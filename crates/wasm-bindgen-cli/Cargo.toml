@@ -1,0 +1,10 @@
+[package]
+name = "wasm-bindgen-cli"
+version = "0.1.0"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+
+[dependencies]
+docopt = "0.8"
+serde = "1.0"
+serde_derive = "1.0"
+wasm-bindgen-cli-support = { path = "../wasm-bindgen-cli-support" }
