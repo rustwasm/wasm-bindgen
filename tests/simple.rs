@@ -81,7 +81,9 @@ fn return_a_string() {
                 pub fn clone(a: &str) -> String {
                     a.to_string()
                 }
+            }
 
+            wasm_bindgen! {
                 pub fn concat(a: &str, b: &str, c: i8) -> String {
                     format!("{} {} {}", a, b, c)
                 }
