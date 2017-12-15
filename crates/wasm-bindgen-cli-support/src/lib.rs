@@ -77,8 +77,9 @@ impl Object {
 
     fn generate_js(&self) -> String {
         format!("\
-const xform = (instance) => {{
-    return instance;
+const xform = (obj) => {{
+    obj.exports = obj.instance.exports;
+    return obj;
 }};
 export const instantiate = (bytes, imports) => {{
     return WebAssembly.instantiate(bytes, imports).then(xform);
