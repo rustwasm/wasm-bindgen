@@ -12,6 +12,8 @@ pub struct Function {
 
 pub enum Type {
     Integer(syn::Ident),
+    BorrowedStr,
+    String,
 }
 
 impl Function {
@@ -100,21 +102,41 @@ impl Function {
 
 impl Type {
     pub fn from(ty: &syn::Type) -> Type {
+        let extract_path_ident = |path: &syn::Path| {
+            if path.leading_colon.is_some() {
+                panic!("unsupported leading colon in path")
+            }
+            if path.segments.len() != 1 {
+                panic!("unsupported path that needs name resolution")
+            }
+            match path.segments.get(0).item().arguments {
+                syn::PathArguments::None => {}
+                _ => panic!("unsupported path that has path arguments")
+            }
+            path.segments.get(0).item().ident
+        };
         match *ty {
-            // syn::Type::Reference(ref r) => {
-            // }
+            syn::Type::Reference(ref r) => {
+                if r.lifetime.is_some() {
+                    panic!("can't have lifetimes on references yet");
+                }
+                match r.ty.mutability {
+                    syn::Mutability::Immutable => {}
+                    _ => panic!("can't have mutable references yet"),
+                }
+                match r.ty.ty {
+                    syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
+                        let ident = extract_path_ident(path);
+                        match ident.sym.as_str() {
+                            "str" => Type::BorrowedStr,
+                            _ => panic!("unsupported reference type"),
+                        }
+                    }
+                    _ => panic!("unsupported reference type"),
+                }
+            }
             syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
-                if path.leading_colon.is_some() {
-                    panic!("unsupported leading colon in path")
-                }
-                if path.segments.len() != 1 {
-                    panic!("unsupported path that needs name resolution")
-                }
-                match path.segments.get(0).item().arguments {
-                    syn::PathArguments::None => {}
-                    _ => panic!("unsupported path that has path arguments")
-                }
-                let ident = path.segments.get(0).item().ident;
+                let ident = extract_path_ident(path);
                 match ident.sym.as_str() {
                     "i8" |
                     "u8" |
@@ -128,6 +150,7 @@ impl Type {
                     "f64" => {
                         Type::Integer(ident)
                     }
+                    "String" => Type::String,
                     s => panic!("unsupported type: {}", s),
                 }
             }
@@ -138,6 +161,8 @@ impl Type {
     fn shared(&self) -> shared::Type {
         match *self {
             Type::Integer(_) => shared::Type::Number,
+            Type::BorrowedStr => shared::Type::BorrowedStr,
+            Type::String => shared::Type::String,
         }
     }
 }
@@ -146,6 +171,13 @@ impl ToTokens for Type {
     fn to_tokens(&self, tokens: &mut Tokens) {
         match *self {
             Type::Integer(i) => i.to_tokens(tokens),
+            Type::String => {
+                syn::Ident::from("String").to_tokens(tokens);
+            }
+            Type::BorrowedStr => {
+                <Token![&]>::default().to_tokens(tokens);
+                syn::Ident::from("str").to_tokens(tokens);
+            }
         }
     }
 }

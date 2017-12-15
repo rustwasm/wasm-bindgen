@@ -28,10 +28,73 @@ fn add() {
             import * as assert from "assert";
 
             export function test(wasm) {
-                assert.strictEqual(wasm.exports.add(1, 2), 3);
-                assert.strictEqual(wasm.exports.add(2, 3), 5);
-                assert.strictEqual(wasm.exports.add3(2), 5);
-                assert.strictEqual(wasm.exports.get2(), 2);
+                assert.strictEqual(wasm.add(1, 2), 3);
+                assert.strictEqual(wasm.add(2, 3), 5);
+                assert.strictEqual(wasm.add3(2), 5);
+                assert.strictEqual(wasm.get2(), 2);
+            }
+        "#)
+        .test();
+}
+
+#[test]
+fn string_arguments() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                pub fn assert_foo(a: &str) {
+                    assert_eq!(a, "foo");
+                }
+
+                pub fn assert_foo_and_bar(a: &str, b: &str) {
+                    assert_eq!(a, "foo2");
+                    assert_eq!(b, "bar");
+                }
+            }
+        "#)
+        .file("test.js", r#"
+            export function test(wasm) {
+                wasm.assert_foo("foo");
+                wasm.assert_foo_and_bar("foo2", "bar");
+            }
+        "#)
+        .test();
+}
+
+#[test]
+fn return_a_string() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                pub fn clone(a: &str) -> String {
+                    a.to_string()
+                }
+
+                pub fn concat(a: &str, b: &str, c: i8) -> String {
+                    format!("{} {} {}", a, b, c)
+                }
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+
+            export function test(wasm) {
+                assert.strictEqual(wasm.clone("foo"), "foo");
+                assert.strictEqual(wasm.clone("another"), "another");
+                assert.strictEqual(wasm.concat("a", "b", 3), "a b 3");
+                assert.strictEqual(wasm.concat("c", "d", -2), "c d -2");
             }
         "#)
         .test();

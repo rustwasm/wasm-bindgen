@@ -13,22 +13,30 @@ use parity_wasm::elements::*;
 
 pub struct Bindgen {
     path: Option<PathBuf>,
+    nodejs: bool,
 }
 
 pub struct Object {
     module: Module,
     items: Vec<shared::Function>,
+    nodejs: bool,
 }
 
 impl Bindgen {
     pub fn new() -> Bindgen {
         Bindgen {
             path: None,
+            nodejs: false,
         }
     }
 
     pub fn input_path<P: AsRef<Path>>(&mut self, path: P) -> &mut Bindgen {
         self.path = Some(path.as_ref().to_path_buf());
+        self
+    }
+
+    pub fn nodejs(&mut self, node: bool) -> &mut Bindgen {
+        self.nodejs = node;
         self
     }
 
@@ -44,6 +52,7 @@ impl Bindgen {
         Ok(Object {
             module,
             items,
+            nodejs: self.nodejs,
         })
     }
 }
@@ -75,16 +84,114 @@ impl Object {
         Ok(())
     }
 
-    fn generate_js(&self) -> String {
+    pub fn generate_js(&self) -> String {
+        let mut set_exports = String::new();
+        for func in self.items.iter() {
+            self.add_export(func, &mut set_exports);
+        }
+
         format!("\
 const xform = (obj) => {{
-    obj.exports = obj.instance.exports;
+    const exports = obj.instance.exports;
+    const memory = obj.instance.exports.memory;
+    {set_exports}
     return obj;
 }};
 export const instantiate = (bytes, imports) => {{
     return WebAssembly.instantiate(bytes, imports).then(xform);
 }};
-")
+",
+    set_exports = set_exports,
+)
+    }
+
+    fn add_export(&self, func: &shared::Function, dst: &mut String) {
+        let simple = func.arguments.iter().all(|t| t.is_number()) &&
+            func.ret.as_ref().map(|t| t.is_number()).unwrap_or(true);
+
+        if simple {
+            dst.push_str(&format!("\n\
+                obj.{f} = obj.instance.exports.{f};\
+            ", f = func.name));
+            return
+        }
+
+        dst.push_str(&format!("\n    obj.{f} = function {f}(",
+                                      f = func.name));
+        let mut passed_args = String::new();
+        let mut arg_conversions = String::new();
+        let mut destructors = String::new();
+
+        for (i, arg) in func.arguments.iter().enumerate() {
+            let name = format!("arg{}", i);
+            if i > 0 {
+                dst.push_str(", ");
+            }
+            dst.push_str(&name);
+
+            let mut pass = |arg: &str| {
+                if passed_args.len() > 0 {
+                    passed_args.push_str(", ");
+                }
+                passed_args.push_str(arg);
+            };
+            match *arg {
+                shared::Type::Number => pass(&name),
+                shared::Type::BorrowedStr |
+                shared::Type::String => {
+                    if self.nodejs {
+                        arg_conversions.push_str(&format!("\
+                            const buf{i} = Buffer.from({arg});
+                            const len{i} = buf{i}.length;
+                            const ptr{i} = exports.__wbindgen_malloc(len{i});
+                            let memory{i} = new Uint8Array(memory.buffer);
+                            buf{i}.copy(memory{i}, ptr{i});
+                        ", i = i, arg = name));
+                        pass(&format!("ptr{}", i));
+                        pass(&format!("len{}", i));
+                        if let shared::Type::BorrowedStr = *arg {
+                            destructors.push_str(&format!("\n\
+                                exports.__wbindgen_free(ptr{i}, len{i});\n\
+                            ", i = i));
+                        }
+                    } else {
+                        panic!("strings not implemented for browser");
+                    }
+                }
+            }
+        }
+        let convert_ret = match func.ret {
+            None |
+            Some(shared::Type::Number) => format!("return ret;"),
+            Some(shared::Type::BorrowedStr) => panic!(),
+            Some(shared::Type::String) => {
+                if self.nodejs {
+                    format!("\
+                        const mem = new Uint8Array(memory.buffer);
+                        const ptr = exports.__wbindgen_boxed_str_ptr(ret);
+                        const len = exports.__wbindgen_boxed_str_len(ret);
+                        const buf = Buffer.from(mem.slice(ptr, ptr + len));
+                        const realRet = buf.toString();
+                        exports.__wbindgen_boxed_str_free(ret);
+                        return realRet;
+                    ")
+                } else {
+                    panic!("strings not implemented for browser");
+                }
+            }
+        };
+        dst.push_str(") {\n        ");
+        dst.push_str(&arg_conversions);
+        dst.push_str(&format!("\
+            try {{
+                const ret = exports.{f}({passed});
+                {convert_ret}
+            }} finally {{
+                {destructors}
+            }}
+        ", f = func.name, passed = passed_args, destructors = destructors,
+            convert_ret = convert_ret));
+        dst.push_str("};");
     }
 }
 

@@ -11,4 +11,15 @@ pub struct Function {
 #[derive(Serialize, Deserialize)]
 pub enum Type {
     Number,
+    BorrowedStr,
+    String,
+}
+
+impl Type {
+    pub fn is_number(&self) -> bool {
+        match *self {
+            Type::Number => true,
+            _ => false,
+        }
+    }
 }

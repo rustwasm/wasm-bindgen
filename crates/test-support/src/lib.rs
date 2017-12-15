@@ -134,6 +134,7 @@ impl Project {
 
         let obj = cli::Bindgen::new()
             .input_path(&out)
+            .nodejs(true)
             .generate()
             .expect("failed to run bindgen");
         obj.write_js_to(root.join("out.js")).expect("failed to write js");
