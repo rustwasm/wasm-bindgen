@@ -2,11 +2,12 @@ extern crate wasm_bindgen_cli_support as cli;
 
 use std::env;
 use std::fs;
-use std::io::Write;
+use std::io::{Write, Read};
 use std::path::{PathBuf, Path};
 use std::process::Command;
-use std::sync::{Once, ONCE_INIT};
 use std::sync::atomic::*;
+use std::sync::{Once, ONCE_INIT};
+use std::time::Instant;
 
 pub struct Project {
     files: Vec<(String, String)>,
@@ -16,6 +17,10 @@ pub fn project() -> Project {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR"));
     let dir = dir.parent().unwrap() // chop off `test-support`
         .parent().unwrap(); // chop off `crates`
+
+    let mut lockfile = String::new();
+    fs::File::open(&dir.join("Cargo.lock")).unwrap()
+        .read_to_string(&mut lockfile).unwrap();
     Project {
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
@@ -33,6 +38,8 @@ pub fn project() -> Project {
                 [profile.dev]
                 opt-level = 2 # TODO: decrease when upstream is not buggy
             "#, dir.display())),
+
+            ("Cargo.lock".to_string(), lockfile),
 
             ("run.js".to_string(), r#"
                 var fs = require("fs");
@@ -153,12 +160,16 @@ impl Project {
 }
 
 fn run(cmd: &mut Command, program: &str) {
+    println!("···················································");
     println!("running {:?}", cmd);
+    let start = Instant::now();
     let output = match cmd.output() {
         Ok(output) => output,
         Err(err) => panic!("failed to spawn `{}`: {}", program, err),
     };
     println!("exit: {}", output.status);
+    let dur = start.elapsed();
+    println!("dur: {}.{:03}ms", dur.as_secs(), dur.subsec_nanos() / 1_000_000);
     if output.stdout.len() > 0 {
         println!("stdout ---\n{}", String::from_utf8_lossy(&output.stdout));
     }
