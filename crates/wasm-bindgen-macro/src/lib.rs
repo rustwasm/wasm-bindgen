@@ -317,7 +317,7 @@ impl ToTokens for Receiver {
                 name.to_tokens(tokens);
             }
             Receiver::StructMethod(_, mutable, name) => {
-                syn::Ident::from("me").to_tokens(tokens);
+                (my_quote! { me }).to_tokens(tokens);
                 syn::tokens::Dot::default().to_tokens(tokens);
                 if mutable {
                     syn::Ident::from("borrow_mut").to_tokens(tokens);
