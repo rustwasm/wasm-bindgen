@@ -218,7 +218,7 @@ impl Js {
             if self.nodejs {
                 globals.push_str("
                     function passStringToWasm(arg) {
-                        if (typeof(n) !== 'string')
+                        if (typeof(arg) !== 'string')
                             throw new Error('expected a string argument');
                         const buf = Buffer.from(arg);
                         const len = buf.length;
@@ -231,7 +231,7 @@ impl Js {
             } else {
                 globals.push_str("
                     function passStringToWasm(arg) {
-                        if (typeof(n) !== 'string')
+                        if (typeof(arg) !== 'string')
                             throw new Error('expected a string argument');
                         const buf = new TextEncoder('utf-8').encode(arg);
                         const len = buf.length;
