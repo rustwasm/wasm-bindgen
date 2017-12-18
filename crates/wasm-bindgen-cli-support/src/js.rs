@@ -6,6 +6,7 @@ pub struct Js {
     pub expose_global_exports: bool,
     pub expose_get_string_from_wasm: bool,
     pub expose_pass_string_to_wasm: bool,
+    pub expose_assert_num: bool,
     pub expose_token: bool,
     pub exports: Vec<(String, String)>,
     pub classes: Vec<String>,
@@ -24,17 +25,6 @@ impl Js {
     }
 
     pub fn generate_free_function(&mut self, func: &shared::Function) {
-        let simple = func.arguments.iter().all(|t| t.is_number()) &&
-            func.ret.as_ref().map(|t| t.is_number()).unwrap_or(true);
-
-        if simple {
-            self.exports.push((
-                func.name.clone(),
-                format!("obj.instance.exports.{}", func.name),
-            ));
-            return
-        }
-
         let ret = self.generate_function(&format!("function {}", func.name),
                                          &func.name,
                                          false,
@@ -118,7 +108,11 @@ impl Js {
                 passed_args.push_str(arg);
             };
             match *arg {
-                shared::Type::Number => pass(&name),
+                shared::Type::Number => {
+                    self.expose_assert_num = true;
+                    arg_conversions.push_str(&format!("_assertNum({});\n", name));
+                    pass(&name)
+                }
                 shared::Type::BorrowedStr |
                 shared::Type::String => {
                     self.expose_global_exports = true;
@@ -207,8 +201,16 @@ impl Js {
             globals.push_str("\
                 const token = Symbol('foo');
                 function _checkToken(sym) {
-                    if (token != sym)
+                    if (token !== sym)
                         throw new Error('cannot invoke `new` directly');
+                }
+            ");
+        }
+        if self.expose_assert_num {
+            globals.push_str("\
+                function _assertNum(n) {
+                    if (typeof(n) !== 'number')
+                        throw new Error('expected a number argument');
                 }
             ");
         }
@@ -216,6 +218,8 @@ impl Js {
             if self.nodejs {
                 globals.push_str("
                     function passStringToWasm(arg) {
+                        if (typeof(n) !== 'string')
+                            throw new Error('expected a string argument');
                         const buf = Buffer.from(arg);
                         const len = buf.length;
                         const ptr = exports.__wbindgen_malloc(len);

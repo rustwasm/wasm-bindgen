@@ -10,6 +10,6 @@ proc-macro = true
 syn = { git = 'https://github.com/dtolnay/syn', features = ['full'] }
 synom = { git = 'https://github.com/dtolnay/syn' }
 quote = { git = 'https://github.com/dtolnay/quote' }
-proc-macro2 = "0.1"
+proc-macro2 = { version = "0.1", features = ["unstable"] }
 serde_json = "1"
 wasm-bindgen-shared = { path = "../wasm-bindgen-shared" }

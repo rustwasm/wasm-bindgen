@@ -105,3 +105,38 @@ fn strings() {
         "#)
         .test();
 }
+
+#[test]
+fn exceptions() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                pub struct A {
+                }
+
+                impl A {
+                    pub fn new() -> A {
+                        A {}
+                    }
+                }
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+
+            export function test(wasm) {
+                assert.throws(() => new wasm.A(), /cannot invoke `new` directly/);
+                let a = wasm.A.new();
+                a.free();
+                // TODO: figure out a better error message?
+                assert.throws(() => a.free(), /RuntimeError: unreachable/);
+            }
+        "#)
+        .test();
+}

@@ -101,3 +101,29 @@ fn return_a_string() {
         "#)
         .test();
 }
+
+#[test]
+fn exceptions() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                pub fn foo(_a: u32) {}
+                pub fn bar(_a: &str) {}
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+
+            export function test(wasm) {
+                assert.throws(() => wasm.foo('a'), /expected a number argument/);
+                assert.throws(() => wasm.bar(3), /expected a string argument/);
+            }
+        "#)
+        .test();
+}

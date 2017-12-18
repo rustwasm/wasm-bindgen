@@ -12,13 +12,17 @@ extern crate wasm_bindgen_shared;
 use std::sync::atomic::*;
 
 use proc_macro::TokenStream;
-use proc_macro2::Literal;
+use proc_macro2::{Literal, Span};
 use quote::{Tokens, ToTokens};
 
 mod ast;
 
 static MALLOC_GENERATED: AtomicBool = ATOMIC_BOOL_INIT;
 static BOXED_STR_GENERATED: AtomicBool = ATOMIC_BOOL_INIT;
+
+macro_rules! my_quote {
+    ($($t:tt)*) => (quote_spanned!(Span::call_site(), $($t)*))
+}
 
 #[proc_macro]
 pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
@@ -69,7 +73,7 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     };
     let generated_static_length = generated_static.len();
 
-    (quote! {
+    (my_quote! {
         #[no_mangle]
         #[allow(non_upper_case_globals)]
         pub static #generated_static_name: [u8; #generated_static_length] =
@@ -100,7 +104,7 @@ fn bindgen_struct(s: &ast::Struct, into: &mut Tokens) {
 
     let name = &s.name;
     let free_fn = s.free_function();
-    (quote! {
+    (my_quote! {
         #[no_mangle]
         pub unsafe extern fn #free_fn(ptr: *mut ::std::cell::RefCell<#name>) {
             assert!(!ptr.is_null());
@@ -149,8 +153,8 @@ fn bindgen(export_name: &syn::Lit,
 
     let mut offset = 0;
     if let Receiver::StructMethod(class, _, _) = receiver {
-        args.push(quote! { me: *mut ::std::cell::RefCell<#class> });
-        arg_conversions.push(quote! {
+        args.push(my_quote! { me: *mut ::std::cell::RefCell<#class> });
+        arg_conversions.push(my_quote! {
             assert!(!me.is_null());
             let me = unsafe { &*me };
         });
@@ -162,15 +166,15 @@ fn bindgen(export_name: &syn::Lit,
         let ident = syn::Ident::from(format!("arg{}", i));
         match *ty {
             ast::Type::Integer(i) => {
-                args.push(quote! { #ident: #i });
+                args.push(my_quote! { #ident: #i });
             }
             ast::Type::BorrowedStr => {
                 malloc = !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
                 let len = syn::Ident::from(format!("arg{}_len", i));
-                args.push(quote! { #ptr: *const u8 });
-                args.push(quote! { #len: usize });
-                arg_conversions.push(quote! {
+                args.push(my_quote! { #ptr: *const u8 });
+                args.push(my_quote! { #len: usize });
+                arg_conversions.push(my_quote! {
                     let #ident = unsafe {
                         let slice = ::std::slice::from_raw_parts(#ptr, #len);
                         ::std::str::from_utf8_unchecked(slice)
@@ -181,9 +185,9 @@ fn bindgen(export_name: &syn::Lit,
                 malloc = !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
                 let len = syn::Ident::from(format!("arg{}_len", i));
-                args.push(quote! { #ptr: *mut u8 });
-                args.push(quote! { #len: usize });
-                arg_conversions.push(quote! {
+                args.push(my_quote! { #ptr: *mut u8 });
+                args.push(my_quote! { #len: usize });
+                arg_conversions.push(my_quote! {
                     let #ident = unsafe {
                         let vec = ::std::vec::Vec::from_raw_parts(#ptr, #len, #len);
                         ::std::string::String::from_utf8_unchecked(vec)
@@ -191,8 +195,8 @@ fn bindgen(export_name: &syn::Lit,
                 });
             }
             ast::Type::ByValue(name) => {
-                args.push(quote! { #ident: *mut ::std::cell::RefCell<#name> });
-                arg_conversions.push(quote! {
+                args.push(my_quote! { #ident: *mut ::std::cell::RefCell<#name> });
+                arg_conversions.push(my_quote! {
                     assert!(!#ident.is_null());
                     let #ident = unsafe {
                         (*#ident).borrow_mut();
@@ -201,53 +205,53 @@ fn bindgen(export_name: &syn::Lit,
                 });
             }
             ast::Type::ByRef(name) => {
-                args.push(quote! { #ident: *mut ::std::cell::RefCell<#name> });
-                arg_conversions.push(quote! {
+                args.push(my_quote! { #ident: *mut ::std::cell::RefCell<#name> });
+                arg_conversions.push(my_quote! {
                     assert!(!#ident.is_null());
                     let #ident = unsafe { (*#ident).borrow() };
                     let #ident = &*#ident;
                 });
             }
             ast::Type::ByMutRef(name) => {
-                args.push(quote! { #ident: *mut ::std::cell::RefCell<#name> });
-                arg_conversions.push(quote! {
+                args.push(my_quote! { #ident: *mut ::std::cell::RefCell<#name> });
+                arg_conversions.push(my_quote! {
                     assert!(!#ident.is_null());
                     let mut #ident = unsafe { (*#ident).borrow_mut() };
                     let #ident = &mut *#ident;
                 });
             }
         }
-        converted_arguments.push(quote! { #ident });
+        converted_arguments.push(my_quote! { #ident });
     }
     let ret_ty;
     let convert_ret;
     match ret_type {
         Some(&ast::Type::Integer(i)) => {
-            ret_ty = quote! { -> #i };
-            convert_ret = quote! { #ret };
+            ret_ty = my_quote! { -> #i };
+            convert_ret = my_quote! { #ret };
         }
         Some(&ast::Type::BorrowedStr) => panic!("can't return a borrowed string"),
         Some(&ast::Type::ByRef(_)) => panic!("can't return a borrowed ref"),
         Some(&ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
         Some(&ast::Type::String) => {
             boxed_str = !BOXED_STR_GENERATED.swap(true, Ordering::SeqCst);
-            ret_ty = quote! { -> *mut String };
-            convert_ret = quote! { Box::into_raw(Box::new(#ret)) };
+            ret_ty = my_quote! { -> *mut String };
+            convert_ret = my_quote! { Box::into_raw(Box::new(#ret)) };
         }
         Some(&ast::Type::ByValue(name)) => {
-            ret_ty = quote! { -> *mut ::std::cell::RefCell<#name> };
-            convert_ret = quote! {
+            ret_ty = my_quote! { -> *mut ::std::cell::RefCell<#name> };
+            convert_ret = my_quote! {
                 Box::into_raw(Box::new(::std::cell::RefCell::new(#ret)))
             };
         }
         None => {
-            ret_ty = quote! {};
-            convert_ret = quote! {};
+            ret_ty = my_quote! {};
+            convert_ret = my_quote! {};
         }
     }
 
     let malloc = if malloc {
-        quote! {
+        my_quote! {
             #[no_mangle]
             pub extern fn __wbindgen_malloc(size: usize) -> *mut u8 {
                 let mut ret = Vec::with_capacity(size);
@@ -262,12 +266,12 @@ fn bindgen(export_name: &syn::Lit,
             }
         }
     } else {
-        quote! {
+        my_quote! {
         }
     };
 
     let boxed_str = if boxed_str {
-        quote! {
+        my_quote! {
             #[no_mangle]
             pub unsafe extern fn __wbindgen_boxed_str_len(ptr: *mut String) -> usize {
                 (*ptr).len()
@@ -284,11 +288,11 @@ fn bindgen(export_name: &syn::Lit,
             }
         }
     } else {
-        quote! {
+        my_quote! {
         }
     };
 
-    let tokens = quote! {
+    let tokens = my_quote! {
         #malloc
         #boxed_str
 
