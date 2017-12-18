@@ -8,4 +8,5 @@ install:
 build: false
 
 test_script:
+  - rustup target add wasm32-unknown-unknown
   - cargo test

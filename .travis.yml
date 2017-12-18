@@ -6,6 +6,7 @@ matrix:
     - rust: nightly
 
 script:
+  - rustup target add wasm32-unknown-unknown
   - cargo test
 
 notifications:
