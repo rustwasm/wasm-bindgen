@@ -1,8 +1,11 @@
 use proc_macro2::Literal;
-use quote::{ToTokens, Tokens};
-use serde_json;
 use syn;
 use wasm_bindgen_shared as shared;
+
+pub struct Program {
+    pub structs: Vec<Struct>,
+    pub free_functions: Vec<Function>,
+}
 
 pub struct Function {
     pub name: syn::Ident,
@@ -14,6 +17,58 @@ pub enum Type {
     Integer(syn::Ident),
     BorrowedStr,
     String,
+    ByValue(syn::Ident),
+    ByRef(syn::Ident),
+    ByMutRef(syn::Ident),
+}
+
+pub struct Struct {
+    pub name: syn::Ident,
+    pub ctor: Option<Function>,
+    pub methods: Vec<Method>,
+    pub functions: Vec<Function>,
+}
+
+pub struct Method {
+    pub mutable: bool,
+    pub function: Function,
+}
+
+impl Program {
+    pub fn push_impl(&mut self, item: &syn::ItemImpl) {
+        match item.defaultness {
+            syn::Defaultness::Final => {}
+            _ => panic!("default impls are not supported"),
+        }
+        match item.unsafety {
+            syn::Unsafety::Normal => {}
+            _ => panic!("unsafe impls are not supported"),
+        }
+        if item.trait_.is_some() {
+            panic!("trait impls are not supported");
+        }
+        if item.generics.params.len() > 0 {
+            panic!("generic impls aren't supported");
+        }
+        let name = match Type::from(&item.self_ty) {
+            Type::ByValue(ident) => ident,
+            _ => panic!("unsupported self type in impl"),
+        };
+        let dst = self.structs
+            .iter_mut()
+            .find(|s| s.name == name)
+            .expect(&format!("failed to definition of struct for impl of `{}`", name));
+        for item in item.items.iter() {
+            dst.push_item(item);
+        }
+    }
+
+    pub fn shared(&self) -> shared::Program {
+        shared::Program {
+            structs: self.structs.iter().map(|s| s.shared()).collect(),
+            free_functions: self.free_functions.iter().map(|s| s.shared()).collect(),
+        }
+    }
 }
 
 impl Function {
@@ -36,6 +91,7 @@ impl Function {
         if !input.abi.is_none() {
             panic!("can only bindgen Rust ABI functions")
         }
+
         if input.decl.variadic {
             panic!("can't bindgen variadic functions")
         }
@@ -59,11 +115,7 @@ impl Function {
             syn::ReturnType::Type(ref t, _) => Some(Type::from(t)),
         };
 
-        Function {
-            name: input.ident,
-            arguments,
-            ret,
-        }
+        Function { name: input.ident, arguments, ret }
     }
 
     pub fn export_name(&self) -> syn::Lit {
@@ -77,18 +129,6 @@ impl Function {
         let generated_name = format!("__wasm_bindgen_generated_{}",
                                      self.name.sym.as_str());
         syn::Ident::from(generated_name)
-    }
-
-    pub fn generated_static_name(&self) -> syn::Ident {
-        let generated_name = format!("__WASM_BINDGEN_GENERATED_{}",
-                                     self.name.sym.as_str());
-        syn::Ident::from(generated_name)
-    }
-
-    pub fn generate_static(&self) -> Vec<u8> {
-        let mut prefix = String::from("wbg:");
-        prefix.push_str(&serde_json::to_string(&self.shared()).unwrap());
-        prefix.into_bytes()
     }
 
     fn shared(&self) -> shared::Function {
@@ -120,16 +160,22 @@ impl Type {
                 if r.lifetime.is_some() {
                     panic!("can't have lifetimes on references yet");
                 }
-                match r.ty.mutability {
-                    syn::Mutability::Immutable => {}
-                    _ => panic!("can't have mutable references yet"),
-                }
+                let mutable = match r.ty.mutability {
+                    syn::Mutability::Immutable => false,
+                    syn::Mutability::Mutable(_) => true,
+                };
                 match r.ty.ty {
                     syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
                         let ident = extract_path_ident(path);
                         match ident.sym.as_str() {
-                            "str" => Type::BorrowedStr,
-                            _ => panic!("unsupported reference type"),
+                            "str" => {
+                                if mutable {
+                                    panic!("mutable strings not allowed");
+                                }
+                                Type::BorrowedStr
+                            }
+                            _ if mutable => Type::ByMutRef(ident),
+                            _ => Type::ByRef(ident),
                         }
                     }
                     _ => panic!("unsupported reference type"),
@@ -151,7 +197,7 @@ impl Type {
                         Type::Integer(ident)
                     }
                     "String" => Type::String,
-                    s => panic!("unsupported type: {}", s),
+                    _ => Type::ByValue(ident),
                 }
             }
             _ => panic!("unsupported type"),
@@ -163,21 +209,108 @@ impl Type {
             Type::Integer(_) => shared::Type::Number,
             Type::BorrowedStr => shared::Type::BorrowedStr,
             Type::String => shared::Type::String,
+            Type::ByValue(n) => shared::Type::ByValue(n.to_string()),
+            Type::ByRef(n) => shared::Type::ByRef(n.to_string()),
+            Type::ByMutRef(n) => shared::Type::ByMutRef(n.to_string()),
         }
     }
 }
 
-impl ToTokens for Type {
-    fn to_tokens(&self, tokens: &mut Tokens) {
-        match *self {
-            Type::Integer(i) => i.to_tokens(tokens),
-            Type::String => {
-                syn::Ident::from("String").to_tokens(tokens);
+impl Struct {
+    pub fn from(s: &syn::ItemStruct) -> Struct {
+        Struct {
+            name: s.ident,
+            ctor: None,
+            methods: Vec::new(),
+            functions: Vec::new(),
+        }
+    }
+
+    pub fn push_item(&mut self, item: &syn::ImplItem) {
+        let method = match *item {
+            syn::ImplItem::Const(_) => panic!("const definitions aren't supported"),
+            syn::ImplItem::Type(_) => panic!("type definitions in impls aren't supported"),
+            syn::ImplItem::Method(ref m) => m,
+            syn::ImplItem::Macro(_) => panic!("macros in impls aren't supported"),
+        };
+        match method.vis {
+            syn::Visibility::Public(_) => {}
+            _ => return,
+        }
+        match method.defaultness {
+            syn::Defaultness::Final => {}
+            _ => panic!("default methods are not supported"),
+        }
+        match method.sig.constness {
+            syn::Constness::NotConst => {}
+            _ => panic!("can only bindgen non-const functions"),
+        }
+        match method.sig.unsafety {
+            syn::Unsafety::Normal => {}
+            _ => panic!("can only bindgen safe functions"),
+        }
+
+        if method.sig.decl.variadic {
+            panic!("can't bindgen variadic functions")
+        }
+        if method.sig.decl.generics.params.len() > 0 {
+            panic!("can't bindgen functions with lifetime or type parameters")
+        }
+
+        let mut mutable = None;
+        let arguments = method.sig.decl.inputs.iter()
+            .map(|i| i.into_item())
+            .filter_map(|arg| {
+                match *arg {
+                    syn::FnArg::Captured(ref c) => Some(c),
+                    syn::FnArg::SelfValue(_) => {
+                        panic!("by-value `self` not yet supported");
+                    }
+                    syn::FnArg::SelfRef(ref a) => {
+                        assert!(mutable.is_none());
+                        mutable = Some(match a.mutbl {
+                            syn::Mutability::Mutable(_) => true,
+                            syn::Mutability::Immutable => false,
+                        });
+                        None
+                    }
+                    _ => panic!("arguments cannot be `self` or ignored"),
+                }
+            })
+            .map(|arg| Type::from(&arg.ty))
+            .collect::<Vec<_>>();
+
+        let ret = match method.sig.decl.output {
+            syn::ReturnType::Default => None,
+            syn::ReturnType::Type(ref t, _) => Some(Type::from(t)),
+        };
+
+        let function = Function { name: method.sig.ident, arguments, ret };
+        match mutable {
+            Some(mutable) => {
+                self.methods.push(Method { mutable, function });
             }
-            Type::BorrowedStr => {
-                <Token![&]>::default().to_tokens(tokens);
-                syn::Ident::from("str").to_tokens(tokens);
+            None => {
+                self.functions.push(function);
             }
+        }
+    }
+
+    pub fn shared(&self) -> shared::Struct {
+        shared::Struct {
+            name: self.name.to_string(),
+            ctor: self.ctor.as_ref().unwrap().shared(),
+            functions: self.functions.iter().map(|f| f.shared()).collect(),
+            methods: self.methods.iter().map(|f| f.shared()).collect(),
+        }
+    }
+}
+
+impl Method {
+    pub fn shared(&self) -> shared::Method {
+        shared::Method {
+            mutable: self.mutable,
+            function: self.function.shared(),
         }
     }
 }

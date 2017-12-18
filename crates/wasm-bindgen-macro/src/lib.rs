@@ -1,7 +1,6 @@
 #![feature(proc_macro)]
 
 extern crate syn;
-#[macro_use]
 extern crate synom;
 #[macro_use]
 extern crate quote;
@@ -28,25 +27,63 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
 
     let mut ret = Tokens::new();
 
+    let mut program = ast::Program {
+        structs: Vec::new(),
+        free_functions: Vec::new(),
+    };
+
     for item in file.items.iter() {
         item.to_tokens(&mut ret);
         match *item {
-            syn::Item::Fn(ref f) => bindgen_fn(f, &mut ret),
+            syn::Item::Fn(ref f) => {
+                program.free_functions.push(ast::Function::from(f));
+            }
+            syn::Item::Struct(ref s) => {
+                let s = ast::Struct::from(s);
+                if program.structs.iter().any(|a| a.name == s.name) {
+                    panic!("redefinition of struct: {}", s.name);
+                }
+                program.structs.push(s);
+            }
+            syn::Item::Impl(ref s) => program.push_impl(s),
             _ => panic!("unexpected item in bindgen macro"),
         }
     }
 
+    for function in program.free_functions.iter() {
+        bindgen_fn(function, &mut ret);
+    }
+    for s in program.structs.iter() {
+        bindgen_struct(s, &mut ret);
+    }
+
+    static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
+    let generated_static_name = format!("__WASM_BINDGEN_GENERATED{}",
+                                        CNT.fetch_add(1, Ordering::SeqCst));
+    let mut generated_static = String::from("wbg:");
+    generated_static.push_str(&serde_json::to_string(&program.shared()).unwrap());
+    let generated_static_value = syn::Lit {
+        value: syn::LitKind::Other(Literal::byte_string(generated_static.as_bytes())),
+        span: Default::default(),
+    };
+    let generated_static_length = generated_static.len();
+
+    (quote! {
+        #[no_mangle]
+        #[allow(non_upper_case_globals)]
+        pub static #generated_static_name: [u8; #generated_static_length] =
+            *#generated_static_value;
+    }).to_tokens(&mut ret);
+
     ret.into()
 }
 
-fn bindgen_fn(input: &syn::ItemFn, into: &mut Tokens) {
-    let function = ast::Function::from(input);
-
+fn bindgen_fn(function: &ast::Function, into: &mut Tokens) {
     let export_name = function.export_name();
     let generated_name = function.rust_symbol();
     let mut args = vec![];
     let mut arg_conversions = vec![];
-    let real_name = &input.ident;
+    let real_name = &function.name;
     let mut converted_arguments = vec![];
     let ret = syn::Ident::from("_ret");
 
@@ -85,6 +122,32 @@ fn bindgen_fn(input: &syn::ItemFn, into: &mut Tokens) {
                     };
                 });
             }
+            ast::Type::ByValue(name) => {
+                args.push(quote! { #ident: *mut ::std::cell::RefCell<#name> });
+                arg_conversions.push(quote! {
+                    assert!(!#ident.is_null());
+                    let #ident = unsafe {
+                        (*#ident).borrow_mut();
+                        Box::from_raw(#ident).into_inner()
+                    };
+                });
+            }
+            ast::Type::ByRef(name) => {
+                args.push(quote! { #ident: *mut ::std::cell::RefCell<#name> });
+                arg_conversions.push(quote! {
+                    assert!(!#ident.is_null());
+                    let #ident = unsafe { (*#ident).borrow() };
+                    let #ident = &*#ident;
+                });
+            }
+            ast::Type::ByMutRef(name) => {
+                args.push(quote! { #ident: *mut ::std::cell::RefCell<#name> });
+                arg_conversions.push(quote! {
+                    assert!(!#ident.is_null());
+                    let mut #ident = unsafe { (*#ident).borrow_mut() };
+                    let #ident = &mut *#ident;
+                });
+            }
         }
         converted_arguments.push(quote! { #ident });
     }
@@ -96,24 +159,24 @@ fn bindgen_fn(input: &syn::ItemFn, into: &mut Tokens) {
             convert_ret = quote! { #ret };
         }
         Some(ast::Type::BorrowedStr) => panic!("can't return a borrowed string"),
+        Some(ast::Type::ByRef(_)) => panic!("can't return a borrowed ref"),
+        Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
         Some(ast::Type::String) => {
             boxed_str = !BOXED_STR_GENERATED.swap(true, Ordering::SeqCst);
             ret_ty = quote! { -> *mut String };
             convert_ret = quote! { Box::into_raw(Box::new(#ret)) };
+        }
+        Some(ast::Type::ByValue(name)) => {
+            ret_ty = quote! { -> *mut ::std::cell::RefCell<#name> };
+            convert_ret = quote! {
+                Box::into_raw(Box::new(::std::cell::RefCell<#ret>))
+            };
         }
         None => {
             ret_ty = quote! {};
             convert_ret = quote! {};
         }
     }
-
-    let generated_static_name = function.generated_static_name();
-    let generated_static = function.generate_static();
-    let generated_static_value = syn::Lit {
-        value: syn::LitKind::Other(Literal::byte_string(&generated_static)),
-        span: Default::default(),
-    };
-    let generated_static_length = generated_static.len();
 
     let malloc = if malloc {
         quote! {
@@ -162,11 +225,6 @@ fn bindgen_fn(input: &syn::ItemFn, into: &mut Tokens) {
         #boxed_str
 
         #[no_mangle]
-        #[allow(non_upper_case_globals)]
-        pub static #generated_static_name: [u8; #generated_static_length] =
-            *#generated_static_value;
-
-        #[no_mangle]
         #[export_name = #export_name]
         pub extern fn #generated_name(#(#args),*) #ret_ty {
             #(#arg_conversions)*
@@ -176,4 +234,10 @@ fn bindgen_fn(input: &syn::ItemFn, into: &mut Tokens) {
     };
     // println!("{}", tokens);
     tokens.to_tokens(into);
+}
+
+fn bindgen_struct(s: &ast::Struct, into: &mut Tokens) {
+    if s.ctor.is_none() {
+        panic!("struct `{}` needs a `new` function to construct it", s.name);
+    }
 }

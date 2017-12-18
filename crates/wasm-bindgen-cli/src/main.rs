@@ -1,4 +1,4 @@
-extern crate wasm_bindgen;
+extern crate wasm_bindgen_cli_support;
 #[macro_use]
 extern crate serde_derive;
 extern crate docopt;
@@ -6,7 +6,7 @@ extern crate docopt;
 use std::path::PathBuf;
 
 use docopt::Docopt;
-use wasm_bindgen::Bindgen;
+use wasm_bindgen_cli_support::Bindgen;
 
 const USAGE: &'static str = "
 Generating JS bindings for a wasm file
