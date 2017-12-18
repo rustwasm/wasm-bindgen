@@ -229,7 +229,18 @@ impl Js {
                     }
                 ");
             } else {
-                panic!("browser strings not implemented yet");
+                globals.push_str("
+                    function passStringToWasm(arg) {
+                        if (typeof(n) !== 'string')
+                            throw new Error('expected a string argument');
+                        const buf = new TextEncoder('utf-8').encode(arg);
+                        const len = buf.length;
+                        const ptr = exports.__wbindgen_malloc(len);
+                        let array = new Uint8Array(memory.buffer);
+                        array.set(buf, ptr);
+                        return [ptr, len];
+                    }
+                ");
             }
         }
         if self.expose_get_string_from_wasm {
@@ -246,7 +257,17 @@ impl Js {
                     }
                 ");
             } else {
-                panic!("strings not implemented for browser");
+                globals.push_str("
+                    function getStringFromWasm(ptr) {
+                        const mem = new Uint8Array(memory.buffer);
+                        const data = exports.__wbindgen_boxed_str_ptr(ptr);
+                        const len = exports.__wbindgen_boxed_str_len(ptr);
+                        const slice = mem.slice(data, data + len);
+                        const ret = new TextDecoder('utf-8').decode(slice);
+                        exports.__wbindgen_boxed_str_free(ptr);
+                        return ret;
+                    }
+                ");
             }
         }
 
