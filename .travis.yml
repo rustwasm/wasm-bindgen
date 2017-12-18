@@ -1,0 +1,14 @@
+language: rust
+sudo: false
+
+matrix:
+  include:
+    - rust: nightly
+
+script:
+  - cargo test
+
+notifications:
+  email:
+    on_success: never
+
