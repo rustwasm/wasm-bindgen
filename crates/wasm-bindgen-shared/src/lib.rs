@@ -10,7 +10,6 @@ pub struct Program {
 #[derive(Serialize, Deserialize)]
 pub struct Struct {
     pub name: String,
-    pub ctor: Function,
     pub functions: Vec<Function>,
     pub methods: Vec<Method>,
 }
@@ -26,6 +25,33 @@ pub struct Function {
     pub name: String,
     pub arguments: Vec<Type>,
     pub ret: Option<Type>,
+}
+
+impl Struct {
+    pub fn free_function(&self) -> String {
+        let mut name = format!("__wbindgen_");
+        name.extend(self.name
+            .chars()
+            .flat_map(|s| s.to_lowercase()));
+        name.push_str("_free");
+        return name
+    }
+}
+
+impl Function {
+    pub fn free_function_export_name(&self) -> String {
+        self.name.clone()
+    }
+
+    pub fn struct_function_export_name(&self, struct_: &str) -> String {
+        let mut name = struct_
+            .chars()
+            .flat_map(|s| s.to_lowercase())
+            .collect::<String>();
+        name.push_str("_");
+        name.push_str(&self.name);
+        return name
+    }
 }
 
 #[derive(Serialize, Deserialize)]

@@ -24,7 +24,6 @@ pub enum Type {
 
 pub struct Struct {
     pub name: syn::Ident,
-    pub ctor: Option<Function>,
     pub methods: Vec<Method>,
     pub functions: Vec<Function>,
 }
@@ -118,16 +117,30 @@ impl Function {
         Function { name: input.ident, arguments, ret }
     }
 
-    pub fn export_name(&self) -> syn::Lit {
+    pub fn free_function_export_name(&self) -> syn::Lit {
+        let name = self.shared().free_function_export_name();
         syn::Lit {
-            value: syn::LitKind::Other(Literal::string(self.name.sym.as_str())),
+            value: syn::LitKind::Other(Literal::string(&name)),
             span: Default::default(),
         }
     }
 
-    pub fn rust_symbol(&self) -> syn::Ident {
-        let generated_name = format!("__wasm_bindgen_generated_{}",
-                                     self.name.sym.as_str());
+    pub fn struct_function_export_name(&self, s: syn::Ident) -> syn::Lit {
+        let name = self.shared().struct_function_export_name(s.sym.as_str());
+        syn::Lit {
+            value: syn::LitKind::Other(Literal::string(&name)),
+            span: Default::default(),
+        }
+    }
+
+    pub fn rust_symbol(&self, namespace: Option<syn::Ident>) -> syn::Ident {
+        let mut generated_name = format!("__wasm_bindgen_generated");
+        if let Some(ns) = namespace {
+            generated_name.push_str("_");
+            generated_name.push_str(ns.sym.as_str());
+        }
+        generated_name.push_str("_");
+        generated_name.push_str(self.name.sym.as_str());
         syn::Ident::from(generated_name)
     }
 
@@ -220,10 +233,13 @@ impl Struct {
     pub fn from(s: &syn::ItemStruct) -> Struct {
         Struct {
             name: s.ident,
-            ctor: None,
             methods: Vec::new(),
             functions: Vec::new(),
         }
+    }
+
+    pub fn free_function(&self) -> syn::Ident {
+        syn::Ident::from(self.shared().free_function())
     }
 
     pub fn push_item(&mut self, item: &syn::ImplItem) {
@@ -299,7 +315,6 @@ impl Struct {
     pub fn shared(&self) -> shared::Struct {
         shared::Struct {
             name: self.name.to_string(),
-            ctor: self.ctor.as_ref().unwrap().shared(),
             functions: self.functions.iter().map(|f| f.shared()).collect(),
             methods: self.methods.iter().map(|f| f.shared()).collect(),
         }

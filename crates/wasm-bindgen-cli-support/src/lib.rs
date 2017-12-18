@@ -88,6 +88,7 @@ impl Object {
 
     pub fn generate_js(&self) -> String {
         let mut js = js::Js::default();
+        js.nodejs = self.nodejs;
         js.generate_program(&self.program);
         js.to_string()
     }

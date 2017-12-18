@@ -8,3 +8,6 @@ wasm-bindgen-macro = { path = "crates/wasm-bindgen-macro" }
 
 [dev-dependencies]
 test-support = { path = "crates/test-support" }
+
+[workspace]
+members = ["crates/wasm-bindgen-cli"]

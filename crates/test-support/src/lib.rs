@@ -9,6 +9,9 @@ use std::sync::atomic::*;
 use std::sync::{Once, ONCE_INIT};
 use std::time::Instant;
 
+static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
+thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
+
 pub struct Project {
     files: Vec<(String, String)>,
 }
@@ -25,9 +28,11 @@ pub fn project() -> Project {
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
                 [package]
-                name = "test"
+                name = "test{}"
                 version = "0.0.1"
                 authors = []
+
+                [workspace]
 
                 [lib]
                 crate-type = ["cdylib"]
@@ -37,7 +42,7 @@ pub fn project() -> Project {
 
                 [profile.dev]
                 opt-level = 2 # TODO: decrease when upstream is not buggy
-            "#, dir.display())),
+            "#, IDX.with(|x| *x), dir.display())),
 
             ("Cargo.lock".to_string(), lockfile),
 
@@ -60,8 +65,6 @@ pub fn project() -> Project {
 }
 
 pub fn root() -> PathBuf {
-    static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
-    thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
     let idx = IDX.with(|x| *x);
 
     let mut me = env::current_exe().unwrap();
@@ -123,7 +126,8 @@ impl Project {
             .env("CARGO_TARGET_DIR", &target_dir);
         run(&mut cmd, "cargo");
 
-        let mut out = target_dir.join("wasm32-unknown-unknown/debug/test.wasm");
+        let idx = IDX.with(|x| *x);
+        let mut out = target_dir.join(&format!("wasm32-unknown-unknown/debug/test{}.wasm", idx));
         if Command::new("wasm-gc").output().is_ok() {
             let tmp = out;
             out = tmp.with_extension("gc.wasm");

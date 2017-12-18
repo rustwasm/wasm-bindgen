@@ -60,6 +60,7 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
     let generated_static_name = format!("__WASM_BINDGEN_GENERATED{}",
                                         CNT.fetch_add(1, Ordering::SeqCst));
+    let generated_static_name = syn::Ident::from(generated_static_name);
     let mut generated_static = String::from("wbg:");
     generated_static.push_str(&serde_json::to_string(&program.shared()).unwrap());
     let generated_static_value = syn::Lit {
@@ -75,22 +76,89 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
             *#generated_static_value;
     }).to_tokens(&mut ret);
 
+    // println!("{}", ret);
+
     ret.into()
 }
 
 fn bindgen_fn(function: &ast::Function, into: &mut Tokens) {
-    let export_name = function.export_name();
-    let generated_name = function.rust_symbol();
+    bindgen(&function.free_function_export_name(),
+            function.rust_symbol(None),
+            Receiver::FreeFunction(function.name),
+            &function.arguments,
+            function.ret.as_ref(),
+            into)
+}
+
+fn bindgen_struct(s: &ast::Struct, into: &mut Tokens) {
+    for f in s.functions.iter() {
+        bindgen_struct_fn(s, f, into);
+    }
+    for f in s.methods.iter() {
+        bindgen_struct_method(s, f, into);
+    }
+
+    let name = &s.name;
+    let free_fn = s.free_function();
+    (quote! {
+        #[no_mangle]
+        pub unsafe extern fn #free_fn(ptr: *mut ::std::cell::RefCell<#name>) {
+            assert!(!ptr.is_null());
+            drop(Box::from_raw(ptr));
+        }
+    }).to_tokens(into);
+}
+
+fn bindgen_struct_fn(s: &ast::Struct, f: &ast::Function, into: &mut Tokens) {
+    bindgen(&f.struct_function_export_name(s.name),
+            f.rust_symbol(Some(s.name)),
+            Receiver::StructFunction(s.name, f.name),
+            &f.arguments,
+            f.ret.as_ref(),
+            into)
+}
+
+fn bindgen_struct_method(s: &ast::Struct, m: &ast::Method, into: &mut Tokens) {
+    bindgen(&m.function.struct_function_export_name(s.name),
+            m.function.rust_symbol(Some(s.name)),
+            Receiver::StructMethod(s.name, m.mutable, m.function.name),
+            &m.function.arguments,
+            m.function.ret.as_ref(),
+            into)
+}
+
+enum Receiver {
+    FreeFunction(syn::Ident),
+    StructFunction(syn::Ident, syn::Ident),
+    StructMethod(syn::Ident, bool, syn::Ident),
+}
+
+fn bindgen(export_name: &syn::Lit,
+           generated_name: syn::Ident,
+           receiver: Receiver,
+           arguments: &[ast::Type],
+           ret_type: Option<&ast::Type>,
+           into: &mut Tokens) {
     let mut args = vec![];
     let mut arg_conversions = vec![];
-    let real_name = &function.name;
     let mut converted_arguments = vec![];
     let ret = syn::Ident::from("_ret");
 
     let mut malloc = false;
     let mut boxed_str = false;
 
-    for (i, ty) in function.arguments.iter().enumerate() {
+    let mut offset = 0;
+    if let Receiver::StructMethod(class, _, _) = receiver {
+        args.push(quote! { me: *mut ::std::cell::RefCell<#class> });
+        arg_conversions.push(quote! {
+            assert!(!me.is_null());
+            let me = unsafe { &*me };
+        });
+        offset = 1;
+    }
+
+    for (i, ty) in arguments.iter().enumerate() {
+        let i = i + offset;
         let ident = syn::Ident::from(format!("arg{}", i));
         match *ty {
             ast::Type::Integer(i) => {
@@ -153,23 +221,23 @@ fn bindgen_fn(function: &ast::Function, into: &mut Tokens) {
     }
     let ret_ty;
     let convert_ret;
-    match function.ret {
-        Some(ast::Type::Integer(i)) => {
+    match ret_type {
+        Some(&ast::Type::Integer(i)) => {
             ret_ty = quote! { -> #i };
             convert_ret = quote! { #ret };
         }
-        Some(ast::Type::BorrowedStr) => panic!("can't return a borrowed string"),
-        Some(ast::Type::ByRef(_)) => panic!("can't return a borrowed ref"),
-        Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
-        Some(ast::Type::String) => {
+        Some(&ast::Type::BorrowedStr) => panic!("can't return a borrowed string"),
+        Some(&ast::Type::ByRef(_)) => panic!("can't return a borrowed ref"),
+        Some(&ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
+        Some(&ast::Type::String) => {
             boxed_str = !BOXED_STR_GENERATED.swap(true, Ordering::SeqCst);
             ret_ty = quote! { -> *mut String };
             convert_ret = quote! { Box::into_raw(Box::new(#ret)) };
         }
-        Some(ast::Type::ByValue(name)) => {
+        Some(&ast::Type::ByValue(name)) => {
             ret_ty = quote! { -> *mut ::std::cell::RefCell<#name> };
             convert_ret = quote! {
-                Box::into_raw(Box::new(::std::cell::RefCell<#ret>))
+                Box::into_raw(Box::new(::std::cell::RefCell::new(#ret)))
             };
         }
         None => {
@@ -224,20 +292,38 @@ fn bindgen_fn(function: &ast::Function, into: &mut Tokens) {
         #malloc
         #boxed_str
 
-        #[no_mangle]
         #[export_name = #export_name]
+        #[allow(non_snake_case)]
         pub extern fn #generated_name(#(#args),*) #ret_ty {
             #(#arg_conversions)*
-            let #ret = #real_name(#(#converted_arguments),*);
+            let #ret = #receiver(#(#converted_arguments),*);
             #convert_ret
         }
     };
-    // println!("{}", tokens);
     tokens.to_tokens(into);
 }
 
-fn bindgen_struct(s: &ast::Struct, into: &mut Tokens) {
-    if s.ctor.is_none() {
-        panic!("struct `{}` needs a `new` function to construct it", s.name);
+impl ToTokens for Receiver {
+    fn to_tokens(&self, tokens: &mut Tokens) {
+        match *self {
+            Receiver::FreeFunction(name) => name.to_tokens(tokens),
+            Receiver::StructFunction(s, name) => {
+                s.to_tokens(tokens);
+                syn::tokens::Colon2::default().to_tokens(tokens);
+                name.to_tokens(tokens);
+            }
+            Receiver::StructMethod(_, mutable, name) => {
+                syn::Ident::from("me").to_tokens(tokens);
+                syn::tokens::Dot::default().to_tokens(tokens);
+                if mutable {
+                    syn::Ident::from("borrow_mut").to_tokens(tokens);
+                } else {
+                    syn::Ident::from("borrow").to_tokens(tokens);
+                }
+                tokens.append_delimited("(", Default::default(), |_| ());
+                syn::tokens::Dot::default().to_tokens(tokens);
+                name.to_tokens(tokens);
+            }
+        }
     }
 }
