@@ -124,6 +124,12 @@ fn exceptions() {
                     pub fn new() -> A {
                         A {}
                     }
+
+                    pub fn foo(&self, _: &A) {
+                    }
+
+                    pub fn bar(&mut self, _: &mut A) {
+                    }
                 }
             }
         "#)
@@ -136,6 +142,14 @@ fn exceptions() {
                 a.free();
                 // TODO: figure out a better error message?
                 assert.throws(() => a.free(), /RuntimeError: unreachable/);
+
+                let b = wasm.A.new();
+                try {
+                    b.foo(b);
+                    assert.throws(() => b.bar(b), /RuntimeError: unreachable/);
+                } finally {
+                    b.free();
+                }
             }
         "#)
         .test();
