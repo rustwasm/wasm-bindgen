@@ -26,6 +26,7 @@ macro_rules! my_quote {
 
 #[proc_macro]
 pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
+    // Parse the input as a list of Rust items, reusing the `syn::File` parser.
     let file = syn::parse::<syn::File>(input)
         .expect("expected a set of valid Rust items");
 
@@ -36,23 +37,32 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
         free_functions: Vec::new(),
     };
 
+    // Translate all input items into our own internal representation (the `ast`
+    // module). We'll be panicking here on anything that we can't process
+
     for item in file.items.iter() {
-        item.to_tokens(&mut ret);
         match *item {
             syn::Item::Fn(ref f) => {
+                item.to_tokens(&mut ret);
                 program.free_functions.push(ast::Function::from(f));
             }
             syn::Item::Struct(ref s) => {
+                item.to_tokens(&mut ret);
                 let s = ast::Struct::from(s);
                 if program.structs.iter().any(|a| a.name == s.name) {
                     panic!("redefinition of struct: {}", s.name);
                 }
                 program.structs.push(s);
             }
-            syn::Item::Impl(ref s) => program.push_impl(s),
+            syn::Item::Impl(ref s) => {
+                item.to_tokens(&mut ret);
+                program.push_impl(s);
+            }
             _ => panic!("unexpected item in bindgen macro"),
         }
     }
+
+    // Generate wrappers for all the items that we've found
 
     for function in program.free_functions.iter() {
         bindgen_fn(function, &mut ret);
@@ -60,6 +70,10 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     for s in program.structs.iter() {
         bindgen_struct(s, &mut ret);
     }
+
+    // Finally generate a static which will eventually be what lives in a custom
+    // section of the wasm executable. For now it's just a plain old static, but
+    // we'll eventually have it actually in its own section.
 
     static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
     let generated_static_name = format!("__WASM_BINDGEN_GENERATED{}",

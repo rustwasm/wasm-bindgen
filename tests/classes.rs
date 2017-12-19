@@ -131,6 +131,15 @@ fn exceptions() {
                     pub fn bar(&mut self, _: &mut A) {
                     }
                 }
+
+                pub struct B {
+                }
+
+                impl B {
+                    pub fn new() -> B {
+                        B {}
+                    }
+                }
             }
         "#)
         .file("test.js", r#"
@@ -144,12 +153,14 @@ fn exceptions() {
                 assert.throws(() => a.free(), /RuntimeError: unreachable/);
 
                 let b = wasm.A.new();
-                try {
-                    b.foo(b);
-                    assert.throws(() => b.bar(b), /RuntimeError: unreachable/);
-                } finally {
-                    b.free();
-                }
+                b.foo(b);
+                assert.throws(() => b.bar(b), /RuntimeError: unreachable/);
+
+                let c = wasm.A.new();
+                let d = wasm.B.new();
+                assert.throws(() => c.foo(d), /expected instance of A/);
+                d.free();
+                c.free();
             }
         "#)
         .test();

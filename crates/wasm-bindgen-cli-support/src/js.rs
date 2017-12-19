@@ -7,6 +7,7 @@ pub struct Js {
     pub expose_get_string_from_wasm: bool,
     pub expose_pass_string_to_wasm: bool,
     pub expose_assert_num: bool,
+    pub expose_assert_class: bool,
     pub expose_token: bool,
     pub exports: Vec<(String, String)>,
     pub classes: Vec<String>,
@@ -128,18 +129,20 @@ impl Js {
                         ", i = i));
                     }
                 }
-                shared::Type::ByRef(_) |
-                shared::Type::ByMutRef(_) => {
+                shared::Type::ByRef(ref s) |
+                shared::Type::ByMutRef(ref s) => {
+                    self.expose_assert_class = true;
                     arg_conversions.push_str(&format!("\
-                        const ptr{i} = {arg}.__wasmPtr;
-                    ", i = i, arg = name));
+                        const ptr{i} = _assertClass({arg}, {struct_});
+                    ", i = i, arg = name, struct_ = s));
                     pass(&format!("ptr{}", i));
                 }
-                shared::Type::ByValue(_) => {
+                shared::Type::ByValue(ref s) => {
+                    self.expose_assert_class = true;
                     arg_conversions.push_str(&format!("\
-                        const ptr{i} = {arg}.__wasmPtr;
+                        const ptr{i} = _assertClass({arg}, {struct_});
                         {arg}.__wasmPtr = 0;
-                    ", i = i, arg = name));
+                    ", i = i, arg = name, struct_ = s));
                     pass(&format!("ptr{}", i));
                 }
             }
@@ -269,6 +272,15 @@ impl Js {
                     }
                 ");
             }
+        }
+        if self.expose_assert_class {
+            globals.push_str("
+                function _assertClass(instance, klass) {
+                    if (!(instance instanceof klass))
+                        throw new Error(`expected instance of ${klass.name}`);
+                    return instance.__wasmPtr;
+                }
+            ");
         }
 
         let mut exports = String::new();
