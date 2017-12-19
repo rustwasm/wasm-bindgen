@@ -55,6 +55,8 @@ pub fn project() -> Project {
 
                 out.instantiate(wasm, test.imports).then(m => {
                     test.test(m);
+                    if (m.assertHeapAndStackEmpty)
+                        m.assertHeapAndStackEmpty();
                 }).catch(function(error) {
                     console.error(error);
                     process.exit(1);
@@ -146,6 +148,7 @@ impl Project {
         let obj = cli::Bindgen::new()
             .input_path(&out)
             .nodejs(true)
+            .debug(true)
             .generate()
             .expect("failed to run bindgen");
         obj.write_js_to(root.join("out.js")).expect("failed to write js");

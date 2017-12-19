@@ -29,6 +29,8 @@ pub enum Type {
     ByValue(syn::Ident),
     ByRef(syn::Ident),
     ByMutRef(syn::Ident),
+    JsObject,
+    JsObjectRef,
 }
 
 pub struct Struct {
@@ -227,6 +229,10 @@ impl Type {
                                 }
                                 Type::BorrowedStr
                             }
+                            "JsObject" if !mutable => Type::JsObjectRef,
+                            "JsObject" if mutable => {
+                                panic!("can't have mutable js object refs")
+                            }
                             _ if mutable => Type::ByMutRef(ident),
                             _ => Type::ByRef(ident),
                         }
@@ -250,6 +256,7 @@ impl Type {
                         Type::Integer(ident)
                     }
                     "String" => Type::String,
+                    "JsObject" => Type::JsObject,
                     _ => Type::ByValue(ident),
                 }
             }
@@ -265,6 +272,8 @@ impl Type {
             Type::ByValue(n) => shared::Type::ByValue(n.to_string()),
             Type::ByRef(n) => shared::Type::ByRef(n.to_string()),
             Type::ByMutRef(n) => shared::Type::ByMutRef(n.to_string()),
+            Type::JsObject => shared::Type::JsObject,
+            Type::JsObjectRef => shared::Type::JsObjectRef,
         }
     }
 }

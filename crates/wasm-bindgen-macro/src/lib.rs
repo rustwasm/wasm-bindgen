@@ -101,7 +101,7 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
             *#generated_static_value;
     }).to_tokens(&mut ret);
 
-    println!("{}", ret);
+    // println!("{}", ret);
 
     ret.into()
 }
@@ -241,6 +241,21 @@ fn bindgen(export_name: &syn::Lit,
                     let #ident = &mut *#ident;
                 });
             }
+            ast::Type::JsObject => {
+                args.push(my_quote! { #ident: u32 });
+                arg_conversions.push(my_quote! {
+                    let #ident = ::wasm_bindgen::JsObject::__from_idx(#ident);
+                });
+            }
+            ast::Type::JsObjectRef => {
+                args.push(my_quote! { #ident: u32 });
+                arg_conversions.push(my_quote! {
+                    let #ident = ::std::mem::ManuallyDrop::new(
+                        ::wasm_bindgen::JsObject::__from_idx(#ident)
+                    );
+                    let #ident = &*#ident;
+                });
+            }
         }
         converted_arguments.push(my_quote! { #ident });
     }
@@ -264,6 +279,15 @@ fn bindgen(export_name: &syn::Lit,
             convert_ret = my_quote! {
                 Box::into_raw(Box::new(::std::cell::RefCell::new(#ret)))
             };
+        }
+        Some(&ast::Type::JsObject) => {
+            ret_ty = my_quote! { -> u32 };
+            convert_ret = my_quote! {
+                ::wasm_bindgen::JsObject::__into_idx(#ret)
+            };
+        }
+        Some(&ast::Type::JsObjectRef) => {
+            panic!("can't return a borrowed ref");
         }
         None => {
             ret_ty = my_quote! {};
@@ -407,11 +431,25 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
                     let #len = #name.len();
                 });
             }
+            ast::Type::JsObject => {
+                abi_argument_names.push(name);
+                abi_arguments.push(my_quote! { #name: u32 });
+                arg_conversions.push(my_quote! {
+                    let #name = ::wasm_bindgen::JsObject::__into_idx(#name);
+                });
+            }
+            ast::Type::JsObjectRef => {
+                abi_argument_names.push(name);
+                abi_arguments.push(my_quote! { #name: u32 });
+                arg_conversions.push(my_quote! {
+                    let #name = ::wasm_bindgen::JsObject::__get_idx(#name);
+                });
+            }
             ast::Type::String => panic!("can't use `String` in foreign functions"),
             ast::Type::ByValue(_name) |
             ast::Type::ByRef(_name) |
             ast::Type::ByMutRef(_name) => {
-                panic!("can't use strct types in foreign functions yet");
+                panic!("can't use struct types in foreign functions yet");
             }
         }
     }
@@ -422,6 +460,13 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
             abi_ret = my_quote! { #i };
             convert_ret = my_quote! { #ret_ident };
         }
+        Some(ast::Type::JsObject) => {
+            abi_ret = my_quote! { u32 };
+            convert_ret = my_quote! {
+                ::wasm_bindgen::JsObject::__from_idx(#ret_ident)
+            };
+        }
+        Some(ast::Type::JsObjectRef) => panic!("can't return a borrowed ref"),
         Some(ast::Type::BorrowedStr) => panic!("can't return a borrowed string"),
         Some(ast::Type::ByRef(_)) => panic!("can't return a borrowed ref"),
         Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),

@@ -16,12 +16,14 @@ mod js;
 pub struct Bindgen {
     path: Option<PathBuf>,
     nodejs: bool,
+    debug: bool,
 }
 
 pub struct Object {
     module: Module,
     program: shared::Program,
     nodejs: bool,
+    debug: bool,
 }
 
 impl Bindgen {
@@ -29,6 +31,7 @@ impl Bindgen {
         Bindgen {
             path: None,
             nodejs: false,
+            debug: false,
         }
     }
 
@@ -39,6 +42,11 @@ impl Bindgen {
 
     pub fn nodejs(&mut self, node: bool) -> &mut Bindgen {
         self.nodejs = node;
+        self
+    }
+
+    pub fn debug(&mut self, debug: bool) -> &mut Bindgen {
+        self.debug = debug;
         self
     }
 
@@ -55,6 +63,7 @@ impl Bindgen {
             module,
             program,
             nodejs: self.nodejs,
+            debug: self.debug,
         })
     }
 }
@@ -89,6 +98,7 @@ impl Object {
     pub fn generate_js(&self) -> String {
         let mut js = js::Js::default();
         js.nodejs = self.nodejs;
+        js.debug = self.debug;
         js.generate_program(&self.program);
         js.to_string()
     }

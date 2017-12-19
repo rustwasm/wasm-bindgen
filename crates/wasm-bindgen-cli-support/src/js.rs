@@ -9,10 +9,12 @@ pub struct Js {
     expose_assert_num: bool,
     expose_assert_class: bool,
     expose_token: bool,
+    expose_objects: bool,
     exports: Vec<(String, String)>,
     classes: Vec<String>,
     imports: Vec<String>,
     pub nodejs: bool,
+    pub debug: bool,
 }
 
 impl Js {
@@ -149,11 +151,31 @@ impl Js {
                     ", i = i, arg = name, struct_ = s));
                     pass(&format!("ptr{}", i));
                 }
+                shared::Type::JsObject => {
+                    self.expose_objects = true;
+                    arg_conversions.push_str(&format!("\
+                        const idx{i} = addHeapObject({arg});
+                    ", i = i, arg = name));
+                    pass(&format!("idx{}", i));
+                }
+                shared::Type::JsObjectRef => {
+                    self.expose_objects = true;
+                    arg_conversions.push_str(&format!("\
+                        const idx{i} = addBorrowedObject({arg});
+                    ", i = i, arg = name));
+                    destructors.push_str("popBorrowedObject();\n");
+                    pass(&format!("idx{}", i));
+                }
             }
         }
         let convert_ret = match ret {
             None |
             Some(&shared::Type::Number) => format!("return ret;"),
+            Some(&shared::Type::JsObject) => {
+                self.expose_objects = true;
+                format!("return takeObject(ret);")
+            }
+            Some(&shared::Type::JsObjectRef) |
             Some(&shared::Type::BorrowedStr) |
             Some(&shared::Type::ByMutRef(_)) |
             Some(&shared::Type::ByRef(_)) => panic!(),
@@ -221,6 +243,16 @@ impl Js {
                     invocation.push_str(&format!("getStringFromWasm(ptr{0}, len{0})", i));
                     dst.push_str(&format!("ptr{0}, len{0}", i));
                 }
+                shared::Type::JsObject => {
+                    self.expose_objects = true;
+                    invocation.push_str(&format!("takeObject(arg{})", i));
+                    dst.push_str(&format!("arg{}", i));
+                }
+                shared::Type::JsObjectRef => {
+                    self.expose_objects = true;
+                    invocation.push_str(&format!("getObject(arg{})", i));
+                    dst.push_str(&format!("arg{}", i));
+                }
                 shared::Type::String |
                 shared::Type::ByRef(_) |
                 shared::Type::ByMutRef(_) |
@@ -235,7 +267,7 @@ impl Js {
         self.imports.push(dst);
     }
 
-    pub fn to_string(&self) -> String {
+    pub fn to_string(&mut self) -> String {
         let mut globals = String::new();
         let mut real_globals = String::new();
         if self.expose_global_memory ||
@@ -328,6 +360,92 @@ impl Js {
             ");
         }
 
+
+        if self.expose_objects {
+            real_globals.push_str("
+                let stack = [];
+                let slab = [];
+                let slab_next = 0;
+
+                function addHeapObject(obj) {
+                    if (slab_next == slab.length) {
+                        slab.push(slab.length + 1);
+                    }
+                    const idx = slab_next;
+                    slab_next = slab[idx];
+                    slab[idx] = { obj, cnt: 1 };
+                    return idx << 1;
+                }
+
+                function addBorrowedObject(obj) {
+                    stack.push(obj);
+                    return ((stack.length - 1) << 1) | 1;
+                }
+
+                function popBorrowedObject() {
+                    stack.pop();
+                }
+
+                function getObject(idx) {
+                    if (idx & 1 == 1) {
+                        return stack[idx >> 1];
+                    } else {
+                        return slab[idx >> 1].obj;
+                    }
+                }
+
+                function takeObject(idx) {
+                    const ret = getObject(idx);
+                    dropRef(idx);
+                    return ret;
+                }
+
+                function cloneRef(idx) {
+                    // If this object is on the stack promote it to the heap.
+                    if (idx & 1 == 1) {
+                        return addHeapObject(getObject(idx));
+                    }
+
+                    // Otherwise if the object is on the heap just bump the
+                    // refcount and move on
+                    slab[idx >> 1].cnt += 1;
+                    return idx;
+                }
+
+                function dropRef(idx) {
+                    if (idx & 1 == 1)
+                        throw new Error('cannot drop ref of stack objects');
+
+                    // Decrement our refcount, but if it's still larger than one
+                    // keep going
+                    let obj = slab[idx >> 1];
+                    obj.cnt -= 1;
+                    if (obj.cnt > 0)
+                        return;
+
+                    // If we hit 0 then free up our space in the slab
+                    slab[idx >> 1] = slab_next;
+                    slab_next = idx >> 1;
+                }
+            ");
+
+            if self.debug {
+                self.exports.push(
+                    (
+                        "assertHeapAndStackEmpty".to_string(),
+                        "function() {
+                            if (stack.length > 0)
+                                throw new Error('stack is not empty');
+                            for (let i = 0; i < slab.length; i++) {
+                                if (typeof(slab[i]) !== 'number')
+                                    throw new Error('slab is not empty');
+                            }
+                        }".to_string(),
+                    )
+                );
+            }
+        }
+
         let mut exports = String::new();
         for class in self.classes.iter() {
             exports.push_str(class);
@@ -344,6 +462,13 @@ impl Js {
         for import in self.imports.iter() {
             imports.push_str(import);
             imports.push_str("\n");
+        }
+
+        if self.expose_objects {
+            imports.push_str("
+                imports.env.__wasm_bindgen_object_clone_ref = cloneRef;
+                imports.env.__wasm_bindgen_object_drop_ref = dropRef;
+            ");
         }
         format!("
             {}

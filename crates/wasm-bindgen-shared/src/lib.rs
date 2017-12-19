@@ -63,6 +63,8 @@ pub enum Type {
     ByValue(String),
     ByRef(String),
     ByMutRef(String),
+    JsObject,
+    JsObjectRef,
 }
 
 impl Type {

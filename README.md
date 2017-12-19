@@ -17,10 +17,10 @@ Notable features of this project includes:
 * Exposing Rust functions to JS
 * Managing arguments between JS/Rust (strings, numbers, classes, etc)
 * Importing JS functions with richer types (strings)
+* Receiving arbitrary JS objects in Rust, passing them through to JS
 
 Planned features include:
 
-* Receiving arbitrary JS objects in Rust
 * An optional flag to generate Typescript bindings
 * Field setters/getters in JS through Rust functions
 * ... and more coming soon!
@@ -240,20 +240,21 @@ wasm_bindgen! {
 
     pub struct Bar {
         contents: u32,
+        opaque: JsObject, // defined in `wasm_bindgen`, imported via prelude
     }
 
     extern "JS" {
-        fn bar_on_reset(to: &str);
+        fn bar_on_reset(to: &str, opaque: &JsObject);
     }
 
     impl Bar {
-        pub fn from_str(s: &str) -> Bar {
-            Bar { contents: s.parse().unwrap_or(0) }
+        pub fn from_str(s: &str, opaque: JsObject) -> Bar {
+            Bar { contents: s.parse().unwrap_or(0), opaque }
         }
 
         pub fn reset(&mut self, s: &str) {
             if let Ok(n) = s.parse() {
-                bar_on_reset(s);
+                bar_on_reset(s, &self.opaque);
                 self.contents = n;
             }
         }
@@ -282,8 +283,9 @@ and this can be worked with similarly to above with:
         .then(bytes => {
           return instantiate(bytes, {
             env: {
-              bar_on_reset(s) {
-                console.log(`an instance of bar was reset to ${s}`);
+              bar_on_reset(s, token) {
+                console.log(token);
+                console.log(`this instance of bar was reset to ${s}`);
               },
             }
           });
@@ -301,7 +303,7 @@ and this can be worked with similarly to above with:
 
           // Pass objects to one another
           let foo1 = mod.Foo.new();
-          let bar = mod.Bar.from_str("22");
+          let bar = mod.Bar.from_str("22", { opaque: 'object' });
           foo1.add_other(bar);
 
           // We also don't have to `free` the `bar` variable as this function is
