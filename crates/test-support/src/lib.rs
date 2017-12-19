@@ -88,7 +88,14 @@ fn babel() -> PathBuf {
 
     INIT.call_once(|| {
         if !me.exists() {
-            run(Command::new("npm")
+            let mut npm = if cfg!(windows) {
+                let mut n = Command::new("cmd");
+                n.arg("/c").arg("npm");
+                n
+            } else {
+                Command::new("npm")
+            };
+            run(npm
                 .arg("install")
                 .arg("babel-cli")
                 .arg("babel-preset-env")
