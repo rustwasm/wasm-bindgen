@@ -341,6 +341,7 @@ macro itself. Arguments allowed are:
 * Owned strings (`String`)
 * Owned structs (`Foo`) defined in the same bindgen macro
 * Borrowed structs (`&Foo` or `&mut Bar`) defined in the same bindgen macro
+* The `JsObject` type and `&JsObject` (not mutable references)
 
 All of the above can also be returned except borrowed references. Strings are
 implemented with shim functions to copy data in/out of the Rust heap. That is, a
@@ -352,6 +353,10 @@ actually turned into `Box<RefCell<Foo>>` under the hood and returned to JS as a
 pointer. The pointer is to have a defined ABI, and the `RefCell` is to ensure
 safety with reentrancy and aliasing in JS. In general you shouldn't see
 `RefCell` panics with normal usage.
+
+JS-values-in-Rust are implemented through indexes that index a table generated
+as part of the JS bindings. This table is managed via the ownership specified in
+Rust and through the bindings that we're returning.
 
 All of these constructs currently create relatively straightforward code on the
 JS side of things, mostly haveing a 1:1 match in Rust with JS.
