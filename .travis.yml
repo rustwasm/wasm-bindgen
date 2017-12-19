@@ -8,6 +8,7 @@ matrix:
 script:
   - rustup target add wasm32-unknown-unknown
   - cargo test
+  - cargo install --debug --path crates/wasm-bindgen-cli
 
 notifications:
   email:
