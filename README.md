@@ -262,7 +262,10 @@ wasm_bindgen! {
 }
 ```
 
-and this can be worked with similarly to above with:
+The generated JS bindigns for this invocation of the macro [look like
+this][bindings]. You can view them in action like so:
+[bindings]: https://gist.github.com/alexcrichton/e5ce88326f91bb32a63b7352892895ba
+
 
 ```html
 <html>
