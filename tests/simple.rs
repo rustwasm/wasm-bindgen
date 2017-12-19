@@ -48,13 +48,13 @@ fn string_arguments() {
             use wasm_bindgen::prelude::*;
 
             wasm_bindgen! {
-                pub fn assert_foo(a: &str) {
-                    assert_eq!(a, "foo");
-                }
-
                 pub fn assert_foo_and_bar(a: &str, b: &str) {
                     assert_eq!(a, "foo2");
                     assert_eq!(b, "bar");
+                }
+
+                pub fn assert_foo(a: &str) {
+                    assert_eq!(a, "foo");
                 }
             }
         "#)

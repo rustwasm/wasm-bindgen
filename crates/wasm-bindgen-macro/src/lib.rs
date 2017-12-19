@@ -169,7 +169,7 @@ fn bindgen(export_name: &syn::Lit,
                 args.push(my_quote! { #ident: #i });
             }
             ast::Type::BorrowedStr => {
-                malloc = !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
+                malloc = malloc || !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
                 let len = syn::Ident::from(format!("arg{}_len", i));
                 args.push(my_quote! { #ptr: *const u8 });
@@ -182,7 +182,7 @@ fn bindgen(export_name: &syn::Lit,
                 });
             }
             ast::Type::String => {
-                malloc = !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
+                malloc = malloc || !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
                 let len = syn::Ident::from(format!("arg{}_len", i));
                 args.push(my_quote! { #ptr: *mut u8 });
