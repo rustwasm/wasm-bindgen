@@ -5,12 +5,21 @@ use wasm_bindgen_shared as shared;
 pub struct Program {
     pub structs: Vec<Struct>,
     pub free_functions: Vec<Function>,
+    pub imports: Vec<Import>,
 }
 
 pub struct Function {
     pub name: syn::Ident,
     pub arguments: Vec<Type>,
     pub ret: Option<Type>,
+}
+
+pub struct Import {
+    pub function: Function,
+    pub decl: Box<syn::FnDecl>,
+    pub ident: syn::Ident,
+    pub vis: syn::Visibility,
+    pub attrs: Vec<syn::Attribute>,
 }
 
 pub enum Type {
@@ -62,10 +71,36 @@ impl Program {
         }
     }
 
+    pub fn push_foreign_mod(&mut self, f: &syn::ItemForeignMod) {
+        match f.abi.kind {
+            syn::AbiKind::Named(ref l) if l.to_string() == "\"JS\"" => {}
+            _ => panic!("only foreign mods with the `JS` ABI are allowed"),
+        }
+        for item in f.items.iter() {
+            self.push_foreign_item(item);
+        }
+    }
+
+    pub fn push_foreign_item(&mut self, f: &syn::ForeignItem) {
+        let f = match *f {
+            syn::ForeignItem::Fn(ref f) => f,
+            _ => panic!("only foreign functions allowed for now, not statics"),
+        };
+
+        self.imports.push(Import {
+            attrs: f.attrs.clone(),
+            vis: f.vis.clone(),
+            decl: f.decl.clone(),
+            ident: f.ident.clone(),
+            function: Function::from_decl(f.ident, &f.decl),
+        });
+    }
+
     pub fn shared(&self) -> shared::Program {
         shared::Program {
             structs: self.structs.iter().map(|s| s.shared()).collect(),
             free_functions: self.free_functions.iter().map(|s| s.shared()).collect(),
+            imports: self.imports.iter().map(|i| i.function.shared()).collect(),
         }
     }
 }
@@ -91,14 +126,18 @@ impl Function {
             panic!("can only bindgen Rust ABI functions")
         }
 
-        if input.decl.variadic {
+        Function::from_decl(input.ident, &input.decl)
+    }
+
+    pub fn from_decl(name: syn::Ident, decl: &syn::FnDecl) -> Function {
+        if decl.variadic {
             panic!("can't bindgen variadic functions")
         }
-        if input.decl.generics.params.len() > 0 {
+        if decl.generics.params.len() > 0 {
             panic!("can't bindgen functions with lifetime or type parameters")
         }
 
-        let arguments = input.decl.inputs.iter()
+        let arguments = decl.inputs.iter()
             .map(|i| i.into_item())
             .map(|arg| {
                 match *arg {
@@ -109,12 +148,12 @@ impl Function {
             .map(|arg| Type::from(&arg.ty))
             .collect::<Vec<_>>();
 
-        let ret = match input.decl.output {
+        let ret = match decl.output {
             syn::ReturnType::Default => None,
             syn::ReturnType::Type(ref t, _) => Some(Type::from(t)),
         };
 
-        Function { name: input.ident, arguments, ret }
+        Function { name, arguments, ret }
     }
 
     pub fn free_function_export_name(&self) -> syn::Lit {
@@ -153,21 +192,22 @@ impl Function {
     }
 }
 
+pub fn extract_path_ident(path: &syn::Path) -> syn::Ident {
+    if path.leading_colon.is_some() {
+        panic!("unsupported leading colon in path")
+    }
+    if path.segments.len() != 1 {
+        panic!("unsupported path that needs name resolution")
+    }
+    match path.segments.get(0).item().arguments {
+        syn::PathArguments::None => {}
+        _ => panic!("unsupported path that has path arguments")
+    }
+    path.segments.get(0).item().ident
+}
+
 impl Type {
     pub fn from(ty: &syn::Type) -> Type {
-        let extract_path_ident = |path: &syn::Path| {
-            if path.leading_colon.is_some() {
-                panic!("unsupported leading colon in path")
-            }
-            if path.segments.len() != 1 {
-                panic!("unsupported path that needs name resolution")
-            }
-            match path.segments.get(0).item().arguments {
-                syn::PathArguments::None => {}
-                _ => panic!("unsupported path that has path arguments")
-            }
-            path.segments.get(0).item().ident
-        };
         match *ty {
             syn::Type::Reference(ref r) => {
                 if r.lifetime.is_some() {

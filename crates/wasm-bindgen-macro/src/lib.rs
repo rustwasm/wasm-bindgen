@@ -35,6 +35,7 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     let mut program = ast::Program {
         structs: Vec::new(),
         free_functions: Vec::new(),
+        imports: Vec::new(),
     };
 
     // Translate all input items into our own internal representation (the `ast`
@@ -54,9 +55,12 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
                 }
                 program.structs.push(s);
             }
-            syn::Item::Impl(ref s) => {
+            syn::Item::Impl(ref i) => {
                 item.to_tokens(&mut ret);
-                program.push_impl(s);
+                program.push_impl(i);
+            }
+            syn::Item::ForeignMod(ref f) => {
+                program.push_foreign_mod(f);
             }
             _ => panic!("unexpected item in bindgen macro"),
         }
@@ -69,6 +73,9 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     }
     for s in program.structs.iter() {
         bindgen_struct(s, &mut ret);
+    }
+    for i in program.imports.iter() {
+        bindgen_import(i, &mut ret);
     }
 
     // Finally generate a static which will eventually be what lives in a custom
@@ -94,7 +101,7 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
             *#generated_static_value;
     }).to_tokens(&mut ret);
 
-    // println!("{}", ret);
+    println!("{}", ret);
 
     ret.into()
 }
@@ -344,4 +351,98 @@ impl ToTokens for Receiver {
             }
         }
     }
+}
+
+fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
+    let vis = &import.vis;
+    let ret = &import.decl.output;
+    let name = &import.ident;
+    let fn_token = &import.decl.fn_token;
+    let arguments = &import.decl.inputs;
+
+    let mut abi_argument_names = Vec::new();
+    let mut abi_arguments = Vec::new();
+    let mut arg_conversions = Vec::new();
+    let ret_ident = syn::Ident::from("_ret");
+
+    let names = import.decl.inputs
+        .iter()
+        .map(|i| i.into_item())
+        .map(|arg| {
+            match *arg {
+                syn::FnArg::Captured(ref c) => c,
+                _ => panic!("arguments cannot be `self` or ignored"),
+            }
+        })
+        .map(|arg| {
+            match arg.pat {
+                syn::Pat::Ident(syn::PatIdent {
+                    mode: syn::BindingMode::ByValue(_),
+                    ident,
+                    subpat: None,
+                    ..
+                }) => {
+                    ident
+                }
+                _ => panic!("unsupported pattern in foreign function"),
+            }
+        });
+
+    for (ty, name) in import.function.arguments.iter().zip(names) {
+        match *ty {
+            ast::Type::Integer(i) => {
+                abi_argument_names.push(name);
+                abi_arguments.push(my_quote! { #name: #i });
+                arg_conversions.push(my_quote! {});
+            }
+            ast::Type::BorrowedStr => {
+                let ptr = syn::Ident::from(format!("{}_ptr", name));
+                let len = syn::Ident::from(format!("{}_len", name));
+                abi_argument_names.push(ptr);
+                abi_argument_names.push(len);
+                abi_arguments.push(my_quote! { #ptr: *const u8 });
+                abi_arguments.push(my_quote! { #len: usize });
+                arg_conversions.push(my_quote! {
+                    let #ptr = #name.as_ptr();
+                    let #len = #name.len();
+                });
+            }
+            ast::Type::String => panic!("can't use `String` in foreign functions"),
+            ast::Type::ByValue(_name) |
+            ast::Type::ByRef(_name) |
+            ast::Type::ByMutRef(_name) => {
+                panic!("can't use strct types in foreign functions yet");
+            }
+        }
+    }
+    let abi_ret;
+    let convert_ret;
+    match import.function.ret {
+        Some(ast::Type::Integer(i)) => {
+            abi_ret = my_quote! { #i };
+            convert_ret = my_quote! { #ret_ident };
+        }
+        Some(ast::Type::BorrowedStr) => panic!("can't return a borrowed string"),
+        Some(ast::Type::ByRef(_)) => panic!("can't return a borrowed ref"),
+        Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
+        Some(ast::Type::String) => panic!("can't return a string in foreign functions"),
+        Some(ast::Type::ByValue(_)) => panic!("can't return a struct in a foreign function"),
+        None => {
+            abi_ret = my_quote! { () };
+            convert_ret = my_quote! {};
+        }
+    }
+
+    (quote! {
+        #vis #fn_token #name(#arguments) #ret {
+            extern {
+                fn #name(#(#abi_arguments),*) -> #abi_ret;
+            }
+            unsafe {
+                #(#arg_conversions)*
+                let #ret_ident = #name(#(#abi_argument_names),*);
+                #convert_ret
+            }
+        }
+    }).to_tokens(tokens);
 }

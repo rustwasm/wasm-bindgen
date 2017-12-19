@@ -2,15 +2,16 @@ use shared;
 
 #[derive(Default)]
 pub struct Js {
-    pub expose_global_memory: bool,
-    pub expose_global_exports: bool,
-    pub expose_get_string_from_wasm: bool,
-    pub expose_pass_string_to_wasm: bool,
-    pub expose_assert_num: bool,
-    pub expose_assert_class: bool,
-    pub expose_token: bool,
-    pub exports: Vec<(String, String)>,
-    pub classes: Vec<String>,
+    expose_global_memory: bool,
+    expose_global_exports: bool,
+    expose_get_string_from_wasm: bool,
+    expose_pass_string_to_wasm: bool,
+    expose_assert_num: bool,
+    expose_assert_class: bool,
+    expose_token: bool,
+    exports: Vec<(String, String)>,
+    classes: Vec<String>,
+    imports: Vec<String>,
     pub nodejs: bool,
 }
 
@@ -22,6 +23,9 @@ impl Js {
         }
         for s in program.structs.iter() {
             self.generate_struct(s);
+        }
+        for s in program.imports.iter() {
+            self.generate_import(s);
         }
     }
 
@@ -160,7 +164,14 @@ impl Js {
             }
             Some(&shared::Type::String) => {
                 self.expose_get_string_from_wasm = true;
-                format!("return getStringFromWasm(ret);")
+                self.expose_global_exports = true;
+                format!("
+                    const ptr = exports.__wbindgen_boxed_str_ptr(ret);
+                    const len = exports.__wbindgen_boxed_str_len(ret);
+                    const realRet = getStringFromWasm(ptr, len);
+                    exports.__wbindgen_boxed_str_free(ret);
+                    return realRet;
+                ")
             }
         };
         dst.push_str(") {\n        ");
@@ -186,8 +197,47 @@ impl Js {
         return dst
     }
 
+    pub fn generate_import(&mut self, import: &shared::Function) {
+        let mut dst = String::new();
+
+        dst.push_str(&format!("const {0} = imports.env.{0};\n", import.name));
+        dst.push_str(&format!("imports.env.{0} = function {0}_shim(", import.name));
+
+        let mut invocation = String::new();
+        for (i, arg) in import.arguments.iter().enumerate() {
+            if invocation.len() > 0 {
+                invocation.push_str(", ");
+            }
+            if i > 0 {
+                dst.push_str(", ");
+            }
+            match *arg {
+                shared::Type::Number => {
+                    invocation.push_str(&format!("arg{}", i));
+                    dst.push_str(&format!("arg{}", i));
+                }
+                shared::Type::BorrowedStr => {
+                    self.expose_get_string_from_wasm = true;
+                    invocation.push_str(&format!("getStringFromWasm(ptr{0}, len{0})", i));
+                    dst.push_str(&format!("ptr{0}, len{0}", i));
+                }
+                shared::Type::String |
+                shared::Type::ByRef(_) |
+                shared::Type::ByMutRef(_) |
+                shared::Type::ByValue(_) => {
+                    panic!("unsupported type in import");
+                }
+            }
+        }
+        dst.push_str(") {\n");
+        dst.push_str(&format!("return {}({});\n}}", import.name, invocation));
+
+        self.imports.push(dst);
+    }
+
     pub fn to_string(&self) -> String {
         let mut globals = String::new();
+        let mut real_globals = String::new();
         if self.expose_global_memory ||
             self.expose_pass_string_to_wasm ||
             self.expose_get_string_from_wasm
@@ -247,27 +297,22 @@ impl Js {
             }
         }
         if self.expose_get_string_from_wasm {
+            real_globals.push_str("let getStringFromWasm = null;\n");
             if self.nodejs {
                 globals.push_str("
-                    function getStringFromWasm(ptr) {
+                    getStringFromWasm = function getStringFromWasm(ptr, len) {
                         const mem = new Uint8Array(memory.buffer);
-                        const data = exports.__wbindgen_boxed_str_ptr(ptr);
-                        const len = exports.__wbindgen_boxed_str_len(ptr);
-                        const buf = Buffer.from(mem.slice(data, data + len));
+                        const buf = Buffer.from(mem.slice(ptr, ptr + len));
                         const ret = buf.toString();
-                        exports.__wbindgen_boxed_str_free(ptr);
                         return ret;
                     }
                 ");
             } else {
                 globals.push_str("
-                    function getStringFromWasm(ptr) {
+                    getStringFromWasm = function getStringFromWasm(ptr, len) {
                         const mem = new Uint8Array(memory.buffer);
-                        const data = exports.__wbindgen_boxed_str_ptr(ptr);
-                        const len = exports.__wbindgen_boxed_str_len(ptr);
-                        const slice = mem.slice(data, data + len);
+                        const slice = mem.slice(ptr, ptr + len);
                         const ret = new TextDecoder('utf-8').decode(slice);
-                        exports.__wbindgen_boxed_str_free(ptr);
                         return ret;
                     }
                 ");
@@ -295,15 +340,22 @@ impl Js {
             exports.push_str(body);
             exports.push_str(";\n");
         }
+        let mut imports = String::new();
+        for import in self.imports.iter() {
+            imports.push_str(import);
+            imports.push_str("\n");
+        }
         format!("
+            {}
             function xform(obj) {{
                 {}
                 {}
                 return obj;
             }}
             export function instantiate(bytes, imports) {{
+                {}
                 return WebAssembly.instantiate(bytes, imports).then(xform);
             }}
-        ", globals, exports)
+        ", real_globals, globals, exports, imports)
     }
 }

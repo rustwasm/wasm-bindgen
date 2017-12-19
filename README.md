@@ -16,6 +16,7 @@ Notable features of this project includes:
 * Exposing Rust structs to JS as classes
 * Exposing Rust functions to JS
 * Managing arguments between JS/Rust (strings, numbers, classes, etc)
+* Importing JS functions with richer types (strings)
 
 Planned features include:
 
@@ -241,13 +242,18 @@ wasm_bindgen! {
         contents: u32,
     }
 
+    extern "JS" {
+        fn bar_on_reset(to: &str);
+    }
+
     impl Bar {
-        pub fn from_str(s: &str) -> Foo {
+        pub fn from_str(s: &str) -> Bar {
             Bar { contents: s.parse().unwrap_or(0) }
         }
 
         pub fn reset(&mut self, s: &str) {
             if let Ok(n) = s.parse() {
+                bar_on_reset(s);
                 self.contents = n;
             }
         }
@@ -273,7 +279,15 @@ and this can be worked with similarly to above with:
 
       fetch("hello.wasm")
         .then(resp => resp.arrayBuffer())
-        .then(instantiate)
+        .then(bytes => {
+          return instantiate(bytes, {
+            env: {
+              bar_on_reset(s) {
+                console.log(`an instance of bar was reset to ${s}`);
+              },
+            }
+          });
+        })
         .then(mod => {
           assertEq(mod.concat('a', 'b'), 'ab');
 
@@ -310,9 +324,11 @@ and this can be worked with similarly to above with:
 Here this section will attempt to be a reference for the various features
 implemented in this project.
 
-In the `wasm_bindgen!` macro you can have three items: functions, structs, and
-impls. Impls can only contain functions. No lifetime parameters or type
-parameters are allowed on any of these types.
+In the `wasm_bindgen!` macro you can have four items: functions, structs,
+impls, and foreign mdoules. Impls can only contain functions. No lifetime
+parameters or type parameters are allowed on any of these types. Foreign
+modules must have the `"JS"` abi and currently only allow integer/string
+arguments and integer return values.
 
 All structs referenced through arguments to functions should be defined in the
 macro itself. Arguments allowed are:
