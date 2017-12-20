@@ -127,8 +127,8 @@ fn bindgen_struct(s: &ast::Struct, into: &mut Tokens) {
     let free_fn = s.free_function();
     (my_quote! {
         #[no_mangle]
-        pub unsafe extern fn #free_fn(ptr: *mut ::std::cell::RefCell<#name>) {
-            assert!(!ptr.is_null());
+        pub unsafe extern fn #free_fn(ptr: *mut ::wasm_bindgen::__rt::WasmRefCell<#name>) {
+            ::wasm_bindgen::__rt::assert_not_null(ptr);
             drop(Box::from_raw(ptr));
         }
     }).to_tokens(into);
@@ -174,9 +174,9 @@ fn bindgen(export_name: &syn::Lit,
 
     let mut offset = 0;
     if let Receiver::StructMethod(class, _, _) = receiver {
-        args.push(my_quote! { me: *mut ::std::cell::RefCell<#class> });
+        args.push(my_quote! { me: *mut ::wasm_bindgen::__rt::WasmRefCell<#class> });
         arg_conversions.push(my_quote! {
-            assert!(!me.is_null());
+            ::wasm_bindgen::__rt::assert_not_null(me);
             let me = unsafe { &*me };
         });
         offset = 1;
@@ -216,9 +216,9 @@ fn bindgen(export_name: &syn::Lit,
                 });
             }
             ast::Type::ByValue(name) => {
-                args.push(my_quote! { #ident: *mut ::std::cell::RefCell<#name> });
+                args.push(my_quote! { #ident: *mut ::wasm_bindgen::__rt::WasmRefCell<#name> });
                 arg_conversions.push(my_quote! {
-                    assert!(!#ident.is_null());
+                    ::wasm_bindgen::__rt::assert_not_null(#ident);
                     let #ident = unsafe {
                         (*#ident).borrow_mut();
                         Box::from_raw(#ident).into_inner()
@@ -226,17 +226,17 @@ fn bindgen(export_name: &syn::Lit,
                 });
             }
             ast::Type::ByRef(name) => {
-                args.push(my_quote! { #ident: *mut ::std::cell::RefCell<#name> });
+                args.push(my_quote! { #ident: *mut ::wasm_bindgen::__rt::WasmRefCell<#name> });
                 arg_conversions.push(my_quote! {
-                    assert!(!#ident.is_null());
+                    ::wasm_bindgen::__rt::assert_not_null(#ident);
                     let #ident = unsafe { (*#ident).borrow() };
                     let #ident = &*#ident;
                 });
             }
             ast::Type::ByMutRef(name) => {
-                args.push(my_quote! { #ident: *mut ::std::cell::RefCell<#name> });
+                args.push(my_quote! { #ident: *mut ::wasm_bindgen::__rt::WasmRefCell<#name> });
                 arg_conversions.push(my_quote! {
-                    assert!(!#ident.is_null());
+                    ::wasm_bindgen::__rt::assert_not_null(#ident);
                     let mut #ident = unsafe { (*#ident).borrow_mut() };
                     let #ident = &mut *#ident;
                 });
@@ -275,9 +275,9 @@ fn bindgen(export_name: &syn::Lit,
             convert_ret = my_quote! { Box::into_raw(Box::new(#ret)) };
         }
         Some(&ast::Type::ByValue(name)) => {
-            ret_ty = my_quote! { -> *mut ::std::cell::RefCell<#name> };
+            ret_ty = my_quote! { -> *mut ::wasm_bindgen::__rt::WasmRefCell<#name> };
             convert_ret = my_quote! {
-                Box::into_raw(Box::new(::std::cell::RefCell::new(#ret)))
+                Box::into_raw(Box::new(::wasm_bindgen::__rt::WasmRefCell::new(#ret)))
             };
         }
         Some(&ast::Type::JsObject) => {
@@ -299,6 +299,17 @@ fn bindgen(export_name: &syn::Lit,
         my_quote! {
             #[no_mangle]
             pub extern fn __wbindgen_malloc(size: usize) -> *mut u8 {
+                // Any malloc request this big is bogus anyway. If this actually
+                // goes down to `Vec` we trigger a whole bunch of panicking
+                // machinery to get pulled in from libstd anyway as it'll verify
+                // the size passed in below.
+                //
+                // Head this all off by just aborting on too-big sizes. This
+                // avoids panicking (code bloat) and gives a better error
+                // message too hopefully.
+                if size >= usize::max_value() / 2 {
+                    ::wasm_bindgen::throw("invalid malloc request");
+                }
                 let mut ret = Vec::with_capacity(size);
                 let ptr = ret.as_mut_ptr();
                 ::std::mem::forget(ret);

@@ -389,6 +389,13 @@ impl Js {
             imports.push_str("__wasm_bindgen_object_drop_ref: dropRef,\n");
         }
 
+        if self.wasm_import_needed("__wbindgen_throw", m) {
+            self.expose_get_string_from_wasm();
+            imports.push_str("__wbindgen_throw: function(ptr: number, len: number) {
+                throw new Error(getStringFromWasm(ptr, len));
+            },\n");
+        }
+
         let mut writes = String::new();
         if self.exposed_globals.contains(&"memory") {
             writes.push_str("memory = exports.memory;\n");
