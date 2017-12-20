@@ -15,8 +15,8 @@ Notable features of this project includes:
 
 * Exposing Rust structs to JS as classes
 * Exposing Rust functions to JS
-* Managing arguments between JS/Rust (strings, numbers, classes, etc)
-* Importing JS functions with richer types (strings)
+* Managing arguments between JS/Rust (strings, numbers, classes, objects, etc)
+* Importing JS functions with richer types (strings, objects)
 * Receiving arbitrary JS objects in Rust, passing them through to JS
 * Generates Typescript for now instead of JS (although that may come later)
 
