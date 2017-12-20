@@ -368,10 +368,6 @@ impl Js {
             if self.wasm_exports_bound.contains(export) {
                 continue
             }
-            // this is a special case, ignore it for now
-            if export == "memory" {
-                continue
-            }
 
             if extra_exports_interface.len() == 0 {
                 extra_exports_interface.push_str("interface ExtraExports {\n");
