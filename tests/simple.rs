@@ -22,6 +22,13 @@ fn add() {
                 pub fn get2() -> u32 {
                     2
                 }
+
+                pub fn raw_pointers_work(a: *mut u32, b: *const u8) -> *const u32 {
+                    unsafe {
+                        (*a) = (*b) as u32;
+                        return a
+                    }
+                }
             }
         "#)
         .file("test.ts", r#"

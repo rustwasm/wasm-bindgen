@@ -189,6 +189,12 @@ fn bindgen(export_name: &syn::Lit,
             ast::Type::Integer(i) => {
                 args.push(my_quote! { #ident: #i });
             }
+            ast::Type::RawMutPtr(i) => {
+                args.push(my_quote! { #ident: *mut #i });
+            }
+            ast::Type::RawConstPtr(i) => {
+                args.push(my_quote! { #ident: *const #i });
+            }
             ast::Type::BorrowedStr => {
                 malloc = malloc || !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
@@ -264,6 +270,14 @@ fn bindgen(export_name: &syn::Lit,
     match ret_type {
         Some(&ast::Type::Integer(i)) => {
             ret_ty = my_quote! { -> #i };
+            convert_ret = my_quote! { #ret };
+        }
+        Some(&ast::Type::RawMutPtr(i)) => {
+            ret_ty = my_quote! { -> *mut #i };
+            convert_ret = my_quote! { #ret };
+        }
+        Some(&ast::Type::RawConstPtr(i)) => {
+            ret_ty = my_quote! { -> *const #i };
             convert_ret = my_quote! { #ret };
         }
         Some(&ast::Type::BorrowedStr) => panic!("can't return a borrowed string"),
@@ -430,6 +444,16 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
                 abi_arguments.push(my_quote! { #name: #i });
                 arg_conversions.push(my_quote! {});
             }
+            ast::Type::RawMutPtr(i) => {
+                abi_argument_names.push(name);
+                abi_arguments.push(my_quote! { #name: *mut #i });
+                arg_conversions.push(my_quote! {});
+            }
+            ast::Type::RawConstPtr(i) => {
+                abi_argument_names.push(name);
+                abi_arguments.push(my_quote! { #name: *const #i });
+                arg_conversions.push(my_quote! {});
+            }
             ast::Type::BorrowedStr => {
                 let ptr = syn::Ident::from(format!("{}_ptr", name));
                 let len = syn::Ident::from(format!("{}_len", name));
@@ -469,6 +493,14 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
     match import.function.ret {
         Some(ast::Type::Integer(i)) => {
             abi_ret = my_quote! { #i };
+            convert_ret = my_quote! { #ret_ident };
+        }
+        Some(ast::Type::RawConstPtr(i)) => {
+            abi_ret = my_quote! { *const #i };
+            convert_ret = my_quote! { #ret_ident };
+        }
+        Some(ast::Type::RawMutPtr(i)) => {
+            abi_ret = my_quote! { *mut #i };
             convert_ret = my_quote! { #ret_ident };
         }
         Some(ast::Type::JsObject) => {

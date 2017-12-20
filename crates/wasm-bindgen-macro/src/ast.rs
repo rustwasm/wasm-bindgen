@@ -29,6 +29,8 @@ pub enum Type {
     ByValue(syn::Ident),
     ByRef(syn::Ident),
     ByMutRef(syn::Ident),
+    RawMutPtr(syn::Ident),
+    RawConstPtr(syn::Ident),
     JsObject,
     JsObjectRef,
 }
@@ -240,6 +242,20 @@ impl Type {
                     _ => panic!("unsupported reference type"),
                 }
             }
+            syn::Type::Ptr(ref p) => {
+                let mutable = p.const_token.is_none();
+                let ident = match p.ty.ty {
+                    syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
+                        extract_path_ident(path)
+                    }
+                    _ => panic!("unsupported reference type"),
+                };
+                if mutable {
+                    Type::RawMutPtr(ident)
+                } else {
+                    Type::RawConstPtr(ident)
+                }
+            }
             syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
                 let ident = extract_path_ident(path);
                 match ident.sym.as_str() {
@@ -266,7 +282,9 @@ impl Type {
 
     fn shared(&self) -> shared::Type {
         match *self {
-            Type::Integer(_) => shared::Type::Number,
+            Type::Integer(_) |
+            Type::RawConstPtr(_) |
+            Type::RawMutPtr(_) => shared::Type::Number,
             Type::BorrowedStr => shared::Type::BorrowedStr,
             Type::String => shared::Type::String,
             Type::ByValue(n) => shared::Type::ByValue(n.to_string()),
