@@ -100,7 +100,7 @@ impl Object {
         ts.nodejs = self.nodejs;
         ts.debug = self.debug;
         ts.generate_program(&self.program, &self.module);
-        ts.to_string(&self.module)
+        ts.to_string(&self.module, &self.program)
     }
 }
 

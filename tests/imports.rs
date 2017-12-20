@@ -77,3 +77,33 @@ fn simple() {
         "#)
         .test();
 }
+
+#[test]
+fn unused() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                extern "JS" {
+                    fn debug_print(s: &str);
+                }
+
+                pub fn bar() {}
+            }
+        "#)
+        .file("test.ts", r#"
+            import { Exports, Imports } from "./out";
+
+            export const imports: Imports = {};
+
+            export function test(wasm: Exports) {
+                wasm.bar();
+            }
+        "#)
+        .test();
+}

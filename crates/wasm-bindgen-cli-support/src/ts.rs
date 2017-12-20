@@ -10,7 +10,6 @@ pub struct Js {
     exports: Vec<(String, String, String)>,
     wasm_exports_bound: HashSet<String>,
     classes: Vec<String>,
-    imports: Vec<(String, String, String)>,
     pub nodejs: bool,
     pub debug: bool,
 }
@@ -25,9 +24,6 @@ impl Js {
         }
         for s in program.structs.iter() {
             self.generate_struct(s);
-        }
-        for s in program.imports.iter() {
-            self.generate_import(s);
         }
     }
 
@@ -257,7 +253,9 @@ impl Js {
         (format!("{} {}", prefix, dst), dst_ts)
     }
 
-    pub fn generate_import(&mut self, import: &shared::Function) {
+    pub fn generate_import(&mut self, import: &shared::Function)
+        -> (String, String)
+    {
         let mut dst = String::new();
         let mut ts_dst = String::new();
 
@@ -348,10 +346,10 @@ impl Js {
         };
         dst.push_str(&format!("return {};\n}}", invoc));
 
-        self.imports.push((import.name.clone(), dst, ts_dst));
+        (dst, ts_dst)
     }
 
-    pub fn to_string(&mut self, m: &Module) -> String {
+    pub fn to_string(&mut self, m: &Module, program: &shared::Program) -> String {
         if self.debug {
             self.expose_global_slab();
             self.expose_global_stack();
@@ -428,13 +426,21 @@ impl Js {
         let mut extra_imports_interface = String::new();
         let mut imports_bound = HashSet::new();
         let mut imports_interface = String::new();
-        for &(ref import, ref val, ref ts_import) in self.imports.iter() {
-            imports_bound.insert(import.clone());
-            imports_object.push_str(import);
+        for import in program.imports.iter() {
+            // Only actually generate this import if it ended up being used in
+            // the wasm module, an optimization pass at some point may have
+            // ended up removing the code that needed the import, removing the
+            // import.
+            if !wasm_imports.contains_key(&import.name) {
+                continue
+            }
+            imports_bound.insert(import.name.clone());
+            let (val, ts) = self.generate_import(import);
+            imports_object.push_str(&import.name);
             imports_object.push_str(":");
-            imports_object.push_str(val);
+            imports_object.push_str(&val);
             imports_object.push_str(",\n");
-            imports_interface.push_str(ts_import);
+            imports_interface.push_str(&ts);
             imports_interface.push_str("\n");
         }
 
