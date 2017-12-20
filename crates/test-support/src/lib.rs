@@ -14,6 +14,7 @@ thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
 
 pub struct Project {
     files: Vec<(String, String)>,
+    debug: bool,
 }
 
 pub fn project() -> Project {
@@ -25,6 +26,7 @@ pub fn project() -> Project {
     fs::File::open(&dir.join("Cargo.lock")).unwrap()
         .read_to_string(&mut lockfile).unwrap();
     Project {
+        debug: true,
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
                 [package]
@@ -57,8 +59,8 @@ pub fn project() -> Project {
 
                 instantiate(wasm, test.imports).then(m => {
                   test.test(m);
-                  if (m.assertHeapAndStackEmpty)
-                    m.assertHeapAndStackEmpty();
+                  if ((m as any).assertHeapAndStackEmpty)
+                    (m as any).assertHeapAndStackEmpty();
                 }).catch(error => {
                   console.error(error);
                   process.exit(1);
@@ -118,6 +120,11 @@ impl Project {
         self
     }
 
+    pub fn debug(&mut self, debug: bool) -> &mut Project {
+        self.debug = debug;
+        self
+    }
+
     pub fn test(&mut self) {
         let root = root();
         drop(fs::remove_dir_all(&root));
@@ -151,7 +158,7 @@ impl Project {
         let obj = cli::Bindgen::new()
             .input_path(&out)
             .nodejs(true)
-            .debug(true)
+            .debug(self.debug)
             .generate()
             .expect("failed to run bindgen");
         obj.write_ts_to(root.join("out.ts")).expect("failed to write ts");

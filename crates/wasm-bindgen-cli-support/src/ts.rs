@@ -40,20 +40,31 @@ impl Js {
 
     pub fn generate_struct(&mut self, s: &shared::Struct) {
         let mut dst = String::new();
-        self.expose_check_token();
         self.expose_wasm_exports();
         dst.push_str(&format!("
             export class {} {{
+        ", s.name));
+        if self.debug {
+            self.expose_check_token();
+            dst.push_str(&format!("
                 constructor(public __wasmPtr: number, sym: Symbol) {{
                     _checkToken(sym);
                 }}
+            "));
+        } else {
+            dst.push_str(&format!("
+                constructor(public __wasmPtr: number) {{}}
+            "));
+        }
 
-                free(): void {{
-                    const ptr = this.__wasmPtr;
-                    this.__wasmPtr = 0;
-                    wasm_exports.{}(ptr);
-                }}
-        ", s.name, s.free_function()));
+        dst.push_str(&format!("
+            free(): void {{
+                const ptr = this.__wasmPtr;
+                this.__wasmPtr = 0;
+                wasm_exports.{}(ptr);
+            }}
+        ", s.free_function()));
+
         self.wasm_exports_bound.insert(s.name.clone());
 
         for function in s.functions.iter() {
@@ -222,9 +233,15 @@ impl Js {
             Some(&shared::Type::ByRef(_)) => panic!(),
             Some(&shared::Type::ByValue(ref name)) => {
                 dst.push_str(name);
-                format!("\
-                    return new {name}(ret, token);
-                ", name = name)
+                if self.debug {
+                    format!("\
+                        return new {name}(ret, token);
+                    ", name = name)
+                } else {
+                    format!("\
+                        return new {name}(ret);
+                    ", name = name)
+                }
             }
             Some(&shared::Type::String) => {
                 dst.push_str("string");
@@ -484,22 +501,28 @@ impl Js {
         if self.wasm_import_needed("__wbindgen_object_clone_ref", m) {
             self.expose_add_heap_object();
             self.expose_get_object();
-            imports_object.push_str("
-                __wbindgen_object_clone_ref: function(idx: number): number {
+            let bump_cnt = if self.debug {
+                String::from("
+                    if (typeof(val) === 'number')
+                        throw new Error('corrupt slab');
+                    val.cnt += 1;
+                ")
+            } else {
+                String::from("(val as {cnt:number}).cnt += 1;")
+            };
+            imports_object.push_str(&format!("
+                __wbindgen_object_clone_ref: function(idx: number): number {{
                     // If this object is on the stack promote it to the heap.
-                    if ((idx & 1) === 1) {
+                    if ((idx & 1) === 1)
                         return addHeapObject(getObject(idx));
-                    }
 
                     // Otherwise if the object is on the heap just bump the
                     // refcount and move on
                     const val = slab[idx >> 1];
-                    if (typeof(val) === 'number')
-                        throw new Error('corrupt slab');
-                    val.cnt += 1;
+                    {}
                     return idx;
-                },
-            ");
+                }},
+            ", bump_cnt));
         }
 
         if self.wasm_import_needed("__wbindgen_object_drop_ref", m) {
@@ -715,25 +738,41 @@ impl Js {
         }
         self.expose_global_slab();
         self.expose_global_slab_next();
-        self.globals.push_str("
-            function dropRef(idx: number): void {
-                if ((idx & 1) == 1)
+        let validate_owned = if self.debug {
+            String::from("
+                if ((idx & 1) === 1)
                     throw new Error('cannot drop ref of stack objects');
-
-                // Decrement our refcount, but if it's still larger than one
-                // keep going
-                let obj = slab[idx >> 1];
+            ")
+        } else {
+            String::new()
+        };
+        let dec_ref = if self.debug {
+            String::from("
                 if (typeof(obj) === 'number')
                     throw new Error('corrupt slab');
                 obj.cnt -= 1;
                 if (obj.cnt > 0)
                     return;
+            ")
+        } else {
+            String::from("
+                (obj as {cnt:number}).cnt -= 1;
+                if ((obj as {cnt:number}).cnt > 0)
+                    return;
+            ")
+        };
+        self.globals.push_str(&format!("
+            function dropRef(idx: number): void {{
+                {}
+
+                let obj = slab[idx >> 1];
+                {}
 
                 // If we hit 0 then free up our space in the slab
                 slab[idx >> 1] = slab_next;
                 slab_next = idx >> 1;
-            }
-        ");
+            }}
+        ", validate_owned, dec_ref));
     }
 
     fn expose_global_stack(&mut self) {
@@ -769,18 +808,28 @@ impl Js {
         }
         self.expose_global_stack();
         self.expose_global_slab();
-        self.globals.push_str("
-            function getObject(idx: number): any {
-                if ((idx & 1) === 1) {
+
+        let get_obj = if self.debug {
+            String::from("
+                if (typeof(val) === 'number')
+                    throw new Error('corrupt slab');
+                return val.obj;
+            ")
+        } else {
+            String::from("
+                return (val as {obj:any}).obj;
+            ")
+        };
+        self.globals.push_str(&format!("
+            function getObject(idx: number): any {{
+                if ((idx & 1) === 1) {{
                     return stack[idx >> 1];
-                } else {
+                }} else {{
                     const val = slab[idx >> 1];
-                    if (typeof(val) === 'number')
-                        throw new Error('corrupt slab');
-                    return val.obj;
-                }
-            }
-        ");
+                    {}
+                }}
+            }}
+        ", get_obj));
     }
 
     fn expose_global_memory(&mut self) {
@@ -945,19 +994,27 @@ impl Js {
         }
         self.expose_global_slab();
         self.expose_global_slab_next();
-        self.globals.push_str("
-            function addHeapObject(obj: any): number {
-                if (slab_next == slab.length) {
-                    slab.push(slab.length + 1);
-                }
-                const idx = slab_next;
-                const next = slab[idx];
+        let set_slab_next = if self.debug {
+            String::from("
                 if (typeof(next) !== 'number')
                     throw new Error('corrupt slab');
                 slab_next = next;
-                slab[idx] = { obj, cnt: 1 };
+            ")
+        } else {
+            String::from("
+                slab_next = next as number;
+            ")
+        };
+        self.globals.push_str(&format!("
+            function addHeapObject(obj: any): number {{
+                if (slab_next == slab.length)
+                    slab.push(slab.length + 1);
+                const idx = slab_next;
+                const next = slab[idx];
+                {}
+                slab[idx] = {{ obj, cnt: 1 }};
                 return idx << 1;
-            }
-        ");
+            }}
+        ", set_slab_next));
     }
 }
