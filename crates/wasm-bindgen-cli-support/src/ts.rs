@@ -311,7 +311,7 @@ impl Js {
         }
         ts_dst.push_str("\n");
         dst.push_str(" {\n");
-        dst.push_str(&format!("return imports.{}({});\n}}", import.name, invocation));
+        dst.push_str(&format!("return _imports.{}({});\n}}", import.name, invocation));
 
         self.imports.push((import.name.clone(), dst, ts_dst));
     }
@@ -368,6 +368,10 @@ impl Js {
             if self.wasm_exports_bound.contains(export) {
                 continue
             }
+            // this is a special case, ignore it for now
+            if export == "memory" {
+                continue
+            }
 
             if extra_exports_interface.len() == 0 {
                 extra_exports_interface.push_str("interface ExtraExports {\n");
@@ -422,7 +426,7 @@ impl Js {
             }
             imports_object.push_str(import);
             imports_object.push_str(":");
-            imports_object.push_str("imports.env.");
+            imports_object.push_str("_imports.env.");
             imports_object.push_str(import);
             imports_object.push_str(",\n");
             extra_imports_interface.push_str(typescript);
@@ -507,7 +511,7 @@ impl Js {
                 {writes}
                 return {exports};
             }}
-            export function instantiate(bytes: any, imports: Imports): Promise<Exports> {{
+            export function instantiate(bytes: any, _imports: Imports): Promise<Exports> {{
                 let wasm_imports: WasmImportsTop = {{
                     env: {{
                         {imports_object}
@@ -623,6 +627,11 @@ impl Js {
         for export in exports.entries() {
             let fn_idx = match *export.internal() {
                 Internal::Function(i) => i as usize,
+                Internal::Memory(_) => {
+                    map.insert(export.field().to_string(),
+                               format!("{}: WebAssembly.Memory;", export.field()));
+                    continue
+                }
                 _ => continue,
             };
             assert!(fn_idx >= imported_functions);

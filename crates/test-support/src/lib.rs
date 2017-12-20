@@ -166,6 +166,7 @@ impl Project {
             .arg("--strictNullChecks")
             .arg("--strictFunctionTypes")
             .arg("--noUnusedLocals")
+            .arg("--noUnusedParameters")
             .arg("--noImplicitReturns")
             .arg("--lib")
             .arg("es6");
