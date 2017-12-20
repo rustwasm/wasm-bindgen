@@ -128,6 +128,14 @@ impl Js {
                     arg_conversions.push_str(&format!("_assertNum({});\n", name));
                     pass(&name)
                 }
+                shared::Type::Boolean => {
+                    dst.push_str("boolean");
+                    self.expose_assert_bool();
+                    arg_conversions.push_str(&format!("\
+                        const bool{i} = _assertBoolean({name});
+                    ", name = name, i = i));
+                    pass(&format!("bool{i}", i = i))
+                }
                 shared::Type::BorrowedStr |
                 shared::Type::String => {
                     dst.push_str("string");
@@ -190,6 +198,10 @@ impl Js {
             Some(&shared::Type::Number) => {
                 dst.push_str("number");
                 format!("return ret;")
+            }
+            Some(&shared::Type::Boolean) => {
+                dst.push_str("boolean");
+                format!("return ret != 0;")
             }
             Some(&shared::Type::JsObject) => {
                 dst.push_str("any");
@@ -270,6 +282,11 @@ impl Js {
                     invocation.push_str(&format!("arg{}", i));
                     dst.push_str(&format!("arg{}: number", i));
                 }
+                shared::Type::Boolean => {
+                    ts_dst.push_str("boolean");
+                    invocation.push_str(&format!("arg{} != 0", i));
+                    dst.push_str(&format!("arg{}: number", i));
+                }
                 shared::Type::BorrowedStr => {
                     ts_dst.push_str("string");
                     self.expose_get_string_from_wasm();
@@ -298,10 +315,17 @@ impl Js {
         }
         ts_dst.push_str("): ");
         dst.push_str("): ");
+        let mut convert = None;
         match import.ret {
             Some(shared::Type::Number) => {
                 ts_dst.push_str("number");
                 dst.push_str("number");
+            }
+            Some(shared::Type::Boolean) => {
+                ts_dst.push_str("boolean");
+                dst.push_str("number");
+                convert = Some("_assertBoolean");
+                self.expose_assert_bool();
             }
             None => {
                 ts_dst.push_str("void");
@@ -311,7 +335,12 @@ impl Js {
         }
         ts_dst.push_str("\n");
         dst.push_str(" {\n");
-        dst.push_str(&format!("return _imports.{}({});\n}}", import.name, invocation));
+        let invoc = format!("_imports.{}({})", import.name, invocation);
+        let invoc = match convert {
+            Some(s) => format!("{}({})", s, invoc),
+            None => invoc,
+        };
+        dst.push_str(&format!("return {};\n}}", invoc));
 
         self.imports.push((import.name.clone(), dst, ts_dst));
     }
@@ -769,6 +798,23 @@ impl Js {
             function _assertNum(n: number): void {
                 if (typeof(n) !== 'number')
                     throw new Error('expected a number argument');
+            }
+        ");
+    }
+
+    fn expose_assert_bool(&mut self) {
+        if !self.exposed_globals.insert("assert_bool") {
+            return
+        }
+        self.globals.push_str("\
+            function _assertBoolean(n: boolean): number {
+                if (typeof(n) !== 'boolean')
+                    throw new Error('expected a boolean argument');
+                if (n) {
+                    return 1;
+                } else {
+                    return 0;
+                }
             }
         ");
     }

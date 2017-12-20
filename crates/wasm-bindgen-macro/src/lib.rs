@@ -189,6 +189,12 @@ fn bindgen(export_name: &syn::Lit,
             ast::Type::Integer(i) => {
                 args.push(my_quote! { #ident: #i });
             }
+            ast::Type::Boolean => {
+                args.push(my_quote! { #ident: u32 });
+                arg_conversions.push(my_quote! {
+                    let #ident = #ident != 0;
+                });
+            }
             ast::Type::RawMutPtr(i) => {
                 args.push(my_quote! { #ident: *mut #i });
             }
@@ -271,6 +277,10 @@ fn bindgen(export_name: &syn::Lit,
         Some(&ast::Type::Integer(i)) => {
             ret_ty = my_quote! { -> #i };
             convert_ret = my_quote! { #ret };
+        }
+        Some(&ast::Type::Boolean) => {
+            ret_ty = my_quote! { -> u32 };
+            convert_ret = my_quote! { #ret as u32 };
         }
         Some(&ast::Type::RawMutPtr(i)) => {
             ret_ty = my_quote! { -> *mut #i };
@@ -444,6 +454,11 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
                 abi_arguments.push(my_quote! { #name: #i });
                 arg_conversions.push(my_quote! {});
             }
+            ast::Type::Boolean => {
+                abi_argument_names.push(name);
+                abi_arguments.push(my_quote! { #name: u32 });
+                arg_conversions.push(my_quote! { let #name = #name as u32; });
+            }
             ast::Type::RawMutPtr(i) => {
                 abi_argument_names.push(name);
                 abi_arguments.push(my_quote! { #name: *mut #i });
@@ -494,6 +509,10 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
         Some(ast::Type::Integer(i)) => {
             abi_ret = my_quote! { #i };
             convert_ret = my_quote! { #ret_ident };
+        }
+        Some(ast::Type::Boolean) => {
+            abi_ret = my_quote! { u32 };
+            convert_ret = my_quote! { #ret_ident != 0 };
         }
         Some(ast::Type::RawConstPtr(i)) => {
             abi_ret = my_quote! { *const #i };

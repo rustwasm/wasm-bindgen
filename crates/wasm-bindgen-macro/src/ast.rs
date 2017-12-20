@@ -33,6 +33,7 @@ pub enum Type {
     RawConstPtr(syn::Ident),
     JsObject,
     JsObjectRef,
+    Boolean,
 }
 
 pub struct Struct {
@@ -271,6 +272,7 @@ impl Type {
                     "f64" => {
                         Type::Integer(ident)
                     }
+                    "bool" => Type::Boolean,
                     "String" => Type::String,
                     "JsObject" => Type::JsObject,
                     _ => Type::ByValue(ident),
@@ -292,6 +294,7 @@ impl Type {
             Type::ByMutRef(n) => shared::Type::ByMutRef(n.to_string()),
             Type::JsObject => shared::Type::JsObject,
             Type::JsObjectRef => shared::Type::JsObjectRef,
+            Type::Boolean => shared::Type::Boolean,
         }
     }
 }

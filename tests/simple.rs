@@ -19,8 +19,12 @@ fn add() {
                     a + 3
                 }
 
-                pub fn get2() -> u32 {
+                pub fn get2(_b: bool) -> u32 {
                     2
+                }
+
+                pub fn return_and_take_bool(a: bool, b: bool) -> bool {
+                    a && b
                 }
 
                 pub fn raw_pointers_work(a: *mut u32, b: *const u8) -> *const u32 {
@@ -41,7 +45,8 @@ fn add() {
                 assert.strictEqual(wasm.add(1, 2), 3);
                 assert.strictEqual(wasm.add(2, 3), 5);
                 assert.strictEqual(wasm.add3(2), 5);
-                assert.strictEqual(wasm.get2(), 2);
+                assert.strictEqual(wasm.get2(true), 2);
+                assert.strictEqual(wasm.return_and_take_bool(true, false), false);
             }
         "#)
         .test();

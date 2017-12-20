@@ -65,6 +65,7 @@ pub enum Type {
     ByMutRef(String),
     JsObject,
     JsObjectRef,
+    Boolean,
 }
 
 impl Type {

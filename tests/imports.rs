@@ -14,12 +14,16 @@ fn simple() {
                 extern "JS" {
                     fn foo(s: &str);
                     fn another(a: u32) -> i32;
+                    fn take_and_return_bool(a: bool) -> bool;
                 }
                 pub fn bar(s: &str) {
                     foo(s);
                 }
                 pub fn another_thunk(a: u32) -> i32 {
                     another(a)
+                }
+                pub fn bool_thunk(a: bool) -> bool {
+                    take_and_return_bool(a)
                 }
             }
         "#)
@@ -42,6 +46,9 @@ fn simple() {
                     ANOTHER_ARG = s;
                     return 35;
                 },
+                take_and_return_bool(s: boolean): boolean {
+                    return s;
+                },
             };
 
             export function test(wasm: Exports) {
@@ -52,6 +59,9 @@ fn simple() {
                 assert.strictEqual(ANOTHER_ARG, null);
                 assert.strictEqual(wasm.another_thunk(21), 35);
                 assert.strictEqual(ANOTHER_ARG, 21);
+
+                assert.strictEqual(wasm.bool_thunk(true), true);
+                assert.strictEqual(wasm.bool_thunk(false), false);
             }
         "#)
         .test();
