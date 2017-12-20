@@ -195,3 +195,23 @@ fn other_imports() {
         "#)
         .test();
 }
+
+#[test]
+fn other_exports() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #[no_mangle]
+            pub extern fn foo(_a: u32) {
+            }
+        "#)
+        .file("test.ts", r#"
+            import { Exports, Imports } from "./out";
+
+            export const imports: Imports = {};
+
+            export function test(wasm: Exports) {
+                wasm.extra.foo(2);
+            }
+        "#)
+        .test();
+}

@@ -8,6 +8,7 @@ pub struct Js {
     globals: String,
     exposed_globals: HashSet<&'static str>,
     exports: Vec<(String, String, String)>,
+    wasm_exports_bound: HashSet<String>,
     classes: Vec<String>,
     imports: Vec<(String, String, String)>,
     pub nodejs: bool,
@@ -57,6 +58,7 @@ impl Js {
                     wasm_exports.{}(ptr);
                 }}
         ", s.name, s.free_function()));
+        self.wasm_exports_bound.insert(s.name.clone());
 
         for function in s.functions.iter() {
             let (js, _ts) = self.generate_function(
@@ -239,6 +241,7 @@ impl Js {
                 convert_ret = convert_ret));
         }
         dst.push_str("}");
+        self.wasm_exports_bound.insert(wasm_name.to_string());
         (format!("{} {}", prefix, dst), dst_ts)
     }
 
@@ -337,7 +340,9 @@ impl Js {
             self.globals.push_str(class);
             self.globals.push_str("\n");
         }
-        let mut typescript_exports = String::new();
+        let wasm_exports = self.typescript_wasm_exports(m);
+        let mut exports_interface = String::new();
+        let mut extra_exports_interface = String::new();
         let mut exports = format!("\
             {{
                 module,
@@ -348,8 +353,38 @@ impl Js {
             exports.push_str(": ");
             exports.push_str(body);
             exports.push_str(",\n");
-            typescript_exports.push_str(ts_export);
-            typescript_exports.push_str("\n");
+            exports_interface.push_str(ts_export);
+            exports_interface.push_str("\n");
+        }
+        // If the user otherwise specified functions to export which *weren't*
+        // part of wasm-bindgen we want to make sure they come through here as
+        // well.
+        for (export, typescript) in wasm_exports.iter() {
+            // ignore any internal functions we have for ourselves
+            if export.starts_with("__wbindgen") {
+                continue
+            }
+            // Ignore anything we just bound above,
+            if self.wasm_exports_bound.contains(export) {
+                continue
+            }
+
+            if extra_exports_interface.len() == 0 {
+                extra_exports_interface.push_str("interface ExtraExports {\n");
+                exports_interface.push_str("extra: ExtraExports;\n");
+                exports.push_str("extra: {\n");
+            }
+            exports.push_str(export);
+            exports.push_str(":");
+            exports.push_str("exports.");
+            exports.push_str(export);
+            exports.push_str(",\n");
+            extra_exports_interface.push_str(typescript);
+            extra_exports_interface.push_str("\n");
+        }
+        if extra_exports_interface.len() > 0 {
+            extra_exports_interface.push_str("}\n");
+            exports.push_str("},\n");
         }
         exports.push_str("}");
         let wasm_imports = self.typescript_wasm_imports(m);
@@ -461,12 +496,14 @@ impl Js {
             export interface Exports {{
                 module: WebAssembly.Module;
                 instance: WebAssembly.Module;
-                {typescript_exports}
+                {exports_interface}
             }}
+
+            {extra_exports_interface}
 
             function xform(obj: WebAssembly.ResultObject): Exports {{
                 let {{ module, instance }} = obj;
-                let {{ exports }} = instance;
+                let exports: WasmExports = instance.exports;
                 {writes}
                 return {exports};
             }}
@@ -483,14 +520,18 @@ impl Js {
             exports = exports,
             imports_object = imports_object,
             writes = writes,
-            extra_imports_interface = extra_imports_interface,
             imports_interface = imports_interface,
-            typescript_exports = typescript_exports,
+            extra_imports_interface = extra_imports_interface,
+            exports_interface = exports_interface,
+            extra_exports_interface = extra_exports_interface,
             wasm_imports = wasm_imports.values()
                 .map(|s| &**s)
                 .collect::<Vec<_>>()
                 .join("\n"),
-            wasm_exports = self.typescript_wasm_exports(m),
+            wasm_exports = wasm_exports.values()
+                .map(|s| &**s)
+                .collect::<Vec<_>>()
+                .join("\n"),
         )
     }
 
@@ -556,30 +597,29 @@ impl Js {
         return map;
     }
 
-    /// Returns a block describing all the raw wasm exports that this module
-    /// has.
+    /// Returns a map from export name to its typescript signature.
     ///
     /// This uses the module itself as the source of truth to help flesh out
     /// bugs in this program.
-    fn typescript_wasm_exports(&self, m: &Module) -> String {
+    fn typescript_wasm_exports(&self, m: &Module) -> HashMap<String, String> {
         let imported_functions = match m.import_section() {
             Some(s) => s.functions(),
             None => 0,
         };
         let functions = match m.function_section() {
             Some(s) => s,
-            None => return String::new(),
+            None => return HashMap::new(),
         };
         let types = match m.type_section() {
             Some(s) => s,
-            None => return String::new(),
+            None => return HashMap::new(),
         };
         let exports = match m.export_section() {
             Some(s) => s,
-            None => return String::new(),
+            None => return HashMap::new(),
         };
 
-        let mut ts = String::new();
+        let mut map = HashMap::new();
         for export in exports.entries() {
             let fn_idx = match *export.internal() {
                 Internal::Function(i) => i as usize,
@@ -591,6 +631,7 @@ impl Js {
                 Type::Function(ref t) => t,
             };
 
+            let mut ts = String::new();
             ts.push_str(export.field());
             ts.push_str("(");
             // TODO: probably match `arg` to catch exhaustive errors in the
@@ -607,9 +648,10 @@ impl Js {
             } else {
                 ts.push_str("number");
             }
-            ts.push_str(";\n");
+            ts.push_str(";");
+            map.insert(export.field().to_string(), ts);
         }
-        return ts;
+        return map;
     }
 
     fn expose_drop_ref(&mut self) {
