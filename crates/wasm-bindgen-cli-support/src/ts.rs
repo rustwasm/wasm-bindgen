@@ -477,6 +477,7 @@ impl Js {
             writes.push_str("wasm_exports = exports;\n");
         }
         format!("
+            /* tslint:disable */
             {globals}
 
             interface WasmImportsTop {{
