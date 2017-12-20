@@ -15,6 +15,7 @@ fn simple() {
                     fn foo(s: &str);
                     fn another(a: u32) -> i32;
                     fn take_and_return_bool(a: bool) -> bool;
+                    fn return_object() -> JsObject;
                 }
                 pub fn bar(s: &str) {
                     foo(s);
@@ -25,6 +26,10 @@ fn simple() {
                 pub fn bool_thunk(a: bool) -> bool {
                     take_and_return_bool(a)
                 }
+
+                pub fn get_the_object() -> JsObject {
+                    return_object()
+                }
             }
         "#)
         .file("test.ts", r#"
@@ -33,6 +38,7 @@ fn simple() {
 
             let ARG: string | null = null;
             let ANOTHER_ARG: number | null = null;
+            let SYM = Symbol('a');
 
             export const imports: Imports = {
                 foo(s) {
@@ -49,6 +55,9 @@ fn simple() {
                 take_and_return_bool(s: boolean): boolean {
                     return s;
                 },
+                return_object(): any {
+                    return SYM;
+                },
             };
 
             export function test(wasm: Exports) {
@@ -62,6 +71,8 @@ fn simple() {
 
                 assert.strictEqual(wasm.bool_thunk(true), true);
                 assert.strictEqual(wasm.bool_thunk(false), false);
+
+                assert.strictEqual(wasm.get_the_object(), SYM);
             }
         "#)
         .test();

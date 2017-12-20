@@ -327,6 +327,12 @@ impl Js {
                 convert = Some("_assertBoolean");
                 self.expose_assert_bool();
             }
+            Some(shared::Type::JsObject) => {
+                ts_dst.push_str("any");
+                dst.push_str("number");
+                self.expose_add_heap_object();
+                convert = Some("addHeapObject");
+            }
             None => {
                 ts_dst.push_str("void");
                 dst.push_str("void");
