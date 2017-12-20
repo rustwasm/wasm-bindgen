@@ -370,7 +370,7 @@ impl Js {
             }
 
             if extra_exports_interface.len() == 0 {
-                extra_exports_interface.push_str("interface ExtraExports {\n");
+                extra_exports_interface.push_str("export interface ExtraExports {\n");
                 exports_interface.push_str("extra: ExtraExports;\n");
                 exports.push_str("extra: {\n");
             }
@@ -417,7 +417,7 @@ impl Js {
             }
 
             if extra_imports_interface.len() == 0 {
-                extra_imports_interface.push_str("interface ExtraImports {\n");
+                extra_imports_interface.push_str("export interface ExtraImports {\n");
                 imports_interface.push_str("env: ExtraImports;\n");
             }
             imports_object.push_str(import);

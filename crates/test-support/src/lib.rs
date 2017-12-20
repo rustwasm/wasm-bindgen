@@ -168,6 +168,7 @@ impl Project {
             .arg("--noUnusedLocals")
             .arg("--noUnusedParameters")
             .arg("--noImplicitReturns")
+            .arg("--declaration")
             .arg("--lib")
             .arg("es6");
         run(&mut cmd, "node");
