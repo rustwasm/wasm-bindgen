@@ -120,17 +120,22 @@ impl Js {
             match *arg {
                 shared::Type::Number => {
                     dst.push_str("number");
-                    self.expose_assert_num();
-                    arg_conversions.push_str(&format!("_assertNum({});\n", name));
+                    if self.debug {
+                        self.expose_assert_num();
+                        arg_conversions.push_str(&format!("_assertNum({});\n", name));
+                    }
                     pass(&name)
                 }
                 shared::Type::Boolean => {
                     dst.push_str("boolean");
-                    self.expose_assert_bool();
-                    arg_conversions.push_str(&format!("\
-                        const bool{i} = _assertBoolean({name});
-                    ", name = name, i = i));
-                    pass(&format!("bool{i}", i = i))
+                    if self.debug {
+                        self.expose_assert_bool();
+                        arg_conversions.push_str(&format!("\
+                            _assertBoolean({name});
+                        ", name = name));
+                    } else {
+                    }
+                    pass(&format!("arg{i} ? 1 : 0", i = i))
                 }
                 shared::Type::BorrowedStr |
                 shared::Type::String => {
@@ -151,19 +156,26 @@ impl Js {
                 shared::Type::ByRef(ref s) |
                 shared::Type::ByMutRef(ref s) => {
                     dst.push_str(s);
-                    self.expose_assert_class();
-                    arg_conversions.push_str(&format!("\
-                        const ptr{i} = _assertClass({arg}, {struct_});
-                    ", i = i, arg = name, struct_ = s));
-                    pass(&format!("ptr{}", i));
+                    if self.debug {
+                        self.expose_assert_class();
+                        arg_conversions.push_str(&format!("\
+                            _assertClass({arg}, {struct_});
+                        ", arg = name, struct_ = s));
+                    }
+                    pass(&format!("{}.__wasmPtr", name));
                 }
                 shared::Type::ByValue(ref s) => {
                     dst.push_str(s);
-                    self.expose_assert_class();
+                    if self.debug {
+                        self.expose_assert_class();
+                        arg_conversions.push_str(&format!("\
+                            _assertClass({arg}, {struct_});
+                        ", arg = name, struct_ = s));
+                    }
                     arg_conversions.push_str(&format!("\
-                        const ptr{i} = _assertClass({arg}, {struct_});
+                        const ptr{i} = {arg}.__wasmPtr;
                         {arg}.__wasmPtr = 0;
-                    ", i = i, arg = name, struct_ = s));
+                    ", i = i, arg = name));
                     pass(&format!("ptr{}", i));
                 }
                 shared::Type::JsObject => {
@@ -313,37 +325,33 @@ impl Js {
         }
         ts_dst.push_str("): ");
         dst.push_str("): ");
-        let mut convert = None;
-        match import.ret {
+        let invoc = format!("_imports.{}({})", import.name, invocation);
+        let invoc = match import.ret {
             Some(shared::Type::Number) => {
                 ts_dst.push_str("number");
                 dst.push_str("number");
+                invoc
             }
             Some(shared::Type::Boolean) => {
                 ts_dst.push_str("boolean");
                 dst.push_str("number");
-                convert = Some("_assertBoolean");
-                self.expose_assert_bool();
+                format!("{} ? 1 : 0", invoc)
             }
             Some(shared::Type::JsObject) => {
                 ts_dst.push_str("any");
                 dst.push_str("number");
                 self.expose_add_heap_object();
-                convert = Some("addHeapObject");
+                format!("addHeapObject({})", invoc)
             }
             None => {
                 ts_dst.push_str("void");
                 dst.push_str("void");
+                invoc
             }
             _ => unimplemented!(),
-        }
+        };
         ts_dst.push_str("\n");
         dst.push_str(" {\n");
-        let invoc = format!("_imports.{}({})", import.name, invocation);
-        let invoc = match convert {
-            Some(s) => format!("{}({})", s, invoc),
-            None => invoc,
-        };
         dst.push_str(&format!("return {};\n}}", invoc));
 
         (dst, ts_dst)
@@ -819,14 +827,9 @@ impl Js {
             return
         }
         self.globals.push_str("\
-            function _assertBoolean(n: boolean): number {
+            function _assertBoolean(n: boolean) {
                 if (typeof(n) !== 'boolean')
                     throw new Error('expected a boolean argument');
-                if (n) {
-                    return 1;
-                } else {
-                    return 0;
-                }
             }
         ");
     }
