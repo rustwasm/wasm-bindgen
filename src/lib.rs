@@ -33,14 +33,14 @@ impl JsObject {
 }
 
 extern {
-    fn __wasm_bindgen_object_clone_ref(idx: u32) -> u32;
-    fn __wasm_bindgen_object_drop_ref(idx: u32);
+    fn __wbindgen_object_clone_ref(idx: u32) -> u32;
+    fn __wbindgen_object_drop_ref(idx: u32);
 }
 
 impl Clone for JsObject {
     fn clone(&self) -> JsObject {
         unsafe {
-            let idx = __wasm_bindgen_object_clone_ref(self.idx);
+            let idx = __wbindgen_object_clone_ref(self.idx);
             JsObject { idx }
         }
     }
@@ -49,7 +49,7 @@ impl Clone for JsObject {
 impl Drop for JsObject {
     fn drop(&mut self) {
         unsafe {
-            __wasm_bindgen_object_drop_ref(self.idx);
+            __wbindgen_object_drop_ref(self.idx);
         }
     }
 }

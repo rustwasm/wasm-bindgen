@@ -363,11 +363,11 @@ impl Js {
             typescript_imports.push_str("\n");
         }
 
-        if self.wasm_import_needed("__wasm_bindgen_object_clone_ref", m) {
+        if self.wasm_import_needed("__wbindgen_object_clone_ref", m) {
             self.expose_add_heap_object();
             self.expose_get_object();
             imports.push_str("
-                __wasm_bindgen_object_clone_ref: function(idx: number): number {
+                __wbindgen_object_clone_ref: function(idx: number): number {
                     // If this object is on the stack promote it to the heap.
                     if ((idx & 1) === 1) {
                         return addHeapObject(getObject(idx));
@@ -384,9 +384,9 @@ impl Js {
             ");
         }
 
-        if self.wasm_import_needed("__wasm_bindgen_object_drop_ref", m) {
+        if self.wasm_import_needed("__wbindgen_object_drop_ref", m) {
             self.expose_drop_ref();
-            imports.push_str("__wasm_bindgen_object_drop_ref: dropRef,\n");
+            imports.push_str("__wbindgen_object_drop_ref: dropRef,\n");
         }
 
         if self.wasm_import_needed("__wbindgen_throw", m) {
