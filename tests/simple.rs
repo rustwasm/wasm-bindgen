@@ -24,10 +24,13 @@ fn add() {
                 }
             }
         "#)
-        .file("test.js", r#"
+        .file("test.ts", r#"
             import * as assert from "assert";
+            import { Exports, Imports } from "./out";
 
-            export function test(wasm) {
+            export const imports: Imports = {};
+
+            export function test(wasm: Exports) {
                 assert.strictEqual(wasm.add(1, 2), 3);
                 assert.strictEqual(wasm.add(2, 3), 5);
                 assert.strictEqual(wasm.add3(2), 5);
@@ -58,8 +61,12 @@ fn string_arguments() {
                 }
             }
         "#)
-        .file("test.js", r#"
-            export function test(wasm) {
+        .file("test.ts", r#"
+            import { Exports, Imports } from "./out";
+
+            export const imports: Imports = {};
+
+            export function test(wasm: Exports) {
                 wasm.assert_foo("foo");
                 wasm.assert_foo_and_bar("foo2", "bar");
             }
@@ -89,10 +96,13 @@ fn return_a_string() {
                 }
             }
         "#)
-        .file("test.js", r#"
+        .file("test.ts", r#"
             import * as assert from "assert";
+            import { Exports, Imports } from "./out";
 
-            export function test(wasm) {
+            export const imports: Imports = {};
+
+            export function test(wasm: Exports) {
                 assert.strictEqual(wasm.clone("foo"), "foo");
                 assert.strictEqual(wasm.clone("another"), "another");
                 assert.strictEqual(wasm.concat("a", "b", 3), "a b 3");
@@ -118,12 +128,20 @@ fn exceptions() {
             }
         "#)
         .file("test.js", r#"
-            import * as assert from "assert";
+            var assert = require("assert");
 
-            export function test(wasm) {
+            exports.imports = {};
+            exports.test = function(wasm) {
                 assert.throws(() => wasm.foo('a'), /expected a number argument/);
                 assert.throws(() => wasm.bar(3), /expected a string argument/);
-            }
+            };
+        "#)
+        .file("test.d.ts", r#"
+            import { Exports, Imports } from "./out";
+
+            export const imports: Imports;
+
+            export function test(wasm: Exports): void;
         "#)
         .test();
 }

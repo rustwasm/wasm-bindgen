@@ -31,10 +31,13 @@ fn simple() {
                 }
             }
         "#)
-        .file("test.js", r#"
+        .file("test.ts", r#"
             import * as assert from "assert";
+            import { Exports, Imports } from "./out";
 
-            export function test(wasm) {
+            export const imports: Imports = {};
+
+            export function test(wasm: Exports) {
                 const r = wasm.Foo.new();
                 assert.strictEqual(r.add(0), 0);
                 assert.strictEqual(r.add(1), 1);
@@ -91,10 +94,13 @@ fn strings() {
                 }
             }
         "#)
-        .file("test.js", r#"
+        .file("test.ts", r#"
             import * as assert from "assert";
+            import { Exports, Imports } from "./out";
 
-            export function test(wasm) {
+            export const imports: Imports = {};
+
+            export function test(wasm: Exports) {
                 const r = wasm.Foo.new();
                 r.set(3);
                 let bar = r.bar('baz');
@@ -143,9 +149,10 @@ fn exceptions() {
             }
         "#)
         .file("test.js", r#"
-            import * as assert from "assert";
+            var assert = require("assert");
 
-            export function test(wasm) {
+            exports.imports = {};
+            exports.test = function(wasm) {
                 assert.throws(() => new wasm.A(), /cannot invoke `new` directly/);
                 let a = wasm.A.new();
                 a.free();
@@ -161,6 +168,63 @@ fn exceptions() {
                 assert.throws(() => c.foo(d), /expected instance of A/);
                 d.free();
                 c.free();
+            };
+        "#)
+        .file("test.d.ts", r#"
+            import { Exports, Imports } from "./out";
+
+            export const imports: Imports;
+
+            export function test(wasm: Exports): void;
+        "#)
+        .test();
+}
+
+#[test]
+fn pass_one_to_another() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                pub struct A {}
+
+                impl A {
+                    pub fn new() -> A {
+                        A {}
+                    }
+
+                    pub fn foo(&self, _other: &B) {
+                    }
+
+                    pub fn bar(&self, _other: B) {
+                    }
+                }
+
+                pub struct B {}
+
+                impl B {
+                    pub fn new() -> B {
+                        B {}
+                    }
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import { Exports, Imports } from "./out";
+
+            export const imports: Imports = {};
+
+            export function test(wasm: Exports) {
+                let a = wasm.A.new();
+                let b = wasm.B.new();
+                a.foo(b);
+                a.bar(b);
+                a.free();
             }
         "#)
         .test();

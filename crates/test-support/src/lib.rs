@@ -46,20 +46,22 @@ pub fn project() -> Project {
 
             ("Cargo.lock".to_string(), lockfile),
 
-            ("run.js".to_string(), r#"
-                var fs = require("fs");
-                var out = require("./out.compat");
-                var test = require("./test.compat");
-                var wasm = fs.readFileSync("out.wasm");
-                var process = require("process");
+            ("run.ts".to_string(), r#"
+                import * as fs from "fs";
+                import * as process from "process";
 
-                out.instantiate(wasm, test.imports).then(m => {
-                    test.test(m);
-                    if (m.assertHeapAndStackEmpty)
-                        m.assertHeapAndStackEmpty();
-                }).catch(function(error) {
-                    console.error(error);
-                    process.exit(1);
+                import { instantiate } from "./out";
+                import * as test from "./test";
+
+                var wasm = fs.readFileSync("out.wasm");
+
+                instantiate(wasm, test.imports).then(m => {
+                  test.test(m);
+                  if (m.assertHeapAndStackEmpty)
+                    m.assertHeapAndStackEmpty();
+                }).catch(error => {
+                  console.error(error);
+                  process.exit(1);
                 });
             "#.to_string()),
         ],
@@ -78,7 +80,7 @@ pub fn root() -> PathBuf {
     return me
 }
 
-fn babel() -> PathBuf {
+fn typescript() -> PathBuf {
     static INIT: Once = ONCE_INIT;
 
     let mut me = env::current_exe().unwrap();
@@ -86,7 +88,7 @@ fn babel() -> PathBuf {
     me.pop(); // chop off `deps`
     me.pop(); // chop off `debug` / `release`
     let install_dir = me.clone();
-    me.push("node_modules/babel-cli/bin/babel.js");
+    me.push("node_modules/typescript/bin/tsc");
 
     INIT.call_once(|| {
         if !me.exists() {
@@ -99,8 +101,9 @@ fn babel() -> PathBuf {
             };
             run(npm
                 .arg("install")
-                .arg("babel-cli")
-                .arg("babel-preset-env")
+                .arg("typescript")
+                .arg("@types/node")
+                .arg("@types/webassembly-js-api")
                 .current_dir(&install_dir), "npm");
             assert!(me.exists());
         }
@@ -151,20 +154,21 @@ impl Project {
             .debug(true)
             .generate()
             .expect("failed to run bindgen");
-        obj.write_js_to(root.join("out.js")).expect("failed to write js");
+        obj.write_ts_to(root.join("out.ts")).expect("failed to write ts");
         obj.write_wasm_to(root.join("out.wasm")).expect("failed to write wasm");
 
         let mut cmd = Command::new("node");
-        cmd.arg(babel())
-            .arg(root.join("out.js"))
-            .arg("--presets").arg("env")
-            .arg("--out-file").arg(root.join("out.compat.js"));
-        run(&mut cmd, "node");
-        let mut cmd = Command::new("node");
-        cmd.arg(babel())
-            .arg(root.join("test.js"))
-            .arg("--presets").arg("env")
-            .arg("--out-file").arg(root.join("test.compat.js"));
+        cmd.arg(typescript())
+            .current_dir(&target_dir)
+            .arg(root.join("run.ts"))
+            .arg("--strict")
+            .arg("--noImplicitAny")
+            .arg("--strictNullChecks")
+            .arg("--strictFunctionTypes")
+            .arg("--noUnusedLocals")
+            .arg("--noImplicitReturns")
+            .arg("--lib")
+            .arg("es6");
         run(&mut cmd, "node");
 
         let mut cmd = Command::new("node");

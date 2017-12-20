@@ -23,29 +23,28 @@ fn simple() {
                 }
             }
         "#)
-        .file("test.js", r#"
+        .file("test.ts", r#"
+            import { Exports, Imports } from "./out";
             import * as assert from "assert";
 
-            let ARG = null;
-            let ANOTHER_ARG = null;
+            let ARG: string | null = null;
+            let ANOTHER_ARG: number | null = null;
 
-            export const imports = {
-                env: {
-                    foo(s) {
-                        assert.strictEqual(ARG, null);
-                        assert.strictEqual(s, "foo");
-                        ARG = s;
-                    },
-                    another(s) {
-                        assert.strictEqual(ANOTHER_ARG, null);
-                        assert.strictEqual(s, 21);
-                        ANOTHER_ARG = s;
-                        return 35;
-                    },
+            export const imports: Imports = {
+                foo(s) {
+                    assert.strictEqual(ARG, null);
+                    assert.strictEqual(s, "foo");
+                    ARG = s;
+                },
+                another(s) {
+                    assert.strictEqual(ANOTHER_ARG, null);
+                    assert.strictEqual(s, 21);
+                    ANOTHER_ARG = s;
+                    return 35;
                 },
             };
 
-            export function test(wasm) {
+            export function test(wasm: Exports) {
                 assert.strictEqual(ARG, null);
                 wasm.bar("foo");
                 assert.strictEqual(ARG, "foo");

@@ -11,7 +11,7 @@ use std::io::Write;
 use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
 
-mod js;
+mod ts;
 
 pub struct Bindgen {
     path: Option<PathBuf>,
@@ -69,16 +69,16 @@ impl Bindgen {
 }
 
 impl Object {
-    pub fn write_js_to<P: AsRef<Path>>(&self, path: P) -> Result<(), Error> {
-        self._write_js_to(path.as_ref())
+    pub fn write_ts_to<P: AsRef<Path>>(&self, path: P) -> Result<(), Error> {
+        self._write_ts_to(path.as_ref())
     }
 
-    fn _write_js_to(&self, path: &Path) -> Result<(), Error> {
-        let js = self.generate_js();
+    fn _write_ts_to(&self, path: &Path) -> Result<(), Error> {
+        let ts = self.generate_ts();
         let mut f = File::create(path).with_context(|_| {
             format!("failed to create file at {:?}", path)
         })?;
-        f.write_all(js.as_bytes()).with_context(|_| {
+        f.write_all(ts.as_bytes()).with_context(|_| {
             format!("failed to write file at {:?}", path)
         })?;
         Ok(())
@@ -95,12 +95,12 @@ impl Object {
         Ok(())
     }
 
-    pub fn generate_js(&self) -> String {
-        let mut js = js::Js::default();
-        js.nodejs = self.nodejs;
-        js.debug = self.debug;
-        js.generate_program(&self.program);
-        js.to_string()
+    pub fn generate_ts(&self) -> String {
+        let mut ts = ts::Js::default();
+        ts.nodejs = self.nodejs;
+        ts.debug = self.debug;
+        ts.generate_program(&self.program, &self.module);
+        ts.to_string(&self.module)
     }
 }
 

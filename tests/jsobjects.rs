@@ -19,21 +19,20 @@ fn simple() {
                 }
             }
         "#)
-        .file("test.js", r#"
+        .file("test.ts", r#"
+            import { Exports, Imports } from "./out";
             import * as assert from "assert";
 
-            let ARG = null;
+            let ARG: string | null = null;
 
-            export const imports = {
-                env: {
-                    foo(s) {
-                        assert.strictEqual(ARG, null);
-                        ARG = s;
-                    },
+            export const imports: Imports = {
+                foo(s) {
+                    assert.strictEqual(ARG, null);
+                    ARG = s;
                 },
             };
 
-            export function test(wasm) {
+            export function test(wasm: Exports) {
                 assert.strictEqual(ARG, null);
                 let sym = Symbol('test');
                 wasm.bar(sym);
@@ -62,21 +61,20 @@ fn owned() {
                 }
             }
         "#)
-        .file("test.js", r#"
+        .file("test.ts", r#"
+            import { Exports, Imports } from "./out";
             import * as assert from "assert";
 
-            let ARG = null;
+            let ARG: Symbol | null = null;
 
-            export const imports = {
-                env: {
-                    foo(s) {
-                        assert.strictEqual(ARG, null);
-                        ARG = s;
-                    },
+            export const imports: Imports = {
+                foo(s) {
+                    assert.strictEqual(ARG, null);
+                    ARG = s;
                 },
             };
 
-            export function test(wasm) {
+            export function test(wasm: Exports) {
                 assert.strictEqual(ARG, null);
                 let sym = Symbol('test');
                 wasm.bar(sym);
@@ -114,22 +112,21 @@ fn clone() {
                 }
             }
         "#)
-        .file("test.js", r#"
+        .file("test.ts", r#"
+            import { Exports, Imports } from "./out";
             import * as assert from "assert";
 
             let ARG = Symbol('test');
 
-            export const imports = {
-                env: {
-                    foo1(s) { assert.strictEqual(s, ARG); },
-                    foo2(s) { assert.strictEqual(s, ARG); },
-                    foo3(s) { assert.strictEqual(s, ARG); },
-                    foo4(s) { assert.strictEqual(s, ARG); },
-                    foo5(s) { assert.strictEqual(s, ARG); },
-                },
+            export const imports: Imports = {
+                foo1(s) { assert.strictEqual(s, ARG); },
+                foo2(s) { assert.strictEqual(s, ARG); },
+                foo3(s) { assert.strictEqual(s, ARG); },
+                foo4(s) { assert.strictEqual(s, ARG); },
+                foo5(s) { assert.strictEqual(s, ARG); },
             };
 
-            export function test(wasm) {
+            export function test(wasm: Exports) {
                 wasm.bar(ARG);
             }
         "#)
@@ -162,21 +159,20 @@ fn promote() {
                 }
             }
         "#)
-        .file("test.js", r#"
+        .file("test.ts", r#"
+            import { Exports, Imports } from "./out";
             import * as assert from "assert";
 
             let ARG = Symbol('test');
 
-            export const imports = {
-                env: {
-                    foo1(s) { assert.strictEqual(s, ARG); },
-                    foo2(s) { assert.strictEqual(s, ARG); },
-                    foo3(s) { assert.strictEqual(s, ARG); },
-                    foo4(s) { assert.strictEqual(s, ARG); },
-                },
+            export const imports: Imports = {
+                foo1(s) { assert.strictEqual(s, ARG); },
+                foo2(s) { assert.strictEqual(s, ARG); },
+                foo3(s) { assert.strictEqual(s, ARG); },
+                foo4(s) { assert.strictEqual(s, ARG); },
             };
 
-            export function test(wasm) {
+            export function test(wasm: Exports) {
                 wasm.bar(ARG);
             }
         "#)

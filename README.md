@@ -18,10 +18,10 @@ Notable features of this project includes:
 * Managing arguments between JS/Rust (strings, numbers, classes, etc)
 * Importing JS functions with richer types (strings)
 * Receiving arbitrary JS objects in Rust, passing them through to JS
+* Generates Typescript for now instead of JS (although that may come later)
 
 Planned features include:
 
-* An optional flag to generate Typescript bindings
 * Field setters/getters in JS through Rust functions
 * ... and more coming soon!
 
@@ -104,19 +104,26 @@ set of JS bindings as well. Let's invoke it!
 
 ```
 $ wasm-bindgen target/wasm32-unknown-unknown/release/js_hello_world.wasm \
-  --output-js hello.js \
+  --output-ts hello.ts \
   --output-wasm hello.wasm
 ```
 
-This'll create a `hello.js` which binds the functions described in
-`js_hello_world.wasm`, and the `hello.wasm` will be a little smaller than the
-input `js_hello_world.wasm`, but it's otherwise equivalent. Note that `hello.js`
-isn't very pretty so to read it you'll probably want to run it through a JS
-formatter.
+This'll create a `hello.ts` (a TypeScript file) which binds the functions
+described in `js_hello_world.wasm`, and the `hello.wasm` will be a little
+smaller than the input `js_hello_world.wasm`, but it's otherwise equivalent.
+Note that `hello.ts` isn't very pretty so to read it you'll probably want to run
+it through a formatter.
 
-Note that `hello.js` uses ES6 modules for easier integration into transpilers
-like webpack/rollup/babel/etc. We're going to test out the syntax in the browser
-with `index.html` below, but your browser may not natively support ES6 modules
+Typically you'll be feeding this typescript into a larger build system, and
+often you'll be using this with your own typescript project as well. For now
+though we'll just want the JS output, so let's convert it real quick:
+
+```
+$ npm install typescript @types/webassembly-js-api @types/text-encoding
+$ ./node_modules/typescript/bin/tsc hello.ts --lib es6 -m es2015
+```
+
+Below we'll be using ES6 modules, but your browser may not support them natively
 just yet. To see more information about this, you can browse
 [online](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
 
@@ -285,12 +292,10 @@ this][bindings]. You can view them in action like so:
         .then(resp => resp.arrayBuffer())
         .then(bytes => {
           return instantiate(bytes, {
-            env: {
-              bar_on_reset(s, token) {
-                console.log(token);
-                console.log(`this instance of bar was reset to ${s}`);
-              },
-            }
+            bar_on_reset(s, token) {
+              console.log(token);
+              console.log(`this instance of bar was reset to ${s}`);
+            },
           });
         })
         .then(mod => {
