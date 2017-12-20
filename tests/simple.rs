@@ -152,3 +152,46 @@ fn exceptions() {
         "#)
         .test();
 }
+
+#[test]
+fn other_imports() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            extern {
+                fn another_import(a: u32);
+            }
+
+            wasm_bindgen! {
+                pub fn foo(a: u32) {
+                    unsafe { another_import(a); }
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import { Exports, Imports } from "./out";
+
+            let ARG: number | null = null;
+
+            export const imports: Imports = {
+                env: {
+                    another_import(a: number) {
+                        assert.strictEqual(ARG, null);
+                        ARG = a;
+                    },
+                },
+            };
+
+            export function test(wasm: Exports) {
+                wasm.foo(2);
+                assert.strictEqual(ARG, 2);
+            }
+        "#)
+        .test();
+}

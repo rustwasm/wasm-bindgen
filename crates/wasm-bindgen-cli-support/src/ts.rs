@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 
 use shared;
 use parity_wasm::elements::*;
@@ -352,21 +352,55 @@ impl Js {
             typescript_exports.push_str("\n");
         }
         exports.push_str("}");
-        let mut imports = String::new();
-        let mut typescript_imports = String::new();
+        let wasm_imports = self.typescript_wasm_imports(m);
+
+        let mut imports_object = String::new();
+        let mut extra_imports_interface = String::new();
+        let mut imports_bound = HashSet::new();
+        let mut imports_interface = String::new();
         for &(ref import, ref val, ref ts_import) in self.imports.iter() {
-            imports.push_str(import);
-            imports.push_str(":");
-            imports.push_str(val);
-            imports.push_str(",\n");
-            typescript_imports.push_str(ts_import);
-            typescript_imports.push_str("\n");
+            imports_bound.insert(import.clone());
+            imports_object.push_str(import);
+            imports_object.push_str(":");
+            imports_object.push_str(val);
+            imports_object.push_str(",\n");
+            imports_interface.push_str(ts_import);
+            imports_interface.push_str("\n");
+        }
+
+        // If the user otherwise specified functions to import which *weren't*
+        // part of wasm-bindgen we want to make sure they come through here as
+        // well.
+        for (import, typescript) in wasm_imports.iter() {
+            // ignore any internal functions we have for ourselves
+            if import.starts_with("__wbindgen") {
+                continue
+            }
+            // Ignore anything we just bound above,
+            if imports_bound.contains(import) {
+                continue
+            }
+
+            if extra_imports_interface.len() == 0 {
+                extra_imports_interface.push_str("interface ExtraImports {\n");
+                imports_interface.push_str("env: ExtraImports;\n");
+            }
+            imports_object.push_str(import);
+            imports_object.push_str(":");
+            imports_object.push_str("imports.env.");
+            imports_object.push_str(import);
+            imports_object.push_str(",\n");
+            extra_imports_interface.push_str(typescript);
+            extra_imports_interface.push_str("\n");
+        }
+        if extra_imports_interface.len() > 0 {
+            extra_imports_interface.push_str("}\n");
         }
 
         if self.wasm_import_needed("__wbindgen_object_clone_ref", m) {
             self.expose_add_heap_object();
             self.expose_get_object();
-            imports.push_str("
+            imports_object.push_str("
                 __wbindgen_object_clone_ref: function(idx: number): number {
                     // If this object is on the stack promote it to the heap.
                     if ((idx & 1) === 1) {
@@ -386,12 +420,12 @@ impl Js {
 
         if self.wasm_import_needed("__wbindgen_object_drop_ref", m) {
             self.expose_drop_ref();
-            imports.push_str("__wbindgen_object_drop_ref: dropRef,\n");
+            imports_object.push_str("__wbindgen_object_drop_ref: dropRef,\n");
         }
 
         if self.wasm_import_needed("__wbindgen_throw", m) {
             self.expose_get_string_from_wasm();
-            imports.push_str("__wbindgen_throw: function(ptr: number, len: number) {
+            imports_object.push_str("__wbindgen_throw: function(ptr: number, len: number) {
                 throw new Error(getStringFromWasm(ptr, len));
             },\n");
         }
@@ -419,8 +453,10 @@ impl Js {
             }}
 
             export interface Imports {{
-                {typescript_imports}
+                {imports_interface}
             }}
+
+            {extra_imports_interface}
 
             export interface Exports {{
                 module: WebAssembly.Module;
@@ -437,7 +473,7 @@ impl Js {
             export function instantiate(bytes: any, imports: Imports): Promise<Exports> {{
                 let wasm_imports: WasmImportsTop = {{
                     env: {{
-                        {imports}
+                        {imports_object}
                     }},
                 }};
                 return WebAssembly.instantiate(bytes, wasm_imports).then(xform);
@@ -445,11 +481,15 @@ impl Js {
         ",
             globals = self.globals,
             exports = exports,
-            imports = imports,
+            imports_object = imports_object,
             writes = writes,
-            typescript_imports = typescript_imports,
+            extra_imports_interface = extra_imports_interface,
+            imports_interface = imports_interface,
             typescript_exports = typescript_exports,
-            wasm_imports = self.typescript_wasm_imports(m),
+            wasm_imports = wasm_imports.values()
+                .map(|s| &**s)
+                .collect::<Vec<_>>()
+                .join("\n"),
             wasm_exports = self.typescript_wasm_exports(m),
         )
     }
@@ -465,17 +505,21 @@ impl Js {
         })
     }
 
-    fn typescript_wasm_imports(&self, m: &Module) -> String {
+    /// Returns a map of import name to the typescript definition for that name.
+    ///
+    /// This function generates the list of imports that a wasm module has,
+    /// using the source of truth (the was module itself) to generate this list.
+    fn typescript_wasm_imports(&self, m: &Module) -> HashMap<String, String> {
         let imports = match m.import_section() {
             Some(s) => s,
-            None => return String::new(),
+            None => return HashMap::new(),
         };
         let types = match m.type_section() {
             Some(s) => s,
-            None => return String::new(),
+            None => return HashMap::new(),
         };
 
-        let mut ts = String::new();
+        let mut map = HashMap::new();
         for import in imports.entries() {
             assert_eq!(import.module(), "env");
 
@@ -488,6 +532,7 @@ impl Js {
                 _ => continue,
             };
 
+            let mut ts = String::new();
             ts.push_str(import.field());
             ts.push_str("(");
             // TODO: probably match `arg` to catch exhaustive errors in the
@@ -504,11 +549,18 @@ impl Js {
             } else {
                 ts.push_str("number");
             }
-            ts.push_str(";\n");
+            ts.push_str(";");
+
+            map.insert(import.field().to_string(), ts);
         }
-        return ts;
+        return map;
     }
 
+    /// Returns a block describing all the raw wasm exports that this module
+    /// has.
+    ///
+    /// This uses the module itself as the source of truth to help flesh out
+    /// bugs in this program.
     fn typescript_wasm_exports(&self, m: &Module) -> String {
         let imported_functions = match m.import_section() {
             Some(s) => s.functions(),
