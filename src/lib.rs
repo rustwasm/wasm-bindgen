@@ -113,6 +113,12 @@ pub mod __rt {
             }
         }
 
+        pub fn get_mut(&mut self) -> &mut T {
+            unsafe {
+                &mut *self.value.get()
+            }
+        }
+
         pub fn borrow(&self) -> Ref<T> {
             unsafe {
                 if self.borrow.get() == usize::max_value() {
