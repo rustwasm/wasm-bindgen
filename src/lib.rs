@@ -55,6 +55,7 @@ impl Drop for JsObject {
 }
 
 #[cold]
+#[inline(never)]
 pub fn throw(s: &str) -> ! {
     extern {
         fn __wbindgen_throw(a: *const u8, b: usize) -> !;
@@ -72,8 +73,14 @@ pub mod __rt {
     #[inline]
     pub fn assert_not_null<T>(s: *mut T) {
         if s.is_null() {
-            super::throw("null pointer passed to rust");
+            throw_null();
         }
+    }
+
+    #[cold]
+    #[inline(never)]
+    fn throw_null() -> ! {
+        super::throw("null pointer passed to rust");
     }
 
     /// A vendored version of `RefCell` from the standard library.
