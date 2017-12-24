@@ -3,6 +3,8 @@ use std::collections::{HashSet, HashMap};
 use shared;
 use parity_wasm::elements::*;
 
+use super::Mapped;
+
 #[derive(Default)]
 pub struct Js {
     globals: String,
@@ -18,27 +20,32 @@ impl Js {
 
     pub fn generate_program(&mut self,
                             program: &shared::Program,
-                            _wasm: &Module) {
+                            m: &Mapped) {
         for f in program.free_functions.iter() {
-            self.generate_free_function(f);
+            self.generate_free_function(f, m);
         }
         for s in program.structs.iter() {
-            self.generate_struct(s);
+            self.generate_struct(s, m);
         }
     }
 
-    pub fn generate_free_function(&mut self, func: &shared::Function) {
+    pub fn generate_free_function(&mut self,
+                                  func: &shared::Function,
+                                  m: &Mapped) {
         let (js, ts) = self.generate_function("function",
                                               &func.name,
                                               &func.name,
                                               false,
                                               &func.arguments,
-                                              func.ret.as_ref());
+                                              func.ret.as_ref(),
+                                              m);
 
         self.exports.push((func.name.clone(), js, ts));
     }
 
-    pub fn generate_struct(&mut self, s: &shared::Struct) {
+    pub fn generate_struct(&mut self,
+                           s: &shared::Struct,
+                           m: &Mapped) {
         let mut dst = String::new();
         self.expose_wasm_exports();
         dst.push_str(&format!("
@@ -63,7 +70,7 @@ impl Js {
                 this.ptr = 0;
                 wasm_exports.{}(ptr);
             }}
-        ", s.free_function()));
+        ", m.export_name(&s.free_function())));
 
         self.wasm_exports_bound.insert(s.name.clone());
 
@@ -75,6 +82,7 @@ impl Js {
                 false,
                 &function.arguments,
                 function.ret.as_ref(),
+                m,
             );
             dst.push_str(&js);
             dst.push_str("\n");
@@ -87,6 +95,7 @@ impl Js {
                 true,
                 &method.function.arguments,
                 method.function.ret.as_ref(),
+                m,
             );
             dst.push_str(&js);
             dst.push_str("\n");
@@ -104,7 +113,8 @@ impl Js {
                          wasm_name: &str,
                          is_method: bool,
                          arguments: &[shared::Type],
-                         ret: Option<&shared::Type>) -> (String, String) {
+                         ret: Option<&shared::Type>,
+                         m: &Mapped) -> (String, String) {
         let mut dst = format!("{}(", name);
         let mut passed_args = String::new();
         let mut arg_conversions = String::new();
@@ -151,7 +161,7 @@ impl Js {
                 shared::Type::BorrowedStr |
                 shared::Type::String => {
                     dst.push_str("string");
-                    self.expose_pass_string_to_wasm();
+                    self.expose_pass_string_to_wasm(m);
                     arg_conversions.push_str(&format!("\
                         const [ptr{i}, len{i}] = passStringToWasm({arg});
                     ", i = i, arg = name));
@@ -160,8 +170,8 @@ impl Js {
                     if let shared::Type::BorrowedStr = *arg {
                         self.expose_wasm_exports();
                         destructors.push_str(&format!("\n\
-                            wasm_exports.__wbindgen_free(ptr{i}, len{i});\n\
-                        ", i = i));
+                            wasm_exports.{free}(ptr{i}, len{i});\n\
+                        ", i = i, free = m.export_name("__wbindgen_free")));
                     }
                 }
                 shared::Type::ByRef(ref s) |
@@ -203,7 +213,7 @@ impl Js {
                     arg_conversions.push_str(&format!("\
                         const idx{i} = addBorrowedObject({arg});
                     ", i = i, arg = name));
-                    destructors.push_str("popBorrowedObject();\n");
+                    destructors.push_str("stack.pop();\n");
                     pass(&format!("idx{}", i));
                 }
             }
@@ -248,12 +258,16 @@ impl Js {
                 self.expose_get_string_from_wasm();
                 self.expose_wasm_exports();
                 format!("
-                    const ptr = wasm_exports.__wbindgen_boxed_str_ptr(ret);
-                    const len = wasm_exports.__wbindgen_boxed_str_len(ret);
+                    const ptr = wasm_exports.{}(ret);
+                    const len = wasm_exports.{}(ret);
                     const realRet = getStringFromWasm(ptr, len);
-                    wasm_exports.__wbindgen_boxed_str_free(ret);
+                    wasm_exports.{}(ret);
                     return realRet;
-                ")
+                ",
+                    m.export_name("__wbindgen_boxed_str_ptr"),
+                    m.export_name("__wbindgen_boxed_str_len"),
+                    m.export_name("__wbindgen_boxed_str_free"),
+                )
             }
         };
         let mut dst_ts = dst.clone();
@@ -265,7 +279,11 @@ impl Js {
             dst.push_str(&format!("\
                 const ret = wasm_exports.{f}({passed});
                 {convert_ret}
-            ", f = wasm_name, passed = passed_args, convert_ret = convert_ret));
+            ",
+                f = m.export_name(wasm_name),
+                passed = passed_args,
+                convert_ret = convert_ret,
+            ));
         } else {
             dst.push_str(&format!("\
                 try {{
@@ -274,8 +292,12 @@ impl Js {
                 }} finally {{
                     {destructors}
                 }}
-            ", f = wasm_name, passed = passed_args, destructors = destructors,
-                convert_ret = convert_ret));
+            ",
+                f = m.export_name(wasm_name),
+                passed = passed_args,
+                destructors = destructors,
+                convert_ret = convert_ret,
+            ));
         }
         dst.push_str("}");
         self.wasm_exports_bound.insert(wasm_name.to_string());
@@ -374,7 +396,7 @@ impl Js {
         (dst, ts_dst)
     }
 
-    pub fn to_string(&mut self, m: &Module, program: &shared::Program) -> String {
+    pub fn to_string(&mut self, m: &Mapped, program: &shared::Program) -> String {
         if self.debug {
             self.expose_global_slab();
             self.expose_global_stack();
@@ -398,7 +420,7 @@ impl Js {
             self.globals.push_str(class);
             self.globals.push_str("\n");
         }
-        let wasm_exports = self.typescript_wasm_exports(m);
+        let wasm_exports = self.typescript_wasm_exports(&m.module);
         let mut exports_interface = String::new();
         let mut extra_exports_interface = String::new();
         let mut exports = format!("\
@@ -419,14 +441,16 @@ impl Js {
         // well.
         for (export, typescript) in wasm_exports.iter() {
             // ignore any internal functions we have for ourselves
-            if export.starts_with("__wbindgen") {
+            let orig_export = m.orig_export_name(export);
+            if orig_export.starts_with("__wbindgen") {
                 continue
             }
             // Ignore anything we just bound above,
-            if self.wasm_exports_bound.contains(export) {
+            if self.wasm_exports_bound.contains(orig_export) {
                 continue
             }
 
+            assert_eq!(orig_export, export);
             if extra_exports_interface.len() == 0 {
                 extra_exports_interface.push_str("export interface ExtraExports {\n");
                 exports_interface.push_str("extra: ExtraExports;\n");
@@ -445,7 +469,7 @@ impl Js {
             exports.push_str("},\n");
         }
         exports.push_str("}");
-        let wasm_imports = self.typescript_wasm_imports(m);
+        let wasm_imports = self.typescript_wasm_imports(&m.module);
 
         let mut imports_object = String::new();
         let mut extra_imports_interface = String::new();
@@ -456,12 +480,13 @@ impl Js {
             // the wasm module, an optimization pass at some point may have
             // ended up removing the code that needed the import, removing the
             // import.
-            if !wasm_imports.contains_key(&import.name) {
+            let name = m.import_name(&import.name);
+            if !wasm_imports.contains_key(name) {
                 continue
             }
-            imports_bound.insert(import.name.clone());
+            imports_bound.insert(name.to_string());
             let (val, ts) = self.generate_import(import);
-            imports_object.push_str(&import.name);
+            imports_object.push_str(&name);
             imports_object.push_str(":");
             imports_object.push_str(&val);
             imports_object.push_str(",\n");
@@ -474,7 +499,8 @@ impl Js {
         // well.
         for (import, typescript) in wasm_imports.iter() {
             // ignore any internal functions we have for ourselves
-            if import.starts_with("__wbindgen") {
+            let orig_import = m.orig_import_name(import);
+            if orig_import.starts_with("__wbindgen") {
                 continue
             }
             // Ignore anything we just bound above,
@@ -482,6 +508,7 @@ impl Js {
                 continue
             }
 
+            assert_eq!(orig_import, import);
             if extra_imports_interface.len() == 0 {
                 extra_imports_interface.push_str("export interface ExtraImports {\n");
                 imports_interface.push_str("env: ExtraImports;\n");
@@ -511,7 +538,7 @@ impl Js {
                 String::from("(val as {cnt:number}).cnt += 1;")
             };
             imports_object.push_str(&format!("
-                __wbindgen_object_clone_ref: function(idx: number): number {{
+                {}: function(idx: number): number {{
                     // If this object is on the stack promote it to the heap.
                     if ((idx & 1) === 1)
                         return addHeapObject(getObject(idx));
@@ -522,19 +549,24 @@ impl Js {
                     {}
                     return idx;
                 }},
-            ", bump_cnt));
+            ", m.import_name("__wbindgen_object_clone_ref"), bump_cnt));
         }
 
         if self.wasm_import_needed("__wbindgen_object_drop_ref", m) {
             self.expose_drop_ref();
-            imports_object.push_str("__wbindgen_object_drop_ref: dropRef,\n");
+            let name = m.import_name("__wbindgen_object_drop_ref");
+            imports_object.push_str(&format!("{}: dropRef,\n", name));
         }
 
         if self.wasm_import_needed("__wbindgen_throw", m) {
             self.expose_get_string_from_wasm();
-            imports_object.push_str("__wbindgen_throw: function(ptr: number, len: number) {
-                throw new Error(getStringFromWasm(ptr, len));
-            },\n");
+            imports_object.push_str(&format!("\
+                {}: function(ptr: number, len: number) {{
+                    throw new Error(getStringFromWasm(ptr, len));
+                }},
+            ",
+                m.import_name("__wbindgen_throw"),
+            ));
         }
 
         let mut writes = String::new();
@@ -608,14 +640,14 @@ impl Js {
         )
     }
 
-    fn wasm_import_needed(&self, name: &str, m: &Module) -> bool {
-        let imports = match m.import_section() {
+    fn wasm_import_needed(&self, name: &str, m: &Mapped) -> bool {
+        let imports = match m.module.import_section() {
             Some(s) => s,
             None => return false,
         };
 
         imports.entries().iter().any(|i| {
-            i.module() == "env" && i.field() == name
+            i.module() == "env" && i.field() == m.import_name(name)
         })
     }
 
@@ -883,37 +915,37 @@ impl Js {
         ");
     }
 
-    fn expose_pass_string_to_wasm(&mut self) {
+    fn expose_pass_string_to_wasm(&mut self, m: &Mapped) {
         if !self.exposed_globals.insert("pass_string_to_wasm") {
             return
         }
         self.expose_wasm_exports();
         self.expose_global_memory();
         if self.nodejs {
-            self.globals.push_str("
-                function passStringToWasm(arg: string): [number, number] {
+            self.globals.push_str(&format!("
+                function passStringToWasm(arg: string): [number, number] {{
                     if (typeof(arg) !== 'string')
                         throw new Error('expected a string argument');
                     const buf = Buffer.from(arg);
                     const len = buf.length;
-                    const ptr = wasm_exports.__wbindgen_malloc(len);
+                    const ptr = wasm_exports.{}(len);
                     buf.copy(Buffer.from(memory.buffer), ptr);
                     return [ptr, len];
-                }
-            ");
+                }}
+            ", m.export_name("__wbindgen_malloc")));
         } else {
-            self.globals.push_str("
-                function passStringToWasm(arg: string): [number, number] {
+            self.globals.push_str(&format!("
+                function passStringToWasm(arg: string): [number, number] {{
                     if (typeof(arg) !== 'string')
                         throw new Error('expected a string argument');
                     const buf = new TextEncoder('utf-8').encode(arg);
                     const len = buf.length;
-                    const ptr = wasm_exports.__wbindgen_malloc(len);
+                    const ptr = wasm_exports.{}(len);
                     let array = new Uint8Array(memory.buffer);
                     array.set(buf, ptr);
                     return [ptr, len];
-                }
-            ");
+                }}
+            ", m.export_name("__wbindgen_malloc")));
         }
     }
 
@@ -965,10 +997,6 @@ impl Js {
             function addBorrowedObject(obj: any): number {
                 stack.push(obj);
                 return ((stack.length - 1) << 1) | 1;
-            }
-
-            function popBorrowedObject(): void {
-                stack.pop();
             }
         ");
     }

@@ -37,9 +37,10 @@ fn main() {
         .unwrap_or_else(|e| e.exit());
 
     let mut b = Bindgen::new();
-    b.input_path(&args.arg_input);
-    b.nodejs(args.flag_nodejs);
-    b.debug(args.flag_debug);
+    b.input_path(&args.arg_input)
+     .nodejs(args.flag_nodejs)
+     .debug(args.flag_debug)
+     .uglify_wasm_names(!args.flag_debug);
     let ret = b.generate().expect("failed to generate bindings");
     if let Some(ref ts) = args.flag_output_ts {
         ret.write_ts_to(ts).expect("failed to write TypeScript output file");

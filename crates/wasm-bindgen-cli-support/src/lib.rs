@@ -4,23 +4,28 @@ extern crate parity_wasm;
 extern crate wasm_bindgen_shared as shared;
 extern crate serde_json;
 
-use std::path::{Path, PathBuf};
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::Write;
+use std::path::{Path, PathBuf};
 
 use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
 
 mod ts;
+mod mapped;
+
+use mapped::Mapped;
 
 pub struct Bindgen {
     path: Option<PathBuf>,
     nodejs: bool,
     debug: bool,
+    uglify: bool,
 }
 
 pub struct Object {
-    module: Module,
+    module: Mapped,
     program: shared::Program,
     nodejs: bool,
     debug: bool,
@@ -32,6 +37,7 @@ impl Bindgen {
             path: None,
             nodejs: false,
             debug: false,
+            uglify: false,
         }
     }
 
@@ -50,6 +56,11 @@ impl Bindgen {
         self
     }
 
+    pub fn uglify_wasm_names(&mut self, uglify: bool) -> &mut Bindgen {
+        self.uglify = uglify;
+        self
+    }
+
     pub fn generate(&mut self) -> Result<Object, Error> {
         let input = match self.path {
             Some(ref path) => path,
@@ -59,8 +70,16 @@ impl Bindgen {
             format_err!("{:?}", e)
         })?;
         let program = extract_program(&mut module);
-        Ok(Object {
+        let mut mapped = Mapped {
             module,
+            imports: HashMap::new(),
+            exports: HashMap::new(),
+        };
+        if self.uglify {
+            mapped.uglify(&program);
+        }
+        Ok(Object {
+            module: mapped,
             program,
             nodejs: self.nodejs,
             debug: self.debug,
@@ -89,7 +108,7 @@ impl Object {
     }
 
     fn _write_wasm_to(self, path: &Path) -> Result<(), Error> {
-        parity_wasm::serialize_to_file(path, self.module).map_err(|e| {
+        parity_wasm::serialize_to_file(path, self.module.module).map_err(|e| {
             format_err!("{:?}", e)
         })?;
         Ok(())

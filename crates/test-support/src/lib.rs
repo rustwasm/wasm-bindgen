@@ -15,6 +15,7 @@ thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
 pub struct Project {
     files: Vec<(String, String)>,
     debug: bool,
+    uglify: bool,
 }
 
 pub fn project() -> Project {
@@ -27,6 +28,7 @@ pub fn project() -> Project {
         .read_to_string(&mut lockfile).unwrap();
     Project {
         debug: true,
+        uglify: false,
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
                 [package]
@@ -125,6 +127,11 @@ impl Project {
         self
     }
 
+    pub fn uglify(&mut self, uglify: bool) -> &mut Project {
+        self.uglify = uglify;
+        self
+    }
+
     pub fn test(&mut self) {
         let root = root();
         drop(fs::remove_dir_all(&root));
@@ -159,6 +166,7 @@ impl Project {
             .input_path(&out)
             .nodejs(true)
             .debug(self.debug)
+            .uglify_wasm_names(self.uglify)
             .generate()
             .expect("failed to run bindgen");
         obj.write_ts_to(root.join("out.ts")).expect("failed to write ts");
