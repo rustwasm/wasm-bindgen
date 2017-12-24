@@ -47,20 +47,20 @@ impl Js {
         if self.debug {
             self.expose_check_token();
             dst.push_str(&format!("
-                constructor(public __wasmPtr: number, sym: Symbol) {{
+                constructor(public ptr: number, sym: Symbol) {{
                     _checkToken(sym);
                 }}
             "));
         } else {
             dst.push_str(&format!("
-                constructor(public __wasmPtr: number) {{}}
+                constructor(public ptr: number) {{}}
             "));
         }
 
         dst.push_str(&format!("
             free(): void {{
-                const ptr = this.__wasmPtr;
-                this.__wasmPtr = 0;
+                const ptr = this.ptr;
+                this.ptr = 0;
                 wasm_exports.{}(ptr);
             }}
         ", s.free_function()));
@@ -111,7 +111,7 @@ impl Js {
         let mut destructors = String::new();
 
         if is_method {
-            passed_args.push_str("this.__wasmPtr");
+            passed_args.push_str("this.ptr");
         }
 
         for (i, arg) in arguments.iter().enumerate() {
@@ -173,7 +173,7 @@ impl Js {
                             _assertClass({arg}, {struct_});
                         ", arg = name, struct_ = s));
                     }
-                    pass(&format!("{}.__wasmPtr", name));
+                    pass(&format!("{}.ptr", name));
                 }
                 shared::Type::ByValue(ref s) => {
                     dst.push_str(s);
@@ -184,8 +184,8 @@ impl Js {
                         ", arg = name, struct_ = s));
                     }
                     arg_conversions.push_str(&format!("\
-                        const ptr{i} = {arg}.__wasmPtr;
-                        {arg}.__wasmPtr = 0;
+                        const ptr{i} = {arg}.ptr;
+                        {arg}.ptr = 0;
                     ", i = i, arg = name));
                     pass(&format!("ptr{}", i));
                 }
@@ -951,7 +951,7 @@ impl Js {
             function _assertClass(instance: any, klass: any) {
                 if (!(instance instanceof klass))
                     throw new Error(`expected instance of ${klass.name}`);
-                return instance.__wasmPtr;
+                return instance.ptr;
             }
         ");
     }
