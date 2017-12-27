@@ -13,6 +13,7 @@ Generating JS bindings for a wasm file
 
 Usage:
     wasm-bindgen [options] <input>
+    wasm-bindgen -h | --help
 
 Options:
     -h --help               Show this screen.
