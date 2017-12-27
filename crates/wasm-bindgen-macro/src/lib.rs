@@ -1,7 +1,6 @@
 #![feature(proc_macro)]
 
 extern crate syn;
-extern crate synom;
 #[macro_use]
 extern crate quote;
 extern crate proc_macro;
@@ -393,19 +392,19 @@ impl ToTokens for Receiver {
             Receiver::FreeFunction(name) => name.to_tokens(tokens),
             Receiver::StructFunction(s, name) => {
                 s.to_tokens(tokens);
-                syn::tokens::Colon2::default().to_tokens(tokens);
+                syn::token::Colon2::default().to_tokens(tokens);
                 name.to_tokens(tokens);
             }
             Receiver::StructMethod(_, mutable, name) => {
                 (my_quote! { me }).to_tokens(tokens);
-                syn::tokens::Dot::default().to_tokens(tokens);
+                syn::token::Dot::default().to_tokens(tokens);
                 if mutable {
                     syn::Ident::from("borrow_mut").to_tokens(tokens);
                 } else {
                     syn::Ident::from("borrow").to_tokens(tokens);
                 }
                 tokens.append_delimited("(", Default::default(), |_| ());
-                syn::tokens::Dot::default().to_tokens(tokens);
+                syn::token::Dot::default().to_tokens(tokens);
                 name.to_tokens(tokens);
             }
         }
