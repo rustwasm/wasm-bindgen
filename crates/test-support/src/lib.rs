@@ -46,6 +46,7 @@ pub fn project() -> Project {
 
                 [profile.dev]
                 opt-level = 2 # TODO: decrease when upstream is not buggy
+                incremental = false
             "#, IDX.with(|x| *x), dir.display())),
 
             ("Cargo.lock".to_string(), lockfile),
