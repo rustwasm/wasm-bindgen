@@ -49,13 +49,11 @@ pub struct Method {
 
 impl Program {
     pub fn push_impl(&mut self, item: &syn::ItemImpl) {
-        match item.defaultness {
-            syn::Defaultness::Final => {}
-            _ => panic!("default impls are not supported"),
+        if item.defaultness.is_some() {
+            panic!("default impls are not supported");
         }
-        match item.unsafety {
-            syn::Unsafety::Normal => {}
-            _ => panic!("unsafe impls are not supported"),
+        if item.unsafety.is_some() {
+            panic!("unsafe impls are not supported");
         }
         if item.trait_.is_some() {
             panic!("trait impls are not supported");
@@ -77,8 +75,8 @@ impl Program {
     }
 
     pub fn push_foreign_mod(&mut self, f: &syn::ItemForeignMod) {
-        match f.abi.kind {
-            syn::AbiKind::Named(ref l) if l.to_string() == "\"JS\"" => {}
+        match f.abi.name {
+            Some(ref l) if l.to_string() == "\"JS\"" => {}
             _ => panic!("only foreign mods with the `JS` ABI are allowed"),
         }
         for item in f.items.iter() {
@@ -116,13 +114,11 @@ impl Function {
             syn::Visibility::Public(_) => {}
             _ => panic!("can only bindgen public functions"),
         }
-        match input.constness {
-            syn::Constness::NotConst => {}
-            _ => panic!("can only bindgen non-const functions"),
+        if input.constness.is_some() {
+            panic!("can only bindgen non-const functions");
         }
-        match input.unsafety {
-            syn::Unsafety::Normal => {}
-            _ => panic!("can only bindgen safe functions"),
+        if input.unsafety.is_some() {
+            panic!("can only bindgen safe functions");
         }
         if !input.abi.is_none() {
             panic!("can only bindgen Rust ABI functions")
@@ -135,7 +131,7 @@ impl Function {
     }
 
     pub fn from_decl(name: syn::Ident, decl: &syn::FnDecl) -> Function {
-        if decl.variadic {
+        if decl.variadic.is_some() {
             panic!("can't bindgen variadic functions")
         }
         if decl.generics.params.len() > 0 {
@@ -155,7 +151,7 @@ impl Function {
 
         let ret = match decl.output {
             syn::ReturnType::Default => None,
-            syn::ReturnType::Type(ref t, _) => Some(Type::from(t)),
+            syn::ReturnType::Type(_, ref t) => Some(Type::from(t)),
         };
 
         Function { name, arguments, ret }
@@ -170,7 +166,7 @@ impl Function {
     }
 
     pub fn struct_function_export_name(&self, s: syn::Ident) -> syn::Lit {
-        let name = self.shared().struct_function_export_name(s.sym.as_str());
+        let name = self.shared().struct_function_export_name(s.as_ref());
         syn::Lit {
             value: syn::LitKind::Other(Literal::string(&name)),
             span: Default::default(),
@@ -181,16 +177,16 @@ impl Function {
         let mut generated_name = format!("__wasm_bindgen_generated");
         if let Some(ns) = namespace {
             generated_name.push_str("_");
-            generated_name.push_str(ns.sym.as_str());
+            generated_name.push_str(ns.as_ref());
         }
         generated_name.push_str("_");
-        generated_name.push_str(self.name.sym.as_str());
+        generated_name.push_str(self.name.as_ref());
         syn::Ident::from(generated_name)
     }
 
     fn shared(&self) -> shared::Function {
         shared::Function {
-            name: self.name.sym.as_str().to_string(),
+            name: self.name.as_ref().to_string(),
             arguments: self.arguments.iter().map(|t| t.shared()).collect(),
             ret: self.ret.as_ref().map(|t| t.shared()),
         }
@@ -204,11 +200,11 @@ pub fn extract_path_ident(path: &syn::Path) -> syn::Ident {
     if path.segments.len() != 1 {
         panic!("unsupported path that needs name resolution")
     }
-    match path.segments.get(0).item().arguments {
+    match path.segments.first().unwrap().item().arguments {
         syn::PathArguments::None => {}
         _ => panic!("unsupported path that has path arguments")
     }
-    path.segments.get(0).item().ident
+    path.segments.first().unwrap().item().ident
 }
 
 impl Type {
@@ -218,14 +214,11 @@ impl Type {
                 if r.lifetime.is_some() {
                     panic!("can't have lifetimes on references yet");
                 }
-                let mutable = match r.ty.mutability {
-                    syn::Mutability::Immutable => false,
-                    syn::Mutability::Mutable(_) => true,
-                };
-                match r.ty.ty {
+                let mutable = r.mutability.is_some();
+                match *r.elem {
                     syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
                         let ident = extract_path_ident(path);
-                        match ident.sym.as_str() {
+                        match ident.as_ref() {
                             "str" => {
                                 if mutable {
                                     panic!("mutable strings not allowed");
@@ -245,7 +238,7 @@ impl Type {
             }
             syn::Type::Ptr(ref p) => {
                 let mutable = p.const_token.is_none();
-                let ident = match p.ty.ty {
+                let ident = match *p.elem {
                     syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
                         extract_path_ident(path)
                     }
@@ -259,7 +252,7 @@ impl Type {
             }
             syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
                 let ident = extract_path_ident(path);
-                match ident.sym.as_str() {
+                match ident.as_ref() {
                     "i8" |
                     "u8" |
                     "u16" |
@@ -318,25 +311,23 @@ impl Struct {
             syn::ImplItem::Type(_) => panic!("type definitions in impls aren't supported"),
             syn::ImplItem::Method(ref m) => m,
             syn::ImplItem::Macro(_) => panic!("macros in impls aren't supported"),
+            syn::ImplItem::Verbatim(_) => panic!("unparsed impl item?"),
         };
         match method.vis {
             syn::Visibility::Public(_) => {}
             _ => return,
         }
-        match method.defaultness {
-            syn::Defaultness::Final => {}
-            _ => panic!("default methods are not supported"),
+        if method.defaultness.is_some() {
+            panic!("default methods are not supported");
         }
-        match method.sig.constness {
-            syn::Constness::NotConst => {}
-            _ => panic!("can only bindgen non-const functions"),
+        if method.sig.constness.is_some() {
+            panic!("can only bindgen non-const functions");
         }
-        match method.sig.unsafety {
-            syn::Unsafety::Normal => {}
-            _ => panic!("can only bindgen safe functions"),
+        if method.sig.unsafety.is_some() {
+            panic!("can only bindgen safe functions");
         }
 
-        if method.sig.decl.variadic {
+        if method.sig.decl.variadic.is_some() {
             panic!("can't bindgen variadic functions")
         }
         if method.sig.decl.generics.params.len() > 0 {
@@ -354,10 +345,7 @@ impl Struct {
                     }
                     syn::FnArg::SelfRef(ref a) => {
                         assert!(mutable.is_none());
-                        mutable = Some(match a.mutbl {
-                            syn::Mutability::Mutable(_) => true,
-                            syn::Mutability::Immutable => false,
-                        });
+                        mutable = Some(a.mutability.is_some());
                         None
                     }
                     _ => panic!("arguments cannot be `self` or ignored"),
@@ -368,7 +356,7 @@ impl Struct {
 
         let ret = match method.sig.decl.output {
             syn::ReturnType::Default => None,
-            syn::ReturnType::Type(ref t, _) => Some(Type::from(t)),
+            syn::ReturnType::Type(_, ref t) => Some(Type::from(t)),
         };
 
         let function = Function { name: method.sig.ident, arguments, ret };

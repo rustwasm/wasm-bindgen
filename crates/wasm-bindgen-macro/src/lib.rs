@@ -435,7 +435,7 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
         .map(|arg| {
             match arg.pat {
                 syn::Pat::Ident(syn::PatIdent {
-                    mode: syn::BindingMode::ByValue(_),
+                    by_ref: None,
                     ident,
                     subpat: None,
                     ..
