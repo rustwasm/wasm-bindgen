@@ -558,6 +558,16 @@ impl Js {
             imports_object.push_str(&format!("{}: dropRef,\n", name));
         }
 
+        if self.wasm_import_needed("__wbindgen_string_new", m) {
+            self.expose_add_heap_object();
+            self.expose_get_string_from_wasm();
+            imports_object.push_str(&format!("
+                {}: function(ptr: number, len: number): number {{
+                    return addHeapObject(getStringFromWasm(ptr, len));
+                }},
+            ", m.import_name("__wbindgen_string_new")));
+        }
+
         if self.wasm_import_needed("__wbindgen_throw", m) {
             self.expose_get_string_from_wasm();
             imports_object.push_str(&format!("\

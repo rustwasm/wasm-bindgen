@@ -1,19 +1,46 @@
+//! Runtime support for the `wasm-bindgen` tool
+//!
+//! This crate contains the runtime support necessary for `wasm-bindgen` the
+//! macro and tool. Crates pull in the `wasm_bindgen!` macro through this crate
+//! and this crate also provides JS bindings through the `JsObject` interface.
+
 #![feature(use_extern_macros)]
 
 extern crate wasm_bindgen_macro;
 
 use std::mem;
 
+/// A module which is typically glob imported from:
+///
+/// ```
+/// use wasm_bindgen::prelude::*;
+/// ```
 pub mod prelude {
     pub use wasm_bindgen_macro::wasm_bindgen;
     pub use JsObject;
 }
 
+/// Representation of an object owned by JS.
+///
+/// A `JsObject` doesn't actually live in Rust right now but actually in a table
+/// owned by the `wasm-bindgen` generated JS glue code. Eventually the ownership
+/// will transfer into wasm directly and this will likely become more efficient,
+/// but for now it may be slightly slow.
 pub struct JsObject {
     idx: u32,
 }
 
 impl JsObject {
+    /// Creates a new JS object which is a string.
+    ///
+    /// The utf-8 string provided is copied to the JS heap and the string will
+    /// be owned by the JS garbage collector.
+    pub fn from_str(s: &str) -> JsObject {
+        unsafe {
+            JsObject::__from_idx(__wbindgen_string_new(s.as_ptr(), s.len()))
+        }
+    }
+
     #[doc(hidden)]
     pub fn __from_idx(idx: u32) -> JsObject {
         JsObject { idx }
@@ -32,9 +59,16 @@ impl JsObject {
     }
 }
 
+impl<'a> From<&'a str> for JsObject {
+    fn from(s: &'a str) -> JsObject {
+        JsObject::from_str(s)
+    }
+}
+
 extern {
     fn __wbindgen_object_clone_ref(idx: u32) -> u32;
     fn __wbindgen_object_drop_ref(idx: u32);
+    fn __wbindgen_string_new(ptr: *const u8, len: usize) -> u32;
 }
 
 impl Clone for JsObject {
@@ -54,6 +88,11 @@ impl Drop for JsObject {
     }
 }
 
+/// Throws a JS exception.
+///
+/// This function will throw a JS exception with the message provided. The
+/// function will not return as the wasm stack will be popped when the exception
+/// is thrown.
 #[cold]
 #[inline(never)]
 pub fn throw(s: &str) -> ! {
