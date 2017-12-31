@@ -525,58 +525,151 @@ impl Js {
             extra_imports_interface.push_str("}\n");
         }
 
-        if self.wasm_import_needed("__wbindgen_object_clone_ref", m) {
-            self.expose_add_heap_object();
-            self.expose_get_object();
-            let bump_cnt = if self.debug {
-                String::from("
-                    if (typeof(val) === 'number')
-                        throw new Error('corrupt slab');
-                    val.cnt += 1;
-                ")
-            } else {
-                String::from("(val as {cnt:number}).cnt += 1;")
+        {
+            let mut bind = |name: &str, f: &Fn(&mut Self) -> String| {
+                if !self.wasm_import_needed(name, m) {
+                    return
+                }
+                imports_object.push_str(&format!("
+                    {}: {},
+                ", m.import_name(name), f(self)));
             };
-            imports_object.push_str(&format!("
-                {}: function(idx: number): number {{
-                    // If this object is on the stack promote it to the heap.
-                    if ((idx & 1) === 1)
-                        return addHeapObject(getObject(idx));
 
-                    // Otherwise if the object is on the heap just bump the
-                    // refcount and move on
-                    const val = slab[idx >> 1];
-                    {}
-                    return idx;
-                }},
-            ", m.import_name("__wbindgen_object_clone_ref"), bump_cnt));
-        }
+            bind("__wbindgen_object_clone_ref", &|me| {
+                me.expose_add_heap_object();
+                me.expose_get_object();
+                let bump_cnt = if me.debug {
+                    String::from("
+                        if (typeof(val) === 'number')
+                            throw new Error('corrupt slab');
+                        val.cnt += 1;
+                    ")
+                } else {
+                    String::from("(val as {cnt:number}).cnt += 1;")
+                };
+                format!("
+                    function(idx: number): number {{
+                        // If this object is on the stack promote it to the heap.
+                        if ((idx & 1) === 1)
+                            return addHeapObject(getObject(idx));
 
-        if self.wasm_import_needed("__wbindgen_object_drop_ref", m) {
-            self.expose_drop_ref();
-            let name = m.import_name("__wbindgen_object_drop_ref");
-            imports_object.push_str(&format!("{}: dropRef,\n", name));
-        }
+                        // Otherwise if the object is on the heap just bump the
+                        // refcount and move on
+                        const val = slab[idx >> 1];
+                        {}
+                        return idx;
+                    }}
+                ", bump_cnt)
+            });
 
-        if self.wasm_import_needed("__wbindgen_string_new", m) {
-            self.expose_add_heap_object();
-            self.expose_get_string_from_wasm();
-            imports_object.push_str(&format!("
-                {}: function(ptr: number, len: number): number {{
-                    return addHeapObject(getStringFromWasm(ptr, len));
-                }},
-            ", m.import_name("__wbindgen_string_new")));
-        }
+            bind("__wbindgen_object_drop_ref", &|me| {
+                me.expose_drop_ref();
+                "dropRef".to_string()
+            });
 
-        if self.wasm_import_needed("__wbindgen_throw", m) {
-            self.expose_get_string_from_wasm();
-            imports_object.push_str(&format!("\
-                {}: function(ptr: number, len: number) {{
-                    throw new Error(getStringFromWasm(ptr, len));
-                }},
-            ",
-                m.import_name("__wbindgen_throw"),
-            ));
+            bind("__wbindgen_string_new", &|me| {
+                me.expose_add_heap_object();
+                me.expose_get_string_from_wasm();
+                String::from("(p, l) => addHeapObject(getStringFromWasm(p, l))")
+            });
+
+            bind("__wbindgen_number_new", &|me| {
+                me.expose_add_heap_object();
+                String::from("addHeapObject")
+            });
+
+            bind("__wbindgen_number_get", &|me| {
+                me.expose_global_memory();
+                String::from("
+                    function(n: number, invalid: number): number {
+                        let obj = getObject(n);
+                        if (typeof(obj) === 'number')
+                            return obj;
+                        (new Uint8Array(memory.buffer))[invalid] = 1;
+                        return 0;
+                    }
+                ")
+            });
+
+            bind("__wbindgen_undefined_new", &|me| {
+                me.expose_add_heap_object();
+                String::from("() => addHeapObject(undefined)")
+            });
+
+            bind("__wbindgen_null_new", &|me| {
+                me.expose_add_heap_object();
+                String::from("() => addHeapObject(null)")
+            });
+
+            bind("__wbindgen_is_null", &|me| {
+                me.expose_get_object();
+                String::from("(idx) => getObject(idx) === null ? 1 : 0")
+            });
+
+            bind("__wbindgen_is_undefined", &|me| {
+                me.expose_get_object();
+                String::from("(idx) => getObject(idx) === undefined ? 1 : 0")
+            });
+
+            bind("__wbindgen_boolean_new", &|me| {
+                me.expose_add_heap_object();
+                String::from("(v) => addHeapObject(v == 1)")
+            });
+
+            bind("__wbindgen_boolean_get", &|me| {
+                me.expose_get_object();
+                String::from("(i) => {
+                    let v = getObject(i);
+                    if (typeof(v) == 'boolean') {
+                        return v ? 1 : 0;
+                    } else {
+                        return 2;
+                    }
+                }")
+            });
+
+            bind("__wbindgen_symbol_new", &|me| {
+                me.expose_get_string_from_wasm();
+                me.expose_add_heap_object();
+                String::from("(ptr, len) => {
+                    let a: Symbol;
+                    console.log(ptr, len);
+                    if (ptr === 0) {
+                        a = Symbol();
+                    } else {
+                        a = Symbol(getStringFromWasm(ptr, len));
+                    }
+                    return addHeapObject(a);
+                }")
+            });
+
+            bind("__wbindgen_is_symbol", &|me| {
+                me.expose_get_object();
+                String::from("(i) => typeof(getObject(i)) == 'symbol' ? 1 : 0")
+            });
+
+            bind("__wbindgen_throw", &|me| {
+                me.expose_get_string_from_wasm();
+                String::from("
+                    function(ptr: number, len: number) {
+                        throw new Error(getStringFromWasm(ptr, len));
+                    }
+                ")
+            });
+
+            bind("__wbindgen_string_get", &|me| {
+                me.expose_pass_string_to_wasm(m);
+                me.expose_get_object();
+                me.expose_global_memory();
+                String::from("(i, len_ptr) => {
+                    let obj = getObject(i);
+                    if (typeof(obj) !== 'string')
+                        return 0;
+                    const [ptr, len] = passStringToWasm(obj);
+                    (new Uint32Array(memory.buffer))[len_ptr / 4] = len;
+                    return ptr;
+                }")
+            });
         }
 
         let mut writes = String::new();
