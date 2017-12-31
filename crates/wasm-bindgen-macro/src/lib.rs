@@ -11,7 +11,7 @@ extern crate wasm_bindgen_shared;
 use std::sync::atomic::*;
 
 use proc_macro::TokenStream;
-use proc_macro2::{Literal, Span};
+use proc_macro2::{Literal, Span, TokenNode, Delimiter, TokenTree};
 use quote::{Tokens, ToTokens};
 
 mod ast;
@@ -403,7 +403,11 @@ impl ToTokens for Receiver {
                 } else {
                     syn::Ident::from("borrow").to_tokens(tokens);
                 }
-                tokens.append_delimited("(", Default::default(), |_| ());
+                tokens.append(TokenTree {
+                    span: Default::default(),
+                    kind: TokenNode::Group(Delimiter::Parenthesis,
+                                           proc_macro2::TokenStream::empty()),
+                });
                 syn::token::Dot::default().to_tokens(tokens);
                 name.to_tokens(tokens);
             }
