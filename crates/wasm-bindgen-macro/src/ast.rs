@@ -139,7 +139,6 @@ impl Function {
         }
 
         let arguments = decl.inputs.iter()
-            .map(|i| i.into_item())
             .map(|arg| {
                 match *arg {
                     syn::FnArg::Captured(ref c) => c,
@@ -336,7 +335,6 @@ impl Struct {
 
         let mut mutable = None;
         let arguments = method.sig.decl.inputs.iter()
-            .map(|i| i.into_item())
             .filter_map(|arg| {
                 match *arg {
                     syn::FnArg::Captured(ref c) => Some(c),

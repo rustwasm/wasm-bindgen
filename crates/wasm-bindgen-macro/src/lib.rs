@@ -429,7 +429,6 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
 
     let names = import.decl.inputs
         .iter()
-        .map(|i| i.into_item())
         .map(|arg| {
             match *arg {
                 syn::FnArg::Captured(ref c) => c,
