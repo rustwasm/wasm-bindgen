@@ -1,4 +1,4 @@
-use proc_macro2::Literal;
+use proc_macro2::Span;
 use syn;
 use wasm_bindgen_shared as shared;
 
@@ -76,7 +76,7 @@ impl Program {
 
     pub fn push_foreign_mod(&mut self, f: &syn::ItemForeignMod) {
         match f.abi.name {
-            Some(ref l) if l.to_string() == "\"JS\"" => {}
+            Some(ref l) if l.value() == "JS" => {}
             _ => panic!("only foreign mods with the `JS` ABI are allowed"),
         }
         for item in f.items.iter() {
@@ -156,20 +156,14 @@ impl Function {
         Function { name, arguments, ret }
     }
 
-    pub fn free_function_export_name(&self) -> syn::Lit {
+    pub fn free_function_export_name(&self) -> syn::LitStr {
         let name = self.shared().free_function_export_name();
-        syn::Lit {
-            value: syn::LitKind::Other(Literal::string(&name)),
-            span: Default::default(),
-        }
+        syn::LitStr::new(&name, Span::def_site())
     }
 
-    pub fn struct_function_export_name(&self, s: syn::Ident) -> syn::Lit {
+    pub fn struct_function_export_name(&self, s: syn::Ident) -> syn::LitStr {
         let name = self.shared().struct_function_export_name(s.as_ref());
-        syn::Lit {
-            value: syn::LitKind::Other(Literal::string(&name)),
-            span: Default::default(),
-        }
+        syn::LitStr::new(&name, Span::def_site())
     }
 
     pub fn rust_symbol(&self, namespace: Option<syn::Ident>) -> syn::Ident {
@@ -199,11 +193,11 @@ pub fn extract_path_ident(path: &syn::Path) -> syn::Ident {
     if path.segments.len() != 1 {
         panic!("unsupported path that needs name resolution")
     }
-    match path.segments.first().unwrap().item().arguments {
+    match path.segments.first().unwrap().value().arguments {
         syn::PathArguments::None => {}
         _ => panic!("unsupported path that has path arguments")
     }
-    path.segments.first().unwrap().item().ident
+    path.segments.first().unwrap().value().ident
 }
 
 impl Type {

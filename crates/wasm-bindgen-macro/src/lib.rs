@@ -11,7 +11,7 @@ extern crate wasm_bindgen_shared;
 use std::sync::atomic::*;
 
 use proc_macro::TokenStream;
-use proc_macro2::{Literal, Span, TokenNode, Delimiter, TokenTree};
+use proc_macro2::{Span, TokenNode, Delimiter, TokenTree};
 use quote::{Tokens, ToTokens};
 
 mod ast;
@@ -20,7 +20,7 @@ static MALLOC_GENERATED: AtomicBool = ATOMIC_BOOL_INIT;
 static BOXED_STR_GENERATED: AtomicBool = ATOMIC_BOOL_INIT;
 
 macro_rules! my_quote {
-    ($($t:tt)*) => (quote_spanned!(Span::call_site(), $($t)*))
+    ($($t:tt)*) => (quote_spanned!(Span::call_site() => $($t)*))
 }
 
 #[proc_macro]
@@ -87,10 +87,10 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     let generated_static_name = syn::Ident::from(generated_static_name);
     let mut generated_static = String::from("wbg:");
     generated_static.push_str(&serde_json::to_string(&program.shared()).unwrap());
-    let generated_static_value = syn::Lit {
-        value: syn::LitKind::Other(Literal::byte_string(generated_static.as_bytes())),
-        span: Default::default(),
-    };
+    let generated_static_value = syn::LitByteStr::new(
+        generated_static.as_bytes(),
+        Span::def_site(),
+    );
     let generated_static_length = generated_static.len();
 
     (my_quote! {
@@ -157,7 +157,7 @@ enum Receiver {
     StructMethod(syn::Ident, bool, syn::Ident),
 }
 
-fn bindgen(export_name: &syn::Lit,
+fn bindgen(export_name: &syn::LitStr,
            generated_name: syn::Ident,
            receiver: Receiver,
            arguments: &[ast::Type],
@@ -404,7 +404,7 @@ impl ToTokens for Receiver {
                     syn::Ident::from("borrow").to_tokens(tokens);
                 }
                 tokens.append(TokenTree {
-                    span: Default::default(),
+                    span: Span::def_site(),
                     kind: TokenNode::Group(Delimiter::Parenthesis,
                                            proc_macro2::TokenStream::empty()),
                 });
