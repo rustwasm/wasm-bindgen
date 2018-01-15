@@ -269,7 +269,7 @@ wasm_bindgen! {
 }
 ```
 
-The generated JS bindigns for this invocation of the macro [look like
+The generated JS bindings for this invocation of the macro [look like
 this][bindings]. You can view them in action like so:
 [bindings]: https://gist.github.com/b7dfa241208ee858d5473c406225080f
 
@@ -303,7 +303,7 @@ this][bindings]. You can view them in action like so:
 
           // Note the `new Foo()` syntax cannot be used, static function
           // constructors must be used instead. Additionally objects allocated
-          // corrseponding to Rust structs will need to be deallocated on the
+          // corresponding to Rust structs will need to be deallocated on the
           // Rust side of things with an explicit call to `free`.
           let foo = mod.Foo.new();
           assertEq(foo.add(10), 10);
@@ -335,7 +335,7 @@ Here this section will attempt to be a reference for the various features
 implemented in this project.
 
 In the `wasm_bindgen!` macro you can have four items: functions, structs,
-impls, and foreign mdoules. Impls can only contain functions. No lifetime
+impls, and foreign modules. Impls can only contain functions. No lifetime
 parameters or type parameters are allowed on any of these types. Foreign
 modules must have the `"JS"` abi and currently only allow integer/string
 arguments and integer return values.
@@ -367,7 +367,7 @@ as part of the JS bindings. This table is managed via the ownership specified in
 Rust and through the bindings that we're returning.
 
 All of these constructs currently create relatively straightforward code on the
-JS side of things, mostly haveing a 1:1 match in Rust with JS.
+JS side of things, mostly having a 1:1 match in Rust with JS.
 
 # License
 
