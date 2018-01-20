@@ -270,7 +270,8 @@ wasm_bindgen! {
 ```
 
 The generated JS bindings for this invocation of the macro [look like
-this][bindings]. You can view them in action like so:
+this](bindings). You can view them in action like so:
+
 [bindings]: https://gist.github.com/b7dfa241208ee858d5473c406225080f
 
 
