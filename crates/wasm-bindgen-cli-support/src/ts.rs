@@ -1,4 +1,5 @@
 use std::collections::{HashSet, HashMap};
+use std::fmt;
 
 use shared;
 use parity_wasm::elements::*;
@@ -14,10 +15,10 @@ pub struct Js {
     classes: Vec<String>,
     pub nodejs: bool,
     pub debug: bool,
+    pub ts: bool,
 }
 
 impl Js {
-
     pub fn generate_program(&mut self,
                             program: &shared::Program,
                             m: &Mapped) {
@@ -51,26 +52,37 @@ impl Js {
         dst.push_str(&format!("
             export class {} {{
         ", s.name));
+        let number = self.typed("number");
+        let symbol = self.typed("Symbol");
+        let void = self.typed("void");
+        if self.ts {
+            dst.push_str("
+                public ptr: number;
+            ");
+        }
         if self.debug {
             self.expose_check_token();
             dst.push_str(&format!("
-                constructor(public ptr: number, sym: Symbol) {{
+                constructor(ptr{}, sym{}) {{
                     _checkToken(sym);
+                    this.ptr = ptr;
                 }}
-            "));
+            ", number, symbol));
         } else {
             dst.push_str(&format!("
-                constructor(public ptr: number) {{}}
-            "));
+                constructor(ptr{}) {{
+                    this.ptr = ptr;
+                }}
+            ", number));
         }
 
         dst.push_str(&format!("
-            free(): void {{
+            free(){} {{
                 const ptr = this.ptr;
                 this.ptr = 0;
                 wasm_exports.{}(ptr);
             }}
-        ", m.export_name(&s.free_function())));
+        ", void, m.export_name(&s.free_function())));
 
         self.wasm_exports_bound.insert(s.name.clone());
 
@@ -130,7 +142,6 @@ impl Js {
                 dst.push_str(", ");
             }
             dst.push_str(&name);
-            dst.push_str(": ");
 
             let mut pass = |arg: &str| {
                 if passed_args.len() > 0 {
@@ -140,7 +151,7 @@ impl Js {
             };
             match *arg {
                 shared::Type::Number => {
-                    dst.push_str("number");
+                    dst.push_str(&format!("{}", self.typed("number")));
                     if self.debug {
                         self.expose_assert_num();
                         arg_conversions.push_str(&format!("_assertNum({});\n", name));
@@ -148,7 +159,7 @@ impl Js {
                     pass(&name)
                 }
                 shared::Type::Boolean => {
-                    dst.push_str("boolean");
+                    dst.push_str(&format!("{}", self.typed("boolean")));
                     if self.debug {
                         self.expose_assert_bool();
                         arg_conversions.push_str(&format!("\
@@ -160,7 +171,7 @@ impl Js {
                 }
                 shared::Type::BorrowedStr |
                 shared::Type::String => {
-                    dst.push_str("string");
+                    dst.push_str(&format!("{}", self.typed("string")));
                     self.expose_pass_string_to_wasm(m);
                     arg_conversions.push_str(&format!("\
                         const [ptr{i}, len{i}] = passStringToWasm({arg});
@@ -176,7 +187,7 @@ impl Js {
                 }
                 shared::Type::ByRef(ref s) |
                 shared::Type::ByMutRef(ref s) => {
-                    dst.push_str(s);
+                    dst.push_str(&format!("{}", self.typed(s)));
                     if self.debug {
                         self.expose_assert_class();
                         arg_conversions.push_str(&format!("\
@@ -186,7 +197,7 @@ impl Js {
                     pass(&format!("{}.ptr", name));
                 }
                 shared::Type::ByValue(ref s) => {
-                    dst.push_str(s);
+                    dst.push_str(&format!("{}", self.typed(s)));
                     if self.debug {
                         self.expose_assert_class();
                         arg_conversions.push_str(&format!("\
@@ -200,7 +211,7 @@ impl Js {
                     pass(&format!("ptr{}", i));
                 }
                 shared::Type::JsObject => {
-                    dst.push_str("any");
+                    dst.push_str(&format!("{}", self.typed("any")));
                     self.expose_add_heap_object();
                     arg_conversions.push_str(&format!("\
                         const idx{i} = addHeapObject({arg});
@@ -208,7 +219,7 @@ impl Js {
                     pass(&format!("idx{}", i));
                 }
                 shared::Type::JsObjectRef => {
-                    dst.push_str("any");
+                    dst.push_str(&format!("{}", self.typed("any")));
                     self.expose_borrowed_objects();
                     arg_conversions.push_str(&format!("\
                         const idx{i} = addBorrowedObject({arg});
@@ -218,22 +229,22 @@ impl Js {
                 }
             }
         }
-        dst.push_str("): ");
+        dst.push_str(")");
         let convert_ret = match ret {
             None => {
-                dst.push_str("void");
+                dst.push_str(&format!("{}", self.typed("void")));
                 format!("return ret;")
             }
             Some(&shared::Type::Number) => {
-                dst.push_str("number");
+                dst.push_str(&format!("{}", self.typed("number")));
                 format!("return ret;")
             }
             Some(&shared::Type::Boolean) => {
-                dst.push_str("boolean");
+                dst.push_str(&format!("{}", self.typed("boolean")));
                 format!("return ret != 0;")
             }
             Some(&shared::Type::JsObject) => {
-                dst.push_str("any");
+                dst.push_str(&format!("{}", self.typed("any")));
                 self.expose_take_object();
                 format!("return takeObject(ret);")
             }
@@ -242,7 +253,7 @@ impl Js {
             Some(&shared::Type::ByMutRef(_)) |
             Some(&shared::Type::ByRef(_)) => panic!(),
             Some(&shared::Type::ByValue(ref name)) => {
-                dst.push_str(name);
+                dst.push_str(&format!("{}", self.typed(name)));
                 if self.debug {
                     format!("\
                         return new {name}(ret, token);
@@ -254,7 +265,7 @@ impl Js {
                 }
             }
             Some(&shared::Type::String) => {
-                dst.push_str("string");
+                dst.push_str(&format!("{}", self.typed("string")));
                 self.expose_get_string_from_wasm();
                 self.expose_wasm_exports();
                 format!("
@@ -309,6 +320,7 @@ impl Js {
     {
         let mut dst = String::new();
         let mut ts_dst = String::new();
+        let number = self.typed("number");
 
         dst.push_str(&format!("function {0}_shim(", import.name));
 
@@ -324,35 +336,35 @@ impl Js {
                 dst.push_str(", ");
                 ts_dst.push_str(", ");
             }
-            ts_dst.push_str(&format!("arg{}: ", i));
+            ts_dst.push_str(&format!("arg{}", i));
             match *arg {
                 shared::Type::Number => {
-                    ts_dst.push_str("number");
+                    ts_dst.push_str(&self.typed("number").to_string());
                     invocation.push_str(&format!("arg{}", i));
-                    dst.push_str(&format!("arg{}: number", i));
+                    dst.push_str(&format!("arg{}{}", i, number));
                 }
                 shared::Type::Boolean => {
-                    ts_dst.push_str("boolean");
+                    ts_dst.push_str(&self.typed("boolean").to_string());
                     invocation.push_str(&format!("arg{} != 0", i));
-                    dst.push_str(&format!("arg{}: number", i));
+                    dst.push_str(&format!("arg{}{}", i, number));
                 }
                 shared::Type::BorrowedStr => {
-                    ts_dst.push_str("string");
+                    ts_dst.push_str(&self.typed("string").to_string());
                     self.expose_get_string_from_wasm();
                     invocation.push_str(&format!("getStringFromWasm(ptr{0}, len{0})", i));
-                    dst.push_str(&format!("ptr{0}: number, len{0}: number", i));
+                    dst.push_str(&format!("ptr{0}{1}, len{0}{1}", i, number));
                 }
                 shared::Type::JsObject => {
-                    ts_dst.push_str("any");
+                    ts_dst.push_str(&self.typed("any").to_string());
                     self.expose_take_object();
                     invocation.push_str(&format!("takeObject(arg{})", i));
-                    dst.push_str(&format!("arg{}: number", i));
+                    dst.push_str(&format!("arg{}{}", i, number));
                 }
                 shared::Type::JsObjectRef => {
-                    ts_dst.push_str("any");
+                    ts_dst.push_str(&self.typed("any").to_string());
                     self.expose_get_object();
                     invocation.push_str(&format!("getObject(arg{})", i));
-                    dst.push_str(&format!("arg{}: number", i));
+                    dst.push_str(&format!("arg{}{}", i, number));
                 }
                 shared::Type::String |
                 shared::Type::ByRef(_) |
@@ -362,29 +374,29 @@ impl Js {
                 }
             }
         }
-        ts_dst.push_str("): ");
-        dst.push_str("): ");
+        ts_dst.push_str(")");
+        dst.push_str(")");
         let invoc = format!("_imports.{}({})", import.name, invocation);
         let invoc = match import.ret {
             Some(shared::Type::Number) => {
-                ts_dst.push_str("number");
-                dst.push_str("number");
+                ts_dst.push_str(&self.typed("number").to_string());
+                dst.push_str(&self.typed("number").to_string());
                 invoc
             }
             Some(shared::Type::Boolean) => {
-                ts_dst.push_str("boolean");
-                dst.push_str("number");
+                ts_dst.push_str(&self.typed("boolean").to_string());
+                dst.push_str(&self.typed("number").to_string());
                 format!("{} ? 1 : 0", invoc)
             }
             Some(shared::Type::JsObject) => {
-                ts_dst.push_str("any");
-                dst.push_str("number");
+                ts_dst.push_str(&self.typed("any").to_string());
+                dst.push_str(&self.typed("number").to_string());
                 self.expose_add_heap_object();
                 format!("addHeapObject({})", invoc)
             }
             None => {
-                ts_dst.push_str("void");
-                dst.push_str("void");
+                ts_dst.push_str(&self.typed("void").to_string());
+                dst.push_str(&self.typed("void").to_string());
                 invoc
             }
             _ => unimplemented!(),
@@ -400,18 +412,19 @@ impl Js {
         if self.debug {
             self.expose_global_slab();
             self.expose_global_stack();
+            let void = self.typed("void");
             self.exports.push(
                 (
                     "assertHeapAndStackEmpty".to_string(),
-                    "function(): void {
+                    format!("function(){} {{
                         if (stack.length > 0)
                             throw new Error('stack is not empty');
-                        for (let i = 0; i < slab.length; i++) {
+                        for (let i = 0; i < slab.length; i++) {{
                             if (typeof(slab[i]) !== 'number')
                                 throw new Error('slab is not empty');
-                        }
-                    }".to_string(),
-                    "assertHeapAndStackEmpty(): void;\n".to_string(),
+                        }}
+                    }}", void),
+                    format!("assertHeapAndStackEmpty(){};\n", void),
                 )
             );
         }
@@ -544,11 +557,14 @@ impl Js {
                             throw new Error('corrupt slab');
                         val.cnt += 1;
                     ")
-                } else {
+                } else if me.ts {
                     String::from("(val as {cnt:number}).cnt += 1;")
+                } else {
+                    String::from("val.cnt += 1;")
                 };
+                let number = me.typed("number");
                 format!("
-                    function(idx: number): number {{
+                    function(idx{}){} {{
                         // If this object is on the stack promote it to the heap.
                         if ((idx & 1) === 1)
                             return addHeapObject(getObject(idx));
@@ -559,7 +575,7 @@ impl Js {
                         {}
                         return idx;
                     }}
-                ", bump_cnt)
+                ", number, number, bump_cnt)
             });
 
             bind("__wbindgen_object_drop_ref", &|me| {
@@ -580,15 +596,16 @@ impl Js {
 
             bind("__wbindgen_number_get", &|me| {
                 me.expose_global_memory();
-                String::from("
-                    function(n: number, invalid: number): number {
+                let number = me.typed("number");
+                format!("
+                    function(n{0}, invalid{0}){0} {{
                         let obj = getObject(n);
                         if (typeof(obj) === 'number')
                             return obj;
                         (new Uint8Array(memory.buffer))[invalid] = 1;
                         return 0;
-                    }
-                ")
+                    }}
+                ", number)
             });
 
             bind("__wbindgen_undefined_new", &|me| {
@@ -631,16 +648,17 @@ impl Js {
             bind("__wbindgen_symbol_new", &|me| {
                 me.expose_get_string_from_wasm();
                 me.expose_add_heap_object();
-                String::from("(ptr, len) => {
-                    let a: Symbol;
+                let symbol = me.typed("Symbol");
+                format!("(ptr, len) => {{
+                    let a{};
                     console.log(ptr, len);
-                    if (ptr === 0) {
+                    if (ptr === 0) {{
                         a = Symbol();
-                    } else {
+                    }} else {{
                         a = Symbol(getStringFromWasm(ptr, len));
-                    }
+                    }}
                     return addHeapObject(a);
-                }")
+                }}", symbol)
             });
 
             bind("__wbindgen_is_symbol", &|me| {
@@ -650,11 +668,12 @@ impl Js {
 
             bind("__wbindgen_throw", &|me| {
                 me.expose_get_string_from_wasm();
-                String::from("
-                    function(ptr: number, len: number) {
+                let number = me.typed("number");
+                format!("
+                    function(ptr{}, len{}) {{
                         throw new Error(getStringFromWasm(ptr, len));
-                    }
-                ")
+                    }}
+                ", number, number)
             });
 
             bind("__wbindgen_string_get", &|me| {
@@ -679,10 +698,8 @@ impl Js {
         if self.exposed_globals.contains(&"wasm_exports") {
             writes.push_str("wasm_exports = exports;\n");
         }
-        format!("
+        let mut interfaces = format!("
             /* tslint:disable */
-            {globals}
-
             interface WasmImportsTop {{
                 env: WasmImports,
             }}
@@ -708,26 +725,7 @@ impl Js {
             }}
 
             {extra_exports_interface}
-
-            function xform(obj: WebAssembly.ResultObject): Exports {{
-                let {{ module, instance }} = obj;
-                let exports: WasmExports = instance.exports;
-                {writes}
-                return {exports};
-            }}
-            export function instantiate(bytes: any, _imports: Imports): Promise<Exports> {{
-                let wasm_imports: WasmImportsTop = {{
-                    env: {{
-                        {imports_object}
-                    }},
-                }};
-                return WebAssembly.instantiate(bytes, wasm_imports).then(xform);
-            }}
         ",
-            globals = self.globals,
-            exports = exports,
-            imports_object = imports_object,
-            writes = writes,
             imports_interface = imports_interface,
             extra_imports_interface = extra_imports_interface,
             exports_interface = exports_interface,
@@ -740,6 +738,52 @@ impl Js {
                 .map(|s| &**s)
                 .collect::<Vec<_>>()
                 .join("\n"),
+        );
+        if !self.ts {
+            interfaces.truncate(0);
+        }
+
+        let any = self.typed("any");
+        let imports_ty = self.typed("Imports");
+        let exports_ty = self.typed("Exports");
+        let result_ty = self.typed("WebAssembly.ResultObject");
+        let promise_ty = self.typed("Promise<Exports>");
+        let wasm_exports_ty = self.typed("WasmExports");
+        let wasm_imports_ty = self.typed("WasmImportsTop");
+
+        format!("
+            /* tslint:disable */
+            {globals}
+
+            {interfaces}
+
+            function xform(obj{result_ty}){exports_ty} {{
+                let {{ module, instance }} = obj;
+                let exports{wasm_exports_ty} = instance.exports;
+                {writes}
+                return {exports};
+            }}
+            export function instantiate(bytes{any}, _imports{imports_ty}){promise_ty} {{
+                let wasm_imports{wasm_imports_ty} = {{
+                    env: {{
+                        {imports_object}
+                    }},
+                }};
+                return WebAssembly.instantiate(bytes, wasm_imports).then(xform);
+            }}
+        ",
+            globals = self.globals,
+            interfaces = interfaces,
+            any = any,
+            result_ty = result_ty,
+            exports_ty = exports_ty,
+            promise_ty = promise_ty,
+            imports_ty = imports_ty,
+            wasm_imports_ty = wasm_imports_ty,
+            wasm_exports_ty = wasm_exports_ty,
+            exports = exports,
+            imports_object = imports_object,
+            writes = writes,
         )
     }
 
@@ -790,13 +834,13 @@ impl Js {
                 if i > 0 {
                     ts.push_str(", ");
                 }
-                ts.push_str(&format!("arg{}: number", i));
+                ts.push_str(&format!("arg{}{}", i, self.typed("number")));
             }
-            ts.push_str("): ");
+            ts.push_str(")");
             if ty.return_type().is_none() {
-                ts.push_str("void");
+                ts.push_str(&self.typed("void").to_string());
             } else {
-                ts.push_str("number");
+                ts.push_str(&self.typed("number").to_string());
             }
             ts.push_str(";");
 
@@ -853,13 +897,13 @@ impl Js {
                 if i > 0 {
                     ts.push_str(", ");
                 }
-                ts.push_str(&format!("arg{}: number", i));
+                ts.push_str(&format!("arg{}{}", i, self.typed("number")));
             }
-            ts.push_str("): ");
+            ts.push_str(")");
             if ty.return_type().is_none() {
-                ts.push_str("void");
+                ts.push_str(&self.typed("void").to_string());
             } else {
-                ts.push_str("number");
+                ts.push_str(&self.typed("number").to_string());
             }
             ts.push_str(";");
             map.insert(export.field().to_string(), ts);
@@ -889,15 +933,23 @@ impl Js {
                 if (obj.cnt > 0)
                     return;
             ")
-        } else {
+        } else if self.ts {
             String::from("
                 (obj as {cnt:number}).cnt -= 1;
                 if ((obj as {cnt:number}).cnt > 0)
                     return;
             ")
+        } else {
+            String::from("
+                obj.cnt -= 1;
+                if (obj.cnt > 0)
+                    return;
+            ")
         };
+        let number = self.typed("number");
+        let void = self.typed("void");
         self.globals.push_str(&format!("
-            function dropRef(idx: number): void {{
+            function dropRef(idx{}){} {{
                 {}
 
                 let obj = slab[idx >> 1];
@@ -907,34 +959,35 @@ impl Js {
                 slab[idx >> 1] = slab_next;
                 slab_next = idx >> 1;
             }}
-        ", validate_owned, dec_ref));
+        ", number, void, validate_owned, dec_ref));
     }
 
     fn expose_global_stack(&mut self) {
         if !self.exposed_globals.insert("stack") {
             return
         }
-        self.globals.push_str("
-            let stack: any[] = [];
-        ");
+        let ty = self.typed("any[]");
+        self.globals.push_str(&format!("
+            let stack{} = [];
+        ", ty));
     }
 
     fn expose_global_slab(&mut self) {
         if !self.exposed_globals.insert("slab") {
             return
         }
-        self.globals.push_str("
-            let slab: ({ obj: any, cnt: number } | number)[] = [];
-        ");
+        let ty = self.typed("({ obj: any, cnt: number } | number)[]");
+        self.globals.push_str(&format!("let slab{} = [];", ty));
     }
 
     fn expose_global_slab_next(&mut self) {
         if !self.exposed_globals.insert("slab_next") {
             return
         }
-        self.globals.push_str("
-            let slab_next: number = 0;
-        ");
+        let ty = self.typed("number");
+        self.globals.push_str(&format!("
+            let slab_next{} = 0;
+        ", ty));
     }
 
     fn expose_get_object(&mut self) {
@@ -950,13 +1003,19 @@ impl Js {
                     throw new Error('corrupt slab');
                 return val.obj;
             ")
-        } else {
+        } else if self.ts {
             String::from("
                 return (val as {obj:any}).obj;
             ")
+        } else {
+            String::from("
+                return val.obj;
+            ")
         };
+        let number = self.typed("number");
+        let any = self.typed("any");
         self.globals.push_str(&format!("
-            function getObject(idx: number): any {{
+            function getObject(idx{}){} {{
                 if ((idx & 1) === 1) {{
                     return stack[idx >> 1];
                 }} else {{
@@ -964,58 +1023,65 @@ impl Js {
                     {}
                 }}
             }}
-        ", get_obj));
+        ", number, any, get_obj));
     }
 
     fn expose_global_memory(&mut self) {
         if !self.exposed_globals.insert("memory") {
             return
         }
-        self.globals.push_str("let memory: WebAssembly.Memory;\n");
+        let mem = self.typed("WebAssembly.Memory");
+        self.globals.push_str(&format!("let memory{};\n", mem));
     }
 
     fn expose_wasm_exports(&mut self) {
         if !self.exposed_globals.insert("wasm_exports") {
             return
         }
-        self.globals.push_str("let wasm_exports: WasmExports;\n");
+        let ty = self.typed("WasmExports");
+        self.globals.push_str(&format!("let wasm_exports{};\n", ty));
     }
 
     fn expose_check_token(&mut self) {
         if !self.exposed_globals.insert("check_token") {
             return
         }
-        self.globals.push_str("\
+        let symbol = self.typed("Symbol");
+        let void = self.typed("void");
+        self.globals.push_str(&format!("
             const token = Symbol('foo');
-            function _checkToken(sym: Symbol): void {
+            function _checkToken(sym{}){} {{
                 if (token !== sym)
                     throw new Error('cannot invoke `new` directly');
-            }
-        ");
+            }}
+        ", symbol, void));
     }
 
     fn expose_assert_num(&mut self) {
         if !self.exposed_globals.insert("assert_num") {
             return
         }
-        self.globals.push_str("\
-            function _assertNum(n: number): void {
+        let number = self.typed("number");
+        let void = self.typed("void");
+        self.globals.push_str(&format!("
+            function _assertNum(n{}){} {{
                 if (typeof(n) !== 'number')
                     throw new Error('expected a number argument');
-            }
-        ");
+            }}
+        ", number, void));
     }
 
     fn expose_assert_bool(&mut self) {
         if !self.exposed_globals.insert("assert_bool") {
             return
         }
-        self.globals.push_str("\
-            function _assertBoolean(n: boolean) {
+        let boolean = self.typed("boolean");
+        self.globals.push_str(&format!("
+            function _assertBoolean(n{}) {{
                 if (typeof(n) !== 'boolean')
                     throw new Error('expected a boolean argument');
-            }
-        ");
+            }}
+        ", boolean));
     }
 
     fn expose_pass_string_to_wasm(&mut self, m: &Mapped) {
@@ -1024,9 +1090,11 @@ impl Js {
         }
         self.expose_wasm_exports();
         self.expose_global_memory();
+        let string = self.typed("string");
+        let ret = self.typed("[number, number]");
         if self.nodejs {
             self.globals.push_str(&format!("
-                function passStringToWasm(arg: string): [number, number] {{
+                function passStringToWasm(arg{}){} {{
                     if (typeof(arg) !== 'string')
                         throw new Error('expected a string argument');
                     const buf = Buffer.from(arg);
@@ -1035,10 +1103,10 @@ impl Js {
                     buf.copy(Buffer.from(memory.buffer), ptr);
                     return [ptr, len];
                 }}
-            ", m.export_name("__wbindgen_malloc")));
+            ", string, ret, m.export_name("__wbindgen_malloc")));
         } else {
             self.globals.push_str(&format!("
-                function passStringToWasm(arg: string): [number, number] {{
+                function passStringToWasm(arg{}){} {{
                     if (typeof(arg) !== 'string')
                         throw new Error('expected a string argument');
                     const buf = new TextEncoder('utf-8').encode(arg);
@@ -1048,7 +1116,7 @@ impl Js {
                     array.set(buf, ptr);
                     return [ptr, len];
                 }}
-            ", m.export_name("__wbindgen_malloc")));
+            ", string, ret, m.export_name("__wbindgen_malloc")));
         }
     }
 
@@ -1056,25 +1124,27 @@ impl Js {
         if !self.exposed_globals.insert("get_string_from_wasm") {
             return
         }
+        let number = self.typed("number");
+        let string = self.typed("string");
         if self.nodejs {
             self.expose_global_memory();
-            self.globals.push_str("
-                function getStringFromWasm(ptr: number, len: number): string {
+            self.globals.push_str(&format!("
+                function getStringFromWasm(ptr{}, len{}){} {{
                     const buf = Buffer.from(memory.buffer).slice(ptr, ptr + len);
                     const ret = buf.toString();
                     return ret;
-                }
-            ");
+                }}
+            ", number, number, string));
         } else {
             self.expose_global_memory();
-            self.globals.push_str("
-                function getStringFromWasm(ptr: number, len: number): string {
+            self.globals.push_str(&format!("
+                function getStringFromWasm(ptr{}, len{}){} {{
                     const mem = new Uint8Array(memory.buffer);
                     const slice = mem.slice(ptr, ptr + len);
                     const ret = new TextDecoder('utf-8').decode(slice);
                     return ret;
-                }
-            ");
+                }}
+            ", number, number, string));
         }
     }
 
@@ -1082,13 +1152,14 @@ impl Js {
         if !self.exposed_globals.insert("assert_class") {
             return
         }
-        self.globals.push_str("
-            function _assertClass(instance: any, klass: any) {
+        let any = self.typed("any");
+        self.globals.push_str(&format!("
+            function _assertClass(instance{}, klass{}) {{
                 if (!(instance instanceof klass))
-                    throw new Error(`expected instance of ${klass.name}`);
+                    throw new Error(`expected instance of ${{klass.name}}`);
                 return instance.ptr;
-            }
-        ");
+            }}
+        ", any, any));
     }
 
     fn expose_borrowed_objects(&mut self) {
@@ -1096,12 +1167,14 @@ impl Js {
             return
         }
         self.expose_global_stack();
-        self.globals.push_str("
-            function addBorrowedObject(obj: any): number {
+        let any = self.typed("any");
+        let number = self.typed("number");
+        self.globals.push_str(&format!("
+            function addBorrowedObject(obj{}){} {{
                 stack.push(obj);
                 return ((stack.length - 1) << 1) | 1;
-            }
-        ");
+            }}
+        ", any, number));
     }
 
     fn expose_take_object(&mut self) {
@@ -1110,13 +1183,15 @@ impl Js {
         }
         self.expose_get_object();
         self.expose_drop_ref();
-        self.globals.push_str("
-            function takeObject(idx: number): any {
+        let number = self.typed("number");
+        let any = self.typed("any");
+        self.globals.push_str(&format!("
+            function takeObject(idx{}){} {{
                 const ret = getObject(idx);
                 dropRef(idx);
                 return ret;
-            }
-        ");
+            }}
+        ", number, any));
     }
 
     fn expose_add_heap_object(&mut self) {
@@ -1131,13 +1206,19 @@ impl Js {
                     throw new Error('corrupt slab');
                 slab_next = next;
             ")
-        } else {
+        } else if self.ts {
             String::from("
                 slab_next = next as number;
             ")
+        } else {
+            String::from("
+                slab_next = next;
+            ")
         };
+        let any = self.typed("any");
+        let number = self.typed("number");
         self.globals.push_str(&format!("
-            function addHeapObject(obj: any): number {{
+            function addHeapObject(obj{}){} {{
                 if (slab_next == slab.length)
                     slab.push(slab.length + 1);
                 const idx = slab_next;
@@ -1146,6 +1227,40 @@ impl Js {
                 slab[idx] = {{ obj, cnt: 1 }};
                 return idx << 1;
             }}
-        ", set_slab_next));
+        ", any, number, set_slab_next));
+    }
+
+    fn typed<T>(&self, t: T) -> MaybeEmit<Typed<T>> {
+        self.maybe(Typed(t))
+    }
+
+    fn maybe<T>(&self, t: T) -> MaybeEmit<T> {
+        MaybeEmit {
+            enabled: self.ts,
+            inner: t,
+        }
+    }
+}
+
+struct MaybeEmit<T> {
+    enabled: bool,
+    inner: T,
+}
+
+impl<T: fmt::Display> fmt::Display for MaybeEmit<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if self.enabled {
+            self.inner.fmt(f)
+        } else {
+            Ok(())
+        }
+    }
+}
+
+struct Typed<T>(T);
+
+impl<T: fmt::Display> fmt::Display for Typed<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, ": {}", self.0)
     }
 }

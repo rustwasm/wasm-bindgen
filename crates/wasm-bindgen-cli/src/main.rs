@@ -17,6 +17,7 @@ Usage:
 
 Options:
     -h --help               Show this screen.
+    --output-js FILE        Output Javascript file
     --output-ts FILE        Output TypeScript file
     --output-wasm FILE      Output WASM file
     --nodejs                Generate output for node.js, not the browser
@@ -25,6 +26,7 @@ Options:
 
 #[derive(Debug, Deserialize)]
 struct Args {
+    flag_output_js: Option<PathBuf>,
     flag_output_ts: Option<PathBuf>,
     flag_output_wasm: Option<PathBuf>,
     flag_nodejs: bool,
@@ -43,9 +45,16 @@ fn main() {
      .debug(args.flag_debug)
      .uglify_wasm_names(!args.flag_debug);
     let ret = b.generate().expect("failed to generate bindings");
+    let mut written = false;
     if let Some(ref ts) = args.flag_output_ts {
         ret.write_ts_to(ts).expect("failed to write TypeScript output file");
-    } else {
+        written = true;
+    }
+    if let Some(ref js) = args.flag_output_js {
+        ret.write_js_to(js).expect("failed to write Javascript output file");
+        written = true;
+    }
+    if !written {
         println!("{}", ret.generate_ts());
     }
     if let Some(ref wasm) = args.flag_output_wasm {

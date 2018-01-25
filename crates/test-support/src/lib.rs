@@ -16,6 +16,7 @@ pub struct Project {
     files: Vec<(String, String)>,
     debug: bool,
     uglify: bool,
+    js: bool,
 }
 
 pub fn project() -> Project {
@@ -29,6 +30,7 @@ pub fn project() -> Project {
     Project {
         debug: true,
         uglify: false,
+        js: false,
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
                 [package]
@@ -133,6 +135,11 @@ impl Project {
         self
     }
 
+    pub fn js(&mut self, js: bool) -> &mut Project {
+        self.js = js;
+        self
+    }
+
     pub fn test(&mut self) {
         let root = root();
         drop(fs::remove_dir_all(&root));
@@ -170,27 +177,41 @@ impl Project {
             .uglify_wasm_names(self.uglify)
             .generate()
             .expect("failed to run bindgen");
-        obj.write_ts_to(root.join("out.ts")).expect("failed to write ts");
+        if self.js {
+            obj.write_js_to(root.join("out.js")).expect("failed to write js");
+        } else {
+            obj.write_ts_to(root.join("out.ts")).expect("failed to write ts");
+        }
         obj.write_wasm_to(root.join("out.wasm")).expect("failed to write wasm");
+        let out_dir = if self.js {
+            root.join("out")
+        } else {
+            root.clone()
+        };
 
         let mut cmd = Command::new("node");
         cmd.arg(typescript())
             .current_dir(&target_dir)
             .arg(root.join("run.ts"))
-            .arg("--strict")
-            .arg("--noImplicitAny")
-            .arg("--strictNullChecks")
-            .arg("--strictFunctionTypes")
             .arg("--noUnusedLocals")
             .arg("--noUnusedParameters")
             .arg("--noImplicitReturns")
-            .arg("--declaration")
             .arg("--lib")
-            .arg("es6");
+            .arg("es6")
+            .arg("--outDir").arg(&out_dir);
+        if self.js {
+            cmd.arg("--allowJs");
+        } else {
+            cmd.arg("--noImplicitAny")
+                .arg("--strict")
+                .arg("--strictNullChecks")
+                .arg("--declaration")
+                .arg("--strictFunctionTypes");
+        }
         run(&mut cmd, "node");
 
         let mut cmd = Command::new("node");
-        cmd.arg("run.js")
+        cmd.arg(out_dir.join("run.js"))
             .current_dir(&root);
         run(&mut cmd, "node");
     }

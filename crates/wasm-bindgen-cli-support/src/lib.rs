@@ -103,6 +103,21 @@ impl Object {
         Ok(())
     }
 
+    pub fn write_js_to<P: AsRef<Path>>(&self, path: P) -> Result<(), Error> {
+        self._write_js_to(path.as_ref())
+    }
+
+    fn _write_js_to(&self, path: &Path) -> Result<(), Error> {
+        let js = self.generate_js();
+        let mut f = File::create(path).with_context(|_| {
+            format!("failed to create file at {:?}", path)
+        })?;
+        f.write_all(js.as_bytes()).with_context(|_| {
+            format!("failed to write file at {:?}", path)
+        })?;
+        Ok(())
+    }
+
     pub fn write_wasm_to<P: AsRef<Path>>(self, path: P) -> Result<(), Error> {
         self._write_wasm_to(path.as_ref())
     }
@@ -118,6 +133,16 @@ impl Object {
         let mut ts = ts::Js::default();
         ts.nodejs = self.nodejs;
         ts.debug = self.debug;
+        ts.ts = true;
+        ts.generate_program(&self.program, &self.module);
+        ts.to_string(&self.module, &self.program)
+    }
+
+    pub fn generate_js(&self) -> String {
+        let mut ts = ts::Js::default();
+        ts.nodejs = self.nodejs;
+        ts.debug = self.debug;
+        ts.ts = false;
         ts.generate_program(&self.program, &self.module);
         ts.to_string(&self.module, &self.program)
     }
