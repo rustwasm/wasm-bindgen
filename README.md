@@ -342,7 +342,10 @@ booted.then(main);
 ## Feature reference
 
 Here this section will attempt to be a reference for the various features
-implemented in this project.
+implemented in this project. This is likely not exhaustive but the [tests]
+should also be a great place to look for examples.
+
+[tests]: https://github.com/alexcrichton/wasm-bindgen/tree/master/tests
 
 In the `wasm_bindgen!` macro you can have four items: functions, structs,
 impls, and foreign modules. Impls can only contain functions. No lifetime
