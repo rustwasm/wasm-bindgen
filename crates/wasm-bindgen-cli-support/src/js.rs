@@ -236,7 +236,7 @@ impl<'a> Js<'a> {
                 wasm.{}(ptr);
             }}
         ", s.free_function()));
-        ts_dst.push_str("free();\n");
+        ts_dst.push_str("free(): void;\n");
 
         for function in s.functions.iter() {
             let (js, ts) = self.generate_function(
