@@ -69,7 +69,7 @@ impl Bindgen {
         let (js, ts) = js::Js {
             globals: String::new(),
             imports: String::new(),
-            typescript: String::new(),
+            typescript: format!("/* tslint:disable */\n"),
             exposed_globals: Default::default(),
             config: &self,
             module: &mut module,

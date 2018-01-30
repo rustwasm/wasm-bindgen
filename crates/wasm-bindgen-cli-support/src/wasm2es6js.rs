@@ -41,7 +41,7 @@ impl Config {
 
 impl Output {
     pub fn typescript(&self) -> String {
-        let mut exports = String::new();
+        let mut exports = format!("/* tslint:disable */\n");
 
         if let Some(i) = self.module.export_section() {
             let imported_functions = self.module.import_section()
