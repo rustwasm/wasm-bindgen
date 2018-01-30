@@ -5,10 +5,15 @@ authors = ["Alex Crichton <alex@alexcrichton.com>"]
 
 [dependencies]
 docopt = "0.8"
+parity-wasm = "0.23"
 serde = "1.0"
 serde_derive = "1.0"
 wasm-bindgen-cli-support = { path = "../wasm-bindgen-cli-support" }
 
 [[bin]]
 name = "wasm-bindgen"
-path = "src/main.rs"
+path = "src/bin/wasm-bindgen.rs"
+
+[[bin]]
+name = "wasm2es6js"
+path = "src/bin/wasm2es6js.rs"

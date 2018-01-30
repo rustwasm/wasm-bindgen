@@ -5,7 +5,7 @@ extern crate serde_derive;
 pub struct Program {
     pub structs: Vec<Struct>,
     pub free_functions: Vec<Function>,
-    pub imports: Vec<Function>,
+    pub imports: Vec<(String, Function)>,
 }
 
 #[derive(Serialize, Deserialize)]

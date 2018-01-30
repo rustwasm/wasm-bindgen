@@ -17,19 +17,17 @@ Usage:
 
 Options:
     -h --help               Show this screen.
-    --output-js FILE        Output Javascript file
-    --output-ts FILE        Output TypeScript file
-    --output-wasm FILE      Output WASM file
+    --out-dir DIR           Output directory
     --nodejs                Generate output for node.js, not the browser
+    --typescript            Output a TypeScript definition file
     --debug                 Include otherwise-extraneous debug checks in output
 ";
 
 #[derive(Debug, Deserialize)]
 struct Args {
-    flag_output_js: Option<PathBuf>,
-    flag_output_ts: Option<PathBuf>,
-    flag_output_wasm: Option<PathBuf>,
     flag_nodejs: bool,
+    flag_typescript: bool,
+    flag_out_dir: Option<PathBuf>,
     flag_debug: bool,
     arg_input: PathBuf,
 }
@@ -43,21 +41,12 @@ fn main() {
     b.input_path(&args.arg_input)
      .nodejs(args.flag_nodejs)
      .debug(args.flag_debug)
-     .uglify_wasm_names(!args.flag_debug);
-    let ret = b.generate().expect("failed to generate bindings");
-    let mut written = false;
-    if let Some(ref ts) = args.flag_output_ts {
-        ret.write_ts_to(ts).expect("failed to write TypeScript output file");
-        written = true;
-    }
-    if let Some(ref js) = args.flag_output_js {
-        ret.write_js_to(js).expect("failed to write Javascript output file");
-        written = true;
-    }
-    if !written {
-        println!("{}", ret.generate_ts());
-    }
-    if let Some(ref wasm) = args.flag_output_wasm {
-        ret.write_wasm_to(wasm).expect("failed to write wasm output file");
-    }
+     .typescript(args.flag_typescript);
+
+    let out_dir = match args.flag_out_dir {
+        Some(ref p) => p,
+        None => panic!("the `--out-dir` argument is now required"),
+    };
+
+    b.generate(out_dir).expect("failed to generate bindings");
 }

@@ -1,15 +1,23 @@
 # wasm-bindgen
 
-A CLI and Rust dependency for generating JS bindings of an interface defined in
-Rust (and maybe eventually other languages!)
+A CLI and Rust dependency for acting as a polyfill for [Wasm host
+bindings][host], allowing you to interoperate with JS from wasm with types like
+strings, JS objects, etc.
+
+[host]: https://github.com/WebAssembly/host-bindings
 
 [![Build Status](https://travis-ci.org/alexcrichton/wasm-bindgen.svg?branch=master)](https://travis-ci.org/alexcrichton/wasm-bindgen)
 [![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/alexcrichton/wasm-bindgen)
 
-This project is intended to be a framework for interoperating between JS and
-Rust. Currently it's very Rust-focused but it's hoped that one day the
-`wasm-bindgen-cli` tool will not be so Rust-specific and would be amenable to
-bindgen for C/C++ modules.
+This project is a "temporary" polyfill for the [host bindings proposal][host]
+which is intended to empower wasm modules to interact with host objects such as
+strings, JS objects, etc. This project enables defining JS classes in wasm,
+taking strings from JS in wasm, and calling into JS with JS objects previously
+provided.
+
+Currently this tool is Rust-focused but the underlying foundation is
+language-independent, and it's hoping that over time as this tool stabilizes
+that it can be used for languages like C/C++!
 
 Notable features of this project includes:
 
@@ -104,30 +112,49 @@ set of JS bindings as well. Let's invoke it!
 
 ```
 $ wasm-bindgen target/wasm32-unknown-unknown/release/js_hello_world.wasm \
-  --output-ts hello.ts \
-  --output-wasm hello.wasm
+  --out-dir .
 ```
 
-This'll create a `hello.ts` (a TypeScript file) which binds the functions
-described in `js_hello_world.wasm`, and the `hello.wasm` will be a little
-smaller than the input `js_hello_world.wasm`, but it's otherwise equivalent.
-Note that `hello.ts` isn't very pretty so to read it you'll probably want to run
-it through a formatter.
+This is the main point where the magic happens. The `js_hello_world.wasm` file
+emitted by rustc contains *descriptors* of how to communicate via richer types
+than wasm currently supports. The `wasm-bindgen` tool will interpret this
+information, emitting a **replacement module** for the wasm file.
 
-Typically you'll be feeding this typescript into a larger build system, and
-often you'll be using this with your own typescript project as well. For now
-though we'll just want the JS output, so let's convert it real quick:
+The previous `js_hello_world.wasm` file is interpreted as if it were an ES6
+module. The `js_hello_world.js` file emitted by `wasm-bindgen` should have the
+intended interface of the wasm file, notably with rich types like strings,
+classes, etc.
 
+The `wasm-bindgen` tool also emits a secondary file, `js_hello_world_wasm.wasm`.
+This is the original wasm file but postprocessed a bit. It's intended that the
+`js_hello_world_wasm.wasm` file, like before, acts like an ES6 module. The
+`js_hello_world.wasm` file, for example, uses `import` to import functionality
+from the wasm.
+
+Note that you can also pass a `--nodejs` argument to `wasm-bindgen` for emitting
+Node-compatible JS as well as a `--typescript` argument to emit a `*.d.ts` file
+describing the exported contents.
+
+At this point you'll typically plug these files into a larger build system. Both
+files emitted by `wasm-bindgen` act like normal ES6 modules (one just happens to
+be wasm). As of the time of this writing there's unfortunately not a lot of
+tools that natively do this (but they're coming!). In the meantime we can use
+the `wasm2es6js` utility (aka "hack") from the `wasm-bindgen` tool we previously
+installed along with the `parcel-bundler` packager. Note that these steps will
+differ depending on your build system.
+
+Alright first create an `index.js` file:
+
+```js
+import { greet } from "./js_hello_world";
+import { booted } from "./js_hello_world_wasm";
+
+booted.then(() => {
+  alert(greet("World!"))
+});
 ```
-$ npm install typescript @types/webassembly-js-api @types/text-encoding
-$ ./node_modules/typescript/bin/tsc hello.ts --lib es6 -m es2015
-```
 
-Below we'll be using ES6 modules, but your browser may not support them natively
-just yet. To see more information about this, you can browse
-[online](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import).
-
-Ok let's see what this look like on the web!
+Then a corresponding `index.html`:
 
 ```html
 <html>
@@ -135,25 +162,20 @@ Ok let's see what this look like on the web!
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
   </head>
   <body>
-    <script type='module'>
-      import { instantiate } from "./hello.js";
-
-      // Send an async request to fetch the wasm file and get all its contents
-      fetch("hello.wasm")
-        .then(resp => resp.arrayBuffer())
-
-        // Invoke the wasm-bindgen-generated function `instantiate` which will
-        // give us a compiled wasm module when it's resolved
-        .then(wasm => instantiate(wasm))
-
-        // Using the module, call our Rust-exported function `greet` and then
-        // use `alert` to display it
-        .then(mod => {
-          alert(mod.greet("world"));
-        });
-    </script>
+    <script src='./index.js'></script>
   </body>
 </html>
+```
+
+And run a local server with these files:
+
+```
+# Convert `*.wasm` to `*.js` where the JS internally instantiates the wasm
+$ wasm2es6js js_hello_world_wasm.wasm -o js_hello_world_wasm.js --base64
+
+# Install parcel and run it against the index files we use below.
+$ npm install -g parcel-bundler
+$ parcel index.html -p 8000
 ```
 
 If you open that in a browser you should see a `Hello, world!` dialog pop up!
@@ -192,14 +214,9 @@ file that we then imported. The JS file wraps instantiating the underlying wasm
 module (aka calling `WebAssembly.instantiate`) and then provides wrappers for
 classes/functions within.
 
-Eventually `wasm-bindgen` will also take a list of imports where you can call
-from Rust to JS without worrying about argument conversions and such. An example
-to come here soon!
-
 ## What else can we do?
 
-Turns out much more! Here's a taste of various features you can use in this
-project:
+Much more! Here's a taste of various features you can use in this project:
 
 ```rust
 // src/lib.rs
@@ -250,6 +267,7 @@ wasm_bindgen! {
         opaque: JsObject, // defined in `wasm_bindgen`, imported via prelude
     }
 
+    #[wasm_module = "./index"] // what ES6 module to import this functionality from
     extern "JS" {
         fn bar_on_reset(to: &str, opaque: &JsObject);
     }
@@ -272,61 +290,53 @@ wasm_bindgen! {
 The generated JS bindings for this invocation of the macro [look like
 this][bindings]. You can view them in action like so:
 
-[bindings]: https://gist.github.com/b7dfa241208ee858d5473c406225080f
+[bindings]: https://gist.github.com/alexcrichton/12ccab3a18d7db0e0d7d777a0f4951b5
+
+and our corresponding `index.js`:
 
 ```html
-<html>
-  <head>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
-  </head>
-  <body>
-    <script type='module'>
-      import { instantiate } from "./hello.js";
-      function assertEq(a, b) {
-        if (a !== b)
-          throw new Error(`${a} != ${b}`);
-        console.log(`found ${a} === ${b}`);
-      }
+import { Foo, Bar, concat } from "./js_hello_world";
+import { booted } from "./js_hello_world_wasm";
 
-      fetch("hello.wasm")
-        .then(resp => resp.arrayBuffer())
-        .then(bytes => {
-          return instantiate(bytes, {
-            bar_on_reset(s, token) {
-              console.log(token);
-              console.log(`this instance of bar was reset to ${s}`);
-            },
-          });
-        })
-        .then(mod => {
-          assertEq(mod.concat('a', 'b'), 'ab');
+export function bar_on_reset(s, token) {
+  console.log(token);
+  console.log(`this instance of bar was reset to ${s}`);
+}
 
-          // Note the `new Foo()` syntax cannot be used, static function
-          // constructors must be used instead. Additionally objects allocated
-          // corresponding to Rust structs will need to be deallocated on the
-          // Rust side of things with an explicit call to `free`.
-          let foo = mod.Foo.new();
-          assertEq(foo.add(10), 10);
-          foo.free();
+function assertEq(a, b) {
+  if (a !== b)
+    throw new Error(`${a} != ${b}`);
+  console.log(`found ${a} === ${b}`);
+}
 
-          // Pass objects to one another
-          let foo1 = mod.Foo.new();
-          let bar = mod.Bar.from_str("22", { opaque: 'object' });
-          foo1.add_other(bar);
+function main() {
+  assertEq(concat('a', 'b'), 'ab');
 
-          // We also don't have to `free` the `bar` variable as this function is
-          // transferring ownership to `foo1`
-          bar.reset('34');
-          foo1.consume_other(bar);
+  // Note the `new Foo()` syntax cannot be used, static function
+  // constructors must be used instead. Additionally objects allocated
+  // corresponding to Rust structs will need to be deallocated on the
+  // Rust side of things with an explicit call to `free`.
+  let foo = Foo.new();
+  assertEq(foo.add(10), 10);
+  foo.free();
 
-          assertEq(foo1.add(2), 22 + 34 + 2);
-          foo1.free();
+  // Pass objects to one another
+  let foo1 = Foo.new();
+  let bar = Bar.from_str("22", { opaque: 'object' });
+  foo1.add_other(bar);
 
-          alert('all passed!')
-        });
-    </script>
-  </body>
-</html>
+  // We also don't have to `free` the `bar` variable as this function is
+  // transferring ownership to `foo1`
+  bar.reset('34');
+  foo1.consume_other(bar);
+
+  assertEq(foo1.add(2), 22 + 34 + 2);
+  foo1.free();
+
+  alert('all passed!')
+}
+
+booted.then(main);
 ```
 
 ## Feature reference

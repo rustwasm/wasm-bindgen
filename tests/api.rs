@@ -98,11 +98,9 @@ fn works() {
         "#)
         .file("test.ts", r#"
             import * as assert from "assert";
-            import { Exports, Imports } from "./out";
+            import * as wasm from "./out";
 
-            export const imports: Imports = {};
-
-            export function test(wasm: Exports) {
+            export function test() {
                 assert.strictEqual(wasm.foo(), 'foo');
                 assert.strictEqual(wasm.bar('a'), 'a');
                 assert.strictEqual(wasm.baz(), 1);
@@ -119,10 +117,10 @@ fn works() {
 
                 assert.strictEqual(typeof(wasm.mk_symbol()), 'symbol');
                 assert.strictEqual(typeof(wasm.mk_symbol2('a')), 'symbol');
-                assert.strictEqual(Symbol.keyFor(wasm.mk_symbol()), undefined);
-                assert.strictEqual(Symbol.keyFor(wasm.mk_symbol2('b')), undefined);
+                assert.strictEqual((Symbol as any).keyFor(wasm.mk_symbol()), undefined);
+                assert.strictEqual((Symbol as any).keyFor(wasm.mk_symbol2('b')), undefined);
 
-                wasm.assert_symbols(Symbol(), 'a');
+                wasm.assert_symbols((Symbol as any)(), 'a');
                 wasm.acquire_string('foo', null)
                 assert.strictEqual(wasm.acquire_string2(''), '');
                 assert.strictEqual(wasm.acquire_string2('a'), 'a');

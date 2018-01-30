@@ -15,6 +15,7 @@ pub struct Function {
 }
 
 pub struct Import {
+    pub module: String,
     pub function: Function,
     pub decl: Box<syn::FnDecl>,
     pub ident: syn::Ident,
@@ -79,18 +80,41 @@ impl Program {
             Some(ref l) if l.value() == "JS" => {}
             _ => panic!("only foreign mods with the `JS` ABI are allowed"),
         }
+        let module = f.attrs.iter()
+            .filter_map(|f| f.interpret_meta())
+            .filter_map(|i| {
+                match i {
+                    syn::Meta::NameValue(i) => {
+                        if i.ident == "wasm_module" {
+                            Some(i.lit)
+                        } else {
+                            None
+                        }
+                    }
+                    _ => None,
+                }
+            })
+            .next()
+            .and_then(|lit| {
+                match lit {
+                    syn::Lit::Str(v) => Some(v.value()),
+                    _ => None,
+                }
+            })
+            .expect("must specify `#[wasm_module = ...]` for module to import from");
         for item in f.items.iter() {
-            self.push_foreign_item(item);
+            self.push_foreign_item(&module, item);
         }
     }
 
-    pub fn push_foreign_item(&mut self, f: &syn::ForeignItem) {
+    pub fn push_foreign_item(&mut self, module: &str, f: &syn::ForeignItem) {
         let f = match *f {
             syn::ForeignItem::Fn(ref f) => f,
             _ => panic!("only foreign functions allowed for now, not statics"),
         };
 
         self.imports.push(Import {
+            module: module.to_string(),
             attrs: f.attrs.clone(),
             vis: f.vis.clone(),
             decl: f.decl.clone(),
@@ -103,7 +127,9 @@ impl Program {
         shared::Program {
             structs: self.structs.iter().map(|s| s.shared()).collect(),
             free_functions: self.free_functions.iter().map(|s| s.shared()).collect(),
-            imports: self.imports.iter().map(|i| i.function.shared()).collect(),
+            imports: self.imports.iter()
+                .map(|i| (i.module.clone(), i.function.shared()))
+                .collect(),
         }
     }
 }

@@ -33,18 +33,16 @@ fn simple() {
         "#)
         .file("test.ts", r#"
             import * as assert from "assert";
-            import { Exports, Imports } from "./out";
+            import { Foo } from "./out";
 
-            export const imports: Imports = {};
-
-            export function test(wasm: Exports) {
-                const r = wasm.Foo.new();
+            export function test() {
+                const r = Foo.new();
                 assert.strictEqual(r.add(0), 0);
                 assert.strictEqual(r.add(1), 1);
                 assert.strictEqual(r.add(1), 2);
                 r.free();
 
-                const r2 = wasm.Foo.with_contents(10);
+                const r2 = Foo.with_contents(10);
                 assert.strictEqual(r2.add(1), 11);
                 assert.strictEqual(r2.add(2), 13);
                 assert.strictEqual(r2.add(3), 16);
@@ -96,12 +94,10 @@ fn strings() {
         "#)
         .file("test.ts", r#"
             import * as assert from "assert";
-            import { Exports, Imports } from "./out";
+            import { Foo } from "./out";
 
-            export const imports: Imports = {};
-
-            export function test(wasm: Exports) {
-                const r = wasm.Foo.new();
+            export function test() {
+                const r = Foo.new();
                 r.set(3);
                 let bar = r.bar('baz');
                 r.free();
@@ -149,32 +145,28 @@ fn exceptions() {
             }
         "#)
         .file("test.js", r#"
-            var assert = require("assert");
+            import * as assert from "assert";
+            import { A, B } from "./out";
 
-            exports.imports = {};
-            exports.test = function(wasm) {
-                assert.throws(() => new wasm.A(), /cannot invoke `new` directly/);
-                let a = wasm.A.new();
+            export function test() {
+                assert.throws(() => new A(), /cannot invoke `new` directly/);
+                let a = A.new();
                 a.free();
                 assert.throws(() => a.free(), /null pointer passed to rust/);
 
-                let b = wasm.A.new();
+                let b = A.new();
                 b.foo(b);
                 assert.throws(() => b.bar(b), /recursive use of an object/);
 
-                let c = wasm.A.new();
-                let d = wasm.B.new();
+                let c = A.new();
+                let d = B.new();
                 assert.throws(() => c.foo(d), /expected instance of A/);
                 d.free();
                 c.free();
             };
         "#)
         .file("test.d.ts", r#"
-            import { Exports, Imports } from "./out";
-
-            export const imports: Imports;
-
-            export function test(wasm: Exports): void;
+            export function test(): void;
         "#)
         .test();
 }
@@ -214,13 +206,11 @@ fn pass_one_to_another() {
             }
         "#)
         .file("test.ts", r#"
-            import { Exports, Imports } from "./out";
+            import { A, B } from "./out";
 
-            export const imports: Imports = {};
-
-            export function test(wasm: Exports) {
-                let a = wasm.A.new();
-                let b = wasm.B.new();
+            export function test() {
+                let a = A.new();
+                let b = B.new();
                 a.foo(b);
                 a.bar(b);
                 a.free();

@@ -11,6 +11,7 @@ fn simple() {
             use wasm_bindgen::prelude::*;
 
             wasm_bindgen! {
+                #[wasm_module = "./test"]
                 extern "JS" {
                     fn foo(s: &JsObject);
                 }
@@ -20,21 +21,19 @@ fn simple() {
             }
         "#)
         .file("test.ts", r#"
-            import { Exports, Imports } from "./out";
+            import * as wasm from "./out";
             import * as assert from "assert";
 
             let ARG: string | null = null;
 
-            export const imports: Imports = {
-                foo(s) {
-                    assert.strictEqual(ARG, null);
-                    ARG = s;
-                },
-            };
-
-            export function test(wasm: Exports) {
+            export function foo(s: any): void {
                 assert.strictEqual(ARG, null);
-                let sym = Symbol('test');
+                ARG = s;
+            }
+
+            export function test() {
+                assert.strictEqual(ARG, null);
+                let sym = (Symbol as any)('test');
                 wasm.bar(sym);
                 assert.strictEqual(ARG, sym);
             }
@@ -53,6 +52,7 @@ fn owned() {
             use wasm_bindgen::prelude::*;
 
             wasm_bindgen! {
+                #[wasm_module = "./test"]
                 extern "JS" {
                     fn foo(s: JsObject);
                 }
@@ -62,21 +62,19 @@ fn owned() {
             }
         "#)
         .file("test.ts", r#"
-            import { Exports, Imports } from "./out";
+            import * as wasm from "./out";
             import * as assert from "assert";
 
-            let ARG: Symbol | null = null;
+            let ARG: any = null;
 
-            export const imports: Imports = {
-                foo(s) {
-                    assert.strictEqual(ARG, null);
-                    ARG = s;
-                },
-            };
-
-            export function test(wasm: Exports) {
+            export function foo(s: any): void {
                 assert.strictEqual(ARG, null);
-                let sym = Symbol('test');
+                ARG = s;
+            }
+
+            export function test() {
+                assert.strictEqual(ARG, null);
+                let sym = (Symbol as any)('test');
                 wasm.bar(sym);
                 assert.strictEqual(ARG, sym);
             }
@@ -95,6 +93,7 @@ fn clone() {
             use wasm_bindgen::prelude::*;
 
             wasm_bindgen! {
+                #[wasm_module = "./test"]
                 extern "JS" {
                     fn foo1(s: JsObject);
                     fn foo2(s: &JsObject);
@@ -113,20 +112,18 @@ fn clone() {
             }
         "#)
         .file("test.ts", r#"
-            import { Exports, Imports } from "./out";
+            import * as wasm from "./out";
             import * as assert from "assert";
 
-            let ARG = Symbol('test');
+            let ARG = (Symbol as any)('test');
 
-            export const imports: Imports = {
-                foo1(s) { assert.strictEqual(s, ARG); },
-                foo2(s) { assert.strictEqual(s, ARG); },
-                foo3(s) { assert.strictEqual(s, ARG); },
-                foo4(s) { assert.strictEqual(s, ARG); },
-                foo5(s) { assert.strictEqual(s, ARG); },
-            };
+            export function foo1(s: any): void { assert.strictEqual(s, ARG); }
+            export function foo2(s: any): void { assert.strictEqual(s, ARG); }
+            export function foo3(s: any): void { assert.strictEqual(s, ARG); }
+            export function foo4(s: any): void { assert.strictEqual(s, ARG); }
+            export function foo5(s: any): void { assert.strictEqual(s, ARG); }
 
-            export function test(wasm: Exports) {
+            export function test() {
                 wasm.bar(ARG);
             }
         "#)
@@ -144,6 +141,7 @@ fn promote() {
             use wasm_bindgen::prelude::*;
 
             wasm_bindgen! {
+                #[wasm_module = "./test"]
                 extern "JS" {
                     fn foo1(s: &JsObject);
                     fn foo2(s: JsObject);
@@ -160,19 +158,17 @@ fn promote() {
             }
         "#)
         .file("test.ts", r#"
-            import { Exports, Imports } from "./out";
+            import * as wasm from "./out";
             import * as assert from "assert";
 
-            let ARG = Symbol('test');
+            let ARG = (Symbol as any)('test');
 
-            export const imports: Imports = {
-                foo1(s) { assert.strictEqual(s, ARG); },
-                foo2(s) { assert.strictEqual(s, ARG); },
-                foo3(s) { assert.strictEqual(s, ARG); },
-                foo4(s) { assert.strictEqual(s, ARG); },
-            };
+            export function foo1(s: any): void { assert.strictEqual(s, ARG); }
+            export function foo2(s: any): void { assert.strictEqual(s, ARG); }
+            export function foo3(s: any): void { assert.strictEqual(s, ARG); }
+            export function foo4(s: any): void { assert.strictEqual(s, ARG); }
 
-            export function test(wasm: Exports) {
+            export function test() {
                 wasm.bar(ARG);
             }
         "#)

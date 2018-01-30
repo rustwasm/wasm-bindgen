@@ -11,6 +11,7 @@ fn simple() {
             use wasm_bindgen::prelude::*;
 
             wasm_bindgen! {
+                #[wasm_module = "./test"]
                 extern "JS" {
                     fn foo(s: &str);
                     fn another(a: u32) -> i32;
@@ -33,34 +34,32 @@ fn simple() {
             }
         "#)
         .file("test.ts", r#"
-            import { Exports, Imports } from "./out";
+            import * as wasm from "./out";
             import * as assert from "assert";
 
             let ARG: string | null = null;
             let ANOTHER_ARG: number | null = null;
-            let SYM = Symbol('a');
+            let SYM = (Symbol as any)('a');
 
-            export const imports: Imports = {
-                foo(s) {
-                    assert.strictEqual(ARG, null);
-                    assert.strictEqual(s, "foo");
-                    ARG = s;
-                },
-                another(s) {
-                    assert.strictEqual(ANOTHER_ARG, null);
-                    assert.strictEqual(s, 21);
-                    ANOTHER_ARG = s;
-                    return 35;
-                },
-                take_and_return_bool(s: boolean): boolean {
-                    return s;
-                },
-                return_object(): any {
-                    return SYM;
-                },
-            };
+            export function foo(s: string): void {
+                assert.strictEqual(ARG, null);
+                assert.strictEqual(s, "foo");
+                ARG = s;
+            }
+            export function another(s: number): number {
+                assert.strictEqual(ANOTHER_ARG, null);
+                assert.strictEqual(s, 21);
+                ANOTHER_ARG = s;
+                return 35;
+            }
+            export function take_and_return_bool(s: boolean): boolean {
+                return s;
+            }
+            export function return_object(): any {
+                return SYM;
+            }
 
-            export function test(wasm: Exports) {
+            export function test() {
                 assert.strictEqual(ARG, null);
                 wasm.bar("foo");
                 assert.strictEqual(ARG, "foo");
@@ -89,6 +88,7 @@ fn unused() {
             use wasm_bindgen::prelude::*;
 
             wasm_bindgen! {
+                #[wasm_module = "./test"]
                 extern "JS" {
                     fn debug_print(s: &str);
                 }
@@ -97,11 +97,11 @@ fn unused() {
             }
         "#)
         .file("test.ts", r#"
-            import { Exports, Imports } from "./out";
+            import * as wasm from "./out";
 
-            export const imports: Imports = {};
+            export function debug_print() {}
 
-            export function test(wasm: Exports) {
+            export function test() {
                 wasm.bar();
             }
         "#)

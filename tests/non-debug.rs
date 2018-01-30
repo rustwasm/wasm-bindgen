@@ -27,12 +27,10 @@ fn works() {
         "#)
         .file("test.ts", r#"
             import * as assert from "assert";
-            import { Exports, Imports } from "./out";
+            import * as wasm from "./out";
 
-            export const imports: Imports = {};
-
-            export function test(wasm: Exports) {
-                let sym = Symbol('a');
+            export function test() {
+                let sym = (Symbol as any)('a');
                 assert.strictEqual(wasm.clone(sym), sym);
                 let a = wasm.A.new();
                 a.free();

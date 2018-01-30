@@ -1,7 +1,7 @@
 extern crate wasm_bindgen_cli_support as cli;
 
 use std::env;
-use std::fs;
+use std::fs::{self, File};
 use std::io::{Write, Read};
 use std::path::{PathBuf, Path};
 use std::process::Command;
@@ -15,7 +15,6 @@ thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
 pub struct Project {
     files: Vec<(String, String)>,
     debug: bool,
-    uglify: bool,
     js: bool,
 }
 
@@ -29,7 +28,6 @@ pub fn project() -> Project {
         .read_to_string(&mut lockfile).unwrap();
     Project {
         debug: true,
-        uglify: false,
         js: false,
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
@@ -54,23 +52,53 @@ pub fn project() -> Project {
             ("Cargo.lock".to_string(), lockfile),
 
             ("run.ts".to_string(), r#"
-                import * as fs from "fs";
                 import * as process from "process";
 
-                import { instantiate } from "./out";
+                import * as out from "./out_wasm";
                 import * as test from "./test";
 
-                var wasm = fs.readFileSync("out.wasm");
-
-                instantiate(wasm, test.imports).then(m => {
-                  test.test(m);
-                  if ((m as any).assertHeapAndStackEmpty)
-                    (m as any).assertHeapAndStackEmpty();
+                out.booted.then(() => {
+                  test.test();
+                  if ((out as any).assertHeapAndStackEmpty)
+                    (out as any).assertHeapAndStackEmpty();
                 }).catch(error => {
                   console.error(error);
                   process.exit(1);
                 });
             "#.to_string()),
+
+            ("rollup.config.js".to_string(), r#"
+                import typescript from 'rollup-plugin-typescript2';
+
+                export default {
+                    input: './run.ts',
+
+                    plugins: [
+                        typescript()
+                    ],
+                    output: {
+                        file: 'bundle.js',
+                        format: 'cjs'
+                    }
+                }
+            "#.to_string()),
+
+            ("tsconfig.json".to_string(), r#"
+				{
+					"compilerOptions": {
+                        "noEmitOnError": true,
+                        "noImplicitAny": true,
+                        "noImplicitThis": true,
+                        "noUnusedParameters": true,
+                        "noUnusedLocals": true,
+                        "noImplicitReturns": true,
+                        "strictFunctionTypes": true,
+                        "strictNullChecks": true,
+                        "alwaysStrict": true,
+                        "strict": true
+					}
+				}
+			"#.to_string()),
         ],
     }
 }
@@ -87,7 +115,7 @@ pub fn root() -> PathBuf {
     return me
 }
 
-fn typescript() -> PathBuf {
+fn rollup() -> PathBuf {
     static INIT: Once = ONCE_INIT;
 
     let mut me = env::current_exe().unwrap();
@@ -95,7 +123,7 @@ fn typescript() -> PathBuf {
     me.pop(); // chop off `deps`
     me.pop(); // chop off `debug` / `release`
     let install_dir = me.clone();
-    me.push("node_modules/typescript/bin/tsc");
+    me.push("node_modules/.bin/rollup");
 
     INIT.call_once(|| {
         if !me.exists() {
@@ -108,9 +136,11 @@ fn typescript() -> PathBuf {
             };
             run(npm
                 .arg("install")
+                .arg("rollup")
+                .arg("rollup-plugin-typescript2")
                 .arg("typescript")
                 .arg("@types/node")
-                .arg("@types/webassembly-js-api")
+                //.arg("@types/webassembly-js-api")
                 .current_dir(&install_dir), "npm");
             assert!(me.exists());
         }
@@ -127,11 +157,6 @@ impl Project {
 
     pub fn debug(&mut self, debug: bool) -> &mut Project {
         self.debug = debug;
-        self
-    }
-
-    pub fn uglify(&mut self, uglify: bool) -> &mut Project {
-        self.uglify = uglify;
         self
     }
 
@@ -170,48 +195,37 @@ impl Project {
             run(&mut cmd, "wasm-gc");
         }
 
-        let obj = cli::Bindgen::new()
-            .input_path(&out)
+        let as_a_module = root.join("out.wasm");
+        fs::copy(&out, &as_a_module).unwrap();
+
+        cli::Bindgen::new()
+            .input_path(&as_a_module)
             .nodejs(true)
+            .typescript(true)
             .debug(self.debug)
-            .uglify_wasm_names(self.uglify)
-            .generate()
+            .generate(&root)
             .expect("failed to run bindgen");
-        if self.js {
-            obj.write_js_to(root.join("out.js")).expect("failed to write js");
-        } else {
-            obj.write_ts_to(root.join("out.ts")).expect("failed to write ts");
-        }
-        obj.write_wasm_to(root.join("out.wasm")).expect("failed to write wasm");
-        let out_dir = if self.js {
-            root.join("out")
-        } else {
-            root.clone()
-        };
+
+        let mut wasm = Vec::new();
+        File::open(root.join("out_wasm.wasm")).unwrap()
+            .read_to_end(&mut wasm).unwrap();
+        let obj = cli::wasm2es6js::Config::new()
+            .base64(true)
+            .generate(&wasm)
+            .expect("failed to convert wasm to js");
+        File::create(root.join("out_wasm.d.ts")).unwrap()
+            .write_all(obj.typescript().as_bytes()).unwrap();
+        File::create(root.join("out_wasm.js")).unwrap()
+            .write_all(obj.js().as_bytes()).unwrap();
 
         let mut cmd = Command::new("node");
-        cmd.arg(typescript())
-            .current_dir(&target_dir)
-            .arg(root.join("run.ts"))
-            .arg("--noUnusedLocals")
-            .arg("--noUnusedParameters")
-            .arg("--noImplicitReturns")
-            .arg("--lib")
-            .arg("es6")
-            .arg("--outDir").arg(&out_dir);
-        if self.js {
-            cmd.arg("--allowJs");
-        } else {
-            cmd.arg("--noImplicitAny")
-                .arg("--strict")
-                .arg("--strictNullChecks")
-                .arg("--declaration")
-                .arg("--strictFunctionTypes");
-        }
+        cmd.arg(rollup())
+            .current_dir(&root)
+            .arg("-c");
         run(&mut cmd, "node");
 
         let mut cmd = Command::new("node");
-        cmd.arg(out_dir.join("run.js"))
+        cmd.arg(root.join("bundle.js"))
             .current_dir(&root);
         run(&mut cmd, "node");
     }
