@@ -20,14 +20,14 @@ Usage:
 Options:
     -h --help               Show this screen.
     -o --output FILE        File to place output in
-    --output-ts FILE        File to place a typescript definition of the module to
+    --typescript            Output a `*.d.ts` file next to the JS output
     --base64                Inline the wasm module using base64 encoding
 ";
 
 #[derive(Debug, Deserialize)]
 struct Args {
     flag_output: Option<PathBuf>,
-    flag_output_ts: Option<PathBuf>,
+    flag_typescript: bool,
     flag_base64: bool,
     arg_input: PathBuf,
 }
@@ -50,9 +50,12 @@ fn main() {
         .generate(&wasm)
         .expect("failed to parse wasm");
 
-    if let Some(ref p) = args.flag_output_ts {
-        File::create(p).expect("failed to create output")
-            .write_all(object.typescript().as_bytes()).expect("failed to write output");
+    if args.flag_typescript {
+        if let Some(ref p) = args.flag_output {
+            let dst = p.with_extension("d.ts");
+            File::create(dst).expect("failed to create output")
+                .write_all(object.typescript().as_bytes()).expect("failed to write output");
+        }
     }
 
     let js = object.js();
