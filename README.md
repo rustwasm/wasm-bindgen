@@ -294,7 +294,7 @@ this][bindings]. You can view them in action like so:
 
 and our corresponding `index.js`:
 
-```html
+```js
 import { Foo, Bar, concat } from "./js_hello_world";
 import { booted } from "./js_hello_world_wasm";
 
