@@ -175,7 +175,7 @@ $ wasm2es6js js_hello_world_wasm.wasm -o js_hello_world_wasm.js --base64
 
 # Install parcel and run it against the index files we use below.
 $ npm install -g parcel-bundler
-$ parcel index.html -p 8000
+$ parcel index.html
 ```
 
 If you open that in a browser you should see a `Hello, world!` dialog pop up!
