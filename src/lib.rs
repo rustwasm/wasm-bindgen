@@ -337,7 +337,7 @@ pub mod __rt {
             }
         }
 
-        pub fn into_inner(self) -> T {
+        pub unsafe fn into_inner(self) -> T {
             self.value.into_inner()
         }
     }
