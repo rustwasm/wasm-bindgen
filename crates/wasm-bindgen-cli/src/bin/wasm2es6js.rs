@@ -22,6 +22,10 @@ Options:
     -o --output FILE        File to place output in
     --typescript            Output a `*.d.ts` file next to the JS output
     --base64                Inline the wasm module using base64 encoding
+
+Note that this is not intended to produce a production-ready output module
+but rather is intended purely as a temporary \"hack\" until it's standard in
+bundlers for working with wasm. Use this program with care!
 ";
 
 #[derive(Debug, Deserialize)]
