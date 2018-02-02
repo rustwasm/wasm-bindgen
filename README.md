@@ -1,19 +1,19 @@
 # wasm-bindgen
 
-A CLI and Rust dependency for acting as a polyfill for [Wasm host
-bindings][host], allowing you to interoperate with JS from wasm with types like
-strings, JS objects, etc.
+A project for facilitating high-level interactions between wasm modules and JS.
 
 [host]: https://github.com/WebAssembly/host-bindings
 
 [![Build Status](https://travis-ci.org/alexcrichton/wasm-bindgen.svg?branch=master)](https://travis-ci.org/alexcrichton/wasm-bindgen)
 [![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/alexcrichton/wasm-bindgen)
 
-This project is a "temporary" polyfill for the [host bindings proposal][host]
-which is intended to empower wasm modules to interact with host objects such as
-strings, JS objects, etc. This project enables defining JS classes in wasm,
-taking strings from JS in wasm, and calling into JS with JS objects previously
-provided.
+This project is sort of half polyfill for features like the [host bindings
+proposal][host] and half features for empowering high-level interactions between
+JS and wasm-compiled code (currently mostly from Rust). More specifically this
+project allows JS/wasm to communicate with strings, JS objects, classes, etc, as
+opposed to purely integers and floats. Using `wasm-bindgen` for example you can
+define a JS class in Rust or take a string from JS or return one. The
+functionality is growing as well!
 
 Currently this tool is Rust-focused but the underlying foundation is
 language-independent, and it's hoping that over time as this tool stabilizes
