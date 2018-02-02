@@ -123,7 +123,7 @@ fn rollup() -> PathBuf {
     me.pop(); // chop off `deps`
     me.pop(); // chop off `debug` / `release`
     let install_dir = me.clone();
-    me.push("node_modules/.bin/rollup");
+    me.push("node_modules/rollup/bin/rollup");
 
     INIT.call_once(|| {
         if !me.exists() {
