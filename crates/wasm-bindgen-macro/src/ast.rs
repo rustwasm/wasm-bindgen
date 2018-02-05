@@ -6,6 +6,7 @@ pub struct Program {
     pub structs: Vec<Struct>,
     pub free_functions: Vec<Function>,
     pub imports: Vec<Import>,
+    pub imported_structs: Vec<ImportStruct>,
 }
 
 pub struct Function {
@@ -16,11 +17,21 @@ pub struct Function {
 
 pub struct Import {
     pub module: String,
-    pub function: Function,
-    pub decl: Box<syn::FnDecl>,
+    pub function: ImportFunction,
+}
+
+pub struct ImportFunction {
     pub ident: syn::Ident,
-    pub vis: syn::Visibility,
-    pub attrs: Vec<syn::Attribute>,
+    pub wasm_function: Function,
+    pub rust_decl: Box<syn::FnDecl>,
+    pub rust_vis: syn::Visibility,
+    pub rust_attrs: Vec<syn::Attribute>,
+}
+
+pub struct ImportStruct {
+    pub module: Option<String>,
+    pub name: syn::Ident,
+    pub functions: Vec<(bool, ImportFunction)>,
 }
 
 pub enum Type {
@@ -103,23 +114,51 @@ impl Program {
             })
             .expect("must specify `#[wasm_module = ...]` for module to import from");
         for item in f.items.iter() {
-            self.push_foreign_item(&module, item);
+            let import = self.gen_foreign_item(item, false).0;
+            self.imports.push(Import {
+                module: module.clone(),
+                function: import,
+            });
         }
     }
 
-    pub fn push_foreign_item(&mut self, module: &str, f: &syn::ForeignItem) {
+    pub fn gen_foreign_item(&mut self,
+                            f: &syn::ForeignItem,
+                            allow_self: bool) -> (ImportFunction, bool) {
         let f = match *f {
             syn::ForeignItem::Fn(ref f) => f,
             _ => panic!("only foreign functions allowed for now, not statics"),
         };
 
-        self.imports.push(Import {
-            module: module.to_string(),
-            attrs: f.attrs.clone(),
-            vis: f.vis.clone(),
-            decl: f.decl.clone(),
+        let (wasm, mutable) = Function::from_decl(f.ident, &f.decl, allow_self);
+        let is_method = match mutable {
+            Some(false) => true,
+            None => false,
+            Some(true) => {
+                panic!("mutable self methods not allowed in extern structs");
+            }
+        };
+
+        (ImportFunction {
+            rust_attrs: f.attrs.clone(),
+            rust_vis: f.vis.clone(),
+            rust_decl: f.decl.clone(),
             ident: f.ident.clone(),
-            function: Function::from_decl(f.ident, &f.decl),
+            wasm_function: wasm,
+        }, is_method)
+    }
+
+    pub fn push_extern_class(&mut self, class: &ExternClass) {
+        let functions = class.functions.iter()
+            .map(|f| {
+                let (f, method) = self.gen_foreign_item(f, true);
+                (method, f)
+            })
+            .collect();
+        self.imported_structs.push(ImportStruct {
+            module: class.module.as_ref().map(|s| s.value()),
+            name: class.name,
+            functions,
         });
     }
 
@@ -128,7 +167,10 @@ impl Program {
             structs: self.structs.iter().map(|s| s.shared()).collect(),
             free_functions: self.free_functions.iter().map(|s| s.shared()).collect(),
             imports: self.imports.iter()
-                .map(|i| (i.module.clone(), i.function.shared()))
+                .map(|i| (i.module.clone(), i.function.wasm_function.shared()))
+                .collect(),
+            imported_structs: self.imported_structs.iter()
+                .map(|i| i.shared())
                 .collect(),
         }
     }
@@ -153,10 +195,12 @@ impl Function {
             panic!("can only bindgen Rust ABI functions")
         }
 
-        Function::from_decl(input.ident, &input.decl)
+        Function::from_decl(input.ident, &input.decl, false).0
     }
 
-    pub fn from_decl(name: syn::Ident, decl: &syn::FnDecl) -> Function {
+    pub fn from_decl(name: syn::Ident,
+                     decl: &syn::FnDecl,
+                     allow_self: bool) -> (Function, Option<bool>) {
         if decl.variadic.is_some() {
             panic!("can't bindgen variadic functions")
         }
@@ -164,10 +208,19 @@ impl Function {
             panic!("can't bindgen functions with lifetime or type parameters")
         }
 
+        let mut mutable = None;
         let arguments = decl.inputs.iter()
-            .map(|arg| {
+            .filter_map(|arg| {
                 match *arg {
-                    syn::FnArg::Captured(ref c) => c,
+                    syn::FnArg::Captured(ref c) => Some(c),
+                    syn::FnArg::SelfValue(_) => {
+                        panic!("by-value `self` not yet supported");
+                    }
+                    syn::FnArg::SelfRef(ref a) if allow_self => {
+                        assert!(mutable.is_none());
+                        mutable = Some(a.mutability.is_some());
+                        None
+                    }
                     _ => panic!("arguments cannot be `self` or ignored"),
                 }
             })
@@ -179,7 +232,7 @@ impl Function {
             syn::ReturnType::Type(_, ref t) => Some(Type::from(t)),
         };
 
-        Function { name, arguments, ret }
+        (Function { name, arguments, ret }, mutable)
     }
 
     pub fn free_function_export_name(&self) -> syn::LitStr {
@@ -346,38 +399,9 @@ impl Struct {
             panic!("can only bindgen safe functions");
         }
 
-        if method.sig.decl.variadic.is_some() {
-            panic!("can't bindgen variadic functions")
-        }
-        if method.sig.decl.generics.params.len() > 0 {
-            panic!("can't bindgen functions with lifetime or type parameters")
-        }
-
-        let mut mutable = None;
-        let arguments = method.sig.decl.inputs.iter()
-            .filter_map(|arg| {
-                match *arg {
-                    syn::FnArg::Captured(ref c) => Some(c),
-                    syn::FnArg::SelfValue(_) => {
-                        panic!("by-value `self` not yet supported");
-                    }
-                    syn::FnArg::SelfRef(ref a) => {
-                        assert!(mutable.is_none());
-                        mutable = Some(a.mutability.is_some());
-                        None
-                    }
-                    _ => panic!("arguments cannot be `self` or ignored"),
-                }
-            })
-            .map(|arg| Type::from(&arg.ty))
-            .collect::<Vec<_>>();
-
-        let ret = match method.sig.decl.output {
-            syn::ReturnType::Default => None,
-            syn::ReturnType::Type(_, ref t) => Some(Type::from(t)),
-        };
-
-        let function = Function { name: method.sig.ident, arguments, ret };
+        let (function, mutable) = Function::from_decl(method.sig.ident,
+                                                      &method.sig.decl,
+                                                      true);
         match mutable {
             Some(mutable) => {
                 self.methods.push(Method { mutable, function });
@@ -404,4 +428,78 @@ impl Method {
             function: self.function.shared(),
         }
     }
+}
+
+impl ImportStruct {
+    fn shared(&self) -> shared::ImportStruct {
+        shared::ImportStruct {
+            module: self.module.clone(),
+            name: self.name.to_string(),
+            functions: self.functions.iter()
+                .map(|&(b, ref f)| (b, f.wasm_function.shared()))
+                .collect(),
+        }
+    }
+}
+
+pub struct File {
+    pub items: Vec<MyItem>,
+}
+
+impl syn::synom::Synom for File {
+    named!(parse -> Self, map!(many0!(syn!(MyItem)), |items| File { items }));
+}
+
+pub enum MyItem {
+    Normal(syn::Item),
+    ExternClass(ExternClass),
+}
+
+impl syn::synom::Synom for MyItem {
+    named!(parse -> Self, alt!(
+        syn!(syn::Item) => { MyItem::Normal }
+        |
+        syn!(ExternClass) => { MyItem::ExternClass }
+    ));
+}
+
+pub struct ExternClass {
+    name: syn::Ident,
+    module: Option<syn::LitStr>,
+    functions: Vec<syn::ForeignItem>,
+}
+
+impl syn::synom::Synom for ExternClass {
+    named!(parse -> Self, do_parse!(
+        module: option!(do_parse!(
+            punct!(#) >>
+            name: brackets!(do_parse!(
+                call!(term, "wasm_module") >>
+                punct!(=) >>
+                val: syn!(syn::LitStr) >>
+                (val)
+            )) >>
+            (name.1)
+        )) >>
+        keyword!(extern) >>
+        keyword!(struct) >>
+        name: syn!(syn::Ident) >>
+        items: braces!(many0!(syn!(syn::ForeignItem))) >>
+        (ExternClass {
+            name,
+            module,
+            functions: items.1,
+        })
+    ));
+}
+
+fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str)
+    -> syn::synom::PResult<'a, ()>
+{
+    if let Some((_span, term, next)) = cursor.term() {
+        if term.as_str() == name {
+            return Ok(((), next))
+        }
+    }
+    syn::parse_error()
 }

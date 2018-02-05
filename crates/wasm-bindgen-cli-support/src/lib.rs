@@ -109,6 +109,7 @@ fn extract_program(module: &mut Module) -> shared::Program {
         structs: Vec::new(),
         free_functions: Vec::new(),
         imports: Vec::new(),
+        imported_structs: Vec::new(),
     };
     let data = match data {
         Some(data) => data,
@@ -126,10 +127,11 @@ fn extract_program(module: &mut Module) -> shared::Program {
                 Ok(f) => f,
                 Err(_) => continue,
             };
-            let shared::Program { structs, free_functions, imports } = p;
+            let shared::Program { structs, free_functions, imports, imported_structs } = p;
             ret.structs.extend(structs);
             ret.free_functions.extend(free_functions);
             ret.imports.extend(imports);
+            ret.imported_structs.extend(imported_structs);
         }
         data.entries_mut().remove(i);
     }

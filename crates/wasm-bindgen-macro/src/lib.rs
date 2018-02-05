@@ -1,5 +1,6 @@
 #![feature(proc_macro)]
 
+#[macro_use]
 extern crate syn;
 #[macro_use]
 extern crate quote;
@@ -26,7 +27,7 @@ macro_rules! my_quote {
 #[proc_macro]
 pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     // Parse the input as a list of Rust items, reusing the `syn::File` parser.
-    let file = syn::parse::<syn::File>(input)
+    let file = syn::parse::<ast::File>(input)
         .expect("expected a set of valid Rust items");
 
     let mut ret = Tokens::new();
@@ -35,12 +36,21 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
         structs: Vec::new(),
         free_functions: Vec::new(),
         imports: Vec::new(),
+        imported_structs: Vec::new(),
     };
 
     // Translate all input items into our own internal representation (the `ast`
     // module). We'll be panicking here on anything that we can't process
 
     for item in file.items.iter() {
+        let item = match *item {
+            ast::MyItem::ExternClass(ref c) => {
+                program.push_extern_class(c);
+                continue
+            }
+            ast::MyItem::Normal(ref item) => item,
+        };
+
         match *item {
             syn::Item::Fn(ref f) => {
                 item.to_tokens(&mut ret);
@@ -75,6 +85,9 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     }
     for i in program.imports.iter() {
         bindgen_import(i, &mut ret);
+    }
+    for i in program.imported_structs.iter() {
+        bindgen_imported_struct(i, &mut ret);
     }
 
     // Finally generate a static which will eventually be what lives in a custom
@@ -416,18 +429,53 @@ impl ToTokens for Receiver {
 }
 
 fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
-    let vis = &import.vis;
-    let ret = &import.decl.output;
-    let name = &import.ident;
-    let fn_token = &import.decl.fn_token;
-    let arguments = &import.decl.inputs;
+    bindgen_import_function(&import.function,
+                            &import.function.ident.to_string(),
+                            Some(&import.module),
+                            tokens);
+}
+
+fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
+    let name = import.name;
+    (my_quote! {
+        pub struct #name {
+            obj: ::wasm_bindgen::JsObject,
+        }
+    }).to_tokens(tokens);
+
+    let mut methods = Tokens::new();
+
+    for &(_is_method, ref f) in import.functions.iter() {
+        let import_name = format!("__wbg_{}_{}", name, f.ident);
+
+        bindgen_import_function(f,
+                                &import_name,
+                                import.module.as_ref().map(|s| &**s),
+                                &mut methods);
+    }
+
+    (my_quote! {
+        impl #name {
+            #methods
+        }
+    }).to_tokens(tokens);
+}
+
+fn bindgen_import_function(import: &ast::ImportFunction,
+                           import_name: &str,
+                           _import_module: Option<&str>,
+                           tokens: &mut Tokens) {
+    let vis = &import.rust_vis;
+    let ret = &import.rust_decl.output;
+    let fn_token = &import.rust_decl.fn_token;
+    let arguments = &import.rust_decl.inputs;
 
     let mut abi_argument_names = Vec::new();
     let mut abi_arguments = Vec::new();
     let mut arg_conversions = Vec::new();
     let ret_ident = syn::Ident::from("_ret");
 
-    let names = import.decl.inputs
+    let names = import.rust_decl.inputs
         .iter()
         .map(|arg| {
             match *arg {
@@ -449,7 +497,7 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
             }
         });
 
-    for (ty, name) in import.function.arguments.iter().zip(names) {
+    for (ty, name) in import.wasm_function.arguments.iter().zip(names) {
         match *ty {
             ast::Type::Integer(i) => {
                 abi_argument_names.push(name);
@@ -507,7 +555,7 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
     }
     let abi_ret;
     let convert_ret;
-    match import.function.ret {
+    match import.wasm_function.ret {
         Some(ast::Type::Integer(i)) => {
             abi_ret = my_quote! { #i };
             convert_ret = my_quote! { #ret_ident };
@@ -542,14 +590,16 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
         }
     }
 
+    let name = import.ident;
+    let import_name = syn::Ident::from(import_name);
     (quote! {
         #vis #fn_token #name(#arguments) #ret {
             extern {
-                fn #name(#(#abi_arguments),*) -> #abi_ret;
+                fn #import_name(#(#abi_arguments),*) -> #abi_ret;
             }
             unsafe {
                 #(#arg_conversions)*
-                let #ret_ident = #name(#(#abi_argument_names),*);
+                let #ret_ident = #import_name(#(#abi_argument_names),*);
                 #convert_ret
             }
         }

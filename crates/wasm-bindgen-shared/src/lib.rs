@@ -6,6 +6,7 @@ pub struct Program {
     pub structs: Vec<Struct>,
     pub free_functions: Vec<Function>,
     pub imports: Vec<(String, Function)>,
+    pub imported_structs: Vec<ImportStruct>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -13,6 +14,13 @@ pub struct Struct {
     pub name: String,
     pub functions: Vec<Function>,
     pub methods: Vec<Method>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ImportStruct {
+    pub module: Option<String>,
+    pub name: String,
+    pub functions: Vec<(bool, Function)>,
 }
 
 #[derive(Serialize, Deserialize)]
