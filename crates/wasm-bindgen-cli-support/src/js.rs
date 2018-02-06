@@ -483,6 +483,7 @@ impl<'a> Js<'a> {
 
         self.gen_import_shim(&shared::mangled_import_name(None, &import.name),
                              &imported_name,
+                             false,
                              import)
     }
 
@@ -493,10 +494,10 @@ impl<'a> Js<'a> {
             ", import.name, module));
         }
 
-        for import in import.functions.iter() {
-            self.generate_import_struct_function(&import.function.name,
-                                                 import.method,
-                                                 &import.function);
+        for f in import.functions.iter() {
+            self.generate_import_struct_function(&import.name,
+                                                 f.method,
+                                                 &f.function);
         }
     }
 
@@ -513,6 +514,7 @@ impl<'a> Js<'a> {
         };
         self.gen_import_shim(&shared::mangled_import_name(Some(class), &function.name),
                              &delegate,
+                             is_method,
                              function)
     }
 
@@ -520,18 +522,25 @@ impl<'a> Js<'a> {
         &mut self,
         shim_name: &str,
         shim_delegate: &str,
+        is_method: bool,
         import: &shared::Function,
     ) {
         let mut dst = String::new();
 
         dst.push_str(&format!("function {}(", shim_name));
-
         let mut invocation = String::new();
+
+        if is_method {
+            dst.push_str("ptr");
+            invocation.push_str("getObject(ptr)");
+            self.expose_get_object();
+        }
+
         for (i, arg) in import.arguments.iter().enumerate() {
             if invocation.len() > 0 {
                 invocation.push_str(", ");
             }
-            if i > 0 {
+            if i > 0 || is_method {
                 dst.push_str(", ");
             }
             match *arg {

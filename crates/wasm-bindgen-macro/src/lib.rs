@@ -431,11 +431,6 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
 
 fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
     let name = import.name;
-    (my_quote! {
-        pub struct #name {
-            obj: ::wasm_bindgen::JsObject,
-        }
-    }).to_tokens(tokens);
 
     let mut methods = Tokens::new();
 
@@ -448,8 +443,27 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
     }
 
     (my_quote! {
+        pub struct #name {
+            obj: ::wasm_bindgen::JsObject,
+        }
+
         impl #name {
             #methods
+        }
+
+        impl ::wasm_bindgen::convert::WasmBoundary for #name {
+            type Js = <::wasm_bindgen::JsObject as
+                ::wasm_bindgen::convert::WasmBoundary>::Js;
+            const DESCRIPTOR: char = <::wasm_bindgen::JsObject as
+                ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR;
+
+            fn into_js(self) -> Self::Js {
+                self.obj.into_js()
+            }
+
+            unsafe fn from_js(js: Self::Js) -> Self {
+                #name { obj: ::wasm_bindgen::JsObject::from_js(js) }
+            }
         }
     }).to_tokens(tokens);
 }
@@ -467,10 +481,26 @@ fn bindgen_import_function(import: &ast::ImportFunction,
     let mut arg_conversions = Vec::new();
     let ret_ident = syn::Ident::from("_ret");
 
-    let names = import.rust_decl.inputs
+    let inputs = import.rust_decl.inputs.iter().collect::<Vec<_>>();
+    let (is_method, inputs) = match inputs.get(0) {
+        Some(&&syn::FnArg::Captured(_)) => (false, &inputs[..]),
+        Some(_) => (true, &inputs[1..]),
+        None => (false, &inputs[..]),
+    };
+
+    if is_method {
+        let ptr = syn::Ident::from("ptr");
+        abi_argument_names.push(ptr);
+        abi_arguments.push(my_quote! { #ptr: u32 });
+        arg_conversions.push(my_quote! {
+            let #ptr = ::wasm_bindgen::convert::ToRefWasmBoundary::to_js_ref(&self.obj);
+        });
+    }
+
+    let names = inputs
         .iter()
         .map(|arg| {
-            match *arg {
+            match **arg {
                 syn::FnArg::Captured(ref c) => c,
                 _ => panic!("arguments cannot be `self` or ignored"),
             }
