@@ -218,3 +218,46 @@ fn pass_one_to_another() {
         "#)
         .test();
 }
+
+#[test]
+fn bindgen_twice() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                pub struct A {}
+
+                impl A {
+                    pub fn new() -> A {
+                        A {}
+                    }
+                }
+            }
+
+            wasm_bindgen! {
+                pub struct B {}
+
+                impl B {
+                    pub fn new() -> B {
+                        B {}
+                    }
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import { A, B } from "./out";
+
+            export function test() {
+                let a = A.new();
+                let b = B.new();
+                a.free();
+                b.free();
+            }
+        "#)
+        .test();
+}

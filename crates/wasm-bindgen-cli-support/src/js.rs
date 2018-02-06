@@ -5,7 +5,7 @@ use parity_wasm::elements::*;
 
 use super::Bindgen;
 
-pub struct Js<'a> {
+pub struct Context<'a> {
     pub globals: String,
     pub imports: String,
     pub typescript: String,
@@ -13,24 +13,16 @@ pub struct Js<'a> {
     pub required_internal_exports: HashSet<&'static str>,
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
-    pub program: &'a shared::Program,
+    pub imports_to_rewrite: HashSet<String>,
 }
 
-impl<'a> Js<'a> {
-    pub fn generate(&mut self, module_name: &str) -> (String, String) {
-        for f in self.program.free_functions.iter() {
-            self.generate_free_function(f);
-        }
-        for f in self.program.imports.iter() {
-            self.generate_import(&f.module, &f.function);
-        }
-        for s in self.program.structs.iter() {
-            self.generate_struct(s);
-        }
-        for s in self.program.imported_structs.iter() {
-            self.generate_import_struct(s);
-        }
+pub struct SubContext<'a, 'b: 'a> {
+    pub program: &'a shared::Program,
+    pub cx: &'a mut Context<'b>,
+}
 
+impl<'a> Context<'a> {
+    pub fn finalize(&mut self, module_name: &str) -> (String, String) {
         {
             let mut bind = |name: &str, f: &Fn(&mut Self) -> String| {
                 if !self.wasm_import_needed(name) {
@@ -196,445 +188,6 @@ impl<'a> Js<'a> {
         (js, self.typescript.clone())
     }
 
-    pub fn generate_free_function(&mut self, func: &shared::Function) {
-        let (js, ts) = self.generate_function("function",
-                                              &func.name,
-                                              &func.name,
-                                              false,
-                                              &func.arguments,
-                                              func.ret.as_ref());
-        self.globals.push_str("export ");
-        self.globals.push_str(&js);
-        self.globals.push_str("\n");
-        self.typescript.push_str("export ");
-        self.typescript.push_str(&ts);
-        self.typescript.push_str("\n");
-    }
-
-    pub fn generate_struct(&mut self, s: &shared::Struct) {
-        let mut dst = String::new();
-        dst.push_str(&format!("export class {} {{", s.name));
-        let mut ts_dst = dst.clone();
-        ts_dst.push_str("
-            public ptr: number;
-        ");
-        if self.config.debug {
-            self.expose_check_token();
-            dst.push_str(&format!("
-                constructor(ptr, sym) {{
-                    _checkToken(sym);
-                    this.ptr = ptr;
-                }}
-            "));
-            ts_dst.push_str("constructor(ptr: number, sym: Symbol);\n");
-        } else {
-            dst.push_str(&format!("
-                constructor(ptr) {{
-                    this.ptr = ptr;
-                }}
-            "));
-            ts_dst.push_str("constructor(ptr: number);\n");
-        }
-
-        dst.push_str(&format!("
-            free() {{
-                const ptr = this.ptr;
-                this.ptr = 0;
-                wasm.{}(ptr);
-            }}
-        ", shared::free_function(&s.name)));
-        ts_dst.push_str("free(): void;\n");
-
-        for function in s.functions.iter() {
-            let (js, ts) = self.generate_function(
-                "static",
-                &function.name,
-                &shared::struct_function_export_name(&s.name, &function.name),
-                false,
-                &function.arguments,
-                function.ret.as_ref(),
-            );
-            dst.push_str(&js);
-            dst.push_str("\n");
-            ts_dst.push_str(&ts);
-            ts_dst.push_str("\n");
-        }
-        for method in s.methods.iter() {
-            let (js, ts) = self.generate_function(
-                "",
-                &method.function.name,
-                &shared::struct_function_export_name(&s.name, &method.function.name),
-                true,
-                &method.function.arguments,
-                method.function.ret.as_ref(),
-            );
-            dst.push_str(&js);
-            dst.push_str("\n");
-            ts_dst.push_str(&ts);
-            ts_dst.push_str("\n");
-        }
-        dst.push_str("}\n");
-        ts_dst.push_str("}\n");
-
-        self.globals.push_str(&dst);
-        self.globals.push_str("\n");
-        self.typescript.push_str(&ts_dst);
-        self.typescript.push_str("\n");
-    }
-
-    fn generate_function(&mut self,
-                         prefix: &str,
-                         name: &str,
-                         wasm_name: &str,
-                         is_method: bool,
-                         arguments: &[shared::Type],
-                         ret: Option<&shared::Type>) -> (String, String) {
-        let mut dst = format!("{}(", name);
-        let mut dst_ts = format!("{}(", name);
-        let mut passed_args = String::new();
-        let mut arg_conversions = String::new();
-        let mut destructors = String::new();
-
-        if is_method {
-            passed_args.push_str("this.ptr");
-        }
-
-        for (i, arg) in arguments.iter().enumerate() {
-            let name = format!("arg{}", i);
-            if i > 0 {
-                dst.push_str(", ");
-                dst_ts.push_str(", ");
-            }
-            dst.push_str(&name);
-            dst_ts.push_str(&name);
-
-            let mut pass = |arg: &str| {
-                if passed_args.len() > 0 {
-                    passed_args.push_str(", ");
-                }
-                passed_args.push_str(arg);
-            };
-            match *arg {
-                shared::TYPE_NUMBER => {
-                    dst_ts.push_str(": number");
-                    if self.config.debug {
-                        self.expose_assert_num();
-                        arg_conversions.push_str(&format!("_assertNum({});\n", name));
-                    }
-                    pass(&name)
-                }
-                shared::TYPE_BOOLEAN => {
-                    dst_ts.push_str(": boolean");
-                    if self.config.debug {
-                        self.expose_assert_bool();
-                        arg_conversions.push_str(&format!("\
-                            _assertBoolean({name});
-                        ", name = name));
-                    } else {
-                    }
-                    pass(&format!("arg{i} ? 1 : 0", i = i))
-                }
-                shared::TYPE_BORROWED_STR |
-                shared::TYPE_STRING => {
-                    dst_ts.push_str(": string");
-                    self.expose_pass_string_to_wasm();
-                    arg_conversions.push_str(&format!("\
-                        const [ptr{i}, len{i}] = passStringToWasm({arg});
-                    ", i = i, arg = name));
-                    pass(&format!("ptr{}", i));
-                    pass(&format!("len{}", i));
-                    if *arg == shared::TYPE_BORROWED_STR {
-                        destructors.push_str(&format!("\n\
-                            wasm.__wbindgen_free(ptr{i}, len{i});\n\
-                        ", i = i));
-                        self.required_internal_exports.insert("__wbindgen_free");
-                    }
-                }
-                shared::TYPE_JS_OWNED => {
-                    dst_ts.push_str(": any");
-                    self.expose_add_heap_object();
-                    arg_conversions.push_str(&format!("\
-                        const idx{i} = addHeapObject({arg});
-                    ", i = i, arg = name));
-                    pass(&format!("idx{}", i));
-                }
-                shared::TYPE_JS_REF => {
-                    dst_ts.push_str(": any");
-                    self.expose_borrowed_objects();
-                    arg_conversions.push_str(&format!("\
-                        const idx{i} = addBorrowedObject({arg});
-                    ", i = i, arg = name));
-                    destructors.push_str("stack.pop();\n");
-                    pass(&format!("idx{}", i));
-                }
-                custom if (custom as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => {
-                    let custom = ((custom as u32) & !shared::TYPE_CUSTOM_REF_FLAG) -
-                        shared::TYPE_CUSTOM_START;
-                    let s = &self.program.custom_type_names[custom as usize / 2];
-                    dst_ts.push_str(&format!(": {}", s));
-                    if self.config.debug {
-                        self.expose_assert_class();
-                        arg_conversions.push_str(&format!("\
-                            _assertClass({arg}, {struct_});
-                        ", arg = name, struct_ = s));
-                    }
-                    pass(&format!("{}.ptr", name));
-                }
-                custom => {
-                    let custom = (custom as u32) - shared::TYPE_CUSTOM_START;
-                    let s = &self.program.custom_type_names[custom as usize / 2];
-                    dst_ts.push_str(&format!(": {}", s));
-                    if self.config.debug {
-                        self.expose_assert_class();
-                        arg_conversions.push_str(&format!("\
-                            _assertClass({arg}, {struct_});
-                        ", arg = name, struct_ = s));
-                    }
-                    arg_conversions.push_str(&format!("\
-                        const ptr{i} = {arg}.ptr;
-                        {arg}.ptr = 0;
-                    ", i = i, arg = name));
-                    pass(&format!("ptr{}", i));
-                }
-            }
-        }
-        dst.push_str(")");
-        dst_ts.push_str(")");
-        let convert_ret = match ret {
-            None => {
-                dst_ts.push_str(": void");
-                format!("return ret;")
-            }
-            Some(&shared::TYPE_NUMBER) => {
-                dst_ts.push_str(": number");
-                format!("return ret;")
-            }
-            Some(&shared::TYPE_BOOLEAN) => {
-                dst_ts.push_str(": boolean");
-                format!("return ret != 0;")
-            }
-            Some(&shared::TYPE_JS_OWNED) => {
-                dst_ts.push_str(": any");
-                self.expose_take_object();
-                format!("return takeObject(ret);")
-            }
-            Some(&shared::TYPE_STRING) => {
-                dst_ts.push_str(": string");
-                self.expose_get_string_from_wasm();
-                self.required_internal_exports.insert("__wbindgen_boxed_str_ptr");
-                self.required_internal_exports.insert("__wbindgen_boxed_str_len");
-                self.required_internal_exports.insert("__wbindgen_boxed_str_free");
-                format!("
-                    const ptr = wasm.__wbindgen_boxed_str_ptr(ret);
-                    const len = wasm.__wbindgen_boxed_str_len(ret);
-                    const realRet = getStringFromWasm(ptr, len);
-                    wasm.__wbindgen_boxed_str_free(ret);
-                    return realRet;
-                ")
-            }
-            Some(&shared::TYPE_JS_REF) |
-            Some(&shared::TYPE_BORROWED_STR) => panic!(),
-            Some(&t) if (t as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => panic!(),
-            Some(&custom) => {
-                let custom = (custom as u32) - shared::TYPE_CUSTOM_START;
-                let name = &self.program.custom_type_names[custom as usize / 2];
-                dst_ts.push_str(": ");
-                dst_ts.push_str(name);
-                if self.config.debug {
-                    format!("\
-                        return new {name}(ret, token);
-                    ", name = name)
-                } else {
-                    format!("\
-                        return new {name}(ret);
-                    ", name = name)
-                }
-            }
-        };
-        dst_ts.push_str(";");
-        dst.push_str(" {\n        ");
-        dst.push_str(&arg_conversions);
-        if destructors.len() == 0 {
-            dst.push_str(&format!("\
-                const ret = wasm.{}({passed});
-                {convert_ret}
-            ",
-                f = wasm_name,
-                passed = passed_args,
-                convert_ret = convert_ret,
-            ));
-        } else {
-            dst.push_str(&format!("\
-                try {{
-                    const ret = wasm.{f}({passed});
-                    {convert_ret}
-                }} finally {{
-                    {destructors}
-                }}
-            ",
-                f = wasm_name,
-                passed = passed_args,
-                destructors = destructors,
-                convert_ret = convert_ret,
-            ));
-        }
-        dst.push_str("}");
-        (format!("{} {}", prefix, dst), format!("{} {}", prefix, dst_ts))
-    }
-
-    pub fn generate_import(&mut self, module: &str, import: &shared::Function) {
-        let imported_name = format!("import{}", self.imports.len());
-
-        self.imports.push_str(&format!("
-            import {{ {} as {} }} from '{}';
-        ", import.name, imported_name, module));
-
-        self.gen_import_shim(&shared::mangled_import_name(None, &import.name),
-                             &imported_name,
-                             false,
-                             import)
-    }
-
-    pub fn generate_import_struct(&mut self, import: &shared::ImportStruct) {
-        if let Some(ref module) = import.module {
-            self.imports.push_str(&format!("
-                import {{ {} }} from '{}';
-            ", import.name, module));
-        }
-
-        for f in import.functions.iter() {
-            self.generate_import_struct_function(&import.name, f);
-        }
-    }
-
-    fn generate_import_struct_function(
-        &mut self,
-        class: &str,
-        f: &shared::ImportStructFunction,
-    ) {
-        let delegate = if f.method {
-            format!("{}.prototype.{}.call", class, f.function.name)
-        } else if f.js_new {
-            format!("new {}", class)
-        } else {
-            format!("{}.{}", class, f.function.name)
-        };
-        self.gen_import_shim(&shared::mangled_import_name(Some(class), &f.function.name),
-                             &delegate,
-                             f.method,
-                             &f.function)
-    }
-
-    fn gen_import_shim(
-        &mut self,
-        shim_name: &str,
-        shim_delegate: &str,
-        is_method: bool,
-        import: &shared::Function,
-    ) {
-        let mut dst = String::new();
-
-        dst.push_str(&format!("function {}(", shim_name));
-        let mut invocation = String::new();
-
-        if is_method {
-            dst.push_str("ptr");
-            invocation.push_str("getObject(ptr)");
-            self.expose_get_object();
-        }
-
-        let mut extra = String::new();
-
-        for (i, arg) in import.arguments.iter().enumerate() {
-            if invocation.len() > 0 {
-                invocation.push_str(", ");
-            }
-            if i > 0 || is_method {
-                dst.push_str(", ");
-            }
-            match *arg {
-                shared::TYPE_NUMBER => {
-                    invocation.push_str(&format!("arg{}", i));
-                    dst.push_str(&format!("arg{}", i));
-                }
-                shared::TYPE_BOOLEAN => {
-                    invocation.push_str(&format!("arg{} != 0", i));
-                    dst.push_str(&format!("arg{}", i));
-                }
-                shared::TYPE_BORROWED_STR => {
-                    self.expose_get_string_from_wasm();
-                    invocation.push_str(&format!("getStringFromWasm(ptr{0}, len{0})", i));
-                    dst.push_str(&format!("ptr{0}, len{0}", i));
-                }
-                shared::TYPE_STRING => {
-                    self.expose_get_string_from_wasm();
-                    dst.push_str(&format!("ptr{0}, len{0}", i));
-                    extra.push_str(&format!("
-                        let arg{0} = getStringFromWasm(ptr{0}, len{0});
-                        wasm.__wbindgen_free(ptr{0}, len{0});
-                    ", i));
-                    invocation.push_str(&format!("arg{}", i));
-                    self.required_internal_exports.insert("__wbindgen_free");
-                }
-                shared::TYPE_JS_OWNED => {
-                    self.expose_take_object();
-                    invocation.push_str(&format!("takeObject(arg{})", i));
-                    dst.push_str(&format!("arg{}", i));
-                }
-                shared::TYPE_JS_REF => {
-                    self.expose_get_object();
-                    invocation.push_str(&format!("getObject(arg{})", i));
-                    dst.push_str(&format!("arg{}", i));
-                }
-                _ => {
-                    panic!("unsupported type in import");
-                }
-            }
-        }
-        let invoc = format!("{}({})", shim_delegate, invocation);
-        let invoc = match import.ret {
-            Some(shared::TYPE_NUMBER) => format!("return {};", invoc),
-            Some(shared::TYPE_BOOLEAN) => format!("return {} ? 1 : 0;", invoc),
-            Some(shared::TYPE_JS_OWNED) => {
-                self.expose_add_heap_object();
-                format!("return addHeapObject({});", invoc)
-            }
-            Some(shared::TYPE_STRING) => {
-                self.expose_pass_string_to_wasm();
-                self.expose_uint32_memory();
-                if import.arguments.len() > 0 || is_method {
-                    dst.push_str(", ");
-                }
-                dst.push_str("wasmretptr");
-                format!("
-                    const [retptr, retlen] = passStringToWasm({});
-                    getUint32Memory()[wasmretptr / 4] = retlen;
-                    return retptr;
-                ", invoc)
-            }
-            None => invoc,
-            _ => unimplemented!(),
-        };
-        dst.push_str(") {\n");
-        dst.push_str(&extra);
-        dst.push_str(&format!("{}\n}}", invoc));
-
-        self.globals.push_str("export ");
-        self.globals.push_str(&dst);
-        self.globals.push_str("\n");
-    }
-
-    fn wasm_import_needed(&self, name: &str) -> bool {
-        let imports = match self.module.import_section() {
-            Some(s) => s,
-            None => return false,
-        };
-
-        imports.entries().iter().any(|i| {
-            i.module() == "env" && i.field() == name
-        })
-    }
-
     fn rewrite_imports(&mut self, module_name: &str) {
         for section in self.module.sections_mut() {
             let imports = match *section {
@@ -642,9 +195,6 @@ impl<'a> Js<'a> {
                 _ => continue,
             };
             for import in imports.entries_mut() {
-                if import.module() != "env" {
-                    continue
-                }
                 if import.field().starts_with("__wbindgen") {
                     import.module_mut().truncate(0);
                     import.module_mut().push_str("./");
@@ -656,16 +206,7 @@ impl<'a> Js<'a> {
                 // than the module `env` so let's use the metadata here to
                 // rewrite the imports if they import from `env` until it's
                 // fixed upstream.
-                let program_import = self.program.imports
-                    .iter()
-                    .any(|f| shared::mangled_import_name(None, &f.function.name) == import.field());
-                let struct_import = self.program.imported_structs
-                    .iter()
-                    .flat_map(|s| s.functions.iter().map(move |f| (s, &f.function)))
-                    .any(|(s, f)| {
-                        shared::mangled_import_name(Some(&s.name), &f.name) == import.field()
-                    });
-                if program_import || struct_import {
+                if self.imports_to_rewrite.contains(import.field()) {
                     import.module_mut().truncate(0);
                     import.module_mut().push_str("./");
                     import.module_mut().push_str(module_name);
@@ -1013,5 +554,466 @@ impl<'a> Js<'a> {
                 return idx << 1;
             }}
         ", set_slab_next));
+    }
+
+    fn wasm_import_needed(&self, name: &str) -> bool {
+        let imports = match self.module.import_section() {
+            Some(s) => s,
+            None => return false,
+        };
+
+        imports.entries().iter().any(|i| {
+            i.module() == "env" && i.field() == name
+        })
+    }
+}
+
+impl<'a, 'b> SubContext<'a, 'b> {
+    pub fn generate(&mut self) {
+        for f in self.program.free_functions.iter() {
+            self.generate_free_function(f);
+        }
+        for f in self.program.imports.iter() {
+            self.generate_import(&f.module, &f.function);
+        }
+        for s in self.program.structs.iter() {
+            self.generate_struct(s);
+        }
+        for s in self.program.imported_structs.iter() {
+            self.generate_import_struct(s);
+        }
+    }
+
+    pub fn generate_free_function(&mut self, func: &shared::Function) {
+        let (js, ts) = self.generate_function("function",
+                                              &func.name,
+                                              &func.name,
+                                              false,
+                                              &func.arguments,
+                                              func.ret.as_ref());
+        self.cx.globals.push_str("export ");
+        self.cx.globals.push_str(&js);
+        self.cx.globals.push_str("\n");
+        self.cx.typescript.push_str("export ");
+        self.cx.typescript.push_str(&ts);
+        self.cx.typescript.push_str("\n");
+    }
+
+    pub fn generate_struct(&mut self, s: &shared::Struct) {
+        let mut dst = String::new();
+        dst.push_str(&format!("export class {} {{", s.name));
+        let mut ts_dst = dst.clone();
+        ts_dst.push_str("
+            public ptr: number;
+        ");
+        if self.cx.config.debug {
+            self.cx.expose_check_token();
+            dst.push_str(&format!("
+                constructor(ptr, sym) {{
+                    _checkToken(sym);
+                    this.ptr = ptr;
+                }}
+            "));
+            ts_dst.push_str("constructor(ptr: number, sym: Symbol);\n");
+        } else {
+            dst.push_str(&format!("
+                constructor(ptr) {{
+                    this.ptr = ptr;
+                }}
+            "));
+            ts_dst.push_str("constructor(ptr: number);\n");
+        }
+
+        dst.push_str(&format!("
+            free() {{
+                const ptr = this.ptr;
+                this.ptr = 0;
+                wasm.{}(ptr);
+            }}
+        ", shared::free_function(&s.name)));
+        ts_dst.push_str("free(): void;\n");
+
+        for function in s.functions.iter() {
+            let (js, ts) = self.generate_function(
+                "static",
+                &function.name,
+                &shared::struct_function_export_name(&s.name, &function.name),
+                false,
+                &function.arguments,
+                function.ret.as_ref(),
+            );
+            dst.push_str(&js);
+            dst.push_str("\n");
+            ts_dst.push_str(&ts);
+            ts_dst.push_str("\n");
+        }
+        for method in s.methods.iter() {
+            let (js, ts) = self.generate_function(
+                "",
+                &method.function.name,
+                &shared::struct_function_export_name(&s.name, &method.function.name),
+                true,
+                &method.function.arguments,
+                method.function.ret.as_ref(),
+            );
+            dst.push_str(&js);
+            dst.push_str("\n");
+            ts_dst.push_str(&ts);
+            ts_dst.push_str("\n");
+        }
+        dst.push_str("}\n");
+        ts_dst.push_str("}\n");
+
+        self.cx.globals.push_str(&dst);
+        self.cx.globals.push_str("\n");
+        self.cx.typescript.push_str(&ts_dst);
+        self.cx.typescript.push_str("\n");
+    }
+
+    fn generate_function(&mut self,
+                         prefix: &str,
+                         name: &str,
+                         wasm_name: &str,
+                         is_method: bool,
+                         arguments: &[shared::Type],
+                         ret: Option<&shared::Type>) -> (String, String) {
+        let mut dst = format!("{}(", name);
+        let mut dst_ts = format!("{}(", name);
+        let mut passed_args = String::new();
+        let mut arg_conversions = String::new();
+        let mut destructors = String::new();
+
+        if is_method {
+            passed_args.push_str("this.ptr");
+        }
+
+        for (i, arg) in arguments.iter().enumerate() {
+            let name = format!("arg{}", i);
+            if i > 0 {
+                dst.push_str(", ");
+                dst_ts.push_str(", ");
+            }
+            dst.push_str(&name);
+            dst_ts.push_str(&name);
+
+            let mut pass = |arg: &str| {
+                if passed_args.len() > 0 {
+                    passed_args.push_str(", ");
+                }
+                passed_args.push_str(arg);
+            };
+            match *arg {
+                shared::TYPE_NUMBER => {
+                    dst_ts.push_str(": number");
+                    if self.cx.config.debug {
+                        self.cx.expose_assert_num();
+                        arg_conversions.push_str(&format!("_assertNum({});\n", name));
+                    }
+                    pass(&name)
+                }
+                shared::TYPE_BOOLEAN => {
+                    dst_ts.push_str(": boolean");
+                    if self.cx.config.debug {
+                        self.cx.expose_assert_bool();
+                        arg_conversions.push_str(&format!("\
+                            _assertBoolean({name});
+                        ", name = name));
+                    } else {
+                    }
+                    pass(&format!("arg{i} ? 1 : 0", i = i))
+                }
+                shared::TYPE_BORROWED_STR |
+                shared::TYPE_STRING => {
+                    dst_ts.push_str(": string");
+                    self.cx.expose_pass_string_to_wasm();
+                    arg_conversions.push_str(&format!("\
+                        const [ptr{i}, len{i}] = passStringToWasm({arg});
+                    ", i = i, arg = name));
+                    pass(&format!("ptr{}", i));
+                    pass(&format!("len{}", i));
+                    if *arg == shared::TYPE_BORROWED_STR {
+                        destructors.push_str(&format!("\n\
+                            wasm.__wbindgen_free(ptr{i}, len{i});\n\
+                        ", i = i));
+                        self.cx.required_internal_exports.insert("__wbindgen_free");
+                    }
+                }
+                shared::TYPE_JS_OWNED => {
+                    dst_ts.push_str(": any");
+                    self.cx.expose_add_heap_object();
+                    arg_conversions.push_str(&format!("\
+                        const idx{i} = addHeapObject({arg});
+                    ", i = i, arg = name));
+                    pass(&format!("idx{}", i));
+                }
+                shared::TYPE_JS_REF => {
+                    dst_ts.push_str(": any");
+                    self.cx.expose_borrowed_objects();
+                    arg_conversions.push_str(&format!("\
+                        const idx{i} = addBorrowedObject({arg});
+                    ", i = i, arg = name));
+                    destructors.push_str("stack.pop();\n");
+                    pass(&format!("idx{}", i));
+                }
+                custom if (custom as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => {
+                    let custom = ((custom as u32) & !shared::TYPE_CUSTOM_REF_FLAG) -
+                        shared::TYPE_CUSTOM_START;
+                    let s = &self.program.custom_type_names[custom as usize / 2];
+                    dst_ts.push_str(&format!(": {}", s));
+                    if self.cx.config.debug {
+                        self.cx.expose_assert_class();
+                        arg_conversions.push_str(&format!("\
+                            _assertClass({arg}, {struct_});
+                        ", arg = name, struct_ = s));
+                    }
+                    pass(&format!("{}.ptr", name));
+                }
+                custom => {
+                    let custom = (custom as u32) - shared::TYPE_CUSTOM_START;
+                    let s = &self.program.custom_type_names[custom as usize / 2];
+                    dst_ts.push_str(&format!(": {}", s));
+                    if self.cx.config.debug {
+                        self.cx.expose_assert_class();
+                        arg_conversions.push_str(&format!("\
+                            _assertClass({arg}, {struct_});
+                        ", arg = name, struct_ = s));
+                    }
+                    arg_conversions.push_str(&format!("\
+                        const ptr{i} = {arg}.ptr;
+                        {arg}.ptr = 0;
+                    ", i = i, arg = name));
+                    pass(&format!("ptr{}", i));
+                }
+            }
+        }
+        dst.push_str(")");
+        dst_ts.push_str(")");
+        let convert_ret = match ret {
+            None => {
+                dst_ts.push_str(": void");
+                format!("return ret;")
+            }
+            Some(&shared::TYPE_NUMBER) => {
+                dst_ts.push_str(": number");
+                format!("return ret;")
+            }
+            Some(&shared::TYPE_BOOLEAN) => {
+                dst_ts.push_str(": boolean");
+                format!("return ret != 0;")
+            }
+            Some(&shared::TYPE_JS_OWNED) => {
+                dst_ts.push_str(": any");
+                self.cx.expose_take_object();
+                format!("return takeObject(ret);")
+            }
+            Some(&shared::TYPE_STRING) => {
+                dst_ts.push_str(": string");
+                self.cx.expose_get_string_from_wasm();
+                self.cx.required_internal_exports.insert("__wbindgen_boxed_str_ptr");
+                self.cx.required_internal_exports.insert("__wbindgen_boxed_str_len");
+                self.cx.required_internal_exports.insert("__wbindgen_boxed_str_free");
+                format!("
+                    const ptr = wasm.__wbindgen_boxed_str_ptr(ret);
+                    const len = wasm.__wbindgen_boxed_str_len(ret);
+                    const realRet = getStringFromWasm(ptr, len);
+                    wasm.__wbindgen_boxed_str_free(ret);
+                    return realRet;
+                ")
+            }
+            Some(&shared::TYPE_JS_REF) |
+            Some(&shared::TYPE_BORROWED_STR) => panic!(),
+            Some(&t) if (t as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => panic!(),
+            Some(&custom) => {
+                let custom = (custom as u32) - shared::TYPE_CUSTOM_START;
+                let name = &self.program.custom_type_names[custom as usize / 2];
+                dst_ts.push_str(": ");
+                dst_ts.push_str(name);
+                if self.cx.config.debug {
+                    format!("\
+                        return new {name}(ret, token);
+                    ", name = name)
+                } else {
+                    format!("\
+                        return new {name}(ret);
+                    ", name = name)
+                }
+            }
+        };
+        dst_ts.push_str(";");
+        dst.push_str(" {\n        ");
+        dst.push_str(&arg_conversions);
+        if destructors.len() == 0 {
+            dst.push_str(&format!("\
+                const ret = wasm.{}({passed});
+                {convert_ret}
+            ",
+                f = wasm_name,
+                passed = passed_args,
+                convert_ret = convert_ret,
+            ));
+        } else {
+            dst.push_str(&format!("\
+                try {{
+                    const ret = wasm.{f}({passed});
+                    {convert_ret}
+                }} finally {{
+                    {destructors}
+                }}
+            ",
+                f = wasm_name,
+                passed = passed_args,
+                destructors = destructors,
+                convert_ret = convert_ret,
+            ));
+        }
+        dst.push_str("}");
+        (format!("{} {}", prefix, dst), format!("{} {}", prefix, dst_ts))
+    }
+
+    pub fn generate_import(&mut self, module: &str, import: &shared::Function) {
+        let imported_name = format!("import{}", self.cx.imports.len());
+
+        self.cx.imports.push_str(&format!("
+            import {{ {} as {} }} from '{}';
+        ", import.name, imported_name, module));
+
+        let name = shared::mangled_import_name(None, &import.name);
+        self.gen_import_shim(&name,
+                             &imported_name,
+                             false,
+                             import);
+        self.cx.imports_to_rewrite.insert(name);
+    }
+
+    pub fn generate_import_struct(&mut self, import: &shared::ImportStruct) {
+        if let Some(ref module) = import.module {
+            self.cx.imports.push_str(&format!("
+                import {{ {} }} from '{}';
+            ", import.name, module));
+        }
+
+        for f in import.functions.iter() {
+            self.generate_import_struct_function(&import.name, f);
+        }
+    }
+
+    fn generate_import_struct_function(
+        &mut self,
+        class: &str,
+        f: &shared::ImportStructFunction,
+    ) {
+        let delegate = if f.method {
+            format!("{}.prototype.{}.call", class, f.function.name)
+        } else if f.js_new {
+            format!("new {}", class)
+        } else {
+            format!("{}.{}", class, f.function.name)
+        };
+
+        let name = shared::mangled_import_name(Some(class), &f.function.name);
+        self.gen_import_shim(&name,
+                             &delegate,
+                             f.method,
+                             &f.function);
+        self.cx.imports_to_rewrite.insert(name);
+    }
+
+    fn gen_import_shim(
+        &mut self,
+        shim_name: &str,
+        shim_delegate: &str,
+        is_method: bool,
+        import: &shared::Function,
+    ) {
+        let mut dst = String::new();
+
+        dst.push_str(&format!("function {}(", shim_name));
+        let mut invocation = String::new();
+
+        if is_method {
+            dst.push_str("ptr");
+            invocation.push_str("getObject(ptr)");
+            self.cx.expose_get_object();
+        }
+
+        let mut extra = String::new();
+
+        for (i, arg) in import.arguments.iter().enumerate() {
+            if invocation.len() > 0 {
+                invocation.push_str(", ");
+            }
+            if i > 0 || is_method {
+                dst.push_str(", ");
+            }
+            match *arg {
+                shared::TYPE_NUMBER => {
+                    invocation.push_str(&format!("arg{}", i));
+                    dst.push_str(&format!("arg{}", i));
+                }
+                shared::TYPE_BOOLEAN => {
+                    invocation.push_str(&format!("arg{} != 0", i));
+                    dst.push_str(&format!("arg{}", i));
+                }
+                shared::TYPE_BORROWED_STR => {
+                    self.cx.expose_get_string_from_wasm();
+                    invocation.push_str(&format!("getStringFromWasm(ptr{0}, len{0})", i));
+                    dst.push_str(&format!("ptr{0}, len{0}", i));
+                }
+                shared::TYPE_STRING => {
+                    self.cx.expose_get_string_from_wasm();
+                    dst.push_str(&format!("ptr{0}, len{0}", i));
+                    extra.push_str(&format!("
+                        let arg{0} = getStringFromWasm(ptr{0}, len{0});
+                        wasm.__wbindgen_free(ptr{0}, len{0});
+                    ", i));
+                    invocation.push_str(&format!("arg{}", i));
+                    self.cx.required_internal_exports.insert("__wbindgen_free");
+                }
+                shared::TYPE_JS_OWNED => {
+                    self.cx.expose_take_object();
+                    invocation.push_str(&format!("takeObject(arg{})", i));
+                    dst.push_str(&format!("arg{}", i));
+                }
+                shared::TYPE_JS_REF => {
+                    self.cx.expose_get_object();
+                    invocation.push_str(&format!("getObject(arg{})", i));
+                    dst.push_str(&format!("arg{}", i));
+                }
+                _ => {
+                    panic!("unsupported type in import");
+                }
+            }
+        }
+        let invoc = format!("{}({})", shim_delegate, invocation);
+        let invoc = match import.ret {
+            Some(shared::TYPE_NUMBER) => format!("return {};", invoc),
+            Some(shared::TYPE_BOOLEAN) => format!("return {} ? 1 : 0;", invoc),
+            Some(shared::TYPE_JS_OWNED) => {
+                self.cx.expose_add_heap_object();
+                format!("return addHeapObject({});", invoc)
+            }
+            Some(shared::TYPE_STRING) => {
+                self.cx.expose_pass_string_to_wasm();
+                self.cx.expose_uint32_memory();
+                if import.arguments.len() > 0 || is_method {
+                    dst.push_str(", ");
+                }
+                dst.push_str("wasmretptr");
+                format!("
+                    const [retptr, retlen] = passStringToWasm({});
+                    getUint32Memory()[wasmretptr / 4] = retlen;
+                    return retptr;
+                ", invoc)
+            }
+            None => invoc,
+            _ => unimplemented!(),
+        };
+        dst.push_str(") {\n");
+        dst.push_str(&extra);
+        dst.push_str(&format!("{}\n}}", invoc));
+
+        self.cx.globals.push_str("export ");
+        self.cx.globals.push_str(&dst);
+        self.cx.globals.push_str("\n");
     }
 }

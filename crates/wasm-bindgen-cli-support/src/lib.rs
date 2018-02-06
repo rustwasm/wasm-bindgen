@@ -65,18 +65,27 @@ impl Bindgen {
         let mut module = parity_wasm::deserialize_file(input).map_err(|e| {
             format_err!("{:?}", e)
         })?;
-        let program = extract_program(&mut module);
+        let programs = extract_programs(&mut module);
 
-        let (js, ts) = js::Js {
-            globals: String::new(),
-            imports: String::new(),
-            typescript: format!("/* tslint:disable */\n"),
-            exposed_globals: Default::default(),
-            required_internal_exports: Default::default(),
-            config: &self,
-            module: &mut module,
-            program: &program,
-        }.generate(stem);
+        let (js, ts) = {
+            let mut cx = js::Context {
+                globals: String::new(),
+                imports: String::new(),
+                typescript: format!("/* tslint:disable */\n"),
+                exposed_globals: Default::default(),
+                required_internal_exports: Default::default(),
+                imports_to_rewrite: Default::default(),
+                config: &self,
+                module: &mut module,
+            };
+            for program in programs.iter() {
+                js::SubContext {
+                    program,
+                    cx: &mut cx,
+                }.generate();
+            }
+            cx.finalize(stem)
+        };
 
         let js_path = out_dir.join(stem).with_extension("js");
         File::create(&js_path).unwrap()
@@ -100,7 +109,7 @@ impl Bindgen {
     }
 }
 
-fn extract_program(module: &mut Module) -> shared::Program {
+fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
     let data = module.sections_mut()
         .iter_mut()
         .filter_map(|s| {
@@ -111,13 +120,7 @@ fn extract_program(module: &mut Module) -> shared::Program {
         })
         .next();
 
-    let mut ret = shared::Program {
-        structs: Vec::new(),
-        free_functions: Vec::new(),
-        imports: Vec::new(),
-        imported_structs: Vec::new(),
-        custom_type_names: Vec::new(),
-    };
+    let mut ret = Vec::new();
     let data = match data {
         Some(data) => data,
         None => return ret,
@@ -136,21 +139,7 @@ fn extract_program(module: &mut Module) -> shared::Program {
                     panic!("failed to decode what looked like wasm-bindgen data: {}", e)
                 }
             };
-            let shared::Program {
-                structs,
-                free_functions,
-                imports,
-                imported_structs,
-                custom_type_names,
-            } = p;
-            ret.structs.extend(structs);
-            ret.free_functions.extend(free_functions);
-            ret.imports.extend(imports);
-            ret.imported_structs.extend(imported_structs);
-            if custom_type_names.len() > 0 {
-                assert_eq!(ret.custom_type_names.len(), 0);
-            }
-            ret.custom_type_names.extend(custom_type_names);
+            ret.push(p);
         }
         data.entries_mut().remove(i);
     }
