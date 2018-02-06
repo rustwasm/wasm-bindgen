@@ -85,12 +85,13 @@ impl<'a> Js<'a> {
 
             bind("__wbindgen_number_get", &|me| {
                 me.expose_get_object();
+                me.expose_uint8_memory();
                 format!("
                     function(n, invalid) {{
                         let obj = getObject(n);
                         if (typeof(obj) === 'number')
                             return obj;
-                        (new Uint8Array(wasm.memory.buffer))[invalid] = 1;
+                        getUint8Memory()[invalid] = 1;
                         return 0;
                     }}
                 ")
@@ -165,12 +166,13 @@ impl<'a> Js<'a> {
             bind("__wbindgen_string_get", &|me| {
                 me.expose_pass_string_to_wasm();
                 me.expose_get_object();
+                me.expose_uint32_memory();
                 String::from("(i, len_ptr) => {
                     let obj = getObject(i);
                     if (typeof(obj) !== 'string')
                         return 0;
                     const [ptr, len] = passStringToWasm(obj);
-                    (new Uint32Array(wasm.memory.buffer))[len_ptr / 4] = len;
+                    getUint32Memory()[len_ptr / 4] = len;
                     return ptr;
                 }")
             });
@@ -599,13 +601,14 @@ impl<'a> Js<'a> {
             }
             Some(shared::TYPE_STRING) => {
                 self.expose_pass_string_to_wasm();
+                self.expose_uint32_memory();
                 if import.arguments.len() > 0 || is_method {
                     dst.push_str(", ");
                 }
                 dst.push_str("wasmretptr");
                 format!("
                     const [retptr, retlen] = passStringToWasm({});
-                    (new Uint32Array(wasm.memory.buffer))[wasmretptr / 4] = retlen;
+                    getUint32Memory()[wasmretptr / 4] = retlen;
                     return retptr;
                 ", invoc)
             }
@@ -839,19 +842,50 @@ impl<'a> Js<'a> {
                 }}
             "));
         } else {
+            self.expose_text_encoder();
+            self.expose_uint8_memory();
             self.globals.push_str(&format!("
                 function passStringToWasm(arg) {{
                     if (typeof(arg) !== 'string')
                         throw new Error('expected a string argument');
-                    const buf = new TextEncoder('utf-8').encode(arg);
+                    const buf = textEncoder().encode(arg);
                     const len = buf.length;
                     const ptr = wasm.__wbindgen_malloc(len);
-                    let array = new Uint8Array(wasm.memory.buffer);
-                    array.set(buf, ptr);
+                    getUint8Memory().set(buf, ptr);
                     return [ptr, len];
                 }}
             "));
         }
+    }
+
+    fn expose_text_encoder(&mut self) {
+        if !self.exposed_globals.insert("text_encoder") {
+            return
+        }
+        self.globals.push_str(&format!("
+            let cachedEncoder = null;
+            function textEncoder() {{
+                if (cachedEncoder)
+                    return cachedEncoder;
+                cachedEncoder = new TextEncoder('utf-8');
+                return cachedEncoder;
+            }}
+        "));
+    }
+
+    fn expose_text_decoder(&mut self) {
+        if !self.exposed_globals.insert("text_decoder") {
+            return
+        }
+        self.globals.push_str(&format!("
+            let cachedDecoder = null;
+            function textDecoder() {{
+                if (cachedDecoder)
+                    return cachedDecoder;
+                cachedDecoder = new TextDecoder('utf-8');
+                return cachedDecoder;
+            }}
+        "));
     }
 
     fn expose_get_string_from_wasm(&mut self) {
@@ -867,15 +901,47 @@ impl<'a> Js<'a> {
                 }}
             "));
         } else {
+            self.expose_text_decoder();
+            self.expose_uint8_memory();
             self.globals.push_str(&format!("
                 function getStringFromWasm(ptr, len) {{
-                    const mem = new Uint8Array(wasm.memory.buffer);
+                    const mem = getUint8Memory();
                     const slice = mem.slice(ptr, ptr + len);
-                    const ret = new TextDecoder('utf-8').decode(slice);
+                    const ret = textDecoder().decode(slice);
                     return ret;
                 }}
             "));
         }
+    }
+
+    fn expose_uint8_memory(&mut self) {
+        if !self.exposed_globals.insert("uint8_memory") {
+            return
+        }
+        self.globals.push_str(&format!("
+            let cachedUint8Memory = null;
+            function getUint8Memory() {{
+                if (cachedUint8Memory === null ||
+                    cachedUint8Memory.buffer !== wasm.memory.buffer)
+                    cachedUint8Memory = new Uint8Array(wasm.memory.buffer);
+                return cachedUint8Memory;
+            }}
+        "));
+    }
+
+    fn expose_uint32_memory(&mut self) {
+        if !self.exposed_globals.insert("uint32_memory") {
+            return
+        }
+        self.globals.push_str(&format!("
+            let cachedUint32Memory = null;
+            function getUint32Memory() {{
+                if (cachedUint32Memory === null ||
+                    cachedUint32Memory.buffer !== wasm.memory.buffer)
+                    cachedUint32Memory = new Uint32Array(wasm.memory.buffer);
+                return cachedUint32Memory;
+            }}
+        "));
     }
 
     fn expose_assert_class(&mut self) {
