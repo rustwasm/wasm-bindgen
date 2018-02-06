@@ -1,3 +1,4 @@
+#![recursion_limit = "128"]
 #![feature(proc_macro)]
 
 #[macro_use]
@@ -7,22 +8,23 @@ extern crate quote;
 extern crate proc_macro;
 extern crate proc_macro2;
 extern crate serde_json;
-extern crate wasm_bindgen_shared;
+extern crate wasm_bindgen_shared as shared;
 
+use std::char;
 use std::sync::atomic::*;
 
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenNode, Delimiter, TokenTree};
 use quote::{Tokens, ToTokens};
 
+macro_rules! my_quote {
+    ($($t:tt)*) => (quote_spanned!(Span::call_site() => $($t)*))
+}
+
 mod ast;
 
 static MALLOC_GENERATED: AtomicBool = ATOMIC_BOOL_INIT;
 static BOXED_STR_GENERATED: AtomicBool = ATOMIC_BOOL_INIT;
-
-macro_rules! my_quote {
-    ($($t:tt)*) => (quote_spanned!(Span::call_site() => $($t)*))
-}
 
 #[proc_macro]
 pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
@@ -80,8 +82,8 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     for function in program.free_functions.iter() {
         bindgen_fn(function, &mut ret);
     }
-    for s in program.structs.iter() {
-        bindgen_struct(s, &mut ret);
+    for (i, s) in program.structs.iter().enumerate() {
+        bindgen_struct(i, s, &mut ret);
     }
     for i in program.imports.iter() {
         bindgen_import(i, &mut ret);
@@ -98,19 +100,14 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     let generated_static_name = format!("__WASM_BINDGEN_GENERATED{}",
                                         CNT.fetch_add(1, Ordering::SeqCst));
     let generated_static_name = syn::Ident::from(generated_static_name);
-    let mut generated_static = String::from("wbg:");
-    generated_static.push_str(&serde_json::to_string(&program.shared()).unwrap());
-    let generated_static_value = syn::LitByteStr::new(
-        generated_static.as_bytes(),
-        Span::def_site(),
-    );
-    let generated_static_length = generated_static.len();
+    let mut generated_static_value = Tokens::new();
+    let generated_static_length = program.wbg_literal(&mut generated_static_value);
 
     (my_quote! {
         #[no_mangle]
         #[allow(non_upper_case_globals)]
         pub static #generated_static_name: [u8; #generated_static_length] =
-            *#generated_static_value;
+            [#generated_static_value];
     }).to_tokens(&mut ret);
 
     // println!("{}", ret);
@@ -127,7 +124,7 @@ fn bindgen_fn(function: &ast::Function, into: &mut Tokens) {
             into)
 }
 
-fn bindgen_struct(s: &ast::Struct, into: &mut Tokens) {
+fn bindgen_struct(idx: usize, s: &ast::Struct, into: &mut Tokens) {
     for f in s.functions.iter() {
         bindgen_struct_fn(s, f, into);
     }
@@ -137,11 +134,47 @@ fn bindgen_struct(s: &ast::Struct, into: &mut Tokens) {
 
     let name = &s.name;
     let free_fn = s.free_function();
+    let c = char::from_u32(idx as u32 * 2 + shared::TYPE_CUSTOM_START);
     (my_quote! {
+        impl ::wasm_bindgen::convert::WasmBoundary for #name {
+            type Js = u32;
+            const DESCRIPTOR: char = #c;
+
+            fn into_js(self) -> u32 {
+                Box::into_raw(Box::new(::wasm_bindgen::__rt::WasmRefCell::new(self))) as u32
+            }
+
+            unsafe fn from_js(js: u32) -> Self {
+                let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
+                ::wasm_bindgen::__rt::assert_not_null(js);
+                let js = Box::from_raw(js);
+                js.borrow_mut(); // make sure no one's borrowing
+                js.into_inner()
+            }
+        }
+
+        impl ::wasm_bindgen::convert::FromRefWasmBoundary for #name {
+            type RefAnchor = ::wasm_bindgen::__rt::Ref<'static, #name>;
+            unsafe fn from_js_ref(js: Self::Js) -> Self::RefAnchor {
+                let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
+                ::wasm_bindgen::__rt::assert_not_null(js);
+                (*js).borrow()
+            }
+        }
+
+        impl ::wasm_bindgen::convert::FromRefMutWasmBoundary for #name {
+            type RefAnchor = ::wasm_bindgen::__rt::RefMut<'static, #name>;
+
+            unsafe fn from_js_ref_mut(js: Self::Js) -> Self::RefAnchor {
+                let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
+                ::wasm_bindgen::__rt::assert_not_null(js);
+                (*js).borrow_mut()
+            }
+        }
+
         #[no_mangle]
-        pub unsafe extern fn #free_fn(ptr: *mut ::wasm_bindgen::__rt::WasmRefCell<#name>) {
-            ::wasm_bindgen::__rt::assert_not_null(ptr);
-            drop(Box::from_raw(ptr));
+        pub unsafe extern fn #free_fn(ptr: u32) {
+            <#name as ::wasm_bindgen::convert::WasmBoundary>::from_js(ptr);
         }
     }).to_tokens(into);
 }
@@ -198,21 +231,6 @@ fn bindgen(export_name: &syn::LitStr,
         let i = i + offset;
         let ident = syn::Ident::from(format!("arg{}", i));
         match *ty {
-            ast::Type::Integer(i) => {
-                args.push(my_quote! { #ident: #i });
-            }
-            ast::Type::Boolean => {
-                args.push(my_quote! { #ident: u32 });
-                arg_conversions.push(my_quote! {
-                    let #ident = #ident != 0;
-                });
-            }
-            ast::Type::RawMutPtr(i) => {
-                args.push(my_quote! { #ident: *mut #i });
-            }
-            ast::Type::RawConstPtr(i) => {
-                args.push(my_quote! { #ident: *const #i });
-            }
             ast::Type::BorrowedStr => {
                 malloc = malloc || !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
@@ -239,45 +257,39 @@ fn bindgen(export_name: &syn::LitStr,
                     };
                 });
             }
-            ast::Type::ByValue(name) => {
-                args.push(my_quote! { #ident: *mut ::wasm_bindgen::__rt::WasmRefCell<#name> });
+            ast::Type::ByValue(ref t) => {
+                args.push(my_quote! {
+                    #ident: <#t as ::wasm_bindgen::convert::WasmBoundary >::Js
+                });
                 arg_conversions.push(my_quote! {
-                    ::wasm_bindgen::__rt::assert_not_null(#ident);
                     let #ident = unsafe {
-                        (*#ident).borrow_mut();
-                        Box::from_raw(#ident).into_inner()
+                        <#t as ::wasm_bindgen::convert::WasmBoundary>
+                            ::from_js(#ident)
                     };
                 });
             }
-            ast::Type::ByRef(name) => {
-                args.push(my_quote! { #ident: *mut ::wasm_bindgen::__rt::WasmRefCell<#name> });
+            ast::Type::ByRef(ref ty) => {
+                args.push(my_quote! {
+                    #ident: <#ty as ::wasm_bindgen::convert::WasmBoundary>::Js
+                });
                 arg_conversions.push(my_quote! {
-                    ::wasm_bindgen::__rt::assert_not_null(#ident);
-                    let #ident = unsafe { (*#ident).borrow() };
+                    let #ident = unsafe {
+                        <#ty as ::wasm_bindgen::convert::FromRefWasmBoundary>
+                            ::from_js_ref(#ident)
+                    };
                     let #ident = &*#ident;
                 });
             }
-            ast::Type::ByMutRef(name) => {
-                args.push(my_quote! { #ident: *mut ::wasm_bindgen::__rt::WasmRefCell<#name> });
+            ast::Type::ByMutRef(ref ty) => {
+                args.push(my_quote! {
+                    #ident: <#ty as ::wasm_bindgen::convert::WasmBoundary>::Js
+                });
                 arg_conversions.push(my_quote! {
-                    ::wasm_bindgen::__rt::assert_not_null(#ident);
-                    let mut #ident = unsafe { (*#ident).borrow_mut() };
+                    let mut #ident = unsafe {
+                        <#ty as ::wasm_bindgen::convert::FromRefMutWasmBoundary>
+                            ::from_js_ref_mut(#ident)
+                    };
                     let #ident = &mut *#ident;
-                });
-            }
-            ast::Type::JsObject => {
-                args.push(my_quote! { #ident: u32 });
-                arg_conversions.push(my_quote! {
-                    let #ident = ::wasm_bindgen::JsObject::__from_idx(#ident);
-                });
-            }
-            ast::Type::JsObjectRef => {
-                args.push(my_quote! { #ident: u32 });
-                arg_conversions.push(my_quote! {
-                    let #ident = ::std::mem::ManuallyDrop::new(
-                        ::wasm_bindgen::JsObject::__from_idx(#ident)
-                    );
-                    let #ident = &*#ident;
                 });
             }
         }
@@ -286,43 +298,22 @@ fn bindgen(export_name: &syn::LitStr,
     let ret_ty;
     let convert_ret;
     match ret_type {
-        Some(&ast::Type::Integer(i)) => {
-            ret_ty = my_quote! { -> #i };
-            convert_ret = my_quote! { #ret };
-        }
-        Some(&ast::Type::Boolean) => {
-            ret_ty = my_quote! { -> u32 };
-            convert_ret = my_quote! { #ret as u32 };
-        }
-        Some(&ast::Type::RawMutPtr(i)) => {
-            ret_ty = my_quote! { -> *mut #i };
-            convert_ret = my_quote! { #ret };
-        }
-        Some(&ast::Type::RawConstPtr(i)) => {
-            ret_ty = my_quote! { -> *const #i };
-            convert_ret = my_quote! { #ret };
-        }
-        Some(&ast::Type::BorrowedStr) => panic!("can't return a borrowed string"),
-        Some(&ast::Type::ByRef(_)) => panic!("can't return a borrowed ref"),
-        Some(&ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
         Some(&ast::Type::String) => {
             boxed_str = !BOXED_STR_GENERATED.swap(true, Ordering::SeqCst);
             ret_ty = my_quote! { -> *mut String };
             convert_ret = my_quote! { Box::into_raw(Box::new(#ret)) };
         }
-        Some(&ast::Type::ByValue(name)) => {
-            ret_ty = my_quote! { -> *mut ::wasm_bindgen::__rt::WasmRefCell<#name> };
+        Some(&ast::Type::ByValue(ref t)) => {
+            ret_ty = my_quote! {
+                -> <#t as ::wasm_bindgen::convert::WasmBoundary>::Js
+            };
             convert_ret = my_quote! {
-                Box::into_raw(Box::new(::wasm_bindgen::__rt::WasmRefCell::new(#ret)))
+                <#t as ::wasm_bindgen::convert::WasmBoundary>::into_js(#ret)
             };
         }
-        Some(&ast::Type::JsObject) => {
-            ret_ty = my_quote! { -> u32 };
-            convert_ret = my_quote! {
-                ::wasm_bindgen::JsObject::__into_idx(#ret)
-            };
-        }
-        Some(&ast::Type::JsObjectRef) => {
+        Some(&ast::Type::BorrowedStr) |
+        Some(&ast::Type::ByMutRef(_)) |
+        Some(&ast::Type::ByRef(_)) => {
             panic!("can't return a borrowed ref");
         }
         None => {
@@ -331,6 +322,8 @@ fn bindgen(export_name: &syn::LitStr,
         }
     }
 
+    // TODO: move this function into wasm-bindgen-the-crate and then gc it out
+    // if it's not used.
     let malloc = if malloc {
         my_quote! {
             #[no_mangle]
@@ -429,8 +422,10 @@ impl ToTokens for Receiver {
 }
 
 fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
-    let import_name = import.function.wasm_function.shared()
-        .mangled_import_name(None);
+    let import_name = shared::mangled_import_name(
+        None,
+        import.function.wasm_function.name.as_ref(),
+    );
     bindgen_import_function(&import.function, &import_name, tokens);
 }
 
@@ -445,8 +440,10 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
     let mut methods = Tokens::new();
 
     for &(_is_method, ref f) in import.functions.iter() {
-        let import_name = f.wasm_function.shared()
-            .mangled_import_name(Some(&import.name.to_string()));
+        let import_name = shared::mangled_import_name(
+            Some(&import.name.to_string()),
+            f.wasm_function.name.as_ref(),
+        );
         bindgen_import_function(f, &import_name, &mut methods);
     }
 
@@ -494,26 +491,6 @@ fn bindgen_import_function(import: &ast::ImportFunction,
 
     for (ty, name) in import.wasm_function.arguments.iter().zip(names) {
         match *ty {
-            ast::Type::Integer(i) => {
-                abi_argument_names.push(name);
-                abi_arguments.push(my_quote! { #name: #i });
-                arg_conversions.push(my_quote! {});
-            }
-            ast::Type::Boolean => {
-                abi_argument_names.push(name);
-                abi_arguments.push(my_quote! { #name: u32 });
-                arg_conversions.push(my_quote! { let #name = #name as u32; });
-            }
-            ast::Type::RawMutPtr(i) => {
-                abi_argument_names.push(name);
-                abi_arguments.push(my_quote! { #name: *mut #i });
-                arg_conversions.push(my_quote! {});
-            }
-            ast::Type::RawConstPtr(i) => {
-                abi_argument_names.push(name);
-                abi_arguments.push(my_quote! { #name: *const #i });
-                arg_conversions.push(my_quote! {});
-            }
             ast::Type::BorrowedStr => {
                 let ptr = syn::Ident::from(format!("{}_ptr", name));
                 let len = syn::Ident::from(format!("{}_len", name));
@@ -526,59 +503,70 @@ fn bindgen_import_function(import: &ast::ImportFunction,
                     let #len = #name.len();
                 });
             }
-            ast::Type::JsObject => {
+            ast::Type::ByValue(ref t) => {
+                abi_argument_names.push(name);
+                abi_arguments.push(my_quote! {
+                    #name: <#t as ::wasm_bindgen::convert::WasmBoundary>::Js
+                });
+                arg_conversions.push(my_quote! {
+                    let #name = <#t as ::wasm_bindgen::convert::WasmBoundary>
+                        ::into_js(#name);
+                });
+            }
+            ast::Type::ByMutRef(_) => panic!("urgh mut"),
+            ast::Type::ByRef(ref t) => {
                 abi_argument_names.push(name);
                 abi_arguments.push(my_quote! { #name: u32 });
                 arg_conversions.push(my_quote! {
-                    let #name = ::wasm_bindgen::JsObject::__into_idx(#name);
+                    let #name = <#t as ::wasm_bindgen::convert::ToRefWasmBoundary>
+                        ::to_js_ref(#name);
                 });
             }
-            ast::Type::JsObjectRef => {
-                abi_argument_names.push(name);
-                abi_arguments.push(my_quote! { #name: u32 });
+            // TODO: need to test this
+            ast::Type::String => {
+                let ptr = syn::Ident::from(format!("{}_ptr", name));
+                let len = syn::Ident::from(format!("{}_len", name));
+                abi_argument_names.push(ptr);
+                abi_argument_names.push(len);
+                abi_arguments.push(my_quote! { #ptr: *const u8 });
+                abi_arguments.push(my_quote! { #len: usize });
                 arg_conversions.push(my_quote! {
-                    let #name = ::wasm_bindgen::JsObject::__get_idx(#name);
+                    let #ptr = #name.as_ptr();
+                    let #len = #name.len();
+                    ::std::mem::forget(#name);
                 });
-            }
-            ast::Type::String => panic!("can't use `String` in foreign functions"),
-            ast::Type::ByValue(_name) |
-            ast::Type::ByRef(_name) |
-            ast::Type::ByMutRef(_name) => {
-                panic!("can't use struct types in foreign functions yet");
             }
         }
     }
     let abi_ret;
     let convert_ret;
     match import.wasm_function.ret {
-        Some(ast::Type::Integer(i)) => {
-            abi_ret = my_quote! { #i };
-            convert_ret = my_quote! { #ret_ident };
-        }
-        Some(ast::Type::Boolean) => {
-            abi_ret = my_quote! { u32 };
-            convert_ret = my_quote! { #ret_ident != 0 };
-        }
-        Some(ast::Type::RawConstPtr(i)) => {
-            abi_ret = my_quote! { *const #i };
-            convert_ret = my_quote! { #ret_ident };
-        }
-        Some(ast::Type::RawMutPtr(i)) => {
-            abi_ret = my_quote! { *mut #i };
-            convert_ret = my_quote! { #ret_ident };
-        }
-        Some(ast::Type::JsObject) => {
-            abi_ret = my_quote! { u32 };
+        Some(ast::Type::ByValue(ref t)) => {
+            abi_ret = my_quote! {
+                <#t as ::wasm_bindgen::convert::WasmBoundary>::Js
+            };
             convert_ret = my_quote! {
-                ::wasm_bindgen::JsObject::__from_idx(#ret_ident)
+                <#t as ::wasm_bindgen::convert::WasmBoundary>::from_js(#ret_ident)
             };
         }
-        Some(ast::Type::JsObjectRef) => panic!("can't return a borrowed ref"),
-        Some(ast::Type::BorrowedStr) => panic!("can't return a borrowed string"),
-        Some(ast::Type::ByRef(_)) => panic!("can't return a borrowed ref"),
+
+        // TODO: add a test for this
+        Some(ast::Type::String) => {
+            let name = syn::Ident::from("__ret_strlen");
+            abi_argument_names.push(name);
+            abi_arguments.push(my_quote! { #name: *mut usize });
+            arg_conversions.push(my_quote! {
+                let mut #name = 0;
+            });
+            abi_ret = my_quote! { *const u8 };
+            convert_ret = my_quote! {
+                let __v = Vec::from_raw_parts(#ret_ident, #name, #name);
+                String::from_utf8_unchecked(__v)
+            };
+        }
+        Some(ast::Type::BorrowedStr) |
+        Some(ast::Type::ByRef(_)) |
         Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
-        Some(ast::Type::String) => panic!("can't return a string in foreign functions"),
-        Some(ast::Type::ByValue(_)) => panic!("can't return a struct in a foreign function"),
         None => {
             abi_ret = my_quote! { () };
             convert_ret = my_quote! {};

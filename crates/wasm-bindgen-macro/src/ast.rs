@@ -1,6 +1,7 @@
 use proc_macro2::Span;
+use quote::{Tokens, ToTokens};
+use shared;
 use syn;
-use wasm_bindgen_shared as shared;
 
 pub struct Program {
     pub structs: Vec<Struct>,
@@ -35,17 +36,13 @@ pub struct ImportStruct {
 }
 
 pub enum Type {
-    Integer(syn::Ident),
+    // special
     BorrowedStr,
     String,
-    ByValue(syn::Ident),
-    ByRef(syn::Ident),
-    ByMutRef(syn::Ident),
-    RawMutPtr(syn::Ident),
-    RawConstPtr(syn::Ident),
-    JsObject,
-    JsObjectRef,
-    Boolean,
+
+    ByRef(syn::Type),
+    ByMutRef(syn::Type),
+    ByValue(syn::Type),
 }
 
 pub struct Struct {
@@ -73,8 +70,13 @@ impl Program {
         if item.generics.params.len() > 0 {
             panic!("generic impls aren't supported");
         }
-        let name = match Type::from(&item.self_ty) {
-            Type::ByValue(ident) => ident,
+        let name = match *item.self_ty {
+            syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
+                match extract_path_ident(path) {
+                    Some(ident) => ident,
+                    None => panic!("unsupported self type in impl"),
+                }
+            }
             _ => panic!("unsupported self type in impl"),
         };
         let dst = self.structs
@@ -162,17 +164,20 @@ impl Program {
         });
     }
 
-    pub fn shared(&self) -> shared::Program {
-        shared::Program {
-            structs: self.structs.iter().map(|s| s.shared()).collect(),
-            free_functions: self.free_functions.iter().map(|s| s.shared()).collect(),
-            imports: self.imports.iter()
-                .map(|i| (i.module.clone(), i.function.wasm_function.shared()))
-                .collect(),
-            imported_structs: self.imported_structs.iter()
-                .map(|i| i.shared())
-                .collect(),
-        }
+    pub fn wbg_literal(&self, dst: &mut Tokens) -> usize {
+        let mut a = LiteralBuilder {
+            dst,
+            cnt: 0,
+        };
+        a.append("wbg:");
+        a.fields(&[
+            ("structs", &|a| a.list(&self.structs, Struct::wbg_literal)),
+            ("free_functions", &|a| a.list(&self.free_functions, Function::wbg_literal)),
+            ("imports", &|a| a.list(&self.imports, Import::wbg_literal)),
+            ("imported_structs", &|a| a.list(&self.imported_structs, ImportStruct::wbg_literal)),
+            ("custom_type_names", &|a| a.list(&self.structs, |s, a| a.str(s.name.as_ref()))),
+        ]);
+        return a.cnt
     }
 }
 
@@ -236,12 +241,15 @@ impl Function {
     }
 
     pub fn free_function_export_name(&self) -> syn::LitStr {
-        let name = self.shared().free_function_export_name();
+        let name = shared::free_function_export_name(self.name.as_ref());
         syn::LitStr::new(&name, Span::def_site())
     }
 
     pub fn struct_function_export_name(&self, s: syn::Ident) -> syn::LitStr {
-        let name = self.shared().struct_function_export_name(s.as_ref());
+        let name = shared::struct_function_export_name(
+            s.as_ref(),
+            self.name.as_ref(),
+        );
         syn::LitStr::new(&name, Span::def_site())
     }
 
@@ -256,110 +264,83 @@ impl Function {
         syn::Ident::from(generated_name)
     }
 
-    pub fn shared(&self) -> shared::Function {
-        shared::Function {
-            name: self.name.as_ref().to_string(),
-            arguments: self.arguments.iter().map(|t| t.shared()).collect(),
-            ret: self.ret.as_ref().map(|t| t.shared()),
-        }
+    fn wbg_literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+            ("name", &|a| a.str(self.name.as_ref())),
+            ("arguments", &|a| a.list(&self.arguments, Type::wbg_literal)),
+            ("ret", &|a| {
+                match self.ret {
+                    Some(ref s) => s.wbg_literal(a),
+                    None => a.append("null"),
+                }
+            }),
+        ]);
     }
 }
 
-pub fn extract_path_ident(path: &syn::Path) -> syn::Ident {
+pub fn extract_path_ident(path: &syn::Path) -> Option<syn::Ident> {
     if path.leading_colon.is_some() {
-        panic!("unsupported leading colon in path")
+        return None
     }
     if path.segments.len() != 1 {
-        panic!("unsupported path that needs name resolution")
+        return None
     }
     match path.segments.first().unwrap().value().arguments {
         syn::PathArguments::None => {}
-        _ => panic!("unsupported path that has path arguments")
+        _ => return None,
     }
-    path.segments.first().unwrap().value().ident
+    path.segments.first().map(|v| v.value().ident)
 }
 
 impl Type {
     pub fn from(ty: &syn::Type) -> Type {
         match *ty {
             syn::Type::Reference(ref r) => {
-                if r.lifetime.is_some() {
-                    panic!("can't have lifetimes on references yet");
-                }
-                let mutable = r.mutability.is_some();
                 match *r.elem {
                     syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
                         let ident = extract_path_ident(path);
-                        match ident.as_ref() {
-                            "str" => {
-                                if mutable {
-                                    panic!("mutable strings not allowed");
-                                }
-                                Type::BorrowedStr
-                            }
-                            "JsObject" if !mutable => Type::JsObjectRef,
-                            "JsObject" if mutable => {
-                                panic!("can't have mutable js object refs")
-                            }
-                            _ if mutable => Type::ByMutRef(ident),
-                            _ => Type::ByRef(ident),
+                        match ident.as_ref().map(|s| s.as_ref()) {
+                            Some("str") => return Type::BorrowedStr,
+                            _ => {}
                         }
                     }
-                    _ => panic!("unsupported reference type"),
+                    _ => {}
                 }
-            }
-            syn::Type::Ptr(ref p) => {
-                let mutable = p.const_token.is_none();
-                let ident = match *p.elem {
-                    syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
-                        extract_path_ident(path)
-                    }
-                    _ => panic!("unsupported reference type"),
-                };
-                if mutable {
-                    Type::RawMutPtr(ident)
+                return if r.mutability.is_some() {
+                    Type::ByMutRef((*r.elem).clone())
                 } else {
-                    Type::RawConstPtr(ident)
+                    Type::ByRef((*r.elem).clone())
                 }
             }
             syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
                 let ident = extract_path_ident(path);
-                match ident.as_ref() {
-                    "i8" |
-                    "u8" |
-                    "u16" |
-                    "i16" |
-                    "u32" |
-                    "i32" |
-                    "isize" |
-                    "usize" |
-                    "f32" |
-                    "f64" => {
-                        Type::Integer(ident)
-                    }
-                    "bool" => Type::Boolean,
-                    "String" => Type::String,
-                    "JsObject" => Type::JsObject,
-                    _ => Type::ByValue(ident),
+                match ident.as_ref().map(|s| s.as_ref()) {
+                    Some("String") => return Type::String,
+                    _ => {}
                 }
             }
-            _ => panic!("unsupported type"),
+            _ => {}
         }
+
+        Type::ByValue(ty.clone())
     }
 
-    fn shared(&self) -> shared::Type {
+    fn wbg_literal(&self, a: &mut LiteralBuilder) {
         match *self {
-            Type::Integer(_) |
-            Type::RawConstPtr(_) |
-            Type::RawMutPtr(_) => shared::Type::Number,
-            Type::BorrowedStr => shared::Type::BorrowedStr,
-            Type::String => shared::Type::String,
-            Type::ByValue(n) => shared::Type::ByValue(n.to_string()),
-            Type::ByRef(n) => shared::Type::ByRef(n.to_string()),
-            Type::ByMutRef(n) => shared::Type::ByMutRef(n.to_string()),
-            Type::JsObject => shared::Type::JsObject,
-            Type::JsObjectRef => shared::Type::JsObjectRef,
-            Type::Boolean => shared::Type::Boolean,
+            Type::BorrowedStr => a.char(shared::TYPE_BORROWED_STR),
+            Type::String => a.char(shared::TYPE_STRING),
+            Type::ByValue(ref t) => {
+                a.as_char(my_quote! {
+                    <#t as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR as u8
+                });
+            }
+            Type::ByRef(ref ty) |
+            Type::ByMutRef(ref ty) => {
+                a.as_char(my_quote! {
+                    ((<#ty as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR as u32) |
+                        ::wasm_bindgen::convert::DESCRIPTOR_CUSTOM_REF_FLAG) as u8
+                });
+            }
         }
     }
 }
@@ -374,7 +355,7 @@ impl Struct {
     }
 
     pub fn free_function(&self) -> syn::Ident {
-        syn::Ident::from(self.shared().free_function())
+        syn::Ident::from(shared::free_function(self.name.as_ref()))
     }
 
     pub fn push_item(&mut self, item: &syn::ImplItem) {
@@ -412,33 +393,53 @@ impl Struct {
         }
     }
 
-    pub fn shared(&self) -> shared::Struct {
-        shared::Struct {
-            name: self.name.to_string(),
-            functions: self.functions.iter().map(|f| f.shared()).collect(),
-            methods: self.methods.iter().map(|f| f.shared()).collect(),
-        }
+    fn wbg_literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+            ("name", &|a| a.str(self.name.as_ref())),
+            ("functions", &|a| a.list(&self.functions, Function::wbg_literal)),
+            ("methods", &|a| a.list(&self.methods, Method::wbg_literal)),
+        ]);
     }
 }
 
 impl Method {
-    pub fn shared(&self) -> shared::Method {
-        shared::Method {
-            mutable: self.mutable,
-            function: self.function.shared(),
-        }
+    fn wbg_literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+            ("mutable", &|a| a.bool(self.mutable)),
+            ("function", &|a| self.function.wbg_literal(a)),
+        ]);
     }
 }
 
 impl ImportStruct {
-    fn shared(&self) -> shared::ImportStruct {
-        shared::ImportStruct {
-            module: self.module.clone(),
-            name: self.name.to_string(),
-            functions: self.functions.iter()
-                .map(|&(b, ref f)| (b, f.wasm_function.shared()))
-                .collect(),
-        }
+    fn wbg_literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+            ("module", &|a| {
+                match self.module {
+                    Some(ref s) => a.str(s),
+                    None => a.append("null"),
+                }
+            }),
+            ("name", &|a| a.str(self.name.as_ref())),
+            ("functions", &|a| {
+                a.list(&self.functions,
+                       |&(is_method, ref f), a| {
+                           a.fields(&[
+                                ("method", &|a| a.bool(is_method)),
+                                ("function", &|a| f.wasm_function.wbg_literal(a)),
+                           ]);
+                       })
+            }),
+        ]);
+    }
+}
+
+impl Import {
+    fn wbg_literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+            ("module", &|a| a.str(&self.module)),
+            ("function", &|a| self.function.wasm_function.wbg_literal(a)),
+        ]);
     }
 }
 
@@ -502,4 +503,92 @@ fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str)
         }
     }
     syn::parse_error()
+}
+
+struct LiteralBuilder<'a> {
+    dst: &'a mut Tokens,
+    cnt: usize,
+}
+
+impl<'a> LiteralBuilder<'a> {
+    fn byte(&mut self, byte: u8) {
+        if self.cnt > 0 {
+            ::syn::token::Comma::default().to_tokens(self.dst);
+        }
+        self.cnt += 1;
+        byte.to_tokens(self.dst);
+    }
+
+    fn append(&mut self, s: &str) {
+        for byte in s.bytes() {
+            self.byte(byte);
+        }
+    }
+
+    fn str(&mut self, s: &str) {
+        self.append("\"");
+        self.append(s);
+        self.append("\"");
+    }
+
+    fn bool(&mut self, v: bool) {
+        if v {
+            self.append("true")
+        } else {
+            self.append("false")
+        }
+    }
+
+    fn char(&mut self, s: char) {
+        self.append("\"\\u");
+        let s = s as u32;
+        self.byte(to_hex((s >> 12) as u8));
+        self.byte(to_hex((s >> 8) as u8));
+        self.byte(to_hex((s >> 4) as u8));
+        self.byte(to_hex((s >> 0) as u8));
+        self.append("\"");
+
+        fn to_hex(a: u8) -> u8 {
+            let a = a & 0xf;
+            match a {
+                0 ... 9 => b'0' + a,
+                _ => b'a'+ a - 10,
+            }
+        }
+    }
+
+    fn as_char(&mut self, tokens: Tokens) {
+        self.append("\"");
+        ::syn::token::Comma::default().to_tokens(self.dst);
+        tokens.to_tokens(self.dst);
+        self.cnt += 1;
+        self.append("\"");
+    }
+
+    fn fields(&mut self, fields: &[(&str, &Fn(&mut Self))]) {
+        self.append("{");
+        for (i, &(field, cb)) in fields.iter().enumerate() {
+            if i > 0 {
+                self.append(",");
+            }
+            self.str(field);
+            self.append(":");
+            cb(self);
+        }
+        self.append("}");
+    }
+
+    fn list<T, F>(&mut self, list: T, mut cb: F)
+        where F: FnMut(T::Item, &mut Self),
+              T: IntoIterator,
+    {
+        self.append("[");
+        for (i, element) in list.into_iter().enumerate() {
+            if i > 0 {
+                self.append(",");
+            }
+            cb(element, self);
+        }
+        self.append("]");
+    }
 }

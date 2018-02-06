@@ -110,6 +110,7 @@ fn extract_program(module: &mut Module) -> shared::Program {
         free_functions: Vec::new(),
         imports: Vec::new(),
         imported_structs: Vec::new(),
+        custom_type_names: Vec::new(),
     };
     let data = match data {
         Some(data) => data,
@@ -125,13 +126,25 @@ fn extract_program(module: &mut Module) -> shared::Program {
             let json = &value[4..];
             let p = match serde_json::from_slice(json) {
                 Ok(f) => f,
-                Err(_) => continue,
+                Err(e) => {
+                    panic!("failed to decode what looked like wasm-bindgen data: {}", e)
+                }
             };
-            let shared::Program { structs, free_functions, imports, imported_structs } = p;
+            let shared::Program {
+                structs,
+                free_functions,
+                imports,
+                imported_structs,
+                custom_type_names,
+            } = p;
             ret.structs.extend(structs);
             ret.free_functions.extend(free_functions);
             ret.imports.extend(imports);
             ret.imported_structs.extend(imported_structs);
+            if custom_type_names.len() > 0 {
+                assert_eq!(ret.custom_type_names.len(), 0);
+            }
+            ret.custom_type_names.extend(custom_type_names);
         }
         data.entries_mut().remove(i);
     }

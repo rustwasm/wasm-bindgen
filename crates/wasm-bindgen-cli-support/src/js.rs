@@ -21,7 +21,7 @@ impl<'a> Js<'a> {
             self.generate_free_function(f);
         }
         for f in self.program.imports.iter() {
-            self.generate_import(&f.0, &f.1);
+            self.generate_import(&f.module, &f.function);
         }
         for s in self.program.structs.iter() {
             self.generate_struct(s);
@@ -238,14 +238,14 @@ impl<'a> Js<'a> {
                 this.ptr = 0;
                 wasm.{}(ptr);
             }}
-        ", s.free_function()));
+        ", shared::free_function(&s.name)));
         ts_dst.push_str("free(): void;\n");
 
         for function in s.functions.iter() {
             let (js, ts) = self.generate_function(
                 "static",
                 &function.name,
-                &function.struct_function_export_name(&s.name),
+                &shared::struct_function_export_name(&s.name, &function.name),
                 false,
                 &function.arguments,
                 function.ret.as_ref(),
@@ -259,7 +259,7 @@ impl<'a> Js<'a> {
             let (js, ts) = self.generate_function(
                 "",
                 &method.function.name,
-                &method.function.struct_function_export_name(&s.name),
+                &shared::struct_function_export_name(&s.name, &method.function.name),
                 true,
                 &method.function.arguments,
                 method.function.ret.as_ref(),
@@ -311,7 +311,7 @@ impl<'a> Js<'a> {
                 passed_args.push_str(arg);
             };
             match *arg {
-                shared::Type::Number => {
+                shared::TYPE_NUMBER => {
                     dst_ts.push_str(": number");
                     if self.config.debug {
                         self.expose_assert_num();
@@ -319,7 +319,7 @@ impl<'a> Js<'a> {
                     }
                     pass(&name)
                 }
-                shared::Type::Boolean => {
+                shared::TYPE_BOOLEAN => {
                     dst_ts.push_str(": boolean");
                     if self.config.debug {
                         self.expose_assert_bool();
@@ -330,8 +330,8 @@ impl<'a> Js<'a> {
                     }
                     pass(&format!("arg{i} ? 1 : 0", i = i))
                 }
-                shared::Type::BorrowedStr |
-                shared::Type::String => {
+                shared::TYPE_BORROWED_STR |
+                shared::TYPE_STRING => {
                     dst_ts.push_str(": string");
                     self.expose_pass_string_to_wasm();
                     arg_conversions.push_str(&format!("\
@@ -339,14 +339,33 @@ impl<'a> Js<'a> {
                     ", i = i, arg = name));
                     pass(&format!("ptr{}", i));
                     pass(&format!("len{}", i));
-                    if let shared::Type::BorrowedStr = *arg {
+                    if *arg == shared::TYPE_BORROWED_STR {
                         destructors.push_str(&format!("\n\
                             wasm.__wbindgen_free(ptr{i}, len{i});\n\
                         ", i = i));
                     }
                 }
-                shared::Type::ByRef(ref s) |
-                shared::Type::ByMutRef(ref s) => {
+                shared::TYPE_JS_OWNED => {
+                    dst_ts.push_str(": any");
+                    self.expose_add_heap_object();
+                    arg_conversions.push_str(&format!("\
+                        const idx{i} = addHeapObject({arg});
+                    ", i = i, arg = name));
+                    pass(&format!("idx{}", i));
+                }
+                shared::TYPE_JS_REF => {
+                    dst_ts.push_str(": any");
+                    self.expose_borrowed_objects();
+                    arg_conversions.push_str(&format!("\
+                        const idx{i} = addBorrowedObject({arg});
+                    ", i = i, arg = name));
+                    destructors.push_str("stack.pop();\n");
+                    pass(&format!("idx{}", i));
+                }
+                custom if (custom as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => {
+                    let custom = ((custom as u32) & !shared::TYPE_CUSTOM_REF_FLAG) -
+                        shared::TYPE_CUSTOM_START;
+                    let s = &self.program.custom_type_names[custom as usize / 2];
                     dst_ts.push_str(&format!(": {}", s));
                     if self.config.debug {
                         self.expose_assert_class();
@@ -356,7 +375,9 @@ impl<'a> Js<'a> {
                     }
                     pass(&format!("{}.ptr", name));
                 }
-                shared::Type::ByValue(ref s) => {
+                custom => {
+                    let custom = (custom as u32) - shared::TYPE_CUSTOM_START;
+                    let s = &self.program.custom_type_names[custom as usize / 2];
                     dst_ts.push_str(&format!(": {}", s));
                     if self.config.debug {
                         self.expose_assert_class();
@@ -370,23 +391,6 @@ impl<'a> Js<'a> {
                     ", i = i, arg = name));
                     pass(&format!("ptr{}", i));
                 }
-                shared::Type::JsObject => {
-                    dst_ts.push_str(": any");
-                    self.expose_add_heap_object();
-                    arg_conversions.push_str(&format!("\
-                        const idx{i} = addHeapObject({arg});
-                    ", i = i, arg = name));
-                    pass(&format!("idx{}", i));
-                }
-                shared::Type::JsObjectRef => {
-                    dst_ts.push_str(": any");
-                    self.expose_borrowed_objects();
-                    arg_conversions.push_str(&format!("\
-                        const idx{i} = addBorrowedObject({arg});
-                    ", i = i, arg = name));
-                    destructors.push_str("stack.pop();\n");
-                    pass(&format!("idx{}", i));
-                }
             }
         }
         dst.push_str(")");
@@ -396,24 +400,36 @@ impl<'a> Js<'a> {
                 dst_ts.push_str(": void");
                 format!("return ret;")
             }
-            Some(&shared::Type::Number) => {
+            Some(&shared::TYPE_NUMBER) => {
                 dst_ts.push_str(": number");
                 format!("return ret;")
             }
-            Some(&shared::Type::Boolean) => {
+            Some(&shared::TYPE_BOOLEAN) => {
                 dst_ts.push_str(": boolean");
                 format!("return ret != 0;")
             }
-            Some(&shared::Type::JsObject) => {
+            Some(&shared::TYPE_JS_OWNED) => {
                 dst_ts.push_str(": any");
                 self.expose_take_object();
                 format!("return takeObject(ret);")
             }
-            Some(&shared::Type::JsObjectRef) |
-            Some(&shared::Type::BorrowedStr) |
-            Some(&shared::Type::ByMutRef(_)) |
-            Some(&shared::Type::ByRef(_)) => panic!(),
-            Some(&shared::Type::ByValue(ref name)) => {
+            Some(&shared::TYPE_STRING) => {
+                dst_ts.push_str(": string");
+                self.expose_get_string_from_wasm();
+                format!("
+                    const ptr = wasm.__wbindgen_boxed_str_ptr(ret);
+                    const len = wasm.__wbindgen_boxed_str_len(ret);
+                    const realRet = getStringFromWasm(ptr, len);
+                    wasm.__wbindgen_boxed_str_free(ret);
+                    return realRet;
+                ")
+            }
+            Some(&shared::TYPE_JS_REF) |
+            Some(&shared::TYPE_BORROWED_STR) => panic!(),
+            Some(&t) if (t as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => panic!(),
+            Some(&custom) => {
+                let custom = (custom as u32) - shared::TYPE_CUSTOM_START;
+                let name = &self.program.custom_type_names[custom as usize / 2];
                 dst_ts.push_str(": ");
                 dst_ts.push_str(name);
                 if self.config.debug {
@@ -425,17 +441,6 @@ impl<'a> Js<'a> {
                         return new {name}(ret);
                     ", name = name)
                 }
-            }
-            Some(&shared::Type::String) => {
-                dst_ts.push_str(": string");
-                self.expose_get_string_from_wasm();
-                format!("
-                    const ptr = wasm.__wbindgen_boxed_str_ptr(ret);
-                    const len = wasm.__wbindgen_boxed_str_len(ret);
-                    const realRet = getStringFromWasm(ptr, len);
-                    wasm.__wbindgen_boxed_str_free(ret);
-                    return realRet;
-                ")
             }
         };
         dst_ts.push_str(";");
@@ -476,7 +481,7 @@ impl<'a> Js<'a> {
             import {{ {} as {} }} from '{}';
         ", import.name, imported_name, module));
 
-        self.gen_import_shim(&import.mangled_import_name(None),
+        self.gen_import_shim(&shared::mangled_import_name(None, &import.name),
                              &imported_name,
                              import)
     }
@@ -488,10 +493,10 @@ impl<'a> Js<'a> {
             ", import.name, module));
         }
 
-        for &(method, ref function) in import.functions.iter() {
-            self.generate_import_struct_function(&import.name,
-                                                 method,
-                                                 function);
+        for import in import.functions.iter() {
+            self.generate_import_struct_function(&import.function.name,
+                                                 import.method,
+                                                 &import.function);
         }
     }
 
@@ -506,7 +511,7 @@ impl<'a> Js<'a> {
         } else {
             format!("{}.{}", class, function.name)
         };
-        self.gen_import_shim(&function.mangled_import_name(Some(class)),
+        self.gen_import_shim(&shared::mangled_import_name(Some(class), &function.name),
                              &delegate,
                              function)
     }
@@ -530,33 +535,30 @@ impl<'a> Js<'a> {
                 dst.push_str(", ");
             }
             match *arg {
-                shared::Type::Number => {
+                shared::TYPE_NUMBER => {
                     invocation.push_str(&format!("arg{}", i));
                     dst.push_str(&format!("arg{}", i));
                 }
-                shared::Type::Boolean => {
+                shared::TYPE_BOOLEAN => {
                     invocation.push_str(&format!("arg{} != 0", i));
                     dst.push_str(&format!("arg{}", i));
                 }
-                shared::Type::BorrowedStr => {
+                shared::TYPE_BORROWED_STR => {
                     self.expose_get_string_from_wasm();
                     invocation.push_str(&format!("getStringFromWasm(ptr{0}, len{0})", i));
                     dst.push_str(&format!("ptr{0}, len{0}", i));
                 }
-                shared::Type::JsObject => {
+                shared::TYPE_JS_OWNED => {
                     self.expose_take_object();
                     invocation.push_str(&format!("takeObject(arg{})", i));
                     dst.push_str(&format!("arg{}", i));
                 }
-                shared::Type::JsObjectRef => {
+                shared::TYPE_JS_REF => {
                     self.expose_get_object();
                     invocation.push_str(&format!("getObject(arg{})", i));
                     dst.push_str(&format!("arg{}", i));
                 }
-                shared::Type::String |
-                shared::Type::ByRef(_) |
-                shared::Type::ByMutRef(_) |
-                shared::Type::ByValue(_) => {
+                _ => {
                     panic!("unsupported type in import");
                 }
             }
@@ -564,9 +566,9 @@ impl<'a> Js<'a> {
         dst.push_str(")");
         let invoc = format!("{}({})", shim_delegate, invocation);
         let invoc = match import.ret {
-            Some(shared::Type::Number) => invoc,
-            Some(shared::Type::Boolean) => format!("{} ? 1 : 0", invoc),
-            Some(shared::Type::JsObject) => {
+            Some(shared::TYPE_NUMBER) => invoc,
+            Some(shared::TYPE_BOOLEAN) => format!("{} ? 1 : 0", invoc),
+            Some(shared::TYPE_JS_OWNED) => {
                 self.expose_add_heap_object();
                 format!("addHeapObject({})", invoc)
             }
@@ -615,11 +617,13 @@ impl<'a> Js<'a> {
                 // fixed upstream.
                 let program_import = self.program.imports
                     .iter()
-                    .any(|&(_, ref f)| f.mangled_import_name(None) == import.field());
+                    .any(|f| shared::mangled_import_name(None, &f.function.name) == import.field());
                 let struct_import = self.program.imported_structs
                     .iter()
-                    .flat_map(|s| s.functions.iter().map(move |f| (s, &f.1)))
-                    .any(|(s, f)| f.mangled_import_name(Some(&s.name)) == import.field());
+                    .flat_map(|s| s.functions.iter().map(move |f| (s, &f.function)))
+                    .any(|(s, f)| {
+                        shared::mangled_import_name(Some(&s.name), &f.name) == import.field()
+                    });
                 if program_import || struct_import {
                     import.module_mut().truncate(0);
                     import.module_mut().push_str("./");

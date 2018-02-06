@@ -8,7 +8,6 @@
 
 extern crate wasm_bindgen_macro;
 
-use std::mem;
 use std::ptr;
 
 /// A module which is typically glob imported from:
@@ -20,6 +19,8 @@ pub mod prelude {
     pub use wasm_bindgen_macro::wasm_bindgen;
     pub use JsObject;
 }
+
+pub mod convert;
 
 /// Representation of an object owned by JS.
 ///
@@ -38,7 +39,7 @@ impl JsObject {
     /// be owned by the JS garbage collector.
     pub fn from_str(s: &str) -> JsObject {
         unsafe {
-            JsObject::__from_idx(__wbindgen_string_new(s.as_ptr(), s.len()))
+            JsObject { idx: __wbindgen_string_new(s.as_ptr(), s.len()) }
         }
     }
 
@@ -48,7 +49,7 @@ impl JsObject {
     /// allocated number) and returns a handle to the JS version of it.
     pub fn from_f64(n: f64) -> JsObject {
         unsafe {
-            JsObject::__from_idx(__wbindgen_number_new(n))
+            JsObject { idx: __wbindgen_number_new(n) }
         }
     }
 
@@ -58,21 +59,21 @@ impl JsObject {
     /// allocated boolean) and returns a handle to the JS version of it.
     pub fn from_bool(b: bool) -> JsObject {
         unsafe {
-            JsObject::__from_idx(__wbindgen_boolean_new(b as u32))
+            JsObject { idx: __wbindgen_boolean_new(b as u32) }
         }
     }
 
     /// Creates a new JS value representing `undefined`.
     pub fn undefined() -> JsObject {
         unsafe {
-            JsObject::__from_idx(__wbindgen_undefined_new())
+            JsObject { idx: __wbindgen_undefined_new() }
         }
     }
 
     /// Creates a new JS value representing `null`.
     pub fn null() -> JsObject {
         unsafe {
-            JsObject::__from_idx(__wbindgen_null_new())
+            JsObject { idx: __wbindgen_null_new() }
         }
     }
 
@@ -84,26 +85,26 @@ impl JsObject {
         unsafe {
             let ptr = description.map(|s| s.as_ptr()).unwrap_or(ptr::null());
             let len = description.map(|s| s.len()).unwrap_or(0);
-            JsObject::__from_idx(__wbindgen_symbol_new(ptr, len))
+            JsObject { idx: __wbindgen_symbol_new(ptr, len) }
         }
     }
 
-    #[doc(hidden)]
-    pub fn __from_idx(idx: u32) -> JsObject {
-        JsObject { idx }
-    }
-
-    #[doc(hidden)]
-    pub fn __get_idx(&self) -> u32 {
-        self.idx
-    }
-
-    #[doc(hidden)]
-    pub fn __into_idx(self) -> u32 {
-        let ret = self.idx;
-        mem::forget(self);
-        return ret
-    }
+    // #[doc(hidden)]
+    // pub fn __from_idx(idx: u32) -> JsObject {
+    //     JsObject { idx }
+    // }
+    //
+    // #[doc(hidden)]
+    // pub fn __get_idx(&self) -> u32 {
+    //     self.idx
+    // }
+    //
+    // #[doc(hidden)]
+    // pub fn __into_idx(self) -> u32 {
+    //     let ret = self.idx;
+    //     mem::forget(self);
+    //     return ret
+    // }
 
     /// Returns the `f64` value of this JS value if it's an instance of a
     /// number.
