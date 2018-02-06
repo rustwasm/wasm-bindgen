@@ -32,7 +32,13 @@ pub struct ImportFunction {
 pub struct ImportStruct {
     pub module: Option<String>,
     pub name: syn::Ident,
-    pub functions: Vec<(bool, ImportFunction)>,
+    pub functions: Vec<(ImportFunctionKind, ImportFunction)>,
+}
+
+pub enum ImportFunctionKind {
+    Method,
+    Static,
+    JsConstructor,
 }
 
 pub enum Type {
@@ -154,7 +160,43 @@ impl Program {
         let functions = class.functions.iter()
             .map(|f| {
                 let (f, method) = self.gen_foreign_item(f, true);
-                (method, f)
+                let kind = if method {
+                    ImportFunctionKind::Method
+                } else {
+                    let new = f.rust_attrs.iter()
+                        .filter_map(|a| a.interpret_meta())
+                        .filter_map(|m| {
+                            match m {
+                                syn::Meta::List(i) => {
+                                    if i.ident == "wasm_bindgen" {
+                                        Some(i.nested)
+                                    } else {
+                                        None
+                                    }
+                                }
+                                _ => None,
+                            }
+                        })
+                        .flat_map(|a| a)
+                        .filter_map(|a| {
+                            match a {
+                                syn::NestedMeta::Meta(a) => Some(a),
+                                _ => None,
+                            }
+                        })
+                        .any(|a| {
+                            match a {
+                                syn::Meta::Word(a) => a == "constructor",
+                                _ => false,
+                            }
+                        });
+                    if new {
+                        ImportFunctionKind::JsConstructor
+                    } else {
+                        ImportFunctionKind::Static
+                    }
+                };
+                (kind, f)
             })
             .collect();
         self.imported_structs.push(ImportStruct {
@@ -423,9 +465,15 @@ impl ImportStruct {
             ("name", &|a| a.str(self.name.as_ref())),
             ("functions", &|a| {
                 a.list(&self.functions,
-                       |&(is_method, ref f), a| {
+                       |&(ref kind, ref f), a| {
+                           let (method, new) = match *kind {
+                               ImportFunctionKind::Method => (true, false),
+                               ImportFunctionKind::JsConstructor => (false, true),
+                               ImportFunctionKind::Static => (false, false),
+                           };
                            a.fields(&[
-                                ("method", &|a| a.bool(is_method)),
+                                ("method", &|a| a.bool(method)),
+                                ("js_new", &|a| a.bool(new)),
                                 ("function", &|a| f.wasm_function.wbg_literal(a)),
                            ]);
                        })

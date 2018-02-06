@@ -33,6 +33,7 @@ pub struct ImportStruct {
 #[derive(Serialize, Deserialize)]
 pub struct ImportStructFunction {
     pub method: bool,
+    pub js_new: bool,
     pub function: Function,
 }
 

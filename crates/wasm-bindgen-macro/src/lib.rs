@@ -367,7 +367,7 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
 
     let mut methods = Tokens::new();
 
-    for &(_is_method, ref f) in import.functions.iter() {
+    for &(_, ref f) in import.functions.iter() {
         let import_name = shared::mangled_import_name(
             Some(&import.name.to_string()),
             f.wasm_function.name.as_ref(),

@@ -141,3 +141,46 @@ fn construct() {
         "#)
         .test();
 }
+
+#[test]
+fn new_constructors() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                #[wasm_module = "./test"]
+                extern struct Foo {
+                    #[wasm_bindgen(constructor)]
+                    fn new(arg: i32) -> Foo;
+                    fn get(&self) -> i32;
+                }
+
+                pub fn run() {
+                    let f = Foo::new(1);
+                    assert_eq!(f.get(), 2);
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export class Foo {
+                constructor(private field: number) {
+                }
+
+                get() {
+                    return this.field + 1;
+                }
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}

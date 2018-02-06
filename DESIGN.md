@@ -345,7 +345,7 @@ happening:
 * Returning strings from wasm is a little tricky as we need to return a ptr/len
   pair, but wasm currently only supports one return value (multiple return values
   [is being standardized](https://github.com/WebAssembly/design/issues/1146)).
-  To work around this in the meantime, we're actually returning a pointer to a 
+  To work around this in the meantime, we're actually returning a pointer to a
   ptr/len pair, and then using functions to access the various fields.
 
 * Some cleanup ends up happening in wasm. The `__wbindgen_boxed_str_free`
@@ -622,14 +622,16 @@ As usual though, let's dive into an example!
 wasm_bindgen! {
     #[wasm_module = "./bar"]
     extern struct Bar {
-        fn new() -> Bar;
+        #[wasm_bindgen(constructor)]
+        fn new(arg: i32) -> Bar;
+        fn another_function() -> i32;
         fn get(&self) -> i32;
         fn set(&self, val: i32);
     }
 }
 
 fn run() {
-    let bar = Bar::new();
+    let bar = Bar::new(Bar::another_function());
     let x = bar.get();
     bar.set(x + 3);
 }
@@ -646,7 +648,11 @@ import { Bar } from './bar';
 // other support functions omitted...
 
 export function __wbg_s_Bar_new() {
-  return addHeapObject(Bar.new());
+  return addHeapObject(new Bar());
+}
+
+export function __wbg_s_Bar_another_function() {
+  return Bar.another_function();
 }
 
 export function __wbg_s_Bar_get(ptr) {
@@ -659,10 +665,11 @@ export function __wbg_s_Bar_set(ptr, arg0) {
 ```
 
 Like when importing functions from JS we can see a bunch of shims are generated
-for all the relevant functions. The `new` static function is translated directly
-to `Bar.new` (where `Bar` is imported at the top), and then when returning we're
-sure to call `addHeapObject` as we're passing ownership to Rust (which just
-declares `-> Bar`, no sigils).
+for all the relevant functions. The `new` static function has the
+`#[wasm_bindgen(constructor)]` attribute which means that instead of any
+particular method it should actually invoke the `new` constructor instead (as
+we see here). The static function `another_function`, however, is dispatched as
+`Bar.another_function`.
 
 The `get` and `set` functions are methods so they go through `Bar.prototype`,
 and otherwise their first argument is implicitly the JS object itself which is
@@ -684,6 +691,15 @@ impl Bar {
         unsafe {
             let ret = __wbg_s_Bar_new();
             Bar { obj: JsValue::__from_idx(ret) }
+        }
+    }
+
+    fn another_function() -> i32 {
+        extern {
+            fn __wbg_s_Bar_another_function() -> i32;
+        }
+        unsafe {
+            __wbg_s_Bar_another_function()
         }
     }
 

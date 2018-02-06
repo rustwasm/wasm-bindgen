@@ -501,27 +501,26 @@ impl<'a> Js<'a> {
         }
 
         for f in import.functions.iter() {
-            self.generate_import_struct_function(&import.name,
-                                                 f.method,
-                                                 &f.function);
+            self.generate_import_struct_function(&import.name, f);
         }
     }
 
     fn generate_import_struct_function(
         &mut self,
         class: &str,
-        is_method: bool,
-        function: &shared::Function,
+        f: &shared::ImportStructFunction,
     ) {
-        let delegate = if is_method {
-            format!("{}.prototype.{}.call", class, function.name)
+        let delegate = if f.method {
+            format!("{}.prototype.{}.call", class, f.function.name)
+        } else if f.js_new {
+            format!("new {}", class)
         } else {
-            format!("{}.{}", class, function.name)
+            format!("{}.{}", class, f.function.name)
         };
-        self.gen_import_shim(&shared::mangled_import_name(Some(class), &function.name),
+        self.gen_import_shim(&shared::mangled_import_name(Some(class), &f.function.name),
                              &delegate,
-                             is_method,
-                             function)
+                             f.method,
+                             &f.function)
     }
 
     fn gen_import_shim(
