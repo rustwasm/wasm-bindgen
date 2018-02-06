@@ -50,7 +50,7 @@ pub struct Function {
 }
 
 pub fn free_function(struct_name: &str) -> String {
-    let mut name = format!("__wbindgen_");
+    let mut name = format!("__wbg_");
     name.extend(struct_name
         .chars()
         .flat_map(|s| s.to_lowercase()));
