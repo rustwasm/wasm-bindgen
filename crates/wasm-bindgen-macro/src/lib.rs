@@ -429,10 +429,9 @@ impl ToTokens for Receiver {
 }
 
 fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
-    bindgen_import_function(&import.function,
-                            &import.function.ident.to_string(),
-                            Some(&import.module),
-                            tokens);
+    let import_name = import.function.wasm_function.shared()
+        .mangled_import_name(None);
+    bindgen_import_function(&import.function, &import_name, tokens);
 }
 
 fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
@@ -446,12 +445,9 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
     let mut methods = Tokens::new();
 
     for &(_is_method, ref f) in import.functions.iter() {
-        let import_name = format!("__wbg_{}_{}", name, f.ident);
-
-        bindgen_import_function(f,
-                                &import_name,
-                                import.module.as_ref().map(|s| &**s),
-                                &mut methods);
+        let import_name = f.wasm_function.shared()
+            .mangled_import_name(Some(&import.name.to_string()));
+        bindgen_import_function(f, &import_name, &mut methods);
     }
 
     (my_quote! {
@@ -463,7 +459,6 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
 
 fn bindgen_import_function(import: &ast::ImportFunction,
                            import_name: &str,
-                           _import_module: Option<&str>,
                            tokens: &mut Tokens) {
     let vis = &import.rust_vis;
     let ret = &import.rust_decl.output;

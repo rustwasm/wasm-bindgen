@@ -26,6 +26,9 @@ impl<'a> Js<'a> {
         for s in self.program.structs.iter() {
             self.generate_struct(s);
         }
+        for s in self.program.imported_structs.iter() {
+            self.generate_import_struct(s);
+        }
 
         {
             let mut bind = |name: &str, f: &Fn(&mut Self) -> String| {
@@ -467,15 +470,56 @@ impl<'a> Js<'a> {
     }
 
     pub fn generate_import(&mut self, module: &str, import: &shared::Function) {
-        let mut dst = String::new();
-
         let imported_name = format!("import{}", self.imports.len());
 
         self.imports.push_str(&format!("
             import {{ {} as {} }} from '{}';
         ", import.name, imported_name, module));
 
-        dst.push_str(&format!("function __wbg_import_{}(", import.name));
+        self.gen_import_shim(&import.mangled_import_name(None),
+                             &imported_name,
+                             import)
+    }
+
+    pub fn generate_import_struct(&mut self, import: &shared::ImportStruct) {
+        if let Some(ref module) = import.module {
+            self.imports.push_str(&format!("
+                import {{ {} }} from '{}';
+            ", import.name, module));
+        }
+
+        for &(method, ref function) in import.functions.iter() {
+            self.generate_import_struct_function(&import.name,
+                                                 method,
+                                                 function);
+        }
+    }
+
+    fn generate_import_struct_function(
+        &mut self,
+        class: &str,
+        is_method: bool,
+        function: &shared::Function,
+    ) {
+        let delegate = if is_method {
+            format!("{}.prototype.{}.call", class, function.name)
+        } else {
+            format!("{}.{}", class, function.name)
+        };
+        self.gen_import_shim(&function.mangled_import_name(Some(class)),
+                             &delegate,
+                             function)
+    }
+
+    fn gen_import_shim(
+        &mut self,
+        shim_name: &str,
+        shim_delegate: &str,
+        import: &shared::Function,
+    ) {
+        let mut dst = String::new();
+
+        dst.push_str(&format!("function {}(", shim_name));
 
         let mut invocation = String::new();
         for (i, arg) in import.arguments.iter().enumerate() {
@@ -518,7 +562,7 @@ impl<'a> Js<'a> {
             }
         }
         dst.push_str(")");
-        let invoc = format!("{}({})", imported_name, invocation);
+        let invoc = format!("{}({})", shim_delegate, invocation);
         let invoc = match import.ret {
             Some(shared::Type::Number) => invoc,
             Some(shared::Type::Boolean) => format!("{} ? 1 : 0", invoc),
@@ -571,12 +615,16 @@ impl<'a> Js<'a> {
                 // fixed upstream.
                 let program_import = self.program.imports
                     .iter()
-                    .find(|&&(_, ref f)| f.name == import.field());
-                if program_import.is_some() {
+                    .any(|&(_, ref f)| f.mangled_import_name(None) == import.field());
+                let struct_import = self.program.imported_structs
+                    .iter()
+                    .flat_map(|s| s.functions.iter().map(move |f| (s, &f.1)))
+                    .any(|(s, f)| f.mangled_import_name(Some(&s.name)) == import.field());
+                if program_import || struct_import {
                     import.module_mut().truncate(0);
                     import.module_mut().push_str("./");
                     import.module_mut().push_str(module_name);
-                    import.field_mut().insert_str(0, "__wbg_import_");
+                    continue
                 }
             }
         }

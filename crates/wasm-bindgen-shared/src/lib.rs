@@ -61,6 +61,13 @@ impl Function {
         name.push_str(&self.name);
         return name
     }
+
+    pub fn mangled_import_name(&self, struct_: Option<&str>) -> String {
+        match struct_ {
+            Some(s) => format!("__wbg_s_{}_{}", s, self.name),
+            None => format!("__wbg_f_{}", self.name),
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize)]

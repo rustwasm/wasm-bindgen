@@ -256,7 +256,7 @@ impl Function {
         syn::Ident::from(generated_name)
     }
 
-    fn shared(&self) -> shared::Function {
+    pub fn shared(&self) -> shared::Function {
         shared::Function {
             name: self.name.as_ref().to_string(),
             arguments: self.arguments.iter().map(|t| t.shared()).collect(),
