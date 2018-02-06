@@ -16,7 +16,7 @@ fn simple() {
                     fn foo(s: &str);
                     fn another(a: u32) -> i32;
                     fn take_and_return_bool(a: bool) -> bool;
-                    fn return_object() -> JsObject;
+                    fn return_object() -> JsValue;
                 }
                 pub fn bar(s: &str) {
                     foo(s);
@@ -28,7 +28,7 @@ fn simple() {
                     take_and_return_bool(a)
                 }
 
-                pub fn get_the_object() -> JsObject {
+                pub fn get_the_object() -> JsValue {
                     return_object()
                 }
             }

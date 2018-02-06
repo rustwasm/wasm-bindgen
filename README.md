@@ -264,16 +264,16 @@ wasm_bindgen! {
 
     pub struct Bar {
         contents: u32,
-        opaque: JsObject, // defined in `wasm_bindgen`, imported via prelude
+        opaque: JsValue, // defined in `wasm_bindgen`, imported via prelude
     }
 
     #[wasm_module = "./index"] // what ES6 module to import this functionality from
     extern "JS" {
-        fn bar_on_reset(to: &str, opaque: &JsObject);
+        fn bar_on_reset(to: &str, opaque: &JsValue);
     }
 
     impl Bar {
-        pub fn from_str(s: &str, opaque: JsObject) -> Bar {
+        pub fn from_str(s: &str, opaque: JsValue) -> Bar {
             Bar { contents: s.parse().unwrap_or(0), opaque }
         }
 
@@ -362,7 +362,7 @@ macro itself. Arguments allowed are:
 * Owned strings (`String`)
 * Owned structs (`Foo`) defined in the same bindgen macro
 * Borrowed structs (`&Foo` or `&mut Bar`) defined in the same bindgen macro
-* The `JsObject` type and `&JsObject` (not mutable references)
+* The `JsValue` type and `&JsValue` (not mutable references)
 
 All of the above can also be returned except borrowed references. Strings are
 implemented with shim functions to copy data in/out of the Rust heap. That is, a

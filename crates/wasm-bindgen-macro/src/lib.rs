@@ -377,7 +377,7 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
 
     (my_quote! {
         pub struct #name {
-            obj: ::wasm_bindgen::JsObject,
+            obj: ::wasm_bindgen::JsValue,
         }
 
         impl #name {
@@ -385,9 +385,9 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
         }
 
         impl ::wasm_bindgen::convert::WasmBoundary for #name {
-            type Js = <::wasm_bindgen::JsObject as
+            type Js = <::wasm_bindgen::JsValue as
                 ::wasm_bindgen::convert::WasmBoundary>::Js;
-            const DESCRIPTOR: char = <::wasm_bindgen::JsObject as
+            const DESCRIPTOR: char = <::wasm_bindgen::JsValue as
                 ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR;
 
             fn into_js(self) -> Self::Js {
@@ -395,7 +395,7 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
             }
 
             unsafe fn from_js(js: Self::Js) -> Self {
-                #name { obj: ::wasm_bindgen::JsObject::from_js(js) }
+                #name { obj: ::wasm_bindgen::JsValue::from_js(js) }
             }
         }
     }).to_tokens(tokens);

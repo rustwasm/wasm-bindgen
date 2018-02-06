@@ -13,9 +13,9 @@ fn simple() {
             wasm_bindgen! {
                 #[wasm_module = "./test"]
                 extern "JS" {
-                    fn foo(s: &JsObject);
+                    fn foo(s: &JsValue);
                 }
-                pub fn bar(s: &JsObject) {
+                pub fn bar(s: &JsValue) {
                     foo(s);
                 }
             }
@@ -54,9 +54,9 @@ fn owned() {
             wasm_bindgen! {
                 #[wasm_module = "./test"]
                 extern "JS" {
-                    fn foo(s: JsObject);
+                    fn foo(s: JsValue);
                 }
-                pub fn bar(s: JsObject) {
+                pub fn bar(s: JsValue) {
                     foo(s);
                 }
             }
@@ -95,14 +95,14 @@ fn clone() {
             wasm_bindgen! {
                 #[wasm_module = "./test"]
                 extern "JS" {
-                    fn foo1(s: JsObject);
-                    fn foo2(s: &JsObject);
-                    fn foo3(s: JsObject);
-                    fn foo4(s: &JsObject);
-                    fn foo5(s: JsObject);
+                    fn foo1(s: JsValue);
+                    fn foo2(s: &JsValue);
+                    fn foo3(s: JsValue);
+                    fn foo4(s: &JsValue);
+                    fn foo5(s: JsValue);
                 }
 
-                pub fn bar(s: JsObject) {
+                pub fn bar(s: JsValue) {
                     foo1(s.clone());
                     foo2(&s);
                     foo3(s.clone());
@@ -143,13 +143,13 @@ fn promote() {
             wasm_bindgen! {
                 #[wasm_module = "./test"]
                 extern "JS" {
-                    fn foo1(s: &JsObject);
-                    fn foo2(s: JsObject);
-                    fn foo3(s: &JsObject);
-                    fn foo4(s: JsObject);
+                    fn foo1(s: &JsValue);
+                    fn foo2(s: JsValue);
+                    fn foo3(s: &JsValue);
+                    fn foo4(s: JsValue);
                 }
 
-                pub fn bar(s: &JsObject) {
+                pub fn bar(s: &JsValue) {
                     foo1(s);
                     foo2(s.clone());
                     foo3(s);

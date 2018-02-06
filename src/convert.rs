@@ -1,7 +1,7 @@
 use std::mem::{self, ManuallyDrop};
 use std::ops::{Deref, DerefMut};
 
-use super::JsObject;
+use super::JsValue;
 
 // keep in sync with shared/src/lib.rs TYPE constants
 pub const DESCRIPTOR_CUSTOM_REF_FLAG: u32 = 0x1;
@@ -92,7 +92,7 @@ impl<T> WasmBoundary for *mut T {
     unsafe fn from_js(js: u32) -> *mut T { js as *mut T }
 }
 
-impl WasmBoundary for JsObject {
+impl WasmBoundary for JsValue {
     type Js = u32;
     const DESCRIPTOR: char = DESCRIPTOR_JS_OWNED;
 
@@ -102,21 +102,21 @@ impl WasmBoundary for JsObject {
         return ret
     }
 
-    unsafe fn from_js(js: u32) -> JsObject {
-        JsObject { idx: js }
+    unsafe fn from_js(js: u32) -> JsValue {
+        JsValue { idx: js }
     }
 }
 
-impl ToRefWasmBoundary for JsObject {
+impl ToRefWasmBoundary for JsValue {
     fn to_js_ref(&self) -> u32 {
         self.idx
     }
 }
 
-impl FromRefWasmBoundary for JsObject {
-    type RefAnchor = ManuallyDrop<JsObject>;
+impl FromRefWasmBoundary for JsValue {
+    type RefAnchor = ManuallyDrop<JsValue>;
 
-    unsafe fn from_js_ref(js: u32) -> ManuallyDrop<JsObject> {
-        ManuallyDrop::new(JsObject { idx: js })
+    unsafe fn from_js_ref(js: u32) -> ManuallyDrop<JsValue> {
+        ManuallyDrop::new(JsValue { idx: js })
     }
 }

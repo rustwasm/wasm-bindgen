@@ -11,35 +11,35 @@ fn works() {
             use wasm_bindgen::prelude::*;
 
             wasm_bindgen! {
-                pub fn foo() -> JsObject {
-                    JsObject::from("foo")
+                pub fn foo() -> JsValue {
+                    JsValue::from("foo")
                 }
 
-                pub fn bar(s: &str) -> JsObject {
-                    JsObject::from(s)
+                pub fn bar(s: &str) -> JsValue {
+                    JsValue::from(s)
                 }
 
-                pub fn baz() -> JsObject {
-                    JsObject::from(1.0)
+                pub fn baz() -> JsValue {
+                    JsValue::from(1.0)
                 }
 
-                pub fn baz2(a: &JsObject, b: &JsObject) {
+                pub fn baz2(a: &JsValue, b: &JsValue) {
                     assert_eq!(a.as_f64(), Some(2.0));
                     assert_eq!(b.as_f64(), None);
                 }
 
-                pub fn js_null() -> JsObject {
-                    JsObject::null()
+                pub fn js_null() -> JsValue {
+                    JsValue::null()
                 }
 
-                pub fn js_undefined() -> JsObject {
-                    JsObject::undefined()
+                pub fn js_undefined() -> JsValue {
+                    JsValue::undefined()
                 }
 
                 pub fn test_is_null_undefined(
-                    a: &JsObject,
-                    b: &JsObject,
-                    c: &JsObject,
+                    a: &JsValue,
+                    b: &JsValue,
+                    c: &JsValue,
                 ) {
                     assert!(a.is_null());
                     assert!(!a.is_undefined());
@@ -51,47 +51,47 @@ fn works() {
                     assert!(!c.is_undefined());
                 }
 
-                pub fn get_true() -> JsObject {
-                    JsObject::from(true)
+                pub fn get_true() -> JsValue {
+                    JsValue::from(true)
                 }
 
-                pub fn get_false() -> JsObject {
-                    JsObject::from(false)
+                pub fn get_false() -> JsValue {
+                    JsValue::from(false)
                 }
 
                 pub fn test_bool(
-                    a: &JsObject,
-                    b: &JsObject,
-                    c: &JsObject,
+                    a: &JsValue,
+                    b: &JsValue,
+                    c: &JsValue,
                 ) {
                     assert_eq!(a.as_bool(), Some(true));
                     assert_eq!(b.as_bool(), Some(false));
                     assert_eq!(c.as_bool(), None);
                 }
 
-                pub fn mk_symbol() -> JsObject {
-                    let a = JsObject::symbol(None);
+                pub fn mk_symbol() -> JsValue {
+                    let a = JsValue::symbol(None);
                     assert!(a.is_symbol());
                     return a
                 }
 
-                pub fn mk_symbol2(s: &str) -> JsObject {
-                    let a = JsObject::symbol(Some(s));
+                pub fn mk_symbol2(s: &str) -> JsValue {
+                    let a = JsValue::symbol(Some(s));
                     assert!(a.is_symbol());
                     return a
                 }
 
-                pub fn assert_symbols(a: &JsObject, b: &JsObject) {
+                pub fn assert_symbols(a: &JsValue, b: &JsValue) {
                     assert!(a.is_symbol());
                     assert!(!b.is_symbol());
                 }
 
-                pub fn acquire_string(a: &JsObject, b: &JsObject) {
+                pub fn acquire_string(a: &JsValue, b: &JsValue) {
                     assert_eq!(a.as_string().unwrap(), "foo");
                     assert_eq!(b.as_string(), None);
                 }
 
-                pub fn acquire_string2(a: &JsObject) -> String {
+                pub fn acquire_string2(a: &JsValue) -> String {
                     a.as_string().unwrap_or("wrong".to_string())
                 }
             }

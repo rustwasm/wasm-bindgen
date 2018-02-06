@@ -2,7 +2,7 @@
 //!
 //! This crate contains the runtime support necessary for `wasm-bindgen` the
 //! macro and tool. Crates pull in the `wasm_bindgen!` macro through this crate
-//! and this crate also provides JS bindings through the `JsObject` interface.
+//! and this crate also provides JS bindings through the `JsValue` interface.
 
 #![feature(use_extern_macros)]
 
@@ -17,29 +17,29 @@ use std::ptr;
 /// ```
 pub mod prelude {
     pub use wasm_bindgen_macro::wasm_bindgen;
-    pub use JsObject;
+    pub use JsValue;
 }
 
 pub mod convert;
 
 /// Representation of an object owned by JS.
 ///
-/// A `JsObject` doesn't actually live in Rust right now but actually in a table
+/// A `JsValue` doesn't actually live in Rust right now but actually in a table
 /// owned by the `wasm-bindgen` generated JS glue code. Eventually the ownership
 /// will transfer into wasm directly and this will likely become more efficient,
 /// but for now it may be slightly slow.
-pub struct JsObject {
+pub struct JsValue {
     idx: u32,
 }
 
-impl JsObject {
+impl JsValue {
     /// Creates a new JS value which is a string.
     ///
     /// The utf-8 string provided is copied to the JS heap and the string will
     /// be owned by the JS garbage collector.
-    pub fn from_str(s: &str) -> JsObject {
+    pub fn from_str(s: &str) -> JsValue {
         unsafe {
-            JsObject { idx: __wbindgen_string_new(s.as_ptr(), s.len()) }
+            JsValue { idx: __wbindgen_string_new(s.as_ptr(), s.len()) }
         }
     }
 
@@ -47,9 +47,9 @@ impl JsObject {
     ///
     /// This function creates a JS value representing a number (a heap
     /// allocated number) and returns a handle to the JS version of it.
-    pub fn from_f64(n: f64) -> JsObject {
+    pub fn from_f64(n: f64) -> JsValue {
         unsafe {
-            JsObject { idx: __wbindgen_number_new(n) }
+            JsValue { idx: __wbindgen_number_new(n) }
         }
     }
 
@@ -57,23 +57,23 @@ impl JsObject {
     ///
     /// This function creates a JS object representing a boolean (a heap
     /// allocated boolean) and returns a handle to the JS version of it.
-    pub fn from_bool(b: bool) -> JsObject {
+    pub fn from_bool(b: bool) -> JsValue {
         unsafe {
-            JsObject { idx: __wbindgen_boolean_new(b as u32) }
+            JsValue { idx: __wbindgen_boolean_new(b as u32) }
         }
     }
 
     /// Creates a new JS value representing `undefined`.
-    pub fn undefined() -> JsObject {
+    pub fn undefined() -> JsValue {
         unsafe {
-            JsObject { idx: __wbindgen_undefined_new() }
+            JsValue { idx: __wbindgen_undefined_new() }
         }
     }
 
     /// Creates a new JS value representing `null`.
-    pub fn null() -> JsObject {
+    pub fn null() -> JsValue {
         unsafe {
-            JsObject { idx: __wbindgen_null_new() }
+            JsValue { idx: __wbindgen_null_new() }
         }
     }
 
@@ -81,17 +81,17 @@ impl JsObject {
     ///
     /// This function will invoke the `Symbol` constructor in JS and return the
     /// JS object corresponding to the symbol created.
-    pub fn symbol(description: Option<&str>) -> JsObject {
+    pub fn symbol(description: Option<&str>) -> JsValue {
         unsafe {
             let ptr = description.map(|s| s.as_ptr()).unwrap_or(ptr::null());
             let len = description.map(|s| s.len()).unwrap_or(0);
-            JsObject { idx: __wbindgen_symbol_new(ptr, len) }
+            JsValue { idx: __wbindgen_symbol_new(ptr, len) }
         }
     }
 
     // #[doc(hidden)]
-    // pub fn __from_idx(idx: u32) -> JsObject {
-    //     JsObject { idx }
+    // pub fn __from_idx(idx: u32) -> JsValue {
+    //     JsValue { idx }
     // }
     //
     // #[doc(hidden)]
@@ -178,29 +178,29 @@ impl JsObject {
     }
 }
 
-impl<'a> From<&'a str> for JsObject {
-    fn from(s: &'a str) -> JsObject {
-        JsObject::from_str(s)
+impl<'a> From<&'a str> for JsValue {
+    fn from(s: &'a str) -> JsValue {
+        JsValue::from_str(s)
     }
 }
 
-impl<'a> From<&'a String> for JsObject {
-    fn from(s: &'a String) -> JsObject {
-        JsObject::from_str(s)
+impl<'a> From<&'a String> for JsValue {
+    fn from(s: &'a String) -> JsValue {
+        JsValue::from_str(s)
     }
 }
 
-impl From<bool> for JsObject {
-    fn from(s: bool) -> JsObject {
-        JsObject::from_bool(s)
+impl From<bool> for JsValue {
+    fn from(s: bool) -> JsValue {
+        JsValue::from_bool(s)
     }
 }
 
 macro_rules! numbers {
     ($($n:ident)*) => ($(
-        impl From<$n> for JsObject {
-            fn from(n: $n) -> JsObject {
-                JsObject::from_f64(n.into())
+        impl From<$n> for JsValue {
+            fn from(n: $n) -> JsValue {
+                JsValue::from_f64(n.into())
             }
         }
     )*)
@@ -225,16 +225,16 @@ extern {
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
 }
 
-impl Clone for JsObject {
-    fn clone(&self) -> JsObject {
+impl Clone for JsValue {
+    fn clone(&self) -> JsValue {
         unsafe {
             let idx = __wbindgen_object_clone_ref(self.idx);
-            JsObject { idx }
+            JsValue { idx }
         }
     }
 }
 
-impl Drop for JsObject {
+impl Drop for JsValue {
     fn drop(&mut self) {
         unsafe {
             __wbindgen_object_drop_ref(self.idx);

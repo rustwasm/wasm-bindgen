@@ -19,7 +19,7 @@ fn works() {
                         A {}
                     }
                 }
-                pub fn clone(a: &JsObject) -> JsObject {
+                pub fn clone(a: &JsValue) -> JsValue {
                     drop(a.clone());
                     a.clone()
                 }

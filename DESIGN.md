@@ -53,13 +53,13 @@ Let's take a look at an example.
 ```rust
 // foo.rs
 wasm_bindgen! {
-    pub fn foo(a: &JsObject) {
+    pub fn foo(a: &JsValue) {
         // ...
     }
 }
 ```
 
-Here we're using the special `JsObject` type from the `wasm-bindgen` library
+Here we're using the special `JsValue` type from the `wasm-bindgen` library
 itself. Our exported function, `foo`, takes a *reference* to an object. This
 notably means that it can't persist the object past the lifetime of this
 function call.
@@ -112,14 +112,14 @@ there! Let's take a look at the code that `wasm_bindgen!` generates in Rust:
 
 ```rust
 // what the user wrote
-pub fn foo(a: &JsObject) {
+pub fn foo(a: &JsValue) {
     // ...
 }
 
 #[export_name = "foo"]
 pub extern fn __wasm_bindgen_generated_foo(arg0: u32) {
     let arg0 = unsafe {
-        ManuallyDrop::new(JsObject::__from_idx(arg0))
+        ManuallyDrop::new(JsValue::__from_idx(arg0))
     };
     let arg0 = &*arg0;
     foo(arg0);
@@ -132,7 +132,7 @@ And as with the JS, the notable points here are:
 * A generated function here (with a unique name) is the one that's actually
   exported from the wasm module
 * Our generated function takes an integer argument (our index) and then wraps it
-  in a `JsObject`. There's some trickery here that's not worth going into just
+  in a `JsValue`. There's some trickery here that's not worth going into just
   yet, but we'll see in a bit what's happening under the hood.
 
 ### Long-lived JS objects in a slab
@@ -153,13 +153,13 @@ example.
 ```rust
 // foo.rs
 wasm_bindgen! {
-    pub fn foo(a: JsObject) {
+    pub fn foo(a: JsValue) {
         // ...
     }
 }
 ```
 
-Note that the `&` is missing in front of the `JsObject` we had before, and in
+Note that the `&` is missing in front of the `JsValue` we had before, and in
 Rust parlance this means it's taking ownership of the JS value. The exported ES
 module interface is the same as before, but the ownership mechanics are slightly
 different. Let's see the generated JS's slab in action:
@@ -208,7 +208,7 @@ using `Rc`, but it's overall not too important to worry about here.
 Another curious aspect of this generated module is the
 `__wbindgen_object_drop_ref` function. This is one that's actually imported from
 wasm rather than used in this module! This function is used to signal the end of
-the lifetime of a `JsObject` in Rust, or in other words when it goes out of
+the lifetime of a `JsValue` in Rust, or in other words when it goes out of
 scope. Otherwise though this function is largely just a general "slab free"
 implementation.
 
@@ -216,14 +216,14 @@ And finally, let's take a look at the Rust generated again too:
 
 ```rust
 // what the user wrote
-pub fn foo(a: JsObject) {
+pub fn foo(a: JsValue) {
     // ...
 }
 
 #[export_name = "foo"]
 pub extern fn __wasm_bindgen_generated_foo(arg0: u32) {
     let arg0 = unsafe {
-        JsObject::__from_idx(arg0)
+        JsValue::__from_idx(arg0)
     };
     foo(arg0);
 }
@@ -232,18 +232,18 @@ pub extern fn __wasm_bindgen_generated_foo(arg0: u32) {
 Ah that looks much more familiar! Not much interesting is happening here, so
 let's move on to...
 
-### Anatomy of `JsObject`
+### Anatomy of `JsValue`
 
-Currently the `JsObject` struct is actually quite simple in Rust, it's:
+Currently the `JsValue` struct is actually quite simple in Rust, it's:
 
 ```rust
-pub struct JsObject {
+pub struct JsValue {
     idx: u32,
 }
 
 // "private" constructors
 
-impl Drop for JsObject {
+impl Drop for JsValue {
     fn drop(&mut self) {
         unsafe {
             __wbindgen_object_drop_ref(self.idx);
@@ -257,7 +257,7 @@ passed from wasm. The destructor here is where the `__wbindgen_object_drop_ref`
 function is called to relinquish our reference count of the JS object, freeing
 up our slot in the `slab` that we saw above.
 
-If you'll recall as well, when we took `&JsObject` above we generated a wrapper
+If you'll recall as well, when we took `&JsValue` above we generated a wrapper
 of `ManuallyDrop` around the local binding, and that's because we wanted to
 avoid invoking this destructor when the object comes from the stack.
 
@@ -673,7 +673,7 @@ take a look:
 
 ```rust
 pub struct Bar {
-    obj: JsObject,
+    obj: JsValue,
 }
 
 impl Bar {
@@ -683,7 +683,7 @@ impl Bar {
         }
         unsafe {
             let ret = __wbg_s_Bar_new();
-            Bar { obj: JsObject::__from_idx(ret) }
+            Bar { obj: JsValue::__from_idx(ret) }
         }
     }
 
@@ -711,7 +711,7 @@ impl Bar {
 ```
 
 In Rust we're seeing that a new type, `Bar`, is generated for this import of a
-class. The type `Bar` internally contains a `JsObject` as an instance of `Bar`
+class. The type `Bar` internally contains a `JsValue` as an instance of `Bar`
 is meant to represent a JS object stored in our module's stack/slab. This then
 works mostly the same way that we saw JS objects work in the beginning.
 
