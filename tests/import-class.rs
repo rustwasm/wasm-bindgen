@@ -92,11 +92,16 @@ fn construct() {
                 #[wasm_module = "./test"]
                 extern struct Foo {
                     fn create() -> Foo;
-                    fn doit(&self);
+                    fn get_internal_string(&self) -> String;
+                    fn append_to_internal_string(&self, s: &str);
+                    fn assert_internal_string(&self, s: &str);
                 }
 
-                pub fn bar() {
-                    Foo::create().doit();
+                pub fn run() {
+                    let f = Foo::create();
+                    assert_eq!(f.get_internal_string(), "this");
+                    f.append_to_internal_string(" foo");
+                    f.assert_internal_string("this foo");
                 }
             }
         "#)
@@ -107,22 +112,30 @@ fn construct() {
             let called = false;
 
             export class Foo {
-                private random_property: string = '';
+                private internal_string: string = '';
 
                 static create() {
                     const ret = new Foo();
-                    ret.random_property = 'this';
+                    ret.internal_string = 'this';
                     return ret;
                 }
 
-                doit() {
-                    assert.strictEqual(this.random_property, 'this');
+                get_internal_string() {
+                    return this.internal_string;
+                }
+
+                append_to_internal_string(s: string) {
+                    this.internal_string += s;
+                }
+
+                assert_internal_string(s: string) {
+                    assert.strictEqual(this.internal_string, s);
                     called = true;
                 }
             }
 
             export function test() {
-                wasm.bar();
+                wasm.run();
                 assert.strictEqual(called, true);
             }
         "#)

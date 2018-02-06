@@ -23,9 +23,6 @@ macro_rules! my_quote {
 
 mod ast;
 
-static MALLOC_GENERATED: AtomicBool = ATOMIC_BOOL_INIT;
-static BOXED_STR_GENERATED: AtomicBool = ATOMIC_BOOL_INIT;
-
 #[proc_macro]
 pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     // Parse the input as a list of Rust items, reusing the `syn::File` parser.
@@ -214,9 +211,6 @@ fn bindgen(export_name: &syn::LitStr,
     let mut converted_arguments = vec![];
     let ret = syn::Ident::from("_ret");
 
-    let mut malloc = false;
-    let mut boxed_str = false;
-
     let mut offset = 0;
     if let Receiver::StructMethod(class, _, _) = receiver {
         args.push(my_quote! { me: *mut ::wasm_bindgen::__rt::WasmRefCell<#class> });
@@ -232,7 +226,6 @@ fn bindgen(export_name: &syn::LitStr,
         let ident = syn::Ident::from(format!("arg{}", i));
         match *ty {
             ast::Type::BorrowedStr => {
-                malloc = malloc || !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
                 let len = syn::Ident::from(format!("arg{}_len", i));
                 args.push(my_quote! { #ptr: *const u8 });
@@ -245,7 +238,6 @@ fn bindgen(export_name: &syn::LitStr,
                 });
             }
             ast::Type::String => {
-                malloc = malloc || !MALLOC_GENERATED.swap(true, Ordering::SeqCst);
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
                 let len = syn::Ident::from(format!("arg{}_len", i));
                 args.push(my_quote! { #ptr: *mut u8 });
@@ -299,7 +291,6 @@ fn bindgen(export_name: &syn::LitStr,
     let convert_ret;
     match ret_type {
         Some(&ast::Type::String) => {
-            boxed_str = !BOXED_STR_GENERATED.swap(true, Ordering::SeqCst);
             ret_ty = my_quote! { -> *mut String };
             convert_ret = my_quote! { Box::into_raw(Box::new(#ret)) };
         }
@@ -322,65 +313,7 @@ fn bindgen(export_name: &syn::LitStr,
         }
     }
 
-    // TODO: move this function into wasm-bindgen-the-crate and then gc it out
-    // if it's not used.
-    let malloc = if malloc {
-        my_quote! {
-            #[no_mangle]
-            pub extern fn __wbindgen_malloc(size: usize) -> *mut u8 {
-                // Any malloc request this big is bogus anyway. If this actually
-                // goes down to `Vec` we trigger a whole bunch of panicking
-                // machinery to get pulled in from libstd anyway as it'll verify
-                // the size passed in below.
-                //
-                // Head this all off by just aborting on too-big sizes. This
-                // avoids panicking (code bloat) and gives a better error
-                // message too hopefully.
-                if size >= usize::max_value() / 2 {
-                    ::wasm_bindgen::throw("invalid malloc request");
-                }
-                let mut ret = Vec::with_capacity(size);
-                let ptr = ret.as_mut_ptr();
-                ::std::mem::forget(ret);
-                return ptr
-            }
-
-            #[no_mangle]
-            pub unsafe extern fn __wbindgen_free(ptr: *mut u8, size: usize) {
-                drop(Vec::<u8>::from_raw_parts(ptr, 0, size));
-            }
-        }
-    } else {
-        my_quote! {
-        }
-    };
-
-    let boxed_str = if boxed_str {
-        my_quote! {
-            #[no_mangle]
-            pub unsafe extern fn __wbindgen_boxed_str_len(ptr: *mut String) -> usize {
-                (*ptr).len()
-            }
-
-            #[no_mangle]
-            pub unsafe extern fn __wbindgen_boxed_str_ptr(ptr: *mut String) -> *const u8 {
-                (*ptr).as_ptr()
-            }
-
-            #[no_mangle]
-            pub unsafe extern fn __wbindgen_boxed_str_free(ptr: *mut String) {
-                drop(Box::from_raw(ptr));
-            }
-        }
-    } else {
-        my_quote! {
-        }
-    };
-
     let tokens = my_quote! {
-        #malloc
-        #boxed_str
-
         #[export_name = #export_name]
         #[allow(non_snake_case)]
         pub extern fn #generated_name(#(#args),*) #ret_ty {

@@ -90,25 +90,3 @@ pub const TYPE_JS_REF: char = '\u{63}';
 
 pub const TYPE_CUSTOM_START: u32 = 0x64;
 pub const TYPE_CUSTOM_REF_FLAG: u32 = 1;
-
-// #[derive(Serialize, Deserialize)]
-// pub enum Type {
-//     Number,
-//     BorrowedStr,
-//     String,
-//     ByValue(String),    // wrapper class
-//     ByRef(String),      // wrapper class
-//     ByMutRef(String),   // wrapper class
-//     JsObject,
-//     JsObjectRef,
-//     Boolean,
-// }
-
-// impl Type {
-//     pub fn is_number(&self) -> bool {
-//         match *self {
-//             Type::Number => true,
-//             _ => false,
-//         }
-//     }
-// }

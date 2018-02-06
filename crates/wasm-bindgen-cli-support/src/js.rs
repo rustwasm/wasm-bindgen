@@ -10,6 +10,7 @@ pub struct Js<'a> {
     pub imports: String,
     pub typescript: String,
     pub exposed_globals: HashSet<&'static str>,
+    pub required_internal_exports: HashSet<&'static str>,
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
     pub program: &'a shared::Program,
@@ -188,6 +189,7 @@ impl<'a> Js<'a> {
         );
 
         self.rewrite_imports(module_name);
+        self.unexport_unused_internal_exports();
 
         (js, self.typescript.clone())
     }
@@ -343,6 +345,7 @@ impl<'a> Js<'a> {
                         destructors.push_str(&format!("\n\
                             wasm.__wbindgen_free(ptr{i}, len{i});\n\
                         ", i = i));
+                        self.required_internal_exports.insert("__wbindgen_free");
                     }
                 }
                 shared::TYPE_JS_OWNED => {
@@ -416,6 +419,9 @@ impl<'a> Js<'a> {
             Some(&shared::TYPE_STRING) => {
                 dst_ts.push_str(": string");
                 self.expose_get_string_from_wasm();
+                self.required_internal_exports.insert("__wbindgen_boxed_str_ptr");
+                self.required_internal_exports.insert("__wbindgen_boxed_str_len");
+                self.required_internal_exports.insert("__wbindgen_boxed_str_free");
                 format!("
                     const ptr = wasm.__wbindgen_boxed_str_ptr(ret);
                     const len = wasm.__wbindgen_boxed_str_len(ret);
@@ -567,6 +573,7 @@ impl<'a> Js<'a> {
                         wasm.__wbindgen_free(ptr{0}, len{0});
                     ", i));
                     invocation.push_str(&format!("arg{}", i));
+                    self.required_internal_exports.insert("__wbindgen_free");
                 }
                 shared::TYPE_JS_OWNED => {
                     self.expose_take_object();
@@ -663,6 +670,20 @@ impl<'a> Js<'a> {
                     continue
                 }
             }
+        }
+    }
+
+    fn unexport_unused_internal_exports(&mut self) {
+        let required = &self.required_internal_exports;
+        for section in self.module.sections_mut() {
+            let exports = match *section {
+                Section::Export(ref mut s) => s,
+                _ => continue,
+            };
+            exports.entries_mut().retain(|export| {
+                !export.field().starts_with("__wbindgen") ||
+                    required.contains(export.field())
+            });
         }
     }
 
@@ -805,6 +826,7 @@ impl<'a> Js<'a> {
         if !self.exposed_globals.insert("pass_string_to_wasm") {
             return
         }
+        self.required_internal_exports.insert("__wbindgen_malloc");
         if self.config.nodejs {
             self.globals.push_str(&format!("
                 function passStringToWasm(arg) {{

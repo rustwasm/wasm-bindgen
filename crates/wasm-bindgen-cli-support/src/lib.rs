@@ -3,6 +3,7 @@ extern crate failure;
 extern crate parity_wasm;
 extern crate wasm_bindgen_shared as shared;
 extern crate serde_json;
+extern crate wasm_gc;
 
 use std::fs::File;
 use std::io::Write;
@@ -71,6 +72,7 @@ impl Bindgen {
             imports: String::new(),
             typescript: format!("/* tslint:disable */\n"),
             exposed_globals: Default::default(),
+            required_internal_exports: Default::default(),
             config: &self,
             module: &mut module,
             program: &program,
@@ -87,9 +89,13 @@ impl Bindgen {
         }
 
         let wasm_path = out_dir.join(format!("{}_wasm", stem)).with_extension("wasm");
-        parity_wasm::serialize_to_file(wasm_path, module).map_err(|e| {
+        let wasm_bytes = parity_wasm::serialize(module).map_err(|e| {
             format_err!("{:?}", e)
         })?;
+        let bytes = wasm_gc::Config::new()
+            .demangle(false)
+            .gc(&wasm_bytes)?;
+        File::create(&wasm_path)?.write_all(&bytes)?;
         Ok(())
     }
 }

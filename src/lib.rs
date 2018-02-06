@@ -261,6 +261,7 @@ pub fn throw(s: &str) -> ! {
 #[doc(hidden)]
 pub mod __rt {
     use std::cell::{Cell, UnsafeCell};
+    use std::mem;
     use std::ops::{Deref, DerefMut};
 
     #[inline]
@@ -393,5 +394,44 @@ pub mod __rt {
     fn borrow_fail() -> ! {
         super::throw("recursive use of an object detected which would lead to \
                       unsafe aliasing in rust");
+    }
+
+    #[no_mangle]
+    pub extern fn __wbindgen_malloc(size: usize) -> *mut u8 {
+        // Any malloc request this big is bogus anyway. If this actually
+        // goes down to `Vec` we trigger a whole bunch of panicking
+        // machinery to get pulled in from libstd anyway as it'll verify
+        // the size passed in below.
+        //
+        // Head this all off by just aborting on too-big sizes. This
+        // avoids panicking (code bloat) and gives a better error
+        // message too hopefully.
+        if size >= usize::max_value() / 2 {
+            super::throw("invalid malloc request");
+        }
+        let mut ret = Vec::with_capacity(size);
+        let ptr = ret.as_mut_ptr();
+        mem::forget(ret);
+        return ptr
+    }
+
+    #[no_mangle]
+    pub unsafe extern fn __wbindgen_free(ptr: *mut u8, size: usize) {
+        drop(Vec::<u8>::from_raw_parts(ptr, 0, size));
+    }
+
+    #[no_mangle]
+    pub unsafe extern fn __wbindgen_boxed_str_len(ptr: *mut String) -> usize {
+        (*ptr).len()
+    }
+
+    #[no_mangle]
+    pub unsafe extern fn __wbindgen_boxed_str_ptr(ptr: *mut String) -> *const u8 {
+        (*ptr).as_ptr()
+    }
+
+    #[no_mangle]
+    pub unsafe extern fn __wbindgen_boxed_str_free(ptr: *mut String) {
+        drop(Box::from_raw(ptr));
     }
 }
