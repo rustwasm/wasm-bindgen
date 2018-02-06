@@ -536,6 +536,8 @@ impl<'a> Js<'a> {
             self.expose_get_object();
         }
 
+        let mut extra = String::new();
+
         for (i, arg) in import.arguments.iter().enumerate() {
             if invocation.len() > 0 {
                 invocation.push_str(", ");
@@ -557,6 +559,15 @@ impl<'a> Js<'a> {
                     invocation.push_str(&format!("getStringFromWasm(ptr{0}, len{0})", i));
                     dst.push_str(&format!("ptr{0}, len{0}", i));
                 }
+                shared::TYPE_STRING => {
+                    self.expose_get_string_from_wasm();
+                    dst.push_str(&format!("ptr{0}, len{0}", i));
+                    extra.push_str(&format!("
+                        let arg{0} = getStringFromWasm(ptr{0}, len{0});
+                        wasm.__wbindgen_free(ptr{0}, len{0});
+                    ", i));
+                    invocation.push_str(&format!("arg{}", i));
+                }
                 shared::TYPE_JS_OWNED => {
                     self.expose_take_object();
                     invocation.push_str(&format!("takeObject(arg{})", i));
@@ -572,20 +583,32 @@ impl<'a> Js<'a> {
                 }
             }
         }
-        dst.push_str(")");
         let invoc = format!("{}({})", shim_delegate, invocation);
         let invoc = match import.ret {
-            Some(shared::TYPE_NUMBER) => invoc,
-            Some(shared::TYPE_BOOLEAN) => format!("{} ? 1 : 0", invoc),
+            Some(shared::TYPE_NUMBER) => format!("return {};", invoc),
+            Some(shared::TYPE_BOOLEAN) => format!("return {} ? 1 : 0;", invoc),
             Some(shared::TYPE_JS_OWNED) => {
                 self.expose_add_heap_object();
-                format!("addHeapObject({})", invoc)
+                format!("return addHeapObject({});", invoc)
+            }
+            Some(shared::TYPE_STRING) => {
+                self.expose_pass_string_to_wasm();
+                if import.arguments.len() > 0 || is_method {
+                    dst.push_str(", ");
+                }
+                dst.push_str("wasmretptr");
+                format!("
+                    const [retptr, retlen] = passStringToWasm({});
+                    (new Uint32Array(wasm.memory.buffer))[wasmretptr / 4] = retlen;
+                    return retptr;
+                ", invoc)
             }
             None => invoc,
             _ => unimplemented!(),
         };
-        dst.push_str(" {\n");
-        dst.push_str(&format!("return {};\n}}", invoc));
+        dst.push_str(") {\n");
+        dst.push_str(&extra);
+        dst.push_str(&format!("{}\n}}", invoc));
 
         self.globals.push_str("export ");
         self.globals.push_str(&dst);

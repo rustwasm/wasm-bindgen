@@ -583,15 +583,18 @@ fn bindgen_import_function(import: &ast::ImportFunction,
         // TODO: add a test for this
         Some(ast::Type::String) => {
             let name = syn::Ident::from("__ret_strlen");
-            abi_argument_names.push(name);
-            abi_arguments.push(my_quote! { #name: *mut usize });
+            let name_ptr = syn::Ident::from("__ret_strlen_ptr");
+            abi_argument_names.push(name_ptr);
+            abi_arguments.push(my_quote! { #name_ptr: *mut usize });
             arg_conversions.push(my_quote! {
                 let mut #name = 0;
+                let mut #name_ptr = &mut #name as *mut usize;
             });
-            abi_ret = my_quote! { *const u8 };
+            abi_ret = my_quote! { *mut u8 };
             convert_ret = my_quote! {
-                let __v = Vec::from_raw_parts(#ret_ident, #name, #name);
-                String::from_utf8_unchecked(__v)
+                String::from_utf8_unchecked(
+                    Vec::from_raw_parts(#ret_ident, #name, #name)
+                )
             };
         }
         Some(ast::Type::BorrowedStr) |

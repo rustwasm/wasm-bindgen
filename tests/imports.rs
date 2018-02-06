@@ -107,3 +107,44 @@ fn unused() {
         "#)
         .test();
 }
+
+#[test]
+fn strings() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                #[wasm_module = "./test"]
+                extern "JS" {
+                    fn foo(a: String) -> String;
+                }
+
+                pub fn bar(a: &str) -> String {
+                    foo(a.to_string())
+                }
+
+                pub fn bar2(a: String) -> String {
+                    foo(a)
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as wasm from "./out";
+            import * as assert from "assert";
+
+            export function foo(a: string): string {
+                return a + 'b';
+            }
+
+            export function test() {
+                assert.strictEqual(wasm.bar('a'), 'ab');
+                assert.strictEqual(wasm.bar2('a'), 'ab');
+            }
+        "#)
+        .test();
+}
