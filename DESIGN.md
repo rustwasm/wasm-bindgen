@@ -297,7 +297,7 @@ export function greet(a: string): string;
 
 To see what's going on, let's take a look at the generated shim
 
-```
+```js
 import * as wasm from './foo_wasm';
 
 function passStringToWasm(arg) {
@@ -635,7 +635,7 @@ fn run() {
 Here we're going to do the opposite of the above example and instead import our
 class and use it from Rust. First up, let's look at the JS:
 
-```rust
+```js
 import * as wasm from './foo_wasm';
 
 import { Bar } from './bar';
