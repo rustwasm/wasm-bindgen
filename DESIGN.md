@@ -15,7 +15,7 @@ JS files.
 
 Now unfortunately at the time of this writing the interface of wasm interop
 isn't very rich. Wasm modules can only call functions or export functions that
-deal exclusively with `u32`, `u64`, `f32`, and `f64`. Bummer!
+deal exclusively with `i32`, `i64`, `f32`, and `f64`. Bummer!
 
 That's where this project comes in. The goal of `wasm-bindgen` is to enhance the
 "ABI" of wasm modules with richer types like classes, JS objects, Rust structs,
@@ -103,7 +103,7 @@ Here we can see a few notable points of action:
   from the stack.
 * Our exported function `foo`, takes an arbitrary argument, `arg0`, which is
   converted to an index with the `addBorrowedObject` object function. The index
-  is the passed to wasm so wasm can operate with it.
+  is then passed to wasm so wasm can operate with it.
 * Finally, we have a `finally` which frees the stack slow as it's no longer in
   used, issuing a `pop` for what was pushed at the start of the function.
 
@@ -113,6 +113,7 @@ there! Let's take a look at the code that `wasm_bindgen!` generates in Rust:
 ```rust
 // what the user wrote
 pub fn foo(a: &JsObject) {
+    // ...
 }
 
 #[export_name = "foo"]
@@ -216,6 +217,7 @@ And finally, let's take a look at the Rust generated again too:
 ```rust
 // what the user wrote
 pub fn foo(a: JsObject) {
+    // ...
 }
 
 #[export_name = "foo"]
@@ -341,9 +343,10 @@ happening:
   and then we'll pass that ptr/length to wasm later on.
 
 * Returning strings from wasm is a little tricky as we need to return a ptr/len
-  pair, but wasm only supports one return value. To work around this we're
-  actually returning a pointer to a ptr/len pair, and then using functions to
-  access the various fields.
+  pair, but wasm currently only supports one return value (multiple return values
+  [is being standardized](https://github.com/WebAssembly/design/issues/1146)).
+  To work around this in the meantime, we're actually returning a pointer to a 
+  ptr/len pair, and then using functions to access the various fields.
 
 * Some cleanup ends up happening in wasm. The `__wbindgen_boxed_str_free`
   function is used to free the return value of `greet` after it's been decoded
@@ -351,7 +354,7 @@ happening:
   free the space we allocated to pass the string argument once the function call
   is done.
 
-At this point it may be preditable, but let's take a look at the Rust side of
+At this point it may be predictable, but let's take a look at the Rust side of
 things as well
 
 ```rust
@@ -465,7 +468,7 @@ returned pointer.
 ## Exporting a struct to JS
 
 So far we've covered JS objects, importing functions, and exporting functions.
-This has given us quite a rich based to build on so far, and that's great! We
+This has given us quite a rich base to build on so far, and that's great! We
 sometimes, though, want to go even further and define a JS `class` in Rust. Or
 in other words, we want to expose an object with methods from Rust to JS rather
 than just importing/exporting free functions.
