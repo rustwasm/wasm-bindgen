@@ -25,8 +25,10 @@ Notable features of this project includes:
 * Exposing Rust functions to JS
 * Managing arguments between JS/Rust (strings, numbers, classes, objects, etc)
 * Importing JS functions with richer types (strings, objects)
+* Importing JS classes and calling methods
 * Receiving arbitrary JS objects in Rust, passing them through to JS
 * Generates Typescript for now instead of JS (although that may come later)
+* Catching JS exceptions in imports
 
 Planned features include:
 
@@ -34,7 +36,10 @@ Planned features include:
 * ... and more coming soon!
 
 This project is still very "early days" but feedback is of course always
-welcome!
+welcome! If you're curious about the design plus even more information about
+what this crate can do, check out the [design doc].
+
+[design doc]: https://github.com/alexcrichton/wasm-bindgen/blob/master/DESIGN.md
 
 ## Basic usage
 

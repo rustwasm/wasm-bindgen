@@ -736,6 +736,36 @@ When calling `Bar::new` we'll get an index back which is wrapped up in `Bar`
 passes the index as the first argument and otherwise forwards everything along
 in Rust.
 
+## Imports and JS exceptions
+
+By default `wasm-bindgen` will take no action when wasm calls a JS function
+which ends up throwing an exception. The wasm spec right now doesn't support
+stack unwinding and as a result Rust code **will not execute destructors**. This
+can unfortunately cause memory leaks in Rust right now, but as soon as wasm
+implements catching exceptions we'll be sure to add support as well!
+
+In the meantime though fear not! You can, if necessary, annotate some imports
+as whether they should catch an exception. For example:
+
+```rust
+wasm_bindgen! {
+    #[wasm_module = "./bar"]
+    extern "JS" {
+        #[wasm_bindgen(catch)]
+        fn foo() -> Result<(), JsValue>;
+    }
+}
+```
+
+Here the import of `foo` is annotated that it should catch the JS exception, if
+one occurs, and return it to wasm. This is expressed in Rust with a `Result`
+type where the `T` of the result is the otherwise successful result of the
+function, and the `E` *must* be `JsValue`.
+
+Under the hood this generates shims that do a bunch of translation, but it
+suffices to say that a call in wasm to `foo` should always return.
+appropriately.
+
 ## Wrapping up
 
 That's currently at least what `wasm-bindgen` has to offer! If you've got more

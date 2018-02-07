@@ -588,7 +588,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             self.generate_free_function(f);
         }
         for f in self.program.imports.iter() {
-            self.generate_import(&f.module, &f.function);
+            self.generate_import(f);
         }
         for s in self.program.structs.iter() {
             self.generate_struct(s);
@@ -880,18 +880,19 @@ impl<'a, 'b> SubContext<'a, 'b> {
         (format!("{} {}", prefix, dst), format!("{} {}", prefix, dst_ts))
     }
 
-    pub fn generate_import(&mut self, module: &str, import: &shared::Function) {
+    pub fn generate_import(&mut self, import: &shared::Import) {
         let imported_name = format!("import{}", self.cx.imports.len());
 
         self.cx.imports.push_str(&format!("
             import {{ {} as {} }} from '{}';
-        ", import.name, imported_name, module));
+        ", import.function.name, imported_name, import.module));
 
-        let name = shared::mangled_import_name(None, &import.name);
+        let name = shared::mangled_import_name(None, &import.function.name);
         self.gen_import_shim(&name,
                              &imported_name,
                              false,
-                             import);
+                             import.catch,
+                             &import.function);
         self.cx.imports_to_rewrite.insert(name);
     }
 
@@ -924,6 +925,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.gen_import_shim(&name,
                              &delegate,
                              f.method,
+                             f.catch,
                              &f.function);
         self.cx.imports_to_rewrite.insert(name);
     }
@@ -933,68 +935,67 @@ impl<'a, 'b> SubContext<'a, 'b> {
         shim_name: &str,
         shim_delegate: &str,
         is_method: bool,
+        catch: bool,
         import: &shared::Function,
     ) {
         let mut dst = String::new();
 
         dst.push_str(&format!("function {}(", shim_name));
-        let mut invocation = String::new();
+        let mut invoc_args = Vec::new();
+        let mut abi_args = Vec::new();
 
         if is_method {
-            dst.push_str("ptr");
-            invocation.push_str("getObject(ptr)");
+            abi_args.push("ptr".to_string());
+            invoc_args.push("getObject(ptr)".to_string());
             self.cx.expose_get_object();
         }
 
         let mut extra = String::new();
 
         for (i, arg) in import.arguments.iter().enumerate() {
-            if invocation.len() > 0 {
-                invocation.push_str(", ");
-            }
-            if i > 0 || is_method {
-                dst.push_str(", ");
-            }
             match *arg {
                 shared::TYPE_NUMBER => {
-                    invocation.push_str(&format!("arg{}", i));
-                    dst.push_str(&format!("arg{}", i));
+                    invoc_args.push(format!("arg{}", i));
+                    abi_args.push(format!("arg{}", i));
                 }
                 shared::TYPE_BOOLEAN => {
-                    invocation.push_str(&format!("arg{} != 0", i));
-                    dst.push_str(&format!("arg{}", i));
+                    invoc_args.push(format!("arg{} != 0", i));
+                    abi_args.push(format!("arg{}", i));
                 }
                 shared::TYPE_BORROWED_STR => {
                     self.cx.expose_get_string_from_wasm();
-                    invocation.push_str(&format!("getStringFromWasm(ptr{0}, len{0})", i));
-                    dst.push_str(&format!("ptr{0}, len{0}", i));
+                    invoc_args.push(format!("getStringFromWasm(ptr{0}, len{0})", i));
+                    abi_args.push(format!("ptr{}", i));
+                    abi_args.push(format!("len{}", i));
                 }
                 shared::TYPE_STRING => {
                     self.cx.expose_get_string_from_wasm();
-                    dst.push_str(&format!("ptr{0}, len{0}", i));
+                    abi_args.push(format!("ptr{}", i));
+                    abi_args.push(format!("len{}", i));
                     extra.push_str(&format!("
                         let arg{0} = getStringFromWasm(ptr{0}, len{0});
                         wasm.__wbindgen_free(ptr{0}, len{0});
                     ", i));
-                    invocation.push_str(&format!("arg{}", i));
+                    invoc_args.push(format!("arg{}", i));
                     self.cx.required_internal_exports.insert("__wbindgen_free");
                 }
                 shared::TYPE_JS_OWNED => {
                     self.cx.expose_take_object();
-                    invocation.push_str(&format!("takeObject(arg{})", i));
-                    dst.push_str(&format!("arg{}", i));
+                    invoc_args.push(format!("takeObject(arg{})", i));
+                    abi_args.push(format!("arg{}", i));
                 }
                 shared::TYPE_JS_REF => {
                     self.cx.expose_get_object();
-                    invocation.push_str(&format!("getObject(arg{})", i));
-                    dst.push_str(&format!("arg{}", i));
+                    invoc_args.push(format!("getObject(arg{})", i));
+                    abi_args.push(format!("arg{}", i));
                 }
                 _ => {
                     panic!("unsupported type in import");
                 }
             }
         }
-        let invoc = format!("{}({})", shim_delegate, invocation);
+
+        let invoc = format!("{}({})", shim_delegate, invoc_args.join(", "));
         let invoc = match import.ret {
             Some(shared::TYPE_NUMBER) => format!("return {};", invoc),
             Some(shared::TYPE_BOOLEAN) => format!("return {} ? 1 : 0;", invoc),
@@ -1005,10 +1006,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(shared::TYPE_STRING) => {
                 self.cx.expose_pass_string_to_wasm();
                 self.cx.expose_uint32_memory();
-                if import.arguments.len() > 0 || is_method {
-                    dst.push_str(", ");
-                }
-                dst.push_str("wasmretptr");
+                abi_args.push("wasmretptr".to_string());
                 format!("
                     const [retptr, retlen] = passStringToWasm({});
                     getUint32Memory()[wasmretptr / 4] = retlen;
@@ -1018,6 +1016,25 @@ impl<'a, 'b> SubContext<'a, 'b> {
             None => invoc,
             _ => unimplemented!(),
         };
+
+        let invoc = if catch {
+            self.cx.expose_uint32_memory();
+            self.cx.expose_add_heap_object();
+            abi_args.push("exnptr".to_string());
+            format!("
+                try {{
+                    {}
+                }} catch (e) {{
+                    const view = getUint32Memory();
+                    view[exnptr / 4] = 1;
+                    view[exnptr / 4 + 1] = addHeapObject(e);
+                }}
+            ", invoc)
+        } else {
+            invoc
+        };
+
+        dst.push_str(&abi_args.join(", "));
         dst.push_str(") {\n");
         dst.push_str(&extra);
         dst.push_str(&format!("{}\n}}", invoc));

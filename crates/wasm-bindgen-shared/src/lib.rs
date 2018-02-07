@@ -24,6 +24,7 @@ pub struct Struct {
 #[derive(Serialize, Deserialize)]
 pub struct Import {
     pub module: String,
+    pub catch: bool,
     pub function: Function,
 }
 
@@ -38,6 +39,7 @@ pub struct ImportStruct {
 pub struct ImportStructFunction {
     pub method: bool,
     pub js_new: bool,
+    pub catch: bool,
     pub function: Function,
 }
 

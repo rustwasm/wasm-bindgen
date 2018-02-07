@@ -366,12 +366,12 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
 
     let mut methods = Tokens::new();
 
-    for &(_, ref f) in import.functions.iter() {
+    for f in import.functions.iter() {
         let import_name = shared::mangled_import_name(
             Some(&import.name.to_string()),
-            f.wasm_function.name.as_ref(),
+            f.function.wasm_function.name.as_ref(),
         );
-        bindgen_import_function(f, &import_name, &mut methods);
+        bindgen_import_function(&f.function, &import_name, &mut methods);
     }
 
     (my_quote! {
@@ -501,7 +501,7 @@ fn bindgen_import_function(import: &ast::ImportFunction,
         }
     }
     let abi_ret;
-    let convert_ret;
+    let mut convert_ret;
     match import.wasm_function.ret {
         Some(ast::Type::ByValue(ref t)) => {
             abi_ret = my_quote! {
@@ -534,8 +534,27 @@ fn bindgen_import_function(import: &ast::ImportFunction,
         Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
         None => {
             abi_ret = my_quote! { () };
-            convert_ret = my_quote! {};
+            convert_ret = my_quote! { () };
         }
+    }
+
+    let mut exceptional_ret = my_quote! {};
+    if import.catch {
+        let exn_data = syn::Ident::from("exn_data");
+        let exn_data_ptr = syn::Ident::from("exn_data_ptr");
+        abi_argument_names.push(exn_data_ptr);
+        abi_arguments.push(my_quote! { #exn_data_ptr: *mut u32 });
+        arg_conversions.push(my_quote! {
+            let mut #exn_data = [0; 2];
+            let mut #exn_data_ptr = #exn_data.as_mut_ptr();
+        });
+        convert_ret = my_quote! { Ok(#convert_ret) };
+        exceptional_ret = my_quote! {
+            if #exn_data[0] == 1 {
+                return Err(<::wasm_bindgen::JsValue as
+                    ::wasm_bindgen::convert::WasmBoundary>::from_js(#exn_data[1]))
+            }
+        };
     }
 
     let name = import.ident;
@@ -548,6 +567,7 @@ fn bindgen_import_function(import: &ast::ImportFunction,
             unsafe {
                 #(#arg_conversions)*
                 let #ret_ident = #import_name(#(#abi_argument_names),*);
+                #exceptional_ret
                 #convert_ret
             }
         }

@@ -22,6 +22,7 @@ pub struct Import {
 }
 
 pub struct ImportFunction {
+    pub catch: bool,
     pub ident: syn::Ident,
     pub wasm_function: Function,
     pub rust_decl: Box<syn::FnDecl>,
@@ -32,7 +33,12 @@ pub struct ImportFunction {
 pub struct ImportStruct {
     pub module: Option<String>,
     pub name: syn::Ident,
-    pub functions: Vec<(ImportFunctionKind, ImportFunction)>,
+    pub functions: Vec<ImportStructFunction>,
+}
+
+pub struct ImportStructFunction {
+    pub kind: ImportFunctionKind,
+    pub function: ImportFunction,
 }
 
 pub enum ImportFunctionKind {
@@ -138,7 +144,7 @@ impl Program {
             _ => panic!("only foreign functions allowed for now, not statics"),
         };
 
-        let (wasm, mutable) = Function::from_decl(f.ident, &f.decl, allow_self);
+        let (mut wasm, mutable) = Function::from_decl(f.ident, &f.decl, allow_self);
         let is_method = match mutable {
             Some(false) => true,
             None => false,
@@ -146,6 +152,19 @@ impl Program {
                 panic!("mutable self methods not allowed in extern structs");
             }
         };
+        let opts = BindgenOpts::from(&f.attrs);
+
+        if opts.catch {
+            // TODO: this assumes a whole bunch:
+            //
+            // * The outer type is actually a `Result`
+            // * The error type is a `JsValue`
+            // * The actual type is the first type parameter
+            //
+            // should probably fix this one day...
+            wasm.ret = extract_first_ty_param(wasm.ret.as_ref())
+                .expect("can't `catch` without returning a Result");
+        }
 
         (ImportFunction {
             rust_attrs: f.attrs.clone(),
@@ -153,6 +172,7 @@ impl Program {
             rust_decl: f.decl.clone(),
             ident: f.ident.clone(),
             wasm_function: wasm,
+            catch: opts.catch,
         }, is_method)
     }
 
@@ -163,40 +183,14 @@ impl Program {
                 let kind = if method {
                     ImportFunctionKind::Method
                 } else {
-                    let new = f.rust_attrs.iter()
-                        .filter_map(|a| a.interpret_meta())
-                        .filter_map(|m| {
-                            match m {
-                                syn::Meta::List(i) => {
-                                    if i.ident == "wasm_bindgen" {
-                                        Some(i.nested)
-                                    } else {
-                                        None
-                                    }
-                                }
-                                _ => None,
-                            }
-                        })
-                        .flat_map(|a| a)
-                        .filter_map(|a| {
-                            match a {
-                                syn::NestedMeta::Meta(a) => Some(a),
-                                _ => None,
-                            }
-                        })
-                        .any(|a| {
-                            match a {
-                                syn::Meta::Word(a) => a == "constructor",
-                                _ => false,
-                            }
-                        });
-                    if new {
+                    let opts = BindgenOpts::from(&f.rust_attrs);
+                    if opts.constructor {
                         ImportFunctionKind::JsConstructor
                     } else {
                         ImportFunctionKind::Static
                     }
                 };
-                (kind, f)
+                ImportStructFunction { kind, function: f }
             })
             .collect();
         self.imported_structs.push(ImportStruct {
@@ -473,8 +467,8 @@ impl ImportStruct {
             ("name", &|a| a.str(self.name.as_ref())),
             ("functions", &|a| {
                 a.list(&self.functions,
-                       |&(ref kind, ref f), a| {
-                           let (method, new) = match *kind {
+                       |f, a| {
+                           let (method, new) = match f.kind {
                                ImportFunctionKind::Method => (true, false),
                                ImportFunctionKind::JsConstructor => (false, true),
                                ImportFunctionKind::Static => (false, false),
@@ -482,7 +476,8 @@ impl ImportStruct {
                            a.fields(&[
                                 ("method", &|a| a.bool(method)),
                                 ("js_new", &|a| a.bool(new)),
-                                ("function", &|a| f.wasm_function.wbg_literal(a)),
+                                ("catch", &|a| a.bool(f.function.catch)),
+                                ("function", &|a| f.function.wasm_function.wbg_literal(a)),
                            ]);
                        })
             }),
@@ -494,6 +489,7 @@ impl Import {
     fn wbg_literal(&self, a: &mut LiteralBuilder) {
         a.fields(&[
             ("module", &|a| a.str(&self.module)),
+            ("catch", &|a| a.bool(self.function.catch)),
             ("function", &|a| self.function.wasm_function.wbg_literal(a)),
         ]);
     }
@@ -635,4 +631,79 @@ impl<'a> LiteralBuilder<'a> {
         }
         self.append("]");
     }
+}
+
+#[derive(Default)]
+struct BindgenOpts {
+    catch: bool,
+    constructor: bool,
+}
+
+impl BindgenOpts {
+    fn from(attrs: &[syn::Attribute]) -> BindgenOpts {
+        let mut opts = BindgenOpts::default();
+        let attrs = attrs.iter()
+            .filter_map(|a| a.interpret_meta())
+            .filter_map(|m| {
+                match m {
+                    syn::Meta::List(i) => {
+                        if i.ident == "wasm_bindgen" {
+                            Some(i.nested)
+                        } else {
+                            None
+                        }
+                    }
+                    _ => None,
+                }
+            })
+            .flat_map(|a| a)
+            .filter_map(|a| {
+                match a {
+                    syn::NestedMeta::Meta(a) => Some(a),
+                    _ => None,
+                }
+            });
+        for attr in attrs {
+            match attr {
+                syn::Meta::Word(a) => {
+                   if a == "constructor" {
+                       opts.constructor = true;
+                   } else if a == "catch" {
+                       opts.catch = true;
+                   }
+                }
+                _ => {}
+            }
+        }
+        return opts
+    }
+}
+
+fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
+    let ty = match ty {
+        Some(t) => t,
+        None => return Some(None)
+    };
+    let ty = match *ty {
+        Type::ByValue(ref t) => t,
+        _ => return None,
+    };
+    let path = match *ty {
+        syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
+        _ => return None,
+    };
+    let seg = path.segments.last()?.into_value();
+    let generics = match seg.arguments {
+        syn::PathArguments::AngleBracketed(ref t) => t,
+        _ => return None,
+    };
+    let ty = match *generics.args.first()?.into_value() {
+        syn::GenericArgument::Type(ref t) => t,
+        _ => return None,
+    };
+    match *ty {
+        syn::Type::Tuple(ref t) if t.elems.len() == 0 => return Some(None),
+        _ => {}
+    }
+    Some(Some(Type::from(ty)))
 }

@@ -148,3 +148,100 @@ fn strings() {
         "#)
         .test();
 }
+
+#[test]
+fn exceptions() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                #[wasm_module = "./test"]
+                extern "JS" {
+                    fn foo();
+                    fn bar();
+                    #[wasm_bindgen(catch)]
+                    fn baz() -> Result<(), JsValue>;
+                }
+
+                pub fn run() {
+                    foo();
+                    bar();
+                }
+
+                pub fn run2() {
+                    assert!(baz().is_err());
+                    bar();
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run, run2 } from "./out";
+            import * as assert from "assert";
+
+            let called = false;
+
+            export function foo() {
+                throw new Error('error!');
+            }
+
+            export function baz() {
+                throw new Error('error2');
+            }
+
+            export function bar() {
+                called = true;
+            }
+
+            export function test() {
+                assert.throws(run, /error!/);
+                assert.strictEqual(called, false);
+                run2();
+                assert.strictEqual(called, true);
+            }
+        "#)
+        .test();
+}
+
+#[test]
+fn exn_caught() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            wasm_bindgen! {
+                #[wasm_module = "./test"]
+                extern "JS" {
+                    #[wasm_bindgen(catch)]
+                    fn foo() -> Result<(), JsValue>;
+                }
+
+                pub fn run() -> JsValue {
+                    foo().unwrap_err()
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+            import * as assert from "assert";
+
+            export function foo() {
+                throw new Error('error!');
+            }
+
+            export function test() {
+                const obj = run();
+                assert.strictEqual(obj instanceof Error, true);
+                assert.strictEqual(obj.message, 'error!');
+            }
+        "#)
+        .test();
+}
