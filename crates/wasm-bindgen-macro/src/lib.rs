@@ -546,7 +546,7 @@ fn bindgen_import_function(import: &ast::ImportFunction,
         abi_arguments.push(my_quote! { #exn_data_ptr: *mut u32 });
         arg_conversions.push(my_quote! {
             let mut #exn_data = [0; 2];
-            let mut #exn_data_ptr = #exn_data.as_mut_ptr();
+            let #exn_data_ptr = #exn_data.as_mut_ptr();
         });
         convert_ret = my_quote! { Ok(#convert_ret) };
         exceptional_ret = my_quote! {
