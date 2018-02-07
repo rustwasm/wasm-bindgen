@@ -217,7 +217,15 @@ impl Program {
             ("free_functions", &|a| a.list(&self.free_functions, Function::wbg_literal)),
             ("imports", &|a| a.list(&self.imports, Import::wbg_literal)),
             ("imported_structs", &|a| a.list(&self.imported_structs, ImportStruct::wbg_literal)),
-            ("custom_type_names", &|a| a.list(&self.structs, |s, a| a.str(s.name.as_ref()))),
+            ("custom_type_names", &|a| {
+                a.list(&self.structs, |s, a| {
+                    let val = shared::name_to_descriptor(s.name.as_ref());
+                    a.fields(&[
+                        ("descriptor", &|a| a.char(val)),
+                        ("name", &|a| a.str(s.name.as_ref()))
+                    ]);
+                })
+            }),
         ]);
         return a.cnt
     }
@@ -373,14 +381,14 @@ impl Type {
             Type::String => a.char(shared::TYPE_STRING),
             Type::ByValue(ref t) => {
                 a.as_char(my_quote! {
-                    <#t as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR as u8
+                    <#t as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR
                 });
             }
             Type::ByRef(ref ty) |
             Type::ByMutRef(ref ty) => {
                 a.as_char(my_quote! {
-                    ((<#ty as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR as u32) |
-                        ::wasm_bindgen::convert::DESCRIPTOR_CUSTOM_REF_FLAG) as u8
+                    (<#ty as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR |
+                        ::wasm_bindgen::convert::DESCRIPTOR_CUSTOM_REF_FLAG)
                 });
             }
         }
@@ -559,17 +567,17 @@ struct LiteralBuilder<'a> {
 }
 
 impl<'a> LiteralBuilder<'a> {
-    fn byte(&mut self, byte: u8) {
+    fn char_lit(&mut self, c: char) {
         if self.cnt > 0 {
             ::syn::token::Comma::default().to_tokens(self.dst);
         }
         self.cnt += 1;
-        byte.to_tokens(self.dst);
+        (c as u32).to_tokens(self.dst);
     }
 
     fn append(&mut self, s: &str) {
-        for byte in s.bytes() {
-            self.byte(byte);
+        for c in s.chars() {
+            self.char_lit(c);
         }
     }
 
@@ -588,21 +596,9 @@ impl<'a> LiteralBuilder<'a> {
     }
 
     fn char(&mut self, s: char) {
-        self.append("\"\\u");
-        let s = s as u32;
-        self.byte(to_hex((s >> 12) as u8));
-        self.byte(to_hex((s >> 8) as u8));
-        self.byte(to_hex((s >> 4) as u8));
-        self.byte(to_hex((s >> 0) as u8));
         self.append("\"");
-
-        fn to_hex(a: u8) -> u8 {
-            let a = a & 0xf;
-            match a {
-                0 ... 9 => b'0' + a,
-                _ => b'a'+ a - 10,
-            }
-        }
+        self.char_lit(s);
+        self.append("\"");
     }
 
     fn as_char(&mut self, tokens: Tokens) {

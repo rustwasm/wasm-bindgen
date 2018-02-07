@@ -1,4 +1,5 @@
-use std::collections::HashSet;
+use std::char;
+use std::collections::{HashSet, HashMap};
 
 use shared;
 use parity_wasm::elements::*;
@@ -14,6 +15,7 @@ pub struct Context<'a> {
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
     pub imports_to_rewrite: HashSet<String>,
+    pub custom_type_names: HashMap<char, String>,
 }
 
 pub struct SubContext<'a, 'b: 'a> {
@@ -22,6 +24,18 @@ pub struct SubContext<'a, 'b: 'a> {
 }
 
 impl<'a> Context<'a> {
+    pub fn add_custom_type_names(&mut self, program: &shared::Program) {
+        for custom in program.custom_type_names.iter() {
+            assert!(self.custom_type_names.insert(custom.descriptor,
+                                                  custom.name.clone()).is_none());
+            let val = custom.descriptor as u32;
+            assert!(val & 1 == 0);
+            let descriptor = char::from_u32(val | 1).unwrap();
+            assert!(self.custom_type_names.insert(descriptor,
+                                                  custom.name.clone()).is_none());
+        }
+    }
+
     pub fn finalize(&mut self, module_name: &str) -> (String, String) {
         {
             let mut bind = |name: &str, f: &Fn(&mut Self) -> String| {
@@ -756,9 +770,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     pass(&format!("idx{}", i));
                 }
                 custom if (custom as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => {
-                    let custom = ((custom as u32) & !shared::TYPE_CUSTOM_REF_FLAG) -
-                        shared::TYPE_CUSTOM_START;
-                    let s = &self.program.custom_type_names[custom as usize / 2];
+                    let s = self.cx.custom_type_names[&custom].clone();
                     dst_ts.push_str(&format!(": {}", s));
                     if self.cx.config.debug {
                         self.cx.expose_assert_class();
@@ -769,8 +781,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     pass(&format!("{}.ptr", name));
                 }
                 custom => {
-                    let custom = (custom as u32) - shared::TYPE_CUSTOM_START;
-                    let s = &self.program.custom_type_names[custom as usize / 2];
+                    let s = self.cx.custom_type_names[&custom].clone();
                     dst_ts.push_str(&format!(": {}", s));
                     if self.cx.config.debug {
                         self.cx.expose_assert_class();
@@ -823,9 +834,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(&shared::TYPE_JS_REF) |
             Some(&shared::TYPE_BORROWED_STR) => panic!(),
             Some(&t) if (t as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => panic!(),
-            Some(&custom) => {
-                let custom = (custom as u32) - shared::TYPE_CUSTOM_START;
-                let name = &self.program.custom_type_names[custom as usize / 2];
+            Some(custom) => {
+                let name = &self.cx.custom_type_names[custom];
                 dst_ts.push_str(": ");
                 dst_ts.push_str(name);
                 if self.cx.config.debug {

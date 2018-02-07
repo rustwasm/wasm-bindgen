@@ -5,13 +5,13 @@ use super::JsValue;
 
 // keep in sync with shared/src/lib.rs TYPE constants
 pub const DESCRIPTOR_CUSTOM_REF_FLAG: u32 = 0x1;
-pub const DESCRIPTOR_NUMBER: char = '\u{5e}';
-pub const DESCRIPTOR_BOOLEAN: char = '\u{61}';
-pub const DESCRIPTOR_JS_OWNED: char = '\u{62}';
+pub const DESCRIPTOR_NUMBER: u32 = 0x5e;
+pub const DESCRIPTOR_BOOLEAN: u32 = 0x61;
+pub const DESCRIPTOR_JS_OWNED: u32 = 0x62;
 
 pub trait WasmBoundary {
     type Js: WasmAbi;
-    const DESCRIPTOR: char;
+    const DESCRIPTOR: u32;
 
     fn into_js(self) -> Self::Js;
     unsafe fn from_js(js: Self::Js) -> Self;
@@ -44,7 +44,7 @@ macro_rules! simple {
     ($($t:tt)*) => ($(
         impl WasmBoundary for $t {
             type Js = $t;
-            const DESCRIPTOR: char = DESCRIPTOR_NUMBER;
+            const DESCRIPTOR: u32 = DESCRIPTOR_NUMBER;
 
             fn into_js(self) -> $t { self }
             unsafe fn from_js(js: $t) -> $t { js }
@@ -58,7 +58,7 @@ macro_rules! as_u32 {
     ($($t:tt)*) => ($(
         impl WasmBoundary for $t {
             type Js = u32;
-            const DESCRIPTOR: char = DESCRIPTOR_NUMBER;
+            const DESCRIPTOR: u32 = DESCRIPTOR_NUMBER;
 
             fn into_js(self) -> u32 { self as u32 }
             unsafe fn from_js(js: u32) -> $t { js as $t }
@@ -70,7 +70,7 @@ as_u32!(i8 u8 i16 u16 i32 isize usize);
 
 impl WasmBoundary for bool {
     type Js = u32;
-    const DESCRIPTOR: char = DESCRIPTOR_BOOLEAN;
+    const DESCRIPTOR: u32 = DESCRIPTOR_BOOLEAN;
 
     fn into_js(self) -> u32 { self as u32 }
     unsafe fn from_js(js: u32) -> bool { js != 0 }
@@ -78,7 +78,7 @@ impl WasmBoundary for bool {
 
 impl<T> WasmBoundary for *const T {
     type Js = u32;
-    const DESCRIPTOR: char = DESCRIPTOR_NUMBER;
+    const DESCRIPTOR: u32 = DESCRIPTOR_NUMBER;
 
     fn into_js(self) -> u32 { self as u32 }
     unsafe fn from_js(js: u32) -> *const T { js as *const T }
@@ -86,7 +86,7 @@ impl<T> WasmBoundary for *const T {
 
 impl<T> WasmBoundary for *mut T {
     type Js = u32;
-    const DESCRIPTOR: char = DESCRIPTOR_NUMBER;
+    const DESCRIPTOR: u32 = DESCRIPTOR_NUMBER;
 
     fn into_js(self) -> u32 { self as u32 }
     unsafe fn from_js(js: u32) -> *mut T { js as *mut T }
@@ -94,7 +94,7 @@ impl<T> WasmBoundary for *mut T {
 
 impl WasmBoundary for JsValue {
     type Js = u32;
-    const DESCRIPTOR: char = DESCRIPTOR_JS_OWNED;
+    const DESCRIPTOR: u32 = DESCRIPTOR_JS_OWNED;
 
     fn into_js(self) -> u32 {
         let ret = self.idx;

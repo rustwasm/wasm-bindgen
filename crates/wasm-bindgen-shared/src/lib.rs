@@ -1,5 +1,9 @@
 #[macro_use]
 extern crate serde_derive;
+extern crate fnv;
+
+use std::char;
+use std::hash::{Hash, Hasher};
 
 #[derive(Serialize, Deserialize)]
 pub struct Program {
@@ -7,7 +11,7 @@ pub struct Program {
     pub free_functions: Vec<Function>,
     pub imports: Vec<Import>,
     pub imported_structs: Vec<ImportStruct>,
-    pub custom_type_names: Vec<String>,
+    pub custom_type_names: Vec<CustomTypeName>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -48,6 +52,12 @@ pub struct Function {
     pub name: String,
     pub arguments: Vec<Type>,
     pub ret: Option<Type>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct CustomTypeName {
+    pub descriptor: char,
+    pub name: String,
 }
 
 pub fn free_function(struct_name: &str) -> String {
@@ -91,3 +101,19 @@ pub const TYPE_JS_REF: char = '\u{63}';
 
 pub const TYPE_CUSTOM_START: u32 = 0x64;
 pub const TYPE_CUSTOM_REF_FLAG: u32 = 1;
+
+pub fn name_to_descriptor(name: &str) -> char {
+    const CHAR_MAX: u32 = 0x10ffff;
+    const CHAR_HOLE_START: u32 = 0xd800;
+    const CHAR_HOLE_END: u32 = 0xe000;
+    let mut h = fnv::FnvHasher::default();
+    name.hash(&mut h);
+    let val = h.finish();
+    let range = (CHAR_MAX - (CHAR_HOLE_END - CHAR_HOLE_START) - TYPE_CUSTOM_START) / 2;
+    let idx = (val % (range as u64)) as u32;
+    let mut ret = TYPE_CUSTOM_START + idx * 2;
+    if CHAR_HOLE_START <= ret && ret < CHAR_HOLE_END {
+        ret += CHAR_HOLE_END - CHAR_HOLE_START;
+    }
+    char::from_u32(ret).unwrap()
+}

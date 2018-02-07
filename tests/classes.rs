@@ -243,7 +243,7 @@ fn bindgen_twice() {
                 pub struct B {}
 
                 impl B {
-                    pub fn new() -> B {
+                    pub fn new(a: &A) -> B {
                         B {}
                     }
                 }
@@ -254,7 +254,7 @@ fn bindgen_twice() {
 
             export function test() {
                 let a = A.new();
-                let b = B.new();
+                let b = B.new(a);
                 a.free();
                 b.free();
             }

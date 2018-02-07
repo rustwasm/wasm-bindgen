@@ -5,9 +5,11 @@ extern crate wasm_bindgen_shared as shared;
 extern crate serde_json;
 extern crate wasm_gc;
 
+use std::char;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
+use std::slice;
 
 use failure::Error;
 use parity_wasm::elements::*;
@@ -75,9 +77,13 @@ impl Bindgen {
                 exposed_globals: Default::default(),
                 required_internal_exports: Default::default(),
                 imports_to_rewrite: Default::default(),
+                custom_type_names: Default::default(),
                 config: &self,
                 module: &mut module,
             };
+            for program in programs.iter() {
+                cx.add_custom_type_names(program);
+            }
             for program in programs.iter() {
                 js::SubContext {
                     program,
@@ -126,14 +132,34 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
         None => return ret,
     };
 
+    'outer:
     for i in (0..data.entries().len()).rev() {
         {
-            let value = data.entries()[i].value();
-            if !value.starts_with(b"wbg:") {
-                continue
+            let mut value = bytes_to_u32(data.entries()[i].value());
+            loop {
+                match value.iter().position(|i| i.0 == (b'w' as u32)) {
+                    Some(i) => value = &value[i + 1..],
+                    None => continue 'outer,
+                }
+                match value.iter().position(|i| i.0 == (b'b' as u32)) {
+                    Some(i) => value = &value[i + 1..],
+                    None => continue 'outer,
+                }
+                match value.iter().position(|i| i.0 == (b'g' as u32)) {
+                    Some(i) => value = &value[i + 1..],
+                    None => continue 'outer,
+                }
+                match value.iter().position(|i| i.0 == (b':' as u32)) {
+                    Some(i) => value = &value[i + 1..],
+                    None => continue 'outer,
+                }
+                break
             }
-            let json = &value[4..];
-            let p = match serde_json::from_slice(json) {
+            // TODO: shouldn't take the rest of the value
+            let json = value.iter()
+                .map(|i| char::from_u32(i.0).unwrap())
+                .collect::<String>();
+            let p = match serde_json::from_str(&json) {
                 Ok(f) => f,
                 Err(e) => {
                     panic!("failed to decode what looked like wasm-bindgen data: {}", e)
@@ -144,4 +170,13 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
         data.entries_mut().remove(i);
     }
     return ret
+}
+
+#[repr(packed)]
+struct Unaligned(u32);
+
+fn bytes_to_u32(a: &[u8]) -> &[Unaligned] {
+    unsafe {
+        slice::from_raw_parts(a.as_ptr() as *const Unaligned, a.len() / 4)
+    }
 }

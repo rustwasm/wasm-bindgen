@@ -10,7 +10,6 @@ extern crate proc_macro2;
 extern crate serde_json;
 extern crate wasm_bindgen_shared as shared;
 
-use std::char;
 use std::sync::atomic::*;
 
 use proc_macro::TokenStream;
@@ -79,8 +78,8 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     for function in program.free_functions.iter() {
         bindgen_fn(function, &mut ret);
     }
-    for (i, s) in program.structs.iter().enumerate() {
-        bindgen_struct(i, s, &mut ret);
+    for s in program.structs.iter() {
+        bindgen_struct(s, &mut ret);
     }
     for i in program.imports.iter() {
         bindgen_import(i, &mut ret);
@@ -103,7 +102,7 @@ pub fn wasm_bindgen(input: TokenStream) -> TokenStream {
     (my_quote! {
         #[no_mangle]
         #[allow(non_upper_case_globals)]
-        pub static #generated_static_name: [u8; #generated_static_length] =
+        pub static #generated_static_name: [u32; #generated_static_length] =
             [#generated_static_value];
     }).to_tokens(&mut ret);
 
@@ -121,7 +120,7 @@ fn bindgen_fn(function: &ast::Function, into: &mut Tokens) {
             into)
 }
 
-fn bindgen_struct(idx: usize, s: &ast::Struct, into: &mut Tokens) {
+fn bindgen_struct(s: &ast::Struct, into: &mut Tokens) {
     for f in s.functions.iter() {
         bindgen_struct_fn(s, f, into);
     }
@@ -131,11 +130,11 @@ fn bindgen_struct(idx: usize, s: &ast::Struct, into: &mut Tokens) {
 
     let name = &s.name;
     let free_fn = s.free_function();
-    let c = char::from_u32(idx as u32 * 2 + shared::TYPE_CUSTOM_START);
+    let c = shared::name_to_descriptor(name.as_ref()) as u32;
     (my_quote! {
         impl ::wasm_bindgen::convert::WasmBoundary for #name {
             type Js = u32;
-            const DESCRIPTOR: char = #c;
+            const DESCRIPTOR: u32 = #c;
 
             fn into_js(self) -> u32 {
                 Box::into_raw(Box::new(::wasm_bindgen::__rt::WasmRefCell::new(self))) as u32
@@ -387,7 +386,7 @@ fn bindgen_imported_struct(import: &ast::ImportStruct, tokens: &mut Tokens) {
         impl ::wasm_bindgen::convert::WasmBoundary for #name {
             type Js = <::wasm_bindgen::JsValue as
                 ::wasm_bindgen::convert::WasmBoundary>::Js;
-            const DESCRIPTOR: char = <::wasm_bindgen::JsValue as
+            const DESCRIPTOR: u32 = <::wasm_bindgen::JsValue as
                 ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR;
 
             fn into_js(self) -> Self::Js {
