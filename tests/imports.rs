@@ -10,27 +10,36 @@ fn simple() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern "JS" {
-                    fn foo(s: &str);
-                    fn another(a: u32) -> i32;
-                    fn take_and_return_bool(a: bool) -> bool;
-                    fn return_object() -> JsValue;
-                }
-                pub fn bar(s: &str) {
-                    foo(s);
-                }
-                pub fn another_thunk(a: u32) -> i32 {
-                    another(a)
-                }
-                pub fn bool_thunk(a: bool) -> bool {
-                    take_and_return_bool(a)
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo(s: &str);
+                fn another(a: u32) -> i32;
+                fn take_and_return_bool(a: bool) -> bool;
+                fn return_object() -> JsValue;
+            }
 
-                pub fn get_the_object() -> JsValue {
-                    return_object()
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar(s: &str) {
+                foo(s);
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn another_thunk(a: u32) -> i32 {
+                another(a)
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bool_thunk(a: bool) -> bool {
+                take_and_return_bool(a)
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn get_the_object() -> JsValue {
+                return_object()
             }
         "#)
         .file("test.ts", r#"
@@ -87,14 +96,14 @@ fn unused() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern "JS" {
-                    fn debug_print(s: &str);
-                }
-
-                pub fn bar() {}
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn debug_print(s: &str);
             }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar() {}
         "#)
         .file("test.ts", r#"
             import * as wasm from "./out";
@@ -118,19 +127,21 @@ fn strings() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern "JS" {
-                    fn foo(a: String) -> String;
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo(a: String) -> String;
+            }
 
-                pub fn bar(a: &str) -> String {
-                    foo(a.to_string())
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar(a: &str) -> String {
+                foo(a.to_string())
+            }
 
-                pub fn bar2(a: String) -> String {
-                    foo(a)
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar2(a: String) -> String {
+                foo(a)
             }
         "#)
         .file("test.ts", r#"
@@ -159,24 +170,26 @@ fn exceptions() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern "JS" {
-                    fn foo();
-                    fn bar();
-                    #[wasm_bindgen(catch)]
-                    fn baz() -> Result<(), JsValue>;
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo();
+                fn bar();
+                #[wasm_bindgen(catch)]
+                fn baz() -> Result<(), JsValue>;
+            }
 
-                pub fn run() {
-                    foo();
-                    bar();
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn run() {
+                foo();
+                bar();
+            }
 
-                pub fn run2() {
-                    assert!(baz().is_err());
-                    bar();
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn run2() {
+                assert!(baz().is_err());
+                bar();
             }
         "#)
         .file("test.ts", r#"
@@ -217,16 +230,16 @@ fn exn_caught() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern "JS" {
-                    #[wasm_bindgen(catch)]
-                    fn foo() -> Result<(), JsValue>;
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                #[wasm_bindgen(catch)]
+                fn foo() -> Result<(), JsValue>;
+            }
 
-                pub fn run() -> JsValue {
-                    foo().unwrap_err()
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn run() -> JsValue {
+                foo().unwrap_err()
             }
         "#)
         .file("test.ts", r#"
@@ -241,6 +254,37 @@ fn exn_caught() {
                 const obj = run();
                 assert.strictEqual(obj instanceof Error, true);
                 assert.strictEqual(obj.message, 'error!');
+            }
+        "#)
+        .test();
+}
+
+#[test]
+fn free_imports() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            extern {
+                fn parseInt(a: &str) -> u32;
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn run() {
+                assert_eq!(parseInt("3"), 3);
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export function test() {
+                run();
             }
         "#)
         .test();

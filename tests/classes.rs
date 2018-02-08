@@ -10,24 +10,24 @@ fn simple() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub struct Foo {
-                    contents: u32,
+            #[wasm_bindgen]
+            pub struct Foo {
+                contents: u32,
+            }
+
+            #[wasm_bindgen]
+            impl Foo {
+                pub fn new() -> Foo {
+                    Foo::with_contents(0)
                 }
 
-                impl Foo {
-                    pub fn new() -> Foo {
-                        Foo::with_contents(0)
-                    }
+                pub fn with_contents(a: u32) -> Foo {
+                    Foo { contents: a }
+                }
 
-                    pub fn with_contents(a: u32) -> Foo {
-                        Foo { contents: a }
-                    }
-
-                    pub fn add(&mut self, amt: u32) -> u32 {
-                        self.contents += amt;
-                        self.contents
-                    }
+                pub fn add(&mut self, amt: u32) -> u32 {
+                    self.contents += amt;
+                    self.contents
                 }
             }
         "#)
@@ -62,33 +62,35 @@ fn strings() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub struct Foo {
-                    name: u32,
+            #[wasm_bindgen]
+            pub struct Foo {
+                name: u32,
+            }
+
+            #[wasm_bindgen]
+            pub struct Bar {
+                contents: String,
+            }
+
+            #[wasm_bindgen]
+            impl Foo {
+                pub fn new() -> Foo {
+                    Foo { name: 0 }
                 }
 
-                pub struct Bar {
-                    contents: String,
+                pub fn set(&mut self, amt: u32) {
+                    self.name = amt;
                 }
 
-                impl Foo {
-                    pub fn new() -> Foo {
-                        Foo { name: 0 }
-                    }
-
-                    pub fn set(&mut self, amt: u32) {
-                        self.name = amt;
-                    }
-
-                    pub fn bar(&self, mix: &str) -> Bar {
-                        Bar { contents: format!("foo-{}-{}", mix, self.name) }
-                    }
+                pub fn bar(&self, mix: &str) -> Bar {
+                    Bar { contents: format!("foo-{}-{}", mix, self.name) }
                 }
+            }
 
-                impl Bar {
-                    pub fn name(&self) -> String {
-                        self.contents.clone()
-                    }
+            #[wasm_bindgen]
+            impl Bar {
+                pub fn name(&self) -> String {
+                    self.contents.clone()
                 }
             }
         "#)
@@ -118,29 +120,31 @@ fn exceptions() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub struct A {
+            #[wasm_bindgen]
+            pub struct A {
+            }
+
+            #[wasm_bindgen]
+            impl A {
+                pub fn new() -> A {
+                    A {}
                 }
 
-                impl A {
-                    pub fn new() -> A {
-                        A {}
-                    }
-
-                    pub fn foo(&self, _: &A) {
-                    }
-
-                    pub fn bar(&mut self, _: &mut A) {
-                    }
+                pub fn foo(&self, _: &A) {
                 }
 
-                pub struct B {
+                pub fn bar(&mut self, _: &mut A) {
                 }
+            }
 
-                impl B {
-                    pub fn new() -> B {
-                        B {}
-                    }
+            #[wasm_bindgen]
+            pub struct B {
+            }
+
+            #[wasm_bindgen]
+            impl B {
+                pub fn new() -> B {
+                    B {}
                 }
             }
         "#)
@@ -181,27 +185,29 @@ fn pass_one_to_another() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub struct A {}
+            #[wasm_bindgen]
+            pub struct A {}
 
-                impl A {
-                    pub fn new() -> A {
-                        A {}
-                    }
-
-                    pub fn foo(&self, _other: &B) {
-                    }
-
-                    pub fn bar(&self, _other: B) {
-                    }
+            #[wasm_bindgen]
+            impl A {
+                pub fn new() -> A {
+                    A {}
                 }
 
-                pub struct B {}
+                pub fn foo(&self, _other: &B) {
+                }
 
-                impl B {
-                    pub fn new() -> B {
-                        B {}
-                    }
+                pub fn bar(&self, _other: B) {
+                }
+            }
+
+            #[wasm_bindgen]
+            pub struct B {}
+
+            #[wasm_bindgen]
+            impl B {
+                pub fn new() -> B {
+                    B {}
                 }
             }
         "#)
@@ -214,49 +220,6 @@ fn pass_one_to_another() {
                 a.foo(b);
                 a.bar(b);
                 a.free();
-            }
-        "#)
-        .test();
-}
-
-#[test]
-fn bindgen_twice() {
-    test_support::project()
-        .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
-
-            extern crate wasm_bindgen;
-
-            use wasm_bindgen::prelude::*;
-
-            wasm_bindgen! {
-                pub struct A {}
-
-                impl A {
-                    pub fn new() -> A {
-                        A {}
-                    }
-                }
-            }
-
-            wasm_bindgen! {
-                pub struct B {}
-
-                impl B {
-                    pub fn new(a: &A) -> B {
-                        B {}
-                    }
-                }
-            }
-        "#)
-        .file("test.ts", r#"
-            import { A, B } from "./out";
-
-            export function test() {
-                let a = A.new();
-                let b = B.new(a);
-                a.free();
-                b.free();
             }
         "#)
         .test();

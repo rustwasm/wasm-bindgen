@@ -1,50 +1,50 @@
+use std::collections::BTreeSet;
+
 use proc_macro2::Span;
 use quote::{Tokens, ToTokens};
 use shared;
 use syn;
 
+#[derive(Default)]
 pub struct Program {
-    pub structs: Vec<Struct>,
-    pub free_functions: Vec<Function>,
+    pub exports: Vec<Export>,
     pub imports: Vec<Import>,
-    pub imported_structs: Vec<ImportStruct>,
+    pub imported_types: Vec<(syn::Visibility, syn::Ident)>,
+    pub structs: Vec<Struct>,
+}
+
+pub struct Export {
+    pub class: Option<syn::Ident>,
+    pub method: bool,
+    pub mutable: bool,
+    pub function: Function,
+}
+
+pub struct Import {
+    pub module: Option<String>,
+    pub kind: ImportKind,
+    pub function: Function,
+}
+
+pub enum ImportKind {
+    Method { class: String, ty: syn::Type },
+    Static { class: String, ty: syn::Type },
+    JsConstructor { class: String, ty: syn::Type },
+    Normal,
 }
 
 pub struct Function {
     pub name: syn::Ident,
     pub arguments: Vec<Type>,
     pub ret: Option<Type>,
-}
-
-pub struct Import {
-    pub module: String,
-    pub function: ImportFunction,
-}
-
-pub struct ImportFunction {
-    pub catch: bool,
-    pub ident: syn::Ident,
-    pub wasm_function: Function,
+    pub opts: BindgenAttrs,
+    pub rust_attrs: Vec<syn::Attribute>,
     pub rust_decl: Box<syn::FnDecl>,
     pub rust_vis: syn::Visibility,
-    pub rust_attrs: Vec<syn::Attribute>,
 }
 
-pub struct ImportStruct {
-    pub module: Option<String>,
+pub struct Struct {
     pub name: syn::Ident,
-    pub functions: Vec<ImportStructFunction>,
-}
-
-pub struct ImportStructFunction {
-    pub kind: ImportFunctionKind,
-    pub function: ImportFunction,
-}
-
-pub enum ImportFunctionKind {
-    Method,
-    Static,
-    JsConstructor,
 }
 
 pub enum Type {
@@ -57,19 +57,54 @@ pub enum Type {
     ByValue(syn::Type),
 }
 
-pub struct Struct {
-    pub name: syn::Ident,
-    pub methods: Vec<Method>,
-    pub functions: Vec<Function>,
-}
-
-pub struct Method {
-    pub mutable: bool,
-    pub function: Function,
-}
-
 impl Program {
-    pub fn push_impl(&mut self, item: &syn::ItemImpl) {
+    pub fn push_item(&mut self,
+                     item: syn::Item,
+                     opts: Option<BindgenAttrs>,
+                     tokens: &mut Tokens) {
+        match item {
+            syn::Item::Fn(mut f) => {
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
+
+                let no_mangle = f.attrs.iter()
+                    .enumerate()
+                    .filter_map(|(i, m)| m.interpret_meta().map(|m| (i, m)))
+                    .find(|&(_, ref m)| m.name() == "no_mangle");
+                match no_mangle {
+                    Some((i, _)) => { f.attrs.remove(i); }
+                    None => {
+                        panic!("#[wasm_bindgen] can only be applied to #[no_mangle] \
+                                functions, or those that would otherwise be exported")
+                    }
+                }
+                f.to_tokens(tokens);
+                self.exports.push(Export {
+                    class: None,
+                    method: false,
+                    mutable: false,
+                    function: Function::from(f, opts),
+                });
+            }
+            syn::Item::Struct(mut s) => {
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut s.attrs));
+                s.to_tokens(tokens);
+                self.structs.push(Struct::from(s, opts));
+            }
+            syn::Item::Impl(mut i) => {
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut i.attrs));
+                i.to_tokens(tokens);
+                self.push_impl(i, opts);
+            }
+            syn::Item::ForeignMod(mut f) => {
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
+                self.push_foreign_mod(f, opts);
+            }
+            _ => panic!("#[wasm_bindgen] can only be applied to a function, \
+                         struct, impl, or extern block"),
+        }
+    }
+
+    pub fn push_impl(&mut self, item: syn::ItemImpl, _opts: BindgenAttrs) {
         if item.defaultness.is_some() {
             panic!("default impls are not supported");
         }
@@ -91,70 +126,76 @@ impl Program {
             }
             _ => panic!("unsupported self type in impl"),
         };
-        let dst = self.structs
-            .iter_mut()
-            .find(|s| s.name == name)
-            .expect(&format!("failed to definition of struct for impl of `{}`", name));
-        for item in item.items.iter() {
-            dst.push_item(item);
+        for item in item.items.into_iter() {
+            self.push_impl_item(name, item);
         }
     }
 
-    pub fn push_foreign_mod(&mut self, f: &syn::ItemForeignMod) {
+    fn push_impl_item(&mut self, class: syn::Ident, item: syn::ImplItem) {
+        let mut method = match item {
+            syn::ImplItem::Const(_) => panic!("const definitions aren't supported"),
+            syn::ImplItem::Type(_) => panic!("type definitions in impls aren't supported"),
+            syn::ImplItem::Method(m) => m,
+            syn::ImplItem::Macro(_) => panic!("macros in impls aren't supported"),
+            syn::ImplItem::Verbatim(_) => panic!("unparsed impl item?"),
+        };
+        match method.vis {
+            syn::Visibility::Public(_) => {}
+            _ => return,
+        }
+        if method.defaultness.is_some() {
+            panic!("default methods are not supported");
+        }
+        if method.sig.constness.is_some() {
+            panic!("can only bindgen non-const functions");
+        }
+        if method.sig.unsafety.is_some() {
+            panic!("can only bindgen safe functions");
+        }
+
+        let opts = BindgenAttrs::find(&mut method.attrs);
+
+        let (function, mutable) = Function::from_decl(method.sig.ident,
+                                                      Box::new(method.sig.decl),
+                                                      method.attrs,
+                                                      opts,
+                                                      method.vis,
+                                                      true);
+        self.exports.push(Export {
+            class: Some(class),
+            method: mutable.is_some(),
+            mutable: mutable.unwrap_or(false),
+            function,
+        });
+    }
+
+    pub fn push_foreign_mod(&mut self, f: syn::ItemForeignMod, opts: BindgenAttrs) {
         match f.abi.name {
-            Some(ref l) if l.value() == "JS" => {}
-            _ => panic!("only foreign mods with the `JS` ABI are allowed"),
+            Some(ref l) if l.value() == "C" => {}
+            None => {}
+            _ => panic!("only foreign mods with the `C` ABI are allowed"),
         }
-        let module = f.attrs.iter()
-            .filter_map(|f| f.interpret_meta())
-            .filter_map(|i| {
-                match i {
-                    syn::Meta::NameValue(i) => {
-                        if i.ident == "wasm_module" {
-                            Some(i.lit)
-                        } else {
-                            None
-                        }
-                    }
-                    _ => None,
-                }
-            })
-            .next()
-            .and_then(|lit| {
-                match lit {
-                    syn::Lit::Str(v) => Some(v.value()),
-                    _ => None,
-                }
-            })
-            .expect("must specify `#[wasm_module = ...]` for module to import from");
-        for item in f.items.iter() {
-            let import = self.gen_foreign_item(item, false).0;
-            self.imports.push(Import {
-                module: module.clone(),
-                function: import,
-            });
+        for item in f.items.into_iter() {
+            match item {
+                syn::ForeignItem::Fn(f) => self.push_foreign_fn(f, &opts),
+                syn::ForeignItem::Type(t) => self.push_foreign_ty(t, &opts),
+                _ => panic!("only foreign functions/types allowed for now"),
+            }
         }
     }
 
-    pub fn gen_foreign_item(&mut self,
-                            f: &syn::ForeignItem,
-                            allow_self: bool) -> (ImportFunction, bool) {
-        let f = match *f {
-            syn::ForeignItem::Fn(ref f) => f,
-            _ => panic!("only foreign functions allowed for now, not statics"),
-        };
+    pub fn push_foreign_fn(&mut self,
+                           mut f: syn::ForeignItemFn,
+                           module_opts: &BindgenAttrs) {
+        let opts = BindgenAttrs::find(&mut f.attrs);
 
-        let (mut wasm, mutable) = Function::from_decl(f.ident, &f.decl, allow_self);
-        let is_method = match mutable {
-            Some(false) => true,
-            None => false,
-            Some(true) => {
-                panic!("mutable self methods not allowed in extern structs");
-            }
-        };
-        let opts = BindgenOpts::from(&f.attrs);
-
-        if opts.catch {
+        let mut wasm = Function::from_decl(f.ident,
+                                           f.decl,
+                                           f.attrs,
+                                           opts,
+                                           f.vis,
+                                           false).0;
+        if wasm.opts.catch() {
             // TODO: this assumes a whole bunch:
             //
             // * The outer type is actually a `Result`
@@ -166,38 +207,73 @@ impl Program {
                 .expect("can't `catch` without returning a Result");
         }
 
-        (ImportFunction {
-            rust_attrs: f.attrs.clone(),
-            rust_vis: f.vis.clone(),
-            rust_decl: f.decl.clone(),
-            ident: f.ident.clone(),
-            wasm_function: wasm,
-            catch: opts.catch,
-        }, is_method)
+        let kind = if wasm.opts.method() {
+            let class = wasm.arguments.get(0)
+                .expect("methods must have at least one argument");
+            let class = match *class {
+                Type::ByRef(ref t) |
+                Type::ByValue(ref t) => t,
+                Type::ByMutRef(_) => {
+                    panic!("first method argument cannot be mutable ref")
+                }
+                Type::String | Type::BorrowedStr => {
+                    panic!("method receivers cannot be strings")
+                }
+            };
+            let class_name = match *class {
+                syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
+                _ => panic!("first argument of method must be a path"),
+            };
+            let class_name = extract_path_ident(class_name)
+                .expect("first argument of method must be a bare type");
+
+            ImportKind::Method {
+                class: class_name.as_ref().to_string(),
+                ty: class.clone(),
+            }
+        } else if wasm.opts.constructor() {
+            let class = match wasm.ret {
+                Some(Type::ByValue(ref t)) => t,
+                _ => panic!("constructor returns must be bare types"),
+            };
+            let class_name = match *class {
+                syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
+                _ => panic!("first argument of method must be a path"),
+            };
+            let class_name = extract_path_ident(class_name)
+                .expect("first argument of method must be a bare type");
+
+            ImportKind::JsConstructor {
+                class: class_name.as_ref().to_string(),
+                ty: class.clone(),
+            }
+
+        } else if let Some(class) = wasm.opts.static_receiver() {
+            let class_name = match *class {
+                syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
+                _ => panic!("first argument of method must be a path"),
+            };
+            let class_name = extract_path_ident(class_name)
+                .expect("first argument of method must be a bare type");
+            ImportKind::Static {
+                class: class_name.to_string(),
+                ty: class.clone(),
+            }
+        } else {
+            ImportKind::Normal
+        };
+
+        self.imports.push(Import {
+            module: module_opts.module().map(|s| s.to_string()),
+            kind,
+            function: wasm,
+        });
     }
 
-    pub fn push_extern_class(&mut self, class: &ExternClass) {
-        let functions = class.functions.iter()
-            .map(|f| {
-                let (f, method) = self.gen_foreign_item(f, true);
-                let kind = if method {
-                    ImportFunctionKind::Method
-                } else {
-                    let opts = BindgenOpts::from(&f.rust_attrs);
-                    if opts.constructor {
-                        ImportFunctionKind::JsConstructor
-                    } else {
-                        ImportFunctionKind::Static
-                    }
-                };
-                ImportStructFunction { kind, function: f }
-            })
-            .collect();
-        self.imported_structs.push(ImportStruct {
-            module: class.module.as_ref().map(|s| s.value()),
-            name: class.name,
-            functions,
-        });
+    pub fn push_foreign_ty(&mut self,
+                           f: syn::ForeignItemType,
+                           _module_opts: &BindgenAttrs) {
+        self.imported_types.push((f.vis, f.ident));
     }
 
     pub fn wbg_literal(&self, dst: &mut Tokens) -> usize {
@@ -207,16 +283,17 @@ impl Program {
         };
         a.append("wbg:");
         a.fields(&[
-            ("structs", &|a| a.list(&self.structs, Struct::wbg_literal)),
-            ("free_functions", &|a| a.list(&self.free_functions, Function::wbg_literal)),
+            ("exports", &|a| a.list(&self.exports, Export::wbg_literal)),
             ("imports", &|a| a.list(&self.imports, Import::wbg_literal)),
-            ("imported_structs", &|a| a.list(&self.imported_structs, ImportStruct::wbg_literal)),
             ("custom_type_names", &|a| {
-                a.list(&self.structs, |s, a| {
-                    let val = shared::name_to_descriptor(s.name.as_ref());
+                let names = self.exports.iter()
+                    .filter_map(|e| e.class)
+                    .collect::<BTreeSet<_>>();
+                a.list(&names, |s, a| {
+                    let val = shared::name_to_descriptor(s.as_ref());
                     a.fields(&[
                         ("descriptor", &|a| a.char(val)),
-                        ("name", &|a| a.str(s.name.as_ref()))
+                        ("name", &|a| a.str(s.as_ref()))
                     ]);
                 })
             }),
@@ -226,7 +303,7 @@ impl Program {
 }
 
 impl Function {
-    pub fn from(input: &syn::ItemFn) -> Function {
+    pub fn from(input: syn::ItemFn, opts: BindgenAttrs) -> Function {
         match input.vis {
             syn::Visibility::Public(_) => {}
             _ => panic!("can only bindgen public functions"),
@@ -237,18 +314,24 @@ impl Function {
         if input.unsafety.is_some() {
             panic!("can only bindgen safe functions");
         }
-        if !input.abi.is_none() {
-            panic!("can only bindgen Rust ABI functions")
-        }
-        if !input.abi.is_none() {
-            panic!("can only bindgen Rust ABI functions")
+        if input.abi.is_none() {
+            panic!("can only bindgen `extern` ABI functions, or those that \
+                    would otherwise be exported")
         }
 
-        Function::from_decl(input.ident, &input.decl, false).0
+        Function::from_decl(input.ident,
+                            input.decl,
+                            input.attrs,
+                            opts,
+                            input.vis,
+                            false).0
     }
 
     pub fn from_decl(name: syn::Ident,
-                     decl: &syn::FnDecl,
+                     decl: Box<syn::FnDecl>,
+                     attrs: Vec<syn::Attribute>,
+                     opts: BindgenAttrs,
+                     vis: syn::Visibility,
                      allow_self: bool) -> (Function, Option<bool>) {
         if decl.variadic.is_some() {
             panic!("can't bindgen variadic functions")
@@ -281,31 +364,15 @@ impl Function {
             syn::ReturnType::Type(_, ref t) => Some(Type::from(t)),
         };
 
-        (Function { name, arguments, ret }, mutable)
-    }
-
-    pub fn free_function_export_name(&self) -> syn::LitStr {
-        let name = shared::free_function_export_name(self.name.as_ref());
-        syn::LitStr::new(&name, Span::def_site())
-    }
-
-    pub fn struct_function_export_name(&self, s: syn::Ident) -> syn::LitStr {
-        let name = shared::struct_function_export_name(
-            s.as_ref(),
-            self.name.as_ref(),
-        );
-        syn::LitStr::new(&name, Span::def_site())
-    }
-
-    pub fn rust_symbol(&self, namespace: Option<syn::Ident>) -> syn::Ident {
-        let mut generated_name = format!("__wasm_bindgen_generated");
-        if let Some(ns) = namespace {
-            generated_name.push_str("_");
-            generated_name.push_str(ns.as_ref());
-        }
-        generated_name.push_str("_");
-        generated_name.push_str(self.name.as_ref());
-        syn::Ident::from(generated_name)
+        (Function {
+            name,
+            arguments,
+            ret,
+            opts,
+            rust_vis: vis,
+            rust_decl: decl,
+            rust_attrs: attrs,
+        }, mutable)
     }
 
     fn wbg_literal(&self, a: &mut LiteralBuilder) {
@@ -389,74 +456,68 @@ impl Type {
     }
 }
 
-impl Struct {
-    pub fn from(s: &syn::ItemStruct) -> Struct {
-        Struct {
-            name: s.ident,
-            methods: Vec::new(),
-            functions: Vec::new(),
+impl Export {
+    pub fn rust_symbol(&self) -> syn::Ident {
+        let mut generated_name = format!("__wasm_bindgen_generated");
+        if let Some(class) = self.class {
+            generated_name.push_str("_");
+            generated_name.push_str(class.as_ref());
         }
+        generated_name.push_str("_");
+        generated_name.push_str(self.function.name.as_ref());
+        syn::Ident::from(generated_name)
     }
 
-    pub fn free_function(&self) -> syn::Ident {
-        syn::Ident::from(shared::free_function(self.name.as_ref()))
-    }
-
-    pub fn push_item(&mut self, item: &syn::ImplItem) {
-        let method = match *item {
-            syn::ImplItem::Const(_) => panic!("const definitions aren't supported"),
-            syn::ImplItem::Type(_) => panic!("type definitions in impls aren't supported"),
-            syn::ImplItem::Method(ref m) => m,
-            syn::ImplItem::Macro(_) => panic!("macros in impls aren't supported"),
-            syn::ImplItem::Verbatim(_) => panic!("unparsed impl item?"),
-        };
-        match method.vis {
-            syn::Visibility::Public(_) => {}
-            _ => return,
-        }
-        if method.defaultness.is_some() {
-            panic!("default methods are not supported");
-        }
-        if method.sig.constness.is_some() {
-            panic!("can only bindgen non-const functions");
-        }
-        if method.sig.unsafety.is_some() {
-            panic!("can only bindgen safe functions");
-        }
-
-        let (function, mutable) = Function::from_decl(method.sig.ident,
-                                                      &method.sig.decl,
-                                                      true);
-        match mutable {
-            Some(mutable) => {
-                self.methods.push(Method { mutable, function });
+    pub fn export_name(&self) -> syn::LitStr {
+        let name = match self.class {
+            Some(class) => {
+                shared::struct_function_export_name(
+                    class.as_ref(),
+                    self.function.name.as_ref(),
+                )
             }
             None => {
-                self.functions.push(function);
+                shared::free_function_export_name(self.function.name.as_ref())
             }
-        }
+        };
+        syn::LitStr::new(&name, Span::def_site())
     }
 
     fn wbg_literal(&self, a: &mut LiteralBuilder) {
         a.fields(&[
-            ("name", &|a| a.str(self.name.as_ref())),
-            ("functions", &|a| a.list(&self.functions, Function::wbg_literal)),
-            ("methods", &|a| a.list(&self.methods, Method::wbg_literal)),
-        ]);
-    }
-}
-
-impl Method {
-    fn wbg_literal(&self, a: &mut LiteralBuilder) {
-        a.fields(&[
-            ("mutable", &|a| a.bool(self.mutable)),
+            ("class", &|a| {
+                match self.class {
+                    Some(ref s) => a.str(s.as_ref()),
+                    None => a.append("null"),
+                }
+            }),
+            ("method", &|a| a.bool(self.method)),
             ("function", &|a| self.function.wbg_literal(a)),
         ]);
     }
 }
 
-impl ImportStruct {
+impl Import {
     fn wbg_literal(&self, a: &mut LiteralBuilder) {
+        let mut method = false;
+        let mut js_new = false;
+        let mut statik = false;
+        let mut class_name = None;
+        match self.kind {
+            ImportKind::Method { ref class, .. } => {
+                method = true;
+                class_name = Some(class);
+            }
+            ImportKind::JsConstructor { ref class, .. } => {
+                js_new = true;
+                class_name = Some(class);
+            }
+            ImportKind::Static { ref class, .. } => {
+                statik = true;
+                class_name = Some(class);
+            }
+            ImportKind::Normal => {}
+        }
         a.fields(&[
             ("module", &|a| {
                 match self.module {
@@ -464,97 +525,25 @@ impl ImportStruct {
                     None => a.append("null"),
                 }
             }),
-            ("name", &|a| a.str(self.name.as_ref())),
-            ("functions", &|a| {
-                a.list(&self.functions,
-                       |f, a| {
-                           let (method, new) = match f.kind {
-                               ImportFunctionKind::Method => (true, false),
-                               ImportFunctionKind::JsConstructor => (false, true),
-                               ImportFunctionKind::Static => (false, false),
-                           };
-                           a.fields(&[
-                                ("method", &|a| a.bool(method)),
-                                ("js_new", &|a| a.bool(new)),
-                                ("catch", &|a| a.bool(f.function.catch)),
-                                ("function", &|a| f.function.wasm_function.wbg_literal(a)),
-                           ]);
-                       })
+            ("catch", &|a| a.bool(self.function.opts.catch())),
+            ("method", &|a| a.bool(method)),
+            ("js_new", &|a| a.bool(js_new)),
+            ("statik", &|a| a.bool(statik)),
+            ("function", &|a| self.function.wbg_literal(a)),
+            ("class", &|a| {
+                match class_name {
+                    Some(s) => a.str(s),
+                    None => a.append("null"),
+                }
             }),
         ]);
     }
 }
 
-impl Import {
-    fn wbg_literal(&self, a: &mut LiteralBuilder) {
-        a.fields(&[
-            ("module", &|a| a.str(&self.module)),
-            ("catch", &|a| a.bool(self.function.catch)),
-            ("function", &|a| self.function.wasm_function.wbg_literal(a)),
-        ]);
+impl Struct {
+    fn from(s: syn::ItemStruct, _opts: BindgenAttrs) -> Struct {
+        Struct { name: s.ident }
     }
-}
-
-pub struct File {
-    pub items: Vec<MyItem>,
-}
-
-impl syn::synom::Synom for File {
-    named!(parse -> Self, map!(many0!(syn!(MyItem)), |items| File { items }));
-}
-
-pub enum MyItem {
-    Normal(syn::Item),
-    ExternClass(ExternClass),
-}
-
-impl syn::synom::Synom for MyItem {
-    named!(parse -> Self, alt!(
-        syn!(syn::Item) => { MyItem::Normal }
-        |
-        syn!(ExternClass) => { MyItem::ExternClass }
-    ));
-}
-
-pub struct ExternClass {
-    name: syn::Ident,
-    module: Option<syn::LitStr>,
-    functions: Vec<syn::ForeignItem>,
-}
-
-impl syn::synom::Synom for ExternClass {
-    named!(parse -> Self, do_parse!(
-        module: option!(do_parse!(
-            punct!(#) >>
-            name: brackets!(do_parse!(
-                call!(term, "wasm_module") >>
-                punct!(=) >>
-                val: syn!(syn::LitStr) >>
-                (val)
-            )) >>
-            (name.1)
-        )) >>
-        keyword!(extern) >>
-        keyword!(struct) >>
-        name: syn!(syn::Ident) >>
-        items: braces!(many0!(syn!(syn::ForeignItem))) >>
-        (ExternClass {
-            name,
-            module,
-            functions: items.1,
-        })
-    ));
-}
-
-fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str)
-    -> syn::synom::PResult<'a, ()>
-{
-    if let Some((_span, term, next)) = cursor.term() {
-        if term.as_str() == name {
-            return Ok(((), next))
-        }
-    }
-    syn::parse_error()
 }
 
 struct LiteralBuilder<'a> {
@@ -634,49 +623,122 @@ impl<'a> LiteralBuilder<'a> {
 }
 
 #[derive(Default)]
-struct BindgenOpts {
-    catch: bool,
-    constructor: bool,
+pub struct BindgenAttrs {
+    attrs: Vec<BindgenAttr>,
 }
 
-impl BindgenOpts {
-    fn from(attrs: &[syn::Attribute]) -> BindgenOpts {
-        let mut opts = BindgenOpts::default();
-        let attrs = attrs.iter()
-            .filter_map(|a| a.interpret_meta())
-            .filter_map(|m| {
-                match m {
-                    syn::Meta::List(i) => {
-                        if i.ident == "wasm_bindgen" {
-                            Some(i.nested)
-                        } else {
-                            None
-                        }
-                    }
+impl BindgenAttrs {
+    pub fn find(attrs: &mut Vec<syn::Attribute>) -> BindgenAttrs {
+        let pos = attrs.iter()
+            .enumerate()
+            .find(|&(_, ref m)| m.path.segments[0].ident == "wasm_bindgen")
+            .map(|a| a.0);
+        let pos = match pos {
+            Some(i) => i,
+            None => return BindgenAttrs::default(),
+        };
+        syn::parse(attrs.remove(pos).tts.into())
+            .expect("malformed #[wasm_bindgen] attribute")
+    }
+
+    fn module(&self) -> Option<&str> {
+        self.attrs.iter()
+            .filter_map(|a| {
+                match *a {
+                    BindgenAttr::Module(ref s) => Some(&s[..]),
                     _ => None,
                 }
             })
-            .flat_map(|a| a)
+            .next()
+    }
+
+    pub fn catch(&self) -> bool {
+        self.attrs.iter()
+            .any(|a| {
+                match *a {
+                    BindgenAttr::Catch => true,
+                    _ => false,
+                }
+            })
+    }
+
+    fn constructor(&self) -> bool {
+        self.attrs.iter()
+            .any(|a| {
+                match *a {
+                    BindgenAttr::Constructor => true,
+                    _ => false,
+                }
+            })
+    }
+
+    fn method(&self) -> bool {
+        self.attrs.iter()
+            .any(|a| {
+                match *a {
+                    BindgenAttr::Method => true,
+                    _ => false,
+                }
+            })
+    }
+
+    fn static_receiver(&self) -> Option<&syn::Type> {
+        self.attrs.iter()
             .filter_map(|a| {
-                match a {
-                    syn::NestedMeta::Meta(a) => Some(a),
+                match *a {
+                    BindgenAttr::Static(ref s) => Some(s),
                     _ => None,
                 }
-            });
-        for attr in attrs {
-            match attr {
-                syn::Meta::Word(a) => {
-                   if a == "constructor" {
-                       opts.constructor = true;
-                   } else if a == "catch" {
-                       opts.catch = true;
-                   }
-                }
-                _ => {}
-            }
-        }
-        return opts
+            })
+            .next()
     }
+}
+
+impl syn::synom::Synom for BindgenAttrs {
+    named!(parse -> Self, alt!(
+        do_parse!(
+            opts: parens!(call!(
+                syn::punctuated::Punctuated::<_, syn::token::Comma>::parse_terminated
+            )) >>
+            (BindgenAttrs {
+                attrs: opts.1.into_iter().collect(),
+            })
+        ) => { |s| s }
+        |
+        epsilon!() => { |_| BindgenAttrs { attrs: Vec::new() } }
+    ));
+}
+
+enum BindgenAttr {
+    Catch,
+    Constructor,
+    Method,
+    Static(syn::Type),
+    Module(String),
+}
+
+impl syn::synom::Synom for BindgenAttr {
+    named!(parse -> Self, alt!(
+        call!(term, "catch") => { |_| BindgenAttr::Catch }
+        |
+        call!(term, "constructor") => { |_| BindgenAttr::Constructor }
+        |
+        call!(term, "method") => { |_| BindgenAttr::Method }
+        |
+        do_parse!(
+            call!(term, "static") >>
+            punct!(=) >>
+            s: syn!(syn::Type) >>
+            (s)
+        )=> { BindgenAttr::Static }
+        |
+        do_parse!(
+            call!(term, "module") >>
+            punct!(=) >>
+            s: syn!(syn::LitStr) >>
+            (s.value())
+        )=> { BindgenAttr::Module }
+    ));
 }
 
 fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
@@ -706,4 +768,15 @@ fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
         _ => {}
     }
     Some(Some(Type::from(ty)))
+}
+
+fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str)
+    -> syn::synom::PResult<'a, ()>
+{
+    if let Some((_span, term, next)) = cursor.term() {
+        if term.as_str() == name {
+            return Ok(((), next))
+        }
+    }
+    syn::parse_error()
 }

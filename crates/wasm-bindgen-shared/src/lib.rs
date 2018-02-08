@@ -5,58 +5,39 @@ extern crate fnv;
 use std::char;
 use std::hash::{Hash, Hasher};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Program {
-    pub structs: Vec<Struct>,
-    pub free_functions: Vec<Function>,
+    pub exports: Vec<Export>,
     pub imports: Vec<Import>,
-    pub imported_structs: Vec<ImportStruct>,
     pub custom_type_names: Vec<CustomTypeName>,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct Struct {
-    pub name: String,
-    pub functions: Vec<Function>,
-    pub methods: Vec<Method>,
-}
-
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Import {
-    pub module: String,
-    pub catch: bool,
-    pub function: Function,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct ImportStruct {
     pub module: Option<String>,
-    pub name: String,
-    pub functions: Vec<ImportStructFunction>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct ImportStructFunction {
+    pub catch: bool,
     pub method: bool,
     pub js_new: bool,
-    pub catch: bool,
+    pub statik: bool,
+    pub class: Option<String>,
     pub function: Function,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct Method {
-    pub mutable: bool,
+#[derive(Deserialize)]
+pub struct Export {
+    pub class: Option<String>,
+    pub method: bool,
     pub function: Function,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct Function {
     pub name: String,
     pub arguments: Vec<Type>,
     pub ret: Option<Type>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct CustomTypeName {
     pub descriptor: char,
     pub name: String,

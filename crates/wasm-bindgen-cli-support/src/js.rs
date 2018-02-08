@@ -1,5 +1,6 @@
 use std::char;
 use std::collections::{HashSet, HashMap};
+use std::mem;
 
 use shared;
 use parity_wasm::elements::*;
@@ -16,6 +17,14 @@ pub struct Context<'a> {
     pub module: &'a mut Module,
     pub imports_to_rewrite: HashSet<String>,
     pub custom_type_names: HashMap<char, String>,
+    pub imported_names: HashSet<String>,
+    pub exported_classes: HashMap<String, ExportedClass>,
+}
+
+#[derive(Default)]
+pub struct ExportedClass {
+    pub contents: String,
+    pub typescript: String,
 }
 
 pub struct SubContext<'a, 'b: 'a> {
@@ -37,6 +46,7 @@ impl<'a> Context<'a> {
     }
 
     pub fn finalize(&mut self, module_name: &str) -> (String, String) {
+        self.write_classes();
         {
             let mut bind = |name: &str, f: &Fn(&mut Self) -> String| {
                 if !self.wasm_import_needed(name) {
@@ -200,6 +210,52 @@ impl<'a> Context<'a> {
         self.unexport_unused_internal_exports();
 
         (js, self.typescript.clone())
+    }
+
+    fn write_classes(&mut self) {
+        let classes = mem::replace(&mut self.exported_classes, Default::default());
+        for (class, exports) in classes {
+            let mut dst = String::new();
+            dst.push_str(&format!("export class {} {{", class));
+            let mut ts_dst = dst.clone();
+            ts_dst.push_str("
+                public ptr: number;
+            ");
+            if self.config.debug {
+                self.expose_check_token();
+                dst.push_str(&format!("
+                    constructor(ptr, sym) {{
+                        _checkToken(sym);
+                        this.ptr = ptr;
+                    }}
+                "));
+                ts_dst.push_str("constructor(ptr: number, sym: Symbol);\n");
+            } else {
+                dst.push_str(&format!("
+                    constructor(ptr) {{
+                        this.ptr = ptr;
+                    }}
+                "));
+                ts_dst.push_str("constructor(ptr: number);\n");
+            }
+
+            dst.push_str(&format!("
+                free() {{
+                    const ptr = this.ptr;
+                    this.ptr = 0;
+                    wasm.{}(ptr);
+                }}
+            ", shared::free_function(&class)));
+            ts_dst.push_str("free(): void;\n");
+
+            dst.push_str(&exports.contents);
+            ts_dst.push_str(&exports.contents);
+            dst.push_str("}\n");
+            ts_dst.push_str("}\n");
+
+            self.globals.push_str(&dst);
+            self.typescript.push_str(&ts_dst);
+        }
     }
 
     fn rewrite_imports(&mut self, module_name: &str) {
@@ -584,27 +640,22 @@ impl<'a> Context<'a> {
 
 impl<'a, 'b> SubContext<'a, 'b> {
     pub fn generate(&mut self) {
-        for f in self.program.free_functions.iter() {
-            self.generate_free_function(f);
+        for f in self.program.exports.iter() {
+            self.generate_export(f);
         }
         for f in self.program.imports.iter() {
             self.generate_import(f);
         }
-        for s in self.program.structs.iter() {
-            self.generate_struct(s);
-        }
-        for s in self.program.imported_structs.iter() {
-            self.generate_import_struct(s);
-        }
     }
 
-    pub fn generate_free_function(&mut self, func: &shared::Function) {
+    pub fn generate_export(&mut self, export: &shared::Export) {
+        if let Some(ref class) = export.class {
+            return self.generate_export_for_class(class, export)
+        }
         let (js, ts) = self.generate_function("function",
-                                              &func.name,
-                                              &func.name,
+                                              &export.function.name,
                                               false,
-                                              &func.arguments,
-                                              func.ret.as_ref());
+                                              &export.function);
         self.cx.globals.push_str("export ");
         self.cx.globals.push_str(&js);
         self.cx.globals.push_str("\n");
@@ -613,86 +664,37 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.typescript.push_str("\n");
     }
 
-    pub fn generate_struct(&mut self, s: &shared::Struct) {
-        let mut dst = String::new();
-        dst.push_str(&format!("export class {} {{", s.name));
-        let mut ts_dst = dst.clone();
-        ts_dst.push_str("
-            public ptr: number;
-        ");
-        if self.cx.config.debug {
-            self.cx.expose_check_token();
-            dst.push_str(&format!("
-                constructor(ptr, sym) {{
-                    _checkToken(sym);
-                    this.ptr = ptr;
-                }}
-            "));
-            ts_dst.push_str("constructor(ptr: number, sym: Symbol);\n");
-        } else {
-            dst.push_str(&format!("
-                constructor(ptr) {{
-                    this.ptr = ptr;
-                }}
-            "));
-            ts_dst.push_str("constructor(ptr: number);\n");
-        }
-
-        dst.push_str(&format!("
-            free() {{
-                const ptr = this.ptr;
-                this.ptr = 0;
-                wasm.{}(ptr);
-            }}
-        ", shared::free_function(&s.name)));
-        ts_dst.push_str("free(): void;\n");
-
-        for function in s.functions.iter() {
-            let (js, ts) = self.generate_function(
-                "static",
-                &function.name,
-                &shared::struct_function_export_name(&s.name, &function.name),
-                false,
-                &function.arguments,
-                function.ret.as_ref(),
-            );
-            dst.push_str(&js);
-            dst.push_str("\n");
-            ts_dst.push_str(&ts);
-            ts_dst.push_str("\n");
-        }
-        for method in s.methods.iter() {
-            let (js, ts) = self.generate_function(
+    pub fn generate_export_for_class(&mut self, class: &str, export: &shared::Export) {
+        let (js, ts) = if export.method {
+            self.generate_function(
                 "",
-                &method.function.name,
-                &shared::struct_function_export_name(&s.name, &method.function.name),
+                &shared::struct_function_export_name(class, &export.function.name),
                 true,
-                &method.function.arguments,
-                method.function.ret.as_ref(),
-            );
-            dst.push_str(&js);
-            dst.push_str("\n");
-            ts_dst.push_str(&ts);
-            ts_dst.push_str("\n");
-        }
-        dst.push_str("}\n");
-        ts_dst.push_str("}\n");
-
-        self.cx.globals.push_str(&dst);
-        self.cx.globals.push_str("\n");
-        self.cx.typescript.push_str(&ts_dst);
-        self.cx.typescript.push_str("\n");
+                &export.function,
+            )
+        } else {
+            self.generate_function(
+                "static",
+                &shared::struct_function_export_name(class, &export.function.name),
+                false,
+                &export.function,
+            )
+        };
+        let class = self.cx.exported_classes.entry(class.to_string())
+            .or_insert(ExportedClass::default());
+        class.contents.push_str(&js);
+        class.contents.push_str("\n");
+        class.typescript.push_str(&ts);
+        class.typescript.push_str("\n");
     }
 
     fn generate_function(&mut self,
                          prefix: &str,
-                         name: &str,
                          wasm_name: &str,
                          is_method: bool,
-                         arguments: &[shared::Type],
-                         ret: Option<&shared::Type>) -> (String, String) {
-        let mut dst = format!("{}(", name);
-        let mut dst_ts = format!("{}(", name);
+                         function: &shared::Function) -> (String, String) {
+        let mut dst = format!("{}(", function.name);
+        let mut dst_ts = format!("{}(", function.name);
         let mut passed_args = String::new();
         let mut arg_conversions = String::new();
         let mut destructors = String::new();
@@ -701,7 +703,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             passed_args.push_str("this.ptr");
         }
 
-        for (i, arg) in arguments.iter().enumerate() {
+        for (i, arg) in function.arguments.iter().enumerate() {
             let name = format!("arg{}", i);
             if i > 0 {
                 dst.push_str(", ");
@@ -799,25 +801,25 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         dst.push_str(")");
         dst_ts.push_str(")");
-        let convert_ret = match ret {
+        let convert_ret = match function.ret {
             None => {
                 dst_ts.push_str(": void");
                 format!("return ret;")
             }
-            Some(&shared::TYPE_NUMBER) => {
+            Some(shared::TYPE_NUMBER) => {
                 dst_ts.push_str(": number");
                 format!("return ret;")
             }
-            Some(&shared::TYPE_BOOLEAN) => {
+            Some(shared::TYPE_BOOLEAN) => {
                 dst_ts.push_str(": boolean");
                 format!("return ret != 0;")
             }
-            Some(&shared::TYPE_JS_OWNED) => {
+            Some(shared::TYPE_JS_OWNED) => {
                 dst_ts.push_str(": any");
                 self.cx.expose_take_object();
                 format!("return takeObject(ret);")
             }
-            Some(&shared::TYPE_STRING) => {
+            Some(shared::TYPE_STRING) => {
                 dst_ts.push_str(": string");
                 self.cx.expose_get_string_from_wasm();
                 self.cx.required_internal_exports.insert("__wbindgen_boxed_str_ptr");
@@ -831,10 +833,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     return realRet;
                 ")
             }
-            Some(&shared::TYPE_JS_REF) |
-            Some(&shared::TYPE_BORROWED_STR) => panic!(),
-            Some(&t) if (t as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => panic!(),
-            Some(custom) => {
+            Some(shared::TYPE_JS_REF) |
+            Some(shared::TYPE_BORROWED_STR) => panic!(),
+            Some(t) if (t as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => panic!(),
+            Some(ref custom) => {
                 let name = &self.cx.custom_type_names[custom];
                 dst_ts.push_str(": ");
                 dst_ts.push_str(name);
@@ -881,78 +883,35 @@ impl<'a, 'b> SubContext<'a, 'b> {
     }
 
     pub fn generate_import(&mut self, import: &shared::Import) {
-        let imported_name = format!("import{}", self.cx.imports.len());
-
-        self.cx.imports.push_str(&format!("
-            import {{ {} as {} }} from '{}';
-        ", import.function.name, imported_name, import.module));
-
-        let name = shared::mangled_import_name(None, &import.function.name);
-        self.gen_import_shim(&name,
-                             &imported_name,
-                             false,
-                             import.catch,
-                             &import.function);
-        self.cx.imports_to_rewrite.insert(name);
-    }
-
-    pub fn generate_import_struct(&mut self, import: &shared::ImportStruct) {
         if let Some(ref module) = import.module {
-            self.cx.imports.push_str(&format!("
-                import {{ {} }} from '{}';
-            ", import.name, module));
+            let name_to_import = import.class.as_ref().unwrap_or(&import.function.name);
+
+            if self.cx.imported_names.insert(name_to_import.clone()) {
+                self.cx.imports.push_str(&format!("
+                    import {{ {} }} from '{}';
+                ", name_to_import, module));
+            }
         }
 
-        for f in import.functions.iter() {
-            self.generate_import_struct_function(&import.name, f);
-        }
-    }
+        let name = shared::mangled_import_name(import.class.as_ref().map(|s| &**s),
+                                               &import.function.name);
+        self.cx.imports_to_rewrite.insert(name.clone());
 
-    fn generate_import_struct_function(
-        &mut self,
-        class: &str,
-        f: &shared::ImportStructFunction,
-    ) {
-        let delegate = if f.method {
-            format!("{}.prototype.{}.call", class, f.function.name)
-        } else if f.js_new {
-            format!("new {}", class)
-        } else {
-            format!("{}.{}", class, f.function.name)
-        };
-
-        let name = shared::mangled_import_name(Some(class), &f.function.name);
-        self.gen_import_shim(&name,
-                             &delegate,
-                             f.method,
-                             f.catch,
-                             &f.function);
-        self.cx.imports_to_rewrite.insert(name);
-    }
-
-    fn gen_import_shim(
-        &mut self,
-        shim_name: &str,
-        shim_delegate: &str,
-        is_method: bool,
-        catch: bool,
-        import: &shared::Function,
-    ) {
         let mut dst = String::new();
 
-        dst.push_str(&format!("function {}(", shim_name));
+        dst.push_str(&format!("function {}(", name));
         let mut invoc_args = Vec::new();
         let mut abi_args = Vec::new();
 
-        if is_method {
-            abi_args.push("ptr".to_string());
-            invoc_args.push("getObject(ptr)".to_string());
-            self.cx.expose_get_object();
-        }
+        // if import.method {
+        //     abi_args.push("ptr".to_string());
+        //     invoc_args.push("getObject(ptr)".to_string());
+        //     self.cx.expose_get_object();
+        // }
 
         let mut extra = String::new();
 
-        for (i, arg) in import.arguments.iter().enumerate() {
+        for (i, arg) in import.function.arguments.iter().enumerate() {
             match *arg {
                 shared::TYPE_NUMBER => {
                     invoc_args.push(format!("arg{}", i));
@@ -995,8 +954,21 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
         }
 
-        let invoc = format!("{}({})", shim_delegate, invoc_args.join(", "));
-        let invoc = match import.ret {
+        let invoc_args = invoc_args.join(", ");
+        let name = &import.function.name;
+        let invoc = match import.class {
+            Some(ref class) if import.method => {
+                format!("{}.prototype.{}.call({})", class, name, invoc_args)
+            }
+            Some(ref class) if import.js_new => {
+                format!("new {}({})", class, invoc_args)
+            }
+            Some(ref class) => {
+                format!("{}.{}({})", class, name, invoc_args)
+            }
+            None => format!("{}({})", name, invoc_args),
+        };
+        let invoc = match import.function.ret {
             Some(shared::TYPE_NUMBER) => format!("return {};", invoc),
             Some(shared::TYPE_BOOLEAN) => format!("return {} ? 1 : 0;", invoc),
             Some(shared::TYPE_JS_OWNED) => {
@@ -1017,7 +989,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             _ => unimplemented!(),
         };
 
-        let invoc = if catch {
+        let invoc = if import.catch {
             self.cx.expose_uint32_memory();
             self.cx.expose_add_heap_object();
             abi_args.push("exnptr".to_string());

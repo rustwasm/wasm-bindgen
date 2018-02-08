@@ -78,6 +78,8 @@ impl Bindgen {
                 required_internal_exports: Default::default(),
                 imports_to_rewrite: Default::default(),
                 custom_type_names: Default::default(),
+                imported_names: Default::default(),
+                exported_classes: Default::default(),
                 config: &self,
                 module: &mut module,
             };

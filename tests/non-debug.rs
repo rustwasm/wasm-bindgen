@@ -11,18 +11,21 @@ fn works() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub struct A {}
+            #[wasm_bindgen]
+            pub struct A {}
 
-                impl A {
-                    pub fn new() -> A {
-                        A {}
-                    }
+            #[wasm_bindgen]
+            impl A {
+                pub fn new() -> A {
+                    A {}
                 }
-                pub fn clone(a: &JsValue) -> JsValue {
-                    drop(a.clone());
-                    a.clone()
-                }
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn clone(a: &JsValue) -> JsValue {
+                drop(a.clone());
+                a.clone()
             }
         "#)
         .file("test.ts", r#"

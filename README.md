@@ -77,16 +77,22 @@ extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
 
-wasm_bindgen! {
-    pub fn greet(name: &str) -> String {
-        format!("Hello, {}!", name)
-    }
+#[wasm_bindgen]
+extern {
+    fn alert(s: &str);
+}
+
+#[wasm_bindgen]
+#[no_mangle]
+pub extern fn greet(name: &str) {
+    alert(&format!("Hello, {}!", name));
 }
 ```
 
-Here we're wrapping the code we'd like to export to JS in the `wasm_bindgen!`
-macro. We'll see more features later, but it suffices to say that most Rust
-syntax fits inside here, it's not too special beyond what it generates!
+And that's it! If we were to write the `greet` function naively without the
+`#[wasm_bindgen]` attribute then JS wouldn't be able to communicate with the
+types like `str`, so slapping a `#[wasm_bindgen]` on the function and the import
+of `alert` ensures that the right shims are generated.
 
 Next up let's build our project:
 
@@ -155,7 +161,7 @@ import { greet } from "./js_hello_world";
 import { booted } from "./js_hello_world_wasm";
 
 booted.then(() => {
-  alert(greet("World!"))
+  greet("World!");
 });
 ```
 
@@ -188,31 +194,31 @@ If you open that in a browser you should see a `Hello, world!` dialog pop up!
 ## What just happened?
 
 Phew! That was a lot of words and a lot ended up happening along the way. There
-were two main pieces of magic happening: the `wasm_bindgen!` macro and the
+were two main pieces of magic happening: the `#[wasm_bindgen]` attribute and the
 `wasm-bindgen` CLI tool.
 
-**The `wasm_bindgen!` macro**
+**The `#[wasm_bindgen]` attribute**
 
-This macro, exported from the `wasm-bindgen` crate, is the entrypoint to
+This attribute, exported from the `wasm-bindgen` crate, is the entrypoint to
 exposing Rust functions to JS. This is a procedural macro (hence requiring the
-nightly Rust toolchain) which will transform the definitions inside and prepare
-appropriate wrappers to receive JS-compatible types and convert them to
-Rust-compatible types.
+nightly Rust toolchain) which will generate the appropriate shims in Rust to
+translate from your type signature to one that JS can interface with. Finally
+the attribute also serializes some information to the output artifact which
+`wasm-bindgen`-the-tool will discard after it parses.
 
 There's a more thorough explanation below of the various bits and pieces of the
-macro, but it suffices for now to say that you can have free functions, structs,
-and impl blocks for those structs in the macro right now. Many Rust features
-aren't supported in these blocks like generics, lifetime parameters, etc.
-Additionally not all types can be taken or returned from the functions. In
-general though simple-ish types should work just fine!
+attribute, but it suffices for now to say that you can attach it to free
+functions, structs, impl blocks for those structs and `extern { ... }` blocks.
+Some Rust features like generics, lifetime parameters, etc, aren't supported on
+functions tagged with `#[wasm_bindgen]` right now.
 
 **The `wasm-bindgen` CLI tool**
 
 The next half of what happened here was all in the `wasm-bindgen` tool. This
 tool opened up the wasm module that rustc generated and found an encoded
-description of what was passed to the `wasm_bindgen!` macro. You can think of
-this as the `wasm_bindgen!` macro created a special section of the output module
-which `wasm-bindgen` strips and processes.
+description of what was passed to the `#[wasm_bindgen]` attribute. You can
+think of this as the `#[wasm_bindgen]` attribute created a special section of
+the output module which `wasm-bindgen` strips and processes.
 
 This information gave `wasm-bindgen` all it needed to know to generate the JS
 file that we then imported. The JS file wraps instantiating the underlying wasm
@@ -231,62 +237,76 @@ extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
 
-wasm_bindgen! {
-    // Strings can both be passed in and received
-    pub fn concat(a: &str, b: &str) -> String {
-        let mut a = a.to_string();
-        a.push_str(b);
-        return a
+// Strings can both be passed in and received
+#[wasm_bindgen]
+#[no_mangle]
+pub extern fn concat(a: &str, b: &str) -> String {
+    let mut a = a.to_string();
+    a.push_str(b);
+    return a
+}
+
+// A struct will show up as a class on the JS side of things
+#[wasm_bindgen]
+pub struct Foo {
+    contents: u32,
+}
+
+#[wasm_bindgen]
+impl Foo {
+    pub fn new() -> Foo {
+        Foo { contents: 0 }
     }
 
-    // A struct will show up as a class on the JS side of things
-    pub struct Foo {
-        contents: u32,
+    // Methods can be defined with `&mut self` or `&self`, and arguments you
+    // can pass to a normal free function also all work in methods.
+    pub fn add(&mut self, amt: u32) -> u32 {
+        self.contents += amt;
+        return self.contents
     }
 
-    impl Foo {
-        pub fn new() -> Foo {
-            Foo { contents: 0 }
-        }
-
-        // Methods can be defined with `&mut self` or `&self`, and arguments you
-        // can pass to a normal free function also all work in methods.
-        pub fn add(&mut self, amt: u32) -> u32 {
-            self.contents += amt;
-            return self.contents
-        }
-
-        // You can also take a limited set of references to other types as well.
-        pub fn add_other(&mut self, bar: &Bar) {
-            self.contents += bar.contents;
-        }
-
-        // Ownership can work too!
-        pub fn consume_other(&mut self, bar: Bar) {
-            self.contents += bar.contents;
-        }
+    // You can also take a limited set of references to other types as well.
+    pub fn add_other(&mut self, bar: &Bar) {
+        self.contents += bar.contents;
     }
 
-    pub struct Bar {
-        contents: u32,
-        opaque: JsValue, // defined in `wasm_bindgen`, imported via prelude
+    // Ownership can work too!
+    pub fn consume_other(&mut self, bar: Bar) {
+        self.contents += bar.contents;
+    }
+}
+
+#[wasm_bindgen]
+pub struct Bar {
+    contents: u32,
+    opaque: JsValue, // defined in `wasm_bindgen`, imported via prelude
+}
+
+#[wasm_bindgen(module = "./index")] // what ES6 module to import from
+extern {
+    fn bar_on_reset(to: &str, opaque: &JsValue);
+
+    // We can import classes and annotate functionality on those classes as well
+    type Awesome;
+    #[wasm_bindgen(constructor)]
+    fn new() -> Awesome;
+    #[wasm_bindgen(method)]
+    fn get_internal(this: &Awesome) -> u32;
+}
+
+#[wasm_bindgen]
+impl Bar {
+    pub fn from_str(s: &str, opaque: JsValue) -> Bar {
+        let contents = s.parse().unwrap_or_else(|| {
+            Awesome::new().get_internal()
+        });
+        Bar { contents, opaque }
     }
 
-    #[wasm_module = "./index"] // what ES6 module to import this functionality from
-    extern "JS" {
-        fn bar_on_reset(to: &str, opaque: &JsValue);
-    }
-
-    impl Bar {
-        pub fn from_str(s: &str, opaque: JsValue) -> Bar {
-            Bar { contents: s.parse().unwrap_or(0), opaque }
-        }
-
-        pub fn reset(&mut self, s: &str) {
-            if let Ok(n) = s.parse() {
-                bar_on_reset(s, &self.opaque);
-                self.contents = n;
-            }
+    pub fn reset(&mut self, s: &str) {
+        if let Ok(n) = s.parse() {
+            bar_on_reset(s, &self.opaque);
+            self.contents = n;
         }
     }
 }
@@ -295,7 +315,7 @@ wasm_bindgen! {
 The generated JS bindings for this invocation of the macro [look like
 this][bindings]. You can view them in action like so:
 
-[bindings]: https://gist.github.com/alexcrichton/12ccab3a18d7db0e0d7d777a0f4951b5
+[bindings]: https://gist.github.com/alexcrichton/3d85c505e785fb8ff32e2c1cf9618367
 
 and our corresponding `index.js`:
 
@@ -341,6 +361,16 @@ function main() {
   alert('all passed!')
 }
 
+export class Awesome {
+  constructor() {
+    this.internal = 32;
+  }
+
+  get_internal() {
+    return this.internal;
+  }
+}
+
 booted.then(main);
 ```
 
@@ -352,21 +382,25 @@ should also be a great place to look for examples.
 
 [tests]: https://github.com/alexcrichton/wasm-bindgen/tree/master/tests
 
-In the `wasm_bindgen!` macro you can have four items: functions, structs,
-impls, and foreign modules. Impls can only contain functions. No lifetime
-parameters or type parameters are allowed on any of these types. Foreign
-modules must have the `"JS"` abi and currently only allow integer/string
-arguments and integer return values.
+The `#[wasm_bindgen]` attribute can be attached to functions, structs,
+impls, and foreign modules. Impls can only contain functions, and the attribute
+cannot be attached to functions in an impl block or functions in a foreign
+module. No lifetime parameters or type parameters are allowed on any of these
+types. Foreign modules must have the `"C"` abi (or none listed). Free functions
+with `#[wasm_bindgen]` must also have the `"C"` abi or none listed and also be
+annotated with the `#[no_mangle]` attribute.
 
 All structs referenced through arguments to functions should be defined in the
-macro itself. Arguments allowed are:
+macro itself. Arguments allowed implement the `WasmBoundary` trait, and examples
+are:
 
 * Integers (not u64/i64)
 * Floats
 * Borrowed strings (`&str`)
 * Owned strings (`String`)
-* Owned structs (`Foo`) defined in the same bindgen macro
-* Borrowed structs (`&Foo` or `&mut Bar`) defined in the same bindgen macro
+* Exported structs (`Foo`, annotated with `#[wasm_bindgen]`)
+* Imported types in a foreign module annotated with `#[wasm_bindgen]`
+* Borrowed exported structs (`&Foo` or `&mut Bar`)
 * The `JsValue` type and `&JsValue` (not mutable references)
 
 All of the above can also be returned except borrowed references. Strings are
@@ -382,7 +416,8 @@ safety with reentrancy and aliasing in JS. In general you shouldn't see
 
 JS-values-in-Rust are implemented through indexes that index a table generated
 as part of the JS bindings. This table is managed via the ownership specified in
-Rust and through the bindings that we're returning.
+Rust and through the bindings that we're returning. More information about this
+can be found in the [design doc].
 
 All of these constructs currently create relatively straightforward code on the
 JS side of things, mostly having a 1:1 match in Rust with JS.

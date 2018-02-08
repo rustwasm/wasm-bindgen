@@ -28,6 +28,41 @@ desired interface expressed in JS (classes, types, strings, etc) and the
 `foo_wasm.wasm` module is simply used as an implementation detail (it was
 lightly modified from the original `foo.wasm` file).
 
+## Foundation #2: Unintrusive in Rust
+
+On the more Rust-y side of things the `wasm-bindgen` crate is designed to
+ideally have as minimal impact on a Rust crate as possible. Ideally a few
+`#[wasm_bindgen]` attributes are annotated in key locations and otherwise you're
+off to the races, but otherwise it strives to both not invent new syntax and
+work with existing idioms today.
+
+For example the `#[no_mangle]` and `extern` ABI indicators are required for
+annotated free functions with `#[wasm_bindgen]`, because these two snippets are
+actually equivalent:
+
+```rust
+#[no_mangle]
+pub extern fn only_integers(a: i32) -> u32 {
+    // ...
+}
+
+// is equivalent to...
+
+#[wasm_bindgen]
+#[no_mangle]
+pub extern fn only_integers_with_wasm_bindgen(a: i32) -> u32 {
+    // ...
+}
+```
+
+Additionally the design here with minimal intervention in Rust should allow us
+to easily take advantage of the upcoming [host bindings][host] proposal. Ideally
+you'd simply upgrade `wasm-bindgen`-the-crate as well as you're toolchain and
+you're immediately getting raw access to host bindigns! (this is still a bit of
+aways off though...)
+
+[host]: https://github.com/WebAssembly/host-bindings
+
 ## Polyfill for "JS objects in wasm"
 
 One of the main goals of `wasm-bindgen` is to allow working with and passing
@@ -52,10 +87,10 @@ Let's take a look at an example.
 
 ```rust
 // foo.rs
-wasm_bindgen! {
-    pub fn foo(a: &JsValue) {
-        // ...
-    }
+#[wasm_bindgen]
+#[no_mangle]
+pub extern fn foo(a: &JsValue) {
+    // ...
 }
 ```
 
@@ -108,11 +143,11 @@ Here we can see a few notable points of action:
   used, issuing a `pop` for what was pushed at the start of the function.
 
 It's also helpful to dig into the Rust side of things to see what's going on
-there! Let's take a look at the code that `wasm_bindgen!` generates in Rust:
+there! Let's take a look at the code that `#[wasm_bindgen]` generates in Rust:
 
 ```rust
-// what the user wrote
-pub fn foo(a: &JsValue) {
+// what the user wrote, note that #[no_mangle] is removed
+pub extern fn foo(a: &JsValue) {
     // ...
 }
 
@@ -152,10 +187,9 @@ example.
 
 ```rust
 // foo.rs
-wasm_bindgen! {
-    pub fn foo(a: JsValue) {
-        // ...
-    }
+#[wasm_bindgen]
+pub fn foo(a: JsValue) {
+    // ...
 }
 ```
 
@@ -216,7 +250,7 @@ And finally, let's take a look at the Rust generated again too:
 
 ```rust
 // what the user wrote
-pub fn foo(a: JsValue) {
+pub extern fn foo(a: JsValue) {
     // ...
 }
 
@@ -283,10 +317,10 @@ The most interesting conversion here happens with strings so let's take a look
 at that.
 
 ```rust
-wasm_bindgen! {
-    pub fn greet(a: &str) -> String {
-        format!("Hello, {}!", a)
-    }
+#[wasm_bindgen]
+#[no_mangle]
+pub extern fn greet(a: &str) -> String {
+    format!("Hello, {}!", a)
 }
 ```
 
@@ -358,7 +392,7 @@ At this point it may be predictable, but let's take a look at the Rust side of
 things as well
 
 ```rust
-pub fn greet(a: &str) -> String {
+pub extern fn greet(a: &str) -> String {
     format!("Hello, {}!", a)
 }
 
@@ -384,7 +418,7 @@ then returned up to was for reading via the `__wbindgen_boxed_str_*` functions.
 So in general exporting a function involves a shim both in JS and in Rust with
 each side translating to or from wasm arguments to the native types of each
 language. The `wasm-bindgen` tool manages hooking up all these shims while the
-`wasm_bindgen!` macro takes care of the Rust shim as well.
+`#[wasm_bindgen]` macro takes care of the Rust shim as well.
 
 Most arguments have a relatively clear way to convert them, bit if you've got
 any questions just let me know!
@@ -399,11 +433,9 @@ First up, let's say we invert the function above and instead want to generate
 greetings in JS but call it from Rust. We might have, for example:
 
 ```rust
-wasm_bindgen! {
-    #[wasm_module = "./greet"]
-    extern "JS" {
-        fn greet(a: &str) -> String;
-    }
+#[wasm_bindgen(module = "./greet")]
+extern {
+    fn greet(a: &str) -> String;
 }
 
 fn other_code() {
@@ -412,8 +444,9 @@ fn other_code() {
 }
 ```
 
-The basic idea of exports is the same in that we'll have shims in both JS and
-Rust doing the necessary translation. Let's first see the JS shim in action:
+The basic idea of imports is the same as exports in that we'll have shims in
+both JS and Rust doing the necessary translation. Let's first see the JS shim in
+action:
 
 ```js
 import * as wasm from './foo_wasm';
@@ -442,7 +475,7 @@ There's some tricky ABI business going on here so let's take a look at the
 generated Rust as well:
 
 ```rust
-fn greet(a: &str) -> String {
+extern fn greet(a: &str) -> String {
     extern {
         fn __wbg_f_greet(a_ptr: *const u8, a_len: usize, ret_len: *mut usize) -> *mut u8;
     }
@@ -473,35 +506,37 @@ sometimes, though, want to go even further and define a JS `class` in Rust. Or
 in other words, we want to expose an object with methods from Rust to JS rather
 than just importing/exporting free functions.
 
-The `wasm_bindgen!` macro currently allows an `impl` block in Rust which does
-just this:
+The `#[wasm_bindgen]` attribute can annotate both a `struct` and `impl` blocks
+to allow:
 
 ```rust
-wasm_bindgen! {
-    pub struct Foo {
-        internal: i32,
+#[wasm_bindgen]
+pub struct Foo {
+    internal: i32,
+}
+
+#[wasm_bindgen]
+impl Foo {
+    pub fn new(val: i32) -> Foo {
+        Foo { internal: val }
     }
 
-    impl Foo {
-        pub fn new(val: i32) -> Foo {
-            Foo { internal: val }
-        }
+    pub fn get(&self) -> i32 {
+        self.internal
+    }
 
-        pub fn get(&self) -> i32 {
-            self.internal
-        }
-
-        pub fn set(&mut self, val: i32) {
-            self.internal = val;
-        }
+    pub fn set(&mut self, val: i32) {
+        self.internal = val;
     }
 }
 ```
 
 This is a typical Rust `struct` definition for a type with a constructor and a
-few methods. By encasing it in the `wasm_bindgen!` macro we're ensuring that the
-types and methods are also available to JS. If we take a look at the generated
-JS code for this we'll see:
+few methods. Annotating the struct with `#[wasm_bindgen]` means that we'll
+generate necessary trait impls to convert this type to/from the JS boundary. The
+annotated `impl` block here means that the functions inside will also be made
+available to JS through generated shims. If we take a look at the generated JS
+code for this we'll see:
 
 ```js
 import * as wasm from './foo_wasm';
@@ -553,7 +588,7 @@ The real trickery with these bindings ends up happening in Rust, however, so
 let's take a look at that.
 
 ```rust
-// original input to `wasm_bindgen!` omitted ...
+// original input to `#[wasm_bindgen]` omitted ...
 
 #[export_name = "foo_new"]
 pub extern fn __wasm_bindgen_generated_Foo_new(arg0: i32) -> u32
@@ -597,14 +632,14 @@ same as [`RefCell`] and can be mostly glossed over.
 The purpose for this type, if you're interested though, is to uphold Rust's
 guarantees about aliasing in a world where aliasing is rampant (JS).
 Specifically the `&Foo` type means that there can be as much alaising as you'd
-like, but crucially `&mut Foo` means that it is the sole pointer to the data (no
-other `&Foo` to the same instance exists). The [`RefCell`] type in libstd is a
-way of dynamically enforcing this at runtime (as opposed to compile time where
-it usually happens). Baking in `WasmRefCell` is the same idea here, adding
-runtime checks for aliasing which are typically happening at compile time. This
-is currently a Rust-specific feature which isn't actually in the `wasm-bindgen`
-tool itself, it's just in the Rust-generated code (aka the `wasm_bindgen!`
-macro).
+like, but crucially `&mut Foo` means that it is the sole pointer to the data
+(no other `&Foo` to the same instance exists). The [`RefCell`] type in libstd
+is a way of dynamically enforcing this at runtime (as opposed to compile time
+where it usually happens). Baking in `WasmRefCell` is the same idea here,
+adding runtime checks for aliasing which are typically happening at compile
+time. This is currently a Rust-specific feature which isn't actually in the
+`wasm-bindgen` tool itself, it's just in the Rust-generated code (aka the
+`#[wasm_bindgen]` attribute).
 
 [`RefCell`]: https://doc.rust-lang.org/std/cell/struct.RefCell.html
 
@@ -619,15 +654,21 @@ object bindings describe above.
 As usual though, let's dive into an example!
 
 ```rust
-wasm_bindgen! {
-    #[wasm_module = "./bar"]
-    extern struct Bar {
-        #[wasm_bindgen(constructor)]
-        fn new(arg: i32) -> Bar;
-        fn another_function() -> i32;
-        fn get(&self) -> i32;
-        fn set(&self, val: i32);
-    }
+#[wasm_bindgen(module = "./bar")]
+extern {
+    type Bar;
+
+    #[wasm_bindgen(constructor)]
+    fn new(arg: i32) -> Bar;
+
+    #[wasm_bindgen(static = Bar)]
+    fn another_function() -> i32;
+
+    #[wasm_bindgen(method)]
+    fn get(this: &Bar) -> i32;
+
+    #[wasm_bindgen(method)]
+    fn set(this: &Bar, val: i32);
 }
 
 fn run() {
@@ -637,8 +678,28 @@ fn run() {
 }
 ```
 
-Here we're going to do the opposite of the above example and instead import our
-class and use it from Rust. First up, let's look at the JS:
+Unlike our previous imports, this one's a bit more chatty! Remember that one of
+the goals of `wasm-bindgen` is to use native Rust syntax wherever possible, so
+this is mostly intended to use the `#[wasm_bindgen]` attribute to interpret
+what's written down in Rust. Now there's a few attribute annotations here, so
+let's go through one-by-one:
+
+* `#[wasm_bindgen(module = "./bar")]` - seen before with imports this is declare
+  where all the subsequent functionality is imported form. For example the `Bar`
+  type is going to be imported from the `./bar` module.
+* `type Bar` - this is a declaration of JS class as a new type in Rust. This
+  means that a new type `Bar` is generated which is "opaque" but is represented
+  as internally containing a `JsValue`. We'll see more on this later.
+* `#[wasm_bindgen(constructor)]` - this indicates that the binding's name isn't
+  actually used in JS but rather translates to `new Bar()`. The return value of
+  this function must be a bare type, like `Bar`.
+* `#[wasm_bindgen(static = Bar)]` - this attribute indicates that the function
+  declaration is a static function accessed through the `Bar` class in JS.
+* `#[wasm_bindgen(method)]` - and finally, this attribute indicates that a
+  method call is going to happen. The first argument must be a JS struct, like
+  `Bar`, and the call in JS looks like `Bar.prototype.set.call(...)`.
+
+With all tha tin mind, let's take a look at the JS generated.
 
 ```js
 import * as wasm from './foo_wasm';
@@ -724,6 +785,14 @@ impl Bar {
         }
     }
 }
+
+impl WasmBoundary for Bar {
+    // ...
+}
+
+impl ToRefWasmBoundary for Bar {
+    // ...
+}
 ```
 
 In Rust we're seeing that a new type, `Bar`, is generated for this import of a
@@ -748,12 +817,10 @@ In the meantime though fear not! You can, if necessary, annotate some imports
 as whether they should catch an exception. For example:
 
 ```rust
-wasm_bindgen! {
-    #[wasm_module = "./bar"]
-    extern "JS" {
-        #[wasm_bindgen(catch)]
-        fn foo() -> Result<(), JsValue>;
-    }
+#[wasm_bindgen(module = "./bar")]
+extern {
+    #[wasm_bindgen(catch)]
+    fn foo() -> Result<(), JsValue>;
 }
 ```
 

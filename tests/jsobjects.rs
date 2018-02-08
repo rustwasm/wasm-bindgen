@@ -10,14 +10,15 @@ fn simple() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern "JS" {
-                    fn foo(s: &JsValue);
-                }
-                pub fn bar(s: &JsValue) {
-                    foo(s);
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo(s: &JsValue);
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar(s: &JsValue) {
+                foo(s);
             }
         "#)
         .file("test.ts", r#"
@@ -51,14 +52,15 @@ fn owned() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern "JS" {
-                    fn foo(s: JsValue);
-                }
-                pub fn bar(s: JsValue) {
-                    foo(s);
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo(s: JsValue);
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar(s: JsValue) {
+                foo(s);
             }
         "#)
         .file("test.ts", r#"
@@ -92,23 +94,23 @@ fn clone() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern "JS" {
-                    fn foo1(s: JsValue);
-                    fn foo2(s: &JsValue);
-                    fn foo3(s: JsValue);
-                    fn foo4(s: &JsValue);
-                    fn foo5(s: JsValue);
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo1(s: JsValue);
+                fn foo2(s: &JsValue);
+                fn foo3(s: JsValue);
+                fn foo4(s: &JsValue);
+                fn foo5(s: JsValue);
+            }
 
-                pub fn bar(s: JsValue) {
-                    foo1(s.clone());
-                    foo2(&s);
-                    foo3(s.clone());
-                    foo4(&s);
-                    foo5(s);
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar(s: JsValue) {
+                foo1(s.clone());
+                foo2(&s);
+                foo3(s.clone());
+                foo4(&s);
+                foo5(s);
             }
         "#)
         .file("test.ts", r#"
@@ -140,21 +142,21 @@ fn promote() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern "JS" {
-                    fn foo1(s: &JsValue);
-                    fn foo2(s: JsValue);
-                    fn foo3(s: &JsValue);
-                    fn foo4(s: JsValue);
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo1(s: &JsValue);
+                fn foo2(s: JsValue);
+                fn foo3(s: &JsValue);
+                fn foo4(s: JsValue);
+            }
 
-                pub fn bar(s: &JsValue) {
-                    foo1(s);
-                    foo2(s.clone());
-                    foo3(s);
-                    foo4(s.clone());
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar(s: &JsValue) {
+                foo1(s);
+                foo2(s.clone());
+                foo3(s);
+                foo4(s.clone());
             }
         "#)
         .file("test.ts", r#"

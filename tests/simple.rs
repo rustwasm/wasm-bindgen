@@ -10,28 +10,36 @@ fn add() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub fn add(a: u32, b: u32) -> u32 {
-                    a + b
-                }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn add(a: u32, b: u32) -> u32 {
+                a + b
+            }
 
-                pub fn add3(a: u32) -> u32 {
-                    a + 3
-                }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn add3(a: u32) -> u32 {
+                a + 3
+            }
 
-                pub fn get2(_b: bool) -> u32 {
-                    2
-                }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn get2(_b: bool) -> u32 {
+                2
+            }
 
-                pub fn return_and_take_bool(a: bool, b: bool) -> bool {
-                    a && b
-                }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn return_and_take_bool(a: bool, b: bool) -> bool {
+                a && b
+            }
 
-                pub fn raw_pointers_work(a: *mut u32, b: *const u8) -> *const u32 {
-                    unsafe {
-                        (*a) = (*b) as u32;
-                        return a
-                    }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn raw_pointers_work(a: *mut u32, b: *const u8) -> *const u32 {
+                unsafe {
+                    (*a) = (*b) as u32;
+                    return a
                 }
             }
         "#)
@@ -60,15 +68,17 @@ fn string_arguments() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub fn assert_foo_and_bar(a: &str, b: &str) {
-                    assert_eq!(a, "foo2");
-                    assert_eq!(b, "bar");
-                }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn assert_foo_and_bar(a: &str, b: &str) {
+                assert_eq!(a, "foo2");
+                assert_eq!(b, "bar");
+            }
 
-                pub fn assert_foo(a: &str) {
-                    assert_eq!(a, "foo");
-                }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn assert_foo(a: &str) {
+                assert_eq!(a, "foo");
             }
         "#)
         .file("test.ts", r#"
@@ -92,16 +102,16 @@ fn return_a_string() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub fn clone(a: &str) -> String {
-                    a.to_string()
-                }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn clone(a: &str) -> String {
+                a.to_string()
             }
 
-            wasm_bindgen! {
-                pub fn concat(a: &str, b: &str, c: i8) -> String {
-                    format!("{} {} {}", a, b, c)
-                }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn concat(a: &str, b: &str, c: i8) -> String {
+                format!("{} {} {}", a, b, c)
             }
         "#)
         .file("test.ts", r#"
@@ -128,10 +138,13 @@ fn exceptions() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub fn foo(_a: u32) {}
-                pub fn bar(_a: &str) {}
-            }
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn foo(_a: u32) {}
+
+            #[no_mangle]
+            #[wasm_bindgen]
+            pub extern fn bar(_a: &str) {}
         "#)
         .file("test.js", r#"
             import * as assert from "assert";

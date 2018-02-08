@@ -10,19 +10,25 @@ fn simple() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                extern struct Math {
-                    fn random() -> f64;
-                    fn log(a: f64) -> f64;
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn get_random() -> f64 {
+                Math::random()
+            }
 
-                pub fn get_random() -> f64 {
-                    Math::random()
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn do_log(a: f64) -> f64 {
+                Math::log(a)
+            }
 
-                pub fn do_log(a: f64) -> f64 {
-                    Math::log(a)
-                }
+            #[wasm_bindgen]
+            extern {
+                type Math;
+                #[wasm_bindgen(static = Math)]
+                fn random() -> f64;
+                #[wasm_bindgen(static = Math)]
+                fn log(a: f64) -> f64;
             }
         "#)
         .file("test.ts", r#"
@@ -47,15 +53,17 @@ fn import_class() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern struct Foo {
-                    fn bar();
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                type Foo;
+                #[wasm_bindgen(static = Foo)]
+                fn bar();
+            }
 
-                pub fn bar() {
-                    Foo::bar();
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar() {
+                Foo::bar();
             }
         "#)
         .file("test.ts", r#"
@@ -88,21 +96,26 @@ fn construct() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern struct Foo {
-                    fn create() -> Foo;
-                    fn get_internal_string(&self) -> String;
-                    fn append_to_internal_string(&self, s: &str);
-                    fn assert_internal_string(&self, s: &str);
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                type Foo;
+                #[wasm_bindgen(static = Foo)]
+                fn create() -> Foo;
+                #[wasm_bindgen(method)]
+                fn get_internal_string(this: &Foo) -> String;
+                #[wasm_bindgen(method)]
+                fn append_to_internal_string(this: &Foo, s: &str);
+                #[wasm_bindgen(method)]
+                fn assert_internal_string(this: &Foo, s: &str);
+            }
 
-                pub fn run() {
-                    let f = Foo::create();
-                    assert_eq!(f.get_internal_string(), "this");
-                    f.append_to_internal_string(" foo");
-                    f.assert_internal_string("this foo");
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn run() {
+                let f = Foo::create();
+                assert_eq!(f.get_internal_string(), "this");
+                f.append_to_internal_string(" foo");
+                f.assert_internal_string("this foo");
             }
         "#)
         .file("test.ts", r#"
@@ -152,18 +165,20 @@ fn new_constructors() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                #[wasm_module = "./test"]
-                extern struct Foo {
-                    #[wasm_bindgen(constructor)]
-                    fn new(arg: i32) -> Foo;
-                    fn get(&self) -> i32;
-                }
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                type Foo;
+                #[wasm_bindgen(constructor)]
+                fn new(arg: i32) -> Foo;
+                #[wasm_bindgen(method)]
+                fn get(this: &Foo) -> i32;
+            }
 
-                pub fn run() {
-                    let f = Foo::new(1);
-                    assert_eq!(f.get(), 2);
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn run() {
+                let f = Foo::new(1);
+                assert_eq!(f.get(), 2);
             }
         "#)
         .file("test.ts", r#"

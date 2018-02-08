@@ -1,8 +1,9 @@
 //! Runtime support for the `wasm-bindgen` tool
 //!
 //! This crate contains the runtime support necessary for `wasm-bindgen` the
-//! macro and tool. Crates pull in the `wasm_bindgen!` macro through this crate
-//! and this crate also provides JS bindings through the `JsValue` interface.
+//! attribute and tool. Crates pull in the `#[wasm_bindgen]` attribute through
+//! this crate and this crate also provides JS bindings through the `JsValue`
+//! interface.
 
 #![feature(use_extern_macros)]
 

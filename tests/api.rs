@@ -10,90 +10,118 @@ fn works() {
 
             use wasm_bindgen::prelude::*;
 
-            wasm_bindgen! {
-                pub fn foo() -> JsValue {
-                    JsValue::from("foo")
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn foo() -> JsValue {
+                JsValue::from("foo")
+            }
 
-                pub fn bar(s: &str) -> JsValue {
-                    JsValue::from(s)
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar(s: &str) -> JsValue {
+                JsValue::from(s)
+            }
 
-                pub fn baz() -> JsValue {
-                    JsValue::from(1.0)
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn baz() -> JsValue {
+                JsValue::from(1.0)
+            }
 
-                pub fn baz2(a: &JsValue, b: &JsValue) {
-                    assert_eq!(a.as_f64(), Some(2.0));
-                    assert_eq!(b.as_f64(), None);
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn baz2(a: &JsValue, b: &JsValue) {
+                assert_eq!(a.as_f64(), Some(2.0));
+                assert_eq!(b.as_f64(), None);
+            }
 
-                pub fn js_null() -> JsValue {
-                    JsValue::null()
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn js_null() -> JsValue {
+                JsValue::null()
+            }
 
-                pub fn js_undefined() -> JsValue {
-                    JsValue::undefined()
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn js_undefined() -> JsValue {
+                JsValue::undefined()
+            }
 
-                pub fn test_is_null_undefined(
-                    a: &JsValue,
-                    b: &JsValue,
-                    c: &JsValue,
-                ) {
-                    assert!(a.is_null());
-                    assert!(!a.is_undefined());
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn test_is_null_undefined(
+                a: &JsValue,
+                b: &JsValue,
+                c: &JsValue,
+            ) {
+                assert!(a.is_null());
+                assert!(!a.is_undefined());
 
-                    assert!(!b.is_null());
-                    assert!(b.is_undefined());
+                assert!(!b.is_null());
+                assert!(b.is_undefined());
 
-                    assert!(!c.is_null());
-                    assert!(!c.is_undefined());
-                }
+                assert!(!c.is_null());
+                assert!(!c.is_undefined());
+            }
 
-                pub fn get_true() -> JsValue {
-                    JsValue::from(true)
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn get_true() -> JsValue {
+                JsValue::from(true)
+            }
 
-                pub fn get_false() -> JsValue {
-                    JsValue::from(false)
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn get_false() -> JsValue {
+                JsValue::from(false)
+            }
 
-                pub fn test_bool(
-                    a: &JsValue,
-                    b: &JsValue,
-                    c: &JsValue,
-                ) {
-                    assert_eq!(a.as_bool(), Some(true));
-                    assert_eq!(b.as_bool(), Some(false));
-                    assert_eq!(c.as_bool(), None);
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn test_bool(
+                a: &JsValue,
+                b: &JsValue,
+                c: &JsValue,
+            ) {
+                assert_eq!(a.as_bool(), Some(true));
+                assert_eq!(b.as_bool(), Some(false));
+                assert_eq!(c.as_bool(), None);
+            }
 
-                pub fn mk_symbol() -> JsValue {
-                    let a = JsValue::symbol(None);
-                    assert!(a.is_symbol());
-                    return a
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn mk_symbol() -> JsValue {
+                let a = JsValue::symbol(None);
+                assert!(a.is_symbol());
+                return a
+            }
 
-                pub fn mk_symbol2(s: &str) -> JsValue {
-                    let a = JsValue::symbol(Some(s));
-                    assert!(a.is_symbol());
-                    return a
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn mk_symbol2(s: &str) -> JsValue {
+                let a = JsValue::symbol(Some(s));
+                assert!(a.is_symbol());
+                return a
+            }
 
-                pub fn assert_symbols(a: &JsValue, b: &JsValue) {
-                    assert!(a.is_symbol());
-                    assert!(!b.is_symbol());
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn assert_symbols(a: &JsValue, b: &JsValue) {
+                assert!(a.is_symbol());
+                assert!(!b.is_symbol());
+            }
 
-                pub fn acquire_string(a: &JsValue, b: &JsValue) {
-                    assert_eq!(a.as_string().unwrap(), "foo");
-                    assert_eq!(b.as_string(), None);
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn acquire_string(a: &JsValue, b: &JsValue) {
+                assert_eq!(a.as_string().unwrap(), "foo");
+                assert_eq!(b.as_string(), None);
+            }
 
-                pub fn acquire_string2(a: &JsValue) -> String {
-                    a.as_string().unwrap_or("wrong".to_string())
-                }
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn acquire_string2(a: &JsValue) -> String {
+                a.as_string().unwrap_or("wrong".to_string())
             }
         "#)
         .file("test.ts", r#"
