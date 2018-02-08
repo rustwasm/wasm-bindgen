@@ -57,9 +57,9 @@ pub extern fn only_integers_with_wasm_bindgen(a: i32) -> u32 {
 
 Additionally the design here with minimal intervention in Rust should allow us
 to easily take advantage of the upcoming [host bindings][host] proposal. Ideally
-you'd simply upgrade `wasm-bindgen`-the-crate as well as you're toolchain and
-you're immediately getting raw access to host bindigns! (this is still a bit of
-aways off though...)
+you'd simply upgrade `wasm-bindgen`-the-crate as well as your toolchain and
+you're immediately getting raw access to host bindings! (this is still a bit of
+a ways off though...)
 
 [host]: https://github.com/WebAssembly/host-bindings
 
@@ -139,7 +139,7 @@ Here we can see a few notable points of action:
 * Our exported function `foo`, takes an arbitrary argument, `arg0`, which is
   converted to an index with the `addBorrowedObject` object function. The index
   is then passed to wasm so wasm can operate with it.
-* Finally, we have a `finally` which frees the stack slow as it's no longer in
+* Finally, we have a `finally` which frees the stack slot as it's no longer
   used, issuing a `pop` for what was pushed at the start of the function.
 
 It's also helpful to dig into the Rust side of things to see what's going on
@@ -233,7 +233,7 @@ export function __wbindgen_object_drop_ref(idx) {
 Unlike before we're now calling `addHeapObject` on the argument to `foo` rather
 than `addBorrowedObject`. This function will use `slab` and `slab_next` as a
 slab allocator to acquire a slot to store the object, placing a structure there
-once its found.
+once it's found.
 
 Note here that a reference count is used in addition to storing the object.
 That's so we can create multiple references to the JS object in Rust without
@@ -699,7 +699,7 @@ let's go through one-by-one:
   method call is going to happen. The first argument must be a JS struct, like
   `Bar`, and the call in JS looks like `Bar.prototype.set.call(...)`.
 
-With all tha tin mind, let's take a look at the JS generated.
+With all that in mind, let's take a look at the JS generated.
 
 ```js
 import * as wasm from './foo_wasm';
@@ -830,7 +830,7 @@ type where the `T` of the result is the otherwise successful result of the
 function, and the `E` *must* be `JsValue`.
 
 Under the hood this generates shims that do a bunch of translation, but it
-suffices to say that a call in wasm to `foo` should always return.
+suffices to say that a call in wasm to `foo` should always return
 appropriately.
 
 ## Wrapping up
