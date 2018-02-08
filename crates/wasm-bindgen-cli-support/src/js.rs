@@ -249,7 +249,7 @@ impl<'a> Context<'a> {
             ts_dst.push_str("free(): void;\n");
 
             dst.push_str(&exports.contents);
-            ts_dst.push_str(&exports.contents);
+            ts_dst.push_str(&exports.typescript);
             dst.push_str("}\n");
             ts_dst.push_str("}\n");
 
