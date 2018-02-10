@@ -134,31 +134,20 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
         None => return ret,
     };
 
-    'outer:
-    for i in (0..data.entries().len()).rev() {
-        {
-            let mut value = bytes_to_u32(data.entries()[i].value());
-            loop {
-                match value.iter().position(|i| i.0 == (b'w' as u32)) {
-                    Some(i) => value = &value[i + 1..],
-                    None => continue 'outer,
-                }
-                match value.iter().position(|i| i.0 == (b'b' as u32)) {
-                    Some(i) => value = &value[i + 1..],
-                    None => continue 'outer,
-                }
-                match value.iter().position(|i| i.0 == (b'g' as u32)) {
-                    Some(i) => value = &value[i + 1..],
-                    None => continue 'outer,
-                }
-                match value.iter().position(|i| i.0 == (b':' as u32)) {
-                    Some(i) => value = &value[i + 1..],
-                    None => continue 'outer,
-                }
-                break
+    for entry in data.entries() {
+        let mut value = bytes_to_u32(entry.value());
+        loop {
+            match value.iter().position(|i| i.0 == 0x30d97887) {
+                Some(i) => value = &value[i + 1..],
+                None => break,
             }
-            // TODO: shouldn't take the rest of the value
-            let json = value.iter()
+            if value.get(0).map(|c| c.0) != Some(0xd4182f61) {
+                continue
+            }
+            let cnt = value[1].0 as usize;
+            let (a, b) = value[2..].split_at(cnt);
+            value = b;
+            let json = a.iter()
                 .map(|i| char::from_u32(i.0).unwrap())
                 .collect::<String>();
             let p = match serde_json::from_str(&json) {
@@ -169,7 +158,6 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
             };
             ret.push(p);
         }
-        data.entries_mut().remove(i);
     }
     return ret
 }

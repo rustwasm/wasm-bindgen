@@ -277,28 +277,38 @@ impl Program {
     }
 
     pub fn wbg_literal(&self, dst: &mut Tokens) -> usize {
-        let mut a = LiteralBuilder {
-            dst,
-            cnt: 0,
+        let mut tmp = Tokens::new();
+        let cnt = {
+            let mut a = LiteralBuilder {
+                dst: &mut tmp,
+                cnt: 0,
+            };
+            a.fields(&[
+                ("exports", &|a| a.list(&self.exports, Export::wbg_literal)),
+                ("imports", &|a| a.list(&self.imports, Import::wbg_literal)),
+                ("custom_type_names", &|a| {
+                    let names = self.exports.iter()
+                        .filter_map(|e| e.class)
+                        .collect::<BTreeSet<_>>();
+                    a.list(&names, |s, a| {
+                        let val = shared::name_to_descriptor(s.as_ref());
+                        a.fields(&[
+                            ("descriptor", &|a| a.char(val)),
+                            ("name", &|a| a.str(s.as_ref()))
+                        ]);
+                    })
+                }),
+            ]);
+            a.cnt
         };
-        a.append("wbg:");
-        a.fields(&[
-            ("exports", &|a| a.list(&self.exports, Export::wbg_literal)),
-            ("imports", &|a| a.list(&self.imports, Import::wbg_literal)),
-            ("custom_type_names", &|a| {
-                let names = self.exports.iter()
-                    .filter_map(|e| e.class)
-                    .collect::<BTreeSet<_>>();
-                a.list(&names, |s, a| {
-                    let val = shared::name_to_descriptor(s.as_ref());
-                    a.fields(&[
-                        ("descriptor", &|a| a.char(val)),
-                        ("name", &|a| a.str(s.as_ref()))
-                    ]);
-                })
-            }),
-        ]);
-        return a.cnt
+        let cnt = cnt as u32;
+        (quote! {
+            0x30d97887,
+            0xd4182f61,
+            #cnt,
+        }).to_tokens(dst);
+        tmp.to_tokens(dst);
+        (cnt as usize) + 3
     }
 }
 
