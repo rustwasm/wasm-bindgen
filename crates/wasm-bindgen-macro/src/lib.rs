@@ -249,6 +249,7 @@ fn bindgen_export(export: &ast::Export, into: &mut Tokens) {
         #[export_name = #export_name]
         #[allow(non_snake_case)]
         pub extern fn #generated_name(#(#args),*) #ret_ty {
+            ::wasm_bindgen::__rt::link_this_library();
             #(#arg_conversions)*
             let #ret = #receiver(#(#converted_arguments),*);
             #convert_ret
@@ -476,9 +477,10 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
         quote!()
     };
 
-    let invocation = quote! {
+    let invocation = my_quote! {
         #(#attrs)*
         #vis extern #fn_token #name(#me #(#arguments),*) #ret {
+            ::wasm_bindgen::__rt::link_this_library();
             extern {
                 fn #import_name(#(#abi_arguments),*) -> #abi_ret;
             }

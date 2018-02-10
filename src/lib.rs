@@ -435,4 +435,6 @@ pub mod __rt {
     pub unsafe extern fn __wbindgen_boxed_str_free(ptr: *mut String) {
         drop(Box::from_raw(ptr));
     }
+
+    pub fn link_this_library() {}
 }
