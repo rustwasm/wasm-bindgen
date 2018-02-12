@@ -57,10 +57,10 @@ impl Output {
                         continue
                     }
                     Internal::Table(_) => {
-                        panic!("wasm exports a table which isn't supported yet");
+                        continue
                     }
                     Internal::Global(_) => {
-                        panic!("wasm exports globals which aren't supported yet");
+                        continue
                     }
                 };
 
@@ -145,10 +145,10 @@ impl Output {
                         continue
                     }
                     Internal::Table(_) => {
-                        panic!("wasm exports a table which isn't supported yet");
+                        continue
                     }
                     Internal::Global(_) => {
-                        panic!("wasm exports globals which aren't supported yet");
+                        continue
                     }
                 };
 
