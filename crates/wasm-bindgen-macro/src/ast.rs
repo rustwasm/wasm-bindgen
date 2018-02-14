@@ -528,6 +528,16 @@ impl Import {
             }
             ImportKind::Normal => {}
         }
+
+        let mut getter = None;
+        let mut setter = None;
+
+        if self.function.opts.getter() {
+            getter = Some(self.infer_getter_property());
+        }
+        if self.function.opts.setter() {
+            setter = Some(self.infer_setter_property());
+        }
         a.fields(&[
             ("module", &|a| {
                 match self.module {
@@ -539,6 +549,18 @@ impl Import {
             ("method", &|a| a.bool(method)),
             ("js_new", &|a| a.bool(js_new)),
             ("statik", &|a| a.bool(statik)),
+            ("getter", &|a| {
+                match getter {
+                    Some(ref s) => a.str(s),
+                    None => a.append("null"),
+                }
+            }),
+            ("setter", &|a| {
+                match setter {
+                    Some(ref s) => a.str(s),
+                    None => a.append("null"),
+                }
+            }),
             ("function", &|a| self.function.wbg_literal(a)),
             ("class", &|a| {
                 match class_name {
@@ -547,6 +569,16 @@ impl Import {
                 }
             }),
         ]);
+    }
+
+    fn infer_getter_property(&self) -> String {
+        self.function.name.as_ref().to_string()
+    }
+
+    fn infer_setter_property(&self) -> String {
+        let name = self.function.name.as_ref();
+        assert!(name.starts_with("set_"), "setters must start with `set_`");
+        name[4..].to_string()
     }
 }
 
@@ -702,6 +734,26 @@ impl BindgenAttrs {
             })
             .next()
     }
+
+    fn getter(&self) -> bool {
+        self.attrs.iter()
+            .any(|a| {
+                match *a {
+                    BindgenAttr::Getter => true,
+                    _ => false,
+                }
+            })
+    }
+
+    fn setter(&self) -> bool {
+        self.attrs.iter()
+            .any(|a| {
+                match *a {
+                    BindgenAttr::Setter => true,
+                    _ => false,
+                }
+            })
+    }
 }
 
 impl syn::synom::Synom for BindgenAttrs {
@@ -725,6 +777,8 @@ enum BindgenAttr {
     Method,
     Static(syn::Type),
     Module(String),
+    Getter,
+    Setter,
 }
 
 impl syn::synom::Synom for BindgenAttr {
@@ -734,6 +788,10 @@ impl syn::synom::Synom for BindgenAttr {
         call!(term, "constructor") => { |_| BindgenAttr::Constructor }
         |
         call!(term, "method") => { |_| BindgenAttr::Method }
+        |
+        call!(term, "getter") => { |_| BindgenAttr::Getter }
+        |
+        call!(term, "setter") => { |_| BindgenAttr::Setter }
         |
         do_parse!(
             call!(term, "static") >>

@@ -19,6 +19,8 @@ pub struct Import {
     pub method: bool,
     pub js_new: bool,
     pub statik: bool,
+    pub getter: Option<String>,
+    pub setter: Option<String>,
     pub class: Option<String>,
     pub function: Function,
 }

@@ -957,23 +957,39 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let invoc_args = invoc_args.join(", ");
         let function_name = &import.function.name;
         let invoc = match import.class {
-            Some(ref class) if import.method => {
-                self.cx.globals.push_str(&format!("
-                    const {}_target = {}.prototype.{};
-                ", name, class, function_name));
-                format!("{}_target.call({})", name, invoc_args)
-            }
             Some(ref class) if import.js_new => {
-                format!("new {}({})", class, invoc_args)
+                format!("new {}", class)
+            }
+            Some(ref class) if import.method => {
+                let target = if let Some(ref g) = import.getter {
+                    format!(
+                        "Object.getOwnPropertyDescriptor({}.prototype, '{}').get;",
+                        class,
+                        g,
+                    )
+                } else if let Some(ref s) = import.setter {
+                    format!(
+                        "Object.getOwnPropertyDescriptor({}.prototype, '{}').set;",
+                        class,
+                        s,
+                    )
+                } else {
+                    format!("{}.prototype.{}", class, function_name)
+                };
+                self.cx.globals.push_str(&format!("
+                    const {}_target = {};
+                ", name, target));
+                format!("{}_target.call", name)
             }
             Some(ref class) => {
                 self.cx.globals.push_str(&format!("
                     const {}_target = {}.{};
                 ", name, class, function_name));
-                format!("{}_target({})", name, invoc_args)
+                format!("{}_target", name)
             }
-            None => format!("{}({})", function_name, invoc_args),
+            None => function_name.to_string(),
         };
+        let invoc = format!("{}({})", invoc, invoc_args);
         let invoc = match import.function.ret {
             Some(shared::TYPE_NUMBER) => format!("return {};", invoc),
             Some(shared::TYPE_BOOLEAN) => format!("return {} ? 1 : 0;", invoc),

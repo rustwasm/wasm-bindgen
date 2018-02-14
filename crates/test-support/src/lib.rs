@@ -95,7 +95,8 @@ pub fn project() -> Project {
                         "strictFunctionTypes": true,
                         "strictNullChecks": true,
                         "alwaysStrict": true,
-                        "strict": true
+                        "strict": true,
+                        "target": "es5"
 					}
 				}
 			"#.to_string()),

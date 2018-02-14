@@ -669,12 +669,20 @@ extern {
 
     #[wasm_bindgen(method)]
     fn set(this: &Bar, val: i32);
+
+    #[wasm_bindgen(method, getter)]
+    fn property(this: &Bar) -> i32;
+
+    #[wasm_bindgen(method, setter)]
+    fn set_property(this: &Bar, val: i32);
 }
 
 fn run() {
     let bar = Bar::new(Bar::another_function());
     let x = bar.get();
     bar.set(x + 3);
+
+    bar.set_property(bar.property() + 6);
 }
 ```
 
@@ -725,6 +733,16 @@ export function __wbg_s_Bar_get(ptr) {
 const set_shim = Bar.prototype.set;
 export function __wbg_s_Bar_set(ptr, arg0) {
   set_shim.call(getObject(ptr), arg0)
+}
+
+const property_shim = Object.getOwnPropertyDescriptor(Bar.prototype, 'property').get;
+export function __wbg_s_Bar_property(ptr) {
+  return property_shim.call(getObject(ptr));
+}
+
+const set_property_shim = Object.getOwnPropertyDescriptor(Bar.prototype, 'property').set;
+export function __wbg_s_Bar_set_property(ptr, arg0) {
+  set_property_shim.call(getObject(ptr), arg0)
 }
 ```
 
@@ -785,6 +803,27 @@ impl Bar {
         unsafe {
             let ptr = self.obj.__get_idx();
             __wbg_s_Bar_set(ptr, val);
+        }
+    }
+
+    fn property(&self) -> i32 {
+        extern {
+            fn __wbg_s_Bar_property(ptr: u32) -> i32;
+        }
+        unsafe {
+            let ptr = self.obj.__get_idx();
+            let ret = __wbg_s_Bar_property(ptr);
+            return ret
+        }
+    }
+
+    fn set_property(&self, val: i32) {
+        extern {
+            fn __wbg_s_Bar_set_property(ptr: u32, val: i32);
+        }
+        unsafe {
+            let ptr = self.obj.__get_idx();
+            __wbg_s_Bar_set_property(ptr, val);
         }
     }
 }

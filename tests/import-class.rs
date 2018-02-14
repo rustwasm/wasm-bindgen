@@ -278,3 +278,60 @@ fn switch_methods() {
         "#)
         .test();
 }
+
+#[test]
+fn properties() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                type Foo;
+
+                #[wasm_bindgen(constructor)]
+                fn new() -> Foo;
+
+                #[wasm_bindgen(getter, method)]
+                fn a(this: &Foo) -> i32;
+
+                #[wasm_bindgen(setter, method)]
+                fn set_a(this: &Foo, a: i32);
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn run() {
+                let a = Foo::new();
+                assert_eq!(a.a(), 1);
+                a.set_a(2);
+                assert_eq!(a.a(), 2);
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export class Foo {
+                constructor(private num: number) {
+                    this.num = 1;
+                }
+
+                get a() {
+                    return this.num;
+                }
+
+                set a(val) {
+                    this.num = val;
+                }
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}
