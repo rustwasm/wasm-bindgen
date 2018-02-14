@@ -712,16 +712,19 @@ export function __wbg_s_Bar_new() {
   return addHeapObject(new Bar());
 }
 
+const another_function_shim = Bar.another_function;
 export function __wbg_s_Bar_another_function() {
-  return Bar.another_function();
+  return another_function_shim();
 }
 
+const get_shim = Bar.prototype.get;
 export function __wbg_s_Bar_get(ptr) {
-  return Bar.prototype.get.call(getObject(ptr));
+  return shim.call(getObject(ptr));
 }
 
+const set_shim = Bar.prototype.set;
 export function __wbg_s_Bar_set(ptr, arg0) {
-  Bar.prototype.set.call(getObject(ptr), arg0)
+  set_shim.call(getObject(ptr), arg0)
 }
 ```
 
