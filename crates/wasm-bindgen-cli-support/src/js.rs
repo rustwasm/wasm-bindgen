@@ -955,18 +955,24 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
 
         let invoc_args = invoc_args.join(", ");
-        let name = &import.function.name;
+        let function_name = &import.function.name;
         let invoc = match import.class {
             Some(ref class) if import.method => {
-                format!("{}.prototype.{}.call({})", class, name, invoc_args)
+                self.cx.globals.push_str(&format!("
+                    const {}_target = {}.prototype.{};
+                ", name, class, function_name));
+                format!("{}_target.call({})", name, invoc_args)
             }
             Some(ref class) if import.js_new => {
                 format!("new {}({})", class, invoc_args)
             }
             Some(ref class) => {
-                format!("{}.{}({})", class, name, invoc_args)
+                self.cx.globals.push_str(&format!("
+                    const {}_target = {}.{};
+                ", name, class, function_name));
+                format!("{}_target({})", name, invoc_args)
             }
-            None => format!("{}({})", name, invoc_args),
+            None => format!("{}({})", function_name, invoc_args),
         };
         let invoc = match import.function.ret {
             Some(shared::TYPE_NUMBER) => format!("return {};", invoc),

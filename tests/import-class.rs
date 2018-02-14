@@ -199,3 +199,82 @@ fn new_constructors() {
         "#)
         .test();
 }
+
+#[test]
+fn switch_methods() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                type Foo;
+
+                #[wasm_bindgen(constructor)]
+                fn new() -> Foo;
+
+                #[wasm_bindgen(static = Foo)]
+                fn a();
+
+                #[wasm_bindgen(method)]
+                fn b(this: &Foo);
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn a() {
+                Foo::a();
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn b() {
+                Foo::new().b();
+            }
+        "#)
+        .file("test.ts", r#"
+            import { a, b } from "./out";
+            import * as assert from "assert";
+
+            let called = false;
+
+            export class Foo {
+                constructor() {
+                }
+
+                static a() {
+                    called = true;
+                }
+
+                b() {
+                    called = true;
+                }
+            }
+
+            export function test() {
+                assert.strictEqual(called, false);
+                a();
+                assert.strictEqual(called, true);
+                called = false;
+                Foo.a = function() {};
+                assert.strictEqual(called, false);
+                a();
+                assert.strictEqual(called, true);
+
+                called = false;
+                assert.strictEqual(called, false);
+                b();
+                assert.strictEqual(called, true);
+                called = false;
+                Foo.prototype.b = function() {};
+                assert.strictEqual(called, false);
+                b();
+                assert.strictEqual(called, true);
+            }
+        "#)
+        .test();
+}
