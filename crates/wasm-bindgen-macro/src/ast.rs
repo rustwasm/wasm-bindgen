@@ -289,6 +289,7 @@ impl Program {
                 ("custom_type_names", &|a| {
                     let names = self.exports.iter()
                         .filter_map(|e| e.class)
+                        .chain(self.structs.iter().map(|s| s.name))
                         .collect::<BTreeSet<_>>();
                     a.list(&names, |s, a| {
                         let val = shared::name_to_descriptor(s.as_ref());

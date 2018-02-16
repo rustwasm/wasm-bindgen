@@ -35,13 +35,11 @@ pub struct SubContext<'a, 'b: 'a> {
 impl<'a> Context<'a> {
     pub fn add_custom_type_names(&mut self, program: &shared::Program) {
         for custom in program.custom_type_names.iter() {
-            assert!(self.custom_type_names.insert(custom.descriptor,
-                                                  custom.name.clone()).is_none());
-            let val = custom.descriptor as u32;
-            assert!(val & 1 == 0);
-            let descriptor = char::from_u32(val | 1).unwrap();
-            assert!(self.custom_type_names.insert(descriptor,
-                                                  custom.name.clone()).is_none());
+            let prev = self.custom_type_names.insert(custom.descriptor,
+                                                     custom.name.clone());
+            if let Some(prev) = prev {
+                assert_eq!(prev, custom.name);
+            }
         }
     }
 
@@ -636,6 +634,12 @@ impl<'a> Context<'a> {
             i.module() == "env" && i.field() == name
         })
     }
+
+    fn custom_type_name(&self, c: char) -> &str {
+        let c = (c as u32) & !shared::TYPE_CUSTOM_REF_FLAG;
+        let c = char::from_u32(c).unwrap();
+        &self.custom_type_names[&c]
+    }
 }
 
 impl<'a, 'b> SubContext<'a, 'b> {
@@ -772,7 +776,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     pass(&format!("idx{}", i));
                 }
                 custom if (custom as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => {
-                    let s = self.cx.custom_type_names[&custom].clone();
+                    let s = self.cx.custom_type_name(custom).to_string();
                     dst_ts.push_str(&format!(": {}", s));
                     if self.cx.config.debug {
                         self.cx.expose_assert_class();
@@ -783,7 +787,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     pass(&format!("{}.ptr", name));
                 }
                 custom => {
-                    let s = self.cx.custom_type_names[&custom].clone();
+                    let s = self.cx.custom_type_name(custom).to_string();
                     dst_ts.push_str(&format!(": {}", s));
                     if self.cx.config.debug {
                         self.cx.expose_assert_class();
@@ -836,8 +840,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(shared::TYPE_JS_REF) |
             Some(shared::TYPE_BORROWED_STR) => panic!(),
             Some(t) if (t as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => panic!(),
-            Some(ref custom) => {
-                let name = &self.cx.custom_type_names[custom];
+            Some(custom) => {
+                let name = self.cx.custom_type_name(custom);
                 dst_ts.push_str(": ");
                 dst_ts.push_str(name);
                 if self.cx.config.debug {

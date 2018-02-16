@@ -224,3 +224,47 @@ fn pass_one_to_another() {
         "#)
         .test();
 }
+
+#[test]
+fn issue_27() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub struct Context {}
+
+            #[wasm_bindgen]
+            impl Context {
+                pub fn parse(&self, expr: &str) -> Expr {
+                    panic!()
+                }
+                pub fn eval(&self, expr: &Expr) -> f64 {
+                    panic!()
+                }
+                pub fn set(&mut self, var: &str, val: f64) {
+                    panic!()
+                }
+            }
+
+            #[wasm_bindgen]
+            pub struct Expr {}
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn context() -> Context {
+                Context {}
+            }
+        "#)
+        .file("test.ts", r#"
+            import { context } from "./out";
+
+            export function test() {
+                context();
+            }
+        "#)
+        .test();
+}
