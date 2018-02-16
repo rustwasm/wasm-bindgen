@@ -52,7 +52,7 @@ impl<'a> Context<'a> {
                 if !self.wasm_import_needed(name) {
                     return
                 }
-                let global = format!("export const {} = {};", name, f(self));
+                let global = format!("export const {} = {};\n", name, f(self));
                 self.globals.push_str(&global);
             };
 
