@@ -144,29 +144,40 @@ fn bindgen_export(export: &ast::Export, into: &mut Tokens) {
         let i = i + offset;
         let ident = syn::Ident::from(format!("arg{}", i));
         match *ty {
-            ast::Type::BorrowedStr => {
+            ast::Type::Vector(ref ty, owned) => {
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
                 let len = syn::Ident::from(format!("arg{}_len", i));
-                args.push(my_quote! { #ptr: *const u8 });
+                let abi_ty = ty.abi_element();
+                args.push(my_quote! { #ptr: *const #abi_ty });
                 args.push(my_quote! { #len: usize });
-                arg_conversions.push(my_quote! {
-                    let #ident = unsafe {
-                        let slice = ::std::slice::from_raw_parts(#ptr, #len);
-                        ::std::str::from_utf8_unchecked(slice)
-                    };
-                });
-            }
-            ast::Type::String => {
-                let ptr = syn::Ident::from(format!("arg{}_ptr", i));
-                let len = syn::Ident::from(format!("arg{}_len", i));
-                args.push(my_quote! { #ptr: *mut u8 });
-                args.push(my_quote! { #len: usize });
-                arg_conversions.push(my_quote! {
-                    let #ident = unsafe {
-                        let vec = ::std::vec::Vec::from_raw_parts(#ptr, #len, #len);
-                        ::std::string::String::from_utf8_unchecked(vec)
-                    };
-                });
+                if owned {
+                    arg_conversions.push(my_quote! {
+                        let #ident = unsafe {
+                            ::std::vec::Vec::from_raw_parts(#ptr, #len, #len)
+                        };
+                    });
+                } else {
+                    arg_conversions.push(my_quote! {
+                        let #ident = unsafe {
+                            ::std::slice::from_raw_parts(#ptr, #len)
+                        };
+                    });
+                }
+                if let ast::VectorType::String = *ty {
+                    if owned {
+                        arg_conversions.push(my_quote! {
+                            let #ident = unsafe {
+                                ::std::string::String::from_utf8_unchecked(#ident)
+                            };
+                        });
+                    } else {
+                        arg_conversions.push(my_quote! {
+                            let #ident = unsafe {
+                                ::std::str::from_utf8_unchecked(#ident)
+                            };
+                        });
+                    }
+                }
             }
             ast::Type::ByValue(ref t) => {
                 args.push(my_quote! {
@@ -209,8 +220,8 @@ fn bindgen_export(export: &ast::Export, into: &mut Tokens) {
     let ret_ty;
     let convert_ret;
     match export.function.ret {
-        Some(ast::Type::String) => {
-            ret_ty = my_quote! { -> *mut String };
+        Some(ast::Type::Vector(ref ty, true)) => {
+            ret_ty = my_quote! { -> *mut #ty };
             convert_ret = my_quote! { Box::into_raw(Box::new(#ret)) };
         }
         Some(ast::Type::ByValue(ref t)) => {
@@ -221,7 +232,7 @@ fn bindgen_export(export: &ast::Export, into: &mut Tokens) {
                 <#t as ::wasm_bindgen::convert::WasmBoundary>::into_js(#ret)
             };
         }
-        Some(ast::Type::BorrowedStr) |
+        Some(ast::Type::Vector(_, false)) |
         Some(ast::Type::ByMutRef(_)) |
         Some(ast::Type::ByRef(_)) => {
             panic!("can't return a borrowed ref");
@@ -344,17 +355,21 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
 
     for (i, (ty, name)) in import.function.arguments.iter().zip(names).enumerate() {
         match *ty {
-            ast::Type::BorrowedStr => {
+            ast::Type::Vector(ref ty, owned) => {
                 let ptr = syn::Ident::from(format!("{}_ptr", name));
                 let len = syn::Ident::from(format!("{}_len", name));
                 abi_argument_names.push(ptr);
                 abi_argument_names.push(len);
-                abi_arguments.push(my_quote! { #ptr: *const u8 });
+                let abi_ty = ty.abi_element();
+                abi_arguments.push(my_quote! { #ptr: *const #abi_ty });
                 abi_arguments.push(my_quote! { #len: usize });
                 arg_conversions.push(my_quote! {
                     let #ptr = #name.as_ptr();
                     let #len = #name.len();
                 });
+                if owned {
+                    arg_conversions.push(my_quote! { ::std::mem::forget(#name); });
+                }
             }
             ast::Type::ByValue(ref t) => {
                 abi_argument_names.push(name);
@@ -389,20 +404,6 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
                     });
                 }
             }
-            // TODO: need to test this
-            ast::Type::String => {
-                let ptr = syn::Ident::from(format!("{}_ptr", name));
-                let len = syn::Ident::from(format!("{}_len", name));
-                abi_argument_names.push(ptr);
-                abi_argument_names.push(len);
-                abi_arguments.push(my_quote! { #ptr: *const u8 });
-                abi_arguments.push(my_quote! { #len: usize });
-                arg_conversions.push(my_quote! {
-                    let #ptr = #name.as_ptr();
-                    let #len = #name.len();
-                    ::std::mem::forget(#name);
-                });
-            }
         }
     }
     let abi_ret;
@@ -417,25 +418,31 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
             };
         }
 
-        // TODO: add a test for this
-        Some(ast::Type::String) => {
-            let name = syn::Ident::from("__ret_strlen");
-            let name_ptr = syn::Ident::from("__ret_strlen_ptr");
+        Some(ast::Type::Vector(ref ty, true)) => {
+            let name = syn::Ident::from("__ret_len");
+            let name_ptr = syn::Ident::from("__ret_len_ptr");
             abi_argument_names.push(name_ptr);
             abi_arguments.push(my_quote! { #name_ptr: *mut usize });
             arg_conversions.push(my_quote! {
                 let mut #name = 0;
                 let mut #name_ptr = &mut #name as *mut usize;
             });
-            abi_ret = my_quote! { *mut u8 };
-            convert_ret = my_quote! {
-                String::from_utf8_unchecked(
+            let abi_ty = ty.abi_element();
+            abi_ret = my_quote! { *mut #abi_ty };
+            if let ast::VectorType::String = *ty {
+                convert_ret = my_quote! {
+                    String::from_utf8_unchecked(
+                        Vec::from_raw_parts(#ret_ident, #name, #name)
+                    )
+                };
+            } else {
+                convert_ret = my_quote! {
                     Vec::from_raw_parts(#ret_ident, #name, #name)
-                )
-            };
+                };
+            }
         }
-        Some(ast::Type::BorrowedStr) |
         Some(ast::Type::ByRef(_)) |
+        Some(ast::Type::Vector(_, false)) |
         Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
         None => {
             abi_ret = my_quote! { () };

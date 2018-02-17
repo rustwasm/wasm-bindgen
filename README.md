@@ -402,6 +402,7 @@ are:
 * Imported types in a foreign module annotated with `#[wasm_bindgen]`
 * Borrowed exported structs (`&Foo` or `&mut Bar`)
 * The `JsValue` type and `&JsValue` (not mutable references)
+* Vectors and slices of supported integer types
 
 All of the above can also be returned except borrowed references. Strings are
 implemented with shim functions to copy data in/out of the Rust heap. That is, a

@@ -467,6 +467,79 @@ impl<'a> Context<'a> {
         }
     }
 
+    fn expose_pass_array8_to_wasm(&mut self) {
+        if !self.exposed_globals.insert("pass_array8_to_wasm") {
+            return
+        }
+        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.expose_uint8_memory();
+        self.globals.push_str(&format!("
+            function passArray8ToWasm(arg) {{
+                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                getUint8Memory().set(arg, ptr);
+                return [ptr, arg.length];
+            }}
+        "));
+    }
+
+    fn expose_pass_array16_to_wasm(&mut self) {
+        if !self.exposed_globals.insert("pass_array16_to_wasm") {
+            return
+        }
+        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.expose_uint16_memory();
+        self.globals.push_str(&format!("
+            function passArray16ToWasm(arg) {{
+                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                getUint16Memory().set(arg, ptr / 2);
+                return [ptr, arg.length];
+            }}
+        "));
+    }
+
+    fn expose_pass_array32_to_wasm(&mut self) {
+        if !self.exposed_globals.insert("pass_array32_to_wasm") {
+            return
+        }
+        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.expose_uint32_memory();
+        self.globals.push_str(&format!("
+            function passArray32ToWasm(arg) {{
+                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                getUint32Memory().set(arg, ptr / 4);
+                return [ptr, arg.length];
+            }}
+        "));
+    }
+
+    fn expose_pass_array_f32_to_wasm(&mut self) {
+        if !self.exposed_globals.insert("pass_array_f32_to_wasm") {
+            return
+        }
+        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.globals.push_str(&format!("
+            function passArrayF32ToWasm(arg) {{
+                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                new Float32Array(wasm.memory.buffer).set(arg, ptr / 4);
+                return [ptr, arg.length];
+            }}
+        "));
+    }
+
+    fn expose_pass_array_f64_to_wasm(&mut self) {
+        if !self.exposed_globals.insert("pass_array_f64_to_wasm") {
+            return
+        }
+        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.globals.push_str(&format!("
+            function passArrayF64ToWasm(arg) {{
+                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                new Float64Array(wasm.memory.buffer).set(arg, ptr / 8);
+                return [ptr, arg.length];
+            }}
+        "));
+    }
+
     fn expose_text_encoder(&mut self) {
         if !self.exposed_globals.insert("text_encoder") {
             return
@@ -523,6 +596,110 @@ impl<'a> Context<'a> {
         }
     }
 
+    fn expose_get_array_i8_from_wasm(&mut self) {
+        if !self.exposed_globals.insert("get_array_i8_from_wasm") {
+            return
+        }
+        self.globals.push_str(&format!("
+            function getArrayI8FromWasm(ptr, len) {{
+                const mem = getUint8Memory();
+                const slice = mem.slice(ptr, ptr + len);
+                return new Int8Array(slice);
+            }}
+        "));
+    }
+
+    fn expose_get_array_u8_from_wasm(&mut self) {
+        if !self.exposed_globals.insert("get_array_u8_from_wasm") {
+            return
+        }
+        self.globals.push_str(&format!("
+            function getArrayU8FromWasm(ptr, len) {{
+                const mem = getUint8Memory();
+                const slice = mem.slice(ptr, ptr + len);
+                return new Uint8Array(slice);
+            }}
+        "));
+    }
+
+    fn expose_get_array_i16_from_wasm(&mut self) {
+        if !self.exposed_globals.insert("get_array_i16_from_wasm") {
+            return
+        }
+        self.globals.push_str(&format!("
+            function getArrayI16FromWasm(ptr, len) {{
+                const mem = getUint16Memory();
+                const slice = mem.slice(ptr / 2, ptr / 2 + len);
+                return new Int16Array(slice);
+            }}
+        "));
+    }
+
+    fn expose_get_array_u16_from_wasm(&mut self) {
+        if !self.exposed_globals.insert("get_array_u16_from_wasm") {
+            return
+        }
+        self.globals.push_str(&format!("
+            function getArrayU16FromWasm(ptr, len) {{
+                const mem = getUint16Memory();
+                const slice = mem.slice(ptr / 2, ptr / 2 + len);
+                return new Uint16Array(slice);
+            }}
+        "));
+    }
+
+    fn expose_get_array_i32_from_wasm(&mut self) {
+        if !self.exposed_globals.insert("get_array_i32_from_wasm") {
+            return
+        }
+        self.globals.push_str(&format!("
+            function getArrayI32FromWasm(ptr, len) {{
+                const mem = getUint32Memory();
+                const slice = mem.slice(ptr / 4, ptr / 4 + len);
+                return new Int32Array(slice);
+            }}
+        "));
+    }
+
+    fn expose_get_array_u32_from_wasm(&mut self) {
+        if !self.exposed_globals.insert("get_array_u32_from_wasm") {
+            return
+        }
+        self.globals.push_str(&format!("
+            function getArrayU32FromWasm(ptr, len) {{
+                const mem = getUint32Memory();
+                const slice = mem.slice(ptr / 4, ptr / 4 + len);
+                return new Uint32Array(slice);
+            }}
+        "));
+    }
+
+    fn expose_get_array_f32_from_wasm(&mut self) {
+        if !self.exposed_globals.insert("get_array_f32_from_wasm") {
+            return
+        }
+        self.globals.push_str(&format!("
+            function getArrayF32FromWasm(ptr, len) {{
+                const mem = new Float32Array(wasm.memory.buffer);
+                const slice = mem.slice(ptr / 4,  ptr / 4 + len);
+                return new Float32Array(slice);
+            }}
+        "));
+    }
+
+    fn expose_get_array_f64_from_wasm(&mut self) {
+        if !self.exposed_globals.insert("get_array_f64_from_wasm") {
+            return
+        }
+        self.globals.push_str(&format!("
+            function getArrayF64FromWasm(ptr, len) {{
+                const mem = new Float64Array(wasm.memory.buffer);
+                const slice = mem.slice(ptr / 8,  ptr / 8 + len);
+                return new Float64Array(slice);
+            }}
+        "));
+    }
+
     fn expose_uint8_memory(&mut self) {
         if !self.exposed_globals.insert("uint8_memory") {
             return
@@ -534,6 +711,21 @@ impl<'a> Context<'a> {
                     cachedUint8Memory.buffer !== wasm.memory.buffer)
                     cachedUint8Memory = new Uint8Array(wasm.memory.buffer);
                 return cachedUint8Memory;
+            }}
+        "));
+    }
+
+    fn expose_uint16_memory(&mut self) {
+        if !self.exposed_globals.insert("uint16_memory") {
+            return
+        }
+        self.globals.push_str(&format!("
+            let cachedUint16Memory = null;
+            function getUint16Memory() {{
+                if (cachedUint16Memory === null ||
+                    cachedUint16Memory.buffer !== wasm.memory.buffer)
+                    cachedUint16Memory = new Uint16Array(wasm.memory.buffer);
+                return cachedUint16Memory;
             }}
         "));
     }
@@ -640,6 +832,76 @@ impl<'a> Context<'a> {
         let c = char::from_u32(c).unwrap();
         &self.custom_type_names[&c]
     }
+
+    fn pass_to_wasm_function(&mut self, ty: &VectorType) -> &'static str {
+        match ty.kind {
+            VectorKind::String => {
+                self.expose_pass_string_to_wasm();
+                "passStringToWasm"
+            }
+            VectorKind::I8 | VectorKind::U8 => {
+                self.expose_pass_array8_to_wasm();
+                "passArray8ToWasm"
+            }
+            VectorKind::I16 | VectorKind::U16 => {
+                self.expose_pass_array16_to_wasm();
+                "passArray16ToWasm"
+            }
+            VectorKind::I32 | VectorKind::U32 => {
+                self.expose_pass_array32_to_wasm();
+                "passArray32ToWasm"
+            }
+            VectorKind::F32 => {
+                self.expose_pass_array_f32_to_wasm();
+                "passArrayF32ToWasm"
+            }
+            VectorKind::F64 => {
+                self.expose_pass_array_f64_to_wasm();
+                "passArrayF64ToWasm"
+            }
+        }
+    }
+
+    fn expose_get_vector_from_wasm(&mut self, ty: &VectorType) -> &'static str {
+        match ty.kind {
+            VectorKind::String => {
+                self.expose_get_string_from_wasm();
+                "getStringFromWasm"
+            }
+            VectorKind::I8 => {
+                self.expose_get_array_i8_from_wasm();
+                "getArrayI8FromWasm"
+            }
+            VectorKind::U8 => {
+                self.expose_get_array_u8_from_wasm();
+                "getArrayU8FromWasm"
+            }
+            VectorKind::I16 => {
+                self.expose_get_array_i16_from_wasm();
+                "getArrayI16FromWasm"
+            }
+            VectorKind::U16 => {
+                self.expose_get_array_u16_from_wasm();
+                "getArrayU16FromWasm"
+            }
+            VectorKind::I32 => {
+                self.expose_get_array_i32_from_wasm();
+                "getArrayI32FromWasm"
+            }
+            VectorKind::U32 => {
+                self.expose_get_array_u32_from_wasm();
+                "getArrayU32FromWasm"
+            }
+            VectorKind::F32 => {
+                self.expose_get_array_f32_from_wasm();
+                "getArrayF32FromWasm"
+            }
+            VectorKind::F64 => {
+                self.expose_get_array_f64_from_wasm();
+                "getArrayF64FromWasm"
+            }
+        }
+    }
 }
 
 impl<'a, 'b> SubContext<'a, 'b> {
@@ -743,15 +1005,33 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     pass(&format!("arg{i} ? 1 : 0", i = i))
                 }
                 shared::TYPE_BORROWED_STR |
-                shared::TYPE_STRING => {
-                    dst_ts.push_str(": string");
-                    self.cx.expose_pass_string_to_wasm();
+                shared::TYPE_STRING |
+                shared::TYPE_VECTOR_U8 |
+                shared::TYPE_VECTOR_I8 |
+                shared::TYPE_SLICE_U8 |
+                shared::TYPE_SLICE_I8 |
+                shared::TYPE_VECTOR_U16 |
+                shared::TYPE_VECTOR_I16 |
+                shared::TYPE_SLICE_U16 |
+                shared::TYPE_SLICE_I16 |
+                shared::TYPE_VECTOR_U32 |
+                shared::TYPE_VECTOR_I32 |
+                shared::TYPE_SLICE_U32 |
+                shared::TYPE_SLICE_I32 |
+                shared::TYPE_VECTOR_F32 |
+                shared::TYPE_VECTOR_F64 |
+                shared::TYPE_SLICE_F32 |
+                shared::TYPE_SLICE_F64 => {
+                    let ty = VectorType::from(*arg);
+                    dst_ts.push_str(": ");
+                    dst_ts.push_str(ty.js_ty());
+                    let func = self.cx.pass_to_wasm_function(&ty);
                     arg_conversions.push_str(&format!("\
-                        const [ptr{i}, len{i}] = passStringToWasm({arg});
-                    ", i = i, arg = name));
+                        const [ptr{i}, len{i}] = {func}({arg});
+                    ", i = i, func = func, arg = name));
                     pass(&format!("ptr{}", i));
                     pass(&format!("len{}", i));
-                    if *arg == shared::TYPE_BORROWED_STR {
+                    if ty.owned {
                         destructors.push_str(&format!("\n\
                             wasm.__wbindgen_free(ptr{i}, len{i});\n\
                         ", i = i));
@@ -823,19 +1103,29 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 self.cx.expose_take_object();
                 format!("return takeObject(ret);")
             }
-            Some(shared::TYPE_STRING) => {
-                dst_ts.push_str(": string");
-                self.cx.expose_get_string_from_wasm();
+            Some(shared::TYPE_STRING) |
+            Some(shared::TYPE_VECTOR_U8) |
+            Some(shared::TYPE_VECTOR_I8) |
+            Some(shared::TYPE_VECTOR_U16) |
+            Some(shared::TYPE_VECTOR_I16) |
+            Some(shared::TYPE_VECTOR_U32) |
+            Some(shared::TYPE_VECTOR_I32) |
+            Some(shared::TYPE_VECTOR_F32) |
+            Some(shared::TYPE_VECTOR_F64) => {
+                let ty = VectorType::from(function.ret.unwrap());
+                dst_ts.push_str(": ");
+                dst_ts.push_str(ty.js_ty());
+                let f = self.cx.expose_get_vector_from_wasm(&ty);
                 self.cx.required_internal_exports.insert("__wbindgen_boxed_str_ptr");
                 self.cx.required_internal_exports.insert("__wbindgen_boxed_str_len");
                 self.cx.required_internal_exports.insert("__wbindgen_boxed_str_free");
                 format!("
                     const ptr = wasm.__wbindgen_boxed_str_ptr(ret);
                     const len = wasm.__wbindgen_boxed_str_len(ret);
-                    const realRet = getStringFromWasm(ptr, len);
+                    const realRet = {}(ptr, len);
                     wasm.__wbindgen_boxed_str_free(ret);
                     return realRet;
-                ")
+                ", f)
             }
             Some(shared::TYPE_JS_REF) |
             Some(shared::TYPE_BORROWED_STR) => panic!(),
@@ -925,22 +1215,39 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     invoc_args.push(format!("arg{} != 0", i));
                     abi_args.push(format!("arg{}", i));
                 }
-                shared::TYPE_BORROWED_STR => {
-                    self.cx.expose_get_string_from_wasm();
-                    invoc_args.push(format!("getStringFromWasm(ptr{0}, len{0})", i));
-                    abi_args.push(format!("ptr{}", i));
-                    abi_args.push(format!("len{}", i));
-                }
-                shared::TYPE_STRING => {
-                    self.cx.expose_get_string_from_wasm();
+                shared::TYPE_BORROWED_STR |
+                shared::TYPE_STRING |
+                shared::TYPE_VECTOR_U8 |
+                shared::TYPE_VECTOR_I8 |
+                shared::TYPE_SLICE_U8 |
+                shared::TYPE_SLICE_I8 |
+                shared::TYPE_VECTOR_U16 |
+                shared::TYPE_VECTOR_I16 |
+                shared::TYPE_SLICE_U16 |
+                shared::TYPE_SLICE_I16 |
+                shared::TYPE_VECTOR_U32 |
+                shared::TYPE_VECTOR_I32 |
+                shared::TYPE_SLICE_U32 |
+                shared::TYPE_SLICE_I32 |
+                shared::TYPE_VECTOR_F32 |
+                shared::TYPE_VECTOR_F64 |
+                shared::TYPE_SLICE_F32 |
+                shared::TYPE_SLICE_F64 => {
+                    let ty = VectorType::from(*arg);
+                    let f = self.cx.expose_get_vector_from_wasm(&ty);
                     abi_args.push(format!("ptr{}", i));
                     abi_args.push(format!("len{}", i));
                     extra.push_str(&format!("
-                        let arg{0} = getStringFromWasm(ptr{0}, len{0});
-                        wasm.__wbindgen_free(ptr{0}, len{0});
-                    ", i));
+                        let arg{0} = {func}(ptr{0}, len{0});
+                    ", i, func = f));
                     invoc_args.push(format!("arg{}", i));
-                    self.cx.required_internal_exports.insert("__wbindgen_free");
+
+                    if ty.owned {
+                        extra.push_str(&format!("
+                            wasm.__wbindgen_free(ptr{0}, len{0});
+                        ", i));
+                        self.cx.required_internal_exports.insert("__wbindgen_free");
+                    }
                 }
                 shared::TYPE_JS_OWNED => {
                     self.cx.expose_take_object();
@@ -1001,15 +1308,24 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 self.cx.expose_add_heap_object();
                 format!("return addHeapObject({});", invoc)
             }
-            Some(shared::TYPE_STRING) => {
-                self.cx.expose_pass_string_to_wasm();
+            Some(shared::TYPE_STRING) |
+            Some(shared::TYPE_VECTOR_U8) |
+            Some(shared::TYPE_VECTOR_I8) |
+            Some(shared::TYPE_VECTOR_U16) |
+            Some(shared::TYPE_VECTOR_I16) |
+            Some(shared::TYPE_VECTOR_U32) |
+            Some(shared::TYPE_VECTOR_I32) |
+            Some(shared::TYPE_VECTOR_F32) |
+            Some(shared::TYPE_VECTOR_F64) => {
+                let ty = VectorType::from(import.function.ret.unwrap());
+                let f = self.cx.pass_to_wasm_function(&ty);
                 self.cx.expose_uint32_memory();
                 abi_args.push("wasmretptr".to_string());
                 format!("
-                    const [retptr, retlen] = passStringToWasm({});
+                    const [retptr, retlen] = {}({});
                     getUint32Memory()[wasmretptr / 4] = retlen;
                     return retptr;
-                ", invoc)
+                ", f, invoc)
             }
             None => invoc,
             _ => unimplemented!(),
@@ -1040,5 +1356,98 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.globals.push_str("export ");
         self.cx.globals.push_str(&dst);
         self.cx.globals.push_str("\n");
+    }
+}
+
+struct VectorType {
+    owned: bool,
+    kind: VectorKind,
+}
+
+enum VectorKind {
+    String,
+    I8,
+    U8,
+    I16,
+    U16,
+    I32,
+    U32,
+    F32,
+    F64,
+}
+
+impl VectorType {
+    fn from(desc: char) -> VectorType {
+        match desc {
+            shared::TYPE_BORROWED_STR => {
+                VectorType { owned: false, kind: VectorKind::String }
+            }
+            shared::TYPE_STRING => {
+                VectorType { owned: true, kind: VectorKind::String }
+            }
+            shared::TYPE_VECTOR_U8 => {
+                VectorType { owned: true, kind: VectorKind::U8 }
+            }
+            shared::TYPE_VECTOR_I8 => {
+                VectorType { owned: true, kind: VectorKind::I8 }
+            }
+            shared::TYPE_SLICE_U8 => {
+                VectorType { owned: false, kind: VectorKind::U8 }
+            }
+            shared::TYPE_SLICE_I8 => {
+                VectorType { owned: false, kind: VectorKind::I8 }
+            }
+            shared::TYPE_VECTOR_U16 => {
+                VectorType { owned: true, kind: VectorKind::U16 }
+            }
+            shared::TYPE_VECTOR_I16 => {
+                VectorType { owned: true, kind: VectorKind::I16 }
+            }
+            shared::TYPE_SLICE_U16 => {
+                VectorType { owned: false, kind: VectorKind::U16 }
+            }
+            shared::TYPE_SLICE_I16 => {
+                VectorType { owned: false, kind: VectorKind::I16 }
+            }
+            shared::TYPE_VECTOR_U32 => {
+                VectorType { owned: true, kind: VectorKind::U32 }
+            }
+            shared::TYPE_VECTOR_I32 => {
+                VectorType { owned: true, kind: VectorKind::I32 }
+            }
+            shared::TYPE_SLICE_U32 => {
+                VectorType { owned: false, kind: VectorKind::U32 }
+            }
+            shared::TYPE_SLICE_I32 => {
+                VectorType { owned: false, kind: VectorKind::I32 }
+            }
+            shared::TYPE_VECTOR_F32 => {
+                VectorType { owned: true, kind: VectorKind::F32 }
+            }
+            shared::TYPE_VECTOR_F64 => {
+                VectorType { owned: true, kind: VectorKind::F64 }
+            }
+            shared::TYPE_SLICE_F32 => {
+                VectorType { owned: false, kind: VectorKind::F32 }
+            }
+            shared::TYPE_SLICE_F64 => {
+                VectorType { owned: false, kind: VectorKind::F64 }
+            }
+            _ => panic!()
+        }
+    }
+
+    fn js_ty(&self) -> &str {
+        match self.kind {
+            VectorKind::String => "string",
+            VectorKind::I8 => "Int8Array",
+            VectorKind::U8 => "Uint8Array",
+            VectorKind::I16 => "Int16Array",
+            VectorKind::U16 => "Uint16Array",
+            VectorKind::I32 => "Int32Array",
+            VectorKind::U32 => "Uint32Array",
+            VectorKind::F32 => "Float32Array",
+            VectorKind::F64 => "Float64Array",
+        }
     }
 }

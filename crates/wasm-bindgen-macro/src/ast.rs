@@ -49,12 +49,23 @@ pub struct Struct {
 
 pub enum Type {
     // special
-    BorrowedStr,
-    String,
+    Vector(VectorType, bool),
 
     ByRef(syn::Type),
     ByMutRef(syn::Type),
     ByValue(syn::Type),
+}
+
+pub enum VectorType {
+    String,
+    I8,
+    U8,
+    I16,
+    U16,
+    I32,
+    U32,
+    F32,
+    F64,
 }
 
 impl Program {
@@ -216,8 +227,8 @@ impl Program {
                 Type::ByMutRef(_) => {
                     panic!("first method argument cannot be mutable ref")
                 }
-                Type::String | Type::BorrowedStr => {
-                    panic!("method receivers cannot be strings")
+                Type::Vector(..) => {
+                    panic!("method receivers cannot be vectors")
                 }
             };
             let class_name = match *class {
@@ -422,8 +433,13 @@ impl Type {
                     syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
                         let ident = extract_path_ident(path);
                         match ident.as_ref().map(|s| s.as_ref()) {
-                            Some("str") => return Type::BorrowedStr,
+                            Some("str") => return Type::Vector(VectorType::String, false),
                             _ => {}
+                        }
+                    }
+                    syn::Type::Slice(ref slice) => {
+                        if let Some(ty) = VectorType::from(&slice.elem) {
+                            return Type::Vector(ty, false)
                         }
                     }
                     _ => {}
@@ -434,10 +450,29 @@ impl Type {
                     Type::ByRef((*r.elem).clone())
                 }
             }
-            syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
-                let ident = extract_path_ident(path);
-                match ident.as_ref().map(|s| s.as_ref()) {
-                    Some("String") => return Type::String,
+            syn::Type::Path(syn::TypePath { qself: None, ref path })
+                if path.leading_colon.is_none() && path.segments.len() == 1 =>
+            {
+                let seg = path.segments.first().unwrap().into_value();
+                match seg.arguments {
+                    syn::PathArguments::None => {
+                        match seg.ident.as_ref() {
+                            "String" => return Type::Vector(VectorType::String, true),
+                            _ => {}
+                        }
+                    }
+                    syn::PathArguments::AngleBracketed(ref t)
+                        if seg.ident == "Vec" && t.args.len() == 1 =>
+                    {
+                        match **t.args.first().unwrap().value() {
+                            syn::GenericArgument::Type(ref t) => {
+                                if let Some(ty) = VectorType::from(t) {
+                                    return Type::Vector(ty, true)
+                                }
+                            }
+                            _ => {}
+                        }
+                    }
                     _ => {}
                 }
             }
@@ -449,8 +484,24 @@ impl Type {
 
     fn wbg_literal(&self, a: &mut LiteralBuilder) {
         match *self {
-            Type::BorrowedStr => a.char(shared::TYPE_BORROWED_STR),
-            Type::String => a.char(shared::TYPE_STRING),
+            Type::Vector(VectorType::String, true) => a.char(shared::TYPE_STRING),
+            Type::Vector(VectorType::String, false) => a.char(shared::TYPE_BORROWED_STR),
+            Type::Vector(VectorType::U8, true) => a.char(shared::TYPE_VECTOR_U8),
+            Type::Vector(VectorType::U8, false) => a.char(shared::TYPE_SLICE_U8),
+            Type::Vector(VectorType::I8, true) => a.char(shared::TYPE_VECTOR_I8),
+            Type::Vector(VectorType::I8, false) => a.char(shared::TYPE_SLICE_I8),
+            Type::Vector(VectorType::U16, true) => a.char(shared::TYPE_VECTOR_U16),
+            Type::Vector(VectorType::U16, false) => a.char(shared::TYPE_SLICE_U16),
+            Type::Vector(VectorType::I16, true) => a.char(shared::TYPE_VECTOR_I16),
+            Type::Vector(VectorType::I16, false) => a.char(shared::TYPE_SLICE_I16),
+            Type::Vector(VectorType::U32, true) => a.char(shared::TYPE_VECTOR_U32),
+            Type::Vector(VectorType::U32, false) => a.char(shared::TYPE_SLICE_U32),
+            Type::Vector(VectorType::I32, true) => a.char(shared::TYPE_VECTOR_I32),
+            Type::Vector(VectorType::I32, false) => a.char(shared::TYPE_SLICE_I32),
+            Type::Vector(VectorType::F32, true) => a.char(shared::TYPE_VECTOR_F32),
+            Type::Vector(VectorType::F32, false) => a.char(shared::TYPE_SLICE_F32),
+            Type::Vector(VectorType::F64, true) => a.char(shared::TYPE_VECTOR_F64),
+            Type::Vector(VectorType::F64, false) => a.char(shared::TYPE_SLICE_F64),
             Type::ByValue(ref t) => {
                 a.as_char(my_quote! {
                     <#t as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR
@@ -848,4 +899,62 @@ fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str)
         }
     }
     syn::parse_error()
+}
+
+fn ungroup(input: &syn::Type) -> &syn::Type {
+    match *input {
+        syn::Type::Group(ref t) => &t.elem,
+        _ => input,
+    }
+}
+
+impl VectorType {
+    fn from(ty: &syn::Type) -> Option<VectorType> {
+        let path = match *ungroup(ty) {
+            syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
+            _ => return None,
+        };
+        match extract_path_ident(path)?.as_ref() {
+            "i8" => Some(VectorType::I8),
+            "u8" => Some(VectorType::U8),
+            "i16" => Some(VectorType::I16),
+            "u16" => Some(VectorType::U16),
+            "i32" => Some(VectorType::I32),
+            "u32" => Some(VectorType::U32),
+            "f32" => Some(VectorType::F32),
+            "f64" => Some(VectorType::F64),
+            _ => None,
+        }
+    }
+
+    pub fn abi_element(&self) -> syn::Ident {
+        match *self {
+            VectorType::String => syn::Ident::from("u8"),
+            VectorType::I8 => syn::Ident::from("i8"),
+            VectorType::U8 => syn::Ident::from("u8"),
+            VectorType::I16 => syn::Ident::from("i16"),
+            VectorType::U16 => syn::Ident::from("u16"),
+            VectorType::I32 => syn::Ident::from("i32"),
+            VectorType::U32 => syn::Ident::from("u32"),
+            VectorType::F32 => syn::Ident::from("f32"),
+            VectorType::F64 => syn::Ident::from("f64"),
+        }
+    }
+}
+
+impl ToTokens for VectorType {
+    fn to_tokens(&self, tokens: &mut Tokens) {
+        let me = match *self {
+            VectorType::String => my_quote! { String },
+            VectorType::I8 => my_quote! { Vec<i8> },
+            VectorType::U8 => my_quote! { Vec<u8> },
+            VectorType::I16 => my_quote! { Vec<i16> },
+            VectorType::U16 => my_quote! { Vec<u16> },
+            VectorType::I32 => my_quote! { Vec<i32> },
+            VectorType::U32 => my_quote! { Vec<u32> },
+            VectorType::F32 => my_quote! { Vec<f32> },
+            VectorType::F64 => my_quote! { Vec<f64> },
+        };
+        me.to_tokens(tokens);
+    }
 }
