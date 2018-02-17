@@ -7,7 +7,7 @@ use super::JsValue;
 pub const DESCRIPTOR_CUSTOM_REF_FLAG: u32 = 0x1;
 pub const DESCRIPTOR_NUMBER: u32 = 0x5e;
 pub const DESCRIPTOR_BOOLEAN: u32 = 0x61;
-pub const DESCRIPTOR_JS_OWNED: u32 = 0x62;
+pub const DESCRIPTOR_JS_OWNED: u32 = 0x72;
 
 pub trait WasmBoundary {
     type Js: WasmAbi;
