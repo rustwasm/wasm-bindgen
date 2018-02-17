@@ -148,7 +148,7 @@ fn bindgen_export(export: &ast::Export, into: &mut Tokens) {
                 let ptr = syn::Ident::from(format!("arg{}_ptr", i));
                 let len = syn::Ident::from(format!("arg{}_len", i));
                 let abi_ty = ty.abi_element();
-                args.push(my_quote! { #ptr: *const #abi_ty });
+                args.push(my_quote! { #ptr: *mut #abi_ty });
                 args.push(my_quote! { #len: usize });
                 if owned {
                     arg_conversions.push(my_quote! {
@@ -159,7 +159,7 @@ fn bindgen_export(export: &ast::Export, into: &mut Tokens) {
                 } else {
                     arg_conversions.push(my_quote! {
                         let #ident = unsafe {
-                            ::std::slice::from_raw_parts(#ptr, #len)
+                            ::std::slice::from_raw_parts(#ptr as *const #abi_ty, #len)
                         };
                     });
                 }

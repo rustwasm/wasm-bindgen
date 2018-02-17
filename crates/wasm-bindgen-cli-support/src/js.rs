@@ -1031,7 +1031,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     ", i = i, func = func, arg = name));
                     pass(&format!("ptr{}", i));
                     pass(&format!("len{}", i));
-                    if ty.owned {
+                    if !ty.owned {
                         destructors.push_str(&format!("\n\
                             wasm.__wbindgen_free(ptr{i}, len{i});\n\
                         ", i = i));

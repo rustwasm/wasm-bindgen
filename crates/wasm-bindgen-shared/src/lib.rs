@@ -100,7 +100,7 @@ pub const TYPE_SLICE_F64: char = '\u{71}';
 pub const TYPE_JS_OWNED: char = '\u{72}';
 pub const TYPE_JS_REF: char = '\u{73}';
 
-pub const TYPE_CUSTOM_START: u32 = 0x64;
+pub const TYPE_CUSTOM_START: u32 = 0x74;
 pub const TYPE_CUSTOM_REF_FLAG: u32 = 1;
 
 pub fn name_to_descriptor(name: &str) -> char {
