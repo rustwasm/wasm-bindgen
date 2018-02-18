@@ -657,6 +657,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_i8_from_wasm(&mut self) {
+        self.expose_uint8_memory();
         if !self.exposed_globals.insert("get_array_i8_from_wasm") {
             return
         }
@@ -670,6 +671,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_u8_from_wasm(&mut self) {
+        self.expose_uint8_memory();
         if !self.exposed_globals.insert("get_array_u8_from_wasm") {
             return
         }
@@ -683,6 +685,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_i16_from_wasm(&mut self) {
+        self.expose_uint16_memory();
         if !self.exposed_globals.insert("get_array_i16_from_wasm") {
             return
         }
@@ -696,6 +699,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_u16_from_wasm(&mut self) {
+        self.expose_uint16_memory();
         if !self.exposed_globals.insert("get_array_u16_from_wasm") {
             return
         }
@@ -709,6 +713,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_i32_from_wasm(&mut self) {
+        self.expose_uint32_memory();
         if !self.exposed_globals.insert("get_array_i32_from_wasm") {
             return
         }
@@ -722,6 +727,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_u32_from_wasm(&mut self) {
+        self.expose_uint32_memory();
         if !self.exposed_globals.insert("get_array_u32_from_wasm") {
             return
         }
