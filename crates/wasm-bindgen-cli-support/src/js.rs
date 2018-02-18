@@ -192,6 +192,8 @@ impl<'a> Context<'a> {
             });
         }
 
+        self.rewrite_imports(module_name);
+
         let js = format!("
             /* tslint:disable */
             import * as wasm from './{module_name}_wasm'; // imports from wasm file
@@ -204,7 +206,6 @@ impl<'a> Context<'a> {
             imports = self.imports,
         );
 
-        self.rewrite_imports(module_name);
         self.unexport_unused_internal_exports();
 
         (js, self.typescript.clone())
@@ -257,30 +258,89 @@ impl<'a> Context<'a> {
     }
 
     fn rewrite_imports(&mut self, module_name: &str) {
-        for section in self.module.sections_mut() {
-            let imports = match *section {
-                Section::Import(ref mut s) => s,
-                _ => continue,
-            };
-            for import in imports.entries_mut() {
-                if import.field().starts_with("__wbindgen") {
-                    import.module_mut().truncate(0);
-                    import.module_mut().push_str("./");
-                    import.module_mut().push_str(module_name);
-                    continue
+        let imports = self.module.sections_mut()
+            .iter_mut()
+            .filter_map(|s| {
+                match *s {
+                    Section::Import(ref mut s) => Some(s),
+                    _ => None,
                 }
+            })
+            .flat_map(|s| s.entries_mut());
 
-                // rustc doesn't have support for importing from anything other
-                // than the module `env` so let's use the metadata here to
-                // rewrite the imports if they import from `env` until it's
-                // fixed upstream.
-                if self.imports_to_rewrite.contains(import.field()) {
-                    import.module_mut().truncate(0);
-                    import.module_mut().push_str("./");
-                    import.module_mut().push_str(module_name);
-                    continue
-                }
+        for import in imports {
+            if import.field().starts_with("__wbindgen") {
+                import.module_mut().truncate(0);
+                import.module_mut().push_str("./");
+                import.module_mut().push_str(module_name);
+                continue
             }
+
+            // rustc doesn't have support for importing from anything other
+            // than the module `env` so let's use the metadata here to
+            // rewrite the imports if they import from `env` until it's
+            // fixed upstream.
+            if self.imports_to_rewrite.contains(import.field()) {
+                import.module_mut().truncate(0);
+                import.module_mut().push_str("./");
+                import.module_mut().push_str(module_name);
+                continue
+            }
+
+            if import.module() != "env" {
+                continue
+            }
+
+            let mut globals = &mut self.globals;
+            let renamed_import = format!("__wbindgen_{}", import.field());
+            let mut bind_math = |expr: &str| {
+                globals.push_str(&format!("
+                    export const {} = {};
+                ", renamed_import, expr));
+            };
+
+            match import.field() {
+                "Math_acos" => bind_math("Math.acos"),
+                "Math_asin" => bind_math("Math.asin"),
+                "Math_atan" => bind_math("Math.atan"),
+                "Math_atan2" => bind_math("Math.atan2"),
+                "Math_cbrt" => bind_math("Math.cbrt"),
+                "Math_cosh" => bind_math("Math.cosh"),
+                "Math_expm1" => bind_math("Math.expm1"),
+                "Math_hypot" => bind_math("Math.hypot"),
+                "Math_log1p" => bind_math("Math.log1p"),
+                "Math_sinh" => bind_math("Math.sinh"),
+                "Math_tan" => bind_math("Math.tan"),
+                "Math_tanh" => bind_math("Math.tanh"),
+                "cos" => bind_math("Math.cos"),
+                "cosf" => bind_math("Math.cos"),
+                "exp" => bind_math("Math.exp"),
+                "expf" => bind_math("Math.exp"),
+                "log2" => bind_math("Math.log2"),
+                "log2f" => bind_math("Math.log2"),
+                "log10" => bind_math("Math.log10"),
+                "log10f" => bind_math("Math.log10"),
+                "log" => bind_math("Math.log"),
+                "logf" => bind_math("Math.log"),
+                "round" => bind_math("Math.round"),
+                "roundf" => bind_math("Math.round"),
+                "sin" => bind_math("Math.sin"),
+                "sinf" => bind_math("Math.sin"),
+                "pow" => bind_math("Math.pow"),
+                "powf" => bind_math("Math.pow"),
+                "exp2" => bind_math("(a) => Math.pow(2, a)"),
+                "exp2f" => bind_math("(a) => Math.pow(2, a)"),
+                "fmod" => bind_math("(a, b) => a % b"),
+                "fmodf" => bind_math("(a, b) => a % b"),
+                "fma" => bind_math("(a, b, c) => (a * b) + c"),
+                "fmaf" => bind_math("(a, b, c) => (a * b) + c"),
+                _ => continue,
+            }
+
+            import.module_mut().truncate(0);
+            import.module_mut().push_str("./");
+            import.module_mut().push_str(module_name);
+            *import.field_mut() = renamed_import.clone();
         }
     }
 
