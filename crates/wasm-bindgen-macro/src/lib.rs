@@ -50,6 +50,9 @@ fn generate_wrappers(program: ast::Program, tokens: &mut Tokens) {
     for i in program.imports.iter() {
         bindgen_import(i, tokens);
     }
+    for e in program.enums.iter() {
+        bindgen_enum(e, tokens);
+    }
     for &(ref vis, ref t) in program.imported_types.iter() {
         bindgen_imported_type(vis, t, tokens);
     }
@@ -509,4 +512,31 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
     } else {
         invocation.to_tokens(tokens);
     }
+}
+
+fn bindgen_enum(e: &ast::Enum, into: &mut Tokens) {
+    let name = &e.name;
+    let c = shared::name_to_descriptor(name.as_ref()) as u32;
+    (my_quote! {
+        impl #name {
+            fn from_usize(n: usize) -> #name {
+                #name::Blue
+            }
+        }
+        impl ::wasm_bindgen::convert::WasmBoundary for #name {
+            type Js = u32;
+            const DESCRIPTOR: u32 = #c;
+
+            fn into_js(self) -> u32 {
+                Box::into_raw(Box::new(self as u32)) as u32
+            }
+
+            unsafe fn from_js(js: u32) -> Self {
+                let js = js as *mut usize;
+                ::wasm_bindgen::__rt::assert_not_null(js);
+                let js = Box::from_raw(js);
+                #name::from_usize(*js)
+            }
+        }
+    }).to_tokens(into);
 }

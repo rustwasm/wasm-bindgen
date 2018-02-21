@@ -9,6 +9,7 @@ use syn;
 pub struct Program {
     pub exports: Vec<Export>,
     pub imports: Vec<Import>,
+    pub enums: Vec<Enum>,
     pub imported_types: Vec<(syn::Visibility, syn::Ident)>,
     pub structs: Vec<Struct>,
 }
@@ -45,6 +46,10 @@ pub struct Function {
 
 pub struct Struct {
     pub name: syn::Ident,
+}
+
+pub struct Enum {
+    pub name: syn::Ident
 }
 
 pub enum Type {
@@ -110,8 +115,13 @@ impl Program {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
                 self.push_foreign_mod(f, opts);
             }
+            syn::Item::Enum(mut e) => {
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut e.attrs));
+                e.to_tokens(tokens);
+                self.push_enum(e, opts);
+            }
             _ => panic!("#[wasm_bindgen] can only be applied to a function, \
-                         struct, impl, or extern block"),
+                         struct, enum, impl, or extern block"),
         }
     }
 
@@ -192,6 +202,28 @@ impl Program {
                 syn::ForeignItem::Type(t) => self.push_foreign_ty(t, &opts),
                 _ => panic!("only foreign functions/types allowed for now"),
             }
+        }
+    }
+
+    pub fn push_enum(&mut self, item: syn::ItemEnum, opts: BindgenAttrs) {
+        match item.vis {
+            syn::Visibility::Public(_) => {}
+            _ => panic!("only public enums are allowed"),
+        }
+
+        let all_fields_unit = item.variants.iter().all(|ref v| {
+            match v.fields {
+                syn::Fields::Unit => true,
+                _ => false
+            }
+        });
+        if all_fields_unit {
+            self.enums.push(Enum {
+                name: item.ident
+            });
+
+        } else {
+            panic!("Only C-Style enums allowed")
         }
     }
 
@@ -301,6 +333,7 @@ impl Program {
                     let names = self.exports.iter()
                         .filter_map(|e| e.class)
                         .chain(self.structs.iter().map(|s| s.name))
+                        .chain(self.enums.iter().map(|s| s.name))
                         .collect::<BTreeSet<_>>();
                     a.list(&names, |s, a| {
                         let val = shared::name_to_descriptor(s.as_ref());

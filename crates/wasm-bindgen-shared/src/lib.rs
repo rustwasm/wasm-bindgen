@@ -77,6 +77,7 @@ pub fn mangled_import_name(struct_: Option<&str>, f: &str) -> String {
 
 pub type Type = char;
 
+pub const TYPE_ENUM: char = '\u{5d}';
 pub const TYPE_NUMBER: char = '\u{5e}';
 pub const TYPE_BORROWED_STR: char = '\u{5f}';
 pub const TYPE_STRING: char = '\u{60}';
