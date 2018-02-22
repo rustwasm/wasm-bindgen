@@ -206,7 +206,7 @@ impl Program {
         }
     }
 
-    pub fn push_enum(&mut self, item: syn::ItemEnum, opts: BindgenAttrs) {
+    pub fn push_enum(&mut self, item: syn::ItemEnum, _opts: BindgenAttrs) {
         match item.vis {
             syn::Visibility::Public(_) => {}
             _ => panic!("only public enums are allowed"),
@@ -329,22 +329,16 @@ impl Program {
                 ("imports", &|a| a.list(&self.imports, Import::wbg_literal)),
                 ("enums", &|a| a.list(&self.enums, Enum::wbg_literal)),
                 ("custom_type_names", &|a| {
-                    let struct_descriptors = self.exports.iter()
+                    let names = self.exports.iter()
                         .filter_map(|e| e.class)
                         .chain(self.structs.iter().map(|s| s.name))
-                        .map(|n| {
-                            let val = shared::name_to_descriptor(n.as_ref());
-                            (val, n.to_string())
-                        });
-                    let enum_descriptors = self.enums.iter().map(|e| {
-                            (shared::TYPE_ENUM, e.name.to_string())
-                        });
-                    let descriptors = struct_descriptors.chain(enum_descriptors).collect::<BTreeSet<_>>();
+                        .collect::<BTreeSet<_>>();
 
-                    a.list(&descriptors, |s, a| {
+                    a.list(&names, |s, a| {
+                        let val = shared::name_to_descriptor(s.as_ref());
                         a.fields(&[
-                            ("descriptor", &|a| a.char(s.0)),
-                            ("name", &|a| a.str(&s.1))
+                            ("descriptor", &|a| a.char(val)),
+                            ("name", &|a| a.str(&s.as_ref()))
                         ]);
                     })
                 }),
