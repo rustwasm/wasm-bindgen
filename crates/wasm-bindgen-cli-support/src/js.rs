@@ -1051,7 +1051,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 passed_args.push_str(arg);
             };
             match *arg {
-                shared::TYPE_NUMBER => {
+                shared::TYPE_ENUM | shared::TYPE_NUMBER => {
+                    // TODO: TS for Enum
                     dst_ts.push_str(": number");
                     if self.cx.config.debug {
                         self.cx.expose_assert_num();

@@ -49,7 +49,8 @@ pub struct Struct {
 }
 
 pub struct Enum {
-    pub name: syn::Ident
+    pub name: syn::Ident,
+    pub variants: Vec<syn::Ident>
 }
 
 pub enum Type {
@@ -211,20 +212,17 @@ impl Program {
             _ => panic!("only public enums are allowed"),
         }
 
-        let all_fields_unit = item.variants.iter().all(|ref v| {
+        let variants = item.variants.iter().map(|ref v| {
             match v.fields {
-                syn::Fields::Unit => true,
-                _ => false
+                syn::Fields::Unit => (),
+                _ => panic!("Only C-Style enums allowed")
             }
+            v.ident
+        }).collect();
+        self.enums.push(Enum {
+            name: item.ident,
+            variants
         });
-        if all_fields_unit {
-            self.enums.push(Enum {
-                name: item.ident
-            });
-
-        } else {
-            panic!("Only C-Style enums allowed")
-        }
     }
 
     pub fn push_foreign_fn(&mut self,
