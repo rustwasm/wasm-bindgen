@@ -978,6 +978,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
         for f in self.program.imports.iter() {
             self.generate_import(f);
         }
+        for e in self.program.enums.iter() {
+            self.generate_enum(e);
+        }
     }
 
     pub fn generate_export(&mut self, export: &shared::Export) {
@@ -1423,6 +1426,19 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.globals.push_str("export ");
         self.cx.globals.push_str(&dst);
         self.cx.globals.push_str("\n");
+    }
+
+    pub fn generate_enum(&mut self, enum_: &shared::Enum) {
+        let mut variants = String::new();
+
+        let mut value = 0;
+        for variant in enum_.variants.iter() {
+            variants.push_str(&format!("{}:{},", variant.name, value));
+            value = value + 1;
+        }
+        self.cx.globals.push_str(&format!("export const {} = {{", enum_.name));
+        self.cx.globals.push_str(&variants);
+        self.cx.globals.push_str("}\n");
     }
 }
 

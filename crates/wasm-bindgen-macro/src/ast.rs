@@ -327,17 +327,24 @@ impl Program {
             a.fields(&[
                 ("exports", &|a| a.list(&self.exports, Export::wbg_literal)),
                 ("imports", &|a| a.list(&self.imports, Import::wbg_literal)),
+                ("enums", &|a| a.list(&self.enums, Enum::wbg_literal)),
                 ("custom_type_names", &|a| {
-                    let names = self.exports.iter()
+                    let struct_descriptors = self.exports.iter()
                         .filter_map(|e| e.class)
                         .chain(self.structs.iter().map(|s| s.name))
-                        .chain(self.enums.iter().map(|s| s.name))
-                        .collect::<BTreeSet<_>>();
-                    a.list(&names, |s, a| {
-                        let val = shared::name_to_descriptor(s.as_ref());
+                        .map(|n| {
+                            let val = shared::name_to_descriptor(n.as_ref());
+                            (val, n.to_string())
+                        });
+                    let enum_descriptors = self.enums.iter().map(|e| {
+                            (shared::TYPE_ENUM, e.name.to_string())
+                        });
+                    let descriptors = struct_descriptors.chain(enum_descriptors).collect::<BTreeSet<_>>();
+
+                    a.list(&descriptors, |s, a| {
                         a.fields(&[
-                            ("descriptor", &|a| a.char(val)),
-                            ("name", &|a| a.str(s.as_ref()))
+                            ("descriptor", &|a| a.char(s.0)),
+                            ("name", &|a| a.str(&s.1))
                         ]);
                     })
                 }),
@@ -662,6 +669,19 @@ impl Import {
         let name = self.function.name.as_ref();
         assert!(name.starts_with("set_"), "setters must start with `set_`");
         name[4..].to_string()
+    }
+}
+
+impl Enum {
+    fn wbg_literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+                 ("name", &|a| a.str(self.name.as_ref())),
+                 ("variants", &|a| a.list(&self.variants, |v, a| {
+                     a.fields(&[
+                              ("name", &|a| a.str(v.as_ref()))
+                     ])
+                 })),
+        ]);
     }
 }
 

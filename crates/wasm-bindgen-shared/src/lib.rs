@@ -8,6 +8,7 @@ use std::hash::{Hash, Hasher};
 #[derive(Deserialize)]
 pub struct Program {
     pub exports: Vec<Export>,
+    pub enums: Vec<Enum>,
     pub imports: Vec<Import>,
     pub custom_type_names: Vec<CustomTypeName>,
 }
@@ -30,6 +31,17 @@ pub struct Export {
     pub class: Option<String>,
     pub method: bool,
     pub function: Function,
+}
+
+#[derive(Deserialize)]
+pub struct Enum {
+    pub name: String,
+    pub variants: Vec<EnumVariant>,
+}
+
+#[derive(Deserialize)]
+pub struct EnumVariant {
+    pub name: String
 }
 
 #[derive(Deserialize)]
