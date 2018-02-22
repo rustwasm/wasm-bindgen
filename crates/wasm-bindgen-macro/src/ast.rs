@@ -333,12 +333,11 @@ impl Program {
                         .filter_map(|e| e.class)
                         .chain(self.structs.iter().map(|s| s.name))
                         .collect::<BTreeSet<_>>();
-
                     a.list(&names, |s, a| {
                         let val = shared::name_to_descriptor(s.as_ref());
                         a.fields(&[
                             ("descriptor", &|a| a.char(val)),
-                            ("name", &|a| a.str(&s.as_ref()))
+                            ("name", &|a| a.str(s.as_ref()))
                         ]);
                     })
                 }),
@@ -671,9 +670,7 @@ impl Enum {
         a.fields(&[
                  ("name", &|a| a.str(self.name.as_ref())),
                  ("variants", &|a| a.list(&self.variants, |v, a| {
-                     a.fields(&[
-                              ("name", &|a| a.str(v.as_ref()))
-                     ])
+                     a.fields(&[("name", &|a| a.str(v.as_ref()))])
                  })),
         ]);
     }
