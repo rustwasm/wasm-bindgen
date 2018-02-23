@@ -41,7 +41,8 @@ pub struct Enum {
 
 #[derive(Deserialize)]
 pub struct EnumVariant {
-    pub name: String
+    pub name: String,
+    pub value: u32
 }
 
 #[derive(Deserialize)]

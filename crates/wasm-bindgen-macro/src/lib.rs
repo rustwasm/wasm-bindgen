@@ -515,27 +515,28 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
 }
 
 fn bindgen_enum(e: &ast::Enum, into: &mut Tokens) {
-    let name = &e.name;
+    let enum_name = &e.name;
     let c = shared::TYPE_ENUM as u32;
     let incoming_u32 = quote! { n };
-    let name_as_string = name.to_string();
-    let cast_clauses = e.variants.iter().map(|ident| {
+    let enum_name_as_string = enum_name.to_string();
+    let cast_clauses = e.variants.iter().map(|variant| {
+        let &(variant_name, _) = variant;
         quote! {
-            if #incoming_u32 == #name::#ident as u32 {
-                #name::#ident
+            if #incoming_u32 == #enum_name::#variant_name as u32 {
+                #enum_name::#variant_name
             }
         }
     });
     (my_quote! {
-        impl #name {
-            fn from_u32(#incoming_u32: u32) -> #name {
+        impl #enum_name {
+            fn from_u32(#incoming_u32: u32) -> #enum_name {
                 #(#cast_clauses else)* {
-                    wasm_bindgen::throw(&format!("Could not cast {} as {}", #incoming_u32, #name_as_string));
+                    wasm_bindgen::throw(&format!("Could not cast {} as {}", #incoming_u32, #enum_name_as_string));
                 }
             }
         }
 
-        impl ::wasm_bindgen::convert::WasmBoundary for #name {
+        impl ::wasm_bindgen::convert::WasmBoundary for #enum_name {
             type Js = u32;
             const DESCRIPTOR: u32 = #c;
 
@@ -544,7 +545,7 @@ fn bindgen_enum(e: &ast::Enum, into: &mut Tokens) {
             }
 
             unsafe fn from_js(js: u32) -> Self {
-                #name::from_u32(js)
+                #enum_name::from_u32(js)
             }
         }
     }).to_tokens(into);

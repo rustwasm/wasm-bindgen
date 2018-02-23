@@ -1434,10 +1434,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
     pub fn generate_enum(&mut self, enum_: &shared::Enum) {
         let mut variants = String::new();
 
-        let mut value = 0;
         for variant in enum_.variants.iter() {
-            variants.push_str(&format!("{}:{},", variant.name, value));
-            value = value + 1;
+            variants.push_str(&format!("{}:{},", variant.name, variant.value));
         }
         self.cx.globals.push_str(&format!("export const {} = {{", enum_.name));
         self.cx.globals.push_str(&variants);

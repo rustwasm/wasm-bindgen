@@ -50,7 +50,7 @@ pub struct Struct {
 
 pub struct Enum {
     pub name: syn::Ident,
-    pub variants: Vec<syn::Ident>
+    pub variants: Vec<(syn::Ident, u32)>
 }
 
 pub enum Type {
@@ -212,12 +212,25 @@ impl Program {
             _ => panic!("only public enums are allowed"),
         }
 
+        let mut i = 0;
         let variants = item.variants.iter().map(|ref v| {
             match v.fields {
                 syn::Fields::Unit => (),
                 _ => panic!("Only C-Style enums allowed")
             }
-            v.ident
+            let value = match v.discriminant {
+                Some((_, syn::Expr::Lit(syn::ExprLit {attrs: _, lit: syn::Lit::Int(ref int_lit)}))) => {
+                    if int_lit.value() > <u32>::max_value() as u64 {
+                        panic!("Enums can only support numbers that can be represented as u32");
+                    }
+                    int_lit.value() as u32
+                },
+                None => i,
+                _ => panic!("Enums may only have number literal values")
+            };
+
+            i = i + 1;
+            (v.ident, value)
         }).collect();
         self.enums.push(Enum {
             name: item.ident,
@@ -670,7 +683,9 @@ impl Enum {
         a.fields(&[
                  ("name", &|a| a.str(self.name.as_ref())),
                  ("variants", &|a| a.list(&self.variants, |v, a| {
-                     a.fields(&[("name", &|a| a.str(v.as_ref()))])
+                     let &(name, value) = v;
+                     a.fields(&[("name", &|a| a.str(name.as_ref())),
+                                ("value", &|a| a.append(&format!("{}", value)))])
                  })),
         ]);
     }
