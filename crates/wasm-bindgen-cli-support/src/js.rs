@@ -1054,8 +1054,15 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 passed_args.push_str(arg);
             };
             match *arg {
-                shared::TYPE_ENUM | shared::TYPE_NUMBER => {
-                    // TODO: TS for Enum
+                shared::TYPE_ENUM => {
+                    dst_ts.push_str(&format!(": {}", "any"));
+                    if self.cx.config.debug {
+                        self.cx.expose_assert_num();
+                        arg_conversions.push_str(&format!("_assertNum({});\n", name));
+                    }
+                    pass(&name)
+                }
+                shared::TYPE_NUMBER => {
                     dst_ts.push_str(": number");
                     if self.cx.config.debug {
                         self.cx.expose_assert_num();
@@ -1158,6 +1165,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let convert_ret = match function.ret {
             None => {
                 dst_ts.push_str(": void");
+                format!("return ret;")
+            }
+            Some(shared::TYPE_ENUM) => {
+                dst_ts.push_str(": any");
                 format!("return ret;")
             }
             Some(shared::TYPE_NUMBER) => {
@@ -1439,6 +1450,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.globals.push_str(&format!("export const {} = {{", enum_.name));
         self.cx.globals.push_str(&variants);
         self.cx.globals.push_str("}\n");
+        self.cx.typescript.push_str(&format!("export enum {} {{", enum_.name));
+
+        variants.clear();
+        for variant in enum_.variants.iter() {
+            variants.push_str(&format!("{},", variant.name));
+        }
+        self.cx.typescript.push_str(&variants);
+        self.cx.typescript.push_str("}\n");
     }
 }
 
