@@ -1054,15 +1054,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 passed_args.push_str(arg);
             };
             match *arg {
-                shared::TYPE_ENUM => {
-                    dst_ts.push_str(&format!(": {}", "any"));
-                    if self.cx.config.debug {
-                        self.cx.expose_assert_num();
-                        arg_conversions.push_str(&format!("_assertNum({});\n", name));
-                    }
-                    pass(&name)
-                }
-                shared::TYPE_NUMBER => {
+                shared::TYPE_ENUM | shared::TYPE_NUMBER => {
                     dst_ts.push_str(": number");
                     if self.cx.config.debug {
                         self.cx.expose_assert_num();
@@ -1168,7 +1160,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 format!("return ret;")
             }
             Some(shared::TYPE_ENUM) => {
-                dst_ts.push_str(": any");
+                dst_ts.push_str(": number");
                 format!("return ret;")
             }
             Some(shared::TYPE_NUMBER) => {
