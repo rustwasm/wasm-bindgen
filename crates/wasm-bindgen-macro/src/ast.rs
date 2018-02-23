@@ -212,8 +212,7 @@ impl Program {
             _ => panic!("only public enums are allowed"),
         }
 
-        let mut i = 0;
-        let variants = item.variants.iter().map(|ref v| {
+        let variants = item.variants.iter().enumerate().map(|(i, v)| {
             match v.fields {
                 syn::Fields::Unit => (),
                 _ => panic!("Only C-Style enums allowed")
@@ -225,11 +224,10 @@ impl Program {
                     }
                     int_lit.value() as u32
                 },
-                None => i,
+                None => i as u32,
                 _ => panic!("Enums may only have number literal values")
             };
 
-            i = i + 1;
             (v.ident, value)
         }).collect();
         self.enums.push(Enum {
