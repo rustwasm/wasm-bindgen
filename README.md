@@ -398,6 +398,7 @@ are:
 * Borrowed strings (`&str`)
 * Owned strings (`String`)
 * Exported structs (`Foo`, annotated with `#[wasm_bindgen]`)
+* Exported C-like enums (`Foo`, annotated with `#[wasm_bindgen]`)
 * Imported types in a foreign module annotated with `#[wasm_bindgen]`
 * Borrowed exported structs (`&Foo` or `&mut Bar`)
 * The `JsValue` type and `&JsValue` (not mutable references)
