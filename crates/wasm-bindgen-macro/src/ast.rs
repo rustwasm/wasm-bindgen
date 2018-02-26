@@ -9,6 +9,7 @@ use syn;
 pub struct Program {
     pub exports: Vec<Export>,
     pub imports: Vec<Import>,
+    pub enums: Vec<Enum>,
     pub imported_types: Vec<(syn::Visibility, syn::Ident)>,
     pub structs: Vec<Struct>,
 }
@@ -45,6 +46,11 @@ pub struct Function {
 
 pub struct Struct {
     pub name: syn::Ident,
+}
+
+pub struct Enum {
+    pub name: syn::Ident,
+    pub variants: Vec<(syn::Ident, u32)>
 }
 
 pub enum Type {
@@ -110,8 +116,13 @@ impl Program {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
                 self.push_foreign_mod(f, opts);
             }
+            syn::Item::Enum(mut e) => {
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut e.attrs));
+                e.to_tokens(tokens);
+                self.push_enum(e, opts);
+            }
             _ => panic!("#[wasm_bindgen] can only be applied to a function, \
-                         struct, impl, or extern block"),
+                         struct, enum, impl, or extern block"),
         }
     }
 
@@ -193,6 +204,36 @@ impl Program {
                 _ => panic!("only foreign functions/types allowed for now"),
             }
         }
+    }
+
+    pub fn push_enum(&mut self, item: syn::ItemEnum, _opts: BindgenAttrs) {
+        match item.vis {
+            syn::Visibility::Public(_) => {}
+            _ => panic!("only public enums are allowed"),
+        }
+
+        let variants = item.variants.iter().enumerate().map(|(i, v)| {
+            match v.fields {
+                syn::Fields::Unit => (),
+                _ => panic!("Only C-Style enums allowed")
+            }
+            let value = match v.discriminant {
+                Some((_, syn::Expr::Lit(syn::ExprLit {attrs: _, lit: syn::Lit::Int(ref int_lit)}))) => {
+                    if int_lit.value() > <u32>::max_value() as u64 {
+                        panic!("Enums can only support numbers that can be represented as u32");
+                    }
+                    int_lit.value() as u32
+                },
+                None => i as u32,
+                _ => panic!("Enums may only have number literal values")
+            };
+
+            (v.ident, value)
+        }).collect();
+        self.enums.push(Enum {
+            name: item.ident,
+            variants
+        });
     }
 
     pub fn push_foreign_fn(&mut self,
@@ -297,6 +338,7 @@ impl Program {
             a.fields(&[
                 ("exports", &|a| a.list(&self.exports, Export::wbg_literal)),
                 ("imports", &|a| a.list(&self.imports, Import::wbg_literal)),
+                ("enums", &|a| a.list(&self.enums, Enum::wbg_literal)),
                 ("custom_type_names", &|a| {
                     let names = self.exports.iter()
                         .filter_map(|e| e.class)
@@ -631,6 +673,19 @@ impl Import {
         let name = self.function.name.as_ref();
         assert!(name.starts_with("set_"), "setters must start with `set_`");
         name[4..].to_string()
+    }
+}
+
+impl Enum {
+    fn wbg_literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+                 ("name", &|a| a.str(self.name.as_ref())),
+                 ("variants", &|a| a.list(&self.variants, |v, a| {
+                     let &(name, value) = v;
+                     a.fields(&[("name", &|a| a.str(name.as_ref())),
+                                ("value", &|a| a.append(&format!("{}", value)))])
+                 })),
+        ]);
     }
 }
 

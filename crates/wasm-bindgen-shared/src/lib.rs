@@ -8,6 +8,7 @@ use std::hash::{Hash, Hasher};
 #[derive(Deserialize)]
 pub struct Program {
     pub exports: Vec<Export>,
+    pub enums: Vec<Enum>,
     pub imports: Vec<Import>,
     pub custom_type_names: Vec<CustomTypeName>,
 }
@@ -30,6 +31,18 @@ pub struct Export {
     pub class: Option<String>,
     pub method: bool,
     pub function: Function,
+}
+
+#[derive(Deserialize)]
+pub struct Enum {
+    pub name: String,
+    pub variants: Vec<EnumVariant>,
+}
+
+#[derive(Deserialize)]
+pub struct EnumVariant {
+    pub name: String,
+    pub value: u32
 }
 
 #[derive(Deserialize)]
@@ -77,6 +90,7 @@ pub fn mangled_import_name(struct_: Option<&str>, f: &str) -> String {
 
 pub type Type = char;
 
+pub const TYPE_ENUM: char = '\u{5d}';
 pub const TYPE_NUMBER: char = '\u{5e}';
 pub const TYPE_BORROWED_STR: char = '\u{5f}';
 pub const TYPE_STRING: char = '\u{60}';

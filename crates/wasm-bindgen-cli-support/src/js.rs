@@ -978,6 +978,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
         for f in self.program.imports.iter() {
             self.generate_import(f);
         }
+        for e in self.program.enums.iter() {
+            self.generate_enum(e);
+        }
     }
 
     pub fn generate_export(&mut self, export: &shared::Export) {
@@ -1051,7 +1054,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 passed_args.push_str(arg);
             };
             match *arg {
-                shared::TYPE_NUMBER => {
+                shared::TYPE_ENUM | shared::TYPE_NUMBER => {
                     dst_ts.push_str(": number");
                     if self.cx.config.debug {
                         self.cx.expose_assert_num();
@@ -1154,6 +1157,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let convert_ret = match function.ret {
             None => {
                 dst_ts.push_str(": void");
+                format!("return ret;")
+            }
+            Some(shared::TYPE_ENUM) => {
+                dst_ts.push_str(": number");
                 format!("return ret;")
             }
             Some(shared::TYPE_NUMBER) => {
@@ -1422,6 +1429,25 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.globals.push_str("export ");
         self.cx.globals.push_str(&dst);
         self.cx.globals.push_str("\n");
+    }
+
+    pub fn generate_enum(&mut self, enum_: &shared::Enum) {
+        let mut variants = String::new();
+
+        for variant in enum_.variants.iter() {
+            variants.push_str(&format!("{}:{},", variant.name, variant.value));
+        }
+        self.cx.globals.push_str(&format!("export const {} = {{", enum_.name));
+        self.cx.globals.push_str(&variants);
+        self.cx.globals.push_str("}\n");
+        self.cx.typescript.push_str(&format!("export enum {} {{", enum_.name));
+
+        variants.clear();
+        for variant in enum_.variants.iter() {
+            variants.push_str(&format!("{},", variant.name));
+        }
+        self.cx.typescript.push_str(&variants);
+        self.cx.typescript.push_str("}\n");
     }
 }
 

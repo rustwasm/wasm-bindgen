@@ -50,6 +50,9 @@ fn generate_wrappers(program: ast::Program, tokens: &mut Tokens) {
     for i in program.imports.iter() {
         bindgen_import(i, tokens);
     }
+    for e in program.enums.iter() {
+        bindgen_enum(e, tokens);
+    }
     for &(ref vis, ref t) in program.imported_types.iter() {
         bindgen_imported_type(vis, t, tokens);
     }
@@ -509,4 +512,41 @@ fn bindgen_import(import: &ast::Import, tokens: &mut Tokens) {
     } else {
         invocation.to_tokens(tokens);
     }
+}
+
+fn bindgen_enum(e: &ast::Enum, into: &mut Tokens) {
+    let enum_name = &e.name;
+    let c = shared::TYPE_ENUM as u32;
+    let incoming_u32 = quote! { n };
+    let enum_name_as_string = enum_name.to_string();
+    let cast_clauses = e.variants.iter().map(|variant| {
+        let &(variant_name, _) = variant;
+        quote! {
+            if #incoming_u32 == #enum_name::#variant_name as u32 {
+                #enum_name::#variant_name
+            }
+        }
+    });
+    (my_quote! {
+        impl #enum_name {
+            fn from_u32(#incoming_u32: u32) -> #enum_name {
+                #(#cast_clauses else)* {
+                    wasm_bindgen::throw(&format!("Could not cast {} as {}", #incoming_u32, #enum_name_as_string));
+                }
+            }
+        }
+
+        impl ::wasm_bindgen::convert::WasmBoundary for #enum_name {
+            type Js = u32;
+            const DESCRIPTOR: u32 = #c;
+
+            fn into_js(self) -> u32 {
+                self as u32
+            }
+
+            unsafe fn from_js(js: u32) -> Self {
+                #enum_name::from_u32(js)
+            }
+        }
+    }).to_tokens(into);
 }
