@@ -27,7 +27,6 @@ Notable features of this project includes:
 * Importing JS functions with richer types (strings, objects)
 * Importing JS classes and calling methods
 * Receiving arbitrary JS objects in Rust, passing them through to JS
-* Generates Typescript for now instead of JS (although that may come later)
 * Catching JS exceptions in imports
 
 Planned features include:
