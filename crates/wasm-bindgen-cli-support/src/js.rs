@@ -656,6 +656,25 @@ impl<'a> Context<'a> {
         }
     }
 
+    fn expose_get_array_js_value_from_wasm(&mut self) {
+        if !self.exposed_globals.insert("get_array_js_value_from_wasm") {
+            return
+        }
+        self.expose_get_array_u8_from_wasm();
+        self.expose_get_object();
+        self.globals.push_str(&format!("
+                function getArrayJsValueFromWasm(ptr, len) {{
+                    const mem = getUint8Memory();
+                    const slice = mem.slice(ptr, ptr + len);
+                    const result = []
+                    for (ptr in slice) {{
+                        result.push(getObject(ptr))
+                    }}
+                    return result;
+                }}
+            "));
+    }
+
     fn expose_get_array_i8_from_wasm(&mut self) {
         self.expose_uint8_memory();
         if !self.exposed_globals.insert("get_array_i8_from_wasm") {
@@ -925,6 +944,7 @@ impl<'a> Context<'a> {
                 self.expose_pass_array_f64_to_wasm();
                 "passArrayF64ToWasm"
             }
+            VectorKind::JsValue => panic!("Cannot pass Vec<JsValue> to function")
         }
     }
 
@@ -965,6 +985,10 @@ impl<'a> Context<'a> {
             VectorKind::F64 => {
                 self.expose_get_array_f64_from_wasm();
                 "getArrayF64FromWasm"
+            }
+            VectorKind::JsValue => {
+                self.expose_get_array_js_value_from_wasm();
+                "getArrayJsValueFromWasm"
             }
         }
     }
@@ -1184,7 +1208,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(shared::TYPE_VECTOR_U32) |
             Some(shared::TYPE_VECTOR_I32) |
             Some(shared::TYPE_VECTOR_F32) |
-            Some(shared::TYPE_VECTOR_F64) => {
+            Some(shared::TYPE_VECTOR_F64) |
+            Some(shared::TYPE_VECTOR_JSVALUE) => {
                 let ty = VectorType::from(function.ret.unwrap());
                 dst_ts.push_str(": ");
                 dst_ts.push_str(ty.js_ty());
@@ -1466,6 +1491,7 @@ enum VectorKind {
     U32,
     F32,
     F64,
+    JsValue
 }
 
 impl VectorType {
@@ -1525,6 +1551,9 @@ impl VectorType {
             shared::TYPE_SLICE_F64 => {
                 VectorType { owned: false, kind: VectorKind::F64 }
             }
+            shared::TYPE_VECTOR_JSVALUE => {
+                VectorType { owned: true, kind: VectorKind::JsValue }
+            }
             _ => panic!()
         }
     }
@@ -1540,6 +1569,7 @@ impl VectorType {
             VectorKind::U32 => "Uint32Array",
             VectorKind::F32 => "Float32Array",
             VectorKind::F64 => "Float64Array",
+            VectorKind::JsValue => "object[]",
         }
     }
 }
