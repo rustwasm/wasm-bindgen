@@ -206,8 +206,7 @@ fn returning_vector() {
             import * as wasm from "./out";
             import * as assert from "assert";
 
-
-            export function foo(): any { return { "foo": "bar" } }
+            export function foo(): any { return { "foo": "bar" }; }
 
             export function test() {
                 const result = wasm.bar();

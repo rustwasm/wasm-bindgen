@@ -660,12 +660,12 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_js_value_from_wasm") {
             return
         }
-        self.expose_get_array_u8_from_wasm();
+        self.expose_get_array_u32_from_wasm();
         self.expose_get_object();
         self.globals.push_str(&format!("
                 function getArrayJsValueFromWasm(ptr, len) {{
-                    const mem = getUint8Memory();
-                    const slice = mem.slice(ptr, ptr + len);
+                    const mem = getUint32Memory();
+                    const slice = mem.slice(ptr / 4, ptr / 4 + len);
                     const result = []
                     for (ptr in slice) {{
                         result.push(getObject(ptr))
@@ -1569,7 +1569,7 @@ impl VectorType {
             VectorKind::U32 => "Uint32Array",
             VectorKind::F32 => "Float32Array",
             VectorKind::F64 => "Float64Array",
-            VectorKind::JsValue => "object[]",
+            VectorKind::JsValue => "any[]",
         }
     }
 }
