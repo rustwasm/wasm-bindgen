@@ -176,3 +176,42 @@ fn promote() {
         "#)
         .test();
 }
+
+#[test]
+fn returning_vector() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo() -> JsValue;
+            }
+
+            #[wasm_bindgen]
+            #[no_mangle]
+            pub extern fn bar() -> Vec<JsValue> {
+                let mut res = Vec::new();
+                for _ in 0..10 {
+                    res.push(foo())
+                }
+                res
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as wasm from "./out";
+            import * as assert from "assert";
+
+            export function foo(): any { return { "foo": "bar" }; }
+
+            export function test() {
+                const result = wasm.bar();
+                assert.strictEqual(result.length, 10);
+            }
+        "#)
+        .test();
+}

@@ -72,6 +72,7 @@ pub enum VectorType {
     U32,
     F32,
     F64,
+    JsValue,
 }
 
 impl Program {
@@ -544,6 +545,8 @@ impl Type {
             Type::Vector(VectorType::F32, false) => a.char(shared::TYPE_SLICE_F32),
             Type::Vector(VectorType::F64, true) => a.char(shared::TYPE_VECTOR_F64),
             Type::Vector(VectorType::F64, false) => a.char(shared::TYPE_SLICE_F64),
+            Type::Vector(VectorType::JsValue, true) => a.char(shared::TYPE_VECTOR_JSVALUE),
+            Type::Vector(VectorType::JsValue, false) => panic!("Slices of JsValues not supported"),
             Type::ByValue(ref t) => {
                 a.as_char(my_quote! {
                     <#t as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR
@@ -978,6 +981,7 @@ impl VectorType {
             "u32" => Some(VectorType::U32),
             "f32" => Some(VectorType::F32),
             "f64" => Some(VectorType::F64),
+            "JsValue" => Some(VectorType::JsValue),
             _ => None,
         }
     }
@@ -993,6 +997,7 @@ impl VectorType {
             VectorType::U32 => syn::Ident::from("u32"),
             VectorType::F32 => syn::Ident::from("f32"),
             VectorType::F64 => syn::Ident::from("f64"),
+            VectorType::JsValue => syn::Ident::from("JsValue"),
         }
     }
 }
@@ -1009,6 +1014,7 @@ impl ToTokens for VectorType {
             VectorType::U32 => my_quote! { Vec<u32> },
             VectorType::F32 => my_quote! { Vec<f32> },
             VectorType::F64 => my_quote! { Vec<f64> },
+            VectorType::JsValue => my_quote! { Vec<JsValue> },
         };
         me.to_tokens(tokens);
     }
