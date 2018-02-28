@@ -404,7 +404,8 @@ are:
 * The `JsValue` type and `&JsValue` (not mutable references)
 * Vectors and slices of supported integer types and of the `JsValue` type.
 
-All of the above can also be returned except borrowed references. Strings are
+All of the above can also be returned except borrowed references. Passing
+`Vec<JsValue>` as an argument to a function is not currently supported. Strings are
 implemented with shim functions to copy data in/out of the Rust heap. That is, a
 string passed to Rust from JS is copied to the Rust heap (using a generated shim
 to malloc some space) and then will be freed appropriately.
