@@ -9,6 +9,7 @@ install:
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
   - source ~/.nvm/nvm.sh
   - nvm install 9
+  - yarn
 
 script:
   - rustup target add wasm32-unknown-unknown

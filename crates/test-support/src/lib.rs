@@ -71,35 +71,11 @@ pub fn project() -> Project {
                 import typescript from 'rollup-plugin-typescript2';
 
                 export default {
-                    input: './run.ts',
-
                     plugins: [
                         typescript()
-                    ],
-                    output: {
-                        file: 'bundle.js',
-                        format: 'cjs'
-                    }
+                    ]
                 }
             "#.to_string()),
-
-            ("tsconfig.json".to_string(), r#"
-				{
-					"compilerOptions": {
-                        "noEmitOnError": true,
-                        "noImplicitAny": true,
-                        "noImplicitThis": true,
-                        "noUnusedParameters": true,
-                        "noUnusedLocals": true,
-                        "noImplicitReturns": true,
-                        "strictFunctionTypes": true,
-                        "strictNullChecks": true,
-                        "alwaysStrict": true,
-                        "strict": true,
-                        "target": "es5"
-					}
-				}
-			"#.to_string()),
         ],
     }
 }
@@ -113,40 +89,6 @@ pub fn root() -> PathBuf {
     me.pop(); // chop off `debug` / `release`
     me.push("generated-tests");
     me.push(&format!("test{}", idx));
-    return me
-}
-
-fn rollup() -> PathBuf {
-    static INIT: Once = ONCE_INIT;
-
-    let mut me = env::current_exe().unwrap();
-    me.pop(); // chop off exe name
-    me.pop(); // chop off `deps`
-    me.pop(); // chop off `debug` / `release`
-    let install_dir = me.clone();
-    me.push("node_modules/rollup/bin/rollup");
-
-    INIT.call_once(|| {
-        if !me.exists() {
-            let mut npm = if cfg!(windows) {
-                let mut n = Command::new("cmd");
-                n.arg("/c").arg("npm");
-                n
-            } else {
-                Command::new("npm")
-            };
-            run(npm
-                .arg("install")
-                .arg("rollup")
-                .arg("rollup-plugin-typescript2")
-                .arg("typescript")
-                .arg("@types/node")
-                //.arg("@types/webassembly-js-api")
-                .current_dir(&install_dir), "npm");
-            assert!(me.exists());
-        }
-    });
-
     return me
 }
 
@@ -219,10 +161,20 @@ impl Project {
         File::create(root.join("out_wasm.js")).unwrap()
             .write_all(obj.js().as_bytes()).unwrap();
 
-        let mut cmd = Command::new("node");
-        cmd.arg(rollup())
-            .current_dir(&root)
-            .arg("-c");
+        let mut cmd = if cfg!(windows) {
+            let mut c = Command::new("cmd");
+            c.arg("/c");
+            c.arg("yarn");
+            c
+        } else {
+            Command::new("yarn")
+        };
+        cmd.arg("rollup")
+            .arg("-c").arg(root.join("rollup.config.js"))
+            .arg("-i").arg(root.join("run.ts"))
+            .arg("-f").arg("cjs")
+            .arg("-o").arg(root.join("bundle.js"))
+            .current_dir(&root);
         run(&mut cmd, "node");
 
         let mut cmd = Command::new("node");
