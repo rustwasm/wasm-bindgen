@@ -118,6 +118,7 @@ impl Bindgen {
 }
 
 fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
+    let version = shared::version();
     let data = module.sections_mut()
         .iter_mut()
         .filter_map(|s| {
@@ -150,12 +151,37 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
             let json = a.iter()
                 .map(|i| char::from_u32(i.0).unwrap())
                 .collect::<String>();
-            let p = match serde_json::from_str(&json) {
+            let p: shared::Program = match serde_json::from_str(&json) {
                 Ok(f) => f,
                 Err(e) => {
                     panic!("failed to decode what looked like wasm-bindgen data: {}", e)
                 }
             };
+            if p.version != version {
+                panic!("
+
+it looks like the Rust project used to create this wasm file was linked against
+a different version of wasm-bindgen than this binary:
+
+  rust wasm file: {}
+     this binary: {}
+
+Currently the bindgen format is unstable enough that these two version must
+exactly match, so it's required that these two version are kept in sync by
+either updating the wasm-bindgen dependency or this binary. You should be able
+to update the wasm-bindgen dependency with:
+
+    cargo update -p wasm-bindgen
+
+or you can update the binary with
+
+    cargo install -f --git https://github.com/alexcrichton/wasm-bindgen
+
+if this warning fails to go away though and you're not sure what to do feel free
+to open an issue at https://github.com/alexcrichton/wasm-bindgen/issues!
+",
+    p.version, version);
+            }
             ret.push(p);
         }
     }

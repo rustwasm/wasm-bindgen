@@ -353,6 +353,7 @@ impl Program {
                         ]);
                     })
                 }),
+                ("version", &|a| a.str(&shared::version())),
             ]);
             a.cnt
         };

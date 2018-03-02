@@ -11,6 +11,7 @@ pub struct Program {
     pub enums: Vec<Enum>,
     pub imports: Vec<Import>,
     pub custom_type_names: Vec<CustomTypeName>,
+    pub version: String,
 }
 
 #[derive(Deserialize)]
