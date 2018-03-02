@@ -134,3 +134,13 @@ pub fn name_to_descriptor(name: &str) -> char {
     }
     char::from_u32(ret).unwrap()
 }
+
+pub fn version() -> String {
+    let mut v = env!("CARGO_PKG_VERSION").to_string();
+    if let Some(s) = option_env!("WBG_VERSION") {
+        v.push_str(" (");
+        v.push_str(s);
+        v.push_str(")");
+    }
+    return v
+}
