@@ -15,6 +15,16 @@ cargo +nightly run --manifest-path ../../crates/wasm-bindgen-cli/Cargo.toml \
   ../../target/wasm32-unknown-unknown/release/hello_world.wasm --out-dir .
 # wasm-bindgen ../../target/wasm32-unknown-unknown/hello_world.wasm --out-dir .
 
+# To avoid a bug occurring when webpack, wasm, and Chrome are used together, we
+# convert the .wasm module to a .js module that embeds the wasm bytecode. To
+# enable this, delete hello_world_wasm.wasm after building or change
+# hello_world.js to import from hello_world_wasm.js explicitly and uncomment
+# the relevant line in index.js.
+cargo +nightly run --manifest-path ../../crates/wasm-bindgen-cli/Cargo.toml \
+  --bin wasm2es6js -- \
+  --base64 -o hello_world_wasm.js hello_world_wasm.wasm
+# wasm2es6js --base64 -o hello_world_wasm.js hello_world_wasm.wasm
+
 # Finally, package everything up using Webpack and start a server so we can
 # browse the result
 npm install

@@ -221,13 +221,15 @@ $ npm run serve
 ```
 
 If you open https://localhost:8080 in a browser you should see a `Hello, world!`
-dialog pop up!
+dialog pop up! This works in Firefox out of the box but not in Chrome due to a
+webpack issue. See [the hello_world README][hello-readme] for a workaround.
 
 If that was all a bit much, no worries! You can [follow along
 online][hello-tree] to see all the files necessary as well as a script to set it
 all up.
 
 [hello-tree]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/hello_world
+[hello-readme]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/hello_world/README.md
 
 ## What just happened?
 
