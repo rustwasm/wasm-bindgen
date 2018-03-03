@@ -16,6 +16,7 @@ script:
   - cargo test
   - cargo install --debug --path crates/wasm-bindgen-cli
   - (cd examples/hello_world && ./build.sh)
+  - (cd examples/smorgasboard && ./build.sh)
 
 notifications:
   email:
