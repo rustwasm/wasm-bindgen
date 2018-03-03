@@ -223,6 +223,12 @@ $ npm run serve
 If you open https://localhost:8080 in a browser you should see a `Hello, world!`
 dialog pop up!
 
+If that was all a bit much, no worries! You can [follow along
+online][hello-tree] to see all the files necessary as well as a script to set it
+all up.
+
+[hello-tree]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/hello_world
+
 ## What just happened?
 
 Phew! That was a lot of words and a lot ended up happening along the way. There
@@ -329,7 +335,7 @@ extern {
 #[wasm_bindgen]
 impl Bar {
     pub fn from_str(s: &str, opaque: JsValue) -> Bar {
-        let contents = s.parse().unwrap_or_else(|| {
+        let contents = s.parse().unwrap_or_else(|_| {
             Awesome::new().get_internal()
         });
         Bar { contents, opaque }

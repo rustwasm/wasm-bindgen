@@ -9,3 +9,6 @@ The examples here are:
 
 * `hello_world` - the "hello world" of `#[wasm_bindgen]`, aka throwing up a
   dialog greeting you
+* `smorgasboard` - a bunch of features all thrown into one, showing off the
+  various capabilities of the `#[wasm_bindgen]` macro and what you can do with
+  it from JS

@@ -17,4 +17,5 @@ test-support = { path = "crates/test-support" }
 members = [
   "crates/wasm-bindgen-cli",
   "examples/hello_world",
+  "examples/smorgasboard",
 ]
