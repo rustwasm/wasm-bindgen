@@ -49,10 +49,19 @@ Let's implement the equivalent of "Hello, world!" for this crate.
 
 [rustup]: https://rustup.rs
 
-First up, let's add the wasm target and generate a Rust project:
+First up, let's install the tools we need
 
 ```
 $ rustup target add wasm32-unknown-unknown
+$ cargo install --git https://github.com/alexcrichton/wasm-bindgen
+```
+
+The first command here installs the wasm target so you can compile to it, and
+the latter will install the `wasm-bindgen` CLI tool we'll be using later.
+
+Next up let's make our project
+
+```
 $ cargo new js-hello-world
 ```
 
@@ -110,15 +119,8 @@ can use [wasm-gc] to make this file a little smaller
 [wasm-gc]: https://github.com/alexcrichton/wasm-gc
 
 Now that we've generated the wasm module it's time to run the bindgen tool
-itself! Let's install it:
-
-```
-$ cargo install --git https://github.com/alexcrichton/wasm-bindgen
-```
-
-This'll install a `wasm-bindgen` binary next to your `cargo` binary. This tool
-will postprocess the wasm file rustc generated, generating a new wasm file and a
-set of JS bindings as well. Let's invoke it!
+itself! This tool will postprocess the wasm file rustc generated, generating a
+new wasm file and a set of JS bindings as well. Let's invoke it!
 
 ```
 $ wasm-bindgen target/wasm32-unknown-unknown/release/js_hello_world.wasm \
@@ -135,36 +137,71 @@ module. The `js_hello_world.js` file emitted by `wasm-bindgen` should have the
 intended interface of the wasm file, notably with rich types like strings,
 classes, etc.
 
-The `wasm-bindgen` tool also emits a secondary file, `js_hello_world_wasm.wasm`.
-This is the original wasm file but postprocessed a bit. It's intended that the
-`js_hello_world_wasm.wasm` file, like before, acts like an ES6 module. The
-`js_hello_world.wasm` file, for example, uses `import` to import functionality
-from the wasm.
+The `wasm-bindgen` tool also emits a few other files needed to implement this
+module. For example `js_hello_world_wasm.wasm` is the original wasm file but
+postprocessed a bit. It's intended that the `js_hello_world_wasm.wasm` file,
+like before, acts like an ES6 module. The `js_hello_world.wasm` file, for
+example, uses `import` to import functionality from the other `*_shims` file
+generated (an internal implementation detail here).
 
 Note that you can also pass a `--nodejs` argument to `wasm-bindgen` for emitting
 Node-compatible JS as well as a `--typescript` argument to emit a `*.d.ts` file
 describing the exported contents.
 
-At this point you'll typically plug these files into a larger build system. Both
-files emitted by `wasm-bindgen` act like normal ES6 modules (one just happens to
+At this point you'll probably plug these files into a larger build system.
+Files emitted by `wasm-bindgen` act like normal ES6 modules (one just happens to
 be wasm). As of the time of this writing there's unfortunately not a lot of
-tools that natively do this (but they're coming!). In the meantime we can use
-the `wasm2es6js` utility (aka "hack") from the `wasm-bindgen` tool we previously
-installed along with the `parcel-bundler` packager. Note that these steps will
-differ depending on your build system.
+tools that natively do this, but Webpack's 4.0 beta release has native wasm
+support!. Let's take a look at that and see how it works.
 
-Alright first create an `index.js` file:
+First create an `index.js` file:
 
 ```js
-import { greet } from "./js_hello_world";
-import { booted } from "./js_hello_world_wasm";
+const js = import("./js_hello_world");
 
-booted.then(() => {
-  greet("World!");
+js.then(js => {
+  js.greet("World!");
 });
 ```
 
-Then a corresponding `index.html`:
+Note that we're using `import(..)` here because Webpack [doesn't
+support][webpack-issue] synchronously importing modules from the main chunk just
+yet.
+
+[webpack-issue]: https://github.com/webpack/webpack/issues/6615
+
+Next our JS dependencies by creating a `package.json`:
+
+```json
+{
+  "scripts": {
+    "serve": "webpack-dev-server"
+  },
+  "devDependencies": {
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.10",
+    "webpack-dev-server": "^3.1.0"
+  }
+}
+```
+
+and our webpack configuration
+
+```js
+// webpack.config.js
+const path = require('path');
+
+module.exports = {
+  entry: "./index.js",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "index.js",
+  },
+  mode: "development"
+};
+```
+
+Our corresponding `index.html`:
 
 ```html
 <html>
@@ -177,18 +214,14 @@ Then a corresponding `index.html`:
 </html>
 ```
 
-And run a local server with these files:
+And finally:
 
 ```
-# Convert `*.wasm` to `*.js` where the JS internally instantiates the wasm
-$ wasm2es6js js_hello_world_wasm.wasm -o js_hello_world_wasm.js --base64
-
-# Install parcel and run it against the index files we use below.
-$ npm install -g parcel-bundler
-$ parcel index.html
+$ npm run serve
 ```
 
-If you open that in a browser you should see a `Hello, world!` dialog pop up!
+If you open https://localhost:8080 in a browser you should see a `Hello, world!`
+dialog pop up!
 
 ## What just happened?
 

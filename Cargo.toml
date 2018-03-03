@@ -14,4 +14,7 @@ wasm-bindgen-macro = { path = "crates/wasm-bindgen-macro" }
 test-support = { path = "crates/test-support" }
 
 [workspace]
-members = ["crates/wasm-bindgen-cli"]
+members = [
+  "crates/wasm-bindgen-cli",
+  "examples/hello_world",
+]
