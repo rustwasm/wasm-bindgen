@@ -50,7 +50,13 @@ impl<'a> Context<'a> {
                 if !self.wasm_import_needed(name) {
                     return
                 }
-                let global = format!("export const {} = {};\n", name, f(self));
+                let contents = f(self);
+                let contents = contents.trim();
+                let global = if contents.starts_with("function") {
+                    format!("export function {} {}\n", name, &contents[8..])
+                } else {
+                    format!("export const {} = {};\n", name, contents)
+                };
                 self.globals.push_str(&global);
             };
 
@@ -83,18 +89,20 @@ impl<'a> Context<'a> {
 
             bind("__wbindgen_object_drop_ref", &|me| {
                 me.expose_drop_ref();
-                "dropRef".to_string()
+                "function(i) { dropRef(i); }".to_string()
             });
 
             bind("__wbindgen_string_new", &|me| {
                 me.expose_add_heap_object();
                 me.expose_get_string_from_wasm();
-                String::from("(p, l) => addHeapObject(getStringFromWasm(p, l))")
+                String::from("function(p, l) {
+                    return addHeapObject(getStringFromWasm(p, l));
+                }")
             });
 
             bind("__wbindgen_number_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("addHeapObject")
+                String::from("function(i) { return addHeapObject(i); }")
             });
 
             bind("__wbindgen_number_get", &|me| {
@@ -113,32 +121,40 @@ impl<'a> Context<'a> {
 
             bind("__wbindgen_undefined_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("() => addHeapObject(undefined)")
+                String::from("function() { return addHeapObject(undefined); }")
             });
 
             bind("__wbindgen_null_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("() => addHeapObject(null)")
+                String::from("function() {
+                    return addHeapObject(null);
+                }")
             });
 
             bind("__wbindgen_is_null", &|me| {
                 me.expose_get_object();
-                String::from("(idx) => getObject(idx) === null ? 1 : 0")
+                String::from("function(idx) {
+                    return getObject(idx) === null ? 1 : 0;
+                }")
             });
 
             bind("__wbindgen_is_undefined", &|me| {
                 me.expose_get_object();
-                String::from("(idx) => getObject(idx) === undefined ? 1 : 0")
+                String::from("function(idx) {
+                    return getObject(idx) === undefined ? 1 : 0;
+                }")
             });
 
             bind("__wbindgen_boolean_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("(v) => addHeapObject(v == 1)")
+                String::from("function(v) {
+                    return addHeapObject(v == 1);
+                }")
             });
 
             bind("__wbindgen_boolean_get", &|me| {
                 me.expose_get_object();
-                String::from("(i) => {
+                String::from("function(i) {
                     let v = getObject(i);
                     if (typeof(v) == 'boolean') {
                         return v ? 1 : 0;
@@ -151,7 +167,7 @@ impl<'a> Context<'a> {
             bind("__wbindgen_symbol_new", &|me| {
                 me.expose_get_string_from_wasm();
                 me.expose_add_heap_object();
-                format!("(ptr, len) => {{
+                format!("function(ptr, len) {{
                     let a;
                     console.log(ptr, len);
                     if (ptr === 0) {{
@@ -165,7 +181,9 @@ impl<'a> Context<'a> {
 
             bind("__wbindgen_is_symbol", &|me| {
                 me.expose_get_object();
-                String::from("(i) => typeof(getObject(i)) == 'symbol' ? 1 : 0")
+                String::from("function(i) {
+                    return typeof(getObject(i)) == 'symbol' ? 1 : 0;
+                }")
             });
 
             bind("__wbindgen_throw", &|me| {
@@ -181,7 +199,7 @@ impl<'a> Context<'a> {
                 me.expose_pass_string_to_wasm();
                 me.expose_get_object();
                 me.expose_uint32_memory();
-                String::from("(i, len_ptr) => {
+                String::from("function(i, len_ptr) {
                     let obj = getObject(i);
                     if (typeof(obj) !== 'string')
                         return 0;
@@ -295,45 +313,46 @@ impl<'a> Context<'a> {
             let renamed_import = format!("__wbindgen_{}", import.field());
             let mut bind_math = |expr: &str| {
                 globals.push_str(&format!("
-                    export const {} = {};
+                    export function {}{}
                 ", renamed_import, expr));
             };
 
+            // FIXME(#32): try to not use function shims
             match import.field() {
-                "Math_acos" => bind_math("Math.acos"),
-                "Math_asin" => bind_math("Math.asin"),
-                "Math_atan" => bind_math("Math.atan"),
-                "Math_atan2" => bind_math("Math.atan2"),
-                "Math_cbrt" => bind_math("Math.cbrt"),
-                "Math_cosh" => bind_math("Math.cosh"),
-                "Math_expm1" => bind_math("Math.expm1"),
-                "Math_hypot" => bind_math("Math.hypot"),
-                "Math_log1p" => bind_math("Math.log1p"),
-                "Math_sinh" => bind_math("Math.sinh"),
-                "Math_tan" => bind_math("Math.tan"),
-                "Math_tanh" => bind_math("Math.tanh"),
-                "cos" => bind_math("Math.cos"),
-                "cosf" => bind_math("Math.cos"),
-                "exp" => bind_math("Math.exp"),
-                "expf" => bind_math("Math.exp"),
-                "log2" => bind_math("Math.log2"),
-                "log2f" => bind_math("Math.log2"),
-                "log10" => bind_math("Math.log10"),
-                "log10f" => bind_math("Math.log10"),
-                "log" => bind_math("Math.log"),
-                "logf" => bind_math("Math.log"),
-                "round" => bind_math("Math.round"),
-                "roundf" => bind_math("Math.round"),
-                "sin" => bind_math("Math.sin"),
-                "sinf" => bind_math("Math.sin"),
-                "pow" => bind_math("Math.pow"),
-                "powf" => bind_math("Math.pow"),
-                "exp2" => bind_math("(a) => Math.pow(2, a)"),
-                "exp2f" => bind_math("(a) => Math.pow(2, a)"),
-                "fmod" => bind_math("(a, b) => a % b"),
-                "fmodf" => bind_math("(a, b) => a % b"),
-                "fma" => bind_math("(a, b, c) => (a * b) + c"),
-                "fmaf" => bind_math("(a, b, c) => (a * b) + c"),
+                "Math_acos" => bind_math("(x) { return Math.acos(x); }"),
+                "Math_asin" => bind_math("(x) { return Math.asin(x); }"),
+                "Math_atan" => bind_math("(x) { return Math.atan(x); }"),
+                "Math_atan2" => bind_math("(x, y) { return Math.atan2(x, y); }"),
+                "Math_cbrt" => bind_math("(x) { return Math.cbrt(x); }"),
+                "Math_cosh" => bind_math("(x) { return Math.cosh(x); }"),
+                "Math_expm1" => bind_math("(x) { return Math.expm1(x); }"),
+                "Math_hypot" => bind_math("(x, y) { return Math.hypot(x, y); }"),
+                "Math_log1p" => bind_math("(x) { return Math.log1p(x); }"),
+                "Math_sinh" => bind_math("(x) { return Math.sinh(x); }"),
+                "Math_tan" => bind_math("(x) { return Math.tan(x); }"),
+                "Math_tanh" => bind_math("(x) { return Math.tanh(x); }"),
+                "cos" => bind_math("(x) { return Math.cos(x); }"),
+                "cosf" => bind_math("(x) { return Math.cos(x); }"),
+                "exp" => bind_math("(x) { return Math.exp(x); }"),
+                "expf" => bind_math("(x) { return Math.exp(x); }"),
+                "log2" => bind_math("(x) { return Math.log2(x); }"),
+                "log2f" => bind_math("(x) { return Math.log2(x); }"),
+                "log10" => bind_math("(x) { return Math.log10(x); }"),
+                "log10f" => bind_math("(x) { return Math.log10(x); }"),
+                "log" => bind_math("(x) { return Math.log(x); }"),
+                "logf" => bind_math("(x) { return Math.log(x); }"),
+                "round" => bind_math("(x) { return Math.round(x); }"),
+                "roundf" => bind_math("(x) { return Math.round(x); }"),
+                "sin" => bind_math("(x) { return Math.sin(x); }"),
+                "sinf" => bind_math("(x) { return Math.sin(x); }"),
+                "pow" => bind_math("(x, y) { return Math.pow(x, y); }"),
+                "powf" => bind_math("(x, y) { return Math.pow(x, y); }"),
+                "exp2" => bind_math("(a) { return Math.pow(2, a); }"),
+                "exp2f" => bind_math("(a) { return Math.pow(2, a); }"),
+                "fmod" => bind_math("(a, b) { return a % b; }"),
+                "fmodf" => bind_math("(a, b) { return a % b; }"),
+                "fma" => bind_math("(a, b, c) { return (a * b) + c; }"),
+                "fmaf" => bind_math("(a, b, c) { return (a * b) + c; }"),
                 _ => continue,
             }
 

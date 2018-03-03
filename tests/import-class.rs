@@ -53,7 +53,7 @@ fn import_class() {
 
             use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen(module = "./test")]
+            #[wasm_bindgen(module = "./another")]
             extern {
                 type Foo;
                 #[wasm_bindgen(static = Foo)]
@@ -67,20 +67,22 @@ fn import_class() {
             }
         "#)
         .file("test.ts", r#"
-            import * as wasm from "./out";
+            import { bar } from "./out";
+            import { called } from "./another";
             import * as assert from "assert";
 
-            let called = false;
+            export function test() {
+                bar();
+                assert.strictEqual(called, true);
+            }
+        "#)
+        .file("another.ts", r#"
+            export let called = false;
 
             export class Foo {
                 static bar() {
                     called = true;
                 }
-            }
-
-            export function test() {
-                wasm.bar();
-                assert.strictEqual(called, true);
             }
         "#)
         .test();
@@ -96,7 +98,7 @@ fn construct() {
 
             use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen(module = "./test")]
+            #[wasm_bindgen(module = "./another")]
             extern {
                 type Foo;
                 #[wasm_bindgen(static = Foo)]
@@ -119,10 +121,19 @@ fn construct() {
             }
         "#)
         .file("test.ts", r#"
-            import * as wasm from "./out";
+            import { run } from "./out";
+            import { called } from "./another";
             import * as assert from "assert";
 
-            let called = false;
+            export function test() {
+                run();
+                assert.strictEqual(called, true);
+            }
+        "#)
+        .file("another.ts", r#"
+            import * as assert from "assert";
+
+            export let called = false;
 
             export class Foo {
                 private internal_string: string = '';
@@ -146,11 +157,6 @@ fn construct() {
                     called = true;
                 }
             }
-
-            export function test() {
-                wasm.run();
-                assert.strictEqual(called, true);
-            }
         "#)
         .test();
 }
@@ -165,7 +171,7 @@ fn new_constructors() {
 
             use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen(module = "./test")]
+            #[wasm_bindgen(module = "./another")]
             extern {
                 type Foo;
                 #[wasm_bindgen(constructor)]
@@ -184,6 +190,11 @@ fn new_constructors() {
         .file("test.ts", r#"
             import { run } from "./out";
 
+            export function test() {
+                run();
+            }
+        "#)
+        .file("another.ts", r#"
             export class Foo {
                 constructor(private field: number) {
                 }
@@ -191,10 +202,6 @@ fn new_constructors() {
                 get() {
                     return this.field + 1;
                 }
-            }
-
-            export function test() {
-                run();
             }
         "#)
         .test();
@@ -210,7 +217,7 @@ fn switch_methods() {
 
             use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen(module = "./test")]
+            #[wasm_bindgen(module = "./another")]
             extern {
                 type Foo;
 
@@ -238,42 +245,44 @@ fn switch_methods() {
         "#)
         .file("test.ts", r#"
             import { a, b } from "./out";
+            import { Foo, called } from "./another";
             import * as assert from "assert";
 
-            let called = false;
+            export function test() {
+                assert.strictEqual(called.a, false);
+                a();
+                assert.strictEqual(called.a, true);
+                called.a = false;
+                Foo.a = function() {};
+                assert.strictEqual(called.a, false);
+                a();
+                assert.strictEqual(called.a, true);
+
+                called.a = false;
+                assert.strictEqual(called.a, false);
+                b();
+                assert.strictEqual(called.a, true);
+                called.a = false;
+                Foo.prototype.b = function() {};
+                assert.strictEqual(called.a, false);
+                b();
+                assert.strictEqual(called.a, true);
+            }
+        "#)
+        .file("another.ts", r#"
+            export let called = { a: false };
 
             export class Foo {
                 constructor() {
                 }
 
                 static a() {
-                    called = true;
+                    called.a = true;
                 }
 
                 b() {
-                    called = true;
+                    called.a = true;
                 }
-            }
-
-            export function test() {
-                assert.strictEqual(called, false);
-                a();
-                assert.strictEqual(called, true);
-                called = false;
-                Foo.a = function() {};
-                assert.strictEqual(called, false);
-                a();
-                assert.strictEqual(called, true);
-
-                called = false;
-                assert.strictEqual(called, false);
-                b();
-                assert.strictEqual(called, true);
-                called = false;
-                Foo.prototype.b = function() {};
-                assert.strictEqual(called, false);
-                b();
-                assert.strictEqual(called, true);
             }
         "#)
         .test();
@@ -289,7 +298,7 @@ fn properties() {
 
             use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen(module = "./test")]
+            #[wasm_bindgen(module = "./another")]
             extern {
                 type Foo;
 
@@ -315,6 +324,11 @@ fn properties() {
         .file("test.ts", r#"
             import { run } from "./out";
 
+            export function test() {
+                run();
+            }
+        "#)
+        .file("another.ts", r#"
             export class Foo {
                 constructor(private num: number) {
                     this.num = 1;
@@ -327,10 +341,6 @@ fn properties() {
                 set a(val) {
                     this.num = val;
                 }
-            }
-
-            export function test() {
-                run();
             }
         "#)
         .test();

@@ -2,11 +2,10 @@ extern crate wasm_bindgen_cli_support as cli;
 
 use std::env;
 use std::fs::{self, File};
-use std::io::{Write, Read};
+use std::io::{self, Write, Read};
 use std::path::{PathBuf, Path};
 use std::process::Command;
 use std::sync::atomic::*;
-use std::sync::{Once, ONCE_INIT};
 use std::time::Instant;
 
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
@@ -51,29 +50,61 @@ pub fn project() -> Project {
 
             ("Cargo.lock".to_string(), lockfile),
 
-            ("run.ts".to_string(), r#"
+            ("run.js".to_string(), r#"
                 import * as process from "process";
 
-                import * as out from "./out_wasm";
-                import * as test from "./test";
+                const test = import("./test");
 
-                out.booted.then(() => {
+                test.then(test => {
                   test.test();
-                  if ((out as any).assertHeapAndStackEmpty)
-                    (out as any).assertHeapAndStackEmpty();
                 }).catch(error => {
                   console.error(error);
                   process.exit(1);
                 });
             "#.to_string()),
 
-            ("rollup.config.js".to_string(), r#"
-                import typescript from 'rollup-plugin-typescript2';
+            ("webpack.config.js".to_string(), r#"
+                const path = require('path');
 
-                export default {
-                    plugins: [
-                        typescript()
+                module.exports = {
+                  entry: './run.js',
+                  mode: "development",
+                  devtool: "source-map",
+                  module: {
+                    rules: [
+                      {
+                        test: /\.ts$/,
+                        use: 'ts-loader',
+                        exclude: /node_modules/
+                      }
                     ]
+                  },
+                  resolve: {
+                    extensions: [ '.ts', '.js', '.wasm' ]
+                  },
+                  output: {
+                    filename: 'bundle.js',
+                    path: path.resolve(__dirname, '.')
+                  },
+                  target: 'node'
+                };
+            "#.to_string()),
+            ("tsconfig.json".to_string(), r#"
+                {
+                  "compilerOptions": {
+                    "noEmitOnError": true,
+                    "noImplicitAny": true,
+                    "noImplicitThis": true,
+                    "noUnusedParameters": true,
+                    "noUnusedLocals": true,
+                    "noImplicitReturns": true,
+                    "strictFunctionTypes": true,
+                    "strictNullChecks": true,
+                    "alwaysStrict": true,
+                    "strict": true,
+                    "target": "es5",
+                    "lib": ["es2015"]
+                  }
                 }
             "#.to_string()),
         ],
@@ -158,8 +189,14 @@ impl Project {
             .expect("failed to convert wasm to js");
         File::create(root.join("out_wasm.d.ts")).unwrap()
             .write_all(obj.typescript().as_bytes()).unwrap();
-        File::create(root.join("out_wasm.js")).unwrap()
-            .write_all(obj.js().as_bytes()).unwrap();
+
+
+        // move files from the root into each test, it looks like this may be
+        // needed for webpack to work well when invoked concurrently.
+        fs::hard_link("package.json", root.join("package.json")).unwrap();
+        fs::hard_link("yarn.lock", root.join("yarn.lock")).unwrap();
+        let cwd = env::current_dir().unwrap();
+        symlink_dir(&cwd.join("node_modules"), &root.join("node_modules")).unwrap();
 
         let mut cmd = if cfg!(windows) {
             let mut c = Command::new("cmd");
@@ -169,12 +206,7 @@ impl Project {
         } else {
             Command::new("yarn")
         };
-        cmd.arg("rollup")
-            .arg("-c").arg(root.join("rollup.config.js"))
-            .arg("-i").arg(root.join("run.ts"))
-            .arg("-f").arg("cjs")
-            .arg("-o").arg(root.join("bundle.js"))
-            .current_dir(&root);
+        cmd.arg("webpack").current_dir(&root);
         run(&mut cmd, "node");
 
         let mut cmd = Command::new("node");
@@ -182,6 +214,18 @@ impl Project {
             .current_dir(&root);
         run(&mut cmd, "node");
     }
+}
+
+#[cfg(unix)]
+fn symlink_dir(a: &Path, b: &Path) -> io::Result<()> {
+    use std::os::unix::fs::symlink;
+    symlink(a, b)
+}
+
+#[cfg(windows)]
+fn symlink_dir(a: &Path, b: &Path) -> io::Result<()> {
+    use std::os::windows::fs::symlink_dir;
+    symlink_dir(a, b)
 }
 
 fn run(cmd: &mut Command, program: &str) {
