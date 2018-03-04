@@ -15,8 +15,8 @@ script:
   - rustup target add wasm32-unknown-unknown
   - cargo test
   - cargo install --debug --path crates/wasm-bindgen-cli
-  - (cd examples/hello_world && ./build.sh)
-  - (cd examples/smorgasboard && ./build.sh)
+  - (cd examples/hello_world && sed -i 's/: "webpack-dev-server"/: "webpack"' package.json && ./build.sh)
+  - (cd examples/smorgasboard && sed -i 's/: "webpack-dev-server"/: "webpack"' package.json && ./build.sh)
 
 notifications:
   email:
