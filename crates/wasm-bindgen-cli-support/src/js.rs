@@ -214,7 +214,7 @@ impl<'a> Context<'a> {
 
         let js = format!("
             /* tslint:disable */
-            import * as wasm from './{module_name}_wasm'; // imports from wasm file
+            import * as wasm from './{module_name}_bg'; // imports from wasm file
             {imports}
 
             {globals}

@@ -204,7 +204,7 @@ fn other_exports() {
             }
         "#)
         .file("test.ts", r#"
-            import * as wasm from "./out_wasm";
+            import * as wasm from "./out_bg";
 
             export function test() {
                 wasm.foo(2);

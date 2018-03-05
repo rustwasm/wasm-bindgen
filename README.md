@@ -138,8 +138,8 @@ intended interface of the wasm file, notably with rich types like strings,
 classes, etc.
 
 The `wasm-bindgen` tool also emits a few other files needed to implement this
-module. For example `js_hello_world_wasm.wasm` is the original wasm file but
-postprocessed a bit. It's intended that the `js_hello_world_wasm.wasm` file,
+module. For example `js_hello_world_bg.wasm` is the original wasm file but
+postprocessed a bit. It's intended that the `js_hello_world_bg.wasm` file,
 like before, acts like an ES6 module. The `js_hello_world.wasm` file, for
 example, uses `import` to import functionality from the other `*_shims` file
 generated (an internal implementation detail here).

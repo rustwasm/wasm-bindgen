@@ -1,4 +1,4 @@
 package-lock.json
 hello_world.js
-hello_world_wasm.js
-hello_world_wasm.wasm
+hello_world_bg.js
+hello_world_bg.wasm
