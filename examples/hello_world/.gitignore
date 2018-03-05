@@ -1,3 +1,4 @@
 package-lock.json
 hello_world.js
+hello_world_wasm.js
 hello_world_wasm.wasm
