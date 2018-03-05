@@ -22,8 +22,7 @@ fn works() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn clone(a: &JsValue) -> JsValue {
+            pub fn clone(a: &JsValue) -> JsValue {
                 drop(a.clone());
                 a.clone()
             }

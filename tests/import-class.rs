@@ -11,14 +11,12 @@ fn simple() {
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn get_random() -> f64 {
+            pub fn get_random() -> f64 {
                 Math::random()
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn do_log(a: f64) -> f64 {
+            pub fn do_log(a: f64) -> f64 {
                 Math::log(a)
             }
 
@@ -61,8 +59,7 @@ fn import_class() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar() {
+            pub fn bar() {
                 Foo::bar();
             }
         "#)
@@ -112,8 +109,7 @@ fn construct() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn run() {
+            pub fn run() {
                 let f = Foo::create();
                 assert_eq!(f.get_internal_string(), "this");
                 f.append_to_internal_string(" foo");
@@ -181,8 +177,7 @@ fn new_constructors() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn run() {
+            pub fn run() {
                 let f = Foo::new(1);
                 assert_eq!(f.get(), 2);
             }
@@ -232,14 +227,12 @@ fn switch_methods() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn a() {
+            pub fn a() {
                 Foo::a();
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn b() {
+            pub fn b() {
                 Foo::new().b();
             }
         "#)
@@ -313,8 +306,7 @@ fn properties() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn run() {
+            pub fn run() {
                 let a = Foo::new();
                 assert_eq!(a.a(), 1);
                 a.set_a(2);

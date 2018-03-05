@@ -49,8 +49,7 @@ pub extern fn only_integers(a: i32) -> u32 {
 // is equivalent to...
 
 #[wasm_bindgen]
-#[no_mangle]
-pub extern fn only_integers_with_wasm_bindgen(a: i32) -> u32 {
+pub fn only_integers_with_wasm_bindgen(a: i32) -> u32 {
     // ...
 }
 ```
@@ -88,8 +87,7 @@ Let's take a look at an example.
 ```rust
 // foo.rs
 #[wasm_bindgen]
-#[no_mangle]
-pub extern fn foo(a: &JsValue) {
+pub fn foo(a: &JsValue) {
     // ...
 }
 ```
@@ -318,8 +316,7 @@ at that.
 
 ```rust
 #[wasm_bindgen]
-#[no_mangle]
-pub extern fn greet(a: &str) -> String {
+pub fn greet(a: &str) -> String {
     format!("Hello, {}!", a)
 }
 ```
