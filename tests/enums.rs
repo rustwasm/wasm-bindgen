@@ -17,9 +17,8 @@ fn c_style_enum() {
                 Red,
             }
 
-            #[no_mangle]
             #[wasm_bindgen]
-            pub extern fn cycle(color: Color) -> Color {
+            pub fn cycle(color: Color) -> Color {
                 match color {
                     Color::Green => Color::Yellow,
                     Color::Yellow => Color::Red,
@@ -60,9 +59,8 @@ fn c_style_enum_with_custom_values() {
                 Red,
             }
 
-            #[no_mangle]
             #[wasm_bindgen]
-            pub extern fn cycle(color: Color) -> Color {
+            pub fn cycle(color: Color) -> Color {
                 match color {
                     Color::Green => Color::Yellow,
                     Color::Yellow => Color::Red,

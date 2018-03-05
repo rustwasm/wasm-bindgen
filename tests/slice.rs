@@ -12,9 +12,8 @@ fn export() {
 
             macro_rules! doit {
                 ($($i:ident)*) => ($(
-                    #[no_mangle]
                     #[wasm_bindgen]
-                    pub extern fn $i(a: &[$i]) -> Vec<$i> {
+                    pub fn $i(a: &[$i]) -> Vec<$i> {
                         assert_eq!(a.len(), 2);
                         assert_eq!(a[0], 1 as $i);
                         assert_eq!(a[1], 2 as $i);
@@ -98,9 +97,8 @@ fn import() {
                         fn $js(a: &[$i]) -> Vec<$i>;
                     }
 
-                    #[no_mangle]
                     #[wasm_bindgen]
-                    pub extern fn $rust(a: &[$i]) -> Vec<$i> {
+                    pub fn $rust(a: &[$i]) -> Vec<$i> {
                         assert_eq!(a.len(), 2);
                         assert_eq!(a[0], 1 as $i);
                         assert_eq!(a[1], 2 as $i);

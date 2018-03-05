@@ -91,8 +91,7 @@ extern {
 }
 
 #[wasm_bindgen]
-#[no_mangle]
-pub extern fn greet(name: &str) {
+pub fn greet(name: &str) {
     alert(&format!("Hello, {}!", name));
 }
 ```
@@ -279,8 +278,7 @@ use wasm_bindgen::prelude::*;
 
 // Strings can both be passed in and received
 #[wasm_bindgen]
-#[no_mangle]
-pub extern fn concat(a: &str, b: &str) -> String {
+pub fn concat(a: &str, b: &str) -> String {
     let mut a = a.to_string();
     a.push_str(b);
     return a
@@ -427,8 +425,8 @@ impls, and foreign modules. Impls can only contain functions, and the attribute
 cannot be attached to functions in an impl block or functions in a foreign
 module. No lifetime parameters or type parameters are allowed on any of these
 types. Foreign modules must have the `"C"` abi (or none listed). Free functions
-with `#[wasm_bindgen]` must also have the `"C"` abi or none listed and also be
-annotated with the `#[no_mangle]` attribute.
+with `#[wasm_bindgen]` might no have the `"C"` abi or none listed and also not 
+needed to annotate with the `#[no_mangle]` attribute.
 
 All structs referenced through arguments to functions should be defined in the
 macro itself. Arguments allowed implement the `WasmBoundary` trait, and examples

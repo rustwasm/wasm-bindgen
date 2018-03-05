@@ -90,10 +90,7 @@ impl Program {
                     .find(|&(_, ref m)| m.name() == "no_mangle");
                 match no_mangle {
                     Some((i, _)) => { f.attrs.remove(i); }
-                    None => {
-                        panic!("#[wasm_bindgen] can only be applied to #[no_mangle] \
-                                functions, or those that would otherwise be exported")
-                    }
+                    _ => {}
                 }
                 f.to_tokens(tokens);
                 self.exports.push(Export {
@@ -379,10 +376,6 @@ impl Function {
         }
         if input.unsafety.is_some() {
             panic!("can only bindgen safe functions");
-        }
-        if input.abi.is_none() {
-            panic!("can only bindgen `extern` ABI functions, or those that \
-                    would otherwise be exported")
         }
 
         Function::from_decl(input.ident,

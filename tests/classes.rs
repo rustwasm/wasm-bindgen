@@ -254,8 +254,7 @@ fn issue_27() {
             pub struct Expr {}
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn context() -> Context {
+            pub fn context() -> Context {
                 Context {}
             }
         "#)

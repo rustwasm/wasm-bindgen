@@ -11,45 +11,38 @@ fn works() {
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn foo() -> JsValue {
+            pub fn foo() -> JsValue {
                 JsValue::from("foo")
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar(s: &str) -> JsValue {
+            pub fn bar(s: &str) -> JsValue {
                 JsValue::from(s)
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn baz() -> JsValue {
+            pub fn baz() -> JsValue {
                 JsValue::from(1.0)
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn baz2(a: &JsValue, b: &JsValue) {
+            pub fn baz2(a: &JsValue, b: &JsValue) {
                 assert_eq!(a.as_f64(), Some(2.0));
                 assert_eq!(b.as_f64(), None);
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn js_null() -> JsValue {
+            pub fn js_null() -> JsValue {
                 JsValue::null()
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn js_undefined() -> JsValue {
+            pub fn js_undefined() -> JsValue {
                 JsValue::undefined()
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn test_is_null_undefined(
+            pub fn test_is_null_undefined(
                 a: &JsValue,
                 b: &JsValue,
                 c: &JsValue,
@@ -65,20 +58,17 @@ fn works() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn get_true() -> JsValue {
+            pub fn get_true() -> JsValue {
                 JsValue::from(true)
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn get_false() -> JsValue {
+            pub fn get_false() -> JsValue {
                 JsValue::from(false)
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn test_bool(
+            pub fn test_bool(
                 a: &JsValue,
                 b: &JsValue,
                 c: &JsValue,
@@ -89,38 +79,33 @@ fn works() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn mk_symbol() -> JsValue {
+            pub fn mk_symbol() -> JsValue {
                 let a = JsValue::symbol(None);
                 assert!(a.is_symbol());
                 return a
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn mk_symbol2(s: &str) -> JsValue {
+            pub fn mk_symbol2(s: &str) -> JsValue {
                 let a = JsValue::symbol(Some(s));
                 assert!(a.is_symbol());
                 return a
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn assert_symbols(a: &JsValue, b: &JsValue) {
+            pub fn assert_symbols(a: &JsValue, b: &JsValue) {
                 assert!(a.is_symbol());
                 assert!(!b.is_symbol());
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn acquire_string(a: &JsValue, b: &JsValue) {
+            pub fn acquire_string(a: &JsValue, b: &JsValue) {
                 assert_eq!(a.as_string().unwrap(), "foo");
                 assert_eq!(b.as_string(), None);
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn acquire_string2(a: &JsValue) -> String {
+            pub fn acquire_string2(a: &JsValue) -> String {
                 a.as_string().unwrap_or("wrong".to_string())
             }
         "#)

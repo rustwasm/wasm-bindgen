@@ -16,8 +16,7 @@ fn simple() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar(s: &JsValue) {
+            pub fn bar(s: &JsValue) {
                 foo(s);
             }
         "#)
@@ -58,8 +57,7 @@ fn owned() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar(s: JsValue) {
+            pub fn bar(s: JsValue) {
                 foo(s);
             }
         "#)
@@ -104,8 +102,7 @@ fn clone() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar(s: JsValue) {
+            pub fn bar(s: JsValue) {
                 foo1(s.clone());
                 foo2(&s);
                 foo3(s.clone());
@@ -151,8 +148,7 @@ fn promote() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar(s: &JsValue) {
+            pub fn bar(s: &JsValue) {
                 foo1(s);
                 foo2(s.clone());
                 foo3(s);
@@ -193,8 +189,7 @@ fn returning_vector() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar() -> Vec<JsValue> {
+            pub fn bar() -> Vec<JsValue> {
                 let mut res = Vec::new();
                 for _ in 0..10 {
                     res.push(foo())

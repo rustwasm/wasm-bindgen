@@ -19,26 +19,22 @@ fn simple() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar(s: &str) {
+            pub fn bar(s: &str) {
                 foo(s);
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn another_thunk(a: u32) -> i32 {
+            pub fn another_thunk(a: u32) -> i32 {
                 another(a)
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bool_thunk(a: bool) -> bool {
+            pub fn bool_thunk(a: bool) -> bool {
                 take_and_return_bool(a)
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn get_the_object() -> JsValue {
+            pub fn get_the_object() -> JsValue {
                 return_object()
             }
         "#)
@@ -102,8 +98,7 @@ fn unused() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar() {}
+            pub fn bar() {}
         "#)
         .file("test.ts", r#"
             import * as wasm from "./out";
@@ -133,14 +128,12 @@ fn strings() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar(a: &str) -> String {
+            pub fn bar(a: &str) -> String {
                 foo(a.to_string())
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn bar2(a: String) -> String {
+            pub fn bar2(a: String) -> String {
                 foo(a)
             }
         "#)
@@ -179,15 +172,13 @@ fn exceptions() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn run() {
+            pub fn run() {
                 foo();
                 bar();
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn run2() {
+            pub fn run2() {
                 assert!(baz().is_err());
                 bar();
             }
@@ -237,8 +228,7 @@ fn exn_caught() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn run() -> JsValue {
+            pub fn run() -> JsValue {
                 foo().unwrap_err()
             }
         "#)
@@ -275,8 +265,7 @@ fn free_imports() {
             }
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn run() {
+            pub fn run() {
                 assert_eq!(parseInt("3"), 3);
             }
         "#)

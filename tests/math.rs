@@ -11,8 +11,7 @@ fn auto_bind_math() {
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen]
-            #[no_mangle]
-            pub extern fn math(a: f32, b: f64) -> f64 {
+            pub fn math(a: f32, b: f64) -> f64 {
                 b.acos() +
                     b.asin() +
                     b.atan() +
