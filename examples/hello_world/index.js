@@ -11,7 +11,7 @@ Promise.all([
   // hack around this and need to defer our call until the converted wasm
   // module is asynchronously loaded. Uncomment this line to enable.
   // This hack is not necessary in Firefox.
-  // import("./hello_world_wasm.js").then(wasm => wasm.booted),
+  // import("./hello_world_bg.js").then(wasm => wasm.booted),
 ]).then(([js]) => {
   js.greet("World!");
 });

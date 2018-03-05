@@ -23,9 +23,9 @@ strings, etc. Keep in mind, though, that everything is based on ES Modules! This
 means that the compiler is actually producing a "broken" wasm file of sorts. The
 wasm file emitted by rustc, for example, does not have the interface we would
 like to have. Instead it requires the `wasm-bindgen` tool to postprocess the
-file, generating a `foo.js` and `foo_wasm.wasm` file. The `foo.js` file is the
+file, generating a `foo.js` and `foo_bg.wasm` file. The `foo.js` file is the
 desired interface expressed in JS (classes, types, strings, etc) and the
-`foo_wasm.wasm` module is simply used as an implementation detail (it was
+`foo_bg.wasm` module is simply used as an implementation detail (it was
 lightly modified from the original `foo.wasm` file).
 
 ## Foundation #2: Unintrusive in Rust
@@ -109,7 +109,7 @@ and what we actually generate looks something like:
 
 ```js
 // foo.js
-import * as wasm from './foo_wasm';
+import * as wasm from './foo_bg';
 
 let stack = [];
 
@@ -130,7 +130,7 @@ export function foo(arg0) {
 
 Here we can see a few notable points of action:
 
-* The wasm file was renamed to `foo_wasm.wasm`, and we can see how the JS module
+* The wasm file was renamed to `foo_bg.wasm`, and we can see how the JS module
   generated here is importing from the wasm file.
 * Next we can see our `stack` module variable which is used to push/pop items
   from the stack.
@@ -197,7 +197,7 @@ module interface is the same as before, but the ownership mechanics are slightly
 different. Let's see the generated JS's slab in action:
 
 ```js
-import * as wasm from './foo_wasm'; // imports from wasm file
+import * as wasm from './foo_bg'; // imports from wasm file
 
 let slab = [];
 let slab_next = 0;
@@ -331,7 +331,7 @@ export function greet(a: string): string;
 To see what's going on, let's take a look at the generated shim
 
 ```js
-import * as wasm from './foo_wasm';
+import * as wasm from './foo_bg';
 
 function passStringToWasm(arg) {
   const buf = new TextEncoder('utf-8').encode(arg);
@@ -446,7 +446,7 @@ both JS and Rust doing the necessary translation. Let's first see the JS shim in
 action:
 
 ```js
-import * as wasm from './foo_wasm';
+import * as wasm from './foo_bg';
 
 import { greet } from './greet';
 
@@ -536,7 +536,7 @@ available to JS through generated shims. If we take a look at the generated JS
 code for this we'll see:
 
 ```js
-import * as wasm from './foo_wasm';
+import * as wasm from './foo_bg';
 
 export class Foo {
   constructor(ptr) {
@@ -707,7 +707,7 @@ let's go through one-by-one:
 With all that in mind, let's take a look at the JS generated.
 
 ```js
-import * as wasm from './foo_wasm';
+import * as wasm from './foo_bg';
 
 import { Bar } from './bar';
 
