@@ -177,13 +177,13 @@ impl Project {
             .expect("failed to run bindgen");
 
         let mut wasm = Vec::new();
-        File::open(root.join("out_wasm.wasm")).unwrap()
+        File::open(root.join("out_bg.wasm")).unwrap()
             .read_to_end(&mut wasm).unwrap();
         let obj = cli::wasm2es6js::Config::new()
             .base64(true)
             .generate(&wasm)
             .expect("failed to convert wasm to js");
-        File::create(root.join("out_wasm.d.ts")).unwrap()
+        File::create(root.join("out_bg.d.ts")).unwrap()
             .write_all(obj.typescript().as_bytes()).unwrap();
 
 

@@ -105,7 +105,7 @@ impl Bindgen {
                 .write_all(ts.as_bytes()).unwrap();
         }
 
-        let wasm_path = out_dir.join(format!("{}_wasm", stem)).with_extension("wasm");
+        let wasm_path = out_dir.join(format!("{}_bg", stem)).with_extension("wasm");
         let wasm_bytes = parity_wasm::serialize(module).map_err(|e| {
             format_err!("{:?}", e)
         })?;
