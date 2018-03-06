@@ -30,7 +30,7 @@ impl Config {
     pub fn generate(&mut self, wasm: &[u8]) -> Result<Output, Error> {
         assert!(self.base64);
         let module = deserialize_buffer(wasm).map_err(|e| {
-            format_err!("{:?}", e)
+            ::Error(format!("{:?}", e))
         })?;
         Ok(Output {
             module,

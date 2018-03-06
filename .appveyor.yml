@@ -1,7 +1,14 @@
+environment:
+  global:
+    RUSTFLAGS: -Zunstable-options -Ctarget-feature=+crt-static
+  matrix:
+    - TARGET: x86_64-pc-windows-msvc
+      DEPLOY: 1
+
 install:
   - ps: Install-Product node 9
   - appveyor-retry appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
-  - if not defined RUSTFLAGS rustup-init.exe -y --default-host x86_64-pc-windows-msvc --default-toolchain nightly
+  - rustup-init.exe -y --default-host x86_64-pc-windows-msvc --default-toolchain nightly
   - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
   - rustc -V
   - cargo -V
@@ -12,4 +19,27 @@ test_script:
   - rustup target add wasm32-unknown-unknown
   - yarn
   - cargo test
-  - cargo install --debug --path crates/wasm-bindgen-cli
+  - cargo build --release -p wasm-bindgen-cli
+
+before_deploy:
+  - ps: |
+        $NAME = "wasm-bindgen-${env:APPVEYOR_REPO_TAG_NAME}-${env:TARGET}"
+        New-Item -Path $NAME -ItemType directory
+        Copy-Item target/release/wasm-bindgen.exe "${NAME}/"
+        Copy-Item target/release/wasm2es6js.exe "${NAME}/"
+        Copy-Item LICENSE-MIT "${NAME}/"
+        Copy-Item LICENSE-APACHE "${NAME}/"
+        Copy-Item README.md "${NAME}/"
+        7z a -ttar "${NAME}.tar" "${NAME}"
+        7z a "${NAME}.tar.gz" "${NAME}.tar"
+        Push-AppveyorArtifact "${NAME}.tar.gz"
+
+deploy:
+  artifact: /.*\.tar.gz/
+  auth_token:
+    secure: dtHSvbZkdAFtL0J5YrSw8DpxjfYuHWgqD1SupmJT/yfYSjEBiX55RFXRoqBM2tx1
+  description: ''
+  on:
+    appveyor_repo_tag: true
+  provider: GitHub
+
