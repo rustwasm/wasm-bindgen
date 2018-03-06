@@ -53,7 +53,7 @@ First up, let's install the tools we need
 
 ```
 $ rustup target add wasm32-unknown-unknown
-$ cargo install --git https://github.com/alexcrichton/wasm-bindgen
+$ cargo install wasm-bindgen-cli
 ```
 
 The first command here installs the wasm target so you can compile to it, and
@@ -73,7 +73,7 @@ configuring our build output:
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { git = 'https://github.com/alexcrichton/wasm-bindgen' }
+wasm-bindgen = "0.1"
 ```
 
 Next up our actual code! We'll write this in `src/lib.rs`:
@@ -425,7 +425,7 @@ impls, and foreign modules. Impls can only contain functions, and the attribute
 cannot be attached to functions in an impl block or functions in a foreign
 module. No lifetime parameters or type parameters are allowed on any of these
 types. Foreign modules must have the `"C"` abi (or none listed). Free functions
-with `#[wasm_bindgen]` might no have the `"C"` abi or none listed and also not 
+with `#[wasm_bindgen]` might no have the `"C"` abi or none listed and also not
 needed to annotate with the `#[no_mangle]` attribute.
 
 All structs referenced through arguments to functions should be defined in the
