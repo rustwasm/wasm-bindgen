@@ -163,7 +163,7 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
                     panic!("failed to decode what looked like wasm-bindgen data: {}", e)
                 }
             };
-            if p.version != version {
+            if p.schema_version != shared::SCHEMA_VERSION {
                 panic!("
 
 it looks like the Rust project used to create this wasm file was linked against

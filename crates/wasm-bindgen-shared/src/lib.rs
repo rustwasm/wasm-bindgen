@@ -5,6 +5,8 @@ extern crate fnv;
 use std::char;
 use std::hash::{Hash, Hasher};
 
+pub const SCHEMA_VERSION: &str = "0";
+
 #[derive(Deserialize)]
 pub struct Program {
     pub exports: Vec<Export>,
@@ -12,6 +14,7 @@ pub struct Program {
     pub imports: Vec<Import>,
     pub custom_type_names: Vec<CustomTypeName>,
     pub version: String,
+    pub schema_version: String,
 }
 
 #[derive(Deserialize)]

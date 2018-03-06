@@ -351,6 +351,7 @@ impl Program {
                     })
                 }),
                 ("version", &|a| a.str(&shared::version())),
+                ("schema_version", &|a| a.str(&shared::SCHEMA_VERSION)),
             ]);
             a.cnt
         };
