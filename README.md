@@ -482,5 +482,5 @@ shall be dual licensed as above, without any additional terms or conditions.
 
 ### Tests
 
-In order to run the tests you will need (node.js)[https://nodejs.org/] version
+In order to run the tests you will need [node.js](https://nodejs.org/) version
 8.9.4 or above. Running the tests is done by running `cargo test`.
