@@ -10,6 +10,8 @@ extern crate proc_macro2;
 extern crate serde_json;
 extern crate wasm_bindgen_shared as shared;
 
+use std::borrow::Cow;
+use std::env;
 use std::sync::atomic::*;
 
 use proc_macro::TokenStream;
@@ -39,6 +41,24 @@ pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
     ret.into()
 }
 
+fn to_ident_name(s: &str) -> Cow<str> {
+    if s.chars().all(|c| match c {
+        'a'...'z' | 'A'...'Z' | '0'...'9' | '_' => true,
+        _ => false,
+    }) {
+        return Cow::from(s);
+    }
+
+    Cow::from(
+        s.chars()
+            .map(|c| match c {
+                'a'...'z' | 'A'...'Z' | '0'...'9' | '_' => c,
+                _ => '_',
+            })
+            .collect::<String>(),
+    )
+}
+
 // Generate wrappers for all the items that we've found
 fn generate_wrappers(program: ast::Program, tokens: &mut Tokens) {
     for export in program.exports.iter() {
@@ -62,9 +82,18 @@ fn generate_wrappers(program: ast::Program, tokens: &mut Tokens) {
     // eventually have it actually in its own section.
 
     static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
-    let generated_static_name = format!("__WASM_BINDGEN_GENERATED{}",
-                                        CNT.fetch_add(1, Ordering::SeqCst));
+
+    let crate_name = env::var("CARGO_PKG_NAME").expect("should have CARGO_PKG_NAME env var");
+    let crate_vers = env::var("CARGO_PKG_VERSION").expect("should have CARGO_PKG_VERSION env var");
+
+    let generated_static_name = format!(
+        "__WASM_BINDGEN_GENERATED_{}_{}_{}",
+        to_ident_name(&crate_name),
+        to_ident_name(&crate_vers),
+        CNT.fetch_add(1, Ordering::SeqCst)
+    );
     let generated_static_name = syn::Ident::from(generated_static_name);
+
     let mut generated_static_value = Tokens::new();
     let generated_static_length = program.wbg_literal(&mut generated_static_value);
 
