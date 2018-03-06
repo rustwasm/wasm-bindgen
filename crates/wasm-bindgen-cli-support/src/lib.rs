@@ -1,5 +1,3 @@
-#[macro_use]
-extern crate failure;
 extern crate parity_wasm;
 extern crate wasm_bindgen_shared as shared;
 extern crate serde_json;
@@ -11,7 +9,6 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::slice;
 
-use failure::Error;
 use parity_wasm::elements::*;
 
 mod js;
@@ -22,6 +19,15 @@ pub struct Bindgen {
     nodejs: bool,
     debug: bool,
     typescript: bool,
+}
+
+#[derive(Debug)]
+pub struct Error(String);
+
+impl<E: std::error::Error> From<E> for Error {
+    fn from(e: E) -> Error {
+        Error(e.to_string())
+    }
 }
 
 impl Bindgen {
@@ -65,7 +71,7 @@ impl Bindgen {
         };
         let stem = input.file_stem().unwrap().to_str().unwrap();
         let mut module = parity_wasm::deserialize_file(input).map_err(|e| {
-            format_err!("{:?}", e)
+            Error(format!("{:?}", e))
         })?;
         let programs = extract_programs(&mut module);
 
@@ -107,7 +113,7 @@ impl Bindgen {
 
         let wasm_path = out_dir.join(format!("{}_bg", stem)).with_extension("wasm");
         let wasm_bytes = parity_wasm::serialize(module).map_err(|e| {
-            format_err!("{:?}", e)
+            Error(format!("{:?}", e))
         })?;
         let bytes = wasm_gc::Config::new()
             .demangle(false)
