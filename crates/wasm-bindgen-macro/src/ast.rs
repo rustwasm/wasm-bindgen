@@ -10,7 +10,7 @@ pub struct Program {
     pub exports: Vec<Export>,
     pub imports: Vec<Import>,
     pub enums: Vec<Enum>,
-    pub imported_types: Vec<(syn::Visibility, syn::Ident)>,
+    pub imported_types: Vec<ImportedType>,
     pub structs: Vec<Struct>,
 }
 
@@ -51,6 +51,11 @@ pub struct Struct {
 pub struct Enum {
     pub name: syn::Ident,
     pub variants: Vec<(syn::Ident, u32)>
+}
+
+pub struct ImportedType {
+    pub vis: syn::Visibility,
+    pub name: syn::Ident,
 }
 
 pub enum Type {
@@ -323,7 +328,10 @@ impl Program {
     pub fn push_foreign_ty(&mut self,
                            f: syn::ForeignItemType,
                            _module_opts: &BindgenAttrs) {
-        self.imported_types.push((f.vis, f.ident));
+        self.imported_types.push(ImportedType {
+            vis: f.vis,
+            name: f.ident
+        });
     }
 
     pub fn wbg_literal(&self, dst: &mut Tokens) -> usize {
