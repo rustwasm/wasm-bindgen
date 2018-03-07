@@ -42,6 +42,8 @@ pub fn project() -> Project {
                 [lib]
                 crate-type = ["cdylib"]
 
+                # XXX: It is important that `[dependencies]` is the last section
+                # here, so that `add_local_dependency` functions correctly!
                 [dependencies]
                 wasm-bindgen = {{ path = '{}' }}
             "#, IDX.with(|x| *x), dir.display())),
@@ -139,6 +141,20 @@ impl Project {
 
     pub fn js(&mut self, js: bool) -> &mut Project {
         self.js = js;
+        self
+    }
+
+    pub fn add_local_dependency(&mut self, name: &str, path: &str) -> &mut Project {
+        {
+            let cargo_toml = self.files
+                .iter_mut()
+                .find(|f| f.0 == "Cargo.toml")
+                .expect("should have Cargo.toml file!");
+            cargo_toml.1.push_str(name);
+            cargo_toml.1.push_str(" = { path = \"");
+            cargo_toml.1.push_str(path);
+            cargo_toml.1.push_str("\" }");
+        }
         self
     }
 
