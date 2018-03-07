@@ -15,6 +15,7 @@ pub struct Project {
     files: Vec<(String, String)>,
     debug: bool,
     js: bool,
+    detect_node: bool,
 }
 
 pub fn project() -> Project {
@@ -28,6 +29,7 @@ pub fn project() -> Project {
     Project {
         debug: true,
         js: false,
+        detect_node: false,
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
                 [package]
@@ -130,6 +132,11 @@ impl Project {
         self
     }
 
+    pub fn detect_node(&mut self, detect_node: bool) -> &mut Project {
+        self.detect_node = detect_node;
+        self
+    }
+
     pub fn js(&mut self, js: bool) -> &mut Project {
         self.js = js;
         self
@@ -171,6 +178,7 @@ impl Project {
         cli::Bindgen::new()
             .input_path(&as_a_module)
             .nodejs(true)
+            .nodejs_runtime_detect(self.detect_node)
             .typescript(true)
             .debug(self.debug)
             .generate(&root)

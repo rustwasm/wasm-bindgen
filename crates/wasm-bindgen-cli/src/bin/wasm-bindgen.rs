@@ -18,17 +18,19 @@ Usage:
     wasm-bindgen -V | --version
 
 Options:
-    -h --help               Show this screen.
-    --out-dir DIR           Output directory
-    --nodejs                Generate output for node.js, not the browser
-    --typescript            Output a TypeScript definition file
-    --debug                 Include otherwise-extraneous debug checks in output
-    -V --version            Print the version number of wasm-bindgen
+    -h --help                Show this screen.
+    --out-dir DIR            Output directory
+    --nodejs                 Generate output for node.js, not the browser
+    --nodejs-runtime-detect  Detect at runtime whether we're in node or a browser
+    --typescript             Output a TypeScript definition file
+    --debug                  Include otherwise-extraneous debug checks in output
+    -V --version             Print the version number of wasm-bindgen
 ";
 
 #[derive(Debug, Deserialize)]
 struct Args {
     flag_nodejs: bool,
+    flag_nodejs_runtime_detect: bool,
     flag_typescript: bool,
     flag_out_dir: Option<PathBuf>,
     flag_debug: bool,
@@ -54,6 +56,7 @@ fn main() {
     let mut b = Bindgen::new();
     b.input_path(&input)
      .nodejs(args.flag_nodejs)
+     .nodejs_runtime_detect(args.flag_nodejs_runtime_detect)
      .debug(args.flag_debug)
      .typescript(args.flag_typescript);
 

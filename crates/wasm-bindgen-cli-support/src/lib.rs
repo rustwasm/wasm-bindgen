@@ -17,6 +17,7 @@ pub mod wasm2es6js;
 pub struct Bindgen {
     path: Option<PathBuf>,
     nodejs: bool,
+    nodejs_runtime_detect: bool,
     debug: bool,
     typescript: bool,
 }
@@ -35,6 +36,7 @@ impl Bindgen {
         Bindgen {
             path: None,
             nodejs: false,
+            nodejs_runtime_detect: false,
             debug: false,
             typescript: false,
         }
@@ -47,6 +49,11 @@ impl Bindgen {
 
     pub fn nodejs(&mut self, node: bool) -> &mut Bindgen {
         self.nodejs = node;
+        self
+    }
+
+    pub fn nodejs_runtime_detect(&mut self, detect: bool) -> &mut Bindgen {
+        self.nodejs_runtime_detect = detect;
         self
     }
 
