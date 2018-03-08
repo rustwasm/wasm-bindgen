@@ -1,5 +1,4 @@
-use std::collections::BTreeSet;
-
+use literal::{self, Literal};
 use proc_macro2::Span;
 use quote::{Tokens, ToTokens};
 use shared;
@@ -50,7 +49,12 @@ pub struct Struct {
 
 pub struct Enum {
     pub name: syn::Ident,
-    pub variants: Vec<(syn::Ident, u32)>
+    pub variants: Vec<Variant>
+}
+
+pub struct Variant {
+    pub name: syn::Ident,
+    pub value: u32,
 }
 
 pub struct ImportedType {
@@ -231,7 +235,10 @@ impl Program {
                 _ => panic!("Enums may only have number literal values")
             };
 
-            (v.ident, value)
+            Variant {
+                name: v.ident,
+                value,
+            }
         }).collect();
         self.enums.push(Enum {
             name: item.ident,
@@ -334,34 +341,12 @@ impl Program {
         });
     }
 
-    pub fn wbg_literal(&self, dst: &mut Tokens) -> usize {
+    pub fn literal(&self, dst: &mut Tokens) -> usize {
         let mut tmp = Tokens::new();
         let cnt = {
-            let mut a = LiteralBuilder {
-                dst: &mut tmp,
-                cnt: 0,
-            };
-            a.fields(&[
-                ("exports", &|a| a.list(&self.exports, Export::wbg_literal)),
-                ("imports", &|a| a.list(&self.imports, Import::wbg_literal)),
-                ("enums", &|a| a.list(&self.enums, Enum::wbg_literal)),
-                ("custom_type_names", &|a| {
-                    let names = self.exports.iter()
-                        .filter_map(|e| e.class)
-                        .chain(self.structs.iter().map(|s| s.name))
-                        .collect::<BTreeSet<_>>();
-                    a.list(&names, |s, a| {
-                        let val = shared::name_to_descriptor(s.as_ref());
-                        a.fields(&[
-                            ("descriptor", &|a| a.char(val)),
-                            ("name", &|a| a.str(s.as_ref()))
-                        ]);
-                    })
-                }),
-                ("version", &|a| a.str(&shared::version())),
-                ("schema_version", &|a| a.str(&shared::SCHEMA_VERSION)),
-            ]);
-            a.cnt
+            let mut a = literal::LiteralBuilder::new(&mut tmp);
+            Literal::literal(self, &mut a);
+            a.finish()
         };
         let cnt = cnt as u32;
         (quote! {
@@ -442,19 +427,6 @@ impl Function {
             rust_attrs: attrs,
         }, mutable)
     }
-
-    fn wbg_literal(&self, a: &mut LiteralBuilder) {
-        a.fields(&[
-            ("name", &|a| a.str(self.name.as_ref())),
-            ("arguments", &|a| a.list(&self.arguments, Type::wbg_literal)),
-            ("ret", &|a| {
-                match self.ret {
-                    Some(ref s) => s.wbg_literal(a),
-                    None => a.append("null"),
-                }
-            }),
-        ]);
-    }
 }
 
 pub fn extract_path_ident(path: &syn::Path) -> Option<syn::Ident> {
@@ -527,43 +499,6 @@ impl Type {
 
         Type::ByValue(ty.clone())
     }
-
-    fn wbg_literal(&self, a: &mut LiteralBuilder) {
-        match *self {
-            Type::Vector(VectorType::String, true) => a.char(shared::TYPE_STRING),
-            Type::Vector(VectorType::String, false) => a.char(shared::TYPE_BORROWED_STR),
-            Type::Vector(VectorType::U8, true) => a.char(shared::TYPE_VECTOR_U8),
-            Type::Vector(VectorType::U8, false) => a.char(shared::TYPE_SLICE_U8),
-            Type::Vector(VectorType::I8, true) => a.char(shared::TYPE_VECTOR_I8),
-            Type::Vector(VectorType::I8, false) => a.char(shared::TYPE_SLICE_I8),
-            Type::Vector(VectorType::U16, true) => a.char(shared::TYPE_VECTOR_U16),
-            Type::Vector(VectorType::U16, false) => a.char(shared::TYPE_SLICE_U16),
-            Type::Vector(VectorType::I16, true) => a.char(shared::TYPE_VECTOR_I16),
-            Type::Vector(VectorType::I16, false) => a.char(shared::TYPE_SLICE_I16),
-            Type::Vector(VectorType::U32, true) => a.char(shared::TYPE_VECTOR_U32),
-            Type::Vector(VectorType::U32, false) => a.char(shared::TYPE_SLICE_U32),
-            Type::Vector(VectorType::I32, true) => a.char(shared::TYPE_VECTOR_I32),
-            Type::Vector(VectorType::I32, false) => a.char(shared::TYPE_SLICE_I32),
-            Type::Vector(VectorType::F32, true) => a.char(shared::TYPE_VECTOR_F32),
-            Type::Vector(VectorType::F32, false) => a.char(shared::TYPE_SLICE_F32),
-            Type::Vector(VectorType::F64, true) => a.char(shared::TYPE_VECTOR_F64),
-            Type::Vector(VectorType::F64, false) => a.char(shared::TYPE_SLICE_F64),
-            Type::Vector(VectorType::JsValue, true) => a.char(shared::TYPE_VECTOR_JSVALUE),
-            Type::Vector(VectorType::JsValue, false) => panic!("Slices of JsValues not supported"),
-            Type::ByValue(ref t) => {
-                a.as_char(my_quote! {
-                    <#t as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR
-                });
-            }
-            Type::ByRef(ref ty) |
-            Type::ByMutRef(ref ty) => {
-                a.as_char(my_quote! {
-                    (<#ty as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR |
-                        ::wasm_bindgen::convert::DESCRIPTOR_CUSTOM_REF_FLAG)
-                });
-            }
-        }
-    }
 }
 
 impl Export {
@@ -592,188 +527,23 @@ impl Export {
         };
         syn::LitStr::new(&name, Span::def_site())
     }
-
-    fn wbg_literal(&self, a: &mut LiteralBuilder) {
-        a.fields(&[
-            ("class", &|a| {
-                match self.class {
-                    Some(ref s) => a.str(s.as_ref()),
-                    None => a.append("null"),
-                }
-            }),
-            ("method", &|a| a.bool(self.method)),
-            ("function", &|a| self.function.wbg_literal(a)),
-        ]);
-    }
 }
 
 impl Import {
-    fn wbg_literal(&self, a: &mut LiteralBuilder) {
-        let mut method = false;
-        let mut js_new = false;
-        let mut statik = false;
-        let mut class_name = None;
-        match self.kind {
-            ImportKind::Method { ref class, .. } => {
-                method = true;
-                class_name = Some(class);
-            }
-            ImportKind::JsConstructor { ref class, .. } => {
-                js_new = true;
-                class_name = Some(class);
-            }
-            ImportKind::Static { ref class, .. } => {
-                statik = true;
-                class_name = Some(class);
-            }
-            ImportKind::Normal => {}
-        }
-
-        let mut getter = None;
-        let mut setter = None;
-
-        if self.function.opts.getter() {
-            getter = Some(self.infer_getter_property());
-        }
-        if self.function.opts.setter() {
-            setter = Some(self.infer_setter_property());
-        }
-        a.fields(&[
-            ("module", &|a| {
-                match self.module {
-                    Some(ref s) => a.str(s),
-                    None => a.append("null"),
-                }
-            }),
-            ("catch", &|a| a.bool(self.function.opts.catch())),
-            ("method", &|a| a.bool(method)),
-            ("js_new", &|a| a.bool(js_new)),
-            ("statik", &|a| a.bool(statik)),
-            ("getter", &|a| {
-                match getter {
-                    Some(ref s) => a.str(s),
-                    None => a.append("null"),
-                }
-            }),
-            ("setter", &|a| {
-                match setter {
-                    Some(ref s) => a.str(s),
-                    None => a.append("null"),
-                }
-            }),
-            ("function", &|a| self.function.wbg_literal(a)),
-            ("class", &|a| {
-                match class_name {
-                    Some(s) => a.str(s),
-                    None => a.append("null"),
-                }
-            }),
-        ]);
-    }
-
-    fn infer_getter_property(&self) -> String {
+    pub fn infer_getter_property(&self) -> String {
         self.function.name.as_ref().to_string()
     }
 
-    fn infer_setter_property(&self) -> String {
+    pub fn infer_setter_property(&self) -> String {
         let name = self.function.name.as_ref();
         assert!(name.starts_with("set_"), "setters must start with `set_`");
         name[4..].to_string()
     }
 }
 
-impl Enum {
-    fn wbg_literal(&self, a: &mut LiteralBuilder) {
-        a.fields(&[
-                 ("name", &|a| a.str(self.name.as_ref())),
-                 ("variants", &|a| a.list(&self.variants, |v, a| {
-                     let &(name, value) = v;
-                     a.fields(&[("name", &|a| a.str(name.as_ref())),
-                                ("value", &|a| a.append(&format!("{}", value)))])
-                 })),
-        ]);
-    }
-}
-
 impl Struct {
     fn from(s: syn::ItemStruct, _opts: BindgenAttrs) -> Struct {
         Struct { name: s.ident }
-    }
-}
-
-struct LiteralBuilder<'a> {
-    dst: &'a mut Tokens,
-    cnt: usize,
-}
-
-impl<'a> LiteralBuilder<'a> {
-    fn char_lit(&mut self, c: char) {
-        if self.cnt > 0 {
-            ::syn::token::Comma::default().to_tokens(self.dst);
-        }
-        self.cnt += 1;
-        (c as u32).to_tokens(self.dst);
-    }
-
-    fn append(&mut self, s: &str) {
-        for c in s.chars() {
-            self.char_lit(c);
-        }
-    }
-
-    fn str(&mut self, s: &str) {
-        self.append("\"");
-        self.append(s);
-        self.append("\"");
-    }
-
-    fn bool(&mut self, v: bool) {
-        if v {
-            self.append("true")
-        } else {
-            self.append("false")
-        }
-    }
-
-    fn char(&mut self, s: char) {
-        self.append("\"");
-        self.char_lit(s);
-        self.append("\"");
-    }
-
-    fn as_char(&mut self, tokens: Tokens) {
-        self.append("\"");
-        ::syn::token::Comma::default().to_tokens(self.dst);
-        tokens.to_tokens(self.dst);
-        self.cnt += 1;
-        self.append("\"");
-    }
-
-    fn fields(&mut self, fields: &[(&str, &Fn(&mut Self))]) {
-        self.append("{");
-        for (i, &(field, cb)) in fields.iter().enumerate() {
-            if i > 0 {
-                self.append(",");
-            }
-            self.str(field);
-            self.append(":");
-            cb(self);
-        }
-        self.append("}");
-    }
-
-    fn list<T, F>(&mut self, list: T, mut cb: F)
-        where F: FnMut(T::Item, &mut Self),
-              T: IntoIterator,
-    {
-        self.append("[");
-        for (i, element) in list.into_iter().enumerate() {
-            if i > 0 {
-                self.append(",");
-            }
-            cb(element, self);
-        }
-        self.append("]");
     }
 }
 
@@ -848,7 +618,7 @@ impl BindgenAttrs {
             .next()
     }
 
-    fn getter(&self) -> bool {
+    pub fn getter(&self) -> bool {
         self.attrs.iter()
             .any(|a| {
                 match *a {
@@ -858,7 +628,7 @@ impl BindgenAttrs {
             })
     }
 
-    fn setter(&self) -> bool {
+    pub fn setter(&self) -> bool {
         self.attrs.iter()
             .any(|a| {
                 match *a {

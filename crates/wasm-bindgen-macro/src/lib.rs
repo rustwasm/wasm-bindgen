@@ -23,6 +23,7 @@ macro_rules! my_quote {
 }
 
 mod ast;
+mod literal;
 
 #[proc_macro_attribute]
 pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
@@ -96,7 +97,7 @@ impl ToTokens for ast::Program {
         let generated_static_name = syn::Ident::from(generated_static_name);
 
         let mut generated_static_value = Tokens::new();
-        let generated_static_length = self.wbg_literal(&mut generated_static_value);
+        let generated_static_length = self.literal(&mut generated_static_value);
 
         (my_quote! {
             #[no_mangle]
@@ -559,7 +560,7 @@ impl ToTokens for ast::Enum {
         let incoming_u32 = quote! { n };
         let enum_name_as_string = enum_name.to_string();
         let cast_clauses = self.variants.iter().map(|variant| {
-            let &(variant_name, _) = variant;
+            let variant_name = &variant.name;
             quote! {
                 if #incoming_u32 == #enum_name::#variant_name as u32 {
                     #enum_name::#variant_name
