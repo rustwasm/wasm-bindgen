@@ -27,4 +27,5 @@ members = [
   "crates/wasm-bindgen-cli",
   "examples/hello_world",
   "examples/smorgasboard",
+  "examples/console_log",
 ]

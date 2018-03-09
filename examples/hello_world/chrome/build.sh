@@ -3,9 +3,9 @@
 set -ex
 
 # This is the same as the directory above this.
-cargo +nightly build --target wasm32-unknown-unknown --release
+cargo +nightly build --target wasm32-unknown-unknown
 cargo +nightly run -p wasm-bindgen-cli --bin wasm-bindgen -- \
-  ../../../target/wasm32-unknown-unknown/release/hello_world.wasm --out-dir .
+  ../../../target/wasm32-unknown-unknown/debug/hello_world.wasm --out-dir .
 
 # To avoid a bug occurring when webpack, wasm, and Chrome are used together, we
 # convert the .wasm module to a .js module that embeds the wasm bytecode. To
