@@ -6,7 +6,7 @@ matrix:
     # CLI builds on stable
     - rust: stable
       install: true
-      script: cargo build -p wasm-bindgen-cli
+      script: cargo build --manifest-path crates/wasm-bindgen-cli/Cargo.toml
 
     # Tests pass on nightly
     - rust: nightly
@@ -14,12 +14,12 @@ matrix:
     # Dist linux binary
     - env: TARGET=x86_64-unknown-linux-musl DEPLOY=1
       before_script: rustup target add $TARGET
-      script: cargo build -p wasm-bindgen-cli --release --target $TARGET
+      script: cargo build --manifest-path crates/wasm-bindgen-cli/Cargo.toml --release --target $TARGET
 
     # Dist OSX binary
     - os: osx
       env: MACOSX_DEPLOYMENT_TARGET=10.7 DEPLOY=1 TARGET=x86_64-apple-darwin
-      script: cargo build -p wasm-bindgen-cli --release --target $TARGET
+      script: cargo build --manifest-path crates/wasm-bindgen-cli/Cargo.toml --release --target $TARGET
       before_install: brew install yarn --without-node
 
 install:
