@@ -6,6 +6,7 @@ extern crate wasm_gc;
 use std::char;
 use std::fs::File;
 use std::io::Write;
+use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::slice;
 
@@ -148,8 +149,9 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
         None => return ret,
     };
 
-    for entry in data.entries() {
-        let mut value = bytes_to_u32(entry.value());
+    for entry in data.entries_mut() {
+        let value = bytes_to_u32(entry.value_mut());
+        let mut value = &*value;
         loop {
             match value.iter().position(|i| i.0 == 0x30d97887) {
                 Some(i) => value = &value[i + 1..],
@@ -204,8 +206,36 @@ to open an issue at https://github.com/alexcrichton/wasm-bindgen/issues!
 #[repr(packed)]
 struct Unaligned(u32);
 
-fn bytes_to_u32(a: &[u8]) -> &[Unaligned] {
-    unsafe {
-        slice::from_raw_parts(a.as_ptr() as *const Unaligned, a.len() / 4)
+struct FutzWithAlign<'a> {
+    data: &'a mut Vec<u8>,
+    len: usize,
+}
+
+fn bytes_to_u32(a: &mut Vec<u8>) -> FutzWithAlign {
+    let prev_len = a.len();
+    // Data implicitly contains zeros after it and it looks like LLD exploits
+    // this. Pad our view into the vector with zeros to make sure that we read
+    // off everything when we iterate. After we're done iterating though we put
+    // this back as we found it, hence the newtype wrapper w/ a dtor.
+    while a.len() % 4 != 0 {
+        a.push(0);
+    }
+    FutzWithAlign { data: a, len: prev_len }
+}
+
+impl<'a> Deref for FutzWithAlign<'a> {
+    type Target = [Unaligned];
+
+    fn deref(&self) -> &[Unaligned] {
+        unsafe {
+            slice::from_raw_parts(self.data.as_ptr() as *const Unaligned,
+                                  self.data.len() / 4)
+        }
+    }
+}
+
+impl<'a> Drop for FutzWithAlign<'a> {
+    fn drop(&mut self) {
+        self.data.truncate(self.len);
     }
 }
