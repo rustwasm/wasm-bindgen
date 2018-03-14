@@ -6,7 +6,7 @@ extern crate wasm_gc;
 use std::char;
 use std::fs::File;
 use std::io::Write;
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 use std::path::{Path, PathBuf};
 use std::slice;
 
@@ -150,20 +150,22 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
     };
 
     for entry in data.entries_mut() {
-        let value = bytes_to_u32(entry.value_mut());
-        let mut value = &*value;
+        let mut value = bytes_to_u32(entry.value_mut());
+        let mut tmp = &mut *value;
         loop {
-            match value.iter().position(|i| i.0 == 0x30d97887) {
-                Some(i) => value = &value[i + 1..],
+            let value = tmp;
+            let start = match value.iter().position(|i| i.0 == 0x30d97887) {
+                Some(i) => i,
                 None => break,
-            }
-            if value.get(0).map(|c| c.0) != Some(0xd4182f61) {
+            };
+            if value.get(start + 1).map(|c| c.0) != Some(0xd4182f61) {
+                tmp = &mut value[1..];
                 continue
             }
-            let cnt = value[1].0 as usize;
-            let (a, b) = value[2..].split_at(cnt);
-            value = b;
-            let json = a.iter()
+            let cnt = value[start + 2].0 as usize;
+            let (a, b) = value[start..].split_at_mut(cnt + 3);
+            tmp = b;
+            let json = a[3..].iter()
                 .map(|i| char::from_u32(i.0).unwrap())
                 .collect::<String>();
             let p: shared::Program = match serde_json::from_str(&json) {
@@ -198,6 +200,10 @@ to open an issue at https://github.com/alexcrichton/wasm-bindgen/issues!
     p.version, version);
             }
             ret.push(p);
+
+            for slot in a {
+                slot.0 = 0;
+            }
         }
     }
     return ret
@@ -230,6 +236,15 @@ impl<'a> Deref for FutzWithAlign<'a> {
         unsafe {
             slice::from_raw_parts(self.data.as_ptr() as *const Unaligned,
                                   self.data.len() / 4)
+        }
+    }
+}
+
+impl<'a> DerefMut for FutzWithAlign<'a> {
+    fn deref_mut(&mut self) -> &mut [Unaligned] {
+        unsafe {
+            slice::from_raw_parts_mut(self.data.as_mut_ptr() as *mut Unaligned,
+                                      self.data.len() / 4)
         }
     }
 }
