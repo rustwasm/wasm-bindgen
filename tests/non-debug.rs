@@ -5,7 +5,7 @@ fn works() {
     test_support::project()
         .debug(false)
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 

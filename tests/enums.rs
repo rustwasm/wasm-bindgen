@@ -4,7 +4,7 @@ extern crate test_support;
 fn c_style_enum() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -46,7 +46,7 @@ fn c_style_enum() {
 fn c_style_enum_with_custom_values() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 

@@ -110,9 +110,9 @@ impl ToTokens for ast::Program {
         let generated_static_length = self.literal(&mut generated_static_value);
 
         (my_quote! {
-            #[no_mangle]
             #[allow(non_upper_case_globals)]
-            pub static #generated_static_name: [u32; #generated_static_length] =
+            #[wasm_custom_section = "__wasm_bindgen_unstable"]
+            const #generated_static_name: [u8; #generated_static_length] =
                 [#generated_static_value];
         }).to_tokens(tokens);
     }
@@ -565,6 +565,7 @@ impl ToTokens for ast::ImportFunction {
             #[allow(bad_style)]
             #vis extern #fn_token #rust_name(#me #(#arguments),*) #ret {
                 ::wasm_bindgen::__rt::link_this_library();
+                #[wasm_import_module = "__wbindgen_placeholder__"]
                 extern {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
                 }
@@ -638,6 +639,7 @@ impl ToTokens for ast::ImportStatic {
             #[allow(bad_style)]
             #vis static #name: ::wasm_bindgen::JsStatic<#ty> = {
                 fn init() -> #ty {
+                    #[wasm_import_module = "__wbindgen_placeholder__"]
                     extern {
                         fn #shim_name() -> u32;
                     }

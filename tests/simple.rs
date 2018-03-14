@@ -4,7 +4,7 @@ extern crate test_support;
 fn add() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -57,7 +57,7 @@ fn add() {
 fn string_arguments() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -89,7 +89,7 @@ fn string_arguments() {
 fn return_a_string() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -123,7 +123,7 @@ fn return_a_string() {
 fn exceptions() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -154,7 +154,7 @@ fn exceptions() {
 // fn other_imports() {
 //     test_support::project()
 //         .file("src/lib.rs", r#"
-//             #![feature(proc_macro)]
+//             #![feature(proc_macro, wasm_custom_section)]
 //
 //             extern crate wasm_bindgen;
 //

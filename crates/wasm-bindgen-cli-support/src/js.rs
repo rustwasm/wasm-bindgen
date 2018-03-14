@@ -16,7 +16,6 @@ pub struct Context<'a> {
     pub required_internal_exports: HashSet<&'static str>,
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
-    pub imports_to_rewrite: HashSet<String>,
     pub custom_type_names: HashMap<char, String>,
     pub imported_names: HashSet<String>,
     pub exported_classes: HashMap<String, ExportedClass>,
@@ -288,18 +287,7 @@ impl<'a> Context<'a> {
             .flat_map(|s| s.entries_mut());
 
         for import in imports {
-            if import.field().starts_with("__wbindgen") {
-                import.module_mut().truncate(0);
-                import.module_mut().push_str("./");
-                import.module_mut().push_str(module_name);
-                continue
-            }
-
-            // rustc doesn't have support for importing from anything other
-            // than the module `env` so let's use the metadata here to
-            // rewrite the imports if they import from `env` until it's
-            // fixed upstream.
-            if self.imports_to_rewrite.contains(import.field()) {
+            if import.module() == "__wbindgen_placeholder__" {
                 import.module_mut().truncate(0);
                 import.module_mut().push_str("./");
                 import.module_mut().push_str(module_name);
@@ -954,7 +942,7 @@ impl<'a> Context<'a> {
         };
 
         imports.entries().iter().any(|i| {
-            i.module() == "env" && i.field() == name
+            i.module() == "__wbindgen_placeholder__" && i.field() == name
         })
     }
 
@@ -1336,7 +1324,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                   info: &shared::Import,
                                   import: &shared::ImportStatic) {
         // TODO: should support more types to import here
-        self.cx.imports_to_rewrite.insert(import.shim.clone());
         let obj = self.import_name(info, &import.name);
         self.cx.expose_add_heap_object();
         self.cx.globals.push_str(&format!("
@@ -1349,8 +1336,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
     pub fn generate_import_function(&mut self,
                                     info: &shared::Import,
                                     import: &shared::ImportFunction) {
-        self.cx.imports_to_rewrite.insert(import.shim.clone());
-
         let mut dst = String::new();
 
         dst.push_str(&format!("function {}(", import.shim));

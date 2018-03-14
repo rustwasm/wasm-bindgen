@@ -4,7 +4,7 @@ extern crate test_support;
 fn export() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -84,7 +84,7 @@ fn export() {
 fn import() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 

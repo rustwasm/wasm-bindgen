@@ -5,7 +5,7 @@
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
 
-#![feature(use_extern_macros, try_reserve)]
+#![feature(use_extern_macros, wasm_import_module, try_reserve)]
 
 extern crate wasm_bindgen_macro;
 
@@ -213,6 +213,7 @@ macro_rules! numbers {
 
 numbers! { i8 u8 i16 u16 i32 u32 f32 f64 }
 
+#[wasm_import_module = "__wbindgen_placeholder__"]
 extern {
     fn __wbindgen_object_clone_ref(idx: u32) -> u32;
     fn __wbindgen_object_drop_ref(idx: u32);
@@ -228,6 +229,7 @@ extern {
     fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_is_symbol(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
+    fn __wbindgen_throw(a: *const u8, b: usize) -> !;
 }
 
 impl Clone for JsValue {
@@ -298,9 +300,6 @@ impl<T: WasmBoundary> Deref for JsStatic<T> {
 #[cold]
 #[inline(never)]
 pub fn throw(s: &str) -> ! {
-    extern {
-        fn __wbindgen_throw(a: *const u8, b: usize) -> !;
-    }
     unsafe {
         __wbindgen_throw(s.as_ptr(), s.len());
     }

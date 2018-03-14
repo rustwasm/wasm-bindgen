@@ -76,7 +76,7 @@ wasm-bindgen = "0.1"
 Next up our actual code! We'll write this in `src/lib.rs`:
 
 ```rust
-#![feature(proc_macro)]
+#![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
 extern crate wasm_bindgen;
 
@@ -261,7 +261,7 @@ Much more! Here's a taste of various features you can use in this project:
 
 ```rust
 // src/lib.rs
-#![feature(proc_macro)]
+#![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
 extern crate wasm_bindgen;
 

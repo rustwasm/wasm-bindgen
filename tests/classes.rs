@@ -4,7 +4,7 @@ extern crate test_support;
 fn simple() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -56,7 +56,7 @@ fn simple() {
 fn strings() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -114,7 +114,7 @@ fn strings() {
 fn exceptions() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -179,7 +179,7 @@ fn exceptions() {
 fn pass_one_to_another() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
 
@@ -229,7 +229,7 @@ fn pass_one_to_another() {
 fn pass_into_js() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 
@@ -276,7 +276,7 @@ fn pass_into_js() {
 fn issue_27() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;

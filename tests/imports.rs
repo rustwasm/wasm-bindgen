@@ -4,7 +4,7 @@ extern crate test_support;
 fn simple() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 
@@ -86,7 +86,7 @@ fn simple() {
 fn unused() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 
@@ -116,7 +116,7 @@ fn unused() {
 fn strings() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 
@@ -157,7 +157,7 @@ fn strings() {
 fn exceptions() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 
@@ -215,7 +215,7 @@ fn exceptions() {
 fn exn_caught() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 
@@ -253,7 +253,7 @@ fn exn_caught() {
 fn free_imports() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 
@@ -283,7 +283,7 @@ fn free_imports() {
 fn import_a_field() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 
@@ -315,7 +315,7 @@ fn import_a_field() {
 fn rename() {
     test_support::project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
 

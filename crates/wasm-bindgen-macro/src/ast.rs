@@ -404,12 +404,13 @@ impl Program {
         };
         let cnt = cnt as u32;
         (quote! {
-            0x30d97887,
-            0xd4182f61,
-            #cnt,
+            (#cnt >> 0) as u8,
+            (#cnt >> 8) as u8,
+            (#cnt >> 16) as u8,
+            (#cnt >> 24) as u8
         }).to_tokens(dst);
         tmp.to_tokens(dst);
-        (cnt as usize) + 3
+        (cnt as usize) + 4
     }
 }
 

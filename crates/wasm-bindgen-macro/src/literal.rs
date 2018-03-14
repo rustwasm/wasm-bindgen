@@ -21,12 +21,18 @@ impl<'a> LiteralBuilder<'a> {
         self.cnt
     }
 
-    fn char_lit(&mut self, c: char) {
-        if self.cnt > 0 {
-            ::syn::token::Comma::default().to_tokens(self.dst);
-        }
+    fn byte(&mut self, b: u8) {
+        ::syn::token::Comma::default().to_tokens(self.dst);
         self.cnt += 1;
-        (c as u32).to_tokens(self.dst);
+        b.to_tokens(self.dst);
+    }
+
+    fn char_lit(&mut self, c: char) {
+        let c = c as u32;
+        self.byte(c as u8);
+        self.byte((c >> 8) as u8);
+        self.byte((c >> 16) as u8);
+        self.byte((c >> 24) as u8);
     }
 
     fn append(&mut self, s: &str) {
@@ -57,9 +63,13 @@ impl<'a> LiteralBuilder<'a> {
 
     fn as_char(&mut self, tokens: Tokens) {
         self.append("\"");
-        ::syn::token::Comma::default().to_tokens(self.dst);
-        tokens.to_tokens(self.dst);
-        self.cnt += 1;
+        (quote! {
+            , (((#tokens) as u32) >> 0) as u8
+            , (((#tokens) as u32) >> 8) as u8
+            , (((#tokens) as u32) >> 16) as u8
+            , (((#tokens) as u32) >> 24) as u8
+        }).to_tokens(self.dst);
+        self.cnt += 4;
         self.append("\"");
     }
 
