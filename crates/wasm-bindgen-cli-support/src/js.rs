@@ -1402,6 +1402,17 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     invoc_args.push(format!("getObject(arg{})", i));
                     abi_args.push(format!("arg{}", i));
                 }
+                custom if (custom as u32) & shared::TYPE_CUSTOM_REF_FLAG == 0 => {
+                    let s = self.cx.custom_type_name(custom).to_string();
+                    abi_args.push(format!("ptr{}", i));
+                    let assign = if self.cx.config.debug {
+                        format!("let arg{0} = new {class}(ptr{0}, token);", i, class = s)
+                    } else {
+                        format!("let arg{0} = new {class}(ptr{0});", i, class = s)
+                    };
+                    extra.push_str(&assign);
+                    invoc_args.push(format!("arg{}", i));
+                }
                 _ => {
                     panic!("unsupported type in import");
                 }

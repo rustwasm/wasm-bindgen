@@ -226,6 +226,53 @@ fn pass_one_to_another() {
 }
 
 #[test]
+fn pass_into_js() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub struct Foo(i32);
+
+            #[wasm_bindgen]
+            impl Foo {
+                pub fn inner(&self) -> i32 {
+                    self.0
+                }
+            }
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn take_foo(foo: Foo);
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                take_foo(Foo(13));
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run, Foo } from "./out";
+            import * as assert from "assert";
+
+            export function take_foo(foo: Foo) {
+                assert.strictEqual(foo.inner(), 13);
+                foo.free();
+                assert.throws(() => foo.free(), /null pointer passed to rust/);
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}
+
+#[test]
 fn issue_27() {
     test_support::project()
         .file("src/lib.rs", r#"
