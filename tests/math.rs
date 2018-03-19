@@ -28,6 +28,7 @@ fn auto_bind_math() {
                     b.exp() +
                     b.exp2() +
                     b.mul_add(b, b) +
+                    b.ln() +
                     b.log(b) +
                     b.log10() +
                     b.log2() +
@@ -35,11 +36,18 @@ fn auto_bind_math() {
                     b.powf(b) +
                     b.round() +
                     b.sin() +
+                    b.abs() +
+                    b.signum() +
+                    b.floor() +
+                    b.ceil() +
+                    b.trunc() +
+                    b.sqrt() +
                     (b % (a as f64)) +
                     ((a.cos() +
                     a.exp() +
                     a.exp2() +
                     a.mul_add(a, a) +
+                    a.ln() +
                     a.log(a) +
                     a.log10() +
                     a.log2() +
@@ -47,6 +55,12 @@ fn auto_bind_math() {
                     a.powf(a) +
                     a.round() +
                     a.sin() +
+                    a.abs() +
+                    a.signum() +
+                    a.floor() +
+                    a.ceil() +
+                    a.trunc() +
+                    a.sqrt() +
                     (a % (b as f32))) as f64) +
                     (b + 2.0f64.powf(a as f64))
             }
