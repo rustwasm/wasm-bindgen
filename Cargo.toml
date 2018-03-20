@@ -29,3 +29,6 @@ members = [
   "examples/smorgasboard",
   "examples/console_log",
 ]
+
+[profile.release]
+lto = true
