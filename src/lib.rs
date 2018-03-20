@@ -5,7 +5,7 @@
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
 
-#![feature(use_extern_macros)]
+#![feature(use_extern_macros, try_reserve)]
 
 extern crate wasm_bindgen_macro;
 
@@ -399,18 +399,10 @@ pub mod __rt {
 
     #[no_mangle]
     pub extern fn __wbindgen_malloc(size: usize) -> *mut u8 {
-        // Any malloc request this big is bogus anyway. If this actually
-        // goes down to `Vec` we trigger a whole bunch of panicking
-        // machinery to get pulled in from libstd anyway as it'll verify
-        // the size passed in below.
-        //
-        // Head this all off by just aborting on too-big sizes. This
-        // avoids panicking (code bloat) and gives a better error
-        // message too hopefully.
-        if size >= usize::max_value() / 2 {
+        let mut ret = Vec::new();
+        if ret.try_reserve_exact(size).is_err() {
             super::throw("invalid malloc request");
         }
-        let mut ret = Vec::with_capacity(size);
         let ptr = ret.as_mut_ptr();
         mem::forget(ret);
         return ptr
