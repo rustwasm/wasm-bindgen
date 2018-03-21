@@ -30,6 +30,7 @@ members = [
   "examples/console_log",
   "examples/dom",
   "examples/math",
+  "examples/performance",
 ]
 
 [profile.release]

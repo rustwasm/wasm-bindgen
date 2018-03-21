@@ -18,3 +18,5 @@ The examples here are:
 * `smorgasboard` - a bunch of features all thrown into one, showing off the
   various capabilities of the `#[wasm_bindgen]` macro and what you can do with
   it from JS
+* `performance` - how to import APIs like `performance.now()` and time various
+  operations in Rust
