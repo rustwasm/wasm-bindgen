@@ -97,6 +97,7 @@ impl ToTokens for ast::Program {
                         // it'd be preferrable to generate a namespace indicator
                         // or something like that (but modules interact weirdly
                         // with imports and such)
+                        #[allow(bad_style)]
                         pub struct #ns { _priv: () }
 
                         impl #ns { #sub_tokens }
@@ -343,6 +344,7 @@ impl ToTokens for ast::ImportType {
         let vis = &self.vis;
         let name = &self.name;
         (my_quote! {
+            #[allow(bad_style)]
             #vis struct #name {
                 obj: ::wasm_bindgen::JsValue,
             }
@@ -566,6 +568,7 @@ impl ToTokens for ast::ImportFunction {
 
         let invocation = my_quote! {
             #(#attrs)*
+            #[allow(bad_style)]
             #vis extern #fn_token #name(#me #(#arguments),*) #ret {
                 ::wasm_bindgen::__rt::link_this_library();
                 extern {
@@ -639,6 +642,7 @@ impl ToTokens for ast::ImportStatic {
         let shim_name = syn::Ident::from(shim_name);
         let vis = &self.vis;
         (my_quote! {
+            #[allow(bad_style)]
             #vis static #name: ::wasm_bindgen::JsStatic<#ty> = {
                 fn init() -> #ty {
                     extern {
