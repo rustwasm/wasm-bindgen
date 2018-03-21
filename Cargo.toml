@@ -28,6 +28,7 @@ members = [
   "examples/hello_world",
   "examples/smorgasboard",
   "examples/console_log",
+  "examples/dom",
 ]
 
 [profile.release]

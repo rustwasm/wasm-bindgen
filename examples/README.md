@@ -11,6 +11,8 @@ The examples here are:
   dialog greeting you
 * `console_log` - a showcase of `#[wasm_bindgen]` importing classes and how to
   bind `console.log`
+* `dom` - an example of accessing the global `document` object and appending
+  HTML to it
 * `smorgasboard` - a bunch of features all thrown into one, showing off the
   various capabilities of the `#[wasm_bindgen]` macro and what you can do with
   it from JS
