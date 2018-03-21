@@ -9,9 +9,7 @@ pub struct Program {
     pub exports: Vec<Export>,
     pub imports: Vec<Import>,
     pub enums: Vec<Enum>,
-    pub imported_types: Vec<ImportedType>,
     pub structs: Vec<Struct>,
-    pub imported_fields: Vec<ImportField>,
 }
 
 pub struct Export {
@@ -23,15 +21,42 @@ pub struct Export {
 
 pub struct Import {
     pub module: Option<String>,
+    pub namespace: Option<syn::Ident>,
     pub kind: ImportKind,
-    pub function: Function,
 }
 
 pub enum ImportKind {
-    Method { class: String, ty: syn::Type },
-    Static { class: String, ty: syn::Type },
-    JsConstructor { class: String, ty: syn::Type },
+    Function(ImportFunction),
+    Static(ImportStatic),
+    Type(ImportType),
+}
+
+pub struct ImportFunction {
+    pub function: Function,
+    pub kind: ImportFunctionKind,
+}
+
+pub enum ImportFunctionKind {
+    Method {
+        class: String,
+        ty: syn::Type,
+    },
+    JsConstructor {
+        class: String,
+        ty: syn::Type,
+    },
     Normal,
+}
+
+pub struct ImportStatic {
+    pub vis: syn::Visibility,
+    pub ty: syn::Type,
+    pub name: syn::Ident,
+}
+
+pub struct ImportType {
+    pub vis: syn::Visibility,
+    pub name: syn::Ident,
 }
 
 pub struct Function {
@@ -56,18 +81,6 @@ pub struct Enum {
 pub struct Variant {
     pub name: syn::Ident,
     pub value: u32,
-}
-
-pub struct ImportedType {
-    pub vis: syn::Visibility,
-    pub name: syn::Ident,
-}
-
-pub struct ImportField {
-    pub vis: syn::Visibility,
-    pub ty: syn::Type,
-    pub module: Option<String>,
-    pub name: syn::Ident,
 }
 
 pub enum Type {
@@ -206,22 +219,6 @@ impl Program {
         });
     }
 
-    pub fn push_foreign_mod(&mut self, f: syn::ItemForeignMod, opts: BindgenAttrs) {
-        match f.abi.name {
-            Some(ref l) if l.value() == "C" => {}
-            None => {}
-            _ => panic!("only foreign mods with the `C` ABI are allowed"),
-        }
-        for item in f.items.into_iter() {
-            match item {
-                syn::ForeignItem::Fn(f) => self.push_foreign_fn(f, &opts),
-                syn::ForeignItem::Type(t) => self.push_foreign_ty(t, &opts),
-                syn::ForeignItem::Static(s) => self.push_foreign_static(s, &opts),
-                _ => panic!("only foreign functions/types allowed for now"),
-            }
-        }
-    }
-
     pub fn push_enum(&mut self, item: syn::ItemEnum, _opts: BindgenAttrs) {
         match item.vis {
             syn::Visibility::Public(_) => {}
@@ -255,11 +252,38 @@ impl Program {
         });
     }
 
-    pub fn push_foreign_fn(&mut self,
-                           mut f: syn::ForeignItemFn,
-                           module_opts: &BindgenAttrs) {
-        let opts = BindgenAttrs::find(&mut f.attrs);
+    pub fn push_foreign_mod(&mut self, f: syn::ItemForeignMod, opts: BindgenAttrs) {
+        match f.abi.name {
+            Some(ref l) if l.value() == "C" => {}
+            None => {}
+            _ => panic!("only foreign mods with the `C` ABI are allowed"),
+        }
+        for mut item in f.items.into_iter() {
+            let item_opts = {
+                let attrs = match item {
+                    syn::ForeignItem::Fn(ref mut f) => &mut f.attrs,
+                    syn::ForeignItem::Type(ref mut t) => &mut t.attrs,
+                    syn::ForeignItem::Static(ref mut s) => &mut s.attrs,
+                    _ => panic!("only foreign functions/types allowed for now"),
+                };
+                BindgenAttrs::find(attrs)
+            };
+            let module = item_opts.module().or(opts.module()).map(|s| s.to_string());
+            let namespace = item_opts.namespace().or(opts.namespace());
+            let mut kind = match item {
+                syn::ForeignItem::Fn(f) => self.push_foreign_fn(f, item_opts),
+                syn::ForeignItem::Type(t) => self.push_foreign_ty(t),
+                syn::ForeignItem::Static(s) => self.push_foreign_static(s),
+                _ => panic!("only foreign functions/types allowed for now"),
+            };
 
+            self.imports.push(Import { module, namespace, kind });
+        }
+    }
+
+    pub fn push_foreign_fn(&mut self, f: syn::ForeignItemFn, opts: BindgenAttrs)
+        -> ImportKind
+    {
         let mut wasm = Function::from_decl(f.ident,
                                            f.decl,
                                            f.attrs,
@@ -298,7 +322,7 @@ impl Program {
             let class_name = extract_path_ident(class_name)
                 .expect("first argument of method must be a bare type");
 
-            ImportKind::Method {
+            ImportFunctionKind::Method {
                 class: class_name.as_ref().to_string(),
                 ty: class.clone(),
             }
@@ -314,54 +338,40 @@ impl Program {
             let class_name = extract_path_ident(class_name)
                 .expect("first argument of method must be a bare type");
 
-            ImportKind::JsConstructor {
+            ImportFunctionKind::JsConstructor {
                 class: class_name.as_ref().to_string(),
                 ty: class.clone(),
             }
-
-        } else if let Some(class) = wasm.opts.static_receiver() {
-            let class_name = match *class {
-                syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
-                _ => panic!("first argument of method must be a path"),
-            };
-            let class_name = extract_path_ident(class_name)
-                .expect("first argument of method must be a bare type");
-            ImportKind::Static {
-                class: class_name.to_string(),
-                ty: class.clone(),
-            }
         } else {
-            ImportKind::Normal
+            ImportFunctionKind::Normal
         };
 
-        self.imports.push(Import {
-            module: module_opts.module().map(|s| s.to_string()),
-            kind,
+        ImportKind::Function(ImportFunction {
             function: wasm,
-        });
+            kind,
+        })
     }
 
-    pub fn push_foreign_ty(&mut self,
-                           f: syn::ForeignItemType,
-                           _module_opts: &BindgenAttrs) {
-        self.imported_types.push(ImportedType {
+    pub fn push_foreign_ty(&mut self, f: syn::ForeignItemType)
+        -> ImportKind
+    {
+        ImportKind::Type(ImportType {
             vis: f.vis,
             name: f.ident
-        });
+        })
     }
 
-    pub fn push_foreign_static(&mut self,
-                               f: syn::ForeignItemStatic,
-                               module_opts: &BindgenAttrs) {
+    pub fn push_foreign_static(&mut self, f: syn::ForeignItemStatic)
+        -> ImportKind
+    {
         if f.mutability.is_some() {
             panic!("cannot import mutable globals yet")
         }
-        self.imported_fields.push(ImportField {
-            module: module_opts.module().map(|s| s.to_string()),
+        ImportKind::Static(ImportStatic {
             ty: *f.ty,
             vis: f.vis,
-            name: f.ident
-        });
+            name: f.ident,
+        })
     }
 
     pub fn literal(&self, dst: &mut Tokens) -> usize {
@@ -552,7 +562,7 @@ impl Export {
     }
 }
 
-impl Import {
+impl ImportFunction {
     pub fn infer_getter_property(&self) -> String {
         self.function.name.as_ref().to_string()
     }
@@ -630,11 +640,11 @@ impl BindgenAttrs {
             })
     }
 
-    fn static_receiver(&self) -> Option<&syn::Type> {
+    fn namespace(&self) -> Option<syn::Ident> {
         self.attrs.iter()
             .filter_map(|a| {
                 match *a {
-                    BindgenAttr::Static(ref s) => Some(s),
+                    BindgenAttr::Namespace(s) => Some(s),
                     _ => None,
                 }
             })
@@ -681,7 +691,7 @@ enum BindgenAttr {
     Catch,
     Constructor,
     Method,
-    Static(syn::Type),
+    Namespace(syn::Ident),
     Module(String),
     Getter,
     Setter,
@@ -700,11 +710,11 @@ impl syn::synom::Synom for BindgenAttr {
         call!(term, "setter") => { |_| BindgenAttr::Setter }
         |
         do_parse!(
-            call!(term, "static") >>
+            call!(term, "namespace") >>
             punct!(=) >>
-            s: syn!(syn::Type) >>
-            (s)
-        )=> { BindgenAttr::Static }
+            ns: syn!(syn::Ident) >>
+            (ns)
+        )=> { BindgenAttr::Namespace }
         |
         do_parse!(
             call!(term, "module") >>
@@ -813,14 +823,5 @@ impl ToTokens for VectorType {
             VectorType::JsValue => my_quote! { Vec<JsValue> },
         };
         me.to_tokens(tokens);
-    }
-}
-
-impl ImportField {
-    pub fn shared(&self) -> shared::ImportField {
-        shared::ImportField {
-            module: self.module.clone(),
-            name: self.name.to_string(),
-        }
     }
 }

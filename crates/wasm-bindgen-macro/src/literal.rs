@@ -107,8 +107,7 @@ impl Literal for ast::Program {
     fn literal(&self, a: &mut LiteralBuilder) {
         a.fields(&[
             ("exports", &|a| a.list_of(&self.exports)),
-            ("imported_functions", &|a| a.list_of(&self.imports)),
-            ("imported_fields", &|a| a.list_of(&self.imported_fields)),
+            ("imports", &|a| a.list_of(&self.imports)),
             ("enums", &|a| a.list_of(&self.enums)),
             ("custom_type_names", &|a| {
                 let names = self.exports
@@ -200,24 +199,45 @@ impl Literal for ast::Export {
 
 impl Literal for ast::Import {
     fn literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+            ("module", &|a| match self.module {
+                Some(ref s) => a.str(s),
+                None => a.append("null"),
+            }),
+            ("namespace", &|a| match self.namespace {
+                Some(ref s) => a.str(s.as_ref()),
+                None => a.append("null"),
+            }),
+            ("kind", &|a| self.kind.literal(a)),
+        ]);
+    }
+}
+
+impl Literal for ast::ImportKind {
+    fn literal(&self, a: &mut LiteralBuilder) {
+        match *self {
+            ast::ImportKind::Function(ref f) => f.literal(a),
+            ast::ImportKind::Static(ref s) => s.literal(a),
+            ast::ImportKind::Type(ref t) => t.literal(a),
+        }
+    }
+}
+
+impl Literal for ast::ImportFunction {
+    fn literal(&self, a: &mut LiteralBuilder) {
         let mut method = false;
         let mut js_new = false;
-        let mut statik = false;
         let mut class_name = None;
         match self.kind {
-            ast::ImportKind::Method { ref class, .. } => {
+            ast::ImportFunctionKind::Method { ref class, .. } => {
                 method = true;
                 class_name = Some(class);
             }
-            ast::ImportKind::JsConstructor { ref class, .. } => {
+            ast::ImportFunctionKind::JsConstructor { ref class, .. } => {
                 js_new = true;
                 class_name = Some(class);
             }
-            ast::ImportKind::Static { ref class, .. } => {
-                statik = true;
-                class_name = Some(class);
-            }
-            ast::ImportKind::Normal => {}
+            ast::ImportFunctionKind::Normal => {}
         }
 
         let mut getter = None;
@@ -230,14 +250,10 @@ impl Literal for ast::Import {
             setter = Some(self.infer_setter_property());
         }
         a.fields(&[
-            ("module", &|a| match self.module {
-                Some(ref s) => a.str(s),
-                None => a.append("null"),
-            }),
+            ("kind", &|a| a.str("function")),
             ("catch", &|a| a.bool(self.function.opts.catch())),
             ("method", &|a| a.bool(method)),
             ("js_new", &|a| a.bool(js_new)),
-            ("statik", &|a| a.bool(statik)),
             ("getter", &|a| match getter {
                 Some(ref s) => a.str(s),
                 None => a.append("null"),
@@ -273,14 +289,19 @@ impl Literal for ast::Variant {
     }
 }
 
-impl Literal for ast::ImportField {
+impl Literal for ast::ImportStatic {
     fn literal(&self, a: &mut LiteralBuilder) {
         a.fields(&[
+            ("kind", &|a| a.str("static")),
             ("name", &|a| a.str(self.name.as_ref())),
-            ("module", &|a| match self.module {
-                Some(ref s) => a.str(s),
-                None => a.append("null"),
-            }),
+        ])
+    }
+}
+
+impl Literal for ast::ImportType {
+    fn literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+            ("kind", &|a| a.str("type")),
         ])
     }
 }

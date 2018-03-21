@@ -1044,11 +1044,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
         for f in self.program.exports.iter() {
             self.generate_export(f);
         }
-        for f in self.program.imported_functions.iter() {
+        for f in self.program.imports.iter() {
             self.generate_import(f);
-        }
-        for f in self.program.imported_fields.iter() {
-            self.generate_import_field(f);
         }
         for e in self.program.enums.iter() {
             self.generate_enum(e);
@@ -1322,35 +1319,36 @@ impl<'a, 'b> SubContext<'a, 'b> {
         (format!("{} {}", prefix, dst), format!("{} {}", prefix, dst_ts))
     }
 
-    pub fn generate_import_field(&mut self, import: &shared::ImportField) {
-        let name = import.shim_name();
-        self.cx.imports_to_rewrite.insert(name.clone());
-
-        if let Some(ref module) = import.module {
-            self.cx.imports.push_str(&format!("
-                import {{ {} }} from '{}';
-            ", import.name, module));
+    pub fn generate_import(&mut self, import: &shared::Import) {
+        match import.kind {
+            shared::ImportKind::Function(ref f) => {
+                self.generate_import_function(import, f)
+            }
+            shared::ImportKind::Static(ref s) => {
+                self.generate_import_static(import, s)
+            }
+            shared::ImportKind::Type(_) => {}
         }
+    }
 
+    pub fn generate_import_static(&mut self,
+                                  info: &shared::Import,
+                                  import: &shared::ImportStatic) {
+        // TODO: should support more types to import here
+        let name = shared::static_import_shim_name(&import.name);
+        self.cx.imports_to_rewrite.insert(name.clone());
+        let obj = self.import_name(info, &import.name);
         self.cx.expose_add_heap_object();
         self.cx.globals.push_str(&format!("
             export function {}() {{
                 return addHeapObject({});
             }}
-        ", name, import.name));
+        ", name, obj));
     }
 
-    pub fn generate_import(&mut self, import: &shared::Import) {
-        if let Some(ref module) = import.module {
-            let name_to_import = import.class.as_ref().unwrap_or(&import.function.name);
-
-            if self.cx.imported_names.insert(name_to_import.clone()) {
-                self.cx.imports.push_str(&format!("
-                    import {{ {} }} from '{}';
-                ", name_to_import, module));
-            }
-        }
-
+    pub fn generate_import_function(&mut self,
+                                    info: &shared::Import,
+                                    import: &shared::ImportFunction) {
         let name = shared::mangled_import_name(import.class.as_ref().map(|s| &**s),
                                                &import.function.name);
         self.cx.imports_to_rewrite.insert(name.clone());
@@ -1360,12 +1358,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
         dst.push_str(&format!("function {}(", name));
         let mut invoc_args = Vec::new();
         let mut abi_args = Vec::new();
-
-        // if import.method {
-        //     abi_args.push("ptr".to_string());
-        //     invoc_args.push("getObject(ptr)".to_string());
-        //     self.cx.expose_get_object();
-        // }
 
         let mut extra = String::new();
 
@@ -1444,9 +1436,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let function_name = &import.function.name;
         let invoc = match import.class {
             Some(ref class) if import.js_new => {
-                format!("new {}", class)
+                format!("new {}", self.import_name(info, class))
             }
             Some(ref class) if import.method => {
+                let class = self.import_name(info, class);
                 let target = if let Some(ref g) = import.getter {
                     format!(
                         "Object.getOwnPropertyDescriptor({}.prototype, '{}').get;",
@@ -1468,12 +1461,23 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 format!("{}_target.call", name)
             }
             Some(ref class) => {
+                let class = self.import_name(info, class);
                 self.cx.globals.push_str(&format!("
                     const {}_target = {}.{};
                 ", name, class, function_name));
                 format!("{}_target", name)
             }
-            None => function_name.to_string(),
+            None => {
+                let import = self.import_name(info, function_name);
+                if import.contains(".") {
+                    self.cx.globals.push_str(&format!("
+                        const {}_target = {};
+                    ", name, import));
+                    format!("{}_target", name)
+                } else {
+                    import
+                }
+            }
         };
         let invoc = format!("{}({})", invoc, invoc_args);
         let invoc = match import.function.ret {
@@ -1550,6 +1554,22 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         self.cx.typescript.push_str(&variants);
         self.cx.typescript.push_str("}\n");
+    }
+
+    fn import_name(&mut self, import: &shared::Import, item: &str) -> String {
+        if let Some(ref module) = import.module {
+            let name = import.namespace.as_ref().map(|s| &**s).unwrap_or(item);
+
+            if self.cx.imported_names.insert(name.to_string()) {
+                self.cx.imports.push_str(&format!("
+                    import {{ {} }} from '{}';
+                ", name, module));
+            }
+        }
+        match import.namespace {
+            Some(ref s) => format!("{}.{}", s, item),
+            None => item.to_string(),
+        }
     }
 }
 

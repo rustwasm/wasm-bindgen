@@ -13,6 +13,7 @@ extern crate wasm_bindgen_shared as shared;
 use std::borrow::Cow;
 use std::env;
 use std::sync::atomic::*;
+use std::collections::{BTreeMap, HashSet};
 
 use proc_macro::TokenStream;
 use proc_macro2::Span;
@@ -69,17 +70,43 @@ impl ToTokens for ast::Program {
         for s in self.structs.iter() {
             s.to_tokens(tokens);
         }
+        let mut types = HashSet::new();
+        let mut buckets = BTreeMap::new();
         for i in self.imports.iter() {
-            i.to_tokens(tokens);
+            buckets.entry(i.namespace)
+                .or_insert(Vec::new())
+                .push(i);
+            if let ast::ImportKind::Type(ref t) = i.kind {
+                types.insert(t.name);
+            }
+        }
+        for (namespace, imports) in buckets {
+            let mut sub_tokens = Tokens::new();
+            for import in imports {
+                import.kind.to_tokens(&mut sub_tokens);
+            }
+            match namespace {
+                Some(ns) if types.contains(&ns) => {
+                    (quote! { impl #ns { #sub_tokens } }).to_tokens(tokens);
+                }
+                Some(ns) => {
+                    (quote! {
+                        // TODO: allow controlling `pub` here.
+                        //
+                        // TODO: we don't really want to generate a type here,
+                        // it'd be preferrable to generate a namespace indicator
+                        // or something like that (but modules interact weirdly
+                        // with imports and such)
+                        pub struct #ns { _priv: () }
+
+                        impl #ns { #sub_tokens }
+                    }).to_tokens(tokens);
+                }
+                None => sub_tokens.to_tokens(tokens),
+            }
         }
         for e in self.enums.iter() {
             e.to_tokens(tokens);
-        }
-        for it in self.imported_types.iter() {
-            it.to_tokens(tokens);
-        }
-        for it in self.imported_fields.iter() {
-            it.to_tokens(tokens);
         }
 
         // Generate a static which will eventually be what lives in a custom section
@@ -311,7 +338,7 @@ impl ToTokens for ast::Export {
     }
 }
 
-impl ToTokens for ast::ImportedType {
+impl ToTokens for ast::ImportType {
     fn to_tokens(&self, tokens: &mut Tokens) {
         let vis = &self.vis;
         let name = &self.name;
@@ -344,23 +371,32 @@ impl ToTokens for ast::ImportedType {
     }
 }
 
-impl ToTokens for ast::Import {
+impl ToTokens for ast::ImportKind {
+    fn to_tokens(&self, tokens: &mut Tokens) {
+        match *self {
+            ast::ImportKind::Function(ref f) => f.to_tokens(tokens),
+            ast::ImportKind::Static(ref s) => s.to_tokens(tokens),
+            ast::ImportKind::Type(ref t) => t.to_tokens(tokens),
+        }
+    }
+}
+
+impl ToTokens for ast::ImportFunction {
     fn to_tokens(&self, tokens: &mut Tokens) {
         let mut class_ty = None;
         let mut is_method = false;
         let mut class_name = None;
         match self.kind {
-            ast::ImportKind::Method { ref ty, ref class } => {
+            ast::ImportFunctionKind::Method { ref ty, ref class } => {
                 is_method = true;
                 class_ty = Some(ty);
                 class_name = Some(class);
             }
-            ast::ImportKind::Static { ref ty, ref class } |
-            ast::ImportKind::JsConstructor { ref ty, ref class } => {
+            ast::ImportFunctionKind::JsConstructor { ref ty, ref class } => {
                 class_ty = Some(ty);
                 class_name = Some(class);
             }
-            ast::ImportKind::Normal => {}
+            ast::ImportFunctionKind::Normal => {}
         }
         let import_name = shared::mangled_import_name(
             class_name.map(|s| &**s),
@@ -595,11 +631,12 @@ impl ToTokens for ast::Enum {
     }
 }
 
-impl ToTokens for ast::ImportField {
+impl ToTokens for ast::ImportStatic {
     fn to_tokens(&self, into: &mut Tokens) {
         let name = self.name;
         let ty = &self.ty;
-        let shim_name = syn::Ident::from(self.shared().shim_name());
+        let shim_name = shared::static_import_shim_name(name.as_ref());
+        let shim_name = syn::Ident::from(shim_name);
         let vis = &self.vis;
         (my_quote! {
             #vis static #name: ::wasm_bindgen::JsStatic<#ty> = {

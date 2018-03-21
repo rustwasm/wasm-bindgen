@@ -22,10 +22,9 @@ fn simple() {
 
             #[wasm_bindgen]
             extern {
-                type Math;
-                #[wasm_bindgen(static = Math)]
+                #[wasm_bindgen(namespace = Math)]
                 fn random() -> f64;
-                #[wasm_bindgen(static = Math)]
+                #[wasm_bindgen(namespace = Math)]
                 fn log(a: f64) -> f64;
             }
         "#)
@@ -53,8 +52,7 @@ fn import_class() {
 
             #[wasm_bindgen(module = "./another")]
             extern {
-                type Foo;
-                #[wasm_bindgen(static = Foo)]
+                #[wasm_bindgen(namespace = Foo)]
                 fn bar();
             }
 
@@ -98,7 +96,7 @@ fn construct() {
             #[wasm_bindgen(module = "./another")]
             extern {
                 type Foo;
-                #[wasm_bindgen(static = Foo)]
+                #[wasm_bindgen(namespace = Foo)]
                 fn create() -> Foo;
                 #[wasm_bindgen(method)]
                 fn get_internal_string(this: &Foo) -> String;
@@ -219,7 +217,7 @@ fn switch_methods() {
                 #[wasm_bindgen(constructor)]
                 fn new() -> Foo;
 
-                #[wasm_bindgen(static = Foo)]
+                #[wasm_bindgen(namespace = Foo)]
                 fn a();
 
                 #[wasm_bindgen(method)]

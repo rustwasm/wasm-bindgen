@@ -11,8 +11,7 @@ pub const SCHEMA_VERSION: &str = "0";
 pub struct Program {
     pub exports: Vec<Export>,
     pub enums: Vec<Enum>,
-    pub imported_functions: Vec<Import>,
-    pub imported_fields: Vec<ImportField>,
+    pub imports: Vec<Import>,
     pub custom_type_names: Vec<CustomTypeName>,
     pub version: String,
     pub schema_version: String,
@@ -21,10 +20,24 @@ pub struct Program {
 #[derive(Deserialize)]
 pub struct Import {
     pub module: Option<String>,
+    pub namespace: Option<String>,
+    pub kind: ImportKind,
+}
+
+#[derive(Deserialize)]
+#[serde(tag = "kind", rename_all = "lowercase")]
+pub enum ImportKind {
+    Function(ImportFunction),
+    Static(ImportStatic),
+    Type(ImportType),
+}
+
+#[derive(Deserialize)]
+pub struct ImportFunction {
+    pub module: Option<String>,
     pub catch: bool,
     pub method: bool,
     pub js_new: bool,
-    pub statik: bool,
     pub getter: Option<String>,
     pub setter: Option<String>,
     pub class: Option<String>,
@@ -32,9 +45,13 @@ pub struct Import {
 }
 
 #[derive(Deserialize)]
-pub struct ImportField {
+pub struct ImportStatic {
     pub module: Option<String>,
     pub name: String,
+}
+
+#[derive(Deserialize)]
+pub struct ImportType {
 }
 
 #[derive(Deserialize)]
@@ -99,6 +116,10 @@ pub fn mangled_import_name(struct_: Option<&str>, f: &str) -> String {
     }
 }
 
+pub fn static_import_shim_name(statik: &str) -> String {
+    format!("__wbg_field_import_shim_{}", statik)
+}
+
 pub type Type = char;
 
 pub const TYPE_VECTOR_JSVALUE: char = '\u{5b}';
@@ -154,10 +175,4 @@ pub fn version() -> String {
         v.push_str(")");
     }
     return v
-}
-
-impl ImportField {
-    pub fn shim_name(&self) -> String {
-        format!("__wbg_field_import_shim_{}", self.name)
-    }
 }

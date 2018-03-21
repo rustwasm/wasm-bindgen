@@ -6,9 +6,7 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern {
-    type console;
-
-    #[wasm_bindgen(static = console)]
+    #[wasm_bindgen(namespace = console)]
     fn log(s: &str);
 }
 
