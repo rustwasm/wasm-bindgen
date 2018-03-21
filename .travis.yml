@@ -40,6 +40,10 @@ script:
     (cd examples/smorgasboard && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
   - |
     (cd examples/console_log && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+  - |
+    (cd examples/math && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+  - |
+    (cd examples/dom && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
 
 notifications:
   email:
