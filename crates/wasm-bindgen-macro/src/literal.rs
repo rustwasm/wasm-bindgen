@@ -107,7 +107,8 @@ impl Literal for ast::Program {
     fn literal(&self, a: &mut LiteralBuilder) {
         a.fields(&[
             ("exports", &|a| a.list_of(&self.exports)),
-            ("imports", &|a| a.list_of(&self.imports)),
+            ("imported_functions", &|a| a.list_of(&self.imports)),
+            ("imported_fields", &|a| a.list_of(&self.imported_fields)),
             ("enums", &|a| a.list_of(&self.enums)),
             ("custom_type_names", &|a| {
                 let names = self.exports
@@ -268,6 +269,18 @@ impl Literal for ast::Variant {
         a.fields(&[
             ("name", &|a| a.str(self.name.as_ref())),
             ("value", &|a| a.append(&format!("{}", self.value))),
+        ])
+    }
+}
+
+impl Literal for ast::ImportField {
+    fn literal(&self, a: &mut LiteralBuilder) {
+        a.fields(&[
+            ("name", &|a| a.str(self.name.as_ref())),
+            ("module", &|a| match self.module {
+                Some(ref s) => a.str(s),
+                None => a.append("null"),
+            }),
         ])
     }
 }

@@ -11,6 +11,7 @@ pub struct Program {
     pub enums: Vec<Enum>,
     pub imported_types: Vec<ImportedType>,
     pub structs: Vec<Struct>,
+    pub imported_fields: Vec<ImportField>,
 }
 
 pub struct Export {
@@ -59,6 +60,13 @@ pub struct Variant {
 
 pub struct ImportedType {
     pub vis: syn::Visibility,
+    pub name: syn::Ident,
+}
+
+pub struct ImportField {
+    pub vis: syn::Visibility,
+    pub ty: syn::Type,
+    pub module: Option<String>,
     pub name: syn::Ident,
 }
 
@@ -208,6 +216,7 @@ impl Program {
             match item {
                 syn::ForeignItem::Fn(f) => self.push_foreign_fn(f, &opts),
                 syn::ForeignItem::Type(t) => self.push_foreign_ty(t, &opts),
+                syn::ForeignItem::Static(s) => self.push_foreign_static(s, &opts),
                 _ => panic!("only foreign functions/types allowed for now"),
             }
         }
@@ -336,6 +345,20 @@ impl Program {
                            f: syn::ForeignItemType,
                            _module_opts: &BindgenAttrs) {
         self.imported_types.push(ImportedType {
+            vis: f.vis,
+            name: f.ident
+        });
+    }
+
+    pub fn push_foreign_static(&mut self,
+                               f: syn::ForeignItemStatic,
+                               module_opts: &BindgenAttrs) {
+        if f.mutability.is_some() {
+            panic!("cannot import mutable globals yet")
+        }
+        self.imported_fields.push(ImportField {
+            module: module_opts.module().map(|s| s.to_string()),
+            ty: *f.ty,
             vis: f.vis,
             name: f.ident
         });
@@ -790,5 +813,14 @@ impl ToTokens for VectorType {
             VectorType::JsValue => my_quote! { Vec<JsValue> },
         };
         me.to_tokens(tokens);
+    }
+}
+
+impl ImportField {
+    pub fn shared(&self) -> shared::ImportField {
+        shared::ImportField {
+            module: self.module.clone(),
+            name: self.name.to_string(),
+        }
     }
 }

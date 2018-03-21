@@ -278,3 +278,35 @@ fn free_imports() {
         "#)
         .test();
 }
+
+#[test]
+fn import_a_field() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                static IMPORT: JsValue;
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                assert_eq!(IMPORT.as_f64(), Some(1.0));
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export const IMPORT = 1.0;
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}

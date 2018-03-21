@@ -9,7 +9,11 @@
 
 extern crate wasm_bindgen_macro;
 
+use std::cell::UnsafeCell;
+use std::ops::Deref;
 use std::ptr;
+
+use convert::WasmBoundary;
 
 /// A module which is typically glob imported from:
 ///
@@ -239,6 +243,49 @@ impl Drop for JsValue {
     fn drop(&mut self) {
         unsafe {
             __wbindgen_object_drop_ref(self.idx);
+        }
+    }
+}
+
+/// Wrapper type for imported statics.
+///
+/// This type is used whenever a `static` is imported from a JS module, for
+/// example this import:
+///
+/// ```ignore
+/// #[wasm_bindgen]
+/// extern {
+///     static console: JsValue;
+/// }
+/// ```
+///
+/// will generate in Rust a value that looks like:
+///
+/// ```ignore
+/// static console: JsStatic<JsValue> = ...;
+/// ```
+///
+/// This type implements `Deref` to the inner type so it's typically used as if
+/// it were `&T`.
+pub struct JsStatic<T> {
+    #[doc(hidden)]
+    pub __inner: UnsafeCell<Option<T>>,
+    #[doc(hidden)]
+    pub __init: fn() -> T,
+}
+
+unsafe impl<T: Sync> Sync for JsStatic<T> {}
+unsafe impl<T: Send> Send for JsStatic<T> {}
+
+impl<T: WasmBoundary> Deref for JsStatic<T> {
+    type Target = T;
+    fn deref(&self) -> &T {
+        unsafe {
+            (*self.__inner.get()).get_or_insert_with(|| {
+                assert!(T::DESCRIPTOR == JsValue::DESCRIPTOR,
+                        "only JS values can be imported as statics for now");
+                (self.__init)()
+            })
         }
     }
 }

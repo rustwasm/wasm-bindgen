@@ -11,7 +11,8 @@ pub const SCHEMA_VERSION: &str = "0";
 pub struct Program {
     pub exports: Vec<Export>,
     pub enums: Vec<Enum>,
-    pub imports: Vec<Import>,
+    pub imported_functions: Vec<Import>,
+    pub imported_fields: Vec<ImportField>,
     pub custom_type_names: Vec<CustomTypeName>,
     pub version: String,
     pub schema_version: String,
@@ -28,6 +29,12 @@ pub struct Import {
     pub setter: Option<String>,
     pub class: Option<String>,
     pub function: Function,
+}
+
+#[derive(Deserialize)]
+pub struct ImportField {
+    pub module: Option<String>,
+    pub name: String,
 }
 
 #[derive(Deserialize)]
@@ -147,4 +154,10 @@ pub fn version() -> String {
         v.push_str(")");
     }
     return v
+}
+
+impl ImportField {
+    pub fn shim_name(&self) -> String {
+        format!("__wbg_field_import_shim_{}", self.name)
+    }
 }

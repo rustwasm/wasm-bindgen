@@ -1044,8 +1044,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
         for f in self.program.exports.iter() {
             self.generate_export(f);
         }
-        for f in self.program.imports.iter() {
+        for f in self.program.imported_functions.iter() {
             self.generate_import(f);
+        }
+        for f in self.program.imported_fields.iter() {
+            self.generate_import_field(f);
         }
         for e in self.program.enums.iter() {
             self.generate_enum(e);
@@ -1317,6 +1320,24 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         dst.push_str("}");
         (format!("{} {}", prefix, dst), format!("{} {}", prefix, dst_ts))
+    }
+
+    pub fn generate_import_field(&mut self, import: &shared::ImportField) {
+        let name = import.shim_name();
+        self.cx.imports_to_rewrite.insert(name.clone());
+
+        if let Some(ref module) = import.module {
+            self.cx.imports.push_str(&format!("
+                import {{ {} }} from '{}';
+            ", import.name, module));
+        }
+
+        self.cx.expose_add_heap_object();
+        self.cx.globals.push_str(&format!("
+            export function {}() {{
+                return addHeapObject({});
+            }}
+        ", name, import.name));
     }
 
     pub fn generate_import(&mut self, import: &shared::Import) {

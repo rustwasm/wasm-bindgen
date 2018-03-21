@@ -78,6 +78,9 @@ impl ToTokens for ast::Program {
         for it in self.imported_types.iter() {
             it.to_tokens(tokens);
         }
+        for it in self.imported_fields.iter() {
+            it.to_tokens(tokens);
+        }
 
         // Generate a static which will eventually be what lives in a custom section
         // of the wasm executable. For now it's just a plain old static, but we'll
@@ -588,6 +591,31 @@ impl ToTokens for ast::Enum {
                     #enum_name::from_u32(js)
                 }
             }
+        }).to_tokens(into);
+    }
+}
+
+impl ToTokens for ast::ImportField {
+    fn to_tokens(&self, into: &mut Tokens) {
+        let name = self.name;
+        let ty = &self.ty;
+        let shim_name = syn::Ident::from(self.shared().shim_name());
+        let vis = &self.vis;
+        (my_quote! {
+            #vis static #name: ::wasm_bindgen::JsStatic<#ty> = {
+                fn init() -> #ty {
+                    extern {
+                        fn #shim_name() -> u32;
+                    }
+                    unsafe {
+                        ::wasm_bindgen::convert::WasmBoundary::from_js(#shim_name())
+                    }
+                }
+                ::wasm_bindgen::JsStatic {
+                    __inner: ::std::cell::UnsafeCell::new(None),
+                    __init: init,
+                }
+            };
         }).to_tokens(into);
     }
 }
