@@ -369,6 +369,18 @@ impl ToTokens for ast::ImportType {
                     self.obj.to_js_ref()
                 }
             }
+
+            impl From<::wasm_bindgen::JsValue> for #name {
+                fn from(obj: ::wasm_bindgen::JsValue) -> #name {
+                    #name { obj }
+                }
+            }
+
+            impl From<#name> for ::wasm_bindgen::JsValue {
+                fn from(obj: #name) -> ::wasm_bindgen::JsValue {
+                    obj.obj
+                }
+            }
         }).to_tokens(tokens);
     }
 }
