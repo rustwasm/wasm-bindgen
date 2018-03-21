@@ -168,7 +168,6 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
             let json = a[3..].iter()
                 .map(|i| char::from_u32(i.0).unwrap())
                 .collect::<String>();
-            println!("{}", json);
             let p: shared::Program = match serde_json::from_str(&json) {
                 Ok(f) => f,
                 Err(e) => {
