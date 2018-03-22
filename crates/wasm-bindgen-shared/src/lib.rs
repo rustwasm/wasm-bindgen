@@ -20,7 +20,7 @@ pub struct Program {
 #[derive(Deserialize)]
 pub struct Import {
     pub module: Option<String>,
-    pub namespace: Option<String>,
+    pub js_namespace: Option<String>,
     pub kind: ImportKind,
 }
 

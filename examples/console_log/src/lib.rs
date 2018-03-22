@@ -6,11 +6,11 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern {
-    #[wasm_bindgen(namespace = console)]
+    #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
 }
 
 #[wasm_bindgen]
 pub fn run() {
-    console::log("Hello from Rust!");
+    log("Hello from Rust!");
 }

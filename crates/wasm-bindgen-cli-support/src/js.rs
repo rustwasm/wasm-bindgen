@@ -1558,7 +1558,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn import_name(&mut self, import: &shared::Import, item: &str) -> String {
         if let Some(ref module) = import.module {
-            let name = import.namespace.as_ref().map(|s| &**s).unwrap_or(item);
+            let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
 
             if self.cx.imported_names.insert(name.to_string()) {
                 self.cx.imports.push_str(&format!("
@@ -1566,7 +1566,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 ", name, module));
             }
         }
-        match import.namespace {
+        match import.js_namespace {
             Some(ref s) => format!("{}.{}", s, item),
             None => item.to_string(),
         }

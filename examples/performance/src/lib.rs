@@ -24,12 +24,12 @@ extern {
     #[wasm_bindgen(method, getter)]
     fn responseEnd(this: &PerformanceTiming) -> f64;
 
-    #[wasm_bindgen(namespace = console)]
+    #[wasm_bindgen(js_namespace = console)]
     fn log(a: &str);
 }
 
 macro_rules! println {
-    ($($t:tt)*) => (console::log(&format_args!($($t)*).to_string()))
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
 // Called by our JS entry point to run the example

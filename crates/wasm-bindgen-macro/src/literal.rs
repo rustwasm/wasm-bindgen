@@ -204,7 +204,7 @@ impl Literal for ast::Import {
                 Some(ref s) => a.str(s),
                 None => a.append("null"),
             }),
-            ("namespace", &|a| match self.namespace {
+            ("js_namespace", &|a| match self.js_namespace {
                 Some(ref s) => a.str(s.as_ref()),
                 None => a.append("null"),
             }),

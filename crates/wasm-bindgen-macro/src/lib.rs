@@ -13,7 +13,7 @@ extern crate wasm_bindgen_shared as shared;
 use std::borrow::Cow;
 use std::env;
 use std::sync::atomic::*;
-use std::collections::{BTreeMap, HashSet};
+use std::collections::HashSet;
 
 use proc_macro::TokenStream;
 use proc_macro2::Span;
@@ -71,39 +71,18 @@ impl ToTokens for ast::Program {
             s.to_tokens(tokens);
         }
         let mut types = HashSet::new();
-        let mut buckets = BTreeMap::new();
         for i in self.imports.iter() {
-            buckets.entry(i.namespace)
-                .or_insert(Vec::new())
-                .push(i);
             if let ast::ImportKind::Type(ref t) = i.kind {
                 types.insert(t.name);
             }
         }
-        for (namespace, imports) in buckets {
-            let mut sub_tokens = Tokens::new();
-            for import in imports {
-                import.kind.to_tokens(&mut sub_tokens);
-            }
-            match namespace {
+        for i in self.imports.iter() {
+            match i.js_namespace {
                 Some(ns) if types.contains(&ns) => {
-                    (quote! { impl #ns { #sub_tokens } }).to_tokens(tokens);
+                    let kind = &i.kind;
+                    (quote! { impl #ns { #kind } }).to_tokens(tokens);
                 }
-                Some(ns) => {
-                    (quote! {
-                        // TODO: allow controlling `pub` here.
-                        //
-                        // TODO: we don't really want to generate a type here,
-                        // it'd be preferrable to generate a namespace indicator
-                        // or something like that (but modules interact weirdly
-                        // with imports and such)
-                        #[allow(bad_style)]
-                        pub struct #ns { _priv: () }
-
-                        impl #ns { #sub_tokens }
-                    }).to_tokens(tokens);
-                }
-                None => sub_tokens.to_tokens(tokens),
+                _ => i.kind.to_tokens(tokens),
             }
         }
         for e in self.enums.iter() {

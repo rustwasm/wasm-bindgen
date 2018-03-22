@@ -12,19 +12,19 @@ fn simple() {
 
             #[wasm_bindgen]
             pub fn get_random() -> f64 {
-                Math::random()
+                random()
             }
 
             #[wasm_bindgen]
             pub fn do_log(a: f64) -> f64 {
-                Math::log(a)
+                log(a)
             }
 
             #[wasm_bindgen]
             extern {
-                #[wasm_bindgen(namespace = Math)]
+                #[wasm_bindgen(js_namespace = Math)]
                 fn random() -> f64;
-                #[wasm_bindgen(namespace = Math)]
+                #[wasm_bindgen(js_namespace = Math)]
                 fn log(a: f64) -> f64;
             }
         "#)
@@ -52,22 +52,22 @@ fn import_class() {
 
             #[wasm_bindgen(module = "./another")]
             extern {
-                #[wasm_bindgen(namespace = Foo)]
+                #[wasm_bindgen(js_namespace = Foo)]
                 fn bar();
             }
 
             #[wasm_bindgen]
-            pub fn bar() {
-                Foo::bar();
+            pub fn baz() {
+                bar();
             }
         "#)
         .file("test.ts", r#"
-            import { bar } from "./out";
+            import { baz } from "./out";
             import { called } from "./another";
             import * as assert from "assert";
 
             export function test() {
-                bar();
+                baz();
                 assert.strictEqual(called, true);
             }
         "#)
@@ -96,7 +96,7 @@ fn construct() {
             #[wasm_bindgen(module = "./another")]
             extern {
                 type Foo;
-                #[wasm_bindgen(namespace = Foo)]
+                #[wasm_bindgen(js_namespace = Foo)]
                 fn create() -> Foo;
                 #[wasm_bindgen(method)]
                 fn get_internal_string(this: &Foo) -> String;
@@ -217,7 +217,7 @@ fn switch_methods() {
                 #[wasm_bindgen(constructor)]
                 fn new() -> Foo;
 
-                #[wasm_bindgen(namespace = Foo)]
+                #[wasm_bindgen(js_namespace = Foo)]
                 fn a();
 
                 #[wasm_bindgen(method)]

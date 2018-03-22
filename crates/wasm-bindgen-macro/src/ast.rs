@@ -21,7 +21,7 @@ pub struct Export {
 
 pub struct Import {
     pub module: Option<String>,
-    pub namespace: Option<syn::Ident>,
+    pub js_namespace: Option<syn::Ident>,
     pub kind: ImportKind,
 }
 
@@ -269,7 +269,7 @@ impl Program {
                 BindgenAttrs::find(attrs)
             };
             let module = item_opts.module().or(opts.module()).map(|s| s.to_string());
-            let namespace = item_opts.namespace().or(opts.namespace());
+            let js_namespace = item_opts.js_namespace().or(opts.js_namespace());
             let mut kind = match item {
                 syn::ForeignItem::Fn(f) => self.push_foreign_fn(f, item_opts),
                 syn::ForeignItem::Type(t) => self.push_foreign_ty(t),
@@ -277,7 +277,7 @@ impl Program {
                 _ => panic!("only foreign functions/types allowed for now"),
             };
 
-            self.imports.push(Import { module, namespace, kind });
+            self.imports.push(Import { module, js_namespace, kind });
         }
     }
 
@@ -640,11 +640,11 @@ impl BindgenAttrs {
             })
     }
 
-    fn namespace(&self) -> Option<syn::Ident> {
+    fn js_namespace(&self) -> Option<syn::Ident> {
         self.attrs.iter()
             .filter_map(|a| {
                 match *a {
-                    BindgenAttr::Namespace(s) => Some(s),
+                    BindgenAttr::JsNamespace(s) => Some(s),
                     _ => None,
                 }
             })
@@ -691,7 +691,7 @@ enum BindgenAttr {
     Catch,
     Constructor,
     Method,
-    Namespace(syn::Ident),
+    JsNamespace(syn::Ident),
     Module(String),
     Getter,
     Setter,
@@ -710,11 +710,11 @@ impl syn::synom::Synom for BindgenAttr {
         call!(term, "setter") => { |_| BindgenAttr::Setter }
         |
         do_parse!(
-            call!(term, "namespace") >>
+            call!(term, "js_namespace") >>
             punct!(=) >>
             ns: syn!(syn::Ident) >>
             (ns)
-        )=> { BindgenAttr::Namespace }
+        )=> { BindgenAttr::JsNamespace }
         |
         do_parse!(
             call!(term, "module") >>
