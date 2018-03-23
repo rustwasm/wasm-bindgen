@@ -24,8 +24,8 @@ extern {
     fn body(this: &HTMLDocument) -> Element;
 
     type Element;
-    #[wasm_bindgen(method, setter)]
-    fn set_innerHTML(this: &Element, html: &str);
+    #[wasm_bindgen(method, setter = "innerHTML")]
+    fn set_inner_html(this: &Element, html: &str);
     #[wasm_bindgen(method)]
     fn appendChild(this: &Element, other: Element);
 }
@@ -34,6 +34,6 @@ extern {
 #[wasm_bindgen]
 pub fn run() {
     let val = document.createElement("p");
-    val.set_innerHTML("Hello from Rust!");
+    val.set_inner_html("Hello from Rust!");
     document.body().appendChild(val);
 }
