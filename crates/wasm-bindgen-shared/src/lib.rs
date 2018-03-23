@@ -38,6 +38,7 @@ pub struct ImportFunction {
     pub catch: bool,
     pub method: bool,
     pub js_new: bool,
+    pub structural: bool,
     pub getter: Option<String>,
     pub setter: Option<String>,
     pub class: Option<String>,

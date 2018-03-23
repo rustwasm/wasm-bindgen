@@ -1,5 +1,6 @@
 use std::char;
 use std::collections::{HashSet, HashMap};
+use std::fmt::Write;
 use std::mem;
 
 use shared;
@@ -1432,6 +1433,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
         }
 
+        let nargs = invoc_args.len();
         let invoc_args = invoc_args.join(", ");
         let function_name = &import.function.name;
         let invoc = match import.class {
@@ -1441,19 +1443,50 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(ref class) if import.method => {
                 let class = self.import_name(info, class);
                 let target = if let Some(ref g) = import.getter {
-                    format!(
-                        "Object.getOwnPropertyDescriptor({}.prototype, '{}').get;",
-                        class,
-                        g,
-                    )
+                    if import.structural {
+                        format!("function() {{ return this.{}; }}", g)
+                    } else {
+                        format!(
+                            "Object.getOwnPropertyDescriptor\
+                                ({}.prototype, '{}').get;",
+                            class,
+                            g,
+                        )
+                    }
                 } else if let Some(ref s) = import.setter {
-                    format!(
-                        "Object.getOwnPropertyDescriptor({}.prototype, '{}').set;",
-                        class,
-                        s,
-                    )
+                    if import.structural {
+                        format!("function(y) {{ this.{} = y; }}", s)
+                    } else {
+                        format!(
+                            "Object.getOwnPropertyDescriptor\
+                                ({}.prototype, '{}').set;",
+                            class,
+                            s,
+                        )
+                    }
                 } else {
-                    format!("{}.prototype.{}", class, function_name)
+                    if import.structural {
+                        let mut s = format!("function(");
+                        for i in 0..nargs - 1 {
+                            if i > 0 {
+                                drop(write!(s, ", "));
+                            }
+                            drop(write!(s, "x{}", i));
+                        }
+                        s.push_str(") { return this.");
+                        s.push_str(function_name);
+                        s.push_str("(");
+                        for i in 0..nargs - 1 {
+                            if i > 0 {
+                                drop(write!(s, ", "));
+                            }
+                            drop(write!(s, "x{}", i));
+                        }
+                        s.push_str("); }");
+                        s
+                    } else {
+                        format!("{}.prototype.{}", class, function_name)
+                    }
                 };
                 self.cx.globals.push_str(&format!("
                     const {}_target = {};

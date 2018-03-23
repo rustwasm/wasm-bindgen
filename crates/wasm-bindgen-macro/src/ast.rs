@@ -670,6 +670,16 @@ impl BindgenAttrs {
                 }
             })
     }
+
+    pub fn structural(&self) -> bool {
+        self.attrs.iter()
+            .any(|a| {
+                match *a {
+                    BindgenAttr::Structural => true,
+                    _ => false,
+                }
+            })
+    }
 }
 
 impl syn::synom::Synom for BindgenAttrs {
@@ -695,6 +705,7 @@ enum BindgenAttr {
     Module(String),
     Getter,
     Setter,
+    Structural,
 }
 
 impl syn::synom::Synom for BindgenAttr {
@@ -708,6 +719,8 @@ impl syn::synom::Synom for BindgenAttr {
         call!(term, "getter") => { |_| BindgenAttr::Getter }
         |
         call!(term, "setter") => { |_| BindgenAttr::Setter }
+        |
+        call!(term, "structural") => { |_| BindgenAttr::Structural }
         |
         do_parse!(
             call!(term, "js_namespace") >>

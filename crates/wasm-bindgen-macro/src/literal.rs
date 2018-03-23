@@ -242,6 +242,7 @@ impl Literal for ast::ImportFunction {
 
         let mut getter = None;
         let mut setter = None;
+        let structural = self.function.opts.structural();
 
         if self.function.opts.getter() {
             getter = Some(self.infer_getter_property());
@@ -254,6 +255,7 @@ impl Literal for ast::ImportFunction {
             ("catch", &|a| a.bool(self.function.opts.catch())),
             ("method", &|a| a.bool(method)),
             ("js_new", &|a| a.bool(js_new)),
+            ("structural", &|a| a.bool(structural)),
             ("getter", &|a| match getter {
                 Some(ref s) => a.str(s),
                 None => a.append("null"),

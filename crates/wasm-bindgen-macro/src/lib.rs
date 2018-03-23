@@ -349,6 +349,16 @@ impl ToTokens for ast::ImportType {
                 }
             }
 
+            impl ::wasm_bindgen::convert::FromRefWasmBoundary for #name {
+                type RefAnchor = ::std::mem::ManuallyDrop<#name>;
+                unsafe fn from_js_ref(js: Self::Js) -> Self::RefAnchor {
+                    let obj = <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary>
+                        ::from_js(js);
+                    ::std::mem::ManuallyDrop::new(#name { obj })
+                }
+            }
+
+
             impl From<::wasm_bindgen::JsValue> for #name {
                 fn from(obj: ::wasm_bindgen::JsValue) -> #name {
                     #name { obj }
