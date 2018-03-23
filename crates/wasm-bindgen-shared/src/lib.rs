@@ -5,7 +5,7 @@ extern crate fnv;
 use std::char;
 use std::hash::{Hash, Hasher};
 
-pub const SCHEMA_VERSION: &str = "0";
+pub const SCHEMA_VERSION: &str = "1";
 
 #[derive(Deserialize)]
 pub struct Program {
