@@ -62,7 +62,7 @@ the latter will install the `wasm-bindgen` CLI tool we'll be using later.
 Next up let's make our project
 
 ```
-$ cargo new js-hello-world
+$ cargo new js-hello-world --lib
 ```
 
 Now let's add a dependency on this project inside `Cargo.toml` as well as
