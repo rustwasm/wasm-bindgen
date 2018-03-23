@@ -975,6 +975,22 @@ possibilities!
   accessible as `foo.set_property(2)`. Note that both functions have a `this`
   argument as they're tagged with `method`.
 
+  Finally, you can also pass a string argument to the `getter` and `setter`
+  properties to configure what property is accessed. When the property is
+  explicitly specified then there is no restriction on the method name. For
+  example the below is equivalent to the above:
+
+  ```rust
+  #[wasm_bindgen]
+  extern {
+      type Foo;
+      #[wasm_bindgen(method, getter = "property")]
+      fn assorted_method_name(this: &Foo) -> u32;
+      #[wasm_bindgen(method, setter = "property")]
+      fn some_other_method_name(this: &Foo, val: u32);
+  }
+  ```
+
   Properties in JS are accessed through `Object.getOwnPropertyDescriptor`. Note
   that this typically only works for class-like-defined properties which aren't
   just attached properties on any old object. For accessing any old property on

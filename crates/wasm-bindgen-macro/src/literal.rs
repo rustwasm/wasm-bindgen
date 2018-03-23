@@ -244,11 +244,11 @@ impl Literal for ast::ImportFunction {
         let mut setter = None;
         let structural = self.function.opts.structural();
 
-        if self.function.opts.getter() {
-            getter = Some(self.infer_getter_property());
+        if let Some(s) = self.function.opts.getter() {
+            getter = Some(s.unwrap_or_else(|| self.infer_getter_property()));
         }
-        if self.function.opts.setter() {
-            setter = Some(self.infer_setter_property());
+        if let Some(s) = self.function.opts.setter() {
+            setter = Some(s.unwrap_or_else(|| self.infer_setter_property()));
         }
         a.fields(&[
             ("kind", &|a| a.str("function")),

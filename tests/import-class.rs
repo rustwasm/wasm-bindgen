@@ -335,3 +335,60 @@ fn properties() {
         "#)
         .test();
 }
+
+#[test]
+fn rename_setter_getter() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./another")]
+            extern {
+                type Foo;
+
+                #[wasm_bindgen(constructor)]
+                fn new() -> Foo;
+
+                #[wasm_bindgen(getter = "a", method)]
+                fn test(this: &Foo) -> i32;
+
+                #[wasm_bindgen(setter = "a", method)]
+                fn another(this: &Foo, a: i32);
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                let a = Foo::new();
+                assert_eq!(a.test(), 1);
+                a.another(2);
+                assert_eq!(a.test(), 2);
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export function test() {
+                run();
+            }
+        "#)
+        .file("another.ts", r#"
+            export class Foo {
+                constructor(private num: number) {
+                    this.num = 1;
+                }
+
+                get a() {
+                    return this.num;
+                }
+
+                set a(val) {
+                    this.num = val;
+                }
+            }
+        "#)
+        .test();
+}

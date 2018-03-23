@@ -651,24 +651,26 @@ impl BindgenAttrs {
             .next()
     }
 
-    pub fn getter(&self) -> bool {
+    pub fn getter(&self) -> Option<Option<String>> {
         self.attrs.iter()
-            .any(|a| {
+            .filter_map(|a| {
                 match *a {
-                    BindgenAttr::Getter => true,
-                    _ => false,
+                    BindgenAttr::Getter(ref s) => Some(s.clone()),
+                    _ => None,
                 }
             })
+            .next()
     }
 
-    pub fn setter(&self) -> bool {
+    pub fn setter(&self) -> Option<Option<String>> {
         self.attrs.iter()
-            .any(|a| {
+            .filter_map(|a| {
                 match *a {
-                    BindgenAttr::Setter => true,
-                    _ => false,
+                    BindgenAttr::Setter(ref s) => Some(s.clone()),
+                    _ => None,
                 }
             })
+            .next()
     }
 
     pub fn structural(&self) -> bool {
@@ -703,8 +705,8 @@ enum BindgenAttr {
     Method,
     JsNamespace(syn::Ident),
     Module(String),
-    Getter,
-    Setter,
+    Getter(Option<String>),
+    Setter(Option<String>),
     Structural,
 }
 
@@ -716,9 +718,25 @@ impl syn::synom::Synom for BindgenAttr {
         |
         call!(term, "method") => { |_| BindgenAttr::Method }
         |
-        call!(term, "getter") => { |_| BindgenAttr::Getter }
+        do_parse!(
+            call!(term, "getter") >>
+            val: option!(do_parse!(
+                punct!(=) >>
+                s: syn!(syn::LitStr) >>
+                (s.value())
+            )) >>
+            (val)
+        )=> { BindgenAttr::Getter }
         |
-        call!(term, "setter") => { |_| BindgenAttr::Setter }
+        do_parse!(
+            call!(term, "setter") >>
+            val: option!(do_parse!(
+                punct!(=) >>
+                s: syn!(syn::LitStr) >>
+                (s.value())
+            )) >>
+            (val)
+        )=> { BindgenAttr::Setter }
         |
         call!(term, "structural") => { |_| BindgenAttr::Structural }
         |
