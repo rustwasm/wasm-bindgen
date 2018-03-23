@@ -21,24 +21,21 @@ that it can be used for languages like C/C++!
 
 Notable features of this project includes:
 
-* Exposing Rust structs to JS as classes
-* Exposing Rust functions to JS
-* Managing arguments between JS/Rust (strings, numbers, classes, objects, etc)
-* Importing JS functions with richer types (strings, objects)
-* Importing JS classes and calling methods
-* Receiving arbitrary JS objects in Rust, passing them through to JS
-* Catching JS exceptions in imports
+* Importing JS functionality in to Rust such as [DOM manipulation][dom-ex],
+  [console logging][console-log], or [performance monitoring][perf-ex].
+* [Exporting Rust functionality][smorg-ex] to JS such as classes, funtions, etc.
+* Working with rich types like strings, numbers, classes, and objects rather
+  than simply `u32` and floats.
 
-Planned features include:
-
-* Field setters/getters in JS through Rust functions
-* ... and more coming soon!
-
-This project is still very "early days" but feedback is of course always
+This project is still relatively new but feedback is of course always
 welcome! If you're curious about the design plus even more information about
 what this crate can do, check out the [design doc].
 
 [design doc]: https://github.com/alexcrichton/wasm-bindgen/blob/master/DESIGN.md
+[dom-ex]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/dom
+[console-log]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/console_log
+[perf-ex]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/performance
+[smorg-ex]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/smorgasboard
 
 ## Basic usage
 
