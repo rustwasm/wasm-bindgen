@@ -353,10 +353,10 @@ fn rename_setter_getter() {
                 #[wasm_bindgen(constructor)]
                 fn new() -> Foo;
 
-                #[wasm_bindgen(getter = "a", method)]
+                #[wasm_bindgen(getter = a, method)]
                 fn test(this: &Foo) -> i32;
 
-                #[wasm_bindgen(setter = "a", method)]
+                #[wasm_bindgen(setter = a, method)]
                 fn another(this: &Foo, a: i32);
             }
 

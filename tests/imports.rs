@@ -310,3 +310,42 @@ fn import_a_field() {
         "#)
         .test();
 }
+
+#[test]
+fn rename() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                #[wasm_bindgen(js_name = baz)]
+                fn foo();
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                foo();
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as wasm from "./out";
+            import * as assert from "assert";
+
+            let called = false;
+
+            export function baz() {
+                called = true;
+            }
+
+            export function test() {
+                wasm.run();
+                assert.strictEqual(called, true);
+            }
+        "#)
+        .test();
+}

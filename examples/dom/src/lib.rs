@@ -24,10 +24,10 @@ extern {
     fn body(this: &HTMLDocument) -> Element;
 
     type Element;
-    #[wasm_bindgen(method, setter = "innerHTML")]
+    #[wasm_bindgen(method, setter = innerHTML)]
     fn set_inner_html(this: &Element, html: &str);
-    #[wasm_bindgen(method)]
-    fn appendChild(this: &Element, other: Element);
+    #[wasm_bindgen(method, js_name = appendChild)]
+    fn append_child(this: &Element, other: Element);
 }
 
 // Called by our JS entry point to run the example
@@ -35,5 +35,5 @@ extern {
 pub fn run() {
     let val = document.createElement("p");
     val.set_inner_html("Hello from Rust!");
-    document.body().appendChild(val);
+    document.body().append_child(val);
 }

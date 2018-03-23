@@ -34,6 +34,7 @@ pub enum ImportKind {
 
 #[derive(Deserialize)]
 pub struct ImportFunction {
+    pub shim: String,
     pub module: Option<String>,
     pub catch: bool,
     pub method: bool,
@@ -49,6 +50,7 @@ pub struct ImportFunction {
 pub struct ImportStatic {
     pub module: Option<String>,
     pub name: String,
+    pub shim: String,
 }
 
 #[derive(Deserialize)]
@@ -108,17 +110,6 @@ pub fn struct_function_export_name(struct_: &str, f: &str) -> String {
     name.push_str("_");
     name.push_str(f);
     return name
-}
-
-pub fn mangled_import_name(struct_: Option<&str>, f: &str) -> String {
-    match struct_ {
-        Some(s) => format!("__wbg_s_{}_{}", s, f),
-        None => format!("__wbg_f_{}", f),
-    }
-}
-
-pub fn static_import_shim_name(statik: &str) -> String {
-    format!("__wbg_field_import_shim_{}", statik)
 }
 
 pub type Type = char;

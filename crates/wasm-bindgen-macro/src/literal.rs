@@ -245,9 +245,11 @@ impl Literal for ast::ImportFunction {
         let structural = self.function.opts.structural();
 
         if let Some(s) = self.function.opts.getter() {
+            let s = s.map(|s| s.to_string());
             getter = Some(s.unwrap_or_else(|| self.infer_getter_property()));
         }
         if let Some(s) = self.function.opts.setter() {
+            let s = s.map(|s| s.to_string());
             setter = Some(s.unwrap_or_else(|| self.infer_setter_property()));
         }
         a.fields(&[
@@ -256,6 +258,7 @@ impl Literal for ast::ImportFunction {
             ("method", &|a| a.bool(method)),
             ("js_new", &|a| a.bool(js_new)),
             ("structural", &|a| a.bool(structural)),
+            ("shim", &|a| a.str(self.shim.as_ref())),
             ("getter", &|a| match getter {
                 Some(ref s) => a.str(s),
                 None => a.append("null"),
@@ -295,7 +298,8 @@ impl Literal for ast::ImportStatic {
     fn literal(&self, a: &mut LiteralBuilder) {
         a.fields(&[
             ("kind", &|a| a.str("static")),
-            ("name", &|a| a.str(self.name.as_ref())),
+            ("name", &|a| a.str(self.js_name.as_ref())),
+            ("shim", &|a| a.str(self.shim.as_ref())),
         ])
     }
 }

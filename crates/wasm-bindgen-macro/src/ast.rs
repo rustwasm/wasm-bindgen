@@ -33,7 +33,9 @@ pub enum ImportKind {
 
 pub struct ImportFunction {
     pub function: Function,
+    pub rust_name: syn::Ident,
     pub kind: ImportFunctionKind,
+    pub shim: syn::Ident,
 }
 
 pub enum ImportFunctionKind {
@@ -51,7 +53,9 @@ pub enum ImportFunctionKind {
 pub struct ImportStatic {
     pub vis: syn::Visibility,
     pub ty: syn::Type,
-    pub name: syn::Ident,
+    pub shim: syn::Ident,
+    pub rust_name: syn::Ident,
+    pub js_name: syn::Ident,
 }
 
 pub struct ImportType {
@@ -273,7 +277,7 @@ impl Program {
             let mut kind = match item {
                 syn::ForeignItem::Fn(f) => self.push_foreign_fn(f, item_opts),
                 syn::ForeignItem::Type(t) => self.push_foreign_ty(t),
-                syn::ForeignItem::Static(s) => self.push_foreign_static(s),
+                syn::ForeignItem::Static(s) => self.push_foreign_static(s, item_opts),
                 _ => panic!("only foreign functions/types allowed for now"),
             };
 
@@ -284,7 +288,8 @@ impl Program {
     pub fn push_foreign_fn(&mut self, f: syn::ForeignItemFn, opts: BindgenAttrs)
         -> ImportKind
     {
-        let mut wasm = Function::from_decl(f.ident,
+        let js_name = opts.js_name().unwrap_or(f.ident);
+        let mut wasm = Function::from_decl(js_name,
                                            f.decl,
                                            f.attrs,
                                            opts,
@@ -346,9 +351,19 @@ impl Program {
             ImportFunctionKind::Normal
         };
 
+        let shim = {
+            let ns = match kind {
+                ImportFunctionKind::Normal => "n",
+                ImportFunctionKind::Method { ref class, .. } => class,
+                ImportFunctionKind::JsConstructor { ref class, .. } => class,
+            };
+            format!("__wbg_f_{}_{}_{}", js_name, f.ident, ns)
+        };
         ImportKind::Function(ImportFunction {
             function: wasm,
             kind,
+            rust_name: f.ident,
+            shim: shim.into(),
         })
     }
 
@@ -361,16 +376,22 @@ impl Program {
         })
     }
 
-    pub fn push_foreign_static(&mut self, f: syn::ForeignItemStatic)
+    pub fn push_foreign_static(&mut self,
+                               f: syn::ForeignItemStatic,
+                               opts: BindgenAttrs)
         -> ImportKind
     {
         if f.mutability.is_some() {
             panic!("cannot import mutable globals yet")
         }
+        let js_name = opts.js_name().unwrap_or(f.ident);
+        let shim = format!("__wbg_static_accessor_{}_{}", js_name, f.ident);
         ImportKind::Static(ImportStatic {
             ty: *f.ty,
             vis: f.vis,
-            name: f.ident,
+            rust_name: f.ident,
+            js_name,
+            shim: shim.into(),
         })
     }
 
@@ -651,22 +672,22 @@ impl BindgenAttrs {
             .next()
     }
 
-    pub fn getter(&self) -> Option<Option<String>> {
+    pub fn getter(&self) -> Option<Option<syn::Ident>> {
         self.attrs.iter()
             .filter_map(|a| {
                 match *a {
-                    BindgenAttr::Getter(ref s) => Some(s.clone()),
+                    BindgenAttr::Getter(s) => Some(s),
                     _ => None,
                 }
             })
             .next()
     }
 
-    pub fn setter(&self) -> Option<Option<String>> {
+    pub fn setter(&self) -> Option<Option<syn::Ident>> {
         self.attrs.iter()
             .filter_map(|a| {
                 match *a {
-                    BindgenAttr::Setter(ref s) => Some(s.clone()),
+                    BindgenAttr::Setter(s) => Some(s),
                     _ => None,
                 }
             })
@@ -681,6 +702,17 @@ impl BindgenAttrs {
                     _ => false,
                 }
             })
+    }
+
+    pub fn js_name(&self) -> Option<syn::Ident> {
+        self.attrs.iter()
+            .filter_map(|a| {
+                match *a {
+                    BindgenAttr::JsName(s) => Some(s),
+                    _ => None,
+                }
+            })
+            .next()
     }
 }
 
@@ -705,9 +737,10 @@ enum BindgenAttr {
     Method,
     JsNamespace(syn::Ident),
     Module(String),
-    Getter(Option<String>),
-    Setter(Option<String>),
+    Getter(Option<syn::Ident>),
+    Setter(Option<syn::Ident>),
     Structural,
+    JsName(syn::Ident),
 }
 
 impl syn::synom::Synom for BindgenAttr {
@@ -722,8 +755,8 @@ impl syn::synom::Synom for BindgenAttr {
             call!(term, "getter") >>
             val: option!(do_parse!(
                 punct!(=) >>
-                s: syn!(syn::LitStr) >>
-                (s.value())
+                s: syn!(syn::Ident) >>
+                (s)
             )) >>
             (val)
         )=> { BindgenAttr::Getter }
@@ -732,8 +765,8 @@ impl syn::synom::Synom for BindgenAttr {
             call!(term, "setter") >>
             val: option!(do_parse!(
                 punct!(=) >>
-                s: syn!(syn::LitStr) >>
-                (s.value())
+                s: syn!(syn::Ident) >>
+                (s)
             )) >>
             (val)
         )=> { BindgenAttr::Setter }
@@ -753,6 +786,13 @@ impl syn::synom::Synom for BindgenAttr {
             s: syn!(syn::LitStr) >>
             (s.value())
         )=> { BindgenAttr::Module }
+        |
+        do_parse!(
+            call!(term, "js_name") >>
+            punct!(=) >>
+            ns: syn!(syn::Ident) >>
+            (ns)
+        )=> { BindgenAttr::JsName }
     ));
 }
 

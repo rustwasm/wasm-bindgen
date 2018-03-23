@@ -975,7 +975,7 @@ possibilities!
   accessible as `foo.set_property(2)`. Note that both functions have a `this`
   argument as they're tagged with `method`.
 
-  Finally, you can also pass a string argument to the `getter` and `setter`
+  Finally, you can also pass an argument to the `getter` and `setter`
   properties to configure what property is accessed. When the property is
   explicitly specified then there is no restriction on the method name. For
   example the below is equivalent to the above:
@@ -984,7 +984,7 @@ possibilities!
   #[wasm_bindgen]
   extern {
       type Foo;
-      #[wasm_bindgen(method, getter = "property")]
+      #[wasm_bindgen(method, getter = property)]
       fn assorted_method_name(this: &Foo) -> u32;
       #[wasm_bindgen(method, setter = "property")]
       fn some_other_method_name(this: &Foo, val: u32);
@@ -1016,6 +1016,26 @@ possibilities!
   The type here, `Foo`, is not required to exist in JS (it's not referenced).
   Instead wasm-bindgen will generate shims that will access the passed in JS
   value's `bar` property to or the `baz` property (depending on the function).
+
+* `js_name = foo` - this can be used to bind to a different function in JS than
+  the identifier that's defined in Rust. For example you can also define
+  multiple signatures for a polymorphic function in JS as well:
+
+  ```rust
+  #[wasm_bindgen]
+  extern {
+      type Foo;
+      #[wasm_bindgen(js_namespace = console, js_name = log)]
+      fn log_string(s: &str);
+      #[wasm_bindgen(js_namespace = console, js_name = log)]
+      fn log_u32(n: u32);
+      #[wasm_bindgen(js_namespace = console, js_name = log)]
+      fn log_many(a: u32, b: JsValue);
+  }
+  ```
+
+  All of these functions will call `console.log` in Rust, but each identifier
+  will have only one signature in Rust.
 
 ## Wrapping up
 

@@ -1336,27 +1336,24 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                   info: &shared::Import,
                                   import: &shared::ImportStatic) {
         // TODO: should support more types to import here
-        let name = shared::static_import_shim_name(&import.name);
-        self.cx.imports_to_rewrite.insert(name.clone());
+        self.cx.imports_to_rewrite.insert(import.shim.clone());
         let obj = self.import_name(info, &import.name);
         self.cx.expose_add_heap_object();
         self.cx.globals.push_str(&format!("
             export function {}() {{
                 return addHeapObject({});
             }}
-        ", name, obj));
+        ", import.shim, obj));
     }
 
     pub fn generate_import_function(&mut self,
                                     info: &shared::Import,
                                     import: &shared::ImportFunction) {
-        let name = shared::mangled_import_name(import.class.as_ref().map(|s| &**s),
-                                               &import.function.name);
-        self.cx.imports_to_rewrite.insert(name.clone());
+        self.cx.imports_to_rewrite.insert(import.shim.clone());
 
         let mut dst = String::new();
 
-        dst.push_str(&format!("function {}(", name));
+        dst.push_str(&format!("function {}(", import.shim));
         let mut invoc_args = Vec::new();
         let mut abi_args = Vec::new();
 
@@ -1490,25 +1487,25 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 };
                 self.cx.globals.push_str(&format!("
                     const {}_target = {};
-                ", name, target));
-                format!("{}_target.call", name)
+                ", import.shim, target));
+                format!("{}_target.call", import.shim)
             }
             Some(ref class) => {
                 let class = self.import_name(info, class);
                 self.cx.globals.push_str(&format!("
                     const {}_target = {}.{};
-                ", name, class, function_name));
-                format!("{}_target", name)
+                ", import.shim, class, function_name));
+                format!("{}_target", import.shim)
             }
             None => {
-                let import = self.import_name(info, function_name);
-                if import.contains(".") {
+                let name = self.import_name(info, function_name);
+                if name.contains(".") {
                     self.cx.globals.push_str(&format!("
                         const {}_target = {};
-                    ", name, import));
-                    format!("{}_target", name)
+                    ", import.shim, name));
+                    format!("{}_target", import.shim)
                 } else {
-                    import
+                    name
                 }
             }
         };

@@ -388,23 +388,16 @@ impl ToTokens for ast::ImportFunction {
     fn to_tokens(&self, tokens: &mut Tokens) {
         let mut class_ty = None;
         let mut is_method = false;
-        let mut class_name = None;
         match self.kind {
-            ast::ImportFunctionKind::Method { ref ty, ref class } => {
+            ast::ImportFunctionKind::Method { ref ty, .. } => {
                 is_method = true;
                 class_ty = Some(ty);
-                class_name = Some(class);
             }
-            ast::ImportFunctionKind::JsConstructor { ref ty, ref class } => {
+            ast::ImportFunctionKind::JsConstructor { ref ty, .. } => {
                 class_ty = Some(ty);
-                class_name = Some(class);
             }
             ast::ImportFunctionKind::Normal => {}
         }
-        let import_name = shared::mangled_import_name(
-            class_name.map(|s| &**s),
-            self.function.name.as_ref(),
-        );
         let vis = &self.function.rust_vis;
         let ret = &self.function.rust_decl.output;
         let fn_token = &self.function.rust_decl.fn_token;
@@ -552,8 +545,8 @@ impl ToTokens for ast::ImportFunction {
             };
         }
 
-        let name = self.function.name;
-        let import_name = syn::Ident::from(import_name);
+        let rust_name = self.rust_name;
+        let import_name = self.shim;
         let attrs = &self.function.rust_attrs;
 
         let arguments = self.function.rust_decl.inputs
@@ -570,7 +563,7 @@ impl ToTokens for ast::ImportFunction {
         let invocation = my_quote! {
             #(#attrs)*
             #[allow(bad_style)]
-            #vis extern #fn_token #name(#me #(#arguments),*) #ret {
+            #vis extern #fn_token #rust_name(#me #(#arguments),*) #ret {
                 ::wasm_bindgen::__rt::link_this_library();
                 extern {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
@@ -637,10 +630,9 @@ impl ToTokens for ast::Enum {
 
 impl ToTokens for ast::ImportStatic {
     fn to_tokens(&self, into: &mut Tokens) {
-        let name = self.name;
+        let name = self.rust_name;
         let ty = &self.ty;
-        let shim_name = shared::static_import_shim_name(name.as_ref());
-        let shim_name = syn::Ident::from(shim_name);
+        let shim_name = self.shim;
         let vis = &self.vis;
         (my_quote! {
             #[allow(bad_style)]
