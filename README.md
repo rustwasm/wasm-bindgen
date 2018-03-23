@@ -104,25 +104,19 @@ of `alert` ensures that the right shims are generated.
 Next up let's build our project:
 
 ```
-$ cargo build --release --target wasm32-unknown-unknown
+$ cargo build --target wasm32-unknown-unknown
 ```
 
-Note that we're using `--release` here because unfortunately the current LLVM
-backend for wasm has a few bugs in non-optimized mode. Those bugs will hopefully
-get smoothed out over time!
-
 After this you'll have a wasm file at
-`target/wasm32-unknown-unknown/release/js_hello_world.wasm`. If you'd like you
-can use [wasm-gc] to make this file a little smaller
-
-[wasm-gc]: https://github.com/alexcrichton/wasm-gc
+`target/wasm32-unknown-unknown/debug/js_hello_world.wasm`. Don't be alarmed at
+the size, this is an unoptimized program!
 
 Now that we've generated the wasm module it's time to run the bindgen tool
 itself! This tool will postprocess the wasm file rustc generated, generating a
 new wasm file and a set of JS bindings as well. Let's invoke it!
 
 ```
-$ wasm-bindgen target/wasm32-unknown-unknown/release/js_hello_world.wasm \
+$ wasm-bindgen target/wasm32-unknown-unknown/debug/js_hello_world.wasm \
   --out-dir .
 ```
 
