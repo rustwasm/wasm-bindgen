@@ -20,3 +20,5 @@ The examples here are:
   it from JS
 * `performance` - how to import APIs like `performance.now()` and time various
   operations in Rust
+* `wasm-in-wasm` - how to interact with namespaced APIs like
+  `WebAssembly.Module` and shows off creation of a WebAssembly module from Rust
