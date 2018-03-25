@@ -203,7 +203,7 @@ let slab = [];
 let slab_next = 0;
 
 function addHeapObject(obj) {
-  if (slab_next == slab.length)
+  if (slab_next === slab.length)
     slab.push(slab.length + 1);
   const idx = slab_next;
   const next = slab[idx];
