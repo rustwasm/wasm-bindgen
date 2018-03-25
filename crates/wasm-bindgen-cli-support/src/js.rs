@@ -148,7 +148,7 @@ impl<'a> Context<'a> {
             bind("__wbindgen_boolean_new", &|me| {
                 me.expose_add_heap_object();
                 String::from("function(v) {
-                    return addHeapObject(v == 1);
+                    return addHeapObject(v === 1);
                 }")
             });
 
@@ -156,7 +156,7 @@ impl<'a> Context<'a> {
                 me.expose_get_object();
                 String::from("function(i) {
                     let v = getObject(i);
-                    if (typeof(v) == 'boolean') {
+                    if (typeof(v) === 'boolean') {
                         return v ? 1 : 0;
                     } else {
                         return 2;
@@ -182,7 +182,7 @@ impl<'a> Context<'a> {
             bind("__wbindgen_is_symbol", &|me| {
                 me.expose_get_object();
                 String::from("function(i) {
-                    return typeof(getObject(i)) == 'symbol' ? 1 : 0;
+                    return typeof(getObject(i)) === 'symbol' ? 1 : 0;
                 }")
             });
 
@@ -924,7 +924,7 @@ impl<'a> Context<'a> {
         };
         self.globals.push_str(&format!("
             function addHeapObject(obj) {{
-                if (slab_next == slab.length)
+                if (slab_next === slab.length)
                     slab.push(slab.length + 1);
                 const idx = slab_next;
                 const next = slab[idx];
@@ -1227,7 +1227,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
             Some(shared::TYPE_BOOLEAN) => {
                 dst_ts.push_str(": boolean");
-                format!("return ret != 0;")
+                format!("return ret !== 0;")
             }
             Some(shared::TYPE_JS_OWNED) => {
                 dst_ts.push_str(": any");
@@ -1351,7 +1351,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     abi_args.push(format!("arg{}", i));
                 }
                 shared::TYPE_BOOLEAN => {
-                    invoc_args.push(format!("arg{} != 0", i));
+                    invoc_args.push(format!("arg{} !== 0", i));
                     abi_args.push(format!("arg{}", i));
                 }
                 shared::TYPE_BORROWED_STR |
