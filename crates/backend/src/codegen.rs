@@ -88,6 +88,7 @@ impl ToTokens for ast::Program {
 impl ToTokens for ast::Struct {
     fn to_tokens(&self, tokens: &mut Tokens) {
         let name = &self.name;
+        let new_fn = syn::Ident::from(shared::new_function(self.name.as_ref()));
         let free_fn = syn::Ident::from(shared::free_function(self.name.as_ref()));
         let c = shared::name_to_descriptor(name.as_ref());
         let descriptor = Literal::byte_string(format!("{:4}", c).as_bytes());
@@ -150,6 +151,21 @@ impl ToTokens for ast::Struct {
                     let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
                     ::wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow_mut()
+                }
+            }
+
+            impl ::std::convert::From<#name> for ::wasm_bindgen::JsValue {
+                fn from(value: #name) -> Self {
+                    let ptr = ::wasm_bindgen::convert::WasmBoundary::into_js(value);
+
+                    #[wasm_import_module = "__wbindgen_placeholder__"]
+                    extern {
+                        fn #new_fn(ptr: u32) -> u32;
+                    }
+
+                    unsafe {
+                        ::wasm_bindgen::JsValue::__from_idx(#new_fn(ptr))
+                    }
                 }
             }
 

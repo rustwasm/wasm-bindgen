@@ -314,3 +314,50 @@ fn issue_27() {
         "#)
         .test();
 }
+
+#[test]
+fn pass_into_js_as_js_class() {
+    test_support::project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub struct Foo(i32);
+
+            #[wasm_bindgen]
+            impl Foo {
+                pub fn inner(&self) -> i32 {
+                    self.0
+                }
+            }
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn take_foo(foo: JsValue);
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                take_foo(Foo(13).into());
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run, Foo } from "./out";
+            import * as assert from "assert";
+
+            export function take_foo(foo: any) {
+                assert(foo instanceof Foo);
+                assert.strictEqual(foo.inner(), 13);
+                foo.free();
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}

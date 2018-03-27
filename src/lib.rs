@@ -94,10 +94,10 @@ impl JsValue {
         }
     }
 
-    // #[doc(hidden)]
-    // pub fn __from_idx(idx: u32) -> JsValue {
-    //     JsValue { idx }
-    // }
+    #[doc(hidden)]
+    pub unsafe fn __from_idx(idx: u32) -> JsValue {
+        JsValue { idx }
+    }
     //
     // #[doc(hidden)]
     // pub fn __get_idx(&self) -> u32 {

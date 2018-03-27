@@ -266,6 +266,11 @@ impl<'a> Context<'a> {
                     }}
                 "));
                 ts_dst.push_str("constructor(ptr: number, sym: Symbol);\n");
+
+                self.globals.push_str(&format!("
+                    export function {new_name}(ptr) {{
+                        return addHeapObject(new {class}(ptr, token));
+                    }}", new_name=shared::new_function(&class), class=class));
             } else {
                 dst.push_str(&format!("
                     constructor(ptr) {{
@@ -273,6 +278,11 @@ impl<'a> Context<'a> {
                     }}
                 "));
                 ts_dst.push_str("constructor(ptr: number);\n");
+
+                self.globals.push_str(&format!("
+                    export function {new_name}(ptr) {{
+                        return addHeapObject(new {class}(ptr));
+                    }}", new_name=shared::new_function(&class), class=class));
             }
 
             dst.push_str(&format!("
