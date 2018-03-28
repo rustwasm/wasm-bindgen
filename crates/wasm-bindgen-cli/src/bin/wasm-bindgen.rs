@@ -56,7 +56,7 @@ fn main() {
     let mut b = Bindgen::new();
     b.input_path(&input)
      .nodejs(args.flag_nodejs)
-     .browser(args.browser)
+     .browser(args.flag_browser)
      .debug(args.flag_debug)
      .typescript(args.flag_typescript);
 
