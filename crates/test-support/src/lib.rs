@@ -193,8 +193,6 @@ impl Project {
 
         cli::Bindgen::new()
             .input_path(&as_a_module)
-            .nodejs(true)
-            .nodejs_runtime_detect(self.detect_node)
             .typescript(true)
             .debug(self.debug)
             .generate(&root)

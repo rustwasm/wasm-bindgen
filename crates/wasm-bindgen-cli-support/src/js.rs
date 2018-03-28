@@ -506,46 +506,19 @@ impl<'a> Context<'a> {
             return
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
-        if self.config.nodejs_runtime_detect || self.config.nodejs {
-            self.globals.push_str(&format!("
-                function passStringToWasmNode(arg) {{
-                    if (typeof(arg) !== 'string')
-                        throw new Error('expected a string argument');
-                    const buf = Buffer.from(arg);
-                    const len = buf.length;
-                    const ptr = wasm.__wbindgen_malloc(len);
-                    buf.copy(Buffer.from(wasm.memory.buffer), ptr);
-                    return [ptr, len];
-                }}
-            "));
-        }
-        if self.config.nodejs_runtime_detect || !self.config.nodejs {
-            self.expose_text_encoder();
-            self.expose_uint8_memory();
-            self.globals.push_str(&format!("
-                function passStringToWasmBrowser(arg) {{
-                    if (typeof(arg) !== 'string')
-                        throw new Error('expected a string argument');
-                    const buf = textEncoder().encode(arg);
-                    const len = buf.length;
-                    const ptr = wasm.__wbindgen_malloc(len);
-                    getUint8Memory().set(buf, ptr);
-                    return [ptr, len];
-                }}
-            "));
-        }
-
-        if self.config.nodejs_runtime_detect {
-            self.globals.push_str("
-                let passStringToWasm = passStringToWasmBrowser;
-                if (typeof window === 'undefined')
-                    passStringToWasm = passStringToWasmNode;
-            ");
-        } else if self.config.nodejs {
-            self.globals.push_str("const passStringToWasm = passStringToWasmNode;\n");
-        } else {
-            self.globals.push_str("const passStringToWasm = passStringToWasmBrowser;\n");
-        }
+        self.expose_text_encoder();
+        self.expose_uint8_memory();
+        self.globals.push_str(&format!("
+            function passStringToWasm(arg) {{
+                if (typeof(arg) !== 'string')
+                    throw new Error('expected a string argument');
+                const buf = textEncoder().encode(arg);
+                const len = buf.length;
+                const ptr = wasm.__wbindgen_malloc(len);
+                getUint8Memory().set(buf, ptr);
+                return [ptr, len];
+            }}
+        "));
     }
 
     fn expose_pass_array8_to_wasm(&mut self) {
@@ -625,6 +598,16 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("text_encoder") {
             return
         }
+        if self.config.nodejs {
+            self.globals.push_str(&format!("
+                const TextEncoder = require('util');
+            "));
+        } else if !self.config.browser {
+            self.globals.push_str(&format!("
+                if (typeof window === 'undefined')
+                    var TextEncoder = require('util').TextEncoder;
+            "));
+        }
         self.globals.push_str(&format!("
             let cachedEncoder = null;
             function textEncoder() {{
@@ -639,6 +622,16 @@ impl<'a> Context<'a> {
     fn expose_text_decoder(&mut self) {
         if !self.exposed_globals.insert("text_decoder") {
             return
+        }
+        if self.config.nodejs {
+            self.globals.push_str(&format!("
+                const TextDecoder = require('util');
+            "));
+        } else if !self.config.browser {
+            self.globals.push_str(&format!("
+                if (typeof window === 'undefined')
+                    var TextDecoder = require('util').TextDecoder;
+            "));
         }
         self.globals.push_str(&format!("
             let cachedDecoder = null;
@@ -655,39 +648,16 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_string_from_wasm") {
             return
         }
-        if self.config.nodejs_runtime_detect || self.config.nodejs {
-            self.globals.push_str(&format!("
-                function getStringFromWasmNode(ptr, len) {{
-                    const buf = Buffer.from(wasm.memory.buffer).slice(ptr, ptr + len);
-                    const ret = buf.toString();
-                    return ret;
-                }}
-            "));
-        }
-        if self.config.nodejs_runtime_detect || !self.config.nodejs {
-            self.expose_text_decoder();
-            self.expose_uint8_memory();
-            self.globals.push_str(&format!("
-                function getStringFromWasmBrowser(ptr, len) {{
-                    const mem = getUint8Memory();
-                    const slice = mem.slice(ptr, ptr + len);
-                    const ret = textDecoder().decode(slice);
-                    return ret;
-                }}
-            "));
-        }
-
-        if self.config.nodejs_runtime_detect {
-            self.globals.push_str("
-                let getStringFromWasm = getStringFromWasmBrowser;
-                if (typeof window === 'undefined')
-                    getStringFromWasm = getStringFromWasmNode;
-            ");
-        } else if self.config.nodejs {
-            self.globals.push_str("const getStringFromWasm = getStringFromWasmNode;\n");
-        } else {
-            self.globals.push_str("const getStringFromWasm = getStringFromWasmBrowser;\n");
-        }
+        self.expose_text_decoder();
+        self.expose_uint8_memory();
+        self.globals.push_str(&format!("
+            function getStringFromWasm(ptr, len) {{
+                const mem = getUint8Memory();
+                const slice = mem.slice(ptr, ptr + len);
+                const ret = textDecoder().decode(slice);
+                return ret;
+            }}
+        "));
     }
 
     fn expose_get_array_js_value_from_wasm(&mut self) {
