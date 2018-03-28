@@ -23,7 +23,7 @@ Notable features of this project includes:
 
 * Importing JS functionality in to Rust such as [DOM manipulation][dom-ex],
   [console logging][console-log], or [performance monitoring][perf-ex].
-* [Exporting Rust functionality][smorg-ex] to JS such as classes, funtions, etc.
+* [Exporting Rust functionality][smorg-ex] to JS such as classes, functions, etc.
 * Working with rich types like strings, numbers, classes, and objects rather
   than simply `u32` and floats.
 
