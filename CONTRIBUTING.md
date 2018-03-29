@@ -14,7 +14,8 @@ please checkout [`DESIGN.md`](DESIGN.md).
 
 [install Rust]: https://www.rust-lang.org/en-US/install.html
 
-2. The tests for this project use Node. [Install Node].
+2. The tests for this project use Node. Make sure you have node >= 8 installed,
+   as that is when WebAssembly support was introduced. [Install Node].
 
 [Install Node]: https://nodejs.org/en/
 
@@ -24,5 +25,16 @@ please checkout [`DESIGN.md`](DESIGN.md).
     npm install yarn -g
     ```
 
-    ... or follow other platform-specific instructions [here](https://yarnpkg.com/en/docs/install).
+   ... or follow other platform-specific instructions [here](https://yarnpkg.com/en/docs/install).
 
+   Once `yarn` is installed, run it in the top level directory:
+
+   ```
+   yarn
+   ```
+
+   Finally, you can run the tests with `cargo`:
+
+   ```
+   cargo test
+   ```
