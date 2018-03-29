@@ -11,6 +11,7 @@ use super::Bindgen;
 pub struct Context<'a> {
     pub globals: String,
     pub imports: String,
+    pub footer: String,
     pub typescript: String,
     pub exposed_globals: HashSet<&'static str>,
     pub required_internal_exports: HashSet<&'static str>,
@@ -52,10 +53,14 @@ impl<'a> Context<'a> {
                 }
                 let contents = f(self);
                 let contents = contents.trim();
-                let global = if contents.starts_with("function") {
-                    format!("export function {} {}\n", name, &contents[8..])
+                let global = if self.config.nodejs {
+                    format!("module.exports.{} = {};\n", name, contents)
                 } else {
-                    format!("export const {} = {};\n", name, contents)
+                    if contents.starts_with("function") {
+                        format!("export function {} {}\n", name, &contents[8..])
+                    } else {
+                        format!("export const {} = {};\n", name, contents)
+                    }
                 };
                 self.globals.push_str(&global);
             };
@@ -212,16 +217,26 @@ impl<'a> Context<'a> {
 
         self.rewrite_imports(module_name);
 
+        let import_wasm = if self.config.nodejs {
+            self.footer.push_str(&format!("wasm = require('./{}_bg');",
+                                          module_name));
+            format!("var wasm;")
+        } else {
+            format!("import * as wasm from './{}_bg';", module_name)
+        };
+
         let js = format!("
             /* tslint:disable */
-            import * as wasm from './{module_name}_bg'; // imports from wasm file
+            {import_wasm}
             {imports}
 
             {globals}
+            {footer}
         ",
-            module_name = module_name,
+            import_wasm = import_wasm,
             globals = self.globals,
             imports = self.imports,
+            footer = self.footer,
         );
 
         self.unexport_unused_internal_exports();
@@ -1019,8 +1034,17 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                               &export.function.name,
                                               false,
                                               &export.function);
-        self.cx.globals.push_str("export ");
+        if self.cx.config.nodejs {
+            self.cx.globals.push_str("module.exports.");
+            self.cx.globals.push_str(&export.function.name);
+            self.cx.globals.push_str(" = ");
+        } else {
+            self.cx.globals.push_str("export ");
+        }
         self.cx.globals.push_str(&js);
+        if self.cx.config.nodejs {
+            self.cx.globals.push_str(";");
+        }
         self.cx.globals.push_str("\n");
         self.cx.typescript.push_str("export ");
         self.cx.typescript.push_str(&ts);
@@ -1517,9 +1541,17 @@ impl<'a, 'b> SubContext<'a, 'b> {
         dst.push_str(&extra);
         dst.push_str(&format!("{}\n}}", invoc));
 
-        self.cx.globals.push_str("export ");
-        self.cx.globals.push_str(&dst);
-        self.cx.globals.push_str("\n");
+        if self.cx.config.nodejs {
+            self.cx.globals.push_str("module.exports.");
+            self.cx.globals.push_str(&import.shim);
+            self.cx.globals.push_str(" = ");
+            self.cx.globals.push_str(&dst);
+            self.cx.globals.push_str(";\n");
+        } else {
+            self.cx.globals.push_str("export ");
+            self.cx.globals.push_str(&dst);
+            self.cx.globals.push_str("\n");
+        }
     }
 
     pub fn generate_enum(&mut self, enum_: &shared::Enum) {
@@ -1546,9 +1578,15 @@ impl<'a, 'b> SubContext<'a, 'b> {
             let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
 
             if self.cx.imported_names.insert(name.to_string()) {
-                self.cx.imports.push_str(&format!("
-                    import {{ {} }} from '{}';
-                ", name, module));
+                if self.cx.config.nodejs {
+                    self.cx.imports.push_str(&format!("
+                        const {} = require('{}').{};
+                    ", name, module, name));
+                } else {
+                    self.cx.imports.push_str(&format!("
+                        import {{ {} }} from '{}';
+                    ", name, module));
+                }
             }
         }
         match import.js_namespace {
