@@ -17,8 +17,8 @@ docopt = "0.8"
 parity-wasm = "0.27"
 serde = "1.0"
 serde_derive = "1.0"
-wasm-bindgen-cli-support = { path = "../wasm-bindgen-cli-support", version = "0.1.1" }
-wasm-bindgen-shared = { path = "../wasm-bindgen-shared", version = "0.1" }
+wasm-bindgen-cli-support = { path = "../cli-support", version = "0.1.1" }
+wasm-bindgen-shared = { path = "../shared", version = "0.1" }
 
 [[bin]]
 name = "wasm-bindgen"
