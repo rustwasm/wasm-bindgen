@@ -248,7 +248,12 @@ impl<'a> Context<'a> {
         let classes = mem::replace(&mut self.exported_classes, Default::default());
         for (class, exports) in classes {
             let mut dst = String::new();
-            dst.push_str(&format!("export class {} {{", class));
+            let global_export = if self.config.nodejs {
+                format!("module.exports.{} = class {} {{\n", class, class)
+            } else {
+                format!("export class {} {{", class)
+            };
+            dst.push_str(&global_export);
             let mut ts_dst = dst.clone();
             ts_dst.push_str("
                 public ptr: number;
