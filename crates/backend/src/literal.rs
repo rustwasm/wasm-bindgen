@@ -11,10 +11,7 @@ pub struct LiteralBuilder<'a> {
 
 impl<'a> LiteralBuilder<'a> {
     pub fn new(dst: &'a mut Tokens) -> LiteralBuilder<'a> {
-        LiteralBuilder {
-            dst,
-            cnt: 0,
-        }
+        LiteralBuilder { dst, cnt: 0 }
     }
 
     pub fn finish(self) -> usize {
@@ -95,8 +92,9 @@ impl<'a> LiteralBuilder<'a> {
     }
 
     fn list<T, F>(&mut self, list: T, mut cb: F)
-        where F: FnMut(T::Item, &mut Self),
-              T: IntoIterator,
+    where
+        F: FnMut(T::Item, &mut Self),
+        T: IntoIterator,
     {
         self.append("[");
         for (i, element) in list.into_iter().enumerate() {
@@ -316,8 +314,6 @@ impl Literal for ast::ImportStatic {
 
 impl Literal for ast::ImportType {
     fn literal(&self, a: &mut LiteralBuilder) {
-        a.fields(&[
-            ("kind", &|a| a.str("type")),
-        ])
+        a.fields(&[("kind", &|a| a.str("type"))])
     }
 }

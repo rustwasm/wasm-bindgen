@@ -1,6 +1,6 @@
 use literal::{self, Literal};
 use proc_macro2::Span;
-use quote::{Tokens, ToTokens};
+use quote::{ToTokens, Tokens};
 use shared;
 use syn;
 
@@ -39,14 +39,8 @@ pub struct ImportFunction {
 }
 
 pub enum ImportFunctionKind {
-    Method {
-        class: String,
-        ty: syn::Type,
-    },
-    JsConstructor {
-        class: String,
-        ty: syn::Type,
-    },
+    Method { class: String, ty: syn::Type },
+    JsConstructor { class: String, ty: syn::Type },
     Normal,
 }
 
@@ -79,7 +73,7 @@ pub struct Struct {
 
 pub struct Enum {
     pub name: syn::Ident,
-    pub variants: Vec<Variant>
+    pub variants: Vec<Variant>,
 }
 
 pub struct Variant {
@@ -110,20 +104,20 @@ pub enum VectorType {
 }
 
 impl Program {
-    pub fn push_item(&mut self,
-                     item: syn::Item,
-                     opts: Option<BindgenAttrs>,
-                     tokens: &mut Tokens) {
+    pub fn push_item(&mut self, item: syn::Item, opts: Option<BindgenAttrs>, tokens: &mut Tokens) {
         match item {
             syn::Item::Fn(mut f) => {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
 
-                let no_mangle = f.attrs.iter()
+                let no_mangle = f.attrs
+                    .iter()
                     .enumerate()
                     .filter_map(|(i, m)| m.interpret_meta().map(|m| (i, m)))
                     .find(|&(_, ref m)| m.name() == "no_mangle");
                 match no_mangle {
-                    Some((i, _)) => { f.attrs.remove(i); }
+                    Some((i, _)) => {
+                        f.attrs.remove(i);
+                    }
                     _ => {}
                 }
                 f.to_tokens(tokens);
@@ -153,8 +147,10 @@ impl Program {
                 e.to_tokens(tokens);
                 self.push_enum(e, opts);
             }
-            _ => panic!("#[wasm_bindgen] can only be applied to a function, \
-                         struct, enum, impl, or extern block"),
+            _ => panic!(
+                "#[wasm_bindgen] can only be applied to a function, \
+                 struct, enum, impl, or extern block"
+            ),
         }
     }
 
@@ -172,12 +168,13 @@ impl Program {
             panic!("generic impls aren't supported");
         }
         let name = match *item.self_ty {
-            syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
-                match extract_path_ident(path) {
-                    Some(ident) => ident,
-                    None => panic!("unsupported self type in impl"),
-                }
-            }
+            syn::Type::Path(syn::TypePath {
+                qself: None,
+                ref path,
+            }) => match extract_path_ident(path) {
+                Some(ident) => ident,
+                None => panic!("unsupported self type in impl"),
+            },
             _ => panic!("unsupported self type in impl"),
         };
         for item in item.items.into_iter() {
@@ -209,12 +206,14 @@ impl Program {
 
         let opts = BindgenAttrs::find(&mut method.attrs);
 
-        let (function, mutable) = Function::from_decl(method.sig.ident,
-                                                      Box::new(method.sig.decl),
-                                                      method.attrs,
-                                                      opts,
-                                                      method.vis,
-                                                      true);
+        let (function, mutable) = Function::from_decl(
+            method.sig.ident,
+            Box::new(method.sig.decl),
+            method.attrs,
+            opts,
+            method.vis,
+            true,
+        );
         self.exports.push(Export {
             class: Some(class),
             method: mutable.is_some(),
@@ -229,30 +228,40 @@ impl Program {
             _ => panic!("only public enums are allowed"),
         }
 
-        let variants = item.variants.iter().enumerate().map(|(i, v)| {
-            match v.fields {
-                syn::Fields::Unit => (),
-                _ => panic!("Only C-Style enums allowed")
-            }
-            let value = match v.discriminant {
-                Some((_, syn::Expr::Lit(syn::ExprLit {attrs: _, lit: syn::Lit::Int(ref int_lit)}))) => {
-                    if int_lit.value() > <u32>::max_value() as u64 {
-                        panic!("Enums can only support numbers that can be represented as u32");
+        let variants = item.variants
+            .iter()
+            .enumerate()
+            .map(|(i, v)| {
+                match v.fields {
+                    syn::Fields::Unit => (),
+                    _ => panic!("Only C-Style enums allowed"),
+                }
+                let value = match v.discriminant {
+                    Some((
+                        _,
+                        syn::Expr::Lit(syn::ExprLit {
+                            attrs: _,
+                            lit: syn::Lit::Int(ref int_lit),
+                        }),
+                    )) => {
+                        if int_lit.value() > <u32>::max_value() as u64 {
+                            panic!("Enums can only support numbers that can be represented as u32");
+                        }
+                        int_lit.value() as u32
                     }
-                    int_lit.value() as u32
-                },
-                None => i as u32,
-                _ => panic!("Enums may only have number literal values")
-            };
+                    None => i as u32,
+                    _ => panic!("Enums may only have number literal values"),
+                };
 
-            Variant {
-                name: v.ident,
-                value,
-            }
-        }).collect();
+                Variant {
+                    name: v.ident,
+                    value,
+                }
+            })
+            .collect();
         self.enums.push(Enum {
             name: item.ident,
-            variants
+            variants,
         });
     }
 
@@ -281,20 +290,17 @@ impl Program {
                 _ => panic!("only foreign functions/types allowed for now"),
             };
 
-            self.imports.push(Import { module, js_namespace, kind });
+            self.imports.push(Import {
+                module,
+                js_namespace,
+                kind,
+            });
         }
     }
 
-    pub fn push_foreign_fn(&mut self, f: syn::ForeignItemFn, opts: BindgenAttrs)
-        -> ImportKind
-    {
+    pub fn push_foreign_fn(&mut self, f: syn::ForeignItemFn, opts: BindgenAttrs) -> ImportKind {
         let js_name = opts.js_name().unwrap_or(f.ident);
-        let mut wasm = Function::from_decl(js_name,
-                                           f.decl,
-                                           f.attrs,
-                                           opts,
-                                           f.vis,
-                                           false).0;
+        let mut wasm = Function::from_decl(js_name, f.decl, f.attrs, opts, f.vis, false).0;
         if wasm.opts.catch() {
             // TODO: this assumes a whole bunch:
             //
@@ -308,20 +314,19 @@ impl Program {
         }
 
         let kind = if wasm.opts.method() {
-            let class = wasm.arguments.get(0)
+            let class = wasm.arguments
+                .get(0)
                 .expect("methods must have at least one argument");
             let class = match *class {
-                Type::ByRef(ref t) |
-                Type::ByValue(ref t) => t,
-                Type::ByMutRef(_) => {
-                    panic!("first method argument cannot be mutable ref")
-                }
-                Type::Vector(..) => {
-                    panic!("method receivers cannot be vectors")
-                }
+                Type::ByRef(ref t) | Type::ByValue(ref t) => t,
+                Type::ByMutRef(_) => panic!("first method argument cannot be mutable ref"),
+                Type::Vector(..) => panic!("method receivers cannot be vectors"),
             };
             let class_name = match *class {
-                syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
+                syn::Type::Path(syn::TypePath {
+                    qself: None,
+                    ref path,
+                }) => path,
                 _ => panic!("first argument of method must be a path"),
             };
             let class_name = extract_path_ident(class_name)
@@ -337,7 +342,10 @@ impl Program {
                 _ => panic!("constructor returns must be bare types"),
             };
             let class_name = match *class {
-                syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
+                syn::Type::Path(syn::TypePath {
+                    qself: None,
+                    ref path,
+                }) => path,
                 _ => panic!("first argument of method must be a path"),
             };
             let class_name = extract_path_ident(class_name)
@@ -367,20 +375,18 @@ impl Program {
         })
     }
 
-    pub fn push_foreign_ty(&mut self, f: syn::ForeignItemType)
-        -> ImportKind
-    {
+    pub fn push_foreign_ty(&mut self, f: syn::ForeignItemType) -> ImportKind {
         ImportKind::Type(ImportType {
             vis: f.vis,
-            name: f.ident
+            name: f.ident,
         })
     }
 
-    pub fn push_foreign_static(&mut self,
-                               f: syn::ForeignItemStatic,
-                               opts: BindgenAttrs)
-        -> ImportKind
-    {
+    pub fn push_foreign_static(
+        &mut self,
+        f: syn::ForeignItemStatic,
+        opts: BindgenAttrs,
+    ) -> ImportKind {
         if f.mutability.is_some() {
             panic!("cannot import mutable globals yet")
         }
@@ -427,20 +433,17 @@ impl Function {
             panic!("can only bindgen safe functions");
         }
 
-        Function::from_decl(input.ident,
-                            input.decl,
-                            input.attrs,
-                            opts,
-                            input.vis,
-                            false).0
+        Function::from_decl(input.ident, input.decl, input.attrs, opts, input.vis, false).0
     }
 
-    pub fn from_decl(name: syn::Ident,
-                     decl: Box<syn::FnDecl>,
-                     attrs: Vec<syn::Attribute>,
-                     opts: BindgenAttrs,
-                     vis: syn::Visibility,
-                     allow_self: bool) -> (Function, Option<bool>) {
+    pub fn from_decl(
+        name: syn::Ident,
+        decl: Box<syn::FnDecl>,
+        attrs: Vec<syn::Attribute>,
+        opts: BindgenAttrs,
+        vis: syn::Visibility,
+        allow_self: bool,
+    ) -> (Function, Option<bool>) {
         if decl.variadic.is_some() {
             panic!("can't bindgen variadic functions")
         }
@@ -449,20 +452,19 @@ impl Function {
         }
 
         let mut mutable = None;
-        let arguments = decl.inputs.iter()
-            .filter_map(|arg| {
-                match *arg {
-                    syn::FnArg::Captured(ref c) => Some(c),
-                    syn::FnArg::SelfValue(_) => {
-                        panic!("by-value `self` not yet supported");
-                    }
-                    syn::FnArg::SelfRef(ref a) if allow_self => {
-                        assert!(mutable.is_none());
-                        mutable = Some(a.mutability.is_some());
-                        None
-                    }
-                    _ => panic!("arguments cannot be `self` or ignored"),
+        let arguments = decl.inputs
+            .iter()
+            .filter_map(|arg| match *arg {
+                syn::FnArg::Captured(ref c) => Some(c),
+                syn::FnArg::SelfValue(_) => {
+                    panic!("by-value `self` not yet supported");
                 }
+                syn::FnArg::SelfRef(ref a) if allow_self => {
+                    assert!(mutable.is_none());
+                    mutable = Some(a.mutability.is_some());
+                    None
+                }
+                _ => panic!("arguments cannot be `self` or ignored"),
             })
             .map(|arg| Type::from(&arg.ty))
             .collect::<Vec<_>>();
@@ -472,24 +474,27 @@ impl Function {
             syn::ReturnType::Type(_, ref t) => Some(Type::from(t)),
         };
 
-        (Function {
-            name,
-            arguments,
-            ret,
-            opts,
-            rust_vis: vis,
-            rust_decl: decl,
-            rust_attrs: attrs,
-        }, mutable)
+        (
+            Function {
+                name,
+                arguments,
+                ret,
+                opts,
+                rust_vis: vis,
+                rust_decl: decl,
+                rust_attrs: attrs,
+            },
+            mutable,
+        )
     }
 }
 
 pub fn extract_path_ident(path: &syn::Path) -> Option<syn::Ident> {
     if path.leading_colon.is_some() {
-        return None
+        return None;
     }
     if path.segments.len() != 1 {
-        return None
+        return None;
     }
     match path.segments.first().unwrap().value().arguments {
         syn::PathArguments::None => {}
@@ -503,7 +508,10 @@ impl Type {
         match *ty {
             syn::Type::Reference(ref r) => {
                 match *r.elem {
-                    syn::Type::Path(syn::TypePath { qself: None, ref path }) => {
+                    syn::Type::Path(syn::TypePath {
+                        qself: None,
+                        ref path,
+                    }) => {
                         let ident = extract_path_ident(path);
                         match ident.as_ref().map(|s| s.as_ref()) {
                             Some("str") => return Type::Vector(VectorType::String, false),
@@ -512,7 +520,7 @@ impl Type {
                     }
                     syn::Type::Slice(ref slice) => {
                         if let Some(ty) = VectorType::from(&slice.elem) {
-                            return Type::Vector(ty, false)
+                            return Type::Vector(ty, false);
                         }
                     }
                     _ => {}
@@ -521,26 +529,26 @@ impl Type {
                     Type::ByMutRef((*r.elem).clone())
                 } else {
                     Type::ByRef((*r.elem).clone())
-                }
+                };
             }
-            syn::Type::Path(syn::TypePath { qself: None, ref path })
-                if path.leading_colon.is_none() && path.segments.len() == 1 =>
+            syn::Type::Path(syn::TypePath {
+                qself: None,
+                ref path,
+            }) if path.leading_colon.is_none() && path.segments.len() == 1 =>
             {
                 let seg = path.segments.first().unwrap().into_value();
                 match seg.arguments {
-                    syn::PathArguments::None => {
-                        match seg.ident.as_ref() {
-                            "String" => return Type::Vector(VectorType::String, true),
-                            _ => {}
-                        }
-                    }
+                    syn::PathArguments::None => match seg.ident.as_ref() {
+                        "String" => return Type::Vector(VectorType::String, true),
+                        _ => {}
+                    },
                     syn::PathArguments::AngleBracketed(ref t)
                         if seg.ident == "Vec" && t.args.len() == 1 =>
                     {
                         match **t.args.first().unwrap().value() {
                             syn::GenericArgument::Type(ref t) => {
                                 if let Some(ty) = VectorType::from(t) {
-                                    return Type::Vector(ty, true)
+                                    return Type::Vector(ty, true);
                                 }
                             }
                             _ => {}
@@ -571,14 +579,9 @@ impl Export {
     pub fn export_name(&self) -> syn::LitStr {
         let name = match self.class {
             Some(class) => {
-                shared::struct_function_export_name(
-                    class.as_ref(),
-                    self.function.name.as_ref(),
-                )
+                shared::struct_function_export_name(class.as_ref(), self.function.name.as_ref())
             }
-            None => {
-                shared::free_function_export_name(self.function.name.as_ref())
-            }
+            None => shared::free_function_export_name(self.function.name.as_ref()),
         };
         syn::LitStr::new(&name, Span::def_site())
     }
@@ -609,7 +612,8 @@ pub struct BindgenAttrs {
 
 impl BindgenAttrs {
     pub fn find(attrs: &mut Vec<syn::Attribute>) -> BindgenAttrs {
-        let pos = attrs.iter()
+        let pos = attrs
+            .iter()
             .enumerate()
             .find(|&(_, ref m)| m.path.segments[0].ident == "wasm_bindgen")
             .map(|a| a.0);
@@ -617,101 +621,83 @@ impl BindgenAttrs {
             Some(i) => i,
             None => return BindgenAttrs::default(),
         };
-        syn::parse(attrs.remove(pos).tts.into())
-            .expect("malformed #[wasm_bindgen] attribute")
+        syn::parse(attrs.remove(pos).tts.into()).expect("malformed #[wasm_bindgen] attribute")
     }
 
     fn module(&self) -> Option<&str> {
-        self.attrs.iter()
-            .filter_map(|a| {
-                match *a {
-                    BindgenAttr::Module(ref s) => Some(&s[..]),
-                    _ => None,
-                }
+        self.attrs
+            .iter()
+            .filter_map(|a| match *a {
+                BindgenAttr::Module(ref s) => Some(&s[..]),
+                _ => None,
             })
             .next()
     }
 
     pub fn catch(&self) -> bool {
-        self.attrs.iter()
-            .any(|a| {
-                match *a {
-                    BindgenAttr::Catch => true,
-                    _ => false,
-                }
-            })
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::Catch => true,
+            _ => false,
+        })
     }
 
     fn constructor(&self) -> bool {
-        self.attrs.iter()
-            .any(|a| {
-                match *a {
-                    BindgenAttr::Constructor => true,
-                    _ => false,
-                }
-            })
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::Constructor => true,
+            _ => false,
+        })
     }
 
     fn method(&self) -> bool {
-        self.attrs.iter()
-            .any(|a| {
-                match *a {
-                    BindgenAttr::Method => true,
-                    _ => false,
-                }
-            })
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::Method => true,
+            _ => false,
+        })
     }
 
     fn js_namespace(&self) -> Option<syn::Ident> {
-        self.attrs.iter()
-            .filter_map(|a| {
-                match *a {
-                    BindgenAttr::JsNamespace(s) => Some(s),
-                    _ => None,
-                }
+        self.attrs
+            .iter()
+            .filter_map(|a| match *a {
+                BindgenAttr::JsNamespace(s) => Some(s),
+                _ => None,
             })
             .next()
     }
 
     pub fn getter(&self) -> Option<Option<syn::Ident>> {
-        self.attrs.iter()
-            .filter_map(|a| {
-                match *a {
-                    BindgenAttr::Getter(s) => Some(s),
-                    _ => None,
-                }
+        self.attrs
+            .iter()
+            .filter_map(|a| match *a {
+                BindgenAttr::Getter(s) => Some(s),
+                _ => None,
             })
             .next()
     }
 
     pub fn setter(&self) -> Option<Option<syn::Ident>> {
-        self.attrs.iter()
-            .filter_map(|a| {
-                match *a {
-                    BindgenAttr::Setter(s) => Some(s),
-                    _ => None,
-                }
+        self.attrs
+            .iter()
+            .filter_map(|a| match *a {
+                BindgenAttr::Setter(s) => Some(s),
+                _ => None,
             })
             .next()
     }
 
     pub fn structural(&self) -> bool {
-        self.attrs.iter()
-            .any(|a| {
-                match *a {
-                    BindgenAttr::Structural => true,
-                    _ => false,
-                }
-            })
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::Structural => true,
+            _ => false,
+        })
     }
 
     pub fn js_name(&self) -> Option<syn::Ident> {
-        self.attrs.iter()
-            .filter_map(|a| {
-                match *a {
-                    BindgenAttr::JsName(s) => Some(s),
-                    _ => None,
-                }
+        self.attrs
+            .iter()
+            .filter_map(|a| match *a {
+                BindgenAttr::JsName(s) => Some(s),
+                _ => None,
             })
             .next()
     }
@@ -800,14 +786,17 @@ impl syn::synom::Synom for BindgenAttr {
 fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
     let ty = match ty {
         Some(t) => t,
-        None => return Some(None)
+        None => return Some(None),
     };
     let ty = match *ty {
         Type::ByValue(ref t) => t,
         _ => return None,
     };
     let path = match *ty {
-        syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
+        syn::Type::Path(syn::TypePath {
+            qself: None,
+            ref path,
+        }) => path,
         _ => return None,
     };
     let seg = path.segments.last()?.into_value();
@@ -826,12 +815,10 @@ fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
     Some(Some(Type::from(ty)))
 }
 
-fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str)
-    -> syn::synom::PResult<'a, ()>
-{
+fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<'a, ()> {
     if let Some((_span, term, next)) = cursor.term() {
         if term.as_str() == name {
-            return Ok(((), next))
+            return Ok(((), next));
         }
     }
     syn::parse_error()
@@ -847,7 +834,10 @@ fn ungroup(input: &syn::Type) -> &syn::Type {
 impl VectorType {
     fn from(ty: &syn::Type) -> Option<VectorType> {
         let path = match *ungroup(ty) {
-            syn::Type::Path(syn::TypePath { qself: None, ref path }) => path,
+            syn::Type::Path(syn::TypePath {
+                qself: None,
+                ref path,
+            }) => path,
             _ => return None,
         };
         match extract_path_ident(path)?.as_ref() {
