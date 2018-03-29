@@ -15,7 +15,7 @@ pub struct Project {
     files: Vec<(String, String)>,
     debug: bool,
     js: bool,
-    detect_node: bool,
+    node: bool,
 }
 
 pub fn project() -> Project {
@@ -29,7 +29,7 @@ pub fn project() -> Project {
     Project {
         debug: true,
         js: false,
-        detect_node: false,
+        node: false,
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
                 [package]
@@ -134,8 +134,8 @@ impl Project {
         self
     }
 
-    pub fn detect_node(&mut self, detect_node: bool) -> &mut Project {
-        self.detect_node = detect_node;
+    pub fn node(&mut self, node: bool) -> &mut Project {
+        self.node = node;
         self
     }
 
@@ -194,6 +194,7 @@ impl Project {
         cli::Bindgen::new()
             .input_path(&as_a_module)
             .typescript(true)
+            .nodejs(self.node)
             .debug(self.debug)
             .generate(&root)
             .expect("failed to run bindgen");
@@ -216,21 +217,28 @@ impl Project {
         let cwd = env::current_dir().unwrap();
         symlink_dir(&cwd.join("node_modules"), &root.join("node_modules")).unwrap();
 
-        let mut cmd = if cfg!(windows) {
-            let mut c = Command::new("cmd");
-            c.arg("/c");
-            c.arg("yarn");
-            c
+        if self.node {
+            let mut cmd = Command::new("node");
+            cmd.arg(root.join("out.js"))
+                .current_dir(&root);
+            run(&mut cmd, "node");
         } else {
-            Command::new("yarn")
-        };
-        cmd.arg("webpack").current_dir(&root);
-        run(&mut cmd, "node");
+            let mut cmd = if cfg!(windows) {
+                let mut c = Command::new("cmd");
+                c.arg("/c");
+                c.arg("yarn");
+                c
+            } else {
+                Command::new("yarn")
+            };
+            cmd.arg("webpack").current_dir(&root);
+            run(&mut cmd, "node");
 
-        let mut cmd = Command::new("node");
-        cmd.arg(root.join("bundle.js"))
-            .current_dir(&root);
-        run(&mut cmd, "node");
+            let mut cmd = Command::new("node");
+            cmd.arg(root.join("bundle.js"))
+                .current_dir(&root);
+            run(&mut cmd, "node");
+        }
     }
 }
 
