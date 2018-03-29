@@ -3,7 +3,6 @@ extern crate test_support;
 #[test]
 fn works() {
     test_support::project()
-        .detect_node(true)
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 

@@ -4,6 +4,7 @@ extern crate serde_json;
 extern crate wasm_gc;
 
 use std::char;
+use std::collections::BTreeSet;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -86,6 +87,7 @@ impl Bindgen {
             let mut cx = js::Context {
                 globals: String::new(),
                 imports: String::new(),
+                footer: String::new(),
                 typescript: format!("/* tslint:disable */\n"),
                 exposed_globals: Default::default(),
                 required_internal_exports: Default::default(),
@@ -118,6 +120,13 @@ impl Bindgen {
         }
 
         let wasm_path = out_dir.join(format!("{}_bg", stem)).with_extension("wasm");
+
+        if self.nodejs {
+            let js_path = wasm_path.with_extension("js");
+            let shim = self.generate_node_wasm_import(&module, &wasm_path);
+            File::create(&js_path)?.write_all(shim.as_bytes())?;
+        }
+
         let wasm_bytes = parity_wasm::serialize(module).map_err(|e| {
             Error(format!("{:?}", e))
         })?;
@@ -126,6 +135,30 @@ impl Bindgen {
             .gc(&wasm_bytes)?;
         File::create(&wasm_path)?.write_all(&bytes)?;
         Ok(())
+    }
+
+    fn generate_node_wasm_import(&self, m: &Module, path: &Path) -> String {
+        let mut imports = BTreeSet::new();
+        if let Some(i) = m.import_section() {
+            for i in i.entries() {
+                imports.insert(i.module());
+            }
+        }
+
+        let mut shim = String::new();
+        shim.push_str("let imports = {};\n");
+        for module in imports {
+            shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
+        }
+
+        shim.push_str(&format!("
+            const bytes = require('fs').readFileSync('{}');
+            const wasmModule = new WebAssembly.Module(bytes);
+            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+            module.exports = wasmInstance.exports;
+        ", path.file_name().unwrap().to_str().unwrap()));
+
+        shim
     }
 }
 
