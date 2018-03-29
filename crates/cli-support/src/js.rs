@@ -1573,9 +1573,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
             enum_string.push_str(&export);
             enum_string
         } else {
-            let mut enum_string = format!("export const {} = {{", enum_.name);
+            let mut enum_string = format!("export const {} = Object.freeze({{", enum_.name);
             enum_string.push_str(&variants);
-            enum_string.push_str("}\n");
+            enum_string.push_str("})\n");
             enum_string
         };
         self.cx.globals.push_str(&global_export);
