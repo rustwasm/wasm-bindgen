@@ -39,6 +39,21 @@ fn works() {
                     self.contents
                 }
             }
+
+            #[wasm_bindgen]
+            pub enum Color {
+                Green,
+                Yellow,
+                Red,
+            }
+            #[wasm_bindgen]
+            pub fn cycle(color: Color) -> Color {
+                match color {
+                    Color::Green => Color::Yellow,
+                    Color::Yellow => Color::Red,
+                    Color::Red => Color::Green,
+                }
+            }
         "#)
         .file("test.js", r#"
             const assert = require('assert');
@@ -68,6 +83,14 @@ fn works() {
                 assert.strictEqual(r2.add(1), 1);
                 assert.strictEqual(r2.add(2), 2);
                 r2.free();
+
+                var Color = run.Color;
+
+                assert.strictEqual(Color.Green, 0);
+                assert.strictEqual(Color.Yellow, 1);
+                assert.strictEqual(Color.Red, 2);
+                assert.strictEqual(Object.keys(Color).length, 3);
+                assert.strictEqual(Color.cycle(Color.Green), Color.Yellow);
             };
 
         "#)

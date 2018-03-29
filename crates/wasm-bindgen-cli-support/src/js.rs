@@ -1565,9 +1565,21 @@ impl<'a, 'b> SubContext<'a, 'b> {
         for variant in enum_.variants.iter() {
             variants.push_str(&format!("{}:{},", variant.name, variant.value));
         }
-        self.cx.globals.push_str(&format!("export const {} = {{", enum_.name));
-        self.cx.globals.push_str(&variants);
-        self.cx.globals.push_str("}\n");
+        let global_export = if self.cx.config.nodejs {
+            let mut enum_string = format!("const {} = Object.freeze({{", enum_.name);
+            enum_string.push_str(&variants);
+            enum_string.push_str("})\n");
+            let export = format!("module.exports.{} = {};\n", enum_.name, enum_.name);
+            enum_string.push_str(&export);
+            enum_string
+        } else {
+            let mut enum_string = format!("export const {} = {{", enum_.name);
+            enum_string.push_str(&variants);
+            enum_string.push_str("}\n");
+            enum_string
+        };
+        self.cx.globals.push_str(&global_export);
+
         self.cx.typescript.push_str(&format!("export enum {} {{", enum_.name));
 
         variants.clear();
