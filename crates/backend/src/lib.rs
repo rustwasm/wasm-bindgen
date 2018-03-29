@@ -15,11 +15,3 @@ macro_rules! my_quote {
 pub mod ast;
 mod codegen;
 mod literal;
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
