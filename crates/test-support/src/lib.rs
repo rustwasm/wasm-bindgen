@@ -63,6 +63,10 @@ pub fn project() -> Project {
                 });
             "#.to_string()),
 
+            ("run-node.js".to_string(), r#"
+                require("./test").test();
+            "#.to_string()),
+
             ("webpack.config.js".to_string(), r#"
                 const path = require('path');
 
@@ -180,13 +184,6 @@ impl Project {
 
         let idx = IDX.with(|x| *x);
         let mut out = target_dir.join(&format!("wasm32-unknown-unknown/debug/test{}.wasm", idx));
-        if Command::new("wasm-gc").output().is_ok() {
-            let tmp = out;
-            out = tmp.with_extension("gc.wasm");
-            let mut cmd = Command::new("wasm-gc");
-            cmd.arg(&tmp).arg(&out);
-            run(&mut cmd, "wasm-gc");
-        }
 
         let as_a_module = root.join("out.wasm");
         fs::copy(&out, &as_a_module).unwrap();
@@ -219,7 +216,7 @@ impl Project {
 
         if self.node {
             let mut cmd = Command::new("node");
-            cmd.arg(root.join("out.js"))
+            cmd.arg(root.join("run-node.js"))
                 .current_dir(&root);
             run(&mut cmd, "node");
         } else {

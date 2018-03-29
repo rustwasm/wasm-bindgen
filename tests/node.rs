@@ -25,7 +25,7 @@ fn works() {
             pub struct Foo {
                 contents: u32,
             }
-            
+
             #[wasm_bindgen]
             impl Foo {
                 pub fn new() -> Foo {
@@ -57,7 +57,6 @@ fn works() {
         "#)
         .file("test.js", r#"
             const assert = require('assert');
-            const run = require('./out');
 
             var called = false;
 
@@ -65,32 +64,29 @@ fn works() {
                 called = true;
             };
 
+            const { run, Foo, Color, cycle } = require('./out');
+
             module.exports.test = function() {
                 run();
                 assert.strictEqual(called, true);
-                var Foo = run.Foo;
 
                 var r = Foo.new();
-                assert.strictEqual(r.contents, 0);
                 assert.strictEqual(r.add(0), 0);
                 assert.strictEqual(r.add(1), 1);
-                assert.strictEqual(r.add(2), 2);
+                assert.strictEqual(r.add(2), 3);
                 r.free();
 
                 var r2 = Foo.with_contents(10);
-                assert.strictEqual(r2.contents, 10);
-                assert.strictEqual(r2.add(0), 0);
-                assert.strictEqual(r2.add(1), 1);
-                assert.strictEqual(r2.add(2), 2);
+                assert.strictEqual(r2.add(0), 10);
+                assert.strictEqual(r2.add(1), 11);
+                assert.strictEqual(r2.add(2), 13);
                 r2.free();
-
-                var Color = run.Color;
 
                 assert.strictEqual(Color.Green, 0);
                 assert.strictEqual(Color.Yellow, 1);
                 assert.strictEqual(Color.Red, 2);
                 assert.strictEqual(Object.keys(Color).length, 3);
-                assert.strictEqual(Color.cycle(Color.Green), Color.Yellow);
+                assert.strictEqual(cycle(Color.Green), Color.Yellow);
             };
 
         "#)
