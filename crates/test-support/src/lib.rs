@@ -232,7 +232,7 @@ impl Project {
                 Command::new("yarn")
             };
             cmd.arg("webpack").current_dir(&root);
-            run(&mut cmd, "node");
+            run(&mut cmd, "yarn");
 
             let mut cmd = Command::new("node");
             cmd.arg(root.join("bundle.js"))
