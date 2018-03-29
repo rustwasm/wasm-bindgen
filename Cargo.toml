@@ -17,14 +17,14 @@ test = false
 doctest = false
 
 [dependencies]
-wasm-bindgen-macro = { path = "crates/wasm-bindgen-macro", version = "0.1" }
+wasm-bindgen-macro = { path = "crates/macro", version = "0.1" }
 
 [dev-dependencies]
 test-support = { path = "crates/test-support" }
 
 [workspace]
 members = [
-  "crates/wasm-bindgen-cli",
+  "crates/cli",
   "examples/hello_world",
   "examples/smorgasboard",
   "examples/console_log",
