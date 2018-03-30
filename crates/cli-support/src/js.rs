@@ -645,7 +645,7 @@ impl<'a> Context<'a> {
         }
         if self.config.nodejs {
             self.globals.push_str(&format!("
-                const TextDecoder = require('util');
+                const TextDecoder = require('util').TextDecoder;
             "));
         } else if !self.config.browser {
             self.globals.push_str(&format!("
