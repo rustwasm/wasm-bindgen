@@ -123,7 +123,7 @@ impl<T> WasmBoundary for *mut T {
 }
 
 macro_rules! vectors {
-    ($($t:ident => ($owned:expr, $slice:expr))*) => ($(
+    ($($t:ident => ($slice:expr, $owned:expr))*) => ($(
         impl WasmBoundary for Box<[$t]> {
             type Abi = u32;
             const DESCRIPTOR: Descriptor = Descriptor { __x: *$owned };
@@ -280,6 +280,25 @@ impl FromRefWasmBoundary for JsValue {
 
     unsafe fn from_abi_ref(js: u32, _extra: &mut Stack) -> ManuallyDrop<JsValue> {
         ManuallyDrop::new(JsValue { idx: js })
+    }
+}
+
+impl WasmBoundary for Box<[JsValue]> {
+    type Abi = u32;
+    const DESCRIPTOR: Descriptor = Descriptor { __x: *b"   0" };
+
+    fn into_abi(self, extra: &mut Stack) -> u32 {
+        let ptr = self.as_ptr();
+        let len = self.len();
+        mem::forget(self);
+        extra.push(len as u32);
+        ptr.into_abi(extra)
+    }
+
+    unsafe fn from_abi(js: u32, extra: &mut Stack) -> Box<[JsValue]> {
+        let ptr = <*mut JsValue>::from_abi(js, extra);
+        let len = extra.pop() as usize;
+        Vec::from_raw_parts(ptr, len, len).into_boxed_slice()
     }
 }
 

@@ -150,7 +150,7 @@ impl Literal for ast::Type {
                 // TODO: this assumes `ToRef*` and `FromRef*` use the same
                 // descriptor.
                 a.as_char(my_quote! {
-                    <#ty as ::wasm_bindgen::convert::ToRefWasmBoundary>::DESCRIPTOR
+                    <#ty as ::wasm_bindgen::convert::FromRefWasmBoundary>::DESCRIPTOR
                 });
             }
         }

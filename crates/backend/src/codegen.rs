@@ -1,11 +1,12 @@
-use ast;
-use quote::{ToTokens, Tokens};
-use proc_macro2::Span;
-use shared;
 use std::borrow::Cow;
 use std::collections::HashSet;
 use std::env;
 use std::sync::atomic::{ATOMIC_USIZE_INIT, AtomicUsize, Ordering};
+
+use ast;
+use quote::{ToTokens, Tokens};
+use proc_macro2::{Span, Literal};
+use shared;
 use syn;
 
 fn to_ident_name(s: &str) -> Cow<str> {
@@ -88,17 +89,26 @@ impl ToTokens for ast::Struct {
     fn to_tokens(&self, tokens: &mut Tokens) {
         let name = &self.name;
         let free_fn = syn::Ident::from(shared::free_function(self.name.as_ref()));
-        let c = shared::name_to_descriptor(name.as_ref()) as u32;
+        let c = shared::name_to_descriptor(name.as_ref());
+        let descriptor = Literal::byte_string(format!("{:4}", c).as_bytes());
+        let borrowed_descriptor = Literal::byte_string(format!("{:4}", c + 1).as_bytes());
         (my_quote! {
             impl ::wasm_bindgen::convert::WasmBoundary for #name {
                 type Abi = u32;
-                const DESCRIPTOR: u32 = #c;
+                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
+                    ::wasm_bindgen::convert::Descriptor {
+                        __x: *#descriptor
+                    };
 
-                fn into_abi(self) -> u32 {
+                fn into_abi(self, _extra: &mut ::wasm_bindgen::convert::Stack)
+                    -> u32
+                {
                     Box::into_raw(Box::new(::wasm_bindgen::__rt::WasmRefCell::new(self))) as u32
                 }
 
-                unsafe fn from_abi(js: u32) -> Self {
+                unsafe fn from_abi(js: u32, _extra: &mut ::wasm_bindgen::convert::Stack)
+                    -> Self
+                {
                     let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
                     ::wasm_bindgen::__rt::assert_not_null(js);
                     let js = Box::from_raw(js);
@@ -108,8 +118,17 @@ impl ToTokens for ast::Struct {
             }
 
             impl ::wasm_bindgen::convert::FromRefWasmBoundary for #name {
+                type Abi = u32;
+                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
+                    ::wasm_bindgen::convert::Descriptor {
+                        __x: *#borrowed_descriptor
+                    };
                 type RefAnchor = ::wasm_bindgen::__rt::Ref<'static, #name>;
-                unsafe fn from_abi_ref(js: Self::Abi) -> Self::RefAnchor {
+
+                unsafe fn from_abi_ref(
+                    js: Self::Abi,
+                    _extra: &mut ::wasm_bindgen::convert::Stack,
+                ) -> Self::RefAnchor {
                     let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
                     ::wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow()
@@ -117,9 +136,17 @@ impl ToTokens for ast::Struct {
             }
 
             impl ::wasm_bindgen::convert::FromRefMutWasmBoundary for #name {
+                type Abi = u32;
+                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
+                    ::wasm_bindgen::convert::Descriptor {
+                        __x: *#borrowed_descriptor
+                    };
                 type RefAnchor = ::wasm_bindgen::__rt::RefMut<'static, #name>;
 
-                unsafe fn from_abi_ref_mut(js: Self::Abi) -> Self::RefAnchor {
+                unsafe fn from_abi_ref_mut(
+                    js: Self::Abi,
+                    _extra: &mut ::wasm_bindgen::convert::Stack,
+                ) -> Self::RefAnchor {
                     let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
                     ::wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow_mut()
@@ -128,7 +155,10 @@ impl ToTokens for ast::Struct {
 
             #[no_mangle]
             pub unsafe extern fn #free_fn(ptr: u32) {
-                <#name as ::wasm_bindgen::convert::WasmBoundary>::from_abi(ptr);
+                <#name as ::wasm_bindgen::convert::WasmBoundary>::from_abi(
+                    ptr,
+                    &mut ::wasm_bindgen::convert::GlobalStack::new(),
+                );
             }
         }).to_tokens(tokens);
     }
@@ -158,41 +188,6 @@ impl ToTokens for ast::Export {
             let i = i + offset;
             let ident = syn::Ident::from(format!("arg{}", i));
             match *ty {
-                // ast::Type::Vector(ref ty, owned) => {
-                //     let ptr = syn::Ident::from(format!("arg{}_ptr", i));
-                //     let len = syn::Ident::from(format!("arg{}_len", i));
-                //     let abi_ty = ty.abi_element();
-                //     args.push(my_quote! { #ptr: *mut #abi_ty });
-                //     args.push(my_quote! { #len: usize });
-                //     if owned {
-                //         arg_conversions.push(my_quote! {
-                //             let #ident = unsafe {
-                //                 ::std::vec::Vec::from_raw_parts(#ptr, #len, #len)
-                //             };
-                //         });
-                //     } else {
-                //         arg_conversions.push(my_quote! {
-                //             let #ident = unsafe {
-                //                 ::std::slice::from_raw_parts(#ptr as *const #abi_ty, #len)
-                //             };
-                //         });
-                //     }
-                //     if let ast::VectorType::String = *ty {
-                //         if owned {
-                //             arg_conversions.push(my_quote! {
-                //                 let #ident = unsafe {
-                //                     ::std::string::String::from_utf8_unchecked(#ident)
-                //                 };
-                //             });
-                //         } else {
-                //             arg_conversions.push(my_quote! {
-                //                 let #ident = unsafe {
-                //                     ::std::str::from_utf8_unchecked(#ident)
-                //                 };
-                //             });
-                //         }
-                //     }
-                // }
                 ast::Type::ByValue(ref t) => {
                     args.push(my_quote! {
                         #ident: <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
@@ -218,7 +213,7 @@ impl ToTokens for ast::Export {
                 }
                 ast::Type::ByMutRef(ref ty) => {
                     args.push(my_quote! {
-                        #ident: <#ty as ::wasm_bindgen::convert::FromRefutWasmBoundary>::Abi
+                        #ident: <#ty as ::wasm_bindgen::convert::FromRefMutWasmBoundary>::Abi
                     });
                     arg_conversions.push(my_quote! {
                         let mut #ident = unsafe {
@@ -234,10 +229,6 @@ impl ToTokens for ast::Export {
         let ret_ty;
         let convert_ret;
         match self.function.ret {
-            // Some(ast::Type::Vector(ref ty, true)) => {
-            //     ret_ty = my_quote! { -> *mut #ty };
-            //     convert_ret = my_quote! { Box::into_raw(Box::new(#ret)) };
-            // }
             Some(ast::Type::ByValue(ref t)) => {
                 ret_ty = my_quote! {
                     -> <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
@@ -304,29 +295,48 @@ impl ToTokens for ast::ImportType {
             impl ::wasm_bindgen::convert::WasmBoundary for #name {
                 type Abi = <::wasm_bindgen::JsValue as
                     ::wasm_bindgen::convert::WasmBoundary>::Abi;
-                const DESCRIPTOR: u32 = <::wasm_bindgen::JsValue as
-                    ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR;
+                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
+                    <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary>
+                        ::DESCRIPTOR;
 
-                fn into_abi(self) -> Self::Abi {
-                    self.obj.into_abi()
+                fn into_abi(self, extra: &mut ::wasm_bindgen::convert::Stack) -> Self::Abi {
+                    self.obj.into_abi(extra)
                 }
 
-                unsafe fn from_abi(js: Self::Abi) -> Self {
-                    #name { obj: ::wasm_bindgen::JsValue::from_abi(js) }
+                unsafe fn from_abi(
+                    js: Self::Abi,
+                    extra: &mut ::wasm_bindgen::convert::Stack,
+                ) -> Self {
+                    #name { obj: ::wasm_bindgen::JsValue::from_abi(js, extra) }
                 }
             }
 
             impl ::wasm_bindgen::convert::ToRefWasmBoundary for #name {
-                fn to_abi_ref(&self) -> u32 {
-                    self.obj.to_abi_ref()
+                type Abi = <::wasm_bindgen::JsValue as
+                    ::wasm_bindgen::convert::ToRefWasmBoundary>::Abi;
+                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
+                    <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::ToRefWasmBoundary>
+                        ::DESCRIPTOR;
+
+                fn to_abi_ref(&self, extra: &mut ::wasm_bindgen::convert::Stack) -> u32 {
+                    self.obj.to_abi_ref(extra)
                 }
             }
 
             impl ::wasm_bindgen::convert::FromRefWasmBoundary for #name {
+                type Abi = <::wasm_bindgen::JsValue as
+                    ::wasm_bindgen::convert::ToRefWasmBoundary>::Abi;
+                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
+                    <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::ToRefWasmBoundary>
+                        ::DESCRIPTOR;
                 type RefAnchor = ::std::mem::ManuallyDrop<#name>;
-                unsafe fn from_abi_ref(js: Self::Abi) -> Self::RefAnchor {
+
+                unsafe fn from_abi_ref(
+                    js: Self::Abi,
+                    extra: &mut ::wasm_bindgen::convert::Stack,
+                ) -> Self::RefAnchor {
                     let obj = <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary>
-                        ::from_abi(js);
+                        ::from_abi(js, extra);
                     ::std::mem::ManuallyDrop::new(#name { obj })
                 }
             }
@@ -536,7 +546,8 @@ impl ToTokens for ast::ImportFunction {
 impl ToTokens for ast::Enum {
     fn to_tokens(&self, into: &mut Tokens) {
         let enum_name = &self.name;
-        let c = shared::TYPE_ENUM as u32;
+        let descriptor = format!("{:4}", shared::TYPE_ENUM);
+        let descriptor = Literal::byte_string(descriptor.as_bytes());
         let incoming_u32 = quote! { n };
         let enum_name_as_string = enum_name.to_string();
         let cast_clauses = self.variants.iter().map(|variant| {
@@ -558,13 +569,19 @@ impl ToTokens for ast::Enum {
 
             impl ::wasm_bindgen::convert::WasmBoundary for #enum_name {
                 type Abi = u32;
-                const DESCRIPTOR: u32 = #c;
+                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
+                    ::wasm_bindgen::convert::Descriptor {
+                        __x: *#descriptor,
+                    };
 
-                fn into_abi(self) -> u32 {
+                fn into_abi(self, _extra: &mut ::wasm_bindgen::convert::Stack) -> u32 {
                     self as u32
                 }
 
-                unsafe fn from_abi(js: u32) -> Self {
+                unsafe fn from_abi(
+                    js: u32,
+                    _extra: &mut ::wasm_bindgen::convert::Stack,
+                ) -> Self {
                     #enum_name::from_u32(js)
                 }
             }

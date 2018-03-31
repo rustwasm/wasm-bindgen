@@ -1268,11 +1268,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 format!("return getObject(ret);")
             }
             Some(other) => {
-                if other & shared::TYPE_CUSTOM_REF_FLAG != 0 {
-                    panic!("cannot return references yet");
-                }
                 match VectorType::from(other) {
                     Some(ty) => {
+                        if !ty.owned {
+                            panic!("cannot return slices yet");
+                        }
                         dst_ts.push_str(": ");
                         dst_ts.push_str(ty.js_ty());
                         let f = self.cx.expose_get_vector_from_wasm(&ty);
@@ -1288,6 +1288,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         ", f, ty.size())
                     }
                     None => {
+                        if other & shared::TYPE_CUSTOM_REF_FLAG != 0 {
+                            panic!("cannot return references yet");
+                        }
                         let name = self.cx.custom_type_name(other);
                         dst_ts.push_str(": ");
                         dst_ts.push_str(name);
@@ -1629,11 +1632,13 @@ impl<'a, 'b> SubContext<'a, 'b> {
     }
 }
 
+#[derive(Debug)]
 struct VectorType {
     owned: bool,
     kind: VectorKind,
 }
 
+#[derive(Debug)]
 enum VectorKind {
     String,
     I8,

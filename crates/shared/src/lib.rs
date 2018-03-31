@@ -2,7 +2,6 @@
 extern crate serde_derive;
 extern crate fnv;
 
-use std::char;
 use std::hash::{Hash, Hasher};
 
 pub const SCHEMA_VERSION: &str = "1";
@@ -132,10 +131,10 @@ pub const TYPE_SLICE_U32: u32 = 14;
 pub const TYPE_VECTOR_U32: u32 = 15;
 pub const TYPE_SLICE_I32: u32 = 16;
 pub const TYPE_VECTOR_I32: u32 = 17;
-pub const TYPE_VECTOR_F32: u32 = 18;
-pub const TYPE_SLICE_F32: u32 = 19;
-pub const TYPE_VECTOR_F64: u32 = 20;
-pub const TYPE_SLICE_F64: u32 = 21;
+pub const TYPE_SLICE_F32: u32 = 18;
+pub const TYPE_VECTOR_F32: u32 = 19;
+pub const TYPE_SLICE_F64: u32 = 20;
+pub const TYPE_VECTOR_F64: u32 = 21;
 pub const TYPE_JS_OWNED: u32 = 22;
 pub const TYPE_JS_REF: u32 = 23;
 
@@ -146,7 +145,7 @@ pub fn name_to_descriptor(name: &str) -> u32 {
     const MAX: u32 = 10_000;
     let mut h = fnv::FnvHasher::default();
     name.hash(&mut h);
-    ((h.finish() as u32) % (MAX - TYPE_CUSTOM_START)) + TYPE_CUSTOM_START
+    (((h.finish() as u32) % (MAX - TYPE_CUSTOM_START)) + TYPE_CUSTOM_START) & !1
 
 }
 
