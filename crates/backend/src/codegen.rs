@@ -422,7 +422,7 @@ impl ToTokens for ast::ImportFunction {
                     };
                     arg_conversions.push(my_quote! {
                         let #name = <#t as ::wasm_bindgen::convert::WasmBoundary>
-                            ::into_abi(#name, &mut __stack);
+                            ::into_abi(#var, &mut __stack);
                     });
                 }
                 ast::Type::ByMutRef(_) => panic!("urgh mut"),
