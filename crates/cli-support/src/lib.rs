@@ -3,12 +3,10 @@ extern crate wasm_bindgen_shared as shared;
 extern crate serde_json;
 extern crate wasm_gc;
 
-use std::char;
 use std::collections::BTreeSet;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::slice;
 
 use parity_wasm::elements::*;
 

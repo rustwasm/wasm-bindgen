@@ -1,4 +1,3 @@
-use std::char;
 use std::collections::{HashSet, HashMap};
 use std::fmt::Write;
 use std::mem;
@@ -1375,75 +1374,58 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         let mut extra = String::new();
 
+        let mut needs_next_global = false;
         for (i, arg) in import.function.arguments.iter().enumerate() {
-            match *arg {
-                shared::TYPE_NUMBER => {
-                    invoc_args.push(format!("arg{}", i));
-                    abi_args.push(format!("arg{}", i));
-                }
-                shared::TYPE_BOOLEAN => {
-                    invoc_args.push(format!("arg{} !== 0", i));
-                    abi_args.push(format!("arg{}", i));
-                }
-                // shared::TYPE_BORROWED_STR |
-                // shared::TYPE_STRING |
-                // shared::TYPE_VECTOR_U8 |
-                // shared::TYPE_VECTOR_I8 |
-                // shared::TYPE_SLICE_U8 |
-                // shared::TYPE_SLICE_I8 |
-                // shared::TYPE_VECTOR_U16 |
-                // shared::TYPE_VECTOR_I16 |
-                // shared::TYPE_SLICE_U16 |
-                // shared::TYPE_SLICE_I16 |
-                // shared::TYPE_VECTOR_U32 |
-                // shared::TYPE_VECTOR_I32 |
-                // shared::TYPE_SLICE_U32 |
-                // shared::TYPE_SLICE_I32 |
-                // shared::TYPE_VECTOR_F32 |
-                // shared::TYPE_VECTOR_F64 |
-                // shared::TYPE_SLICE_F32 |
-                // shared::TYPE_SLICE_F64 => {
-                //     let ty = VectorType::from(*arg);
-                //     let f = self.cx.expose_get_vector_from_wasm(&ty);
-                //     abi_args.push(format!("ptr{}", i));
-                //     abi_args.push(format!("len{}", i));
-                //     extra.push_str(&format!("
-                //         let arg{0} = {func}(ptr{0}, len{0});
-                //     ", i, func = f));
-                //     invoc_args.push(format!("arg{}", i));
-                //
-                //     if ty.owned {
-                //         extra.push_str(&format!("
-                //             wasm.__wbindgen_free(ptr{0}, len{0});
-                //         ", i));
-                //         self.cx.required_internal_exports.insert("__wbindgen_free");
-                //     }
-                // }
+            abi_args.push(format!("arg{}", i));
+            let invoc_arg = match *arg {
+                shared::TYPE_NUMBER => format!("arg{}", i),
+                shared::TYPE_BOOLEAN => format!("arg{} !== 0", i),
                 shared::TYPE_JS_OWNED => {
                     self.cx.expose_take_object();
-                    invoc_args.push(format!("takeObject(arg{})", i));
-                    abi_args.push(format!("arg{}", i));
+                    format!("takeObject(arg{})", i)
                 }
                 shared::TYPE_JS_REF => {
                     self.cx.expose_get_object();
-                    invoc_args.push(format!("getObject(arg{})", i));
-                    abi_args.push(format!("arg{}", i));
+                    format!("getObject(arg{})", i)
                 }
-                custom if custom & shared::TYPE_CUSTOM_REF_FLAG == 0 => {
-                    let s = self.cx.custom_type_name(custom).to_string();
-                    abi_args.push(format!("ptr{}", i));
-                    let assign = if self.cx.config.debug {
-                        format!("let arg{0} = new {class}(ptr{0}, token);", i, class = s)
-                    } else {
-                        format!("let arg{0} = new {class}(ptr{0});", i, class = s)
-                    };
-                    extra.push_str(&assign);
-                    invoc_args.push(format!("arg{}", i));
+                other => {
+                    match VectorType::from(other) {
+                        Some(ty) => {
+                            let f = self.cx.expose_get_vector_from_wasm(&ty);
+                            needs_next_global = true;
+                            self.cx.expose_get_global_argument();
+                            extra.push_str(&format!("
+                                let len{0} = getGlobalArgument(next_global++);
+                                let v{0} = {func}(arg{0}, len{0});
+                            ", i, func = f));
+
+                            if ty.owned {
+                                extra.push_str(&format!("
+                                    wasm.__wbindgen_free(arg{0}, len{0} * {size});
+                                ", i, size = ty.size()));
+                                self.cx.required_internal_exports.insert(
+                                    "__wbindgen_free"
+                                );
+                            }
+                            format!("v{}", i)
+                        }
+                        None => {
+                            if other & shared::TYPE_CUSTOM_REF_FLAG != 0 {
+                                panic!("cannot import custom ref types yet")
+                            }
+                            let s = self.cx.custom_type_name(other).to_string();
+                            let assign = if self.cx.config.debug {
+                                format!("let c{0} = new {class}(arg{0}, token);", i, class = s)
+                            } else {
+                                format!("let c{0} = new {class}(arg{0});", i, class = s)
+                            };
+                            extra.push_str(&assign);
+                            format!("c{}", i)
+                        }
+                    }
                 }
-                _ => {
-                    panic!("unsupported type in import");
-                }
-            }
+            };
+            invoc_args.push(invoc_arg);
         }
 
         let nargs = invoc_args.len();
@@ -1533,27 +1515,26 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 self.cx.expose_add_heap_object();
                 format!("return addHeapObject({});", invoc)
             }
-            // Some(shared::TYPE_STRING) |
-            // Some(shared::TYPE_VECTOR_U8) |
-            // Some(shared::TYPE_VECTOR_I8) |
-            // Some(shared::TYPE_VECTOR_U16) |
-            // Some(shared::TYPE_VECTOR_I16) |
-            // Some(shared::TYPE_VECTOR_U32) |
-            // Some(shared::TYPE_VECTOR_I32) |
-            // Some(shared::TYPE_VECTOR_F32) |
-            // Some(shared::TYPE_VECTOR_F64) => {
-            //     let ty = VectorType::from(import.function.ret.unwrap());
-            //     let f = self.cx.pass_to_wasm_function(&ty);
-            //     self.cx.expose_uint32_memory();
-            //     abi_args.push("wasmretptr".to_string());
-            //     format!("
-            //         const [retptr, retlen] = {}({});
-            //         getUint32Memory()[wasmretptr / 4] = retlen;
-            //         return retptr;
-            //     ", f, invoc)
-            // }
+            Some(other) => {
+                match VectorType::from(other) {
+                    Some(ty) => {
+                        if !ty.owned {
+                            panic!("cannot return borrowed slices in imports");
+                        }
+                        let f = self.cx.pass_to_wasm_function(&ty);
+                        self.cx.expose_uint32_memory();
+                        self.cx.expose_push_global_argument();
+                        format!("
+                            GLOBAL_ARGUMENT_CNT = 0;
+                            const [retptr, retlen] = {}({});
+                            pushGlobalArgument(retlen);
+                            return retptr;
+                        ", f, invoc)
+                    }
+                    None => panic!("unimplemented return type in import"),
+                }
+            }
             None => invoc,
-            _ => unimplemented!(),
         };
 
         let invoc = if import.catch {
@@ -1575,6 +1556,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         dst.push_str(&abi_args.join(", "));
         dst.push_str(") {\n");
+        if needs_next_global {
+            dst.push_str("let next_global = 0;\n");
+        }
         dst.push_str(&extra);
         dst.push_str(&format!("{}\n}}", invoc));
 

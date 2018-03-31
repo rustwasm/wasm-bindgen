@@ -87,19 +87,6 @@ pub enum Type {
     ByValue(syn::Type),
 }
 
-pub enum VectorType {
-    String,
-    I8,
-    U8,
-    I16,
-    U16,
-    I32,
-    U32,
-    F32,
-    F64,
-    JsValue,
-}
-
 impl Program {
     pub fn push_item(&mut self, item: syn::Item, opts: Option<BindgenAttrs>, tokens: &mut Tokens) {
         match item {
@@ -770,68 +757,4 @@ fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<
         }
     }
     syn::parse_error()
-}
-
-fn ungroup(input: &syn::Type) -> &syn::Type {
-    match *input {
-        syn::Type::Group(ref t) => &t.elem,
-        _ => input,
-    }
-}
-
-impl VectorType {
-    fn from(ty: &syn::Type) -> Option<VectorType> {
-        let path = match *ungroup(ty) {
-            syn::Type::Path(syn::TypePath {
-                qself: None,
-                ref path,
-            }) => path,
-            _ => return None,
-        };
-        match extract_path_ident(path)?.as_ref() {
-            "i8" => Some(VectorType::I8),
-            "u8" => Some(VectorType::U8),
-            "i16" => Some(VectorType::I16),
-            "u16" => Some(VectorType::U16),
-            "i32" => Some(VectorType::I32),
-            "u32" => Some(VectorType::U32),
-            "f32" => Some(VectorType::F32),
-            "f64" => Some(VectorType::F64),
-            "JsValue" => Some(VectorType::JsValue),
-            _ => None,
-        }
-    }
-
-    pub fn abi_element(&self) -> syn::Ident {
-        match *self {
-            VectorType::String => syn::Ident::from("u8"),
-            VectorType::I8 => syn::Ident::from("i8"),
-            VectorType::U8 => syn::Ident::from("u8"),
-            VectorType::I16 => syn::Ident::from("i16"),
-            VectorType::U16 => syn::Ident::from("u16"),
-            VectorType::I32 => syn::Ident::from("i32"),
-            VectorType::U32 => syn::Ident::from("u32"),
-            VectorType::F32 => syn::Ident::from("f32"),
-            VectorType::F64 => syn::Ident::from("f64"),
-            VectorType::JsValue => syn::Ident::from("JsValue"),
-        }
-    }
-}
-
-impl ToTokens for VectorType {
-    fn to_tokens(&self, tokens: &mut Tokens) {
-        let me = match *self {
-            VectorType::String => my_quote! { String },
-            VectorType::I8 => my_quote! { Vec<i8> },
-            VectorType::U8 => my_quote! { Vec<u8> },
-            VectorType::I16 => my_quote! { Vec<i16> },
-            VectorType::U16 => my_quote! { Vec<u16> },
-            VectorType::I32 => my_quote! { Vec<i32> },
-            VectorType::U32 => my_quote! { Vec<u32> },
-            VectorType::F32 => my_quote! { Vec<f32> },
-            VectorType::F64 => my_quote! { Vec<f64> },
-            VectorType::JsValue => my_quote! { Vec<JsValue> },
-        };
-        me.to_tokens(tokens);
-    }
 }

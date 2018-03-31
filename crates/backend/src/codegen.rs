@@ -277,11 +277,13 @@ impl ToTokens for ast::Export {
             #[allow(non_snake_case)]
             pub extern fn #generated_name(#(#args),*) #ret_ty {
                 ::wasm_bindgen::__rt::link_this_library();
-                let mut __stack = unsafe {
-                    ::wasm_bindgen::convert::GlobalStack::new()
+                let #ret = {
+                    let mut __stack = unsafe {
+                        ::wasm_bindgen::convert::GlobalStack::new()
+                    };
+                    #(#arg_conversions)*
+                    #receiver(#(#converted_arguments),*)
                 };
-                #(#arg_conversions)*
-                let #ret = #receiver(#(#converted_arguments),*);
                 #convert_ret
             }
         };
@@ -398,22 +400,6 @@ impl ToTokens for ast::ImportFunction {
 
         for (i, (ty, name)) in self.function.arguments.iter().zip(names).enumerate() {
             match *ty {
-                // ast::Type::Vector(ref ty, owned) => {
-                //     let ptr = syn::Ident::from(format!("{}_ptr", name));
-                //     let len = syn::Ident::from(format!("{}_len", name));
-                //     abi_argument_names.push(ptr);
-                //     abi_argument_names.push(len);
-                //     let abi_ty = ty.abi_element();
-                //     abi_arguments.push(my_quote! { #ptr: *const #abi_ty });
-                //     abi_arguments.push(my_quote! { #len: usize });
-                //     arg_conversions.push(my_quote! {
-                //         let #ptr = #name.as_ptr();
-                //         let #len = #name.len();
-                //     });
-                //     if owned {
-                //         arg_conversions.push(my_quote! { ::std::mem::forget(#name); });
-                //     }
-                // }
                 ast::Type::ByValue(ref t) => {
                     abi_argument_names.push(name);
                     abi_arguments.push(my_quote! {
@@ -422,12 +408,12 @@ impl ToTokens for ast::ImportFunction {
                     if i == 0 && is_method {
                         arg_conversions.push(my_quote! {
                             let #name = <#t as ::wasm_bindgen::convert::WasmBoundary>
-                                ::into_abi(self);
+                                ::into_abi(self, &mut __stack);
                         });
                     } else {
                         arg_conversions.push(my_quote! {
                             let #name = <#t as ::wasm_bindgen::convert::WasmBoundary>
-                                ::into_abi(#name);
+                                ::into_abi(#name, &mut __stack);
                         });
                     }
                 }
@@ -438,12 +424,12 @@ impl ToTokens for ast::ImportFunction {
                     if i == 0 && is_method {
                         arg_conversions.push(my_quote! {
                             let #name = <#t as ::wasm_bindgen::convert::ToRefWasmBoundary>
-                                ::to_abi_ref(self);
+                                ::to_abi_ref(self, &mut __stack);
                         });
                     } else {
                         arg_conversions.push(my_quote! {
                             let #name = <#t as ::wasm_bindgen::convert::ToRefWasmBoundary>
-                                ::to_abi_ref(#name);
+                                ::to_abi_ref(#name, &mut __stack);
                         });
                     }
                 }
@@ -457,33 +443,13 @@ impl ToTokens for ast::ImportFunction {
                     <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
                 };
                 convert_ret = my_quote! {
-                    <#t as ::wasm_bindgen::convert::WasmBoundary>::from_abi(#ret_ident)
+                    <#t as ::wasm_bindgen::convert::WasmBoundary>
+                        ::from_abi(
+                            #ret_ident,
+                            &mut ::wasm_bindgen::convert::GlobalStack::new(),
+                        )
                 };
             }
-
-            // Some(ast::Type::Vector(ref ty, true)) => {
-            //     let name = syn::Ident::from("__ret_len");
-            //     let name_ptr = syn::Ident::from("__ret_len_ptr");
-            //     abi_argument_names.push(name_ptr);
-            //     abi_arguments.push(my_quote! { #name_ptr: *mut usize });
-            //     arg_conversions.push(my_quote! {
-            //         let mut #name = 0;
-            //         let mut #name_ptr = &mut #name as *mut usize;
-            //     });
-            //     let abi_ty = ty.abi_element();
-            //     abi_ret = my_quote! { *mut #abi_ty };
-            //     if let ast::VectorType::String = *ty {
-            //         convert_ret = my_quote! {
-            //             String::from_utf8_unchecked(
-            //                 Vec::from_raw_parts(#ret_ident, #name, #name)
-            //             )
-            //         };
-            //     } else {
-            //         convert_ret = my_quote! {
-            //             Vec::from_raw_parts(#ret_ident, #name, #name)
-            //         };
-            //     }
-            // }
             Some(ast::Type::ByRef(_))
             | Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
             None => {
@@ -493,23 +459,28 @@ impl ToTokens for ast::ImportFunction {
         }
 
         let mut exceptional_ret = my_quote!{};
-        if self.function.opts.catch() {
+        let exn_data = if self.function.opts.catch() {
             let exn_data = syn::Ident::from("exn_data");
             let exn_data_ptr = syn::Ident::from("exn_data_ptr");
             abi_argument_names.push(exn_data_ptr);
             abi_arguments.push(my_quote! { #exn_data_ptr: *mut u32 });
-            arg_conversions.push(my_quote! {
-                let mut #exn_data = [0; 2];
-                let #exn_data_ptr = #exn_data.as_mut_ptr();
-            });
             convert_ret = my_quote! { Ok(#convert_ret) };
             exceptional_ret = my_quote! {
                 if #exn_data[0] == 1 {
-                    return Err(<::wasm_bindgen::JsValue as
-                        ::wasm_bindgen::convert::WasmBoundary>::from_abi(#exn_data[1]))
+                    return Err(
+                        <
+                            ::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary
+                        >::from_abi(#exn_data[1], &mut ::wasm_bindgen::convert::GlobalStack::new()),
+                    )
                 }
             };
-        }
+            my_quote! {
+                let mut #exn_data = [0; 2];
+                let #exn_data_ptr = #exn_data.as_mut_ptr();
+            }
+        } else {
+            quote! {}
+        };
 
         let rust_name = self.rust_name;
         let import_name = self.shim;
@@ -538,8 +509,12 @@ impl ToTokens for ast::ImportFunction {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
                 }
                 unsafe {
-                    #(#arg_conversions)*
-                    let #ret_ident = #import_name(#(#abi_argument_names),*);
+                    #exn_data
+                    let #ret_ident = {
+                        let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
+                        #(#arg_conversions)*
+                        #import_name(#(#abi_argument_names),*)
+                    };
                     #exceptional_ret
                     #convert_ret
                 }
@@ -609,10 +584,13 @@ impl ToTokens for ast::ImportStatic {
                 fn init() -> #ty {
                     #[wasm_import_module = "__wbindgen_placeholder__"]
                     extern {
-                        fn #shim_name() -> u32;
+                        fn #shim_name() -> <#ty as ::wasm_bindgen::convert::WasmBoundary>::Abi;
                     }
                     unsafe {
-                        ::wasm_bindgen::convert::WasmBoundary::from_abi(#shim_name())
+                        ::wasm_bindgen::convert::WasmBoundary::from_abi(
+                            #shim_name(),
+                            &mut ::wasm_bindgen::convert::GlobalStack::new(),
+                        )
                     }
                 }
                 ::wasm_bindgen::JsStatic {
