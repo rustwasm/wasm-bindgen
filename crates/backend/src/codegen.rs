@@ -415,33 +415,29 @@ impl ToTokens for ast::ImportFunction {
                     abi_arguments.push(my_quote! {
                         #name: <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
                     });
-                    if i == 0 && is_method {
-                        arg_conversions.push(my_quote! {
-                            let #name = <#t as ::wasm_bindgen::convert::WasmBoundary>
-                                ::into_abi(self, &mut __stack);
-                        });
+                    let var = if i == 0 && is_method {
+                        quote! { self }
                     } else {
-                        arg_conversions.push(my_quote! {
-                            let #name = <#t as ::wasm_bindgen::convert::WasmBoundary>
-                                ::into_abi(#name, &mut __stack);
-                        });
-                    }
+                        quote! { #name }
+                    };
+                    arg_conversions.push(my_quote! {
+                        let #name = <#t as ::wasm_bindgen::convert::WasmBoundary>
+                            ::into_abi(#name, &mut __stack);
+                    });
                 }
                 ast::Type::ByMutRef(_) => panic!("urgh mut"),
                 ast::Type::ByRef(ref t) => {
                     abi_argument_names.push(name);
                     abi_arguments.push(my_quote! { #name: u32 });
-                    if i == 0 && is_method {
-                        arg_conversions.push(my_quote! {
-                            let #name = <#t as ::wasm_bindgen::convert::ToRefWasmBoundary>
-                                ::to_abi_ref(self, &mut __stack);
-                        });
+                    let var = if i == 0 && is_method {
+                        quote! { self }
                     } else {
-                        arg_conversions.push(my_quote! {
-                            let #name = <#t as ::wasm_bindgen::convert::ToRefWasmBoundary>
-                                ::to_abi_ref(#name, &mut __stack);
-                        });
-                    }
+                        quote! { #name }
+                    };
+                    arg_conversions.push(my_quote! {
+                        let #name = <#t as ::wasm_bindgen::convert::ToRefWasmBoundary>
+                            ::to_abi_ref(#var, &mut __stack);
+                    });
                 }
             }
         }
