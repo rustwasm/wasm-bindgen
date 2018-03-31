@@ -24,17 +24,9 @@ impl<'a> LiteralBuilder<'a> {
         b.to_tokens(self.dst);
     }
 
-    fn char_lit(&mut self, c: char) {
-        let c = c as u32;
-        self.byte(c as u8);
-        self.byte((c >> 8) as u8);
-        self.byte((c >> 16) as u8);
-        self.byte((c >> 24) as u8);
-    }
-
     fn append(&mut self, s: &str) {
-        for c in s.chars() {
-            self.char_lit(c);
+        for &b in s.as_bytes() {
+            self.byte(b);
         }
     }
 
@@ -52,22 +44,18 @@ impl<'a> LiteralBuilder<'a> {
         }
     }
 
-    fn char(&mut self, s: char) {
-        self.append("\"");
-        self.char_lit(s);
-        self.append("\"");
+    fn u32(&mut self, s: u32) {
+        self.append(&s.to_string())
     }
 
     fn as_char(&mut self, tokens: Tokens) {
-        self.append("\"");
         (quote! {
-            , (((#tokens) as u32) >> 0) as u8
-            , (((#tokens) as u32) >> 8) as u8
-            , (((#tokens) as u32) >> 16) as u8
-            , (((#tokens) as u32) >> 24) as u8
+            ,(#tokens).__x[0]
+            ,(#tokens).__x[1]
+            ,(#tokens).__x[2]
+            ,(#tokens).__x[3]
         }).to_tokens(self.dst);
         self.cnt += 4;
-        self.append("\"");
     }
 
     pub fn fields(&mut self, fields: &[(&str, &Fn(&mut Self))]) {
@@ -126,7 +114,7 @@ impl Literal for ast::Program {
                 a.list(&names, |s, a| {
                     let val = shared::name_to_descriptor(s.as_ref());
                     a.fields(&[
-                        ("descriptor", &|a| a.char(val)),
+                        ("descriptor", &|a| a.u32(val)),
                         ("name", &|a| a.str(s.as_ref())),
                     ]);
                 })
@@ -153,39 +141,16 @@ impl Literal for ast::Function {
 impl Literal for ast::Type {
     fn literal(&self, a: &mut LiteralBuilder) {
         match *self {
-            ast::Type::Vector(ast::VectorType::String, true) => a.char(shared::TYPE_STRING),
-            ast::Type::Vector(ast::VectorType::String, false) => a.char(shared::TYPE_BORROWED_STR),
-            ast::Type::Vector(ast::VectorType::U8, true) => a.char(shared::TYPE_VECTOR_U8),
-            ast::Type::Vector(ast::VectorType::U8, false) => a.char(shared::TYPE_SLICE_U8),
-            ast::Type::Vector(ast::VectorType::I8, true) => a.char(shared::TYPE_VECTOR_I8),
-            ast::Type::Vector(ast::VectorType::I8, false) => a.char(shared::TYPE_SLICE_I8),
-            ast::Type::Vector(ast::VectorType::U16, true) => a.char(shared::TYPE_VECTOR_U16),
-            ast::Type::Vector(ast::VectorType::U16, false) => a.char(shared::TYPE_SLICE_U16),
-            ast::Type::Vector(ast::VectorType::I16, true) => a.char(shared::TYPE_VECTOR_I16),
-            ast::Type::Vector(ast::VectorType::I16, false) => a.char(shared::TYPE_SLICE_I16),
-            ast::Type::Vector(ast::VectorType::U32, true) => a.char(shared::TYPE_VECTOR_U32),
-            ast::Type::Vector(ast::VectorType::U32, false) => a.char(shared::TYPE_SLICE_U32),
-            ast::Type::Vector(ast::VectorType::I32, true) => a.char(shared::TYPE_VECTOR_I32),
-            ast::Type::Vector(ast::VectorType::I32, false) => a.char(shared::TYPE_SLICE_I32),
-            ast::Type::Vector(ast::VectorType::F32, true) => a.char(shared::TYPE_VECTOR_F32),
-            ast::Type::Vector(ast::VectorType::F32, false) => a.char(shared::TYPE_SLICE_F32),
-            ast::Type::Vector(ast::VectorType::F64, true) => a.char(shared::TYPE_VECTOR_F64),
-            ast::Type::Vector(ast::VectorType::F64, false) => a.char(shared::TYPE_SLICE_F64),
-            ast::Type::Vector(ast::VectorType::JsValue, true) => {
-                a.char(shared::TYPE_VECTOR_JSVALUE)
-            }
-            ast::Type::Vector(ast::VectorType::JsValue, false) => {
-                panic!("Slices of JsValues not supported")
-            }
             ast::Type::ByValue(ref t) => {
                 a.as_char(my_quote! {
                     <#t as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR
                 });
             }
             ast::Type::ByRef(ref ty) | ast::Type::ByMutRef(ref ty) => {
+                // TODO: this assumes `ToRef*` and `FromRef*` use the same
+                // descriptor.
                 a.as_char(my_quote! {
-                    (<#ty as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR |
-                        ::wasm_bindgen::convert::DESCRIPTOR_CUSTOM_REF_FLAG)
+                    <#ty as ::wasm_bindgen::convert::ToRefWasmBoundary>::DESCRIPTOR
                 });
             }
         }

@@ -17,7 +17,7 @@ pub struct Context<'a> {
     pub required_internal_exports: HashSet<&'static str>,
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
-    pub custom_type_names: HashMap<char, String>,
+    pub custom_type_names: HashMap<u32, String>,
     pub imported_names: HashSet<String>,
     pub exported_classes: HashMap<String, ExportedClass>,
 }
@@ -528,6 +528,7 @@ impl<'a> Context<'a> {
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_text_encoder();
         self.expose_uint8_memory();
+        self.expose_push_global_argument();
         self.globals.push_str(&format!("
             function passStringToWasm(arg) {{
                 if (typeof(arg) !== 'string')
@@ -936,9 +937,8 @@ impl<'a> Context<'a> {
         })
     }
 
-    fn custom_type_name(&self, c: char) -> &str {
-        let c = (c as u32) & !shared::TYPE_CUSTOM_REF_FLAG;
-        let c = char::from_u32(c).unwrap();
+    fn custom_type_name(&self, c: u32) -> &str {
+        let c = c & !shared::TYPE_CUSTOM_REF_FLAG;
         &self.custom_type_names[&c]
     }
 
@@ -1015,6 +1015,51 @@ impl<'a> Context<'a> {
                 "getArrayJsValueFromWasm"
             }
         }
+    }
+
+    fn expose_push_global_argument(&mut self) {
+        if !self.exposed_globals.insert("push_global_argument") {
+            return
+        }
+        self.expose_uint32_memory();
+        self.expose_global_argument_ptr();
+        self.globals.push_str("
+            function pushGlobalArgument(arg) {{
+                const idx = globalArgumentPtr() / 4 + GLOBAL_ARGUMENT_CNT;
+                getUint32Memory()[idx] = arg;
+                GLOBAL_ARGUMENT_CNT += 1;
+            }}
+        ");
+    }
+
+    fn expose_get_global_argument(&mut self) {
+        if !self.exposed_globals.insert("get_global_argument") {
+            return
+        }
+        self.expose_uint32_memory();
+        self.expose_global_argument_ptr();
+        self.globals.push_str("
+            function getGlobalArgument(arg) {{
+                const idx = globalArgumentPtr() / 4 + arg;
+                return getUint32Memory()[idx];
+            }}
+        ");
+    }
+
+    fn expose_global_argument_ptr(&mut self) {
+        if !self.exposed_globals.insert("global_argument_ptr") {
+            return
+        }
+        self.required_internal_exports.insert("__wbindgen_global_argument_ptr");
+        self.globals.push_str("
+            let cachedGlobalArgumentPtr = null;
+            let GLOBAL_ARGUMENT_CNT = 0;
+            function globalArgumentPtr() {
+                if (cachedGlobalArgumentPtr === null)
+                    cachedGlobalArgumentPtr = wasm.__wbindgen_global_argument_ptr();
+                return cachedGlobalArgumentPtr;
+            }
+        ");
     }
 }
 
@@ -1095,6 +1140,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             passed_args.push_str("this.ptr");
         }
 
+        let mut argument_pushed = false;
         for (i, arg) in function.arguments.iter().enumerate() {
             let name = format!("arg{}", i);
             if i > 0 {
@@ -1130,40 +1176,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     }
                     pass(&format!("arg{i} ? 1 : 0", i = i))
                 }
-                shared::TYPE_BORROWED_STR |
-                shared::TYPE_STRING |
-                shared::TYPE_VECTOR_U8 |
-                shared::TYPE_VECTOR_I8 |
-                shared::TYPE_SLICE_U8 |
-                shared::TYPE_SLICE_I8 |
-                shared::TYPE_VECTOR_U16 |
-                shared::TYPE_VECTOR_I16 |
-                shared::TYPE_SLICE_U16 |
-                shared::TYPE_SLICE_I16 |
-                shared::TYPE_VECTOR_U32 |
-                shared::TYPE_VECTOR_I32 |
-                shared::TYPE_SLICE_U32 |
-                shared::TYPE_SLICE_I32 |
-                shared::TYPE_VECTOR_F32 |
-                shared::TYPE_VECTOR_F64 |
-                shared::TYPE_SLICE_F32 |
-                shared::TYPE_SLICE_F64 => {
-                    let ty = VectorType::from(*arg);
-                    dst_ts.push_str(": ");
-                    dst_ts.push_str(ty.js_ty());
-                    let func = self.cx.pass_to_wasm_function(&ty);
-                    arg_conversions.push_str(&format!("\
-                        const [ptr{i}, len{i}] = {func}({arg});
-                    ", i = i, func = func, arg = name));
-                    pass(&format!("ptr{}", i));
-                    pass(&format!("len{}", i));
-                    if !ty.owned {
-                        destructors.push_str(&format!("\n\
-                            wasm.__wbindgen_free(ptr{i}, len{i});\n\
-                        ", i = i));
-                        self.cx.required_internal_exports.insert("__wbindgen_free");
-                    }
-                }
                 shared::TYPE_JS_OWNED => {
                     dst_ts.push_str(": any");
                     self.cx.expose_add_heap_object();
@@ -1181,31 +1193,49 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     destructors.push_str("stack.pop();\n");
                     pass(&format!("idx{}", i));
                 }
-                custom if (custom as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => {
-                    let s = self.cx.custom_type_name(custom).to_string();
-                    dst_ts.push_str(&format!(": {}", s));
-                    if self.cx.config.debug {
-                        self.cx.expose_assert_class();
-                        arg_conversions.push_str(&format!("\
-                            _assertClass({arg}, {struct_});
-                        ", arg = name, struct_ = s));
+                other => {
+                    match VectorType::from(other) {
+                        Some(ty) => {
+                            dst_ts.push_str(": ");
+                            dst_ts.push_str(ty.js_ty());
+                            let func = self.cx.pass_to_wasm_function(&ty);
+                            self.cx.expose_push_global_argument();
+                            argument_pushed = true;
+                            arg_conversions.push_str(&format!("\
+                                const [ptr{i}, len{i}] = {func}({arg});
+                                pushGlobalArgument(len{i});
+                            ", i = i, func = func, arg = name));
+                            pass(&format!("ptr{}", i));
+                            if !ty.owned {
+                                destructors.push_str(&format!("\n\
+                                    wasm.__wbindgen_free(ptr{i}, len{i} * {size});\n\
+                                ", i = i, size = ty.size()));
+                                self.cx.required_internal_exports.insert(
+                                    "__wbindgen_free",
+                                );
+                            }
+                        }
+                        None => {
+                            let s = self.cx.custom_type_name(other).to_string();
+                            dst_ts.push_str(&format!(": {}", s));
+                            if self.cx.config.debug {
+                                self.cx.expose_assert_class();
+                                arg_conversions.push_str(&format!("\
+                                    _assertClass({arg}, {struct_});
+                                ", arg = name, struct_ = s));
+                            }
+
+                            if other & shared::TYPE_CUSTOM_REF_FLAG != 0 {
+                                pass(&format!("{}.ptr", name));
+                            } else {
+                                arg_conversions.push_str(&format!("\
+                                    const ptr{i} = {arg}.ptr;
+                                    {arg}.ptr = 0;
+                                ", i = i, arg = name));
+                                pass(&format!("ptr{}", i));
+                            }
+                        }
                     }
-                    pass(&format!("{}.ptr", name));
-                }
-                custom => {
-                    let s = self.cx.custom_type_name(custom).to_string();
-                    dst_ts.push_str(&format!(": {}", s));
-                    if self.cx.config.debug {
-                        self.cx.expose_assert_class();
-                        arg_conversions.push_str(&format!("\
-                            _assertClass({arg}, {struct_});
-                        ", arg = name, struct_ = s));
-                    }
-                    arg_conversions.push_str(&format!("\
-                        const ptr{i} = {arg}.ptr;
-                        {arg}.ptr = 0;
-                    ", i = i, arg = name));
-                    pass(&format!("ptr{}", i));
                 }
             }
         }
@@ -1233,51 +1263,53 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 self.cx.expose_take_object();
                 format!("return takeObject(ret);")
             }
-            Some(shared::TYPE_STRING) |
-            Some(shared::TYPE_VECTOR_U8) |
-            Some(shared::TYPE_VECTOR_I8) |
-            Some(shared::TYPE_VECTOR_U16) |
-            Some(shared::TYPE_VECTOR_I16) |
-            Some(shared::TYPE_VECTOR_U32) |
-            Some(shared::TYPE_VECTOR_I32) |
-            Some(shared::TYPE_VECTOR_F32) |
-            Some(shared::TYPE_VECTOR_F64) |
-            Some(shared::TYPE_VECTOR_JSVALUE) => {
-                let ty = VectorType::from(function.ret.unwrap());
-                dst_ts.push_str(": ");
-                dst_ts.push_str(ty.js_ty());
-                let f = self.cx.expose_get_vector_from_wasm(&ty);
-                self.cx.required_internal_exports.insert("__wbindgen_boxed_str_ptr");
-                self.cx.required_internal_exports.insert("__wbindgen_boxed_str_len");
-                self.cx.required_internal_exports.insert("__wbindgen_boxed_str_free");
-                format!("
-                    const ptr = wasm.__wbindgen_boxed_str_ptr(ret);
-                    const len = wasm.__wbindgen_boxed_str_len(ret);
-                    const realRet = {}(ptr, len);
-                    wasm.__wbindgen_boxed_str_free(ret);
-                    return realRet;
-                ", f)
+            Some(shared::TYPE_JS_REF) => {
+                dst_ts.push_str(": any");
+                self.cx.expose_get_object();
+                format!("return getObject(ret);")
             }
-            Some(shared::TYPE_JS_REF) |
-            Some(shared::TYPE_BORROWED_STR) => panic!(),
-            Some(t) if (t as u32) & shared::TYPE_CUSTOM_REF_FLAG != 0 => panic!(),
-            Some(custom) => {
-                let name = self.cx.custom_type_name(custom);
-                dst_ts.push_str(": ");
-                dst_ts.push_str(name);
-                if self.cx.config.debug {
-                    format!("\
-                        return new {name}(ret, token);
-                    ", name = name)
-                } else {
-                    format!("\
-                        return new {name}(ret);
-                    ", name = name)
+            Some(other) => {
+                if other & shared::TYPE_CUSTOM_REF_FLAG != 0 {
+                    panic!("cannot return references yet");
+                }
+                match VectorType::from(other) {
+                    Some(ty) => {
+                        dst_ts.push_str(": ");
+                        dst_ts.push_str(ty.js_ty());
+                        let f = self.cx.expose_get_vector_from_wasm(&ty);
+                        self.cx.expose_get_global_argument();
+                        self.cx.required_internal_exports.insert(
+                            "__wbindgen_free",
+                        );
+                        format!("
+                            const len = getGlobalArgument(0);
+                            const realRet = {}(ret, len);
+                            wasm.__wbindgen_free(ret, len * {});
+                            return realRet;
+                        ", f, ty.size())
+                    }
+                    None => {
+                        let name = self.cx.custom_type_name(other);
+                        dst_ts.push_str(": ");
+                        dst_ts.push_str(name);
+                        if self.cx.config.debug {
+                            format!("\
+                                return new {name}(ret, token);
+                            ", name = name)
+                        } else {
+                            format!("\
+                                return new {name}(ret);
+                            ", name = name)
+                        }
+                    }
                 }
             }
         };
         dst_ts.push_str(";");
         dst.push_str(" {\n        ");
+        if argument_pushed {
+            dst.push_str("GLOBAL_ARGUMENT_CNT = 0;\n");
+        }
         dst.push_str(&arg_conversions);
         if destructors.len() == 0 {
             dst.push_str(&format!("\
@@ -1353,40 +1385,40 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     invoc_args.push(format!("arg{} !== 0", i));
                     abi_args.push(format!("arg{}", i));
                 }
-                shared::TYPE_BORROWED_STR |
-                shared::TYPE_STRING |
-                shared::TYPE_VECTOR_U8 |
-                shared::TYPE_VECTOR_I8 |
-                shared::TYPE_SLICE_U8 |
-                shared::TYPE_SLICE_I8 |
-                shared::TYPE_VECTOR_U16 |
-                shared::TYPE_VECTOR_I16 |
-                shared::TYPE_SLICE_U16 |
-                shared::TYPE_SLICE_I16 |
-                shared::TYPE_VECTOR_U32 |
-                shared::TYPE_VECTOR_I32 |
-                shared::TYPE_SLICE_U32 |
-                shared::TYPE_SLICE_I32 |
-                shared::TYPE_VECTOR_F32 |
-                shared::TYPE_VECTOR_F64 |
-                shared::TYPE_SLICE_F32 |
-                shared::TYPE_SLICE_F64 => {
-                    let ty = VectorType::from(*arg);
-                    let f = self.cx.expose_get_vector_from_wasm(&ty);
-                    abi_args.push(format!("ptr{}", i));
-                    abi_args.push(format!("len{}", i));
-                    extra.push_str(&format!("
-                        let arg{0} = {func}(ptr{0}, len{0});
-                    ", i, func = f));
-                    invoc_args.push(format!("arg{}", i));
-
-                    if ty.owned {
-                        extra.push_str(&format!("
-                            wasm.__wbindgen_free(ptr{0}, len{0});
-                        ", i));
-                        self.cx.required_internal_exports.insert("__wbindgen_free");
-                    }
-                }
+                // shared::TYPE_BORROWED_STR |
+                // shared::TYPE_STRING |
+                // shared::TYPE_VECTOR_U8 |
+                // shared::TYPE_VECTOR_I8 |
+                // shared::TYPE_SLICE_U8 |
+                // shared::TYPE_SLICE_I8 |
+                // shared::TYPE_VECTOR_U16 |
+                // shared::TYPE_VECTOR_I16 |
+                // shared::TYPE_SLICE_U16 |
+                // shared::TYPE_SLICE_I16 |
+                // shared::TYPE_VECTOR_U32 |
+                // shared::TYPE_VECTOR_I32 |
+                // shared::TYPE_SLICE_U32 |
+                // shared::TYPE_SLICE_I32 |
+                // shared::TYPE_VECTOR_F32 |
+                // shared::TYPE_VECTOR_F64 |
+                // shared::TYPE_SLICE_F32 |
+                // shared::TYPE_SLICE_F64 => {
+                //     let ty = VectorType::from(*arg);
+                //     let f = self.cx.expose_get_vector_from_wasm(&ty);
+                //     abi_args.push(format!("ptr{}", i));
+                //     abi_args.push(format!("len{}", i));
+                //     extra.push_str(&format!("
+                //         let arg{0} = {func}(ptr{0}, len{0});
+                //     ", i, func = f));
+                //     invoc_args.push(format!("arg{}", i));
+                //
+                //     if ty.owned {
+                //         extra.push_str(&format!("
+                //             wasm.__wbindgen_free(ptr{0}, len{0});
+                //         ", i));
+                //         self.cx.required_internal_exports.insert("__wbindgen_free");
+                //     }
+                // }
                 shared::TYPE_JS_OWNED => {
                     self.cx.expose_take_object();
                     invoc_args.push(format!("takeObject(arg{})", i));
@@ -1397,7 +1429,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     invoc_args.push(format!("getObject(arg{})", i));
                     abi_args.push(format!("arg{}", i));
                 }
-                custom if (custom as u32) & shared::TYPE_CUSTOM_REF_FLAG == 0 => {
+                custom if custom & shared::TYPE_CUSTOM_REF_FLAG == 0 => {
                     let s = self.cx.custom_type_name(custom).to_string();
                     abi_args.push(format!("ptr{}", i));
                     let assign = if self.cx.config.debug {
@@ -1501,25 +1533,25 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 self.cx.expose_add_heap_object();
                 format!("return addHeapObject({});", invoc)
             }
-            Some(shared::TYPE_STRING) |
-            Some(shared::TYPE_VECTOR_U8) |
-            Some(shared::TYPE_VECTOR_I8) |
-            Some(shared::TYPE_VECTOR_U16) |
-            Some(shared::TYPE_VECTOR_I16) |
-            Some(shared::TYPE_VECTOR_U32) |
-            Some(shared::TYPE_VECTOR_I32) |
-            Some(shared::TYPE_VECTOR_F32) |
-            Some(shared::TYPE_VECTOR_F64) => {
-                let ty = VectorType::from(import.function.ret.unwrap());
-                let f = self.cx.pass_to_wasm_function(&ty);
-                self.cx.expose_uint32_memory();
-                abi_args.push("wasmretptr".to_string());
-                format!("
-                    const [retptr, retlen] = {}({});
-                    getUint32Memory()[wasmretptr / 4] = retlen;
-                    return retptr;
-                ", f, invoc)
-            }
+            // Some(shared::TYPE_STRING) |
+            // Some(shared::TYPE_VECTOR_U8) |
+            // Some(shared::TYPE_VECTOR_I8) |
+            // Some(shared::TYPE_VECTOR_U16) |
+            // Some(shared::TYPE_VECTOR_I16) |
+            // Some(shared::TYPE_VECTOR_U32) |
+            // Some(shared::TYPE_VECTOR_I32) |
+            // Some(shared::TYPE_VECTOR_F32) |
+            // Some(shared::TYPE_VECTOR_F64) => {
+            //     let ty = VectorType::from(import.function.ret.unwrap());
+            //     let f = self.cx.pass_to_wasm_function(&ty);
+            //     self.cx.expose_uint32_memory();
+            //     abi_args.push("wasmretptr".to_string());
+            //     format!("
+            //         const [retptr, retlen] = {}({});
+            //         getUint32Memory()[wasmretptr / 4] = retlen;
+            //         return retptr;
+            //     ", f, invoc)
+            // }
             None => invoc,
             _ => unimplemented!(),
         };
@@ -1632,8 +1664,8 @@ enum VectorKind {
 }
 
 impl VectorType {
-    fn from(desc: char) -> VectorType {
-        match desc {
+    fn from(desc: u32) -> Option<VectorType> {
+        let ty = match desc {
             shared::TYPE_BORROWED_STR => {
                 VectorType { owned: false, kind: VectorKind::String }
             }
@@ -1691,8 +1723,9 @@ impl VectorType {
             shared::TYPE_VECTOR_JSVALUE => {
                 VectorType { owned: true, kind: VectorKind::JsValue }
             }
-            _ => panic!()
-        }
+            _ => return None
+        };
+        Some(ty)
     }
 
     fn js_ty(&self) -> &str {
@@ -1707,6 +1740,21 @@ impl VectorType {
             VectorKind::F32 => "Float32Array",
             VectorKind::F64 => "Float64Array",
             VectorKind::JsValue => "any[]",
+        }
+    }
+
+    fn size(&self) -> usize {
+        match self.kind {
+            VectorKind::String => 1,
+            VectorKind::I8 => 1,
+            VectorKind::U8 => 1,
+            VectorKind::I16 => 2,
+            VectorKind::U16 => 2,
+            VectorKind::I32 => 4,
+            VectorKind::U32 => 4,
+            VectorKind::F32 => 4,
+            VectorKind::F64 => 8,
+            VectorKind::JsValue => 4,
         }
     }
 }

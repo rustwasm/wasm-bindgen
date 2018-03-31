@@ -85,7 +85,7 @@ pub struct Function {
 
 #[derive(Deserialize)]
 pub struct CustomTypeName {
-    pub descriptor: char,
+    pub descriptor: u32,
     pub name: String,
 }
 
@@ -112,51 +112,42 @@ pub fn struct_function_export_name(struct_: &str, f: &str) -> String {
     return name
 }
 
-pub type Type = char;
+pub type Type = u32;
 
-pub const TYPE_VECTOR_JSVALUE: char = '\u{5b}';
-// Note: '\u{5c}' is '\' which breaks json encoding/decoding
-pub const TYPE_ENUM: char = '\u{5d}';
-pub const TYPE_NUMBER: char = '\u{5e}';
-pub const TYPE_BORROWED_STR: char = '\u{5f}';
-pub const TYPE_STRING: char = '\u{60}';
-pub const TYPE_BOOLEAN: char = '\u{61}';
-pub const TYPE_SLICE_U8: char = '\u{62}';
-pub const TYPE_VECTOR_U8: char = '\u{63}';
-pub const TYPE_SLICE_I8: char = '\u{64}';
-pub const TYPE_VECTOR_I8: char = '\u{65}';
-pub const TYPE_SLICE_U16: char = '\u{66}';
-pub const TYPE_VECTOR_U16: char = '\u{67}';
-pub const TYPE_SLICE_I16: char = '\u{68}';
-pub const TYPE_VECTOR_I16: char = '\u{69}';
-pub const TYPE_SLICE_U32: char = '\u{6a}';
-pub const TYPE_VECTOR_U32: char = '\u{6b}';
-pub const TYPE_SLICE_I32: char = '\u{6c}';
-pub const TYPE_VECTOR_I32: char = '\u{6d}';
-pub const TYPE_VECTOR_F32: char = '\u{6e}';
-pub const TYPE_SLICE_F32: char = '\u{6f}';
-pub const TYPE_VECTOR_F64: char = '\u{70}';
-pub const TYPE_SLICE_F64: char = '\u{71}';
-pub const TYPE_JS_OWNED: char = '\u{72}';
-pub const TYPE_JS_REF: char = '\u{73}';
+pub const TYPE_VECTOR_JSVALUE: u32 = 0;
+pub const TYPE_ENUM: u32 = 1;
+pub const TYPE_NUMBER: u32 = 2;
+pub const TYPE_BORROWED_STR: u32 = 3;
+pub const TYPE_STRING: u32 = 4;
+pub const TYPE_BOOLEAN: u32 = 5;
+pub const TYPE_SLICE_U8: u32 = 6;
+pub const TYPE_VECTOR_U8: u32 = 7;
+pub const TYPE_SLICE_I8: u32 = 8;
+pub const TYPE_VECTOR_I8: u32 = 9;
+pub const TYPE_SLICE_U16: u32 = 10;
+pub const TYPE_VECTOR_U16: u32 = 11;
+pub const TYPE_SLICE_I16: u32 = 12;
+pub const TYPE_VECTOR_I16: u32 = 13;
+pub const TYPE_SLICE_U32: u32 = 14;
+pub const TYPE_VECTOR_U32: u32 = 15;
+pub const TYPE_SLICE_I32: u32 = 16;
+pub const TYPE_VECTOR_I32: u32 = 17;
+pub const TYPE_VECTOR_F32: u32 = 18;
+pub const TYPE_SLICE_F32: u32 = 19;
+pub const TYPE_VECTOR_F64: u32 = 20;
+pub const TYPE_SLICE_F64: u32 = 21;
+pub const TYPE_JS_OWNED: u32 = 22;
+pub const TYPE_JS_REF: u32 = 23;
 
-pub const TYPE_CUSTOM_START: u32 = 0x74;
+pub const TYPE_CUSTOM_START: u32 = 24;
 pub const TYPE_CUSTOM_REF_FLAG: u32 = 1;
 
-pub fn name_to_descriptor(name: &str) -> char {
-    const CHAR_MAX: u32 = 0x10ffff;
-    const CHAR_HOLE_START: u32 = 0xd800;
-    const CHAR_HOLE_END: u32 = 0xe000;
+pub fn name_to_descriptor(name: &str) -> u32 {
+    const MAX: u32 = 10_000;
     let mut h = fnv::FnvHasher::default();
     name.hash(&mut h);
-    let val = h.finish();
-    let range = (CHAR_MAX - (CHAR_HOLE_END - CHAR_HOLE_START) - TYPE_CUSTOM_START) / 2;
-    let idx = (val % (range as u64)) as u32;
-    let mut ret = TYPE_CUSTOM_START + idx * 2;
-    if CHAR_HOLE_START <= ret && ret < CHAR_HOLE_END {
-        ret += CHAR_HOLE_END - CHAR_HOLE_START;
-    }
-    char::from_u32(ret).unwrap()
+    ((h.finish() as u32) % (MAX - TYPE_CUSTOM_START)) + TYPE_CUSTOM_START
+
 }
 
 pub fn version() -> String {

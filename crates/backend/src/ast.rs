@@ -82,9 +82,6 @@ pub struct Variant {
 }
 
 pub enum Type {
-    // special
-    Vector(VectorType, bool),
-
     ByRef(syn::Type),
     ByMutRef(syn::Type),
     ByValue(syn::Type),
@@ -320,7 +317,6 @@ impl Program {
             let class = match *class {
                 Type::ByRef(ref t) | Type::ByValue(ref t) => t,
                 Type::ByMutRef(_) => panic!("first method argument cannot be mutable ref"),
-                Type::Vector(..) => panic!("method receivers cannot be vectors"),
             };
             let class_name = match *class {
                 syn::Type::Path(syn::TypePath {
@@ -505,61 +501,13 @@ pub fn extract_path_ident(path: &syn::Path) -> Option<syn::Ident> {
 
 impl Type {
     pub fn from(ty: &syn::Type) -> Type {
-        match *ty {
-            syn::Type::Reference(ref r) => {
-                match *r.elem {
-                    syn::Type::Path(syn::TypePath {
-                        qself: None,
-                        ref path,
-                    }) => {
-                        let ident = extract_path_ident(path);
-                        match ident.as_ref().map(|s| s.as_ref()) {
-                            Some("str") => return Type::Vector(VectorType::String, false),
-                            _ => {}
-                        }
-                    }
-                    syn::Type::Slice(ref slice) => {
-                        if let Some(ty) = VectorType::from(&slice.elem) {
-                            return Type::Vector(ty, false);
-                        }
-                    }
-                    _ => {}
-                }
-                return if r.mutability.is_some() {
-                    Type::ByMutRef((*r.elem).clone())
-                } else {
-                    Type::ByRef((*r.elem).clone())
-                };
+        if let syn::Type::Reference(ref r) = *ty {
+            return if r.mutability.is_some() {
+                Type::ByMutRef((*r.elem).clone())
+            } else {
+                Type::ByRef((*r.elem).clone())
             }
-            syn::Type::Path(syn::TypePath {
-                qself: None,
-                ref path,
-            }) if path.leading_colon.is_none() && path.segments.len() == 1 =>
-            {
-                let seg = path.segments.first().unwrap().into_value();
-                match seg.arguments {
-                    syn::PathArguments::None => match seg.ident.as_ref() {
-                        "String" => return Type::Vector(VectorType::String, true),
-                        _ => {}
-                    },
-                    syn::PathArguments::AngleBracketed(ref t)
-                        if seg.ident == "Vec" && t.args.len() == 1 =>
-                    {
-                        match **t.args.first().unwrap().value() {
-                            syn::GenericArgument::Type(ref t) => {
-                                if let Some(ty) = VectorType::from(t) {
-                                    return Type::Vector(ty, true);
-                                }
-                            }
-                            _ => {}
-                        }
-                    }
-                    _ => {}
-                }
-            }
-            _ => {}
         }
-
         Type::ByValue(ty.clone())
     }
 }

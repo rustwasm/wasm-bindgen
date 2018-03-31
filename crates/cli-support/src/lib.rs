@@ -166,9 +166,6 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
     let version = shared::version();
     let mut ret = Vec::new();
 
-    #[repr(packed)]
-    struct Unaligned(u32);
-
     module.sections_mut().retain(|s| {
         let custom = match *s {
             Section::Custom(ref s) => s,
@@ -178,21 +175,16 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
             return true
         }
 
-        assert!(custom.payload().len() % 4 == 0);
-        let mut payload = unsafe {
-            slice::from_raw_parts(custom.payload().as_ptr() as *const Unaligned,
-                                  custom.payload().len() / 4)
-        };
-
+        let mut payload = custom.payload();
         while payload.len() > 0 {
-            let len = payload[0].0.to_le();
-            assert!(len % 4 == 0);
-            let (a, b) = payload[1..].split_at((len / 4) as usize);
+            let len =
+                ((payload[0] as usize) << 0) |
+                ((payload[1] as usize) << 8) |
+                ((payload[2] as usize) << 16) |
+                ((payload[3] as usize) << 24);
+            let (a, b) = payload[4..].split_at(len as usize);
             payload = b;
-            let json = a.iter()
-                .map(|i| char::from_u32(i.0.to_le()).unwrap())
-                .collect::<String>();
-            let p: shared::Program = match serde_json::from_str(&json) {
+            let p: shared::Program = match serde_json::from_slice(&a) {
                 Ok(f) => f,
                 Err(e) => {
                     panic!("failed to decode what looked like wasm-bindgen data: {}", e)

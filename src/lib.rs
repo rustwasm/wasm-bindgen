@@ -459,20 +459,5 @@ pub mod __rt {
         drop(Vec::<u8>::from_raw_parts(ptr, 0, size));
     }
 
-    #[no_mangle]
-    pub unsafe extern fn __wbindgen_boxed_str_len(ptr: *mut String) -> usize {
-        (*ptr).len()
-    }
-
-    #[no_mangle]
-    pub unsafe extern fn __wbindgen_boxed_str_ptr(ptr: *mut String) -> *const u8 {
-        (*ptr).as_ptr()
-    }
-
-    #[no_mangle]
-    pub unsafe extern fn __wbindgen_boxed_str_free(ptr: *mut String) {
-        drop(Box::from_raw(ptr));
-    }
-
     pub fn link_this_library() {}
 }
