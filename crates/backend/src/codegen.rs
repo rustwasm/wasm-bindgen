@@ -416,7 +416,7 @@ impl ToTokens for ast::ImportFunction {
                         #name: <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
                     });
                     let var = if i == 0 && is_method {
-                        quote! { self }
+                        my_quote! { self }
                     } else {
                         quote! { #name }
                     };
@@ -430,7 +430,7 @@ impl ToTokens for ast::ImportFunction {
                     abi_argument_names.push(name);
                     abi_arguments.push(my_quote! { #name: u32 });
                     let var = if i == 0 && is_method {
-                        quote! { self }
+                        my_quote! { self }
                     } else {
                         quote! { #name }
                     };
