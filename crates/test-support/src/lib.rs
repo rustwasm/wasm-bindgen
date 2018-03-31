@@ -183,7 +183,7 @@ impl Project {
         run(&mut cmd, "cargo");
 
         let idx = IDX.with(|x| *x);
-        let mut out = target_dir.join(&format!("wasm32-unknown-unknown/debug/test{}.wasm", idx));
+        let out = target_dir.join(&format!("wasm32-unknown-unknown/debug/test{}.wasm", idx));
 
         let as_a_module = root.join("out.wasm");
         fs::copy(&out, &as_a_module).unwrap();
