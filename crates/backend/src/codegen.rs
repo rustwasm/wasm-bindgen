@@ -156,7 +156,10 @@ impl ToTokens for ast::Struct {
 
             impl ::std::convert::From<#name> for ::wasm_bindgen::JsValue {
                 fn from(value: #name) -> Self {
-                    let ptr = ::wasm_bindgen::convert::WasmBoundary::into_js(value);
+                    let ptr = ::wasm_bindgen::convert::WasmBoundary::into_abi(
+                        value,
+                        unsafe { &mut ::wasm_bindgen::convert::GlobalStack::new() },
+                    );
 
                     #[wasm_import_module = "__wbindgen_placeholder__"]
                     extern {
@@ -164,7 +167,11 @@ impl ToTokens for ast::Struct {
                     }
 
                     unsafe {
-                        ::wasm_bindgen::JsValue::__from_idx(#new_fn(ptr))
+                        <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary>
+                            ::from_abi(
+                                #new_fn(ptr),
+                                unsafe { &mut ::wasm_bindgen::convert::GlobalStack::new() },
+                            )
                     }
                 }
             }
