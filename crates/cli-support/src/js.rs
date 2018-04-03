@@ -570,7 +570,7 @@ impl<'a> Context<'a> {
                 {}
                 const buf = textEncoder().encode(arg);
                 const ptr = wasm.__wbindgen_malloc(buf.length);
-                getUint8Memory().set(buf, buf.length);
+                getUint8Memory().set(buf, ptr);
                 return [ptr, buf.length];
             }}
         ", debug));
@@ -1123,23 +1123,19 @@ impl<'a, 'b> SubContext<'a, 'b> {
     }
 
     pub fn generate_export_for_class(&mut self, class: &str, export: &shared::Export) {
-        let (js, ts) = if export.method {
-            self.generate_function(
-                "",
-                &shared::struct_function_export_name(class, &export.function.name),
-                true,
-                &export.function,
-            )
-        } else {
-            self.generate_function(
-                "static",
-                &shared::struct_function_export_name(class, &export.function.name),
-                false,
-                &export.function,
-            )
-        };
+        let (js, ts) = self.generate_function(
+            "",
+            &shared::struct_function_export_name(class, &export.function.name),
+            export.method,
+            &export.function,
+        );
         let class = self.cx.exported_classes.entry(class.to_string())
             .or_insert(ExportedClass::default());
+        if !export.method {
+            class.contents.push_str("static ");
+            class.typescript.push_str("static ");
+        }
+        class.contents.push_str(&export.function.name);
         class.contents.push_str(&js);
         class.contents.push_str("\n");
         class.typescript.push_str(&ts);
