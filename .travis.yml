@@ -12,6 +12,7 @@ matrix:
     - rust: nightly
       before_install: rustup target add wasm32-unknown-unknown
       script: cargo test
+      env: RUST_BACKTRACE=1
 
     # Dist linux binary
     - env: TARGET=x86_64-unknown-linux-musl DEPLOY=1
