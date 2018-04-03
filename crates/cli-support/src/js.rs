@@ -1397,7 +1397,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         let mut extra = String::new();
 
-        let mut needs_next_global = false;
+        let mut next_global = 0;
         for (i, arg) in import.function.arguments.iter().enumerate() {
             abi_args.push(format!("arg{}", i));
             let invoc_arg = match *arg {
@@ -1415,12 +1415,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     match VectorType::from(other) {
                         Some(ty) => {
                             let f = self.cx.expose_get_vector_from_wasm(&ty);
-                            needs_next_global = true;
                             self.cx.expose_get_global_argument();
                             extra.push_str(&format!("
-                                let len{0} = getGlobalArgument(next_global++);
+                                let len{0} = getGlobalArgument({next_global});
                                 let v{0} = {func}(arg{0}, len{0});
-                            ", i, func = f));
+                            ", i, func = f, next_global = next_global));
+                            next_global += 1;
 
                             if ty.owned {
                                 extra.push_str(&format!("
@@ -1579,9 +1579,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         dst.push_str(&abi_args.join(", "));
         dst.push_str(") {\n");
-        if needs_next_global {
-            dst.push_str("let next_global = 0;\n");
-        }
         dst.push_str(&extra);
         dst.push_str(&format!("{}\n}}", invoc));
 
