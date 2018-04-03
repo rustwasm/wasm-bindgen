@@ -545,7 +545,6 @@ impl<'a> Context<'a> {
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_text_encoder();
         self.expose_uint8_memory();
-        self.expose_push_global_argument();
         self.globals.push_str(&format!("
             function passStringToWasm(arg) {{
                 if (typeof(arg) !== 'string')
@@ -1036,17 +1035,16 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn expose_push_global_argument(&mut self) {
-        if !self.exposed_globals.insert("push_global_argument") {
+    fn expose_set_global_argument(&mut self) {
+        if !self.exposed_globals.insert("set_global_argument") {
             return
         }
         self.expose_uint32_memory();
         self.expose_global_argument_ptr();
         self.globals.push_str("
-            function pushGlobalArgument(arg) {
-                const idx = globalArgumentPtr() / 4 + GLOBAL_ARGUMENT_CNT;
+            function setGlobalArgument(arg, i) {
+                const idx = globalArgumentPtr() / 4 + i;
                 getUint32Memory()[idx] = arg;
-                GLOBAL_ARGUMENT_CNT += 1;
             }
         ");
     }
@@ -1072,7 +1070,6 @@ impl<'a> Context<'a> {
         self.required_internal_exports.insert("__wbindgen_global_argument_ptr");
         self.globals.push_str("
             let cachedGlobalArgumentPtr = null;
-            let GLOBAL_ARGUMENT_CNT = 0;
             function globalArgumentPtr() {
                 if (cachedGlobalArgumentPtr === null)
                     cachedGlobalArgumentPtr = wasm.__wbindgen_global_argument_ptr();
@@ -1159,7 +1156,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             passed_args.push_str("this.ptr");
         }
 
-        let mut argument_pushed = false;
+        let mut global_idx = 0;
         for (i, arg) in function.arguments.iter().enumerate() {
             let name = format!("arg{}", i);
             if i > 0 {
@@ -1218,12 +1215,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             dst_ts.push_str(": ");
                             dst_ts.push_str(ty.js_ty());
                             let func = self.cx.pass_to_wasm_function(&ty);
-                            self.cx.expose_push_global_argument();
-                            argument_pushed = true;
+                            self.cx.expose_set_global_argument();
                             arg_conversions.push_str(&format!("\
                                 const [ptr{i}, len{i}] = {func}({arg});
-                                pushGlobalArgument(len{i});
-                            ", i = i, func = func, arg = name));
+                                setGlobalArgument(len{i}, {global_idx});
+                            ", i = i, func = func, arg = name, global_idx = global_idx));
+                            global_idx += 1;
                             pass(&format!("ptr{}", i));
                             if !ty.owned {
                                 destructors.push_str(&format!("\n\
@@ -1329,9 +1326,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
         };
         dst_ts.push_str(";");
         dst.push_str(" {\n        ");
-        if argument_pushed {
-            dst.push_str("GLOBAL_ARGUMENT_CNT = 0;\n");
-        }
         dst.push_str(&arg_conversions);
         if destructors.len() == 0 {
             dst.push_str(&format!("\
@@ -1546,11 +1540,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         }
                         let f = self.cx.pass_to_wasm_function(&ty);
                         self.cx.expose_uint32_memory();
-                        self.cx.expose_push_global_argument();
+                        self.cx.expose_set_global_argument();
                         format!("
-                            GLOBAL_ARGUMENT_CNT = 0;
                             const [retptr, retlen] = {}({});
-                            pushGlobalArgument(retlen);
+                            setGlobalArgument(retlen, 0);
                             return retptr;
                         ", f, invoc)
                     }
