@@ -170,7 +170,7 @@ impl ToTokens for ast::Struct {
                         <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary>
                             ::from_abi(
                                 #new_fn(ptr),
-                                unsafe { &mut ::wasm_bindgen::convert::GlobalStack::new() },
+                                &mut ::wasm_bindgen::convert::GlobalStack::new(),
                             )
                     }
                 }
