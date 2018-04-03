@@ -337,10 +337,17 @@ impl<'a> Context<'a> {
 
             let mut globals = &mut self.globals;
             let renamed_import = format!("__wbindgen_{}", import.field());
+            let node = self.config.nodejs;
             let mut bind_math = |expr: &str| {
-                globals.push_str(&format!("
-                    export function {}{}
-                ", renamed_import, expr));
+                if node {
+                    globals.push_str(&format!("
+                        exports.{} = function{};
+                    ", renamed_import, expr));
+                } else {
+                    globals.push_str(&format!("
+                        export function {}{}
+                    ", renamed_import, expr));
+                }
             };
 
             // FIXME(#32): try to not use function shims
