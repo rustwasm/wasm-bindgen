@@ -70,7 +70,7 @@ configuring our build output:
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.1"
+wasm-bindgen = "0.2"
 ```
 
 Next up our actual code! We'll write this in `src/lib.rs`:
