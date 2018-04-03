@@ -266,6 +266,15 @@ impl<'a> Context<'a> {
                     }}
                 "));
                 ts_dst.push_str("constructor(ptr: number, sym: Symbol);\n");
+
+                let new_name = shared::new_function(&class);
+                if self.wasm_import_needed(&new_name) {
+                    self.globals.push_str(&format!("
+                        export function {new_name}(ptr) {{
+                            return addHeapObject(new {class}(ptr, token));
+                        }}
+                    ", new_name = new_name, class = class));
+                }
             } else {
                 dst.push_str(&format!("
                     constructor(ptr) {{
@@ -273,6 +282,15 @@ impl<'a> Context<'a> {
                     }}
                 "));
                 ts_dst.push_str("constructor(ptr: number);\n");
+
+                let new_name = shared::new_function(&class);
+                if self.wasm_import_needed(&new_name) {
+                    self.globals.push_str(&format!("
+                        export function {new_name}(ptr) {{
+                            return addHeapObject(new {class}(ptr));
+                        }}
+                    ", new_name = new_name, class = class));
+                }
             }
 
             dst.push_str(&format!("

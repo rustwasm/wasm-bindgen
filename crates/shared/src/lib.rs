@@ -88,6 +88,15 @@ pub struct CustomTypeName {
     pub name: String,
 }
 
+pub fn new_function(struct_name: &str) -> String {
+    let mut name = format!("__wbg_");
+    name.extend(struct_name
+        .chars()
+        .flat_map(|s| s.to_lowercase()));
+    name.push_str("_new");
+    return name
+}
+
 pub fn free_function(struct_name: &str) -> String {
     let mut name = format!("__wbg_");
     name.extend(struct_name

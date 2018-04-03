@@ -95,7 +95,7 @@ impl JsValue {
     }
 
     // #[doc(hidden)]
-    // pub fn __from_idx(idx: u32) -> JsValue {
+    // pub unsafe fn __from_idx(idx: u32) -> JsValue {
     //     JsValue { idx }
     // }
     //
