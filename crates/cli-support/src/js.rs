@@ -697,10 +697,7 @@ impl<'a> Context<'a> {
         self.expose_uint8_memory();
         self.globals.push_str(&format!("
             function getStringFromWasm(ptr, len) {{
-                const mem = getUint8Memory();
-                const slice = mem.slice(ptr, ptr + len);
-                const ret = textDecoder().decode(slice);
-                return ret;
+                return textDecoder().decode(getUint8Memory().slice(ptr, ptr + len));
             }}
         "));
     }
