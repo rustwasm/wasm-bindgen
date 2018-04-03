@@ -130,13 +130,7 @@ classes, etc.
 The `wasm-bindgen` tool also emits a few other files needed to implement this
 module. For example `js_hello_world_bg.wasm` is the original wasm file but
 postprocessed a bit. It's intended that the `js_hello_world_bg.wasm` file,
-like before, acts like an ES6 module. The `js_hello_world.wasm` file, for
-example, uses `import` to import functionality from the other `*_shims` file
-generated (an internal implementation detail here).
-
-Note that you can also pass a `--nodejs` argument to `wasm-bindgen` for emitting
-Node-compatible JS as well as a `--typescript` argument to emit a `*.d.ts` file
-describing the exported contents.
+like before, acts like an ES6 module.
 
 At this point you'll probably plug these files into a larger build system.
 Files emitted by `wasm-bindgen` act like normal ES6 modules (one just happens to
@@ -453,6 +447,32 @@ can be found in the [design doc].
 
 All of these constructs currently create relatively straightforward code on the
 JS side of things, mostly having a 1:1 match in Rust with JS.
+
+## CLI Reference
+
+The `wasm-bindgen` tool has a number of options available to it to tweak the JS
+that is generated. By default the generated JS uses ES modules and is compatible
+with both Node and browsers (but will likely require a bundler for both use
+cases).
+
+Supported flags of the CLI tool can be learned via `wasm-bindgen --help`, but
+some notable options are:
+
+* `--nodejs` - this flag will tailor output for Node instead of browsers,
+  allowing for native usage of `require` of the generated JS and internally
+  using `require` instead of ES modules. When using this flag no further
+  postprocessing (aka a bundler) should be necessary to work with the wasm.
+
+* `--browser` - this flag will tailor the output specifically for browsers,
+  making it incompatible with Node. This will basically make the generated JS a
+  tiny bit smaller as runtime checks for Node won't be necessary.
+
+* `--typescript` - when passed a `*.d.ts` file will be generated for the
+  generated JS file. This should allow hooking into TypeScript projects to
+  ensure everything still typechecks.
+
+* `--debug` - generates a bit more JS and wasm in "debug mode" to help catch
+  programmer errors, but this output isn't intended to be shipped to production
 
 # License
 
