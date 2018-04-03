@@ -23,8 +23,8 @@ development mode) wasm modules may be larger than 4K.
 
 The usage of `new WebAssembly.Instance` is currently believed to [be a bug][bug]
 in webpack which is likely to get fixed once [`instantiateStreaming`][bug2] is
-used instead. Once this is fixed in upstream Webpack then this example with work
-in Chrome (like it does currently in Firefox).
+used instead. Once this is [fixed in upstream Webpack][fix] then this example
+with work in Chrome (like it does currently in Firefox).
 
 In the meantime, however, there's a `chrome` directory in this folder which also
 has a `build.sh` script that contains a workaround for this issue. If you're
@@ -43,3 +43,4 @@ the issue tracker or in the `#rust-wasm` IRC channel.
 
 [bug]: https://github.com/webpack/webpack/issues/6475
 [bug2]: https://github.com/webpack/webpack/issues/6433
+[fix]: https://github.com/webpack/webpack/pull/6709
