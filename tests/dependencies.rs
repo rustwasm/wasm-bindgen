@@ -6,7 +6,7 @@ fn dependencies_work() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
             extern crate wasm_bindgen;
             extern crate dependency;
             use wasm_bindgen::prelude::*;
@@ -51,7 +51,7 @@ fn dependencies_work() {
         .file(
             "vendor/dependency/src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
 
