@@ -1,6 +1,10 @@
 language: rust
 sudo: false
 
+env:
+  global:
+    - CARGO_INCREMENTAL=0
+
 matrix:
   include:
     # CLI builds on stable
