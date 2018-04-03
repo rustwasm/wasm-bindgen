@@ -210,6 +210,9 @@ impl Project {
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
         fs::hard_link("package.json", root.join("package.json")).unwrap();
+        if !Path::new("yarn.lock").exists() {
+            panic!("\n\nfailed to find `yarn.lock`, have you run `yarn` yet?\n\n");
+        }
         fs::hard_link("yarn.lock", root.join("yarn.lock")).unwrap();
         let cwd = env::current_dir().unwrap();
         symlink_dir(&cwd.join("node_modules"), &root.join("node_modules")).unwrap();

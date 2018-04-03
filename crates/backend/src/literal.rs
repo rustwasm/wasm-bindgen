@@ -1,5 +1,4 @@
 use ast;
-use proc_macro2::Span;
 use quote::{ToTokens, Tokens};
 use shared;
 use std::collections::BTreeSet;
@@ -142,14 +141,14 @@ impl Literal for ast::Type {
     fn literal(&self, a: &mut LiteralBuilder) {
         match *self {
             ast::Type::ByValue(ref t) => {
-                a.as_char(my_quote! {
+                a.as_char(quote! {
                     <#t as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR
                 });
             }
             ast::Type::ByRef(ref ty) | ast::Type::ByMutRef(ref ty) => {
                 // TODO: this assumes `ToRef*` and `FromRef*` use the same
                 // descriptor.
-                a.as_char(my_quote! {
+                a.as_char(quote! {
                     <#ty as ::wasm_bindgen::convert::FromRefWasmBoundary>::DESCRIPTOR
                 });
             }

@@ -518,7 +518,7 @@ impl Export {
             }
             None => shared::free_function_export_name(self.function.name.as_ref()),
         };
-        syn::LitStr::new(&name, Span::def_site())
+        syn::LitStr::new(&name, Span::call_site())
     }
 }
 
@@ -751,7 +751,7 @@ fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
 }
 
 fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<'a, ()> {
-    if let Some((_span, term, next)) = cursor.term() {
+    if let Some((term, next)) = cursor.term() {
         if term.as_str() == name {
             return Ok(((), next));
         }

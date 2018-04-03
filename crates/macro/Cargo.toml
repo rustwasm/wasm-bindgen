@@ -14,9 +14,9 @@ Definition of the `#[wasm_bindgen]` attribute, an internal dependency
 proc-macro = true
 
 [dependencies]
-syn = { version = '0.12', features = ['full'] }
-quote = '0.4'
-proc-macro2 = { version = "0.2", features = ["nightly"] }
+syn = { version = '0.13', features = ['full'] }
+quote = '0.5'
+proc-macro2 = { version = "0.3", features = ["nightly"] }
 serde_json = "1"
 wasm-bindgen-shared = { path = "../shared", version = "0.1.0" }
 wasm-bindgen-backend = { path = "../backend", version = "0.1.0" }

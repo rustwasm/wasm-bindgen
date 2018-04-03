@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
 
 [dependencies]
-quote = '0.4'
-proc-macro2 = { version = "0.2", features = ["nightly"] }
+quote = '0.5'
+proc-macro2 = { version = "0.3", features = ["nightly"] }
 wasm-bindgen-shared = { path = "../shared", version = "0.1.0" }
-syn = { version = '0.12', features = ['full'] }
+syn = { version = '0.13', features = ['full'] }

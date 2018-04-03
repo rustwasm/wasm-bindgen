@@ -5,7 +5,7 @@ use std::sync::atomic::{ATOMIC_USIZE_INIT, AtomicUsize, Ordering};
 
 use ast;
 use quote::{ToTokens, Tokens};
-use proc_macro2::{Span, Literal};
+use proc_macro2::Literal;
 use shared;
 use syn;
 
@@ -76,7 +76,7 @@ impl ToTokens for ast::Program {
         let mut generated_static_value = Tokens::new();
         let generated_static_length = self.literal(&mut generated_static_value);
 
-        (my_quote! {
+        (quote! {
             #[allow(non_upper_case_globals)]
             #[wasm_custom_section = "__wasm_bindgen_unstable"]
             const #generated_static_name: [u8; #generated_static_length] =
@@ -92,7 +92,7 @@ impl ToTokens for ast::Struct {
         let c = shared::name_to_descriptor(name.as_ref());
         let descriptor = Literal::byte_string(format!("{:4}", c).as_bytes());
         let borrowed_descriptor = Literal::byte_string(format!("{:4}", c + 1).as_bytes());
-        (my_quote! {
+        (quote! {
             impl ::wasm_bindgen::convert::WasmBoundary for #name {
                 type Abi = u32;
                 const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
@@ -176,8 +176,8 @@ impl ToTokens for ast::Export {
         let mut offset = 0;
         if self.method {
             let class = self.class.unwrap();
-            args.push(my_quote! { me: *mut ::wasm_bindgen::__rt::WasmRefCell<#class> });
-            arg_conversions.push(my_quote! {
+            args.push(quote! { me: *mut ::wasm_bindgen::__rt::WasmRefCell<#class> });
+            arg_conversions.push(quote! {
                 ::wasm_bindgen::__rt::assert_not_null(me);
                 let me = unsafe { &*me };
             });
@@ -189,10 +189,10 @@ impl ToTokens for ast::Export {
             let ident = syn::Ident::from(format!("arg{}", i));
             match *ty {
                 ast::Type::ByValue(ref t) => {
-                    args.push(my_quote! {
+                    args.push(quote! {
                         #ident: <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
                     });
-                    arg_conversions.push(my_quote! {
+                    arg_conversions.push(quote! {
                         let #ident = unsafe {
                             <#t as ::wasm_bindgen::convert::WasmBoundary>
                                 ::from_abi(#ident, &mut __stack)
@@ -200,10 +200,10 @@ impl ToTokens for ast::Export {
                     });
                 }
                 ast::Type::ByRef(ref ty) => {
-                    args.push(my_quote! {
+                    args.push(quote! {
                         #ident: <#ty as ::wasm_bindgen::convert::FromRefWasmBoundary>::Abi
                     });
-                    arg_conversions.push(my_quote! {
+                    arg_conversions.push(quote! {
                         let #ident = unsafe {
                             <#ty as ::wasm_bindgen::convert::FromRefWasmBoundary>
                                 ::from_abi_ref(#ident, &mut __stack)
@@ -212,10 +212,10 @@ impl ToTokens for ast::Export {
                     });
                 }
                 ast::Type::ByMutRef(ref ty) => {
-                    args.push(my_quote! {
+                    args.push(quote! {
                         #ident: <#ty as ::wasm_bindgen::convert::FromRefMutWasmBoundary>::Abi
                     });
-                    arg_conversions.push(my_quote! {
+                    arg_conversions.push(quote! {
                         let mut #ident = unsafe {
                             <#ty as ::wasm_bindgen::convert::FromRefMutWasmBoundary>
                                 ::from_abi_ref_mut(#ident, &mut __stack)
@@ -224,16 +224,16 @@ impl ToTokens for ast::Export {
                     });
                 }
             }
-            converted_arguments.push(my_quote! { #ident });
+            converted_arguments.push(quote! { #ident });
         }
         let ret_ty;
         let convert_ret;
         match self.function.ret {
             Some(ast::Type::ByValue(ref t)) => {
-                ret_ty = my_quote! {
+                ret_ty = quote! {
                     -> <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
                 };
-                convert_ret = my_quote! {
+                convert_ret = quote! {
                     <#t as ::wasm_bindgen::convert::WasmBoundary>
                         ::into_abi(#ret, &mut unsafe {
                             ::wasm_bindgen::convert::GlobalStack::new()
@@ -245,8 +245,8 @@ impl ToTokens for ast::Export {
                 panic!("can't return a borrowed ref");
             }
             None => {
-                ret_ty = my_quote!{};
-                convert_ret = my_quote!{};
+                ret_ty = quote!{};
+                convert_ret = quote!{};
             }
         }
 
@@ -254,16 +254,16 @@ impl ToTokens for ast::Export {
         let receiver = match self.class {
             Some(_) if self.method => {
                 if self.mutable {
-                    my_quote! { me.borrow_mut().#name }
+                    quote! { me.borrow_mut().#name }
                 } else {
-                    my_quote! { me.borrow().#name }
+                    quote! { me.borrow().#name }
                 }
             }
-            Some(class) => my_quote! { #class::#name },
-            None => my_quote!{ #name },
+            Some(class) => quote! { #class::#name },
+            None => quote!{ #name },
         };
 
-        let tokens = my_quote! {
+        let tokens = quote! {
             #[export_name = #export_name]
             #[allow(non_snake_case)]
             pub extern fn #generated_name(#(#args),*) #ret_ty {
@@ -286,7 +286,7 @@ impl ToTokens for ast::ImportType {
     fn to_tokens(&self, tokens: &mut Tokens) {
         let vis = &self.vis;
         let name = &self.name;
-        (my_quote! {
+        (quote! {
             #[allow(bad_style)]
             #vis struct #name {
                 obj: ::wasm_bindgen::JsValue,
@@ -412,15 +412,15 @@ impl ToTokens for ast::ImportFunction {
             match *ty {
                 ast::Type::ByValue(ref t) => {
                     abi_argument_names.push(name);
-                    abi_arguments.push(my_quote! {
+                    abi_arguments.push(quote! {
                         #name: <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
                     });
                     let var = if i == 0 && is_method {
-                        my_quote! { self }
+                        quote! { self }
                     } else {
                         quote! { #name }
                     };
-                    arg_conversions.push(my_quote! {
+                    arg_conversions.push(quote! {
                         let #name = <#t as ::wasm_bindgen::convert::WasmBoundary>
                             ::into_abi(#var, &mut __stack);
                     });
@@ -428,13 +428,13 @@ impl ToTokens for ast::ImportFunction {
                 ast::Type::ByMutRef(_) => panic!("urgh mut"),
                 ast::Type::ByRef(ref t) => {
                     abi_argument_names.push(name);
-                    abi_arguments.push(my_quote! { #name: u32 });
+                    abi_arguments.push(quote! { #name: u32 });
                     let var = if i == 0 && is_method {
-                        my_quote! { self }
+                        quote! { self }
                     } else {
                         quote! { #name }
                     };
-                    arg_conversions.push(my_quote! {
+                    arg_conversions.push(quote! {
                         let #name = <#t as ::wasm_bindgen::convert::ToRefWasmBoundary>
                             ::to_abi_ref(#var, &mut __stack);
                     });
@@ -445,10 +445,10 @@ impl ToTokens for ast::ImportFunction {
         let mut convert_ret;
         match self.function.ret {
             Some(ast::Type::ByValue(ref t)) => {
-                abi_ret = my_quote! {
+                abi_ret = quote! {
                     <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
                 };
-                convert_ret = my_quote! {
+                convert_ret = quote! {
                     <#t as ::wasm_bindgen::convert::WasmBoundary>
                         ::from_abi(
                             #ret_ident,
@@ -459,19 +459,19 @@ impl ToTokens for ast::ImportFunction {
             Some(ast::Type::ByRef(_))
             | Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
             None => {
-                abi_ret = my_quote! { () };
-                convert_ret = my_quote! { () };
+                abi_ret = quote! { () };
+                convert_ret = quote! { () };
             }
         }
 
-        let mut exceptional_ret = my_quote!{};
+        let mut exceptional_ret = quote!{};
         let exn_data = if self.function.opts.catch() {
             let exn_data = syn::Ident::from("exn_data");
             let exn_data_ptr = syn::Ident::from("exn_data_ptr");
             abi_argument_names.push(exn_data_ptr);
-            abi_arguments.push(my_quote! { #exn_data_ptr: *mut u32 });
-            convert_ret = my_quote! { Ok(#convert_ret) };
-            exceptional_ret = my_quote! {
+            abi_arguments.push(quote! { #exn_data_ptr: *mut u32 });
+            convert_ret = quote! { Ok(#convert_ret) };
+            exceptional_ret = quote! {
                 if #exn_data[0] == 1 {
                     return Err(
                         <
@@ -480,7 +480,7 @@ impl ToTokens for ast::ImportFunction {
                     )
                 }
             };
-            my_quote! {
+            quote! {
                 let mut #exn_data = [0; 2];
                 let #exn_data_ptr = #exn_data.as_mut_ptr();
             }
@@ -500,12 +500,12 @@ impl ToTokens for ast::ImportFunction {
             .collect::<Vec<_>>();
 
         let me = if is_method {
-            my_quote! { &self, }
+            quote! { &self, }
         } else {
             quote!()
         };
 
-        let invocation = my_quote! {
+        let invocation = quote! {
             #(#attrs)*
             #[allow(bad_style)]
             #vis extern #fn_token #rust_name(#me #(#arguments),*) #ret {
@@ -554,7 +554,7 @@ impl ToTokens for ast::Enum {
                 }
             }
         });
-        (my_quote! {
+        (quote! {
             impl #enum_name {
                 fn from_u32(#incoming_u32: u32) -> #enum_name {
                     #(#cast_clauses else)* {
@@ -591,7 +591,7 @@ impl ToTokens for ast::ImportStatic {
         let ty = &self.ty;
         let shim_name = self.shim;
         let vis = &self.vis;
-        (my_quote! {
+        (quote! {
             #[allow(bad_style)]
             #vis static #name: ::wasm_bindgen::JsStatic<#ty> = {
                 fn init() -> #ty {

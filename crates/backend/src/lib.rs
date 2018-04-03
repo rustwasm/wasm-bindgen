@@ -8,10 +8,6 @@ extern crate syn;
 
 extern crate wasm_bindgen_shared as shared;
 
-macro_rules! my_quote {
-    ($($t:tt)*) => (quote_spanned!(Span::call_site() => $($t)*))
-}
-
 pub mod ast;
 mod codegen;
 mod literal;
