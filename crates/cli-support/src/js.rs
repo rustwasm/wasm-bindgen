@@ -50,6 +50,8 @@ impl<'a> Context<'a> {
         } else {
             if contents.starts_with("function") {
                 format!("export function {} {}\n", name, &contents[8..])
+            } else if contents.starts_with("class") {
+                format!("export {}\n", contents)
             } else {
                 format!("export const {} = {};\n", name, contents)
             }
@@ -251,14 +253,8 @@ impl<'a> Context<'a> {
     fn write_classes(&mut self) {
         let classes = mem::replace(&mut self.exported_classes, Default::default());
         for (class, exports) in classes {
-            let mut dst = String::new();
-            let global_export = if self.config.nodejs {
-                format!("module.exports.{} = class {} {{\n", class, class)
-            } else {
-                format!("export class {} {{", class)
-            };
-            dst.push_str(&global_export);
-            let mut ts_dst = dst.clone();
+            let mut dst = format!("class {} {{\n", class);
+            let mut ts_dst = format!("export {}", dst);
             ts_dst.push_str("
                 public ptr: number;
             ");
@@ -312,7 +308,7 @@ impl<'a> Context<'a> {
             dst.push_str("}\n");
             ts_dst.push_str("}\n");
 
-            self.globals.push_str(&dst);
+            self.export(&class, &dst);
             self.typescript.push_str(&ts_dst);
         }
     }
