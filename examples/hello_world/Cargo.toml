@@ -11,4 +11,4 @@ crate-type = ["cdylib"]
 # but you'd use the commented out version below if you're copying this into your
 # project.
 wasm-bindgen = { path = "../.." }
-#wasm-bindgen = { git = "https://github.com/alexcrichton/wasm-bindgen" }
+#wasm-bindgen = "0.2"
