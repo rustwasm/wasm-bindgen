@@ -314,6 +314,15 @@ impl<'a> Context<'a> {
     }
 
     fn rewrite_imports(&mut self, module_name: &str) {
+        for (name, contents) in self._rewrite_imports(module_name) {
+            self.export(&name, &contents);
+        }
+    }
+
+    fn _rewrite_imports(&mut self, module_name: &str)
+        -> Vec<(String, String)>
+    {
+        let mut math_imports = Vec::new();
         let imports = self.module.sections_mut()
             .iter_mut()
             .filter_map(|s| {
@@ -336,19 +345,12 @@ impl<'a> Context<'a> {
                 continue
             }
 
-            let mut globals = &mut self.globals;
             let renamed_import = format!("__wbindgen_{}", import.field());
-            let node = self.config.nodejs;
             let mut bind_math = |expr: &str| {
-                if node {
-                    globals.push_str(&format!("
-                        exports.{} = function{};
-                    ", renamed_import, expr));
-                } else {
-                    globals.push_str(&format!("
-                        export function {}{}
-                    ", renamed_import, expr));
-                }
+                math_imports.push((
+                    renamed_import.clone(),
+                    format!("function{}", expr),
+                ));
             };
 
             // FIXME(#32): try to not use function shims
@@ -395,6 +397,8 @@ impl<'a> Context<'a> {
             import.module_mut().push_str(module_name);
             *import.field_mut() = renamed_import.clone();
         }
+
+        math_imports
     }
 
     fn unexport_unused_internal_exports(&mut self) {
