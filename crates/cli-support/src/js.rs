@@ -1043,11 +1043,11 @@ impl<'a> Context<'a> {
         self.expose_uint32_memory();
         self.expose_global_argument_ptr();
         self.globals.push_str("
-            function pushGlobalArgument(arg) {{
+            function pushGlobalArgument(arg) {
                 const idx = globalArgumentPtr() / 4 + GLOBAL_ARGUMENT_CNT;
                 getUint32Memory()[idx] = arg;
                 GLOBAL_ARGUMENT_CNT += 1;
-            }}
+            }
         ");
     }
 
@@ -1058,10 +1058,10 @@ impl<'a> Context<'a> {
         self.expose_uint32_memory();
         self.expose_global_argument_ptr();
         self.globals.push_str("
-            function getGlobalArgument(arg) {{
+            function getGlobalArgument(arg) {
                 const idx = globalArgumentPtr() / 4 + arg;
                 return getUint32Memory()[idx];
-            }}
+            }
         ");
     }
 
