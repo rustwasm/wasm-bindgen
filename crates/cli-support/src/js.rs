@@ -642,8 +642,9 @@ impl<'a> Context<'a> {
             "));
         } else if !self.config.browser {
             self.globals.push_str(&format!("
-                if (typeof window === 'undefined')
-                    var TextEncoder = require('util').TextEncoder;
+                const TextEncoder = typeof window === 'object' && window.TextEncoder
+                    ? window.TextEncoder
+                    : require('util').TextEncoder;
             "));
         }
         self.globals.push_str(&format!("
