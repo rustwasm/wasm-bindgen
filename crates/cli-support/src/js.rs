@@ -545,17 +545,23 @@ impl<'a> Context<'a> {
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_text_encoder();
         self.expose_uint8_memory();
-        self.globals.push_str(&format!("
-            function passStringToWasm(arg) {{
+        let debug = if self.config.debug {
+            "
                 if (typeof(arg) !== 'string')
                     throw new Error('expected a string argument');
+            "
+        } else {
+            ""
+        };
+        self.globals.push_str(&format!("
+            function passStringToWasm(arg) {{
+                {}
                 const buf = textEncoder().encode(arg);
-                const len = buf.length;
-                const ptr = wasm.__wbindgen_malloc(len);
-                getUint8Memory().set(buf, ptr);
+                const ptr = wasm.__wbindgen_malloc(buf.length);
+                getUint8Memory().set(buf, buf.length);
                 return [ptr, len];
             }}
-        "));
+        ", debug));
     }
 
     fn expose_pass_array8_to_wasm(&mut self) {
