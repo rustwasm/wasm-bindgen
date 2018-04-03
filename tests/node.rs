@@ -13,12 +13,14 @@ fn works() {
 
             #[wasm_bindgen(module = "./test")]
             extern {
+                static FOO: JsValue;
                 fn hit();
             }
 
             #[wasm_bindgen]
             pub fn run() {
                 hit();
+                assert_eq!(FOO.as_f64(), Some(1.0));
             }
 
             #[wasm_bindgen]
@@ -118,6 +120,7 @@ fn works() {
             module.exports.hit = function() {
                 called = true;
             };
+            module.exports.FOO = 1.0;
 
             const { math, run, Foo, Color, cycle } = require('./out');
 

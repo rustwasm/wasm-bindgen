@@ -43,6 +43,20 @@ impl<'a> Context<'a> {
         }
     }
 
+    fn export(&mut self, name: &str, contents: &str) {
+        let contents = contents.trim();
+        let global = if self.config.nodejs {
+            format!("module.exports.{} = {};\n", name, contents)
+        } else {
+            if contents.starts_with("function") {
+                format!("export function {} {}\n", name, &contents[8..])
+            } else {
+                format!("export const {} = {};\n", name, contents)
+            }
+        };
+        self.globals.push_str(&global);
+    }
+
     pub fn finalize(&mut self, module_name: &str) -> (String, String) {
         self.write_classes();
         {
@@ -52,16 +66,7 @@ impl<'a> Context<'a> {
                 }
                 let contents = f(self);
                 let contents = contents.trim();
-                let global = if self.config.nodejs {
-                    format!("module.exports.{} = {};\n", name, contents)
-                } else {
-                    if contents.starts_with("function") {
-                        format!("export function {} {}\n", name, &contents[8..])
-                    } else {
-                        format!("export const {} = {};\n", name, contents)
-                    }
-                };
-                self.globals.push_str(&global);
+                self.export(name, contents);
             };
 
             bind("__wbindgen_object_clone_ref", &|me| {
@@ -269,11 +274,11 @@ impl<'a> Context<'a> {
 
                 let new_name = shared::new_function(&class);
                 if self.wasm_import_needed(&new_name) {
-                    self.globals.push_str(&format!("
-                        export function {new_name}(ptr) {{
+                    self.export(&new_name, &format!("
+                        function(ptr) {{
                             return addHeapObject(new {class}(ptr, token));
                         }}
-                    ", new_name = new_name, class = class));
+                    ", class = class));
                 }
             } else {
                 dst.push_str(&format!("
@@ -285,11 +290,11 @@ impl<'a> Context<'a> {
 
                 let new_name = shared::new_function(&class);
                 if self.wasm_import_needed(&new_name) {
-                    self.globals.push_str(&format!("
-                        export function {new_name}(ptr) {{
+                    self.export(&new_name, &format!("
+                        function(ptr) {{
                             return addHeapObject(new {class}(ptr));
                         }}
-                    ", new_name = new_name, class = class));
+                    ", class = class));
                 }
             }
 
@@ -566,7 +571,7 @@ impl<'a> Context<'a> {
                 const buf = textEncoder().encode(arg);
                 const ptr = wasm.__wbindgen_malloc(buf.length);
                 getUint8Memory().set(buf, buf.length);
-                return [ptr, len];
+                return [ptr, buf.length];
             }}
         ", debug));
     }
@@ -1110,17 +1115,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                               &export.function.name,
                                               false,
                                               &export.function);
-        if self.cx.config.nodejs {
-            self.cx.globals.push_str("module.exports.");
-            self.cx.globals.push_str(&export.function.name);
-            self.cx.globals.push_str(" = ");
-        } else {
-            self.cx.globals.push_str("export ");
-        }
-        self.cx.globals.push_str(&js);
-        if self.cx.config.nodejs {
-            self.cx.globals.push_str(";");
-        }
+        self.cx.export(&export.function.name, &js);
         self.cx.globals.push_str("\n");
         self.cx.typescript.push_str("export ");
         self.cx.typescript.push_str(&ts);
@@ -1156,7 +1151,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                          wasm_name: &str,
                          is_method: bool,
                          function: &shared::Function) -> (String, String) {
-        let mut dst = format!("{}(", function.name);
+        let mut dst = String::from("(");
         let mut dst_ts = format!("{}(", function.name);
         let mut passed_args = String::new();
         let mut arg_conversions = String::new();
@@ -1383,11 +1378,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
         // TODO: should support more types to import here
         let obj = self.import_name(info, &import.name);
         self.cx.expose_add_heap_object();
-        self.cx.globals.push_str(&format!("
-            export function {}() {{
+        self.cx.export(&import.shim, &format!("
+            function() {{
                 return addHeapObject({});
             }}
-        ", import.shim, obj));
+        ", obj));
     }
 
     pub fn generate_import_function(&mut self,
@@ -1395,7 +1390,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                     import: &shared::ImportFunction) {
         let mut dst = String::new();
 
-        dst.push_str(&format!("function {}(", import.shim));
+        dst.push_str("function(");
         let mut invoc_args = Vec::new();
         let mut abi_args = Vec::new();
 
@@ -1584,18 +1579,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         dst.push_str(") {\n");
         dst.push_str(&extra);
         dst.push_str(&format!("{}\n}}", invoc));
-
-        if self.cx.config.nodejs {
-            self.cx.globals.push_str("module.exports.");
-            self.cx.globals.push_str(&import.shim);
-            self.cx.globals.push_str(" = ");
-            self.cx.globals.push_str(&dst);
-            self.cx.globals.push_str(";\n");
-        } else {
-            self.cx.globals.push_str("export ");
-            self.cx.globals.push_str(&dst);
-            self.cx.globals.push_str("\n");
-        }
+        self.cx.export(&import.shim, &dst);
     }
 
     pub fn generate_enum(&mut self, enum_: &shared::Enum) {
@@ -1604,21 +1588,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         for variant in enum_.variants.iter() {
             variants.push_str(&format!("{}:{},", variant.name, variant.value));
         }
-        let global_export = if self.cx.config.nodejs {
-            let mut enum_string = format!("const {} = Object.freeze({{", enum_.name);
-            enum_string.push_str(&variants);
-            enum_string.push_str("})\n");
-            let export = format!("module.exports.{} = {};\n", enum_.name, enum_.name);
-            enum_string.push_str(&export);
-            enum_string
-        } else {
-            let mut enum_string = format!("export const {} = Object.freeze({{", enum_.name);
-            enum_string.push_str(&variants);
-            enum_string.push_str("})\n");
-            enum_string
-        };
-        self.cx.globals.push_str(&global_export);
-
+        self.cx.export(&enum_.name, &format!("Object.freeze({{ {} }})", variants));
         self.cx.typescript.push_str(&format!("export enum {} {{", enum_.name));
 
         variants.clear();
