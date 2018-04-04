@@ -655,7 +655,7 @@ impl<'a> Context<'a> {
         }
         if self.config.nodejs {
             self.globals.push_str(&format!("
-                const TextEncoder = require('util');
+                const TextEncoder = require('util').TextEncoder;
             "));
         } else if !self.config.browser {
             self.globals.push_str(&format!("
