@@ -19,6 +19,7 @@ pub struct Context<'a> {
     pub custom_type_names: HashMap<u32, String>,
     pub imported_names: HashSet<String>,
     pub exported_classes: HashMap<String, ExportedClass>,
+    pub function_table_needed: bool,
 }
 
 #[derive(Default)]
@@ -246,6 +247,7 @@ impl<'a> Context<'a> {
         );
 
         self.unexport_unused_internal_exports();
+        self.export_table();
 
         (js, self.typescript.clone())
     }
@@ -310,6 +312,22 @@ impl<'a> Context<'a> {
 
             self.export(&class, &dst);
             self.typescript.push_str(&ts_dst);
+        }
+    }
+
+    fn export_table(&mut self) {
+        if !self.function_table_needed {
+            return
+        }
+        for section in self.module.sections_mut() {
+            let exports = match *section {
+                Section::Export(ref mut s) => s,
+                _ => continue,
+            };
+            let entry = ExportEntry::new("__wbg_function_table".to_string(),
+                                         Internal::Table(0));
+            exports.entries_mut().push(entry);
+            break
         }
     }
 
@@ -1404,6 +1422,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let mut abi_args = Vec::new();
 
         let mut extra = String::new();
+        let mut finally = String::new();
 
         let mut next_global = 0;
         for (i, arg) in import.function.arguments.iter().enumerate() {
@@ -1418,6 +1437,30 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 shared::TYPE_JS_REF => {
                     self.cx.expose_get_object();
                     format!("getObject(arg{})", i)
+                }
+                shared::TYPE_STACK_FUNC0 |
+                shared::TYPE_STACK_FUNC1 => {
+                    let nargs = *arg - shared::TYPE_STACK_FUNC0;
+                    let args = (0..nargs)
+                        .map(|i| format!("arg{}", i))
+                        .collect::<Vec<_>>()
+                        .join(", ");
+                    self.cx.expose_get_global_argument();
+                    self.cx.function_table_needed = true;
+                    let sep = if nargs == 0 {""} else {","};
+                    extra.push_str(&format!("
+                        let cb{0} = function({args}) {{
+                            return this.f(this.a, this.b {sep} {args});
+                        }};
+                        cb{0}.f = wasm.__wbg_function_table.get(arg{0});
+                        cb{0}.a = getGlobalArgument({next_global});
+                        cb{0}.b = getGlobalArgument({next_global} + 1);
+                    ", i, next_global = next_global, args = args, sep = sep));
+                    next_global += 2;
+                    finally.push_str(&format!("
+                        cb{0}.a = cb{0}.b = 0;
+                    ", i));
+                    format!("cb{0}.bind(cb{0})", i)
                 }
                 other => {
                     match VectorType::from(other) {
@@ -1582,6 +1625,17 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     view[exnptr / 4 + 1] = addHeapObject(e);
                 }}
             ", invoc)
+        } else {
+            invoc
+        };
+        let invoc = if finally.len() > 0 {
+            format!("
+                try {{
+                    {}
+                }} finally {{
+                    {}
+                }}
+            ", invoc, finally)
         } else {
             invoc
         };

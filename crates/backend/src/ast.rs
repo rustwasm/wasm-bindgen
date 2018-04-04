@@ -81,10 +81,25 @@ pub struct Variant {
     pub value: u32,
 }
 
-pub enum Type {
-    ByRef(syn::Type),
-    ByMutRef(syn::Type),
-    ByValue(syn::Type),
+pub struct Type {
+    pub ty: syn::Type,
+    pub kind: TypeKind,
+    pub loc: TypeLocation,
+}
+
+#[derive(Copy, Clone)]
+pub enum TypeKind {
+    ByRef,
+    ByMutRef,
+    ByValue,
+}
+
+#[derive(Copy, Clone)]
+pub enum TypeLocation {
+    ImportArgument,
+    ImportRet,
+    ExportArgument,
+    ExportRet,
 }
 
 impl Program {
@@ -197,6 +212,7 @@ impl Program {
             opts,
             method.vis,
             true,
+            false,
         );
         self.exports.push(Export {
             class: Some(class),
@@ -284,7 +300,15 @@ impl Program {
 
     pub fn push_foreign_fn(&mut self, f: syn::ForeignItemFn, opts: BindgenAttrs) -> ImportKind {
         let js_name = opts.js_name().unwrap_or(f.ident);
-        let mut wasm = Function::from_decl(js_name, f.decl, f.attrs, opts, f.vis, false).0;
+        let mut wasm = Function::from_decl(
+            js_name,
+            f.decl,
+            f.attrs,
+            opts,
+            f.vis,
+            false,
+            true,
+        ).0;
         if wasm.opts.catch() {
             // TODO: this assumes a whole bunch:
             //
@@ -301,11 +325,7 @@ impl Program {
             let class = wasm.arguments
                 .get(0)
                 .expect("methods must have at least one argument");
-            let class = match *class {
-                Type::ByRef(ref t) | Type::ByValue(ref t) => t,
-                Type::ByMutRef(_) => panic!("first method argument cannot be mutable ref"),
-            };
-            let class_name = match *class {
+            let class_name = match class.ty {
                 syn::Type::Path(syn::TypePath {
                     qself: None,
                     ref path,
@@ -317,11 +337,11 @@ impl Program {
 
             ImportFunctionKind::Method {
                 class: class_name.as_ref().to_string(),
-                ty: class.clone(),
+                ty: class.ty.clone(),
             }
         } else if wasm.opts.constructor() {
             let class = match wasm.ret {
-                Some(Type::ByValue(ref t)) => t,
+                Some(Type { ref ty, kind: TypeKind::ByValue, .. }) => ty,
                 _ => panic!("constructor returns must be bare types"),
             };
             let class_name = match *class {
@@ -416,7 +436,15 @@ impl Function {
             panic!("can only bindgen safe functions");
         }
 
-        Function::from_decl(input.ident, input.decl, input.attrs, opts, input.vis, false).0
+        Function::from_decl(
+            input.ident,
+            input.decl,
+            input.attrs,
+            opts,
+            input.vis,
+            false,
+            false,
+        ).0
     }
 
     pub fn from_decl(
@@ -426,6 +454,7 @@ impl Function {
         opts: BindgenAttrs,
         vis: syn::Visibility,
         allow_self: bool,
+        import: bool,
     ) -> (Function, Option<bool>) {
         if decl.variadic.is_some() {
             panic!("can't bindgen variadic functions")
@@ -449,12 +478,24 @@ impl Function {
                 }
                 _ => panic!("arguments cannot be `self` or ignored"),
             })
-            .map(|arg| Type::from(&arg.ty))
+            .map(|arg| {
+                Type::from(&arg.ty, if import {
+                    TypeLocation::ImportArgument
+                } else {
+                    TypeLocation::ExportArgument
+                })
+            })
             .collect::<Vec<_>>();
 
         let ret = match decl.output {
             syn::ReturnType::Default => None,
-            syn::ReturnType::Type(_, ref t) => Some(Type::from(t)),
+            syn::ReturnType::Type(_, ref t) => {
+                Some(Type::from(t, if import {
+                    TypeLocation::ImportRet
+                } else {
+                    TypeLocation::ExportRet
+                }))
+            }
         };
 
         (
@@ -484,19 +525,6 @@ pub fn extract_path_ident(path: &syn::Path) -> Option<syn::Ident> {
         _ => return None,
     }
     path.segments.first().map(|v| v.value().ident)
-}
-
-impl Type {
-    pub fn from(ty: &syn::Type) -> Type {
-        if let syn::Type::Reference(ref r) = *ty {
-            return if r.mutability.is_some() {
-                Type::ByMutRef((*r.elem).clone())
-            } else {
-                Type::ByRef((*r.elem).clone())
-            }
-        }
-        Type::ByValue(ty.clone())
-    }
 }
 
 impl Export {
@@ -537,6 +565,22 @@ impl ImportFunction {
 impl Struct {
     fn from(s: syn::ItemStruct, _opts: BindgenAttrs) -> Struct {
         Struct { name: s.ident }
+    }
+}
+
+impl Type {
+    pub fn from(ty: &syn::Type, loc: TypeLocation) -> Type {
+        let (ty, kind) = match *ty {
+            syn::Type::Reference(ref r) => {
+                if r.mutability.is_some() {
+                    ((*r.elem).clone(), TypeKind::ByMutRef)
+                } else {
+                    ((*r.elem).clone(), TypeKind::ByRef)
+                }
+            }
+            _ => (ty.clone(), TypeKind::ByValue),
+        };
+        Type { loc, ty, kind }
     }
 }
 
@@ -719,12 +763,12 @@ impl syn::synom::Synom for BindgenAttr {
 }
 
 fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
-    let ty = match ty {
+    let t = match ty {
         Some(t) => t,
         None => return Some(None),
     };
-    let ty = match *ty {
-        Type::ByValue(ref t) => t,
+    let ty = match *t {
+        Type { ref ty, kind: TypeKind::ByValue, .. } => ty,
         _ => return None,
     };
     let path = match *ty {
@@ -747,7 +791,11 @@ fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
         syn::Type::Tuple(ref t) if t.elems.len() == 0 => return Some(None),
         _ => {}
     }
-    Some(Some(Type::from(ty)))
+    Some(Some(Type {
+        ty: ty.clone(),
+        kind: TypeKind::ByValue,
+        loc: t.loc,
+    }))
 }
 
 fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<'a, ()> {

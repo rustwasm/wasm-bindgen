@@ -94,6 +94,7 @@ impl Bindgen {
                 exported_classes: Default::default(),
                 config: &self,
                 module: &mut module,
+                function_table_needed: false,
             };
             for program in programs.iter() {
                 cx.add_custom_type_names(program);
