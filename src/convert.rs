@@ -23,6 +23,12 @@ pub const DESCRIPTOR_JS_REF: Descriptor = Descriptor { __x: *b"  23", };
 
 pub const DESCRIPTOR_STACK_FUNC0: Descriptor = Descriptor { __x: *b"  24", };
 pub const DESCRIPTOR_STACK_FUNC1: Descriptor = Descriptor { __x: *b"  25", };
+pub const DESCRIPTOR_STACK_FUNC2: Descriptor = Descriptor { __x: *b"  26", };
+pub const DESCRIPTOR_STACK_FUNC3: Descriptor = Descriptor { __x: *b"  27", };
+pub const DESCRIPTOR_STACK_FUNC4: Descriptor = Descriptor { __x: *b"  28", };
+pub const DESCRIPTOR_STACK_FUNC5: Descriptor = Descriptor { __x: *b"  29", };
+pub const DESCRIPTOR_STACK_FUNC6: Descriptor = Descriptor { __x: *b"  30", };
+pub const DESCRIPTOR_STACK_FUNC7: Descriptor = Descriptor { __x: *b"  31", };
 
 pub trait WasmBoundary {
     type Abi: WasmAbi;
@@ -407,4 +413,10 @@ macro_rules! stack_closures {
 stack_closures! {
     () => DESCRIPTOR_STACK_FUNC0
     (A) => DESCRIPTOR_STACK_FUNC1
+    (A B) => DESCRIPTOR_STACK_FUNC2
+    (A B C) => DESCRIPTOR_STACK_FUNC3
+    (A B C D) => DESCRIPTOR_STACK_FUNC4
+    (A B C D E) => DESCRIPTOR_STACK_FUNC5
+    (A B C D E F) => DESCRIPTOR_STACK_FUNC6
+    (A B C D E F G) => DESCRIPTOR_STACK_FUNC7
 }

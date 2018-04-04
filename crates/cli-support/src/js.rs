@@ -1439,7 +1439,13 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     format!("getObject(arg{})", i)
                 }
                 shared::TYPE_STACK_FUNC0 |
-                shared::TYPE_STACK_FUNC1 => {
+                shared::TYPE_STACK_FUNC1 |
+                shared::TYPE_STACK_FUNC2 |
+                shared::TYPE_STACK_FUNC3 |
+                shared::TYPE_STACK_FUNC4 |
+                shared::TYPE_STACK_FUNC5 |
+                shared::TYPE_STACK_FUNC6 |
+                shared::TYPE_STACK_FUNC7 => {
                     let nargs = *arg - shared::TYPE_STACK_FUNC0;
                     let args = (0..nargs)
                         .map(|i| format!("arg{}", i))

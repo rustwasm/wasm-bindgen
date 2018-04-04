@@ -148,8 +148,14 @@ pub const TYPE_JS_OWNED: u32 = 22;
 pub const TYPE_JS_REF: u32 = 23;
 pub const TYPE_STACK_FUNC0: u32 = 24;
 pub const TYPE_STACK_FUNC1: u32 = 25;
+pub const TYPE_STACK_FUNC2: u32 = 26;
+pub const TYPE_STACK_FUNC3: u32 = 27;
+pub const TYPE_STACK_FUNC4: u32 = 28;
+pub const TYPE_STACK_FUNC5: u32 = 29;
+pub const TYPE_STACK_FUNC6: u32 = 30;
+pub const TYPE_STACK_FUNC7: u32 = 31;
 
-pub const TYPE_CUSTOM_START: u32 = 26;
+pub const TYPE_CUSTOM_START: u32 = 32;
 pub const TYPE_CUSTOM_REF_FLAG: u32 = 1;
 
 pub fn name_to_descriptor(name: &str) -> u32 {
