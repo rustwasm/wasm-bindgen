@@ -568,7 +568,7 @@ impl<'a> Context<'a> {
         self.globals.push_str(&format!("
             function passStringToWasm(arg) {{
                 {}
-                const buf = textEncoder().encode(arg);
+                const buf = cachedEncoder.encode(arg);
                 const ptr = wasm.__wbindgen_malloc(buf.length);
                 getUint8Memory().set(buf, ptr);
                 return [ptr, buf.length];
@@ -655,7 +655,7 @@ impl<'a> Context<'a> {
         }
         if self.config.nodejs {
             self.globals.push_str(&format!("
-                const TextEncoder = require('util');
+                const TextEncoder = require('util').TextEncoder;
             "));
         } else if !self.config.browser {
             self.globals.push_str(&format!("
@@ -665,13 +665,7 @@ impl<'a> Context<'a> {
             "));
         }
         self.globals.push_str(&format!("
-            let cachedEncoder = null;
-            function textEncoder() {{
-                if (cachedEncoder)
-                    return cachedEncoder;
-                cachedEncoder = new TextEncoder('utf-8');
-                return cachedEncoder;
-            }}
+            let cachedEncoder = new TextEncoder('utf-8');
         "));
     }
 
@@ -691,13 +685,7 @@ impl<'a> Context<'a> {
             "));
         }
         self.globals.push_str(&format!("
-            let cachedDecoder = null;
-            function textDecoder() {{
-                if (cachedDecoder)
-                    return cachedDecoder;
-                cachedDecoder = new TextDecoder('utf-8');
-                return cachedDecoder;
-            }}
+            let cachedDecoder = new TextDecoder('utf-8');
         "));
     }
 
@@ -709,7 +697,7 @@ impl<'a> Context<'a> {
         self.expose_uint8_memory();
         self.globals.push_str(&format!("
             function getStringFromWasm(ptr, len) {{
-                return textDecoder().decode(getUint8Memory().slice(ptr, ptr + len));
+                return cachedDecoder.decode(getUint8Memory().slice(ptr, ptr + len));
             }}
         "));
     }
