@@ -47,6 +47,8 @@ impl<'a> Context<'a> {
         let contents = contents.trim();
         let global = if self.config.nodejs {
             format!("module.exports.{} = {};\n", name, contents)
+        } else if self.config.umd {
+            format!("__exports.{} = {}\n", name, contents)
         } else {
             if contents.starts_with("function") {
                 format!("export function {} {}\n", name, &contents[8..])
@@ -227,23 +229,77 @@ impl<'a> Context<'a> {
             self.footer.push_str(&format!("wasm = require('./{}_bg');",
                                           module_name));
             format!("var wasm;")
+        } else if self.config.umd {
+            format!("
+                if(typeof window === 'undefined' && typeof process === 'object') {{
+                    const fs = require('fs');
+                    const path = require('path');
+                    const wasm_path = path.join(__dirname, '{module}_bg.wasm');
+                    const buffer = fs.readFileSync(wasm_path);
+                    const wasm = new WebAssembly.Module(buffer);
+
+                    return __initialize(wasm, false);
+                }} else {{
+                    return fetch('{module}_bg.wasm')
+                        .then(response => response.arrayBuffer())
+                        .then(bytes => WebAssembly.compile(bytes))
+                        .then(wasm => __initialize(wasm, true));
+                }}", module = module_name)
         } else {
             format!("import * as wasm from './{}_bg';", module_name)
         };
 
-        let js = format!("
-            /* tslint:disable */
-            {import_wasm}
-            {imports}
+        let js = if self.config.umd {
+            format!("
+                (function (root, factory) {{
+                    if (typeof define === 'function' && define.amd) {{
+                        define([], factory);
+                    }} else if (typeof module === 'object' && module.exports) {{
+                        module.exports = factory();
+                    }} else {{
+                        root.{module} = factory();
+                    }}
+                }}(typeof self !== 'undefined' ? self : this, function() {{
+                    function __initialize(wasm, __load_async) {{
+                        const __js_exports = {{}};
+                        const __exports = {{}};
+                        {globals}
+                        __js_exports['./{module}'] = __exports;
 
-            {globals}
-            {footer}
-        ",
-            import_wasm = import_wasm,
-            globals = self.globals,
-            imports = self.imports,
-            footer = self.footer,
-        );
+                        if (__load_async) {{
+                            return WebAssembly.instantiate(wasm, __js_exports)
+                                .then(instance => {{
+                                    return instance.exports;
+                                }})
+                                .catch(error => {{
+                                    console.log('Error loading wasm module `{module}`:', error);
+                                    throw error;
+                                }});
+                        }} else {{
+                            const instance = new WebAssembly.Instance(wasm, __js_exports);
+                            return instance.exports;
+                        }}
+                    }}
+                    {import_wasm}
+                }}))
+            ",
+                    module = module_name,
+                    import_wasm = import_wasm,
+            )
+        } else {
+            format!("
+                /* tslint:disable */
+                {import_wasm}
+                {imports}
+
+                {globals}
+                {footer}",
+                    import_wasm = import_wasm,
+                    globals = self.globals,
+                    imports = self.imports,
+                    footer = self.footer,
+            )
+        };
 
         self.unexport_unused_internal_exports();
 
@@ -1623,7 +1679,7 @@ enum VectorKind {
     U32,
     F32,
     F64,
-    JsValue
+    JsValue,
 }
 
 impl VectorType {
