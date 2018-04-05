@@ -284,6 +284,7 @@ impl<'a> Context<'a> {
                 }}))
             ",
                     module = module_name,
+                    globals = self.globals,
                     import_wasm = import_wasm,
             )
         } else {
