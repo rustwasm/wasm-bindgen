@@ -5,7 +5,7 @@
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
 
-#![feature(use_extern_macros, wasm_import_module, try_reserve)]
+#![feature(use_extern_macros, wasm_import_module, try_reserve, unsize)]
 
 extern crate wasm_bindgen_macro;
 
@@ -23,9 +23,11 @@ use convert::WasmBoundary;
 pub mod prelude {
     pub use wasm_bindgen_macro::wasm_bindgen;
     pub use JsValue;
+    pub use closure::Closure;
 }
 
 pub mod convert;
+pub mod closure;
 
 /// Representation of an object owned by JS.
 ///
@@ -230,6 +232,16 @@ extern {
     fn __wbindgen_is_symbol(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
     fn __wbindgen_throw(a: *const u8, b: usize) -> !;
+
+    fn __wbindgen_cb_arity0(a: u32, b: u32, c: u32) -> u32;
+    fn __wbindgen_cb_arity1(a: u32, b: u32, c: u32) -> u32;
+    fn __wbindgen_cb_arity2(a: u32, b: u32, c: u32) -> u32;
+    fn __wbindgen_cb_arity3(a: u32, b: u32, c: u32) -> u32;
+    fn __wbindgen_cb_arity4(a: u32, b: u32, c: u32) -> u32;
+    fn __wbindgen_cb_arity5(a: u32, b: u32, c: u32) -> u32;
+    fn __wbindgen_cb_arity6(a: u32, b: u32, c: u32) -> u32;
+    fn __wbindgen_cb_arity7(a: u32, b: u32, c: u32) -> u32;
+    fn __wbindgen_cb_drop(idx: u32);
 }
 
 impl Clone for JsValue {
@@ -341,13 +353,13 @@ pub mod __rt {
     /// guard accidental reentrancy, so this vendored version is intended solely
     /// to not panic in libstd. Instead when it "panics" it calls our `throw`
     /// function in this crate which raises an error in JS.
-    pub struct WasmRefCell<T> {
+    pub struct WasmRefCell<T: ?Sized> {
         borrow: Cell<usize>,
         value: UnsafeCell<T>,
     }
 
-    impl<T> WasmRefCell<T> {
-        pub fn new(value: T) -> WasmRefCell<T> {
+    impl<T: ?Sized> WasmRefCell<T> {
+        pub fn new(value: T) -> WasmRefCell<T> where T: Sized {
             WasmRefCell {
                 value: UnsafeCell::new(value),
                 borrow: Cell::new(0),
@@ -386,17 +398,17 @@ pub mod __rt {
             }
         }
 
-        pub fn into_inner(self) -> T {
+        pub fn into_inner(self) -> T where T: Sized {
             self.value.into_inner()
         }
     }
 
-    pub struct Ref<'b, T: 'b> {
+    pub struct Ref<'b, T: ?Sized + 'b> {
         value: &'b T,
         borrow: &'b Cell<usize>,
     }
 
-    impl<'b, T> Deref for Ref<'b, T> {
+    impl<'b, T: ?Sized> Deref for Ref<'b, T> {
         type Target = T;
 
         #[inline]
@@ -405,18 +417,18 @@ pub mod __rt {
         }
     }
 
-    impl<'b, T> Drop for Ref<'b, T> {
+    impl<'b, T: ?Sized> Drop for Ref<'b, T> {
         fn drop(&mut self) {
             self.borrow.set(self.borrow.get() - 1);
         }
     }
 
-    pub struct RefMut<'b, T: 'b> {
+    pub struct RefMut<'b, T: ?Sized + 'b> {
         value: &'b mut T,
         borrow: &'b Cell<usize>,
     }
 
-    impl<'b, T> Deref for RefMut<'b, T> {
+    impl<'b, T: ?Sized> Deref for RefMut<'b, T> {
         type Target = T;
 
         #[inline]
@@ -425,14 +437,14 @@ pub mod __rt {
         }
     }
 
-    impl<'b, T> DerefMut for RefMut<'b, T> {
+    impl<'b, T: ?Sized> DerefMut for RefMut<'b, T> {
         #[inline]
         fn deref_mut(&mut self) -> &mut T {
             self.value
         }
     }
 
-    impl<'b, T> Drop for RefMut<'b, T> {
+    impl<'b, T: ?Sized> Drop for RefMut<'b, T> {
         fn drop(&mut self) {
             self.borrow.set(0);
         }

@@ -30,6 +30,8 @@ pub const DESCRIPTOR_STACK_FUNC5: Descriptor = Descriptor { __x: *b"  29", };
 pub const DESCRIPTOR_STACK_FUNC6: Descriptor = Descriptor { __x: *b"  30", };
 pub const DESCRIPTOR_STACK_FUNC7: Descriptor = Descriptor { __x: *b"  31", };
 
+pub const DESCRIPTOR_FUNC: Descriptor = Descriptor { __x: *b"  32", };
+
 pub trait WasmBoundary {
     type Abi: WasmAbi;
     const DESCRIPTOR: Descriptor;
@@ -366,7 +368,7 @@ macro_rules! stack_closures {
                     $($var: $var),*
                 ) -> R {
                     if a == 0 {
-                        throw("stack closure has been destroyed already");
+                        throw("closure has been destroyed already");
                     }
                     let f: &Fn($($var),*) -> R = mem::transmute((a, b));
                     f($($var),*)
@@ -394,7 +396,7 @@ macro_rules! stack_closures {
                     $($var: $var),*
                 ) {
                     if a == 0 {
-                        throw("stack closure has been destroyed already");
+                        throw("closure has been destroyed already");
                     }
                     let f: &Fn($($var),*) = mem::transmute((a, b));
                     f($($var),*)

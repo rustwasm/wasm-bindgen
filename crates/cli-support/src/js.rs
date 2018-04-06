@@ -220,6 +220,37 @@ impl<'a> Context<'a> {
                     return ptr;
                 }")
             });
+
+            for i in 0..8 {
+                let name = format!("__wbindgen_cb_arity{}", i);
+                bind(&name, &|me| {
+                    me.expose_add_heap_object();
+                    me.function_table_needed = true;
+                    let args = (0..i)
+                        .map(|x| format!("arg{}", x))
+                        .collect::<Vec<_>>()
+                        .join(", ");
+                    format!("function(a, b, c) {{
+                        const cb = function({0}) {{
+                            return this.f(this.a, this.b {1} {0});
+                        }};
+                        cb.a = b;
+                        cb.b = c;
+                        cb.f = wasm.__wbg_function_table.get(a);
+                        let real = cb.bind(cb);
+                        real.original = cb;
+                        return addHeapObject(real);
+                    }}", args, if i == 0 {""} else {","})
+                });
+            }
+            bind("__wbindgen_cb_drop", &|me| {
+                me.expose_drop_ref();
+                String::from("function(i) {
+                    let obj = getObject(i).original;
+                    obj.a = obj.b = 0;
+                    dropRef(i);
+                }")
+            });
         }
 
         self.rewrite_imports(module_name);
@@ -1435,6 +1466,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     format!("takeObject(arg{})", i)
                 }
                 shared::TYPE_JS_REF => {
+                    self.cx.expose_get_object();
+                    format!("getObject(arg{})", i)
+                }
+                shared::TYPE_FUNC => {
                     self.cx.expose_get_object();
                     format!("getObject(arg{})", i)
                 }
