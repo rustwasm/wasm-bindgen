@@ -2,8 +2,10 @@ use std::collections::{HashSet, HashMap};
 use std::fmt::Write;
 use std::mem;
 
-use shared;
 use parity_wasm::elements::*;
+use parity_wasm;
+use shared;
+use wasm_gc;
 
 use super::Bindgen;
 
@@ -61,6 +63,8 @@ impl<'a> Context<'a> {
     }
 
     pub fn finalize(&mut self, module_name: &str) -> (String, String) {
+        self.unexport_unused_internal_exports();
+        self.gc();
         self.write_classes();
         {
             let mut bind = |name: &str, f: &Fn(&mut Self) -> String| {
@@ -277,8 +281,8 @@ impl<'a> Context<'a> {
             footer = self.footer,
         );
 
-        self.unexport_unused_internal_exports();
         self.export_table();
+        self.gc();
 
         (js, self.typescript.clone())
     }
@@ -303,6 +307,7 @@ impl<'a> Context<'a> {
 
                 let new_name = shared::new_function(&class);
                 if self.wasm_import_needed(&new_name) {
+                    self.expose_add_heap_object();
                     self.export(&new_name, &format!("
                         function(ptr) {{
                             return addHeapObject(new {class}(ptr, token));
@@ -319,6 +324,7 @@ impl<'a> Context<'a> {
 
                 let new_name = shared::new_function(&class);
                 if self.wasm_import_needed(&new_name) {
+                    self.expose_add_heap_object();
                     self.export(&new_name, &format!("
                         function(ptr) {{
                             return addHeapObject(new {class}(ptr));
@@ -1153,6 +1159,16 @@ impl<'a> Context<'a> {
               throw \"descriptor not found\";
             }
         ");
+    }
+
+    fn gc(&mut self) {
+        let module = mem::replace(self.module, Module::default());
+        let wasm_bytes = parity_wasm::serialize(module).unwrap();
+        let bytes = wasm_gc::Config::new()
+            .demangle(false)
+            .gc(&wasm_bytes)
+            .unwrap();
+        *self.module = deserialize_buffer(&bytes).unwrap();
     }
 }
 

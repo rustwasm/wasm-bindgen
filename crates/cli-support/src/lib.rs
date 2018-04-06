@@ -129,10 +129,7 @@ impl Bindgen {
         let wasm_bytes = parity_wasm::serialize(module).map_err(|e| {
             Error(format!("{:?}", e))
         })?;
-        let bytes = wasm_gc::Config::new()
-            .demangle(false)
-            .gc(&wasm_bytes)?;
-        File::create(&wasm_path)?.write_all(&bytes)?;
+        File::create(&wasm_path)?.write_all(&wasm_bytes)?;
         Ok(())
     }
 
