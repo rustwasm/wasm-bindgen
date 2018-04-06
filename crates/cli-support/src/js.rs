@@ -236,14 +236,14 @@ impl<'a> Context<'a> {
                     const path = require('path');
                     const wasm_path = path.join(__dirname, '{module}_bg.wasm');
                     const buffer = fs.readFileSync(wasm_path);
-                    const wasm = new WebAssembly.Module(buffer);
+                    const mod = new WebAssembly.Module(buffer);
 
-                    return __initialize(wasm, false);
+                    return __initialize(mod, false);
                 }} else {{
                     return fetch('{module}_bg.wasm')
                         .then(response => response.arrayBuffer())
                         .then(bytes => WebAssembly.compile(bytes))
-                        .then(wasm => __initialize(wasm, true));
+                        .then(mod => __initialize(mod, true));
                 }}", module = module_name)
         } else {
             format!("import * as wasm from './{}_bg';", module_name)
@@ -260,15 +260,18 @@ impl<'a> Context<'a> {
                         root.{module} = factory();
                     }}
                 }}(typeof self !== 'undefined' ? self : this, function() {{
-                    function __initialize(wasm, __load_async) {{
+                    let wasm;
+                    {import_wasm}
+                    function __initialize(__mod, __load_async) {{
                         const __js_exports = {{}};
                         const __exports = {{}};
                         {globals}
                         __js_exports['./{module}'] = __exports;
 
                         if (__load_async) {{
-                            return WebAssembly.instantiate(wasm, __js_exports)
+                            return WebAssembly.instantiate(__mod, __js_exports)
                                 .then(instance => {{
+                                    wasm = instance.exports;
                                     return instance.exports;
                                 }})
                                 .catch(error => {{
@@ -276,11 +279,11 @@ impl<'a> Context<'a> {
                                     throw error;
                                 }});
                         }} else {{
-                            const instance = new WebAssembly.Instance(wasm, __js_exports);
+                            const instance = new WebAssembly.Instance(__mod, __js_exports);
+                            wasm = instance.exports;
                             return instance.exports;
                         }}
                     }}
-                    {import_wasm}
                 }}))
             ",
                     module = module_name,
