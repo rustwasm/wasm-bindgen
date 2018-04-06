@@ -242,6 +242,7 @@ extern {
     fn __wbindgen_cb_arity6(a: u32, b: u32, c: u32) -> u32;
     fn __wbindgen_cb_arity7(a: u32, b: u32, c: u32) -> u32;
     fn __wbindgen_cb_drop(idx: u32);
+    fn __wbindgen_cb_forget(idx: u32);
 }
 
 impl Clone for JsValue {

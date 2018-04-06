@@ -255,6 +255,12 @@ impl<'a> Context<'a> {
                     dropRef(i);
                 }")
             });
+            bind("__wbindgen_cb_forget", &|me| {
+                me.expose_drop_ref();
+                String::from("function(i) {
+                    dropRef(i);
+                }")
+            });
         }
 
         self.rewrite_imports(module_name);
