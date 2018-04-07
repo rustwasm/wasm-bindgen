@@ -22,7 +22,7 @@ Options:
     --out-dir DIR            Output directory
     --nodejs                 Generate output that only works in node.js
     --browser                Generate output that only works in a browser
-    --umd                    Generate output that works both in browser and node.js
+    --amd                    Generate output that only works in a browser
     --typescript             Output a TypeScript definition file
     --debug                  Include otherwise-extraneous debug checks in output
     -V --version             Print the version number of wasm-bindgen
