@@ -695,7 +695,7 @@ impl<'a> Context<'a> {
             self.globals.push_str(&format!("
                 const TextEncoder = require('util').TextEncoder;
             "));
-        } else if !self.config.browser {
+        } else if !(self.config.browser && self.config.amd) {
             self.globals.push_str(&format!("
                 const TextEncoder = typeof window === 'object' && window.TextEncoder
                     ? window.TextEncoder
@@ -715,7 +715,7 @@ impl<'a> Context<'a> {
             self.globals.push_str(&format!("
                 const TextDecoder = require('util').TextDecoder;
             "));
-        } else if !self.config.browser {
+        } else if !(self.config.browser && self.config.amd) {
             self.globals.push_str(&format!("
                 const TextDecoder = typeof window === 'object' && window.TextDecoder
                     ? window.TextDecoder
