@@ -32,7 +32,7 @@ Options:
 struct Args {
     flag_nodejs: bool,
     flag_browser: bool,
-    flag_umd: bool,
+    flag_amd: bool,
     flag_typescript: bool,
     flag_out_dir: Option<PathBuf>,
     flag_debug: bool,
@@ -59,7 +59,7 @@ fn main() {
     b.input_path(&input)
         .nodejs(args.flag_nodejs)
         .browser(args.flag_browser)
-        .umd(args.flag_umd)
+        .amd(args.flag_amd)
         .debug(args.flag_debug)
         .typescript(args.flag_typescript);
 

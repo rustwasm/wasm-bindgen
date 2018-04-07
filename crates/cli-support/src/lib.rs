@@ -17,7 +17,7 @@ pub struct Bindgen {
     path: Option<PathBuf>,
     nodejs: bool,
     browser: bool,
-    umd: bool,
+    amd: bool,
     debug: bool,
     typescript: bool,
 }
@@ -37,7 +37,7 @@ impl Bindgen {
             path: None,
             nodejs: false,
             browser: false,
-            umd: false,
+            amd: false,
             debug: false,
             typescript: false,
         }
@@ -58,8 +58,8 @@ impl Bindgen {
         self
     }
 
-    pub fn umd(&mut self, umd: bool) -> &mut Bindgen {
-        self.umd = umd;
+    pub fn amd(&mut self, amd: bool) -> &mut Bindgen {
+        self.amd = amd;
         self
     }
 
