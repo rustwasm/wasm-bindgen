@@ -52,7 +52,6 @@ fn cannot_reuse() {
 
             extern crate wasm_bindgen;
 
-            use std::cell::Cell;
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen(module = "./test")]
@@ -97,6 +96,7 @@ fn long_lived() {
             extern crate wasm_bindgen;
 
             use std::cell::Cell;
+            use std::rc::Rc;
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen(module = "./test")]
@@ -107,21 +107,23 @@ fn long_lived() {
 
             #[wasm_bindgen]
             pub fn run() {
-                let hit = Cell::new(false);
-                let a = Closure::new(|| hit.set(true));
+                let hit = Rc::new(Cell::new(false));
+                let hit2 = hit.clone();
+                let a = Closure::new(move || hit2.set(true));
                 assert!(!hit.get());
                 call1(&a);
                 assert!(hit.get());
 
-                let mut hit = false;
+                let hit = Rc::new(Cell::new(false));
                 {
-                    let a = Closure::new(|x| {
-                        hit = true;
+                    let hit = hit.clone();
+                    let a = Closure::new(move |x| {
+                        hit.set(true);
                         x + 3
                     });
                     assert_eq!(call2(&a), 5);
                 }
-                assert!(hit);
+                assert!(hit.get());
             }
         "#)
         .file("test.ts", r#"
@@ -246,6 +248,7 @@ fn long_lived_dropping() {
             extern crate wasm_bindgen;
 
             use std::cell::Cell;
+            use std::rc::Rc;
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen(module = "./test")]
@@ -257,8 +260,9 @@ fn long_lived_dropping() {
 
             #[wasm_bindgen]
             pub fn run() {
-                let hit = Cell::new(false);
-                let a = Closure::new(|| hit.set(true));
+                let hit = Rc::new(Cell::new(false));
+                let hit2 = hit.clone();
+                let a = Closure::new(move || hit2.set(true));
                 cache(&a);
                 assert!(!hit.get());
                 assert!(call().is_ok());
