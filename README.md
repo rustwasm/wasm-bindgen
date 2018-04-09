@@ -5,7 +5,7 @@ A project for facilitating high-level interactions between wasm modules and JS.
 [host]: https://github.com/WebAssembly/host-bindings
 
 [![Build Status](https://travis-ci.org/rustwasm/wasm-bindgen.svg?branch=master)](https://travis-ci.org/rustwasm/wasm-bindgen)
-[![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/rustwasm/wasm-bindgen)
+[![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/alexcrichton/wasm-bindgen)
 
 This project is sort of half polyfill for features like the [host bindings
 proposal][host] and half features for empowering high-level interactions between
