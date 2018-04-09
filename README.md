@@ -4,8 +4,8 @@ A project for facilitating high-level interactions between wasm modules and JS.
 
 [host]: https://github.com/WebAssembly/host-bindings
 
-[![Build Status](https://travis-ci.org/alexcrichton/wasm-bindgen.svg?branch=master)](https://travis-ci.org/alexcrichton/wasm-bindgen)
-[![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/alexcrichton/wasm-bindgen)
+[![Build Status](https://travis-ci.org/rustwasm/wasm-bindgen.svg?branch=master)](https://travis-ci.org/rustwasm/wasm-bindgen)
+[![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/rustwasm/wasm-bindgen)
 
 This project is sort of half polyfill for features like the [host bindings
 proposal][host] and half features for empowering high-level interactions between
@@ -31,11 +31,11 @@ This project is still relatively new but feedback is of course always
 welcome! If you're curious about the design plus even more information about
 what this crate can do, check out the [design doc].
 
-[design doc]: https://github.com/alexcrichton/wasm-bindgen/blob/master/DESIGN.md
-[dom-ex]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/dom
-[console-log]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/console_log
-[perf-ex]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/performance
-[smorg-ex]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/smorgasboard
+[design doc]: https://github.com/rustwasm/wasm-bindgen/blob/master/DESIGN.md
+[dom-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/dom
+[console-log]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/console_log
+[perf-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/performance
+[smorg-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/smorgasboard
 
 ## Basic usage
 
@@ -212,8 +212,8 @@ If that was all a bit much, no worries! You can [follow along
 online][hello-tree] to see all the files necessary as well as a script to set it
 all up.
 
-[hello-tree]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/hello_world
-[hello-readme]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/hello_world/README.md
+[hello-tree]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world
+[hello-readme]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world/README.md
 
 ## What just happened?
 
@@ -403,7 +403,7 @@ Here this section will attempt to be a reference for the various features
 implemented in this project. This is likely not exhaustive but the [tests]
 should also be a great place to look for examples.
 
-[tests]: https://github.com/alexcrichton/wasm-bindgen/tree/master/tests
+[tests]: https://github.com/rustwasm/wasm-bindgen/tree/master/tests
 
 The `#[wasm_bindgen]` attribute can be attached to functions, structs,
 impls, and foreign modules. Impls can only contain functions, and the attribute
