@@ -872,6 +872,7 @@ Under the hood this generates shims that do a bunch of translation, but it
 suffices to say that a call in wasm to `foo` should always return
 appropriately.
 
+
 ## Customizing import behavior
 
 The `#[wasm_bindgen]` macro supports a good amount of configuration for
@@ -1036,6 +1037,49 @@ possibilities!
 
   All of these functions will call `console.log` in Rust, but each identifier
   will have only one signature in Rust.
+
+## Closures
+
+Closures are a particularly tricky topic in wasm-bindgen right now. They use
+somewhat advanced language features to currently be implemented and *still* the
+amount of functionality you can use is quite limiting.
+
+Most of the implementation details of closures can be found in `src/convert.rs`
+and `src/closure.rs`, effectively the `ToRefWasmBoundary` implementations for
+closure types. Stack closures are pretty straightforward in that they pass
+a function pointer and a data pointer to JS. This function pointer is accessed
+via the exported `WebAssembly.Table` in JS, and the data pointer is passed along
+eventually when the JS closure is invoked.
+
+Stack closures currently only support `Fn` because there's no great location to
+insert a `RefCell` for types like `FnMut`. This restriction may be lift-able
+though in the future...
+
+Long-lived closures are a bit more complicated. The general idea there is:
+
+* First you create a `Closure`. This manufactures a JS callback and "passes it"
+  to Rust so Rust can store it.
+* Next you later pass it as `&Closure<...>` to JS. This extracts the callback
+  from Rust and passes it to JS.
+* Finally you eventually drop the Rust `Closure` which invalidates the JS
+  closure.
+
+Creation of the initial JS function is done with a bunch of
+`__wbindgen_cb_arityN` functions. These functions create a JS closure with the
+given arity (number of arguments). This isn't really that scalable unfortunately
+and also means that it's very difficult to support richer types one day. Unsure
+how to solve this.
+
+The `ToRefWasmBoundary` is quite straightforward for `Closure` as it just plucks
+out the JS closure and passes it along. The real meat comes down to the
+`WasmShim` internal trait. This is implemented for all the *unsized* closure
+types to avoid running afoul with coherence. Each trait impl defines a shim
+function to be invokeable from JS as well as the ability to wrap up the sized
+verion (aka transition from `F: FnMut()` to `FnMut()`). Impls for `FnMut` also
+embed the `RefCell` internally.
+
+The `WasmShim` design is basically the first thing that got working today. It's
+not great and will likely change in the future to hopefully be more flexible!
 
 ## Wrapping up
 

@@ -3,7 +3,7 @@ use std::ops::{Deref, DerefMut};
 use std::slice;
 use std::str;
 
-use super::JsValue;
+use {JsValue, throw};
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 pub struct Descriptor {
@@ -20,6 +20,17 @@ pub const DESCRIPTOR_BOOLEAN: Descriptor = Descriptor { __x: *b"   5", };
 
 pub const DESCRIPTOR_JS_OWNED: Descriptor = Descriptor { __x: *b"  22", };
 pub const DESCRIPTOR_JS_REF: Descriptor = Descriptor { __x: *b"  23", };
+
+pub const DESCRIPTOR_STACK_FUNC0: Descriptor = Descriptor { __x: *b"  24", };
+pub const DESCRIPTOR_STACK_FUNC1: Descriptor = Descriptor { __x: *b"  25", };
+pub const DESCRIPTOR_STACK_FUNC2: Descriptor = Descriptor { __x: *b"  26", };
+pub const DESCRIPTOR_STACK_FUNC3: Descriptor = Descriptor { __x: *b"  27", };
+pub const DESCRIPTOR_STACK_FUNC4: Descriptor = Descriptor { __x: *b"  28", };
+pub const DESCRIPTOR_STACK_FUNC5: Descriptor = Descriptor { __x: *b"  29", };
+pub const DESCRIPTOR_STACK_FUNC6: Descriptor = Descriptor { __x: *b"  30", };
+pub const DESCRIPTOR_STACK_FUNC7: Descriptor = Descriptor { __x: *b"  31", };
+
+pub const DESCRIPTOR_FUNC: Descriptor = Descriptor { __x: *b"  32", };
 
 pub trait WasmBoundary {
     type Abi: WasmAbi;
@@ -336,4 +347,78 @@ impl Stack for GlobalStack {
 #[no_mangle]
 pub unsafe extern fn __wbindgen_global_argument_ptr() -> *mut u32 {
     GLOBAL_STACK.as_mut_ptr()
+}
+
+macro_rules! stack_closures {
+    ($(
+        ($($var:ident)*) => $descriptor:ident
+    )*) => ($(
+        impl<'a, $($var,)* R> ToRefWasmBoundary for Fn($($var),*) -> R + 'a
+            where $($var: WasmAbi,)*
+                  R: WasmAbi
+        {
+            type Abi = u32;
+            const DESCRIPTOR: Descriptor = $descriptor;
+
+            fn to_abi_ref(&self, extra: &mut Stack) -> u32 {
+                #[allow(non_snake_case)]
+                unsafe extern fn invoke<$($var,)* R>(
+                    a: usize,
+                    b: usize,
+                    $($var: $var),*
+                ) -> R {
+                    if a == 0 {
+                        throw("closure has been destroyed already");
+                    }
+                    let f: &Fn($($var),*) -> R = mem::transmute((a, b));
+                    f($($var),*)
+                }
+                unsafe {
+                    let (a, b): (usize, usize) = mem::transmute(self);
+                    extra.push(a as u32);
+                    extra.push(b as u32);
+                    invoke::<$($var,)* R> as u32
+                }
+            }
+        }
+
+        impl<'a, $($var,)*> ToRefWasmBoundary for Fn($($var),*) + 'a
+            where $($var: WasmAbi,)*
+        {
+            type Abi = u32;
+            const DESCRIPTOR: Descriptor = $descriptor;
+
+            fn to_abi_ref(&self, extra: &mut Stack) -> u32 {
+                #[allow(non_snake_case)]
+                unsafe extern fn invoke<$($var,)* >(
+                    a: usize,
+                    b: usize,
+                    $($var: $var),*
+                ) {
+                    if a == 0 {
+                        throw("closure has been destroyed already");
+                    }
+                    let f: &Fn($($var),*) = mem::transmute((a, b));
+                    f($($var),*)
+                }
+                unsafe {
+                    let (a, b): (usize, usize) = mem::transmute(self);
+                    extra.push(a as u32);
+                    extra.push(b as u32);
+                    invoke::<$($var,)*> as u32
+                }
+            }
+        }
+    )*)
+}
+
+stack_closures! {
+    () => DESCRIPTOR_STACK_FUNC0
+    (A) => DESCRIPTOR_STACK_FUNC1
+    (A B) => DESCRIPTOR_STACK_FUNC2
+    (A B C) => DESCRIPTOR_STACK_FUNC3
+    (A B C D) => DESCRIPTOR_STACK_FUNC4
+    (A B C D E) => DESCRIPTOR_STACK_FUNC5
+    (A B C D E F) => DESCRIPTOR_STACK_FUNC6
+    (A B C D E F G) => DESCRIPTOR_STACK_FUNC7
 }

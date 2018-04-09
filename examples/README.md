@@ -22,3 +22,5 @@ The examples here are:
   operations in Rust
 * `wasm-in-wasm` - how to interact with namespaced APIs like
   `WebAssembly.Module` and shows off creation of a WebAssembly module from Rust
+* `closures` - an example of how to invoke functions like `setInterval` or use
+  the `onclick` property in conjunction with closures.

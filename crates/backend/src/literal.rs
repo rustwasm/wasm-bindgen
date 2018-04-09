@@ -139,18 +139,31 @@ impl Literal for ast::Function {
 
 impl Literal for ast::Type {
     fn literal(&self, a: &mut LiteralBuilder) {
-        match *self {
-            ast::Type::ByValue(ref t) => {
+        let t = &self.ty;
+        match self.kind {
+            ast::TypeKind::ByValue => {
                 a.as_char(quote! {
                     <#t as ::wasm_bindgen::convert::WasmBoundary>::DESCRIPTOR
                 });
             }
-            ast::Type::ByRef(ref ty) | ast::Type::ByMutRef(ref ty) => {
-                // TODO: this assumes `ToRef*` and `FromRef*` use the same
-                // descriptor.
-                a.as_char(quote! {
-                    <#ty as ::wasm_bindgen::convert::FromRefWasmBoundary>::DESCRIPTOR
-                });
+            ast::TypeKind::ByRef |
+            ast::TypeKind::ByMutRef => {
+                match self.loc {
+                    ast::TypeLocation::ImportArgument |
+                    ast::TypeLocation::ExportRet => {
+                        a.as_char(quote! {
+                            <#t as ::wasm_bindgen::convert::ToRefWasmBoundary>
+                                ::DESCRIPTOR
+                        });
+                    }
+                    ast::TypeLocation::ImportRet |
+                    ast::TypeLocation::ExportArgument => {
+                        a.as_char(quote! {
+                            <#t as ::wasm_bindgen::convert::FromRefWasmBoundary>
+                                ::DESCRIPTOR
+                        });
+                    }
+                }
             }
         }
     }

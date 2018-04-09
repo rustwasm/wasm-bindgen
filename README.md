@@ -24,8 +24,8 @@ Notable features of this project includes:
 * Importing JS functionality in to Rust such as [DOM manipulation][dom-ex],
   [console logging][console-log], or [performance monitoring][perf-ex].
 * [Exporting Rust functionality][smorg-ex] to JS such as classes, functions, etc.
-* Working with rich types like strings, numbers, classes, and objects rather
-  than simply `u32` and floats.
+* Working with rich types like strings, numbers, classes, closures, and objects
+  rather than simply `u32` and floats.
 
 This project is still relatively new but feedback is of course always
 welcome! If you're curious about the design plus even more information about
@@ -396,6 +396,79 @@ export class Awesome {
 
 booted.then(main);
 ```
+
+## Closures
+
+The `#[wasm_bindgen]` attribute supports a limited subset of Rust closures being
+passed to JS at this time. There are plans to expand this support currently but
+it's not clear how to proceed unfortunately. In any case some examples of what
+you can do are:
+
+```rust
+#[wasm_bindgen]
+extern {
+    fn foo(a: &Fn()); // must be `Fn`, not `FnMut`
+}
+```
+
+Here a function `foo` is imported from JS where the first argument is a *stack
+closure*. You can call this function with a `&Fn()` argument and JS will receive
+a JS function. When the `foo` function returns, however, the JS function will be
+invalidated and any future usage of it will raise an exception.
+
+Closures also support arguments and return values native to the wasm type
+system, aka f32/u32:
+
+```rust
+#[wasm_bindgen]
+extern {
+    fn bar(a: &Fn(u32, f32) -> f64);
+}
+```
+
+At this time [types like strings aren't supported][cbstr] unfortunately.
+
+[cbstr]: https://github.com/rustwasm/wasm-bindgen/issues/104
+
+Sometimes the stack behavior of these closures is not desired. For example you'd
+like to schedule a closure to be run on the next turn of the event loop in JS
+through `setTimeout`. For this you want the imported function to return but the
+JS closure still needs to be valid!
+
+To support this use case you can also do:
+
+```rust
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern {
+    fn baz(a: &Closure<Fn()>);
+}
+```
+
+The `Closure` type is defined in the `wasm_bindgen` crate and represents a "long
+lived" closure. The JS closure passed to `baz` is still valid after `baz`
+returns, and the validity of the JS closure is tied to the lifetime of the
+`Closure` in Rust. Once `Closure` is dropped it will deallocate its internal
+memory and invalidate the corresponding JS function.
+
+Unlike stack closures a `Closure` supports `FnMut`:
+
+```rust
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern {
+    fn another(a: &Closure<FnMut() -> u32>);
+}
+```
+
+Like stack closures, however, only wasm types like u32/f32 are supported today.
+
+At this time you cannot [pass a JS closure to Rust][cbjs], you can only pass a
+Rust closure to JS in limited circumstances.
+
+[cbjs]: https://github.com/rustwasm/wasm-bindgen/issues/103
 
 ## Feature reference
 

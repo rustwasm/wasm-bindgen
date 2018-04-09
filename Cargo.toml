@@ -32,7 +32,10 @@ members = [
   "examples/math",
   "examples/performance",
   "examples/wasm-in-wasm",
+  "examples/closures",
 ]
 
 [profile.release]
 lto = true
+opt-level = 'z'
+panic = 'abort'

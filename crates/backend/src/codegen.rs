@@ -210,8 +210,9 @@ impl ToTokens for ast::Export {
         for (i, ty) in self.function.arguments.iter().enumerate() {
             let i = i + offset;
             let ident = syn::Ident::from(format!("arg{}", i));
-            match *ty {
-                ast::Type::ByValue(ref t) => {
+            let t = &ty.ty;
+            match ty.kind {
+                ast::TypeKind::ByValue => {
                     args.push(quote! {
                         #ident: <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
                     });
@@ -222,25 +223,25 @@ impl ToTokens for ast::Export {
                         };
                     });
                 }
-                ast::Type::ByRef(ref ty) => {
+                ast::TypeKind::ByRef => {
                     args.push(quote! {
-                        #ident: <#ty as ::wasm_bindgen::convert::FromRefWasmBoundary>::Abi
+                        #ident: <#t as ::wasm_bindgen::convert::FromRefWasmBoundary>::Abi
                     });
                     arg_conversions.push(quote! {
                         let #ident = unsafe {
-                            <#ty as ::wasm_bindgen::convert::FromRefWasmBoundary>
+                            <#t as ::wasm_bindgen::convert::FromRefWasmBoundary>
                                 ::from_abi_ref(#ident, &mut __stack)
                         };
                         let #ident = &*#ident;
                     });
                 }
-                ast::Type::ByMutRef(ref ty) => {
+                ast::TypeKind::ByMutRef => {
                     args.push(quote! {
-                        #ident: <#ty as ::wasm_bindgen::convert::FromRefMutWasmBoundary>::Abi
+                        #ident: <#t as ::wasm_bindgen::convert::FromRefMutWasmBoundary>::Abi
                     });
                     arg_conversions.push(quote! {
                         let mut #ident = unsafe {
-                            <#ty as ::wasm_bindgen::convert::FromRefMutWasmBoundary>
+                            <#t as ::wasm_bindgen::convert::FromRefMutWasmBoundary>
                                 ::from_abi_ref_mut(#ident, &mut __stack)
                         };
                         let #ident = &mut *#ident;
@@ -252,19 +253,19 @@ impl ToTokens for ast::Export {
         let ret_ty;
         let convert_ret;
         match self.function.ret {
-            Some(ast::Type::ByValue(ref t)) => {
+            Some(ast::Type { ref ty, kind: ast::TypeKind::ByValue, .. }) => {
                 ret_ty = quote! {
-                    -> <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
+                    -> <#ty as ::wasm_bindgen::convert::WasmBoundary>::Abi
                 };
                 convert_ret = quote! {
-                    <#t as ::wasm_bindgen::convert::WasmBoundary>
+                    <#ty as ::wasm_bindgen::convert::WasmBoundary>
                         ::into_abi(#ret, &mut unsafe {
                             ::wasm_bindgen::convert::GlobalStack::new()
                         })
                 };
             }
-            Some(ast::Type::ByMutRef(_))
-            | Some(ast::Type::ByRef(_)) => {
+            Some(ast::Type { kind: ast::TypeKind::ByMutRef, .. }) |
+            Some(ast::Type { kind: ast::TypeKind::ByRef, .. }) => {
                 panic!("can't return a borrowed ref");
             }
             None => {
@@ -432,8 +433,9 @@ impl ToTokens for ast::ImportFunction {
             });
 
         for (i, (ty, name)) in self.function.arguments.iter().zip(names).enumerate() {
-            match *ty {
-                ast::Type::ByValue(ref t) => {
+            let t = &ty.ty;
+            match ty.kind {
+                ast::TypeKind::ByValue => {
                     abi_argument_names.push(name);
                     abi_arguments.push(quote! {
                         #name: <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
@@ -448,8 +450,8 @@ impl ToTokens for ast::ImportFunction {
                             ::into_abi(#var, &mut __stack);
                     });
                 }
-                ast::Type::ByMutRef(_) => panic!("urgh mut"),
-                ast::Type::ByRef(ref t) => {
+                ast::TypeKind::ByMutRef => panic!("urgh mut"),
+                ast::TypeKind::ByRef => {
                     abi_argument_names.push(name);
                     abi_arguments.push(quote! { #name: u32 });
                     let var = if i == 0 && is_method {
@@ -467,20 +469,22 @@ impl ToTokens for ast::ImportFunction {
         let abi_ret;
         let mut convert_ret;
         match self.function.ret {
-            Some(ast::Type::ByValue(ref t)) => {
+            Some(ast::Type { ref ty, kind: ast::TypeKind::ByValue, .. }) => {
                 abi_ret = quote! {
-                    <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
+                    <#ty as ::wasm_bindgen::convert::WasmBoundary>::Abi
                 };
                 convert_ret = quote! {
-                    <#t as ::wasm_bindgen::convert::WasmBoundary>
+                    <#ty as ::wasm_bindgen::convert::WasmBoundary>
                         ::from_abi(
                             #ret_ident,
                             &mut ::wasm_bindgen::convert::GlobalStack::new(),
                         )
                 };
             }
-            Some(ast::Type::ByRef(_))
-            | Some(ast::Type::ByMutRef(_)) => panic!("can't return a borrowed ref"),
+            Some(ast::Type { kind: ast::TypeKind::ByRef, .. }) |
+            Some(ast::Type { kind: ast::TypeKind::ByMutRef, .. }) => {
+                panic!("can't return a borrowed ref")
+            }
             None => {
                 abi_ret = quote! { () };
                 convert_ret = quote! { () };
