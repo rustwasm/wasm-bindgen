@@ -20,11 +20,13 @@ matrix:
 
     # Dist linux binary
     - env: TARGET=x86_64-unknown-linux-musl DEPLOY=1
+      rust: nightly
       before_script: rustup target add $TARGET
       script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
 
     # Dist OSX binary
     - os: osx
+      rust: nightly
       env: MACOSX_DEPLOYMENT_TARGET=10.7 DEPLOY=1 TARGET=x86_64-apple-darwin
       script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
       install: true
