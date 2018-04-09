@@ -51,6 +51,8 @@ matrix:
           (cd examples/dom && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
         - |
           (cd examples/wasm-in-wasm && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+        - |
+          (cd examples/closures && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
 
 install:
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
