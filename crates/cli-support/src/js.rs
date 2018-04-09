@@ -1080,6 +1080,31 @@ impl<'a> Context<'a> {
             }
         ");
     }
+
+    fn expose_get_inherited_descriptor(&mut self) {
+        if !self.exposed_globals.insert("get_inherited_descriptor") {
+            return
+        }
+        // It looks like while rare some browsers will move descriptors up the
+        // property chain which runs the risk of breaking wasm-bindgen-generated
+        // code because we're looking for precise descriptor functions rather
+        // than relying on the prototype chain like most "normal JS" projects
+        // do.
+        //
+        // As a result we have a small helper here which will walk the prototype
+        // chain looking for a descriptor. For some more information on this see
+        // #109
+        self.globals.push_str("
+            function GetOwnOrInheritedPropertyDescriptor(obj, id) {
+              while (obj) {
+                let desc = Object.getOwnPropertyDescriptor(obj, id);
+                if (desc) return desc;
+                obj = Object.getPrototypeOf(obj);
+              }
+              throw \"descriptor not found\";
+            }
+        ");
+    }
 }
 
 impl<'a, 'b> SubContext<'a, 'b> {
@@ -1447,8 +1472,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     if import.structural {
                         format!("function() {{ return this.{}; }}", g)
                     } else {
+                        self.cx.expose_get_inherited_descriptor();
                         format!(
-                            "Object.getOwnPropertyDescriptor\
+                            "GetOwnOrInheritedPropertyDescriptor\
                                 ({}.prototype, '{}').get;",
                             class,
                             g,
@@ -1458,8 +1484,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     if import.structural {
                         format!("function(y) {{ this.{} = y; }}", s)
                     } else {
+                        self.cx.expose_get_inherited_descriptor();
                         format!(
-                            "Object.getOwnPropertyDescriptor\
+                            "GetOwnOrInheritedPropertyDescriptor\
                                 ({}.prototype, '{}').set;",
                             class,
                             s,
