@@ -1,8 +1,8 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn simple() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -42,7 +42,7 @@ fn simple() {
 
 #[test]
 fn import_class() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -85,7 +85,7 @@ fn import_class() {
 
 #[test]
 fn construct() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -157,7 +157,7 @@ fn construct() {
 
 #[test]
 fn new_constructors() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -202,7 +202,7 @@ fn new_constructors() {
 
 #[test]
 fn switch_methods() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -281,7 +281,7 @@ fn switch_methods() {
 
 #[test]
 fn properties() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -338,7 +338,7 @@ fn properties() {
 
 #[test]
 fn rename_setter_getter() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 

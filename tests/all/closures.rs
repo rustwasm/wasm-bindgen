@@ -1,8 +1,8 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn works() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -46,7 +46,7 @@ fn works() {
 
 #[test]
 fn cannot_reuse() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -89,7 +89,7 @@ fn cannot_reuse() {
 
 #[test]
 fn long_lived() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -146,7 +146,7 @@ fn long_lived() {
 
 #[test]
 fn many_arity() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -241,7 +241,7 @@ fn many_arity() {
 
 #[test]
 fn long_lived_dropping() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -288,7 +288,7 @@ fn long_lived_dropping() {
 
 #[test]
 fn long_fnmut_recursive() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 

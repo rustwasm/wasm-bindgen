@@ -1,8 +1,8 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn add() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
@@ -55,7 +55,7 @@ fn add() {
 
 #[test]
 fn string_arguments() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
@@ -87,7 +87,7 @@ fn string_arguments() {
 
 #[test]
 fn return_a_string() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
@@ -121,7 +121,7 @@ fn return_a_string() {
 
 #[test]
 fn exceptions() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
@@ -152,7 +152,7 @@ fn exceptions() {
 
 // #[test]
 // fn other_imports() {
-//     test_support::project()
+//     project()
 //         .file("src/lib.rs", r#"
 //             #![feature(proc_macro, wasm_custom_section)]
 //
@@ -186,7 +186,7 @@ fn exceptions() {
 
 #[test]
 fn other_exports() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #[no_mangle]
             pub extern fn foo(_a: u32) {

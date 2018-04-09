@@ -1,8 +1,8 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn works() {
-    test_support::project()
+    project()
         .debug(false)
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]

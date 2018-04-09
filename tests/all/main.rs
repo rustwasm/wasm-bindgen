@@ -11,24 +11,19 @@ use std::time::Instant;
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
 thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
 
-pub struct Project {
+struct Project {
     files: Vec<(String, String)>,
     debug: bool,
-    js: bool,
     node: bool,
 }
 
-pub fn project() -> Project {
+fn project() -> Project {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let dir = dir.parent().unwrap() // chop off `test-support`
-        .parent().unwrap(); // chop off `crates`
-
     let mut lockfile = String::new();
     fs::File::open(&dir.join("Cargo.lock")).unwrap()
         .read_to_string(&mut lockfile).unwrap();
     Project {
         debug: true,
-        js: false,
         node: false,
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
@@ -115,7 +110,7 @@ pub fn project() -> Project {
     }
 }
 
-pub fn root() -> PathBuf {
+fn root() -> PathBuf {
     let idx = IDX.with(|x| *x);
 
     let mut me = env::current_exe().unwrap();
@@ -128,27 +123,22 @@ pub fn root() -> PathBuf {
 }
 
 impl Project {
-    pub fn file(&mut self, name: &str, contents: &str) -> &mut Project {
+    fn file(&mut self, name: &str, contents: &str) -> &mut Project {
         self.files.push((name.to_string(), contents.to_string()));
         self
     }
 
-    pub fn debug(&mut self, debug: bool) -> &mut Project {
+    fn debug(&mut self, debug: bool) -> &mut Project {
         self.debug = debug;
         self
     }
 
-    pub fn node(&mut self, node: bool) -> &mut Project {
+    fn node(&mut self, node: bool) -> &mut Project {
         self.node = node;
         self
     }
 
-    pub fn js(&mut self, js: bool) -> &mut Project {
-        self.js = js;
-        self
-    }
-
-    pub fn add_local_dependency(&mut self, name: &str, path: &str) -> &mut Project {
+    fn add_local_dependency(&mut self, name: &str, path: &str) -> &mut Project {
         {
             let cargo_toml = self.files
                 .iter_mut()
@@ -162,7 +152,7 @@ impl Project {
         self
     }
 
-    pub fn test(&mut self) {
+    fn test(&mut self) {
         let root = root();
         drop(fs::remove_dir_all(&root));
         for &(ref file, ref contents) in self.files.iter() {
@@ -273,3 +263,18 @@ fn run(cmd: &mut Command, program: &str) {
     }
     assert!(output.status.success());
 }
+
+mod api;
+mod classes;
+mod closures;
+mod dependencies;
+mod enums;
+mod import_class;
+mod imports;
+mod jsobjects;
+mod math;
+mod node;
+mod non_debug;
+mod simple;
+mod slice;
+mod structural;

@@ -20,7 +20,7 @@ doctest = false
 wasm-bindgen-macro = { path = "crates/macro", version = "0.2.1" }
 
 [dev-dependencies]
-test-support = { path = "crates/test-support" }
+wasm-bindgen-cli-support = { path = "crates/cli-support", version = '0.2.1' }
 
 [workspace]
 members = [

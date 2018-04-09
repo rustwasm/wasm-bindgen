@@ -1,11 +1,10 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn works() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
-
             extern crate wasm_bindgen;
 
             use wasm_bindgen::prelude::*;

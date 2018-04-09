@@ -1,8 +1,8 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn dependencies_work() {
-    test_support::project()
+    project()
         .file(
             "src/lib.rs",
             r#"

@@ -1,8 +1,8 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn auto_bind_math() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 

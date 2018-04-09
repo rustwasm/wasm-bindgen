@@ -1,8 +1,8 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn simple() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -54,7 +54,7 @@ fn simple() {
 
 #[test]
 fn strings() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -112,7 +112,7 @@ fn strings() {
 
 #[test]
 fn exceptions() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -177,7 +177,7 @@ fn exceptions() {
 
 #[test]
 fn pass_one_to_another() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -227,7 +227,7 @@ fn pass_one_to_another() {
 
 #[test]
 fn pass_into_js() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -274,7 +274,7 @@ fn pass_into_js() {
 
 #[test]
 fn issue_27() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -317,7 +317,7 @@ fn issue_27() {
 
 #[test]
 fn pass_into_js_as_js_class() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 

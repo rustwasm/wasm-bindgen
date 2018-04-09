@@ -1,8 +1,8 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn simple() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -84,7 +84,7 @@ fn simple() {
 
 #[test]
 fn unused() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -114,7 +114,7 @@ fn unused() {
 
 #[test]
 fn strings() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -155,7 +155,7 @@ fn strings() {
 
 #[test]
 fn exceptions() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -213,7 +213,7 @@ fn exceptions() {
 
 #[test]
 fn exn_caught() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -251,7 +251,7 @@ fn exn_caught() {
 
 #[test]
 fn free_imports() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -281,7 +281,7 @@ fn free_imports() {
 
 #[test]
 fn import_a_field() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
@@ -313,7 +313,7 @@ fn import_a_field() {
 
 #[test]
 fn rename() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 

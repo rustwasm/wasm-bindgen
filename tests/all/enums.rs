@@ -1,8 +1,8 @@
-extern crate test_support;
+use super::project;
 
 #[test]
 fn c_style_enum() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
@@ -44,7 +44,7 @@ fn c_style_enum() {
 
 #[test]
 fn c_style_enum_with_custom_values() {
-    test_support::project()
+    project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
