@@ -37,5 +37,5 @@ members = [
 
 [profile.release]
 lto = true
-opt-level = 'z'
+opt-level = 's'
 panic = 'abort'
