@@ -148,7 +148,8 @@ impl Bindgen {
         }
 
         shim.push_str(&format!("
-            const bytes = require('fs').readFileSync('{}');
+            const join = require('path').join;
+            const bytes = require('fs').readFileSync(join(__dirname, '{}'));
             const wasmModule = new WebAssembly.Module(bytes);
             const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
             module.exports = wasmInstance.exports;
