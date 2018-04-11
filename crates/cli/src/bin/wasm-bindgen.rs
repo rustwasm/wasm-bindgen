@@ -24,6 +24,7 @@ Options:
     --browser                Generate output that only works in a browser
     --typescript             Output a TypeScript definition file
     --debug                  Include otherwise-extraneous debug checks in output
+    --no-demangle            Don't demangle Rust symbol names
     -V --version             Print the version number of wasm-bindgen
 ";
 
@@ -35,6 +36,7 @@ struct Args {
     flag_out_dir: Option<PathBuf>,
     flag_debug: bool,
     flag_version: bool,
+    flag_no_demangle: bool,
     arg_input: Option<PathBuf>,
 }
 
@@ -58,6 +60,7 @@ fn main() {
      .nodejs(args.flag_nodejs)
      .browser(args.flag_browser)
      .debug(args.flag_debug)
+     .demangle(!args.flag_no_demangle)
      .typescript(args.flag_typescript);
 
     let out_dir = match args.flag_out_dir {

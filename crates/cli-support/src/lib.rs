@@ -19,6 +19,7 @@ pub struct Bindgen {
     browser: bool,
     debug: bool,
     typescript: bool,
+    demangle: bool,
 }
 
 #[derive(Debug)]
@@ -38,6 +39,7 @@ impl Bindgen {
             browser: false,
             debug: false,
             typescript: false,
+            demangle: true,
         }
     }
 
@@ -63,6 +65,11 @@ impl Bindgen {
 
     pub fn typescript(&mut self, typescript: bool) -> &mut Bindgen {
         self.typescript = typescript;
+        self
+    }
+
+    pub fn demangle(&mut self, demangle: bool) -> &mut Bindgen {
+        self.demangle = demangle;
         self
     }
 

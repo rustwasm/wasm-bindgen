@@ -1171,7 +1171,7 @@ impl<'a> Context<'a> {
         let module = mem::replace(self.module, Module::default());
         let wasm_bytes = parity_wasm::serialize(module).unwrap();
         let bytes = wasm_gc::Config::new()
-            .demangle(false)
+            .demangle(self.config.demangle)
             .gc(&wasm_bytes)
             .unwrap();
         *self.module = deserialize_buffer(&bytes).unwrap();
