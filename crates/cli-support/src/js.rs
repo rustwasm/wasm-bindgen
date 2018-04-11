@@ -1622,6 +1622,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn import_name(&mut self, import: &shared::Import, item: &str) -> String {
         if let Some(ref module) = import.module {
+            if self.cx.config.no_modules {
+                panic!("import from `{}` module not allowed in `--no-modules`. use `--nodejs` or `--browser` instead", module);
+            }
+
             let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
 
             if self.cx.imported_names.insert(name.to_string()) {
