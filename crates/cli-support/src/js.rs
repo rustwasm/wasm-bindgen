@@ -47,7 +47,7 @@ impl<'a> Context<'a> {
         let contents = contents.trim();
         let global = if self.config.nodejs {
             format!("module.exports.{} = {};\n", name, contents)
-        } else if self.config.amd {
+        } else if self.config.no_modules {
             format!("__exports.{} = {}\n", name, contents)
         } else {
             if contents.starts_with("function") {
@@ -229,7 +229,7 @@ impl<'a> Context<'a> {
             self.footer.push_str(&format!("wasm = require('./{}_bg');",
                                           module_name));
             format!("var wasm;")
-        } else if self.config.amd {
+        } else if self.config.no_modules {
             format!("
                 return fetch('{module}_bg.wasm')
                     .then(response => response.arrayBuffer())
@@ -247,7 +247,7 @@ impl<'a> Context<'a> {
             format!("import * as wasm from './{}_bg';", module_name)
         };
 
-        let js = if self.config.amd {
+        let js = if self.config.no_modules {
             format!("
                 (function (root, factory) {{
                     if (typeof define === 'function' && define.amd) {{
@@ -695,7 +695,7 @@ impl<'a> Context<'a> {
             self.globals.push_str(&format!("
                 const TextEncoder = require('util').TextEncoder;
             "));
-        } else if !(self.config.browser || self.config.amd) {
+        } else if !(self.config.browser || self.config.no_modules) {
             self.globals.push_str(&format!("
                 const TextEncoder = typeof window === 'object' && window.TextEncoder
                     ? window.TextEncoder
@@ -715,7 +715,7 @@ impl<'a> Context<'a> {
             self.globals.push_str(&format!("
                 const TextDecoder = require('util').TextDecoder;
             "));
-        } else if !(self.config.browser || self.config.amd) {
+        } else if !(self.config.browser || self.config.no_modules) {
             self.globals.push_str(&format!("
                 const TextDecoder = typeof window === 'object' && window.TextDecoder
                     ? window.TextDecoder

@@ -17,7 +17,7 @@ pub struct Bindgen {
     path: Option<PathBuf>,
     nodejs: bool,
     browser: bool,
-    amd: bool,
+    no_modules: bool,
     debug: bool,
     typescript: bool,
 }
@@ -37,7 +37,7 @@ impl Bindgen {
             path: None,
             nodejs: false,
             browser: false,
-            amd: false,
+            no_modules: false,
             debug: false,
             typescript: false,
         }
@@ -58,8 +58,8 @@ impl Bindgen {
         self
     }
 
-    pub fn amd(&mut self, amd: bool) -> &mut Bindgen {
-        self.amd = amd;
+    pub fn no_modules(&mut self, no_modules: bool) -> &mut Bindgen {
+        self.no_modules = no_modules;
         self
     }
 
