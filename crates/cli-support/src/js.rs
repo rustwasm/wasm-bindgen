@@ -231,9 +231,9 @@ impl<'a> Context<'a> {
             format!("var wasm;")
         } else if self.config.no_modules {
             format!("
-                return fetch('{module}_bg.wasm')
+                window.{module} = fetch('{module}_bg.wasm')
                     .then(response => response.arrayBuffer())
-                    .then(buffer => WebAssembly.instantiate(buffer, __js_exports))
+                    .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
                     .then(({{instance}}) => {{
                         wasm = instance.exports;
                         return wasm;
@@ -249,22 +249,11 @@ impl<'a> Context<'a> {
 
         let js = if self.config.no_modules {
             format!("
-                (function (root, factory) {{
-                    if (typeof define === 'function' && define.amd) {{
-                        define([], factory);
-                    }} else {{
-                        root.{module} = factory();
-                    }}
-                }}(typeof self !== 'undefined' ? self : this, function() {{
-                    let wasm;
-                    const __js_exports = {{}};
-                    const __exports = {{}};
-                    {globals}
-                    __js_exports['./{module}'] = __exports;
-                    {import_wasm}
-                }}))
+                let wasm;
+                const __exports = {{}};
+                {globals}
+                {import_wasm}
             ",
-                    module = module_name,
                     globals = self.globals,
                     import_wasm = import_wasm,
             )
