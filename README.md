@@ -540,6 +540,13 @@ some notable options are:
   making it incompatible with Node. This will basically make the generated JS a
   tiny bit smaller as runtime checks for Node won't be necessary.
 
+* `--no-modules` - the default output of `wasm-bindgen` uses ES modules but this
+  option indicates that ES modules should not be used and output should be
+  tailored for a web browser. In this mode `window.wasm_bindgen` will be a
+  function that takes a path to the wasm file to fetch and instantiate.
+  Afterwards exported functions from the wasm are available through
+  `window.wasm_bindgen.foo`.
+
 * `--typescript` - when passed a `*.d.ts` file will be generated for the
   generated JS file. This should allow hooking into TypeScript projects to
   ensure everything still typechecks.
