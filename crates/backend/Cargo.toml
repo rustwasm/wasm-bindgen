@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-backend"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/alexcrichton/wasm-bindgen"
@@ -13,5 +13,5 @@ Backend code generation of the wasm-bindgen tool
 [dependencies]
 quote = '0.5'
 proc-macro2 = { version = "0.3", features = ["nightly"] }
-wasm-bindgen-shared = { path = "../shared", version = "0.2.1" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.2" }
 syn = { version = '0.13', features = ['full'] }
