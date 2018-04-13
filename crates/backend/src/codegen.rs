@@ -495,7 +495,14 @@ impl ToTokens for ast::ImportFunction {
                             ::into_abi(#var, &mut __stack);
                     });
                 }
-                ast::TypeKind::ByMutRef => panic!("urgh mut"),
+                ast::TypeKind::ByMutRef => {
+                    abi_argument_names.push(name);
+                    abi_arguments.push(quote! { #name: u32 });
+                    arg_conversions.push(quote! {
+                        let #name = <#t as ::wasm_bindgen::convert::ToRefMutWasmBoundary>
+                            ::to_abi_ref_mut(#name, &mut __stack);
+                    });
+                }
                 ast::TypeKind::ByRef => {
                     abi_argument_names.push(name);
                     abi_arguments.push(quote! { #name: u32 });

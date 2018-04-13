@@ -42,6 +42,12 @@ pub trait ToRefWasmBoundary: WasmDescribe {
     fn to_abi_ref(&self, extra: &mut Stack) -> u32;
 }
 
+pub trait ToRefMutWasmBoundary: WasmDescribe {
+    type Abi: WasmAbi;
+
+    fn to_abi_ref_mut(&mut self, extra: &mut Stack) -> u32;
+}
+
 pub trait Stack {
     fn push(&mut self, bits: u32);
     fn pop(&mut self) -> u32;
@@ -354,6 +360,61 @@ macro_rules! stack_closures {
                         throw("closure has been destroyed already");
                     }
                     let f: &Fn($($var),*) = mem::transmute((a, b));
+                    f($($var),*)
+                }
+                unsafe {
+                    let (a, b): (usize, usize) = mem::transmute(self);
+                    extra.push(a as u32);
+                    extra.push(b as u32);
+                    invoke::<$($var,)*> as u32
+                }
+            }
+        }
+
+        impl<'a, $($var,)* R> ToRefMutWasmBoundary for FnMut($($var),*) -> R + 'a
+            where $($var: WasmAbi + WasmDescribe,)*
+                  R: WasmAbi + WasmDescribe
+        {
+            type Abi = u32;
+
+            fn to_abi_ref_mut(&mut self, extra: &mut Stack) -> u32 {
+                #[allow(non_snake_case)]
+                unsafe extern fn invoke<$($var,)* R>(
+                    a: usize,
+                    b: usize,
+                    $($var: $var),*
+                ) -> R {
+                    if a == 0 {
+                        throw("closure invoked recursively or destroyed already");
+                    }
+                    let f: &mut FnMut($($var),*) -> R = mem::transmute((a, b));
+                    f($($var),*)
+                }
+                unsafe {
+                    let (a, b): (usize, usize) = mem::transmute(self);
+                    extra.push(a as u32);
+                    extra.push(b as u32);
+                    invoke::<$($var,)* R> as u32
+                }
+            }
+        }
+
+        impl<'a, $($var,)*> ToRefMutWasmBoundary for FnMut($($var),*) + 'a
+            where $($var: WasmAbi + WasmDescribe,)*
+        {
+            type Abi = u32;
+
+            fn to_abi_ref_mut(&mut self, extra: &mut Stack) -> u32 {
+                #[allow(non_snake_case)]
+                unsafe extern fn invoke<$($var,)* >(
+                    a: usize,
+                    b: usize,
+                    $($var: $var),*
+                ) {
+                    if a == 0 {
+                        throw("closure invoked recursively or destroyed already");
+                    }
+                    let f: &mut FnMut($($var),*) = mem::transmute((a, b));
                     f($($var),*)
                 }
                 unsafe {

@@ -212,13 +212,14 @@ impl Descriptor {
         }
     }
 
-    pub fn stack_closure(&self) -> Option<&Function> {
-        let inner = match *self {
-            Descriptor::Ref(ref d) => &**d,
+    pub fn stack_closure(&self) -> Option<(&Function, bool)> {
+        let (inner, mutable) = match *self {
+            Descriptor::Ref(ref d) => (&**d, false),
+            Descriptor::RefMut(ref d) => (&**d, true),
             _ => return None,
         };
         match *inner {
-            Descriptor::Function(ref f) => Some(f),
+            Descriptor::Function(ref f) => Some((f, mutable)),
             _ => None,
         }
     }
