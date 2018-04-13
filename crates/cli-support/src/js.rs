@@ -267,44 +267,36 @@ impl<'a> Context<'a> {
 
         self.rewrite_imports(module_name);
 
-        let import_wasm = if self.config.nodejs {
-            self.footer.push_str(&format!("wasm = require('./{}_bg');",
-                                          module_name));
-            format!("var wasm;")
-        } else if self.config.no_modules {
-            format!("
-                window.wasm_bindgen.init = function(__wasm_path) {{
-                    return fetch(__wasm_path)
-                        .then(response => response.arrayBuffer())
-                        .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
-                        .then(({{instance}}) => {{
-                            wasm = instance.exports;
-                            return;
-                        }})
-                        .catch(error => {{
-                            console.log('Error loading wasm module `{module}`:', error);
-                            throw error;
-                        }});
-                }};
-            ", module = module_name)
-        } else {
-            format!("import * as wasm from './{}_bg';", module_name)
-        };
-
         let js = if self.config.no_modules {
             format!("
                 (function() {{
-                    let wasm;
+                    var wasm;
                     const __exports = {{}};
                     {globals}
-                    window.wasm_bindgen = Object.assign({{}}, __exports);
-                    {import_wasm}
+                    function init(wasm_path) {{
+                        return fetch(wasm_path)
+                            .then(response => response.arrayBuffer())
+                            .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
+                            .then(({{instance}}) => {{
+                                wasm = init.wasm = instance.exports;
+                                return;
+                            }});
+                    }};
+                    window.wasm_bindgen = Object.assign(init, __exports);
                 }})();
             ",
                     globals = self.globals,
-                    import_wasm = import_wasm,
+                    module = module_name,
             )
         } else {
+            let import_wasm = if self.config.nodejs {
+                self.footer.push_str(&format!("wasm = require('./{}_bg');",
+                                              module_name));
+                format!("var wasm;")
+            } else {
+                format!("import * as wasm from './{}_bg';", module_name)
+            };
+
             format!("
                 /* tslint:disable */
                 {import_wasm}
