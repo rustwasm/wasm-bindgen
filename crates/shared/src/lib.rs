@@ -1,29 +1,25 @@
 #[macro_use]
 extern crate serde_derive;
-extern crate fnv;
 
-use std::hash::{Hash, Hasher};
+pub const SCHEMA_VERSION: &str = "2";
 
-pub const SCHEMA_VERSION: &str = "1";
-
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Program {
     pub exports: Vec<Export>,
     pub enums: Vec<Enum>,
     pub imports: Vec<Import>,
-    pub custom_type_names: Vec<CustomTypeName>,
     pub version: String,
     pub schema_version: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Import {
     pub module: Option<String>,
     pub js_namespace: Option<String>,
     pub kind: ImportKind,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "lowercase")]
 pub enum ImportKind {
     Function(ImportFunction),
@@ -31,10 +27,9 @@ pub enum ImportKind {
     Type(ImportType),
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct ImportFunction {
     pub shim: String,
-    pub module: Option<String>,
     pub catch: bool,
     pub method: bool,
     pub js_new: bool,
@@ -45,46 +40,37 @@ pub struct ImportFunction {
     pub function: Function,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct ImportStatic {
-    pub module: Option<String>,
     pub name: String,
     pub shim: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct ImportType {
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Export {
     pub class: Option<String>,
     pub method: bool,
     pub function: Function,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Enum {
     pub name: String,
     pub variants: Vec<EnumVariant>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct EnumVariant {
     pub name: String,
     pub value: u32
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Function {
-    pub name: String,
-    pub arguments: Vec<Type>,
-    pub ret: Option<Type>,
-}
-
-#[derive(Deserialize)]
-pub struct CustomTypeName {
-    pub descriptor: u32,
     pub name: String,
 }
 
@@ -118,53 +104,6 @@ pub fn struct_function_export_name(struct_: &str, f: &str) -> String {
     name.push_str("_");
     name.push_str(f);
     return name
-}
-
-pub type Type = u32;
-
-pub const TYPE_VECTOR_JSVALUE: u32 = 0;
-pub const TYPE_ENUM: u32 = 1;
-pub const TYPE_NUMBER: u32 = 2;
-pub const TYPE_BORROWED_STR: u32 = 3;
-pub const TYPE_STRING: u32 = 4;
-pub const TYPE_BOOLEAN: u32 = 5;
-pub const TYPE_SLICE_U8: u32 = 6;
-pub const TYPE_VECTOR_U8: u32 = 7;
-pub const TYPE_SLICE_I8: u32 = 8;
-pub const TYPE_VECTOR_I8: u32 = 9;
-pub const TYPE_SLICE_U16: u32 = 10;
-pub const TYPE_VECTOR_U16: u32 = 11;
-pub const TYPE_SLICE_I16: u32 = 12;
-pub const TYPE_VECTOR_I16: u32 = 13;
-pub const TYPE_SLICE_U32: u32 = 14;
-pub const TYPE_VECTOR_U32: u32 = 15;
-pub const TYPE_SLICE_I32: u32 = 16;
-pub const TYPE_VECTOR_I32: u32 = 17;
-pub const TYPE_SLICE_F32: u32 = 18;
-pub const TYPE_VECTOR_F32: u32 = 19;
-pub const TYPE_SLICE_F64: u32 = 20;
-pub const TYPE_VECTOR_F64: u32 = 21;
-pub const TYPE_JS_OWNED: u32 = 22;
-pub const TYPE_JS_REF: u32 = 23;
-pub const TYPE_STACK_FUNC0: u32 = 24;
-pub const TYPE_STACK_FUNC1: u32 = 25;
-pub const TYPE_STACK_FUNC2: u32 = 26;
-pub const TYPE_STACK_FUNC3: u32 = 27;
-pub const TYPE_STACK_FUNC4: u32 = 28;
-pub const TYPE_STACK_FUNC5: u32 = 29;
-pub const TYPE_STACK_FUNC6: u32 = 30;
-pub const TYPE_STACK_FUNC7: u32 = 31;
-pub const TYPE_FUNC: u32 = 32;
-
-pub const TYPE_CUSTOM_START: u32 = 40;
-pub const TYPE_CUSTOM_REF_FLAG: u32 = 1;
-
-pub fn name_to_descriptor(name: &str) -> u32 {
-    const MAX: u32 = 10_000;
-    let mut h = fnv::FnvHasher::default();
-    name.hash(&mut h);
-    (((h.finish() as u32) % (MAX - TYPE_CUSTOM_START)) + TYPE_CUSTOM_START) & !1
-
 }
 
 pub fn version() -> String {

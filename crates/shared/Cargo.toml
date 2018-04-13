@@ -14,4 +14,3 @@ dependency.
 [dependencies]
 serde_derive = "1"
 serde = "1"
-fnv = "1"

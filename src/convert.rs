@@ -1,9 +1,13 @@
+//! This is mostly an internal module, no stability guarantees are provied. Use
+//! at your own risk.
+
 use std::mem::{self, ManuallyDrop};
 use std::ops::{Deref, DerefMut};
 use std::slice;
 use std::str;
 
 use {JsValue, throw};
+use describe::*;
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 pub struct Descriptor {
@@ -11,54 +15,29 @@ pub struct Descriptor {
     pub __x: [u8; 4],
 }
 
-// keep in sync with shared/src/lib.rs TYPE constants
-// pub const DESCRIPTOR_CUSTOM_REF_FLAG: Descriptor = Descriptor { __x: *b"  1", };
-pub const DESCRIPTOR_NUMBER: Descriptor = Descriptor { __x: *b"   2", };
-pub const DESCRIPTOR_BORROWED_STR: Descriptor = Descriptor { __x: *b"   3", };
-pub const DESCRIPTOR_STRING: Descriptor = Descriptor { __x: *b"   4", };
-pub const DESCRIPTOR_BOOLEAN: Descriptor = Descriptor { __x: *b"   5", };
-
-pub const DESCRIPTOR_JS_OWNED: Descriptor = Descriptor { __x: *b"  22", };
-pub const DESCRIPTOR_JS_REF: Descriptor = Descriptor { __x: *b"  23", };
-
-pub const DESCRIPTOR_STACK_FUNC0: Descriptor = Descriptor { __x: *b"  24", };
-pub const DESCRIPTOR_STACK_FUNC1: Descriptor = Descriptor { __x: *b"  25", };
-pub const DESCRIPTOR_STACK_FUNC2: Descriptor = Descriptor { __x: *b"  26", };
-pub const DESCRIPTOR_STACK_FUNC3: Descriptor = Descriptor { __x: *b"  27", };
-pub const DESCRIPTOR_STACK_FUNC4: Descriptor = Descriptor { __x: *b"  28", };
-pub const DESCRIPTOR_STACK_FUNC5: Descriptor = Descriptor { __x: *b"  29", };
-pub const DESCRIPTOR_STACK_FUNC6: Descriptor = Descriptor { __x: *b"  30", };
-pub const DESCRIPTOR_STACK_FUNC7: Descriptor = Descriptor { __x: *b"  31", };
-
-pub const DESCRIPTOR_FUNC: Descriptor = Descriptor { __x: *b"  32", };
-
-pub trait WasmBoundary {
+pub trait WasmBoundary: WasmDescribe {
     type Abi: WasmAbi;
-    const DESCRIPTOR: Descriptor;
 
     fn into_abi(self, extra: &mut Stack) -> Self::Abi;
     unsafe fn from_abi(js: Self::Abi, extra: &mut Stack) -> Self;
 }
 
-pub trait FromRefWasmBoundary {
+pub trait FromRefWasmBoundary: WasmDescribe {
     type Abi: WasmAbi;
-    const DESCRIPTOR: Descriptor;
     type RefAnchor: Deref<Target = Self>;
 
     unsafe fn from_abi_ref(js: Self::Abi, extra: &mut Stack) -> Self::RefAnchor;
 }
 
-pub trait FromRefMutWasmBoundary {
+pub trait FromRefMutWasmBoundary: WasmDescribe {
     type Abi: WasmAbi;
-    const DESCRIPTOR: Descriptor;
     type RefAnchor: DerefMut<Target = Self>;
 
     unsafe fn from_abi_ref_mut(js: Self::Abi, extra: &mut Stack) -> Self::RefAnchor;
 }
 
-pub trait ToRefWasmBoundary {
+pub trait ToRefWasmBoundary: WasmDescribe {
     type Abi: WasmAbi;
-    const DESCRIPTOR: Descriptor;
 
     fn to_abi_ref(&self, extra: &mut Stack) -> u32;
 }
@@ -78,6 +57,8 @@ pub unsafe trait WasmAbi {}
 
 unsafe impl WasmAbi for u32 {}
 unsafe impl WasmAbi for u64 {}
+unsafe impl WasmAbi for i32 {}
+unsafe impl WasmAbi for i64 {}
 unsafe impl WasmAbi for f32 {}
 unsafe impl WasmAbi for f64 {}
 
@@ -85,7 +66,6 @@ macro_rules! simple {
     ($($t:tt)*) => ($(
         impl WasmBoundary for $t {
             type Abi = $t;
-            const DESCRIPTOR: Descriptor = DESCRIPTOR_NUMBER;
 
             fn into_abi(self, _extra: &mut Stack) -> $t { self }
             unsafe fn from_abi(js: $t, _extra: &mut Stack) -> $t { js }
@@ -93,13 +73,12 @@ macro_rules! simple {
     )*)
 }
 
-simple!(u32 u64 f32 f64);
+simple!(u32 u64 i32 i64 f32 f64);
 
 macro_rules! as_u32 {
     ($($t:tt)*) => ($(
         impl WasmBoundary for $t {
             type Abi = u32;
-            const DESCRIPTOR: Descriptor = DESCRIPTOR_NUMBER;
 
             fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
             unsafe fn from_abi(js: u32, _extra: &mut Stack) -> $t { js as $t }
@@ -107,11 +86,10 @@ macro_rules! as_u32 {
     )*)
 }
 
-as_u32!(i8 u8 i16 u16 i32 isize usize);
+as_u32!(i8 u8 i16 u16 isize usize);
 
 impl WasmBoundary for bool {
     type Abi = u32;
-    const DESCRIPTOR: Descriptor = DESCRIPTOR_BOOLEAN;
 
     fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
     unsafe fn from_abi(js: u32, _extra: &mut Stack) -> bool { js != 0 }
@@ -119,7 +97,6 @@ impl WasmBoundary for bool {
 
 impl<T> WasmBoundary for *const T {
     type Abi = u32;
-    const DESCRIPTOR: Descriptor = DESCRIPTOR_NUMBER;
 
     fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
     unsafe fn from_abi(js: u32, _extra: &mut Stack) -> *const T { js as *const T }
@@ -127,17 +104,15 @@ impl<T> WasmBoundary for *const T {
 
 impl<T> WasmBoundary for *mut T {
     type Abi = u32;
-    const DESCRIPTOR: Descriptor = DESCRIPTOR_NUMBER;
 
     fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
     unsafe fn from_abi(js: u32, _extra: &mut Stack) -> *mut T { js as *mut T }
 }
 
 macro_rules! vectors {
-    ($($t:ident => ($slice:expr, $owned:expr))*) => ($(
+    ($($t:ident)*) => ($(
         impl WasmBoundary for Box<[$t]> {
             type Abi = u32;
-            const DESCRIPTOR: Descriptor = Descriptor { __x: *$owned };
 
             fn into_abi(self, extra: &mut Stack) -> u32 {
                 let ptr = self.as_ptr();
@@ -152,11 +127,11 @@ macro_rules! vectors {
                 let len = extra.pop() as usize;
                 Vec::from_raw_parts(ptr, len, len).into_boxed_slice()
             }
+
         }
 
         impl ToRefWasmBoundary for [$t] {
             type Abi = u32;
-            const DESCRIPTOR: Descriptor = Descriptor { __x: *$slice };
 
             fn to_abi_ref(&self, extra: &mut Stack) -> u32 {
                 let ptr = self.as_ptr();
@@ -168,7 +143,6 @@ macro_rules! vectors {
 
         impl FromRefWasmBoundary for [$t] {
             type Abi = u32;
-            const DESCRIPTOR: Descriptor = Descriptor { __x: *$slice };
             type RefAnchor = SliceAnchor<$t>;
 
             unsafe fn from_abi_ref(js: u32, extra: &mut Stack) -> SliceAnchor<$t> {
@@ -194,19 +168,11 @@ impl<T> Deref for SliceAnchor<T> {
 }
 
 vectors! {
-    u8 => (b"   6", b"   7")
-    i8 => (b"   8", b"   9")
-    u16 => (b"  10", b"  11")
-    i16 => (b"  12", b"  13")
-    u32 => (b"  14", b"  15")
-    i32 => (b"  16", b"  17")
-    f32 => (b"  18", b"  19")
-    f64 => (b"  20", b"  21")
+    u8 i8 u16 i16 u32 i32 f32 f64
 }
 
 impl<T> WasmBoundary for Vec<T> where Box<[T]>: WasmBoundary {
     type Abi = <Box<[T]> as WasmBoundary>::Abi;
-    const DESCRIPTOR: Descriptor = <Box<[T]> as WasmBoundary>::DESCRIPTOR;
 
     fn into_abi(self, extra: &mut Stack) -> Self::Abi {
         self.into_boxed_slice().into_abi(extra)
@@ -219,7 +185,6 @@ impl<T> WasmBoundary for Vec<T> where Box<[T]>: WasmBoundary {
 
 impl WasmBoundary for String {
     type Abi = u32;
-    const DESCRIPTOR: Descriptor = DESCRIPTOR_STRING;
 
     fn into_abi(self, extra: &mut Stack) -> u32 {
         self.into_bytes().into_abi(extra)
@@ -232,7 +197,6 @@ impl WasmBoundary for String {
 
 impl ToRefWasmBoundary for str {
     type Abi = <[u8] as ToRefWasmBoundary>::Abi;
-    const DESCRIPTOR: Descriptor = DESCRIPTOR_BORROWED_STR;
 
     fn to_abi_ref(&self, extra: &mut Stack) -> Self::Abi {
         self.as_bytes().to_abi_ref(extra)
@@ -241,7 +205,6 @@ impl ToRefWasmBoundary for str {
 
 impl FromRefWasmBoundary for str {
     type Abi = <[u8] as ToRefWasmBoundary>::Abi;
-    const DESCRIPTOR: Descriptor = DESCRIPTOR_BORROWED_STR;
     type RefAnchor = StrAnchor;
 
     unsafe fn from_abi_ref(js: Self::Abi, extra: &mut Stack) -> Self::RefAnchor {
@@ -263,7 +226,6 @@ impl Deref for StrAnchor {
 
 impl WasmBoundary for JsValue {
     type Abi = u32;
-    const DESCRIPTOR: Descriptor = DESCRIPTOR_JS_OWNED;
 
     fn into_abi(self, _extra: &mut Stack) -> u32 {
         let ret = self.idx;
@@ -278,7 +240,6 @@ impl WasmBoundary for JsValue {
 
 impl ToRefWasmBoundary for JsValue {
     type Abi = u32;
-    const DESCRIPTOR: Descriptor = DESCRIPTOR_JS_REF;
     fn to_abi_ref(&self, _extra: &mut Stack) -> u32 {
         self.idx
     }
@@ -286,7 +247,6 @@ impl ToRefWasmBoundary for JsValue {
 
 impl FromRefWasmBoundary for JsValue {
     type Abi = u32;
-    const DESCRIPTOR: Descriptor = DESCRIPTOR_JS_REF;
     type RefAnchor = ManuallyDrop<JsValue>;
 
     unsafe fn from_abi_ref(js: u32, _extra: &mut Stack) -> ManuallyDrop<JsValue> {
@@ -296,7 +256,6 @@ impl FromRefWasmBoundary for JsValue {
 
 impl WasmBoundary for Box<[JsValue]> {
     type Abi = u32;
-    const DESCRIPTOR: Descriptor = Descriptor { __x: *b"   0" };
 
     fn into_abi(self, extra: &mut Stack) -> u32 {
         let ptr = self.as_ptr();
@@ -350,15 +309,12 @@ pub unsafe extern fn __wbindgen_global_argument_ptr() -> *mut u32 {
 }
 
 macro_rules! stack_closures {
-    ($(
-        ($($var:ident)*) => $descriptor:ident
-    )*) => ($(
+    ($( ($($var:ident)*) )*) => ($(
         impl<'a, $($var,)* R> ToRefWasmBoundary for Fn($($var),*) -> R + 'a
-            where $($var: WasmAbi,)*
-                  R: WasmAbi
+            where $($var: WasmAbi + WasmDescribe,)*
+                  R: WasmAbi + WasmDescribe
         {
             type Abi = u32;
-            const DESCRIPTOR: Descriptor = $descriptor;
 
             fn to_abi_ref(&self, extra: &mut Stack) -> u32 {
                 #[allow(non_snake_case)]
@@ -383,10 +339,9 @@ macro_rules! stack_closures {
         }
 
         impl<'a, $($var,)*> ToRefWasmBoundary for Fn($($var),*) + 'a
-            where $($var: WasmAbi,)*
+            where $($var: WasmAbi + WasmDescribe,)*
         {
             type Abi = u32;
-            const DESCRIPTOR: Descriptor = $descriptor;
 
             fn to_abi_ref(&self, extra: &mut Stack) -> u32 {
                 #[allow(non_snake_case)]
@@ -413,12 +368,12 @@ macro_rules! stack_closures {
 }
 
 stack_closures! {
-    () => DESCRIPTOR_STACK_FUNC0
-    (A) => DESCRIPTOR_STACK_FUNC1
-    (A B) => DESCRIPTOR_STACK_FUNC2
-    (A B C) => DESCRIPTOR_STACK_FUNC3
-    (A B C D) => DESCRIPTOR_STACK_FUNC4
-    (A B C D E) => DESCRIPTOR_STACK_FUNC5
-    (A B C D E F) => DESCRIPTOR_STACK_FUNC6
-    (A B C D E F G) => DESCRIPTOR_STACK_FUNC7
+    ()
+    (A)
+    (A B)
+    (A B C)
+    (A B C D)
+    (A B C D E)
+    (A B C D E F)
+    (A B C D E F G)
 }

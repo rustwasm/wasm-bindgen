@@ -15,3 +15,4 @@ quote = '0.5'
 proc-macro2 = { version = "0.3", features = ["nightly"] }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.2" }
 syn = { version = '0.13', features = ['full'] }
+serde_json = "1.0"

@@ -4,8 +4,9 @@ use std::env;
 use std::sync::atomic::{ATOMIC_USIZE_INIT, AtomicUsize, Ordering};
 
 use ast;
+use proc_macro2::Span;
 use quote::{ToTokens, Tokens};
-use proc_macro2::Literal;
+use serde_json;
 use shared;
 use syn;
 
@@ -50,6 +51,7 @@ impl ToTokens for ast::Program {
                 }
                 _ => i.kind.to_tokens(tokens),
             }
+            DescribeImport(&i.kind).to_tokens(tokens);
         }
         for e in self.enums.iter() {
             e.to_tokens(tokens);
@@ -73,14 +75,26 @@ impl ToTokens for ast::Program {
         );
         let generated_static_name = syn::Ident::from(generated_static_name);
 
-        let mut generated_static_value = Tokens::new();
-        let generated_static_length = self.literal(&mut generated_static_value);
+        let description = serde_json::to_string(&self.shared()).unwrap();
+
+        // Each JSON blob is prepended with the length of the JSON blob so when
+        // all these sections are concatenated in the final wasm file we know
+        // how to extract all the JSON pieces, so insert the byte length here.
+        let generated_static_length = description.len() + 4;
+        let mut bytes = vec![
+            (description.len() >> 0) as u8,
+            (description.len() >> 8) as u8,
+            (description.len() >> 16) as u8,
+            (description.len() >> 24) as u8,
+        ];
+        bytes.extend_from_slice(description.as_bytes());
+        let generated_static_value = syn::LitByteStr::new(&bytes, Span::call_site());
 
         (quote! {
             #[allow(non_upper_case_globals)]
             #[wasm_custom_section = "__wasm_bindgen_unstable"]
             const #generated_static_name: [u8; #generated_static_length] =
-                [#generated_static_value];
+                *#generated_static_value;
         }).to_tokens(tokens);
     }
 }
@@ -88,18 +102,22 @@ impl ToTokens for ast::Program {
 impl ToTokens for ast::Struct {
     fn to_tokens(&self, tokens: &mut Tokens) {
         let name = &self.name;
+        let name_len = name.as_ref().len() as u32;
+        let name_chars = name.as_ref().chars().map(|c| c as u32);
         let new_fn = syn::Ident::from(shared::new_function(self.name.as_ref()));
         let free_fn = syn::Ident::from(shared::free_function(self.name.as_ref()));
-        let c = shared::name_to_descriptor(name.as_ref());
-        let descriptor = Literal::byte_string(format!("{:4}", c).as_bytes());
-        let borrowed_descriptor = Literal::byte_string(format!("{:4}", c + 1).as_bytes());
         (quote! {
+            impl ::wasm_bindgen::describe::WasmDescribe for #name {
+                fn describe() {
+                    use wasm_bindgen::describe::*;
+                    inform(RUST_STRUCT);
+                    inform(#name_len);
+                    #(inform(#name_chars);)*
+                }
+            }
+
             impl ::wasm_bindgen::convert::WasmBoundary for #name {
                 type Abi = u32;
-                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
-                    ::wasm_bindgen::convert::Descriptor {
-                        __x: *#descriptor
-                    };
 
                 fn into_abi(self, _extra: &mut ::wasm_bindgen::convert::Stack)
                     -> u32
@@ -120,10 +138,6 @@ impl ToTokens for ast::Struct {
 
             impl ::wasm_bindgen::convert::FromRefWasmBoundary for #name {
                 type Abi = u32;
-                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
-                    ::wasm_bindgen::convert::Descriptor {
-                        __x: *#borrowed_descriptor
-                    };
                 type RefAnchor = ::wasm_bindgen::__rt::Ref<'static, #name>;
 
                 unsafe fn from_abi_ref(
@@ -138,10 +152,6 @@ impl ToTokens for ast::Struct {
 
             impl ::wasm_bindgen::convert::FromRefMutWasmBoundary for #name {
                 type Abi = u32;
-                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
-                    ::wasm_bindgen::convert::Descriptor {
-                        __x: *#borrowed_descriptor
-                    };
                 type RefAnchor = ::wasm_bindgen::__rt::RefMut<'static, #name>;
 
                 unsafe fn from_abi_ref_mut(
@@ -273,6 +283,15 @@ impl ToTokens for ast::Export {
                 convert_ret = quote!{};
             }
         }
+        let describe_ret = match self.function.ret {
+            Some(ast::Type { ref ty, .. }) => {
+                quote! {
+                    inform(1);
+                    <#ty as WasmDescribe>::describe();
+                }
+            }
+            None => quote! { inform(0); },
+        };
 
         let name = self.function.name;
         let receiver = match self.class {
@@ -286,6 +305,10 @@ impl ToTokens for ast::Export {
             Some(class) => quote! { #class::#name },
             None => quote!{ #name },
         };
+        let descriptor_name = format!("__wbindgen_describe_{}", export_name);
+        let descriptor_name = syn::Ident::from(descriptor_name);
+        let nargs = self.function.arguments.len() as u32;
+        let argtys = self.function.arguments.iter();
 
         let tokens = quote! {
             #[export_name = #export_name]
@@ -301,8 +324,43 @@ impl ToTokens for ast::Export {
                 };
                 #convert_ret
             }
+
+            // In addition to generating the shim function above which is what
+            // our generated JS will invoke, we *also* generate a "descriptor"
+            // shim. This descriptor shim uses the `WasmDescribe` trait to
+            // programmatically describe the type signature of the generated
+            // shim above. This in turn is then used to inform the
+            // `wasm-bindgen` CLI tool exactly what types and such it should be
+            // using in JS.
+            //
+            // Note that this descriptor function is a purely an internal detail
+            // of `#[wasm_bindgen]` and isn't intended to be exported to anyone
+            // or actually part of the final was binary. Additionally, this is
+            // literally executed when the `wasm-bindgen` tool executes.
+            //
+            // In any case, there's complications in `wasm-bindgen` to handle
+            // this, but the tl;dr; is that this is stripped from the final wasm
+            // binary along with anything it references.
+            #[no_mangle]
+            pub extern fn #descriptor_name() {
+                use wasm_bindgen::describe::*;
+                inform(FUNCTION);
+                inform(#nargs);
+                #(<#argtys as WasmDescribe>::describe();)*
+                #describe_ret
+            }
         };
         tokens.to_tokens(into);
+    }
+}
+
+impl ToTokens for ast::ImportKind {
+    fn to_tokens(&self, tokens: &mut Tokens) {
+        match *self {
+            ast::ImportKind::Function(ref f) => f.to_tokens(tokens),
+            ast::ImportKind::Static(ref s) => s.to_tokens(tokens),
+            ast::ImportKind::Type(ref t) => t.to_tokens(tokens),
+        }
     }
 }
 
@@ -316,12 +374,15 @@ impl ToTokens for ast::ImportType {
                 obj: ::wasm_bindgen::JsValue,
             }
 
+            impl ::wasm_bindgen::describe::WasmDescribe for #name {
+                fn describe() {
+                    ::wasm_bindgen::JsValue::describe();
+                }
+            }
+
             impl ::wasm_bindgen::convert::WasmBoundary for #name {
                 type Abi = <::wasm_bindgen::JsValue as
                     ::wasm_bindgen::convert::WasmBoundary>::Abi;
-                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
-                    <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary>
-                        ::DESCRIPTOR;
 
                 fn into_abi(self, extra: &mut ::wasm_bindgen::convert::Stack) -> Self::Abi {
                     self.obj.into_abi(extra)
@@ -338,9 +399,6 @@ impl ToTokens for ast::ImportType {
             impl ::wasm_bindgen::convert::ToRefWasmBoundary for #name {
                 type Abi = <::wasm_bindgen::JsValue as
                     ::wasm_bindgen::convert::ToRefWasmBoundary>::Abi;
-                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
-                    <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::ToRefWasmBoundary>
-                        ::DESCRIPTOR;
 
                 fn to_abi_ref(&self, extra: &mut ::wasm_bindgen::convert::Stack) -> u32 {
                     self.obj.to_abi_ref(extra)
@@ -350,9 +408,6 @@ impl ToTokens for ast::ImportType {
             impl ::wasm_bindgen::convert::FromRefWasmBoundary for #name {
                 type Abi = <::wasm_bindgen::JsValue as
                     ::wasm_bindgen::convert::ToRefWasmBoundary>::Abi;
-                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
-                    <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::ToRefWasmBoundary>
-                        ::DESCRIPTOR;
                 type RefAnchor = ::std::mem::ManuallyDrop<#name>;
 
                 unsafe fn from_abi_ref(
@@ -378,16 +433,6 @@ impl ToTokens for ast::ImportType {
                 }
             }
         }).to_tokens(tokens);
-    }
-}
-
-impl ToTokens for ast::ImportKind {
-    fn to_tokens(&self, tokens: &mut Tokens) {
-        match *self {
-            ast::ImportKind::Function(ref f) => f.to_tokens(tokens),
-            ast::ImportKind::Static(ref s) => s.to_tokens(tokens),
-            ast::ImportKind::Type(ref t) => t.to_tokens(tokens),
-        }
     }
 }
 
@@ -552,6 +597,7 @@ impl ToTokens for ast::ImportFunction {
                     #convert_ret
                 }
             }
+
         };
 
         if let Some(class) = class_ty {
@@ -566,36 +612,52 @@ impl ToTokens for ast::ImportFunction {
     }
 }
 
+// See comment above in ast::Export for what's going on here.
+struct DescribeImport<'a>(&'a ast::ImportKind);
+
+impl<'a> ToTokens for DescribeImport<'a> {
+    fn to_tokens(&self, tokens: &mut Tokens) {
+        let f = match *self.0 {
+            ast::ImportKind::Function(ref f) => f,
+            ast::ImportKind::Static(_) => return,
+            ast::ImportKind::Type(_) => return,
+        };
+        let describe_name = format!("__wbindgen_describe_{}", f.shim);
+        let describe_name = syn::Ident::from(describe_name);
+        let argtys = f.function.arguments.iter();
+        let nargs = f.function.arguments.len() as u32;
+        let inform_ret = match f.function.ret {
+            Some(ref t) => quote! { inform(1); <#t as WasmDescribe>::describe(); },
+            None => quote! { inform(0); },
+        };
+        (quote! {
+            #[no_mangle]
+            #[allow(non_snake_case)]
+            pub extern fn #describe_name() {
+                use wasm_bindgen::describe::*;
+                inform(FUNCTION);
+                inform(#nargs);
+                #(<#argtys as WasmDescribe>::describe();)*
+                #inform_ret
+            }
+        }).to_tokens(tokens);
+    }
+}
+
 impl ToTokens for ast::Enum {
     fn to_tokens(&self, into: &mut Tokens) {
         let enum_name = &self.name;
-        let descriptor = format!("{:4}", shared::TYPE_ENUM);
-        let descriptor = Literal::byte_string(descriptor.as_bytes());
-        let incoming_u32 = quote! { n };
-        let enum_name_as_string = enum_name.to_string();
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
             quote! {
-                if #incoming_u32 == #enum_name::#variant_name as u32 {
+                if js == #enum_name::#variant_name as u32 {
                     #enum_name::#variant_name
                 }
             }
         });
         (quote! {
-            impl #enum_name {
-                fn from_u32(#incoming_u32: u32) -> #enum_name {
-                    #(#cast_clauses else)* {
-                        wasm_bindgen::throw(&format!("Could not cast {} as {}", #incoming_u32, #enum_name_as_string));
-                    }
-                }
-            }
-
             impl ::wasm_bindgen::convert::WasmBoundary for #enum_name {
                 type Abi = u32;
-                const DESCRIPTOR: ::wasm_bindgen::convert::Descriptor =
-                    ::wasm_bindgen::convert::Descriptor {
-                        __x: *#descriptor,
-                    };
 
                 fn into_abi(self, _extra: &mut ::wasm_bindgen::convert::Stack) -> u32 {
                     self as u32
@@ -605,7 +667,16 @@ impl ToTokens for ast::Enum {
                     js: u32,
                     _extra: &mut ::wasm_bindgen::convert::Stack,
                 ) -> Self {
-                    #enum_name::from_u32(js)
+                    #(#cast_clauses else)* {
+                        wasm_bindgen::throw("invalid enum value passed")
+                    }
+                }
+            }
+
+            impl ::wasm_bindgen::describe::WasmDescribe for #enum_name {
+                fn describe() {
+                    use wasm_bindgen::describe::*;
+                    inform(ENUM);
                 }
             }
         }).to_tokens(into);
@@ -639,5 +710,21 @@ impl ToTokens for ast::ImportStatic {
                 }
             };
         }).to_tokens(into);
+    }
+}
+
+impl ToTokens for ast::Type {
+    fn to_tokens(&self, into: &mut Tokens) {
+        match self.kind {
+            ast::TypeKind::ByValue => {}
+            ast::TypeKind::ByRef => {
+                syn::token::And::default().to_tokens(into);
+            }
+            ast::TypeKind::ByMutRef => {
+                syn::token::And::default().to_tokens(into);
+                syn::token::Mut::default().to_tokens(into);
+            }
+        }
+        self.ty.to_tokens(into);
     }
 }

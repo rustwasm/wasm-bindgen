@@ -1,5 +1,3 @@
-use literal::{self, Literal};
-use proc_macro2::Span;
 use quote::{ToTokens, Tokens};
 use shared;
 use syn;
@@ -404,22 +402,14 @@ impl Program {
         })
     }
 
-    pub fn literal(&self, dst: &mut Tokens) -> usize {
-        let mut tmp = Tokens::new();
-        let cnt = {
-            let mut a = literal::LiteralBuilder::new(&mut tmp);
-            Literal::literal(self, &mut a);
-            a.finish()
-        };
-        let cnt = cnt as u32;
-        (quote! {
-            (#cnt >> 0) as u8,
-            (#cnt >> 8) as u8,
-            (#cnt >> 16) as u8,
-            (#cnt >> 24) as u8
-        }).to_tokens(dst);
-        tmp.to_tokens(dst);
-        (cnt as usize) + 4
+    pub fn shared(&self) -> shared::Program {
+        shared::Program {
+            exports: self.exports.iter().map(|a| a.shared()).collect(),
+            enums: self.enums.iter().map(|a| a.shared()).collect(),
+            imports: self.imports.iter().map(|a| a.shared()).collect(),
+            version: shared::version(),
+            schema_version: shared::SCHEMA_VERSION.to_string(),
+        }
     }
 }
 
@@ -511,6 +501,12 @@ impl Function {
             mutable,
         )
     }
+
+    fn shared(&self) -> shared::Function {
+        shared::Function {
+            name: self.name.as_ref().to_string(),
+        }
+    }
 }
 
 pub fn extract_path_ident(path: &syn::Path) -> Option<syn::Ident> {
@@ -539,14 +535,59 @@ impl Export {
         syn::Ident::from(generated_name)
     }
 
-    pub fn export_name(&self) -> syn::LitStr {
-        let name = match self.class {
+    pub fn export_name(&self) -> String {
+        match self.class {
             Some(class) => {
                 shared::struct_function_export_name(class.as_ref(), self.function.name.as_ref())
             }
             None => shared::free_function_export_name(self.function.name.as_ref()),
-        };
-        syn::LitStr::new(&name, Span::call_site())
+        }
+    }
+
+    fn shared(&self) -> shared::Export {
+        shared::Export {
+            class: self.class.map(|s| s.as_ref().to_string()),
+            method: self.method,
+            function: self.function.shared(),
+        }
+    }
+}
+
+impl Enum {
+    fn shared(&self) -> shared::Enum {
+        shared::Enum {
+            name: self.name.as_ref().to_string(),
+            variants: self.variants.iter().map(|v| v.shared()).collect(),
+        }
+    }
+}
+
+impl Variant {
+    fn shared(&self) -> shared::EnumVariant {
+        shared::EnumVariant {
+            name: self.name.as_ref().to_string(),
+            value: self.value,
+        }
+    }
+}
+
+impl Import {
+    fn shared(&self) -> shared::Import {
+        shared::Import {
+            module: self.module.clone(),
+            js_namespace: self.js_namespace.map(|s| s.as_ref().to_string()),
+            kind: self.kind.shared(),
+        }
+    }
+}
+
+impl ImportKind {
+    fn shared(&self) -> shared::ImportKind {
+        match *self {
+            ImportKind::Function(ref f) => shared::ImportKind::Function(f.shared()),
+            ImportKind::Static(ref f) => shared::ImportKind::Static(f.shared()),
+            ImportKind::Type(ref f) => shared::ImportKind::Type(f.shared()),
+        }
     }
 }
 
@@ -559,6 +600,60 @@ impl ImportFunction {
         let name = self.function.name.as_ref();
         assert!(name.starts_with("set_"), "setters must start with `set_`");
         name[4..].to_string()
+    }
+
+    fn shared(&self) -> shared::ImportFunction {
+        let mut method = false;
+        let mut js_new = false;
+        let mut class_name = None;
+        match self.kind {
+            ImportFunctionKind::Method { ref class, .. } => {
+                method = true;
+                class_name = Some(class);
+            }
+            ImportFunctionKind::JsConstructor { ref class, .. } => {
+                js_new = true;
+                class_name = Some(class);
+            }
+            ImportFunctionKind::Normal => {}
+        }
+        let mut getter = None;
+        let mut setter = None;
+
+        if let Some(s) = self.function.opts.getter() {
+            let s = s.map(|s| s.to_string());
+            getter = Some(s.unwrap_or_else(|| self.infer_getter_property()));
+        }
+        if let Some(s) = self.function.opts.setter() {
+            let s = s.map(|s| s.to_string());
+            setter = Some(s.unwrap_or_else(|| self.infer_setter_property()));
+        }
+        shared::ImportFunction {
+            shim: self.shim.as_ref().to_string(),
+            catch: self.function.opts.catch(),
+            method,
+            js_new,
+            structural: self.function.opts.structural(),
+            getter,
+            setter,
+            class: class_name.cloned(),
+            function: self.function.shared(),
+        }
+    }
+}
+
+impl ImportStatic {
+    fn shared(&self) -> shared::ImportStatic {
+        shared::ImportStatic {
+            name: self.js_name.as_ref().to_string(),
+            shim: self.shim.as_ref().to_string(),
+        }
+    }
+}
+
+impl ImportType {
+    fn shared(&self) -> shared::ImportType {
+        shared::ImportType { }
     }
 }
 

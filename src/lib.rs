@@ -28,6 +28,7 @@ pub mod prelude {
 
 pub mod convert;
 pub mod closure;
+pub mod describe;
 
 /// Representation of an object owned by JS.
 ///
@@ -243,6 +244,8 @@ extern {
     fn __wbindgen_cb_arity7(a: u32, b: u32, c: u32) -> u32;
     fn __wbindgen_cb_drop(idx: u32);
     fn __wbindgen_cb_forget(idx: u32);
+
+    fn __wbindgen_describe(v: u32);
 }
 
 impl Clone for JsValue {
@@ -297,8 +300,6 @@ impl<T: WasmBoundary> Deref for JsStatic<T> {
     fn deref(&self) -> &T {
         unsafe {
             (*self.__inner.get()).get_or_insert_with(|| {
-                assert!(T::DESCRIPTOR == JsValue::DESCRIPTOR,
-                        "only JS values can be imported as statics for now");
                 (self.__init)()
             })
         }

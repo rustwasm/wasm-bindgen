@@ -9,6 +9,7 @@ use std::marker::Unsize;
 
 use {throw, JsValue};
 use convert::*;
+use describe::*;
 use __rt::WasmRefCell;
 
 /// A handle to both a closure in Rust as well as JS closure which will invoke
@@ -122,12 +123,20 @@ impl<T> Closure<T>
     }
 }
 
+impl<T> WasmDescribe for Closure<T>
+    where T: WasmShim + ?Sized,
+{
+    fn describe() {
+        inform(CLOSURE);
+        T::describe();
+    }
+}
+
 // `Closure` can only be passed by reference to imports.
 impl<T> ToRefWasmBoundary for Closure<T>
     where T: WasmShim + ?Sized,
 {
     type Abi = u32;
-    const DESCRIPTOR: Descriptor = T::DESCRIPTOR;
 
     fn to_abi_ref(&self, extra: &mut Stack) -> u32 {
         self.js.to_abi_ref(extra)
@@ -149,9 +158,7 @@ impl<T> Drop for Closure<T>
 ///
 /// This trait is not stable and it's not recommended to use this in bounds or
 /// implement yourself.
-pub unsafe trait WasmShim {
-    #[doc(hidden)]
-    const DESCRIPTOR: Descriptor;
+pub unsafe trait WasmShim: WasmDescribe {
     #[doc(hidden)]
     type Wrapper;
     #[doc(hidden)]
@@ -174,8 +181,9 @@ macro_rules! doit {
         ($($var:ident)*) => $arity:ident
     )*) => ($(
         // Fn with no return
-        unsafe impl<$($var: WasmAbi),*> WasmShim for Fn($($var),*) {
-            const DESCRIPTOR: Descriptor = DESCRIPTOR_FUNC;
+        unsafe impl<$($var),*> WasmShim for Fn($($var),*)
+            where $($var: WasmAbi + WasmDescribe,)*
+        {
             type Wrapper = Box<Fn($($var),*)>;
 
             fn shim() -> u32 {
@@ -209,8 +217,10 @@ macro_rules! doit {
         }
 
         // Fn with a return
-        unsafe impl<$($var: WasmAbi,)* R: WasmAbi> WasmShim for Fn($($var),*) -> R {
-            const DESCRIPTOR: Descriptor = DESCRIPTOR_FUNC;
+        unsafe impl<$($var,)* R> WasmShim for Fn($($var),*) -> R
+            where $($var: WasmAbi + WasmDescribe,)*
+                  R: WasmAbi + WasmDescribe,
+        {
             type Wrapper = Box<Fn($($var),*) -> R>;
 
             fn shim() -> u32 {
@@ -244,8 +254,9 @@ macro_rules! doit {
         }
 
         // FnMut with no return
-        unsafe impl<$($var: WasmAbi),*> WasmShim for FnMut($($var),*) {
-            const DESCRIPTOR: Descriptor = DESCRIPTOR_FUNC;
+        unsafe impl<$($var),*> WasmShim for FnMut($($var),*)
+            where $($var: WasmAbi + WasmDescribe,)*
+        {
             type Wrapper = Box<WasmRefCell<FnMut($($var),*)>>;
 
             fn shim() -> u32 {
@@ -283,8 +294,10 @@ macro_rules! doit {
         }
 
         // FnMut with a return
-        unsafe impl<$($var: WasmAbi,)* R: WasmAbi> WasmShim for FnMut($($var),*) -> R {
-            const DESCRIPTOR: Descriptor = DESCRIPTOR_FUNC;
+        unsafe impl<$($var,)* R> WasmShim for FnMut($($var),*) -> R
+            where $($var: WasmAbi + WasmDescribe,)*
+                  R: WasmAbi + WasmDescribe,
+        {
             type Wrapper = Box<WasmRefCell<FnMut($($var),*) -> R>>;
 
             fn shim() -> u32 {
