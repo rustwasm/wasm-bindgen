@@ -231,17 +231,19 @@ impl<'a> Context<'a> {
             format!("var wasm;")
         } else if self.config.no_modules {
             format!("
-                window.{module} = fetch('{module}_bg.wasm')
-                    .then(response => response.arrayBuffer())
-                    .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
-                    .then(({{instance}}) => {{
-                        wasm = instance.exports;
-                        return wasm;
-                    }})
-                    .catch(error => {{
-                        console.log('Error loading wasm module `{module}`:', error);
-                        throw error;
-                    }});
+                window.wasm_bindgen.init = function(__wasm_path) {{
+                    return fetch(__wasm_path)
+                        .then(response => response.arrayBuffer())
+                        .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
+                        .then(({{instance}}) => {{
+                            wasm = instance.exports;
+                            return;
+                        }})
+                        .catch(error => {{
+                            console.log('Error loading wasm module `{module}`:', error);
+                            throw error;
+                        }});
+                }};
             ", module = module_name)
         } else {
             format!("import * as wasm from './{}_bg';", module_name)
@@ -249,10 +251,13 @@ impl<'a> Context<'a> {
 
         let js = if self.config.no_modules {
             format!("
-                let wasm;
-                const __exports = {{}};
-                {globals}
-                {import_wasm}
+                (function() {{
+                    let wasm;
+                    const __exports = {{}};
+                    {globals}
+                    window.wasm_bindgen = Object.assign({{}}, __exports);
+                    {import_wasm}
+                }})();
             ",
                     globals = self.globals,
                     import_wasm = import_wasm,
