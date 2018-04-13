@@ -50,6 +50,8 @@ impl<'a> Context<'a> {
         let contents = contents.trim();
         let global = if self.config.nodejs {
             format!("module.exports.{} = {};\n", name, contents)
+        } else if self.config.no_modules {
+            format!("__exports.{} = {}\n", name, contents)
         } else {
             if contents.starts_with("function") {
                 format!("export function {} {}\n", name, &contents[8..])
@@ -69,7 +71,7 @@ impl<'a> Context<'a> {
         {
             let mut bind = |name: &str, f: &Fn(&mut Self) -> String| {
                 if !self.wasm_import_needed(name) {
-                    return
+                    return;
                 }
                 let contents = f(self);
                 let contents = contents.trim();
@@ -269,23 +271,53 @@ impl<'a> Context<'a> {
             self.footer.push_str(&format!("wasm = require('./{}_bg');",
                                           module_name));
             format!("var wasm;")
+        } else if self.config.no_modules {
+            format!("
+                window.wasm_bindgen.init = function(__wasm_path) {{
+                    return fetch(__wasm_path)
+                        .then(response => response.arrayBuffer())
+                        .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
+                        .then(({{instance}}) => {{
+                            wasm = instance.exports;
+                            return;
+                        }})
+                        .catch(error => {{
+                            console.log('Error loading wasm module `{module}`:', error);
+                            throw error;
+                        }});
+                }};
+            ", module = module_name)
         } else {
             format!("import * as wasm from './{}_bg';", module_name)
         };
 
-        let js = format!("
-            /* tslint:disable */
-            {import_wasm}
-            {imports}
+        let js = if self.config.no_modules {
+            format!("
+                (function() {{
+                    let wasm;
+                    const __exports = {{}};
+                    {globals}
+                    window.wasm_bindgen = Object.assign({{}}, __exports);
+                    {import_wasm}
+                }})();
+            ",
+                    globals = self.globals,
+                    import_wasm = import_wasm,
+            )
+        } else {
+            format!("
+                /* tslint:disable */
+                {import_wasm}
+                {imports}
 
-            {globals}
-            {footer}
-        ",
-            import_wasm = import_wasm,
-            globals = self.globals,
-            imports = self.imports,
-            footer = self.footer,
-        );
+                {globals}
+                {footer}",
+                    import_wasm = import_wasm,
+                    globals = self.globals,
+                    imports = self.imports,
+                    footer = self.footer,
+            )
+        };
 
         self.export_table();
         self.gc();
@@ -381,7 +413,7 @@ impl<'a> Context<'a> {
     }
 
     fn _rewrite_imports(&mut self, module_name: &str)
-        -> Vec<(String, String)>
+                        -> Vec<(String, String)>
     {
         let mut math_imports = Vec::new();
         let imports = self.module.sections_mut()
@@ -399,11 +431,11 @@ impl<'a> Context<'a> {
                 import.module_mut().truncate(0);
                 import.module_mut().push_str("./");
                 import.module_mut().push_str(module_name);
-                continue
+                continue;
             }
 
             if import.module() != "env" {
-                continue
+                continue;
             }
 
             let renamed_import = format!("__wbindgen_{}", import.field());
@@ -478,7 +510,7 @@ impl<'a> Context<'a> {
 
     fn expose_drop_ref(&mut self) {
         if !self.exposed_globals.insert("drop_ref") {
-            return
+            return;
         }
         self.expose_global_slab();
         self.expose_global_slab_next();
@@ -521,7 +553,7 @@ impl<'a> Context<'a> {
 
     fn expose_global_stack(&mut self) {
         if !self.exposed_globals.insert("stack") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             let stack = [];
@@ -530,14 +562,14 @@ impl<'a> Context<'a> {
 
     fn expose_global_slab(&mut self) {
         if !self.exposed_globals.insert("slab") {
-            return
+            return;
         }
         self.globals.push_str(&format!("let slab = [];"));
     }
 
     fn expose_global_slab_next(&mut self) {
         if !self.exposed_globals.insert("slab_next") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             let slab_next = 0;
@@ -546,7 +578,7 @@ impl<'a> Context<'a> {
 
     fn expose_get_object(&mut self) {
         if !self.exposed_globals.insert("get_object") {
-            return
+            return;
         }
         self.expose_global_stack();
         self.expose_global_slab();
@@ -576,7 +608,7 @@ impl<'a> Context<'a> {
 
     fn expose_check_token(&mut self) {
         if !self.exposed_globals.insert("check_token") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             const token = Symbol('foo');
@@ -589,7 +621,7 @@ impl<'a> Context<'a> {
 
     fn expose_assert_num(&mut self) {
         if !self.exposed_globals.insert("assert_num") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function _assertNum(n) {{
@@ -601,7 +633,7 @@ impl<'a> Context<'a> {
 
     fn expose_assert_bool(&mut self) {
         if !self.exposed_globals.insert("assert_bool") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function _assertBoolean(n) {{
@@ -613,7 +645,7 @@ impl<'a> Context<'a> {
 
     fn expose_pass_string_to_wasm(&mut self) {
         if !self.exposed_globals.insert("pass_string_to_wasm") {
-            return
+            return;
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_text_encoder();
@@ -639,7 +671,7 @@ impl<'a> Context<'a> {
 
     fn expose_pass_array8_to_wasm(&mut self) {
         if !self.exposed_globals.insert("pass_array8_to_wasm") {
-            return
+            return;
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_uint8_memory();
@@ -654,7 +686,7 @@ impl<'a> Context<'a> {
 
     fn expose_pass_array16_to_wasm(&mut self) {
         if !self.exposed_globals.insert("pass_array16_to_wasm") {
-            return
+            return;
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_uint16_memory();
@@ -669,7 +701,7 @@ impl<'a> Context<'a> {
 
     fn expose_pass_array32_to_wasm(&mut self) {
         if !self.exposed_globals.insert("pass_array32_to_wasm") {
-            return
+            return;
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_uint32_memory();
@@ -684,7 +716,7 @@ impl<'a> Context<'a> {
 
     fn expose_pass_array_f32_to_wasm(&mut self) {
         if !self.exposed_globals.insert("pass_array_f32_to_wasm") {
-            return
+            return;
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.globals.push_str(&format!("
@@ -698,7 +730,7 @@ impl<'a> Context<'a> {
 
     fn expose_pass_array_f64_to_wasm(&mut self) {
         if !self.exposed_globals.insert("pass_array_f64_to_wasm") {
-            return
+            return;
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.globals.push_str(&format!("
@@ -712,13 +744,13 @@ impl<'a> Context<'a> {
 
     fn expose_text_encoder(&mut self) {
         if !self.exposed_globals.insert("text_encoder") {
-            return
+            return;
         }
         if self.config.nodejs {
             self.globals.push_str(&format!("
                 const TextEncoder = require('util').TextEncoder;
             "));
-        } else if !self.config.browser {
+        } else if !(self.config.browser || self.config.no_modules) {
             self.globals.push_str(&format!("
                 const TextEncoder = typeof window === 'object' && window.TextEncoder
                     ? window.TextEncoder
@@ -732,13 +764,13 @@ impl<'a> Context<'a> {
 
     fn expose_text_decoder(&mut self) {
         if !self.exposed_globals.insert("text_decoder") {
-            return
+            return;
         }
         if self.config.nodejs {
             self.globals.push_str(&format!("
                 const TextDecoder = require('util').TextDecoder;
             "));
-        } else if !self.config.browser {
+        } else if !(self.config.browser || self.config.no_modules) {
             self.globals.push_str(&format!("
                 const TextDecoder = typeof window === 'object' && window.TextDecoder
                     ? window.TextDecoder
@@ -752,7 +784,7 @@ impl<'a> Context<'a> {
 
     fn expose_get_string_from_wasm(&mut self) {
         if !self.exposed_globals.insert("get_string_from_wasm") {
-            return
+            return;
         }
         self.expose_text_decoder();
         self.expose_uint8_memory();
@@ -765,7 +797,7 @@ impl<'a> Context<'a> {
 
     fn expose_get_array_js_value_from_wasm(&mut self) {
         if !self.exposed_globals.insert("get_array_js_value_from_wasm") {
-            return
+            return;
         }
         self.expose_get_array_u32_from_wasm();
         self.expose_get_object();
@@ -785,7 +817,7 @@ impl<'a> Context<'a> {
     fn expose_get_array_i8_from_wasm(&mut self) {
         self.expose_uint8_memory();
         if !self.exposed_globals.insert("get_array_i8_from_wasm") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function getArrayI8FromWasm(ptr, len) {{
@@ -799,7 +831,7 @@ impl<'a> Context<'a> {
     fn expose_get_array_u8_from_wasm(&mut self) {
         self.expose_uint8_memory();
         if !self.exposed_globals.insert("get_array_u8_from_wasm") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function getArrayU8FromWasm(ptr, len) {{
@@ -813,7 +845,7 @@ impl<'a> Context<'a> {
     fn expose_get_array_i16_from_wasm(&mut self) {
         self.expose_uint16_memory();
         if !self.exposed_globals.insert("get_array_i16_from_wasm") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function getArrayI16FromWasm(ptr, len) {{
@@ -827,7 +859,7 @@ impl<'a> Context<'a> {
     fn expose_get_array_u16_from_wasm(&mut self) {
         self.expose_uint16_memory();
         if !self.exposed_globals.insert("get_array_u16_from_wasm") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function getArrayU16FromWasm(ptr, len) {{
@@ -841,7 +873,7 @@ impl<'a> Context<'a> {
     fn expose_get_array_i32_from_wasm(&mut self) {
         self.expose_uint32_memory();
         if !self.exposed_globals.insert("get_array_i32_from_wasm") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function getArrayI32FromWasm(ptr, len) {{
@@ -855,7 +887,7 @@ impl<'a> Context<'a> {
     fn expose_get_array_u32_from_wasm(&mut self) {
         self.expose_uint32_memory();
         if !self.exposed_globals.insert("get_array_u32_from_wasm") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function getArrayU32FromWasm(ptr, len) {{
@@ -868,7 +900,7 @@ impl<'a> Context<'a> {
 
     fn expose_get_array_f32_from_wasm(&mut self) {
         if !self.exposed_globals.insert("get_array_f32_from_wasm") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function getArrayF32FromWasm(ptr, len) {{
@@ -881,7 +913,7 @@ impl<'a> Context<'a> {
 
     fn expose_get_array_f64_from_wasm(&mut self) {
         if !self.exposed_globals.insert("get_array_f64_from_wasm") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function getArrayF64FromWasm(ptr, len) {{
@@ -894,7 +926,7 @@ impl<'a> Context<'a> {
 
     fn expose_uint8_memory(&mut self) {
         if !self.exposed_globals.insert("uint8_memory") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             let cachedUint8Memory = null;
@@ -909,7 +941,7 @@ impl<'a> Context<'a> {
 
     fn expose_uint16_memory(&mut self) {
         if !self.exposed_globals.insert("uint16_memory") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             let cachedUint16Memory = null;
@@ -924,7 +956,7 @@ impl<'a> Context<'a> {
 
     fn expose_uint32_memory(&mut self) {
         if !self.exposed_globals.insert("uint32_memory") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             let cachedUint32Memory = null;
@@ -939,7 +971,7 @@ impl<'a> Context<'a> {
 
     fn expose_assert_class(&mut self) {
         if !self.exposed_globals.insert("assert_class") {
-            return
+            return;
         }
         self.globals.push_str(&format!("
             function _assertClass(instance, klass) {{
@@ -952,7 +984,7 @@ impl<'a> Context<'a> {
 
     fn expose_borrowed_objects(&mut self) {
         if !self.exposed_globals.insert("borrowed_objects") {
-            return
+            return;
         }
         self.expose_global_stack();
         self.globals.push_str(&format!("
@@ -965,7 +997,7 @@ impl<'a> Context<'a> {
 
     fn expose_take_object(&mut self) {
         if !self.exposed_globals.insert("take_object") {
-            return
+            return;
         }
         self.expose_get_object();
         self.expose_drop_ref();
@@ -980,7 +1012,7 @@ impl<'a> Context<'a> {
 
     fn expose_add_heap_object(&mut self) {
         if !self.exposed_globals.insert("add_heap_object") {
-            return
+            return;
         }
         self.expose_global_slab();
         self.expose_global_slab_next();
@@ -1101,7 +1133,7 @@ impl<'a> Context<'a> {
 
     fn expose_set_global_argument(&mut self) {
         if !self.exposed_globals.insert("set_global_argument") {
-            return
+            return;
         }
         self.expose_uint32_memory();
         self.expose_global_argument_ptr();
@@ -1115,7 +1147,7 @@ impl<'a> Context<'a> {
 
     fn expose_get_global_argument(&mut self) {
         if !self.exposed_globals.insert("get_global_argument") {
-            return
+            return;
         }
         self.expose_uint32_memory();
         self.expose_global_argument_ptr();
@@ -1129,7 +1161,7 @@ impl<'a> Context<'a> {
 
     fn expose_global_argument_ptr(&mut self) {
         if !self.exposed_globals.insert("global_argument_ptr") {
-            return
+            return;
         }
         self.required_internal_exports.insert("__wbindgen_global_argument_ptr");
         self.globals.push_str("
@@ -1193,7 +1225,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     pub fn generate_export(&mut self, export: &shared::Export) {
         if let Some(ref class) = export.class {
-            return self.generate_export_for_class(class, export)
+            return self.generate_export_for_class(class, export);
         }
         let (js, ts) = self.generate_function("function",
                                               &export.function.name,
@@ -1273,8 +1305,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         arg_conversions.push_str(&format!("\
                             _assertBoolean({name});
                         ", name = name));
-                    } else {
-                    }
+                    } else {}
                     pass(&format!("arg{i} ? 1 : 0", i = i))
                 }
                 shared::TYPE_JS_OWNED => {
@@ -1417,9 +1448,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 const ret = wasm.{}({passed});
                 {convert_ret}
             ",
-                f = wasm_name,
-                passed = passed_args,
-                convert_ret = convert_ret,
+                                  f = wasm_name,
+                                  passed = passed_args,
+                                  convert_ret = convert_ret,
             ));
         } else {
             dst.push_str(&format!("\
@@ -1430,10 +1461,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     {destructors}
                 }}
             ",
-                f = wasm_name,
-                passed = passed_args,
-                destructors = destructors,
-                convert_ret = convert_ret,
+                                  f = wasm_name,
+                                  passed = passed_args,
+                                  destructors = destructors,
+                                  convert_ret = convert_ret,
             ));
         }
         dst.push_str("}");
@@ -1729,6 +1760,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn import_name(&mut self, import: &shared::Import, item: &str) -> String {
         if let Some(ref module) = import.module {
+            if self.cx.config.no_modules {
+                panic!("import from `{}` module not allowed in `--no-modules`. use `--nodejs` or `--browser` instead", module);
+            }
+
             let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
 
             if self.cx.imported_names.insert(name.to_string()) {
@@ -1767,7 +1802,7 @@ enum VectorKind {
     U32,
     F32,
     F64,
-    JsValue
+    JsValue,
 }
 
 impl VectorType {

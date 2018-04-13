@@ -17,6 +17,7 @@ pub struct Bindgen {
     path: Option<PathBuf>,
     nodejs: bool,
     browser: bool,
+    no_modules: bool,
     debug: bool,
     typescript: bool,
     demangle: bool,
@@ -37,6 +38,7 @@ impl Bindgen {
             path: None,
             nodejs: false,
             browser: false,
+            no_modules: false,
             debug: false,
             typescript: false,
             demangle: true,
@@ -55,6 +57,11 @@ impl Bindgen {
 
     pub fn browser(&mut self, browser: bool) -> &mut Bindgen {
         self.browser = browser;
+        self
+    }
+
+    pub fn no_modules(&mut self, no_modules: bool) -> &mut Bindgen {
+        self.no_modules = no_modules;
         self
     }
 

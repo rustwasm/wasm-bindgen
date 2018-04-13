@@ -22,6 +22,7 @@ Options:
     --out-dir DIR            Output directory
     --nodejs                 Generate output that only works in node.js
     --browser                Generate output that only works in a browser
+    --no-modules             Generate output that only works in a browser (without modules)
     --typescript             Output a TypeScript definition file
     --debug                  Include otherwise-extraneous debug checks in output
     --no-demangle            Don't demangle Rust symbol names
@@ -32,6 +33,7 @@ Options:
 struct Args {
     flag_nodejs: bool,
     flag_browser: bool,
+    flag_no_modules: bool,
     flag_typescript: bool,
     flag_out_dir: Option<PathBuf>,
     flag_debug: bool,
@@ -47,7 +49,7 @@ fn main() {
 
     if args.flag_version {
         println!("wasm-bindgen {}", wasm_bindgen_shared::version());
-        return
+        return;
     }
 
     let input = match args.arg_input {
@@ -57,11 +59,12 @@ fn main() {
 
     let mut b = Bindgen::new();
     b.input_path(&input)
-     .nodejs(args.flag_nodejs)
-     .browser(args.flag_browser)
-     .debug(args.flag_debug)
-     .demangle(!args.flag_no_demangle)
-     .typescript(args.flag_typescript);
+        .nodejs(args.flag_nodejs)
+        .browser(args.flag_browser)
+        .no_modules(args.flag_no_modules)
+        .debug(args.flag_debug)
+        .demangle(!args.flag_no_demangle)
+        .typescript(args.flag_typescript);
 
     let out_dir = match args.flag_out_dir {
         Some(ref p) => p,
