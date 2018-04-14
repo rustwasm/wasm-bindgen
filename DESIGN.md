@@ -538,21 +538,13 @@ code for this we'll see:
 ```js
 import * as wasm from './js_hello_world_bg';
 
+export class Foo {
+    static __construct(ptr) {
+        return new Foo(ptr);
+    }
 
-class ConstructorToken {
     constructor(ptr) {
         this.ptr = ptr;
-    }
-}
-
-export class Foo {
-
-    constructor(...args) {
-        if (args.length === 1 && args[0] instanceof ConstructorToken) {
-            this.ptr = args[0].ptr;
-            return;
-        }
-        throw new Error('you cannot invoke `new` directly without having a method annotated a constructor');
     }
 
     free() {
@@ -563,7 +555,7 @@ export class Foo {
 
     static new(arg0) {
         const ret = wasm.foo_new(arg0);
-        return new Foo(new ConstructorToken(ret));
+        return Foo.__construct(ret)
     }
 
     get() {

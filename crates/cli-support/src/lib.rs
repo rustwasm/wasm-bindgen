@@ -110,7 +110,7 @@ impl Bindgen {
         // execute a shim function which informs us about its type so we can
         // then generate the appropriate bindings.
         let instance = wasmi::Module::from_parity_wasm_module(module.clone())?;
-        let instance = wasmi::ModuleInstance::new(&imodule, &MyResolver)?;
+        let instance = wasmi::ModuleInstance::new(&instance, &MyResolver)?;
         let instance = instance.not_started_instance();
 
         let (js, ts) = {
@@ -128,7 +128,7 @@ impl Bindgen {
                 function_table_needed: false,
                 run_descriptor: &|name| {
                     let mut v = MyExternals(Vec::new());
-                    let ret = imodulei
+                    let ret = instance
                         .invoke_export(name, &[], &mut v)
                         .expect("failed to run export");
                     assert!(ret.is_none());
