@@ -58,8 +58,8 @@ pub struct ImportType {
 
 pub struct Function {
     pub name: syn::Ident,
-    pub arguments: Vec<Type>,
-    pub ret: Option<Type>,
+    pub arguments: Vec<syn::Type>,
+    pub ret: Option<syn::Type>,
     pub opts: BindgenAttrs,
     pub rust_attrs: Vec<syn::Attribute>,
     pub rust_decl: Box<syn::FnDecl>,
@@ -78,12 +78,6 @@ pub struct Enum {
 pub struct Variant {
     pub name: syn::Ident,
     pub value: u32,
-}
-
-pub struct Type {
-    pub ty: syn::Type,
-    pub kind: TypeKind,
-    pub loc: TypeLocation,
 }
 
 #[derive(Copy, Clone)]
@@ -218,7 +212,6 @@ impl Program {
             opts,
             method.vis.clone(),
             true,
-            false,
         );
 
         self.exports.push(Export {
@@ -315,7 +308,6 @@ impl Program {
             opts,
             f.vis,
             false,
-            true,
         ).0;
         if wasm.opts.catch() {
             // TODO: this assumes a whole bunch:
@@ -333,7 +325,15 @@ impl Program {
             let class = wasm.arguments
                 .get(0)
                 .expect("methods must have at least one argument");
-            let class_name = match class.ty {
+            let class = match *class {
+                syn::Type::Reference(syn::TypeReference {
+                    mutability: None,
+                    ref elem,
+                    ..
+                }) => &**elem,
+                _ => panic!("first argument of method must be a shared reference"),
+            };
+            let class_name = match *class {
                 syn::Type::Path(syn::TypePath {
                     qself: None,
                     ref path,
@@ -345,11 +345,11 @@ impl Program {
 
             ImportFunctionKind::Method {
                 class: class_name.as_ref().to_string(),
-                ty: class.ty.clone(),
+                ty: class.clone(),
             }
         } else if wasm.opts.constructor() {
             let class = match wasm.ret {
-                Some(Type { ref ty, kind: TypeKind::ByValue, .. }) => ty,
+                Some(ref ty) => ty,
                 _ => panic!("constructor returns must be bare types"),
             };
             let class_name = match *class {
@@ -443,7 +443,6 @@ impl Function {
             opts,
             input.vis,
             false,
-            false,
         ).0
     }
 
@@ -454,7 +453,6 @@ impl Function {
         opts: BindgenAttrs,
         vis: syn::Visibility,
         allow_self: bool,
-        import: bool,
     ) -> (Function, Option<bool>) {
         if decl.variadic.is_some() {
             panic!("can't bindgen variadic functions")
@@ -462,6 +460,8 @@ impl Function {
         if decl.generics.params.len() > 0 {
             panic!("can't bindgen functions with lifetime or type parameters")
         }
+
+        assert_no_lifetimes(&decl);
 
         let mut mutable = None;
         let arguments = decl.inputs
@@ -478,24 +478,12 @@ impl Function {
                 }
                 _ => panic!("arguments cannot be `self` or ignored"),
             })
-            .map(|arg| {
-                Type::from(&arg.ty, if import {
-                    TypeLocation::ImportArgument
-                } else {
-                    TypeLocation::ExportArgument
-                })
-            })
+            .map(|arg| arg.ty.clone())
             .collect::<Vec<_>>();
 
         let ret = match decl.output {
             syn::ReturnType::Default => None,
-            syn::ReturnType::Type(_, ref t) => {
-                Some(Type::from(t, if import {
-                    TypeLocation::ImportRet
-                } else {
-                    TypeLocation::ExportRet
-                }))
-            }
+            syn::ReturnType::Type(_, ref t) => Some((**t).clone()),
         };
 
         (
@@ -671,22 +659,6 @@ impl ImportType {
 impl Struct {
     fn from(s: syn::ItemStruct, _opts: BindgenAttrs) -> Struct {
         Struct { name: s.ident }
-    }
-}
-
-impl Type {
-    pub fn from(ty: &syn::Type, loc: TypeLocation) -> Type {
-        let (ty, kind) = match *ty {
-            syn::Type::Reference(ref r) => {
-                if r.mutability.is_some() {
-                    ((*r.elem).clone(), TypeKind::ByMutRef)
-                } else {
-                    ((*r.elem).clone(), TypeKind::ByRef)
-                }
-            }
-            _ => (ty.clone(), TypeKind::ByValue),
-        };
-        Type { loc, ty, kind }
     }
 }
 
@@ -869,16 +841,12 @@ impl syn::synom::Synom for BindgenAttr {
     ));
 }
 
-fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
+fn extract_first_ty_param(ty: Option<&syn::Type>) -> Option<Option<syn::Type>> {
     let t = match ty {
         Some(t) => t,
         None => return Some(None),
     };
-    let ty = match *t {
-        Type { ref ty, kind: TypeKind::ByValue, .. } => ty,
-        _ => return None,
-    };
-    let path = match *ty {
+    let path = match *t {
         syn::Type::Path(syn::TypePath {
             qself: None,
             ref path,
@@ -898,11 +866,7 @@ fn extract_first_ty_param(ty: Option<&Type>) -> Option<Option<Type>> {
         syn::Type::Tuple(ref t) if t.elems.len() == 0 => return Some(None),
         _ => {}
     }
-    Some(Some(Type {
-        ty: ty.clone(),
-        kind: TypeKind::ByValue,
-        loc: t.loc,
-    }))
+    Some(Some(ty.clone()))
 }
 
 fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<'a, ()> {
@@ -912,4 +876,17 @@ fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<
         }
     }
     syn::parse_error()
+}
+
+fn assert_no_lifetimes(decl: &syn::FnDecl) {
+    struct Walk;
+
+    impl<'ast> syn::visit::Visit<'ast> for Walk {
+        fn visit_lifetime(&mut self, _i: &'ast syn::Lifetime) {
+            panic!("it is currently not sound to use lifetimes in function \
+                    signatures");
+        }
+    }
+
+    syn::visit::Visit::visit_fn_decl(&mut Walk, decl);
 }

@@ -8,7 +8,7 @@ use shared;
 use wasm_gc;
 
 use super::Bindgen;
-use descriptor::{Descriptor, VectorKind};
+use descriptor::{Descriptor, VectorKind, Function};
 
 pub struct Context<'a> {
     pub globals: String,
@@ -1325,10 +1325,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
         if let Some(ref class) = export.class {
             return self.generate_export_for_class(class, export);
         }
+        let descriptor = self.cx.describe(&export.function.name);
         let (js, ts) = self.generate_function("function",
                                               &export.function.name,
+                                              &export.function.name,
                                               false,
-                                              &export.function);
+                                              descriptor.unwrap_function());
         self.cx.export(&export.function.name, &js);
         self.cx.globals.push_str("\n");
         self.cx.typescript.push_str("export ");
@@ -1336,12 +1338,15 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.typescript.push_str("\n");
     }
 
-    pub fn generate_export_for_class(&mut self, class_name: &str, export: &shared::Export) {
+    pub fn generate_export_for_class(&mut self, class: &str, export: &shared::Export) {
+        let wasm_name = shared::struct_function_export_name(class, &export.function.name);
+        let descriptor = self.cx.describe(&wasm_name);
         let (js, ts) = self.generate_function(
             "",
-            &shared::struct_function_export_name(class_name, &export.function.name),
+            &export.function.name,
+            &wasm_name,
             export.method,
-            &export.function,
+            &descriptor.unwrap_function(),
         );
 
         let class = self.cx.exported_classes.entry(class_name.to_string())
@@ -1372,13 +1377,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn generate_function(&mut self,
                          prefix: &str,
+                         js_name: &str,
                          wasm_name: &str,
                          is_method: bool,
-                         function: &shared::Function) -> (String, String) {
-        let descriptor = self.cx.describe(wasm_name);
-        let desc_function = descriptor.unwrap_function();
+                         function: &Function) -> (String, String) {
         let mut dst = String::from("(");
-        let mut dst_ts = format!("{}(", function.name);
+        let mut dst_ts = format!("{}(", js_name);
         let mut passed_args = String::new();
         let mut arg_conversions = String::new();
         let mut destructors = String::new();
@@ -1388,7 +1392,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
 
         let mut global_idx = 0;
-        for (i, arg) in desc_function.arguments.iter().enumerate() {
+        for (i, arg) in function.arguments.iter().enumerate() {
             let name = format!("arg{}", i);
             if i > 0 {
                 dst.push_str(", ");
@@ -1487,7 +1491,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         dst.push_str(")");
         dst_ts.push_str(")");
-        let convert_ret = self.cx.return_from_rust(&desc_function.ret, &mut dst_ts);
+        let convert_ret = self.cx.return_from_rust(&function.ret, &mut dst_ts);
         dst_ts.push_str(";");
         dst.push_str(" {\n        ");
         dst.push_str(&arg_conversions);
@@ -1594,7 +1598,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 continue
             }
 
-            if let Some(f) = arg.stack_closure() {
+            if let Some((f, mutable)) = arg.stack_closure() {
                 let args = (0..f.arguments.len())
                     .map(|i| format!("arg{}", i))
                     .collect::<Vec<_>>()
@@ -1602,14 +1606,25 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 self.cx.expose_get_global_argument();
                 self.cx.function_table_needed = true;
                 let sep = if f.arguments.len() == 0 {""} else {","};
+                let body = if mutable {
+                    format!("
+                        let a = this.a;
+                        this.a = 0;
+                        try {{
+                            return this.f(a, this.b {} {});
+                        }} finally {{
+                            this.a = a;
+                        }}
+                    ", sep, args)
+                } else {
+                    format!("return this.f(this.a, this.b {} {});", sep, args)
+                };
                 extra.push_str(&format!("
-                    let cb{0} = function({args}) {{
-                        return this.f(this.a, this.b {sep} {args});
-                    }};
+                    let cb{0} = function({args}) {{ {body} }};
                     cb{0}.f = wasm.__wbg_function_table.get(arg{0});
                     cb{0}.a = getGlobalArgument({next_global});
                     cb{0}.b = getGlobalArgument({next_global} + 1);
-                ", i, next_global = next_global, args = args, sep = sep));
+                ", i, next_global = next_global, body = body, args = args));
                 next_global += 2;
                 finally.push_str(&format!("
                     cb{0}.a = cb{0}.b = 0;

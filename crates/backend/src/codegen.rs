@@ -116,7 +116,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
-            impl ::wasm_bindgen::convert::WasmBoundary for #name {
+            impl ::wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = u32;
 
                 fn into_abi(self, _extra: &mut ::wasm_bindgen::convert::Stack)
@@ -124,40 +124,44 @@ impl ToTokens for ast::Struct {
                 {
                     Box::into_raw(Box::new(::wasm_bindgen::__rt::WasmRefCell::new(self))) as u32
                 }
+            }
 
-                unsafe fn from_abi(js: u32, _extra: &mut ::wasm_bindgen::convert::Stack)
+            impl ::wasm_bindgen::convert::FromWasmAbi for #name {
+                type Abi = u32;
+
+                unsafe fn from_abi(js: u32, extra: &mut ::wasm_bindgen::convert::Stack)
                     -> Self
                 {
-                    let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
-                    ::wasm_bindgen::__rt::assert_not_null(js);
-                    let js = Box::from_raw(js);
+                    let ptr = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
+                    ::wasm_bindgen::__rt::assert_not_null(ptr);
+                    let js = Box::from_raw(ptr);
                     js.borrow_mut(); // make sure no one's borrowing
                     js.into_inner()
                 }
             }
 
-            impl ::wasm_bindgen::convert::FromRefWasmBoundary for #name {
+            impl ::wasm_bindgen::convert::RefFromWasmAbi for #name {
                 type Abi = u32;
-                type RefAnchor = ::wasm_bindgen::__rt::Ref<'static, #name>;
+                type Anchor = ::wasm_bindgen::__rt::Ref<'static, #name>;
 
-                unsafe fn from_abi_ref(
+                unsafe fn ref_from_abi(
                     js: Self::Abi,
                     _extra: &mut ::wasm_bindgen::convert::Stack,
-                ) -> Self::RefAnchor {
+                ) -> Self::Anchor {
                     let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
                     ::wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow()
                 }
             }
 
-            impl ::wasm_bindgen::convert::FromRefMutWasmBoundary for #name {
+            impl ::wasm_bindgen::convert::RefMutFromWasmAbi for #name {
                 type Abi = u32;
-                type RefAnchor = ::wasm_bindgen::__rt::RefMut<'static, #name>;
+                type Anchor = ::wasm_bindgen::__rt::RefMut<'static, #name>;
 
-                unsafe fn from_abi_ref_mut(
+                unsafe fn ref_mut_from_abi(
                     js: Self::Abi,
                     _extra: &mut ::wasm_bindgen::convert::Stack,
-                ) -> Self::RefAnchor {
+                ) -> Self::Anchor {
                     let js = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
                     ::wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow_mut()
@@ -166,7 +170,7 @@ impl ToTokens for ast::Struct {
 
             impl ::std::convert::From<#name> for ::wasm_bindgen::JsValue {
                 fn from(value: #name) -> Self {
-                    let ptr = ::wasm_bindgen::convert::WasmBoundary::into_abi(
+                    let ptr = ::wasm_bindgen::convert::IntoWasmAbi::into_abi(
                         value,
                         unsafe { &mut ::wasm_bindgen::convert::GlobalStack::new() },
                     );
@@ -177,7 +181,7 @@ impl ToTokens for ast::Struct {
                     }
 
                     unsafe {
-                        <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary>
+                        <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::FromWasmAbi>
                             ::from_abi(
                                 #new_fn(ptr),
                                 &mut ::wasm_bindgen::convert::GlobalStack::new(),
@@ -188,7 +192,7 @@ impl ToTokens for ast::Struct {
 
             #[no_mangle]
             pub unsafe extern fn #free_fn(ptr: u32) {
-                <#name as ::wasm_bindgen::convert::WasmBoundary>::from_abi(
+                <#name as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
                     ptr,
                     &mut ::wasm_bindgen::convert::GlobalStack::new(),
                 );
@@ -220,41 +224,44 @@ impl ToTokens for ast::Export {
         for (i, ty) in self.function.arguments.iter().enumerate() {
             let i = i + offset;
             let ident = syn::Ident::from(format!("arg{}", i));
-            let t = &ty.ty;
-            match ty.kind {
-                ast::TypeKind::ByValue => {
+            match *ty {
+                syn::Type::Reference(syn::TypeReference {
+                    mutability: Some(_),
+                    ref elem,
+                    ..
+                }) => {
                     args.push(quote! {
-                        #ident: <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
+                        #ident: <#elem as ::wasm_bindgen::convert::RefMutFromWasmAbi>::Abi
                     });
                     arg_conversions.push(quote! {
-                        let #ident = unsafe {
-                            <#t as ::wasm_bindgen::convert::WasmBoundary>
-                                ::from_abi(#ident, &mut __stack)
+                        let mut #ident = unsafe {
+                            <#elem as ::wasm_bindgen::convert::RefMutFromWasmAbi>
+                                ::ref_mut_from_abi(#ident, &mut __stack)
                         };
+                        let #ident = &mut *#ident;
                     });
                 }
-                ast::TypeKind::ByRef => {
+                syn::Type::Reference(syn::TypeReference { ref elem, .. }) => {
                     args.push(quote! {
-                        #ident: <#t as ::wasm_bindgen::convert::FromRefWasmBoundary>::Abi
+                        #ident: <#elem as ::wasm_bindgen::convert::RefFromWasmAbi>::Abi
                     });
                     arg_conversions.push(quote! {
                         let #ident = unsafe {
-                            <#t as ::wasm_bindgen::convert::FromRefWasmBoundary>
-                                ::from_abi_ref(#ident, &mut __stack)
+                            <#elem as ::wasm_bindgen::convert::RefFromWasmAbi>
+                                ::ref_from_abi(#ident, &mut __stack)
                         };
                         let #ident = &*#ident;
                     });
                 }
-                ast::TypeKind::ByMutRef => {
+                _ => {
                     args.push(quote! {
-                        #ident: <#t as ::wasm_bindgen::convert::FromRefMutWasmBoundary>::Abi
+                        #ident: <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi
                     });
                     arg_conversions.push(quote! {
-                        let mut #ident = unsafe {
-                            <#t as ::wasm_bindgen::convert::FromRefMutWasmBoundary>
-                                ::from_abi_ref_mut(#ident, &mut __stack)
+                        let #ident = unsafe {
+                            <#ty as ::wasm_bindgen::convert::FromWasmAbi>
+                                ::from_abi(#ident, &mut __stack)
                         };
-                        let #ident = &mut *#ident;
                     });
                 }
             }
@@ -263,20 +270,17 @@ impl ToTokens for ast::Export {
         let ret_ty;
         let convert_ret;
         match self.function.ret {
-            Some(ast::Type { ref ty, kind: ast::TypeKind::ByValue, .. }) => {
+            Some(syn::Type::Reference(_)) => panic!("can't return a borrowed ref"),
+            Some(ref ty) => {
                 ret_ty = quote! {
-                    -> <#ty as ::wasm_bindgen::convert::WasmBoundary>::Abi
+                    -> <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
                 };
                 convert_ret = quote! {
-                    <#ty as ::wasm_bindgen::convert::WasmBoundary>
+                    <#ty as ::wasm_bindgen::convert::IntoWasmAbi>
                         ::into_abi(#ret, &mut unsafe {
                             ::wasm_bindgen::convert::GlobalStack::new()
                         })
                 };
-            }
-            Some(ast::Type { kind: ast::TypeKind::ByMutRef, .. }) |
-            Some(ast::Type { kind: ast::TypeKind::ByRef, .. }) => {
-                panic!("can't return a borrowed ref");
             }
             None => {
                 ret_ty = quote!{};
@@ -284,7 +288,7 @@ impl ToTokens for ast::Export {
             }
         }
         let describe_ret = match self.function.ret {
-            Some(ast::Type { ref ty, .. }) => {
+            Some(ref ty) => {
                 quote! {
                     inform(1);
                     <#ty as WasmDescribe>::describe();
@@ -380,46 +384,54 @@ impl ToTokens for ast::ImportType {
                 }
             }
 
-            impl ::wasm_bindgen::convert::WasmBoundary for #name {
+            impl ::wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = <::wasm_bindgen::JsValue as
-                    ::wasm_bindgen::convert::WasmBoundary>::Abi;
+                    ::wasm_bindgen::convert::IntoWasmAbi>::Abi;
 
                 fn into_abi(self, extra: &mut ::wasm_bindgen::convert::Stack) -> Self::Abi {
                     self.obj.into_abi(extra)
                 }
+            }
+
+            impl ::wasm_bindgen::convert::FromWasmAbi for #name {
+                type Abi = <::wasm_bindgen::JsValue as
+                    ::wasm_bindgen::convert::FromWasmAbi>::Abi;
 
                 unsafe fn from_abi(
                     js: Self::Abi,
                     extra: &mut ::wasm_bindgen::convert::Stack,
                 ) -> Self {
-                    #name { obj: ::wasm_bindgen::JsValue::from_abi(js, extra) }
+                    #name {
+                        obj: ::wasm_bindgen::JsValue::from_abi(js, extra),
+                    }
                 }
             }
 
-            impl ::wasm_bindgen::convert::ToRefWasmBoundary for #name {
-                type Abi = <::wasm_bindgen::JsValue as
-                    ::wasm_bindgen::convert::ToRefWasmBoundary>::Abi;
+            impl<'a> ::wasm_bindgen::convert::IntoWasmAbi for &'a #name {
+                type Abi = <&'a ::wasm_bindgen::JsValue as
+                    ::wasm_bindgen::convert::IntoWasmAbi>::Abi;
 
-                fn to_abi_ref(&self, extra: &mut ::wasm_bindgen::convert::Stack) -> u32 {
-                    self.obj.to_abi_ref(extra)
+                fn into_abi(self, extra: &mut ::wasm_bindgen::convert::Stack) -> Self::Abi {
+                    (&self.obj).into_abi(extra)
                 }
             }
 
-            impl ::wasm_bindgen::convert::FromRefWasmBoundary for #name {
+            impl ::wasm_bindgen::convert::RefFromWasmAbi for #name {
                 type Abi = <::wasm_bindgen::JsValue as
-                    ::wasm_bindgen::convert::ToRefWasmBoundary>::Abi;
-                type RefAnchor = ::std::mem::ManuallyDrop<#name>;
+                    ::wasm_bindgen::convert::RefFromWasmAbi>::Abi;
+                type Anchor = ::std::mem::ManuallyDrop<#name>;
 
-                unsafe fn from_abi_ref(
+                unsafe fn ref_from_abi(
                     js: Self::Abi,
                     extra: &mut ::wasm_bindgen::convert::Stack,
-                ) -> Self::RefAnchor {
-                    let obj = <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary>
-                        ::from_abi(js, extra);
-                    ::std::mem::ManuallyDrop::new(#name { obj })
+                ) -> Self::Anchor {
+                    let tmp = <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::RefFromWasmAbi>
+                        ::ref_from_abi(js, extra);
+                    ::std::mem::ManuallyDrop::new(#name {
+                        obj: ::std::mem::ManuallyDrop::into_inner(tmp),
+                    })
                 }
             }
-
 
             impl From<::wasm_bindgen::JsValue> for #name {
                 fn from(obj: ::wasm_bindgen::JsValue) -> #name {
@@ -478,57 +490,37 @@ impl ToTokens for ast::ImportFunction {
             });
 
         for (i, (ty, name)) in self.function.arguments.iter().zip(names).enumerate() {
-            let t = &ty.ty;
-            match ty.kind {
-                ast::TypeKind::ByValue => {
-                    abi_argument_names.push(name);
-                    abi_arguments.push(quote! {
-                        #name: <#t as ::wasm_bindgen::convert::WasmBoundary>::Abi
-                    });
-                    let var = if i == 0 && is_method {
-                        quote! { self }
-                    } else {
-                        quote! { #name }
-                    };
-                    arg_conversions.push(quote! {
-                        let #name = <#t as ::wasm_bindgen::convert::WasmBoundary>
-                            ::into_abi(#var, &mut __stack);
-                    });
-                }
-                ast::TypeKind::ByMutRef => panic!("urgh mut"),
-                ast::TypeKind::ByRef => {
-                    abi_argument_names.push(name);
-                    abi_arguments.push(quote! { #name: u32 });
-                    let var = if i == 0 && is_method {
-                        quote! { self }
-                    } else {
-                        quote! { #name }
-                    };
-                    arg_conversions.push(quote! {
-                        let #name = <#t as ::wasm_bindgen::convert::ToRefWasmBoundary>
-                            ::to_abi_ref(#var, &mut __stack);
-                    });
-                }
-            }
+            abi_argument_names.push(name);
+            abi_arguments.push(quote! {
+                #name: <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
+            });
+            let var = if i == 0 && is_method {
+                quote! { self }
+            } else {
+                quote! { #name }
+            };
+            arg_conversions.push(quote! {
+                let #name = <#ty as ::wasm_bindgen::convert::IntoWasmAbi>
+                    ::into_abi(#var, &mut __stack);
+            });
         }
         let abi_ret;
         let mut convert_ret;
         match self.function.ret {
-            Some(ast::Type { ref ty, kind: ast::TypeKind::ByValue, .. }) => {
+            Some(syn::Type::Reference(_)) => {
+                panic!("cannot return references in imports yet");
+            }
+            Some(ref ty) => {
                 abi_ret = quote! {
-                    <#ty as ::wasm_bindgen::convert::WasmBoundary>::Abi
+                    <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi
                 };
                 convert_ret = quote! {
-                    <#ty as ::wasm_bindgen::convert::WasmBoundary>
+                    <#ty as ::wasm_bindgen::convert::FromWasmAbi>
                         ::from_abi(
                             #ret_ident,
                             &mut ::wasm_bindgen::convert::GlobalStack::new(),
                         )
                 };
-            }
-            Some(ast::Type { kind: ast::TypeKind::ByRef, .. }) |
-            Some(ast::Type { kind: ast::TypeKind::ByMutRef, .. }) => {
-                panic!("can't return a borrowed ref")
             }
             None => {
                 abi_ret = quote! { () };
@@ -547,8 +539,8 @@ impl ToTokens for ast::ImportFunction {
                 if #exn_data[0] == 1 {
                     return Err(
                         <
-                            ::wasm_bindgen::JsValue as ::wasm_bindgen::convert::WasmBoundary
-                        >::from_abi(#exn_data[1], &mut ::wasm_bindgen::convert::GlobalStack::new()),
+                            ::wasm_bindgen::JsValue as ::wasm_bindgen::convert::FromWasmAbi
+                        >::from_abi(#exn_data[1], &mut ::wasm_bindgen::convert::GlobalStack::new())
                     )
                 }
             };
@@ -656,12 +648,16 @@ impl ToTokens for ast::Enum {
             }
         });
         (quote! {
-            impl ::wasm_bindgen::convert::WasmBoundary for #enum_name {
+            impl ::wasm_bindgen::convert::IntoWasmAbi for #enum_name {
                 type Abi = u32;
 
                 fn into_abi(self, _extra: &mut ::wasm_bindgen::convert::Stack) -> u32 {
                     self as u32
                 }
+            }
+
+            impl ::wasm_bindgen::convert::FromWasmAbi for #enum_name {
+                type Abi = u32;
 
                 unsafe fn from_abi(
                     js: u32,
@@ -695,13 +691,14 @@ impl ToTokens for ast::ImportStatic {
                 fn init() -> #ty {
                     #[wasm_import_module = "__wbindgen_placeholder__"]
                     extern {
-                        fn #shim_name() -> <#ty as ::wasm_bindgen::convert::WasmBoundary>::Abi;
+                        fn #shim_name() -> <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi;
                     }
                     unsafe {
-                        ::wasm_bindgen::convert::WasmBoundary::from_abi(
+                        <#ty as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
                             #shim_name(),
                             &mut ::wasm_bindgen::convert::GlobalStack::new(),
                         )
+
                     }
                 }
                 ::wasm_bindgen::JsStatic {
@@ -710,21 +707,5 @@ impl ToTokens for ast::ImportStatic {
                 }
             };
         }).to_tokens(into);
-    }
-}
-
-impl ToTokens for ast::Type {
-    fn to_tokens(&self, into: &mut Tokens) {
-        match self.kind {
-            ast::TypeKind::ByValue => {}
-            ast::TypeKind::ByRef => {
-                syn::token::And::default().to_tokens(into);
-            }
-            ast::TypeKind::ByMutRef => {
-                syn::token::And::default().to_tokens(into);
-                syn::token::Mut::default().to_tokens(into);
-            }
-        }
-        self.ty.to_tokens(into);
     }
 }
