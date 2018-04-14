@@ -203,23 +203,13 @@ impl Program {
             panic!("can only bindgen safe functions");
         }
 
-        let mut opts = BindgenAttrs::find(&mut method.attrs);
+        let opts = BindgenAttrs::find(&mut method.attrs);
         let is_constructor = opts.constructor();
         let constructor = if is_constructor {
             Some(method.sig.ident.to_string())
         } else {
             None
         };
-
-        if is_constructor {
-            let pos = opts.attrs
-                .iter()
-                .enumerate()
-                .find(|(_, a)| **a == BindgenAttr::Constructor)
-                .unwrap()
-                .0;
-            opts.attrs.remove(pos);
-        }
 
         let (function, mutable) = Function::from_decl(
             method.sig.ident,

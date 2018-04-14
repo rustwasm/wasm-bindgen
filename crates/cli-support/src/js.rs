@@ -318,41 +318,56 @@ impl<'a> Context<'a> {
                 public ptr: number;
             ");
 
-            self.expose_constructor_token();
-
-            dst.push_str(&format!("
-                constructor(...args) {{
-                    if (args.length === 1 && args[0] instanceof ConstructorToken) {{
-                        this.ptr = args[0].ptr;
-                        return;
-                    }}
-                "));
-
-            if let Some(constructor) = exports.constructor {
-                ts_dst.push_str(&format!("constructor(...args: [any] | [ConstructorToken]);\n"));
+            if self.config.debug || exports.constructor.is_some() {
+                self.expose_constructor_token();
 
                 dst.push_str(&format!("
-                    // This invocation of new will call this constructor with a ConstructorToken
-                    let instance = {class}.{constructor}(...args);
-                    this.ptr = instance.ptr;
-                ", class = class, constructor = constructor));
-            } else {
-                ts_dst.push_str(&format!("constructor(...args: [ConstructorToken]);\n"));
+                    static __construct(ptr) {{
+                        return new {}(new ConstructorToken(ptr));
+                    }}
 
-                dst.push_str("throw new Error('you cannot invoke `new` directly without having a \
+                    constructor(...args) {{
+                        if (args.length === 1 && args[0] instanceof ConstructorToken) {{
+                            this.ptr = args[0].ptr;
+                            return;
+                        }}
+                ", class));
+
+                if let Some(constructor) = exports.constructor {
+                    ts_dst.push_str(&format!("constructor(...args: [any]);\n"));
+
+                    dst.push_str(&format!("
+                        // This invocation of new will call this constructor with a ConstructorToken
+                        let instance = {class}.{constructor}(...args);
+                        this.ptr = instance.ptr;
+                    ", class = class, constructor = constructor));
+                } else {
+                    dst.push_str("throw new Error('you cannot invoke `new` directly without having a \
                 method annotated a constructor');");
-            }
+                }
 
-            dst.push_str("}");
+                dst.push_str("}");
+            } else {
+                dst.push_str(&format!("
+                    static __construct(ptr) {{
+                        return new {}(ptr);
+                    }}
+
+                    constructor(ptr) {{
+                        this.ptr = ptr;
+                    }}
+                ", class));
+            }
 
             let new_name = shared::new_function(&class);
             if self.wasm_import_needed(&new_name) {
                 self.expose_add_heap_object();
+
                 self.export(&new_name, &format!("
                     function(ptr) {{
-                        return addHeapObject(new {class}(new ConstructorToken(ptr)));
+                        return addHeapObject({}.__construct(ptr));
                     }}
-                ", class = class));
+                ", class));
             }
 
             dst.push_str(&format!("
@@ -765,13 +780,6 @@ impl<'a> Context<'a> {
                 }
             }
         ");
-
-        self.typescript.push_str("
-            class ConstructorToken {
-                constructor(ptr: number);
-            }
-        ");
-
     }
 
     fn expose_get_string_from_wasm(&mut self) {
@@ -1245,7 +1253,8 @@ impl<'a> Context<'a> {
         if let Some(name) = ty.rust_struct() {
             dst_ts.push_str(": ");
             dst_ts.push_str(name);
-            return format!("return new {name}(new ConstructorToken(ret));", name = name);
+
+            return format!("return {}.__construct(ret)",&name);
         }
 
         if ty.is_number() {
@@ -1575,11 +1584,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 continue
             }
 
-            if let Some(s) = arg.rust_struct() {
+            if let Some(class) = arg.rust_struct() {
                 if arg.is_by_ref() {
                     panic!("cannot invoke JS functions with custom ref types yet")
                 }
-                let assign = format!("let c{0} = new {class}(new ConstructorToken(arg{0}));", i, class = s);
+                let assign = format!("let c{0} = {1}.__construct(arg{0});", i, class);
                 extra.push_str(&assign);
                 invoc_args.push(format!("c{}", i));
                 continue

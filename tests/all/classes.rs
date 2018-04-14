@@ -380,6 +380,11 @@ fn constructors() {
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen]
+            pub fn cross_item_construction() -> Bar {
+                Bar::other_name(7, 8)
+            }
+
+            #[wasm_bindgen]
             pub struct Foo {
                 number: u32,
             }
@@ -416,7 +421,7 @@ fn constructors() {
         "#)
         .file("test.ts", r#"
             import * as assert from "assert";
-            import { Foo, Bar } from "./out";
+            import { Foo, Bar, cross_item_construction } from "./out";
 
             export function test() {
                 const foo = new Foo(1);
@@ -434,6 +439,8 @@ fn constructors() {
                 const bar2 = Bar.other_name(5, 6);
                 assert.strictEqual(bar2.get_sum(), 11);
                 bar2.free();
+
+                assert.strictEqual(cross_item_construction().get_sum(), 15);
             }
         "#)
         .test();
