@@ -405,7 +405,7 @@ fn constructors() {
             #[wasm_bindgen]
             impl Bar {
                 #[wasm_bindgen(constructor)]
-                pub fn new(number: u32, number2: u32) -> Bar {
+                pub fn other_name(number: u32, number2: u32) -> Bar {
                     Bar { number, number2 }
                 }
 
@@ -431,7 +431,7 @@ fn constructors() {
                 assert.strictEqual(bar.get_sum(), 7);
                 bar.free();
 
-                const bar2 = Bar.new(5, 6);
+                const bar2 = Bar.other_name(5, 6);
                 assert.strictEqual(bar2.get_sum(), 11);
                 bar2.free();
             }

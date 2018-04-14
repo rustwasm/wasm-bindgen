@@ -14,7 +14,7 @@ pub struct Export {
     pub class: Option<syn::Ident>,
     pub method: bool,
     pub mutable: bool,
-    pub constructor: bool,
+    pub constructor: Option<String>,
     pub function: Function,
 }
 
@@ -123,7 +123,7 @@ impl Program {
                     class: None,
                     method: false,
                     mutable: false,
-                    constructor: false,
+                    constructor: None,
                     function: Function::from(f, opts),
                 });
             }
@@ -204,12 +204,14 @@ impl Program {
         }
 
         let mut opts = BindgenAttrs::find(&mut method.attrs);
-        let constructor = opts.constructor();
-        if constructor {
-            if method.sig.ident != syn::Ident::from("new") {
-                panic!("The constructor must be called 'new' for now")
-            }
+        let is_constructor = opts.constructor();
+        let constructor = if is_constructor {
+            Some(method.sig.ident.to_string())
+        } else {
+            None
+        };
 
+        if is_constructor {
             let pos = opts.attrs
                 .iter()
                 .enumerate()
@@ -566,7 +568,7 @@ impl Export {
         shared::Export {
             class: self.class.map(|s| s.as_ref().to_string()),
             method: self.method,
-            constructor: self.constructor,
+            constructor: self.constructor.clone(),
             function: self.function.shared(),
         }
     }

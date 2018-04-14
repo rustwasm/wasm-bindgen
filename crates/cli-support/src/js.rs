@@ -29,7 +29,7 @@ pub struct Context<'a> {
 pub struct ExportedClass {
     pub contents: String,
     pub typescript: String,
-    pub constructor: bool,
+    pub constructor: Option<String>,
 }
 
 pub struct SubContext<'a, 'b: 'a> {
@@ -328,14 +328,14 @@ impl<'a> Context<'a> {
                     }}
                 "));
 
-            if exports.constructor {
+            if let Some(constructor) = exports.constructor {
                 ts_dst.push_str(&format!("constructor(...args: [any] | [ConstructorToken]);\n"));
 
                 dst.push_str(&format!("
                     // This invocation of new will call this constructor with a ConstructorToken
-                    let instance = {class}.new(...args);
+                    let instance = {class}.{constructor}(...args);
                     this.ptr = instance.ptr;
-                ", class = class));
+                ", class = class, constructor = constructor));
             } else {
                 ts_dst.push_str(&format!("constructor(...args: [ConstructorToken]);\n"));
 
@@ -1342,10 +1342,17 @@ impl<'a, 'b> SubContext<'a, 'b> {
             class.typescript.push_str("static ");
         }
 
-        class.constructor = self.program.exports
+        let constructors: Vec<String> = self.program.exports
             .iter()
             .filter(|x| x.class == Some(class_name.to_string()))
-            .any(|x| x.constructor);
+            .filter_map(|x| x.constructor.clone())
+            .collect();
+
+        class.constructor = match constructors.len() {
+            0 => None,
+            1 => Some(constructors[0].clone()),
+            x @ _ => panic!("There must be only one constructor, not {}", x),
+        };
 
         class.contents.push_str(&export.function.name);
         class.contents.push_str(&js);
