@@ -407,7 +407,7 @@ you can do are:
 ```rust
 #[wasm_bindgen]
 extern {
-    fn foo(a: &Fn()); // must be `Fn`, not `FnMut`
+    fn foo(a: &Fn()); // could also be `&mut FnMut()`
 }
 ```
 
@@ -452,7 +452,7 @@ returns, and the validity of the JS closure is tied to the lifetime of the
 `Closure` in Rust. Once `Closure` is dropped it will deallocate its internal
 memory and invalidate the corresponding JS function.
 
-Unlike stack closures a `Closure` supports `FnMut`:
+Like stack closures a `Closure` also supports `FnMut`:
 
 ```rust
 use wasm_bindgen::prelude::*;

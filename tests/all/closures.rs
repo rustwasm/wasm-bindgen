@@ -327,3 +327,109 @@ fn long_fnmut_recursive() {
         "#)
         .test();
 }
+
+#[test]
+fn fnmut() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use std::cell::Cell;
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn call(a: &mut FnMut());
+                fn thread(a: &mut FnMut(u32) -> u32) -> u32;
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                let mut a = false;
+                call(&mut || a = true);
+                assert!(a);
+
+                let mut x = false;
+                assert_eq!(thread(&mut |a| {
+                    x = true;
+                    a + 1
+                }), 3);
+                assert!(x);
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export function call(a: any) {
+                a();
+            }
+
+            export function thread(a: any) {
+                return a(2);
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}
+
+#[test]
+fn fnmut_bad() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use std::cell::Cell;
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn call(a: &mut FnMut());
+                #[wasm_bindgen(catch)]
+                fn again(a: bool) -> Result<(), JsValue>;
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                let mut x = true;
+                let mut hits = 0;
+                call(&mut || {
+                    hits += 1;
+                    if again(hits == 1).is_err() {
+                        return
+                    }
+                    x = false;
+                });
+                assert!(hits == 1);
+                assert!(x);
+
+                assert!(again(true).is_err());
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            let F: any = null;
+
+            export function call(a: any) {
+                F = a;
+                a();
+            }
+
+            export function again(x: boolean) {
+                if (x) F();
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}
+

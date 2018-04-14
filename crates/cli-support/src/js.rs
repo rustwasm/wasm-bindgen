@@ -1570,7 +1570,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 continue
             }
 
-            if let Some(f) = arg.stack_closure() {
+            if let Some((f, mutable)) = arg.stack_closure() {
                 let args = (0..f.arguments.len())
                     .map(|i| format!("arg{}", i))
                     .collect::<Vec<_>>()
@@ -1578,14 +1578,25 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 self.cx.expose_get_global_argument();
                 self.cx.function_table_needed = true;
                 let sep = if f.arguments.len() == 0 {""} else {","};
+                let body = if mutable {
+                    format!("
+                        let a = this.a;
+                        this.a = 0;
+                        try {{
+                            return this.f(a, this.b {} {});
+                        }} finally {{
+                            this.a = a;
+                        }}
+                    ", sep, args)
+                } else {
+                    format!("return this.f(this.a, this.b {} {});", sep, args)
+                };
                 extra.push_str(&format!("
-                    let cb{0} = function({args}) {{
-                        return this.f(this.a, this.b {sep} {args});
-                    }};
+                    let cb{0} = function({args}) {{ {body} }};
                     cb{0}.f = wasm.__wbg_function_table.get(arg{0});
                     cb{0}.a = getGlobalArgument({next_global});
                     cb{0}.b = getGlobalArgument({next_global} + 1);
-                ", i, next_global = next_global, args = args, sep = sep));
+                ", i, next_global = next_global, body = body, args = args));
                 next_global += 2;
                 finally.push_str(&format!("
                     cb{0}.a = cb{0}.b = 0;
