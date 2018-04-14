@@ -17,6 +17,7 @@ fn simple() {
 
             #[wasm_bindgen]
             impl Foo {
+                #[wasm_bindgen(constructor)]
                 pub fn new() -> Foo {
                     Foo::with_contents(0)
                 }
@@ -47,6 +48,10 @@ fn simple() {
                 assert.strictEqual(r2.add(2), 13);
                 assert.strictEqual(r2.add(3), 16);
                 r2.free();
+
+                const r3 = new Foo();
+                assert.strictEqual(r3.add(42), 42);
+                r3.free();
             }
         "#)
         .test();
@@ -357,6 +362,78 @@ fn pass_into_js_as_js_class() {
 
             export function test() {
                 run();
+            }
+        "#)
+        .test();
+}
+
+
+
+#[test]
+fn constructors() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub struct Foo {
+                number: u32,
+            }
+
+            #[wasm_bindgen]
+            impl Foo {
+                #[wasm_bindgen(constructor)]
+                pub fn new(number: u32) -> Foo {
+                    Foo { number }
+                }
+
+                pub fn get_number(&self) -> u32 {
+                    self.number
+                }
+            }
+
+            #[wasm_bindgen]
+            pub struct Bar {
+                number: u32,
+                number2: u32,
+            }
+
+            #[wasm_bindgen]
+            impl Bar {
+                #[wasm_bindgen(constructor)]
+                pub fn new(number: u32, number2: u32) -> Bar {
+                    Bar { number, number2 }
+                }
+
+                pub fn get_sum(&self) -> u32 {
+                    self.number + self.number2
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import { Foo, Bar } from "./out";
+
+            export function test() {
+                const foo = new Foo(1);
+                assert.strictEqual(foo.get_number(), 1);
+                foo.free();
+
+                const foo2 = Foo.new(2);
+                assert.strictEqual(foo2.get_number(), 2);
+                foo2.free();
+
+                const bar = new Bar(3, 4);
+                assert.strictEqual(bar.get_sum(), 7);
+                bar.free();
+
+                const bar2 = Bar.new(5, 6);
+                assert.strictEqual(bar2.get_sum(), 11);
+                bar2.free();
             }
         "#)
         .test();

@@ -29,6 +29,7 @@ pub struct Context<'a> {
 pub struct ExportedClass {
     pub contents: String,
     pub typescript: String,
+    pub constructor: bool,
 }
 
 pub struct SubContext<'a, 'b: 'a> {
@@ -316,42 +317,42 @@ impl<'a> Context<'a> {
             ts_dst.push_str("
                 public ptr: number;
             ");
-            if self.config.debug {
-                self.expose_check_token();
-                dst.push_str(&format!("
-                    constructor(ptr, sym) {{
-                        _checkToken(sym);
-                        this.ptr = ptr;
+
+            self.expose_constructor_token();
+
+            dst.push_str(&format!("
+                constructor(...args) {{
+                    if (args.length === 1 && args[0] instanceof ConstructorToken) {{
+                        this.ptr = args[0].ptr;
+                        return;
                     }}
                 "));
-                ts_dst.push_str("constructor(ptr: number, sym: Symbol);\n");
 
-                let new_name = shared::new_function(&class);
-                if self.wasm_import_needed(&new_name) {
-                    self.expose_add_heap_object();
-                    self.export(&new_name, &format!("
-                        function(ptr) {{
-                            return addHeapObject(new {class}(ptr, token));
-                        }}
-                    ", class = class));
-                }
+            if exports.constructor {
+                ts_dst.push_str(&format!("constructor(...args: [any] | [ConstructorToken]);\n"));
+
+                dst.push_str(&format!("
+                    // This invocation of new will call this constructor with a ConstructorToken
+                    let instance = {class}.new(...args);
+                    this.ptr = instance.ptr;
+                ", class = class));
             } else {
-                dst.push_str(&format!("
-                    constructor(ptr) {{
-                        this.ptr = ptr;
-                    }}
-                "));
-                ts_dst.push_str("constructor(ptr: number);\n");
+                ts_dst.push_str(&format!("constructor(...args: [ConstructorToken]);\n"));
 
-                let new_name = shared::new_function(&class);
-                if self.wasm_import_needed(&new_name) {
-                    self.expose_add_heap_object();
-                    self.export(&new_name, &format!("
-                        function(ptr) {{
-                            return addHeapObject(new {class}(ptr));
-                        }}
-                    ", class = class));
-                }
+                dst.push_str("throw new Error('you cannot invoke `new` directly without having a \
+                method annotated a constructor');");
+            }
+
+            dst.push_str("}");
+
+            let new_name = shared::new_function(&class);
+            if self.wasm_import_needed(&new_name) {
+                self.expose_add_heap_object();
+                self.export(&new_name, &format!("
+                    function(ptr) {{
+                        return addHeapObject(new {class}(new ConstructorToken(ptr)));
+                    }}
+                ", class = class));
             }
 
             dst.push_str(&format!("
@@ -589,19 +590,6 @@ impl<'a> Context<'a> {
         ", get_obj));
     }
 
-    fn expose_check_token(&mut self) {
-        if !self.exposed_globals.insert("check_token") {
-            return;
-        }
-        self.globals.push_str(&format!("
-            const token = Symbol('foo');
-            function _checkToken(sym) {{
-                if (token !== sym)
-                    throw new Error('cannot invoke `new` directly');
-            }}
-        "));
-    }
-
     fn expose_assert_num(&mut self) {
         if !self.exposed_globals.insert("assert_num") {
             return;
@@ -763,6 +751,27 @@ impl<'a> Context<'a> {
         self.globals.push_str(&format!("
             let cachedDecoder = new TextDecoder('utf-8');
         "));
+    }
+
+    fn expose_constructor_token(&mut self) {
+        if !self.exposed_globals.insert("ConstructorToken") {
+            return;
+        }
+
+        self.globals.push_str("
+            class ConstructorToken {
+                constructor(ptr) {
+                    this.ptr = ptr;
+                }
+            }
+        ");
+
+        self.typescript.push_str("
+            class ConstructorToken {
+                constructor(ptr: number);
+            }
+        ");
+
     }
 
     fn expose_get_string_from_wasm(&mut self) {
@@ -1236,11 +1245,7 @@ impl<'a> Context<'a> {
         if let Some(name) = ty.rust_struct() {
             dst_ts.push_str(": ");
             dst_ts.push_str(name);
-            return if self.config.debug {
-                format!("return new {name}(ret, token);", name = name)
-            } else {
-                format!("return new {name}(ret);", name = name)
-            }
+            return format!("return new {name}(new ConstructorToken(ret));", name = name);
         }
 
         if ty.is_number() {
@@ -1322,19 +1327,26 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.typescript.push_str("\n");
     }
 
-    pub fn generate_export_for_class(&mut self, class: &str, export: &shared::Export) {
+    pub fn generate_export_for_class(&mut self, class_name: &str, export: &shared::Export) {
         let (js, ts) = self.generate_function(
             "",
-            &shared::struct_function_export_name(class, &export.function.name),
+            &shared::struct_function_export_name(class_name, &export.function.name),
             export.method,
             &export.function,
         );
-        let class = self.cx.exported_classes.entry(class.to_string())
+
+        let class = self.cx.exported_classes.entry(class_name.to_string())
             .or_insert(ExportedClass::default());
         if !export.method {
             class.contents.push_str("static ");
             class.typescript.push_str("static ");
         }
+
+        class.constructor = self.program.exports
+            .iter()
+            .filter(|x| x.class == Some(class_name.to_string()))
+            .any(|x| x.constructor);
+
         class.contents.push_str(&export.function.name);
         class.contents.push_str(&js);
         class.contents.push_str("\n");
@@ -1560,11 +1572,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 if arg.is_by_ref() {
                     panic!("cannot invoke JS functions with custom ref types yet")
                 }
-                let assign = if self.cx.config.debug {
-                    format!("let c{0} = new {class}(arg{0}, token);", i, class = s)
-                } else {
-                    format!("let c{0} = new {class}(arg{0});", i, class = s)
-                };
+                let assign = format!("let c{0} = new {class}(new ConstructorToken(arg{0}));", i, class = s);
                 extra.push_str(&assign);
                 invoc_args.push(format!("c{}", i));
                 continue

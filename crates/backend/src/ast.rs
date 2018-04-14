@@ -14,6 +14,7 @@ pub struct Export {
     pub class: Option<syn::Ident>,
     pub method: bool,
     pub mutable: bool,
+    pub constructor: bool,
     pub function: Function,
 }
 
@@ -122,6 +123,7 @@ impl Program {
                     class: None,
                     method: false,
                     mutable: false,
+                    constructor: false,
                     function: Function::from(f, opts),
                 });
             }
@@ -132,8 +134,8 @@ impl Program {
             }
             syn::Item::Impl(mut i) => {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut i.attrs));
+                self.push_impl(&mut i, opts);
                 i.to_tokens(tokens);
-                self.push_impl(i, opts);
             }
             syn::Item::ForeignMod(mut f) => {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
@@ -151,7 +153,7 @@ impl Program {
         }
     }
 
-    pub fn push_impl(&mut self, item: syn::ItemImpl, _opts: BindgenAttrs) {
+    pub fn push_impl(&mut self, item: &mut syn::ItemImpl, _opts: BindgenAttrs) {
         if item.defaultness.is_some() {
             panic!("default impls are not supported");
         }
@@ -174,16 +176,16 @@ impl Program {
             },
             _ => panic!("unsupported self type in impl"),
         };
-        for item in item.items.into_iter() {
-            self.push_impl_item(name, item);
+        for mut item in item.items.iter_mut() {
+            self.push_impl_item(name, &mut item);
         }
     }
 
-    fn push_impl_item(&mut self, class: syn::Ident, item: syn::ImplItem) {
-        let mut method = match item {
+    fn push_impl_item(&mut self, class: syn::Ident, item: &mut syn::ImplItem) {
+        let method = match item {
             syn::ImplItem::Const(_) => panic!("const definitions aren't supported"),
             syn::ImplItem::Type(_) => panic!("type definitions in impls aren't supported"),
-            syn::ImplItem::Method(m) => m,
+            syn::ImplItem::Method(ref mut m) => m,
             syn::ImplItem::Macro(_) => panic!("macros in impls aren't supported"),
             syn::ImplItem::Verbatim(_) => panic!("unparsed impl item?"),
         };
@@ -201,21 +203,37 @@ impl Program {
             panic!("can only bindgen safe functions");
         }
 
-        let opts = BindgenAttrs::find(&mut method.attrs);
+        let mut opts = BindgenAttrs::find(&mut method.attrs);
+        let constructor = opts.constructor();
+        if constructor {
+            if method.sig.ident != syn::Ident::from("new") {
+                panic!("The constructor must be called 'new' for now")
+            }
+
+            let pos = opts.attrs
+                .iter()
+                .enumerate()
+                .find(|(_, a)| **a == BindgenAttr::Constructor)
+                .unwrap()
+                .0;
+            opts.attrs.remove(pos);
+        }
 
         let (function, mutable) = Function::from_decl(
             method.sig.ident,
-            Box::new(method.sig.decl),
-            method.attrs,
+            Box::new(method.sig.decl.clone()),
+            method.attrs.clone(),
             opts,
-            method.vis,
+            method.vis.clone(),
             true,
             false,
         );
+
         self.exports.push(Export {
             class: Some(class),
             method: mutable.is_some(),
             mutable: mutable.unwrap_or(false),
+            constructor,
             function,
         });
     }
@@ -548,6 +566,7 @@ impl Export {
         shared::Export {
             class: self.class.map(|s| s.as_ref().to_string()),
             method: self.method,
+            constructor: self.constructor,
             function: self.function.shared(),
         }
     }
@@ -792,6 +811,7 @@ impl syn::synom::Synom for BindgenAttrs {
     ));
 }
 
+#[derive(PartialEq)]
 enum BindgenAttr {
     Catch,
     Constructor,

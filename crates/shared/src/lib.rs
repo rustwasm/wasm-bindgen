@@ -54,6 +54,7 @@ pub struct ImportType {
 pub struct Export {
     pub class: Option<String>,
     pub method: bool,
+    pub constructor: bool,
     pub function: Function,
 }
 
