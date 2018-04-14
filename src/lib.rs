@@ -13,7 +13,7 @@ use std::cell::UnsafeCell;
 use std::ops::Deref;
 use std::ptr;
 
-use convert::WasmBoundary;
+use convert::FromWasmAbi;
 
 /// A module which is typically glob imported from:
 ///
@@ -295,7 +295,7 @@ pub struct JsStatic<T> {
 unsafe impl<T: Sync> Sync for JsStatic<T> {}
 unsafe impl<T: Send> Send for JsStatic<T> {}
 
-impl<T: WasmBoundary> Deref for JsStatic<T> {
+impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
     type Target = T;
     fn deref(&self) -> &T {
         unsafe {

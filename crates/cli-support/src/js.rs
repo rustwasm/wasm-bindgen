@@ -8,7 +8,7 @@ use shared;
 use wasm_gc;
 
 use super::Bindgen;
-use descriptor::{Descriptor, VectorKind};
+use descriptor::{Descriptor, VectorKind, Function};
 
 pub struct Context<'a> {
     pub globals: String,
@@ -1311,10 +1311,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
         if let Some(ref class) = export.class {
             return self.generate_export_for_class(class, export);
         }
+        let descriptor = self.cx.describe(&export.function.name);
         let (js, ts) = self.generate_function("function",
                                               &export.function.name,
+                                              &export.function.name,
                                               false,
-                                              &export.function);
+                                              descriptor.unwrap_function());
         self.cx.export(&export.function.name, &js);
         self.cx.globals.push_str("\n");
         self.cx.typescript.push_str("export ");
@@ -1323,11 +1325,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
     }
 
     pub fn generate_export_for_class(&mut self, class: &str, export: &shared::Export) {
+        let wasm_name = shared::struct_function_export_name(class, &export.function.name);
+        let descriptor = self.cx.describe(&wasm_name);
         let (js, ts) = self.generate_function(
             "",
-            &shared::struct_function_export_name(class, &export.function.name),
+            &export.function.name,
+            &wasm_name,
             export.method,
-            &export.function,
+            &descriptor.unwrap_function(),
         );
         let class = self.cx.exported_classes.entry(class.to_string())
             .or_insert(ExportedClass::default());
@@ -1344,13 +1349,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn generate_function(&mut self,
                          prefix: &str,
+                         js_name: &str,
                          wasm_name: &str,
                          is_method: bool,
-                         function: &shared::Function) -> (String, String) {
-        let descriptor = self.cx.describe(wasm_name);
-        let desc_function = descriptor.unwrap_function();
+                         function: &Function) -> (String, String) {
         let mut dst = String::from("(");
-        let mut dst_ts = format!("{}(", function.name);
+        let mut dst_ts = format!("{}(", js_name);
         let mut passed_args = String::new();
         let mut arg_conversions = String::new();
         let mut destructors = String::new();
@@ -1360,7 +1364,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
 
         let mut global_idx = 0;
-        for (i, arg) in desc_function.arguments.iter().enumerate() {
+        for (i, arg) in function.arguments.iter().enumerate() {
             let name = format!("arg{}", i);
             if i > 0 {
                 dst.push_str(", ");
@@ -1459,7 +1463,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         dst.push_str(")");
         dst_ts.push_str(")");
-        let convert_ret = self.cx.return_from_rust(&desc_function.ret, &mut dst_ts);
+        let convert_ret = self.cx.return_from_rust(&function.ret, &mut dst_ts);
         dst_ts.push_str(";");
         dst.push_str(" {\n        ");
         dst.push_str(&arg_conversions);
