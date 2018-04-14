@@ -269,7 +269,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             .collect::<Vec<_>>()
             .join(", ");
         let mut js = format!("{}({}) {{\n", prefix, js_args);
-        js.push_str(&indent(&self.prelude, 2));
+        js.push_str(&indent(&self.prelude));
         let rust_args = self.rust_arguments.join(", ");
 
         let invoc = self.ret_expr.replace("RET", &format!("{}({})", invoc, rust_args));
@@ -283,11 +283,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     {}\
                 }}\n\
             ",
-                indent(&invoc, 2),
-                indent(&self.finally, 2),
+                indent(&invoc),
+                indent(&self.finally),
             )
         };
-        js.push_str(&indent(&invoc, 2));
+        js.push_str(&indent(&invoc));
         js.push_str("}");
 
         let ts_args = self.js_arguments
@@ -306,12 +306,10 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     }
 }
 
-fn indent(s: &str, spaces: usize) -> String {
+fn indent(s: &str) -> String {
     let mut ret = String::new();
     for line in s.lines() {
-        for _ in 0..spaces {
-            ret.push_str(" ");
-        }
+        ret.push_str("    ");
         ret.push_str(line);
         ret.push_str("\n");
     }
