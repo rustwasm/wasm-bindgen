@@ -99,7 +99,7 @@ impl<T> Closure<T>
             let js = T::factory()(T::shim(), data[0], data[1]);
             Closure {
                 _inner: t,
-                js: ManuallyDrop::new(JsValue::from_abi(js, &mut GlobalStack::new())),
+                js: ManuallyDrop::new(JsValue { idx: js }),
             }
         }
     }
@@ -117,7 +117,7 @@ impl<T> Closure<T>
     /// cleanup as it can.
     pub fn forget(self) {
         unsafe {
-            super::__wbindgen_cb_forget(self.js.to_abi_ref(&mut GlobalStack::new()));
+            super::__wbindgen_cb_forget(self.js.idx);
             mem::forget(self);
         }
     }
@@ -133,13 +133,13 @@ impl<T> WasmDescribe for Closure<T>
 }
 
 // `Closure` can only be passed by reference to imports.
-impl<T> ToRefWasmBoundary for Closure<T>
+impl<'a, T> IntoWasmAbi for &'a Closure<T>
     where T: WasmShim + ?Sized,
 {
     type Abi = u32;
 
-    fn to_abi_ref(&self, extra: &mut Stack) -> u32 {
-        self.js.to_abi_ref(extra)
+    fn into_abi(self, _extra: &mut Stack) -> u32 {
+        self.js.idx
     }
 }
 
@@ -148,8 +148,7 @@ impl<T> Drop for Closure<T>
 {
     fn drop(&mut self) {
         unsafe {
-            let idx = self.js.to_abi_ref(&mut GlobalStack::new());
-            super::__wbindgen_cb_drop(idx);
+            super::__wbindgen_cb_drop(self.js.idx);
         }
     }
 }
