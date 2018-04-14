@@ -325,24 +325,28 @@ pub unsafe extern fn __wbindgen_global_argument_ptr() -> *mut u32 {
 
 macro_rules! stack_closures {
     ($( ($($var:ident)*) )*) => ($(
-        impl<'a, $($var,)* R> IntoWasmAbi for &'a (Fn($($var),*) -> R + 'a)
-            where $($var: WasmAbi + WasmDescribe,)*
-                  R: WasmAbi + WasmDescribe
+        impl<'a, 'b, $($var,)* R> IntoWasmAbi for &'a (Fn($($var),*) -> R + 'b)
+            where $($var: FromWasmAbi,)*
+                  R: IntoWasmAbi
         {
             type Abi = u32;
 
             fn into_abi(self, extra: &mut Stack) -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var,)* R>(
+                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: IntoWasmAbi>(
                     a: usize,
                     b: usize,
-                    $($var: $var),*
-                ) -> R {
+                    $($var: <$var as FromWasmAbi>::Abi),*
+                ) -> <R as IntoWasmAbi>::Abi {
                     if a == 0 {
-                        throw("closure has been destroyed already");
+                        throw("closure invoked recursively or destroyed already");
                     }
                     let f: &Fn($($var),*) -> R = mem::transmute((a, b));
-                    f($($var),*)
+                    let mut _stack = GlobalStack::new();
+                    $(
+                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    )*
+                    f($($var),*).into_abi(&mut GlobalStack::new())
                 }
                 unsafe {
                     let (a, b): (usize, usize) = mem::transmute(self);
@@ -353,22 +357,26 @@ macro_rules! stack_closures {
             }
         }
 
-        impl<'a, $($var,)*> IntoWasmAbi for &'a (Fn($($var),*) + 'a)
-            where $($var: WasmAbi + WasmDescribe,)*
+        impl<'a, 'b, $($var,)*> IntoWasmAbi for &'a (Fn($($var),*) + 'b)
+            where $($var: FromWasmAbi,)*
         {
             type Abi = u32;
 
             fn into_abi(self, extra: &mut Stack) -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var,)* >(
+                unsafe extern fn invoke<$($var: FromWasmAbi,)* >(
                     a: usize,
                     b: usize,
-                    $($var: $var),*
+                    $($var: <$var as FromWasmAbi>::Abi),*
                 ) {
                     if a == 0 {
-                        throw("closure has been destroyed already");
+                        throw("closure invoked recursively or destroyed already");
                     }
                     let f: &Fn($($var),*) = mem::transmute((a, b));
+                    let mut _stack = GlobalStack::new();
+                    $(
+                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    )*
                     f($($var),*)
                 }
                 unsafe {
@@ -380,24 +388,28 @@ macro_rules! stack_closures {
             }
         }
 
-        impl<'a, $($var,)* R> IntoWasmAbi for &'a mut (FnMut($($var),*) -> R + 'a)
-            where $($var: WasmAbi + WasmDescribe,)*
-                  R: WasmAbi + WasmDescribe
+        impl<'a, 'b, $($var,)* R> IntoWasmAbi for &'a mut (FnMut($($var),*) -> R + 'b)
+            where $($var: FromWasmAbi,)*
+                  R: IntoWasmAbi
         {
             type Abi = u32;
 
             fn into_abi(self, extra: &mut Stack) -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var,)* R>(
+                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: IntoWasmAbi>(
                     a: usize,
                     b: usize,
-                    $($var: $var),*
-                ) -> R {
+                    $($var: <$var as FromWasmAbi>::Abi),*
+                ) -> <R as IntoWasmAbi>::Abi {
                     if a == 0 {
                         throw("closure invoked recursively or destroyed already");
                     }
                     let f: &mut FnMut($($var),*) -> R = mem::transmute((a, b));
-                    f($($var),*)
+                    let mut _stack = GlobalStack::new();
+                    $(
+                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    )*
+                    f($($var),*).into_abi(&mut GlobalStack::new())
                 }
                 unsafe {
                     let (a, b): (usize, usize) = mem::transmute(self);
@@ -408,22 +420,26 @@ macro_rules! stack_closures {
             }
         }
 
-        impl<'a, $($var,)*> IntoWasmAbi for &'a mut (FnMut($($var),*) + 'a)
-            where $($var: WasmAbi + WasmDescribe,)*
+        impl<'a, 'b, $($var,)*> IntoWasmAbi for &'a mut (FnMut($($var),*) + 'b)
+            where $($var: FromWasmAbi,)*
         {
             type Abi = u32;
 
             fn into_abi(self, extra: &mut Stack) -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var,)* >(
+                unsafe extern fn invoke<$($var: FromWasmAbi,)* >(
                     a: usize,
                     b: usize,
-                    $($var: $var),*
+                    $($var: <$var as FromWasmAbi>::Abi),*
                 ) {
                     if a == 0 {
                         throw("closure invoked recursively or destroyed already");
                     }
                     let f: &mut FnMut($($var),*) = mem::transmute((a, b));
+                    let mut _stack = GlobalStack::new();
+                    $(
+                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    )*
                     f($($var),*)
                 }
                 unsafe {
