@@ -1338,8 +1338,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.typescript.push_str("\n");
     }
 
-    pub fn generate_export_for_class(&mut self, class: &str, export: &shared::Export) {
-        let wasm_name = shared::struct_function_export_name(class, &export.function.name);
+    pub fn generate_export_for_class(&mut self, class_name: &str, export: &shared::Export) {
+        let wasm_name = shared::struct_function_export_name(class_name, &export.function.name);
         let descriptor = self.cx.describe(&wasm_name);
         let (js, ts) = self.generate_function(
             "",
