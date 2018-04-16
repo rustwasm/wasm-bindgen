@@ -536,31 +536,37 @@ available to JS through generated shims. If we take a look at the generated JS
 code for this we'll see:
 
 ```js
-import * as wasm from './foo_bg';
+import * as wasm from './js_hello_world_bg';
 
 export class Foo {
-  constructor(ptr) {
-    this.ptr = ptr;
-  }
+    static __construct(ptr) {
+        return new Foo(ptr);
+    }
 
-  free() {
-    const ptr = this.ptr;
-    this.ptr = 0;
-    wasm.__wbindgen_foo_free(ptr);
-  }
+    constructor(ptr) {
+        this.ptr = ptr;
+    }
 
-  static new(arg0) {
-    const ret = wasm.foo_new(arg0);
-    return new Foo(ret);
-  }
+    free() {
+        const ptr = this.ptr;
+        this.ptr = 0;
+        wasm.__wbg_foo_free(ptr);
+    }
 
-  get() {
-    return wasm.foo_get(this.ptr);
-  }
+    static new(arg0) {
+        const ret = wasm.foo_new(arg0);
+        return Foo.__construct(ret)
+    }
 
-  set(arg0) {
-    wasm.foo_set(this.ptr, arg0);
-  }
+    get() {
+        const ret = wasm.foo_get(this.ptr);
+        return ret;
+    }
+
+    set(arg0) {
+        const ret = wasm.foo_set(this.ptr, arg0);
+        return ret;
+    }
 }
 ```
 
@@ -573,9 +579,7 @@ to JS:
 * Manual memory management is exposed in JS as well. The `free` function is
   required to be invoked to deallocate resources on the Rust side of things.
 
-It's intended that `new Foo()` is never used in JS. When `wasm-bindgen` is run
-with `--debug` it'll actually emit assertions to this effect to ensure that
-instances of `Foo` are only constructed with the functions like `Foo.new` in JS.
+To be able to use `new Foo()`, you'd need to annotate `new` as `#[wasm_bindgen(constructor)]`.
 
 One important aspect to note here, though, is that once `free` is called the JS
 object is "neutered" in that its internal pointer is nulled out. This means that
