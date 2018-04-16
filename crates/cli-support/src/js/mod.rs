@@ -56,7 +56,7 @@ impl<'a> Context<'a> {
                 format!("export const {} = {};\n", name, contents)
             }
         };
-        self.globals.push_str(&global);
+        self.global(&global);
     }
 
     pub fn finalize(&mut self, module_name: &str) -> (String, String) {
@@ -262,7 +262,7 @@ impl<'a> Context<'a> {
 
         self.rewrite_imports(module_name);
 
-        let js = if self.config.no_modules {
+        let mut js = if self.config.no_modules {
             format!("
                 (function() {{
                     var wasm;
@@ -292,12 +292,12 @@ impl<'a> Context<'a> {
                 format!("import * as wasm from './{}_bg';", module_name)
             };
 
-            format!("
-                /* tslint:disable */
-                {import_wasm}
-                {imports}
+            format!("\
+                /* tslint:disable */\n\
+                {import_wasm}\n\
+                {imports}\n\
 
-                {globals}
+                {globals}\n\
                 {footer}",
                     import_wasm = import_wasm,
                     globals = self.globals,
@@ -308,6 +308,10 @@ impl<'a> Context<'a> {
 
         self.export_table();
         self.gc();
+
+        while js.contains("\n\n\n") {
+            js = js.replace("\n\n\n", "\n\n");
+        }
 
         (js, self.typescript.clone())
     }
@@ -539,7 +543,7 @@ impl<'a> Context<'a> {
                     return;
             ")
         };
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function dropRef(idx) {{
                 {}
 
@@ -557,7 +561,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("stack") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             let stack = [];
         "));
     }
@@ -566,14 +570,14 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("slab") {
             return;
         }
-        self.globals.push_str(&format!("let slab = [];"));
+        self.global(&format!("let slab = [];"));
     }
 
     fn expose_global_slab_next(&mut self) {
         if !self.exposed_globals.insert("slab_next") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             let slab_next = 0;
         "));
     }
@@ -596,7 +600,7 @@ impl<'a> Context<'a> {
                 return val.obj;
             ")
         };
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getObject(idx) {{
                 if ((idx & 1) === 1) {{
                     return stack[idx >> 1];
@@ -612,7 +616,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("assert_num") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function _assertNum(n) {{
                 if (typeof(n) !== 'number')
                     throw new Error('expected a number argument');
@@ -624,7 +628,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("assert_bool") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function _assertBoolean(n) {{
                 if (typeof(n) !== 'boolean')
                     throw new Error('expected a boolean argument');
@@ -647,7 +651,7 @@ impl<'a> Context<'a> {
         } else {
             ""
         };
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function passStringToWasm(arg) {{
                 {}
                 const buf = cachedEncoder.encode(arg);
@@ -664,7 +668,7 @@ impl<'a> Context<'a> {
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_uint8_memory();
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function passArray8ToWasm(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.byteLength);
                 getUint8Memory().set(arg, ptr);
@@ -679,7 +683,7 @@ impl<'a> Context<'a> {
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_uint16_memory();
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function passArray16ToWasm(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.byteLength);
                 getUint16Memory().set(arg, ptr / 2);
@@ -694,7 +698,7 @@ impl<'a> Context<'a> {
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.expose_uint32_memory();
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function passArray32ToWasm(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.byteLength);
                 getUint32Memory().set(arg, ptr / 4);
@@ -708,7 +712,7 @@ impl<'a> Context<'a> {
             return;
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function passArrayF32ToWasm(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.byteLength);
                 new Float32Array(wasm.memory.buffer).set(arg, ptr / 4);
@@ -722,7 +726,7 @@ impl<'a> Context<'a> {
             return;
         }
         self.required_internal_exports.insert("__wbindgen_malloc");
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function passArrayF64ToWasm(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.byteLength);
                 new Float64Array(wasm.memory.buffer).set(arg, ptr / 8);
@@ -736,17 +740,17 @@ impl<'a> Context<'a> {
             return;
         }
         if self.config.nodejs {
-            self.globals.push_str(&format!("
+            self.global(&format!("
                 const TextEncoder = require('util').TextEncoder;
             "));
         } else if !(self.config.browser || self.config.no_modules) {
-            self.globals.push_str(&format!("
+            self.global(&format!("
                 const TextEncoder = typeof window === 'object' && window.TextEncoder
                     ? window.TextEncoder
                     : require('util').TextEncoder;
             "));
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             let cachedEncoder = new TextEncoder('utf-8');
         "));
     }
@@ -756,17 +760,17 @@ impl<'a> Context<'a> {
             return;
         }
         if self.config.nodejs {
-            self.globals.push_str(&format!("
+            self.global(&format!("
                 const TextDecoder = require('util').TextDecoder;
             "));
         } else if !(self.config.browser || self.config.no_modules) {
-            self.globals.push_str(&format!("
+            self.global(&format!("
                 const TextDecoder = typeof window === 'object' && window.TextDecoder
                     ? window.TextDecoder
                     : require('util').TextDecoder;
             "));
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             let cachedDecoder = new TextDecoder('utf-8');
         "));
     }
@@ -776,7 +780,7 @@ impl<'a> Context<'a> {
             return;
         }
 
-        self.globals.push_str("
+        self.global("
             class ConstructorToken {
                 constructor(ptr) {
                     this.ptr = ptr;
@@ -791,7 +795,7 @@ impl<'a> Context<'a> {
         }
         self.expose_text_decoder();
         self.expose_uint8_memory();
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getStringFromWasm(ptr, len) {{
                 return cachedDecoder.decode(getUint8Memory().slice(ptr, ptr + len));
             }}
@@ -804,7 +808,7 @@ impl<'a> Context<'a> {
         }
         self.expose_get_array_u32_from_wasm();
         self.expose_get_object();
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getArrayJsValueFromWasm(ptr, len) {{
                 const mem = getUint32Memory();
                 const slice = mem.slice(ptr / 4, ptr / 4 + len);
@@ -822,7 +826,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_i8_from_wasm") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getArrayI8FromWasm(ptr, len) {{
                 const mem = getUint8Memory();
                 const slice = mem.slice(ptr, ptr + len);
@@ -836,7 +840,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_u8_from_wasm") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getArrayU8FromWasm(ptr, len) {{
                 const mem = getUint8Memory();
                 const slice = mem.slice(ptr, ptr + len);
@@ -850,7 +854,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_i16_from_wasm") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getArrayI16FromWasm(ptr, len) {{
                 const mem = getUint16Memory();
                 const slice = mem.slice(ptr / 2, ptr / 2 + len);
@@ -864,7 +868,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_u16_from_wasm") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getArrayU16FromWasm(ptr, len) {{
                 const mem = getUint16Memory();
                 const slice = mem.slice(ptr / 2, ptr / 2 + len);
@@ -878,7 +882,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_i32_from_wasm") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getArrayI32FromWasm(ptr, len) {{
                 const mem = getUint32Memory();
                 const slice = mem.slice(ptr / 4, ptr / 4 + len);
@@ -892,7 +896,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_u32_from_wasm") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getArrayU32FromWasm(ptr, len) {{
                 const mem = getUint32Memory();
                 const slice = mem.slice(ptr / 4, ptr / 4 + len);
@@ -905,7 +909,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_f32_from_wasm") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getArrayF32FromWasm(ptr, len) {{
                 const mem = new Float32Array(wasm.memory.buffer);
                 const slice = mem.slice(ptr / 4,  ptr / 4 + len);
@@ -918,7 +922,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_f64_from_wasm") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function getArrayF64FromWasm(ptr, len) {{
                 const mem = new Float64Array(wasm.memory.buffer);
                 const slice = mem.slice(ptr / 8,  ptr / 8 + len);
@@ -931,7 +935,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("uint8_memory") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             let cachedUint8Memory = null;
             function getUint8Memory() {{
                 if (cachedUint8Memory === null ||
@@ -946,7 +950,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("uint16_memory") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             let cachedUint16Memory = null;
             function getUint16Memory() {{
                 if (cachedUint16Memory === null ||
@@ -961,7 +965,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("uint32_memory") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             let cachedUint32Memory = null;
             function getUint32Memory() {{
                 if (cachedUint32Memory === null ||
@@ -976,7 +980,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("assert_class") {
             return;
         }
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function _assertClass(instance, klass) {{
                 if (!(instance instanceof klass))
                     throw new Error(`expected instance of ${{klass.name}}`);
@@ -990,7 +994,7 @@ impl<'a> Context<'a> {
             return;
         }
         self.expose_global_stack();
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function addBorrowedObject(obj) {{
                 stack.push(obj);
                 return ((stack.length - 1) << 1) | 1;
@@ -1004,7 +1008,7 @@ impl<'a> Context<'a> {
         }
         self.expose_get_object();
         self.expose_drop_ref();
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function takeObject(idx) {{
                 const ret = getObject(idx);
                 dropRef(idx);
@@ -1030,7 +1034,7 @@ impl<'a> Context<'a> {
                 slab_next = next;
             ")
         };
-        self.globals.push_str(&format!("
+        self.global(&format!("
             function addHeapObject(obj) {{
                 if (slab_next === slab.length)
                     slab.push(slab.length + 1);
@@ -1140,7 +1144,7 @@ impl<'a> Context<'a> {
         }
         self.expose_uint32_memory();
         self.expose_global_argument_ptr();
-        self.globals.push_str("
+        self.global("
             function setGlobalArgument(arg, i) {
                 const idx = globalArgumentPtr() / 4 + i;
                 getUint32Memory()[idx] = arg;
@@ -1154,7 +1158,7 @@ impl<'a> Context<'a> {
         }
         self.expose_uint32_memory();
         self.expose_global_argument_ptr();
-        self.globals.push_str("
+        self.global("
             function getGlobalArgument(arg) {
                 const idx = globalArgumentPtr() / 4 + arg;
                 return getUint32Memory()[idx];
@@ -1167,7 +1171,7 @@ impl<'a> Context<'a> {
             return;
         }
         self.required_internal_exports.insert("__wbindgen_global_argument_ptr");
-        self.globals.push_str("
+        self.global("
             let cachedGlobalArgumentPtr = null;
             function globalArgumentPtr() {
                 if (cachedGlobalArgumentPtr === null)
@@ -1190,7 +1194,7 @@ impl<'a> Context<'a> {
         // As a result we have a small helper here which will walk the prototype
         // chain looking for a descriptor. For some more information on this see
         // #109
-        self.globals.push_str("
+        self.global("
             function GetOwnOrInheritedPropertyDescriptor(obj, id) {
               while (obj) {
                 let desc = Object.getOwnPropertyDescriptor(obj, id);
@@ -1246,6 +1250,20 @@ impl<'a> Context<'a> {
                 format!("return addHeapObject({});", invoc)
             }
             _ => panic!("unimplemented return from JS to Rust: {:?}", ty),
+        }
+    }
+
+    fn global(&mut self, s: &str) {
+        let amt_to_strip = s.lines()
+            .filter(|l| !l.trim().is_empty())
+            .map(|s| s.len() - s.trim_left().len())
+            .min()
+            .unwrap_or(0);
+        for line in s.lines() {
+            if !line.trim().is_empty() {
+                self.globals.push_str(&line[amt_to_strip..]);
+            }
+            self.globals.push_str("\n");
         }
     }
 }
@@ -1529,14 +1547,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         format!("{}.prototype.{}", class, function_name)
                     }
                 };
-                self.cx.globals.push_str(&format!("
+                self.cx.global(&format!("
                     const {}_target = {};
                 ", import.shim, target));
                 format!("{}_target.call", import.shim)
             }
             Some(ref class) => {
                 let class = self.import_name(info, class);
-                self.cx.globals.push_str(&format!("
+                self.cx.global(&format!("
                     const {}_target = {}.{};
                 ", import.shim, class, function_name));
                 format!("{}_target", import.shim)
@@ -1544,7 +1562,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             None => {
                 let name = self.import_name(info, function_name);
                 if name.contains(".") {
-                    self.cx.globals.push_str(&format!("
+                    self.cx.global(&format!("
                         const {}_target = {};
                     ", import.shim, name));
                     format!("{}_target", import.shim)

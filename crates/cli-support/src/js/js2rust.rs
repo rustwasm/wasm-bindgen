@@ -78,13 +78,19 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
     /// Add extra processing to the prelude of this shim.
     pub fn prelude(&mut self, s: &str) -> &mut Self {
-        self.prelude.push_str(s);
+        for line in s.lines() {
+            self.prelude.push_str(line);
+            self.prelude.push_str("\n");
+        }
         self
     }
 
     /// Add extra processing to the finally block of this shim.
     pub fn finally(&mut self, s: &str) -> &mut Self {
-        self.finally.push_str(s);
+        for line in s.lines() {
+            self.finally.push_str(line);
+            self.finally.push_str("\n");
+        }
         self
     }
 
@@ -105,12 +111,12 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             let func = self.cx.pass_to_wasm_function(kind);
             self.cx.expose_set_global_argument();
             let global_idx = self.global_idx();
-            self.prelude.push_str(&format!("\
-                const [ptr{i}, len{i}] = {func}({arg});
-                setGlobalArgument(len{i}, {global_idx});
+            self.prelude(&format!("\
+                const [ptr{i}, len{i}] = {func}({arg});\n\
+                setGlobalArgument(len{i}, {global_idx});\n\
             ", i = i, func = func, arg = name, global_idx = global_idx));
             if arg.is_by_ref() {
-                self.finally.push_str(&format!("\n\
+                self.finally(&format!("\
                     wasm.__wbindgen_free(ptr{i}, len{i} * {size});\n\
                 ", i = i, size = kind.size()));
                 self.cx.required_internal_exports.insert(
@@ -126,17 +132,17 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
             if self.cx.config.debug {
                 self.cx.expose_assert_class();
-                self.prelude.push_str(&format!("\
-                    _assertClass({arg}, {struct_});
+                self.prelude(&format!("\
+                    _assertClass({arg}, {struct_});\n\
                 ", arg = name, struct_ = s));
             }
 
             if arg.is_by_ref() {
                 self.rust_arguments.push(format!("{}.ptr", name));
             } else {
-                self.prelude.push_str(&format!("\
-                    const ptr{i} = {arg}.ptr;
-                    {arg}.ptr = 0;
+                self.prelude(&format!("\
+                    const ptr{i} = {arg}.ptr;\n\
+                    {arg}.ptr = 0;\n\
                 ", i = i, arg = name));
                 self.rust_arguments.push(format!("ptr{}", i));
             }
@@ -148,7 +154,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
             if self.cx.config.debug {
                 self.cx.expose_assert_num();
-                self.prelude.push_str(&format!("_assertNum({});\n", name));
+                self.prelude(&format!("_assertNum({});", name));
             }
 
             self.rust_arguments.push(name);
@@ -158,7 +164,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         if arg.is_ref_anyref() {
             self.js_arguments.push((name.clone(), "any".to_string()));
             self.cx.expose_borrowed_objects();
-            self.finally.push_str("stack.pop();\n");
+            self.finally("stack.pop();");
             self.rust_arguments.push(format!("addBorrowedObject({})", name));
             return
         }
@@ -168,8 +174,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.js_arguments.push((name.clone(), "boolean".to_string()));
                 if self.cx.config.debug {
                     self.cx.expose_assert_bool();
-                    self.prelude.push_str(&format!("\
-                        _assertBoolean({name});
+                    self.prelude(&format!("\
+                        _assertBoolean({name});\n\
                     ", name = name));
                 }
                 self.rust_arguments.push(format!("arg{i} ? 1 : 0", i = i));
@@ -211,12 +217,12 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             let f = self.cx.expose_get_vector_from_wasm(ty);
             self.cx.expose_get_global_argument();
             self.cx.required_internal_exports.insert("__wbindgen_free");
-            self.ret_expr = format!("
-                const ret = RET;
-                const len = getGlobalArgument(0);
-                const realRet = {}(ret, len);
-                wasm.__wbindgen_free(ret, len * {});
-                return realRet;
+            self.ret_expr = format!("\
+                const ret = RET;\n\
+                const len = getGlobalArgument(0);\n\
+                const realRet = {}(ret, len);\n\
+                wasm.__wbindgen_free(ret, len * {});\n\
+                return realRet;\n\
             ", f, ty.size());
             return
         }
@@ -263,24 +269,25 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             .collect::<Vec<_>>()
             .join(", ");
         let mut js = format!("{}({}) {{\n", prefix, js_args);
-        js.push_str(&self.prelude);
+        js.push_str(&indent(&self.prelude));
         let rust_args = self.rust_arguments.join(", ");
 
         let invoc = self.ret_expr.replace("RET", &format!("{}({})", invoc, rust_args));
-        if self.finally.len() == 0 {
-            js.push_str(&invoc);
+        let invoc = if self.finally.len() == 0 {
+            invoc
         } else {
-            js.push_str(&format!("\
-                try {{
-                    {}
-                }} finally {{
-                    {}
-                }}
+            format!("\
+                try {{\n\
+                    {}\
+                }} finally {{\n\
+                    {}\
+                }}\n\
             ",
-                invoc,
-                self.finally,
-            ));
-        }
+                indent(&invoc),
+                indent(&self.finally),
+            )
+        };
+        js.push_str(&indent(&invoc));
         js.push_str("}");
 
         let ts_args = self.js_arguments
@@ -297,4 +304,14 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         self.global_idx += 1;
         ret
     }
+}
+
+fn indent(s: &str) -> String {
+    let mut ret = String::new();
+    for line in s.lines() {
+        ret.push_str("    ");
+        ret.push_str(line);
+        ret.push_str("\n");
+    }
+    return ret
 }
