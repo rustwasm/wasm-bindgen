@@ -415,6 +415,7 @@ impl Program {
     pub fn shared(&self) -> shared::Program {
         shared::Program {
             exports: self.exports.iter().map(|a| a.shared()).collect(),
+            structs: self.structs.iter().map(|a| a.name.as_ref().to_string()).collect(),
             enums: self.enums.iter().map(|a| a.shared()).collect(),
             imports: self.imports.iter().map(|a| a.shared()).collect(),
             version: shared::version(),

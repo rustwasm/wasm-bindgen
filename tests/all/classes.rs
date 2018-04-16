@@ -367,8 +367,6 @@ fn pass_into_js_as_js_class() {
         .test();
 }
 
-
-
 #[test]
 fn constructors() {
     project()
@@ -441,6 +439,36 @@ fn constructors() {
                 bar2.free();
 
                 assert.strictEqual(cross_item_construction().get_sum(), 15);
+            }
+        "#)
+        .test();
+}
+
+#[test]
+fn empty_structs() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub struct MissingClass {}
+
+            #[wasm_bindgen]
+            pub struct Other {}
+
+            #[wasm_bindgen]
+            impl Other { pub fn return_a_value() -> MissingClass { MissingClass {} } }
+        "#)
+        .file("test.ts", r#"
+            import { Other } from "./out";
+
+            export function test() {
+                Other.return_a_value();
             }
         "#)
         .test();

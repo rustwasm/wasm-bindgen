@@ -1279,6 +1279,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
         for e in self.program.enums.iter() {
             self.generate_enum(e);
         }
+        for s in self.program.structs.iter() {
+            self.cx.exported_classes
+                .entry(s.clone())
+                .or_insert_with(Default::default);
+        }
     }
 
     pub fn generate_export(&mut self, export: &shared::Export) {

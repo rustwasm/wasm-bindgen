@@ -8,6 +8,7 @@ pub struct Program {
     pub exports: Vec<Export>,
     pub enums: Vec<Enum>,
     pub imports: Vec<Import>,
+    pub structs: Vec<String>,
     pub version: String,
     pub schema_version: String,
 }
