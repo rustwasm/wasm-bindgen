@@ -12,6 +12,8 @@ use descriptor::{Descriptor, VectorKind};
 
 mod js2rust;
 use self::js2rust::Js2Rust;
+mod rust2js;
+use self::rust2js::Rust2Js;
 
 pub struct Context<'a> {
     pub globals: String,
@@ -42,6 +44,7 @@ pub struct SubContext<'a, 'b: 'a> {
 
 impl<'a> Context<'a> {
     fn export(&mut self, name: &str, contents: &str) {
+        let contents = deindent(contents);
         let contents = contents.trim();
         let global = if self.config.nodejs {
             format!("module.exports.{} = {};\n", name, contents)
@@ -49,7 +52,7 @@ impl<'a> Context<'a> {
             format!("__exports.{} = {}\n", name, contents)
         } else {
             if contents.starts_with("function") {
-                format!("export function {} {}\n", name, &contents[8..])
+                format!("export function {}{}\n", name, &contents[8..])
             } else if contents.starts_with("class") {
                 format!("export {}\n", contents)
             } else {
@@ -69,8 +72,7 @@ impl<'a> Context<'a> {
                     return;
                 }
                 let contents = f(self);
-                let contents = contents.trim();
-                self.export(name, contents);
+                self.export(name, &contents);
             };
 
             bind("__wbindgen_object_clone_ref", &|me| {
@@ -108,9 +110,11 @@ impl<'a> Context<'a> {
             bind("__wbindgen_string_new", &|me| {
                 me.expose_add_heap_object();
                 me.expose_get_string_from_wasm();
-                String::from("function(p, l) {
-                    return addHeapObject(getStringFromWasm(p, l));
-                }")
+                String::from("
+                    function(p, l) {
+                        return addHeapObject(getStringFromWasm(p, l));
+                    }
+                ")
             });
 
             bind("__wbindgen_number_new", &|me| {
@@ -139,64 +143,78 @@ impl<'a> Context<'a> {
 
             bind("__wbindgen_null_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("function() {
-                    return addHeapObject(null);
-                }")
+                String::from("
+                    function() {
+                        return addHeapObject(null);
+                    }
+                ")
             });
 
             bind("__wbindgen_is_null", &|me| {
                 me.expose_get_object();
-                String::from("function(idx) {
-                    return getObject(idx) === null ? 1 : 0;
-                }")
+                String::from("
+                    function(idx) {
+                        return getObject(idx) === null ? 1 : 0;
+                    }
+                ")
             });
 
             bind("__wbindgen_is_undefined", &|me| {
                 me.expose_get_object();
-                String::from("function(idx) {
-                    return getObject(idx) === undefined ? 1 : 0;
-                }")
+                String::from("
+                    function(idx) {
+                        return getObject(idx) === undefined ? 1 : 0;
+                    }
+                ")
             });
 
             bind("__wbindgen_boolean_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("function(v) {
-                    return addHeapObject(v === 1);
-                }")
+                String::from("
+                    function(v) {
+                        return addHeapObject(v === 1);
+                    }
+                ")
             });
 
             bind("__wbindgen_boolean_get", &|me| {
                 me.expose_get_object();
-                String::from("function(i) {
-                    let v = getObject(i);
-                    if (typeof(v) === 'boolean') {
-                        return v ? 1 : 0;
-                    } else {
-                        return 2;
+                String::from("
+                    function(i) {
+                        let v = getObject(i);
+                        if (typeof(v) === 'boolean') {
+                            return v ? 1 : 0;
+                        } else {
+                            return 2;
+                        }
                     }
-                }")
+                ")
             });
 
             bind("__wbindgen_symbol_new", &|me| {
                 me.expose_get_string_from_wasm();
                 me.expose_add_heap_object();
-                format!("function(ptr, len) {{
-                    let a;
-                    console.log(ptr, len);
-                    if (ptr === 0) {{
-                        a = Symbol();
-                    }} else {{
-                        a = Symbol(getStringFromWasm(ptr, len));
+                format!("
+                    function(ptr, len) {{
+                        let a;
+                        console.log(ptr, len);
+                        if (ptr === 0) {{
+                            a = Symbol();
+                        }} else {{
+                            a = Symbol(getStringFromWasm(ptr, len));
+                        }}
+                        return addHeapObject(a);
                     }}
-                    return addHeapObject(a);
-                }}")
+                ")
             });
 
             bind("__wbindgen_is_symbol", &|me| {
                 me.expose_get_object();
-                String::from("function(i) {
-                    return typeof(getObject(i)) === 'symbol' ? 1 : 0;
-                }")
+                String::from("
+                    function(i) {
+                        return typeof(getObject(i)) === 'symbol' ? 1 : 0;
+                    }
+                ")
             });
 
             bind("__wbindgen_throw", &|me| {
@@ -212,51 +230,35 @@ impl<'a> Context<'a> {
                 me.expose_pass_string_to_wasm();
                 me.expose_get_object();
                 me.expose_uint32_memory();
-                String::from("function(i, len_ptr) {
-                    let obj = getObject(i);
-                    if (typeof(obj) !== 'string')
-                        return 0;
-                    const [ptr, len] = passStringToWasm(obj);
-                    getUint32Memory()[len_ptr / 4] = len;
-                    return ptr;
-                }")
+                String::from("
+                    function(i, len_ptr) {
+                        let obj = getObject(i);
+                        if (typeof(obj) !== 'string')
+                            return 0;
+                        const [ptr, len] = passStringToWasm(obj);
+                        getUint32Memory()[len_ptr / 4] = len;
+                        return ptr;
+                    }
+                ")
             });
 
-            for i in 0..8 {
-                let name = format!("__wbindgen_cb_arity{}", i);
-                bind(&name, &|me| {
-                    me.expose_add_heap_object();
-                    me.function_table_needed = true;
-                    let args = (0..i)
-                        .map(|x| format!("arg{}", x))
-                        .collect::<Vec<_>>()
-                        .join(", ");
-                    format!("function(a, b, c) {{
-                        const cb = function({0}) {{
-                            return this.f(this.a, this.b {1} {0});
-                        }};
-                        cb.a = b;
-                        cb.b = c;
-                        cb.f = wasm.__wbg_function_table.get(a);
-                        let real = cb.bind(cb);
-                        real.original = cb;
-                        return addHeapObject(real);
-                    }}", args, if i == 0 {""} else {","})
-                });
-            }
             bind("__wbindgen_cb_drop", &|me| {
                 me.expose_drop_ref();
-                String::from("function(i) {
-                    let obj = getObject(i).original;
-                    obj.a = obj.b = 0;
-                    dropRef(i);
-                }")
+                String::from("
+                    function(i) {
+                        let obj = getObject(i).original;
+                        obj.a = obj.b = 0;
+                        dropRef(i);
+                    }
+                ")
             });
             bind("__wbindgen_cb_forget", &|me| {
                 me.expose_drop_ref();
-                String::from("function(i) {
-                    dropRef(i);
-                }")
+                String::from("
+                    function(i) {
+                        dropRef(i);
+                    }
+                ")
             });
         }
 
@@ -1222,49 +1224,17 @@ impl<'a> Context<'a> {
         Descriptor::decode(&ret)
     }
 
-    fn return_from_js(&mut self, ty: &Option<Descriptor>, invoc: &str) -> String {
-        let ty = match *ty {
-            Some(ref t) => t,
-            None => return invoc.to_string(),
-        };
-        if ty.is_by_ref() {
-            panic!("cannot return a reference from JS to Rust")
-        }
-        if let Some(ty) = ty.vector_kind() {
-            let f = self.pass_to_wasm_function(ty);
-            self.expose_uint32_memory();
-            self.expose_set_global_argument();
-            return format!("
-                const [retptr, retlen] = {}({});
-                setGlobalArgument(retlen, 0);
-                return retptr;
-            ", f, invoc)
-        }
-        if ty.is_number() {
-            return format!("return {};", invoc)
-        }
-        match *ty {
-            Descriptor::Boolean => format!("return {} ? 1 : 0;", invoc),
-            Descriptor::Anyref => {
-                self.expose_add_heap_object();
-                format!("return addHeapObject({});", invoc)
-            }
-            _ => panic!("unimplemented return from JS to Rust: {:?}", ty),
-        }
-    }
-
     fn global(&mut self, s: &str) {
-        let amt_to_strip = s.lines()
-            .filter(|l| !l.trim().is_empty())
-            .map(|s| s.len() - s.trim_left().len())
-            .min()
-            .unwrap_or(0);
-        for line in s.lines() {
-            if !line.trim().is_empty() {
-                self.globals.push_str(&line[amt_to_strip..]);
-            }
+        let s = deindent(s);
+        let s = s.trim();
+
+        // Ensure a blank line between adjacent items, and ensure everything is
+        // terminated with a newline.
+        while !self.globals.ends_with("\n\n\n") {
             self.globals.push_str("\n");
         }
+        self.globals.push_str(s);
+        self.globals.push_str("\n");
     }
 }
 
@@ -1363,142 +1333,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                     info: &shared::Import,
                                     import: &shared::ImportFunction) {
         let descriptor = self.cx.describe(&import.shim);
-        let desc_function = descriptor.unwrap_function();
 
-        let mut dst = String::new();
-
-        dst.push_str("function(");
-        let mut invoc_args = Vec::new();
-        let mut abi_args = Vec::new();
-
-        let mut extra = String::new();
-        let mut finally = String::new();
-
-        let mut next_global = 0;
-        for (i, arg) in desc_function.arguments.iter().enumerate() {
-            abi_args.push(format!("arg{}", i));
-
-            if let Some(ty) = arg.vector_kind() {
-                let f = self.cx.expose_get_vector_from_wasm(ty);
-                self.cx.expose_get_global_argument();
-                extra.push_str(&format!("
-                    let len{0} = getGlobalArgument({next_global});
-                    let v{0} = {func}(arg{0}, len{0});
-                ", i, func = f, next_global = next_global));
-                next_global += 1;
-
-                if !arg.is_by_ref() {
-                    extra.push_str(&format!("
-                        wasm.__wbindgen_free(arg{0}, len{0} * {size});
-                    ", i, size = ty.size()));
-                    self.cx.required_internal_exports.insert(
-                        "__wbindgen_free"
-                    );
-                }
-                invoc_args.push(format!("v{}", i));
-                continue
-            }
-
-            if let Some(class) = arg.rust_struct() {
-                if arg.is_by_ref() {
-                    panic!("cannot invoke JS functions with custom ref types yet")
-                }
-                let assign = format!("let c{0} = {1}.__construct(arg{0});", i, class);
-                extra.push_str(&assign);
-                invoc_args.push(format!("c{}", i));
-                continue
-            }
-
-            if let Some((f, mutable)) = arg.stack_closure() {
-                let (js, _ts) = {
-                    let mut builder = Js2Rust::new("", self.cx);
-                    if mutable {
-                        builder.prelude("let a = this.a;\n")
-                            .prelude("this.a = 0;\n")
-                            .rust_argument("a")
-                            .finally("this.a = a;\n");
-                    } else {
-                        builder.rust_argument("this.a");
-                    }
-                    builder
-                        .rust_argument("this.b")
-                        .process(f)
-                        .finish("function", "this.f")
-                };
-                self.cx.expose_get_global_argument();
-                self.cx.function_table_needed = true;
-                extra.push_str(&format!("
-                    let cb{0} = {js};
-                    cb{0}.f = wasm.__wbg_function_table.get(arg{0});
-                    cb{0}.a = getGlobalArgument({next_global});
-                    cb{0}.b = getGlobalArgument({next_global} + 1);
-                ", i, js = js, next_global = next_global));
-                next_global += 2;
-                finally.push_str(&format!("
-                    cb{0}.a = cb{0}.b = 0;
-                ", i));
-                invoc_args.push(format!("cb{0}.bind(cb{0})", i));
-                continue
-            }
-
-            if let Some((f, mutable)) = arg.ref_closure() {
-                let (js, _ts) = {
-                    let mut builder = Js2Rust::new("", self.cx);
-                    if mutable {
-                        builder.prelude("let a = this.a;\n")
-                            .prelude("this.a = 0;\n")
-                            .rust_argument("a")
-                            .finally("this.a = a;\n");
-                    } else {
-                        builder.rust_argument("this.a");
-                    }
-                    builder
-                        .rust_argument("this.b")
-                        .process(f)
-                        .finish("function", "this.f")
-                };
-                self.cx.expose_get_global_argument();
-                self.cx.expose_uint32_memory();
-                self.cx.expose_add_heap_object();
-                self.cx.function_table_needed = true;
-                extra.push_str(&format!("
-                    let idx{0} = getUint32Memory()[arg{0} / 4];
-                    if (idx{0} === 0xffffffff) {{
-                        let cb{0} = {js};
-                        cb{0}.a = getGlobalArgument({next_global});
-                        cb{0}.b = getGlobalArgument({next_global} + 1);
-                        cb{0}.f = wasm.__wbg_function_table.get(getGlobalArgument({next_global} + 2));
-                        let real = cb{0}.bind(cb{0});
-                        real.original = cb{0};
-                        idx{0} = getUint32Memory()[arg{0} / 4] = addHeapObject(real);
-                    }}
-                ", i, js = js, next_global = next_global));
-                next_global += 3;
-                self.cx.expose_get_object();
-                invoc_args.push(format!("getObject(idx{})", i));
-                continue
-            }
-
-            let invoc_arg = match *arg {
-                ref d if d.is_number() => format!("arg{}", i),
-                Descriptor::Boolean => format!("arg{} !== 0", i),
-                Descriptor::Anyref => {
-                    self.cx.expose_take_object();
-                    format!("takeObject(arg{})", i)
-                }
-                ref d if d.is_ref_anyref() => {
-                    self.cx.expose_get_object();
-                    format!("getObject(arg{})", i)
-                }
-                _ => panic!("unimplemented argument type in imported function: {:?}", arg),
-            };
-            invoc_args.push(invoc_arg);
-        }
-
-        let nargs = invoc_args.len();
-        let invoc_args = invoc_args.join(", ");
-        let function_name = &import.function.name;
-        let invoc = match import.class {
+        let target = match import.class {
             Some(ref class) if import.js_new => {
                 format!("new {}", self.import_name(info, class))
             }
@@ -1530,6 +1366,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     }
                 } else {
                     if import.structural {
+                        let nargs = descriptor.unwrap_function().arguments.len();
                         let mut s = format!("function(");
                         for i in 0..nargs - 1 {
                             if i > 0 {
@@ -1538,7 +1375,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             drop(write!(s, "x{}", i));
                         }
                         s.push_str(") { return this.");
-                        s.push_str(function_name);
+                        s.push_str(&import.function.name);
                         s.push_str("(");
                         for i in 0..nargs - 1 {
                             if i > 0 {
@@ -1549,7 +1386,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         s.push_str("); }");
                         s
                     } else {
-                        format!("{}.prototype.{}", class, function_name)
+                        format!("{}.prototype.{}", class, import.function.name)
                     }
                 };
                 self.cx.global(&format!("
@@ -1561,11 +1398,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 let class = self.import_name(info, class);
                 self.cx.global(&format!("
                     const {}_target = {}.{};
-                ", import.shim, class, function_name));
+                ", import.shim, class, import.function.name));
                 format!("{}_target", import.shim)
             }
             None => {
-                let name = self.import_name(info, function_name);
+                let name = self.import_name(info, &import.function.name);
                 if name.contains(".") {
                     self.cx.global(&format!("
                         const {}_target = {};
@@ -1576,42 +1413,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 }
             }
         };
-        let invoc = format!("{}({})", invoc, invoc_args);
-        let invoc = self.cx.return_from_js(&desc_function.ret, &invoc);
 
-        let invoc = if import.catch {
-            self.cx.expose_uint32_memory();
-            self.cx.expose_add_heap_object();
-            abi_args.push("exnptr".to_string());
-            format!("
-                try {{
-                    {}
-                }} catch (e) {{
-                    const view = getUint32Memory();
-                    view[exnptr / 4] = 1;
-                    view[exnptr / 4 + 1] = addHeapObject(e);
-                }}
-            ", invoc)
-        } else {
-            invoc
-        };
-        let invoc = if finally.len() > 0 {
-            format!("
-                try {{
-                    {}
-                }} finally {{
-                    {}
-                }}
-            ", invoc, finally)
-        } else {
-            invoc
-        };
-
-        dst.push_str(&abi_args.join(", "));
-        dst.push_str(") {\n");
-        dst.push_str(&extra);
-        dst.push_str(&format!("{}\n}}", invoc));
-        self.cx.export(&import.shim, &dst);
+        let js = Rust2Js::new(self.cx)
+            .catch(import.catch)
+            .process(descriptor.unwrap_function())
+            .finish(&target);
+        self.cx.export(&import.shim, &js);
     }
 
     pub fn generate_enum(&mut self, enum_: &shared::Enum) {
@@ -1641,12 +1448,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
             if self.cx.imported_names.insert(name.to_string()) {
                 if self.cx.config.nodejs {
-                    self.cx.imports.push_str(&format!("
-                        const {} = require('{}').{};
+                    self.cx.imports.push_str(&format!("\
+                        const {} = require('{}').{};\n\
                     ", name, module, name));
                 } else {
-                    self.cx.imports.push_str(&format!("
-                        import {{ {} }} from '{}';
+                    self.cx.imports.push_str(&format!("\
+                        import {{ {} }} from '{}';\n\
                     ", name, module));
                 }
             }
@@ -1656,4 +1463,30 @@ impl<'a, 'b> SubContext<'a, 'b> {
             None => item.to_string(),
         }
     }
+}
+
+fn indent(s: &str) -> String {
+    let mut ret = String::new();
+    for line in s.lines() {
+        ret.push_str("    ");
+        ret.push_str(line);
+        ret.push_str("\n");
+    }
+    return ret
+}
+
+fn deindent(s: &str) -> String {
+    let amt_to_strip = s.lines()
+        .filter(|l| !l.trim().is_empty())
+        .map(|s| s.len() - s.trim_left().len())
+        .min()
+        .unwrap_or(0);
+    let mut ret = String::new();
+    for line in s.lines() {
+        if !line.trim().is_empty() {
+            ret.push_str(&line[amt_to_strip..]);
+        }
+        ret.push_str("\n");
+    }
+    ret
 }

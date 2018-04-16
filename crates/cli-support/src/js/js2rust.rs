@@ -1,4 +1,4 @@
-use super::Context;
+use super::{indent, Context};
 use descriptor::{Descriptor, Function};
 
 /// Helper struct for manfuacturing a shim in JS used to translate JS types to
@@ -304,14 +304,4 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         self.global_idx += 1;
         ret
     }
-}
-
-fn indent(s: &str) -> String {
-    let mut ret = String::new();
-    for line in s.lines() {
-        ret.push_str("    ");
-        ret.push_str(line);
-        ret.push_str("\n");
-    }
-    return ret
 }
