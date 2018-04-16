@@ -385,8 +385,9 @@ happening:
   free the space we allocated to pass the string argument once the function call
   is done.
 
-At this point it may be predictable, but let's take a look at the Rust side of
-things as well
+Next let's take a look at the Rust side of things as well. Here we'll be looking
+at a mostly abbreviated and/or "simplified" in the sense of this is what it
+compiles down to:
 
 ```rust
 pub extern fn greet(a: &str) -> String {
@@ -469,7 +470,8 @@ name (was the function import in Rust said) and then the `__wbg_f_greet`
 function is shimming that import.
 
 There's some tricky ABI business going on here so let's take a look at the
-generated Rust as well:
+generated Rust as well. Like before this is simplified from what's actually
+generated.
 
 ```rust
 extern fn greet(a: &str) -> String {
@@ -1042,48 +1044,181 @@ possibilities!
   All of these functions will call `console.log` in Rust, but each identifier
   will have only one signature in Rust.
 
-## Closures
+## Rust Type conversions
 
-Closures are a particularly tricky topic in wasm-bindgen right now. They use
-somewhat advanced language features to currently be implemented and *still* the
-amount of functionality you can use is quite limiting.
+Previously we've been seeing mostly abridged versions of type conversions when
+values enter Rust. Here we'll go into some more depth about how this is
+implemented. There are two categories of traits for converting values, traits
+for converting values from Rust to JS and traits for the other way around.
 
-Most of the implementation details of closures can be found in `src/convert.rs`
-and `src/closure.rs`, effectively the `ToRefWasmBoundary` implementations for
-closure types. Stack closures are pretty straightforward in that they pass
-a function pointer and a data pointer to JS. This function pointer is accessed
-via the exported `WebAssembly.Table` in JS, and the data pointer is passed along
-eventually when the JS closure is invoked.
+### From Rust to JS
 
-Stack closures currently only support `Fn` because there's no great location to
-insert a `RefCell` for types like `FnMut`. This restriction may be lift-able
-though in the future...
+First up let's take a look at going from Rust to JS:
 
-Long-lived closures are a bit more complicated. The general idea there is:
+```rust
+pub trait IntoWasmAbi: WasmDescribe {
+    type Abi: WasmAbi;
+    fn into_abi(self, extra: &mut Stack) -> Self::Abi;
+}
+```
 
-* First you create a `Closure`. This manufactures a JS callback and "passes it"
-  to Rust so Rust can store it.
-* Next you later pass it as `&Closure<...>` to JS. This extracts the callback
-  from Rust and passes it to JS.
-* Finally you eventually drop the Rust `Closure` which invalidates the JS
-  closure.
+And that's it! This is actually the only trait needed currently for translating
+a Rust value to a JS one. There's a few points here:
 
-Creation of the initial JS function is done with a bunch of
-`__wbindgen_cb_arityN` functions. These functions create a JS closure with the
-given arity (number of arguments). This isn't really that scalable unfortunately
-and also means that it's very difficult to support richer types one day. Unsure
-how to solve this.
+* We'll get to `WasmDescribe` later in this section
+* The associated type `Abi` is what will actually be generated as an argument to
+  the wasm export. The bound `WasmAbi` is only implemented for types like `u32`
+  and `f64`, those which can be placed on the boundary and transmitted
+  losslessly.
+* And finally we have the `into_abi` function, returning the `Abi` associated
+  type which will be actually passed to JS. There's also this `Stack` parameter,
+  however. Not all Rust values can be communicated in 32 bits to the `Stack`
+  parameter allows transmitting more data, explained in a moment.
 
-The `ToRefWasmBoundary` is quite straightforward for `Closure` as it just plucks
-out the JS closure and passes it along. The real meat comes down to the
-`WasmShim` internal trait. This is implemented for all the *unsized* closure
-types to avoid running afoul with coherence. Each trait impl defines a shim
-function to be invokeable from JS as well as the ability to wrap up the sized
-verion (aka transition from `F: FnMut()` to `FnMut()`). Impls for `FnMut` also
-embed the `RefCell` internally.
+This trait is implemented for all types that can be converted to JS and is
+unconditionally used during codegen. For example you'll often see `IntoWasmAbi
+for Foo` but also `IntoWasmAbi for &'a Foo`.
 
-The `WasmShim` design is basically the first thing that got working today. It's
-not great and will likely change in the future to hopefully be more flexible!
+The `IntoWasmAbi` trait is used in two locations. First it's used to convert
+return values of Rust exported functions to JS. Second it's used to convert the
+Rust arguments of JS functions imported to Rust.
+
+### From JS to Rust
+
+Unfortunately the opposite direction from above, going from JS to Rust, is a bit
+mroe complicated. Here we've got three traits:
+
+```rust
+pub trait FromWasmAbi: WasmDescribe {
+    type Abi: WasmAbi;
+    unsafe fn from_abi(js: Self::Abi, extra: &mut Stack) -> Self;
+}
+
+pub trait RefFromWasmAbi: WasmDescribe {
+    type Abi: WasmAbi;
+    type Anchor: Deref<Target=Self>;
+    unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor;
+}
+
+pub trait RefMutFromWasmAbi: WasmDescribe {
+    type Abi: WasmAbi;
+    type Anchor: DerefMut<Target=Self>;
+    unsafe fn ref_mut_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor;
+}
+```
+
+The `FromWasmAbi` is relatively straightforward, basically the opposite of
+`IntoWasmAbi`. It takes the ABI argument (typically the same as
+`IntoWasmAbi::Abi`) and then the auxiliary stack to produce an instance of
+`Self`. This trait is implemented primarily for types that *don't* have internal
+lifetimes or are references.
+
+The latter two traits here are mostly the same, and are intended for generating
+references (both shared and mutable references). They look almost the same as
+`FromWasmAbi` except that they return an `Anchor` type which implements a
+`Deref` trait rather than `Self`.
+
+The `Ref*` traits allow having arguments in functions that are references rather
+than bare types, for example `&str`, `&JsValue`, or `&[u8]`. The `Anchor` here
+is required to ensure that the lifetimes don't persist beyond one function call
+and remain anonymous.
+
+The `From*` family of traits are used for converting the Rust arguments in Rust
+exported functions to JS. They are also used for the return value in JS
+functions imported into Rust.
+
+### Global stack
+
+Mentioned above not all Rust types will fit within 32 bits. While we can
+communicate an `f64` we don't necessarily have the ability to use all the bits.
+Types like `&str` need to communicate two items, a pointer and a length (64
+bits). Other types like `&Closure<Fn()>` have even more information to
+transmit.
+
+As a result we need a method of communicating more data through the signatures
+of functions. While we could add more arguments this is somewhat difficult to do
+in the world of closures where code generation isn't quite as dynamic as a
+procedural macro. Consequently a "global stack" is used to transmit extra
+data for a function call.
+
+The global stack is a fixed-sized static allocation in the wasm module. This
+stack is temporary scratch space for any one function call from either JS to
+Rust or Rust ot JS. Both Rust and the JS shim generated have pointers to this
+global stack and will read/write information from it.
+
+Using this scheme whenever we want to pass `&str` from JS to Rust we can pass
+the pointer as the actual ABI argument and the length is then placed in the next
+spot on the global stack.
+
+The `Stack` argument to the conversion traits above looks like:
+
+```rust
+pub trait Stack {
+    fn push(&mut self, bits: u32);
+    fn pop(&mut self) -> u32;
+}
+```
+
+A trait is used here to facilitate testing but typically the calls don't end up
+being virtually dispatched at runtime.
+
+### Communicating types to `wasm-bindgen`
+
+The last aspect to talk about when converting Rust/JS types amongst one another
+is how this information is actually communicated. The `#[wasm_bindgen]` macro is
+running over the syntactical (unresolved) structure of the Rust code and is then
+responsible for generating information that `wasm-bindgen` the CLI tool later
+reads.
+
+To accomplish this a slightly unconventional approach is taken. Static
+information about the structure of the Rust code is serialized via JSON
+(currently) to a custom section of the wasm executable. Other information, like
+what the types actually are, unfortunately isn't known until later in the
+compiler due to things like associated type projections and typedefs. It also
+turns out that we want to convey "rich" types like `FnMut(String, Foo,
+&JsValue)` to the `wasm-bindgen` CLI, and handling all this is pretty tricky!
+
+To solve this issue the `#[wasm_bindgen]` macro generates **executable
+functions** which "describe the type signature of an import or export". These
+executable functions are what the `WasmDescribe` trait is all about:
+
+```rust
+pub trait WasmDescribe {
+    fn describe();
+}
+```
+
+While deceptively simple this trait is actually quite important. When you write,
+an export like this:
+
+```rust
+#[wasm_bindgen]
+fn greet(a: &str) {
+    // ...
+}
+```
+
+In addition to the shims we talked about above which JS generates the macro
+*also* generates something like:
+
+```
+#[no_mangle]
+pub extern fn __wbindgen_describe_greet() {
+    <Fn(&str)>::describe();
+}
+```
+
+Or in other words it generates invocations of `describe` functions. In doing so
+the `__wbindgen_describe_greet` shim is a programmatic description of the type
+layouts of an import/export. These are then executed when `wasm-bindgen` runs!
+These executions rely on an import called `__wbindgen_describe` which passes one
+`u32` to the host, and when called multiple times gives a `Vec<u32>`
+effectively. This `Vec<u32>` can then be reparsed into an `enum Descriptor`
+which fully describes a type.
+
+All in all this is a bit roundabout but shouldn't have any impact on the
+generated code or runtime at all. All these descriptor functions are pruned from
+the emitted wasm file.
 
 ## Wrapping up
 
