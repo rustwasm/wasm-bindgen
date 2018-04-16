@@ -672,7 +672,7 @@ impl<'a> Context<'a> {
         self.expose_uint8_memory();
         self.global(&format!("
             function passArray8ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                const ptr = wasm.__wbindgen_malloc(arg.length);
                 getUint8Memory().set(arg, ptr);
                 return [ptr, arg.length];
             }}
@@ -687,7 +687,7 @@ impl<'a> Context<'a> {
         self.expose_uint16_memory();
         self.global(&format!("
             function passArray16ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                const ptr = wasm.__wbindgen_malloc(arg.length * 2);
                 getUint16Memory().set(arg, ptr / 2);
                 return [ptr, arg.length];
             }}
@@ -702,7 +702,7 @@ impl<'a> Context<'a> {
         self.expose_uint32_memory();
         self.global(&format!("
             function passArray32ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                const ptr = wasm.__wbindgen_malloc(arg.length * 4);
                 getUint32Memory().set(arg, ptr / 4);
                 return [ptr, arg.length];
             }}
@@ -716,7 +716,7 @@ impl<'a> Context<'a> {
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.global(&format!("
             function passArrayF32ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                const ptr = wasm.__wbindgen_malloc(arg.length * 4);
                 new Float32Array(wasm.memory.buffer).set(arg, ptr / 4);
                 return [ptr, arg.length];
             }}
@@ -730,7 +730,7 @@ impl<'a> Context<'a> {
         self.required_internal_exports.insert("__wbindgen_malloc");
         self.global(&format!("
             function passArrayF64ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.byteLength);
+                const ptr = wasm.__wbindgen_malloc(arg.length * 8);
                 new Float64Array(wasm.memory.buffer).set(arg, ptr / 8);
                 return [ptr, arg.length];
             }}

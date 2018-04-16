@@ -228,3 +228,53 @@ fn import() {
         "#)
         .test();
 }
+
+#[test]
+fn pass_array_works() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            macro_rules! doit {
+                ($(($rust:ident, $i:ident))*) => ($(
+                    #[wasm_bindgen]
+                    pub fn $rust(a: &[$i]) {
+                        assert_eq!(a.len(), 2);
+                        assert_eq!(a[0], 1 as $i);
+                        assert_eq!(a[1], 2 as $i);
+                    }
+                )*)
+            }
+
+
+            doit! {
+                (rust_i8, i8)
+                (rust_u8, u8)
+                (rust_i16, i16)
+                (rust_u16, u16)
+                (rust_i32, i32)
+                (rust_u32, u32)
+                (rust_f32, f32)
+                (rust_f64, f64)
+            }
+        "#)
+        .file("test.js", r#"
+            const wasm = require("./out");
+
+            module.exports.test = function() {
+                wasm.rust_i8([1, 2]);
+                wasm.rust_u8([1, 2]);
+                wasm.rust_i16([1, 2]);
+                wasm.rust_u16([1, 2]);
+                wasm.rust_i32([1, 2]);
+                wasm.rust_u32([1, 2]);
+                wasm.rust_f32([1, 2]);
+                wasm.rust_f64([1, 2]);
+            };
+        "#)
+        .test();
+}
