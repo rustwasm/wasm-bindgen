@@ -433,3 +433,86 @@ fn fnmut_bad() {
         .test();
 }
 
+#[test]
+fn string_arguments() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use std::cell::Cell;
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn call(a: &mut FnMut(String));
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                let mut x = false;
+                call(&mut |s| {
+                    assert_eq!(s, "foo");
+                    x = true;
+                });
+                assert!(x);
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export function call(a: any) {
+                a("foo")
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}
+
+#[test]
+fn string_ret() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn call(a: &mut FnMut(String) -> String);
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                let mut x = false;
+                call(&mut |mut s| {
+                    assert_eq!(s, "foo");
+                    s.push_str("bar");
+                    x = true;
+                    s
+                });
+                assert!(x);
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+            import * as assert from "assert";
+
+            export function call(a: any) {
+                const s = a("foo");
+                assert.strictEqual(s, "foobar");
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}
+

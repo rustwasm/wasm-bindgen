@@ -48,7 +48,7 @@ pub enum Descriptor {
     F64,
     Boolean,
     Function(Box<Function>),
-    Closure(Box<Function>),
+    Closure(Box<Function>, bool),
     Ref(Box<Descriptor>),
     RefMut(Box<Descriptor>),
     Slice(Box<Descriptor>),
@@ -101,8 +101,9 @@ impl Descriptor {
             BOOLEAN => Descriptor::Boolean,
             FUNCTION => Descriptor::Function(Box::new(Function::decode(data))),
             CLOSURE => {
+                let mutable = get(data) == REFMUT;
                 assert_eq!(get(data), FUNCTION);
-                Descriptor::Closure(Box::new(Function::decode(data)))
+                Descriptor::Closure(Box::new(Function::decode(data)), mutable)
             }
             REF => Descriptor::Ref(Box::new(Descriptor::_decode(data))),
             REFMUT => Descriptor::RefMut(Box::new(Descriptor::_decode(data))),
@@ -152,16 +153,16 @@ impl Descriptor {
         }
     }
 
-    pub fn ref_closure(&self) -> Option<&Function> {
+    pub fn ref_closure(&self) -> Option<(&Function, bool)> {
         match *self {
             Descriptor::Ref(ref s) => s.closure(),
             _ => None,
         }
     }
 
-    pub fn closure(&self) -> Option<&Function> {
+    pub fn closure(&self) -> Option<(&Function, bool)> {
         match *self {
-            Descriptor::Closure(ref s) => Some(s),
+            Descriptor::Closure(ref s, mutable) => Some((s, mutable)),
             _ => None,
         }
     }

@@ -4,13 +4,13 @@
 //! closures" from Rust to JS. Some more details can be found on the `Closure`
 //! type itself.
 
-use std::mem::{self, ManuallyDrop};
+use std::cell::UnsafeCell;
 use std::marker::Unsize;
+use std::mem::{self, ManuallyDrop};
 
-use {throw, JsValue};
+use JsValue;
 use convert::*;
 use describe::*;
-use __rt::WasmRefCell;
 
 /// A handle to both a closure in Rust as well as JS closure which will invoke
 /// the Rust closure.
@@ -63,13 +63,13 @@ use __rt::WasmRefCell;
 ///     ClosureHandle(cb)
 /// }
 /// ```
-pub struct Closure<T: WasmShim + ?Sized> {
-    _inner: T::Wrapper,
-    js: ManuallyDrop<JsValue>,
+pub struct Closure<T: ?Sized> {
+    inner: UnsafeCell<Box<T>>,
+    js: UnsafeCell<ManuallyDrop<JsValue>>,
 }
 
 impl<T> Closure<T>
-    where T: WasmShim + ?Sized,
+    where T: ?Sized,
 {
     /// Creates a new instance of `Closure` from the provided Rust closure.
     ///
@@ -86,21 +86,17 @@ impl<T> Closure<T>
     pub fn new<F>(t: F) -> Closure<T>
         where F: Unsize<T> + 'static
     {
-        Closure::wrap(T::wrap(t))
+        Closure::wrap(Box::new(t) as Box<T>)
     }
 
     /// A mostly internal function to wrap a boxed closure inside a `Closure`
     /// type.
     ///
     /// This is the function where the JS closure is manufactured.
-    pub fn wrap(t: T::Wrapper) -> Closure<T> {
-        unsafe {
-            let data = T::data(&t);
-            let js = T::factory()(T::shim(), data[0], data[1]);
-            Closure {
-                _inner: t,
-                js: ManuallyDrop::new(JsValue { idx: js }),
-            }
+    pub fn wrap(t: Box<T>) -> Closure<T> {
+        Closure {
+            inner: UnsafeCell::new(t),
+            js: UnsafeCell::new(ManuallyDrop::new(JsValue { idx: !0 })),
         }
     }
 
@@ -117,14 +113,17 @@ impl<T> Closure<T>
     /// cleanup as it can.
     pub fn forget(self) {
         unsafe {
-            super::__wbindgen_cb_forget(self.js.idx);
+            let idx = (*self.js.get()).idx;
+            if idx != !0 {
+                super::__wbindgen_cb_forget(idx);
+            }
             mem::forget(self);
         }
     }
 }
 
 impl<T> WasmDescribe for Closure<T>
-    where T: WasmShim + ?Sized,
+    where T: WasmClosure + ?Sized,
 {
     fn describe() {
         inform(CLOSURE);
@@ -134,21 +133,38 @@ impl<T> WasmDescribe for Closure<T>
 
 // `Closure` can only be passed by reference to imports.
 impl<'a, T> IntoWasmAbi for &'a Closure<T>
-    where T: WasmShim + ?Sized,
+    where T: WasmClosure + ?Sized,
 {
     type Abi = u32;
 
-    fn into_abi(self, _extra: &mut Stack) -> u32 {
-        self.js.idx
+    fn into_abi(self, extra: &mut Stack) -> u32 {
+        unsafe {
+            let fnptr = WasmClosure::into_abi(&mut **self.inner.get(), extra);
+            extra.push(fnptr);
+            &mut (*self.js.get()).idx as *const u32 as u32
+        }
     }
 }
 
+fn _check() {
+    fn _assert<T: IntoWasmAbi>() {}
+    _assert::<&Closure<Fn()>>();
+    _assert::<&Closure<Fn(String)>>();
+    _assert::<&Closure<Fn() -> String>>();
+    _assert::<&Closure<FnMut()>>();
+    _assert::<&Closure<FnMut(String)>>();
+    _assert::<&Closure<FnMut() -> String>>();
+}
+
 impl<T> Drop for Closure<T>
-    where T: WasmShim + ?Sized,
+    where T: ?Sized,
 {
     fn drop(&mut self) {
         unsafe {
-            super::__wbindgen_cb_drop(self.js.idx);
+            let idx = (*self.js.get()).idx;
+            if idx != !0 {
+                super::__wbindgen_cb_drop(idx);
+            }
         }
     }
 }
@@ -157,191 +173,76 @@ impl<T> Drop for Closure<T>
 ///
 /// This trait is not stable and it's not recommended to use this in bounds or
 /// implement yourself.
-pub unsafe trait WasmShim: WasmDescribe {
-    #[doc(hidden)]
-    type Wrapper;
-    #[doc(hidden)]
-    fn shim() -> u32;
-    #[doc(hidden)]
-    fn factory() -> unsafe extern fn(u32, u32, u32) -> u32;
-    #[doc(hidden)]
-    fn wrap<U>(u: U) -> Self::Wrapper where U: Unsize<Self> + 'static;
-    #[doc(hidden)]
-    fn data(t: &Self::Wrapper) -> [u32; 2];
-}
+pub unsafe trait WasmClosure: 'static {
+    fn describe();
 
-union RawPtr<T: ?Sized> {
-    ptr: *const T,
-    data: [u32; 2]
+    unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32;
 }
 
 macro_rules! doit {
     ($(
-        ($($var:ident)*) => $arity:ident
+        ($($var:ident)*)
     )*) => ($(
         // Fn with no return
-        unsafe impl<$($var),*> WasmShim for Fn($($var),*)
-            where $($var: WasmAbi + WasmDescribe,)*
+        unsafe impl<$($var),*> WasmClosure for Fn($($var),*)
+            where $($var: FromWasmAbi + 'static,)*
         {
-            type Wrapper = Box<Fn($($var),*)>;
-
-            fn shim() -> u32 {
-                #[allow(non_snake_case)]
-                unsafe extern fn shim<$($var),*>(
-                    a: u32,
-                    b: u32,
-                    $($var:$var),*
-                ) {
-                    if a == 0 {
-                        throw("closure has been destroyed already");
-                    }
-                    (*RawPtr::<Fn($($var),*)> { data: [a, b] }.ptr)($($var),*)
-                }
-                shim::<$($var),*> as u32
+            fn describe() {
+                <&Self>::describe();
             }
 
-            fn factory() -> unsafe extern fn(u32, u32, u32) -> u32 {
-                super::$arity
-            }
-
-            fn wrap<U>(u: U) -> Self::Wrapper where U: Unsize<Self> + 'static {
-                Box::new(u) as Box<Self>
-            }
-
-            fn data(t: &Self::Wrapper) -> [u32; 2] {
-                unsafe {
-                    RawPtr::<Self> { ptr: &**t }.data
-                }
+            unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32 {
+                IntoWasmAbi::into_abi(&*me, extra)
             }
         }
-
-        // Fn with a return
-        unsafe impl<$($var,)* R> WasmShim for Fn($($var),*) -> R
-            where $($var: WasmAbi + WasmDescribe,)*
-                  R: WasmAbi + WasmDescribe,
+        // Fn with return
+        unsafe impl<$($var,)* R> WasmClosure for Fn($($var),*) -> R
+            where $($var: FromWasmAbi + 'static,)*
+                  R: IntoWasmAbi + 'static,
         {
-            type Wrapper = Box<Fn($($var),*) -> R>;
-
-            fn shim() -> u32 {
-                #[allow(non_snake_case)]
-                unsafe extern fn shim<$($var,)* R>(
-                    a: u32,
-                    b: u32,
-                    $($var:$var),*
-                ) -> R {
-                    if a == 0 {
-                        throw("closure has been destroyed already");
-                    }
-                    (*RawPtr::<Fn($($var),*) -> R> { data: [a, b] }.ptr)($($var),*)
-                }
-                shim::<$($var,)* R> as u32
+            fn describe() {
+                <&Self>::describe();
             }
 
-            fn factory() -> unsafe extern fn(u32, u32, u32) -> u32 {
-                super::$arity
-            }
-
-            fn wrap<U>(u: U) -> Self::Wrapper where U: Unsize<Self> + 'static {
-                Box::new(u) as Box<Self>
-            }
-
-            fn data(t: &Self::Wrapper) -> [u32; 2] {
-                unsafe {
-                    RawPtr::<Self> { ptr: &**t }.data
-                }
+            unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32 {
+                IntoWasmAbi::into_abi(&*me, extra)
             }
         }
-
         // FnMut with no return
-        unsafe impl<$($var),*> WasmShim for FnMut($($var),*)
-            where $($var: WasmAbi + WasmDescribe,)*
+        unsafe impl<$($var),*> WasmClosure for FnMut($($var),*)
+            where $($var: FromWasmAbi + 'static,)*
         {
-            type Wrapper = Box<WasmRefCell<FnMut($($var),*)>>;
-
-            fn shim() -> u32 {
-                #[allow(non_snake_case)]
-                unsafe extern fn shim<$($var),*>(
-                    a: u32,
-                    b: u32,
-                    $($var:$var),*
-                ) {
-                    if a == 0 {
-                        throw("closure has been destroyed already");
-                    }
-                    let ptr: *const WasmRefCell<FnMut($($var),*)> = RawPtr {
-                        data: [a, b],
-                    }.ptr;
-                    let mut ptr = (*ptr).borrow_mut();
-                    (&mut *ptr)($($var),*)
-                }
-                shim::<$($var),*> as u32
+            fn describe() {
+                <&mut Self>::describe();
             }
 
-            fn factory() -> unsafe extern fn(u32, u32, u32) -> u32 {
-                super::$arity
-            }
-
-            fn wrap<U>(u: U) -> Self::Wrapper where U: Unsize<Self> + 'static {
-                Box::new(WasmRefCell::new(u)) as Box<_>
-            }
-
-            fn data(t: &Self::Wrapper) -> [u32; 2] {
-                unsafe {
-                    RawPtr::<WasmRefCell<Self>> { ptr: &**t }.data
-                }
+            unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32 {
+                IntoWasmAbi::into_abi(&mut *me, extra)
             }
         }
-
-        // FnMut with a return
-        unsafe impl<$($var,)* R> WasmShim for FnMut($($var),*) -> R
-            where $($var: WasmAbi + WasmDescribe,)*
-                  R: WasmAbi + WasmDescribe,
+        // FnMut with return
+        unsafe impl<$($var,)* R> WasmClosure for FnMut($($var),*) -> R
+            where $($var: FromWasmAbi + 'static,)*
+                  R: IntoWasmAbi + 'static,
         {
-            type Wrapper = Box<WasmRefCell<FnMut($($var),*) -> R>>;
-
-            fn shim() -> u32 {
-                #[allow(non_snake_case)]
-                unsafe extern fn shim<$($var,)* R>(
-                    a: u32,
-                    b: u32,
-                    $($var:$var),*
-                ) -> R {
-                    if a == 0 {
-                        throw("closure has been destroyed already");
-                    }
-                    let ptr: *const WasmRefCell<FnMut($($var),*) -> R> = RawPtr {
-                        data: [a, b],
-                    }.ptr;
-                    let mut ptr = (*ptr).borrow_mut();
-                    (&mut *ptr)($($var),*)
-                }
-                shim::<$($var,)* R> as u32
+            fn describe() {
+                <&Self>::describe();
             }
 
-            fn factory() -> unsafe extern fn(u32, u32, u32) -> u32 {
-                super::$arity
-            }
-
-            fn wrap<U>(u: U) -> Self::Wrapper where U: Unsize<Self> + 'static {
-                Box::new(WasmRefCell::new(u)) as Box<_>
-            }
-
-            fn data(t: &Self::Wrapper) -> [u32; 2] {
-                unsafe {
-                    RawPtr::<WasmRefCell<Self>> { ptr: &**t }.data
-                }
+            unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32 {
+                IntoWasmAbi::into_abi(&mut *me, extra)
             }
         }
     )*)
 }
 
 doit! {
-    () => __wbindgen_cb_arity0
-    (A) => __wbindgen_cb_arity1
-    (A B) => __wbindgen_cb_arity2
-    (A B C) => __wbindgen_cb_arity3
-    (A B C D) => __wbindgen_cb_arity4
-    (A B C D E) => __wbindgen_cb_arity5
-    (A B C D E F) => __wbindgen_cb_arity6
-    (A B C D E F G) => __wbindgen_cb_arity7
+    ()
+    (A)
+    (A B)
+    (A B C)
+    (A B C D)
+    (A B C D E)
+    (A B C D E F)
+    (A B C D E F G)
 }

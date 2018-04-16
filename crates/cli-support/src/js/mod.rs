@@ -8,7 +8,10 @@ use shared;
 use wasm_gc;
 
 use super::Bindgen;
-use descriptor::{Descriptor, VectorKind, Function};
+use descriptor::{Descriptor, VectorKind};
+
+mod js2rust;
+use self::js2rust::Js2Rust;
 
 pub struct Context<'a> {
     pub globals: String,
@@ -1215,67 +1218,6 @@ impl<'a> Context<'a> {
         Descriptor::decode(&ret)
     }
 
-    fn return_from_rust(&mut self, ty: &Option<Descriptor>, dst_ts: &mut String)
-        -> String
-    {
-        let ty = match *ty {
-            Some(ref t) => t,
-            None => {
-                dst_ts.push_str(": void");
-                return format!("return ret;")
-            }
-        };
-
-        if ty.is_ref_anyref() {
-            dst_ts.push_str(": any");
-            self.expose_get_object();
-            return format!("return getObject(ret);")
-        }
-
-        if ty.is_by_ref() {
-            panic!("cannot return references from Rust to JS yet")
-        }
-
-        if let Some(ty) = ty.vector_kind() {
-            dst_ts.push_str(": ");
-            dst_ts.push_str(ty.js_ty());
-            let f = self.expose_get_vector_from_wasm(ty);
-            self.expose_get_global_argument();
-            self.required_internal_exports.insert("__wbindgen_free");
-            return format!("
-                const len = getGlobalArgument(0);
-                const realRet = {}(ret, len);
-                wasm.__wbindgen_free(ret, len * {});
-                return realRet;
-            ", f, ty.size())
-        }
-
-        if let Some(name) = ty.rust_struct() {
-            dst_ts.push_str(": ");
-            dst_ts.push_str(name);
-
-            return format!("return {}.__construct(ret)",&name);
-        }
-
-        if ty.is_number() {
-            dst_ts.push_str(": number");
-            return format!("return ret;")
-        }
-
-        match *ty {
-            Descriptor::Boolean => {
-                dst_ts.push_str(": boolean");
-                format!("return ret !== 0;")
-            }
-            Descriptor::Anyref => {
-                dst_ts.push_str(": any");
-                self.expose_take_object();
-                format!("return takeObject(ret);")
-            }
-            _ => panic!("unsupported return from Rust to JS {:?}", ty),
-        }
-    }
-
     fn return_from_js(&mut self, ty: &Option<Descriptor>, invoc: &str) -> String {
         let ty = match *ty {
             Some(ref t) => t,
@@ -1326,11 +1268,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
             return self.generate_export_for_class(class, export);
         }
         let descriptor = self.cx.describe(&export.function.name);
-        let (js, ts) = self.generate_function("function",
-                                              &export.function.name,
-                                              &export.function.name,
-                                              false,
-                                              descriptor.unwrap_function());
+        let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
+            .process(descriptor.unwrap_function())
+            .finish("function", &format!("wasm.{}", export.function.name));
         self.cx.export(&export.function.name, &js);
         self.cx.globals.push_str("\n");
         self.cx.typescript.push_str("export ");
@@ -1341,14 +1281,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
     pub fn generate_export_for_class(&mut self, class_name: &str, export: &shared::Export) {
         let wasm_name = shared::struct_function_export_name(class_name, &export.function.name);
         let descriptor = self.cx.describe(&wasm_name);
-        let (js, ts) = self.generate_function(
-            "",
-            &export.function.name,
-            &wasm_name,
-            export.method,
-            &descriptor.unwrap_function(),
-        );
-
+        let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
+            .method(export.method)
+            .process(descriptor.unwrap_function())
+            .finish("", &format!("wasm.{}", wasm_name));
         let class = self.cx.exported_classes.entry(class_name.to_string())
             .or_insert(ExportedClass::default());
         if !export.method {
@@ -1373,154 +1309,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
         class.contents.push_str("\n");
         class.typescript.push_str(&ts);
         class.typescript.push_str("\n");
-    }
-
-    fn generate_function(&mut self,
-                         prefix: &str,
-                         js_name: &str,
-                         wasm_name: &str,
-                         is_method: bool,
-                         function: &Function) -> (String, String) {
-        let mut dst = String::from("(");
-        let mut dst_ts = format!("{}(", js_name);
-        let mut passed_args = String::new();
-        let mut arg_conversions = String::new();
-        let mut destructors = String::new();
-
-        if is_method {
-            passed_args.push_str("this.ptr");
-        }
-
-        let mut global_idx = 0;
-        for (i, arg) in function.arguments.iter().enumerate() {
-            let name = format!("arg{}", i);
-            if i > 0 {
-                dst.push_str(", ");
-                dst_ts.push_str(", ");
-            }
-            dst.push_str(&name);
-            dst_ts.push_str(&name);
-
-            let mut pass = |arg: &str| {
-                if passed_args.len() > 0 {
-                    passed_args.push_str(", ");
-                }
-                passed_args.push_str(arg);
-            };
-
-            if let Some(kind) = arg.vector_kind() {
-                dst_ts.push_str(": ");
-                dst_ts.push_str(kind.js_ty());
-                let func = self.cx.pass_to_wasm_function(kind);
-                self.cx.expose_set_global_argument();
-                arg_conversions.push_str(&format!("\
-                    const [ptr{i}, len{i}] = {func}({arg});
-                    setGlobalArgument(len{i}, {global_idx});
-                ", i = i, func = func, arg = name, global_idx = global_idx));
-                global_idx += 1;
-                pass(&format!("ptr{}", i));
-                if arg.is_by_ref() {
-                    destructors.push_str(&format!("\n\
-                        wasm.__wbindgen_free(ptr{i}, len{i} * {size});\n\
-                    ", i = i, size = kind.size()));
-                    self.cx.required_internal_exports.insert(
-                        "__wbindgen_free",
-                    );
-                }
-                continue
-            }
-
-            if let Some(s) = arg.rust_struct() {
-                dst_ts.push_str(&format!(": {}", s));
-                if self.cx.config.debug {
-                    self.cx.expose_assert_class();
-                    arg_conversions.push_str(&format!("\
-                        _assertClass({arg}, {struct_});
-                    ", arg = name, struct_ = s));
-                }
-
-                if arg.is_by_ref() {
-                    pass(&format!("{}.ptr", name));
-                } else {
-                    arg_conversions.push_str(&format!("\
-                        const ptr{i} = {arg}.ptr;
-                        {arg}.ptr = 0;
-                    ", i = i, arg = name));
-                    pass(&format!("ptr{}", i));
-                }
-                continue
-            }
-
-            match *arg {
-                ref d if d.is_number() => {
-                    dst_ts.push_str(": number");
-                    if self.cx.config.debug {
-                        self.cx.expose_assert_num();
-                        arg_conversions.push_str(&format!("_assertNum({});\n", name));
-                    }
-                    pass(&name);
-                    continue
-                }
-                Descriptor::Boolean => {
-                    dst_ts.push_str(": boolean");
-                    if self.cx.config.debug {
-                        self.cx.expose_assert_bool();
-                        arg_conversions.push_str(&format!("\
-                            _assertBoolean({name});
-                        ", name = name));
-                    }
-                    pass(&format!("arg{i} ? 1 : 0", i = i));
-                    continue
-                }
-                Descriptor::Anyref => {
-                    dst_ts.push_str(": any");
-                    self.cx.expose_add_heap_object();
-                    pass(&format!("addHeapObject({})", name));
-                    continue
-                }
-                ref r if r.is_ref_anyref() => {
-                    dst_ts.push_str(": any");
-                    self.cx.expose_borrowed_objects();
-                    destructors.push_str("stack.pop();\n");
-                    pass(&format!("addBorrowedObject({})", name));
-                    continue
-                }
-                _ => {}
-            }
-            panic!("unsupported argument to rust function {:?}", arg)
-        }
-        dst.push_str(")");
-        dst_ts.push_str(")");
-        let convert_ret = self.cx.return_from_rust(&function.ret, &mut dst_ts);
-        dst_ts.push_str(";");
-        dst.push_str(" {\n        ");
-        dst.push_str(&arg_conversions);
-        if destructors.len() == 0 {
-            dst.push_str(&format!("\
-                const ret = wasm.{f}({passed});
-                {convert_ret}
-            ",
-                                  f = wasm_name,
-                                  passed = passed_args,
-                                  convert_ret = convert_ret,
-            ));
-        } else {
-            dst.push_str(&format!("\
-                try {{
-                    const ret = wasm.{f}({passed});
-                    {convert_ret}
-                }} finally {{
-                    {destructors}
-                }}
-            ",
-                                  f = wasm_name,
-                                  passed = passed_args,
-                                  destructors = destructors,
-                                  convert_ret = convert_ret,
-            ));
-        }
-        dst.push_str("}");
-        (format!("{} {}", prefix, dst), format!("{} {}", prefix, dst_ts))
     }
 
     pub fn generate_import(&mut self, import: &shared::Import) {
@@ -1599,32 +1387,29 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
 
             if let Some((f, mutable)) = arg.stack_closure() {
-                let args = (0..f.arguments.len())
-                    .map(|i| format!("arg{}", i))
-                    .collect::<Vec<_>>()
-                    .join(", ");
+                let (js, _ts) = {
+                    let mut builder = Js2Rust::new("", self.cx);
+                    if mutable {
+                        builder.prelude("let a = this.a;\n")
+                            .prelude("this.a = 0;\n")
+                            .rust_argument("a")
+                            .finally("this.a = a;\n");
+                    } else {
+                        builder.rust_argument("this.a");
+                    }
+                    builder
+                        .rust_argument("this.b")
+                        .process(f)
+                        .finish("function", "this.f")
+                };
                 self.cx.expose_get_global_argument();
                 self.cx.function_table_needed = true;
-                let sep = if f.arguments.len() == 0 {""} else {","};
-                let body = if mutable {
-                    format!("
-                        let a = this.a;
-                        this.a = 0;
-                        try {{
-                            return this.f(a, this.b {} {});
-                        }} finally {{
-                            this.a = a;
-                        }}
-                    ", sep, args)
-                } else {
-                    format!("return this.f(this.a, this.b {} {});", sep, args)
-                };
                 extra.push_str(&format!("
-                    let cb{0} = function({args}) {{ {body} }};
+                    let cb{0} = {js};
                     cb{0}.f = wasm.__wbg_function_table.get(arg{0});
                     cb{0}.a = getGlobalArgument({next_global});
                     cb{0}.b = getGlobalArgument({next_global} + 1);
-                ", i, next_global = next_global, body = body, args = args));
+                ", i, js = js, next_global = next_global));
                 next_global += 2;
                 finally.push_str(&format!("
                     cb{0}.a = cb{0}.b = 0;
@@ -1633,9 +1418,41 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 continue
             }
 
-            if let Some(_f) = arg.ref_closure() {
+            if let Some((f, mutable)) = arg.ref_closure() {
+                let (js, _ts) = {
+                    let mut builder = Js2Rust::new("", self.cx);
+                    if mutable {
+                        builder.prelude("let a = this.a;\n")
+                            .prelude("this.a = 0;\n")
+                            .rust_argument("a")
+                            .finally("this.a = a;\n");
+                    } else {
+                        builder.rust_argument("this.a");
+                    }
+                    builder
+                        .rust_argument("this.b")
+                        .process(f)
+                        .finish("function", "this.f")
+                };
+                self.cx.expose_get_global_argument();
+                self.cx.expose_uint32_memory();
+                self.cx.expose_add_heap_object();
+                self.cx.function_table_needed = true;
+                extra.push_str(&format!("
+                    let idx{0} = getUint32Memory()[arg{0} / 4];
+                    if (idx{0} === 0xffffffff) {{
+                        let cb{0} = {js};
+                        cb{0}.a = getGlobalArgument({next_global});
+                        cb{0}.b = getGlobalArgument({next_global} + 1);
+                        cb{0}.f = wasm.__wbg_function_table.get(getGlobalArgument({next_global} + 2));
+                        let real = cb{0}.bind(cb{0});
+                        real.original = cb{0};
+                        idx{0} = getUint32Memory()[arg{0} / 4] = addHeapObject(real);
+                    }}
+                ", i, js = js, next_global = next_global));
+                next_global += 3;
                 self.cx.expose_get_object();
-                invoc_args.push(format!("getObject(arg{})", i));
+                invoc_args.push(format!("getObject(idx{})", i));
                 continue
             }
 
