@@ -140,10 +140,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             return
         }
 
-        if let Some((f, mutable)) = arg.ref_closure() {
+        if let Some(closure) = arg.ref_closure() {
             let (js, _ts) = {
                 let mut builder = Js2Rust::new("", self.cx);
-                if mutable {
+                if closure.mutable {
                     builder.prelude("let a = this.a;\n")
                         .prelude("this.a = 0;\n")
                         .rust_argument("a")
@@ -153,7 +153,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 }
                 builder
                     .rust_argument("this.b")
-                    .process(f)
+                    .process(&closure.function)
                     .finish("function", "this.f")
             };
             self.cx.expose_get_global_argument();

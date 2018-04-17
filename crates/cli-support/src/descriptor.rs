@@ -48,7 +48,7 @@ pub enum Descriptor {
     F64,
     Boolean,
     Function(Box<Function>),
-    Closure(Box<Function>, bool),
+    Closure(Box<Closure>),
     Ref(Box<Descriptor>),
     RefMut(Box<Descriptor>),
     Slice(Box<Descriptor>),
@@ -63,6 +63,12 @@ pub enum Descriptor {
 pub struct Function {
     pub arguments: Vec<Descriptor>,
     pub ret: Option<Descriptor>,
+}
+
+#[derive(Debug)]
+pub struct Closure {
+    pub function: Function,
+    pub mutable: bool,
 }
 
 #[derive(Copy, Clone)]
@@ -100,11 +106,7 @@ impl Descriptor {
             F64 => Descriptor::F64,
             BOOLEAN => Descriptor::Boolean,
             FUNCTION => Descriptor::Function(Box::new(Function::decode(data))),
-            CLOSURE => {
-                let mutable = get(data) == REFMUT;
-                assert_eq!(get(data), FUNCTION);
-                Descriptor::Closure(Box::new(Function::decode(data)), mutable)
-            }
+            CLOSURE => Descriptor::Closure(Box::new(Closure::decode(data))),
             REF => Descriptor::Ref(Box::new(Descriptor::_decode(data))),
             REFMUT => Descriptor::RefMut(Box::new(Descriptor::_decode(data))),
             SLICE => Descriptor::Slice(Box::new(Descriptor::_decode(data))),
@@ -153,16 +155,16 @@ impl Descriptor {
         }
     }
 
-    pub fn ref_closure(&self) -> Option<(&Function, bool)> {
+    pub fn ref_closure(&self) -> Option<&Closure> {
         match *self {
             Descriptor::Ref(ref s) => s.closure(),
             _ => None,
         }
     }
 
-    pub fn closure(&self) -> Option<(&Function, bool)> {
+    pub fn closure(&self) -> Option<&Closure> {
         match *self {
-            Descriptor::Closure(ref s, mutable) => Some((s, mutable)),
+            Descriptor::Closure(ref s) => Some(s),
             _ => None,
         }
     }
@@ -238,6 +240,17 @@ fn get(a: &mut &[u32]) -> u32 {
     let ret = a[0];
     *a = &a[1..];
     ret
+}
+
+impl Closure {
+    fn decode(data: &mut &[u32]) -> Closure {
+        let mutable = get(data) == REFMUT;
+        assert_eq!(get(data), FUNCTION);
+        Closure {
+            mutable,
+            function: Function::decode(data),
+        }
+    }
 }
 
 impl Function {
