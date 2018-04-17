@@ -39,3 +39,6 @@ members = [
 lto = true
 opt-level = 's'
 panic = 'abort'
+
+[patch.crates-io]
+parity-wasm = { git = 'https://github.com/alexcrichton/parity-wasm', branch = 'fix-overflow' }
