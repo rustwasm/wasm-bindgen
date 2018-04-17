@@ -41,4 +41,4 @@ opt-level = 's'
 panic = 'abort'
 
 [patch.crates-io]
-parity-wasm = { git = 'https://github.com/alexcrichton/parity-wasm', branch = 'fix-overflow' }
+parity-wasm = { git = 'https://github.com/paritytech/parity-wasm' }
