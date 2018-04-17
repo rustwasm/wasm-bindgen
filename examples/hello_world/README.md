@@ -37,7 +37,7 @@ The wasm-bindgen project assumes that wasm files are ES6 modules (as does
 Webpack's current integration), so the `wasm2es6js` translates a wasm file to a
 JS file by explicitly instantiating the wasm module rather than relying on the
 bundler to do it. When doing this we can manually use
-`WebAssemblyly.instantiate` which does not have similar limits in Chrome.
+`WebAssembly.instantiate` which does not have similar limits in Chrome.
 
 If all this seems unfortunate for now, don't worry because it should hopefully
 be fixed soon! If you've got any questions about this though feel free to ask on
