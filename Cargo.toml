@@ -39,6 +39,3 @@ members = [
 lto = true
 opt-level = 's'
 panic = 'abort'
-
-[patch.crates-io]
-parity-wasm = { git = 'https://github.com/paritytech/parity-wasm' }
