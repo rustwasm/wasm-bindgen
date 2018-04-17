@@ -1,5 +1,7 @@
 # `performance`
 
+[View this example online](https://webassembly.studio/?f=6gxcp4f4953)
+
 This directory is an example of using the `#[wasm_bindgen]` macro to interact
 with global APIs like `performance.now()` to learn about the current time in
 Rust.

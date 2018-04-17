@@ -1,5 +1,7 @@
 # `Math`
 
+[View this example online](https://webassembly.studio/?f=ffnm4kpzmib)
+
 This directory is an example of using the `#[wasm_bindgen]` macro to import the
 `Math` object and invoke various functions on it.
 

@@ -1,5 +1,7 @@
 # `console.log`
 
+[View this example online](https://webassembly.studio/?f=ppd7u8k9i9)
+
 This directory is an example of using the `#[wasm_bindgen]` macro to import the
 `console.log` function and call it
 

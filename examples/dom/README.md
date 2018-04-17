@@ -1,5 +1,7 @@
 # DOM access
 
+[View this example online](https://webassembly.studio/?f=54xnz04tcke)
+
 This directory is an example of using the `#[wasm_bindgen]` macro to interact
 with the DOM, specifically the `document` object. You'll see here a few examples
 of defining access to the global `document` variable as well as appending a new

@@ -1,9 +1,12 @@
 # Examples
 
 This directory contains a number of examples of the `#[wasm_bindgen]` macro and
-how to display them in the browser. Each directory should contain a `build.sh`
-which assembles all the relevant files, and then if you open up `index.html` in
-a web browser you should be able to see everything in action!
+how to display them in the browser. Each directory contains a README with a link
+to https://webassembly.studio so you can also explore the example online
+(apologies if they're out of sync!), and each directory also contains a
+`build.sh` which assembles all the relevant files locally. If you open up
+`index.html` in a web browser you should be able to see everything in action
+when using `build.sh`!
 
 The examples here are:
 

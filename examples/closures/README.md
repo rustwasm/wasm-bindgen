@@ -1,5 +1,7 @@
 # Closure examples
 
+[View this example online](https://webassembly.studio/?f=g3hc1qs6tka)
+
 This directory is an example of using the `#[wasm_bindgen]` macro with closures
 to interact with the DOM.
 

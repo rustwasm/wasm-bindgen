@@ -37,6 +37,8 @@ what this crate can do, check out the [design doc].
 [perf-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/performance
 [smorg-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/smorgasboard
 
+[hello-online]: https://webassembly.studio/?f=gzubao6tg3
+
 ## Basic usage
 
 Let's implement the equivalent of "Hello, world!" for this crate.
@@ -46,7 +48,9 @@ Let's implement the equivalent of "Hello, world!" for this crate.
 
 [rustup]: https://rustup.rs
 
-First up, let's install the tools we need
+If you'd like you dive [straight into an online example][hello-online], but
+if you'd prefer to follow along in your own console let's install the tools we
+need:
 
 ```
 $ rustup target add wasm32-unknown-unknown
@@ -208,9 +212,10 @@ If you open https://localhost:8080 in a browser you should see a `Hello, world!`
 dialog pop up! This works in Firefox out of the box but not in Chrome due to a
 webpack issue. See [the hello_world README][hello-readme] for a workaround.
 
-If that was all a bit much, no worries! You can [follow along
-online][hello-tree] to see all the files necessary as well as a script to set it
-all up.
+If that was all a bit much, no worries! You can [execute this code
+online][hello-online] thanks to [WebAssembly Studio](https://webassembly.studio)
+or you can [follow along on GitHUb][hello-tree] to see all the files necessary
+as well as a script to set it all up.
 
 [hello-tree]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world
 [hello-readme]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world/README.md
@@ -251,7 +256,8 @@ classes/functions within.
 
 ## What else can we do?
 
-Much more! Here's a taste of various features you can use in this project:
+Much more! Here's a taste of various features you can use in this project. You
+can also [explore this code online](https://webassembly.studio/?f=t61j18noqz):
 
 ```rust
 // src/lib.rs

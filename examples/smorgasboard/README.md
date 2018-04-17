@@ -1,5 +1,7 @@
 # Smorgasboard of examples
 
+[View this example online](https://webassembly.studio/?f=t61j18noqz)
+
 This directory is an smattering of examples using the `#[wasm_bindgen]` macro.
 Here we see passing strings back and for, exporting classes from Rust to JS,
 importing classes from JS to Rust, etc.
