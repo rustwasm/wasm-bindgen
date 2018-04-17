@@ -214,7 +214,7 @@ webpack issue. See [the hello_world README][hello-readme] for a workaround.
 
 If that was all a bit much, no worries! You can [execute this code
 online][hello-online] thanks to [WebAssembly Studio](https://webassembly.studio)
-or you can [follow along on GitHUb][hello-tree] to see all the files necessary
+or you can [follow along on GitHub][hello-tree] to see all the files necessary
 as well as a script to set it all up.
 
 [hello-tree]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world
