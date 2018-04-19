@@ -72,7 +72,6 @@ simple! {
     f64 => F64
     bool => BOOLEAN
     str => STRING
-    String => STRING
     JsValue => ANYREF
 }
 
@@ -105,16 +104,24 @@ impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a mut T {
     }
 }
 
-impl<T: WasmDescribe> WasmDescribe for Box<[T]> {
-    fn describe() {
-        inform(VECTOR);
-        T::describe();
-    }
-}
+if_std! {
+    use std::prelude::v1::*;
 
-impl<T> WasmDescribe for Vec<T> where Box<[T]>: WasmDescribe {
-    fn describe() {
-        <Box<[T]>>::describe();
+    impl WasmDescribe for String {
+        fn describe() { inform(STRING) }
+    }
+
+    impl<T: WasmDescribe> WasmDescribe for Box<[T]> {
+        fn describe() {
+            inform(VECTOR);
+            T::describe();
+        }
+    }
+
+    impl<T> WasmDescribe for Vec<T> where Box<[T]>: WasmDescribe {
+        fn describe() {
+            <Box<[T]>>::describe();
+        }
     }
 }
 

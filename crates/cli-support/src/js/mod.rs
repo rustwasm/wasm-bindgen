@@ -62,6 +62,22 @@ impl<'a> Context<'a> {
         self.global(&global);
     }
 
+    fn require_internal_export(&mut self, name: &'static str) {
+        if !self.required_internal_exports.insert(name) {
+            return
+        }
+        if let Some(s) = self.module.export_section() {
+            if s.entries().iter().any(|e| e.field() == name) {
+                return
+            }
+        }
+
+        panic!("\n\nthe exported function `{}` is required to generate bindings \
+                but it was not found in the wasm file, perhaps the `std` feature \
+                of the `wasm-bindgen` crate needs to be enabled?\n\n",
+               name);
+    }
+
     pub fn finalize(&mut self, module_name: &str) -> (String, String) {
         self.unexport_unused_internal_exports();
         self.gc();
@@ -642,7 +658,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("pass_string_to_wasm") {
             return;
         }
-        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc");
         self.expose_text_encoder();
         self.expose_uint8_memory();
         let debug = if self.config.debug {
@@ -668,7 +684,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("pass_array8_to_wasm") {
             return;
         }
-        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc");
         self.expose_uint8_memory();
         self.global(&format!("
             function passArray8ToWasm(arg) {{
@@ -683,7 +699,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("pass_array16_to_wasm") {
             return;
         }
-        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc");
         self.expose_uint16_memory();
         self.global(&format!("
             function passArray16ToWasm(arg) {{
@@ -698,7 +714,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("pass_array32_to_wasm") {
             return;
         }
-        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc");
         self.expose_uint32_memory();
         self.global(&format!("
             function passArray32ToWasm(arg) {{
@@ -713,7 +729,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("pass_array_f32_to_wasm") {
             return;
         }
-        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc");
         self.global(&format!("
             function passArrayF32ToWasm(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.length * 4);
@@ -727,7 +743,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("pass_array_f64_to_wasm") {
             return;
         }
-        self.required_internal_exports.insert("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc");
         self.global(&format!("
             function passArrayF64ToWasm(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.length * 8);
@@ -1172,7 +1188,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("global_argument_ptr") {
             return;
         }
-        self.required_internal_exports.insert("__wbindgen_global_argument_ptr");
+        self.require_internal_export("__wbindgen_global_argument_ptr");
         self.global("
             let cachedGlobalArgumentPtr = null;
             function globalArgumentPtr() {

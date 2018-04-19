@@ -1,13 +1,16 @@
 //! This is mostly an internal module, no stability guarantees are provied. Use
 //! at your own risk.
 
-use std::mem::{self, ManuallyDrop};
-use std::ops::{Deref, DerefMut};
-use std::slice;
-use std::str;
+use core::mem::{self, ManuallyDrop};
+use core::ops::{Deref, DerefMut};
+use core::slice;
+use core::str;
 
 use {JsValue, throw};
 use describe::*;
+
+#[cfg(feature = "std")]
+use std::prelude::v1::*;
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 pub struct Descriptor {
@@ -132,6 +135,7 @@ impl<T> FromWasmAbi for *mut T {
 
 macro_rules! vectors {
     ($($t:ident)*) => ($(
+        #[cfg(feature = "std")]
         impl IntoWasmAbi for Box<[$t]> {
             type Abi = u32;
 
@@ -144,6 +148,7 @@ macro_rules! vectors {
             }
         }
 
+        #[cfg(feature = "std")]
         impl FromWasmAbi for Box<[$t]> {
             type Abi = u32;
 
@@ -183,34 +188,36 @@ vectors! {
     u8 i8 u16 i16 u32 i32 f32 f64
 }
 
-impl<T> IntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi {
-    type Abi = <Box<[T]> as IntoWasmAbi>::Abi;
-    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
-        self.into_boxed_slice().into_abi(extra)
+if_std! {
+    impl<T> IntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi {
+        type Abi = <Box<[T]> as IntoWasmAbi>::Abi;
+        fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+            self.into_boxed_slice().into_abi(extra)
+        }
     }
-}
 
-impl<T> FromWasmAbi for Vec<T> where Box<[T]>: FromWasmAbi {
-    type Abi = <Box<[T]> as FromWasmAbi>::Abi;
+    impl<T> FromWasmAbi for Vec<T> where Box<[T]>: FromWasmAbi {
+        type Abi = <Box<[T]> as FromWasmAbi>::Abi;
 
-    unsafe fn from_abi(js: Self::Abi, extra: &mut Stack) -> Self {
-        <Box<[T]>>::from_abi(js, extra).into()
+        unsafe fn from_abi(js: Self::Abi, extra: &mut Stack) -> Self {
+            <Box<[T]>>::from_abi(js, extra).into()
+        }
     }
-}
 
-impl IntoWasmAbi for String {
-    type Abi = u32;
+    impl IntoWasmAbi for String {
+        type Abi = u32;
 
-    fn into_abi(self, extra: &mut Stack) -> u32 {
-        self.into_bytes().into_abi(extra)
+        fn into_abi(self, extra: &mut Stack) -> u32 {
+            self.into_bytes().into_abi(extra)
+        }
     }
-}
 
-impl FromWasmAbi for String {
-    type Abi = u32;
+    impl FromWasmAbi for String {
+        type Abi = u32;
 
-    unsafe fn from_abi(js: u32, extra: &mut Stack) -> Self {
-        String::from_utf8_unchecked(<Vec<u8>>::from_abi(js, extra))
+        unsafe fn from_abi(js: u32, extra: &mut Stack) -> Self {
+            String::from_utf8_unchecked(<Vec<u8>>::from_abi(js, extra))
+        }
     }
 }
 
@@ -265,25 +272,27 @@ impl RefFromWasmAbi for JsValue {
     }
 }
 
-impl IntoWasmAbi for Box<[JsValue]> {
-    type Abi = u32;
+if_std! {
+    impl IntoWasmAbi for Box<[JsValue]> {
+        type Abi = u32;
 
-    fn into_abi(self, extra: &mut Stack) -> u32 {
-        let ptr = self.as_ptr();
-        let len = self.len();
-        mem::forget(self);
-        extra.push(len as u32);
-        ptr.into_abi(extra)
+        fn into_abi(self, extra: &mut Stack) -> u32 {
+            let ptr = self.as_ptr();
+            let len = self.len();
+            mem::forget(self);
+            extra.push(len as u32);
+            ptr.into_abi(extra)
+        }
     }
-}
 
-impl FromWasmAbi for Box<[JsValue]> {
-    type Abi = u32;
+    impl FromWasmAbi for Box<[JsValue]> {
+        type Abi = u32;
 
-    unsafe fn from_abi(js: u32, extra: &mut Stack) -> Self {
-        let ptr = <*mut JsValue>::from_abi(js, extra);
-        let len = extra.pop() as usize;
-        Vec::from_raw_parts(ptr, len, len).into_boxed_slice()
+        unsafe fn from_abi(js: u32, extra: &mut Stack) -> Self {
+            let ptr = <*mut JsValue>::from_abi(js, extra);
+            let len = extra.pop() as usize;
+            Vec::from_raw_parts(ptr, len, len).into_boxed_slice()
+        }
     }
 }
 

@@ -6,14 +6,21 @@
 //! interface.
 
 #![feature(use_extern_macros, wasm_import_module, try_reserve, unsize)]
+#![no_std]
 
 extern crate wasm_bindgen_macro;
 
-use std::cell::UnsafeCell;
-use std::ops::Deref;
-use std::ptr;
+use core::cell::UnsafeCell;
+use core::ops::Deref;
+use core::ptr;
 
 use convert::FromWasmAbi;
+
+macro_rules! if_std {
+    ($($i:item)*) => ($(
+        #[cfg(feature = "std")] $i
+    )*)
+}
 
 /// A module which is typically glob imported from:
 ///
@@ -23,12 +30,20 @@ use convert::FromWasmAbi;
 pub mod prelude {
     pub use wasm_bindgen_macro::wasm_bindgen;
     pub use JsValue;
-    pub use closure::Closure;
+
+    if_std! {
+        pub use closure::Closure;
+    }
 }
 
 pub mod convert;
-pub mod closure;
 pub mod describe;
+
+if_std! {
+    extern crate std;
+    use std::prelude::v1::*;
+    pub mod closure;
+}
 
 /// Representation of an object owned by JS.
 ///
@@ -136,6 +151,7 @@ impl JsValue {
     ///
     /// If this JS value is not an instance of a string or if it's not valid
     /// utf-8 then this returns `None`.
+    #[cfg(feature = "std")]
     pub fn as_string(&self) -> Option<String> {
         unsafe {
             let mut len = 0;
@@ -192,9 +208,11 @@ impl<'a> From<&'a str> for JsValue {
     }
 }
 
-impl<'a> From<&'a String> for JsValue {
-    fn from(s: &'a String) -> JsValue {
-        JsValue::from_str(s)
+if_std! {
+    impl<'a> From<&'a String> for JsValue {
+        fn from(s: &'a String) -> JsValue {
+            JsValue::from_str(s)
+        }
     }
 }
 
@@ -321,9 +339,23 @@ pub fn throw(s: &str) -> ! {
 
 #[doc(hidden)]
 pub mod __rt {
-    use std::cell::{Cell, UnsafeCell};
-    use std::mem;
-    use std::ops::{Deref, DerefMut};
+    use core::cell::{Cell, UnsafeCell};
+    use core::ops::{Deref, DerefMut};
+    pub extern crate core;
+    #[cfg(feature = "std")]
+    pub extern crate std;
+
+    #[macro_export]
+    #[cfg(feature = "std")]
+    macro_rules! __wbindgen_if_not_std {
+        ($($i:item)*) => ()
+    }
+
+    #[macro_export]
+    #[cfg(not(feature = "std"))]
+    macro_rules! __wbindgen_if_not_std {
+        ($($i:item)*) => ($($i)*)
+    }
 
     #[inline]
     pub fn assert_not_null<T>(s: *mut T) {
@@ -457,20 +489,26 @@ pub mod __rt {
                       unsafe aliasing in rust");
     }
 
-    #[no_mangle]
-    pub extern fn __wbindgen_malloc(size: usize) -> *mut u8 {
-        let mut ret = Vec::new();
-        if ret.try_reserve_exact(size).is_err() {
-            super::throw("invalid malloc request");
-        }
-        let ptr = ret.as_mut_ptr();
-        mem::forget(ret);
-        return ptr
-    }
+    if_std! {
+        use std::prelude::v1::*;
 
-    #[no_mangle]
-    pub unsafe extern fn __wbindgen_free(ptr: *mut u8, size: usize) {
-        drop(Vec::<u8>::from_raw_parts(ptr, 0, size));
+        #[no_mangle]
+        pub extern fn __wbindgen_malloc(size: usize) -> *mut u8 {
+            use core::mem;
+
+            let mut ret = Vec::new();
+            if ret.try_reserve_exact(size).is_err() {
+                super::throw("invalid malloc request");
+            }
+            let ptr = ret.as_mut_ptr();
+            mem::forget(ret);
+            return ptr
+        }
+
+        #[no_mangle]
+        pub unsafe extern fn __wbindgen_free(ptr: *mut u8, size: usize) {
+            drop(Vec::<u8>::from_raw_parts(ptr, 0, size));
+        }
     }
 
     pub fn link_this_library() {}

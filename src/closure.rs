@@ -7,6 +7,7 @@
 use std::cell::UnsafeCell;
 use std::marker::Unsize;
 use std::mem::{self, ManuallyDrop};
+use std::prelude::v1::*;
 
 use JsValue;
 use convert::*;

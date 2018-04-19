@@ -119,9 +119,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.finally(&format!("\
                     wasm.__wbindgen_free(ptr{i}, len{i} * {size});\n\
                 ", i = i, size = kind.size()));
-                self.cx.required_internal_exports.insert(
-                    "__wbindgen_free",
-                );
+                self.cx.require_internal_export("__wbindgen_free");
             }
             self.rust_arguments.push(format!("ptr{}", i));
             return
@@ -216,7 +214,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.ret_ty = ty.js_ty().to_string();
             let f = self.cx.expose_get_vector_from_wasm(ty);
             self.cx.expose_get_global_argument();
-            self.cx.required_internal_exports.insert("__wbindgen_free");
+            self.cx.require_internal_export("__wbindgen_free");
             self.ret_expr = format!("\
                 const ret = RET;\n\
                 const len = getGlobalArgument(0);\n\

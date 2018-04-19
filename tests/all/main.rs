@@ -15,6 +15,7 @@ struct Project {
     files: Vec<(String, String)>,
     debug: bool,
     node: bool,
+    no_std: bool,
 }
 
 fn project() -> Project {
@@ -25,6 +26,7 @@ fn project() -> Project {
     Project {
         debug: true,
         node: false,
+        no_std: false,
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
                 [package]
@@ -40,8 +42,7 @@ fn project() -> Project {
                 # XXX: It is important that `[dependencies]` is the last section
                 # here, so that `add_local_dependency` functions correctly!
                 [dependencies]
-                wasm-bindgen = {{ path = '{}' }}
-            "#, IDX.with(|x| *x), dir.display())),
+            "#, IDX.with(|x| *x))),
 
             ("Cargo.lock".to_string(), lockfile),
 
@@ -138,6 +139,11 @@ impl Project {
         self
     }
 
+    fn no_std(&mut self, no_std: bool) -> &mut Project {
+        self.no_std = no_std;
+        self
+    }
+
     fn add_local_dependency(&mut self, name: &str, path: &str) -> &mut Project {
         {
             let cargo_toml = self.files
@@ -145,14 +151,28 @@ impl Project {
                 .find(|f| f.0 == "Cargo.toml")
                 .expect("should have Cargo.toml file!");
             cargo_toml.1.push_str(name);
-            cargo_toml.1.push_str(" = { path = \"");
+            cargo_toml.1.push_str(" = { path = '");
             cargo_toml.1.push_str(path);
-            cargo_toml.1.push_str("\" }");
+            cargo_toml.1.push_str("' }\n");
         }
         self
     }
 
     fn test(&mut self) {
+        {
+            let cargo_toml = self.files
+                .iter_mut()
+                .find(|f| f.0 == "Cargo.toml")
+                .expect("should have Cargo.toml file!");
+            cargo_toml.1.push_str("wasm-bindgen = { path = '");
+            cargo_toml.1.push_str(env!("CARGO_MANIFEST_DIR"));
+            if self.no_std {
+                cargo_toml.1.push_str("', default-features = false");
+            } else {
+                cargo_toml.1.push_str("'");
+            }
+            cargo_toml.1.push_str(" }\n");
+        }
         let root = root();
         drop(fs::remove_dir_all(&root));
         for &(ref file, ref contents) in self.files.iter() {
