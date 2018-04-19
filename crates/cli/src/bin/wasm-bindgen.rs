@@ -23,6 +23,7 @@ Options:
     --nodejs                 Generate output that only works in node.js
     --browser                Generate output that only works in a browser
     --no-modules             Generate output that only works in a browser (without modules)
+    --no-modules-global VAR  Name of the global variable to initialize
     --typescript             Output a TypeScript definition file
     --debug                  Include otherwise-extraneous debug checks in output
     --no-demangle            Don't demangle Rust symbol names
@@ -39,6 +40,7 @@ struct Args {
     flag_debug: bool,
     flag_version: bool,
     flag_no_demangle: bool,
+    flag_no_modules_global: Option<String>,
     arg_input: Option<PathBuf>,
 }
 
@@ -65,6 +67,9 @@ fn main() {
         .debug(args.flag_debug)
         .demangle(!args.flag_no_demangle)
         .typescript(args.flag_typescript);
+    if let Some(name) = &args.flag_no_modules_global {
+        b.no_modules_global(name);
+    }
 
     let out_dir = match args.flag_out_dir {
         Some(ref p) => p,

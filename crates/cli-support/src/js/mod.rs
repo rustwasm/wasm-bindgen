@@ -295,11 +295,15 @@ impl<'a> Context<'a> {
                                 return;
                             }});
                     }};
-                    self.wasm_bindgen = Object.assign(init, __exports);
+                    self.{global_name} = Object.assign(init, __exports);
                 }})();
             ",
                     globals = self.globals,
                     module = module_name,
+                    global_name = self.config.no_modules_global
+                        .as_ref()
+                        .map(|s| &**s)
+                        .unwrap_or("wasm_bindgen"),
             )
         } else {
             let import_wasm = if self.config.nodejs {

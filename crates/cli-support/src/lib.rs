@@ -21,6 +21,7 @@ pub struct Bindgen {
     nodejs: bool,
     browser: bool,
     no_modules: bool,
+    no_modules_global: Option<String>,
     debug: bool,
     typescript: bool,
     demangle: bool,
@@ -42,6 +43,7 @@ impl Bindgen {
             nodejs: false,
             browser: false,
             no_modules: false,
+            no_modules_global: None,
             debug: false,
             typescript: false,
             demangle: true,
@@ -65,6 +67,11 @@ impl Bindgen {
 
     pub fn no_modules(&mut self, no_modules: bool) -> &mut Bindgen {
         self.no_modules = no_modules;
+        self
+    }
+
+    pub fn no_modules_global(&mut self, name: &str) -> &mut Bindgen {
+        self.no_modules_global = Some(name.to_string());
         self
     }
 

@@ -544,7 +544,8 @@ some notable options are:
   tailored for a web browser. In this mode `window.wasm_bindgen` will be a
   function that takes a path to the wasm file to fetch and instantiate.
   Afterwards exported functions from the wasm are available through
-  `window.wasm_bindgen.foo`.
+  `window.wasm_bindgen.foo`. Note that the name `wasm_bindgen` can be configured
+  with the `--no-modules-global FOO` flag.
 
 * `--typescript` - when passed a `*.d.ts` file will be generated for the
   generated JS file. This should allow hooking into TypeScript projects to
