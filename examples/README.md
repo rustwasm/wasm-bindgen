@@ -27,3 +27,5 @@ The examples here are:
   `WebAssembly.Module` and shows off creation of a WebAssembly module from Rust
 * `closures` - an example of how to invoke functions like `setInterval` or use
   the `onclick` property in conjunction with closures.
+* `no_modules` - an example of how to use the `--no-modules` flag to
+  the `wasm-bindgen` CLI tool

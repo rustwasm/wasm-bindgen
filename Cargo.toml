@@ -33,6 +33,7 @@ members = [
   "examples/performance",
   "examples/wasm-in-wasm",
   "examples/closures",
+  "examples/no_modules",
 ]
 
 [profile.release]

@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+  </head>
+  <body>
+    <script src='./no_modules.js'></script>
+    <script>
+      // the `wasm_bindgen` global is set to the exports of the Rust module
+      const { greet } = wasm_bindgen;
+
+      // we'll defer our execution until the wasm is ready to go
+      function run() {
+          greet('World');
+      }
+
+      // here we tell bindgen the path to the wasm file so it can run
+      // initialization and return to us a promise when it's done
+      wasm_bindgen('./no_modules_bg.wasm').then(run);
+    </script>
+  </body>
+</html>
