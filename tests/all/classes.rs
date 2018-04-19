@@ -291,13 +291,13 @@ fn issue_27() {
 
             #[wasm_bindgen]
             impl Context {
-                pub fn parse(&self, expr: &str) -> Expr {
+                pub fn parse(&self, _expr: &str) -> Expr {
                     panic!()
                 }
-                pub fn eval(&self, expr: &Expr) -> f64 {
+                pub fn eval(&self, _expr: &Expr) -> f64 {
                     panic!()
                 }
-                pub fn set(&mut self, var: &str, val: f64) {
+                pub fn set(&mut self, _var: &str, _val: f64) {
                     panic!()
                 }
             }

@@ -169,7 +169,9 @@ impl Project {
             .arg("--target")
             .arg("wasm32-unknown-unknown")
             .current_dir(&root)
-            .env("CARGO_TARGET_DIR", &target_dir);
+            .env("CARGO_TARGET_DIR", &target_dir)
+            // Catch any warnings in generated code because we don't want any
+            .env("RUSTFLAGS", "-Dwarnings");
         run(&mut cmd, "cargo");
 
         let idx = IDX.with(|x| *x);

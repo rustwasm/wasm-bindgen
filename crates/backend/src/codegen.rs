@@ -129,7 +129,7 @@ impl ToTokens for ast::Struct {
             impl ::wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = u32;
 
-                unsafe fn from_abi(js: u32, extra: &mut ::wasm_bindgen::convert::Stack)
+                unsafe fn from_abi(js: u32, _extra: &mut ::wasm_bindgen::convert::Stack)
                     -> Self
                 {
                     let ptr = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;

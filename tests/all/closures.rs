@@ -294,7 +294,6 @@ fn long_fnmut_recursive() {
 
             extern crate wasm_bindgen;
 
-            use std::cell::Cell;
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen(module = "./test")]
@@ -336,7 +335,6 @@ fn fnmut() {
 
             extern crate wasm_bindgen;
 
-            use std::cell::Cell;
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen(module = "./test")]
@@ -385,7 +383,6 @@ fn fnmut_bad() {
 
             extern crate wasm_bindgen;
 
-            use std::cell::Cell;
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen(module = "./test")]
@@ -441,7 +438,6 @@ fn string_arguments() {
 
             extern crate wasm_bindgen;
 
-            use std::cell::Cell;
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen(module = "./test")]

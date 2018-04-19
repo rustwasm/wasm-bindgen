@@ -87,6 +87,7 @@ fn unused() {
     project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+            #![allow(dead_code)]
 
             extern crate wasm_bindgen;
 
