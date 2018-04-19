@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate serde_derive;
 
-pub const SCHEMA_VERSION: &str = "2";
+pub const SCHEMA_VERSION: &str = "3";
 
 #[derive(Deserialize)]
 pub struct ProgramOnlySchema {
@@ -14,7 +14,7 @@ pub struct Program {
     pub exports: Vec<Export>,
     pub enums: Vec<Enum>,
     pub imports: Vec<Import>,
-    pub structs: Vec<String>,
+    pub structs: Vec<Struct>,
     pub version: String,
     pub schema_version: String,
 }
@@ -82,6 +82,17 @@ pub struct Function {
     pub name: String,
 }
 
+#[derive(Deserialize, Serialize)]
+pub struct Struct {
+    pub name: String,
+    pub fields: Vec<StructField>,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct StructField {
+    pub name: String,
+}
+
 pub fn new_function(struct_name: &str) -> String {
     let mut name = format!("__wbg_");
     name.extend(struct_name
@@ -109,6 +120,26 @@ pub fn struct_function_export_name(struct_: &str, f: &str) -> String {
         .chars()
         .flat_map(|s| s.to_lowercase())
         .collect::<String>();
+    name.push_str("_");
+    name.push_str(f);
+    return name
+}
+
+pub fn struct_field_get(struct_: &str, f: &str) -> String {
+    let mut name = String::from("__wbg_get_");
+    name.extend(struct_
+        .chars()
+        .flat_map(|s| s.to_lowercase()));
+    name.push_str("_");
+    name.push_str(f);
+    return name
+}
+
+pub fn struct_field_set(struct_: &str, f: &str) -> String {
+    let mut name = String::from("__wbg_set_");
+    name.extend(struct_
+        .chars()
+        .flat_map(|s| s.to_lowercase()));
     name.push_str("_");
     name.push_str(f);
     return name

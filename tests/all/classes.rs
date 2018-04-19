@@ -473,3 +473,56 @@ fn empty_structs() {
         "#)
         .test();
 }
+
+#[test]
+fn public_fields() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            #[derive(Default)]
+            pub struct Foo {
+                pub a: u32,
+                pub b: f32,
+                pub c: f64,
+                pub d: i32,
+            }
+
+            #[wasm_bindgen]
+            impl Foo {
+                pub fn new() -> Foo {
+                    Foo::default()
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import { Foo } from "./out";
+            import * as assert from "assert";
+
+            export function test() {
+                const a = Foo.new();
+                assert.strictEqual(a.a, 0);
+                a.a = 3;
+                assert.strictEqual(a.a, 3);
+
+                assert.strictEqual(a.b, 0);
+                a.b = 7;
+                assert.strictEqual(a.b, 7);
+
+                assert.strictEqual(a.c, 0);
+                a.c = 8;
+                assert.strictEqual(a.c, 8);
+
+                assert.strictEqual(a.d, 0);
+                a.d = 3.3;
+                assert.strictEqual(a.d, 3);
+            }
+        "#)
+        .test();
+}

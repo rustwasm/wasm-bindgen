@@ -212,6 +212,65 @@ impl ToTokens for ast::Struct {
                 }
             }
         }).to_tokens(tokens);
+
+        for field in self.fields.iter() {
+            field.to_tokens(tokens);
+        }
+    }
+}
+
+impl ToTokens for ast::StructField {
+    fn to_tokens(&self, tokens: &mut Tokens) {
+        let name = &self.name;
+        let struct_name = &self.struct_name;
+        let ty = &self.ty;
+        let getter = &self.getter;
+        let setter = &self.setter;
+        let desc = syn::Ident::from(format!("__wbindgen_describe_{}", getter));
+        (quote! {
+            #[no_mangle]
+            pub unsafe extern fn #getter(js: u32)
+                -> <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
+            {
+                use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
+                use wasm_bindgen::convert::{GlobalStack, IntoWasmAbi};
+
+                fn assert_copy<T: Copy>(){}
+                assert_copy::<#ty>();
+
+                let js = js as *mut WasmRefCell<#struct_name>;
+                assert_not_null(js);
+                let val = (*js).borrow().#name;
+                <#ty as IntoWasmAbi>::into_abi(
+                    val,
+                    &mut GlobalStack::new(),
+                )
+            }
+
+            #[no_mangle]
+            pub unsafe extern fn #setter(
+                js: u32,
+                val: <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi,
+            ) {
+                use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
+                use wasm_bindgen::convert::{GlobalStack, FromWasmAbi};
+
+                let js = js as *mut WasmRefCell<#struct_name>;
+                assert_not_null(js);
+                let val = <#ty as FromWasmAbi>::from_abi(
+                    val,
+                    &mut GlobalStack::new(),
+                );
+                (*js).borrow_mut().#name = val;
+            }
+
+            #[no_mangle]
+            pub extern fn #desc() {
+                use wasm_bindgen::describe::*;
+                <#ty as WasmDescribe>::describe();
+
+            }
+        }).to_tokens(tokens);
     }
 }
 

@@ -68,6 +68,15 @@ pub struct Function {
 
 pub struct Struct {
     pub name: syn::Ident,
+    pub fields: Vec<StructField>,
+}
+
+pub struct StructField {
+    pub name: syn::Ident,
+    pub struct_name: syn::Ident,
+    pub ty: syn::Type,
+    pub getter: syn::Ident,
+    pub setter: syn::Ident,
 }
 
 pub struct Enum {
@@ -415,7 +424,7 @@ impl Program {
     pub fn shared(&self) -> shared::Program {
         shared::Program {
             exports: self.exports.iter().map(|a| a.shared()).collect(),
-            structs: self.structs.iter().map(|a| a.name.as_ref().to_string()).collect(),
+            structs: self.structs.iter().map(|a| a.shared()).collect(),
             enums: self.enums.iter().map(|a| a.shared()).collect(),
             imports: self.imports.iter().map(|a| a.shared()).collect(),
             version: shared::version(),
@@ -659,7 +668,47 @@ impl ImportType {
 
 impl Struct {
     fn from(s: syn::ItemStruct, _opts: BindgenAttrs) -> Struct {
-        Struct { name: s.ident }
+        let mut fields = Vec::new();
+        if let syn::Fields::Named(names) = s.fields {
+            for field in names.named.iter() {
+                match field.vis {
+                    syn::Visibility::Public(..) => {}
+                    _ => continue,
+                }
+                let name = match field.ident {
+                    Some(n) => n,
+                    None => continue,
+                };
+                let getter = shared::struct_field_get(s.ident.as_ref(), name.as_ref());
+                let setter = shared::struct_field_set(s.ident.as_ref(), name.as_ref());
+                fields.push(StructField {
+                    name,
+                    struct_name: s.ident,
+                    ty: field.ty.clone(),
+                    getter: getter.into(),
+                    setter: setter.into(),
+                });
+            }
+        }
+        Struct {
+            name: s.ident,
+            fields,
+        }
+    }
+
+    fn shared(&self) -> shared::Struct {
+        shared::Struct {
+            name: self.name.as_ref().to_string(),
+            fields: self.fields.iter().map(|s| s.shared()).collect(),
+        }
+    }
+}
+
+impl StructField {
+    fn shared(&self) -> shared::StructField {
+        shared::StructField {
+            name: self.name.as_ref().to_string(),
+        }
     }
 }
 
