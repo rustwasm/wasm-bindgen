@@ -67,7 +67,7 @@ fn main() {
         .debug(args.flag_debug)
         .demangle(!args.flag_no_demangle)
         .typescript(args.flag_typescript);
-    if let Some(name) = &args.flag_no_modules_global {
+    if let Some(ref name) = args.flag_no_modules_global {
         b.no_modules_global(name);
     }
 
