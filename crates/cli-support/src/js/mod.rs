@@ -279,7 +279,7 @@ impl<'a> Context<'a> {
                                 return;
                             }});
                     }};
-                    window.wasm_bindgen = Object.assign(init, __exports);
+                    self.wasm_bindgen = Object.assign(init, __exports);
                 }})();
             ",
                     globals = self.globals,
@@ -747,8 +747,8 @@ impl<'a> Context<'a> {
             "));
         } else if !(self.config.browser || self.config.no_modules) {
             self.global(&format!("
-                const TextEncoder = typeof window === 'object' && window.TextEncoder
-                    ? window.TextEncoder
+                const TextEncoder = typeof self === 'object' && self.TextEncoder
+                    ? self.TextEncoder
                     : require('util').TextEncoder;
             "));
         }
@@ -767,8 +767,8 @@ impl<'a> Context<'a> {
             "));
         } else if !(self.config.browser || self.config.no_modules) {
             self.global(&format!("
-                const TextDecoder = typeof window === 'object' && window.TextDecoder
-                    ? window.TextDecoder
+                const TextDecoder = typeof self === 'object' && self.TextDecoder
+                    ? self.TextDecoder
                     : require('util').TextDecoder;
             "));
         }
