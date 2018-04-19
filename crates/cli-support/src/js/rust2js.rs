@@ -91,9 +91,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 self.prelude(&format!("\
                     wasm.__wbindgen_free(arg{0}, len{0} * {size});\
                 ", i, size = ty.size()));
-                self.cx.required_internal_exports.insert(
-                    "__wbindgen_free"
-                );
+                self.cx.require_internal_export("__wbindgen_free");
             }
             self.js_arguments.push(format!("v{}", i));
             return

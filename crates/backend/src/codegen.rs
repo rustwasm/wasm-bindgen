@@ -116,13 +116,22 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            ::wasm_bindgen::__wbindgen_if_not_std! {
+                compile_error! {
+                    "exporting a class to JS requires the `std` feature to \
+                     be enabled in the `wasm-bindgen` crate"
+                }
+            }
+
             impl ::wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = u32;
 
                 fn into_abi(self, _extra: &mut ::wasm_bindgen::convert::Stack)
                     -> u32
                 {
-                    Box::into_raw(Box::new(::wasm_bindgen::__rt::WasmRefCell::new(self))) as u32
+                    use wasm_bindgen::__rt::std::boxed::Box;
+                    use wasm_bindgen::__rt::WasmRefCell;
+                    Box::into_raw(Box::new(WasmRefCell::new(self))) as u32
                 }
             }
 
@@ -132,12 +141,47 @@ impl ToTokens for ast::Struct {
                 unsafe fn from_abi(js: u32, _extra: &mut ::wasm_bindgen::convert::Stack)
                     -> Self
                 {
-                    let ptr = js as *mut ::wasm_bindgen::__rt::WasmRefCell<#name>;
-                    ::wasm_bindgen::__rt::assert_not_null(ptr);
+                    use wasm_bindgen::__rt::std::boxed::Box;
+                    use wasm_bindgen::__rt::{assert_not_null, WasmRefCell};
+
+                    let ptr = js as *mut WasmRefCell<#name>;
+                    assert_not_null(ptr);
                     let js = Box::from_raw(ptr);
                     js.borrow_mut(); // make sure no one's borrowing
                     js.into_inner()
                 }
+            }
+
+            impl ::wasm_bindgen::__rt::core::convert::From<#name> for
+                ::wasm_bindgen::JsValue
+            {
+                fn from(value: #name) -> Self {
+                    let ptr = ::wasm_bindgen::convert::IntoWasmAbi::into_abi(
+                        value,
+                        unsafe { &mut ::wasm_bindgen::convert::GlobalStack::new() },
+                    );
+
+                    #[wasm_import_module = "__wbindgen_placeholder__"]
+                    extern {
+                        fn #new_fn(ptr: u32) -> u32;
+                    }
+
+                    unsafe {
+                        <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::FromWasmAbi>
+                            ::from_abi(
+                                #new_fn(ptr),
+                                &mut ::wasm_bindgen::convert::GlobalStack::new(),
+                            )
+                    }
+                }
+            }
+
+            #[no_mangle]
+            pub unsafe extern fn #free_fn(ptr: u32) {
+                <#name as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
+                    ptr,
+                    &mut ::wasm_bindgen::convert::GlobalStack::new(),
+                );
             }
 
             impl ::wasm_bindgen::convert::RefFromWasmAbi for #name {
@@ -166,36 +210,6 @@ impl ToTokens for ast::Struct {
                     ::wasm_bindgen::__rt::assert_not_null(js);
                     (*js).borrow_mut()
                 }
-            }
-
-            impl ::std::convert::From<#name> for ::wasm_bindgen::JsValue {
-                fn from(value: #name) -> Self {
-                    let ptr = ::wasm_bindgen::convert::IntoWasmAbi::into_abi(
-                        value,
-                        unsafe { &mut ::wasm_bindgen::convert::GlobalStack::new() },
-                    );
-
-                    #[wasm_import_module = "__wbindgen_placeholder__"]
-                    extern {
-                        fn #new_fn(ptr: u32) -> u32;
-                    }
-
-                    unsafe {
-                        <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::FromWasmAbi>
-                            ::from_abi(
-                                #new_fn(ptr),
-                                &mut ::wasm_bindgen::convert::GlobalStack::new(),
-                            )
-                    }
-                }
-            }
-
-            #[no_mangle]
-            pub unsafe extern fn #free_fn(ptr: u32) {
-                <#name as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
-                    ptr,
-                    &mut ::wasm_bindgen::convert::GlobalStack::new(),
-                );
             }
         }).to_tokens(tokens);
     }
@@ -419,7 +433,7 @@ impl ToTokens for ast::ImportType {
             impl ::wasm_bindgen::convert::RefFromWasmAbi for #name {
                 type Abi = <::wasm_bindgen::JsValue as
                     ::wasm_bindgen::convert::RefFromWasmAbi>::Abi;
-                type Anchor = ::std::mem::ManuallyDrop<#name>;
+                type Anchor = ::wasm_bindgen::__rt::core::mem::ManuallyDrop<#name>;
 
                 unsafe fn ref_from_abi(
                     js: Self::Abi,
@@ -427,8 +441,8 @@ impl ToTokens for ast::ImportType {
                 ) -> Self::Anchor {
                     let tmp = <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::RefFromWasmAbi>
                         ::ref_from_abi(js, extra);
-                    ::std::mem::ManuallyDrop::new(#name {
-                        obj: ::std::mem::ManuallyDrop::into_inner(tmp),
+                    ::wasm_bindgen::__rt::core::mem::ManuallyDrop::new(#name {
+                        obj: ::wasm_bindgen::__rt::core::mem::ManuallyDrop::into_inner(tmp),
                     })
                 }
             }
@@ -702,7 +716,7 @@ impl ToTokens for ast::ImportStatic {
                     }
                 }
                 ::wasm_bindgen::JsStatic {
-                    __inner: ::std::cell::UnsafeCell::new(None),
+                    __inner: ::wasm_bindgen::__rt::core::cell::UnsafeCell::new(None),
                     __init: init,
                 }
             };

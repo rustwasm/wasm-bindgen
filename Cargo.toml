@@ -16,6 +16,10 @@ Easy support for interacting between JS and Rust.
 test = false
 doctest = false
 
+[features]
+default = ["std"]
+std = []
+
 [dependencies]
 wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.4" }
 
