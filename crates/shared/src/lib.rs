@@ -3,6 +3,12 @@ extern crate serde_derive;
 
 pub const SCHEMA_VERSION: &str = "2";
 
+#[derive(Deserialize)]
+pub struct ProgramOnlySchema {
+    pub schema_version: String,
+    pub version: String,
+}
+
 #[derive(Deserialize, Serialize)]
 pub struct Program {
     pub exports: Vec<Export>,

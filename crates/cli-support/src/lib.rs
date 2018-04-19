@@ -224,7 +224,7 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
                 ((payload[3] as usize) << 24);
             let (a, b) = payload[4..].split_at(len as usize);
             payload = b;
-            let p: shared::Program = match serde_json::from_slice(&a) {
+            let p: shared::ProgramOnlySchema = match serde_json::from_slice(&a) {
                 Ok(f) => f,
                 Err(e) => {
                     panic!("failed to decode what looked like wasm-bindgen data: {}", e)
@@ -255,6 +255,12 @@ to open an issue at https://github.com/alexcrichton/wasm-bindgen/issues!
 ",
     p.version, version);
             }
+            let p: shared::Program = match serde_json::from_slice(&a) {
+                Ok(f) => f,
+                Err(e) => {
+                    panic!("failed to decode what looked like wasm-bindgen data: {}", e)
+                }
+            };
             ret.push(p);
         }
 
