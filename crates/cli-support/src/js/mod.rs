@@ -339,9 +339,6 @@ impl<'a> Context<'a> {
         for (class, exports) in classes {
             let mut dst = format!("class {} {{\n", class);
             let mut ts_dst = format!("export {}", dst);
-            ts_dst.push_str("
-                public ptr: number;
-            ");
 
             if self.config.debug || exports.constructor.is_some() {
                 self.expose_constructor_token();

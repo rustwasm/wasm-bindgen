@@ -84,7 +84,7 @@ fn dependencies_work() {
 
                 const z = wasm.takes_own_dep_ty(foo);
                 assert.strictEqual(z, y);
-                assert.strictEqual(foo.ptr, 0);
+                assert.strictEqual((foo as any).ptr, 0);
             }
         "#,
         )
