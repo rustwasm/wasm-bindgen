@@ -32,14 +32,15 @@ pub struct Context<'a> {
 
 #[derive(Default)]
 pub struct ExportedClass {
-    pub contents: String,
-    pub typescript: String,
-    pub constructor: Option<String>,
-    pub fields: Vec<ClassField>,
+    contents: String,
+    typescript: String,
+    constructor: Option<String>,
+    fields: Vec<ClassField>,
 }
 
-pub struct ClassField {
-    pub name: String,
+struct ClassField {
+    name: String,
+    readonly: bool,
 }
 
 pub struct SubContext<'a, 'b: 'a> {
@@ -416,7 +417,8 @@ impl<'a> Context<'a> {
                 cx.method(true)
                     .argument(&descriptor)
                     .ret(&None);
-                ts_dst.push_str(&format!("{}: {}\n",
+                ts_dst.push_str(&format!("{}{}: {}\n",
+                                         if field.readonly { "readonly " } else { "" },
                                          field.name,
                                          &cx.js_arguments[0].1));
                 cx.finish("", &format!("wasm.{}", wasm_setter)).0
@@ -430,9 +432,11 @@ impl<'a> Context<'a> {
             dst.push_str(&field.name);
             dst.push_str(&get);
             dst.push_str("\n");
-            dst.push_str("set ");
-            dst.push_str(&field.name);
-            dst.push_str(&set);
+            if !field.readonly {
+                dst.push_str("set ");
+                dst.push_str(&field.name);
+                dst.push_str(&set);
+            }
         }
 
         dst.push_str(&format!("
@@ -1312,6 +1316,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 .extend(s.fields.iter().map(|s| {
                     ClassField {
                         name: s.name.clone(),
+                        readonly: s.readonly,
                     }
                 }));
         }

@@ -248,6 +248,18 @@ impl ToTokens for ast::StructField {
             }
 
             #[no_mangle]
+            pub extern fn #desc() {
+                use wasm_bindgen::describe::*;
+                <#ty as WasmDescribe>::describe();
+            }
+        }).to_tokens(tokens);
+
+        if self.opts.readonly() {
+            return
+        }
+
+        (quote! {
+            #[no_mangle]
             pub unsafe extern fn #setter(
                 js: u32,
                 val: <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi,
@@ -262,13 +274,6 @@ impl ToTokens for ast::StructField {
                     &mut GlobalStack::new(),
                 );
                 (*js).borrow_mut().#name = val;
-            }
-
-            #[no_mangle]
-            pub extern fn #desc() {
-                use wasm_bindgen::describe::*;
-                <#ty as WasmDescribe>::describe();
-
             }
         }).to_tokens(tokens);
     }

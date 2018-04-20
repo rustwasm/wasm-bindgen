@@ -72,6 +72,7 @@ pub struct Struct {
 }
 
 pub struct StructField {
+    pub opts: BindgenAttrs,
     pub name: syn::Ident,
     pub struct_name: syn::Ident,
     pub ty: syn::Type,
@@ -132,8 +133,8 @@ impl Program {
             }
             syn::Item::Struct(mut s) => {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut s.attrs));
+                self.structs.push(Struct::from(&mut s, opts));
                 s.to_tokens(tokens);
-                self.structs.push(Struct::from(s, opts));
             }
             syn::Item::Impl(mut i) => {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut i.attrs));
@@ -668,10 +669,10 @@ impl ImportType {
 }
 
 impl Struct {
-    fn from(s: syn::ItemStruct, _opts: BindgenAttrs) -> Struct {
+    fn from(s: &mut syn::ItemStruct, _opts: BindgenAttrs) -> Struct {
         let mut fields = Vec::new();
-        if let syn::Fields::Named(names) = s.fields {
-            for field in names.named.iter() {
+        if let syn::Fields::Named(names) = &mut s.fields {
+            for field in names.named.iter_mut() {
                 match field.vis {
                     syn::Visibility::Public(..) => {}
                     _ => continue,
@@ -682,7 +683,9 @@ impl Struct {
                 };
                 let getter = shared::struct_field_get(s.ident.as_ref(), name.as_ref());
                 let setter = shared::struct_field_set(s.ident.as_ref(), name.as_ref());
+                let opts = BindgenAttrs::find(&mut field.attrs);
                 fields.push(StructField {
+                    opts,
                     name,
                     struct_name: s.ident,
                     ty: field.ty.clone(),
@@ -709,6 +712,7 @@ impl StructField {
     fn shared(&self) -> shared::StructField {
         shared::StructField {
             name: self.name.as_ref().to_string(),
+            readonly: self.opts.readonly(),
         }
     }
 }
@@ -800,6 +804,13 @@ impl BindgenAttrs {
         })
     }
 
+    pub fn readonly(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::Readonly => true,
+            _ => false,
+        })
+    }
+
     pub fn js_name(&self) -> Option<syn::Ident> {
         self.attrs
             .iter()
@@ -836,6 +847,7 @@ enum BindgenAttr {
     Getter(Option<syn::Ident>),
     Setter(Option<syn::Ident>),
     Structural,
+    Readonly,
     JsName(syn::Ident),
 }
 
@@ -868,6 +880,8 @@ impl syn::synom::Synom for BindgenAttr {
         )=> { BindgenAttr::Setter }
         |
         call!(term, "structural") => { |_| BindgenAttr::Structural }
+        |
+        call!(term, "readonly") => { |_| BindgenAttr::Readonly }
         |
         do_parse!(
             call!(term, "js_namespace") >>

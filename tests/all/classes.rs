@@ -558,3 +558,42 @@ fn using_self() {
         "#)
         .test();
 }
+
+#[test]
+fn readonly_fields() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            #[derive(Default)]
+            pub struct Foo {
+                #[wasm_bindgen(readonly)]
+                pub a: u32,
+            }
+
+            #[wasm_bindgen]
+            impl Foo {
+                pub fn new() -> Foo {
+                    Foo::default()
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import { Foo } from "./out";
+            import * as assert from "assert";
+
+            export function test() {
+                const a = Foo.new();
+                assert.strictEqual(a.a, 0);
+                assert.throws(() => (a as any).a = 3, /has only a getter/);
+                a.free();
+            }
+        "#)
+        .test();
+}

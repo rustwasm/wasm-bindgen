@@ -1044,6 +1044,23 @@ possibilities!
   All of these functions will call `console.log` in Rust, but each identifier
   will have only one signature in Rust.
 
+* `readonly` - when attached to a `pub` struct field this indicates that it's
+  readonly from JS and a setter will not be generated.
+
+  ```rust
+  #[wasm_bindgen]
+  pub struct Foo {
+      pub first: u32,
+      #[wasm_bindgen(readonly)]
+      pub second: u32,
+  }
+  ```
+
+  Here the `first` field will be both readable and writable from JS, but the
+  `second` field will be a `readonly` field in JS where the setter isn't
+  implemented and attempting to set it will throw an exception.
+
+
 ## Rust Type conversions
 
 Previously we've been seeing mostly abridged versions of type conversions when

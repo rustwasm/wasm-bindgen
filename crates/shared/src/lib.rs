@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate serde_derive;
 
-pub const SCHEMA_VERSION: &str = "3";
+pub const SCHEMA_VERSION: &str = "4";
 
 #[derive(Deserialize)]
 pub struct ProgramOnlySchema {
@@ -91,6 +91,7 @@ pub struct Struct {
 #[derive(Deserialize, Serialize)]
 pub struct StructField {
     pub name: String,
+    pub readonly: bool,
 }
 
 pub fn new_function(struct_name: &str) -> String {
