@@ -179,12 +179,13 @@ impl Program {
             },
             _ => panic!("unsupported self type in impl"),
         };
-        for mut item in item.items.iter_mut() {
-            self.push_impl_item(name, &mut item);
+        for item in item.items.iter_mut() {
+            self.push_impl_item(name, item);
         }
     }
 
     fn push_impl_item(&mut self, class: syn::Ident, item: &mut syn::ImplItem) {
+        replace_self(class, item);
         let method = match item {
             syn::ImplItem::Const(_) => panic!("const definitions aren't supported"),
             syn::ImplItem::Type(_) => panic!("type definitions in impls aren't supported"),
@@ -458,7 +459,7 @@ impl Function {
 
     pub fn from_decl(
         name: syn::Ident,
-        decl: Box<syn::FnDecl>,
+        mut decl: Box<syn::FnDecl>,
         attrs: Vec<syn::Attribute>,
         opts: BindgenAttrs,
         vis: syn::Visibility,
@@ -471,7 +472,7 @@ impl Function {
             panic!("can't bindgen functions with lifetime or type parameters")
         }
 
-        assert_no_lifetimes(&decl);
+        assert_no_lifetimes(&mut decl);
 
         let mut mutable = None;
         let arguments = decl.inputs
@@ -928,15 +929,29 @@ fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<
     syn::parse_error()
 }
 
-fn assert_no_lifetimes(decl: &syn::FnDecl) {
+fn assert_no_lifetimes(decl: &mut syn::FnDecl) {
     struct Walk;
 
-    impl<'ast> syn::visit::Visit<'ast> for Walk {
-        fn visit_lifetime(&mut self, _i: &'ast syn::Lifetime) {
+    impl<'ast> syn::visit_mut::VisitMut for Walk {
+        fn visit_lifetime_mut(&mut self, _i: &mut syn::Lifetime) {
             panic!("it is currently not sound to use lifetimes in function \
                     signatures");
         }
     }
 
-    syn::visit::Visit::visit_fn_decl(&mut Walk, decl);
+    syn::visit_mut::VisitMut::visit_fn_decl_mut(&mut Walk, decl);
+}
+
+fn replace_self(name: syn::Ident, item: &mut syn::ImplItem) {
+    struct Walk(syn::Ident);
+
+    impl syn::visit_mut::VisitMut for Walk {
+        fn visit_ident_mut(&mut self, i: &mut syn::Ident) {
+            if i.as_ref() == "Self" {
+                *i = self.0;
+            }
+        }
+    }
+
+    syn::visit_mut::VisitMut::visit_impl_item_mut(&mut Walk(name), item);
 }

@@ -526,3 +526,35 @@ fn public_fields() {
         "#)
         .test();
 }
+
+#[test]
+fn using_self() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub struct Foo {
+            }
+
+            #[wasm_bindgen]
+            impl Foo {
+                pub fn new() -> Self {
+                    Foo {}
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import { Foo } from "./out";
+
+            export function test() {
+                Foo.new().free();
+            }
+        "#)
+        .test();
+}

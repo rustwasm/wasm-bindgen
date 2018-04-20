@@ -14,5 +14,5 @@ Backend code generation of the wasm-bindgen tool
 quote = '0.5'
 proc-macro2 = { version = "0.3", features = ["nightly"] }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.4" }
-syn = { version = '0.13', features = ['full', 'visit'] }
+syn = { version = '0.13', features = ['full', 'visit-mut'] }
 serde_json = "1.0"
