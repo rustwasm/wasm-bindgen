@@ -35,6 +35,11 @@ pub struct ExportedClass {
     pub contents: String,
     pub typescript: String,
     pub constructor: Option<String>,
+    pub fields: Vec<ClassField>,
+}
+
+pub struct ClassField {
+    pub name: String,
 }
 
 pub struct SubContext<'a, 'b: 'a> {
@@ -341,78 +346,111 @@ impl<'a> Context<'a> {
     fn write_classes(&mut self) {
         let classes = mem::replace(&mut self.exported_classes, Default::default());
         for (class, exports) in classes {
-            let mut dst = format!("class {} {{\n", class);
-            let mut ts_dst = format!("export {}", dst);
+            self.write_class(&class, &exports);
+        }
+    }
 
-            if self.config.debug || exports.constructor.is_some() {
-                self.expose_constructor_token();
+    fn write_class(&mut self, name: &str, class: &ExportedClass) {
+        let mut dst = format!("class {} {{\n", name);
+        let mut ts_dst = format!("export {}", dst);
 
-                dst.push_str(&format!("
-                    static __construct(ptr) {{
-                        return new {}(new ConstructorToken(ptr));
-                    }}
-
-                    constructor(...args) {{
-                        if (args.length === 1 && args[0] instanceof ConstructorToken) {{
-                            this.ptr = args[0].ptr;
-                            return;
-                        }}
-                ", class));
-
-                if let Some(constructor) = exports.constructor {
-                    ts_dst.push_str(&format!("constructor(...args: [any]);\n"));
-
-                    dst.push_str(&format!("
-                        // This invocation of new will call this constructor with a ConstructorToken
-                        let instance = {class}.{constructor}(...args);
-                        this.ptr = instance.ptr;
-                    ", class = class, constructor = constructor));
-                } else {
-                    dst.push_str("throw new Error('you cannot invoke `new` directly without having a \
-                method annotated a constructor');");
-                }
-
-                dst.push_str("}");
-            } else {
-                dst.push_str(&format!("
-                    static __construct(ptr) {{
-                        return new {}(ptr);
-                    }}
-
-                    constructor(ptr) {{
-                        this.ptr = ptr;
-                    }}
-                ", class));
-            }
-
-            let new_name = shared::new_function(&class);
-            if self.wasm_import_needed(&new_name) {
-                self.expose_add_heap_object();
-
-                self.export(&new_name, &format!("
-                    function(ptr) {{
-                        return addHeapObject({}.__construct(ptr));
-                    }}
-                ", class));
-            }
+        if self.config.debug || class.constructor.is_some() {
+            self.expose_constructor_token();
 
             dst.push_str(&format!("
-                free() {{
-                    const ptr = this.ptr;
-                    this.ptr = 0;
-                    wasm.{}(ptr);
+                static __construct(ptr) {{
+                    return new {}(new ConstructorToken(ptr));
                 }}
-            ", shared::free_function(&class)));
-            ts_dst.push_str("free(): void;\n");
 
-            dst.push_str(&exports.contents);
-            ts_dst.push_str(&exports.typescript);
-            dst.push_str("}\n");
-            ts_dst.push_str("}\n");
+                constructor(...args) {{
+                    if (args.length === 1 && args[0] instanceof ConstructorToken) {{
+                        this.ptr = args[0].ptr;
+                        return;
+                    }}
+            ", name));
 
-            self.export(&class, &dst);
-            self.typescript.push_str(&ts_dst);
+            if let Some(ref constructor) = class.constructor {
+                ts_dst.push_str(&format!("constructor(...args: [any]);\n"));
+
+                dst.push_str(&format!("
+                    // This invocation of new will call this constructor with a ConstructorToken
+                    let instance = {class}.{constructor}(...args);
+                    this.ptr = instance.ptr;
+                ", class = name, constructor = constructor));
+            } else {
+                dst.push_str("throw new Error('you cannot invoke `new` directly without having a \
+            method annotated a constructor');");
+            }
+
+            dst.push_str("}");
+        } else {
+            dst.push_str(&format!("
+                static __construct(ptr) {{
+                    return new {}(ptr);
+                }}
+
+                constructor(ptr) {{
+                    this.ptr = ptr;
+                }}
+            ", name));
         }
+
+        let new_name = shared::new_function(&name);
+        if self.wasm_import_needed(&new_name) {
+            self.expose_add_heap_object();
+
+            self.export(&new_name, &format!("
+                function(ptr) {{
+                    return addHeapObject({}.__construct(ptr));
+                }}
+            ", name));
+        }
+
+        for field in class.fields.iter() {
+            let wasm_getter = shared::struct_field_get(name, &field.name);
+            let wasm_setter = shared::struct_field_set(name, &field.name);
+            let descriptor = self.describe(&wasm_getter);
+
+            let set = {
+                let mut cx = Js2Rust::new(&field.name, self);
+                cx.method(true)
+                    .argument(&descriptor)
+                    .ret(&None);
+                ts_dst.push_str(&format!("{}: {}\n",
+                                         field.name,
+                                         &cx.js_arguments[0].1));
+                cx.finish("", &format!("wasm.{}", wasm_setter)).0
+            };
+            let (get, _ts) = Js2Rust::new(&field.name, self)
+                .method(true)
+                .ret(&Some(descriptor))
+                .finish("", &format!("wasm.{}", wasm_getter));
+
+            dst.push_str("get ");
+            dst.push_str(&field.name);
+            dst.push_str(&get);
+            dst.push_str("\n");
+            dst.push_str("set ");
+            dst.push_str(&field.name);
+            dst.push_str(&set);
+        }
+
+        dst.push_str(&format!("
+            free() {{
+                const ptr = this.ptr;
+                this.ptr = 0;
+                wasm.{}(ptr);
+            }}
+        ", shared::free_function(&name)));
+        ts_dst.push_str("free(): void;\n");
+
+        dst.push_str(&class.contents);
+        ts_dst.push_str(&class.typescript);
+        dst.push_str("}\n");
+        ts_dst.push_str("}\n");
+
+        self.export(&name, &dst);
+        self.typescript.push_str(&ts_dst);
     }
 
     fn export_table(&mut self) {
@@ -1268,8 +1306,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         for s in self.program.structs.iter() {
             self.cx.exported_classes
-                .entry(s.clone())
-                .or_insert_with(Default::default);
+                .entry(s.name.clone())
+                .or_insert_with(Default::default)
+                .fields
+                .extend(s.fields.iter().map(|s| {
+                    ClassField {
+                        name: s.name.clone(),
+                    }
+                }));
         }
     }
 

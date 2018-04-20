@@ -11,7 +11,7 @@ pub struct Js2Rust<'a, 'b: 'a> {
     rust_arguments: Vec<String>,
 
     /// Arguments and their types to the JS shim.
-    js_arguments: Vec<(String, String)>,
+    pub js_arguments: Vec<(String, String)>,
 
     /// Conversions that happen before we invoke the wasm function, such as
     /// converting a string to a ptr/length pair.
@@ -100,7 +100,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         self
     }
 
-    fn argument(&mut self, arg: &Descriptor) {
+    pub fn argument(&mut self, arg: &Descriptor) -> &mut Self {
         let i = self.arg_idx;
         self.arg_idx += 1;
         let name = format!("arg{}", i);
@@ -122,7 +122,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.cx.require_internal_export("__wbindgen_free");
             }
             self.rust_arguments.push(format!("ptr{}", i));
-            return
+            return self
         }
 
         if let Some(s) = arg.rust_struct() {
@@ -144,7 +144,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 ", i = i, arg = name));
                 self.rust_arguments.push(format!("ptr{}", i));
             }
-            return
+            return self
         }
 
         if arg.is_number() {
@@ -156,7 +156,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             }
 
             self.rust_arguments.push(name);
-            return
+            return self
         }
 
         if arg.is_ref_anyref() {
@@ -164,7 +164,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.cx.expose_borrowed_objects();
             self.finally("stack.pop();");
             self.rust_arguments.push(format!("addBorrowedObject({})", name));
-            return
+            return self
         }
 
         match *arg {
@@ -187,15 +187,16 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 panic!("unsupported argument to rust function {:?}", arg)
             }
         }
+        self
     }
 
-    fn ret(&mut self, ret: &Option<Descriptor>) {
+    pub fn ret(&mut self, ret: &Option<Descriptor>) -> &mut Self {
         let ty = match *ret {
             Some(ref t) => t,
             None => {
                 self.ret_ty = "void".to_string();
                 self.ret_expr = format!("return RET;");
-                return
+                return self
             }
         };
 
@@ -203,7 +204,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.ret_ty = "any".to_string();
             self.cx.expose_get_object();
             self.ret_expr = format!("return getObject(RET);");
-            return
+            return self
         }
 
         if ty.is_by_ref() {
@@ -222,19 +223,19 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 wasm.__wbindgen_free(ret, len * {});\n\
                 return realRet;\n\
             ", f, ty.size());
-            return
+            return self
         }
 
         if let Some(name) = ty.rust_struct() {
             self.ret_ty = name.to_string();
             self.ret_expr = format!("return {name}.__construct(RET);", name = name);
-            return
+            return self
         }
 
         if ty.is_number() {
             self.ret_ty = "number".to_string();
             self.ret_expr = format!("return RET;");
-            return
+            return self
         }
 
         match *ty {
@@ -249,6 +250,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             }
             _ => panic!("unsupported return from Rust to JS {:?}", ty),
         }
+        self
     }
 
     /// Generate the actual function.
