@@ -2,7 +2,10 @@
 
 A project for facilitating high-level interactions between wasm modules and JS.
 
+[Introduction blog post][post]
+
 [host]: https://github.com/WebAssembly/host-bindings
+[post]: https://hacks.mozilla.org/2018/04/javascript-to-rust-and-back-again-a-wasm-bindgen-tale/
 
 [![Build Status](https://travis-ci.org/rustwasm/wasm-bindgen.svg?branch=master)](https://travis-ci.org/rustwasm/wasm-bindgen)
 [![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/alexcrichton/wasm-bindgen)
