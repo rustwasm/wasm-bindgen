@@ -29,3 +29,5 @@ The examples here are:
   the `onclick` property in conjunction with closures.
 * `no_modules` - an example of how to use the `--no-modules` flag to
   the `wasm-bindgen` CLI tool
+* `add` - an example of generating a tiny wasm binary, one that only adds two
+  numbers.
