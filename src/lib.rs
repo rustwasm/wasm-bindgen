@@ -317,9 +317,29 @@ impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
     type Target = T;
     fn deref(&self) -> &T {
         unsafe {
-            (*self.__inner.get()).get_or_insert_with(|| {
-                (self.__init)()
-            })
+            // Ideally we want to use `get_or_insert_with` here but
+            // unfortunately that has subpar codegen for now.
+            //
+            // If we get past the `Some` branch here LLVM statically
+            // knows that we're `None`, but the after the call to the `__init`
+            // function LLVM can no longer know this because `__init` could
+            // recursively call this function again (aka if JS came back to Rust
+            // and Rust referenced this static).
+            //
+            // We know, however, that cannot happen. As a result we can
+            // conclude that even after the call to `__init` our `ptr` still
+            // points to `None` (and a debug assertion to this effect). Then
+            // using `ptr::write` should tell rustc to not run destuctors
+            // (as one isn't there) and this should tighten up codegen for
+            // `JsStatic` a bit as well.
+            let ptr = self.__inner.get();
+            if let Some(ref t) = *ptr {
+                return t
+            }
+            let init = Some((self.__init)());
+            debug_assert!((*ptr).is_none());
+            ptr::write(ptr, init);
+            (*ptr).as_ref().unwrap()
         }
     }
 }
