@@ -631,7 +631,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("slab") {
             return;
         }
-        self.global(&format!("let slab = [];"));
+        self.global(&format!("let slab = [null];"));
     }
 
     fn expose_global_slab_next(&mut self) {
@@ -639,7 +639,8 @@ impl<'a> Context<'a> {
             return;
         }
         self.global(&format!("
-            let slab_next = 0;
+            // Avoid 0 as an index to enable optimizing Option<JsValue> layout
+            let slab_next = 1;
         "));
     }
 
