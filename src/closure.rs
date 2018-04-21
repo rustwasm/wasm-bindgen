@@ -7,6 +7,7 @@
 use std::cell::UnsafeCell;
 use std::marker::Unsize;
 use std::mem::{self, ManuallyDrop};
+use std::num::NonZeroU32;
 use std::prelude::v1::*;
 
 use JsValue;
@@ -95,9 +96,12 @@ impl<T> Closure<T>
     ///
     /// This is the function where the JS closure is manufactured.
     pub fn wrap(t: Box<T>) -> Closure<T> {
+        let idx = unsafe {
+            NonZeroU32::new_unchecked(!0)
+        };
         Closure {
             inner: UnsafeCell::new(t),
-            js: UnsafeCell::new(ManuallyDrop::new(JsValue { idx: !0 })),
+            js: UnsafeCell::new(ManuallyDrop::new(JsValue { idx })),
         }
     }
 
@@ -114,7 +118,7 @@ impl<T> Closure<T>
     /// cleanup as it can.
     pub fn forget(self) {
         unsafe {
-            let idx = (*self.js.get()).idx;
+            let idx = (*self.js.get()).idx.get();
             if idx != !0 {
                 super::__wbindgen_cb_forget(idx);
             }
@@ -142,7 +146,7 @@ impl<'a, T> IntoWasmAbi for &'a Closure<T>
         unsafe {
             let fnptr = WasmClosure::into_abi(&mut **self.inner.get(), extra);
             extra.push(fnptr);
-            &mut (*self.js.get()).idx as *const u32 as u32
+            &mut (*self.js.get()).idx.get() as *const u32 as u32
         }
     }
 }
@@ -162,7 +166,7 @@ impl<T> Drop for Closure<T>
 {
     fn drop(&mut self) {
         unsafe {
-            let idx = (*self.js.get()).idx;
+            let idx = (*self.js.get()).idx.get();
             if idx != !0 {
                 super::__wbindgen_cb_drop(idx);
             }

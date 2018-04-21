@@ -5,12 +5,13 @@
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
 
-#![feature(use_extern_macros, wasm_import_module, try_reserve, unsize)]
+#![feature(use_extern_macros, wasm_import_module, try_reserve, unsize, nonzero)]
 #![no_std]
 
 extern crate wasm_bindgen_macro;
 
 use core::cell::UnsafeCell;
+use core::num::NonZeroU32;
 use core::ops::Deref;
 use core::ptr;
 
@@ -52,7 +53,7 @@ if_std! {
 /// will transfer into wasm directly and this will likely become more efficient,
 /// but for now it may be slightly slow.
 pub struct JsValue {
-    idx: u32,
+    idx: NonZeroU32,
 }
 
 impl JsValue {
@@ -62,7 +63,7 @@ impl JsValue {
     /// be owned by the JS garbage collector.
     pub fn from_str(s: &str) -> JsValue {
         unsafe {
-            JsValue { idx: __wbindgen_string_new(s.as_ptr(), s.len()) }
+            JsValue { idx: NonZeroU32::new_unchecked(__wbindgen_string_new(s.as_ptr(), s.len())) }
         }
     }
 
@@ -72,7 +73,7 @@ impl JsValue {
     /// allocated number) and returns a handle to the JS version of it.
     pub fn from_f64(n: f64) -> JsValue {
         unsafe {
-            JsValue { idx: __wbindgen_number_new(n) }
+            JsValue { idx: NonZeroU32::new_unchecked(__wbindgen_number_new(n)) }
         }
     }
 
@@ -82,21 +83,21 @@ impl JsValue {
     /// allocated boolean) and returns a handle to the JS version of it.
     pub fn from_bool(b: bool) -> JsValue {
         unsafe {
-            JsValue { idx: __wbindgen_boolean_new(b as u32) }
+            JsValue { idx: NonZeroU32::new_unchecked(__wbindgen_boolean_new(b as u32)) }
         }
     }
 
     /// Creates a new JS value representing `undefined`.
     pub fn undefined() -> JsValue {
         unsafe {
-            JsValue { idx: __wbindgen_undefined_new() }
+            JsValue { idx: NonZeroU32::new_unchecked(__wbindgen_undefined_new()) }
         }
     }
 
     /// Creates a new JS value representing `null`.
     pub fn null() -> JsValue {
         unsafe {
-            JsValue { idx: __wbindgen_null_new() }
+            JsValue { idx: NonZeroU32::new_unchecked(__wbindgen_null_new()) }
         }
     }
 
@@ -108,7 +109,7 @@ impl JsValue {
         unsafe {
             let ptr = description.map(|s| s.as_ptr()).unwrap_or(ptr::null());
             let len = description.map(|s| s.len()).unwrap_or(0);
-            JsValue { idx: __wbindgen_symbol_new(ptr, len) }
+            JsValue { idx: NonZeroU32::new_unchecked(__wbindgen_symbol_new(ptr, len)) }
         }
     }
 
@@ -137,7 +138,7 @@ impl JsValue {
     pub fn as_f64(&self) -> Option<f64> {
         let mut invalid = 0;
         unsafe {
-            let ret = __wbindgen_number_get(self.idx, &mut invalid);
+            let ret = __wbindgen_number_get(self.idx.get(), &mut invalid);
             if invalid == 1 {
                 None
             } else {
@@ -155,7 +156,7 @@ impl JsValue {
     pub fn as_string(&self) -> Option<String> {
         unsafe {
             let mut len = 0;
-            let ptr = __wbindgen_string_get(self.idx, &mut len);
+            let ptr = __wbindgen_string_get(self.idx.get(), &mut len);
             if ptr.is_null() {
                 None
             } else {
@@ -172,7 +173,7 @@ impl JsValue {
     /// `None`.
     pub fn as_bool(&self) -> Option<bool> {
         unsafe {
-            match __wbindgen_boolean_get(self.idx) {
+            match __wbindgen_boolean_get(self.idx.get()) {
                 0 => Some(false),
                 1 => Some(true),
                 _ => None,
@@ -183,21 +184,21 @@ impl JsValue {
     /// Tests whether this JS value is `null`
     pub fn is_null(&self) -> bool {
         unsafe {
-            __wbindgen_is_null(self.idx) == 1
+            __wbindgen_is_null(self.idx.get()) == 1
         }
     }
 
     /// Tests whether this JS value is `undefined`
     pub fn is_undefined(&self) -> bool {
         unsafe {
-            __wbindgen_is_undefined(self.idx) == 1
+            __wbindgen_is_undefined(self.idx.get()) == 1
         }
     }
 
     /// Tests whether the type of this JS value is `symbol`
     pub fn is_symbol(&self) -> bool {
         unsafe {
-            __wbindgen_is_symbol(self.idx) == 1
+            __wbindgen_is_symbol(self.idx.get()) == 1
         }
     }
 }
@@ -269,8 +270,8 @@ extern {
 impl Clone for JsValue {
     fn clone(&self) -> JsValue {
         unsafe {
-            let idx = __wbindgen_object_clone_ref(self.idx);
-            JsValue { idx }
+            let idx = __wbindgen_object_clone_ref(self.idx.get());
+            JsValue { idx: NonZeroU32::new_unchecked(idx) }
         }
     }
 }
@@ -278,7 +279,7 @@ impl Clone for JsValue {
 impl Drop for JsValue {
     fn drop(&mut self) {
         unsafe {
-            __wbindgen_object_drop_ref(self.idx);
+            __wbindgen_object_drop_ref(self.idx.get());
         }
     }
 }

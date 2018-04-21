@@ -2,6 +2,7 @@
 //! at your own risk.
 
 use core::mem::{self, ManuallyDrop};
+use core::num::NonZeroU32;
 use core::ops::{Deref, DerefMut};
 use core::slice;
 use core::str;
@@ -242,7 +243,7 @@ impl IntoWasmAbi for JsValue {
     type Abi = u32;
 
     fn into_abi(self, _extra: &mut Stack) -> u32 {
-        let ret = self.idx;
+        let ret = self.idx.get();
         mem::forget(self);
         return ret
     }
@@ -252,14 +253,14 @@ impl FromWasmAbi for JsValue {
     type Abi = u32;
 
     unsafe fn from_abi(js: u32, _extra: &mut Stack) -> JsValue {
-        JsValue { idx: js }
+        JsValue { idx: NonZeroU32::new_unchecked(js) }
     }
 }
 
 impl<'a> IntoWasmAbi for &'a JsValue {
     type Abi = u32;
     fn into_abi(self, _extra: &mut Stack) -> u32 {
-        self.idx
+        self.idx.get()
     }
 }
 
@@ -268,7 +269,7 @@ impl RefFromWasmAbi for JsValue {
     type Anchor = ManuallyDrop<JsValue>;
 
     unsafe fn ref_from_abi(js: u32, _extra: &mut Stack) -> Self::Anchor {
-        ManuallyDrop::new(JsValue { idx: js })
+        ManuallyDrop::new(JsValue { idx: NonZeroU32::new_unchecked(js) })
     }
 }
 
