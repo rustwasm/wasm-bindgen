@@ -303,9 +303,9 @@ impl Drop for JsValue {
 ///
 /// This type implements `Deref` to the inner type so it's typically used as if
 /// it were `&T`.
-pub struct JsStatic<T> {
+pub struct JsStatic<T: 'static> {
     #[doc(hidden)]
-    pub __inner: UnsafeCell<Option<T>>,
+    pub __inner: &'static UnsafeCell<Option<T>>,
     #[doc(hidden)]
     pub __init: fn() -> T,
 }

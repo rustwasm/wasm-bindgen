@@ -779,8 +779,10 @@ impl ToTokens for ast::ImportStatic {
 
                     }
                 }
+                static mut _VAL: ::wasm_bindgen::__rt::core::cell::UnsafeCell<Option<#ty>> =
+                    ::wasm_bindgen::__rt::core::cell::UnsafeCell::new(None);
                 ::wasm_bindgen::JsStatic {
-                    __inner: ::wasm_bindgen::__rt::core::cell::UnsafeCell::new(None),
+                    __inner: unsafe { &_VAL },
                     __init: init,
                 }
             };
