@@ -22,6 +22,7 @@ Options:
     -o --output FILE        File to place output in
     --typescript            Output a `*.d.ts` file next to the JS output
     --base64                Inline the wasm module using base64 encoding
+    --fetch                 Load module via `fetch()` instead of default webpack implementation
 
 Note that this is not intended to produce a production-ready output module
 but rather is intended purely as a temporary \"hack\" until it's standard in
@@ -33,6 +34,7 @@ struct Args {
     flag_output: Option<PathBuf>,
     flag_typescript: bool,
     flag_base64: bool,
+    flag_fetch: bool,
     arg_input: PathBuf,
 }
 
@@ -41,8 +43,8 @@ fn main() {
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
 
-    if !args.flag_base64 {
-        panic!("unfortunately only works right now with base64");
+    if !args.flag_base64 && !args.flag_fetch {
+        panic!("unfortunately only works right now with base64 or fetch");
     }
 
     let mut wasm = Vec::new();
@@ -51,6 +53,7 @@ fn main() {
 
     let object = wasm_bindgen_cli_support::wasm2es6js::Config::new()
         .base64(args.flag_base64)
+        .fetch(args.flag_fetch, &args.arg_input)
         .generate(&wasm)
         .expect("failed to parse wasm");
 
