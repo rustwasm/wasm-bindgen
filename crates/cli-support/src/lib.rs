@@ -248,7 +248,7 @@ to update the wasm-bindgen dependency with:
 
 or you can update the binary with
 
-    cargo install -f --git https://github.com/alexcrichton/wasm-bindgen
+    cargo install -f wasm-bindgen-cli
 
 if this warning fails to go away though and you're not sure what to do feel free
 to open an issue at https://github.com/alexcrichton/wasm-bindgen/issues!
