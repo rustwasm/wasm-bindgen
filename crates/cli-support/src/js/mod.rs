@@ -371,7 +371,7 @@ impl<'a> Context<'a> {
             ", name));
 
             if let Some(ref constructor) = class.constructor {
-                ts_dst.push_str(&format!("constructor(...args: [any]);\n"));
+                ts_dst.push_str(&format!("constructor(...args: any[]);\n"));
 
                 dst.push_str(&format!("
                     // This invocation of new will call this constructor with a ConstructorToken
