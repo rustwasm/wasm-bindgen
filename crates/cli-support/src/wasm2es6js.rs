@@ -29,7 +29,7 @@ impl Config {
         self.base64 = base64;
         self
     }
-    
+
     pub fn fetch(&mut self, path: Option<String>) -> &mut Self {
         self.fetch_path = path;
         self
@@ -195,7 +195,7 @@ impl Output {
                 .then(obj => {{
                     wasm = obj.instance;
                     {memory}
-                }})", 
+                }})",
                 imports = imports,
                 memory = if export_mem { "memory = wasm.exports.memory;" } else { "" },
             );
@@ -213,12 +213,12 @@ impl Output {
                     }}", base64 = base64::encode(&wasm)),
                 inst
             )
-        } else if self.fetch_path.is_some() {
+        } else if let Some(ref path) = self.fetch_path {
             (
                 String::new(),
                 format!("fetch('{path}')
                 .then(res => res.arrayBuffer())
-                .then(bytes => {inst})", path = self.fetch_path.unwrap(), inst = inst)
+                .then(bytes => {inst})", path = path, inst = inst)
             )
         } else {
             panic!("the option --base64 or --fetch is required");
