@@ -40,6 +40,8 @@ matrix:
         - |
           (cd examples/hello_world/chrome && ./build.sh)
         - |
+          (cd examples/hello_world/chrome && ./build_fetch.sh)
+        - |
           (cd examples/smorgasboard && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
         - |
           (cd examples/console_log && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)

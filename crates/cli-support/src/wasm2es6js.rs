@@ -8,17 +8,20 @@ use super::Error;
 
 pub struct Config {
     base64: bool,
+    fetch_path: Option<String>,
 }
 
 pub struct Output {
     module: Module,
     base64: bool,
+    fetch_path: Option<String>,
 }
 
 impl Config {
     pub fn new() -> Config {
         Config {
             base64: false,
+            fetch_path: None,
         }
     }
 
@@ -26,15 +29,23 @@ impl Config {
         self.base64 = base64;
         self
     }
+    
+    pub fn fetch(&mut self, path: Option<String>) -> &mut Self {
+        self.fetch_path = path;
+        self
+    }
 
     pub fn generate(&mut self, wasm: &[u8]) -> Result<Output, Error> {
-        assert!(self.base64);
+        if !self.base64 && !self.fetch_path.is_some() {
+            panic!("the option --base64 or --fetch is required");
+        }
         let module = deserialize_buffer(wasm).map_err(|e| {
             ::Error(format!("{:?}", e))
         })?;
         Ok(Output {
             module,
             base64: self.base64,
+            fetch_path: self.fetch_path.clone(),
         })
     }
 }
@@ -180,35 +191,51 @@ impl Output {
                 ));
             }
         }
-
-        let wasm = serialize(self.module)
-            .expect("failed to serialize");
-
-        format!("
-            {js_imports}
-            let wasm;
-            let bytes;
-            const base64 = \"{base64}\";
-            if (typeof Buffer === 'undefined') {{
-                bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-            }} else {{
-                bytes = Buffer.from(base64, 'base64');
-            }}
-            {mem_export}
-            export const booted = WebAssembly.instantiate(bytes, {{ {imports} }})
+        let inst = format!("WebAssembly.instantiate(bytes,{{ {imports} }})
                 .then(obj => {{
                     wasm = obj.instance;
                     {memory}
-                }});
-
+                }})", 
+                imports = imports,
+                memory = if export_mem { "memory = wasm.exports.memory;" } else { "" },
+            );
+        let (bytes, booted) = if self.base64 {
+            let wasm = serialize(self.module)
+                .expect("failed to serialize");
+            (
+                format!("
+                    let bytes;
+                    const base64 = \"{base64}\";
+                    if (typeof Buffer === 'undefined') {{
+                        bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+                    }} else {{
+                        bytes = Buffer.from(base64, 'base64');
+                    }}", base64 = base64::encode(&wasm)),
+                inst
+            )
+        } else if self.fetch_path.is_some() {
+            (
+                String::new(),
+                format!("fetch('{path}')
+                .then(res => res.arrayBuffer())
+                .then(bytes => {inst})", path = self.fetch_path.unwrap(), inst = inst)
+            )
+        } else {
+            panic!("the option --base64 or --fetch is required");
+        };
+        format!("
+            {js_imports}
+            let wasm;
+            {bytes}
+            {mem_export}
+            export const booted = {booted};
             {exports}
         ",
-            base64 = base64::encode(&wasm),
+            bytes = bytes,
+            booted = booted,
             js_imports = js_imports,
-            imports = imports,
             exports = exports,
             mem_export = if export_mem { "export let memory;" } else { "" },
-            memory = if export_mem { "memory = wasm.exports.memory;" } else { "" },
         )
     }
 }
