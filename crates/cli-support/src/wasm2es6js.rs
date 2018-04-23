@@ -1,7 +1,6 @@
 extern crate base64;
 
 use std::collections::HashSet;
-use std::path::PathBuf;
 
 use parity_wasm::elements::*;
 
@@ -9,23 +8,20 @@ use super::Error;
 
 pub struct Config {
     base64: bool,
-    fetch: bool,
-    file_name: String,
+    fetch_path: Option<String>,
 }
 
 pub struct Output {
     module: Module,
     base64: bool,
-    fetch: bool,
-    file_name: String,
+    fetch_path: Option<String>,
 }
 
 impl Config {
     pub fn new() -> Config {
         Config {
             base64: false,
-            fetch: false,
-            file_name: String::new(),
+            fetch_path: None,
         }
     }
 
@@ -34,18 +30,14 @@ impl Config {
         self
     }
     
-    pub fn fetch(&mut self, fetch: bool, in_path: &PathBuf) -> &mut Self {
-        self.fetch = fetch;
-        self.file_name = match in_path.file_name() {
-            Some(os_str) => os_str.to_str().unwrap_or("").to_string(),
-            None => String::new()
-        };
+    pub fn fetch(&mut self, path: Option<String>) -> &mut Self {
+        self.fetch_path = path;
         self
     }
 
     pub fn generate(&mut self, wasm: &[u8]) -> Result<Output, Error> {
-        if !self.base64 && !self.fetch {
-            panic!()
+        if !self.base64 && !self.fetch_path.is_some() {
+            panic!("the option --base64 or --fetch is required");
         }
         let module = deserialize_buffer(wasm).map_err(|e| {
             ::Error(format!("{:?}", e))
@@ -53,8 +45,7 @@ impl Config {
         Ok(Output {
             module,
             base64: self.base64,
-            fetch: self.fetch,
-            file_name: self.file_name.clone(),
+            fetch_path: self.fetch_path.clone(),
         })
     }
 }
@@ -222,12 +213,12 @@ impl Output {
                     }}", base64 = base64::encode(&wasm)),
                 inst
             )
-        } else if self.fetch {
+        } else if self.fetch_path.is_some() {
             (
                 String::new(),
-                format!("fetch('/{name}')
+                format!("fetch('{path}')
                 .then(res => res.arrayBuffer())
-                .then(bytes => {inst})", name = self.file_name, inst = inst)
+                .then(bytes => {inst})", path = self.fetch_path.unwrap(), inst = inst)
             )
         } else {
             panic!("the option --base64 or --fetch is required");

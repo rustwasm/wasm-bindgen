@@ -8,14 +8,13 @@ cargo +nightly run -p wasm-bindgen-cli --bin wasm-bindgen -- \
   ../../../target/wasm32-unknown-unknown/debug/hello_world.wasm --out-dir .
 
 # To avoid a bug occurring when webpack, wasm, and Chrome are used together, we
-# convert the .wasm module to a .js module that embeds the wasm bytecode. To
-# enable this, use the "--resolve-enxensions .js" flag when starting 
-# webpack-dev-server
+# create a .js module that will download the .wasm module via fetch. 
 cargo +nightly run -p wasm-bindgen-cli --bin wasm2es6js -- \
-  --fetch -o hello_world_bg.js hello_world_bg.wasm
-# wasm2es6js --base64 -o hello_world_bg.js hello_world_bg.wasm
+  --fetch ./hello_world_bg.wasm -o hello_world_bg.js hello_world_bg.wasm
 
 # And like the directory above this, from here it's the same.
 npm install
-#force webpack-dev-server to ignore the .wasm file
+
+# since we kept the same name for the .js module, we need
+# to force webpack to ignore any other file extensions
 npm run serve -- --resolve-extensions .js
