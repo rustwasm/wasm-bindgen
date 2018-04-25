@@ -1,3 +1,5 @@
+use failure::Error;
+
 use super::{indent, Context};
 use descriptor::{Descriptor, Function};
 
@@ -59,12 +61,12 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
     /// Generates all bindings necessary for the signature in `Function`,
     /// creating necessary argument conversions and return value processing.
-    pub fn process(&mut self, function: &Function) -> &mut Self {
+    pub fn process(&mut self, function: &Function) -> Result<&mut Self, Error> {
         for arg in function.arguments.iter() {
-            self.argument(arg);
+            self.argument(arg)?;
         }
-        self.ret(&function.ret);
-        self
+        self.ret(&function.ret)?;
+        Ok(self)
     }
 
     /// Flag this shim as a method call into Rust, so the first Rust argument
@@ -100,7 +102,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         self
     }
 
-    pub fn argument(&mut self, arg: &Descriptor) -> &mut Self {
+    pub fn argument(&mut self, arg: &Descriptor) -> Result<&mut Self, Error> {
         let i = self.arg_idx;
         self.arg_idx += 1;
         let name = format!("arg{}", i);
@@ -108,8 +110,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         if let Some(kind) = arg.vector_kind() {
             self.js_arguments.push((name.clone(), kind.js_ty().to_string()));
 
-            let func = self.cx.pass_to_wasm_function(kind);
-            self.cx.expose_set_global_argument();
+            let func = self.cx.pass_to_wasm_function(kind)?;
+            self.cx.expose_set_global_argument()?;
             let global_idx = self.global_idx();
             self.prelude(&format!("\
                 const [ptr{i}, len{i}] = {func}({arg});\n\
@@ -119,10 +121,10 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.finally(&format!("\
                     wasm.__wbindgen_free(ptr{i}, len{i} * {size});\n\
                 ", i = i, size = kind.size()));
-                self.cx.require_internal_export("__wbindgen_free");
+                self.cx.require_internal_export("__wbindgen_free")?;
             }
             self.rust_arguments.push(format!("ptr{}", i));
-            return self
+            return Ok(self)
         }
 
         if let Some(s) = arg.rust_struct() {
@@ -144,7 +146,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 ", i = i, arg = name));
                 self.rust_arguments.push(format!("ptr{}", i));
             }
-            return self
+            return Ok(self)
         }
 
         if arg.is_number() {
@@ -156,7 +158,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             }
 
             self.rust_arguments.push(name);
-            return self
+            return Ok(self)
         }
 
         if arg.is_ref_anyref() {
@@ -164,7 +166,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.cx.expose_borrowed_objects();
             self.finally("stack.pop();");
             self.rust_arguments.push(format!("addBorrowedObject({})", name));
-            return self
+            return Ok(self)
         }
 
         match *arg {
@@ -184,19 +186,19 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.rust_arguments.push(format!("addHeapObject({})", name));
             }
             _ => {
-                panic!("unsupported argument to rust function {:?}", arg)
+                bail!("unsupported argument to rust function {:?}", arg)
             }
         }
-        self
+        Ok(self)
     }
 
-    pub fn ret(&mut self, ret: &Option<Descriptor>) -> &mut Self {
+    pub fn ret(&mut self, ret: &Option<Descriptor>) -> Result<&mut Self, Error> {
         let ty = match *ret {
             Some(ref t) => t,
             None => {
                 self.ret_ty = "void".to_string();
                 self.ret_expr = format!("return RET;");
-                return self
+                return Ok(self)
             }
         };
 
@@ -204,18 +206,18 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.ret_ty = "any".to_string();
             self.cx.expose_get_object();
             self.ret_expr = format!("return getObject(RET);");
-            return self
+            return Ok(self)
         }
 
         if ty.is_by_ref() {
-            panic!("cannot return references from Rust to JS yet")
+            bail!("cannot return references from Rust to JS yet")
         }
 
         if let Some(ty) = ty.vector_kind() {
             self.ret_ty = ty.js_ty().to_string();
             let f = self.cx.expose_get_vector_from_wasm(ty);
-            self.cx.expose_get_global_argument();
-            self.cx.require_internal_export("__wbindgen_free");
+            self.cx.expose_get_global_argument()?;
+            self.cx.require_internal_export("__wbindgen_free")?;
             self.ret_expr = format!("\
                 const ret = RET;\n\
                 const len = getGlobalArgument(0);\n\
@@ -223,19 +225,19 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 wasm.__wbindgen_free(ret, len * {});\n\
                 return realRet;\n\
             ", f, ty.size());
-            return self
+            return Ok(self)
         }
 
         if let Some(name) = ty.rust_struct() {
             self.ret_ty = name.to_string();
             self.ret_expr = format!("return {name}.__construct(RET);", name = name);
-            return self
+            return Ok(self)
         }
 
         if ty.is_number() {
             self.ret_ty = "number".to_string();
             self.ret_expr = format!("return RET;");
-            return self
+            return Ok(self)
         }
 
         match *ty {
@@ -248,9 +250,9 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.cx.expose_take_object();
                 self.ret_expr = format!("return takeObject(RET);");
             }
-            _ => panic!("unsupported return from Rust to JS {:?}", ty),
+            _ => bail!("unsupported return from Rust to JS {:?}", ty),
         }
-        self
+        Ok(self)
     }
 
     /// Generate the actual function.
