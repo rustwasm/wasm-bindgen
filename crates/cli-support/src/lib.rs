@@ -3,6 +3,8 @@ extern crate wasm_bindgen_shared as shared;
 extern crate serde_json;
 extern crate wasm_gc;
 extern crate wasmi;
+#[macro_use]
+extern crate failure;
 
 use std::collections::BTreeSet;
 use std::fmt;
@@ -10,6 +12,7 @@ use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
+use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
 
 mod js;
@@ -25,15 +28,6 @@ pub struct Bindgen {
     debug: bool,
     typescript: bool,
     demangle: bool,
-}
-
-#[derive(Debug)]
-pub struct Error(String);
-
-impl<E: std::error::Error> From<E> for Error {
-    fn from(e: E) -> Error {
-        Error(e.to_string())
-    }
 }
 
 impl Bindgen {
@@ -97,11 +91,13 @@ impl Bindgen {
     fn _generate(&mut self, out_dir: &Path) -> Result<(), Error> {
         let input = match self.path {
             Some(ref path) => path,
-            None => panic!("must have a path input for now"),
+            None => bail!("must have a path input for now"),
         };
         let stem = input.file_stem().unwrap().to_str().unwrap();
-        let mut module = parity_wasm::deserialize_file(input)?;
-        let programs = extract_programs(&mut module);
+        let mut module = parity_wasm::deserialize_file(input)
+            .with_context(|_| "failed to parse input file as wasm")?;
+        let programs = extract_programs(&mut module)
+            .with_context(|_| "failed to extract wasm-bindgen custom sections")?;
 
         // Here we're actually instantiating the module we've parsed above for
         // execution. Why, you might be asking, are we executing wasm code? A
@@ -116,8 +112,10 @@ impl Bindgen {
         // This means that whenever we encounter an import or export we'll
         // execute a shim function which informs us about its type so we can
         // then generate the appropriate bindings.
-        let instance = wasmi::Module::from_parity_wasm_module(module.clone())?;
-        let instance = wasmi::ModuleInstance::new(&instance, &MyResolver)?;
+        let instance = wasmi::Module::from_parity_wasm_module(module.clone())
+            .with_context(|_| "failed to create wasmi module")?;
+        let instance = wasmi::ModuleInstance::new(&instance, &MyResolver)
+            .with_context(|_| "failed to instantiate wasm module")?;
         let instance = instance.not_started_instance();
 
         let (js, ts) = {
@@ -146,19 +144,21 @@ impl Bindgen {
                 js::SubContext {
                     program,
                     cx: &mut cx,
-                }.generate();
+                }.generate()?;
             }
-            cx.finalize(stem)
+            cx.finalize(stem)?
         };
 
         let js_path = out_dir.join(stem).with_extension("js");
-        File::create(&js_path).unwrap()
-            .write_all(js.as_bytes()).unwrap();
+        File::create(&js_path)
+            .and_then(|mut f| f.write_all(js.as_bytes()))
+            .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
 
         if self.typescript {
             let ts_path = out_dir.join(stem).with_extension("d.ts");
-            File::create(&ts_path).unwrap()
-                .write_all(ts.as_bytes()).unwrap();
+            File::create(&ts_path)
+                .and_then(|mut f| f.write_all(ts.as_bytes()))
+                .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
         }
 
         let wasm_path = out_dir.join(format!("{}_bg", stem)).with_extension("wasm");
@@ -166,13 +166,15 @@ impl Bindgen {
         if self.nodejs {
             let js_path = wasm_path.with_extension("js");
             let shim = self.generate_node_wasm_import(&module, &wasm_path);
-            File::create(&js_path)?.write_all(shim.as_bytes())?;
+            File::create(&js_path)
+                .and_then(|mut f| f.write_all(shim.as_bytes()))
+                .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
         }
 
-        let wasm_bytes = parity_wasm::serialize(module).map_err(|e| {
-            Error(format!("{:?}", e))
-        })?;
-        File::create(&wasm_path)?.write_all(&wasm_bytes)?;
+        let wasm_bytes = parity_wasm::serialize(module)?;
+        File::create(&wasm_path)
+            .and_then(|mut f| f.write_all(&wasm_bytes))
+            .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
         Ok(())
     }
 
@@ -202,18 +204,20 @@ impl Bindgen {
     }
 }
 
-fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
+fn extract_programs(module: &mut Module) -> Result<Vec<shared::Program>, Error> {
     let version = shared::version();
     let mut ret = Vec::new();
+    let mut to_remove = Vec::new();
 
-    module.sections_mut().retain(|s| {
+    for (i, s) in module.sections().iter().enumerate() {
         let custom = match *s {
             Section::Custom(ref s) => s,
-            _ => return true,
+            _ => continue,
         };
         if custom.name() != "__wasm_bindgen_unstable" {
-            return true
+            continue
         }
+        to_remove.push(i);
 
         let mut payload = custom.payload();
         while payload.len() > 0 {
@@ -227,11 +231,11 @@ fn extract_programs(module: &mut Module) -> Vec<shared::Program> {
             let p: shared::ProgramOnlySchema = match serde_json::from_slice(&a) {
                 Ok(f) => f,
                 Err(e) => {
-                    panic!("failed to decode what looked like wasm-bindgen data: {}", e)
+                    bail!("failed to decode what looked like wasm-bindgen data: {}", e)
                 }
             };
             if p.schema_version != shared::SCHEMA_VERSION {
-                panic!("
+                bail!("
 
 it looks like the Rust project used to create this wasm file was linked against
 a different version of wasm-bindgen than this binary:
@@ -258,15 +262,17 @@ to open an issue at https://github.com/alexcrichton/wasm-bindgen/issues!
             let p: shared::Program = match serde_json::from_slice(&a) {
                 Ok(f) => f,
                 Err(e) => {
-                    panic!("failed to decode what looked like wasm-bindgen data: {}", e)
+                    bail!("failed to decode what looked like wasm-bindgen data: {}", e)
                 }
             };
             ret.push(p);
         }
+    }
 
-        false
-    });
-    return ret
+    for i in to_remove.into_iter().rev() {
+        module.sections_mut().remove(i);
+    }
+    Ok(ret)
 }
 
 struct MyResolver;

@@ -2,6 +2,7 @@ use std::collections::{HashSet, HashMap};
 use std::fmt::Write;
 use std::mem;
 
+use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
 use parity_wasm;
 use shared;
@@ -68,33 +69,38 @@ impl<'a> Context<'a> {
         self.global(&global);
     }
 
-    fn require_internal_export(&mut self, name: &'static str) {
+    fn require_internal_export(&mut self, name: &'static str)
+        -> Result<(), Error>
+    {
         if !self.required_internal_exports.insert(name) {
-            return
+            return Ok(())
         }
         if let Some(s) = self.module.export_section() {
             if s.entries().iter().any(|e| e.field() == name) {
-                return
+                return Ok(())
             }
         }
 
-        panic!("\n\nthe exported function `{}` is required to generate bindings \
-                but it was not found in the wasm file, perhaps the `std` feature \
-                of the `wasm-bindgen` crate needs to be enabled?\n\n",
-               name);
+        bail!("\n\nthe exported function `{}` is required to generate bindings \
+               but it was not found in the wasm file, perhaps the `std` feature \
+               of the `wasm-bindgen` crate needs to be enabled?\n\n",
+              name);
     }
 
-    pub fn finalize(&mut self, module_name: &str) -> (String, String) {
+    pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
         self.unexport_unused_internal_exports();
-        self.gc();
-        self.write_classes();
+        self.gc()?;
+        self.write_classes()?;
         {
-            let mut bind = |name: &str, f: &Fn(&mut Self) -> String| {
+            let mut bind = |name: &str, f: &Fn(&mut Self) -> Result<String, Error>|
+                -> Result<(), Error>
+            {
                 if !self.wasm_import_needed(name) {
-                    return;
+                    return Ok(());
                 }
-                let contents = f(self);
+                let contents = f(self)?;
                 self.export(name, &contents);
+                Ok(())
             };
 
             bind("__wbindgen_object_clone_ref", &|me| {
@@ -109,7 +115,7 @@ impl<'a> Context<'a> {
                 } else {
                     String::from("val.cnt += 1;")
                 };
-                format!("
+                Ok(format!("
                     function(idx) {{
                         // If this object is on the stack promote it to the heap.
                         if ((idx & 1) === 1)
@@ -121,33 +127,33 @@ impl<'a> Context<'a> {
                         {}
                         return idx;
                     }}
-                ", bump_cnt)
-            });
+                ", bump_cnt))
+            })?;
 
             bind("__wbindgen_object_drop_ref", &|me| {
                 me.expose_drop_ref();
-                "function(i) { dropRef(i); }".to_string()
-            });
+                Ok("function(i) { dropRef(i); }".to_string())
+            })?;
 
             bind("__wbindgen_string_new", &|me| {
                 me.expose_add_heap_object();
                 me.expose_get_string_from_wasm();
-                String::from("
+                Ok(String::from("
                     function(p, l) {
                         return addHeapObject(getStringFromWasm(p, l));
                     }
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_number_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("function(i) { return addHeapObject(i); }")
-            });
+                Ok(String::from("function(i) { return addHeapObject(i); }"))
+            })?;
 
             bind("__wbindgen_number_get", &|me| {
                 me.expose_get_object();
                 me.expose_uint8_memory();
-                format!("
+                Ok(format!("
                     function(n, invalid) {{
                         let obj = getObject(n);
                         if (typeof(obj) === 'number')
@@ -155,53 +161,53 @@ impl<'a> Context<'a> {
                         getUint8Memory()[invalid] = 1;
                         return 0;
                     }}
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_undefined_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("function() { return addHeapObject(undefined); }")
-            });
+                Ok(String::from("function() { return addHeapObject(undefined); }"))
+            })?;
 
             bind("__wbindgen_null_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("
+                Ok(String::from("
                     function() {
                         return addHeapObject(null);
                     }
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_is_null", &|me| {
                 me.expose_get_object();
-                String::from("
+                Ok(String::from("
                     function(idx) {
                         return getObject(idx) === null ? 1 : 0;
                     }
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_is_undefined", &|me| {
                 me.expose_get_object();
-                String::from("
+                Ok(String::from("
                     function(idx) {
                         return getObject(idx) === undefined ? 1 : 0;
                     }
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_boolean_new", &|me| {
                 me.expose_add_heap_object();
-                String::from("
+                Ok(String::from("
                     function(v) {
                         return addHeapObject(v === 1);
                     }
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_boolean_get", &|me| {
                 me.expose_get_object();
-                String::from("
+                Ok(String::from("
                     function(i) {
                         let v = getObject(i);
                         if (typeof(v) === 'boolean') {
@@ -210,13 +216,13 @@ impl<'a> Context<'a> {
                             return 2;
                         }
                     }
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_symbol_new", &|me| {
                 me.expose_get_string_from_wasm();
                 me.expose_add_heap_object();
-                format!("
+                Ok(format!("
                     function(ptr, len) {{
                         let a;
                         console.log(ptr, len);
@@ -227,32 +233,32 @@ impl<'a> Context<'a> {
                         }}
                         return addHeapObject(a);
                     }}
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_is_symbol", &|me| {
                 me.expose_get_object();
-                String::from("
+                Ok(String::from("
                     function(i) {
                         return typeof(getObject(i)) === 'symbol' ? 1 : 0;
                     }
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_throw", &|me| {
                 me.expose_get_string_from_wasm();
-                format!("
+                Ok(format!("
                     function(ptr, len) {{
                         throw new Error(getStringFromWasm(ptr, len));
                     }}
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_string_get", &|me| {
-                me.expose_pass_string_to_wasm();
+                me.expose_pass_string_to_wasm()?;
                 me.expose_get_object();
                 me.expose_uint32_memory();
-                String::from("
+                Ok(String::from("
                     function(i, len_ptr) {
                         let obj = getObject(i);
                         if (typeof(obj) !== 'string')
@@ -261,27 +267,27 @@ impl<'a> Context<'a> {
                         getUint32Memory()[len_ptr / 4] = len;
                         return ptr;
                     }
-                ")
-            });
+                "))
+            })?;
 
             bind("__wbindgen_cb_drop", &|me| {
                 me.expose_drop_ref();
-                String::from("
+                Ok(String::from("
                     function(i) {
                         let obj = getObject(i).original;
                         obj.a = obj.b = 0;
                         dropRef(i);
                     }
-                ")
-            });
+                "))
+            })?;
             bind("__wbindgen_cb_forget", &|me| {
                 me.expose_drop_ref();
-                String::from("
+                Ok(String::from("
                     function(i) {
                         dropRef(i);
                     }
-                ")
-            });
+                "))
+            })?;
         }
 
         self.rewrite_imports(module_name);
@@ -335,23 +341,24 @@ impl<'a> Context<'a> {
         };
 
         self.export_table();
-        self.gc();
+        self.gc()?;
 
         while js.contains("\n\n\n") {
             js = js.replace("\n\n\n", "\n\n");
         }
 
-        (js, self.typescript.clone())
+        Ok((js, self.typescript.clone()))
     }
 
-    fn write_classes(&mut self) {
+    fn write_classes(&mut self) -> Result<(), Error> {
         let classes = mem::replace(&mut self.exported_classes, Default::default());
         for (class, exports) in classes {
-            self.write_class(&class, &exports);
+            self.write_class(&class, &exports)?;
         }
+        Ok(())
     }
 
-    fn write_class(&mut self, name: &str, class: &ExportedClass) {
+    fn write_class(&mut self, name: &str, class: &ExportedClass) -> Result<(), Error> {
         let mut dst = format!("class {} {{\n", name);
         let mut ts_dst = format!("export {}", dst);
 
@@ -415,8 +422,8 @@ impl<'a> Context<'a> {
             let set = {
                 let mut cx = Js2Rust::new(&field.name, self);
                 cx.method(true)
-                    .argument(&descriptor)
-                    .ret(&None);
+                    .argument(&descriptor)?
+                    .ret(&None)?;
                 ts_dst.push_str(&format!("{}{}: {}\n",
                                          if field.readonly { "readonly " } else { "" },
                                          field.name,
@@ -425,7 +432,7 @@ impl<'a> Context<'a> {
             };
             let (get, _ts) = Js2Rust::new(&field.name, self)
                 .method(true)
-                .ret(&Some(descriptor))
+                .ret(&Some(descriptor))?
                 .finish("", &format!("wasm.{}", wasm_getter));
 
             dst.push_str("get ");
@@ -455,6 +462,8 @@ impl<'a> Context<'a> {
 
         self.export(&name, &dst);
         self.typescript.push_str(&ts_dst);
+
+        Ok(())
     }
 
     fn export_table(&mut self) {
@@ -697,11 +706,11 @@ impl<'a> Context<'a> {
         "));
     }
 
-    fn expose_pass_string_to_wasm(&mut self) {
+    fn expose_pass_string_to_wasm(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("pass_string_to_wasm") {
-            return;
+            return Ok(());
         }
-        self.require_internal_export("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc")?;
         self.expose_text_encoder();
         self.expose_uint8_memory();
         let debug = if self.config.debug {
@@ -721,13 +730,14 @@ impl<'a> Context<'a> {
                 return [ptr, buf.length];
             }}
         ", debug));
+        Ok(())
     }
 
-    fn expose_pass_array8_to_wasm(&mut self) {
+    fn expose_pass_array8_to_wasm(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("pass_array8_to_wasm") {
-            return;
+            return Ok(());
         }
-        self.require_internal_export("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc")?;
         self.expose_uint8_memory();
         self.global(&format!("
             function passArray8ToWasm(arg) {{
@@ -736,13 +746,14 @@ impl<'a> Context<'a> {
                 return [ptr, arg.length];
             }}
         "));
+        Ok(())
     }
 
-    fn expose_pass_array16_to_wasm(&mut self) {
+    fn expose_pass_array16_to_wasm(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("pass_array16_to_wasm") {
-            return;
+            return Ok(());
         }
-        self.require_internal_export("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc")?;
         self.expose_uint16_memory();
         self.global(&format!("
             function passArray16ToWasm(arg) {{
@@ -751,13 +762,14 @@ impl<'a> Context<'a> {
                 return [ptr, arg.length];
             }}
         "));
+        Ok(())
     }
 
-    fn expose_pass_array32_to_wasm(&mut self) {
+    fn expose_pass_array32_to_wasm(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("pass_array32_to_wasm") {
-            return;
+            return Ok(())
         }
-        self.require_internal_export("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc")?;
         self.expose_uint32_memory();
         self.global(&format!("
             function passArray32ToWasm(arg) {{
@@ -766,13 +778,14 @@ impl<'a> Context<'a> {
                 return [ptr, arg.length];
             }}
         "));
+        Ok(())
     }
 
-    fn expose_pass_array_f32_to_wasm(&mut self) {
+    fn expose_pass_array_f32_to_wasm(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("pass_array_f32_to_wasm") {
-            return;
+            return Ok(())
         }
-        self.require_internal_export("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc")?;
         self.global(&format!("
             function passArrayF32ToWasm(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.length * 4);
@@ -780,13 +793,14 @@ impl<'a> Context<'a> {
                 return [ptr, arg.length];
             }}
         "));
+        Ok(())
     }
 
-    fn expose_pass_array_f64_to_wasm(&mut self) {
+    fn expose_pass_array_f64_to_wasm(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("pass_array_f64_to_wasm") {
-            return;
+            return Ok(())
         }
-        self.require_internal_export("__wbindgen_malloc");
+        self.require_internal_export("__wbindgen_malloc")?;
         self.global(&format!("
             function passArrayF64ToWasm(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.length * 8);
@@ -794,6 +808,7 @@ impl<'a> Context<'a> {
                 return [ptr, arg.length];
             }}
         "));
+        Ok(())
     }
 
     fn expose_text_encoder(&mut self) {
@@ -1119,39 +1134,40 @@ impl<'a> Context<'a> {
         })
     }
 
-    fn pass_to_wasm_function(&mut self, t: VectorKind) -> &'static str {
-        match t {
+    fn pass_to_wasm_function(&mut self, t: VectorKind) -> Result<&'static str, Error> {
+        let s = match t {
             VectorKind::String => {
-                self.expose_pass_string_to_wasm();
+                self.expose_pass_string_to_wasm()?;
                 "passStringToWasm"
             }
             VectorKind::I8 |
             VectorKind::U8 => {
-                self.expose_pass_array8_to_wasm();
+                self.expose_pass_array8_to_wasm()?;
                 "passArray8ToWasm"
             }
             VectorKind::U16 |
             VectorKind::I16 => {
-                self.expose_pass_array16_to_wasm();
+                self.expose_pass_array16_to_wasm()?;
                 "passArray16ToWasm"
             }
             VectorKind::I32 |
             VectorKind::U32 => {
-                self.expose_pass_array32_to_wasm();
+                self.expose_pass_array32_to_wasm()?;
                 "passArray32ToWasm"
             }
             VectorKind::F32 => {
-                self.expose_pass_array_f32_to_wasm();
+                self.expose_pass_array_f32_to_wasm()?;
                 "passArrayF32ToWasm"
             }
             VectorKind::F64 => {
-                self.expose_pass_array_f64_to_wasm();
+                self.expose_pass_array_f64_to_wasm()?;
                 "passArrayF64ToWasm"
             }
             VectorKind::Anyref => {
-                panic!("cannot pass list of JsValue to wasm yet")
+                bail!("cannot pass list of JsValue to wasm yet")
             }
-        }
+        };
+        Ok(s)
     }
 
     fn expose_get_vector_from_wasm(&mut self, ty: VectorKind) -> &'static str {
@@ -1199,39 +1215,41 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn expose_set_global_argument(&mut self) {
+    fn expose_set_global_argument(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("set_global_argument") {
-            return;
+            return Ok(());
         }
         self.expose_uint32_memory();
-        self.expose_global_argument_ptr();
+        self.expose_global_argument_ptr()?;
         self.global("
             function setGlobalArgument(arg, i) {
                 const idx = globalArgumentPtr() / 4 + i;
                 getUint32Memory()[idx] = arg;
             }
         ");
+        Ok(())
     }
 
-    fn expose_get_global_argument(&mut self) {
+    fn expose_get_global_argument(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("get_global_argument") {
-            return;
+            return Ok(());
         }
         self.expose_uint32_memory();
-        self.expose_global_argument_ptr();
+        self.expose_global_argument_ptr()?;
         self.global("
             function getGlobalArgument(arg) {
                 const idx = globalArgumentPtr() / 4 + arg;
                 return getUint32Memory()[idx];
             }
         ");
+        Ok(())
     }
 
-    fn expose_global_argument_ptr(&mut self) {
+    fn expose_global_argument_ptr(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("global_argument_ptr") {
-            return;
+            return Ok(());
         }
-        self.require_internal_export("__wbindgen_global_argument_ptr");
+        self.require_internal_export("__wbindgen_global_argument_ptr")?;
         self.global("
             let cachedGlobalArgumentPtr = null;
             function globalArgumentPtr() {
@@ -1240,6 +1258,7 @@ impl<'a> Context<'a> {
                 return cachedGlobalArgumentPtr;
             }
         ");
+        Ok(())
     }
 
     fn expose_get_inherited_descriptor(&mut self) {
@@ -1267,14 +1286,14 @@ impl<'a> Context<'a> {
         ");
     }
 
-    fn gc(&mut self) {
+    fn gc(&mut self) -> Result<(), Error> {
         let module = mem::replace(self.module, Module::default());
-        let wasm_bytes = parity_wasm::serialize(module).unwrap();
+        let wasm_bytes = parity_wasm::serialize(module)?;
         let bytes = wasm_gc::Config::new()
             .demangle(self.config.demangle)
-            .gc(&wasm_bytes)
-            .unwrap();
-        *self.module = deserialize_buffer(&bytes).unwrap();
+            .gc(&wasm_bytes)?;
+        *self.module = deserialize_buffer(&bytes)?;
+        Ok(())
     }
 
     fn describe(&self, name: &str) -> Descriptor {
@@ -1298,12 +1317,16 @@ impl<'a> Context<'a> {
 }
 
 impl<'a, 'b> SubContext<'a, 'b> {
-    pub fn generate(&mut self) {
+    pub fn generate(&mut self) -> Result<(), Error> {
         for f in self.program.exports.iter() {
-            self.generate_export(f);
+            self.generate_export(f)
+                .with_context(|_| {
+                    format!("failed to generate bindings for Rust export `{}`",
+                            f.function.name)
+                })?;
         }
         for f in self.program.imports.iter() {
-            self.generate_import(f);
+            self.generate_import(f)?;
         }
         for e in self.program.enums.iter() {
             self.generate_enum(e);
@@ -1320,29 +1343,38 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     }
                 }));
         }
+
+        Ok(())
     }
 
-    pub fn generate_export(&mut self, export: &shared::Export) {
+    fn generate_export(&mut self, export: &shared::Export)
+        -> Result<(), Error>
+    {
         if let Some(ref class) = export.class {
             return self.generate_export_for_class(class, export);
         }
         let descriptor = self.cx.describe(&export.function.name);
         let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
-            .process(descriptor.unwrap_function())
+            .process(descriptor.unwrap_function())?
             .finish("function", &format!("wasm.{}", export.function.name));
         self.cx.export(&export.function.name, &js);
         self.cx.globals.push_str("\n");
         self.cx.typescript.push_str("export ");
         self.cx.typescript.push_str(&ts);
         self.cx.typescript.push_str("\n");
+        Ok(())
     }
 
-    pub fn generate_export_for_class(&mut self, class_name: &str, export: &shared::Export) {
+    fn generate_export_for_class(
+        &mut self,
+        class_name: &str,
+        export: &shared::Export,
+    ) -> Result<(), Error> {
         let wasm_name = shared::struct_function_export_name(class_name, &export.function.name);
         let descriptor = self.cx.describe(&wasm_name);
         let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
             .method(export.method)
-            .process(descriptor.unwrap_function())
+            .process(descriptor.unwrap_function())?
             .finish("", &format!("wasm.{}", wasm_name));
         let class = self.cx.exported_classes.entry(class_name.to_string())
             .or_insert(ExportedClass::default());
@@ -1360,7 +1392,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         class.constructor = match constructors.len() {
             0 => None,
             1 => Some(constructors[0].clone()),
-            x @ _ => panic!("There must be only one constructor, not {}", x),
+            x @ _ => bail!("there must be only one constructor, not {}", x),
         };
 
         class.contents.push_str(&export.function.name);
@@ -1368,44 +1400,61 @@ impl<'a, 'b> SubContext<'a, 'b> {
         class.contents.push_str("\n");
         class.typescript.push_str(&ts);
         class.typescript.push_str("\n");
+        Ok(())
     }
 
-    pub fn generate_import(&mut self, import: &shared::Import) {
+    fn generate_import(&mut self, import: &shared::Import) -> Result<(), Error> {
         match import.kind {
             shared::ImportKind::Function(ref f) => {
                 self.generate_import_function(import, f)
+                    .with_context(|_| {
+                        format!("failed to generate bindings for JS import `{}`",
+                                f.function.name)
+                    })?;
             }
             shared::ImportKind::Static(ref s) => {
                 self.generate_import_static(import, s)
+                    .with_context(|_| {
+                        format!("failed to generate bindings for JS import `{}`",
+                                s.name)
+                    })?;
             }
             shared::ImportKind::Type(_) => {}
         }
+        Ok(())
     }
 
-    pub fn generate_import_static(&mut self,
-                                  info: &shared::Import,
-                                  import: &shared::ImportStatic) {
+    fn generate_import_static(
+        &mut self,
+        info: &shared::Import,
+        import: &shared::ImportStatic,
+    )
+        -> Result<(), Error>
+    {
         // TODO: should support more types to import here
-        let obj = self.import_name(info, &import.name);
+        let obj = self.import_name(info, &import.name)?;
         self.cx.expose_add_heap_object();
         self.cx.export(&import.shim, &format!("
             function() {{
                 return addHeapObject({});
             }}
         ", obj));
+        Ok(())
     }
 
-    pub fn generate_import_function(&mut self,
-                                    info: &shared::Import,
-                                    import: &shared::ImportFunction) {
+    fn generate_import_function(&mut self,
+                                info: &shared::Import,
+                                import: &shared::ImportFunction)
+        -> Result<(), Error>
+    {
         let descriptor = self.cx.describe(&import.shim);
 
         let target = match import.class {
             Some(ref class) if import.js_new => {
-                format!("new {}", self.import_name(info, class))
+                format!("new {}", self.import_name(info, class)?)
             }
             Some(ref class) if import.method => {
-                let class = self.import_name(info, class);
+                let class = self.import_name(info, class)?;
                 let target = if let Some(ref g) = import.getter {
                     if import.structural {
                         format!("function() {{ return this.{}; }}", g)
@@ -1461,14 +1510,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 format!("{}_target.call", import.shim)
             }
             Some(ref class) => {
-                let class = self.import_name(info, class);
+                let class = self.import_name(info, class)?;
                 self.cx.global(&format!("
                     const {}_target = {}.{};
                 ", import.shim, class, import.function.name));
                 format!("{}_target", import.shim)
             }
             None => {
-                let name = self.import_name(info, &import.function.name);
+                let name = self.import_name(info, &import.function.name)?;
                 if name.contains(".") {
                     self.cx.global(&format!("
                         const {}_target = {};
@@ -1482,12 +1531,13 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         let js = Rust2Js::new(self.cx)
             .catch(import.catch)
-            .process(descriptor.unwrap_function())
+            .process(descriptor.unwrap_function())?
             .finish(&target);
         self.cx.export(&import.shim, &js);
+        Ok(())
     }
 
-    pub fn generate_enum(&mut self, enum_: &shared::Enum) {
+    fn generate_enum(&mut self, enum_: &shared::Enum) {
         let mut variants = String::new();
 
         for variant in enum_.variants.iter() {
@@ -1504,10 +1554,13 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.typescript.push_str("}\n");
     }
 
-    fn import_name(&mut self, import: &shared::Import, item: &str) -> String {
+    fn import_name(&mut self, import: &shared::Import, item: &str)
+        -> Result<String, Error>
+    {
         if let Some(ref module) = import.module {
             if self.cx.config.no_modules {
-                panic!("import from `{}` module not allowed in `--no-modules`. use `--nodejs` or `--browser` instead", module);
+                bail!("import from `{}` module not allowed with `--no-modules`; \
+                      use `--nodejs` or `--browser` instead", module);
             }
 
             let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
@@ -1524,10 +1577,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 }
             }
         }
-        match import.js_namespace {
+        Ok(match import.js_namespace {
             Some(ref s) => format!("{}.{}", s, item),
             None => item.to_string(),
-        }
+        })
     }
 }
 

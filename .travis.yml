@@ -19,6 +19,10 @@ matrix:
       rust: nightly
       before_script: rustup target add $TARGET
       script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
+      addons:
+        apt:
+          packages:
+          - musl-tools
 
     # Dist OSX binary
     - os: osx

@@ -3,12 +3,16 @@ extern crate serde_derive;
 extern crate docopt;
 extern crate parity_wasm;
 extern crate wasm_bindgen_cli_support;
+#[macro_use]
+extern crate failure;
 
 use std::fs::File;
 use std::io::{Write, Read};
 use std::path::PathBuf;
+use std::process;
 
 use docopt::Docopt;
+use failure::{Error, ResultExt};
 
 const USAGE: &'static str = "
 Converts a wasm file to an ES6 JS module
@@ -42,38 +46,56 @@ fn main() {
     let args: Args = Docopt::new(USAGE)
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
+    let err = match rmain(&args) {
+        Ok(()) => return,
+        Err(e) => e,
+    };
+    println!("error: {}", err);
+    for cause in err.causes().skip(1) {
+        println!("\tcaused by: {}", cause);
+    }
+    process::exit(1);
+}
 
+fn rmain(args: &Args) -> Result<(), Error> {
     if !args.flag_base64 && !args.flag_fetch.is_some() {
-        panic!("unfortunately only works right now with base64 or fetch");
+        bail!("unfortunately only works right now with base64 or fetch");
     }
 
     let mut wasm = Vec::new();
-    File::open(&args.arg_input).expect("failed to open input")
-        .read_to_end(&mut wasm).expect("failed to read input");
+    File::open(&args.arg_input)
+        .and_then(|mut f| f.read_to_end(&mut wasm))
+        .with_context(|_| format!("failed to read `{}`", args.arg_input.display()))?;
 
     let object = wasm_bindgen_cli_support::wasm2es6js::Config::new()
         .base64(args.flag_base64)
-        .fetch(args.flag_fetch)
-        .generate(&wasm)
-        .expect("failed to parse wasm");
+        .fetch(args.flag_fetch.clone())
+        .generate(&wasm)?;
 
     if args.flag_typescript {
         if let Some(ref p) = args.flag_output {
             let dst = p.with_extension("d.ts");
-            File::create(dst).expect("failed to create output")
-                .write_all(object.typescript().as_bytes()).expect("failed to write output");
+            let ts = object.typescript();
+            File::create(&dst)
+                .and_then(|mut f| f.write_all(ts.as_bytes()))
+                .with_context(|_| {
+                    format!("failed to write `{}`", dst.display())
+                })?;
         }
     }
 
-    let js = object.js();
+    let js = object.js()?;
 
     match args.flag_output {
         Some(ref p) => {
-            File::create(p).expect("failed to create output")
-                .write_all(js.as_bytes()).expect("failed to write output");
+            File::create(p)
+                .and_then(|mut f| f.write_all(js.as_bytes()))
+                .with_context(|_| format!("failed to write `{}`", p.display()))?;
         }
         None => {
             println!("{}", js);
         }
     }
+
+    Ok(())
 }

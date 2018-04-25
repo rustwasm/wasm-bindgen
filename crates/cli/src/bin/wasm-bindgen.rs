@@ -3,11 +3,15 @@ extern crate wasm_bindgen_cli_support;
 extern crate serde_derive;
 extern crate docopt;
 extern crate wasm_bindgen_shared;
+#[macro_use]
+extern crate failure;
 
 use std::path::PathBuf;
+use std::process;
 
 use docopt::Docopt;
 use wasm_bindgen_cli_support::Bindgen;
+use failure::Error;
 
 const USAGE: &'static str = "
 Generating JS bindings for a wasm file
@@ -53,14 +57,25 @@ fn main() {
         println!("wasm-bindgen {}", wasm_bindgen_shared::version());
         return;
     }
+    let err = match rmain(&args) {
+        Ok(()) => return,
+        Err(e) => e,
+    };
+    println!("error: {}", err);
+    for cause in err.causes().skip(1) {
+        println!("\tcaused by: {}", cause);
+    }
+    process::exit(1);
+}
 
+fn rmain(args: &Args) -> Result<(), Error> {
     let input = match args.arg_input {
-        Some(s) => s,
-        None => panic!("input file expected"),
+        Some(ref s) => s,
+        None => bail!("input file expected"),
     };
 
     let mut b = Bindgen::new();
-    b.input_path(&input)
+    b.input_path(input)
         .nodejs(args.flag_nodejs)
         .browser(args.flag_browser)
         .no_modules(args.flag_no_modules)
@@ -73,8 +88,8 @@ fn main() {
 
     let out_dir = match args.flag_out_dir {
         Some(ref p) => p,
-        None => panic!("the `--out-dir` argument is now required"),
+        None => bail!("the `--out-dir` argument is now required"),
     };
 
-    b.generate(out_dir).expect("failed to generate bindings");
+    b.generate(out_dir)
 }

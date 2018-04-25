@@ -1,7 +1,7 @@
-use super::Context;
-use descriptor::{Descriptor, Function};
+use failure::Error;
 
-use super::{indent, Js2Rust};
+use descriptor::{Descriptor, Function};
+use super::{indent, Context, Js2Rust};
 
 /// Helper struct for manfuacturing a shim in JS used to translate Rust types to
 /// JS, then invoking an imported JS function.
@@ -64,15 +64,15 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
     /// Generates all bindings necessary for the signature in `Function`,
     /// creating necessary argument conversions and return value processing.
-    pub fn process(&mut self, function: &Function) -> &mut Self {
+    pub fn process(&mut self, function: &Function) -> Result<&mut Self, Error> {
         for arg in function.arguments.iter() {
-            self.argument(arg);
+            self.argument(arg)?;
         }
-        self.ret(&function.ret);
-        self
+        self.ret(&function.ret)?;
+        Ok(self)
     }
 
-    fn argument(&mut self, arg: &Descriptor) {
+    fn argument(&mut self, arg: &Descriptor) -> Result<(), Error> {
         let i = self.arg_idx;
         self.arg_idx += 1;
 
@@ -80,7 +80,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
         if let Some(ty) = arg.vector_kind() {
             let f = self.cx.expose_get_vector_from_wasm(ty);
-            self.cx.expose_get_global_argument();
+            self.cx.expose_get_global_argument()?;
             let next_global = self.global_idx();
             self.prelude(&format!("\
                 let len{0} = getGlobalArgument({next_global});\n\
@@ -91,20 +91,20 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 self.prelude(&format!("\
                     wasm.__wbindgen_free(arg{0}, len{0} * {size});\
                 ", i, size = ty.size()));
-                self.cx.require_internal_export("__wbindgen_free");
+                self.cx.require_internal_export("__wbindgen_free")?;
             }
             self.js_arguments.push(format!("v{}", i));
-            return
+            return Ok(())
         }
 
         if let Some(class) = arg.rust_struct() {
             if arg.is_by_ref() {
-                panic!("cannot invoke JS functions with custom ref types yet")
+                bail!("cannot invoke JS functions with custom ref types yet")
             }
             let assign = format!("let c{0} = {1}.__construct(arg{0});", i, class);
             self.prelude(&assign);
             self.js_arguments.push(format!("c{}", i));
-            return
+            return Ok(())
         }
 
         if let Some((f, mutable)) = arg.stack_closure() {
@@ -120,10 +120,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 }
                 builder
                     .rust_argument("this.b")
-                    .process(f)
+                    .process(f)?
                     .finish("function", "this.f")
             };
-            self.cx.expose_get_global_argument();
+            self.cx.expose_get_global_argument()?;
             self.cx.function_table_needed = true;
             let next_global = self.global_idx();
             self.global_idx();
@@ -135,7 +135,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ", i, js = js, next_global = next_global));
             self.finally(&format!("cb{0}.a = cb{0}.b = 0;", i));
             self.js_arguments.push(format!("cb{0}.bind(cb{0})", i));
-            return
+            return Ok(())
         }
 
         if let Some(closure) = arg.ref_closure() {
@@ -151,10 +151,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 }
                 builder
                     .rust_argument("this.b")
-                    .process(&closure.function)
+                    .process(&closure.function)?
                     .finish("function", "this.f")
             };
-            self.cx.expose_get_global_argument();
+            self.cx.expose_get_global_argument()?;
             self.cx.expose_uint32_memory();
             self.cx.expose_add_heap_object();
             self.cx.function_table_needed = true;
@@ -181,7 +181,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ", i, indent(&reset_idx)));
             self.cx.expose_get_object();
             self.js_arguments.push(format!("getObject(idx{})", i));
-            return
+            return Ok(())
         }
 
         let invoc_arg = match *arg {
@@ -195,36 +195,37 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 self.cx.expose_get_object();
                 format!("getObject(arg{})", i)
             }
-            _ => panic!("unimplemented argument type in imported function: {:?}", arg),
+            _ => bail!("unimplemented argument type in imported function: {:?}", arg),
         };
         self.js_arguments.push(invoc_arg);
+        Ok(())
     }
 
-    fn ret(&mut self, ret: &Option<Descriptor>) {
+    fn ret(&mut self, ret: &Option<Descriptor>) -> Result<(), Error> {
         let ty = match *ret {
             Some(ref t) => t,
             None => {
                 self.ret_expr = "JS;".to_string();
-                return
+                return Ok(())
             }
         };
         if ty.is_by_ref() {
-            panic!("cannot return a reference from JS to Rust")
+            bail!("cannot return a reference from JS to Rust")
         }
         if let Some(ty) = ty.vector_kind() {
-            let f = self.cx.pass_to_wasm_function(ty);
+            let f = self.cx.pass_to_wasm_function(ty)?;
             self.cx.expose_uint32_memory();
-            self.cx.expose_set_global_argument();
+            self.cx.expose_set_global_argument()?;
             self.ret_expr = format!("\
                 const [retptr, retlen] = {}(JS);\n\
                 setGlobalArgument(retlen, 0);\n\
                 return retptr;\n\
             ", f);
-            return
+            return Ok(())
         }
         if ty.is_number() {
             self.ret_expr = "return JS;".to_string();
-            return
+            return Ok(())
         }
         self.ret_expr = match *ty {
             Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
@@ -232,8 +233,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 self.cx.expose_add_heap_object();
                 "return addHeapObject(JS);".to_string()
             }
-            _ => panic!("unimplemented return from JS to Rust: {:?}", ty),
-        }
+            _ => bail!("unimplemented return from JS to Rust: {:?}", ty),
+        };
+        Ok(())
     }
 
     pub fn finish(&self, invoc: &str) -> String {

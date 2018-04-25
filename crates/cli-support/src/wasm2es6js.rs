@@ -3,8 +3,7 @@ extern crate base64;
 use std::collections::HashSet;
 
 use parity_wasm::elements::*;
-
-use super::Error;
+use failure::Error;
 
 pub struct Config {
     base64: bool,
@@ -37,11 +36,9 @@ impl Config {
 
     pub fn generate(&mut self, wasm: &[u8]) -> Result<Output, Error> {
         if !self.base64 && !self.fetch_path.is_some() {
-            panic!("the option --base64 or --fetch is required");
+            bail!("the option --base64 or --fetch is required");
         }
-        let module = deserialize_buffer(wasm).map_err(|e| {
-            ::Error(format!("{:?}", e))
-        })?;
+        let module = deserialize_buffer(wasm)?;
         Ok(Output {
             module,
             base64: self.base64,
@@ -110,7 +107,7 @@ impl Output {
         return exports
     }
 
-    pub fn js(self) -> String {
+    pub fn js(self) -> Result<String, Error> {
         let mut js_imports = String::new();
         let mut exports = String::new();
         let mut imports = String::new();
@@ -122,13 +119,13 @@ impl Output {
                 match *entry.external() {
                     External::Function(_) => {}
                     External::Table(_) => {
-                        panic!("wasm imports a table which isn't supported yet");
+                        bail!("wasm imports a table which isn't supported yet");
                     }
                     External::Memory(_) => {
-                        panic!("wasm imports memory which isn't supported yet");
+                        bail!("wasm imports memory which isn't supported yet");
                     }
                     External::Global(_) => {
-                        panic!("wasm imports globals which aren't supported yet");
+                        bail!("wasm imports globals which aren't supported yet");
                     }
                 }
 
@@ -221,9 +218,9 @@ impl Output {
                 .then(bytes => {inst})", path = path, inst = inst)
             )
         } else {
-            panic!("the option --base64 or --fetch is required");
+            bail!("the option --base64 or --fetch is required");
         };
-        format!("
+        Ok(format!("
             {js_imports}
             let wasm;
             {bytes}
@@ -236,6 +233,6 @@ impl Output {
             js_imports = js_imports,
             exports = exports,
             mem_export = if export_mem { "export let memory;" } else { "" },
-        )
+        ))
     }
 }
