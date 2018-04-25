@@ -17,7 +17,8 @@ test = false
 doctest = false
 
 [features]
-default = ["std"]
+default = ["spans", "std"]
+spans = ["wasm-bindgen-macro/spans"]
 std = []
 
 [dependencies]

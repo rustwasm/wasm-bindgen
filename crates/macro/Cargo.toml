@@ -13,10 +13,13 @@ Definition of the `#[wasm_bindgen]` attribute, an internal dependency
 [lib]
 proc-macro = true
 
+[features]
+spans = ["proc-macro2/nightly", "wasm-bindgen-backend/spans"]
+
 [dependencies]
 syn = { version = '0.13', features = ['full'] }
 quote = '0.5'
-proc-macro2 = { version = "0.3", features = ["nightly"] }
+proc-macro2 = "0.3"
 serde_json = "1"
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.5" }
 wasm-bindgen-backend = { path = "../backend", version = "=0.2.5" }
