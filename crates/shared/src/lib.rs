@@ -22,6 +22,7 @@ pub struct Program {
 #[derive(Deserialize, Serialize)]
 pub struct Import {
     pub module: Option<String>,
+    pub version: Option<String>,
     pub js_namespace: Option<String>,
     pub kind: ImportKind,
 }

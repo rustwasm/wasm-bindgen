@@ -1,5 +1,7 @@
 extern crate parity_wasm;
 extern crate wasm_bindgen_shared as shared;
+#[macro_use]
+extern crate serde_derive;
 extern crate serde_json;
 extern crate wasm_gc;
 extern crate wasmi;
@@ -131,6 +133,7 @@ impl Bindgen {
                 config: &self,
                 module: &mut module,
                 function_table_needed: false,
+                module_versions: Default::default(),
                 run_descriptor: &|name| {
                     let mut v = MyExternals(Vec::new());
                     let ret = instance
