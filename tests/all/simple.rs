@@ -216,7 +216,7 @@ fn no_std() {
 
             use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen]
+            #[wasm_bindgen(module = "./foo")]
             extern {
                 fn test(a: &str);
 
@@ -236,6 +236,12 @@ fn no_std() {
             export function test() {
                 // mostly just testing the project compiles here
                 wasm.foo(1);
+            }
+        "#)
+        .file("foo.js", r#"
+            export class Js {
+                init() {
+                }
             }
         "#)
         .test();

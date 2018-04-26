@@ -633,6 +633,15 @@ impl<'a> Context<'a> {
         self.global(&format!("
             let stack = [];
         "));
+        if self.config.debug {
+            self.export("assertStackEmpty", "
+                function() {
+                    if (stack.length === 0)
+                        return;
+                    throw new Error('stack is not currently empty');
+                }
+            ");
+        }
     }
 
     fn expose_global_slab(&mut self) {
@@ -640,6 +649,17 @@ impl<'a> Context<'a> {
             return;
         }
         self.global(&format!("let slab = [];"));
+        if self.config.debug {
+            self.export("assertSlabEmpty", "
+                function() {
+                    for (let i = 0; i < slab.length; i++) {
+                        if (typeof(slab[i]) === 'number')
+                            continue;
+                        throw new Error('slab is not currently empty');
+                    }
+                }
+            ");
+        }
     }
 
     fn expose_global_slab_next(&mut self) {
@@ -882,14 +902,14 @@ impl<'a> Context<'a> {
             return;
         }
         self.expose_get_array_u32_from_wasm();
-        self.expose_get_object();
+        self.expose_take_object();
         self.global(&format!("
             function getArrayJsValueFromWasm(ptr, len) {{
                 const mem = getUint32Memory();
                 const slice = mem.slice(ptr / 4, ptr / 4 + len);
                 const result = [];
                 for (let i = 0; i < slice.length; i++) {{
-                    result.push(getObject(slice[i]))
+                    result.push(takeObject(slice[i]))
                 }}
                 return result;
             }}

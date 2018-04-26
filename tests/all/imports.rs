@@ -283,6 +283,7 @@ fn free_imports() {
 #[test]
 fn import_a_field() {
     project()
+        .debug(false)
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 

@@ -48,11 +48,18 @@ fn project() -> Project {
 
             ("run.js".to_string(), r#"
                 import * as process from "process";
+                let wasm = import('./out');
 
                 const test = import("./test");
 
-                test.then(test => {
+                Promise.all([test, wasm]).then(results => {
+                  let [test, wasm] = results;
                   test.test();
+
+                  if (wasm.assertStackEmpty)
+                    wasm.assertStackEmpty();
+                  if (wasm.assertSlabEmpty)
+                    wasm.assertSlabEmpty();
                 }).catch(error => {
                   console.error(error);
                   process.exit(1);
