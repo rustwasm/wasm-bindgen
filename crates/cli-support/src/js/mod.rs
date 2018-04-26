@@ -225,7 +225,6 @@ impl<'a> Context<'a> {
                 Ok(format!("
                     function(ptr, len) {{
                         let a;
-                        console.log(ptr, len);
                         if (ptr === 0) {{
                             a = Symbol();
                         }} else {{
@@ -889,8 +888,8 @@ impl<'a> Context<'a> {
                 const mem = getUint32Memory();
                 const slice = mem.slice(ptr / 4, ptr / 4 + len);
                 const result = [];
-                for (ptr in slice) {{
-                    result.push(getObject(ptr))
+                for (let i = 0; i < slice.length; i++) {{
+                    result.push(getObject(slice[i]))
                 }}
                 return result;
             }}

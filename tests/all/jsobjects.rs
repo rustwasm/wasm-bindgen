@@ -210,3 +210,37 @@ fn returning_vector() {
         "#)
         .test();
 }
+
+#[test]
+fn another_vector_return() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+
+            #[wasm_bindgen]
+            pub fn get_array() -> Vec<JsValue> {
+                vec![
+                    JsValue::from(1),
+                    JsValue::from(2),
+                    JsValue::from(3),
+                    JsValue::from(4),
+                    JsValue::from(5),
+                    JsValue::from(6),
+                ]
+            }
+        "#)
+        .file("test.ts", r#"
+            import { get_array } from "./out";
+            import * as assert from "assert";
+
+            export function test() {
+                assert.deepStrictEqual(get_array(), [1, 2, 3, 4, 5, 6]);
+            }
+        "#)
+        .test();
+}
