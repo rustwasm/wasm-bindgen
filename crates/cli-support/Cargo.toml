@@ -13,10 +13,10 @@ Shared support for the wasm-bindgen-cli package, an internal dependency
 [dependencies]
 base64 = "0.9"
 failure = "0.1"
-parity-wasm = "0.27"
+parity-wasm = "0.28"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
 wasm-bindgen-shared = { path = "../shared", version = '=0.2.5' }
 wasm-gc-api = "0.1"
-wasmi = { version = "0.1", features = ["opt-in-32bit"] }
+wasmi = "0.2"

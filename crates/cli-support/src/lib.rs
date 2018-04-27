@@ -11,7 +11,7 @@ extern crate failure;
 use std::collections::BTreeSet;
 use std::fmt;
 use std::fs::File;
-use std::io::Write;
+use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
 use failure::{Error, ResultExt};
@@ -96,7 +96,11 @@ impl Bindgen {
             None => bail!("must have a path input for now"),
         };
         let stem = input.file_stem().unwrap().to_str().unwrap();
-        let mut module = parity_wasm::deserialize_file(input)
+        let mut contents = Vec::new();
+        File::open(&input)
+            .and_then(|mut f| f.read_to_end(&mut contents))
+            .with_context(|_| format!("failed to read `{}`", input.display()))?;
+        let mut module = parity_wasm::deserialize_buffer::<Module>(&contents)
             .with_context(|_| "failed to parse input file as wasm")?;
         let programs = extract_programs(&mut module)
             .with_context(|_| "failed to extract wasm-bindgen custom sections")?;
@@ -114,7 +118,7 @@ impl Bindgen {
         // This means that whenever we encounter an import or export we'll
         // execute a shim function which informs us about its type so we can
         // then generate the appropriate bindings.
-        let instance = wasmi::Module::from_parity_wasm_module(module.clone())
+        let instance = wasmi::Module::from_buffer(&contents)
             .with_context(|_| "failed to create wasmi module")?;
         let instance = wasmi::ModuleInstance::new(&instance, &MyResolver)
             .with_context(|_| "failed to instantiate wasm module")?;
@@ -305,8 +309,8 @@ impl wasmi::ImportResolver for MyResolver {
         let val = match descriptor.value_type() {
             wasmi::ValueType::I32 => wasmi::RuntimeValue::I32(0),
             wasmi::ValueType::I64 => wasmi::RuntimeValue::I64(0),
-            wasmi::ValueType::F32 => wasmi::RuntimeValue::F32(0.0),
-            wasmi::ValueType::F64 => wasmi::RuntimeValue::F64(0.0),
+            wasmi::ValueType::F32 => wasmi::RuntimeValue::F32(0.0.into()),
+            wasmi::ValueType::F64 => wasmi::RuntimeValue::F64(0.0.into()),
         };
         Ok(wasmi::GlobalInstance::alloc(val, descriptor.is_mutable()))
     }
