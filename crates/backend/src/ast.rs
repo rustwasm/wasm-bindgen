@@ -1,3 +1,4 @@
+use proc_macro2::TokenTree;
 use quote::{ToTokens, Tokens};
 use shared;
 use syn;
@@ -757,7 +758,16 @@ impl BindgenAttrs {
             Some(i) => i,
             None => return BindgenAttrs::default(),
         };
-        syn::parse(attrs.remove(pos).tts.into()).expect("malformed #[wasm_bindgen] attribute")
+        let mut tts = attrs.remove(pos).tts.into_iter();
+        let tt = match tts.next() {
+            Some(TokenTree::Group(d)) => d.stream(),
+            Some(_) => panic!("malformed #[wasm_bindgen] attribute"),
+            None => return BindgenAttrs::default(),
+        };
+        if tts.next().is_some() {
+            panic!("malformed #[wasm_bindgen] attribute");
+        }
+        syn::parse(tt.into()).expect("malformed #[wasm_bindgen] attribute")
     }
 
     fn module(&self) -> Option<&str> {
@@ -859,11 +869,11 @@ impl BindgenAttrs {
 impl syn::synom::Synom for BindgenAttrs {
     named!(parse -> Self, alt!(
         do_parse!(
-            opts: parens!(call!(
+            opts: call!(
                 syn::punctuated::Punctuated::<_, syn::token::Comma>::parse_terminated
-            )) >>
+            ) >>
             (BindgenAttrs {
-                attrs: opts.1.into_iter().collect(),
+                attrs: opts.into_iter().collect(),
             })
         ) => { |s| s }
         |

@@ -109,17 +109,17 @@ impl ToTokens for ast::Struct {
         (quote! {
             impl ::wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
+                    use wasm_bindgen::__wbindgen_if_not_std;
+                    __wbindgen_if_not_std! {
+                        compile_error! {
+                            "exporting a class to JS requires the `std` feature to \
+                             be enabled in the `wasm-bindgen` crate"
+                        }
+                    }
                     use wasm_bindgen::describe::*;
                     inform(RUST_STRUCT);
                     inform(#name_len);
                     #(inform(#name_chars);)*
-                }
-            }
-
-            ::wasm_bindgen::__wbindgen_if_not_std! {
-                compile_error! {
-                    "exporting a class to JS requires the `std` feature to \
-                     be enabled in the `wasm-bindgen` crate"
                 }
             }
 
