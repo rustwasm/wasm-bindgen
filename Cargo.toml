@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen"
-version = "0.2.5"
+version = "0.2.6"
 authors = ["Alex Crichton <alex@alexcrichton.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
@@ -22,10 +22,10 @@ spans = ["wasm-bindgen-macro/spans"]
 std = []
 
 [dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.5" }
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.6" }
 
 [dev-dependencies]
-wasm-bindgen-cli-support = { path = "crates/cli-support", version = '=0.2.5' }
+wasm-bindgen-cli-support = { path = "crates/cli-support", version = '=0.2.6' }
 
 [workspace]
 members = [
