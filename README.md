@@ -550,9 +550,8 @@ some notable options are:
   `window.wasm_bindgen.foo`. Note that the name `wasm_bindgen` can be configured
   with the `--no-modules-global FOO` flag.
 
-* `--typescript` - when passed a `*.d.ts` file will be generated for the
-  generated JS file. This should allow hooking into TypeScript projects to
-  ensure everything still typechecks.
+* `--no-typescript` - by default a `*.d.ts` file is generated for the generated
+  JS file, but this flag will disable generating this TypeScript file.
 
 * `--debug` - generates a bit more JS and wasm in "debug mode" to help catch
   programmer errors, but this output isn't intended to be shipped to production

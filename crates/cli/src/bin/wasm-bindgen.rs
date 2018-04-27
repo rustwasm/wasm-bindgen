@@ -28,7 +28,8 @@ Options:
     --browser                Generate output that only works in a browser
     --no-modules             Generate output that only works in a browser (without modules)
     --no-modules-global VAR  Name of the global variable to initialize
-    --typescript             Output a TypeScript definition file
+    --typescript             Output a TypeScript definition file (on by default)
+    --no-typescript          Don't emit a *.d.ts file
     --debug                  Include otherwise-extraneous debug checks in output
     --no-demangle            Don't demangle Rust symbol names
     -V --version             Print the version number of wasm-bindgen
@@ -40,6 +41,7 @@ struct Args {
     flag_browser: bool,
     flag_no_modules: bool,
     flag_typescript: bool,
+    flag_no_typescript: bool,
     flag_out_dir: Option<PathBuf>,
     flag_debug: bool,
     flag_version: bool,
@@ -74,6 +76,8 @@ fn rmain(args: &Args) -> Result<(), Error> {
         None => bail!("input file expected"),
     };
 
+    let typescript = args.flag_typescript || !args.flag_no_typescript;
+
     let mut b = Bindgen::new();
     b.input_path(input)
         .nodejs(args.flag_nodejs)
@@ -81,7 +85,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .no_modules(args.flag_no_modules)
         .debug(args.flag_debug)
         .demangle(!args.flag_no_demangle)
-        .typescript(args.flag_typescript);
+        .typescript(typescript);
     if let Some(ref name) = args.flag_no_modules_global {
         b.no_modules_global(name);
     }
