@@ -83,213 +83,230 @@ impl<'a> Context<'a> {
             }
         }
 
-        bail!("\n\nthe exported function `{}` is required to generate bindings \
+        bail!("the exported function `{}` is required to generate bindings \
                but it was not found in the wasm file, perhaps the `std` feature \
-               of the `wasm-bindgen` crate needs to be enabled?\n\n",
+               of the `wasm-bindgen` crate needs to be enabled?",
               name);
     }
 
     pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
+        self.write_classes()?;
+
+        self.bind("__wbindgen_object_clone_ref", &|me| {
+            me.expose_add_heap_object();
+            me.expose_get_object();
+            let bump_cnt = if me.config.debug {
+                String::from("
+                    if (typeof(val) === 'number')
+                        throw new Error('corrupt slab');
+                    val.cnt += 1;
+                ")
+            } else {
+                String::from("val.cnt += 1;")
+            };
+            Ok(format!("
+                function(idx) {{
+                    // If this object is on the stack promote it to the heap.
+                    if ((idx & 1) === 1)
+                        return addHeapObject(getObject(idx));
+
+                    // Otherwise if the object is on the heap just bump the
+                    // refcount and move on
+                    const val = slab[idx >> 1];
+                    {}
+                    return idx;
+                }}
+            ", bump_cnt))
+        })?;
+
+        self.bind("__wbindgen_object_drop_ref", &|me| {
+            me.expose_drop_ref();
+            Ok("function(i) { dropRef(i); }".to_string())
+        })?;
+
+        self.bind("__wbindgen_string_new", &|me| {
+            me.expose_add_heap_object();
+            me.expose_get_string_from_wasm();
+            Ok(String::from("
+                function(p, l) {
+                    return addHeapObject(getStringFromWasm(p, l));
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_number_new", &|me| {
+            me.expose_add_heap_object();
+            Ok(String::from("function(i) { return addHeapObject(i); }"))
+        })?;
+
+        self.bind("__wbindgen_number_get", &|me| {
+            me.expose_get_object();
+            me.expose_uint8_memory();
+            Ok(format!("
+                function(n, invalid) {{
+                    let obj = getObject(n);
+                    if (typeof(obj) === 'number')
+                        return obj;
+                    getUint8Memory()[invalid] = 1;
+                    return 0;
+                }}
+            "))
+        })?;
+
+        self.bind("__wbindgen_undefined_new", &|me| {
+            me.expose_add_heap_object();
+            Ok(String::from("function() { return addHeapObject(undefined); }"))
+        })?;
+
+        self.bind("__wbindgen_null_new", &|me| {
+            me.expose_add_heap_object();
+            Ok(String::from("
+                function() {
+                    return addHeapObject(null);
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_is_null", &|me| {
+            me.expose_get_object();
+            Ok(String::from("
+                function(idx) {
+                    return getObject(idx) === null ? 1 : 0;
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_is_undefined", &|me| {
+            me.expose_get_object();
+            Ok(String::from("
+                function(idx) {
+                    return getObject(idx) === undefined ? 1 : 0;
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_boolean_new", &|me| {
+            me.expose_add_heap_object();
+            Ok(String::from("
+                function(v) {
+                    return addHeapObject(v === 1);
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_boolean_get", &|me| {
+            me.expose_get_object();
+            Ok(String::from("
+                function(i) {
+                    let v = getObject(i);
+                    if (typeof(v) === 'boolean') {
+                        return v ? 1 : 0;
+                    } else {
+                        return 2;
+                    }
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_symbol_new", &|me| {
+            me.expose_get_string_from_wasm();
+            me.expose_add_heap_object();
+            Ok(format!("
+                function(ptr, len) {{
+                    let a;
+                    if (ptr === 0) {{
+                        a = Symbol();
+                    }} else {{
+                        a = Symbol(getStringFromWasm(ptr, len));
+                    }}
+                    return addHeapObject(a);
+                }}
+            "))
+        })?;
+
+        self.bind("__wbindgen_is_symbol", &|me| {
+            me.expose_get_object();
+            Ok(String::from("
+                function(i) {
+                    return typeof(getObject(i)) === 'symbol' ? 1 : 0;
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_string_get", &|me| {
+            me.expose_pass_string_to_wasm()?;
+            me.expose_get_object();
+            me.expose_uint32_memory();
+            Ok(String::from("
+                function(i, len_ptr) {
+                    let obj = getObject(i);
+                    if (typeof(obj) !== 'string')
+                        return 0;
+                    const [ptr, len] = passStringToWasm(obj);
+                    getUint32Memory()[len_ptr / 4] = len;
+                    return ptr;
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_cb_drop", &|me| {
+            me.expose_drop_ref();
+            Ok(String::from("
+                function(i) {
+                    let obj = getObject(i).original;
+                    obj.a = obj.b = 0;
+                    dropRef(i);
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_cb_forget", &|me| {
+            me.expose_drop_ref();
+            Ok(String::from("
+                function(i) {
+                    dropRef(i);
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_json_parse", &|me| {
+            me.expose_add_heap_object();
+            me.expose_get_string_from_wasm();
+            Ok(String::from("
+                function(ptr, len) {
+                    return addHeapObject(JSON.parse(getStringFromWasm(ptr, len)));
+                }
+            "))
+        })?;
+
+        self.bind("__wbindgen_json_serialize", &|me| {
+            me.expose_get_object();
+            me.expose_pass_string_to_wasm()?;
+            me.expose_uint32_memory();
+            Ok(String::from("
+                function(idx, ptrptr) {
+                    const [ptr, len] = passStringToWasm(JSON.stringify(getObject(idx)));
+                    getUint32Memory()[ptrptr / 4] = ptr;
+                    return len;
+                }
+            "))
+        })?;
+
         self.unexport_unused_internal_exports();
         self.gc()?;
-        self.write_classes()?;
-        {
-            let mut bind = |name: &str, f: &Fn(&mut Self) -> Result<String, Error>|
-                -> Result<(), Error>
-            {
-                if !self.wasm_import_needed(name) {
-                    return Ok(());
-                }
-                let contents = f(self)?;
-                self.export(name, &contents);
-                Ok(())
-            };
 
-            bind("__wbindgen_object_clone_ref", &|me| {
-                me.expose_add_heap_object();
-                me.expose_get_object();
-                let bump_cnt = if me.config.debug {
-                    String::from("
-                        if (typeof(val) === 'number')
-                            throw new Error('corrupt slab');
-                        val.cnt += 1;
-                    ")
-                } else {
-                    String::from("val.cnt += 1;")
-                };
-                Ok(format!("
-                    function(idx) {{
-                        // If this object is on the stack promote it to the heap.
-                        if ((idx & 1) === 1)
-                            return addHeapObject(getObject(idx));
-
-                        // Otherwise if the object is on the heap just bump the
-                        // refcount and move on
-                        const val = slab[idx >> 1];
-                        {}
-                        return idx;
-                    }}
-                ", bump_cnt))
-            })?;
-
-            bind("__wbindgen_object_drop_ref", &|me| {
-                me.expose_drop_ref();
-                Ok("function(i) { dropRef(i); }".to_string())
-            })?;
-
-            bind("__wbindgen_string_new", &|me| {
-                me.expose_add_heap_object();
-                me.expose_get_string_from_wasm();
-                Ok(String::from("
-                    function(p, l) {
-                        return addHeapObject(getStringFromWasm(p, l));
-                    }
-                "))
-            })?;
-
-            bind("__wbindgen_number_new", &|me| {
-                me.expose_add_heap_object();
-                Ok(String::from("function(i) { return addHeapObject(i); }"))
-            })?;
-
-            bind("__wbindgen_number_get", &|me| {
-                me.expose_get_object();
-                me.expose_uint8_memory();
-                Ok(format!("
-                    function(n, invalid) {{
-                        let obj = getObject(n);
-                        if (typeof(obj) === 'number')
-                            return obj;
-                        getUint8Memory()[invalid] = 1;
-                        return 0;
-                    }}
-                "))
-            })?;
-
-            bind("__wbindgen_undefined_new", &|me| {
-                me.expose_add_heap_object();
-                Ok(String::from("function() { return addHeapObject(undefined); }"))
-            })?;
-
-            bind("__wbindgen_null_new", &|me| {
-                me.expose_add_heap_object();
-                Ok(String::from("
-                    function() {
-                        return addHeapObject(null);
-                    }
-                "))
-            })?;
-
-            bind("__wbindgen_is_null", &|me| {
-                me.expose_get_object();
-                Ok(String::from("
-                    function(idx) {
-                        return getObject(idx) === null ? 1 : 0;
-                    }
-                "))
-            })?;
-
-            bind("__wbindgen_is_undefined", &|me| {
-                me.expose_get_object();
-                Ok(String::from("
-                    function(idx) {
-                        return getObject(idx) === undefined ? 1 : 0;
-                    }
-                "))
-            })?;
-
-            bind("__wbindgen_boolean_new", &|me| {
-                me.expose_add_heap_object();
-                Ok(String::from("
-                    function(v) {
-                        return addHeapObject(v === 1);
-                    }
-                "))
-            })?;
-
-            bind("__wbindgen_boolean_get", &|me| {
-                me.expose_get_object();
-                Ok(String::from("
-                    function(i) {
-                        let v = getObject(i);
-                        if (typeof(v) === 'boolean') {
-                            return v ? 1 : 0;
-                        } else {
-                            return 2;
-                        }
-                    }
-                "))
-            })?;
-
-            bind("__wbindgen_symbol_new", &|me| {
-                me.expose_get_string_from_wasm();
-                me.expose_add_heap_object();
-                Ok(format!("
-                    function(ptr, len) {{
-                        let a;
-                        if (ptr === 0) {{
-                            a = Symbol();
-                        }} else {{
-                            a = Symbol(getStringFromWasm(ptr, len));
-                        }}
-                        return addHeapObject(a);
-                    }}
-                "))
-            })?;
-
-            bind("__wbindgen_is_symbol", &|me| {
-                me.expose_get_object();
-                Ok(String::from("
-                    function(i) {
-                        return typeof(getObject(i)) === 'symbol' ? 1 : 0;
-                    }
-                "))
-            })?;
-
-            bind("__wbindgen_throw", &|me| {
-                me.expose_get_string_from_wasm();
-                Ok(format!("
-                    function(ptr, len) {{
-                        throw new Error(getStringFromWasm(ptr, len));
-                    }}
-                "))
-            })?;
-
-            bind("__wbindgen_string_get", &|me| {
-                me.expose_pass_string_to_wasm()?;
-                me.expose_get_object();
-                me.expose_uint32_memory();
-                Ok(String::from("
-                    function(i, len_ptr) {
-                        let obj = getObject(i);
-                        if (typeof(obj) !== 'string')
-                            return 0;
-                        const [ptr, len] = passStringToWasm(obj);
-                        getUint32Memory()[len_ptr / 4] = len;
-                        return ptr;
-                    }
-                "))
-            })?;
-
-            bind("__wbindgen_cb_drop", &|me| {
-                me.expose_drop_ref();
-                Ok(String::from("
-                    function(i) {
-                        let obj = getObject(i).original;
-                        obj.a = obj.b = 0;
-                        dropRef(i);
-                    }
-                "))
-            })?;
-            bind("__wbindgen_cb_forget", &|me| {
-                me.expose_drop_ref();
-                Ok(String::from("
-                    function(i) {
-                        dropRef(i);
-                    }
-                "))
-            })?;
-        }
+        // Note that it's important `throw` comes last *after* we gc. The
+        // `__wbindgen_malloc` function may call this but we only want to
+        // generate code for this if it's actually live (and __wbindgen_malloc
+        // isn't gc'd).
+        self.bind("__wbindgen_throw", &|me| {
+            me.expose_get_string_from_wasm();
+            Ok(format!("
+                function(ptr, len) {{
+                    throw new Error(getStringFromWasm(ptr, len));
+                }}
+            "))
+        })?;
 
         self.rewrite_imports(module_name);
 
@@ -350,6 +367,20 @@ impl<'a> Context<'a> {
         }
 
         Ok((js, self.typescript.clone()))
+    }
+
+    fn bind(&mut self, name: &str, f: &Fn(&mut Self) -> Result<String, Error>)
+        -> Result<(), Error>
+    {
+        if !self.wasm_import_needed(name) {
+            return Ok(());
+        }
+        let contents = f(self)
+            .with_context(|_| {
+                format!("failed to generate internal JS function `{}`", name)
+            })?;
+        self.export(name, &contents);
+        Ok(())
     }
 
     fn write_classes(&mut self) -> Result<(), Error> {

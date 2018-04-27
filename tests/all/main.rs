@@ -16,6 +16,7 @@ struct Project {
     debug: bool,
     node: bool,
     no_std: bool,
+    serde: bool,
 }
 
 fn project() -> Project {
@@ -27,6 +28,7 @@ fn project() -> Project {
         debug: true,
         node: false,
         no_std: false,
+        serde: false,
         files: vec![
             ("Cargo.toml".to_string(), format!(r#"
                 [package]
@@ -151,6 +153,23 @@ impl Project {
         self
     }
 
+    fn serde(&mut self, serde: bool) -> &mut Project {
+        self.serde = serde;
+        self
+    }
+
+    fn depend(&mut self, dep: &str) -> &mut Project {
+        {
+            let cargo_toml = self.files
+                .iter_mut()
+                .find(|f| f.0 == "Cargo.toml")
+                .expect("should have Cargo.toml file!");
+            cargo_toml.1.push_str(dep);
+            cargo_toml.1.push_str("\n");
+        }
+        self
+    }
+
     fn add_local_dependency(&mut self, name: &str, path: &str) -> &mut Project {
         {
             let cargo_toml = self.files
@@ -173,10 +192,12 @@ impl Project {
                 .expect("should have Cargo.toml file!");
             cargo_toml.1.push_str("wasm-bindgen = { path = '");
             cargo_toml.1.push_str(env!("CARGO_MANIFEST_DIR"));
+            cargo_toml.1.push_str("'");
             if self.no_std {
-                cargo_toml.1.push_str("', default-features = false");
-            } else {
-                cargo_toml.1.push_str("'");
+                cargo_toml.1.push_str(", default-features = false");
+            }
+            if self.serde {
+                cargo_toml.1.push_str(", features = ['serde-serialize']");
             }
             cargo_toml.1.push_str(" }\n");
         }
@@ -207,13 +228,18 @@ impl Project {
         let as_a_module = root.join("out.wasm");
         fs::copy(&out, &as_a_module).unwrap();
 
-        cli::Bindgen::new()
+        let res = cli::Bindgen::new()
             .input_path(&as_a_module)
             .typescript(true)
             .nodejs(self.node)
             .debug(self.debug)
-            .generate(&root)
-            .expect("failed to run bindgen");
+            .generate(&root);
+        if let Err(e) = res {
+            for e in e.causes() {
+                println!("- {}", e);
+            }
+            panic!("failed");
+        }
 
         let mut wasm = Vec::new();
         File::open(root.join("out_bg.wasm")).unwrap()
