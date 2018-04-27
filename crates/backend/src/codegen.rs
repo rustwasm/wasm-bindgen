@@ -155,6 +155,7 @@ impl ToTokens for ast::Struct {
             impl ::wasm_bindgen::__rt::core::convert::From<#name> for
                 ::wasm_bindgen::JsValue
             {
+                #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 fn from(value: #name) -> Self {
                     let ptr = ::wasm_bindgen::convert::IntoWasmAbi::into_abi(
                         value,
@@ -174,8 +175,14 @@ impl ToTokens for ast::Struct {
                             )
                     }
                 }
+
+                #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+                fn from(_value: #name) -> Self {
+                    panic!("cannot convert to JsValue outside of the wasm target")
+                }
             }
 
+            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[no_mangle]
             pub unsafe extern fn #free_fn(ptr: u32) {
                 <#name as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
@@ -229,6 +236,7 @@ impl ToTokens for ast::StructField {
         let desc = syn::Ident::from(format!("__wbindgen_describe_{}", getter));
         (quote! {
             #[no_mangle]
+            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub unsafe extern fn #getter(js: u32)
                 -> <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
             {
@@ -260,6 +268,7 @@ impl ToTokens for ast::StructField {
 
         (quote! {
             #[no_mangle]
+            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub unsafe extern fn #setter(
                 js: u32,
                 val: <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi,
@@ -395,6 +404,7 @@ impl ToTokens for ast::Export {
         let tokens = quote! {
             #[export_name = #export_name]
             #[allow(non_snake_case)]
+            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub extern fn #generated_name(#(#args),*) #ret_ty {
                 ::wasm_bindgen::__rt::link_this_library();
                 let #ret = {
@@ -424,6 +434,7 @@ impl ToTokens for ast::Export {
             // this, but the tl;dr; is that this is stripped from the final wasm
             // binary along with anything it references.
             #[no_mangle]
+            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub extern fn #descriptor_name() {
                 use wasm_bindgen::describe::*;
                 inform(FUNCTION);
@@ -640,6 +651,7 @@ impl ToTokens for ast::ImportFunction {
             .iter()
             .skip(if is_method { 1 } else { 0 })
             .collect::<Vec<_>>();
+        let arguments = &arguments[..];
 
         let me = if is_method {
             quote! { &self, }
@@ -650,6 +662,7 @@ impl ToTokens for ast::ImportFunction {
         let invocation = quote! {
             #(#attrs)*
             #[allow(bad_style)]
+            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #vis extern #fn_token #rust_name(#me #(#arguments),*) #ret {
                 ::wasm_bindgen::__rt::link_this_library();
                 #[wasm_import_module = "__wbindgen_placeholder__"]
@@ -666,6 +679,14 @@ impl ToTokens for ast::ImportFunction {
                     #exceptional_ret
                     #convert_ret
                 }
+            }
+
+            #(#attrs)*
+            #[allow(bad_style, unused_variables)]
+            #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+            #vis extern #fn_token #rust_name(#me #(#arguments),*) #ret {
+                panic!("cannot call wasm-bindgen imported functions on \
+                        non-wasm targets");
             }
 
         };
@@ -766,6 +787,7 @@ impl ToTokens for ast::ImportStatic {
         (quote! {
             #[allow(bad_style)]
             #vis static #name: ::wasm_bindgen::JsStatic<#ty> = {
+                #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 fn init() -> #ty {
                     #[wasm_import_module = "__wbindgen_placeholder__"]
                     extern {
@@ -778,6 +800,10 @@ impl ToTokens for ast::ImportStatic {
                         )
 
                     }
+                }
+                #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+                fn init() -> #ty {
+                    panic!("cannot access imported statics on non-wasm targets")
                 }
                 static mut _VAL: ::wasm_bindgen::__rt::core::cell::UnsafeCell<Option<#ty>> =
                     ::wasm_bindgen::__rt::core::cell::UnsafeCell::new(None);

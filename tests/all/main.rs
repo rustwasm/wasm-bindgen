@@ -17,6 +17,8 @@ struct Project {
     node: bool,
     no_std: bool,
     serde: bool,
+    rlib: bool,
+    deps: Vec<String>,
 }
 
 fn project() -> Project {
@@ -29,23 +31,9 @@ fn project() -> Project {
         node: false,
         no_std: false,
         serde: false,
+        rlib: false,
+        deps: Vec::new(),
         files: vec![
-            ("Cargo.toml".to_string(), format!(r#"
-                [package]
-                name = "test{}"
-                version = "0.0.1"
-                authors = []
-
-                [workspace]
-
-                [lib]
-                crate-type = ["cdylib"]
-
-                # XXX: It is important that `[dependencies]` is the last section
-                # here, so that `add_local_dependency` functions correctly!
-                [dependencies]
-            "#, IDX.with(|x| *x))),
-
             ("Cargo.lock".to_string(), lockfile),
 
             ("run.js".to_string(), r#"
@@ -158,49 +146,58 @@ impl Project {
         self
     }
 
+    fn rlib(&mut self, rlib: bool) -> &mut Project {
+        self.rlib = rlib;
+        self
+    }
+
     fn depend(&mut self, dep: &str) -> &mut Project {
-        {
-            let cargo_toml = self.files
-                .iter_mut()
-                .find(|f| f.0 == "Cargo.toml")
-                .expect("should have Cargo.toml file!");
-            cargo_toml.1.push_str(dep);
-            cargo_toml.1.push_str("\n");
-        }
+        self.deps.push(dep.to_string());
         self
     }
 
     fn add_local_dependency(&mut self, name: &str, path: &str) -> &mut Project {
-        {
-            let cargo_toml = self.files
-                .iter_mut()
-                .find(|f| f.0 == "Cargo.toml")
-                .expect("should have Cargo.toml file!");
-            cargo_toml.1.push_str(name);
-            cargo_toml.1.push_str(" = { path = '");
-            cargo_toml.1.push_str(path);
-            cargo_toml.1.push_str("' }\n");
-        }
+        self.deps.push(format!("{} = {{ path = '{}' }}", name, path));
         self
     }
 
-    fn test(&mut self) {
-        {
-            let cargo_toml = self.files
-                .iter_mut()
-                .find(|f| f.0 == "Cargo.toml")
-                .expect("should have Cargo.toml file!");
-            cargo_toml.1.push_str("wasm-bindgen = { path = '");
-            cargo_toml.1.push_str(env!("CARGO_MANIFEST_DIR"));
-            cargo_toml.1.push_str("'");
-            if self.no_std {
-                cargo_toml.1.push_str(", default-features = false");
-            }
-            if self.serde {
-                cargo_toml.1.push_str(", features = ['serde-serialize']");
-            }
-            cargo_toml.1.push_str(" }\n");
+    fn crate_name(&self) -> String {
+        format!("test{}", IDX.with(|x| *x))
+    }
+
+    fn build(&mut self) -> (PathBuf, PathBuf) {
+        let mut manifest = format!(r#"
+            [package]
+            name = "test{}"
+            version = "0.0.1"
+            authors = []
+
+            [workspace]
+
+            [lib]
+        "#, IDX.with(|x| *x));
+
+        if !self.rlib {
+            manifest.push_str("crate-type = [\"cdylib\"]\n");
         }
+
+        manifest.push_str("[dependencies]\n");
+        for dep in self.deps.iter() {
+            manifest.push_str(dep);
+            manifest.push_str("\n");
+        }
+        manifest.push_str("wasm-bindgen = { path = '");
+        manifest.push_str(env!("CARGO_MANIFEST_DIR"));
+        manifest.push_str("'");
+        if self.no_std {
+            manifest.push_str(", default-features = false");
+        }
+        if self.serde {
+            manifest.push_str(", features = ['serde-serialize']");
+        }
+        manifest.push_str(" }\n");
+        self.files.push(("Cargo.toml".to_string(), manifest));
+
         let root = root();
         drop(fs::remove_dir_all(&root));
         for &(ref file, ref contents) in self.files.iter() {
@@ -208,9 +205,13 @@ impl Project {
             fs::create_dir_all(dst.parent().unwrap()).unwrap();
             fs::File::create(&dst).unwrap().write_all(contents.as_ref()).unwrap();
         }
-
         let target_dir = root.parent().unwrap() // chop off test name
             .parent().unwrap(); // chop off `generated-tests`
+        (root.clone(), target_dir.to_path_buf())
+    }
+
+    fn test(&mut self) {
+        let (root, target_dir) = self.build();
 
         let mut cmd = Command::new("cargo");
         cmd.arg("build")
@@ -333,3 +334,4 @@ mod non_debug;
 mod simple;
 mod slice;
 mod structural;
+mod non_wasm;
