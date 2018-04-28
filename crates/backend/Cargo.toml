@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-backend"
-version = "0.2.6"
+version = "0.2.7"
 authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/alexcrichton/wasm-bindgen"
@@ -16,6 +16,6 @@ spans = ["proc-macro2/nightly"]
 [dependencies]
 quote = '0.5'
 proc-macro2 = "0.3"
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.6" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.7" }
 syn = { version = '0.13', features = ['full', 'visit-mut'] }
 serde_json = "1.0"
