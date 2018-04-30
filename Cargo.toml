@@ -43,6 +43,7 @@ members = [
   "examples/closures",
   "examples/no_modules",
   "examples/add",
+  "examples/asm.js",
 ]
 
 [profile.release]
