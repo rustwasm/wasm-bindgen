@@ -31,3 +31,7 @@ The examples here are:
   the `wasm-bindgen` CLI tool
 * `add` - an example of generating a tiny wasm binary, one that only adds two
   numbers.
+* `asm.js` - an example of using the `wasm2asm` tool from [binaryen] to convert
+  the generated WebAssembly to normal JS
+
+[binaryen]: https://github.com/WebAssembly/binaryen

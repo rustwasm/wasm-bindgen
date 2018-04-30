@@ -17,6 +17,7 @@ parity-wasm = "0.28"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
+tempfile = "3.0"
 wasm-bindgen-shared = { path = "../shared", version = '=0.2.7' }
 wasm-gc-api = "0.1"
 wasmi = "0.2"
