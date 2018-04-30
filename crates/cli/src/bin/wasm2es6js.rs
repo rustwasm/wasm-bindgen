@@ -50,9 +50,9 @@ fn main() {
         Ok(()) => return,
         Err(e) => e,
     };
-    println!("error: {}", err);
+    eprintln!("error: {}", err);
     for cause in err.causes().skip(1) {
-        println!("\tcaused by: {}", cause);
+        eprintln!("\tcaused by: {}", cause);
     }
     process::exit(1);
 }
