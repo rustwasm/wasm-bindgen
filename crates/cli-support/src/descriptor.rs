@@ -187,6 +187,12 @@ impl Descriptor {
                     _ => return None,
                 }
             }
+            Descriptor::RefMut(ref d) => {
+                match **d {
+                    Descriptor::Slice(ref d) => &**d,
+                    _ => return None,
+                }
+            }
             _ => return None,
         };
         match *inner {
@@ -230,6 +236,13 @@ impl Descriptor {
     pub fn is_by_ref(&self) -> bool {
         match *self {
             Descriptor::Ref(_) |
+            Descriptor::RefMut(_) => true,
+            _ => false,
+        }
+    }
+
+    pub fn is_mut_ref(&self) -> bool {
+        match *self {
             Descriptor::RefMut(_) => true,
             _ => false,
         }

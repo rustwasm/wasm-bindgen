@@ -92,6 +92,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     wasm.__wbindgen_free(arg{0}, len{0} * {size});\
                 ", i, size = ty.size()));
                 self.cx.require_internal_export("__wbindgen_free")?;
+            } else if arg.is_mut_ref() {
+                let f = self.cx.expose_commit_slice_to_wasm(ty)?;
+                self.finally(&format!("{}(arg{i}, v{i});", f, i = i));
             }
             self.js_arguments.push(format!("v{}", i));
             return Ok(())

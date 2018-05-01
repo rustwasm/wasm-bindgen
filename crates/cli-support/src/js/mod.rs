@@ -926,7 +926,7 @@ impl<'a> Context<'a> {
         self.expose_uint8_memory();
         self.global(&format!("
             function getStringFromWasm(ptr, len) {{
-                return cachedDecoder.decode(getUint8Memory().slice(ptr, ptr + len));
+                return cachedDecoder.decode(getUint8Memory().subarray(ptr, ptr + len));
             }}
         "));
     }
@@ -940,7 +940,7 @@ impl<'a> Context<'a> {
         self.global(&format!("
             function getArrayJsValueFromWasm(ptr, len) {{
                 const mem = getUint32Memory();
-                const slice = mem.slice(ptr / 4, ptr / 4 + len);
+                const slice = mem.subarray(ptr / 4, ptr / 4 + len);
                 const result = [];
                 for (let i = 0; i < slice.length; i++) {{
                     result.push(takeObject(slice[i]))
@@ -951,158 +951,154 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_i8_from_wasm(&mut self) {
-        self.expose_uint8_memory();
-        if !self.exposed_globals.insert("get_array_i8_from_wasm") {
-            return;
-        }
-        self.global(&format!("
-            function getArrayI8FromWasm(ptr, len) {{
-                const mem = getUint8Memory();
-                const slice = mem.slice(ptr, ptr + len);
-                return new Int8Array(slice);
-            }}
-        "));
+        self.expose_int8_memory();
+        self.arrayget("getArrayI8FromWasm", "getInt8Memory", 1);
     }
 
     fn expose_get_array_u8_from_wasm(&mut self) {
         self.expose_uint8_memory();
-        if !self.exposed_globals.insert("get_array_u8_from_wasm") {
-            return;
-        }
-        self.global(&format!("
-            function getArrayU8FromWasm(ptr, len) {{
-                const mem = getUint8Memory();
-                const slice = mem.slice(ptr, ptr + len);
-                return new Uint8Array(slice);
-            }}
-        "));
+        self.arrayget("getArrayU8FromWasm", "getUint8Memory", 1);
     }
 
     fn expose_get_array_i16_from_wasm(&mut self) {
-        self.expose_uint16_memory();
-        if !self.exposed_globals.insert("get_array_i16_from_wasm") {
-            return;
-        }
-        self.global(&format!("
-            function getArrayI16FromWasm(ptr, len) {{
-                const mem = getUint16Memory();
-                const slice = mem.slice(ptr / 2, ptr / 2 + len);
-                return new Int16Array(slice);
-            }}
-        "));
+        self.expose_int16_memory();
+        self.arrayget("getArrayI16FromWasm", "getInt16Memory", 2);
     }
 
     fn expose_get_array_u16_from_wasm(&mut self) {
         self.expose_uint16_memory();
-        if !self.exposed_globals.insert("get_array_u16_from_wasm") {
-            return;
-        }
-        self.global(&format!("
-            function getArrayU16FromWasm(ptr, len) {{
-                const mem = getUint16Memory();
-                const slice = mem.slice(ptr / 2, ptr / 2 + len);
-                return new Uint16Array(slice);
-            }}
-        "));
+        self.arrayget("getArrayU16FromWasm", "getUint16Memory", 2);
     }
 
     fn expose_get_array_i32_from_wasm(&mut self) {
-        self.expose_uint32_memory();
-        if !self.exposed_globals.insert("get_array_i32_from_wasm") {
-            return;
-        }
-        self.global(&format!("
-            function getArrayI32FromWasm(ptr, len) {{
-                const mem = getUint32Memory();
-                const slice = mem.slice(ptr / 4, ptr / 4 + len);
-                return new Int32Array(slice);
-            }}
-        "));
+        self.expose_int32_memory();
+        self.arrayget("getArrayI32FromWasm", "getInt32Memory", 4);
     }
 
     fn expose_get_array_u32_from_wasm(&mut self) {
         self.expose_uint32_memory();
-        if !self.exposed_globals.insert("get_array_u32_from_wasm") {
-            return;
-        }
-        self.global(&format!("
-            function getArrayU32FromWasm(ptr, len) {{
-                const mem = getUint32Memory();
-                const slice = mem.slice(ptr / 4, ptr / 4 + len);
-                return new Uint32Array(slice);
-            }}
-        "));
+        self.arrayget("getArrayU32FromWasm", "getUint32Memory", 4);
     }
 
     fn expose_get_array_f32_from_wasm(&mut self) {
-        if !self.exposed_globals.insert("get_array_f32_from_wasm") {
-            return;
-        }
-        self.global(&format!("
-            function getArrayF32FromWasm(ptr, len) {{
-                const mem = new Float32Array(wasm.memory.buffer);
-                const slice = mem.slice(ptr / 4,  ptr / 4 + len);
-                return new Float32Array(slice);
-            }}
-        "));
+        self.expose_f32_memory();
+        self.arrayget("getArrayF32FromWasm", "getFloat32Memory", 4);
     }
 
     fn expose_get_array_f64_from_wasm(&mut self) {
-        if !self.exposed_globals.insert("get_array_f64_from_wasm") {
+        self.expose_f64_memory();
+        self.arrayget("getArrayF64FromWasm", "getFloat64Memory", 8);
+    }
+
+    fn arrayget(&mut self, name: &'static str, mem: &'static str, size: usize) {
+        if !self.exposed_globals.insert(name) {
             return;
         }
         self.global(&format!("
-            function getArrayF64FromWasm(ptr, len) {{
-                const mem = new Float64Array(wasm.memory.buffer);
-                const slice = mem.slice(ptr / 8,  ptr / 8 + len);
-                return new Float64Array(slice);
+            function {name}(ptr, len) {{
+                return {mem}().subarray(ptr / {size}, ptr / {size} + len);
             }}
-        "));
+        ",
+            name = name,
+            mem = mem,
+            size = size,
+        ));
+    }
+
+    fn expose_int8_memory(&mut self) {
+        self.memview("getInt8Memory", "Int8Array");
     }
 
     fn expose_uint8_memory(&mut self) {
-        if !self.exposed_globals.insert("uint8_memory") {
-            return;
-        }
-        self.global(&format!("
-            let cachedUint8Memory = null;
-            function getUint8Memory() {{
-                if (cachedUint8Memory === null ||
-                    cachedUint8Memory.buffer !== wasm.memory.buffer)
-                    cachedUint8Memory = new Uint8Array(wasm.memory.buffer);
-                return cachedUint8Memory;
-            }}
-        "));
+        self.memview("getUint8Memory", "Uint8Array");
+    }
+
+    fn expose_int16_memory(&mut self) {
+        self.memview("getInt16Memory", "Int16Array");
     }
 
     fn expose_uint16_memory(&mut self) {
-        if !self.exposed_globals.insert("uint16_memory") {
-            return;
-        }
-        self.global(&format!("
-            let cachedUint16Memory = null;
-            function getUint16Memory() {{
-                if (cachedUint16Memory === null ||
-                    cachedUint16Memory.buffer !== wasm.memory.buffer)
-                    cachedUint16Memory = new Uint16Array(wasm.memory.buffer);
-                return cachedUint16Memory;
-            }}
-        "));
+        self.memview("getUint16Memory", "Uint16Array");
+    }
+
+    fn expose_int32_memory(&mut self) {
+        self.memview("getInt32Memory", "Int32Array");
     }
 
     fn expose_uint32_memory(&mut self) {
-        if !self.exposed_globals.insert("uint32_memory") {
+        self.memview("getUint32Memory", "Uint32Array");
+    }
+
+    fn expose_f32_memory(&mut self) {
+        self.memview("getFloat32Memory", "Float32Array");
+    }
+
+    fn expose_f64_memory(&mut self) {
+        self.memview("getFloat64Memory", "Float64Array");
+    }
+
+    fn memview_function(&mut self, t: VectorKind) -> &'static str {
+        match t {
+            VectorKind::String => {
+                self.expose_uint8_memory();
+                "getUint8Memory"
+            }
+            VectorKind::I8 => {
+                self.expose_int8_memory();
+                "getInt8Memory"
+            }
+            VectorKind::U8 => {
+                self.expose_uint8_memory();
+                "getUint8Memory"
+            }
+            VectorKind::I16 => {
+                self.expose_int16_memory();
+                "getInt16Memory"
+            }
+            VectorKind::U16 => {
+                self.expose_uint16_memory();
+                "getUint16Memory"
+            }
+            VectorKind::I32 => {
+                self.expose_int32_memory();
+                "getInt32Memory"
+            }
+            VectorKind::U32 => {
+                self.expose_uint32_memory();
+                "getUint32Memory"
+            }
+            VectorKind::F32 => {
+                self.expose_f32_memory();
+                "getFloat32Memory"
+            }
+            VectorKind::F64 => {
+                self.expose_f64_memory();
+                "getFloat64Memory"
+            }
+            VectorKind::Anyref => {
+                self.expose_uint32_memory();
+                "getUint32Memory"
+            }
+        }
+    }
+
+
+    fn memview(&mut self, name: &'static str, js: &str) {
+        if !self.exposed_globals.insert(name) {
             return;
         }
         self.global(&format!("
-            let cachedUint32Memory = null;
-            function getUint32Memory() {{
-                if (cachedUint32Memory === null ||
-                    cachedUint32Memory.buffer !== wasm.memory.buffer)
-                    cachedUint32Memory = new Uint32Array(wasm.memory.buffer);
-                return cachedUint32Memory;
+            let cache{name} = null;
+            function {name}() {{
+                if (cache{name} === null ||
+                    cache{name}.buffer !== wasm.memory.buffer)
+                    cache{name} = new {js}(wasm.memory.buffer);
+                return cache{name};
             }}
-        "));
+        ",
+            name = name,
+            js = js,
+        ));
     }
 
     fn expose_assert_class(&mut self) {
@@ -1264,6 +1260,60 @@ impl<'a> Context<'a> {
             VectorKind::Anyref => {
                 self.expose_get_array_js_value_from_wasm();
                 "getArrayJsValueFromWasm"
+            }
+        }
+    }
+
+    fn expose_commit_slice_to_wasm(&mut self, ty: VectorKind)
+        -> Result<&'static str, Error>
+    {
+        let gen = |me: &mut Context, name: &'static str, size: usize, get: &str| {
+            me.global(&format!("
+                function {name}(ptr, view) {{
+                    if (view.buffer !== wasm.memory.buffer)
+                        {get}().set(view, ptr / {size});
+                }}
+            ",
+                name = name,
+                size = size,
+                get = get,
+            ));
+            name
+        };
+        match ty {
+            VectorKind::String => bail!("strings cannot be used with mutable slices"),
+            VectorKind::Anyref => bail!("js values cannot be used with mutable slices"),
+            VectorKind::I8 => {
+                self.expose_int8_memory();
+                Ok(gen(self, "commitI8ToWasm", 1, "getInt8Memory"))
+            }
+            VectorKind::U8 => {
+                self.expose_uint8_memory();
+                Ok(gen(self, "commitU8ToWasm", 1, "getUint8Memory"))
+            }
+            VectorKind::I16 => {
+                self.expose_int16_memory();
+                Ok(gen(self, "commitI16ToWasm", 2, "getInt16Memory"))
+            }
+            VectorKind::U16 => {
+                self.expose_uint16_memory();
+                Ok(gen(self, "commitU16ToWasm", 2, "getUint16Memory"))
+            }
+            VectorKind::I32 => {
+                self.expose_int32_memory();
+                Ok(gen(self, "commitI32ToWasm", 4, "getInt32Memory"))
+            }
+            VectorKind::U32 => {
+                self.expose_uint32_memory();
+                Ok(gen(self, "commitU32ToWasm", 4, "getUint32Memory"))
+            }
+            VectorKind::F32 => {
+                self.expose_f32_memory();
+                Ok(gen(self, "commitF32ToWasm", 4, "getFloat32Memory"))
+            }
+            VectorKind::F64 => {
+                self.expose_f64_memory();
+                Ok(gen(self, "commitF64ToWasm", 8, "getFloat64Memory"))
             }
         }
     }
