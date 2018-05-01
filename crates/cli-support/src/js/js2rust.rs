@@ -118,6 +118,15 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 setGlobalArgument(len{i}, {global_idx});\n\
             ", i = i, func = func, arg = name, global_idx = global_idx));
             if arg.is_by_ref() {
+                if arg.is_mut_ref() {
+                    let get = self.cx.memview_function(kind);
+                    self.finally(&format!("\
+                        {arg}.set({get}().subarray(\
+                            ptr{i} / {size}, \
+                            ptr{i} / {size} + len{i}\
+                        ));\n\
+                    ", i = i, arg = name, get = get, size = kind.size()));
+                }
                 self.finally(&format!("\
                     wasm.__wbindgen_free(ptr{i}, len{i} * {size});\n\
                 ", i = i, size = kind.size()));

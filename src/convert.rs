@@ -170,6 +170,14 @@ macro_rules! vectors {
             }
         }
 
+        impl<'a> IntoWasmAbi for &'a mut [$t] {
+            type Abi = u32;
+
+            fn into_abi(self, extra: &mut Stack) -> u32 {
+                (&*self).into_abi(extra)
+            }
+        }
+
         impl RefFromWasmAbi for [$t] {
             type Abi = u32;
             type Anchor = &'static [$t];
@@ -177,6 +185,18 @@ macro_rules! vectors {
             unsafe fn ref_from_abi(js: u32, extra: &mut Stack) -> &'static [$t] {
                 slice::from_raw_parts(
                     <*const $t>::from_abi(js, extra),
+                    extra.pop() as usize,
+                )
+            }
+        }
+
+        impl RefMutFromWasmAbi for [$t] {
+            type Abi = u32;
+            type Anchor = &'static mut [$t];
+
+            unsafe fn ref_mut_from_abi(js: u32, extra: &mut Stack) -> &'static mut [$t] {
+                slice::from_raw_parts_mut(
+                    <*mut $t>::from_abi(js, extra),
                     extra.pop() as usize,
                 )
             }
