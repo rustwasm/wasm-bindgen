@@ -52,12 +52,18 @@ fn c_style_enum_with_custom_values() {
 
             use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen]
-            pub enum Color {
-                Green = 21,
-                Yellow = 34,
-                Red,
+            pub mod inner {
+                use wasm_bindgen::prelude::*;
+
+                #[wasm_bindgen]
+                pub enum Color {
+                    Green = 21,
+                    Yellow = 34,
+                    Red,
+                }
             }
+
+            use inner::Color;
 
             #[wasm_bindgen]
             pub fn cycle(color: Color) -> Color {

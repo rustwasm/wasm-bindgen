@@ -763,7 +763,7 @@ impl ToTokens for ast::Enum {
                     _extra: &mut ::wasm_bindgen::convert::Stack,
                 ) -> Self {
                     #(#cast_clauses else)* {
-                        wasm_bindgen::throw("invalid enum value passed")
+                        ::wasm_bindgen::throw("invalid enum value passed")
                     }
                 }
             }
