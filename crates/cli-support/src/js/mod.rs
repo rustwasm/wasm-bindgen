@@ -1318,21 +1318,6 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn expose_set_global_argument(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("set_global_argument") {
-            return Ok(());
-        }
-        self.expose_uint32_memory();
-        self.expose_global_argument_ptr()?;
-        self.global("
-            function setGlobalArgument(arg, i) {
-                const idx = globalArgumentPtr() / 4 + i;
-                getUint32Memory()[idx] = arg;
-            }
-        ");
-        Ok(())
-    }
-
     fn expose_get_global_argument(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("get_global_argument") {
             return Ok(());

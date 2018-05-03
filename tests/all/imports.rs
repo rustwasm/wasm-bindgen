@@ -114,6 +114,40 @@ fn unused() {
 }
 
 #[test]
+fn string_ret() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo() -> String;
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                assert_eq!(foo(), "bar");
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as wasm from "./out";
+
+            export function foo(): string {
+                return 'bar';
+            }
+
+            export function test() {
+                wasm.run();
+            }
+        "#)
+        .test();
+}
+
+#[test]
 fn strings() {
     project()
         .file("src/lib.rs", r#"

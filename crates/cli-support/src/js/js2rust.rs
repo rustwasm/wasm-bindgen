@@ -23,10 +23,6 @@ pub struct Js2Rust<'a, 'b: 'a> {
     /// finishes. This is scheduled in a `finally` block.
     finally: String,
 
-    /// Next global index to write to when passing arguments via the single
-    /// global stack.
-    global_idx: usize,
-
     /// Index of the next argument for unique name generation purposes.
     arg_idx: usize,
 
@@ -52,7 +48,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             js_arguments: Vec::new(),
             prelude: String::new(),
             finally: String::new(),
-            global_idx: 0,
             arg_idx: 0,
             ret_ty: String::new(),
             ret_expr: String::new(),
@@ -102,21 +97,23 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         self
     }
 
+    fn abi_arg(&mut self) -> String {
+        let s = format!("arg{}", self.arg_idx);
+        self.arg_idx += 1;
+        s
+    }
+
     pub fn argument(&mut self, arg: &Descriptor) -> Result<&mut Self, Error> {
         let i = self.arg_idx;
-        self.arg_idx += 1;
-        let name = format!("arg{}", i);
+        let name = self.abi_arg();
 
         if let Some(kind) = arg.vector_kind() {
             self.js_arguments.push((name.clone(), kind.js_ty().to_string()));
 
             let func = self.cx.pass_to_wasm_function(kind)?;
-            self.cx.expose_set_global_argument()?;
-            let global_idx = self.global_idx();
             self.prelude(&format!("\
                 const [ptr{i}, len{i}] = {func}({arg});\n\
-                setGlobalArgument(len{i}, {global_idx});\n\
-            ", i = i, func = func, arg = name, global_idx = global_idx));
+            ", i = i, func = func, arg = name));
             if arg.is_by_ref() {
                 if arg.is_mut_ref() {
                     let get = self.cx.memview_function(kind);
@@ -133,6 +130,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.cx.require_internal_export("__wbindgen_free")?;
             }
             self.rust_arguments.push(format!("ptr{}", i));
+            self.rust_arguments.push(format!("len{}", i));
             return Ok(self)
         }
 
@@ -187,7 +185,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                         _assertBoolean({name});\n\
                     ", name = name));
                 }
-                self.rust_arguments.push(format!("arg{i} ? 1 : 0", i = i));
+                self.rust_arguments.push(format!("{} ? 1 : 0", name));
             }
             Descriptor::Anyref => {
                 self.js_arguments.push((name.clone(), "any".to_string()));
@@ -225,13 +223,18 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         if let Some(ty) = ty.vector_kind() {
             self.ret_ty = ty.js_ty().to_string();
             let f = self.cx.expose_get_vector_from_wasm(ty);
-            self.cx.expose_get_global_argument()?;
+            self.cx.expose_global_argument_ptr()?;
+            self.cx.expose_uint32_memory();
             self.cx.require_internal_export("__wbindgen_free")?;
+            self.prelude("const retptr = globalArgumentPtr();");
+            self.rust_arguments.insert(0, "retptr".to_string());
             self.ret_expr = format!("\
-                const ret = RET;\n\
-                const len = getGlobalArgument(0);\n\
-                const realRet = {}(ret, len);\n\
-                wasm.__wbindgen_free(ret, len * {});\n\
+                RET;\n\
+                const mem = getUint32Memory();\n\
+                const ptr = mem[retptr / 4];\n\
+                const len = mem[retptr / 4 + 1];\n\
+                const realRet = {}(ptr, len);\n\
+                wasm.__wbindgen_free(ptr, len * {});\n\
                 return realRet;\n\
             ", f, ty.size());
             return Ok(self)
@@ -308,11 +311,5 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             .join(", ");
         let ts = format!("{} {}({}): {};\n", prefix, self.js_name, ts_args, self.ret_ty);
         (js, ts)
-    }
-
-    fn global_idx(&mut self) -> usize {
-        let ret = self.global_idx;
-        self.global_idx += 1;
-        ret
     }
 }
