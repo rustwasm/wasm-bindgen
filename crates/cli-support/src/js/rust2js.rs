@@ -72,31 +72,32 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         Ok(self)
     }
 
-    fn argument(&mut self, arg: &Descriptor) -> Result<(), Error> {
-        let i = self.arg_idx;
+    fn shim_argument(&mut self) -> String {
+        let s = format!("arg{}", self.arg_idx);
         self.arg_idx += 1;
+        self.shim_arguments.push(s.clone());
+        s
+    }
 
-        self.shim_arguments.push(format!("arg{}", i));
+    fn argument(&mut self, arg: &Descriptor) -> Result<(), Error> {
+        let abi = self.shim_argument();
 
         if let Some(ty) = arg.vector_kind() {
+            let abi2 = self.shim_argument();
             let f = self.cx.expose_get_vector_from_wasm(ty);
-            self.cx.expose_get_global_argument()?;
-            let next_global = self.global_idx();
-            self.prelude(&format!("\
-                let len{0} = getGlobalArgument({next_global});\n\
-                let v{0} = {func}(arg{0}, len{0});\n\
-            ", i, func = f, next_global = next_global));
+            self.prelude(&format!("let v{0} = {func}({0}, {1});",
+                                  abi, abi2, func = f));
 
             if !arg.is_by_ref() {
                 self.prelude(&format!("\
-                    wasm.__wbindgen_free(arg{0}, len{0} * {size});\
-                ", i, size = ty.size()));
+                    wasm.__wbindgen_free({0}, {1} * {size});\
+                ", abi, abi2, size = ty.size()));
                 self.cx.require_internal_export("__wbindgen_free")?;
             } else if arg.is_mut_ref() {
                 let f = self.cx.expose_commit_slice_to_wasm(ty)?;
-                self.finally(&format!("{}(arg{i}, v{i});", f, i = i));
+                self.finally(&format!("{}({1}, v{1});", f, abi));
             }
-            self.js_arguments.push(format!("v{}", i));
+            self.js_arguments.push(format!("v{}", abi));
             return Ok(())
         }
 
@@ -104,9 +105,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             if arg.is_by_ref() {
                 bail!("cannot invoke JS functions with custom ref types yet")
             }
-            let assign = format!("let c{0} = {1}.__construct(arg{0});", i, class);
+            let assign = format!("let c{0} = {1}.__construct({0});", abi, class);
             self.prelude(&assign);
-            self.js_arguments.push(format!("c{}", i));
+            self.js_arguments.push(format!("c{}", abi));
             return Ok(())
         }
 
@@ -132,12 +133,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             self.global_idx();
             self.prelude(&format!("\
                 let cb{0} = {js};\n\
-                cb{0}.f = wasm.__wbg_function_table.get(arg{0});\n\
+                cb{0}.f = wasm.__wbg_function_table.get({0});\n\
                 cb{0}.a = getGlobalArgument({next_global});\n\
                 cb{0}.b = getGlobalArgument({next_global} + 1);\n\
-            ", i, js = js, next_global = next_global));
-            self.finally(&format!("cb{0}.a = cb{0}.b = 0;", i));
-            self.js_arguments.push(format!("cb{0}.bind(cb{0})", i));
+            ", abi, js = js, next_global = next_global));
+            self.finally(&format!("cb{0}.a = cb{0}.b = 0;", abi));
+            self.js_arguments.push(format!("cb{0}.bind(cb{0})", abi));
             return Ok(())
         }
 
@@ -168,35 +169,35 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 cb{0}.f = wasm.__wbg_function_table.get(getGlobalArgument({c}));\n\
                 let real = cb{0}.bind(cb{0});\n\
                 real.original = cb{0};\n\
-                idx{0} = getUint32Memory()[arg{0} / 4] = addHeapObject(real);\n\
+                idx{0} = getUint32Memory()[{0} / 4] = addHeapObject(real);\n\
             ",
-                i,
+                abi,
                 js = js,
                 a = self.global_idx(),
                 b = self.global_idx(),
                 c = self.global_idx(),
             );
             self.prelude(&format!("\
-                let idx{0} = getUint32Memory()[arg{0} / 4];\n\
+                let idx{0} = getUint32Memory()[{0} / 4];\n\
                 if (idx{0} === 0xffffffff) {{\n\
                 {1}\
                 }}\n\
-            ", i, indent(&reset_idx)));
+            ", abi, indent(&reset_idx)));
             self.cx.expose_get_object();
-            self.js_arguments.push(format!("getObject(idx{})", i));
+            self.js_arguments.push(format!("getObject(idx{})", abi));
             return Ok(())
         }
 
         let invoc_arg = match *arg {
-            ref d if d.is_number() => format!("arg{}", i),
-            Descriptor::Boolean => format!("arg{} !== 0", i),
+            ref d if d.is_number() => abi,
+            Descriptor::Boolean => format!("{} !== 0", abi),
             Descriptor::Anyref => {
                 self.cx.expose_take_object();
-                format!("takeObject(arg{})", i)
+                format!("takeObject({})", abi)
             }
             ref d if d.is_ref_anyref() => {
                 self.cx.expose_get_object();
-                format!("getObject(arg{})", i)
+                format!("getObject({})", abi)
             }
             _ => bail!("unimplemented argument type in imported function: {:?}", arg),
         };
@@ -218,11 +219,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         if let Some(ty) = ty.vector_kind() {
             let f = self.cx.pass_to_wasm_function(ty)?;
             self.cx.expose_uint32_memory();
-            self.cx.expose_set_global_argument()?;
+            self.shim_arguments.insert(0, "ret".to_string());
             self.ret_expr = format!("\
                 const [retptr, retlen] = {}(JS);\n\
-                setGlobalArgument(retlen, 0);\n\
-                return retptr;\n\
+                const mem = getUint32Memory();
+                mem[ret / 4] = retptr;
+                mem[ret / 4 + 1] = retlen;
             ", f);
             return Ok(())
         }
