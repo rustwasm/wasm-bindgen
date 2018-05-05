@@ -168,6 +168,29 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             return Ok(self)
         }
 
+        if let Some(signed) = arg.get_64bit() {
+            let f = if signed {
+                self.cx.expose_int64_cvt_shim()
+            } else {
+                self.cx.expose_uint64_cvt_shim()
+            };
+            self.cx.expose_uint32_memory();
+            self.cx.expose_global_argument_ptr()?;
+            self.js_arguments.push((name.clone(), "BigInt".to_string()));
+            self.prelude(&format!("\
+                {f}[0] = {name};\n\
+                const lo{i} = u32CvtShim[0];\n\
+                const hi{i} = u32CvtShim[1];\n\
+            ",
+                i = i,
+                f = f,
+                name = name,
+            ));
+            self.rust_arguments.push(format!("lo{}", i));
+            self.rust_arguments.push(format!("hi{}", i));
+            return Ok(self)
+        }
+
         if arg.is_ref_anyref() {
             self.js_arguments.push((name.clone(), "any".to_string()));
             self.cx.expose_borrowed_objects();
@@ -249,6 +272,25 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         if ty.is_number() {
             self.ret_ty = "number".to_string();
             self.ret_expr = format!("return RET;");
+            return Ok(self)
+        }
+
+        if let Some(signed) = ty.get_64bit() {
+            self.ret_ty = "BigInt".to_string();
+            self.cx.expose_global_argument_ptr()?;
+            let f = if signed {
+                self.cx.expose_int64_memory();
+                "getInt64Memory"
+            } else {
+                self.cx.expose_uint64_memory();
+                "getUint64Memory"
+            };
+            self.prelude("const retptr = globalArgumentPtr();");
+            self.rust_arguments.insert(0, "retptr".to_string());
+            self.ret_expr = format!("\
+                RET;\n\
+                return {}()[retptr / 8];\n\
+            ", f);
             return Ok(self)
         }
 

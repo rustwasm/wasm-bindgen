@@ -492,7 +492,7 @@ All structs referenced through arguments to functions should be defined in the
 macro itself. Arguments allowed implement the `WasmBoundary` trait, and examples
 are:
 
-* Integers (not u64/i64)
+* Integers (u64/i64 require `BigInt` support)
 * Floats
 * Borrowed strings (`&str`)
 * Owned strings (`String`)

@@ -55,9 +55,7 @@ pub trait Stack {
 pub unsafe trait WasmAbi {}
 
 unsafe impl WasmAbi for u32 {}
-unsafe impl WasmAbi for u64 {}
 unsafe impl WasmAbi for i32 {}
-unsafe impl WasmAbi for i64 {}
 unsafe impl WasmAbi for f32 {}
 unsafe impl WasmAbi for f64 {}
 
@@ -83,7 +81,30 @@ macro_rules! simple {
     )*)
 }
 
-simple!(u32 u64 i32 i64 f32 f64);
+simple!(u32 i32 f32 f64);
+
+macro_rules! sixtyfour {
+    ($($t:tt)*) => ($(
+        impl IntoWasmAbi for $t {
+            type Abi = WasmSlice;
+            fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
+                WasmSlice {
+                    ptr: self as u32,
+                    len: (self >> 32) as u32,
+                }
+            }
+        }
+
+        impl FromWasmAbi for $t {
+            type Abi = WasmSlice;
+            unsafe fn from_abi(js: WasmSlice, _extra: &mut Stack) -> $t {
+                (js.ptr as $t) | ((js.len as $t) << 32)
+            }
+        }
+    )*)
+}
+
+sixtyfour!(i64 u64);
 
 macro_rules! as_u32 {
     ($($t:tt)*) => ($(
@@ -217,7 +238,7 @@ macro_rules! vectors {
 }
 
 vectors! {
-    u8 i8 u16 i16 u32 i32 f32 f64
+    u8 i8 u16 i16 u32 i32 u64 i64 f32 f64
 }
 
 if_std! {

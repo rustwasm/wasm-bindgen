@@ -98,6 +98,28 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             return Ok(())
         }
 
+        if let Some(signed) = arg.get_64bit() {
+            let f = if signed {
+                self.cx.expose_int64_cvt_shim()
+            } else {
+                self.cx.expose_uint64_cvt_shim()
+            };
+            let hi = self.shim_argument();
+            let name = format!("n{}", abi);
+            self.prelude(&format!("\
+                u32CvtShim[0] = {lo};\n\
+                u32CvtShim[1] = {hi};\n\
+                const {name} = {f}[0];\n\
+            ",
+                lo = abi,
+                hi = hi,
+                f = f,
+                name = name,
+            ));
+            self.js_arguments.push(name);
+            return Ok(())
+        }
+
         if let Some(class) = arg.rust_struct() {
             if arg.is_by_ref() {
                 bail!("cannot invoke JS functions with custom ref types yet")
@@ -227,6 +249,21 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
         if ty.is_number() {
             self.ret_expr = "return JS;".to_string();
+            return Ok(())
+        }
+        if let Some(signed) = ty.get_64bit() {
+            let f = if signed {
+                self.cx.expose_int64_memory();
+                "getInt64Memory"
+            } else {
+                self.cx.expose_uint64_memory();
+                "getUint64Memory"
+            };
+            self.shim_arguments.insert(0, "ret".to_string());
+            self.ret_expr = format!("\
+                const val = JS;\n\
+                {}()[ret / 8] = val;\n\
+            ", f);
             return Ok(())
         }
         self.ret_expr = match *ty {

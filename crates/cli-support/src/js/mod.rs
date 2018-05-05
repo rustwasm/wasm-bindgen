@@ -787,80 +787,52 @@ impl<'a> Context<'a> {
     }
 
     fn expose_pass_array8_to_wasm(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("pass_array8_to_wasm") {
-            return Ok(());
-        }
-        self.require_internal_export("__wbindgen_malloc")?;
         self.expose_uint8_memory();
-        self.global(&format!("
-            function passArray8ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.length);
-                getUint8Memory().set(arg, ptr);
-                return [ptr, arg.length];
-            }}
-        "));
-        Ok(())
+        self.pass_array_to_wasm("passArray8ToWasm", "getUint8Memory", 1)
     }
 
     fn expose_pass_array16_to_wasm(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("pass_array16_to_wasm") {
-            return Ok(());
-        }
-        self.require_internal_export("__wbindgen_malloc")?;
         self.expose_uint16_memory();
-        self.global(&format!("
-            function passArray16ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.length * 2);
-                getUint16Memory().set(arg, ptr / 2);
-                return [ptr, arg.length];
-            }}
-        "));
-        Ok(())
+        self.pass_array_to_wasm("passArray16ToWasm", "getUint16Memory", 2)
     }
 
     fn expose_pass_array32_to_wasm(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("pass_array32_to_wasm") {
-            return Ok(())
-        }
-        self.require_internal_export("__wbindgen_malloc")?;
         self.expose_uint32_memory();
-        self.global(&format!("
-            function passArray32ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.length * 4);
-                getUint32Memory().set(arg, ptr / 4);
-                return [ptr, arg.length];
-            }}
-        "));
-        Ok(())
+        self.pass_array_to_wasm("passArray32ToWasm", "getUint32Memory", 4)
+    }
+
+    fn expose_pass_array64_to_wasm(&mut self) -> Result<(), Error> {
+        self.expose_uint64_memory();
+        self.pass_array_to_wasm("passArray64ToWasm", "getUint64Memory", 8)
     }
 
     fn expose_pass_array_f32_to_wasm(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("pass_array_f32_to_wasm") {
-            return Ok(())
-        }
-        self.require_internal_export("__wbindgen_malloc")?;
-        self.global(&format!("
-            function passArrayF32ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.length * 4);
-                new Float32Array(wasm.memory.buffer).set(arg, ptr / 4);
-                return [ptr, arg.length];
-            }}
-        "));
-        Ok(())
+        self.expose_f32_memory();
+        self.pass_array_to_wasm("passArrayF32ToWasm", "getFloat32Memory", 4)
     }
 
     fn expose_pass_array_f64_to_wasm(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("pass_array_f64_to_wasm") {
+        self.expose_f64_memory();
+        self.pass_array_to_wasm("passArrayF64ToWasm", "getFloat64Memory", 8)
+    }
+
+    fn pass_array_to_wasm(&mut self,
+                          name: &'static str,
+                          delegate: &str,
+                          size: usize) -> Result<(), Error>
+    {
+        if !self.exposed_globals.insert(name) {
             return Ok(())
         }
         self.require_internal_export("__wbindgen_malloc")?;
+        self.expose_uint64_memory();
         self.global(&format!("
-            function passArrayF64ToWasm(arg) {{
-                const ptr = wasm.__wbindgen_malloc(arg.length * 8);
-                new Float64Array(wasm.memory.buffer).set(arg, ptr / 8);
+            function {}(arg) {{
+                const ptr = wasm.__wbindgen_malloc(arg.length * {size});
+                {}().set(arg, ptr / {size});
                 return [ptr, arg.length];
             }}
-        "));
+        ", name, delegate, size = size));
         Ok(())
     }
 
@@ -980,6 +952,16 @@ impl<'a> Context<'a> {
         self.arrayget("getArrayU32FromWasm", "getUint32Memory", 4);
     }
 
+    fn expose_get_array_i64_from_wasm(&mut self) {
+        self.expose_int64_memory();
+        self.arrayget("getArrayI64FromWasm", "getInt64Memory", 8);
+    }
+
+    fn expose_get_array_u64_from_wasm(&mut self) {
+        self.expose_uint64_memory();
+        self.arrayget("getArrayU64FromWasm", "getUint64Memory", 8);
+    }
+
     fn expose_get_array_f32_from_wasm(&mut self) {
         self.expose_f32_memory();
         self.arrayget("getArrayF32FromWasm", "getFloat32Memory", 4);
@@ -1029,6 +1011,14 @@ impl<'a> Context<'a> {
         self.memview("getUint32Memory", "Uint32Array");
     }
 
+    fn expose_int64_memory(&mut self) {
+        self.memview("getInt64Memory", "BigInt64Array");
+    }
+
+    fn expose_uint64_memory(&mut self) {
+        self.memview("getUint64Memory", "BigUint64Array");
+    }
+
     fn expose_f32_memory(&mut self) {
         self.memview("getFloat32Memory", "Float32Array");
     }
@@ -1066,6 +1056,14 @@ impl<'a> Context<'a> {
             VectorKind::U32 => {
                 self.expose_uint32_memory();
                 "getUint32Memory"
+            }
+            VectorKind::I64 => {
+                self.expose_int64_memory();
+                "getInt64Memory"
+            }
+            VectorKind::U64 => {
+                self.expose_uint64_memory();
+                "getUint64Memory"
             }
             VectorKind::F32 => {
                 self.expose_f32_memory();
@@ -1204,6 +1202,11 @@ impl<'a> Context<'a> {
                 self.expose_pass_array32_to_wasm()?;
                 "passArray32ToWasm"
             }
+            VectorKind::I64 |
+            VectorKind::U64 => {
+                self.expose_pass_array64_to_wasm()?;
+                "passArray64ToWasm"
+            }
             VectorKind::F32 => {
                 self.expose_pass_array_f32_to_wasm()?;
                 "passArrayF32ToWasm"
@@ -1248,6 +1251,14 @@ impl<'a> Context<'a> {
             VectorKind::U32 => {
                 self.expose_get_array_u32_from_wasm();
                 "getArrayU32FromWasm"
+            }
+            VectorKind::I64 => {
+                self.expose_get_array_i64_from_wasm();
+                "getArrayI64FromWasm"
+            }
+            VectorKind::U64 => {
+                self.expose_get_array_u64_from_wasm();
+                "getArrayU64FromWasm"
             }
             VectorKind::F32 => {
                 self.expose_get_array_f32_from_wasm();
@@ -1318,6 +1329,35 @@ impl<'a> Context<'a> {
               throw \"descriptor not found\";
             }
         ");
+    }
+
+    fn expose_u32_cvt_shim(&mut self) -> &'static str {
+        let name = "u32CvtShim";
+        if !self.exposed_globals.insert(name) {
+            return name
+        }
+        self.global(&format!("const {} = new Uint32Array(2);", name));
+        name
+    }
+
+    fn expose_int64_cvt_shim(&mut self) -> &'static str {
+        let name = "int64CvtShim";
+        if !self.exposed_globals.insert(name) {
+            return name
+        }
+        let n = self.expose_u32_cvt_shim();
+        self.global(&format!("const {} = new BigInt64Array({}.buffer);", name, n));
+        name
+    }
+
+    fn expose_uint64_cvt_shim(&mut self) -> &'static str {
+        let name = "uint64CvtShim";
+        if !self.exposed_globals.insert(name) {
+            return name
+        }
+        let n = self.expose_u32_cvt_shim();
+        self.global(&format!("const {} = new BigUint64Array({}.buffer);", name, n));
+        name
     }
 
     fn gc(&mut self) -> Result<(), Error> {

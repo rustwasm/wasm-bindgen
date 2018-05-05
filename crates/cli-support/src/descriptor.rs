@@ -79,6 +79,8 @@ pub enum VectorKind {
     U16,
     I32,
     U32,
+    I64,
+    U64,
     F32,
     F64,
     String,
@@ -139,12 +141,18 @@ impl Descriptor {
             Descriptor::U16 |
             Descriptor::I32 |
             Descriptor::U32 |
-            Descriptor::I64 |
-            Descriptor::U64 |
             Descriptor::F32 |
             Descriptor::F64 |
             Descriptor::Enum => true,
             _ => return false,
+        }
+    }
+
+    pub fn get_64bit(&self) -> Option<bool> {
+        match *self {
+            Descriptor::I64 => Some(true),
+            Descriptor::U64 => Some(false),
+            _ => None,
         }
     }
 
@@ -199,9 +207,11 @@ impl Descriptor {
             Descriptor::I8 => Some(VectorKind::I8),
             Descriptor::I16 => Some(VectorKind::I16),
             Descriptor::I32 => Some(VectorKind::I32),
+            Descriptor::I64 => Some(VectorKind::I64),
             Descriptor::U8 => Some(VectorKind::U8),
             Descriptor::U16 => Some(VectorKind::U16),
             Descriptor::U32 => Some(VectorKind::U32),
+            Descriptor::U64 => Some(VectorKind::U64),
             Descriptor::F32 => Some(VectorKind::F32),
             Descriptor::F64 => Some(VectorKind::F64),
             Descriptor::Anyref => Some(VectorKind::Anyref),
@@ -290,6 +300,8 @@ impl VectorKind {
             VectorKind::U16 => "Uint16Array",
             VectorKind::I32 => "Int32Array",
             VectorKind::U32 => "Uint32Array",
+            VectorKind::I64 => "BigInt64Array",
+            VectorKind::U64 => "BigUint64Array",
             VectorKind::F32 => "Float32Array",
             VectorKind::F64 => "Float64Array",
             VectorKind::Anyref => "any[]",
@@ -305,6 +317,8 @@ impl VectorKind {
             VectorKind::U16 => 2,
             VectorKind::I32 => 4,
             VectorKind::U32 => 4,
+            VectorKind::I64 => 8,
+            VectorKind::U64 => 8,
             VectorKind::F32 => 4,
             VectorKind::F64 => 8,
             VectorKind::Anyref => 4,
