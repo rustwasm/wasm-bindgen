@@ -1264,60 +1264,6 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn expose_commit_slice_to_wasm(&mut self, ty: VectorKind)
-        -> Result<&'static str, Error>
-    {
-        let gen = |me: &mut Context, name: &'static str, size: usize, get: &str| {
-            me.global(&format!("
-                function {name}(ptr, view) {{
-                    if (view.buffer !== wasm.memory.buffer)
-                        {get}().set(view, ptr / {size});
-                }}
-            ",
-                name = name,
-                size = size,
-                get = get,
-            ));
-            name
-        };
-        match ty {
-            VectorKind::String => bail!("strings cannot be used with mutable slices"),
-            VectorKind::Anyref => bail!("js values cannot be used with mutable slices"),
-            VectorKind::I8 => {
-                self.expose_int8_memory();
-                Ok(gen(self, "commitI8ToWasm", 1, "getInt8Memory"))
-            }
-            VectorKind::U8 => {
-                self.expose_uint8_memory();
-                Ok(gen(self, "commitU8ToWasm", 1, "getUint8Memory"))
-            }
-            VectorKind::I16 => {
-                self.expose_int16_memory();
-                Ok(gen(self, "commitI16ToWasm", 2, "getInt16Memory"))
-            }
-            VectorKind::U16 => {
-                self.expose_uint16_memory();
-                Ok(gen(self, "commitU16ToWasm", 2, "getUint16Memory"))
-            }
-            VectorKind::I32 => {
-                self.expose_int32_memory();
-                Ok(gen(self, "commitI32ToWasm", 4, "getInt32Memory"))
-            }
-            VectorKind::U32 => {
-                self.expose_uint32_memory();
-                Ok(gen(self, "commitU32ToWasm", 4, "getUint32Memory"))
-            }
-            VectorKind::F32 => {
-                self.expose_f32_memory();
-                Ok(gen(self, "commitF32ToWasm", 4, "getFloat32Memory"))
-            }
-            VectorKind::F64 => {
-                self.expose_f64_memory();
-                Ok(gen(self, "commitF64ToWasm", 8, "getFloat64Memory"))
-            }
-        }
-    }
-
     fn expose_get_global_argument(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("get_global_argument") {
             return Ok(());
