@@ -8,7 +8,7 @@ environment:
       DEPLOY: 1
 
 install:
-  - ps: Install-Product node 9
+  - ps: Install-Product node 10
   - appveyor-retry appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
   - rustup-init.exe -y --default-host x86_64-pc-windows-msvc --default-toolchain nightly
   - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin

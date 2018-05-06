@@ -4,7 +4,8 @@ use std::env;
 use std::fs::{self, File};
 use std::io::{self, Write, Read};
 use std::path::{PathBuf, Path};
-use std::process::Command;
+use std::process::{Command, Stdio};
+use std::sync::{Once, ONCE_INIT};
 use std::sync::atomic::*;
 use std::time::Instant;
 
@@ -18,6 +19,7 @@ struct Project {
     no_std: bool,
     serde: bool,
     rlib: bool,
+    node_args: Vec<String>,
     deps: Vec<String>,
 }
 
@@ -33,6 +35,7 @@ fn project() -> Project {
         serde: false,
         rlib: false,
         deps: Vec::new(),
+        node_args: Vec::new(),
         files: vec![
             ("Cargo.lock".to_string(), lockfile),
 
@@ -120,6 +123,40 @@ fn root() -> PathBuf {
     return me
 }
 
+fn assert_bigint_support() -> Option<&'static str> {
+    static BIGINT_SUPPORED: AtomicUsize = ATOMIC_USIZE_INIT;
+    static INIT: Once = ONCE_INIT;
+
+    INIT.call_once(|| {
+        let mut cmd = Command::new("node");
+        cmd.arg("-e").arg("BigInt");
+        cmd.stdin(Stdio::null())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped());
+        if cmd.status().unwrap().success() {
+            BIGINT_SUPPORED.store(1, Ordering::SeqCst);
+            return
+        }
+
+        cmd.arg("--harmony-bigint");
+        if cmd.status().unwrap().success() {
+            BIGINT_SUPPORED.store(2, Ordering::SeqCst);
+            return
+        }
+    });
+
+    match BIGINT_SUPPORED.load(Ordering::SeqCst) {
+        1 => return None,
+        2 => return Some("--harmony-bigint"),
+        _ => {
+            panic!("the version of node.js that is installed for these tests \
+                    does not support `BigInt`, you may wish to try installing \
+                    node 10 to fix this")
+        }
+    }
+
+}
+
 impl Project {
     fn file(&mut self, name: &str, contents: &str) -> &mut Project {
         self.files.push((name.to_string(), contents.to_string()));
@@ -163,6 +200,13 @@ impl Project {
 
     fn crate_name(&self) -> String {
         format!("test{}", IDX.with(|x| *x))
+    }
+
+    fn requires_bigint(&mut self) -> &mut Project {
+        if let Some(arg) = assert_bigint_support() {
+            self.node_args.push(arg.to_string());
+        }
+        self
     }
 
     fn build(&mut self) -> (PathBuf, PathBuf) {
@@ -265,6 +309,7 @@ impl Project {
 
         if self.node {
             let mut cmd = Command::new("node");
+            cmd.args(&self.node_args);
             cmd.arg(root.join("run-node.js"))
                 .current_dir(&root);
             run(&mut cmd, "node");
@@ -281,6 +326,7 @@ impl Project {
             run(&mut cmd, "yarn");
 
             let mut cmd = Command::new("node");
+            cmd.args(&self.node_args);
             cmd.arg(root.join("bundle.js"))
                 .current_dir(&root);
             run(&mut cmd, "node");
@@ -335,3 +381,4 @@ mod simple;
 mod slice;
 mod structural;
 mod non_wasm;
+mod u64;
