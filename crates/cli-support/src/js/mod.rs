@@ -56,9 +56,17 @@ impl<'a> Context<'a> {
         let contents = deindent(contents);
         let contents = contents.trim();
         let global = if self.config.nodejs {
-            format!("module.exports.{} = {};\n", name, contents)
+            if contents.starts_with("class") {
+                format!("{1}\nmodule.exports.{0} = {0};\n", name, contents)
+            } else {
+                format!("module.exports.{} = {};\n", name, contents)
+            }
         } else if self.config.no_modules {
-            format!("__exports.{} = {}\n", name, contents)
+            if contents.starts_with("class") {
+                format!("{1}\n__exports.{0} = {0};\n", name, contents)
+            } else {
+                format!("__exports.{} = {};\n", name, contents)
+            }
         } else {
             if contents.starts_with("function") {
                 format!("export function {}{}\n", name, &contents[8..])
