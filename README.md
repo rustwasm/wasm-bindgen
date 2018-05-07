@@ -212,8 +212,7 @@ $ npm run serve
 ```
 
 If you open https://localhost:8080 in a browser you should see a `Hello, world!`
-dialog pop up! This works in Firefox out of the box but not in Chrome due to a
-webpack issue. See [the hello_world README][hello-readme] for a workaround.
+dialog pop up!
 
 If that was all a bit much, no worries! You can [execute this code
 online][hello-online] thanks to [WebAssembly Studio](https://webassembly.studio)
