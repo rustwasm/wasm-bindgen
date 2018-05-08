@@ -4,7 +4,7 @@
     "@types/node": "^9.4.6",
     "ts-loader": "^4.0.1",
     "typescript": "^2.7.2",
-    "webpack": "^4.8.0",
+    "webpack": "^4.8.1",
     "webpack-cli": "^2.0.10"
   }
 }
