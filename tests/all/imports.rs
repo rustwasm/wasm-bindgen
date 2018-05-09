@@ -429,3 +429,38 @@ fn versions() {
         "#)
         .test();
 }
+
+#[test]
+fn rust_keyword() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                #[wasm_bindgen(js_name = self)]
+                fn foo() -> u32;
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                assert_eq!(foo(), 2);
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export function self() {
+                return 2;
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}

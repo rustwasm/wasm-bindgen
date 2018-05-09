@@ -908,7 +908,7 @@ impl syn::synom::Synom for BindgenAttr {
             call!(term, "getter") >>
             val: option!(do_parse!(
                 punct!(=) >>
-                s: syn!(syn::Ident) >>
+                s: call!(term2ident) >>
                 (s)
             )) >>
             (val)
@@ -918,7 +918,7 @@ impl syn::synom::Synom for BindgenAttr {
             call!(term, "setter") >>
             val: option!(do_parse!(
                 punct!(=) >>
-                s: syn!(syn::Ident) >>
+                s: call!(term2ident) >>
                 (s)
             )) >>
             (val)
@@ -931,7 +931,7 @@ impl syn::synom::Synom for BindgenAttr {
         do_parse!(
             call!(term, "js_namespace") >>
             punct!(=) >>
-            ns: syn!(syn::Ident) >>
+            ns: call!(term2ident) >>
             (ns)
         )=> { BindgenAttr::JsNamespace }
         |
@@ -952,7 +952,7 @@ impl syn::synom::Synom for BindgenAttr {
         do_parse!(
             call!(term, "js_name") >>
             punct!(=) >>
-            ns: syn!(syn::Ident) >>
+            ns: call!(term2ident) >>
             (ns)
         )=> { BindgenAttr::JsName }
     ));
@@ -990,6 +990,19 @@ fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<
     if let Some((term, next)) = cursor.term() {
         if term.as_str() == name {
             return Ok(((), next));
+        }
+    }
+    syn::parse_error()
+}
+
+fn term2ident<'a>(cursor: syn::buffer::Cursor<'a>)
+    -> syn::synom::PResult<'a, syn::Ident>
+{
+    if let Some((term, next)) = cursor.term() {
+        let n = term.to_string();
+        if !n.starts_with("'") {
+            let i = syn::Ident::new(&n, term.span());
+            return Ok((i, next));
         }
     }
     syn::parse_error()
