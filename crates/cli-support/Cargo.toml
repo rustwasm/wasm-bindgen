@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-cli-support"
-version = "0.2.8"
+version = "0.2.9"
 authors = ["Alex Crichton <alex@alexcrichton.com>"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/alexcrichton/wasm-bindgen"
@@ -18,6 +18,6 @@ serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
 tempfile = "3.0"
-wasm-bindgen-shared = { path = "../shared", version = '=0.2.8' }
+wasm-bindgen-shared = { path = "../shared", version = '=0.2.9' }
 wasm-gc-api = "0.1"
 wasmi = "0.2"
