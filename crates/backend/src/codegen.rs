@@ -50,6 +50,7 @@ impl ToTokens for ast::Program {
                 if types.contains(&ns) && i.kind.fits_on_impl() {
                     let kind = &i.kind;
                     (quote! { impl #ns { #kind } }).to_tokens(tokens);
+                    continue
                 }
             }
 
