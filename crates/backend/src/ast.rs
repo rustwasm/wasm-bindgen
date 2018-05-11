@@ -618,6 +618,14 @@ impl Import {
 }
 
 impl ImportKind {
+    pub fn fits_on_impl(&self) -> bool {
+        match *self {
+            ImportKind::Function(_) => true,
+            ImportKind::Static(_) => false,
+            ImportKind::Type(_) => false,
+        }
+    }
+
     fn shared(&self) -> shared::ImportKind {
         match *self {
             ImportKind::Function(ref f) => shared::ImportKind::Function(f.shared()),

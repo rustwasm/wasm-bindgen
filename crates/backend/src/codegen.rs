@@ -44,14 +44,16 @@ impl ToTokens for ast::Program {
             }
         }
         for i in self.imports.iter() {
-            match i.js_namespace {
-                Some(ns) if types.contains(&ns) => {
+            DescribeImport(&i.kind).to_tokens(tokens);
+
+            if let Some(ns) = i.js_namespace {
+                if types.contains(&ns) && i.kind.fits_on_impl() {
                     let kind = &i.kind;
                     (quote! { impl #ns { #kind } }).to_tokens(tokens);
                 }
-                _ => i.kind.to_tokens(tokens),
             }
-            DescribeImport(&i.kind).to_tokens(tokens);
+
+            i.kind.to_tokens(tokens);
         }
         for e in self.enums.iter() {
             e.to_tokens(tokens);

@@ -464,3 +464,40 @@ fn rust_keyword() {
         "#)
         .test();
 }
+
+#[test]
+fn rust_keyword2() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                pub type bar;
+                #[wasm_bindgen(js_namespace = bar, js_name = foo)]
+                static FOO: JsValue;
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                assert_eq!(FOO.as_f64(), Some(3.0));
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export const bar = {
+                foo: 3,
+            };
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}
