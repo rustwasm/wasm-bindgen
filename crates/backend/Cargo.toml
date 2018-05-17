@@ -11,7 +11,7 @@ Backend code generation of the wasm-bindgen tool
 """
 
 [features]
-spans = ["proc-macro2/nightly"]
+spans = []
 
 [dependencies]
 quote = '0.5'
