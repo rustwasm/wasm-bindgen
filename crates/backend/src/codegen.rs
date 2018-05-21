@@ -4,8 +4,8 @@ use std::env;
 use std::sync::atomic::{ATOMIC_USIZE_INIT, AtomicUsize, Ordering};
 
 use ast;
-use proc_macro2::Span;
-use quote::{ToTokens, Tokens};
+use proc_macro2::{Span, Ident, TokenStream};
+use quote::ToTokens;
 use serde_json;
 use shared;
 use syn;
@@ -30,7 +30,7 @@ fn to_ident_name(s: &str) -> Cow<str> {
 
 impl ToTokens for ast::Program {
     // Generate wrappers for all the items that we've found
-    fn to_tokens(&self, tokens: &mut Tokens) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         for export in self.exports.iter() {
             export.to_tokens(tokens);
         }
@@ -39,15 +39,15 @@ impl ToTokens for ast::Program {
         }
         let mut types = HashSet::new();
         for i in self.imports.iter() {
-            if let ast::ImportKind::Type(ref t) = i.kind {
-                types.insert(t.name);
+            if let ast::ImportKind::Type(t) = &i.kind {
+                types.insert(t.name.clone());
             }
         }
         for i in self.imports.iter() {
             DescribeImport(&i.kind).to_tokens(tokens);
 
-            if let Some(ns) = i.js_namespace {
-                if types.contains(&ns) && i.kind.fits_on_impl() {
+            if let Some(ns) = &i.js_namespace {
+                if types.contains(ns) && i.kind.fits_on_impl() {
                     let kind = &i.kind;
                     (quote! { impl #ns { #kind } }).to_tokens(tokens);
                     continue
@@ -76,7 +76,7 @@ impl ToTokens for ast::Program {
             to_ident_name(&crate_vers),
             CNT.fetch_add(1, Ordering::SeqCst)
         );
-        let generated_static_name = syn::Ident::from(generated_static_name);
+        let generated_static_name = Ident::new(&generated_static_name, Span::call_site());
 
         let description = serde_json::to_string(&self.shared()).unwrap();
 
@@ -103,12 +103,13 @@ impl ToTokens for ast::Program {
 }
 
 impl ToTokens for ast::Struct {
-    fn to_tokens(&self, tokens: &mut Tokens) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         let name = &self.name;
-        let name_len = name.as_ref().len() as u32;
-        let name_chars = name.as_ref().chars().map(|c| c as u32);
-        let new_fn = syn::Ident::from(shared::new_function(self.name.as_ref()));
-        let free_fn = syn::Ident::from(shared::free_function(self.name.as_ref()));
+        let name_str = name.to_string();
+        let name_len = name_str.len() as u32;
+        let name_chars = name_str.chars().map(|c| c as u32);
+        let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
+        let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
         (quote! {
             impl ::wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
@@ -230,13 +231,13 @@ impl ToTokens for ast::Struct {
 }
 
 impl ToTokens for ast::StructField {
-    fn to_tokens(&self, tokens: &mut Tokens) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         let name = &self.name;
         let struct_name = &self.struct_name;
         let ty = &self.ty;
         let getter = &self.getter;
         let setter = &self.setter;
-        let desc = syn::Ident::from(format!("__wbindgen_describe_{}", getter));
+        let desc = Ident::new(&format!("__wbindgen_describe_{}", getter), Span::call_site());
         (quote! {
             #[no_mangle]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
@@ -292,17 +293,17 @@ impl ToTokens for ast::StructField {
 }
 
 impl ToTokens for ast::Export {
-    fn to_tokens(self: &ast::Export, into: &mut Tokens) {
+    fn to_tokens(self: &ast::Export, into: &mut TokenStream) {
         let generated_name = self.rust_symbol();
         let export_name = self.export_name();
         let mut args = vec![];
         let mut arg_conversions = vec![];
         let mut converted_arguments = vec![];
-        let ret = syn::Ident::from("_ret");
+        let ret = Ident::new("_ret", Span::call_site());
 
         let mut offset = 0;
         if self.method {
-            let class = self.class.unwrap();
+            let class = self.class.as_ref().unwrap();
             args.push(quote! { me: *mut ::wasm_bindgen::__rt::WasmRefCell<#class> });
             arg_conversions.push(quote! {
                 ::wasm_bindgen::__rt::assert_not_null(me);
@@ -313,7 +314,7 @@ impl ToTokens for ast::Export {
 
         for (i, ty) in self.function.arguments.iter().enumerate() {
             let i = i + offset;
-            let ident = syn::Ident::from(format!("arg{}", i));
+            let ident = Ident::new(&format!("arg{}", i), Span::call_site());
             match *ty {
                 syn::Type::Reference(syn::TypeReference {
                     mutability: Some(_),
@@ -359,9 +360,9 @@ impl ToTokens for ast::Export {
         }
         let ret_ty;
         let convert_ret;
-        match self.function.ret {
+        match &self.function.ret {
             Some(syn::Type::Reference(_)) => panic!("can't return a borrowed ref"),
-            Some(ref ty) => {
+            Some(ty) => {
                 ret_ty = quote! {
                     -> <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
                 };
@@ -377,8 +378,8 @@ impl ToTokens for ast::Export {
                 convert_ret = quote!{};
             }
         }
-        let describe_ret = match self.function.ret {
-            Some(ref ty) => {
+        let describe_ret = match &self.function.ret {
+            Some(ty) => {
                 quote! {
                     inform(1);
                     <#ty as WasmDescribe>::describe();
@@ -387,8 +388,8 @@ impl ToTokens for ast::Export {
             None => quote! { inform(0); },
         };
 
-        let name = self.function.name;
-        let receiver = match self.class {
+        let name = &self.function.name;
+        let receiver = match &self.class {
             Some(_) if self.method => {
                 if self.mutable {
                     quote! { me.borrow_mut().#name }
@@ -400,7 +401,7 @@ impl ToTokens for ast::Export {
             None => quote!{ #name },
         };
         let descriptor_name = format!("__wbindgen_describe_{}", export_name);
-        let descriptor_name = syn::Ident::from(descriptor_name);
+        let descriptor_name = Ident::new(&descriptor_name, Span::call_site());
         let nargs = self.function.arguments.len() as u32;
         let argtys = self.function.arguments.iter();
 
@@ -451,7 +452,7 @@ impl ToTokens for ast::Export {
 }
 
 impl ToTokens for ast::ImportKind {
-    fn to_tokens(&self, tokens: &mut Tokens) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         match *self {
             ast::ImportKind::Function(ref f) => f.to_tokens(tokens),
             ast::ImportKind::Static(ref s) => s.to_tokens(tokens),
@@ -461,7 +462,7 @@ impl ToTokens for ast::ImportKind {
 }
 
 impl ToTokens for ast::ImportType {
-    fn to_tokens(&self, tokens: &mut Tokens) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         let vis = &self.vis;
         let name = &self.name;
         (quote! {
@@ -541,7 +542,7 @@ impl ToTokens for ast::ImportType {
 }
 
 impl ToTokens for ast::ImportFunction {
-    fn to_tokens(&self, tokens: &mut Tokens) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         let mut class_ty = None;
         let mut is_method = false;
         match self.kind {
@@ -561,28 +562,32 @@ impl ToTokens for ast::ImportFunction {
         let mut abi_argument_names = Vec::new();
         let mut abi_arguments = Vec::new();
         let mut arg_conversions = Vec::new();
-        let ret_ident = syn::Ident::from("_ret");
+        let ret_ident = Ident::new("_ret", Span::call_site());
 
         let names = self.function
             .rust_decl
             .inputs
             .iter()
-            .map(|arg| match *arg {
-                syn::FnArg::Captured(ref c) => c,
-                _ => panic!("arguments cannot be `self` or ignored"),
+            .map(|arg| {
+                match arg {
+                    syn::FnArg::Captured(c) => c,
+                    _ => panic!("arguments cannot be `self` or ignored"),
+                }
             })
-            .map(|arg| match arg.pat {
-                syn::Pat::Ident(syn::PatIdent {
-                    by_ref: None,
-                    ident,
-                    subpat: None,
-                    ..
-                }) => ident,
-                _ => panic!("unsupported pattern in foreign function"),
+            .map(|arg| {
+                match &arg.pat {
+                    syn::Pat::Ident(syn::PatIdent {
+                        by_ref: None,
+                        ident,
+                        subpat: None,
+                        ..
+                    }) => ident.clone(),
+                    _ => panic!("unsupported pattern in foreign function"),
+                }
             });
 
         for (i, (ty, name)) in self.function.arguments.iter().zip(names).enumerate() {
-            abi_argument_names.push(name);
+            abi_argument_names.push(name.clone());
             abi_arguments.push(quote! {
                 #name: <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
             });
@@ -622,9 +627,9 @@ impl ToTokens for ast::ImportFunction {
 
         let mut exceptional_ret = quote!{};
         let exn_data = if self.function.opts.catch() {
-            let exn_data = syn::Ident::from("exn_data");
-            let exn_data_ptr = syn::Ident::from("exn_data_ptr");
-            abi_argument_names.push(exn_data_ptr);
+            let exn_data = Ident::new("exn_data", Span::call_site());
+            let exn_data_ptr = Ident::new("exn_data_ptr", Span::call_site());
+            abi_argument_names.push(exn_data_ptr.clone());
             abi_arguments.push(quote! { #exn_data_ptr: *mut u32 });
             convert_ret = quote! { Ok(#convert_ret) };
             exceptional_ret = quote! {
@@ -644,8 +649,8 @@ impl ToTokens for ast::ImportFunction {
             quote! {}
         };
 
-        let rust_name = self.rust_name;
-        let import_name = self.shim;
+        let rust_name = &self.rust_name;
+        let import_name = &self.shim;
         let attrs = &self.function.rust_attrs;
 
         let arguments = self.function
@@ -710,14 +715,14 @@ impl ToTokens for ast::ImportFunction {
 struct DescribeImport<'a>(&'a ast::ImportKind);
 
 impl<'a> ToTokens for DescribeImport<'a> {
-    fn to_tokens(&self, tokens: &mut Tokens) {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
         let f = match *self.0 {
             ast::ImportKind::Function(ref f) => f,
             ast::ImportKind::Static(_) => return,
             ast::ImportKind::Type(_) => return,
         };
         let describe_name = format!("__wbindgen_describe_{}", f.shim);
-        let describe_name = syn::Ident::from(describe_name);
+        let describe_name = Ident::new(&describe_name, Span::call_site());
         let argtys = f.function.arguments.iter();
         let nargs = f.function.arguments.len() as u32;
         let inform_ret = match f.function.ret {
@@ -739,7 +744,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
 }
 
 impl ToTokens for ast::Enum {
-    fn to_tokens(&self, into: &mut Tokens) {
+    fn to_tokens(&self, into: &mut TokenStream) {
         let enum_name = &self.name;
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
@@ -782,10 +787,10 @@ impl ToTokens for ast::Enum {
 }
 
 impl ToTokens for ast::ImportStatic {
-    fn to_tokens(&self, into: &mut Tokens) {
-        let name = self.rust_name;
+    fn to_tokens(&self, into: &mut TokenStream) {
+        let name = &self.rust_name;
         let ty = &self.ty;
-        let shim_name = self.shim;
+        let shim_name = &self.shim;
         let vis = &self.vis;
         (quote! {
             #[allow(bad_style)]

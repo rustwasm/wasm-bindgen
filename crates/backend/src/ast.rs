@@ -1,5 +1,5 @@
-use proc_macro2::TokenTree;
-use quote::{ToTokens, Tokens};
+use proc_macro2::{TokenTree, TokenStream, Ident, Span};
+use quote::ToTokens;
 use shared;
 use syn;
 
@@ -12,7 +12,7 @@ pub struct Program {
 }
 
 pub struct Export {
-    pub class: Option<syn::Ident>,
+    pub class: Option<Ident>,
     pub method: bool,
     pub mutable: bool,
     pub constructor: Option<String>,
@@ -22,7 +22,7 @@ pub struct Export {
 pub struct Import {
     pub module: Option<String>,
     pub version: Option<String>,
-    pub js_namespace: Option<syn::Ident>,
+    pub js_namespace: Option<Ident>,
     pub kind: ImportKind,
 }
 
@@ -34,9 +34,9 @@ pub enum ImportKind {
 
 pub struct ImportFunction {
     pub function: Function,
-    pub rust_name: syn::Ident,
+    pub rust_name: Ident,
     pub kind: ImportFunctionKind,
-    pub shim: syn::Ident,
+    pub shim: Ident,
 }
 
 pub enum ImportFunctionKind {
@@ -48,18 +48,18 @@ pub enum ImportFunctionKind {
 pub struct ImportStatic {
     pub vis: syn::Visibility,
     pub ty: syn::Type,
-    pub shim: syn::Ident,
-    pub rust_name: syn::Ident,
-    pub js_name: syn::Ident,
+    pub shim: Ident,
+    pub rust_name: Ident,
+    pub js_name: Ident,
 }
 
 pub struct ImportType {
     pub vis: syn::Visibility,
-    pub name: syn::Ident,
+    pub name: Ident,
 }
 
 pub struct Function {
-    pub name: syn::Ident,
+    pub name: Ident,
     pub arguments: Vec<syn::Type>,
     pub ret: Option<syn::Type>,
     pub opts: BindgenAttrs,
@@ -69,26 +69,26 @@ pub struct Function {
 }
 
 pub struct Struct {
-    pub name: syn::Ident,
+    pub name: Ident,
     pub fields: Vec<StructField>,
 }
 
 pub struct StructField {
     pub opts: BindgenAttrs,
-    pub name: syn::Ident,
-    pub struct_name: syn::Ident,
+    pub name: Ident,
+    pub struct_name: Ident,
     pub ty: syn::Type,
-    pub getter: syn::Ident,
-    pub setter: syn::Ident,
+    pub getter: Ident,
+    pub setter: Ident,
 }
 
 pub struct Enum {
-    pub name: syn::Ident,
+    pub name: Ident,
     pub variants: Vec<Variant>,
 }
 
 pub struct Variant {
-    pub name: syn::Ident,
+    pub name: Ident,
     pub value: u32,
 }
 
@@ -108,7 +108,7 @@ pub enum TypeLocation {
 }
 
 impl Program {
-    pub fn push_item(&mut self, item: syn::Item, opts: Option<BindgenAttrs>, tokens: &mut Tokens) {
+    pub fn push_item(&mut self, item: syn::Item, opts: Option<BindgenAttrs>, tokens: &mut TokenStream) {
         match item {
             syn::Item::Fn(mut f) => {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
@@ -183,11 +183,11 @@ impl Program {
             _ => panic!("unsupported self type in impl"),
         };
         for item in item.items.iter_mut() {
-            self.push_impl_item(name, item);
+            self.push_impl_item(&name, item);
         }
     }
 
-    fn push_impl_item(&mut self, class: syn::Ident, item: &mut syn::ImplItem) {
+    fn push_impl_item(&mut self, class: &Ident, item: &mut syn::ImplItem) {
         replace_self(class, item);
         let method = match item {
             syn::ImplItem::Const(_) => panic!("const definitions aren't supported"),
@@ -219,7 +219,7 @@ impl Program {
         };
 
         let (function, mutable) = Function::from_decl(
-            method.sig.ident,
+            &method.sig.ident,
             Box::new(method.sig.decl.clone()),
             method.attrs.clone(),
             opts,
@@ -228,7 +228,7 @@ impl Program {
         );
 
         self.exports.push(Export {
-            class: Some(class),
+            class: Some(class.clone()),
             method: mutable.is_some(),
             mutable: mutable.unwrap_or(false),
             constructor,
@@ -268,7 +268,7 @@ impl Program {
                 };
 
                 Variant {
-                    name: v.ident,
+                    name: v.ident.clone(),
                     value,
                 }
             })
@@ -297,7 +297,7 @@ impl Program {
             };
             let module = item_opts.module().or(opts.module()).map(|s| s.to_string());
             let version = item_opts.version().or(opts.version()).map(|s| s.to_string());
-            let js_namespace = item_opts.js_namespace().or(opts.js_namespace());
+            let js_namespace = item_opts.js_namespace().or(opts.js_namespace()).cloned();
             let mut kind = match item {
                 syn::ForeignItem::Fn(f) => self.push_foreign_fn(f, item_opts),
                 syn::ForeignItem::Type(t) => self.push_foreign_ty(t),
@@ -315,9 +315,9 @@ impl Program {
     }
 
     pub fn push_foreign_fn(&mut self, f: syn::ForeignItemFn, opts: BindgenAttrs) -> ImportKind {
-        let js_name = opts.js_name().unwrap_or(f.ident);
+        let js_name = opts.js_name().unwrap_or(&f.ident).clone();
         let mut wasm = Function::from_decl(
-            js_name,
+            &js_name,
             f.decl,
             f.attrs,
             opts,
@@ -359,7 +359,7 @@ impl Program {
                 .expect("first argument of method must be a bare type");
 
             ImportFunctionKind::Method {
-                class: class_name.as_ref().to_string(),
+                class: class_name.to_string(),
                 ty: class.clone(),
             }
         } else if wasm.opts.constructor() {
@@ -378,7 +378,7 @@ impl Program {
                 .expect("first argument of method must be a bare type");
 
             ImportFunctionKind::JsConstructor {
-                class: class_name.as_ref().to_string(),
+                class: class_name.to_string(),
                 ty: class.clone(),
             }
         } else {
@@ -396,8 +396,8 @@ impl Program {
         ImportKind::Function(ImportFunction {
             function: wasm,
             kind,
-            rust_name: f.ident,
-            shim: shim.into(),
+            rust_name: f.ident.clone(),
+            shim: Ident::new(&shim, Span::call_site()),
         })
     }
 
@@ -416,14 +416,14 @@ impl Program {
         if f.mutability.is_some() {
             panic!("cannot import mutable globals yet")
         }
-        let js_name = opts.js_name().unwrap_or(f.ident);
+        let js_name = opts.js_name().unwrap_or(&f.ident);
         let shim = format!("__wbg_static_accessor_{}_{}", js_name, f.ident);
         ImportKind::Static(ImportStatic {
             ty: *f.ty,
             vis: f.vis,
-            rust_name: f.ident,
-            js_name,
-            shim: shim.into(),
+            rust_name: f.ident.clone(),
+            js_name: js_name.clone(),
+            shim: Ident::new(&shim, Span::call_site()),
         })
     }
 
@@ -453,7 +453,7 @@ impl Function {
         }
 
         Function::from_decl(
-            input.ident,
+            &input.ident,
             input.decl,
             input.attrs,
             opts,
@@ -463,7 +463,7 @@ impl Function {
     }
 
     pub fn from_decl(
-        name: syn::Ident,
+        name: &Ident,
         mut decl: Box<syn::FnDecl>,
         attrs: Vec<syn::Attribute>,
         opts: BindgenAttrs,
@@ -504,7 +504,7 @@ impl Function {
 
         (
             Function {
-                name,
+                name: name.clone(),
                 arguments,
                 ret,
                 opts,
@@ -518,12 +518,12 @@ impl Function {
 
     fn shared(&self) -> shared::Function {
         shared::Function {
-            name: self.name.as_ref().to_string(),
+            name: self.name.to_string(),
         }
     }
 }
 
-pub fn extract_path_ident(path: &syn::Path) -> Option<syn::Ident> {
+pub fn extract_path_ident(path: &syn::Path) -> Option<Ident> {
     if path.leading_colon.is_some() {
         return None;
     }
@@ -534,33 +534,34 @@ pub fn extract_path_ident(path: &syn::Path) -> Option<syn::Ident> {
         syn::PathArguments::None => {}
         _ => return None,
     }
-    path.segments.first().map(|v| v.value().ident)
+    path.segments.first().map(|v| v.value().ident.clone())
 }
 
 impl Export {
-    pub fn rust_symbol(&self) -> syn::Ident {
+    pub fn rust_symbol(&self) -> Ident {
         let mut generated_name = format!("__wasm_bindgen_generated");
-        if let Some(class) = self.class {
+        if let Some(class) = &self.class {
             generated_name.push_str("_");
-            generated_name.push_str(class.as_ref());
+            generated_name.push_str(&class.to_string());
         }
         generated_name.push_str("_");
-        generated_name.push_str(self.function.name.as_ref());
-        syn::Ident::from(generated_name)
+        generated_name.push_str(&self.function.name.to_string());
+        Ident::new(&generated_name, Span::call_site())
     }
 
     pub fn export_name(&self) -> String {
-        match self.class {
+        let fn_name = self.function.name.to_string();
+        match &self.class {
             Some(class) => {
-                shared::struct_function_export_name(class.as_ref(), self.function.name.as_ref())
+                shared::struct_function_export_name(&class.to_string(), &fn_name)
             }
-            None => shared::free_function_export_name(self.function.name.as_ref()),
+            None => shared::free_function_export_name(&fn_name),
         }
     }
 
     fn shared(&self) -> shared::Export {
         shared::Export {
-            class: self.class.map(|s| s.as_ref().to_string()),
+            class: self.class.as_ref().map(|s| s.to_string()),
             method: self.method,
             constructor: self.constructor.clone(),
             function: self.function.shared(),
@@ -571,7 +572,7 @@ impl Export {
 impl Enum {
     fn shared(&self) -> shared::Enum {
         shared::Enum {
-            name: self.name.as_ref().to_string(),
+            name: self.name.to_string(),
             variants: self.variants.iter().map(|v| v.shared()).collect(),
         }
     }
@@ -580,7 +581,7 @@ impl Enum {
 impl Variant {
     fn shared(&self) -> shared::EnumVariant {
         shared::EnumVariant {
-            name: self.name.as_ref().to_string(),
+            name: self.name.to_string(),
             value: self.value,
         }
     }
@@ -611,7 +612,7 @@ impl Import {
         shared::Import {
             module: self.module.clone(),
             version: self.version.clone(),
-            js_namespace: self.js_namespace.map(|s| s.as_ref().to_string()),
+            js_namespace: self.js_namespace.as_ref().map(|s| s.to_string()),
             kind: self.kind.shared(),
         }
     }
@@ -637,11 +638,11 @@ impl ImportKind {
 
 impl ImportFunction {
     pub fn infer_getter_property(&self) -> String {
-        self.function.name.as_ref().to_string()
+        self.function.name.to_string()
     }
 
     pub fn infer_setter_property(&self) -> String {
-        let name = self.function.name.as_ref();
+        let name = self.function.name.to_string();
         assert!(name.starts_with("set_"), "setters must start with `set_`");
         name[4..].to_string()
     }
@@ -673,7 +674,7 @@ impl ImportFunction {
             setter = Some(s.unwrap_or_else(|| self.infer_setter_property()));
         }
         shared::ImportFunction {
-            shim: self.shim.as_ref().to_string(),
+            shim: self.shim.to_string(),
             catch: self.function.opts.catch(),
             method,
             js_new,
@@ -689,8 +690,8 @@ impl ImportFunction {
 impl ImportStatic {
     fn shared(&self) -> shared::ImportStatic {
         shared::ImportStatic {
-            name: self.js_name.as_ref().to_string(),
-            shim: self.shim.as_ref().to_string(),
+            name: self.js_name.to_string(),
+            shim: self.shim.to_string(),
         }
     }
 }
@@ -710,32 +711,34 @@ impl Struct {
                     syn::Visibility::Public(..) => {}
                     _ => continue,
                 }
-                let name = match field.ident {
+                let name = match &field.ident {
                     Some(n) => n,
                     None => continue,
                 };
-                let getter = shared::struct_field_get(s.ident.as_ref(), name.as_ref());
-                let setter = shared::struct_field_set(s.ident.as_ref(), name.as_ref());
+                let ident = s.ident.to_string();
+                let name_str = name.to_string();
+                let getter = shared::struct_field_get(&ident, &name_str);
+                let setter = shared::struct_field_set(&ident, &name_str);
                 let opts = BindgenAttrs::find(&mut field.attrs);
                 fields.push(StructField {
                     opts,
-                    name,
-                    struct_name: s.ident,
+                    name: name.clone(),
+                    struct_name: s.ident.clone(),
                     ty: field.ty.clone(),
-                    getter: getter.into(),
-                    setter: setter.into(),
+                    getter: Ident::new(&getter, Span::call_site()),
+                    setter: Ident::new(&setter, Span::call_site()),
                 });
             }
         }
         Struct {
-            name: s.ident,
+            name: s.ident.clone(),
             fields,
         }
     }
 
     fn shared(&self) -> shared::Struct {
         shared::Struct {
-            name: self.name.as_ref().to_string(),
+            name: self.name.to_string(),
             fields: self.fields.iter().map(|s| s.shared()).collect(),
         }
     }
@@ -744,7 +747,7 @@ impl Struct {
 impl StructField {
     fn shared(&self) -> shared::StructField {
         shared::StructField {
-            name: self.name.as_ref().to_string(),
+            name: self.name.to_string(),
             readonly: self.opts.readonly(),
         }
     }
@@ -781,9 +784,11 @@ impl BindgenAttrs {
     fn module(&self) -> Option<&str> {
         self.attrs
             .iter()
-            .filter_map(|a| match *a {
-                BindgenAttr::Module(ref s) => Some(&s[..]),
-                _ => None,
+            .filter_map(|a| {
+                match a {
+                    BindgenAttr::Module(s) => Some(&s[..]),
+                    _ => None,
+                }
             })
             .next()
     }
@@ -791,84 +796,104 @@ impl BindgenAttrs {
     fn version(&self) -> Option<&str> {
         self.attrs
             .iter()
-            .filter_map(|a| match *a {
-                BindgenAttr::Version(ref s) => Some(&s[..]),
-                _ => None,
+            .filter_map(|a| {
+                match a {
+                    BindgenAttr::Version(s) => Some(&s[..]),
+                    _ => None,
+                }
             })
             .next()
     }
 
     pub fn catch(&self) -> bool {
-        self.attrs.iter().any(|a| match *a {
-            BindgenAttr::Catch => true,
-            _ => false,
+        self.attrs.iter().any(|a| {
+            match a {
+                BindgenAttr::Catch => true,
+                _ => false,
+            }
         })
     }
 
     fn constructor(&self) -> bool {
-        self.attrs.iter().any(|a| match *a {
-            BindgenAttr::Constructor => true,
-            _ => false,
+        self.attrs.iter().any(|a| {
+            match a {
+                BindgenAttr::Constructor => true,
+                _ => false,
+            }
         })
     }
 
     fn method(&self) -> bool {
-        self.attrs.iter().any(|a| match *a {
-            BindgenAttr::Method => true,
-            _ => false,
+        self.attrs.iter().any(|a| {
+            match a {
+                BindgenAttr::Method => true,
+                _ => false,
+            }
         })
     }
 
-    fn js_namespace(&self) -> Option<syn::Ident> {
+    fn js_namespace(&self) -> Option<&Ident> {
         self.attrs
             .iter()
-            .filter_map(|a| match *a {
-                BindgenAttr::JsNamespace(s) => Some(s),
-                _ => None,
+            .filter_map(|a| {
+                match a {
+                    BindgenAttr::JsNamespace(s) => Some(s),
+                    _ => None,
+                }
             })
             .next()
     }
 
-    pub fn getter(&self) -> Option<Option<syn::Ident>> {
+    pub fn getter(&self) -> Option<Option<&Ident>> {
         self.attrs
             .iter()
-            .filter_map(|a| match *a {
-                BindgenAttr::Getter(s) => Some(s),
-                _ => None,
+            .filter_map(|a| {
+                match a {
+                    BindgenAttr::Getter(s) => Some(s.as_ref()),
+                    _ => None,
+                }
             })
             .next()
     }
 
-    pub fn setter(&self) -> Option<Option<syn::Ident>> {
+    pub fn setter(&self) -> Option<Option<&Ident>> {
         self.attrs
             .iter()
-            .filter_map(|a| match *a {
-                BindgenAttr::Setter(s) => Some(s),
-                _ => None,
+            .filter_map(|a| {
+                match a {
+                    BindgenAttr::Setter(s) => Some(s.as_ref()),
+                    _ => None,
+                }
             })
             .next()
     }
 
     pub fn structural(&self) -> bool {
-        self.attrs.iter().any(|a| match *a {
-            BindgenAttr::Structural => true,
-            _ => false,
+        self.attrs.iter().any(|a| {
+            match *a {
+                BindgenAttr::Structural => true,
+                _ => false,
+            }
         })
     }
 
     pub fn readonly(&self) -> bool {
-        self.attrs.iter().any(|a| match *a {
-            BindgenAttr::Readonly => true,
-            _ => false,
+        self.attrs.iter().any(|a| {
+            match *a {
+                BindgenAttr::Readonly => true,
+                _ => false,
+            }
         })
     }
 
-    pub fn js_name(&self) -> Option<syn::Ident> {
+    pub fn js_name(&self) -> Option<&Ident> {
         self.attrs
             .iter()
-            .filter_map(|a| match *a {
-                BindgenAttr::JsName(s) => Some(s),
-                _ => None,
+            .filter_map(|a| {
+                match a {
+                    BindgenAttr::JsName(s) => Some(s),
+                    _ => None,
+                }
             })
             .next()
     }
@@ -894,14 +919,14 @@ enum BindgenAttr {
     Catch,
     Constructor,
     Method,
-    JsNamespace(syn::Ident),
+    JsNamespace(Ident),
     Module(String),
     Version(String),
-    Getter(Option<syn::Ident>),
-    Setter(Option<syn::Ident>),
+    Getter(Option<Ident>),
+    Setter(Option<Ident>),
     Structural,
     Readonly,
-    JsName(syn::Ident),
+    JsName(Ident),
 }
 
 impl syn::synom::Synom for BindgenAttr {
@@ -995,8 +1020,8 @@ fn extract_first_ty_param(ty: Option<&syn::Type>) -> Option<Option<syn::Type>> {
 }
 
 fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<'a, ()> {
-    if let Some((term, next)) = cursor.term() {
-        if term.as_str() == name {
+    if let Some((ident, next)) = cursor.ident() {
+        if ident == name {
             return Ok(((), next));
         }
     }
@@ -1004,16 +1029,12 @@ fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<
 }
 
 fn term2ident<'a>(cursor: syn::buffer::Cursor<'a>)
-    -> syn::synom::PResult<'a, syn::Ident>
+    -> syn::synom::PResult<'a, Ident>
 {
-    if let Some((term, next)) = cursor.term() {
-        let n = term.to_string();
-        if !n.starts_with("'") {
-            let i = syn::Ident::new(&n, term.span());
-            return Ok((i, next));
-        }
+    match cursor.ident() {
+        Some(pair) => Ok(pair),
+        None => syn::parse_error()
     }
-    syn::parse_error()
 }
 
 fn assert_no_lifetimes(decl: &mut syn::FnDecl) {
@@ -1029,13 +1050,13 @@ fn assert_no_lifetimes(decl: &mut syn::FnDecl) {
     syn::visit_mut::VisitMut::visit_fn_decl_mut(&mut Walk, decl);
 }
 
-fn replace_self(name: syn::Ident, item: &mut syn::ImplItem) {
-    struct Walk(syn::Ident);
+fn replace_self(name: &Ident, item: &mut syn::ImplItem) {
+    struct Walk<'a>(&'a Ident);
 
-    impl syn::visit_mut::VisitMut for Walk {
-        fn visit_ident_mut(&mut self, i: &mut syn::Ident) {
-            if i.as_ref() == "Self" {
-                *i = self.0;
+    impl<'a> syn::visit_mut::VisitMut for Walk<'a> {
+        fn visit_ident_mut(&mut self, i: &mut Ident) {
+            if i == "Self" {
+                *i = self.0.clone();
             }
         }
     }
