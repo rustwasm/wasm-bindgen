@@ -1,10 +1,11 @@
-//! This is mostly an internal module, no stability guarantees are provied. Use
+//! This is mostly an internal module, no stability guarantees are provided. Use
 //! at your own risk.
 
 use core::mem::{self, ManuallyDrop};
 use core::ops::{Deref, DerefMut};
 use core::slice;
 use core::str;
+use core::char;
 
 use {JsValue, throw};
 use describe::*;
@@ -132,6 +133,18 @@ impl FromWasmAbi for bool {
     type Abi = u32;
 
     unsafe fn from_abi(js: u32, _extra: &mut Stack) -> bool { js != 0 }
+}
+
+impl IntoWasmAbi for char {
+    type Abi = u32;
+    fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
+}
+
+impl FromWasmAbi for char {
+    type Abi = u32;
+    unsafe fn from_abi(js: u32, _extra: &mut Stack) -> char { 
+        char::from_u32_unchecked(js)
+    }
 }
 
 impl<T> IntoWasmAbi for *const T {

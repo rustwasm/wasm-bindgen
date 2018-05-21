@@ -216,6 +216,25 @@ impl<'a> Context<'a> {
             "))
         })?;
 
+        self.bind("__wbindgen_char_new", &|me| {
+            me.expose_add_heap_object();
+            Ok(String::from("function(i) { return addHeapObject(i); }"))
+        })?;
+
+        self.bind("__wbindgen_char_get", &|me| {
+            me.expose_get_object();
+            me.expose_uint8_memory();
+            Ok(format!("
+                function(n, invalid) {{
+                    let obj = getObject(n);
+                    if (typeof(obj) === 'number')
+                        return String.fromCodePoint(obj);
+                    getUint8Memory()[invalid] = 1;
+                    return 0;
+                }}
+            "))
+        })?;
+
         self.bind("__wbindgen_symbol_new", &|me| {
             me.expose_get_string_from_wasm();
             me.expose_add_heap_object();

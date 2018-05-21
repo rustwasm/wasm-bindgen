@@ -305,6 +305,8 @@ externs! {
     fn __wbindgen_is_undefined(idx: u32) -> u32;
     fn __wbindgen_boolean_new(val: u32) -> u32;
     fn __wbindgen_boolean_get(idx: u32) -> u32;
+    fn __wbindgen_char_new(val: u32) -> u32;
+    fn __wbindgen_char_get(idx: u32) -> u32;
     fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_is_symbol(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
