@@ -265,7 +265,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
         if let Some(name) = ty.rust_struct() {
             self.ret_ty = name.to_string();
-            self.ret_expr = format!("return {name}.__construct(RET);", name = name);
+            self.ret_expr = format!("return {export}{name}.__construct(RET);", name = name, export = if self.cx.config.no_modules { "__exports." } else { "" });
             return Ok(self)
         }
 
