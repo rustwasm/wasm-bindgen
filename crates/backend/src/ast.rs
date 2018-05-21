@@ -704,6 +704,10 @@ impl ImportType {
 
 impl Struct {
     fn from(s: &mut syn::ItemStruct, _opts: BindgenAttrs) -> Struct {
+        if s.generics.params.len() > 0 {
+            panic!("structs with #[wasm_bindgen] cannot have lifetime or \
+                    type parameters currently");
+        }
         let mut fields = Vec::new();
         if let syn::Fields::Named(names) = &mut s.fields {
             for field in names.named.iter_mut() {
