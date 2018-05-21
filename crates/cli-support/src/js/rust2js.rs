@@ -90,6 +90,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
             if !arg.is_by_ref() {
                 self.prelude(&format!("\
+                    v{0} = v{0}.slice();\n\
                     wasm.__wbindgen_free({0}, {1} * {size});\
                 ", abi, abi2, size = ty.size()));
                 self.cx.require_internal_export("__wbindgen_free")?;

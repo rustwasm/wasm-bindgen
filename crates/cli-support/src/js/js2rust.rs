@@ -256,7 +256,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 const mem = getUint32Memory();\n\
                 const ptr = mem[retptr / 4];\n\
                 const len = mem[retptr / 4 + 1];\n\
-                const realRet = {}(ptr, len);\n\
+                const realRet = {}(ptr, len).slice();\n\
                 wasm.__wbindgen_free(ptr, len * {});\n\
                 return realRet;\n\
             ", f, ty.size());

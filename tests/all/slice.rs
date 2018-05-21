@@ -416,3 +416,76 @@ fn export_mut() {
         .test();
 }
 
+#[test]
+fn return_vec_ok() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub fn broken_vec() -> Vec<u32> {
+                vec![1, 2, 3, 4, 5, 6, 7, 8, 9]
+            }
+
+            #[wasm_bindgen]
+            pub fn web_main() -> Application {
+                Application::new()
+            }
+
+            #[wasm_bindgen]
+            pub struct Application {
+                thing: Vec<u32>,
+            }
+
+            #[wasm_bindgen]
+            impl Application {
+                pub fn new() -> Application {
+                    let mut thing = vec![];
+                    thing.push(0);
+                    thing.push(0);
+                    thing.push(0);
+                    thing.push(0);
+                    thing.push(0);
+
+                    Application {
+                        thing: thing
+                    }
+                }
+                pub fn tick(&mut self) {
+                    self.thing = self.thing.clone();
+                }
+            }
+
+            pub fn main() {
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+
+            export function test() {
+                let app = wasm.web_main();
+
+                for (let i = 0; i < 10; i++) {
+                    app.tick();
+                    let bad = wasm.broken_vec();
+                    console.log("Received from rust:", i, bad);
+                    assert.strictEqual(bad[0], 1);
+                    assert.strictEqual(bad[1], 2);
+                    assert.strictEqual(bad[2], 3);
+                    assert.strictEqual(bad[3], 4);
+                    assert.strictEqual(bad[4], 5);
+                    assert.strictEqual(bad[5], 6);
+                    assert.strictEqual(bad[6], 7);
+                    assert.strictEqual(bad[7], 8);
+                    assert.strictEqual(bad[8], 9);
+                }
+            }
+      "#)
+        .test();
+}
+
