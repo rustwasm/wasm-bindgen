@@ -1,10 +1,6 @@
 {
-  "name": "char",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
   "scripts": {
-    "serve": "./node_modules/.bin/webpack-dev-server"
+    "serve": "webpack-dev-server"
   },
   "devDependencies": {
     "webpack": "^4.8.3",
