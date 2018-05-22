@@ -47,9 +47,3 @@ impl Counter {
         self.key = key;
     }
 }
-
-#[wasm_bindgen]
-pub fn parrot(key: char) -> char {
-    log(&format!("{}", key));
-    key
-}
