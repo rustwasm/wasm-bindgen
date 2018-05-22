@@ -254,11 +254,10 @@ impl Output {
 
     fn js_wasm2asm(self) -> Result<String, Error> {
         let mut js_imports = String::new();
-        let mut imported_modules = Vec::new();
+        let mut imported_items = Vec::new();
         if let Some(i) = self.module.import_section() {
-            let mut module_set = HashSet::new();
             let mut name_map = HashMap::new();
-            for entry in i.entries() {
+            for (i, entry) in i.entries().iter().enumerate() {
                 match *entry.external() {
                     External::Function(_) => {}
                     External::Table(_) => {
@@ -279,15 +278,12 @@ impl Output {
                            mode");
                 }
 
-                if !module_set.insert(entry.module()) {
-                    continue
-                }
-
-                let name = (b'a' + (module_set.len() as u8)) as char;
-                js_imports.push_str(&format!("import * as import_{} from '{}';",
+                let name = format!("import{}", i);
+                js_imports.push_str(&format!("import {{ {} as {} }} from '{}';\n",
+                                             entry.field(),
                                              name,
                                              entry.module()));
-                imported_modules.push(format!("import_{}", name));
+                imported_items.push((entry.field().to_string(), name));
             }
         }
 
@@ -373,9 +369,11 @@ impl Output {
             })?;
 
 
-        let mut imports = String::from("{}");
-        for m in imported_modules {
-            imports = format!("Object.assign({}, {})", imports, m);
+        let mut make_imports = String::from("
+            var imports = {};
+        ");
+        for (name, import) in imported_items {
+            make_imports.push_str(&format!("imports['{}'] = {};\n", name, import));
         }
 
         Ok(format!("\
@@ -397,14 +395,27 @@ impl Output {
                 }}
             }}
             {js_init_mem}
-            const ret = asmFunc(self, {imports}, mem);
+            {make_imports}
+            const ret = asmFunc({{
+                Math,
+                Int8Array,
+                Uint8Array,
+                Int16Array,
+                Uint16Array,
+                Int32Array,
+                Uint32Array,
+                Float32Array,
+                Float64Array,
+                NaN,
+                Infinity,
+            }}, imports, mem);
             {js_exports}
         ",
             js_imports = js_imports,
             js_init_mem = js_init_mem,
             asm_func = asm_func,
             js_exports = js_exports,
-            imports = imports,
+            make_imports = make_imports,
             mem_size = memory_size * (1 << 16),
         ))
     }
