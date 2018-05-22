@@ -3,7 +3,7 @@ use failure::Error;
 use descriptor::{Descriptor, Function};
 use super::{indent, Context, Js2Rust};
 
-/// Helper struct for manfuacturing a shim in JS used to translate Rust types to
+/// Helper struct for manufacturing a shim in JS used to translate Rust types to
 /// JS, then invoking an imported JS function.
 pub struct Rust2Js<'a, 'b: 'a> {
     cx: &'a mut Context<'b>,
@@ -211,6 +211,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         let invoc_arg = match *arg {
             ref d if d.is_number() => abi,
             Descriptor::Boolean => format!("{} !== 0", abi),
+            Descriptor::Char => {
+                format!("String.fromCodePoint({})", abi)
+            }
             Descriptor::Anyref => {
                 self.cx.expose_take_object();
                 format!("takeObject({})", abi)
@@ -269,6 +272,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
         self.ret_expr = match *ty {
             Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
+            Descriptor::Char => "return JS.codePointAt(0)".to_string(),
             Descriptor::Anyref => {
                 self.cx.expose_add_heap_object();
                 "return addHeapObject(JS);".to_string()

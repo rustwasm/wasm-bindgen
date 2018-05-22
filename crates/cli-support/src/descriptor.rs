@@ -32,6 +32,7 @@ tys! {
     ANYREF
     ENUM
     RUST_STRUCT
+    CHAR
 }
 
 #[derive(Debug)]
@@ -57,6 +58,7 @@ pub enum Descriptor {
     Anyref,
     Enum,
     RustStruct(String),
+    Char,
 }
 
 #[derive(Debug)]
@@ -122,6 +124,7 @@ impl Descriptor {
                     .collect();
                 Descriptor::RustStruct(name)
             }
+            CHAR => Descriptor::Char,
             other => panic!("unknown descriptor: {}", other),
         }
     }

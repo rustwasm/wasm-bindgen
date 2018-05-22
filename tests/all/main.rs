@@ -382,3 +382,4 @@ mod slice;
 mod structural;
 mod non_wasm;
 mod u64;
+mod char;

@@ -37,6 +37,7 @@ tys! {
     ANYREF
     ENUM
     RUST_STRUCT
+    CHAR
 }
 
 pub fn inform(a: u32) {
@@ -71,6 +72,7 @@ simple! {
     f32 => F32
     f64 => F64
     bool => BOOLEAN
+    char => CHAR
     str => STRING
     JsValue => ANYREF
 }

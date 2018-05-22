@@ -33,5 +33,6 @@ The examples here are:
   numbers.
 * `asm.js` - an example of using the `wasm2asm` tool from [binaryen] to convert
   the generated WebAssembly to normal JS
+* `char` - an example of passing the rust `char` type to and from the js `string` type
 
 [binaryen]: https://github.com/WebAssembly/binaryen
