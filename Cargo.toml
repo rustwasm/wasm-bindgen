@@ -45,6 +45,7 @@ members = [
   "examples/add",
   "examples/asm.js",
   "examples/char",
+  "examples/import_js",
 ]
 
 [profile.release]
