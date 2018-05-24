@@ -14,7 +14,7 @@ Definition of the `#[wasm_bindgen]` attribute, an internal dependency
 proc-macro = true
 
 [features]
-spans = ["wasm-bindgen-backend/spans"]
+spans = ["proc-macro2/nightly", "wasm-bindgen-backend/spans"]
 
 [dependencies]
 syn = { version = '0.14', features = ['full'] }
