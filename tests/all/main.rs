@@ -383,3 +383,4 @@ mod structural;
 mod non_wasm;
 mod u64;
 mod char;
+mod webidl;
