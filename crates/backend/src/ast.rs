@@ -3,7 +3,7 @@ use quote::ToTokens;
 use shared;
 use syn;
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq, Eq)]
 pub struct Program {
     pub exports: Vec<Export>,
     pub imports: Vec<Import>,
@@ -11,7 +11,7 @@ pub struct Program {
     pub structs: Vec<Struct>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Export {
     pub class: Option<Ident>,
     pub method: bool,
@@ -20,7 +20,7 @@ pub struct Export {
     pub function: Function,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Import {
     pub module: Option<String>,
     pub version: Option<String>,
@@ -28,14 +28,14 @@ pub struct Import {
     pub kind: ImportKind,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum ImportKind {
     Function(ImportFunction),
     Static(ImportStatic),
     Type(ImportType),
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct ImportFunction {
     pub function: Function,
     pub rust_name: Ident,
@@ -43,14 +43,14 @@ pub struct ImportFunction {
     pub shim: Ident,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum ImportFunctionKind {
     Method { class: String, ty: syn::Type },
     JsConstructor { class: String, ty: syn::Type },
     Normal,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct ImportStatic {
     pub vis: syn::Visibility,
     pub ty: syn::Type,
@@ -59,13 +59,13 @@ pub struct ImportStatic {
     pub js_name: Ident,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct ImportType {
     pub vis: syn::Visibility,
     pub name: Ident,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Function {
     pub name: Ident,
     pub arguments: Vec<syn::Type>,
@@ -76,13 +76,13 @@ pub struct Function {
     pub rust_vis: syn::Visibility,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Struct {
     pub name: Ident,
     pub fields: Vec<StructField>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct StructField {
     pub opts: BindgenAttrs,
     pub name: Ident,
@@ -92,26 +92,26 @@ pub struct StructField {
     pub setter: Ident,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Enum {
     pub name: Ident,
     pub variants: Vec<Variant>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Variant {
     pub name: Ident,
     pub value: u32,
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum TypeKind {
     ByRef,
     ByMutRef,
     ByValue,
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum TypeLocation {
     ImportArgument,
     ImportRet,
@@ -769,7 +769,7 @@ impl StructField {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, PartialEq, Eq)]
 pub struct BindgenAttrs {
     attrs: Vec<BindgenAttr>,
 }
@@ -930,7 +930,7 @@ impl syn::synom::Synom for BindgenAttrs {
     ));
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 enum BindgenAttr {
     Catch,
     Constructor,
