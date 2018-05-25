@@ -22,6 +22,10 @@ spans = ["wasm-bindgen-macro/spans"]
 std = []
 serde-serialize = ["serde", "serde_json", "std"]
 
+# This is only for debugging wasm-bindgen! No stability guarantees, so enable
+# this at your own peril!
+xxx_debug_only_print_generated_code = ["wasm-bindgen-macro/xxx_debug_only_print_generated_code"]
+
 [dependencies]
 wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.11" }
 serde = { version = "1.0", optional = true }

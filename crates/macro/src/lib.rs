@@ -20,7 +20,9 @@ pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
     program.push_item(item, Some(opts), &mut ret);
     program.to_tokens(&mut ret);
 
-    // println!("{}", ret);
+    if cfg!(feature = "xxx_debug_only_print_generated_code") {
+        println!("{}", ret);
+    }
 
     ret.into()
 }
