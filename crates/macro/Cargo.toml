@@ -15,6 +15,7 @@ proc-macro = true
 
 [features]
 spans = ["proc-macro2/nightly", "wasm-bindgen-backend/spans"]
+xxx_debug_only_print_generated_code = []
 
 [dependencies]
 syn = { version = '0.14', features = ['full'] }
