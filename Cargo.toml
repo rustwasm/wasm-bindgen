@@ -37,6 +37,7 @@ wasm-bindgen-cli-support = { path = "crates/cli-support", version = '=0.2.11' }
 [workspace]
 members = [
   "crates/cli",
+  "crates/webidl",
   "examples/hello_world",
   "examples/smorgasboard",
   "examples/console_log",
