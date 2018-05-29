@@ -12,10 +12,11 @@ Backend code generation of the wasm-bindgen tool
 
 [features]
 spans = ["proc-macro2/nightly"]
+extra-traits = ["syn/extra-traits"]
 
 [dependencies]
 quote = '0.6'
 proc-macro2 = "0.4"
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.11" }
-syn = { version = '0.14', features = ['extra-traits', 'full', 'visit-mut'] }
+syn = { version = '0.14', features = ['full', 'visit-mut'] }
 serde_json = "1.0"

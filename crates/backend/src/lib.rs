@@ -1,5 +1,5 @@
 #![recursion_limit = "256"]
-#![deny(missing_debug_implementations)]
+#![cfg_attr(feature = "extra-traits", deny(missing_debug_implementations))]
 
 extern crate proc_macro2;
 #[macro_use]
