@@ -12,6 +12,7 @@ Backend code generation of the wasm-bindgen tool
 
 [features]
 spans = ["proc-macro2/nightly"]
+extra-traits = ["syn/extra-traits"]
 
 [dependencies]
 quote = '0.6'
