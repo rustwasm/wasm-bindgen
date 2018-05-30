@@ -9,10 +9,12 @@ path = "tests/all/lib.rs"
 
 [dev-dependencies]
 wasm-bindgen-backend = { version = "=0.2.11", path = "../backend", features = ["extra-traits"] }
+diff = "0.1.11"
 
 [dependencies]
 failure = "0.1"
 proc-macro2 = "0.4"
+quote = '0.6'
 syn = { version = '0.14', features = ['full'] }
 wasm-bindgen-backend = { version = "=0.2.11", path = "../backend" }
 webidl = "0.6.0"

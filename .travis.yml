@@ -14,6 +14,12 @@ matrix:
       script: cargo test
       env: RUST_BACKTRACE=1
 
+    # WebIDL tests pass on nightly
+    - rust: nightly
+      before_install: rustup component add rustfmt-preview --toolchain nightly
+      script: (cd crates/webidl && cargo test)
+      env: RUST_BACKTRACE=1
+
     # Dist linux binary
     - env: TARGET=x86_64-unknown-linux-musl DEPLOY=1
       rust: nightly

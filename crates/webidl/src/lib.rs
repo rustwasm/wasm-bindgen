@@ -10,12 +10,14 @@ emitted for the types and methods described in the WebIDL.
 
 extern crate failure;
 extern crate proc_macro2;
+extern crate quote;
 extern crate syn;
 extern crate wasm_bindgen_backend as backend;
 extern crate webidl;
 
 use failure::ResultExt;
 use proc_macro2::Ident;
+use quote::ToTokens;
 use std::fs;
 use std::io::{self, Read};
 use std::path::Path;
@@ -41,6 +43,26 @@ pub fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
     definitions.webidl_parse(&mut program)?;
 
     Ok(program)
+}
+
+/// Compile the given WebIDL file into Rust source text containing
+/// `wasm-bindgen` bindings to the things described in the WebIDL.
+pub fn compile_file(webidl_path: &Path) -> Result<String> {
+    let ast = parse_file(webidl_path)?;
+    Ok(compile_ast(&ast))
+}
+
+/// Compile the given WebIDL source text into Rust source text containing
+/// `wasm-bindgen` bindings to the things described in the WebIDL.
+pub fn compile(webidl_source: &str) -> Result<String> {
+    let ast = parse(webidl_source)?;
+    Ok(compile_ast(&ast))
+}
+
+fn compile_ast(ast: &backend::ast::Program) -> String {
+    let mut tokens = proc_macro2::TokenStream::new();
+    ast.to_tokens(&mut tokens);
+    tokens.to_string()
 }
 
 trait WebidlParse {
