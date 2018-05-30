@@ -1,0 +1,18 @@
+[package]
+name = "wasm-bindgen-webidl"
+version = "0.1.0"
+authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
+
+[[test]]
+name = "webidl-all"
+path = "tests/all/lib.rs"
+
+[dev-dependencies]
+wasm-bindgen-backend = { version = "=0.2.11", path = "../backend", features = ["extra-traits"] }
+
+[dependencies]
+failure = "0.1"
+proc-macro2 = "0.4"
+syn = { version = '0.14', features = ['full'] }
+wasm-bindgen-backend = { version = "=0.2.11", path = "../backend" }
+webidl = "0.6.0"
