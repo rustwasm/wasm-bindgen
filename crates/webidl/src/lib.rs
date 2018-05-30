@@ -91,7 +91,7 @@ impl WebidlParse for webidl::ast::NonPartialInterface {
             js_namespace: None,
             kind: backend::ast::ImportKind::Type(backend::ast::ImportType {
                 vis: syn::Visibility::Public(syn::VisPublic {
-                    pub_token: syn::token::Pub(proc_macro2::Span::call_site()),
+                    pub_token: Default::default(),
                 }),
                 name: Ident::new(&self.name, proc_macro2::Span::call_site()),
             }),
