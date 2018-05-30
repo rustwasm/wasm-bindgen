@@ -778,7 +778,7 @@ impl StructField {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Default)]
 pub struct BindgenAttrs {
-    attrs: Vec<BindgenAttr>,
+    pub attrs: Vec<BindgenAttr>,
 }
 
 impl BindgenAttrs {
@@ -916,7 +916,7 @@ impl syn::synom::Synom for BindgenAttrs {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-enum BindgenAttr {
+pub enum BindgenAttr {
     Catch,
     Constructor,
     Method,

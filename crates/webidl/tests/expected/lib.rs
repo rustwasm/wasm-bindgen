@@ -3,4 +3,4 @@
 
 extern crate wasm_bindgen;
 
-mod Event;
+pub mod Event;

@@ -1,30 +1,8 @@
-use backend;
 use diff;
 use std::io::{self, Write};
 use std::process;
 use std::sync::{Once, ONCE_INIT};
 use wb_webidl;
-
-pub fn assert_parse(webidl: &str, expected: backend::ast::Program) {
-    let actual = wb_webidl::parse(webidl).expect("should parse the webidl source OK");
-    assert_eq!(expected, actual);
-}
-
-macro_rules! assert_parse {
-    ($test_name:ident, $expected_ast:expr) => {
-        #[test]
-        #[allow(non_snake_case)]
-        fn $test_name() {
-            let webidl_source = include_str!(concat!(
-                env!("CARGO_MANIFEST_DIR"),
-                "/tests/fixtures/",
-                stringify!($test_name),
-                ".webidl"
-            ));
-            $crate::assert_parse(webidl_source, $expected_ast);
-        }
-    };
-}
 
 fn rustfmt<S: Into<String>>(source: S) -> (String, String) {
     let source = source.into();

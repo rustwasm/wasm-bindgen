@@ -53,6 +53,124 @@ impl From<Event> for ::wasm_bindgen::JsValue {
         obj.obj
     }
 }
+#[no_mangle]
+#[allow(non_snake_case)]
+pub extern "C" fn __wbindgen_describe___wbg_f_stopPropagation_stopPropagation_Event() {
+    use wasm_bindgen::describe::*;
+    inform(FUNCTION);
+    inform(1u32);
+    <&Event as WasmDescribe>::describe();
+    inform(0);
+}
+impl Event {
+    #[allow(bad_style)]
+    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+    pub extern "C" fn stopPropagation(&self) {
+        ::wasm_bindgen::__rt::link_this_library();
+        #[wasm_import_module = "__wbindgen_placeholder__"]
+        extern "C" {
+            fn __wbg_f_stopPropagation_stopPropagation_Event(
+                self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
+            ) -> ();
+        }
+        unsafe {
+            let _ret = {
+                let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
+                let self_ =
+                    <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(self, &mut __stack);
+                __wbg_f_stopPropagation_stopPropagation_Event(self_)
+            };
+            ()
+        }
+    }
+    #[allow(bad_style, unused_variables)]
+    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+    pub extern "C" fn stopPropagation(&self) {
+        panic!(
+            "cannot call wasm-bindgen imported functions on \
+             non-wasm targets"
+        );
+    }
+}
+#[no_mangle]
+#[allow(non_snake_case)]
+pub extern "C" fn __wbindgen_describe___wbg_f_stopImmediatePropagation_stopImmediatePropagation_Event(
+) {
+    use wasm_bindgen::describe::*;
+    inform(FUNCTION);
+    inform(1u32);
+    <&Event as WasmDescribe>::describe();
+    inform(0);
+}
+impl Event {
+    #[allow(bad_style)]
+    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+    pub extern "C" fn stopImmediatePropagation(&self) {
+        ::wasm_bindgen::__rt::link_this_library();
+        #[wasm_import_module = "__wbindgen_placeholder__"]
+        extern "C" {
+            fn __wbg_f_stopImmediatePropagation_stopImmediatePropagation_Event(
+                self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
+            ) -> ();
+        }
+        unsafe {
+            let _ret = {
+                let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
+                let self_ =
+                    <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(self, &mut __stack);
+                __wbg_f_stopImmediatePropagation_stopImmediatePropagation_Event(self_)
+            };
+            ()
+        }
+    }
+    #[allow(bad_style, unused_variables)]
+    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+    pub extern "C" fn stopImmediatePropagation(&self) {
+        panic!(
+            "cannot call wasm-bindgen imported functions on \
+             non-wasm targets"
+        );
+    }
+}
+#[no_mangle]
+#[allow(non_snake_case)]
+pub extern "C" fn __wbindgen_describe___wbg_f_preventDefault_preventDefault_Event() {
+    use wasm_bindgen::describe::*;
+    inform(FUNCTION);
+    inform(1u32);
+    <&Event as WasmDescribe>::describe();
+    inform(0);
+}
+impl Event {
+    #[allow(bad_style)]
+    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+    pub extern "C" fn preventDefault(&self) {
+        ::wasm_bindgen::__rt::link_this_library();
+        #[wasm_import_module = "__wbindgen_placeholder__"]
+        extern "C" {
+            fn __wbg_f_preventDefault_preventDefault_Event(
+                self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
+            ) -> ();
+        }
+        unsafe {
+            let _ret = {
+                let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
+                let self_ =
+                    <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(self, &mut __stack);
+                __wbg_f_preventDefault_preventDefault_Event(self_)
+            };
+            ()
+        }
+    }
+    #[allow(bad_style, unused_variables)]
+    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+    pub extern "C" fn preventDefault(&self) {
+        panic!(
+            "cannot call wasm-bindgen imported functions on \
+             non-wasm targets"
+        );
+    }
+}
 #[allow(non_upper_case_globals)]
 #[wasm_custom_section = "__wasm_bindgen_unstable"]
 const __WASM_BINDGEN_GENERATED_wasm_bindgen_webidl_0_1_0_0 : [ u8 ; 180usize ] = * b"\xB0\0\0\0{\"exports\":[],\"enums\":[],\"imports\":[{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"type\"}}],\"structs\":[],\"version\":\"0.2.11 (3879f6f42)\",\"schema_version\":\"4\"}" ;
