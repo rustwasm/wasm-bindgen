@@ -9,6 +9,7 @@ path = "tests/all/lib.rs"
 
 [dev-dependencies]
 wasm-bindgen-backend = { version = "=0.2.11", path = "../backend", features = ["extra-traits"] }
+diff = "0.1.11"
 
 [dependencies]
 failure = "0.1"
