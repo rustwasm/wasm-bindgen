@@ -15,7 +15,7 @@ pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
     let opts = syn::parse::<backend::ast::BindgenAttrs>(attr)
         .expect("invalid arguments to #[wasm_bindgen]");
 
-    let mut ret = proc_macro2::TokenStream::empty();
+    let mut ret = proc_macro2::TokenStream::new();
     let mut program = backend::ast::Program::default();
     program.push_item(item, Some(opts), &mut ret);
     program.to_tokens(&mut ret);
