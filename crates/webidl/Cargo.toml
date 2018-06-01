@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-webidl"
-version = "0.1.0"
+version = "0.2.11"
 authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
 
 [[test]]
@@ -12,12 +12,14 @@ name = "webidl-expected"
 path = "tests/expected/lib.rs"
 
 [dev-dependencies]
+diff = "0.1.11"
+env_logger = "0.5.10"
 wasm-bindgen = { version = "=0.2.11", path = "../..", default-features = false }
 wasm-bindgen-backend = { version = "=0.2.11", path = "../backend", features = ["extra-traits"] }
-diff = "0.1.11"
 
 [dependencies]
 failure = "0.1"
+log = "0.4.1"
 proc-macro2 = "0.4"
 quote = '0.6'
 syn = { version = '0.14', features = ['full'] }
