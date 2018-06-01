@@ -1,4 +1,5 @@
 use diff;
+use env_logger;
 use std::io::{self, Write};
 use std::process;
 use std::sync::{Once, ONCE_INIT};
@@ -90,6 +91,11 @@ fn strip_wasm_bindgen_generated(source: String) -> String {
 }
 
 pub fn assert_compile(webidl: &str, expected: &str) {
+    static INIT_ENV_LOGGER: Once = ONCE_INIT;
+    INIT_ENV_LOGGER.call_once(|| {
+        env_logger::init();
+    });
+
     let actual = wb_webidl::compile(webidl).expect("should compile the webidl source OK");
 
     let (actual, actual_stderr) = rustfmt(actual);

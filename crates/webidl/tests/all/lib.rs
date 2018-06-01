@@ -1,4 +1,5 @@
 extern crate diff;
+extern crate env_logger;
 extern crate proc_macro2;
 extern crate syn;
 extern crate wasm_bindgen_backend as backend;

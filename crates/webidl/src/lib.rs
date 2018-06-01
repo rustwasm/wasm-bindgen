@@ -9,6 +9,8 @@ emitted for the types and methods described in the WebIDL.
 #![deny(missing_debug_implementations)]
 
 extern crate failure;
+#[macro_use]
+extern crate log;
 extern crate proc_macro2;
 extern crate quote;
 extern crate syn;
@@ -99,7 +101,10 @@ impl<'a> WebidlParse<'a> for webidl::ast::Definition {
             | webidl::ast::Definition::Includes(..)
             | webidl::ast::Definition::Mixin(..)
             | webidl::ast::Definition::Namespace(..)
-            | webidl::ast::Definition::Typedef(..) => Ok(()),
+            | webidl::ast::Definition::Typedef(..) => {
+                warn!("Unsupported WebIDL definition: {:?}", self);
+                Ok(())
+            }
         }
     }
 }
@@ -113,7 +118,10 @@ impl<'a> WebidlParse<'a> for webidl::ast::Interface {
                 interface.webidl_parse(program, ())
             }
             // TODO
-            webidl::ast::Interface::Callback(..) | webidl::ast::Interface::Partial(..) => Ok(()),
+            webidl::ast::Interface::Callback(..) | webidl::ast::Interface::Partial(..) => {
+                warn!("Unsupported WebIDL interface: {:?}", self);
+                Ok(())
+            }
         }
     }
 }
@@ -153,7 +161,10 @@ impl<'a> WebidlParse<'a> for webidl::ast::InterfaceMember {
             | webidl::ast::InterfaceMember::Const(_)
             | webidl::ast::InterfaceMember::Iterable(_)
             | webidl::ast::InterfaceMember::Maplike(_)
-            | webidl::ast::InterfaceMember::Setlike(_) => Ok(()),
+            | webidl::ast::InterfaceMember::Setlike(_) => {
+                warn!("Unsupported WebIDL interface member: {:?}", self);
+                Ok(())
+            }
         }
     }
 }
@@ -167,7 +178,10 @@ impl<'a> WebidlParse<'a> for webidl::ast::Operation {
             // TODO
             webidl::ast::Operation::Special(_)
             | webidl::ast::Operation::Static(_)
-            | webidl::ast::Operation::Stringifier(_) => Ok(()),
+            | webidl::ast::Operation::Stringifier(_) => {
+                warn!("Unsupported WebIDL operation: {:?}", self);
+                Ok(())
+            }
         }
     }
 }
@@ -276,14 +290,26 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
 
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
         let fn_name = match self.name {
-            None => return Ok(()),
+            None => {
+                warn!(
+                    "Operations without a name are unsupported. Skipping {:?}",
+                    self
+                );
+                return Ok(());
+            }
             Some(ref name) => Ident::new(name, proc_macro2::Span::call_site()),
         };
 
         let (output, ret) = match self.return_type {
             webidl::ast::ReturnType::Void => (syn::ReturnType::Default, None),
             webidl::ast::ReturnType::NonVoid(ref ty) => match webidl_ty_to_syn_ty(ty) {
-                None => return Ok(()),
+                None => {
+                    warn!(
+                        "Operation's return type is not yet supported: {:?}. Skipping bindings for {:?}",
+                        ty, self
+                    );
+                    return Ok(());
+                }
                 Some(ty) => (
                     syn::ReturnType::Type(Default::default(), Box::new(ty.clone())),
                     Some(ty),
@@ -303,14 +329,30 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
         arguments.push(self_ref_ty);
 
         for arg in &self.arguments {
-            if arg.optional || arg.variadic {
-                // We don't support optional or variadic functions yet; skip
-                // bindings for this this whole function.
+            if arg.optional {
+                warn!(
+                    "Optional arguments are not supported yet. Skipping bindings for {:?}",
+                    self
+                );
+                return Ok(());
+            }
+
+            if arg.variadic {
+                warn!(
+                    "Variadic arguments are not supported yet. Skipping bindings for {:?}",
+                    self
+                );
                 return Ok(());
             }
 
             match webidl_ty_to_syn_ty(&arg.type_) {
-                None => return Ok(()),
+                None => {
+                    warn!(
+                        "Argument's type is not yet supported: {:?}. Skipping bindings for {:?}",
+                        arg.type_, self
+                    );
+                    return Ok(());
+                }
                 Some(ty) => {
                     inputs.push(simple_fn_arg(
                         proc_macro2::Ident::new(&arg.name, proc_macro2::Span::call_site()),
