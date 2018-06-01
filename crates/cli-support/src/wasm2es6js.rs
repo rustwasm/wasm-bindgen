@@ -320,11 +320,11 @@ impl Output {
                 if offset.len() != 2 {
                     bail!("don't recognize data offset {:?}", offset)
                 }
-                if offset[1] != Opcode::End {
+                if offset[1] != Instruction::End {
                     bail!("don't recognize data offset {:?}", offset)
                 }
                 let offset = match offset[0] {
-                    Opcode::I32Const(x) => x,
+                    Instruction::I32Const(x) => x,
                     _ => bail!("don't recognize data offset {:?}", offset),
                 };
 
