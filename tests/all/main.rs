@@ -300,10 +300,10 @@ impl Project {
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
         fs::hard_link("package.json", root.join("package.json")).unwrap();
-        if !Path::new("yarn.lock").exists() {
-            panic!("\n\nfailed to find `yarn.lock`, have you run `yarn` yet?\n\n");
+        if !Path::new("node_modules").exists() {
+            panic!("\n\nfailed to find `node_modules`, have you run `npm install` yet?\n\n");
         }
-        fs::hard_link("yarn.lock", root.join("yarn.lock")).unwrap();
+        fs::hard_link("package-lock.json", root.join("package-lock.json")).unwrap();
         let cwd = env::current_dir().unwrap();
         symlink_dir(&cwd.join("node_modules"), &root.join("node_modules")).unwrap();
 
@@ -317,13 +317,13 @@ impl Project {
             let mut cmd = if cfg!(windows) {
                 let mut c = Command::new("cmd");
                 c.arg("/c");
-                c.arg("yarn");
+                c.arg("npm");
                 c
             } else {
-                Command::new("yarn")
+                Command::new("npm")
             };
-            cmd.arg("webpack").current_dir(&root);
-            run(&mut cmd, "yarn");
+            cmd.arg("run").arg("run-webpack").current_dir(&root);
+            run(&mut cmd, "npm");
 
             let mut cmd = Command::new("node");
             cmd.args(&self.node_args);

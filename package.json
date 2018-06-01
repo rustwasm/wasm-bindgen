@@ -1,5 +1,8 @@
 {
   "license": "MIT",
+  "scripts": {
+    "run-webpack": "webpack"
+  },
   "devDependencies": {
     "@types/node": "^9.4.6",
     "ts-loader": "^4.0.1",
