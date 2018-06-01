@@ -1,4 +1,4 @@
-use proc_macro2::{TokenTree, TokenStream, Ident, Span};
+use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
 use syn;
@@ -121,7 +121,12 @@ pub enum TypeLocation {
 }
 
 impl Program {
-    pub fn push_item(&mut self, item: syn::Item, opts: Option<BindgenAttrs>, tokens: &mut TokenStream) {
+    pub fn push_item(
+        &mut self,
+        item: syn::Item,
+        opts: Option<BindgenAttrs>,
+        tokens: &mut TokenStream,
+    ) {
         match item {
             syn::Item::Fn(mut f) => {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
@@ -309,7 +314,10 @@ impl Program {
                 BindgenAttrs::find(attrs)
             };
             let module = item_opts.module().or(opts.module()).map(|s| s.to_string());
-            let version = item_opts.version().or(opts.version()).map(|s| s.to_string());
+            let version = item_opts
+                .version()
+                .or(opts.version())
+                .map(|s| s.to_string());
             let js_namespace = item_opts.js_namespace().or(opts.js_namespace()).cloned();
             let mut kind = match item {
                 syn::ForeignItem::Fn(f) => self.push_foreign_fn(f, item_opts),
@@ -329,14 +337,7 @@ impl Program {
 
     pub fn push_foreign_fn(&mut self, f: syn::ForeignItemFn, opts: BindgenAttrs) -> ImportKind {
         let js_name = opts.js_name().unwrap_or(&f.ident).clone();
-        let mut wasm = Function::from_decl(
-            &js_name,
-            f.decl,
-            f.attrs,
-            opts,
-            f.vis,
-            false,
-        ).0;
+        let mut wasm = Function::from_decl(&js_name, f.decl, f.attrs, opts, f.vis, false).0;
         if wasm.opts.catch() {
             // TODO: this assumes a whole bunch:
             //
@@ -565,9 +566,7 @@ impl Export {
     pub fn export_name(&self) -> String {
         let fn_name = self.function.name.to_string();
         match &self.class {
-            Some(class) => {
-                shared::struct_function_export_name(&class.to_string(), &fn_name)
-            }
+            Some(class) => shared::struct_function_export_name(&class.to_string(), &fn_name),
             None => shared::free_function_export_name(&fn_name),
         }
     }
@@ -605,20 +604,24 @@ impl Import {
         match (&self.module, &self.version) {
             (&Some(ref m), None) if m.starts_with("./") => {}
             (&Some(ref m), &Some(_)) if m.starts_with("./") => {
-                panic!("when a module path starts with `./` that indicates \
-                        that a local file is being imported so the `version` \
-                        key cannot also be specified");
+                panic!(
+                    "when a module path starts with `./` that indicates \
+                     that a local file is being imported so the `version` \
+                     key cannot also be specified"
+                );
             }
             (&Some(_), &Some(_)) => {}
-            (&Some(_), &None) => {
-                panic!("when the `module` directive doesn't start with `./` \
-                        then it's interpreted as an NPM package which requires \
-                        a `version` to be specified as well, try using \
-                        #[wasm_bindgen(module = \"...\", version = \"...\")]")
-            }
+            (&Some(_), &None) => panic!(
+                "when the `module` directive doesn't start with `./` \
+                 then it's interpreted as an NPM package which requires \
+                 a `version` to be specified as well, try using \
+                 #[wasm_bindgen(module = \"...\", version = \"...\")]"
+            ),
             (&None, &Some(_)) => {
-                panic!("the #[wasm_bindgen(version = \"...\")] attribute can only \
-                        be used when `module = \"...\"` is also specified");
+                panic!(
+                    "the #[wasm_bindgen(version = \"...\")] attribute can only \
+                     be used when `module = \"...\"` is also specified"
+                );
             }
             (&None, &None) => {}
         }
@@ -711,15 +714,17 @@ impl ImportStatic {
 
 impl ImportType {
     fn shared(&self) -> shared::ImportType {
-        shared::ImportType { }
+        shared::ImportType {}
     }
 }
 
 impl Struct {
     fn from(s: &mut syn::ItemStruct, _opts: BindgenAttrs) -> Struct {
         if s.generics.params.len() > 0 {
-            panic!("structs with #[wasm_bindgen] cannot have lifetime or \
-                    type parameters currently");
+            panic!(
+                "structs with #[wasm_bindgen] cannot have lifetime or \
+                 type parameters currently"
+            );
         }
         let mut fields = Vec::new();
         if let syn::Fields::Named(names) = &mut s.fields {
@@ -773,7 +778,7 @@ impl StructField {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Default)]
 pub struct BindgenAttrs {
-    attrs: Vec<BindgenAttr>,
+    pub attrs: Vec<BindgenAttr>,
 }
 
 impl BindgenAttrs {
@@ -802,11 +807,9 @@ impl BindgenAttrs {
     fn module(&self) -> Option<&str> {
         self.attrs
             .iter()
-            .filter_map(|a| {
-                match a {
-                    BindgenAttr::Module(s) => Some(&s[..]),
-                    _ => None,
-                }
+            .filter_map(|a| match a {
+                BindgenAttr::Module(s) => Some(&s[..]),
+                _ => None,
             })
             .next()
     }
@@ -814,50 +817,40 @@ impl BindgenAttrs {
     fn version(&self) -> Option<&str> {
         self.attrs
             .iter()
-            .filter_map(|a| {
-                match a {
-                    BindgenAttr::Version(s) => Some(&s[..]),
-                    _ => None,
-                }
+            .filter_map(|a| match a {
+                BindgenAttr::Version(s) => Some(&s[..]),
+                _ => None,
             })
             .next()
     }
 
     pub fn catch(&self) -> bool {
-        self.attrs.iter().any(|a| {
-            match a {
-                BindgenAttr::Catch => true,
-                _ => false,
-            }
+        self.attrs.iter().any(|a| match a {
+            BindgenAttr::Catch => true,
+            _ => false,
         })
     }
 
     fn constructor(&self) -> bool {
-        self.attrs.iter().any(|a| {
-            match a {
-                BindgenAttr::Constructor => true,
-                _ => false,
-            }
+        self.attrs.iter().any(|a| match a {
+            BindgenAttr::Constructor => true,
+            _ => false,
         })
     }
 
     fn method(&self) -> bool {
-        self.attrs.iter().any(|a| {
-            match a {
-                BindgenAttr::Method => true,
-                _ => false,
-            }
+        self.attrs.iter().any(|a| match a {
+            BindgenAttr::Method => true,
+            _ => false,
         })
     }
 
     fn js_namespace(&self) -> Option<&Ident> {
         self.attrs
             .iter()
-            .filter_map(|a| {
-                match a {
-                    BindgenAttr::JsNamespace(s) => Some(s),
-                    _ => None,
-                }
+            .filter_map(|a| match a {
+                BindgenAttr::JsNamespace(s) => Some(s),
+                _ => None,
             })
             .next()
     }
@@ -865,11 +858,9 @@ impl BindgenAttrs {
     pub fn getter(&self) -> Option<Option<&Ident>> {
         self.attrs
             .iter()
-            .filter_map(|a| {
-                match a {
-                    BindgenAttr::Getter(s) => Some(s.as_ref()),
-                    _ => None,
-                }
+            .filter_map(|a| match a {
+                BindgenAttr::Getter(s) => Some(s.as_ref()),
+                _ => None,
             })
             .next()
     }
@@ -877,41 +868,33 @@ impl BindgenAttrs {
     pub fn setter(&self) -> Option<Option<&Ident>> {
         self.attrs
             .iter()
-            .filter_map(|a| {
-                match a {
-                    BindgenAttr::Setter(s) => Some(s.as_ref()),
-                    _ => None,
-                }
+            .filter_map(|a| match a {
+                BindgenAttr::Setter(s) => Some(s.as_ref()),
+                _ => None,
             })
             .next()
     }
 
     pub fn structural(&self) -> bool {
-        self.attrs.iter().any(|a| {
-            match *a {
-                BindgenAttr::Structural => true,
-                _ => false,
-            }
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::Structural => true,
+            _ => false,
         })
     }
 
     pub fn readonly(&self) -> bool {
-        self.attrs.iter().any(|a| {
-            match *a {
-                BindgenAttr::Readonly => true,
-                _ => false,
-            }
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::Readonly => true,
+            _ => false,
         })
     }
 
     pub fn js_name(&self) -> Option<&Ident> {
         self.attrs
             .iter()
-            .filter_map(|a| {
-                match a {
-                    BindgenAttr::JsName(s) => Some(s),
-                    _ => None,
-                }
+            .filter_map(|a| match a {
+                BindgenAttr::JsName(s) => Some(s),
+                _ => None,
             })
             .next()
     }
@@ -933,7 +916,7 @@ impl syn::synom::Synom for BindgenAttrs {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-enum BindgenAttr {
+pub enum BindgenAttr {
     Catch,
     Constructor,
     Method,
@@ -1046,12 +1029,10 @@ fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<
     syn::parse_error()
 }
 
-fn term2ident<'a>(cursor: syn::buffer::Cursor<'a>)
-    -> syn::synom::PResult<'a, Ident>
-{
+fn term2ident<'a>(cursor: syn::buffer::Cursor<'a>) -> syn::synom::PResult<'a, Ident> {
     match cursor.ident() {
         Some(pair) => Ok(pair),
-        None => syn::parse_error()
+        None => syn::parse_error(),
     }
 }
 
@@ -1060,8 +1041,10 @@ fn assert_no_lifetimes(decl: &mut syn::FnDecl) {
 
     impl<'ast> syn::visit_mut::VisitMut for Walk {
         fn visit_lifetime_mut(&mut self, _i: &mut syn::Lifetime) {
-            panic!("it is currently not sound to use lifetimes in function \
-                    signatures");
+            panic!(
+                "it is currently not sound to use lifetimes in function \
+                 signatures"
+            );
         }
     }
 
