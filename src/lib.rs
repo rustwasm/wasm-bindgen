@@ -243,6 +243,14 @@ impl JsValue {
     }
 }
 
+impl PartialEq for JsValue {
+    fn eq(&self, other: &JsValue) -> bool {
+        unsafe {
+            __wbindgen_jsval_eq(self.idx, other.idx) != 0
+        }
+    }
+}
+
 impl<'a> From<&'a str> for JsValue {
     fn from(s: &'a str) -> JsValue {
         JsValue::from_str(s)
@@ -317,6 +325,7 @@ externs! {
 
     fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_json_serialize(idx: u32, ptr: *mut *mut u8) -> usize;
+    fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
 }
 
 impl Clone for JsValue {

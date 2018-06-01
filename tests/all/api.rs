@@ -142,3 +142,41 @@ fn works() {
         .test();
 }
 
+#[test]
+fn eq_works() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub fn test(a: &JsValue, b: &JsValue) -> bool {
+                a == b
+            }
+
+            #[wasm_bindgen]
+            pub fn test1(a: &JsValue) -> bool {
+                a == a
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.strictEqual(wasm.test('a', 'a'), true);
+                assert.strictEqual(wasm.test('a', 'b'), false);
+                assert.strictEqual(wasm.test(NaN, NaN), false);
+                assert.strictEqual(wasm.test({a: 'a'}, {a: 'a'}), false);
+                assert.strictEqual(wasm.test1(NaN), false);
+                let x = {a: 'a'};
+                assert.strictEqual(wasm.test(x, x), true);
+                assert.strictEqual(wasm.test1(x), true);
+            }
+        "#)
+        .test();
+}
+
