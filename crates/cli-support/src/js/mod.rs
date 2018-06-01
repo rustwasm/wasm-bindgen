@@ -690,17 +690,23 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("slab") {
             return;
         }
-        self.global(&format!("let slab = [];"));
+        let initial_values = [
+            "{ obj: null }",
+            "{ obj: undefined }",
+            "{ obj: true }",
+            "{ obj: false }",
+        ];
+        self.global(&format!("let slab = [{}];", initial_values.join(", ")));
         if self.config.debug {
-            self.export("assertSlabEmpty", "
-                function() {
-                    for (let i = 0; i < slab.length; i++) {
+            self.export("assertSlabEmpty", &format!("
+                function() {{
+                    for (let i = {}; i < slab.length; i++) {{
                         if (typeof(slab[i]) === 'number')
                             continue;
                         throw new Error('slab is not currently empty');
-                    }
-                }
-            ");
+                    }}
+                }}
+            ", initial_values.len()));
         }
     }
 
@@ -708,8 +714,9 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("slab_next") {
             return;
         }
+        self.expose_global_slab();
         self.global(&format!("
-            let slab_next = 0;
+            let slab_next = slab.length;
         "));
     }
 

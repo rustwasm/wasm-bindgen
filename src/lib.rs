@@ -60,6 +60,12 @@ pub struct JsValue {
     idx: u32,
 }
 
+const JSIDX_NULL: u32 = 0;
+const JSIDX_UNDEFINED: u32 = 2;
+const JSIDX_TRUE: u32 = 4;
+const JSIDX_FALSE: u32 = 6;
+const JSIDX_RESERVED: u32 = 8;
+
 impl JsValue {
     /// Creates a new JS value which is a string.
     ///
@@ -86,23 +92,17 @@ impl JsValue {
     /// This function creates a JS object representing a boolean (a heap
     /// allocated boolean) and returns a handle to the JS version of it.
     pub fn from_bool(b: bool) -> JsValue {
-        unsafe {
-            JsValue { idx: __wbindgen_boolean_new(b as u32) }
-        }
+        JsValue { idx: if b { JSIDX_TRUE } else { JSIDX_FALSE } }
     }
 
     /// Creates a new JS value representing `undefined`.
     pub fn undefined() -> JsValue {
-        unsafe {
-            JsValue { idx: __wbindgen_undefined_new() }
-        }
+        JsValue { idx: JSIDX_UNDEFINED }
     }
 
     /// Creates a new JS value representing `null`.
     pub fn null() -> JsValue {
-        unsafe {
-            JsValue { idx: __wbindgen_null_new() }
-        }
+        JsValue { idx: JSIDX_NULL }
     }
 
     /// Creates a new JS symbol with the optional description specified.
@@ -331,7 +331,12 @@ impl Clone for JsValue {
 impl Drop for JsValue {
     fn drop(&mut self) {
         unsafe {
-            __wbindgen_object_drop_ref(self.idx);
+            // if the first bit is set then this is a stack value, so we for
+            // sure need to drop it. Otherwise if this is one of the special
+            // reserved values there's no need to drop it.
+            if (self.idx & 1) == 1 || self.idx >= JSIDX_RESERVED {
+                __wbindgen_object_drop_ref(self.idx);
+            }
         }
     }
 }
