@@ -300,6 +300,15 @@ impl<'a> Context<'a> {
             "))
         })?;
 
+        self.bind("__wbindgen_jsval_eq", &|me| {
+            me.expose_get_object();
+            Ok(String::from("
+                function(a, b) {
+                    return getObject(a) === getObject(b) ? 1 : 0;
+                }
+            "))
+        })?;
+
         self.unexport_unused_internal_exports();
         self.gc()?;
 
