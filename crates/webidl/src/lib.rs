@@ -68,6 +68,34 @@ fn compile_ast(ast: &backend::ast::Program) -> String {
     tokens.to_string()
 }
 
+fn is_rust_keyword(name: &str) -> bool {
+    match name {
+        "abstract" | "alignof" | "as" | "become" | "box" | "break" | "const" | "continue"
+        | "crate" | "do" | "else" | "enum" | "extern" | "false" | "final" | "fn" | "for" | "if"
+        | "impl" | "in" | "let" | "loop" | "macro" | "match" | "mod" | "move" | "mut"
+        | "offsetof" | "override" | "priv" | "proc" | "pub" | "pure" | "ref" | "return"
+        | "Self" | "self" | "sizeof" | "static" | "struct" | "super" | "trait" | "true"
+        | "type" | "typeof" | "unsafe" | "unsized" | "use" | "virtual" | "where" | "while"
+        | "yield" | "bool" | "_" => true,
+        _ => false,
+    }
+}
+
+// Create an `Ident`, possibly mangling it if it conflicts with a Rust keyword.
+fn rust_ident(name: &str) -> Ident {
+    if is_rust_keyword(name) {
+        Ident::new(&format!("{}_", name), proc_macro2::Span::call_site())
+    } else {
+        raw_ident(name)
+    }
+}
+
+// Create an `Ident` without checking to see if it conflicts with a Rust
+// keyword.
+fn raw_ident(name: &str) -> Ident {
+    Ident::new(name, proc_macro2::Span::call_site())
+}
+
 trait WebidlParse<'a> {
     type Extra;
 
@@ -138,7 +166,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::NonPartialInterface {
                 vis: syn::Visibility::Public(syn::VisPublic {
                     pub_token: Default::default(),
                 }),
-                name: Ident::new(&self.name, proc_macro2::Span::call_site()),
+                name: rust_ident(&self.name),
             }),
         });
 
@@ -188,13 +216,12 @@ impl<'a> WebidlParse<'a> for webidl::ast::Operation {
 
 fn simple_path_ty<I>(segments: I) -> syn::Type
 where
-    I: IntoIterator,
-    I::Item: AsRef<str>,
+    I: IntoIterator<Item = Ident>,
 {
     let segments: Vec<_> = segments
         .into_iter()
-        .map(|s| syn::PathSegment {
-            ident: syn::Ident::new(s.as_ref(), proc_macro2::Span::call_site()),
+        .map(|i| syn::PathSegment {
+            ident: i,
             arguments: syn::PathArguments::None,
         })
         .collect();
@@ -208,6 +235,10 @@ where
     }.into()
 }
 
+fn ident_ty(ident: Ident) -> syn::Type {
+    simple_path_ty(Some(ident))
+}
+
 fn shared_ref(ty: syn::Type) -> syn::Type {
     syn::TypeReference {
         and_token: Default::default(),
@@ -217,37 +248,51 @@ fn shared_ref(ty: syn::Type) -> syn::Type {
     }.into()
 }
 
-fn webidl_ty_to_syn_ty(ty: &webidl::ast::Type) -> Option<syn::Type> {
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+enum TypePosition {
+    Argument,
+    Return,
+}
+
+fn webidl_ty_to_syn_ty(ty: &webidl::ast::Type, pos: TypePosition) -> Option<syn::Type> {
     Some(match ty.kind {
         // `any` becomes `::wasm_bindgen::JsValue`.
-        webidl::ast::TypeKind::Any => simple_path_ty(&["wasm_bindgen", "JsValue"]),
+        webidl::ast::TypeKind::Any => {
+            simple_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")])
+        }
 
         // A reference to a type by name becomes the same thing in the
         // bindings.
-        webidl::ast::TypeKind::Identifier(ref id) => simple_path_ty(Some(id)),
+        webidl::ast::TypeKind::Identifier(ref id) => ident_ty(rust_ident(id)),
 
         // Scalars.
-        webidl::ast::TypeKind::Boolean => simple_path_ty(Some("bool")),
-        webidl::ast::TypeKind::Byte => simple_path_ty(Some("i8")),
-        webidl::ast::TypeKind::Octet => simple_path_ty(Some("u8")),
+        webidl::ast::TypeKind::Boolean => ident_ty(raw_ident("bool")),
+        webidl::ast::TypeKind::Byte => ident_ty(raw_ident("i8")),
+        webidl::ast::TypeKind::Octet => ident_ty(raw_ident("u8")),
         webidl::ast::TypeKind::RestrictedDouble | webidl::ast::TypeKind::UnrestrictedDouble => {
-            simple_path_ty(Some("f64"))
+            ident_ty(raw_ident("f64"))
         }
         webidl::ast::TypeKind::RestrictedFloat | webidl::ast::TypeKind::UnrestrictedFloat => {
-            simple_path_ty(Some("f32"))
+            ident_ty(raw_ident("f32"))
         }
-        webidl::ast::TypeKind::SignedLong => simple_path_ty(Some("i32")),
-        webidl::ast::TypeKind::SignedLongLong => simple_path_ty(Some("i64")),
-        webidl::ast::TypeKind::SignedShort => simple_path_ty(Some("i16")),
-        webidl::ast::TypeKind::UnsignedLong => simple_path_ty(Some("u32")),
-        webidl::ast::TypeKind::UnsignedLongLong => simple_path_ty(Some("u64")),
-        webidl::ast::TypeKind::UnsignedShort => simple_path_ty(Some("u16")),
+        webidl::ast::TypeKind::SignedLong => ident_ty(raw_ident("i32")),
+        webidl::ast::TypeKind::SignedLongLong => ident_ty(raw_ident("i64")),
+        webidl::ast::TypeKind::SignedShort => ident_ty(raw_ident("i16")),
+        webidl::ast::TypeKind::UnsignedLong => ident_ty(raw_ident("u32")),
+        webidl::ast::TypeKind::UnsignedLongLong => ident_ty(raw_ident("u64")),
+        webidl::ast::TypeKind::UnsignedShort => ident_ty(raw_ident("u16")),
+
+        // `DOMString -> `&str` for arguments
+        webidl::ast::TypeKind::DOMString if pos == TypePosition::Argument => {
+            shared_ref(ident_ty(raw_ident("str")))
+        }
+        // `DOMString` is not supported yet in other positions.
+        webidl::ast::TypeKind::DOMString => return None,
 
         // Support for these types is not yet implemented, so skip
         // generating any bindings for this function.
         webidl::ast::TypeKind::ArrayBuffer
         | webidl::ast::TypeKind::ByteString
-        | webidl::ast::TypeKind::DOMString
         | webidl::ast::TypeKind::DataView
         | webidl::ast::TypeKind::Error
         | webidl::ast::TypeKind::Float32Array
@@ -272,7 +317,7 @@ fn webidl_ty_to_syn_ty(ty: &webidl::ast::Type) -> Option<syn::Type> {
     })
 }
 
-fn simple_fn_arg(ident: proc_macro2::Ident, ty: syn::Type) -> syn::FnArg {
+fn simple_fn_arg(ident: Ident, ty: syn::Type) -> syn::FnArg {
     syn::FnArg::Captured(syn::ArgCaptured {
         pat: syn::Pat::Ident(syn::PatIdent {
             by_ref: None,
@@ -297,46 +342,37 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
                 );
                 return Ok(());
             }
-            Some(ref name) => Ident::new(name, proc_macro2::Span::call_site()),
+            Some(ref name) => rust_ident(name),
         };
 
         let (output, ret) = match self.return_type {
             webidl::ast::ReturnType::Void => (syn::ReturnType::Default, None),
-            webidl::ast::ReturnType::NonVoid(ref ty) => match webidl_ty_to_syn_ty(ty) {
-                None => {
-                    warn!(
+            webidl::ast::ReturnType::NonVoid(ref ty) => {
+                match webidl_ty_to_syn_ty(ty, TypePosition::Return) {
+                    None => {
+                        warn!(
                         "Operation's return type is not yet supported: {:?}. Skipping bindings for {:?}",
                         ty, self
                     );
-                    return Ok(());
+                        return Ok(());
+                    }
+                    Some(ty) => (
+                        syn::ReturnType::Type(Default::default(), Box::new(ty.clone())),
+                        Some(ty),
+                    ),
                 }
-                Some(ty) => (
-                    syn::ReturnType::Type(Default::default(), Box::new(ty.clone())),
-                    Some(ty),
-                ),
-            },
+            }
         };
 
         let mut inputs = Vec::with_capacity(self.arguments.len() + 1);
         let mut arguments = Vec::with_capacity(self.arguments.len() + 1);
 
-        let self_ty = simple_path_ty(Some(self_name));
+        let self_ty = ident_ty(rust_ident(self_name));
         let self_ref_ty = shared_ref(self_ty.clone());
-        inputs.push(simple_fn_arg(
-            proc_macro2::Ident::new("self_", proc_macro2::Span::call_site()),
-            self_ref_ty.clone(),
-        ));
+        inputs.push(simple_fn_arg(raw_ident("self_"), self_ref_ty.clone()));
         arguments.push(self_ref_ty);
 
         for arg in &self.arguments {
-            if arg.optional {
-                warn!(
-                    "Optional arguments are not supported yet. Skipping bindings for {:?}",
-                    self
-                );
-                return Ok(());
-            }
-
             if arg.variadic {
                 warn!(
                     "Variadic arguments are not supported yet. Skipping bindings for {:?}",
@@ -345,7 +381,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
                 return Ok(());
             }
 
-            match webidl_ty_to_syn_ty(&arg.type_) {
+            match webidl_ty_to_syn_ty(&arg.type_, TypePosition::Argument) {
                 None => {
                     warn!(
                         "Argument's type is not yet supported: {:?}. Skipping bindings for {:?}",
@@ -354,20 +390,14 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
                     return Ok(());
                 }
                 Some(ty) => {
-                    inputs.push(simple_fn_arg(
-                        proc_macro2::Ident::new(&arg.name, proc_macro2::Span::call_site()),
-                        ty.clone(),
-                    ));
+                    inputs.push(simple_fn_arg(rust_ident(&arg.name), ty.clone()));
                     arguments.push(ty);
                 }
             }
         }
 
         let rust_name = fn_name.clone();
-        let shim = proc_macro2::Ident::new(
-            &format!("__wbg_f_{}_{}_{}", fn_name, fn_name, self_name),
-            proc_macro2::Span::call_site(),
-        );
+        let shim = rust_ident(&format!("__wbg_f_{}_{}_{}", fn_name, fn_name, self_name));
 
         program.imports.push(backend::ast::Import {
             module: None,
