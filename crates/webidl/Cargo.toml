@@ -7,7 +7,12 @@ authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
 name = "webidl-all"
 path = "tests/all/lib.rs"
 
+[[test]]
+name = "webidl-expected"
+path = "tests/expected/lib.rs"
+
 [dev-dependencies]
+wasm-bindgen = { version = "=0.2.11", path = "../..", default-features = false }
 wasm-bindgen-backend = { version = "=0.2.11", path = "../backend", features = ["extra-traits"] }
 diff = "0.1.11"
 
