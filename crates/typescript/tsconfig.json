@@ -1,0 +1,15 @@
+{
+    "version": "2.4.2",
+    "compilerOptions": {
+        "lib": ["es5", "es6"],
+        "target": "es6",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "sourceMap": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
