@@ -12,5 +12,5 @@ fn main() {
 
     let mut tokens = TokenStream::new();
     program.to_tokens(&mut tokens);
-    println!("{}", tokens);
+    println!("{:#?}", tokens);
 }
