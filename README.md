@@ -484,8 +484,8 @@ impls, and foreign modules. Impls can only contain functions, and the attribute
 cannot be attached to functions in an impl block or functions in a foreign
 module. No lifetime parameters or type parameters are allowed on any of these
 types. Foreign modules must have the `"C"` abi (or none listed). Free functions
-with `#[wasm_bindgen]` might no have the `"C"` abi or none listed and also not
-needed to annotate with the `#[no_mangle]` attribute.
+with `#[wasm_bindgen]` might not have the `"C"` abi or none listed, and it's also not
+necessary to annotate with the `#[no_mangle]` attribute.
 
 All structs referenced through arguments to functions should be defined in the
 macro itself. Arguments allowed implement the `WasmBoundary` trait, and examples
