@@ -67,11 +67,9 @@ fn parse_json(file_name: &str) -> TsPackage {
 
 fn build_function(name: String, parameters: HashMap<String, TsMethodProperty>, return_value: TsReturnValue) -> Function {
     let arguments = parameters.iter().map( |(_name, property)| {
-        let property_type = rust_type(&property.property_type);
-
         let mut segments = syn::punctuated::Punctuated::new();
         segments.push(syn::PathSegment {
-            ident: syn::Ident::new(property_type, proc_macro2::Span::call_site()),
+            ident: syn::Ident::new(&property.property_type, proc_macro2::Span::call_site()),
             arguments: syn::PathArguments::None,
         });
 
@@ -84,11 +82,9 @@ fn build_function(name: String, parameters: HashMap<String, TsMethodProperty>, r
         })
     }).collect::<Vec<_>>();
 
-    let ret_property_type = rust_type(&return_value.property_type);
-
     let mut ret_segments = syn::punctuated::Punctuated::new();
     ret_segments.push(syn::PathSegment {
-        ident: syn::Ident::new(ret_property_type, proc_macro2::Span::call_site()),
+        ident: syn::Ident::new(&return_value.property_type, proc_macro2::Span::call_site()),
         arguments: syn::PathArguments::None,
     });
 
@@ -120,19 +116,5 @@ fn build_function(name: String, parameters: HashMap<String, TsMethodProperty>, r
         rust_vis: syn::Visibility::Public(syn::VisPublic {
             pub_token: Default::default(),
         }),
-    }
-}
-
-// TODO: implement this properly
-fn rust_type(js_type: &str) -> &'static str {
-    match js_type {
-        "string" => "String",
-        "number" => "String",
-        "boolean" => "bool",
-        "symbol" => "String",
-        "object" => "String",
-        "function" => "String",
-        "void" => "String",
-        _ => "String",
     }
 }
