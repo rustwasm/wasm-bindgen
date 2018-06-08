@@ -528,6 +528,7 @@ mod enums;
 mod import_class;
 mod imports;
 mod jsobjects;
+#[cfg(feature = "js_globals")] mod js_globals;
 mod math;
 mod node;
 mod non_debug;

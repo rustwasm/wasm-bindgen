@@ -6,6 +6,7 @@
 //! interface.
 
 #![feature(use_extern_macros, wasm_import_module, try_reserve, unsize)]
+#![cfg_attr(feature = "js_globals", feature(proc_macro, wasm_custom_section))]
 #![no_std]
 
 #[cfg(feature = "serde-serialize")]
@@ -43,6 +44,13 @@ pub mod prelude {
 
 pub mod convert;
 pub mod describe;
+#[cfg(feature = "js_globals")]
+pub mod js;
+
+#[cfg(feature = "js_globals")]
+mod wasm_bindgen {
+    pub use super::*;
+}
 
 if_std! {
     extern crate std;
