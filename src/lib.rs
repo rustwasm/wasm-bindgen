@@ -67,6 +67,18 @@ const JSIDX_FALSE: u32 = 6;
 const JSIDX_RESERVED: u32 = 8;
 
 impl JsValue {
+    /// The `null` JS value constant.
+    pub const NULL: JsValue = JsValue { idx:  JSIDX_NULL };
+
+    /// The `undefined` JS value constant.
+    pub const UNDEFINED: JsValue = JsValue { idx:  JSIDX_UNDEFINED };
+
+    /// The `true` JS value constant.
+    pub const TRUE: JsValue = JsValue { idx:  JSIDX_TRUE };
+
+    /// The `false` JS value constant.
+    pub const FALSE: JsValue = JsValue { idx:  JSIDX_FALSE };
+
     /// Creates a new JS value which is a string.
     ///
     /// The utf-8 string provided is copied to the JS heap and the string will
