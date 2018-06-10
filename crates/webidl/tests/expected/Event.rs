@@ -55,7 +55,7 @@ impl From<Event> for ::wasm_bindgen::JsValue {
 }
 #[no_mangle]
 #[allow(non_snake_case)]
-pub extern "C" fn __wbindgen_describe___wbg_f_stopPropagation_stopPropagation_Event() {
+pub extern "C" fn __wbindgen_describe___wbg_f_stopPropagation_stop_propagation_Event() {
     use wasm_bindgen::describe::*;
     inform(FUNCTION);
     inform(1u32);
@@ -65,11 +65,11 @@ pub extern "C" fn __wbindgen_describe___wbg_f_stopPropagation_stopPropagation_Ev
 impl Event {
     #[allow(bad_style)]
     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-    pub extern "C" fn stopPropagation(&self) {
+    pub extern "C" fn stop_propagation(&self) {
         ::wasm_bindgen::__rt::link_this_library();
         #[wasm_import_module = "__wbindgen_placeholder__"]
         extern "C" {
-            fn __wbg_f_stopPropagation_stopPropagation_Event(
+            fn __wbg_f_stopPropagation_stop_propagation_Event(
                 self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
             ) -> ();
         }
@@ -78,14 +78,14 @@ impl Event {
                 let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
                 let self_ =
                     <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(self, &mut __stack);
-                __wbg_f_stopPropagation_stopPropagation_Event(self_)
+                __wbg_f_stopPropagation_stop_propagation_Event(self_)
             };
             ()
         }
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn stopPropagation(&self) {
+    pub extern "C" fn stop_propagation(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -94,7 +94,7 @@ impl Event {
 }
 #[no_mangle]
 #[allow(non_snake_case)]
-pub extern "C" fn __wbindgen_describe___wbg_f_stopImmediatePropagation_stopImmediatePropagation_Event(
+pub extern "C" fn __wbindgen_describe___wbg_f_stopImmediatePropagation_stop_immediate_propagation_Event(
 ) {
     use wasm_bindgen::describe::*;
     inform(FUNCTION);
@@ -105,11 +105,11 @@ pub extern "C" fn __wbindgen_describe___wbg_f_stopImmediatePropagation_stopImmed
 impl Event {
     #[allow(bad_style)]
     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-    pub extern "C" fn stopImmediatePropagation(&self) {
+    pub extern "C" fn stop_immediate_propagation(&self) {
         ::wasm_bindgen::__rt::link_this_library();
         #[wasm_import_module = "__wbindgen_placeholder__"]
         extern "C" {
-            fn __wbg_f_stopImmediatePropagation_stopImmediatePropagation_Event(
+            fn __wbg_f_stopImmediatePropagation_stop_immediate_propagation_Event(
                 self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
             ) -> ();
         }
@@ -118,14 +118,14 @@ impl Event {
                 let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
                 let self_ =
                     <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(self, &mut __stack);
-                __wbg_f_stopImmediatePropagation_stopImmediatePropagation_Event(self_)
+                __wbg_f_stopImmediatePropagation_stop_immediate_propagation_Event(self_)
             };
             ()
         }
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn stopImmediatePropagation(&self) {
+    pub extern "C" fn stop_immediate_propagation(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -134,7 +134,7 @@ impl Event {
 }
 #[no_mangle]
 #[allow(non_snake_case)]
-pub extern "C" fn __wbindgen_describe___wbg_f_preventDefault_preventDefault_Event() {
+pub extern "C" fn __wbindgen_describe___wbg_f_preventDefault_prevent_default_Event() {
     use wasm_bindgen::describe::*;
     inform(FUNCTION);
     inform(1u32);
@@ -144,11 +144,11 @@ pub extern "C" fn __wbindgen_describe___wbg_f_preventDefault_preventDefault_Even
 impl Event {
     #[allow(bad_style)]
     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-    pub extern "C" fn preventDefault(&self) {
+    pub extern "C" fn prevent_default(&self) {
         ::wasm_bindgen::__rt::link_this_library();
         #[wasm_import_module = "__wbindgen_placeholder__"]
         extern "C" {
-            fn __wbg_f_preventDefault_preventDefault_Event(
+            fn __wbg_f_preventDefault_prevent_default_Event(
                 self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
             ) -> ();
         }
@@ -157,14 +157,14 @@ impl Event {
                 let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
                 let self_ =
                     <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(self, &mut __stack);
-                __wbg_f_preventDefault_preventDefault_Event(self_)
+                __wbg_f_preventDefault_prevent_default_Event(self_)
             };
             ()
         }
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn preventDefault(&self) {
+    pub extern "C" fn prevent_default(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -173,7 +173,7 @@ impl Event {
 }
 #[no_mangle]
 #[allow(non_snake_case)]
-pub extern "C" fn __wbindgen_describe___wbg_f_initEvent_initEvent_Event() {
+pub extern "C" fn __wbindgen_describe___wbg_f_initEvent_init_event_Event() {
     use wasm_bindgen::describe::*;
     inform(FUNCTION);
     inform(4u32);
@@ -186,11 +186,11 @@ pub extern "C" fn __wbindgen_describe___wbg_f_initEvent_initEvent_Event() {
 impl Event {
     #[allow(bad_style)]
     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-    pub extern "C" fn initEvent(&self, type_: &str, bubbles: bool, cancelable: bool) {
+    pub extern "C" fn init_event(&self, type_: &str, bubbles: bool, cancelable: bool) {
         ::wasm_bindgen::__rt::link_this_library();
         #[wasm_import_module = "__wbindgen_placeholder__"]
         extern "C" {
-            fn __wbg_f_initEvent_initEvent_Event(
+            fn __wbg_f_initEvent_init_event_Event(
                 self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
                 type_: <&str as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
                 bubbles: <bool as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
@@ -210,14 +210,14 @@ impl Event {
                     cancelable,
                     &mut __stack,
                 );
-                __wbg_f_initEvent_initEvent_Event(self_, type_, bubbles, cancelable)
+                __wbg_f_initEvent_init_event_Event(self_, type_, bubbles, cancelable)
             };
             ()
         }
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn initEvent(&self, type_: &str, bubbles: bool, cancelable: bool) {
+    pub extern "C" fn init_event(&self, type_: &str, bubbles: bool, cancelable: bool) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -226,4 +226,4 @@ impl Event {
 }
 #[allow(non_upper_case_globals)]
 #[wasm_custom_section = "__wasm_bindgen_unstable"]
-const __WASM_BINDGEN_GENERATED_wasm_bindgen_webidl_0_1_0_0 : [ u8 ; 180usize ] = * b"\xB0\0\0\0{\"exports\":[],\"enums\":[],\"imports\":[{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"type\"}}],\"structs\":[],\"version\":\"0.2.11 (3879f6f42)\",\"schema_version\":\"4\"}" ;
+const __WASM_BINDGEN_GENERATED_wasm_bindgen_webidl_0_2_11_0 : [ u8 ; 1299usize ] = * b"\x0F\x05\0\0{\"exports\":[],\"enums\":[],\"imports\":[{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"type\"}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__wbg_f_stopPropagation_stop_propagation_Event\",\"catch\":false,\"method\":true,\"js_new\":false,\"structural\":false,\"getter\":null,\"setter\":null,\"class\":\"Event\",\"function\":{\"name\":\"stopPropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__wbg_f_stopImmediatePropagation_stop_immediate_propagation_Event\",\"catch\":false,\"method\":true,\"js_new\":false,\"structural\":false,\"getter\":null,\"setter\":null,\"class\":\"Event\",\"function\":{\"name\":\"stopImmediatePropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__wbg_f_preventDefault_prevent_default_Event\",\"catch\":false,\"method\":true,\"js_new\":false,\"structural\":false,\"getter\":null,\"setter\":null,\"class\":\"Event\",\"function\":{\"name\":\"preventDefault\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__wbg_f_initEvent_init_event_Event\",\"catch\":false,\"method\":true,\"js_new\":false,\"structural\":false,\"getter\":null,\"setter\":null,\"class\":\"Event\",\"function\":{\"name\":\"initEvent\"}}}],\"structs\":[],\"version\":\"0.2.11 (71107b8e8)\",\"schema_version\":\"4\"}" ;

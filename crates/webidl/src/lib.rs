@@ -9,6 +9,7 @@ emitted for the types and methods described in the WebIDL.
 #![deny(missing_debug_implementations)]
 
 extern crate failure;
+extern crate heck;
 #[macro_use]
 extern crate log;
 extern crate proc_macro2;
@@ -18,6 +19,7 @@ extern crate wasm_bindgen_backend as backend;
 extern crate webidl;
 
 use failure::ResultExt;
+use heck::SnakeCase;
 use proc_macro2::Ident;
 use quote::ToTokens;
 use std::fs;
@@ -334,7 +336,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
     type Extra = &'a str;
 
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
-        let fn_name = match self.name {
+        let name = match self.name {
             None => {
                 warn!(
                     "Operations without a name are unsupported. Skipping {:?}",
@@ -342,8 +344,11 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
                 );
                 return Ok(());
             }
-            Some(ref name) => rust_ident(name),
+            Some(ref name) => name,
         };
+
+        let rust_name = rust_ident(&name.to_snake_case());
+        let name = raw_ident(name);
 
         let (output, ret) = match self.return_type {
             webidl::ast::ReturnType::Void => (syn::ReturnType::Default, None),
@@ -396,8 +401,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
             }
         }
 
-        let rust_name = fn_name.clone();
-        let shim = rust_ident(&format!("__wbg_f_{}_{}_{}", fn_name, fn_name, self_name));
+        let shim = rust_ident(&format!("__wbg_f_{}_{}_{}", name, rust_name, self_name));
 
         program.imports.push(backend::ast::Import {
             module: None,
@@ -405,7 +409,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
             js_namespace: None,
             kind: backend::ast::ImportKind::Function(backend::ast::ImportFunction {
                 function: backend::ast::Function {
-                    name: fn_name,
+                    name,
                     arguments,
                     ret,
                     opts: backend::ast::BindgenAttrs {
