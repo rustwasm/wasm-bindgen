@@ -213,14 +213,31 @@ impl<'a> WebidlParse<'a> for webidl::ast::InterfaceMember {
 
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
         match *self {
+            webidl::ast::InterfaceMember::Attribute(ref attr) => {
+                attr.webidl_parse(program, self_name)
+            }
             webidl::ast::InterfaceMember::Operation(ref op) => op.webidl_parse(program, self_name),
             // TODO
-            webidl::ast::InterfaceMember::Attribute(_)
-            | webidl::ast::InterfaceMember::Const(_)
+            webidl::ast::InterfaceMember::Const(_)
             | webidl::ast::InterfaceMember::Iterable(_)
             | webidl::ast::InterfaceMember::Maplike(_)
             | webidl::ast::InterfaceMember::Setlike(_) => {
                 warn!("Unsupported WebIDL interface member: {:?}", self);
+                Ok(())
+            }
+        }
+    }
+}
+
+impl<'a> WebidlParse<'a> for webidl::ast::Attribute {
+    type Extra = &'a str;
+
+    fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
+        match *self {
+            webidl::ast::Attribute::Regular(ref attr) => attr.webidl_parse(program, self_name),
+            // TODO
+            webidl::ast::Attribute::Static(_) | webidl::ast::Attribute::Stringifier(_) => {
+                warn!("Unsupported WebIDL attribute: {:?}", self);
                 Ok(())
             }
         }
@@ -285,6 +302,10 @@ enum TypePosition {
 }
 
 fn webidl_ty_to_syn_ty(ty: &webidl::ast::Type, pos: TypePosition) -> Option<syn::Type> {
+    // nullable types are not yet supported (see issue #14)
+    if ty.nullable {
+        return None;
+    }
     Some(match ty.kind {
         // `any` becomes `::wasm_bindgen::JsValue`.
         webidl::ast::TypeKind::Any => {
@@ -358,6 +379,151 @@ fn simple_fn_arg(ident: Ident, ty: syn::Type) -> syn::FnArg {
         colon_token: Default::default(),
         ty,
     })
+}
+
+impl<'a> WebidlParse<'a> for webidl::ast::RegularAttribute {
+    type Extra = &'a str;
+
+    fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
+        fn create_getter(
+            this: &webidl::ast::RegularAttribute,
+            self_name: &str,
+        ) -> Option<backend::ast::Import> {
+            let name = raw_ident(&this.name);
+            let rust_name = rust_ident(&this.name.to_snake_case());
+
+            let (output, ret) = match webidl_ty_to_syn_ty(&this.type_, TypePosition::Return) {
+                None => {
+                    warn!("Attribute's type does not yet support reading: {:?}. Skipping getter binding for {:?}",
+                        this.type_, this);
+                    return None;
+                }
+                Some(ty) => (
+                    syn::ReturnType::Type(Default::default(), Box::new(ty.clone())),
+                    Some(ty),
+                ),
+            };
+
+            let self_ty = ident_ty(rust_ident(self_name));
+            let self_ref_ty = shared_ref(self_ty.clone());
+
+            let shim = rust_ident(&format!("__wbg_f_{}_{}_{}", name, rust_name, self_name));
+
+            Some(backend::ast::Import {
+                module: None,
+                version: None,
+                js_namespace: None,
+                kind: backend::ast::ImportKind::Function(backend::ast::ImportFunction {
+                    function: backend::ast::Function {
+                        name: name.clone(),
+                        arguments: vec![self_ref_ty.clone()],
+                        ret,
+                        opts: backend::ast::BindgenAttrs {
+                            attrs: vec![
+                                backend::ast::BindgenAttr::Method,
+                                backend::ast::BindgenAttr::Getter(Some(name.clone())),
+                            ],
+                        },
+                        rust_attrs: vec![],
+                        rust_decl: Box::new(syn::FnDecl {
+                            fn_token: Default::default(),
+                            generics: Default::default(),
+                            paren_token: Default::default(),
+                            inputs: syn::punctuated::Punctuated::from_iter(vec![simple_fn_arg(
+                                raw_ident("self_"),
+                                self_ref_ty,
+                            )]),
+                            variadic: None,
+                            output,
+                        }),
+                        rust_vis: syn::Visibility::Public(syn::VisPublic {
+                            pub_token: Default::default(),
+                        }),
+                    },
+                    rust_name,
+                    kind: backend::ast::ImportFunctionKind::Method {
+                        class: self_name.to_string(),
+                        ty: self_ty,
+                    },
+                    shim,
+                }),
+            })
+        }
+
+        fn create_setter(
+            this: &webidl::ast::RegularAttribute,
+            self_name: &str,
+        ) -> Option<backend::ast::Import> {
+            let name = raw_ident(&this.name);
+            let rust_attr_name = rust_ident(&this.name.to_snake_case());
+            let rust_name = rust_ident(&format!("set_{}", rust_attr_name));
+
+            let self_ty = ident_ty(rust_ident(self_name));
+
+            let (inputs, arguments) = match webidl_ty_to_syn_ty(&this.type_, TypePosition::Argument)
+            {
+                None => {
+                    warn!("Attribute's type does not yet support writing: {:?}. Skipping setter binding for {:?}",
+                        this.type_, this);
+                    return None;
+                }
+                Some(ty) => {
+                    let self_ref_ty = shared_ref(self_ty.clone());
+                    let mut inputs = syn::punctuated::Punctuated::new();
+                    inputs.push(simple_fn_arg(raw_ident("self_"), self_ref_ty.clone()));
+                    inputs.push(simple_fn_arg(rust_attr_name, ty.clone()));
+                    (inputs, vec![self_ref_ty, ty])
+                }
+            };
+
+            let shim = rust_ident(&format!("__wbg_f_{}_{}_{}", name, rust_name, self_name));
+
+            Some(backend::ast::Import {
+                module: None,
+                version: None,
+                js_namespace: None,
+                kind: backend::ast::ImportKind::Function(backend::ast::ImportFunction {
+                    function: backend::ast::Function {
+                        name: name.clone(),
+                        arguments,
+                        ret: None,
+                        opts: backend::ast::BindgenAttrs {
+                            attrs: vec![
+                                backend::ast::BindgenAttr::Method,
+                                backend::ast::BindgenAttr::Setter(Some(name)),
+                            ],
+                        },
+                        rust_attrs: vec![],
+                        rust_decl: Box::new(syn::FnDecl {
+                            fn_token: Default::default(),
+                            generics: Default::default(),
+                            paren_token: Default::default(),
+                            inputs,
+                            variadic: None,
+                            output: syn::ReturnType::Default,
+                        }),
+                        rust_vis: syn::Visibility::Public(syn::VisPublic {
+                            pub_token: Default::default(),
+                        }),
+                    },
+                    rust_name,
+                    kind: backend::ast::ImportFunctionKind::Method {
+                        class: self_name.to_string(),
+                        ty: self_ty,
+                    },
+                    shim,
+                }),
+            })
+        }
+
+        create_getter(self, self_name).map(|import| program.imports.push(import));
+
+        if !self.read_only {
+            create_setter(self, self_name).map(|import| program.imports.push(import));
+        }
+
+        Ok(())
+    }
 }
 
 impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
