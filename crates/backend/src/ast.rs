@@ -158,15 +158,16 @@ impl Program {
                 let comments: Vec<String> = f.attrs
                                 .iter()
                                 .filter_map(|a| {
-                                    if a.style == AttrStyle::Outer {
-                                        Some(
-                                            a.tts.clone().into_iter().filter_map(|t| match t {
-                                                TokenTree::Literal(lit) => Some(format!("{}", lit)),
-                                                _ => None,
-                                            })
-                                        )
-                                    } else {
-                                        None
+                                    match a.style {
+                                        AttrStyle::Outer => {
+                                            Some(
+                                                a.tts.clone().into_iter().filter_map(|t| match t {
+                                                    TokenTree::Literal(lit) => Some(format!("{}", lit)),
+                                                    _ => None,
+                                                })
+                                            )
+                                        },
+                                        _ => None,
                                     }
                                 })
                                 .fold(vec![], |mut acc, a| {acc.extend(a); acc});
@@ -1111,16 +1112,17 @@ fn extract_doc_comments(attrs: &Vec<syn::Attribute>) -> Vec<String> {
     .iter()
     .filter_map(|a| {
         //We only care about outer comments for now
-        if a.style == AttrStyle::Outer {
-            //We only care about literal values
-            Some(
-                a.tts.clone().into_iter().filter_map(|t| match t {
-                    TokenTree::Literal(lit) => Some(lit.to_string()),
-                    _ => None,
-                })
-            )
-        } else {
-            None
+        match a.style {
+            AttrStyle::Outer => {
+                //We only care about literal values
+                Some(
+                    a.tts.clone().into_iter().filter_map(|t| match t {
+                        TokenTree::Literal(lit) => Some(lit.to_string()),
+                        _ => None,
+                    })
+                )
+            },
+            _ => None
         }
     })
     //Fold up the [[String]] iter we created into Vec<String>
