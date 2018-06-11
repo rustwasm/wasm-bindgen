@@ -19,6 +19,7 @@ wasm-bindgen-backend = { version = "=0.2.11", path = "../backend", features = ["
 
 [dependencies]
 failure = "0.1"
+heck = "0.3"
 log = "0.4.1"
 proc-macro2 = "0.4"
 quote = '0.6'
