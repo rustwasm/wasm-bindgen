@@ -489,6 +489,9 @@ impl<'a> Context<'a> {
                 .method(true)
                 .ret(&Some(descriptor))?
                 .finish("", &format!("wasm.{}", wasm_getter));
+            if !dst.ends_with("\n") {
+                dst.push_str("\n");
+            }
             dst.push_str(&field.comments);
             dst.push_str("get ");
             dst.push_str(&field.name);
@@ -509,7 +512,6 @@ impl<'a> Context<'a> {
             }}
         ", shared::free_function(&name)));
         ts_dst.push_str("free(): void;\n");
-
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
         dst.push_str("}\n");
@@ -1505,6 +1507,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .finish("", &format!("wasm.{}", wasm_name));
         let class = self.cx.exported_classes.entry(class_name.to_string())
             .or_insert(ExportedClass::default());
+        class.contents.push_str(&format_doc_comments(&export.comments));
         if !export.method {
             class.contents.push_str("static ");
             class.typescript.push_str("static ");
@@ -1521,7 +1524,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
             1 => Some(constructors[0].clone()),
             x @ _ => bail!("there must be only one constructor, not {}", x),
         };
-
         class.contents.push_str(&export.function.name);
         class.contents.push_str(&js);
         class.contents.push_str("\n");
