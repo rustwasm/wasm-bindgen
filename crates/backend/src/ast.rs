@@ -2,6 +2,7 @@ use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
 use syn;
+use syn::AttrStyle;
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Default)]
@@ -20,6 +21,7 @@ pub struct Export {
     pub mutable: bool,
     pub constructor: Option<String>,
     pub function: Function,
+    pub comments: Vec<String>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -82,6 +84,7 @@ pub struct Function {
 pub struct Struct {
     pub name: Ident,
     pub fields: Vec<StructField>,
+    pub comments: Vec<String>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -92,12 +95,14 @@ pub struct StructField {
     pub ty: syn::Type,
     pub getter: Ident,
     pub setter: Ident,
+    pub comments: Vec<String>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub struct Enum {
     pub name: Ident,
     pub variants: Vec<Variant>,
+    pub comments: Vec<String>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -150,6 +155,21 @@ impl Program {
                     }
                     _ => {}
                 }
+                let comments: Vec<String> = f.attrs
+                                .iter()
+                                .filter_map(|a| {
+                                    if a.style == AttrStyle::Outer {
+                                        Some(
+                                            a.tts.clone().into_iter().filter_map(|t| match t {
+                                                TokenTree::Literal(lit) => Some(format!("{}", lit)),
+                                                _ => None,
+                                            })
+                                        )
+                                    } else {
+                                        None
+                                    }
+                                })
+                                .fold(vec![], |mut acc, a| {acc.extend(a); acc});
                 f.to_tokens(tokens);
                 self.exports.push(Export {
                     class: None,
@@ -157,6 +177,7 @@ impl Program {
                     mutable: false,
                     constructor: None,
                     function: Function::from(f, opts),
+                    comments,
                 });
             }
             syn::Item::Struct(mut s) => {
@@ -237,6 +258,7 @@ impl Program {
         }
 
         let opts = BindgenAttrs::find(&mut method.attrs);
+        let comments = extract_doc_comments(&method.attrs);
         let is_constructor = opts.constructor();
         let constructor = if is_constructor {
             Some(method.sig.ident.to_string())
@@ -259,6 +281,7 @@ impl Program {
             mutable: mutable.unwrap_or(false),
             constructor,
             function,
+            comments,
         });
     }
 
@@ -299,9 +322,11 @@ impl Program {
                 }
             })
             .collect();
+        let comments = extract_doc_comments(&item.attrs);
         self.enums.push(Enum {
             name: item.ident,
             variants,
+            comments,
         });
     }
 
@@ -585,6 +610,7 @@ impl Export {
             method: self.method,
             constructor: self.constructor.clone(),
             function: self.function.shared(),
+            comments: self.comments.clone(),
         }
     }
 }
@@ -594,6 +620,7 @@ impl Enum {
         shared::Enum {
             name: self.name.to_string(),
             variants: self.variants.iter().map(|v| v.shared()).collect(),
+            comments: self.comments.clone(),
         }
     }
 }
@@ -750,6 +777,7 @@ impl Struct {
                 let getter = shared::struct_field_get(&ident, &name_str);
                 let setter = shared::struct_field_set(&ident, &name_str);
                 let opts = BindgenAttrs::find(&mut field.attrs);
+                let comments = extract_doc_comments(&field.attrs);
                 fields.push(StructField {
                     opts,
                     name: name.clone(),
@@ -757,12 +785,15 @@ impl Struct {
                     ty: field.ty.clone(),
                     getter: Ident::new(&getter, Span::call_site()),
                     setter: Ident::new(&setter, Span::call_site()),
+                    comments
                 });
             }
         }
+        let comments: Vec<String> = extract_doc_comments(&s.attrs);
         Struct {
             name: s.ident.clone(),
             fields,
+            comments,
         }
     }
 
@@ -770,6 +801,7 @@ impl Struct {
         shared::Struct {
             name: self.name.to_string(),
             fields: self.fields.iter().map(|s| s.shared()).collect(),
+            comments: self.comments.clone(),
         }
     }
 }
@@ -779,6 +811,7 @@ impl StructField {
         shared::StructField {
             name: self.name.to_string(),
             readonly: self.opts.readonly(),
+            comments: self.comments.clone(),
         }
     }
 }
@@ -1071,4 +1104,25 @@ fn replace_self(name: &Ident, item: &mut syn::ImplItem) {
     }
 
     syn::visit_mut::VisitMut::visit_impl_item_mut(&mut Walk(name), item);
+}
+/// Extract the documentation comments from a Vec of attributes
+fn extract_doc_comments(attrs: &Vec<syn::Attribute>) -> Vec<String> {
+    attrs
+    .iter()
+    .filter_map(|a| {
+        //We only care about outer comments for now
+        if a.style == AttrStyle::Outer {
+            //We only care about literal values
+            Some(
+                a.tts.clone().into_iter().filter_map(|t| match t {
+                    TokenTree::Literal(lit) => Some(lit.to_string()),
+                    _ => None,
+                })
+            )
+        } else {
+            None
+        }
+    })
+    //Fold up the [[String]] iter we created into Vec<String>
+    .fold(vec![], |mut acc, a| {acc.extend(a); acc})
 }
