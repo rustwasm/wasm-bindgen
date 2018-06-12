@@ -2,11 +2,11 @@ extern crate wasm_bindgen_cli_support as cli;
 
 use std::env;
 use std::fs::{self, File};
-use std::io::{self, Write, Read};
-use std::path::{PathBuf, Path};
+use std::io::{self, Read, Write};
+use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-use std::sync::{Once, ONCE_INIT};
 use std::sync::atomic::*;
+use std::sync::{Once, ONCE_INIT};
 use std::time::Instant;
 
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
@@ -26,8 +26,10 @@ struct Project {
 fn project() -> Project {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR"));
     let mut lockfile = String::new();
-    fs::File::open(&dir.join("Cargo.lock")).unwrap()
-        .read_to_string(&mut lockfile).unwrap();
+    fs::File::open(&dir.join("Cargo.lock"))
+        .unwrap()
+        .read_to_string(&mut lockfile)
+        .unwrap();
     Project {
         debug: true,
         node: false,
@@ -38,32 +40,13 @@ fn project() -> Project {
         node_args: Vec::new(),
         files: vec![
             ("Cargo.lock".to_string(), lockfile),
-
-            ("run.js".to_string(), r#"
-                import * as process from "process";
-                let wasm = import('./out');
-
-                const test = import("./test");
-
-                Promise.all([test, wasm]).then(results => {
-                  let [test, wasm] = results;
-                  test.test();
-
-                  if (wasm.assertStackEmpty)
-                    wasm.assertStackEmpty();
-                  if (wasm.assertSlabEmpty)
-                    wasm.assertSlabEmpty();
-                }).catch(error => {
-                  console.error(error);
-                  process.exit(1);
-                });
-            "#.to_string()),
-
-            ("run-node.js".to_string(), r#"
-                require("./test").test();
-            "#.to_string()),
-
-            ("webpack.config.js".to_string(), r#"
+            (
+                "run-node.js".to_string(),
+                r#"require("./test").test();"#.to_string(),
+            ),
+            (
+                "webpack.config.js".to_string(),
+                r#"
                 const path = require('path');
 
                 module.exports = {
@@ -88,8 +71,11 @@ fn project() -> Project {
                   },
                   target: 'node'
                 };
-            "#.to_string()),
-            ("tsconfig.json".to_string(), r#"
+            "#.to_string(),
+            ),
+            (
+                "tsconfig.json".to_string(),
+                r#"
                 {
                   "compilerOptions": {
                     "noEmitOnError": true,
@@ -106,7 +92,8 @@ fn project() -> Project {
                     "lib": ["es2015"]
                   }
                 }
-            "#.to_string()),
+            "#.to_string(),
+            ),
         ],
     }
 }
@@ -120,7 +107,7 @@ fn root() -> PathBuf {
     me.pop(); // chop off `debug` / `release`
     me.push("generated-tests");
     me.push(&format!("test{}", idx));
-    return me
+    return me;
 }
 
 fn assert_bigint_support() -> Option<&'static str> {
@@ -135,26 +122,25 @@ fn assert_bigint_support() -> Option<&'static str> {
             .stderr(Stdio::piped());
         if cmd.status().unwrap().success() {
             BIGINT_SUPPORED.store(1, Ordering::SeqCst);
-            return
+            return;
         }
 
         cmd.arg("--harmony-bigint");
         if cmd.status().unwrap().success() {
             BIGINT_SUPPORED.store(2, Ordering::SeqCst);
-            return
+            return;
         }
     });
 
     match BIGINT_SUPPORED.load(Ordering::SeqCst) {
         1 => return None,
         2 => return Some("--harmony-bigint"),
-        _ => {
-            panic!("the version of node.js that is installed for these tests \
-                    does not support `BigInt`, you may wish to try installing \
-                    node 10 to fix this")
-        }
+        _ => panic!(
+            "the version of node.js that is installed for these tests \
+             does not support `BigInt`, you may wish to try installing \
+             node 10 to fix this"
+        ),
     }
-
 }
 
 impl Project {
@@ -194,7 +180,8 @@ impl Project {
     }
 
     fn add_local_dependency(&mut self, name: &str, path: &str) -> &mut Project {
-        self.deps.push(format!("{} = {{ path = '{}' }}", name, path));
+        self.deps
+            .push(format!("{} = {{ path = '{}' }}", name, path));
         self
     }
 
@@ -209,8 +196,149 @@ impl Project {
         self
     }
 
+    fn generate_webidl_bindings(&mut self) -> Vec<PathBuf> {
+        let mut res = Vec::new();
+        let mut origpaths = Vec::new();
+
+        for (path, _) in &self.files {
+            let path = Path::new(&path);
+            let extension = path.extension().map(|x| x.to_str().unwrap());
+
+            if extension != Some("webidl") {
+                continue;
+            }
+
+            res.push(path.with_extension("rs"));
+            origpaths.push(path.to_owned());
+        }
+
+        if res.is_empty() {
+            return res;
+        }
+
+        let mut buildrs = r#"
+            extern crate wasm_bindgen_webidl;
+
+            use wasm_bindgen_webidl::compile_file;
+            use std::env;
+            use std::fs::{self, File};
+            use std::io::Write;
+            use std::path::Path;
+
+            fn main() {
+                let dest = env::var("OUT_DIR").unwrap();
+        "#.to_string();
+
+        for (path, origpath) in res.iter().zip(origpaths.iter()) {
+            buildrs.push_str(&format!(
+                r#"
+                fs::create_dir_all("{}").unwrap();
+                File::create(&Path::new(&dest).join("{}"))
+                    .unwrap()
+                    .write_all(
+                        compile_file(Path::new("{}"))
+                            .unwrap()
+                            .as_bytes()
+                    )
+                    .unwrap();
+                "#,
+                path.parent().unwrap().to_str().unwrap(),
+                path.to_str().unwrap(),
+                origpath.to_str().unwrap(),
+            ));
+
+            self.files.push((
+                Path::new("src").join(path).to_str().unwrap().to_string(),
+                format!(
+                    r#"include!(concat!(env!("OUT_DIR"), "/{}"));"#,
+                    path.display()
+                ),
+            ));
+        }
+
+        buildrs.push('}');
+
+        self.files.push(("build.rs".to_string(), buildrs));
+
+        res
+    }
+
+    fn generate_js_entry(&mut self, modules: Vec<PathBuf>) {
+        let mut runjs = r#"
+            import * as process from "process";
+        "#.to_string();
+
+        if !modules.is_empty() {
+            runjs.push_str(r#"Promise.all(["#);
+            for module in &modules {
+                runjs.push_str(&format!(
+                    r#"import('./{}'),"#,
+                    module.with_extension("").to_str().unwrap()
+                ));
+            }
+            runjs.push_str(
+                r#"]).then(results => { results.map(module => Object.assign(global, module));"#,
+            );
+        }
+
+        runjs.push_str(
+            r#"
+            let wasm = import('./out');
+            const test = import('./test');
+            "#,
+        );
+
+        if !modules.is_empty() {
+            runjs.push_str("return ");
+        }
+
+        runjs.push_str(r#"Promise.all([test, wasm])"#);
+
+        if !modules.is_empty() {
+            runjs.push_str("})");
+        }
+
+        runjs.push_str(
+            r#"
+            .then(results => {
+                let [test, wasm] = results;
+                test.test();
+
+                if (wasm.assertStackEmpty)
+                    wasm.assertStackEmpty();
+                if (wasm.assertSlabEmpty)
+                    wasm.assertSlabEmpty();
+            })
+            .catch(error => {
+                  console.error(error);
+                  process.exit(1);
+                });
+            "#,
+        );
+        self.files.push(("run.js".to_string(), runjs));
+    }
+
+    fn ensure_test_entry(&mut self) {
+        if !self
+            .files
+            .iter()
+            .any(|(path, _)| path == "test.ts" || path == "test.js")
+        {
+            self.files.push((
+                "test.ts".to_string(),
+                r#"export {test} from './out';"#.to_string(),
+            ));
+        }
+    }
+
     fn build(&mut self) -> (PathBuf, PathBuf) {
-        let mut manifest = format!(r#"
+        self.ensure_test_entry();
+
+        let webidl_modules = self.generate_webidl_bindings();
+        self.generate_js_entry(webidl_modules);
+
+        let mut manifest = format!(
+            r#"
             [package]
             name = "test{}"
             version = "0.0.1"
@@ -219,11 +347,18 @@ impl Project {
             [workspace]
 
             [lib]
-        "#, IDX.with(|x| *x));
+        "#,
+            IDX.with(|x| *x)
+        );
 
         if !self.rlib {
             manifest.push_str("crate-type = [\"cdylib\"]\n");
         }
+
+        manifest.push_str("[build-dependencies]\n");
+        manifest.push_str("wasm-bindgen-webidl = { path = '");
+        manifest.push_str(env!("CARGO_MANIFEST_DIR"));
+        manifest.push_str("/crates/webidl' }\n");
 
         manifest.push_str("[dependencies]\n");
         for dep in self.deps.iter() {
@@ -247,7 +382,10 @@ impl Project {
         for &(ref file, ref contents) in self.files.iter() {
             let dst = root.join(file);
             fs::create_dir_all(dst.parent().unwrap()).unwrap();
-            fs::File::create(&dst).unwrap().write_all(contents.as_ref()).unwrap();
+            fs::File::create(&dst)
+                .unwrap()
+                .write_all(contents.as_ref())
+                .unwrap();
         }
         let target_dir = root.parent().unwrap() // chop off test name
             .parent().unwrap(); // chop off `generated-tests`
@@ -287,15 +425,18 @@ impl Project {
         }
 
         let mut wasm = Vec::new();
-        File::open(root.join("out_bg.wasm")).unwrap()
-            .read_to_end(&mut wasm).unwrap();
+        File::open(root.join("out_bg.wasm"))
+            .unwrap()
+            .read_to_end(&mut wasm)
+            .unwrap();
         let obj = cli::wasm2es6js::Config::new()
             .base64(true)
             .generate(&wasm)
             .expect("failed to convert wasm to js");
-        File::create(root.join("out_bg.d.ts")).unwrap()
-            .write_all(obj.typescript().as_bytes()).unwrap();
-
+        File::create(root.join("out_bg.d.ts"))
+            .unwrap()
+            .write_all(obj.typescript().as_bytes())
+            .unwrap();
 
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
@@ -310,8 +451,7 @@ impl Project {
         if self.node {
             let mut cmd = Command::new("node");
             cmd.args(&self.node_args);
-            cmd.arg(root.join("run-node.js"))
-                .current_dir(&root);
+            cmd.arg(root.join("run-node.js")).current_dir(&root);
             run(&mut cmd, "node");
         } else {
             let mut cmd = if cfg!(windows) {
@@ -327,8 +467,7 @@ impl Project {
 
             let mut cmd = Command::new("node");
             cmd.args(&self.node_args);
-            cmd.arg(root.join("bundle.js"))
-                .current_dir(&root);
+            cmd.arg(root.join("bundle.js")).current_dir(&root);
             run(&mut cmd, "node");
         }
     }
@@ -356,7 +495,11 @@ fn run(cmd: &mut Command, program: &str) {
     };
     println!("exit: {}", output.status);
     let dur = start.elapsed();
-    println!("dur: {}.{:03}ms", dur.as_secs(), dur.subsec_nanos() / 1_000_000);
+    println!(
+        "dur: {}.{:03}ms",
+        dur.as_secs(),
+        dur.subsec_nanos() / 1_000_000
+    );
     if output.stdout.len() > 0 {
         println!("stdout ---\n{}", String::from_utf8_lossy(&output.stdout));
     }
@@ -367,6 +510,7 @@ fn run(cmd: &mut Command, program: &str) {
 }
 
 mod api;
+mod char;
 mod classes;
 mod closures;
 mod dependencies;
@@ -377,10 +521,9 @@ mod jsobjects;
 mod math;
 mod node;
 mod non_debug;
+mod non_wasm;
 mod simple;
 mod slice;
 mod structural;
-mod non_wasm;
 mod u64;
-mod char;
 mod webidl;
