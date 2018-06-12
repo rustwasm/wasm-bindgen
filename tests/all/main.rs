@@ -405,38 +405,10 @@ impl Project {
             .env("RUSTFLAGS", "-Dwarnings");
         run(&mut cmd, "cargo");
 
-        let idx = IDX.with(|x| *x);
-        let out = target_dir.join(&format!("wasm32-unknown-unknown/debug/test{}.wasm", idx));
+        obj = gen_bindings(&root, &target_dir);
+        File::create(root.join("out_bg.d.ts")).unwrap()
+            .write_all(obj.typescript().as_bytes()).unwrap();
 
-        let as_a_module = root.join("out.wasm");
-        fs::copy(&out, &as_a_module).unwrap();
-
-        let res = cli::Bindgen::new()
-            .input_path(&as_a_module)
-            .typescript(true)
-            .nodejs(self.node)
-            .debug(self.debug)
-            .generate(&root);
-        if let Err(e) = res {
-            for e in e.causes() {
-                println!("- {}", e);
-            }
-            panic!("failed");
-        }
-
-        let mut wasm = Vec::new();
-        File::open(root.join("out_bg.wasm"))
-            .unwrap()
-            .read_to_end(&mut wasm)
-            .unwrap();
-        let obj = cli::wasm2es6js::Config::new()
-            .base64(true)
-            .generate(&wasm)
-            .expect("failed to convert wasm to js");
-        File::create(root.join("out_bg.d.ts"))
-            .unwrap()
-            .write_all(obj.typescript().as_bytes())
-            .unwrap();
 
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
@@ -470,6 +442,34 @@ impl Project {
             cmd.arg(root.join("bundle.js")).current_dir(&root);
             run(&mut cmd, "node");
         }
+    }
+    /// execute the cli against the current test .wasm
+    fn gen_bindings(root: &PathBuf, target_dir: &PathBuf) -> cli::wasm2es6js::Output {
+        let idx = IDX.with(|x| *x);
+        let out = target_dir.join(&format!("wasm32-unknown-unknown/debug/test{}.wasm", idx));
+
+        let as_a_module = root.join("out.wasm");
+        fs::copy(&out, &as_a_module).unwrap();
+
+        let res = cli::Bindgen::new()
+            .input_path(&as_a_module)
+            .typescript(true)
+            .nodejs(self.node)
+            .debug(self.debug)
+            .generate(&root);
+        if let Err(e) = res {
+            for e in e.causes() {
+                println!("- {}", e);
+            }
+            panic!("failed");
+        }
+        let mut wasm = Vec::new();
+        File::open(wasm_path).unwrap()
+            .read_to_end(&mut wasm).unwrap();
+        let obj = cli::wasm2es6js::Config::new()
+            .base64(true)
+            .generate(&wasm)
+            .expect("failed to convert wasm to js")
     }
 }
 
