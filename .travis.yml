@@ -61,6 +61,8 @@ matrix:
           (cd examples/char && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
         - |
           (cd examples/closures && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+        - |
+          (cd examples/comments && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
 
 
 install:
