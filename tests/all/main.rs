@@ -196,7 +196,7 @@ impl Project {
         self
     }
 
-    fn generate_bindings(&mut self) -> Vec<PathBuf> {
+    fn generate_webidl_bindings(&mut self) -> Vec<PathBuf> {
         let mut res = Vec::new();
         let mut origpaths = Vec::new();
 
@@ -319,11 +319,10 @@ impl Project {
     }
 
     fn ensure_test_entry(&mut self) {
-        if self
+        if !self
             .files
             .iter()
-            .find(|(path, _)| path == "test.ts" || path == "test.js")
-            .is_none()
+            .any(|(path, _)| path == "test.ts" || path == "test.js")
         {
             self.files.push((
                 "test.ts".to_string(),
@@ -335,8 +334,8 @@ impl Project {
     fn build(&mut self) -> (PathBuf, PathBuf) {
         self.ensure_test_entry();
 
-        let modules = self.generate_bindings();
-        self.generate_js_entry(modules);
+        let webidl_modules = self.generate_webidl_bindings();
+        self.generate_js_entry(webidl_modules);
 
         let mut manifest = format!(
             r#"
