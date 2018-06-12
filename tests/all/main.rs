@@ -389,12 +389,6 @@ impl Project {
         }
         let target_dir = root.parent().unwrap() // chop off test name
             .parent().unwrap(); // chop off `generated-tests`
-        (root.clone(), target_dir.to_path_buf())
-    }
-
-    fn test(&mut self) {
-        let (root, target_dir) = self.build();
-
         let mut cmd = Command::new("cargo");
         cmd.arg("build")
             .arg("--target")
@@ -404,11 +398,15 @@ impl Project {
             // Catch any warnings in generated code because we don't want any
             .env("RUSTFLAGS", "-Dwarnings");
         run(&mut cmd, "cargo");
+        (root.clone(), target_dir.to_path_buf())
+    }
+
+    fn test(&mut self) {
+        let (root, target_dir) = self.build();
 
         obj = gen_bindings(&root, &target_dir);
         File::create(root.join("out_bg.d.ts")).unwrap()
             .write_all(obj.typescript().as_bytes()).unwrap();
-
 
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
