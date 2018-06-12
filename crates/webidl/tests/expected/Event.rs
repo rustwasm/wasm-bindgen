@@ -224,6 +224,8 @@ impl Event {
         );
     }
 }
+#[allow(non_camel_case_types)]
+pub type DOMHighResTimeStamp = f64;
 #[allow(non_upper_case_globals)]
 #[wasm_custom_section = "__wasm_bindgen_unstable"]
 const __WASM_BINDGEN_GENERATED_wasm_bindgen_webidl_0_2_11_0 : [ u8 ; 1299usize ] = * b"\x0F\x05\0\0{\"exports\":[],\"enums\":[],\"imports\":[{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"type\"}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__wbg_f_stopPropagation_stop_propagation_Event\",\"catch\":false,\"method\":true,\"js_new\":false,\"structural\":false,\"getter\":null,\"setter\":null,\"class\":\"Event\",\"function\":{\"name\":\"stopPropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__wbg_f_stopImmediatePropagation_stop_immediate_propagation_Event\",\"catch\":false,\"method\":true,\"js_new\":false,\"structural\":false,\"getter\":null,\"setter\":null,\"class\":\"Event\",\"function\":{\"name\":\"stopImmediatePropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__wbg_f_preventDefault_prevent_default_Event\",\"catch\":false,\"method\":true,\"js_new\":false,\"structural\":false,\"getter\":null,\"setter\":null,\"class\":\"Event\",\"function\":{\"name\":\"preventDefault\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__wbg_f_initEvent_init_event_Event\",\"catch\":false,\"method\":true,\"js_new\":false,\"structural\":false,\"getter\":null,\"setter\":null,\"class\":\"Event\",\"function\":{\"name\":\"initEvent\"}}}],\"structs\":[],\"version\":\"0.2.11 (71107b8e8)\",\"schema_version\":\"4\"}" ;

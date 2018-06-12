@@ -123,6 +123,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::Definition {
             webidl::ast::Definition::Interface(ref interface) => {
                 interface.webidl_parse(program, ())
             }
+            webidl::ast::Definition::Typedef(ref typedef) => typedef.webidl_parse(program, ()),
             // TODO
             webidl::ast::Definition::Callback(..)
             | webidl::ast::Definition::Dictionary(..)
@@ -130,8 +131,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::Definition {
             | webidl::ast::Definition::Implements(..)
             | webidl::ast::Definition::Includes(..)
             | webidl::ast::Definition::Mixin(..)
-            | webidl::ast::Definition::Namespace(..)
-            | webidl::ast::Definition::Typedef(..) => {
+            | webidl::ast::Definition::Namespace(..) => {
                 warn!("Unsupported WebIDL definition: {:?}", self);
                 Ok(())
             }
@@ -153,6 +153,34 @@ impl<'a> WebidlParse<'a> for webidl::ast::Interface {
                 Ok(())
             }
         }
+    }
+}
+
+impl<'a> WebidlParse<'a> for webidl::ast::Typedef {
+    type Extra = ();
+
+    fn webidl_parse(&self, program: &mut backend::ast::Program, _: ()) -> Result<()> {
+        let dest = rust_ident(&self.name);
+        let src = match webidl_ty_to_syn_ty(&self.type_, TypePosition::Return) {
+            Some(src) => src,
+            None => {
+                warn!(
+                    "typedef's source type is not yet supported: {:?}. Skipping typedef {:?}",
+                    *self.type_, self
+                );
+                return Ok(());
+            }
+        };
+
+        program.type_aliases.push(backend::ast::TypeAlias {
+            vis: syn::Visibility::Public(syn::VisPublic {
+                pub_token: Default::default(),
+            }),
+            dest,
+            src,
+        });
+
+        Ok(())
     }
 }
 

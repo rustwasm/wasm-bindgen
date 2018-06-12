@@ -10,6 +10,9 @@
  * liability, trademark and document use rules apply.
  */
 
+// TODO: don't include this here, use Performance.webidl instead
+typedef double DOMHighResTimeStamp;
+
 [Constructor(DOMString type, optional EventInit eventInitDict),
  Exposed=(Window,Worker,System), ProbablyShortLivingWrapper]
 interface Event {

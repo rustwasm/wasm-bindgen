@@ -10,6 +10,7 @@ pub struct Program {
     pub imports: Vec<Import>,
     pub enums: Vec<Enum>,
     pub structs: Vec<Struct>,
+    pub type_aliases: Vec<TypeAlias>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -118,6 +119,13 @@ pub enum TypeLocation {
     ImportRet,
     ExportArgument,
     ExportRet,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub struct TypeAlias {
+    pub vis: syn::Visibility,
+    pub dest: Ident,
+    pub src: syn::Type,
 }
 
 impl Program {
