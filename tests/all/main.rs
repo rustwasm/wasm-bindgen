@@ -404,7 +404,15 @@ impl Project {
     fn test(&mut self) {
         let (root, target_dir) = self.build();
 
-        obj = gen_bindings(&root, &target_dir);
+        self.gen_bindings(&root, &target_dir);
+        let mut wasm = Vec::new();
+        File::open(root.join("out_bg.wasm")).unwrap()
+            .read_to_end(&mut wasm).unwrap();
+        let obj = cli::wasm2es6js::Config::new()
+            .base64(true)
+            .generate(&wasm)
+            .expect("failed to convert wasm to js");
+        
         File::create(root.join("out_bg.d.ts")).unwrap()
             .write_all(obj.typescript().as_bytes()).unwrap();
 
@@ -442,7 +450,7 @@ impl Project {
         }
     }
     /// execute the cli against the current test .wasm
-    fn gen_bindings(root: &PathBuf, target_dir: &PathBuf) -> cli::wasm2es6js::Output {
+    fn gen_bindings(&self, root: &PathBuf, target_dir: &PathBuf) {
         let idx = IDX.with(|x| *x);
         let out = target_dir.join(&format!("wasm32-unknown-unknown/debug/test{}.wasm", idx));
 
@@ -461,13 +469,12 @@ impl Project {
             }
             panic!("failed");
         }
-        let mut wasm = Vec::new();
-        File::open(wasm_path).unwrap()
-            .read_to_end(&mut wasm).unwrap();
-        let obj = cli::wasm2es6js::Config::new()
-            .base64(true)
-            .generate(&wasm)
-            .expect("failed to convert wasm to js")
+        
+    }
+    fn read_js(&self) -> String {
+        let path = root().join("out.js");
+        println!("js, {:?}", &path);
+        fs::read_to_string(path).expect("Unable to read js")
     }
 }
 
@@ -525,3 +532,4 @@ mod slice;
 mod structural;
 mod u64;
 mod webidl;
+mod comments;
