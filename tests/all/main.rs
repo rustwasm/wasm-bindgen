@@ -330,6 +330,20 @@ impl Project {
             ));
         }
     }
+    /// build + cargo cmd execution
+    fn cargo_build(&mut self) -> (PathBuf, PathBuf) {
+        let (root, target_dir) = self.build();
+        let mut cmd = Command::new("cargo");
+        cmd.arg("build")
+            .arg("--target")
+            .arg("wasm32-unknown-unknown")
+            .current_dir(&root)
+            .env("CARGO_TARGET_DIR", &target_dir)
+            // Catch any warnings in generated code because we don't want any
+            .env("RUSTFLAGS", "-Dwarnings");
+        run(&mut cmd, "cargo");
+        (root, target_dir)
+    }
 
     fn build(&mut self) -> (PathBuf, PathBuf) {
         self.ensure_test_entry();
@@ -389,20 +403,11 @@ impl Project {
         }
         let target_dir = root.parent().unwrap() // chop off test name
             .parent().unwrap(); // chop off `generated-tests`
-        let mut cmd = Command::new("cargo");
-        cmd.arg("build")
-            .arg("--target")
-            .arg("wasm32-unknown-unknown")
-            .current_dir(&root)
-            .env("CARGO_TARGET_DIR", &target_dir)
-            // Catch any warnings in generated code because we don't want any
-            .env("RUSTFLAGS", "-Dwarnings");
-        run(&mut cmd, "cargo");
         (root.clone(), target_dir.to_path_buf())
     }
 
     fn test(&mut self) {
-        let (root, target_dir) = self.build();
+        let (root, target_dir) = self.cargo_build();
 
         self.gen_bindings(&root, &target_dir);
         let mut wasm = Vec::new();

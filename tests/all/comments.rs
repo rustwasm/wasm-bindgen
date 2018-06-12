@@ -17,6 +17,7 @@ fn works() {
             }
 
             #[wasm_bindgen]
+            /// This comment should exist
             pub struct Annotated {
                 /// This comment should not exist
                 a: String,
@@ -34,7 +35,7 @@ fn works() {
             }
         "#);
 
-        let (root, target) = p.build();
+        let (root, target) = p.cargo_build();
         p.gen_bindings(&root, &target);
         let js = p.read_js();
         let comments = extract_doc_comments(&js);
