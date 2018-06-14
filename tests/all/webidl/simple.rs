@@ -1,15 +1,15 @@
 use super::project;
 
 #[test]
-fn webidl() {
+fn method() {
     project()
         .file(
             "foo.webidl",
             r#"
-            [Constructor(float value)]
+            [Constructor(double value)]
             interface Foo {
                 [Pure]
-                boolean my_cmp(Foo bar);
+                boolean myCmp(Foo bar);
             };
         "#,
         )
@@ -17,11 +17,10 @@ fn webidl() {
             "foo.ts",
             r#"
             export class Foo {
-                value: number;
-                constructor(value: number) {
+                constructor(private value: number) {
                     this.value = value;
                 }
-                my_cmp(other: Foo): boolean {
+                myCmp(other: Foo): boolean {
                     return this.value === other.value;
                 }
             }
@@ -38,26 +37,82 @@ fn webidl() {
 
             pub mod foo;
 
+            use foo::Foo;
+
             #[wasm_bindgen]
-            pub fn call_my_cmp(first: &foo::Foo, second: foo::Foo) -> bool {
-                first.my_cmp(second)
+            pub fn test() {
+                let pi = Foo::new(3.14159);
+                let e = Foo::new(2.71828);
+                let tmp = pi.my_cmp(Foo::new(3.14159));
+                assert!(tmp);
+                let tmp =!pi.my_cmp(Foo::new(2.71828));
+                assert!(tmp);
+                let tmp = !e.my_cmp(Foo::new(3.14159));
+                assert!(tmp);
+                let tmp = e.my_cmp(Foo::new(2.71828));
+                assert!(tmp);
             }
         "#,
         )
-        .file(
-            "test.ts",
-            r#"
-            import * as assert from 'assert';
-            import * as wasm from './out';
-            import {Foo} from './foo';
+        .test();
+}
 
-            export function test() {
-                const pi = new Foo(3.14159);
-                const e = new Foo(2.71828);
-                assert.strictEqual(wasm.call_my_cmp(pi, pi), true);
-                assert.strictEqual(wasm.call_my_cmp(pi, e), false);
-                assert.strictEqual(wasm.call_my_cmp(e, pi), false);
-                assert.strictEqual(wasm.call_my_cmp(e, e), true);
+#[test]
+fn property() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+            [Constructor(double value)]
+            interface Foo {
+                [Pure]
+                attribute double value;
+            };
+        "#,
+        )
+        .file(
+            "foo.ts",
+            r#"
+            export class Foo {
+                constructor(private _value: number) {
+                    this._value = _value;
+                }
+
+                get value(): number {
+                    return this._value;
+                }
+
+                set value(_value: number) {
+                    this._value = _value;
+                }
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            pub mod foo;
+
+            use foo::Foo;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                let x = Foo::new(3.14159);
+                let tmp = x.value() == 3.14159;
+                assert!(tmp);
+                let tmp = x.value() != 2.71828;
+                assert!(tmp);
+                x.set_value(2.71828);
+                let tmp = x.value() != 3.14159;
+                assert!(tmp);
+                let tmp = x.value() == 2.71828;
+                assert!(tmp);
             }
         "#,
         )

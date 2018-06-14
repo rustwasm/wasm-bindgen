@@ -164,8 +164,67 @@ impl WebidlParse<()> for webidl::ast::NonPartialInterface {
             }),
         });
 
+        for extended_attribute in &self.extended_attributes {
+            extended_attribute.webidl_parse(program, self)?;
+        }
+
         for member in &self.members {
             member.webidl_parse(program, &self.name)?;
+        }
+
+        Ok(())
+    }
+}
+
+impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::ExtendedAttribute {
+    fn webidl_parse(
+        &self,
+        program: &mut backend::ast::Program,
+        interface: &'a webidl::ast::NonPartialInterface,
+    ) -> Result<()> {
+        let mut add_constructor = |arguments: &[webidl::ast::Argument]| {
+            let self_ty = ident_ty(rust_ident(&interface.name));
+            let kind = backend::ast::ImportFunctionKind::JsConstructor {
+                class: interface.name.to_string(),
+                ty: self_ty.clone(),
+            };
+            create_function(
+                "new",
+                arguments
+                    .iter()
+                    .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
+                kind,
+                Some(self_ty),
+                vec![backend::ast::BindgenAttr::Constructor],
+            ).map(|function| {
+                program.imports.push(backend::ast::Import {
+                    module: None,
+                    version: None,
+                    js_namespace: None,
+                    kind: backend::ast::ImportKind::Function(function),
+                })
+            })
+        };
+
+        match self {
+            webidl::ast::ExtendedAttribute::ArgumentList(
+                webidl::ast::ArgumentListExtendedAttribute { arguments, name },
+            ) if name == "Constructor" =>
+            {
+                add_constructor(&*arguments);
+            }
+            webidl::ast::ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name))
+                if name == "Constructor" =>
+            {
+                add_constructor(&[] as &[_]);
+            }
+            webidl::ast::ExtendedAttribute::ArgumentList(_)
+            | webidl::ast::ExtendedAttribute::Identifier(_)
+            | webidl::ast::ExtendedAttribute::IdentifierList(_)
+            | webidl::ast::ExtendedAttribute::NamedArgumentList(_)
+            | webidl::ast::ExtendedAttribute::NoArguments(_) => {
+                warn!("Unsupported WebIDL extended attribute: {:?}", self);
+            }
         }
 
         Ok(())
