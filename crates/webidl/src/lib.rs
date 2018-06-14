@@ -182,10 +182,10 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
         program: &mut backend::ast::Program,
         interface: &'a webidl::ast::NonPartialInterface,
     ) -> Result<()> {
-        let mut add_constructor = |arguments: &[webidl::ast::Argument]| {
+        let mut add_constructor = |arguments: &[webidl::ast::Argument], class: &str| {
             let self_ty = ident_ty(rust_ident(&interface.name));
             let kind = backend::ast::ImportFunctionKind::JsConstructor {
-                class: interface.name.to_string(),
+                class: class.to_string(),
                 ty: self_ty.clone(),
             };
             create_function(
@@ -211,12 +211,22 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                 webidl::ast::ArgumentListExtendedAttribute { arguments, name },
             ) if name == "Constructor" =>
             {
-                add_constructor(&*arguments);
+                add_constructor(arguments, &interface.name);
             }
             webidl::ast::ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name))
                 if name == "Constructor" =>
             {
-                add_constructor(&[] as &[_]);
+                add_constructor(&[] as &[_], &interface.name);
+            }
+            webidl::ast::ExtendedAttribute::NamedArgumentList(
+                webidl::ast::NamedArgumentListExtendedAttribute {
+                    lhs_name,
+                    rhs_arguments,
+                    rhs_name,
+                },
+            ) if lhs_name == "NamedConstructor" =>
+            {
+                add_constructor(rhs_arguments, rhs_name);
             }
             webidl::ast::ExtendedAttribute::ArgumentList(_)
             | webidl::ast::ExtendedAttribute::Identifier(_)

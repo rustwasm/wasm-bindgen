@@ -118,3 +118,61 @@ fn property() {
         )
         .test();
 }
+
+#[test]
+fn named_constructor() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+            [NamedConstructor=Bar(double value)]
+            interface Foo {
+                [Pure]
+                readonly attribute double value;
+            };
+        "#,
+        )
+        .file(
+            // Not a perfect test, but it gets the job done.
+            "foo.ts",
+            r#"
+            export class Foo {
+                protected _value: number = 0;
+                get value(): number {
+                    return this._value;
+                }
+            }
+
+            export class Bar extends Foo {
+                constructor(_value: number) {
+                    super();
+                    this._value = _value;
+                }
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            pub mod foo;
+
+            use foo::Foo;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                let x = Foo::new(3.14159);
+                let tmp = x.value() == 3.14159;
+                assert!(tmp);
+                let tmp = x.value() != 0.;
+                assert!(tmp);
+            }
+        "#,
+        )
+        .test();
+}
