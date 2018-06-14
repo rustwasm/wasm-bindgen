@@ -1,10 +1,10 @@
 use std::borrow::Cow;
 use std::collections::HashSet;
 use std::env;
-use std::sync::atomic::{ATOMIC_USIZE_INIT, AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
 
 use ast;
-use proc_macro2::{Span, Ident, TokenStream};
+use proc_macro2::{Ident, Span, TokenStream};
 use quote::ToTokens;
 use serde_json;
 use shared;
@@ -50,7 +50,7 @@ impl ToTokens for ast::Program {
                 if types.contains(ns) && i.kind.fits_on_impl() {
                     let kind = &i.kind;
                     (quote! { impl #ns { #kind } }).to_tokens(tokens);
-                    continue
+                    continue;
                 }
             }
 
@@ -240,7 +240,10 @@ impl ToTokens for ast::StructField {
         let ty = &self.ty;
         let getter = &self.getter;
         let setter = &self.setter;
-        let desc = Ident::new(&format!("__wbindgen_describe_{}", getter), Span::call_site());
+        let desc = Ident::new(
+            &format!("__wbindgen_describe_{}", getter),
+            Span::call_site(),
+        );
         (quote! {
             #[no_mangle]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
@@ -270,7 +273,7 @@ impl ToTokens for ast::StructField {
         }).to_tokens(tokens);
 
         if self.opts.readonly() {
-            return
+            return;
         }
 
         (quote! {
@@ -315,7 +318,7 @@ impl ToTokens for ast::Export {
             offset = 1;
         }
 
-        for (i, ty) in self.function.arguments.iter().enumerate() {
+        for (i, syn::ArgCaptured { ty, .. }) in self.function.arguments.iter().enumerate() {
             let i = i + offset;
             let ident = Ident::new(&format!("arg{}", i), Span::call_site());
             match *ty {
@@ -377,8 +380,8 @@ impl ToTokens for ast::Export {
                 };
             }
             None => {
-                ret_ty = quote!{};
-                convert_ret = quote!{};
+                ret_ty = quote!();
+                convert_ret = quote!();
             }
         }
         let describe_ret = match &self.function.ret {
@@ -406,7 +409,7 @@ impl ToTokens for ast::Export {
         let descriptor_name = format!("__wbindgen_describe_{}", export_name);
         let descriptor_name = Ident::new(&descriptor_name, Span::call_site());
         let nargs = self.function.arguments.len() as u32;
-        let argtys = self.function.arguments.iter();
+        let argtys = self.function.arguments.iter().map(|arg| &arg.ty);
 
         let tokens = quote! {
             #[export_name = #export_name]
@@ -559,37 +562,27 @@ impl ToTokens for ast::ImportFunction {
             ast::ImportFunctionKind::Normal => {}
         }
         let vis = &self.function.rust_vis;
-        let ret = &self.function.rust_decl.output;
-        let fn_token = &self.function.rust_decl.fn_token;
+        let ret = match &self.function.ret {
+            Some(ty) => quote! { -> #ty },
+            None => quote!(),
+        };
 
         let mut abi_argument_names = Vec::new();
         let mut abi_arguments = Vec::new();
         let mut arg_conversions = Vec::new();
         let ret_ident = Ident::new("_ret", Span::call_site());
 
-        let names = self.function
-            .rust_decl
-            .inputs
-            .iter()
-            .map(|arg| {
-                match arg {
-                    syn::FnArg::Captured(c) => c,
-                    _ => panic!("arguments cannot be `self` or ignored"),
-                }
-            })
-            .map(|arg| {
-                match &arg.pat {
-                    syn::Pat::Ident(syn::PatIdent {
-                        by_ref: None,
-                        ident,
-                        subpat: None,
-                        ..
-                    }) => ident.clone(),
-                    _ => panic!("unsupported pattern in foreign function"),
-                }
-            });
+        for (i, syn::ArgCaptured { pat, ty, .. }) in self.function.arguments.iter().enumerate() {
+            let name = match pat {
+                syn::Pat::Ident(syn::PatIdent {
+                    by_ref: None,
+                    ident,
+                    subpat: None,
+                    ..
+                }) => ident.clone(),
+                _ => panic!("unsupoported pattern in foreign function"),
+            };
 
-        for (i, (ty, name)) in self.function.arguments.iter().zip(names).enumerate() {
             abi_argument_names.push(name.clone());
             abi_arguments.push(quote! {
                 #name: <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
@@ -606,7 +599,7 @@ impl ToTokens for ast::ImportFunction {
         }
         let abi_ret;
         let mut convert_ret;
-        match self.function.ret {
+        match &self.js_ret {
             Some(syn::Type::Reference(_)) => {
                 panic!("cannot return references in imports yet");
             }
@@ -628,7 +621,7 @@ impl ToTokens for ast::ImportFunction {
             }
         }
 
-        let mut exceptional_ret = quote!{};
+        let mut exceptional_ret = quote!();
         let exn_data = if self.function.opts.catch() {
             let exn_data = Ident::new("exn_data", Span::call_site());
             let exn_data_ptr = Ident::new("exn_data_ptr", Span::call_site());
@@ -649,20 +642,18 @@ impl ToTokens for ast::ImportFunction {
                 let #exn_data_ptr = #exn_data.as_mut_ptr();
             }
         } else {
-            quote! {}
+            quote!()
         };
 
         let rust_name = &self.rust_name;
         let import_name = &self.shim;
         let attrs = &self.function.rust_attrs;
 
-        let arguments = self.function
-            .rust_decl
-            .inputs
-            .iter()
-            .skip(if is_method { 1 } else { 0 })
-            .collect::<Vec<_>>();
-        let arguments = &arguments[..];
+        let arguments = if is_method {
+            &self.function.arguments[1..]
+        } else {
+            &self.function.arguments[..]
+        };
 
         let me = if is_method {
             quote! { &self, }
@@ -674,7 +665,7 @@ impl ToTokens for ast::ImportFunction {
             #(#attrs)*
             #[allow(bad_style)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            #vis extern #fn_token #rust_name(#me #(#arguments),*) #ret {
+            #vis extern fn #rust_name(#me #(#arguments),*) #ret {
                 ::wasm_bindgen::__rt::link_this_library();
                 #[wasm_import_module = "__wbindgen_placeholder__"]
                 extern {
@@ -695,7 +686,7 @@ impl ToTokens for ast::ImportFunction {
             #(#attrs)*
             #[allow(bad_style, unused_variables)]
             #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-            #vis extern #fn_token #rust_name(#me #(#arguments),*) #ret {
+            #vis extern fn #rust_name(#me #(#arguments),*) #ret {
                 panic!("cannot call wasm-bindgen imported functions on \
                         non-wasm targets");
             }
@@ -726,9 +717,9 @@ impl<'a> ToTokens for DescribeImport<'a> {
         };
         let describe_name = format!("__wbindgen_describe_{}", f.shim);
         let describe_name = Ident::new(&describe_name, Span::call_site());
-        let argtys = f.function.arguments.iter();
+        let argtys = f.function.arguments.iter().map(|arg| &arg.ty);
         let nargs = f.function.arguments.len() as u32;
-        let inform_ret = match f.function.ret {
+        let inform_ret = match &f.js_ret {
             Some(ref t) => quote! { inform(1); <#t as WasmDescribe>::describe(); },
             None => quote! { inform(0); },
         };

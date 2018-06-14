@@ -41,6 +41,7 @@ pub enum ImportKind {
 pub struct ImportFunction {
     pub function: Function,
     pub rust_name: Ident,
+    pub js_ret: Option<syn::Type>,
     pub kind: ImportFunctionKind,
     pub shim: Ident,
 }
@@ -70,11 +71,10 @@ pub struct ImportType {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub struct Function {
     pub name: Ident,
-    pub arguments: Vec<syn::Type>,
+    pub arguments: Vec<syn::ArgCaptured>,
     pub ret: Option<syn::Type>,
     pub opts: BindgenAttrs,
     pub rust_attrs: Vec<syn::Attribute>,
-    pub rust_decl: Box<syn::FnDecl>,
     pub rust_vis: syn::Visibility,
 }
 
@@ -139,7 +139,8 @@ impl Program {
             syn::Item::Fn(mut f) => {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
 
-                let no_mangle = f.attrs
+                let no_mangle = f
+                    .attrs
                     .iter()
                     .enumerate()
                     .filter_map(|(i, m)| m.interpret_meta().map(|m| (i, m)))
@@ -268,7 +269,8 @@ impl Program {
             _ => panic!("only public enums are allowed"),
         }
 
-        let variants = item.variants
+        let variants = item
+            .variants
             .iter()
             .enumerate()
             .map(|(i, v)| {
@@ -345,8 +347,8 @@ impl Program {
 
     pub fn push_foreign_fn(&mut self, f: syn::ForeignItemFn, opts: BindgenAttrs) -> ImportKind {
         let js_name = opts.js_name().unwrap_or(&f.ident).clone();
-        let mut wasm = Function::from_decl(&js_name, f.decl, f.attrs, opts, f.vis, false).0;
-        if wasm.opts.catch() {
+        let wasm = Function::from_decl(&js_name, f.decl, f.attrs, opts, f.vis, false).0;
+        let js_ret = if wasm.opts.catch() {
             // TODO: this assumes a whole bunch:
             //
             // * The outer type is actually a `Result`
@@ -354,15 +356,18 @@ impl Program {
             // * The actual type is the first type parameter
             //
             // should probably fix this one day...
-            wasm.ret = extract_first_ty_param(wasm.ret.as_ref())
-                .expect("can't `catch` without returning a Result");
-        }
+            extract_first_ty_param(wasm.ret.as_ref())
+                .expect("can't `catch` without returning a Result")
+        } else {
+            wasm.ret.clone()
+        };
 
         let kind = if wasm.opts.method() {
-            let class = wasm.arguments
+            let class = wasm
+                .arguments
                 .get(0)
                 .expect("methods must have at least one argument");
-            let class = match *class {
+            let class = match class.ty {
                 syn::Type::Reference(syn::TypeReference {
                     mutability: None,
                     ref elem,
@@ -418,6 +423,7 @@ impl Program {
         ImportKind::Function(ImportFunction {
             function: wasm,
             kind,
+            js_ret,
             rust_name: f.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
         })
@@ -501,11 +507,13 @@ impl Function {
 
         assert_no_lifetimes(&mut decl);
 
+        let syn::FnDecl { inputs, output, .. } = { *decl };
+
         let mut mutable = None;
-        let arguments = decl.inputs
-            .iter()
-            .filter_map(|arg| match *arg {
-                syn::FnArg::Captured(ref c) => Some(c),
+        let arguments = inputs
+            .into_iter()
+            .filter_map(|arg| match arg {
+                syn::FnArg::Captured(c) => Some(c),
                 syn::FnArg::SelfValue(_) => {
                     panic!("by-value `self` not yet supported");
                 }
@@ -516,12 +524,11 @@ impl Function {
                 }
                 _ => panic!("arguments cannot be `self` or ignored"),
             })
-            .map(|arg| arg.ty.clone())
             .collect::<Vec<_>>();
 
-        let ret = match decl.output {
+        let ret = match output {
             syn::ReturnType::Default => None,
-            syn::ReturnType::Type(_, ref t) => Some((**t).clone()),
+            syn::ReturnType::Type(_, ty) => Some(*ty),
         };
 
         (
@@ -531,7 +538,6 @@ impl Function {
                 ret,
                 opts,
                 rust_vis: vis,
-                rust_decl: decl,
                 rust_attrs: attrs,
             },
             mutable,

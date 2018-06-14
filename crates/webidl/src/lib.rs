@@ -18,14 +18,18 @@ extern crate syn;
 extern crate wasm_bindgen_backend as backend;
 extern crate webidl;
 
-use failure::ResultExt;
-use heck::SnakeCase;
-use proc_macro2::Ident;
-use quote::ToTokens;
 use std::fs;
 use std::io::{self, Read};
-use std::iter::FromIterator;
+use std::iter;
 use std::path::Path;
+
+use failure::ResultExt;
+use heck::CamelCase;
+use quote::ToTokens;
+
+mod util;
+
+use util::{create_function, ident_ty, raw_ident, rust_ident, webidl_ty_to_syn_ty, TypePosition};
 
 /// Either `Ok(t)` or `Err(failure::Error)`.
 pub type Result<T> = ::std::result::Result<T, failure::Error>;
@@ -70,43 +74,11 @@ fn compile_ast(ast: &backend::ast::Program) -> String {
     tokens.to_string()
 }
 
-fn is_rust_keyword(name: &str) -> bool {
-    match name {
-        "abstract" | "alignof" | "as" | "become" | "box" | "break" | "const" | "continue"
-        | "crate" | "do" | "else" | "enum" | "extern" | "false" | "final" | "fn" | "for" | "if"
-        | "impl" | "in" | "let" | "loop" | "macro" | "match" | "mod" | "move" | "mut"
-        | "offsetof" | "override" | "priv" | "proc" | "pub" | "pure" | "ref" | "return"
-        | "Self" | "self" | "sizeof" | "static" | "struct" | "super" | "trait" | "true"
-        | "type" | "typeof" | "unsafe" | "unsized" | "use" | "virtual" | "where" | "while"
-        | "yield" | "bool" | "_" => true,
-        _ => false,
-    }
+trait WebidlParse<Ctx> {
+    fn webidl_parse(&self, program: &mut backend::ast::Program, context: Ctx) -> Result<()>;
 }
 
-// Create an `Ident`, possibly mangling it if it conflicts with a Rust keyword.
-fn rust_ident(name: &str) -> Ident {
-    if is_rust_keyword(name) {
-        Ident::new(&format!("{}_", name), proc_macro2::Span::call_site())
-    } else {
-        raw_ident(name)
-    }
-}
-
-// Create an `Ident` without checking to see if it conflicts with a Rust
-// keyword.
-fn raw_ident(name: &str) -> Ident {
-    Ident::new(name, proc_macro2::Span::call_site())
-}
-
-trait WebidlParse<'a> {
-    type Extra;
-
-    fn webidl_parse(&self, program: &mut backend::ast::Program, extra: Self::Extra) -> Result<()>;
-}
-
-impl<'a> WebidlParse<'a> for Vec<webidl::ast::Definition> {
-    type Extra = ();
-
+impl WebidlParse<()> for Vec<webidl::ast::Definition> {
     fn webidl_parse(&self, program: &mut backend::ast::Program, _: ()) -> Result<()> {
         for def in self {
             def.webidl_parse(program, ())?;
@@ -115,9 +87,7 @@ impl<'a> WebidlParse<'a> for Vec<webidl::ast::Definition> {
     }
 }
 
-impl<'a> WebidlParse<'a> for webidl::ast::Definition {
-    type Extra = ();
-
+impl WebidlParse<()> for webidl::ast::Definition {
     fn webidl_parse(&self, program: &mut backend::ast::Program, _: ()) -> Result<()> {
         match *self {
             webidl::ast::Definition::Interface(ref interface) => {
@@ -139,9 +109,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::Definition {
     }
 }
 
-impl<'a> WebidlParse<'a> for webidl::ast::Interface {
-    type Extra = ();
-
+impl WebidlParse<()> for webidl::ast::Interface {
     fn webidl_parse(&self, program: &mut backend::ast::Program, _: ()) -> Result<()> {
         match *self {
             webidl::ast::Interface::NonPartial(ref interface) => {
@@ -156,9 +124,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::Interface {
     }
 }
 
-impl<'a> WebidlParse<'a> for webidl::ast::Typedef {
-    type Extra = ();
-
+impl WebidlParse<()> for webidl::ast::Typedef {
     fn webidl_parse(&self, program: &mut backend::ast::Program, _: ()) -> Result<()> {
         let dest = rust_ident(&self.name);
         let src = match webidl_ty_to_syn_ty(&self.type_, TypePosition::Return) {
@@ -184,9 +150,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::Typedef {
     }
 }
 
-impl<'a> WebidlParse<'a> for webidl::ast::NonPartialInterface {
-    type Extra = ();
-
+impl WebidlParse<()> for webidl::ast::NonPartialInterface {
     fn webidl_parse(&self, program: &mut backend::ast::Program, _: ()) -> Result<()> {
         program.imports.push(backend::ast::Import {
             module: None,
@@ -208,9 +172,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::NonPartialInterface {
     }
 }
 
-impl<'a> WebidlParse<'a> for webidl::ast::InterfaceMember {
-    type Extra = &'a str;
-
+impl<'a> WebidlParse<&'a str> for webidl::ast::InterfaceMember {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
         match *self {
             webidl::ast::InterfaceMember::Attribute(ref attr) => {
@@ -229,9 +191,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::InterfaceMember {
     }
 }
 
-impl<'a> WebidlParse<'a> for webidl::ast::Attribute {
-    type Extra = &'a str;
-
+impl<'a> WebidlParse<&'a str> for webidl::ast::Attribute {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
         match *self {
             webidl::ast::Attribute::Regular(ref attr) => attr.webidl_parse(program, self_name),
@@ -244,9 +204,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::Attribute {
     }
 }
 
-impl<'a> WebidlParse<'a> for webidl::ast::Operation {
-    type Extra = &'a str;
-
+impl<'a> WebidlParse<&'a str> for webidl::ast::Operation {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
         match *self {
             webidl::ast::Operation::Regular(ref op) => op.webidl_parse(program, self_name),
@@ -261,192 +219,39 @@ impl<'a> WebidlParse<'a> for webidl::ast::Operation {
     }
 }
 
-fn simple_path_ty<I>(segments: I) -> syn::Type
-where
-    I: IntoIterator<Item = Ident>,
-{
-    let segments: Vec<_> = segments
-        .into_iter()
-        .map(|i| syn::PathSegment {
-            ident: i,
-            arguments: syn::PathArguments::None,
-        })
-        .collect();
-
-    syn::TypePath {
-        qself: None,
-        path: syn::Path {
-            leading_colon: None,
-            segments: syn::punctuated::Punctuated::from_iter(segments),
-        },
-    }.into()
-}
-
-fn ident_ty(ident: Ident) -> syn::Type {
-    simple_path_ty(Some(ident))
-}
-
-fn shared_ref(ty: syn::Type) -> syn::Type {
-    syn::TypeReference {
-        and_token: Default::default(),
-        lifetime: None,
-        mutability: None,
-        elem: Box::new(ty),
-    }.into()
-}
-
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-enum TypePosition {
-    Argument,
-    Return,
-}
-
-fn webidl_ty_to_syn_ty(ty: &webidl::ast::Type, pos: TypePosition) -> Option<syn::Type> {
-    // nullable types are not yet supported (see issue #14)
-    if ty.nullable {
-        return None;
-    }
-    Some(match ty.kind {
-        // `any` becomes `::wasm_bindgen::JsValue`.
-        webidl::ast::TypeKind::Any => {
-            simple_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")])
-        }
-
-        // A reference to a type by name becomes the same thing in the
-        // bindings.
-        webidl::ast::TypeKind::Identifier(ref id) => ident_ty(rust_ident(id)),
-
-        // Scalars.
-        webidl::ast::TypeKind::Boolean => ident_ty(raw_ident("bool")),
-        webidl::ast::TypeKind::Byte => ident_ty(raw_ident("i8")),
-        webidl::ast::TypeKind::Octet => ident_ty(raw_ident("u8")),
-        webidl::ast::TypeKind::RestrictedDouble | webidl::ast::TypeKind::UnrestrictedDouble => {
-            ident_ty(raw_ident("f64"))
-        }
-        webidl::ast::TypeKind::RestrictedFloat | webidl::ast::TypeKind::UnrestrictedFloat => {
-            ident_ty(raw_ident("f32"))
-        }
-        webidl::ast::TypeKind::SignedLong => ident_ty(raw_ident("i32")),
-        webidl::ast::TypeKind::SignedLongLong => ident_ty(raw_ident("i64")),
-        webidl::ast::TypeKind::SignedShort => ident_ty(raw_ident("i16")),
-        webidl::ast::TypeKind::UnsignedLong => ident_ty(raw_ident("u32")),
-        webidl::ast::TypeKind::UnsignedLongLong => ident_ty(raw_ident("u64")),
-        webidl::ast::TypeKind::UnsignedShort => ident_ty(raw_ident("u16")),
-
-        // `DOMString -> `&str` for arguments
-        webidl::ast::TypeKind::DOMString if pos == TypePosition::Argument => {
-            shared_ref(ident_ty(raw_ident("str")))
-        }
-        // `DOMString` is not supported yet in other positions.
-        webidl::ast::TypeKind::DOMString => return None,
-
-        // Support for these types is not yet implemented, so skip
-        // generating any bindings for this function.
-        webidl::ast::TypeKind::ArrayBuffer
-        | webidl::ast::TypeKind::ByteString
-        | webidl::ast::TypeKind::DataView
-        | webidl::ast::TypeKind::Error
-        | webidl::ast::TypeKind::Float32Array
-        | webidl::ast::TypeKind::Float64Array
-        | webidl::ast::TypeKind::FrozenArray(_)
-        | webidl::ast::TypeKind::Int16Array
-        | webidl::ast::TypeKind::Int32Array
-        | webidl::ast::TypeKind::Int8Array
-        | webidl::ast::TypeKind::Object
-        | webidl::ast::TypeKind::Promise(_)
-        | webidl::ast::TypeKind::Record(..)
-        | webidl::ast::TypeKind::Sequence(_)
-        | webidl::ast::TypeKind::Symbol
-        | webidl::ast::TypeKind::USVString
-        | webidl::ast::TypeKind::Uint16Array
-        | webidl::ast::TypeKind::Uint32Array
-        | webidl::ast::TypeKind::Uint8Array
-        | webidl::ast::TypeKind::Uint8ClampedArray
-        | webidl::ast::TypeKind::Union(_) => {
-            return None;
-        }
-    })
-}
-
-fn simple_fn_arg(ident: Ident, ty: syn::Type) -> syn::FnArg {
-    syn::FnArg::Captured(syn::ArgCaptured {
-        pat: syn::Pat::Ident(syn::PatIdent {
-            by_ref: None,
-            mutability: None,
-            ident,
-            subpat: None,
-        }),
-        colon_token: Default::default(),
-        ty,
-    })
-}
-
-impl<'a> WebidlParse<'a> for webidl::ast::RegularAttribute {
-    type Extra = &'a str;
-
+impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
         fn create_getter(
             this: &webidl::ast::RegularAttribute,
             self_name: &str,
         ) -> Option<backend::ast::Import> {
-            let name = raw_ident(&this.name);
-            let rust_name = rust_ident(&this.name.to_snake_case());
-
-            let (output, ret) = match webidl_ty_to_syn_ty(&this.type_, TypePosition::Return) {
+            let ret = match webidl_ty_to_syn_ty(&this.type_, TypePosition::Return) {
                 None => {
                     warn!("Attribute's type does not yet support reading: {:?}. Skipping getter binding for {:?}",
                         this.type_, this);
                     return None;
                 }
-                Some(ty) => (
-                    syn::ReturnType::Type(Default::default(), Box::new(ty.clone())),
-                    Some(ty),
-                ),
+                Some(ty) => Some(ty),
             };
 
-            let self_ty = ident_ty(rust_ident(self_name));
-            let self_ref_ty = shared_ref(self_ty.clone());
+            let kind = backend::ast::ImportFunctionKind::Method {
+                class: self_name.to_string(),
+                ty: ident_ty(rust_ident(self_name)),
+            };
 
-            let shim = rust_ident(&format!("__wbg_f_{}_{}_{}", name, rust_name, self_name));
-
-            Some(backend::ast::Import {
+            create_function(
+                &this.name,
+                iter::empty(),
+                kind,
+                ret,
+                vec![backend::ast::BindgenAttr::Getter(Some(raw_ident(
+                    &this.name,
+                )))],
+            ).map(|function| backend::ast::Import {
                 module: None,
                 version: None,
                 js_namespace: None,
-                kind: backend::ast::ImportKind::Function(backend::ast::ImportFunction {
-                    function: backend::ast::Function {
-                        name: name.clone(),
-                        arguments: vec![self_ref_ty.clone()],
-                        ret,
-                        opts: backend::ast::BindgenAttrs {
-                            attrs: vec![
-                                backend::ast::BindgenAttr::Method,
-                                backend::ast::BindgenAttr::Getter(Some(name.clone())),
-                            ],
-                        },
-                        rust_attrs: vec![],
-                        rust_decl: Box::new(syn::FnDecl {
-                            fn_token: Default::default(),
-                            generics: Default::default(),
-                            paren_token: Default::default(),
-                            inputs: syn::punctuated::Punctuated::from_iter(vec![simple_fn_arg(
-                                raw_ident("self_"),
-                                self_ref_ty,
-                            )]),
-                            variadic: None,
-                            output,
-                        }),
-                        rust_vis: syn::Visibility::Public(syn::VisPublic {
-                            pub_token: Default::default(),
-                        }),
-                    },
-                    rust_name,
-                    kind: backend::ast::ImportFunctionKind::Method {
-                        class: self_name.to_string(),
-                        ty: self_ty,
-                    },
-                    shim,
-                }),
+                kind: backend::ast::ImportKind::Function(function),
             })
         }
 
@@ -454,65 +259,24 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularAttribute {
             this: &webidl::ast::RegularAttribute,
             self_name: &str,
         ) -> Option<backend::ast::Import> {
-            let name = raw_ident(&this.name);
-            let rust_attr_name = rust_ident(&this.name.to_snake_case());
-            let rust_name = rust_ident(&format!("set_{}", rust_attr_name));
-
-            let self_ty = ident_ty(rust_ident(self_name));
-
-            let (inputs, arguments) = match webidl_ty_to_syn_ty(&this.type_, TypePosition::Argument)
-            {
-                None => {
-                    warn!("Attribute's type does not yet support writing: {:?}. Skipping setter binding for {:?}",
-                        this.type_, this);
-                    return None;
-                }
-                Some(ty) => {
-                    let self_ref_ty = shared_ref(self_ty.clone());
-                    let mut inputs = syn::punctuated::Punctuated::new();
-                    inputs.push(simple_fn_arg(raw_ident("self_"), self_ref_ty.clone()));
-                    inputs.push(simple_fn_arg(rust_attr_name, ty.clone()));
-                    (inputs, vec![self_ref_ty, ty])
-                }
+            let kind = backend::ast::ImportFunctionKind::Method {
+                class: self_name.to_string(),
+                ty: ident_ty(rust_ident(self_name)),
             };
 
-            let shim = rust_ident(&format!("__wbg_f_{}_{}_{}", name, rust_name, self_name));
-
-            Some(backend::ast::Import {
+            create_function(
+                &format!("set_{}", this.name.to_camel_case()),
+                iter::once((&*this.name, &*this.type_, false)),
+                kind,
+                None,
+                vec![backend::ast::BindgenAttr::Setter(Some(raw_ident(
+                    &this.name,
+                )))],
+            ).map(|function| backend::ast::Import {
                 module: None,
                 version: None,
                 js_namespace: None,
-                kind: backend::ast::ImportKind::Function(backend::ast::ImportFunction {
-                    function: backend::ast::Function {
-                        name: name.clone(),
-                        arguments,
-                        ret: None,
-                        opts: backend::ast::BindgenAttrs {
-                            attrs: vec![
-                                backend::ast::BindgenAttr::Method,
-                                backend::ast::BindgenAttr::Setter(Some(name)),
-                            ],
-                        },
-                        rust_attrs: vec![],
-                        rust_decl: Box::new(syn::FnDecl {
-                            fn_token: Default::default(),
-                            generics: Default::default(),
-                            paren_token: Default::default(),
-                            inputs,
-                            variadic: None,
-                            output: syn::ReturnType::Default,
-                        }),
-                        rust_vis: syn::Visibility::Public(syn::VisPublic {
-                            pub_token: Default::default(),
-                        }),
-                    },
-                    rust_name,
-                    kind: backend::ast::ImportFunctionKind::Method {
-                        class: self_name.to_string(),
-                        ty: self_ty,
-                    },
-                    shim,
-                }),
+                kind: backend::ast::ImportKind::Function(function),
             })
         }
 
@@ -526,9 +290,7 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularAttribute {
     }
 }
 
-impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
-    type Extra = &'a str;
-
+impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
         let name = match self.name {
             None => {
@@ -541,11 +303,13 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
             Some(ref name) => name,
         };
 
-        let rust_name = rust_ident(&name.to_snake_case());
-        let name = raw_ident(name);
+        let kind = backend::ast::ImportFunctionKind::Method {
+            class: self_name.to_string(),
+            ty: ident_ty(rust_ident(self_name)),
+        };
 
-        let (output, ret) = match self.return_type {
-            webidl::ast::ReturnType::Void => (syn::ReturnType::Default, None),
+        let ret = match self.return_type {
+            webidl::ast::ReturnType::Void => None,
             webidl::ast::ReturnType::NonVoid(ref ty) => {
                 match webidl_ty_to_syn_ty(ty, TypePosition::Return) {
                     None => {
@@ -555,80 +319,26 @@ impl<'a> WebidlParse<'a> for webidl::ast::RegularOperation {
                     );
                         return Ok(());
                     }
-                    Some(ty) => (
-                        syn::ReturnType::Type(Default::default(), Box::new(ty.clone())),
-                        Some(ty),
-                    ),
+                    Some(ty) => Some(ty),
                 }
             }
         };
 
-        let mut inputs = Vec::with_capacity(self.arguments.len() + 1);
-        let mut arguments = Vec::with_capacity(self.arguments.len() + 1);
-
-        let self_ty = ident_ty(rust_ident(self_name));
-        let self_ref_ty = shared_ref(self_ty.clone());
-        inputs.push(simple_fn_arg(raw_ident("self_"), self_ref_ty.clone()));
-        arguments.push(self_ref_ty);
-
-        for arg in &self.arguments {
-            if arg.variadic {
-                warn!(
-                    "Variadic arguments are not supported yet. Skipping bindings for {:?}",
-                    self
-                );
-                return Ok(());
-            }
-
-            match webidl_ty_to_syn_ty(&arg.type_, TypePosition::Argument) {
-                None => {
-                    warn!(
-                        "Argument's type is not yet supported: {:?}. Skipping bindings for {:?}",
-                        arg.type_, self
-                    );
-                    return Ok(());
-                }
-                Some(ty) => {
-                    inputs.push(simple_fn_arg(rust_ident(&arg.name), ty.clone()));
-                    arguments.push(ty);
-                }
-            }
-        }
-
-        let shim = rust_ident(&format!("__wbg_f_{}_{}_{}", name, rust_name, self_name));
-
-        program.imports.push(backend::ast::Import {
-            module: None,
-            version: None,
-            js_namespace: None,
-            kind: backend::ast::ImportKind::Function(backend::ast::ImportFunction {
-                function: backend::ast::Function {
-                    name,
-                    arguments,
-                    ret,
-                    opts: backend::ast::BindgenAttrs {
-                        attrs: vec![backend::ast::BindgenAttr::Method],
-                    },
-                    rust_attrs: vec![],
-                    rust_decl: Box::new(syn::FnDecl {
-                        fn_token: Default::default(),
-                        generics: Default::default(),
-                        paren_token: Default::default(),
-                        inputs: syn::punctuated::Punctuated::from_iter(inputs),
-                        variadic: None,
-                        output,
-                    }),
-                    rust_vis: syn::Visibility::Public(syn::VisPublic {
-                        pub_token: Default::default(),
-                    }),
-                },
-                rust_name,
-                kind: backend::ast::ImportFunctionKind::Method {
-                    class: self_name.to_string(),
-                    ty: self_ty,
-                },
-                shim,
-            }),
+        create_function(
+            &name,
+            self.arguments
+                .iter()
+                .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
+            kind,
+            ret,
+            Vec::new(),
+        ).map(|function| {
+            program.imports.push(backend::ast::Import {
+                module: None,
+                version: None,
+                js_namespace: None,
+                kind: backend::ast::ImportKind::Function(function),
+            })
         });
 
         Ok(())
