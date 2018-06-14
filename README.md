@@ -148,10 +148,10 @@ support!. Let's take a look at that and see how it works.
 First create an `index.js` file:
 
 ```js
-const js = import("./js_hello_world");
+const helloWorld = import("./js_hello_world");
 
-js.then(js => {
-  js.greet("World!");
+helloWorld.then(wasmModule => {
+  wasmModule.greet("World!");
 });
 ```
 
