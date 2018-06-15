@@ -2,7 +2,6 @@ use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
 use syn;
-use syn::AttrStyle;
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Default)]
@@ -155,22 +154,7 @@ impl Program {
                     }
                     _ => {}
                 }
-                let comments: Vec<String> = f.attrs
-                                .iter()
-                                .filter_map(|a| {
-                                    match a.style {
-                                        AttrStyle::Outer => {
-                                            Some(
-                                                a.tts.clone().into_iter().filter_map(|t| match t {
-                                                    TokenTree::Literal(lit) => Some(format!("{}", lit)),
-                                                    _ => None,
-                                                })
-                                            )
-                                        },
-                                        _ => None,
-                                    }
-                                })
-                                .fold(vec![], |mut acc, a| {acc.extend(a); acc});
+                let comments = extract_doc_comments(&f.attrs);
                 f.to_tokens(tokens);
                 self.exports.push(Export {
                     class: None,
@@ -1106,23 +1090,28 @@ fn replace_self(name: &Ident, item: &mut syn::ImplItem) {
 
     syn::visit_mut::VisitMut::visit_impl_item_mut(&mut Walk(name), item);
 }
+
 /// Extract the documentation comments from a Vec of attributes
-fn extract_doc_comments(attrs: &Vec<syn::Attribute>) -> Vec<String> {
+fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
     attrs
     .iter()
     .filter_map(|a| {
-        //We only care about outer comments for now
-        match a.style {
-            AttrStyle::Outer => {
-                //We only care about literal values
-                Some(
-                    a.tts.clone().into_iter().filter_map(|t| match t {
-                        TokenTree::Literal(lit) => Some(lit.to_string()),
-                        _ => None,
-                    })
-                )
-            },
-            _ => None
+        // if the path segments include an ident of "doc" we know this
+        // this is a doc comment
+        if a.path.segments.iter().any(|s| s.ident.to_string() == "doc") {
+            Some(
+                // We want to filter out any Puncts so just grab the Literals
+                a.tts.clone().into_iter().filter_map(|t| match t {
+                    TokenTree::Literal(lit) => {
+                        // this will always return the quoted string, we deal with 
+                        // that in the cli when we read in the comments
+                        Some(lit.to_string())
+                    },
+                    _ => None,
+                })
+            )
+        } else {
+            None
         }
     })
     //Fold up the [[String]] iter we created into Vec<String>

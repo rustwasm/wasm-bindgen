@@ -39,7 +39,6 @@ fn works() {
         p.gen_bindings(&root, &target);
         let js = p.read_js();
         let comments = extract_doc_comments(&js);
-        /// 
         assert!(comments.iter().all(|c| c == "This comment should exist"));
 }
 /// Pull out all lines in a js string that start with
@@ -49,7 +48,7 @@ fn extract_doc_comments(js: &str) -> Vec<String> {
     js.lines().filter_map(|l| {
         let trimmed = l.trim();
         if trimmed.starts_with("* ") {
-            Some(l[2..].to_owned())
+            Some(trimmed[2..].to_owned())
         } else {
             None
         }
