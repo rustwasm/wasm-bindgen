@@ -1,4 +1,4 @@
-use std::iter::FromIterator;
+use std::iter::{self, FromIterator};
 
 use backend;
 use heck::SnakeCase;
@@ -30,7 +30,7 @@ pub fn rust_ident(name: &str) -> Ident {
 
 // Create an `Ident` without checking to see if it conflicts with a Rust
 // keyword.
-pub fn raw_ident(name: &str) -> Ident {
+fn raw_ident(name: &str) -> Ident {
     Ident::new(name, proc_macro2::Span::call_site())
 }
 
@@ -285,6 +285,56 @@ pub fn create_basic_method(
         kind,
         ret,
         Vec::new(),
+    )
+}
+
+pub fn create_getter(
+    name: &str,
+    ty: &webidl::ast::Type,
+    self_name: &str,
+    kind: backend::ast::MethodKind,
+) -> Option<backend::ast::ImportFunction> {
+    let ret = match webidl_ty_to_syn_ty(ty, TypePosition::Return) {
+        None => {
+            warn!("Attribute's type does not yet support reading: {:?}", ty);
+            return None;
+        }
+        Some(ty) => Some(ty),
+    };
+
+    let kind = backend::ast::ImportFunctionKind::Method {
+        class: self_name.to_string(),
+        ty: ident_ty(rust_ident(self_name)),
+        kind,
+    };
+
+    create_function(
+        name,
+        iter::empty(),
+        kind,
+        ret,
+        vec![backend::ast::BindgenAttr::Getter(Some(raw_ident(name)))],
+    )
+}
+
+pub fn create_setter(
+    name: &str,
+    ty: &webidl::ast::Type,
+    self_name: &str,
+    kind: backend::ast::MethodKind,
+) -> Option<backend::ast::ImportFunction> {
+    let kind = backend::ast::ImportFunctionKind::Method {
+        class: self_name.to_string(),
+        ty: ident_ty(rust_ident(self_name)),
+        kind,
+    };
+
+    create_function(
+        &format!("set_{}", name),
+        iter::once((name, ty, false)),
+        kind,
+        None,
+        vec![backend::ast::BindgenAttr::Setter(Some(raw_ident(name)))],
     )
 }
 

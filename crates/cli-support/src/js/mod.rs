@@ -1605,76 +1605,78 @@ impl<'a, 'b> SubContext<'a, 'b> {
     {
         let descriptor = self.cx.describe(&import.shim);
 
-        let target = match import.class {
-            Some(ref class) if import.js_new => {
-                format!("new {}", self.import_name(info, class)?)
-            }
-            Some(ref class) if import.method => {
+        let target = match &import.method {
+            Some(shared::MethodData { class, kind, getter, setter }) => {
                 let class = self.import_name(info, class)?;
-                let target = if let Some(ref g) = import.getter {
-                    if import.structural {
-                        format!("function() {{ 
-                            return this.{}; 
-                        }}", g)
-                    } else {
-                        self.cx.expose_get_inherited_descriptor();
-                        format!(
-                            "GetOwnOrInheritedPropertyDescriptor\
-                                ({}.prototype, '{}').get",
-                            class,
-                            g,
-                        )
-                    }
-                } else if let Some(ref s) = import.setter {
-                    if import.structural {
-                        format!("function(y) {{ 
-                            this.{} = y; 
-                        }}", s)
-                    } else {
-                        self.cx.expose_get_inherited_descriptor();
-                        format!(
-                            "GetOwnOrInheritedPropertyDescriptor\
-                                ({}.prototype, '{}').set",
-                            class,
-                            s,
-                        )
-                    }
+                if let shared::MethodKind::Constructor = kind {
+                    format!("new {}", class)
                 } else {
-                    if import.structural {
-                        let nargs = descriptor.unwrap_function().arguments.len();
-                        let mut s = format!("function(");
-                        for i in 0..nargs - 1 {
-                            if i > 0 {
-                                drop(write!(s, ", "));
-                            }
-                            drop(write!(s, "x{}", i));
-                        }
-                        s.push_str(") { \nreturn this.");
-                        s.push_str(&import.function.name);
-                        s.push_str("(");
-                        for i in 0..nargs - 1 {
-                            if i > 0 {
-                                drop(write!(s, ", "));
-                            }
-                            drop(write!(s, "x{}", i));
-                        }
-                        s.push_str(");\n}");
-                        s
+                    let is_static = if let shared::MethodKind::Static = kind {
+                        true
                     } else {
-                        format!("{}.prototype.{}", class, import.function.name)
-                    }
-                };
-                self.cx.global(&format!("
-                    const {}_target = {};
-                ", import.shim, target));
-                format!("{}_target.call", import.shim)
-            }
-            Some(ref class) => {
-                let class = self.import_name(info, class)?;
-                self.cx.global(&format!("
-                    const {}_target = {}.{};
-                ", import.shim, class, import.function.name));
-                format!("{}_target", import.shim)
+                        false
+                    };
+
+                    let target = if let Some(g) = getter {
+                        if import.structural {
+                            format!("function(y) {{
+                                return this.{};
+                            }}", g)
+                        } else {
+                            self.cx.expose_get_inherited_descriptor();
+                            format!(
+                                "GetOwnOrInheritedPropertyDescriptor\
+                                    ({}{}, '{}').get",
+                                class,
+                                if is_static { "" } else { ".prototype "},
+                                g,
+                            )
+                        }
+                    } else if let Some(s) = setter {
+                        if import.structural {
+                            format!("function(y) {{
+                                this.{} = y;
+                            }}", s)
+                        } else {
+                            self.cx.expose_get_inherited_descriptor();
+                            format!(
+                                "GetOwnOrInheritedPropertyDescriptor\
+                                    ({}{}, '{}').set",
+                                class,
+                                if is_static { "" } else { ".prototype "},
+                                s,
+                            )
+                        }
+                    } else {
+                        if import.structural {
+                            let nargs = descriptor.unwrap_function().arguments.len();
+                            let mut s = format!("function(");
+                            for i in 0..nargs - 1 {
+                                if i > 0 {
+                                    drop(write!(s, ", "));
+                                }
+                                drop(write!(s, "x{}", i));
+                            }
+                            s.push_str(") { \nreturn this.");
+                            s.push_str(&import.function.name);
+                            s.push_str("(");
+                            for i in 0..nargs - 1 {
+                                if i > 0 {
+                                    drop(write!(s, ", "));
+                                }
+                                drop(write!(s, "x{}", i));
+                            }
+                            s.push_str(");\n}");
+                            s
+                        } else {
+                            format!("{}{}.{}", class, if is_static { "" } else { ".prototype" }, import.function.name)
+                        }
+                    };
+                    self.cx.global(&format!("
+                        const {}_target = {};
+                    ", import.shim, target));
+                    format!("{}_target{}", import.shim, if is_static { "" } else { ".call" })
+                }
             }
             None => {
                 let name = self.import_name(info, &import.function.name)?;

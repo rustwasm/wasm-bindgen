@@ -29,8 +29,8 @@ use quote::ToTokens;
 mod util;
 
 use util::{
-    create_basic_method, create_function, ident_ty, raw_ident, rust_ident, webidl_ty_to_syn_ty,
-    wrap_import_function, TypePosition,
+    create_basic_method, create_function, create_getter, create_setter, ident_ty, rust_ident,
+    webidl_ty_to_syn_ty, wrap_import_function, TypePosition,
 };
 
 /// Either `Ok(t)` or `Err(failure::Error)`.
@@ -265,10 +265,11 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::InterfaceMember {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::Attribute {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
-        match *self {
-            webidl::ast::Attribute::Regular(ref attr) => attr.webidl_parse(program, self_name),
+        match self {
+            webidl::ast::Attribute::Regular(attr) => attr.webidl_parse(program, self_name),
+            webidl::ast::Attribute::Static(attr) => attr.webidl_parse(program, self_name),
             // TODO
-            webidl::ast::Attribute::Static(_) | webidl::ast::Attribute::Stringifier(_) => {
+            webidl::ast::Attribute::Stringifier(_) => {
                 warn!("Unsupported WebIDL attribute: {:?}", self);
                 Ok(())
             }
@@ -292,61 +293,46 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Operation {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
-        fn create_getter(
-            this: &webidl::ast::RegularAttribute,
-            self_name: &str,
-        ) -> Option<backend::ast::Import> {
-            let ret = match webidl_ty_to_syn_ty(&this.type_, TypePosition::Return) {
-                None => {
-                    warn!("Attribute's type does not yet support reading: {:?}. Skipping getter binding for {:?}",
-                        this.type_, this);
-                    return None;
-                }
-                Some(ty) => Some(ty),
-            };
-
-            let kind = backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty: ident_ty(rust_ident(self_name)),
-                kind: backend::ast::MethodKind::Normal,
-            };
-
-            create_function(
-                &this.name,
-                iter::empty(),
-                kind,
-                ret,
-                vec![backend::ast::BindgenAttr::Getter(Some(raw_ident(
-                    &this.name,
-                )))],
-            ).map(wrap_import_function)
-        }
-
-        fn create_setter(
-            this: &webidl::ast::RegularAttribute,
-            self_name: &str,
-        ) -> Option<backend::ast::Import> {
-            let kind = backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty: ident_ty(rust_ident(self_name)),
-                kind: backend::ast::MethodKind::Normal,
-            };
-
-            create_function(
-                &format!("set_{}", this.name),
-                iter::once((&*this.name, &*this.type_, false)),
-                kind,
-                None,
-                vec![backend::ast::BindgenAttr::Setter(Some(raw_ident(
-                    &this.name,
-                )))],
-            ).map(wrap_import_function)
-        }
-
-        create_getter(self, self_name).map(|import| program.imports.push(import));
+        create_getter(
+            &self.name,
+            &self.type_,
+            self_name,
+            backend::ast::MethodKind::Normal,
+        ).map(wrap_import_function)
+            .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(self, self_name).map(|import| program.imports.push(import));
+            create_setter(
+                &self.name,
+                &self.type_,
+                self_name,
+                backend::ast::MethodKind::Normal,
+            ).map(wrap_import_function)
+                .map(|import| program.imports.push(import));
+        }
+
+        Ok(())
+    }
+}
+
+impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
+    fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
+        create_getter(
+            &self.name,
+            &self.type_,
+            self_name,
+            backend::ast::MethodKind::Static,
+        ).map(wrap_import_function)
+            .map(|import| program.imports.push(import));
+
+        if !self.read_only {
+            create_setter(
+                &self.name,
+                &self.type_,
+                self_name,
+                backend::ast::MethodKind::Static,
+            ).map(wrap_import_function)
+                .map(|import| program.imports.push(import));
         }
 
         Ok(())

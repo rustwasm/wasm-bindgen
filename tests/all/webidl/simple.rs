@@ -184,7 +184,6 @@ fn static_method() {
             "foo.webidl",
             r#"
             interface Foo {
-                [Pure]
                 static double swap(double value);
             };
         "#,
@@ -226,6 +225,66 @@ fn static_method() {
                 let tmp = Foo::swap(3.14159) == 2.71828;
                 assert!(tmp);
                 let tmp = Foo::swap(3.14159) != 2.71828;
+                assert!(tmp);
+            }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn static_property() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+            interface Foo {
+                static attribute double value;
+            };
+        "#,
+        )
+        .file(
+            "foo.ts",
+            r#"
+            export class Foo {
+                private static _value: number = 0;
+
+                static get value(): number {
+                    return Foo._value;
+                }
+
+                static set value(_value: number) {
+                    Foo._value = _value;
+                }
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            pub mod foo;
+
+            use foo::Foo;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                let tmp = Foo::value() == 0.;
+                assert!(tmp);
+                Foo::set_value(3.14159);
+                let tmp = Foo::value() == 3.14159;
+                assert!(tmp);
+                let tmp = Foo::value() != 2.71828;
+                assert!(tmp);
+                Foo::set_value(2.71828);
+                let tmp = Foo::value() == 2.71828;
+                assert!(tmp);
+                let tmp = Foo::value() != 3.14159;
                 assert!(tmp);
             }
         "#,

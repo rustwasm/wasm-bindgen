@@ -701,24 +701,6 @@ impl ImportFunction {
     }
 
     fn shared(&self) -> shared::ImportFunction {
-        let mut method = false;
-        let mut js_new = false;
-        let mut class_name = None;
-        match self.kind {
-            ImportFunctionKind::Method {
-                ref class,
-                ref kind,
-                ..
-            } => {
-                match kind {
-                    MethodKind::Normal => method = true,
-                    MethodKind::Constructor => js_new = true,
-                    MethodKind::Static => {}
-                }
-                class_name = Some(class);
-            }
-            ImportFunctionKind::Normal => {}
-        }
         let mut getter = None;
         let mut setter = None;
 
@@ -730,15 +712,34 @@ impl ImportFunction {
             let s = s.map(|s| s.to_string());
             setter = Some(s.unwrap_or_else(|| self.infer_setter_property()));
         }
+
+        let mut method = None;
+        match self.kind {
+            ImportFunctionKind::Method {
+                ref class,
+                ref kind,
+                ..
+            } => {
+                let kind = match kind {
+                    MethodKind::Normal => shared::MethodKind::Normal,
+                    MethodKind::Constructor => shared::MethodKind::Constructor,
+                    MethodKind::Static => shared::MethodKind::Static,
+                };
+                method = Some(shared::MethodData {
+                    class: class.clone(),
+                    kind,
+                    getter,
+                    setter,
+                });
+            }
+            ImportFunctionKind::Normal => {}
+        }
+
         shared::ImportFunction {
             shim: self.shim.to_string(),
             catch: self.function.opts.catch(),
             method,
-            js_new,
             structural: self.function.opts.structural(),
-            getter,
-            setter,
-            class: class_name.cloned(),
             function: self.function.shared(),
         }
     }
