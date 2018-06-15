@@ -64,12 +64,14 @@ pub struct Export {
     pub method: bool,
     pub constructor: Option<String>,
     pub function: Function,
+    pub comments: Vec<String>,
 }
 
 #[derive(Deserialize, Serialize)]
 pub struct Enum {
     pub name: String,
     pub variants: Vec<EnumVariant>,
+    pub comments: Vec<String>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -87,12 +89,14 @@ pub struct Function {
 pub struct Struct {
     pub name: String,
     pub fields: Vec<StructField>,
+    pub comments: Vec<String>,
 }
 
 #[derive(Deserialize, Serialize)]
 pub struct StructField {
     pub name: String,
     pub readonly: bool,
+    pub comments: Vec<String>,
 }
 
 pub fn new_function(struct_name: &str) -> String {

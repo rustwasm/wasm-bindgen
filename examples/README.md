@@ -35,5 +35,6 @@ The examples here are:
   the generated WebAssembly to normal JS
 * `char` - an example of passing the rust `char` type to and from the js `string` type
 * `import_js` - an example of importing local JS functionality into a crate
+* `comments` - an example of how Rust comments are copied into js bindings
 
 [binaryen]: https://github.com/WebAssembly/binaryen

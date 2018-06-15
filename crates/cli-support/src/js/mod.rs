@@ -35,6 +35,7 @@ pub struct Context<'a> {
 
 #[derive(Default)]
 pub struct ExportedClass {
+    comments: String,
     contents: String,
     typescript: String,
     constructor: Option<String>,
@@ -42,6 +43,7 @@ pub struct ExportedClass {
 }
 
 struct ClassField {
+    comments: String,
     name: String,
     readonly: bool,
 }
@@ -52,9 +54,12 @@ pub struct SubContext<'a, 'b: 'a> {
 }
 
 impl<'a> Context<'a> {
-    fn export(&mut self, name: &str, contents: &str) {
+    fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
         let contents = deindent(contents);
         let contents = contents.trim();
+        if let Some(ref c) = comments {
+            self.globals.push_str(c);
+        }
         let global = if self.config.nodejs {
             if contents.starts_with("class") {
                 format!("{1}\nmodule.exports.{0} = {0};\n", name, contents)
@@ -396,7 +401,7 @@ impl<'a> Context<'a> {
             .with_context(|_| {
                 format!("failed to generate internal JS function `{}`", name)
             })?;
-        self.export(name, &contents);
+        self.export(name, &contents, None);
         Ok(())
     }
 
@@ -461,7 +466,7 @@ impl<'a> Context<'a> {
                 function(ptr) {{
                     return addHeapObject({}.__construct(ptr));
                 }}
-            ", name));
+            ", name), None);
         }
 
         for field in class.fields.iter() {
@@ -484,7 +489,10 @@ impl<'a> Context<'a> {
                 .method(true)
                 .ret(&Some(descriptor))?
                 .finish("", &format!("wasm.{}", wasm_getter));
-
+            if !dst.ends_with("\n") {
+                dst.push_str("\n");
+            }
+            dst.push_str(&field.comments);
             dst.push_str("get ");
             dst.push_str(&field.name);
             dst.push_str(&get);
@@ -504,13 +512,12 @@ impl<'a> Context<'a> {
             }}
         ", shared::free_function(&name)));
         ts_dst.push_str("free(): void;\n");
-
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
         dst.push_str("}\n");
         ts_dst.push_str("}\n");
 
-        self.export(&name, &dst);
+        self.export(&name, &dst, Some(class.comments.clone()));
         self.typescript.push_str(&ts_dst);
 
         Ok(())
@@ -534,7 +541,7 @@ impl<'a> Context<'a> {
 
     fn rewrite_imports(&mut self, module_name: &str) {
         for (name, contents) in self._rewrite_imports(module_name) {
-            self.export(&name, &contents);
+            self.export(&name, &contents, None);
         }
     }
 
@@ -691,7 +698,7 @@ impl<'a> Context<'a> {
                         return;
                     throw new Error('stack is not currently empty');
                 }
-            ");
+            ", None);
         }
     }
 
@@ -715,7 +722,7 @@ impl<'a> Context<'a> {
                         throw new Error('slab is not currently empty');
                     }}
                 }}
-            ", initial_values.len()));
+            ", initial_values.len()), None);
         }
     }
 
@@ -1406,7 +1413,7 @@ impl<'a> Context<'a> {
 
         // Ensure a blank line between adjacent items, and ensure everything is
         // terminated with a newline.
-        while !self.globals.ends_with("\n\n\n") {
+        while !self.globals.ends_with("\n\n\n") && !self.globals.ends_with("*/\n") {
             self.globals.push_str("\n");
         }
         self.globals.push_str(s);
@@ -1452,14 +1459,16 @@ impl<'a, 'b> SubContext<'a, 'b> {
             self.generate_enum(e);
         }
         for s in self.program.structs.iter() {
-            self.cx.exported_classes
+            let mut class = self.cx.exported_classes
                 .entry(s.name.clone())
-                .or_insert_with(Default::default)
-                .fields
-                .extend(s.fields.iter().map(|s| {
+                .or_insert_with(Default::default);
+            class.comments = format_doc_comments(&s.comments);
+            class.fields
+                .extend(s.fields.iter().map(|f| {
                     ClassField {
-                        name: s.name.clone(),
-                        readonly: s.readonly,
+                        name: f.name.clone(),
+                        readonly: f.readonly,
+                        comments: format_doc_comments(&f.comments),
                     }
                 }));
         }
@@ -1477,7 +1486,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
             .process(descriptor.unwrap_function())?
             .finish("function", &format!("wasm.{}", export.function.name));
-        self.cx.export(&export.function.name, &js);
+        self.cx.export(&export.function.name, &js, Some(format_doc_comments(&export.comments)));
         self.cx.globals.push_str("\n");
         self.cx.typescript.push_str("export ");
         self.cx.typescript.push_str(&ts);
@@ -1498,6 +1507,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .finish("", &format!("wasm.{}", wasm_name));
         let class = self.cx.exported_classes.entry(class_name.to_string())
             .or_insert(ExportedClass::default());
+        class.contents.push_str(&format_doc_comments(&export.comments));
         if !export.method {
             class.contents.push_str("static ");
             class.typescript.push_str("static ");
@@ -1514,7 +1524,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
             1 => Some(constructors[0].clone()),
             x @ _ => bail!("there must be only one constructor, not {}", x),
         };
-
         class.contents.push_str(&export.function.name);
         class.contents.push_str(&js);
         class.contents.push_str("\n");
@@ -1593,7 +1602,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             function() {{
                 return addHeapObject({});
             }}
-        ", obj));
+        ", obj), None);
         Ok(())
     }
 
@@ -1688,7 +1697,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .catch(import.catch)
             .process(descriptor.unwrap_function())?
             .finish(&target);
-        self.cx.export(&import.shim, &js);
+        self.cx.export(&import.shim, &js, None);
         Ok(())
     }
 
@@ -1698,7 +1707,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         for variant in enum_.variants.iter() {
             variants.push_str(&format!("{}:{},", variant.name, variant.value));
         }
-        self.cx.export(&enum_.name, &format!("Object.freeze({{ {} }})", variants));
+        self.cx.export(&enum_.name, &format!("Object.freeze({{ {} }})", variants), Some(format_doc_comments(&enum_.comments)));
         self.cx.typescript.push_str(&format!("export enum {} {{", enum_.name));
 
         variants.clear();
@@ -1763,4 +1772,10 @@ fn deindent(s: &str) -> String {
         ret.push_str("\n");
     }
     ret
+}
+
+
+fn format_doc_comments(comments: &Vec<String>) -> String {
+    let body: String = comments.iter().map(|c| format!("*{}\n", c.trim_matches('"'))).collect();
+    format!("/**\n{}*/\n", body)
 }
