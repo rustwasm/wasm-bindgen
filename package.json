@@ -8,6 +8,7 @@
     "ts-loader": "^4.0.1",
     "typescript": "^2.7.2",
     "webpack": "^4.11.1",
-    "webpack-cli": "^2.0.10"
+    "webpack-cli": "^2.0.10",
+    "eslint": "^4.19.1"
   }
 }

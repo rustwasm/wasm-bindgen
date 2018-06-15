@@ -55,7 +55,7 @@ pub struct SubContext<'a, 'b: 'a> {
 
 impl<'a> Context<'a> {
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
-        let contents = deindent(contents);
+        let contents = contents;
         let contents = contents.trim();
         if let Some(ref c) = comments {
             self.globals.push_str(c);
@@ -110,8 +110,7 @@ impl<'a> Context<'a> {
             me.expose_get_object();
             let bump_cnt = if me.config.debug {
                 String::from("
-                    if (typeof(val) === 'number')
-                        throw new Error('corrupt slab');
+                    if (typeof(val) === 'number') throw new Error('corrupt slab');
                     val.cnt += 1;
                 ")
             } else {
@@ -120,8 +119,7 @@ impl<'a> Context<'a> {
             Ok(format!("
                 function(idx) {{
                     // If this object is on the stack promote it to the heap.
-                    if ((idx & 1) === 1)
-                        return addHeapObject(getObject(idx));
+                    if ((idx & 1) === 1) return addHeapObject(getObject(idx));
 
                     // Otherwise if the object is on the heap just bump the
                     // refcount and move on
@@ -134,7 +132,9 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_object_drop_ref", &|me| {
             me.expose_drop_ref();
-            Ok("function(i) { dropRef(i); }".to_string())
+            Ok("function(i) { 
+                dropRef(i); 
+            }".to_string())
         })?;
 
         self.bind("__wbindgen_string_new", &|me| {
@@ -149,7 +149,9 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_number_new", &|me| {
             me.expose_add_heap_object();
-            Ok(String::from("function(i) { return addHeapObject(i); }"))
+            Ok(String::from("function(i) { 
+                return addHeapObject(i); 
+            }"))
         })?;
 
         self.bind("__wbindgen_number_get", &|me| {
@@ -158,8 +160,7 @@ impl<'a> Context<'a> {
             Ok(format!("
                 function(n, invalid) {{
                     let obj = getObject(n);
-                    if (typeof(obj) === 'number')
-                        return obj;
+                    if (typeof(obj) === 'number') return obj;
                     getUint8Memory()[invalid] = 1;
                     return 0;
                 }}
@@ -168,7 +169,9 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_undefined_new", &|me| {
             me.expose_add_heap_object();
-            Ok(String::from("function() { return addHeapObject(undefined); }"))
+            Ok(String::from("function() { 
+                return addHeapObject(undefined); 
+            }"))
         })?;
 
         self.bind("__wbindgen_null_new", &|me| {
@@ -253,8 +256,7 @@ impl<'a> Context<'a> {
             Ok(String::from("
                 function(i, len_ptr) {
                     let obj = getObject(i);
-                    if (typeof(obj) !== 'string')
-                        return 0;
+                    if (typeof(obj) !== 'string') return 0;
                     const [ptr, len] = passStringToWasm(obj);
                     getUint32Memory()[len_ptr / 4] = len;
                     return ptr;
@@ -442,7 +444,7 @@ impl<'a> Context<'a> {
                 ", class = name, constructor = constructor));
             } else {
                 dst.push_str("throw new Error('you cannot invoke `new` directly without having a \
-            method annotated a constructor');");
+            method annotated a constructor');\n");
             }
 
             dst.push_str("}");
@@ -649,34 +651,28 @@ impl<'a> Context<'a> {
         self.expose_global_slab_next();
         let validate_owned = if self.config.debug {
             String::from("
-                if ((idx & 1) === 1)
-                    throw new Error('cannot drop ref of stack objects');
+                if ((idx & 1) === 1) throw new Error('cannot drop ref of stack objects');
             ")
         } else {
             String::new()
         };
         let dec_ref = if self.config.debug {
             String::from("
-                if (typeof(obj) === 'number')
-                    throw new Error('corrupt slab');
+                if (typeof(obj) === 'number') throw new Error('corrupt slab');
                 obj.cnt -= 1;
-                if (obj.cnt > 0)
-                    return;
+                if (obj.cnt > 0) return;
             ")
         } else {
             String::from("
                 obj.cnt -= 1;
-                if (obj.cnt > 0)
-                    return;
+                if (obj.cnt > 0) return;
             ")
         };
         self.global(&format!("
             function dropRef(idx) {{
                 {}
-
                 let obj = slab[idx >> 1];
                 {}
-
                 // If we hit 0 then free up our space in the slab
                 slab[idx >> 1] = slab_next;
                 slab_next = idx >> 1;
@@ -694,8 +690,7 @@ impl<'a> Context<'a> {
         if self.config.debug {
             self.export("assertStackEmpty", "
                 function() {
-                    if (stack.length === 0)
-                        return;
+                    if (stack.length === 0) return;
                     throw new Error('stack is not currently empty');
                 }
             ", None);
@@ -717,8 +712,7 @@ impl<'a> Context<'a> {
             self.export("assertSlabEmpty", &format!("
                 function() {{
                     for (let i = {}; i < slab.length; i++) {{
-                        if (typeof(slab[i]) === 'number')
-                            continue;
+                        if (typeof(slab[i]) === 'number') continue;
                         throw new Error('slab is not currently empty');
                     }}
                 }}
@@ -745,8 +739,7 @@ impl<'a> Context<'a> {
 
         let get_obj = if self.config.debug {
             String::from("
-                if (typeof(val) === 'number')
-                    throw new Error('corrupt slab');
+                if (typeof(val) === 'number') throw new Error('corrupt slab');
                 return val.obj;
             ")
         } else {
@@ -772,8 +765,7 @@ impl<'a> Context<'a> {
         }
         self.global(&format!("
             function _assertNum(n) {{
-                if (typeof(n) !== 'number')
-                    throw new Error('expected a number argument');
+                if (typeof(n) !== 'number') throw new Error('expected a number argument');
             }}
         "));
     }
@@ -784,8 +776,9 @@ impl<'a> Context<'a> {
         }
         self.global(&format!("
             function _assertBoolean(n) {{
-                if (typeof(n) !== 'boolean')
+                if (typeof(n) !== 'boolean') {{
                     throw new Error('expected a boolean argument');
+                }}
             }}
         "));
     }
@@ -799,8 +792,7 @@ impl<'a> Context<'a> {
         self.expose_uint8_memory();
         let debug = if self.config.debug {
             "
-                if (typeof(arg) !== 'string')
-                    throw new Error('expected a string argument');
+                if (typeof(arg) !== 'string') throw new Error('expected a string argument');
             "
         } else {
             ""
@@ -946,7 +938,7 @@ impl<'a> Context<'a> {
                 const slice = mem.subarray(ptr / 4, ptr / 4 + len);
                 const result = [];
                 for (let i = 0; i < slice.length; i++) {{
-                    result.push(takeObject(slice[i]))
+                    result.push(takeObject(slice[i]));
                 }}
                 return result;
             }}
@@ -1119,9 +1111,9 @@ impl<'a> Context<'a> {
         self.global(&format!("
             let cache{name} = null;
             function {name}() {{
-                if (cache{name} === null ||
-                    cache{name}.buffer !== wasm.memory.buffer)
+                if (cache{name} === null || cache{name}.buffer !== wasm.memory.buffer) {{
                     cache{name} = new {js}(wasm.memory.buffer);
+                }}
                 return cache{name};
             }}
         ",
@@ -1136,8 +1128,9 @@ impl<'a> Context<'a> {
         }
         self.global(&format!("
             function _assertClass(instance, klass) {{
-                if (!(instance instanceof klass))
+                if (!(instance instanceof klass)) {{
                     throw new Error(`expected instance of ${{klass.name}}`);
+                }}
                 return instance.ptr;
             }}
         "));
@@ -1179,8 +1172,7 @@ impl<'a> Context<'a> {
         self.expose_global_slab_next();
         let set_slab_next = if self.config.debug {
             String::from("
-                if (typeof(next) !== 'number')
-                    throw new Error('corrupt slab');
+                if (typeof(next) !== 'number') throw new Error('corrupt slab');
                 slab_next = next;
             ")
         } else {
@@ -1190,8 +1182,7 @@ impl<'a> Context<'a> {
         };
         self.global(&format!("
             function addHeapObject(obj) {{
-                if (slab_next === slab.length)
-                    slab.push(slab.length + 1);
+                if (slab_next === slab.length) slab.push(slab.length + 1);
                 const idx = slab_next;
                 const next = slab[idx];
                 {}
@@ -1329,8 +1320,9 @@ impl<'a> Context<'a> {
         self.global("
             let cachedGlobalArgumentPtr = null;
             function globalArgumentPtr() {
-                if (cachedGlobalArgumentPtr === null)
+                if (cachedGlobalArgumentPtr === null) {{
                     cachedGlobalArgumentPtr = wasm.__wbindgen_global_argument_ptr();
+                }}
                 return cachedGlobalArgumentPtr;
             }
         ");
@@ -1357,7 +1349,7 @@ impl<'a> Context<'a> {
                 if (desc) return desc;
                 obj = Object.getPrototypeOf(obj);
               }
-              throw \"descriptor not found\";
+              throw new Error('descriptor not found');
             }
         ");
     }
@@ -1408,7 +1400,7 @@ impl<'a> Context<'a> {
     }
 
     fn global(&mut self, s: &str) {
-        let s = deindent(s);
+        let s = s;
         let s = s.trim();
 
         // Ensure a blank line between adjacent items, and ensure everything is
@@ -1621,24 +1613,28 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 let class = self.import_name(info, class)?;
                 let target = if let Some(ref g) = import.getter {
                     if import.structural {
-                        format!("function() {{ return this.{}; }}", g)
+                        format!("function() {{ 
+                            return this.{}; 
+                        }}", g)
                     } else {
                         self.cx.expose_get_inherited_descriptor();
                         format!(
                             "GetOwnOrInheritedPropertyDescriptor\
-                                ({}.prototype, '{}').get;",
+                                ({}.prototype, '{}').get",
                             class,
                             g,
                         )
                     }
                 } else if let Some(ref s) = import.setter {
                     if import.structural {
-                        format!("function(y) {{ this.{} = y; }}", s)
+                        format!("function(y) {{ 
+                            this.{} = y; 
+                        }}", s)
                     } else {
                         self.cx.expose_get_inherited_descriptor();
                         format!(
                             "GetOwnOrInheritedPropertyDescriptor\
-                                ({}.prototype, '{}').set;",
+                                ({}.prototype, '{}').set",
                             class,
                             s,
                         )
@@ -1653,7 +1649,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             }
                             drop(write!(s, "x{}", i));
                         }
-                        s.push_str(") { return this.");
+                        s.push_str(") { \nreturn this.");
                         s.push_str(&import.function.name);
                         s.push_str("(");
                         for i in 0..nargs - 1 {
@@ -1662,7 +1658,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             }
                             drop(write!(s, "x{}", i));
                         }
-                        s.push_str("); }");
+                        s.push_str(");\n}");
                         s
                     } else {
                         format!("{}.prototype.{}", class, import.function.name)
@@ -1747,33 +1743,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
         })
     }
 }
-
-fn indent(s: &str) -> String {
-    let mut ret = String::new();
-    for line in s.lines() {
-        ret.push_str("    ");
-        ret.push_str(line);
-        ret.push_str("\n");
-    }
-    return ret
-}
-
-fn deindent(s: &str) -> String {
-    let amt_to_strip = s.lines()
-        .filter(|l| !l.trim().is_empty())
-        .map(|s| s.len() - s.trim_left().len())
-        .min()
-        .unwrap_or(0);
-    let mut ret = String::new();
-    for line in s.lines() {
-        if !line.trim().is_empty() {
-            ret.push_str(&line[amt_to_strip..]);
-        }
-        ret.push_str("\n");
-    }
-    ret
-}
-
 
 fn format_doc_comments(comments: &Vec<String>) -> String {
     let body: String = comments.iter().map(|c| format!("*{}\n", c.trim_matches('"'))).collect();
