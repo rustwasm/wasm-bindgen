@@ -13,6 +13,9 @@
 // TODO: don't include this here, use Performance.webidl instead
 typedef double DOMHighResTimeStamp;
 
+// TODO: remove this when dicts are resolved
+typedef boolean EventInit;
+
 [Constructor(DOMString type, optional EventInit eventInitDict),
  Exposed=(Window,Worker,System), ProbablyShortLivingWrapper]
 interface Event {
@@ -59,4 +62,10 @@ interface Event {
                  optional boolean bubbles = false,
                  optional boolean cancelable = false);
   attribute boolean cancelBubble;
+};
+
+dictionary EventInit {
+  boolean bubbles = false;
+  boolean cancelable = false;
+  boolean composed = false;
 };
