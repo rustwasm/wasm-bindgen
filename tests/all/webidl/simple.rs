@@ -176,3 +176,59 @@ fn named_constructor() {
         )
         .test();
 }
+
+#[test]
+fn static_method() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+            interface Foo {
+                [Pure]
+                static double swap(double value);
+            };
+        "#,
+        )
+        .file(
+            "foo.ts",
+            r#"
+            export class Foo {
+                private static value: number = 0;
+                static swap(value: number): number {
+                    const res = Foo.value;
+                    Foo.value = value;
+                    return res;
+                }
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            pub mod foo;
+
+            use foo::Foo;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                let tmp = Foo::swap(3.14159) == 0.;
+                assert!(tmp);
+                let tmp = Foo::swap(2.71828) == 3.14159;
+                assert!(tmp);
+                let tmp = Foo::swap(2.71828) != 3.14159;
+                assert!(tmp);
+                let tmp = Foo::swap(3.14159) == 2.71828;
+                assert!(tmp);
+                let tmp = Foo::swap(3.14159) != 2.71828;
+                assert!(tmp);
+            }
+        "#,
+        )
+        .test();
+}

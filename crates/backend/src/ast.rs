@@ -49,9 +49,19 @@ pub struct ImportFunction {
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub enum ImportFunctionKind {
-    Method { class: String, ty: syn::Type },
-    JsConstructor { class: String, ty: syn::Type },
+    Method {
+        class: String,
+        ty: syn::Type,
+        kind: MethodKind,
+    },
     Normal,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub enum MethodKind {
+    Normal,
+    Constructor,
+    Static,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -398,6 +408,7 @@ impl Program {
             ImportFunctionKind::Method {
                 class: class_name.to_string(),
                 ty: class.clone(),
+                kind: MethodKind::Normal,
             }
         } else if wasm.opts.constructor() {
             let class = match wasm.ret {
@@ -414,9 +425,10 @@ impl Program {
             let class_name = extract_path_ident(class_name)
                 .expect("first argument of method must be a bare type");
 
-            ImportFunctionKind::JsConstructor {
+            ImportFunctionKind::Method {
                 class: class_name.to_string(),
                 ty: class.clone(),
+                kind: MethodKind::Constructor,
             }
         } else {
             ImportFunctionKind::Normal
@@ -426,7 +438,6 @@ impl Program {
             let ns = match kind {
                 ImportFunctionKind::Normal => "n",
                 ImportFunctionKind::Method { ref class, .. } => class,
-                ImportFunctionKind::JsConstructor { ref class, .. } => class,
             };
             format!("__wbg_f_{}_{}_{}", js_name, f.ident, ns)
         };
@@ -694,12 +705,16 @@ impl ImportFunction {
         let mut js_new = false;
         let mut class_name = None;
         match self.kind {
-            ImportFunctionKind::Method { ref class, .. } => {
-                method = true;
-                class_name = Some(class);
-            }
-            ImportFunctionKind::JsConstructor { ref class, .. } => {
-                js_new = true;
+            ImportFunctionKind::Method {
+                ref class,
+                ref kind,
+                ..
+            } => {
+                match kind {
+                    MethodKind::Normal => method = true,
+                    MethodKind::Constructor => js_new = true,
+                    MethodKind::Static => {}
+                }
                 class_name = Some(class);
             }
             ImportFunctionKind::Normal => {}
