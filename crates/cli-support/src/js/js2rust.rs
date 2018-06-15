@@ -1,6 +1,6 @@
 use failure::Error;
 
-use super::{indent, Context};
+use super::Context;
 use descriptor::{Descriptor, Function};
 
 /// Helper struct for manufacturing a shim in JS used to translate JS types to
@@ -305,7 +305,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             }
             Descriptor::Char => {
                 self.ret_ty = "string".to_string();
-                self.ret_expr = format!("return String.fromCodePoint(RET)")
+                self.ret_expr = format!("return String.fromCodePoint(RET);")
             }
             Descriptor::Anyref => {
                 self.ret_ty = "any".to_string();
@@ -333,7 +333,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             .collect::<Vec<_>>()
             .join(", ");
         let mut js = format!("{}({}) {{\n", prefix, js_args);
-        js.push_str(&indent(&self.prelude));
+        js.push_str(&self.prelude);
         let rust_args = self.rust_arguments.join(", ");
 
         let invoc = self.ret_expr.replace("RET", &format!("{}({})", invoc, rust_args));
@@ -342,18 +342,17 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         } else {
             format!("\
                 try {{\n\
-                    {}\
-                }} finally {{\n\
-                    {}\
+                    {}
+                \n}} finally {{\n\
+                    {}
                 }}\n\
             ",
-                indent(&invoc),
-                indent(&self.finally),
+                &invoc,
+                &self.finally,
             )
         };
-        js.push_str(&indent(&invoc));
-        js.push_str("}");
-
+        js.push_str(&invoc);
+        js.push_str("\n}");
         let ts_args = self.js_arguments
             .iter()
             .map(|s| format!("{}: {}", s.0, s.1))

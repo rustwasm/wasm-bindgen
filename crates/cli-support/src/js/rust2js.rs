@@ -1,7 +1,7 @@
 use failure::Error;
 
 use descriptor::{Descriptor, Function};
-use super::{indent, Context, Js2Rust};
+use super::{Context, Js2Rust};
 
 /// Helper struct for manufacturing a shim in JS used to translate Rust types to
 /// JS, then invoking an imported JS function.
@@ -202,7 +202,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 if (idx{0} === 0xffffffff) {{\n\
                 {1}\
                 }}\n\
-            ", abi, indent(&reset_idx)));
+            ", abi, &reset_idx));
             self.cx.expose_get_object();
             self.js_arguments.push(format!("getObject(idx{})", abi));
             return Ok(())
@@ -272,7 +272,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
         self.ret_expr = match *ty {
             Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
-            Descriptor::Char => "return JS.codePointAt(0)".to_string(),
+            Descriptor::Char => "return JS.codePointAt(0);".to_string(),
             Descriptor::Anyref => {
                 self.cx.expose_add_heap_object();
                 "return addHeapObject(JS);".to_string()
@@ -293,7 +293,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ret.push_str("exnptr");
         }
         ret.push_str(") {\n");
-        ret.push_str(&indent(&self.prelude));
+        ret.push_str(&self.prelude);
 
         let mut invoc = self.ret_expr.replace(
             "JS",
@@ -308,25 +308,25 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
             invoc = format!("\
             try {{\n\
-            {}\
+            {}
             }} catch (e) {{\n\
-            {}\
+            {}
             }}\
-            ", indent(&invoc), indent(catch));
+            ", &invoc, catch);
         };
 
         if self.finally.len() > 0 {
             invoc = format!("\
             try {{\n\
-            {}\
+            {}
             }} finally {{\n\
-            {}\
+            {}
             }}\
-            ", indent(&invoc), indent(&self.finally));
+            ", &invoc, &self.finally);
         }
-        ret.push_str(&indent(&invoc));
+        ret.push_str(&invoc);
 
-        ret.push_str("}\n");
+        ret.push_str("\n}\n");
         return ret
     }
 

@@ -11,7 +11,10 @@ matrix:
     # Tests pass on nightly
     - rust: nightly
       before_install: rustup target add wasm32-unknown-unknown
-      script: cargo test
+      script: 
+        - cargo test
+        # Check JS output from all tests against eslint
+        - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
       env: RUST_BACKTRACE=1
 
     # WebIDL tests pass on nightly

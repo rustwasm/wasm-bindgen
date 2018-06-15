@@ -158,7 +158,7 @@ impl Bindgen {
 
         let js_path = out_dir.join(stem).with_extension("js");
         File::create(&js_path)
-            .and_then(|mut f| f.write_all(js.as_bytes()))
+            .and_then(|mut f| f.write_all(reset_indentation(&js).as_bytes()))
             .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
 
         if self.typescript {
@@ -207,7 +207,7 @@ impl Bindgen {
             module.exports = wasmInstance.exports;
         ", path.file_name().unwrap().to_str().unwrap()));
 
-        shim
+        reset_indentation(&shim)
     }
 }
 
@@ -378,5 +378,34 @@ impl wasmi::HostError for MyError {}
 impl fmt::Display for MyError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.0.fmt(f)
+    }
+}
+
+fn reset_indentation(s: &str) -> String {
+    indent_recurse(s.lines(), 0)
+}
+
+fn indent_recurse(mut lines: ::std::str::Lines, current_indent: usize) -> String {
+    if let Some(line) = lines.next() {
+        let mut trimmed = line.trim().to_owned();
+        let mut next_indent = current_indent;
+        let mut current_indent = current_indent;
+        if trimmed.ends_with('{') {
+            next_indent += 1;
+        }
+        if trimmed.starts_with('}') || trimmed.ends_with('}') {
+            if current_indent > 0 { 
+                current_indent -= 1; 
+            }
+            if next_indent > 0 { 
+                next_indent -= 1; 
+            }
+        }
+        if trimmed.starts_with('?') || trimmed.starts_with(':') {
+            current_indent += 1;
+        }
+        format!("\n{}{}{}", "    ".repeat(current_indent), &trimmed, &indent_recurse(lines, next_indent))
+    } else {
+        String::new()
     }
 }
