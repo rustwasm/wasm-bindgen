@@ -113,7 +113,7 @@ impl<'a> Context<'a> {
                     "
                     if (typeof(val) === 'number') throw new Error('corrupt slab');
                     val.cnt += 1;
-                ",
+                    ",
                 )
             } else {
                 String::from("val.cnt += 1;")
@@ -130,17 +130,20 @@ impl<'a> Context<'a> {
                     {}
                     return idx;
                 }}
-            ",
+                ",
                 bump_cnt
             ))
         })?;
 
         self.bind("__wbindgen_object_drop_ref", &|me| {
             me.expose_drop_ref();
-            Ok("function(i) {
-                dropRef(i);
-            }"
-                .to_string())
+            Ok(String::from(
+                "
+                function(i) {
+                    dropRef(i);
+                }
+                ",
+            ))
         })?;
 
         self.bind("__wbindgen_string_new", &|me| {
@@ -151,40 +154,44 @@ impl<'a> Context<'a> {
                 function(p, l) {
                     return addHeapObject(getStringFromWasm(p, l));
                 }
-            ",
+                ",
             ))
         })?;
 
         self.bind("__wbindgen_number_new", &|me| {
             me.expose_add_heap_object();
             Ok(String::from(
-                "function(i) {
-                return addHeapObject(i);
-            }",
+                "
+                function(i) {
+                    return addHeapObject(i);
+                }
+                ",
             ))
         })?;
 
         self.bind("__wbindgen_number_get", &|me| {
             me.expose_get_object();
             me.expose_uint8_memory();
-            Ok(format!(
+            Ok(String::from(
                 "
-                function(n, invalid) {{
+                function(n, invalid) {
                     let obj = getObject(n);
                     if (typeof(obj) === 'number') return obj;
                     getUint8Memory()[invalid] = 1;
                     return 0;
-                }}
-            "
+                }
+                ",
             ))
         })?;
 
         self.bind("__wbindgen_undefined_new", &|me| {
             me.expose_add_heap_object();
             Ok(String::from(
-                "function() {
-                return addHeapObject(undefined);
-            }",
+                "
+                function() {
+                    return addHeapObject(undefined);
+                }
+                ",
             ))
         })?;
 
@@ -195,7 +202,7 @@ impl<'a> Context<'a> {
                 function() {
                     return addHeapObject(null);
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -206,7 +213,7 @@ impl<'a> Context<'a> {
                 function(idx) {
                     return getObject(idx) === null ? 1 : 0;
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -217,7 +224,7 @@ impl<'a> Context<'a> {
                 function(idx) {
                     return getObject(idx) === undefined ? 1 : 0;
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -228,7 +235,7 @@ impl<'a> Context<'a> {
                 function(v) {
                     return addHeapObject(v === 1);
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -244,25 +251,25 @@ impl<'a> Context<'a> {
                         return 2;
                     }
                 }
-            ",
+                ",
             ))
         })?;
 
         self.bind("__wbindgen_symbol_new", &|me| {
             me.expose_get_string_from_wasm();
             me.expose_add_heap_object();
-            Ok(format!(
+            Ok(String::from(
                 "
-                function(ptr, len) {{
+                function(ptr, len) {
                     let a;
-                    if (ptr === 0) {{
+                    if (ptr === 0) {
                         a = Symbol();
-                    }} else {{
+                    } else {
                         a = Symbol(getStringFromWasm(ptr, len));
-                    }}
+                    }
                     return addHeapObject(a);
-                }}
-            "
+                }
+                ",
             ))
         })?;
 
@@ -273,7 +280,7 @@ impl<'a> Context<'a> {
                 function(i) {
                     return typeof(getObject(i)) === 'symbol' ? 1 : 0;
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -290,7 +297,7 @@ impl<'a> Context<'a> {
                     getUint32Memory()[len_ptr / 4] = len;
                     return ptr;
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -303,7 +310,7 @@ impl<'a> Context<'a> {
                     obj.a = obj.b = 0;
                     dropRef(i);
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -314,7 +321,7 @@ impl<'a> Context<'a> {
                 function(i) {
                     dropRef(i);
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -326,7 +333,7 @@ impl<'a> Context<'a> {
                 function(ptr, len) {
                     return addHeapObject(JSON.parse(getStringFromWasm(ptr, len)));
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -341,7 +348,7 @@ impl<'a> Context<'a> {
                     getUint32Memory()[ptrptr / 4] = ptr;
                     return len;
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -352,7 +359,7 @@ impl<'a> Context<'a> {
                 function(a, b) {
                     return getObject(a) === getObject(b) ? 1 : 0;
                 }
-            ",
+                ",
             ))
         })?;
 
@@ -365,35 +372,36 @@ impl<'a> Context<'a> {
         // isn't gc'd).
         self.bind("__wbindgen_throw", &|me| {
             me.expose_get_string_from_wasm();
-            Ok(format!(
+            Ok(String::from(
                 "
-                function(ptr, len) {{
+                function(ptr, len) {
                     throw new Error(getStringFromWasm(ptr, len));
-                }}
-            "
+                }
+                ",
             ))
         })?;
 
         self.rewrite_imports(module_name);
 
         let mut js = if self.config.no_modules {
-            format!("
-                (function() {{
-                    var wasm;
-                    const __exports = {{}};
-                    {globals}
-                    function init(wasm_path) {{
-                        return fetch(wasm_path)
-                            .then(response => response.arrayBuffer())
-                            .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
-                            .then(({{instance}}) => {{
-                                wasm = init.wasm = instance.exports;
-                                return;
-                            }});
-                    }};
-                    self.{global_name} = Object.assign(init, __exports);
-                }})();
-            ",
+            format!(
+                    "
+                    (function() {{
+                        var wasm;
+                        const __exports = {{}};
+                        {globals}
+                        function init(wasm_path) {{
+                            return fetch(wasm_path)
+                                .then(response => response.arrayBuffer())
+                                .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
+                                .then(({{instance}}) => {{
+                                    wasm = init.wasm = instance.exports;
+                                    return;
+                                }});
+                        }};
+                        self.{global_name} = Object.assign(init, __exports);
+                    }})();
+                    ",
                     globals = self.globals,
                     module = module_name,
                     global_name = self.config.no_modules_global
@@ -476,7 +484,7 @@ impl<'a> Context<'a> {
                         this.ptr = args[0].ptr;
                         return;
                     }}
-            ",
+                ",
                 name
             ));
 
@@ -488,7 +496,7 @@ impl<'a> Context<'a> {
                     // This invocation of new will call this constructor with a ConstructorToken
                     let instance = {class}.{constructor}(...args);
                     this.ptr = instance.ptr;
-                ",
+                    ",
                     class = name,
                     constructor = constructor
                 ));
@@ -510,7 +518,7 @@ impl<'a> Context<'a> {
                 constructor(ptr) {{
                     this.ptr = ptr;
                 }}
-            ",
+                ",
                 name
             ));
         }
@@ -523,10 +531,10 @@ impl<'a> Context<'a> {
                 &new_name,
                 &format!(
                     "
-                function(ptr) {{
-                    return addHeapObject({}.__construct(ptr));
-                }}
-            ",
+                    function(ptr) {{
+                        return addHeapObject({}.__construct(ptr));
+                    }}
+                    ",
                     name
                 ),
                 None,
@@ -578,7 +586,7 @@ impl<'a> Context<'a> {
                 this.ptr = 0;
                 wasm.{}(ptr);
             }}
-        ",
+            ",
             shared::free_function(&name)
         ));
         ts_dst.push_str("free(): void;\n");
@@ -714,7 +722,7 @@ impl<'a> Context<'a> {
             String::from(
                 "
                 if ((idx & 1) === 1) throw new Error('cannot drop ref of stack objects');
-            ",
+                ",
             )
         } else {
             String::new()
@@ -725,14 +733,14 @@ impl<'a> Context<'a> {
                 if (typeof(obj) === 'number') throw new Error('corrupt slab');
                 obj.cnt -= 1;
                 if (obj.cnt > 0) return;
-            ",
+                ",
             )
         } else {
             String::from(
                 "
                 obj.cnt -= 1;
                 if (obj.cnt > 0) return;
-            ",
+                ",
             )
         };
         self.global(&format!(
@@ -745,7 +753,7 @@ impl<'a> Context<'a> {
                 slab[idx >> 1] = slab_next;
                 slab_next = idx >> 1;
             }}
-        ",
+            ",
             validate_owned, dec_ref
         ));
     }
@@ -767,7 +775,7 @@ impl<'a> Context<'a> {
                     if (stack.length === 0) return;
                     throw new Error('stack is not currently empty');
                 }
-            ",
+                ",
                 None,
             );
         }
@@ -789,13 +797,13 @@ impl<'a> Context<'a> {
                 "assertSlabEmpty",
                 &format!(
                     "
-                function() {{
-                    for (let i = {}; i < slab.length; i++) {{
-                        if (typeof(slab[i]) === 'number') continue;
-                        throw new Error('slab is not currently empty');
+                    function() {{
+                        for (let i = {}; i < slab.length; i++) {{
+                            if (typeof(slab[i]) === 'number') continue;
+                            throw new Error('slab is not currently empty');
+                        }}
                     }}
-                }}
-            ",
+                    ",
                     initial_values.len()
                 ),
                 None,
@@ -808,11 +816,11 @@ impl<'a> Context<'a> {
             return;
         }
         self.expose_global_slab();
-        self.global(&format!(
+        self.global(
             "
             let slab_next = slab.length;
-        "
-        ));
+            ",
+        );
     }
 
     fn expose_get_object(&mut self) {
@@ -827,13 +835,13 @@ impl<'a> Context<'a> {
                 "
                 if (typeof(val) === 'number') throw new Error('corrupt slab');
                 return val.obj;
-            ",
+                ",
             )
         } else {
             String::from(
                 "
                 return val.obj;
-            ",
+                ",
             )
         };
         self.global(&format!(
@@ -846,7 +854,7 @@ impl<'a> Context<'a> {
                     {}
                 }}
             }}
-        ",
+            ",
             get_obj
         ));
     }
@@ -860,7 +868,7 @@ impl<'a> Context<'a> {
             function _assertNum(n) {{
                 if (typeof(n) !== 'number') throw new Error('expected a number argument');
             }}
-        "
+            "
         ));
     }
 
@@ -875,7 +883,7 @@ impl<'a> Context<'a> {
                     throw new Error('expected a boolean argument');
                 }}
             }}
-        "
+            "
         ));
     }
 
@@ -902,7 +910,7 @@ impl<'a> Context<'a> {
                 getUint8Memory().set(buf, ptr);
                 return [ptr, buf.length];
             }}
-        ",
+            ",
             debug
         ));
         Ok(())
@@ -956,7 +964,7 @@ impl<'a> Context<'a> {
                 {}().set(arg, ptr / {size});
                 return [ptr, arg.length];
             }}
-        ",
+            ",
             name,
             delegate,
             size = size
@@ -969,25 +977,25 @@ impl<'a> Context<'a> {
             return;
         }
         if self.config.nodejs {
-            self.global(&format!(
+            self.global(
                 "
                 const TextEncoder = require('util').TextEncoder;
-            "
-            ));
+                ",
+            );
         } else if !(self.config.browser || self.config.no_modules) {
-            self.global(&format!(
+            self.global(
                 "
                 const TextEncoder = typeof self === 'object' && self.TextEncoder
                     ? self.TextEncoder
                     : require('util').TextEncoder;
-            "
-            ));
+                ",
+            );
         }
-        self.global(&format!(
+        self.global(
             "
             let cachedEncoder = new TextEncoder('utf-8');
-        "
-        ));
+            ",
+        );
     }
 
     fn expose_text_decoder(&mut self) {
@@ -995,25 +1003,25 @@ impl<'a> Context<'a> {
             return;
         }
         if self.config.nodejs {
-            self.global(&format!(
+            self.global(
                 "
                 const TextDecoder = require('util').TextDecoder;
-            "
-            ));
+                ",
+            );
         } else if !(self.config.browser || self.config.no_modules) {
-            self.global(&format!(
+            self.global(
                 "
                 const TextDecoder = typeof self === 'object' && self.TextDecoder
                     ? self.TextDecoder
                     : require('util').TextDecoder;
-            "
-            ));
+                ",
+            );
         }
-        self.global(&format!(
+        self.global(
             "
             let cachedDecoder = new TextDecoder('utf-8');
-        "
-        ));
+            ",
+        );
     }
 
     fn expose_constructor_token(&mut self) {
@@ -1028,7 +1036,7 @@ impl<'a> Context<'a> {
                     this.ptr = ptr;
                 }
             }
-        ",
+            ",
         );
     }
 
@@ -1038,13 +1046,13 @@ impl<'a> Context<'a> {
         }
         self.expose_text_decoder();
         self.expose_uint8_memory();
-        self.global(&format!(
+        self.global(
             "
-            function getStringFromWasm(ptr, len) {{
+            function getStringFromWasm(ptr, len) {
                 return cachedDecoder.decode(getUint8Memory().subarray(ptr, ptr + len));
-            }}
-        "
-        ));
+            }
+            ",
+        );
     }
 
     fn expose_get_array_js_value_from_wasm(&mut self) {
@@ -1053,19 +1061,19 @@ impl<'a> Context<'a> {
         }
         self.expose_get_array_u32_from_wasm();
         self.expose_take_object();
-        self.global(&format!(
+        self.global(
             "
-            function getArrayJsValueFromWasm(ptr, len) {{
+            function getArrayJsValueFromWasm(ptr, len) {
                 const mem = getUint32Memory();
                 const slice = mem.subarray(ptr / 4, ptr / 4 + len);
                 const result = [];
-                for (let i = 0; i < slice.length; i++) {{
+                for (let i = 0; i < slice.length; i++) {
                     result.push(takeObject(slice[i]));
-                }}
+                }
                 return result;
-            }}
-        "
-        ));
+            }
+            ",
+        );
     }
 
     fn expose_get_array_i8_from_wasm(&mut self) {
@@ -1127,7 +1135,7 @@ impl<'a> Context<'a> {
             function {name}(ptr, len) {{
                 return {mem}().subarray(ptr / {size}, ptr / {size} + len);
             }}
-        ",
+            ",
             name = name,
             mem = mem,
             size = size,
@@ -1240,7 +1248,7 @@ impl<'a> Context<'a> {
                 }}
                 return cache{name};
             }}
-        ",
+            ",
             name = name,
             js = js,
         ));
@@ -1250,16 +1258,16 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("assert_class") {
             return;
         }
-        self.global(&format!(
+        self.global(
             "
-            function _assertClass(instance, klass) {{
-                if (!(instance instanceof klass)) {{
-                    throw new Error(`expected instance of ${{klass.name}}`);
-                }}
+            function _assertClass(instance, klass) {
+                if (!(instance instanceof klass)) {
+                    throw new Error(`expected instance of ${klass.name}`);
+                }
                 return instance.ptr;
-            }}
-        "
-        ));
+            }
+            ",
+        );
     }
 
     fn expose_borrowed_objects(&mut self) {
@@ -1267,14 +1275,14 @@ impl<'a> Context<'a> {
             return;
         }
         self.expose_global_stack();
-        self.global(&format!(
+        self.global(
             "
-            function addBorrowedObject(obj) {{
+            function addBorrowedObject(obj) {
                 stack.push(obj);
                 return ((stack.length - 1) << 1) | 1;
-            }}
-        "
-        ));
+            }
+            ",
+        );
     }
 
     fn expose_take_object(&mut self) {
@@ -1283,15 +1291,15 @@ impl<'a> Context<'a> {
         }
         self.expose_get_object();
         self.expose_drop_ref();
-        self.global(&format!(
+        self.global(
             "
-            function takeObject(idx) {{
+            function takeObject(idx) {
                 const ret = getObject(idx);
                 dropRef(idx);
                 return ret;
-            }}
-        "
-        ));
+            }
+            ",
+        );
     }
 
     fn expose_add_heap_object(&mut self) {
@@ -1305,13 +1313,13 @@ impl<'a> Context<'a> {
                 "
                 if (typeof(next) !== 'number') throw new Error('corrupt slab');
                 slab_next = next;
-            ",
+                ",
             )
         } else {
             String::from(
                 "
                 slab_next = next;
-            ",
+                ",
             )
         };
         self.global(&format!(
@@ -1324,7 +1332,7 @@ impl<'a> Context<'a> {
                 slab[idx] = {{ obj, cnt: 1 }};
                 return idx << 1;
             }}
-        ",
+            ",
             set_slab_next
         ));
     }
@@ -1441,7 +1449,7 @@ impl<'a> Context<'a> {
                 const idx = globalArgumentPtr() / 4 + arg;
                 return getUint32Memory()[idx];
             }
-        ",
+            ",
         );
         Ok(())
     }
@@ -1455,12 +1463,12 @@ impl<'a> Context<'a> {
             "
             let cachedGlobalArgumentPtr = null;
             function globalArgumentPtr() {
-                if (cachedGlobalArgumentPtr === null) {{
+                if (cachedGlobalArgumentPtr === null) {
                     cachedGlobalArgumentPtr = wasm.__wbindgen_global_argument_ptr();
-                }}
+                }
                 return cachedGlobalArgumentPtr;
             }
-        ",
+            ",
         );
         Ok(())
     }
@@ -1488,7 +1496,7 @@ impl<'a> Context<'a> {
               }
               throw new Error('descriptor not found');
             }
-        ",
+            ",
         );
     }
 
@@ -1754,10 +1762,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
             &import.shim,
             &format!(
                 "
-            function() {{
-                return addHeapObject({});
-            }}
-        ",
+                function() {{
+                    return addHeapObject({});
+                }}
+                ",
                 obj
             ),
             None,
@@ -1797,7 +1805,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             format!(
                                 "function(y) {{
                                 return this.{};
-                            }}",
+                                }}",
                                 g
                             )
                         } else {
@@ -1806,7 +1814,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                 "GetOwnOrInheritedPropertyDescriptor\
                                  ({}{}, '{}').get",
                                 class,
-                                if is_static { "" } else { ".prototype " },
+                                if is_static { "" } else { ".prototype" },
                                 g,
                             )
                         }
@@ -1824,7 +1832,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                 "GetOwnOrInheritedPropertyDescriptor\
                                  ({}{}, '{}').set",
                                 class,
-                                if is_static { "" } else { ".prototype " },
+                                if is_static { "" } else { ".prototype" },
                                 s,
                             )
                         }
@@ -1861,7 +1869,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     self.cx.global(&format!(
                         "
                         const {}_target = {};
-                    ",
+                        ",
                         import.shim, target
                     ));
                     format!(
@@ -1877,7 +1885,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     self.cx.global(&format!(
                         "
                         const {}_target = {};
-                    ",
+                        ",
                         import.shim, name
                     ));
                     format!("{}_target", import.shim)

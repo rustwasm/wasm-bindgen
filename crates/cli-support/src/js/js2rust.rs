@@ -393,7 +393,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 \n}} finally {{\n\
                     {}
                 }}\n\
-            ",
+                ",
                 &invoc, &self.finally,
             )
         };

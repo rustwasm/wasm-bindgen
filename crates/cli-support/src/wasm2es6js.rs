@@ -77,7 +77,7 @@ impl Output {
                         exports.push_str(&format!(
                             "
                             export const {}: WebAssembly.Memory;
-                        ",
+                            ",
                             entry.field()
                         ));
                         continue;
@@ -111,7 +111,7 @@ impl Output {
                 exports.push_str(&format!(
                     "
                     export function {name}({args}): {ret};
-                ",
+                    ",
                     name = entry.field(),
                     args = args,
                     ret = if ty.return_type().is_some() {
@@ -212,7 +212,7 @@ impl Output {
                     export function {name}({args}) {{
                         {ret} wasm.exports.{name}({args});
                     }}
-                ",
+                    ",
                     name = entry.field(),
                     args = args,
                     ret = if ty.return_type().is_some() {
@@ -224,11 +224,13 @@ impl Output {
             }
         }
         let inst = format!(
-            "WebAssembly.instantiate(bytes,{{ {imports} }})
+            "
+            WebAssembly.instantiate(bytes,{{ {imports} }})
                 .then(obj => {{
                     wasm = obj.instance;
                     {memory}
-                }})",
+                }})
+            ",
             imports = imports,
             memory = if export_mem {
                 "memory = wasm.exports.memory;"
@@ -247,7 +249,8 @@ impl Output {
                         bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
                     }} else {{
                         bytes = Buffer.from(base64, 'base64');
-                    }}",
+                    }}
+                    ",
                     base64 = base64::encode(&wasm)
                 ),
                 inst,
@@ -256,9 +259,11 @@ impl Output {
             (
                 String::new(),
                 format!(
-                    "fetch('{path}')
-                .then(res => res.arrayBuffer())
-                .then(bytes => {inst})",
+                    "
+                    fetch('{path}')
+                        .then(res => res.arrayBuffer())
+                        .then(bytes => {inst})
+                    ",
                     path = path,
                     inst = inst
                 ),
@@ -274,7 +279,7 @@ impl Output {
             {mem_export}
             export const booted = {booted};
             {exports}
-        ",
+            ",
             bytes = bytes,
             booted = booted,
             js_imports = js_imports,
@@ -440,7 +445,7 @@ impl Output {
                 Infinity,
             }}, imports, mem);
             {js_exports}
-        ",
+            ",
             js_imports = js_imports,
             js_init_mem = js_init_mem,
             asm_func = asm_func,

@@ -212,7 +212,7 @@ impl Bindgen {
             const wasmModule = new WebAssembly.Module(bytes);
             const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
             module.exports = wasmInstance.exports;
-        ",
+            ",
             path.file_name().unwrap().to_str().unwrap()
         ));
 

@@ -271,7 +271,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 const mem = getUint32Memory();
                 mem[ret / 4] = retptr;
                 mem[ret / 4 + 1] = retlen;
-            ",
+                ",
                 f
             );
             return Ok(());
@@ -336,12 +336,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
             invoc = format!(
                 "\
-            try {{\n\
-            {}
-            }} catch (e) {{\n\
-            {}
-            }}\
-            ",
+                try {{\n\
+                {}
+                }} catch (e) {{\n\
+                {}
+                }}\
+                ",
                 &invoc, catch
             );
         };
@@ -349,12 +349,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         if self.finally.len() > 0 {
             invoc = format!(
                 "\
-            try {{\n\
-            {}
-            }} finally {{\n\
-            {}
-            }}\
-            ",
+                try {{\n\
+                {}
+                }} finally {{\n\
+                {}
+                }}\
+                ",
                 &invoc, &self.finally
             );
         }
