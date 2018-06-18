@@ -68,6 +68,9 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     /// passed should be `this.ptr`.
     pub fn method(&mut self, method: bool) -> &mut Self {
         if method {
+            self.prelude("if (this.ptr === 0) {
+                throw new Error('Attempt to use a moved value');
+            }");
             self.rust_arguments.insert(0, "this.ptr".to_string());
         }
         self
@@ -149,6 +152,9 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             } else {
                 self.prelude(&format!("\
                     const ptr{i} = {arg}.ptr;\n\
+                    if (ptr{i} === 0) {{
+                        throw new Error('Attempt to use a moved value');
+                    }}
                     {arg}.ptr = 0;\n\
                 ", i = i, arg = name));
                 self.rust_arguments.push(format!("ptr{}", i));

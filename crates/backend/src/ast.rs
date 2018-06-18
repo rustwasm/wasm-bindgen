@@ -2,6 +2,7 @@ use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
 use syn;
+use syn::AttrStyle;
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Default)]
