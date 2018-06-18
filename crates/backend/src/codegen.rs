@@ -266,6 +266,7 @@ impl ToTokens for ast::StructField {
             }
 
             #[no_mangle]
+            #[doc(hidden)]
             pub extern fn #desc() {
                 use wasm_bindgen::describe::*;
                 <#ty as WasmDescribe>::describe();
@@ -445,6 +446,7 @@ impl ToTokens for ast::Export {
             // binary along with anything it references.
             #[no_mangle]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+            #[doc(hidden)]
             pub extern fn #descriptor_name() {
                 use wasm_bindgen::describe::*;
                 inform(FUNCTION);
@@ -726,6 +728,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
         (quote! {
             #[no_mangle]
             #[allow(non_snake_case)]
+            #[doc(hidden)]
             pub extern fn #describe_name() {
                 use wasm_bindgen::describe::*;
                 inform(FUNCTION);
