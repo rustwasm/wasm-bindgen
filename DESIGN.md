@@ -915,7 +915,7 @@ possibilities!
   Note that the `version` is *required* if `module` doesn't start with `./`. If
   `module` starts with `./` then it is an error to provide a version.
 
-[wasm-pack]: https://github.com/ashleygwilliams/wasm-pack
+[wasm-pack]: https://github.com/rustwasm/wasm-pack
 
 * `catch` - as we saw before the `catch` attribute allows catching a JS
   exception. This can be attached to any imported function and the function must
