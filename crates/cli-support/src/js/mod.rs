@@ -29,7 +29,7 @@ pub struct Context<'a> {
     pub imported_names: HashSet<String>,
     pub exported_classes: HashMap<String, ExportedClass>,
     pub function_table_needed: bool,
-    pub run_descriptor: &'a Fn(&str) -> Vec<u32>,
+    pub run_descriptor: &'a Fn(&str) -> Option<Vec<u32>>,
     pub module_versions: Vec<(String, String)>,
 }
 
@@ -474,7 +474,10 @@ impl<'a> Context<'a> {
         for field in class.fields.iter() {
             let wasm_getter = shared::struct_field_get(name, &field.name);
             let wasm_setter = shared::struct_field_set(name, &field.name);
-            let descriptor = self.describe(&wasm_getter);
+            let descriptor = match self.describe(&wasm_getter) {
+                None => continue,
+                Some(d) => d,
+            };
 
             let set = {
                 let mut cx = Js2Rust::new(&field.name, self);
@@ -1393,10 +1396,9 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn describe(&self, name: &str) -> Descriptor {
+    fn describe(&self, name: &str) -> Option<Descriptor> {
         let name = format!("__wbindgen_describe_{}", name);
-        let ret = (self.run_descriptor)(&name);
-        Descriptor::decode(&ret)
+        (self.run_descriptor)(&name).map(|d| Descriptor::decode(&d))
     }
 
     fn global(&mut self, s: &str) {
@@ -1474,7 +1476,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
         if let Some(ref class) = export.class {
             return self.generate_export_for_class(class, export);
         }
-        let descriptor = self.cx.describe(&export.function.name);
+
+        let descriptor = match self.cx.describe(&export.function.name) {
+            None => return Ok(()),
+            Some(d) => d,
+        };
+
         let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
             .process(descriptor.unwrap_function())?
             .finish("function", &format!("wasm.{}", export.function.name));
@@ -1492,7 +1499,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
         export: &shared::Export,
     ) -> Result<(), Error> {
         let wasm_name = shared::struct_function_export_name(class_name, &export.function.name);
-        let descriptor = self.cx.describe(&wasm_name);
+
+        let descriptor = match self.cx.describe(&wasm_name) {
+            None => return Ok(()),
+            Some(d) => d,
+        };
+
         let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
             .method(export.method)
             .process(descriptor.unwrap_function())?
@@ -1603,7 +1615,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                 import: &shared::ImportFunction)
         -> Result<(), Error>
     {
-        let descriptor = self.cx.describe(&import.shim);
+        let descriptor = match self.cx.describe(&import.shim) {
+            None => return Ok(()),
+            Some(d) => d,
+        };
 
         let target = match import.class {
             Some(ref class) if import.js_new => {
