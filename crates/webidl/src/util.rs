@@ -1,4 +1,4 @@
-use std::iter::FromIterator;
+use std::iter::{self, FromIterator};
 
 use backend;
 use heck::SnakeCase;
@@ -30,7 +30,7 @@ pub fn rust_ident(name: &str) -> Ident {
 
 // Create an `Ident` without checking to see if it conflicts with a Rust
 // keyword.
-pub fn raw_ident(name: &str) -> Ident {
+fn raw_ident(name: &str) -> Ident {
     Ident::new(name, proc_macro2::Span::call_site())
 }
 
@@ -163,7 +163,12 @@ where
 {
     let estimate = arguments.size_hint();
     let len = estimate.1.unwrap_or(estimate.0);
-    let mut res = if let backend::ast::ImportFunctionKind::Method { ty, .. } = kind {
+    let mut res = if let backend::ast::ImportFunctionKind::Method {
+        ty,
+        kind: backend::ast::MethodKind::Normal,
+        ..
+    } = kind
+    {
         let mut res = Vec::with_capacity(len + 1);
         res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())));
         res
@@ -189,7 +194,7 @@ where
     Some(res)
 }
 
-pub fn create_function<'a, 'b, I>(
+pub fn create_function<'a, I>(
     name: &str,
     arguments: I,
     kind: backend::ast::ImportFunctionKind,
@@ -216,7 +221,6 @@ where
         let ns = match kind {
             backend::ast::ImportFunctionKind::Normal => "",
             backend::ast::ImportFunctionKind::Method { ref class, .. } => class,
-            backend::ast::ImportFunctionKind::JsConstructor { ref class, .. } => class,
         };
 
         raw_ident(&format!("__widl_f_{}_{}", rust_name, ns))
@@ -238,4 +242,107 @@ where
         kind,
         shim,
     })
+}
+
+pub fn create_basic_method(
+    arguments: &[webidl::ast::Argument],
+    name: Option<&String>,
+    return_type: &webidl::ast::ReturnType,
+    self_name: &str,
+    kind: backend::ast::MethodKind,
+) -> Option<backend::ast::ImportFunction> {
+    let name = match name {
+        None => {
+            warn!("Operations without a name are unsupported");
+            return None;
+        }
+        Some(ref name) => name,
+    };
+
+    let kind = backend::ast::ImportFunctionKind::Method {
+        class: self_name.to_string(),
+        ty: ident_ty(rust_ident(self_name)),
+        kind,
+    };
+
+    let ret = match return_type {
+        webidl::ast::ReturnType::Void => None,
+        webidl::ast::ReturnType::NonVoid(ty) => match webidl_ty_to_syn_ty(ty, TypePosition::Return)
+        {
+            None => {
+                warn!("Operation's return type is not yet supported: {:?}", ty);
+                return None;
+            }
+            Some(ty) => Some(ty),
+        },
+    };
+
+    create_function(
+        &name,
+        arguments
+            .iter()
+            .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
+        kind,
+        ret,
+        Vec::new(),
+    )
+}
+
+pub fn create_getter(
+    name: &str,
+    ty: &webidl::ast::Type,
+    self_name: &str,
+    kind: backend::ast::MethodKind,
+) -> Option<backend::ast::ImportFunction> {
+    let ret = match webidl_ty_to_syn_ty(ty, TypePosition::Return) {
+        None => {
+            warn!("Attribute's type does not yet support reading: {:?}", ty);
+            return None;
+        }
+        Some(ty) => Some(ty),
+    };
+
+    let kind = backend::ast::ImportFunctionKind::Method {
+        class: self_name.to_string(),
+        ty: ident_ty(rust_ident(self_name)),
+        kind,
+    };
+
+    create_function(
+        name,
+        iter::empty(),
+        kind,
+        ret,
+        vec![backend::ast::BindgenAttr::Getter(Some(raw_ident(name)))],
+    )
+}
+
+pub fn create_setter(
+    name: &str,
+    ty: &webidl::ast::Type,
+    self_name: &str,
+    kind: backend::ast::MethodKind,
+) -> Option<backend::ast::ImportFunction> {
+    let kind = backend::ast::ImportFunctionKind::Method {
+        class: self_name.to_string(),
+        ty: ident_ty(rust_ident(self_name)),
+        kind,
+    };
+
+    create_function(
+        &format!("set_{}", name),
+        iter::once((name, ty, false)),
+        kind,
+        None,
+        vec![backend::ast::BindgenAttr::Setter(Some(raw_ident(name)))],
+    )
+}
+
+pub fn wrap_import_function(function: backend::ast::ImportFunction) -> backend::ast::Import {
+    backend::ast::Import {
+        module: None,
+        version: None,
+        js_namespace: None,
+        kind: backend::ast::ImportKind::Function(function),
+    }
 }

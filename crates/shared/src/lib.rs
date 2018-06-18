@@ -39,13 +39,24 @@ pub enum ImportKind {
 pub struct ImportFunction {
     pub shim: String,
     pub catch: bool,
-    pub method: bool,
-    pub js_new: bool,
+    pub method: Option<MethodData>,
     pub structural: bool,
+    pub function: Function,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct MethodData {
+    pub class: String,
+    pub kind: MethodKind,
     pub getter: Option<String>,
     pub setter: Option<String>,
-    pub class: Option<String>,
-    pub function: Function,
+}
+
+#[derive(Deserialize, Serialize)]
+pub enum MethodKind {
+    Normal,
+    Constructor,
+    Static,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -55,8 +66,7 @@ pub struct ImportStatic {
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct ImportType {
-}
+pub struct ImportType {}
 
 #[derive(Deserialize, Serialize)]
 pub struct Export {
@@ -77,7 +87,7 @@ pub struct Enum {
 #[derive(Deserialize, Serialize)]
 pub struct EnumVariant {
     pub name: String,
-    pub value: u32
+    pub value: u32,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -101,20 +111,16 @@ pub struct StructField {
 
 pub fn new_function(struct_name: &str) -> String {
     let mut name = format!("__wbg_");
-    name.extend(struct_name
-        .chars()
-        .flat_map(|s| s.to_lowercase()));
+    name.extend(struct_name.chars().flat_map(|s| s.to_lowercase()));
     name.push_str("_new");
-    return name
+    return name;
 }
 
 pub fn free_function(struct_name: &str) -> String {
     let mut name = format!("__wbg_");
-    name.extend(struct_name
-        .chars()
-        .flat_map(|s| s.to_lowercase()));
+    name.extend(struct_name.chars().flat_map(|s| s.to_lowercase()));
     name.push_str("_free");
-    return name
+    return name;
 }
 
 pub fn free_function_export_name(function_name: &str) -> String {
@@ -128,27 +134,23 @@ pub fn struct_function_export_name(struct_: &str, f: &str) -> String {
         .collect::<String>();
     name.push_str("_");
     name.push_str(f);
-    return name
+    return name;
 }
 
 pub fn struct_field_get(struct_: &str, f: &str) -> String {
     let mut name = String::from("__wbg_get_");
-    name.extend(struct_
-        .chars()
-        .flat_map(|s| s.to_lowercase()));
+    name.extend(struct_.chars().flat_map(|s| s.to_lowercase()));
     name.push_str("_");
     name.push_str(f);
-    return name
+    return name;
 }
 
 pub fn struct_field_set(struct_: &str, f: &str) -> String {
     let mut name = String::from("__wbg_set_");
-    name.extend(struct_
-        .chars()
-        .flat_map(|s| s.to_lowercase()));
+    name.extend(struct_.chars().flat_map(|s| s.to_lowercase()));
     name.push_str("_");
     name.push_str(f);
-    return name
+    return name;
 }
 
 pub fn version() -> String {
@@ -158,5 +160,5 @@ pub fn version() -> String {
         v.push_str(s);
         v.push_str(")");
     }
-    return v
+    return v;
 }

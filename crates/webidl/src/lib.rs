@@ -24,12 +24,14 @@ use std::iter;
 use std::path::Path;
 
 use failure::ResultExt;
-use heck::CamelCase;
 use quote::ToTokens;
 
 mod util;
 
-use util::{create_function, ident_ty, raw_ident, rust_ident, webidl_ty_to_syn_ty, TypePosition};
+use util::{
+    create_basic_method, create_function, create_getter, create_setter, ident_ty, rust_ident,
+    webidl_ty_to_syn_ty, wrap_import_function, TypePosition,
+};
 
 /// Either `Ok(t)` or `Err(failure::Error)`.
 pub type Result<T> = ::std::result::Result<T, failure::Error>;
@@ -184,9 +186,10 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
     ) -> Result<()> {
         let mut add_constructor = |arguments: &[webidl::ast::Argument], class: &str| {
             let self_ty = ident_ty(rust_ident(&interface.name));
-            let kind = backend::ast::ImportFunctionKind::JsConstructor {
+            let kind = backend::ast::ImportFunctionKind::Method {
                 class: class.to_string(),
                 ty: self_ty.clone(),
+                kind: backend::ast::MethodKind::Constructor,
             };
             create_function(
                 "new",
@@ -216,7 +219,7 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
             webidl::ast::ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name))
                 if name == "Constructor" =>
             {
-                add_constructor(&[] as &[_], &interface.name);
+                add_constructor(&[], &interface.name);
             }
             webidl::ast::ExtendedAttribute::NamedArgumentList(
                 webidl::ast::NamedArgumentListExtendedAttribute {
@@ -262,10 +265,11 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::InterfaceMember {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::Attribute {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
-        match *self {
-            webidl::ast::Attribute::Regular(ref attr) => attr.webidl_parse(program, self_name),
+        match self {
+            webidl::ast::Attribute::Regular(attr) => attr.webidl_parse(program, self_name),
+            webidl::ast::Attribute::Static(attr) => attr.webidl_parse(program, self_name),
             // TODO
-            webidl::ast::Attribute::Static(_) | webidl::ast::Attribute::Stringifier(_) => {
+            webidl::ast::Attribute::Stringifier(_) => {
                 warn!("Unsupported WebIDL attribute: {:?}", self);
                 Ok(())
             }
@@ -275,12 +279,11 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Attribute {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::Operation {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
-        match *self {
-            webidl::ast::Operation::Regular(ref op) => op.webidl_parse(program, self_name),
+        match self {
+            webidl::ast::Operation::Regular(op) => op.webidl_parse(program, self_name),
+            webidl::ast::Operation::Static(op) => op.webidl_parse(program, self_name),
             // TODO
-            webidl::ast::Operation::Special(_)
-            | webidl::ast::Operation::Static(_)
-            | webidl::ast::Operation::Stringifier(_) => {
+            webidl::ast::Operation::Special(_) | webidl::ast::Operation::Stringifier(_) => {
                 warn!("Unsupported WebIDL operation: {:?}", self);
                 Ok(())
             }
@@ -290,69 +293,46 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Operation {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
-        fn create_getter(
-            this: &webidl::ast::RegularAttribute,
-            self_name: &str,
-        ) -> Option<backend::ast::Import> {
-            let ret = match webidl_ty_to_syn_ty(&this.type_, TypePosition::Return) {
-                None => {
-                    warn!("Attribute's type does not yet support reading: {:?}. Skipping getter binding for {:?}",
-                        this.type_, this);
-                    return None;
-                }
-                Some(ty) => Some(ty),
-            };
-
-            let kind = backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty: ident_ty(rust_ident(self_name)),
-            };
-
-            create_function(
-                &this.name,
-                iter::empty(),
-                kind,
-                ret,
-                vec![backend::ast::BindgenAttr::Getter(Some(raw_ident(
-                    &this.name,
-                )))],
-            ).map(|function| backend::ast::Import {
-                module: None,
-                version: None,
-                js_namespace: None,
-                kind: backend::ast::ImportKind::Function(function),
-            })
-        }
-
-        fn create_setter(
-            this: &webidl::ast::RegularAttribute,
-            self_name: &str,
-        ) -> Option<backend::ast::Import> {
-            let kind = backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty: ident_ty(rust_ident(self_name)),
-            };
-
-            create_function(
-                &format!("set_{}", this.name.to_camel_case()),
-                iter::once((&*this.name, &*this.type_, false)),
-                kind,
-                None,
-                vec![backend::ast::BindgenAttr::Setter(Some(raw_ident(
-                    &this.name,
-                )))],
-            ).map(|function| backend::ast::Import {
-                module: None,
-                version: None,
-                js_namespace: None,
-                kind: backend::ast::ImportKind::Function(function),
-            })
-        }
-
-        create_getter(self, self_name).map(|import| program.imports.push(import));
+        create_getter(
+            &self.name,
+            &self.type_,
+            self_name,
+            backend::ast::MethodKind::Normal,
+        ).map(wrap_import_function)
+            .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(self, self_name).map(|import| program.imports.push(import));
+            create_setter(
+                &self.name,
+                &self.type_,
+                self_name,
+                backend::ast::MethodKind::Normal,
+            ).map(wrap_import_function)
+                .map(|import| program.imports.push(import));
+        }
+
+        Ok(())
+    }
+}
+
+impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
+    fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
+        create_getter(
+            &self.name,
+            &self.type_,
+            self_name,
+            backend::ast::MethodKind::Static,
+        ).map(wrap_import_function)
+            .map(|import| program.imports.push(import));
+
+        if !self.read_only {
+            create_setter(
+                &self.name,
+                &self.type_,
+                self_name,
+                backend::ast::MethodKind::Static,
+            ).map(wrap_import_function)
+                .map(|import| program.imports.push(import));
         }
 
         Ok(())
@@ -361,54 +341,29 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
-        let name = match self.name {
-            None => {
-                warn!(
-                    "Operations without a name are unsupported. Skipping {:?}",
-                    self
-                );
-                return Ok(());
-            }
-            Some(ref name) => name,
-        };
+        create_basic_method(
+            &self.arguments,
+            self.name.as_ref(),
+            &self.return_type,
+            self_name,
+            backend::ast::MethodKind::Normal,
+        ).map(wrap_import_function)
+            .map(|import| program.imports.push(import));
 
-        let kind = backend::ast::ImportFunctionKind::Method {
-            class: self_name.to_string(),
-            ty: ident_ty(rust_ident(self_name)),
-        };
+        Ok(())
+    }
+}
 
-        let ret = match self.return_type {
-            webidl::ast::ReturnType::Void => None,
-            webidl::ast::ReturnType::NonVoid(ref ty) => {
-                match webidl_ty_to_syn_ty(ty, TypePosition::Return) {
-                    None => {
-                        warn!(
-                        "Operation's return type is not yet supported: {:?}. Skipping bindings for {:?}",
-                        ty, self
-                    );
-                        return Ok(());
-                    }
-                    Some(ty) => Some(ty),
-                }
-            }
-        };
-
-        create_function(
-            &name,
-            self.arguments
-                .iter()
-                .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
-            kind,
-            ret,
-            Vec::new(),
-        ).map(|function| {
-            program.imports.push(backend::ast::Import {
-                module: None,
-                version: None,
-                js_namespace: None,
-                kind: backend::ast::ImportKind::Function(function),
-            })
-        });
+impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
+    fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
+        create_basic_method(
+            &self.arguments,
+            self.name.as_ref(),
+            &self.return_type,
+            self_name,
+            backend::ast::MethodKind::Static,
+        ).map(wrap_import_function)
+            .map(|import| program.imports.push(import));
 
         Ok(())
     }

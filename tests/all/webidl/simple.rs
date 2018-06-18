@@ -43,6 +43,8 @@ fn method() {
             pub fn test() {
                 let pi = Foo::new(3.14159);
                 let e = Foo::new(2.71828);
+                // TODO: figure out why the following doesn't fail
+                // assert!(!pi.my_cmp(Foo::new(3.14159)));
                 let tmp = pi.my_cmp(Foo::new(3.14159));
                 assert!(tmp);
                 let tmp =!pi.my_cmp(Foo::new(2.71828));
@@ -104,15 +106,11 @@ fn property() {
             #[wasm_bindgen]
             pub fn test() {
                 let x = Foo::new(3.14159);
-                let tmp = x.value() == 3.14159;
-                assert!(tmp);
-                let tmp = x.value() != 2.71828;
-                assert!(tmp);
+                assert_eq!(x.value(), 3.14159);
+                assert_ne!(x.value(), 2.71828);
                 x.set_value(2.71828);
-                let tmp = x.value() != 3.14159;
-                assert!(tmp);
-                let tmp = x.value() == 2.71828;
-                assert!(tmp);
+                assert_ne!(x.value(), 3.14159);
+                assert_eq!(x.value(), 2.71828);
             }
         "#,
         )
@@ -167,10 +165,113 @@ fn named_constructor() {
             #[wasm_bindgen]
             pub fn test() {
                 let x = Foo::new(3.14159);
-                let tmp = x.value() == 3.14159;
-                assert!(tmp);
-                let tmp = x.value() != 0.;
-                assert!(tmp);
+                assert_eq!(x.value(), 3.14159);
+                assert_ne!(x.value(), 0.);
+            }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn static_method() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+            interface Foo {
+                static double swap(double value);
+            };
+        "#,
+        )
+        .file(
+            "foo.ts",
+            r#"
+            export class Foo {
+                private static value: number = 0;
+                static swap(value: number): number {
+                    const res = Foo.value;
+                    Foo.value = value;
+                    return res;
+                }
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            pub mod foo;
+
+            use foo::Foo;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                assert_eq!(Foo::swap(3.14159), 0.);
+                assert_eq!(Foo::swap(2.71828), 3.14159);
+                assert_ne!(Foo::swap(2.71828), 3.14159);
+                assert_eq!(Foo::swap(3.14159), 2.71828);
+                assert_ne!(Foo::swap(3.14159), 2.71828);
+            }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn static_property() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+            interface Foo {
+                static attribute double value;
+            };
+        "#,
+        )
+        .file(
+            "foo.ts",
+            r#"
+            export class Foo {
+                private static _value: number = 0;
+
+                static get value(): number {
+                    return Foo._value;
+                }
+
+                static set value(_value: number) {
+                    Foo._value = _value;
+                }
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            pub mod foo;
+
+            use foo::Foo;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                assert_eq!(Foo::value(), 0.);
+                Foo::set_value(3.14159);
+                assert_eq!(Foo::value(), 3.14159);
+                assert_ne!(Foo::value(), 2.71828);
+                Foo::set_value(2.71828);
+                assert_eq!(Foo::value(), 2.71828);
+                assert_ne!(Foo::value(), 3.14159);
             }
         "#,
         )

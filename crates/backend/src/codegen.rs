@@ -552,11 +552,12 @@ impl ToTokens for ast::ImportFunction {
         let mut class_ty = None;
         let mut is_method = false;
         match self.kind {
-            ast::ImportFunctionKind::Method { ref ty, .. } => {
-                is_method = true;
-                class_ty = Some(ty);
-            }
-            ast::ImportFunctionKind::JsConstructor { ref ty, .. } => {
+            ast::ImportFunctionKind::Method {
+                ref ty, ref kind, ..
+            } => {
+                if let ast::MethodKind::Normal = kind {
+                    is_method = true;
+                }
                 class_ty = Some(ty);
             }
             ast::ImportFunctionKind::Normal => {}
