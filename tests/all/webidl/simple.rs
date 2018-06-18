@@ -43,6 +43,8 @@ fn method() {
             pub fn test() {
                 let pi = Foo::new(3.14159);
                 let e = Foo::new(2.71828);
+                // TODO: figure out why the following doesn't fail
+                // assert!(!pi.my_cmp(Foo::new(3.14159)));
                 let tmp = pi.my_cmp(Foo::new(3.14159));
                 assert!(tmp);
                 let tmp =!pi.my_cmp(Foo::new(2.71828));
@@ -104,15 +106,11 @@ fn property() {
             #[wasm_bindgen]
             pub fn test() {
                 let x = Foo::new(3.14159);
-                let tmp = x.value() == 3.14159;
-                assert!(tmp);
-                let tmp = x.value() != 2.71828;
-                assert!(tmp);
+                assert_eq!(x.value(), 3.14159);
+                assert_ne!(x.value(), 2.71828);
                 x.set_value(2.71828);
-                let tmp = x.value() != 3.14159;
-                assert!(tmp);
-                let tmp = x.value() == 2.71828;
-                assert!(tmp);
+                assert_ne!(x.value(), 3.14159);
+                assert_eq!(x.value(), 2.71828);
             }
         "#,
         )
@@ -167,10 +165,8 @@ fn named_constructor() {
             #[wasm_bindgen]
             pub fn test() {
                 let x = Foo::new(3.14159);
-                let tmp = x.value() == 3.14159;
-                assert!(tmp);
-                let tmp = x.value() != 0.;
-                assert!(tmp);
+                assert_eq!(x.value(), 3.14159);
+                assert_ne!(x.value(), 0.);
             }
         "#,
         )
@@ -216,16 +212,11 @@ fn static_method() {
 
             #[wasm_bindgen]
             pub fn test() {
-                let tmp = Foo::swap(3.14159) == 0.;
-                assert!(tmp);
-                let tmp = Foo::swap(2.71828) == 3.14159;
-                assert!(tmp);
-                let tmp = Foo::swap(2.71828) != 3.14159;
-                assert!(tmp);
-                let tmp = Foo::swap(3.14159) == 2.71828;
-                assert!(tmp);
-                let tmp = Foo::swap(3.14159) != 2.71828;
-                assert!(tmp);
+                assert_eq!(Foo::swap(3.14159), 0.);
+                assert_eq!(Foo::swap(2.71828), 3.14159);
+                assert_ne!(Foo::swap(2.71828), 3.14159);
+                assert_eq!(Foo::swap(3.14159), 2.71828);
+                assert_ne!(Foo::swap(3.14159), 2.71828);
             }
         "#,
         )
@@ -274,18 +265,13 @@ fn static_property() {
 
             #[wasm_bindgen]
             pub fn test() {
-                let tmp = Foo::value() == 0.;
-                assert!(tmp);
+                assert_eq!(Foo::value(), 0.);
                 Foo::set_value(3.14159);
-                let tmp = Foo::value() == 3.14159;
-                assert!(tmp);
-                let tmp = Foo::value() != 2.71828;
-                assert!(tmp);
+                assert_eq!(Foo::value(), 3.14159);
+                assert_ne!(Foo::value(), 2.71828);
                 Foo::set_value(2.71828);
-                let tmp = Foo::value() == 2.71828;
-                assert!(tmp);
-                let tmp = Foo::value() != 3.14159;
-                assert!(tmp);
+                assert_eq!(Foo::value(), 2.71828);
+                assert_ne!(Foo::value(), 3.14159);
             }
         "#,
         )
