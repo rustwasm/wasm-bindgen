@@ -10,3 +10,9 @@
 - [Closures](./closures.md)
 - [Feature Reference](./feature-reference.md)
 - [CLI Reference](./cli-reference.md)
+
+--------------------------------------------------------------------------------
+
+- [Contributing](./contributing.md)
+  - [Design](./design.md)
+  - [Team](./team.md)
