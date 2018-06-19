@@ -74,7 +74,7 @@ matrix:
         provider: pages
         skip-cleanup: true
         github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
-        local-dir: guide
+        local-dir: guide/book
         keep-history: false
         on:
           branch: master
