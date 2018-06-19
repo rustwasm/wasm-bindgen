@@ -69,7 +69,6 @@ matrix:
 
     # Build the guide.
     - rust: stable
-      env: DEPLOY=0
       script: (cd guide && cargo install mdbook --vers "^0.1.0" && mdbook build)
       deploy:
         provider: pages
@@ -93,11 +92,14 @@ notifications:
     on_success: never
 
 before_deploy:
-  - name="wasm-bindgen-$TRAVIS_TAG-$TARGET"
-  - mkdir $name
-  - cp target/$TARGET/release/{wasm-bindgen,wasm2es6js} $name/
-  - cp README.md LICENSE-MIT LICENSE-APACHE $name/
-  - tar czvf $name.tar.gz $name
+  |
+    if [[ "$DEPLOY" == "1" ]]; then
+        name="wasm-bindgen-$TRAVIS_TAG-$TARGET"
+        mkdir "$name"
+        cp "target/$TARGET/release/{wasm-bindgen,wasm2es6js}" "$name/"
+        cp README.md LICENSE-MIT LICENSE-APACHE "$name/"
+        tar czvf "$name.tar.gz" "$name"
+    fi
 
 deploy:
   api_key:
