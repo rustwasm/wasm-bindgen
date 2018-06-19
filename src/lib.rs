@@ -6,6 +6,7 @@
 //! interface.
 
 #![feature(use_extern_macros, wasm_import_module, try_reserve, unsize)]
+#![cfg_attr(feature = "js_globals", feature(proc_macro, wasm_custom_section))]
 #![no_std]
 
 #[cfg(feature = "serde-serialize")]
@@ -43,6 +44,13 @@ pub mod prelude {
 
 pub mod convert;
 pub mod describe;
+#[cfg(feature = "js_globals")]
+pub mod js;
+
+#[cfg(feature = "js_globals")]
+mod wasm_bindgen {
+    pub use super::*;
+}
 
 if_std! {
     extern crate std;
@@ -67,6 +75,18 @@ const JSIDX_FALSE: u32 = 6;
 const JSIDX_RESERVED: u32 = 8;
 
 impl JsValue {
+    /// The `null` JS value constant.
+    pub const NULL: JsValue = JsValue { idx:  JSIDX_NULL };
+
+    /// The `undefined` JS value constant.
+    pub const UNDEFINED: JsValue = JsValue { idx:  JSIDX_UNDEFINED };
+
+    /// The `true` JS value constant.
+    pub const TRUE: JsValue = JsValue { idx:  JSIDX_TRUE };
+
+    /// The `false` JS value constant.
+    pub const FALSE: JsValue = JsValue { idx:  JSIDX_FALSE };
+
     /// Creates a new JS value which is a string.
     ///
     /// The utf-8 string provided is copied to the JS heap and the string will

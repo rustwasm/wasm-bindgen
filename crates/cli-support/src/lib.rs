@@ -140,11 +140,19 @@ impl Bindgen {
                 module_versions: Default::default(),
                 run_descriptor: &|name| {
                     let mut v = MyExternals(Vec::new());
-                    let ret = instance
-                        .invoke_export(name, &[], &mut v)
-                        .expect("failed to run export");
-                    assert!(ret.is_none());
-                    v.0
+                    match instance.invoke_export(name, &[], &mut v) {
+                        Ok(None) => Some(v.0),
+                        Ok(Some(_)) => {
+                            unreachable!(
+                                "there is only one export, and we only return None from it"
+                            )
+                        },
+                        // Allow missing exported describe functions. This can
+                        // happen when a nested dependency crate exports things
+                        // but the root crate doesn't use them.
+                        Err(wasmi::Error::Function(_)) => None,
+                        Err(e) => panic!("unexpected error running descriptor: {}", e),
+                    }
                 },
             };
             for program in programs.iter() {
@@ -342,6 +350,7 @@ impl wasmi::ImportResolver for MyResolver {
 }
 
 struct MyExternals(Vec<u32>);
+
 #[derive(Debug)]
 struct MyError(String);
 

@@ -17,7 +17,8 @@ test = false
 doctest = false
 
 [features]
-default = ["spans", "std"]
+default = ["spans", "std", "js_globals"]
+js_globals = []
 spans = ["wasm-bindgen-macro/spans"]
 std = []
 serde-serialize = ["serde", "serde_json", "std"]
