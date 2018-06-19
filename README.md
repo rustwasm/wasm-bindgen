@@ -69,10 +69,11 @@ at your option.
 
 ## Contribution
 
-[See `CONTRIBUTING.md` for hacking!][contributing]
+**[See the "Contributing" section of the guide for information on
+hacking on `wasm-bindgen`!][contributing]**
 
 Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in this project by you, as defined in the Apache-2.0 license,
 shall be dual licensed as above, without any additional terms or conditions.
 
-[contributing]: (https://github.com/rustwasm/wasm-bindgen/blob/master/CONTRIBUTING.md)
+[contributing]: https://rustwasm.github.io/wasm-bindgen/contributing.html
