@@ -25,13 +25,6 @@ fn decode_uri() {
                 assert!(js::decode_uri("%E0%A4%A").is_err());
             }
         "#)
-        .file("test.ts", r#"
-            import * as wasm from "./out";
-
-            export function test() {
-                wasm.test();
-            }
-        "#)
         .test();
 }
 
@@ -50,13 +43,6 @@ fn encode_uri() {
             pub fn test() {
                 let x = js::encode_uri("ABC abc 123");
                 assert_eq!(x, "ABC%20abc%20123");
-            }
-        "#)
-        .file("test.ts", r#"
-            import * as wasm from "./out";
-
-            export function test() {
-                wasm.test();
             }
         "#)
         .test();
@@ -81,13 +67,6 @@ fn eval() {
                     .err()
                     .expect("eval should throw");
                 assert_eq!(err.as_f64().unwrap(), 42.0);
-            }
-        "#)
-        .file("test.ts", r#"
-            import * as wasm from "./out";
-
-            export function test() {
-                wasm.test();
             }
         "#)
         .test();
