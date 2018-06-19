@@ -539,3 +539,4 @@ mod structural;
 mod u64;
 mod webidl;
 mod comments;
+mod validate_prt;
