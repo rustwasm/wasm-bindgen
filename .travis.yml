@@ -11,7 +11,7 @@ matrix:
     # Tests pass on nightly
     - rust: nightly
       before_install: rustup target add wasm32-unknown-unknown
-      script: 
+      script:
         - cargo test
         # Check JS output from all tests against eslint
         - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
@@ -69,6 +69,7 @@ matrix:
 
     # Build the guide.
     - rust: stable
+      env: DEPLOY=0
       script: (cd guide && cargo install mdbook --vers "^0.1.0" && mdbook build)
       deploy:
         provider: pages
