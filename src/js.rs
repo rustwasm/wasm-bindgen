@@ -126,4 +126,11 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
     #[wasm_bindgen(method)]
     pub fn slice(this: &Array, start: u32, end: u32) -> Array;
+
+    /// The fill() method fills all the elements of an array from a start index to an end index with a static value.
+    /// The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Array, value: JsValue, start: u32, end: u32) -> Array;
 }
