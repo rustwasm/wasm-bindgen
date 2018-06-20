@@ -356,3 +356,33 @@ fn unshift() {
         "#)
         .test()
 }
+
+#[test]
+fn to_string() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn array_to_string(this: &js::Array) -> String {
+                this.to_string()
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let characters = [8, 5, 4, 3, 1, 2]
+                let arrayString = wasm.array_to_string(characters);
+
+                assert.equal(arrayString, "8,5,4,3,1,2");
+            }
+        "#)
+        .test()
+}

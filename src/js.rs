@@ -171,4 +171,10 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift
     #[wasm_bindgen(method)]
     pub fn unshift(this: &Array, value: JsValue) -> u32;
+
+    /// The toString() method returns a string representing the specified array and its elements.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString
+    #[wasm_bindgen(method, js_name = toString)]
+    pub fn to_string(this: &Array) -> String;
 }
