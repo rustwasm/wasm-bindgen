@@ -145,4 +145,10 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop
     #[wasm_bindgen(method)]
     pub fn pop(this: &Array) -> JsValue;
+
+    /// The push() method adds one or more elements to the end of an array and returns the new length of the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+    #[wasm_bindgen(method)]
+    pub fn push(this: &Array, value: JsValue) -> u32;
 }

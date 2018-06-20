@@ -233,3 +233,34 @@ fn pop() {
         "#)
         .test()
 }
+
+
+#[test]
+fn push() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn push_it_along(this: &js::Array, value: JsValue) -> u32 {
+                this.push(value)
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let characters = [8, 5, 4, 3, 1, 2]
+                let length = wasm.push_it_along(characters, "a");
+                assert.equal(length, 7);
+                assert.equal(characters[6], "a");
+            }
+        "#)
+        .test()
+}
