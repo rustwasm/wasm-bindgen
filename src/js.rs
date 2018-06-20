@@ -86,3 +86,24 @@ extern {
     #[wasm_bindgen(method, js_name = hasOwnProperty)]
     pub fn has_own_property(this: &Object, property: &str) -> bool;
 }
+
+
+// String
+#[wasm_bindgen]
+extern {
+    pub type String;
+
+    /// The String global object is a constructor for strings or a sequence
+    /// of characters.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> String;
+
+    /// The length property of a String object indicates the length of a
+    /// string, in UTF-16 code units.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length
+    #[wasm_bindgen(method, js_name = length)]
+    pub fn length(this: &String) -> i32;
+}
