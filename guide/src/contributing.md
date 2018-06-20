@@ -9,6 +9,7 @@ development.
 
     ```shell
     rustup default nightly
+    rustup target add wasm32-unknown-unknown
     ```
 
 [install Rust]: https://www.rust-lang.org/en-US/install.html
