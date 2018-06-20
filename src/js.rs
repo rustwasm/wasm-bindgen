@@ -105,4 +105,11 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
     #[wasm_bindgen(method, js_name = indexOf)]
     pub fn index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+
+    /// The lastIndexOf() method returns the last index at which a given element can be found in the array, or -1 if it is not present.
+    /// The array is searched backwards, starting at fromIndex.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
+    #[wasm_bindgen(method, js_name = lastIndexOf)]
+    pub fn last_index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
 }
