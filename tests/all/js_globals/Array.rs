@@ -264,3 +264,33 @@ fn push() {
         "#)
         .test()
 }
+
+#[test]
+fn reverse() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn reverse_array(this: &js::Array) -> js::Array {
+                this.reverse()
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let characters = [8, 5, 4, 3, 1, 2]
+                let reversed = wasm.reverse_array(characters);
+                assert.equal(reversed[0], 2);
+                assert.equal(reversed[5], 8);
+            }
+        "#)
+        .test()
+}

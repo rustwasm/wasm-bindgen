@@ -151,4 +151,11 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
     #[wasm_bindgen(method)]
     pub fn push(this: &Array, value: JsValue) -> u32;
+
+    /// The reverse() method reverses an array in place.
+    /// The first array element becomes the last, and the last array element becomes the first.
+    /// 
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse
+    #[wasm_bindgen(method)]
+    pub fn reverse(this: &Array) -> Array;
 }
