@@ -169,3 +169,37 @@ fn fill() {
         "#)
         .test()
 }
+
+#[test]
+fn copy_within() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn copy_values_within_array(this: &js::Array, target: i32, start: i32, end: i32) -> js::Array {
+                this.copy_within(target, start, end)
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let characters = [8, 5, 4, 3, 1, 2]
+                wasm.copy_values_within_array(characters, 1, 4, 5);
+
+                assert.equal(characters[1], 1);
+
+                // if negatives were used
+                wasm.copy_values_within_array(characters, -1, -3, -2);
+                assert.equal(characters[5], 3);
+            }
+        "#)
+        .test()
+}

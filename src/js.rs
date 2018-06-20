@@ -133,4 +133,10 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Array, value: JsValue, start: u32, end: u32) -> Array;
+
+    /// The copyWithin() method shallow copies part of an array to another location in the same array and returns it, without modifying its size.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin
+    #[wasm_bindgen(method, js_name = copyWithin)]
+    pub fn copy_within(this: &Array, target: i32, start: i32, end: i32) -> Array;
 }
