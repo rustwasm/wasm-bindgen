@@ -94,3 +94,15 @@ extern {
 
 
 }
+
+// Array
+#[wasm_bindgen]
+extern {
+    pub type Array;
+
+    /// The indexOf() method returns the first index at which a given element can be found in the array, or -1 if it is not present.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+    #[wasm_bindgen(method, js_name = indexOf)]
+    pub fn index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+}
