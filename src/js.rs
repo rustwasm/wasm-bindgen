@@ -139,4 +139,10 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin
     #[wasm_bindgen(method, js_name = copyWithin)]
     pub fn copy_within(this: &Array, target: i32, start: i32, end: i32) -> Array;
+
+    /// The pop() method removes the last element from an array and returns that element. This method changes the length of the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop
+    #[wasm_bindgen(method)]
+    pub fn pop(this: &Array) -> JsValue;
 }
