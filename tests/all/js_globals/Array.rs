@@ -294,3 +294,34 @@ fn reverse() {
         "#)
         .test()
 }
+
+#[test]
+fn shift() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn shift_item(this: &js::Array) -> JsValue {
+                this.shift()
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let characters = [8, 5, 4, 3, 1, 2]
+                let shiftedItem = wasm.shift_item(characters);
+
+                assert.equal(shiftedItem, 8);
+                assert.equal(characters.length, 5);
+            }
+        "#)
+        .test()
+}

@@ -158,4 +158,11 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse
     #[wasm_bindgen(method)]
     pub fn reverse(this: &Array) -> Array;
+
+    /// The shift() method removes the first element from an array and returns that removed element.
+    /// This method changes the length of the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
+    #[wasm_bindgen(method)]
+    pub fn shift(this: &Array) -> JsValue;
 }
