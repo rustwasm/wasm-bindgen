@@ -16,6 +16,7 @@
 //! example, `decodeURI` in JavaScript is exposed as `decode_uri` in these
 //! bindings.
 
+use closure::*;
 use wasm_bindgen_macro::*;
 use JsValue;
 if_std! {
@@ -85,4 +86,22 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty
     #[wasm_bindgen(method, js_name = hasOwnProperty)]
     pub fn has_own_property(this: &Object, property: &str) -> bool;
+}
+
+// Promise.
+#[wasm_bindgen]
+extern {
+    pub type Promise;
+
+    /// A Promise object is created using the new keyword and its constructor.
+    /// This constructor takes as its argument a function, called the "executor
+    /// function". This function should take two functions as parameters.
+    /// The first of these functions (resolve) is called when the asynchronous
+    /// task completes successfully and returns the results of the task as a value.
+    /// The second (reject) is called when the task fails, and returns the reason
+    /// for failure, which is typically an error object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+    #[wasm_bindgen(constructor)]
+    pub fn new(executor: &Closure<FnMut(Box<Fn(JsValue)>, Box<Fn(JsValue)>)>) -> Promise;
 }

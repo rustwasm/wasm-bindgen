@@ -3,6 +3,7 @@
 use super::project;
 
 mod Object;
+mod Promise;
 
 #[test]
 #[cfg(feature = "std")]
