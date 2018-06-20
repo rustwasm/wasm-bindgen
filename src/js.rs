@@ -94,3 +94,94 @@ extern {
 
 
 }
+
+// Array
+#[wasm_bindgen]
+extern {
+    pub type Array;
+
+    /// The indexOf() method returns the first index at which a given element can be found in the array, or -1 if it is not present.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+    #[wasm_bindgen(method, js_name = indexOf)]
+    pub fn index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+
+    /// The lastIndexOf() method returns the last index at which a given element can be found in the array, or -1 if it is not present.
+    /// The array is searched backwards, starting at fromIndex.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
+    #[wasm_bindgen(method, js_name = lastIndexOf)]
+    pub fn last_index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+
+    /// The join() method joins all elements of an array (or an array-like object) into a string and returns this string.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
+    #[wasm_bindgen(method)]
+    pub fn join(this: &Array, delimiter: &str) -> String;
+
+    /// The slice() method returns a shallow copy of a portion of an array into a new array
+    /// object selected from begin to end (end not included).
+    /// The original array will not be modified.
+    /// 
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Array, start: u32, end: u32) -> Array;
+
+    /// The fill() method fills all the elements of an array from a start index to an end index with a static value.
+    /// The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Array, value: JsValue, start: u32, end: u32) -> Array;
+
+    /// The copyWithin() method shallow copies part of an array to another location in the same array and returns it, without modifying its size.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin
+    #[wasm_bindgen(method, js_name = copyWithin)]
+    pub fn copy_within(this: &Array, target: i32, start: i32, end: i32) -> Array;
+
+    /// The pop() method removes the last element from an array and returns that element. This method changes the length of the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop
+    #[wasm_bindgen(method)]
+    pub fn pop(this: &Array) -> JsValue;
+
+    /// The push() method adds one or more elements to the end of an array and returns the new length of the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+    #[wasm_bindgen(method)]
+    pub fn push(this: &Array, value: JsValue) -> u32;
+
+    /// The reverse() method reverses an array in place.
+    /// The first array element becomes the last, and the last array element becomes the first.
+    /// 
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse
+    #[wasm_bindgen(method)]
+    pub fn reverse(this: &Array) -> Array;
+
+    /// The shift() method removes the first element from an array and returns that removed element.
+    /// This method changes the length of the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
+    #[wasm_bindgen(method)]
+    pub fn shift(this: &Array) -> JsValue;
+
+    /// The unshift() method adds one or more elements to the beginning of an array and returns the new length of the array.
+    /// 
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift
+    #[wasm_bindgen(method)]
+    pub fn unshift(this: &Array, value: JsValue) -> u32;
+
+    /// The toString() method returns a string representing the specified array and its elements.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString
+    #[wasm_bindgen(method, js_name = toString)]
+    pub fn to_string(this: &Array) -> String;
+
+    /// The includes() method determines whether an array includes a certain element, returning true or false as appropriate.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+    #[wasm_bindgen(method)]
+    pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
+
+}

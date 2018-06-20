@@ -3,6 +3,7 @@
 use super::project;
 
 mod Object;
+mod Array;
 
 #[test]
 #[cfg(feature = "std")]
