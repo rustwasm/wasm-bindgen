@@ -3,6 +3,7 @@
 use super::project;
 
 mod Object;
+mod String;
 
 #[test]
 #[cfg(feature = "std")]
