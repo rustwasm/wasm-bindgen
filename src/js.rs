@@ -177,4 +177,11 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(this: &Array) -> String;
+
+    /// The includes() method determines whether an array includes a certain element, returning true or false as appropriate.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+    #[wasm_bindgen(method)]
+    pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
+
 }
