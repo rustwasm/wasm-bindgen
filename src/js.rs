@@ -165,4 +165,10 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
     #[wasm_bindgen(method)]
     pub fn shift(this: &Array) -> JsValue;
+
+    /// The unshift() method adds one or more elements to the beginning of an array and returns the new length of the array.
+    /// 
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift
+    #[wasm_bindgen(method)]
+    pub fn unshift(this: &Array, value: JsValue) -> u32;
 }

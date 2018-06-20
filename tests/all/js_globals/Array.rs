@@ -325,3 +325,34 @@ fn shift() {
         "#)
         .test()
 }
+
+#[test]
+fn unshift() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn unshift_item(this: &js::Array, value: JsValue) -> u32 {
+                this.unshift(value)
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let characters = [8, 5, 4, 3, 1, 2]
+                let length = wasm.unshift_item(characters, "abba");
+
+                assert.equal(length, 7);
+                assert.equal(characters[0], "abba");
+            }
+        "#)
+        .test()
+}
