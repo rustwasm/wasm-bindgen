@@ -118,4 +118,12 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
     #[wasm_bindgen(method)]
     pub fn join(this: &Array, delimiter: &str) -> String;
+
+    /// The slice() method returns a shallow copy of a portion of an array into a new array
+    /// object selected from begin to end (end not included).
+    /// The original array will not be modified.
+    /// 
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Array, start: u32, end: u32) -> Array;
 }
