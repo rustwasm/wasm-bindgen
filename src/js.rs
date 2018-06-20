@@ -112,4 +112,10 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
     #[wasm_bindgen(method, js_name = lastIndexOf)]
     pub fn last_index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+
+    /// The join() method joins all elements of an array (or an array-like object) into a string and returns this string.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
+    #[wasm_bindgen(method)]
+    pub fn join(this: &Array, delimiter: &str) -> String;
 }
