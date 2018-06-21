@@ -151,6 +151,17 @@ extern {
     #[wasm_bindgen(method)]
     pub fn shift(this: &Array) -> JsValue;
 
+    /// The sort() method sorts the elements of an array in place and returns
+    /// the array. The sort is not necessarily stable. The default sort
+    /// order is according to string Unicode code points.
+    ///
+    /// The time and space complexity of the sort cannot be guaranteed as it
+    /// is implementation dependent.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    #[wasm_bindgen(method)]
+    pub fn sort(this: &Array) -> Array;
+
     /// The toString() method returns a string representing the specified array and its elements.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString
