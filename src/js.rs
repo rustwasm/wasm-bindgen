@@ -197,6 +197,7 @@ extern {
     pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
 }
 
+// Array Iterator
 #[wasm_bindgen]
 extern {
     pub type ArrayIterator;
@@ -206,4 +207,10 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
     #[wasm_bindgen(method)]
     pub fn keys(this: &Array) -> ArrayIterator;
+
+    /// The entries() method returns a new Array Iterator object that contains the key/value pairs for each index in the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
+    #[wasm_bindgen(method)]
+    pub fn entries(this: &Array) -> ArrayIterator;
 }
