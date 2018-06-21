@@ -98,6 +98,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isPrototypeOf
     #[wasm_bindgen(method, js_name = isPrototypeOf)]
     pub fn is_prototype_of(this: &Object, value: &JsValue) -> bool;
+
+    /// The propertyIsEnumerable() method returns a Boolean indicating
+    /// whether the specified property is enumerable.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable
+    #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
+    pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
 }
 
 // Array
