@@ -39,8 +39,8 @@ fn has_own_property() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has_own_foo_property(obj: &js::Object) -> bool {
-                obj.has_own_property("foo")
+            pub fn has_own_foo_property(obj: &js::Object, property: &JsValue) -> bool {
+                obj.has_own_property(&property)
             }
         "#)
         .file("test.ts", r#"
@@ -48,8 +48,12 @@ fn has_own_property() {
             import * as wasm from "./out";
 
             export function test() {
-                assert.ok(wasm.has_own_foo_property({ foo: 42 }));
-                assert.ok(!wasm.has_own_foo_property({}));
+                assert(wasm.has_own_foo_property({ foo: 42 }, "foo"));
+                assert(wasm.has_own_foo_property({ 42: "foo" }, 42));
+                assert(!wasm.has_own_foo_property({ foo: 42 }, "bar"));
+
+                const s = Symbol();
+                assert(wasm.has_own_foo_property({ [s]: "foo" }, s));
             }
         "#)
         .test()
