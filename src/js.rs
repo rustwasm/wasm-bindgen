@@ -84,7 +84,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty
     #[wasm_bindgen(method, js_name = hasOwnProperty)]
-    pub fn has_own_property(this: &Object, property: &str) -> bool;
+    pub fn has_own_property(this: &Object, property: &JsValue) -> bool;
 
     /// The toString() method returns a string representing the object.
     ///
