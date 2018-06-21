@@ -118,3 +118,38 @@ fn is_prototype_of() {
         "#)
         .test()
 }
+
+#[test]
+fn property_is_enumerable() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn property_is_enumerable(obj: &js::Object, property: &JsValue) -> bool {
+                obj.property_is_enumerable(&property)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert(wasm.property_is_enumerable({ foo: 42 }, "foo"));
+                assert(wasm.property_is_enumerable({ 42: "foo" }, 42));
+                assert(!wasm.property_is_enumerable({}, 42));
+
+                const obj = {};
+                Object.defineProperty(obj, "foo", { enumerable: false });
+                assert(!wasm.property_is_enumerable(obj, "foo"));
+
+                const s = Symbol();
+                assert.ok(wasm.property_is_enumerable({ [s]: true }, s));
+            }
+        "#)
+        .test()
+}
