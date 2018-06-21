@@ -163,6 +163,7 @@ Our corresponding `index.html`:
 And finally:
 
 ```shell
+$ npm install
 $ npm run serve
 ```
 
