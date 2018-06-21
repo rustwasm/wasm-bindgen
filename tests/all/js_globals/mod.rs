@@ -4,6 +4,7 @@ use super::project;
 
 mod Object;
 mod Array;
+mod ArrayIterator;
 
 #[test]
 #[cfg(feature = "std")]
