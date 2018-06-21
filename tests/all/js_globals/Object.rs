@@ -140,6 +140,15 @@ fn property_is_enumerable() {
 
             export function test() {
                 assert(wasm.property_is_enumerable({ foo: 42 }, "foo"));
+                assert(wasm.property_is_enumerable({ 42: "foo" }, 42));
+                assert(!wasm.property_is_enumerable({}, 42));
+
+                const obj = {};
+                Object.defineProperty(obj, "foo", { enumerable: false });
+                assert(!wasm.property_is_enumerable(obj, "foo"));
+
+                const s = Symbol();
+                assert.ok(wasm.property_is_enumerable({ [s]: true }, s));
             }
         "#)
         .test()
