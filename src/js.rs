@@ -92,7 +92,12 @@ extern {
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(this: &Object) -> String;
 
-
+    /// The isPrototypeOf() method checks if an object exists in another
+    /// object's prototype chain.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isPrototypeOf
+    #[wasm_bindgen(method, js_name = isPrototypeOf)]
+    pub fn is_prototype_of(this: &Object, value: &JsValue) -> bool;
 }
 
 // Array

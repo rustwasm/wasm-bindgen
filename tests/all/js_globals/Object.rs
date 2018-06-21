@@ -87,3 +87,34 @@ fn to_string() {
         "#)
         .test()
 }
+
+#[test]
+fn is_prototype_of() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn obj_is_prototype_of_value(obj: &js::Object, value: &JsValue) -> bool {
+                obj.is_prototype_of(&value)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            class Foo {}
+            class Bar {}
+
+            export function test() {
+                const foo = new Foo();
+                assert(wasm.obj_is_prototype_of_value(Foo.prototype, foo));
+                assert(!wasm.obj_is_prototype_of_value(Bar.prototype, foo));
+            }
+        "#)
+        .test()
+}
