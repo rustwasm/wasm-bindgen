@@ -4,6 +4,7 @@ use super::project;
 
 mod Object;
 mod Array;
+mod String;
 
 #[test]
 #[cfg(feature = "std")]

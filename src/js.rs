@@ -190,3 +190,15 @@ extern {
     pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
 
 }
+
+// String
+#[wasm_bindgen]
+extern {
+    pub type String;
+
+    /// The String object's charAt() method returns a new string consisting of the single UTF-16 code unit located at the specified offset into the string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
+    #[wasm_bindgen(method, js_name = charAt)]
+    pub fn char_at(this: &String, index: i32) -> String;
+}
