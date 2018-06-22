@@ -157,3 +157,30 @@ fn property_is_enumerable() {
         "#)
         .test()
 }
+
+#[test]
+fn to_locale_string() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn to_locale_string() -> String {
+                let object = js::Object::new();
+                object.to_locale_string()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.to_locale_string(), "[object Object]");
+            }
+        "#)
+        .test()
+}
