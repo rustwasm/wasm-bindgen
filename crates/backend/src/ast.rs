@@ -813,7 +813,7 @@ impl Struct {
                     ty: field.ty.clone(),
                     getter: Ident::new(&getter, Span::call_site()),
                     setter: Ident::new(&setter, Span::call_site()),
-                    comments
+                    comments,
                 });
             }
         }
@@ -912,7 +912,7 @@ impl BindgenAttrs {
             .iter()
             .filter_map(|a| match a {
                 BindgenAttr::StaticMethodOf(c) => Some(c),
-                _ => None
+                _ => None,
             })
             .next()
     }
