@@ -1,6 +1,7 @@
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
+use std::iter::FromIterator;
 use syn;
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -412,6 +413,24 @@ impl Program {
                 ty: class.clone(),
                 kind: MethodKind::Normal,
             }
+        } else if let Some(cls) = wasm.opts.static_method_of() {
+            let class = cls.to_string();
+            let kind = MethodKind::Static;
+
+            let segments = syn::punctuated::Punctuated::from_iter(Some(syn::PathSegment {
+                ident: cls.clone(),
+                arguments: syn::PathArguments::None,
+            }));
+
+            let ty = syn::Type::Path(syn::TypePath {
+                qself: None,
+                path: syn::Path {
+                    leading_colon: None,
+                    segments,
+                },
+            });
+
+            ImportFunctionKind::Method { class, ty, kind }
         } else if wasm.opts.constructor() {
             let class = match wasm.ret {
                 Some(ref ty) => ty,
@@ -888,6 +907,16 @@ impl BindgenAttrs {
         })
     }
 
+    fn static_method_of(&self) -> Option<&Ident> {
+        self.attrs
+            .iter()
+            .filter_map(|a| match a {
+                BindgenAttr::StaticMethodOf(c) => Some(c),
+                _ => None
+            })
+            .next()
+    }
+
     fn method(&self) -> bool {
         self.attrs.iter().any(|a| match a {
             BindgenAttr::Method => true,
@@ -980,6 +1009,7 @@ pub enum BindgenAttr {
     Catch,
     Constructor,
     Method,
+    StaticMethodOf(Ident),
     JsNamespace(Ident),
     Module(String),
     Version(String),
@@ -998,6 +1028,13 @@ impl syn::synom::Synom for BindgenAttr {
         call!(term, "constructor") => { |_| BindgenAttr::Constructor }
         |
         call!(term, "method") => { |_| BindgenAttr::Method }
+        |
+        do_parse!(
+            call!(term, "static_method_of") >>
+            punct!(=) >>
+            cls: call!(term2ident) >>
+            (cls)
+        )=> { BindgenAttr::StaticMethodOf }
         |
         do_parse!(
             call!(term, "getter") >>
