@@ -422,3 +422,37 @@ fn includes() {
         "#)
         .test()
 }
+
+
+#[test]
+fn length() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn array_length(this: &js::Array) -> u32 {
+                this.length()
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let characters = [8, 5, 4, 3, 1, 2]
+                let charactersLength = wasm.array_length(characters);
+                assert.equal(charactersLength, 6);
+
+                var empty : number[] = [];
+                let emptyLength = wasm.array_length(empty);
+                assert.equal(emptyLength, 0);
+            }
+        "#)
+        .test()
+}

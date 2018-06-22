@@ -112,6 +112,13 @@ extern {
 extern {
     pub type Array;
 
+    /// The length property of an object which is an instance of type Array sets or returns the number of elements in that array.
+    /// The value is an unsigned, 32-bit integer that is always numerically greater than the highest index in the array.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn length(this: &Array) -> u32;
+
     /// The indexOf() method returns the first index at which a given element can be found in the array, or -1 if it is not present.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
