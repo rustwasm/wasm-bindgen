@@ -405,9 +405,11 @@ impl Program {
             };
             let class_name = extract_path_ident(class_name)
                 .expect("first argument of method must be a bare type");
+            let class_name = wasm.opts.js_class().map(Into::into)
+                .unwrap_or_else(|| class_name.to_string());
 
             ImportFunctionKind::Method {
-                class: class_name.to_string(),
+                class: class_name,
                 ty: class.clone(),
                 kind: MethodKind::Normal,
             }
@@ -947,6 +949,16 @@ impl BindgenAttrs {
             })
             .next()
     }
+
+    fn js_class(&self) -> Option<&str> {
+        self.attrs
+            .iter()
+            .filter_map(|a| match a {
+                BindgenAttr::JsClass(s) => Some(&s[..]),
+                _ => None,
+            })
+            .next()
+    }
 }
 
 impl syn::synom::Synom for BindgenAttrs {
@@ -977,6 +989,7 @@ pub enum BindgenAttr {
     Structural,
     Readonly,
     JsName(Ident),
+    JsClass(String),
 }
 
 impl syn::synom::Synom for BindgenAttr {
@@ -1038,6 +1051,13 @@ impl syn::synom::Synom for BindgenAttr {
             ns: call!(term2ident) >>
             (ns)
         )=> { BindgenAttr::JsName }
+        |
+        do_parse!(
+            call!(term, "js_class") >>
+            punct!(=) >>
+            s: syn!(syn::LitStr) >>
+            (s.value())
+        )=> { BindgenAttr::JsClass }
     ));
 }
 
