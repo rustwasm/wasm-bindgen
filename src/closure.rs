@@ -174,6 +174,7 @@ impl<T> Drop for Closure<T>
 ///
 /// This trait is not stable and it's not recommended to use this in bounds or
 /// implement yourself.
+#[doc(hidden)]
 pub unsafe trait WasmClosure: 'static {
     fn describe();
 
