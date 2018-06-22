@@ -1125,7 +1125,7 @@ fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
                 // We want to filter out any Puncts so just grab the Literals
                 a.tts.clone().into_iter().filter_map(|t| match t {
                     TokenTree::Literal(lit) => {
-                        // this will always return the quoted string, we deal with 
+                        // this will always return the quoted string, we deal with
                         // that in the cli when we read in the comments
                         Some(lit.to_string())
                     },
