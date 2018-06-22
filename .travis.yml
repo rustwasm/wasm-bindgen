@@ -10,7 +10,17 @@ matrix:
 
     # Tests pass on nightly
     - rust: nightly
-      before_install: rustup target add wasm32-unknown-unknown
+      before_install:
+        - rustup target add wasm32-unknown-unknown
+        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+        - source ~/.nvm/nvm.sh
+        - nvm install 10
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
+        - export PATH=$HOME/.yarn/bin:$PATH
+      cache:
+        yarn: true
+      install:
+        - yarn install --freeze-lockfile
       script:
         - cargo test
         # Check JS output from all tests against eslint
@@ -46,7 +56,11 @@ matrix:
 
     # All examples work
     - rust: nightly
-      before_install: rustup target add wasm32-unknown-unknown
+      before_install:
+        - rustup target add wasm32-unknown-unknown
+        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+        - source ~/.nvm/nvm.sh
+        - nvm install 10
       script:
         - |
           (cd examples/hello_world && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
@@ -79,13 +93,6 @@ matrix:
         on:
           branch: master
 
-
-
-install:
-  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
-  - source ~/.nvm/nvm.sh
-  - nvm install 10
-  - npm install
 
 notifications:
   email:

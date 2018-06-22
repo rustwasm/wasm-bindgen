@@ -19,9 +19,12 @@ build: false
 
 test_script:
   - rustup target add wasm32-unknown-unknown
-  - npm install
+  - yarn install --freeze-lockfile
   - cargo test
   - cargo build --release -p wasm-bindgen-cli
+
+cache:
+  - "%LOCALAPPDATA%\\Yarn"
 
 before_deploy:
   - ps: |
