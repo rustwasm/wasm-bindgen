@@ -41,6 +41,36 @@ fn index_of() {
 }
 
 #[test]
+fn sort() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn sort_array(this: &js::Array) -> js::Array {
+                this.sort()
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let numbers = [3, 1, 6, 2];
+                let sorted = wasm.sort_array(numbers);
+
+                assert.deepStrictEqual(sorted, [1, 2, 3, 6])
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn last_index_of() {
     project()
         .file("src/lib.rs", r#"
