@@ -293,6 +293,13 @@ extern {
     #[wasm_bindgen(method, js_name = isPrototypeOf)]
     pub fn is_prototype_of(this: &Object, value: &JsValue) -> bool;
 
+    /// The Object.keys() method returns an array of a given object's property
+    /// names, in the same order as we get with a normal loop.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn keys(object: &Object) -> Array;
+
     /// The Object constructor creates an object wrapper.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object

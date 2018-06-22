@@ -124,6 +124,33 @@ fn is_prototype_of() {
 }
 
 #[test]
+fn keys() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn keys(obj: &js::Object) -> js::Array {
+                js::Object::keys(obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const obj = { a: 1, b: 2, c: 3 };
+                assert.deepStrictEqual(wasm.keys(obj), ["a", "b", "c"]);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn property_is_enumerable() {
     project()
         .file("src/lib.rs", r#"
