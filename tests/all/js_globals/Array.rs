@@ -453,6 +453,36 @@ fn includes() {
         .test()
 }
 
+#[test]
+fn concat() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn array_concat(this: &js::Array, arr: &js::Array) -> js::Array {
+                this.concat(arr)
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let arr1 = [1, 2, 3];
+                let arr2 = [4, 5, 6];
+
+                let new_array = wasm.array_concat(arr1, arr2)
+                assert.deepStrictEqual(new_array, [1, 2, 3, 4, 5, 6]);
+            }
+        "#)
+        .test()
+}
 
 #[test]
 fn length() {
