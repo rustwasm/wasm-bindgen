@@ -227,6 +227,40 @@ extern {
     pub fn name(this: &JsFunction) -> String;
 }
 
+// Number.
+#[wasm_bindgen]
+extern {
+    pub type Number;
+
+    /// The toLocaleString() method returns a string with a language sensitive
+    /// representation of this number.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
+    #[wasm_bindgen(method, js_name = toLocaleString)]
+    pub fn to_locale_string(this: &Number, locale: String) -> String;
+
+    /// The toPrecision() method returns a string representing the Number
+    /// object to the specified precision.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
+    #[wasm_bindgen(catch, method, js_name = toPrecision)]
+    pub fn to_precision(this: &Number, precision: u8) -> Result<String, JsValue>;
+
+    /// The toString() method returns a string representing the
+    /// specified Number object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString
+    #[wasm_bindgen(catch, method, js_name = toString)]
+    pub fn to_string(this: &Number, radix: u8) -> Result<String, JsValue>;
+
+    /// The valueOf() method returns the wrapped primitive value of
+    /// a Number object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/valueOf
+    #[wasm_bindgen(method, js_name = valueOf)]
+    pub fn value_of(this: &Number) -> Number;
+}
+
 // Object.
 #[wasm_bindgen]
 extern {
@@ -273,6 +307,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable
     #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
     pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
+
+    /// The valueOf() method returns the primitive value of the
+    /// specified object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf
+    #[wasm_bindgen(method, js_name = valueOf)]
+    pub fn value_of(this: &Object) -> Object;
 }
 
 // String
