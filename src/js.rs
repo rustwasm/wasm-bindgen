@@ -254,6 +254,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable
     #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
     pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
+
+    /// The valueOf() method returns the primitive value of the
+    /// specified object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf
+    #[wasm_bindgen(method, js_name = valueOf)]
+    pub fn value_of(this: &Object) -> Object;
 }
 
 // String

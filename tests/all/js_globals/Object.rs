@@ -184,3 +184,31 @@ fn to_locale_string() {
         "#)
         .test()
 }
+
+#[test]
+fn value_of() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn value_of(obj: &js::Object) -> js::Object {
+                obj.value_of()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const obj = { foo: 42 };
+                assert.strictEqual(wasm.value_of(obj), obj);
+                assert.notStrictEqual(wasm.value_of(obj), { foo: 42 });
+            }
+        "#)
+        .test()
+}
