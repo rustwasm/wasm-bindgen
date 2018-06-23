@@ -6,6 +6,7 @@ mod Object;
 mod Array;
 mod ArrayIterator;
 mod JsString;
+mod Number;
 
 #[test]
 #[cfg(feature = "std")]

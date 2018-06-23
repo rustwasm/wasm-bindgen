@@ -208,6 +208,20 @@ extern {
     pub fn entries(this: &Array) -> ArrayIterator;
 }
 
+// Number.
+#[wasm_bindgen]
+extern {
+    pub type Number;
+
+    /// The valueOf() method returns the wrapped primitive value of
+    /// a Number object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/valueOf
+    #[wasm_bindgen(method, js_name = valueOf)]
+    pub fn value_of(this: &Number) -> Number;
+
+}
+
 // Object.
 #[wasm_bindgen]
 extern {
