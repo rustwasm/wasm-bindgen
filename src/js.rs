@@ -255,3 +255,17 @@ extern {
     #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
     pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
 }
+
+// String
+#[wasm_bindgen]
+extern {
+    #[wasm_bindgen(js_name = String)]
+    pub type JsString;
+
+    /// The slice() method extracts a section of a string and returns it as a
+    /// new string, without modifying the original string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn slice(this: &JsString, start: u32, end: u32) -> JsString;
+}
