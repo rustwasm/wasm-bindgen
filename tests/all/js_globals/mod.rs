@@ -5,6 +5,7 @@ use super::project;
 mod Object;
 mod Array;
 mod ArrayIterator;
+mod JsString;
 
 #[test]
 #[cfg(feature = "std")]
