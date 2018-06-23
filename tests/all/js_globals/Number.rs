@@ -2,6 +2,37 @@
 
 use super::project;
 
+#[test]
+fn to_precision() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn to_precision(this: &js::Number, precision: u8) -> String {
+                let result = this.to_precision(precision);
+                let result = match result {
+                    Ok(num) => num,
+                    Err(_err) => "RangeError".to_string()
+                };
+                result
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.to_precision(0.1, 3), "0.100");
+                assert.equal(wasm.to_precision(10, 101), "RangeError");
+            }
+        "#)
+        .test()
+}
 
 #[test]
 fn to_string() {

@@ -213,6 +213,13 @@ extern {
 extern {
     pub type Number;
 
+    /// The toPrecision() method returns a string representing the Number
+    /// object to the specified precision.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
+    #[wasm_bindgen(catch, method, js_name = toPrecision)]
+    pub fn to_precision(this: &Number, precision: u8) -> Result<String, JsValue>;
+
     /// The toString() method returns a string representing the
     /// specified Number object.
     ///
