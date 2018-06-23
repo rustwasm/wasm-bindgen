@@ -208,6 +208,25 @@ extern {
     pub fn entries(this: &Array) -> ArrayIterator;
 }
 
+// Function
+#[wasm_bindgen]
+extern {
+    pub type JsFunction;
+
+    /// The length property indicates the number of arguments expected by the function.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/length
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn length(this: &JsFunction) -> u32;
+
+    /// A Function object's read-only name property indicates the function's name as specified when it was created
+    /// or "anonymous" for functions created anonymously.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn name(this: &JsFunction) -> String;
+}
+
 // Object.
 #[wasm_bindgen]
 extern {
