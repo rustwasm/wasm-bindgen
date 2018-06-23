@@ -53,7 +53,7 @@ fn name() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn fn_name(this: &js::JsFunction) -> String {
+            pub fn fn_name(this: &js::JsFunction) -> js::JsString {
                 this.name()
             }
         "#)

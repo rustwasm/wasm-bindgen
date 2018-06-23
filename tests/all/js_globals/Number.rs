@@ -14,7 +14,7 @@ fn to_locale_string() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_locale_string(this: &js::Number, locale: String) -> String {
+            pub fn to_locale_string(this: &js::Number, locale: js::JsString) -> js::JsString {
                 this.to_locale_string(locale)
             }
         "#)
@@ -43,11 +43,11 @@ fn to_precision() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_precision(this: &js::Number, precision: u8) -> String {
+            pub fn to_precision(this: &js::Number, precision: u8) -> js::JsString {
                 let result = this.to_precision(precision);
                 let result = match result {
                     Ok(num) => num,
-                    Err(_err) => "RangeError".to_string()
+                    Err(_err) => "RangeError".into()
                 };
                 result
             }
@@ -75,11 +75,11 @@ fn to_string() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_string(this: &js::Number, radix: u8) -> String {
+            pub fn to_string(this: &js::Number, radix: u8) -> js::JsString {
                 let result = this.to_string(radix);
                 let result = match result {
                     Ok(num) => num,
-                    Err(_err) => "RangeError".to_string()
+                    Err(_err) => "RangeError".into()
                 };
                 result
             }

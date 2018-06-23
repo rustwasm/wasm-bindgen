@@ -25,7 +25,7 @@ fn decode_uri() {
                 let x = js::decode_uri("https://mozilla.org/?x=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B")
                     .ok()
                     .expect("should decode URI OK");
-                assert_eq!(x, "https://mozilla.org/?x=шеллы");
+                assert_eq!(String::from(x), "https://mozilla.org/?x=шеллы");
 
                 assert!(js::decode_uri("%E0%A4%A").is_err());
             }
@@ -47,7 +47,7 @@ fn encode_uri() {
             #[wasm_bindgen]
             pub fn test() {
                 let x = js::encode_uri("ABC abc 123");
-                assert_eq!(x, "ABC%20abc%20123");
+                assert_eq!(String::from(x), "ABC%20abc%20123");
             }
         "#)
         .test();
