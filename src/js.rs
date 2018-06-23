@@ -213,6 +213,13 @@ extern {
 extern {
     pub type Number;
 
+    /// The toLocaleString() method returns a string with a language sensitive
+    /// representation of this number.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
+    #[wasm_bindgen(method, js_name = toLocaleString)]
+    pub fn to_locale_string(this: &Number, locale: String) -> String;
+
     /// The toPrecision() method returns a string representing the Number
     /// object to the specified precision.
     ///
