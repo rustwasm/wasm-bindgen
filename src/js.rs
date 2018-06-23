@@ -213,6 +213,13 @@ extern {
 extern {
     pub type Number;
 
+    /// The toString() method returns a string representing the
+    /// specified Number object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString
+    #[wasm_bindgen(catch, method, js_name = toString)]
+    pub fn to_string(this: &Number, radix: u8) -> Result<String, JsValue>;
+
     /// The valueOf() method returns the wrapped primitive value of
     /// a Number object.
     ///
