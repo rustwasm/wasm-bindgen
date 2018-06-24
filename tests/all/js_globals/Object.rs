@@ -70,14 +70,14 @@ fn to_string() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_string(obj: &js::Object) -> String {
+            pub fn to_string(obj: &js::Object) -> js::JsString {
                 obj.to_string()
             }
 
             #[wasm_bindgen]
             pub fn test() {
                 let object = js::Object::new();
-                assert_eq!(object.to_string(), "[object Object]");
+                assert_eq!(String::from(object.to_string()), "[object Object]");
             }
         "#)
         .file("test.ts", r#"
@@ -169,7 +169,7 @@ fn to_locale_string() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_locale_string() -> String {
+            pub fn to_locale_string() -> js::JsString {
                 let object = js::Object::new();
                 object.to_locale_string()
             }

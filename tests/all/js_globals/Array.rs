@@ -119,7 +119,7 @@ fn join() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn join_array(this: &js::Array, delimiter: &str) -> String {
+            pub fn join_array(this: &js::Array, delimiter: &str) -> js::JsString {
                 this.join(delimiter)
             }
 
@@ -398,7 +398,7 @@ fn to_string() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn array_to_string(this: &js::Array) -> String {
+            pub fn array_to_string(this: &js::Array) -> js::JsString {
                 this.to_string()
             }
 
