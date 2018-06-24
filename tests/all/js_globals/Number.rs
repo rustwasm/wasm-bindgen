@@ -126,3 +126,67 @@ fn value_of() {
         "#)
         .test()
 }
+
+#[test]
+fn to_fixed() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn to_fixed(this: &js::Number, digits: u8) -> js::JsString {
+                let result = this.to_fixed(digits);
+                let result = match result {
+                    Ok(num) => num,
+                    Err(_err) => "RangeError".into()
+                };
+                result
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.to_fixed(123.456, 2), "123.46");
+                assert.equal(wasm.to_fixed(10, 101), "RangeError");
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn to_exponential() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn to_exponential(this: &js::Number, fraction_digits: u8) -> js::JsString {
+                let result = this.to_exponential(fraction_digits);
+                let result = match result {
+                    Ok(num) => num,
+                    Err(_err) => "RangeError".into()
+                };
+                result
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.to_exponential(123456, 2), "1.23e+5");
+                assert.equal(wasm.to_exponential(10, 101), "RangeError");
+            }
+        "#)
+        .test()
+}
