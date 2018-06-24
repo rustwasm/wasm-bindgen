@@ -256,7 +256,7 @@ extern {
     /// The toExponential() method returns a string representing the Number
     /// object in exponential notation.
     ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toFixed
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toExponential
     #[wasm_bindgen(catch, method, js_name = toExponential)]
     pub fn to_exponential(this: &Number, fraction_digits: u8) -> Result<String, JsValue>;
 
