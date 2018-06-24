@@ -49,6 +49,7 @@ members = [
   "examples/wasm-in-wasm",
   "examples/closures",
   "examples/no_modules",
+  "examples/node_module",
   "examples/add",
   "examples/asm.js",
   "examples/char",
