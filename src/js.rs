@@ -331,7 +331,7 @@ extern {
     /// UTF-16 code unit located at the specified offset into the string.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
-    #[wasm_bindgen(method, js_name = charAt)]
+    #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
     pub fn char_at(this: &JsString, index: u32) -> JsString;
 }
 
