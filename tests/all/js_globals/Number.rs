@@ -138,11 +138,11 @@ fn to_fixed() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_fixed(this: &js::Number, digits: u8) -> String {
+            pub fn to_fixed(this: &js::Number, digits: u8) -> js::JsString {
                 let result = this.to_fixed(digits);
                 let result = match result {
                     Ok(num) => num,
-                    Err(_err) => "RangeError".to_string()
+                    Err(_err) => "RangeError".into()
                 };
                 result
             }
@@ -170,11 +170,11 @@ fn to_exponential() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_exponential(this: &js::Number, fraction_digits: u8) -> String {
+            pub fn to_exponential(this: &js::Number, fraction_digits: u8) -> js::JsString {
                 let result = this.to_exponential(fraction_digits);
                 let result = match result {
                     Ok(num) => num,
-                    Err(_err) => "RangeError".to_string()
+                    Err(_err) => "RangeError".into()
                 };
                 result
             }
