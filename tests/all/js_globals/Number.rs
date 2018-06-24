@@ -3,9 +3,7 @@
 use super::project;
 
 
-// TODO: test seems to be system dependent, disable for now
-// #[test]
-#[allow(dead_code)]
+#[test]
 fn to_locale_string() {
     project()
         .file("src/lib.rs", r#"
@@ -26,9 +24,10 @@ fn to_locale_string() {
 
             export function test() {
                 let number = 1234.45;
-                assert.equal(wasm.to_locale_string(number, "de-DE"), "1,234.45");
                 assert.equal(wasm.to_locale_string(number, "en-US"), "1,234.45");
-                assert.equal(wasm.to_locale_string(number, "zh-Hans-CN-u-nu-hanidec"), "1,234.45");
+                // TODO: these tests seems to be system dependent, disable for now
+                // assert.equal(wasm.to_locale_string(number, "de-DE"), "1,234.45");
+                // assert.equal(wasm.to_locale_string(number, "zh-Hans-CN-u-nu-hanidec"), "1,234.45");
             }
         "#)
         .test()
