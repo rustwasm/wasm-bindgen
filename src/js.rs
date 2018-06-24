@@ -326,6 +326,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
     #[wasm_bindgen(method, js_class = "String")]
     pub fn slice(this: &JsString, start: u32, end: u32) -> JsString;
+
+    /// The String object's charAt() method returns a new string consisting of the single
+    /// UTF-16 code unit located at the specified offset into the string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
+    #[wasm_bindgen(method, js_name = charAt)]
+    pub fn char_at(this: &JsString, index: u32) -> JsString;
 }
 
 impl<'a> From<&'a str> for JsString {
