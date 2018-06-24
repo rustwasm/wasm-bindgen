@@ -45,9 +45,8 @@ extern {
     /// previously created by `encodeURI` or by a similar routine.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURI
-    #[cfg(feature = "std")]
     #[wasm_bindgen(catch, js_name = decodeURI)]
-    pub fn decode_uri(encoded: &str) -> Result<String, JsValue>;
+    pub fn decode_uri(encoded: &str) -> Result<JsString, JsValue>;
 
     /// The `encodeURI()` function encodes a Uniform Resource Identifier (URI)
     /// by replacing each instance of certain characters by one, two, three, or
@@ -56,9 +55,8 @@ extern {
     /// "surrogate" characters).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI
-    #[cfg(feature = "std")]
     #[wasm_bindgen(js_name = encodeURI)]
-    pub fn encode_uri(decoded: &str) -> String;
+    pub fn encode_uri(decoded: &str) -> JsString;
 
     /// The `eval()` function evaluates JavaScript code represented as a string.
     ///
@@ -119,7 +117,7 @@ extern {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
     #[wasm_bindgen(method)]
-    pub fn join(this: &Array, delimiter: &str) -> String;
+    pub fn join(this: &Array, delimiter: &str) -> JsString;
 
     /// The lastIndexOf() method returns the last index at which a given element can
     /// be found in the array, or -1 if it is not present. The array is searched
@@ -180,7 +178,7 @@ extern {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString
     #[wasm_bindgen(method, js_name = toString)]
-    pub fn to_string(this: &Array) -> String;
+    pub fn to_string(this: &Array) -> JsString;
 
     /// The unshift() method adds one or more elements to the beginning of an array
     /// and returns the new length of the array.
@@ -224,7 +222,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
     #[wasm_bindgen(method, getter, structural)]
-    pub fn name(this: &JsFunction) -> String;
+    pub fn name(this: &JsFunction) -> JsString;
 }
 
 // Number.
@@ -237,14 +235,14 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString
     #[wasm_bindgen(method, js_name = toLocaleString)]
-    pub fn to_locale_string(this: &Number, locale: String) -> String;
+    pub fn to_locale_string(this: &Number, locale: &str) -> JsString;
 
     /// The toPrecision() method returns a string representing the Number
     /// object to the specified precision.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toPrecision
     #[wasm_bindgen(catch, method, js_name = toPrecision)]
-    pub fn to_precision(this: &Number, precision: u8) -> Result<String, JsValue>;
+    pub fn to_precision(this: &Number, precision: u8) -> Result<JsString, JsValue>;
 
     /// The toFixed() method returns a string representing the Number
     /// object using fixed-point notation.
@@ -265,7 +263,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toString
     #[wasm_bindgen(catch, method, js_name = toString)]
-    pub fn to_string(this: &Number, radix: u8) -> Result<String, JsValue>;
+    pub fn to_string(this: &Number, radix: u8) -> Result<JsString, JsValue>;
 
     /// The valueOf() method returns the wrapped primitive value of
     /// a Number object.
@@ -300,13 +298,13 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toLocaleString
     #[wasm_bindgen(method, js_name = toLocaleString)]
-    pub fn to_locale_string(this: &Object) -> String;
+    pub fn to_locale_string(this: &Object) -> JsString;
 
     /// The toString() method returns a string representing the object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString
     #[wasm_bindgen(method, js_name = toString)]
-    pub fn to_string(this: &Object) -> String;
+    pub fn to_string(this: &Object) -> JsString;
 
     /// The isPrototypeOf() method checks if an object exists in another
     /// object's prototype chain.
@@ -324,16 +322,16 @@ extern {
 
     /// The valueOf() method returns the primitive value of the
     /// specified object.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf
     #[wasm_bindgen(method, js_name = valueOf)]
     pub fn value_of(this: &Object) -> Object;
 }
 
-// String
+// JsString
 #[wasm_bindgen]
 extern {
-    #[wasm_bindgen(js_name = String)]
+    #[wasm_bindgen(js_name = JsString)]
     pub type JsString;
 
     /// The slice() method extracts a section of a string and returns it as a
@@ -342,4 +340,32 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
     #[wasm_bindgen(method, js_class = "String")]
     pub fn slice(this: &JsString, start: u32, end: u32) -> JsString;
+}
+
+impl<'a> From<&'a str> for JsString {
+    fn from(s: &'a str) -> Self {
+        JsString {
+            obj: JsValue::from_str(s),
+        }
+    }
+}
+
+if_std! {
+    impl From<String> for JsString {
+        fn from(s: String) -> Self {
+            From::from(&*s)
+        }
+    }
+
+    impl<'a> From<&'a JsString> for String {
+        fn from(s: &'a JsString) -> Self {
+            s.obj.as_string().unwrap()
+        }
+    }
+
+    impl From<JsString> for String {
+        fn from(s: JsString) -> Self {
+            From::from(&s)
+        }
+    }
 }
