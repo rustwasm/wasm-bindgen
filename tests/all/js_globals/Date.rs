@@ -3,6 +3,34 @@
 use super::project;
 
 #[test]
+fn to_iso_string() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, JsString};
+
+            #[wasm_bindgen]
+            pub fn to_iso_string(this: &Date) -> JsString {
+                this.to_iso_string()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('05 October 2011 14:48 UTC');
+
+                assert.equal(wasm.to_iso_string(date), '2011-10-05T14:48:00.000Z');
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn to_json() {
     project()
         .file("src/lib.rs", r#"

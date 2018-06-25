@@ -376,7 +376,16 @@ extern {
 #[wasm_bindgen]
 extern {
     pub type Date;
-    
+
+    /// The toISOString() method returns a string in simplified extended ISO format (ISO
+    /// 8601), which is always 24 or 27 characters long (YYYY-MM-DDTHH:mm:ss.sssZ or
+    /// ±YYYYYY-MM-DDTHH:mm:ss.sssZ, respectively). The timezone is always zero UTC offset, 
+    /// as denoted by the suffix "Z"
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+    #[wasm_bindgen(method, js_name = toISOString)]
+    pub fn to_iso_string(this: &Date) -> JsString;
+
     /// The toJSON() method returns a string representation of the Date object.
     /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
