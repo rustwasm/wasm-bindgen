@@ -70,8 +70,8 @@ extern {
 extern {
     pub type Array;
 
-    /// The copyWithin() method shallow copies part of an array to another location in the same
-    /// array and returns it, without modifying its size.
+    /// The copyWithin() method shallow copies part of an array to another
+    /// location in the same array and returns it, without modifying its size.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin
     #[wasm_bindgen(method, js_name = copyWithin)]
@@ -84,29 +84,31 @@ extern {
     #[wasm_bindgen(method)]
     pub fn concat(this: &Array, array: &Array) -> Array;
 
-    /// The fill() method fills all the elements of an array from a start index to an
-    /// end index with a static value. The end index is not included.
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Array, value: JsValue, start: u32, end: u32) -> Array;
 
-    /// The length property of an object which is an instance of type Array sets or returns the number of elements in that array.
-    /// The value is an unsigned, 32-bit integer that is always numerically greater than the highest index in the array.
+    /// The length property of an object which is an instance of type Array
+    /// sets or returns the number of elements in that array. The value is an
+    /// unsigned, 32-bit integer that is always numerically greater than the
+    /// highest index in the array.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
     #[wasm_bindgen(method, getter, structural)]
     pub fn length(this: &Array) -> u32;
 
-    /// The indexOf() method returns the first index at which a given element can be
-    /// found in the array, or -1 if it is not present.
+    /// The indexOf() method returns the first index at which a given element
+    /// can be found in the array, or -1 if it is not present.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
     #[wasm_bindgen(method, js_name = indexOf)]
     pub fn index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
 
-    /// The includes() method determines whether an array includes a certain element,
-    /// returning true or false as appropriate.
+    /// The includes() method determines whether an array includes a certain
+    /// element, returning true or false as appropriate.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
     #[wasm_bindgen(method)]
@@ -119,45 +121,45 @@ extern {
     #[wasm_bindgen(method)]
     pub fn join(this: &Array, delimiter: &str) -> JsString;
 
-    /// The lastIndexOf() method returns the last index at which a given element can
-    /// be found in the array, or -1 if it is not present. The array is searched
-    /// backwards, starting at fromIndex.
+    /// The lastIndexOf() method returns the last index at which a given element
+    /// can be found in the array, or -1 if it is not present. The array is
+    /// searched backwards, starting at fromIndex.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
     #[wasm_bindgen(method, js_name = lastIndexOf)]
     pub fn last_index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
 
-    /// The pop() method removes the last element from an array and returns that element.
-    /// This method changes the length of the array.
+    /// The pop() method removes the last element from an array and returns that
+    /// element. This method changes the length of the array.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop
     #[wasm_bindgen(method)]
     pub fn pop(this: &Array) -> JsValue;
 
-    /// The push() method adds one or more elements to the end of an array and returns
-    /// the new length of the array.
+    /// The push() method adds one or more elements to the end of an array and
+    /// returns the new length of the array.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
     #[wasm_bindgen(method)]
     pub fn push(this: &Array, value: JsValue) -> u32;
 
-    /// The reverse() method reverses an array in place.
-    /// The first array element becomes the last, and the last array element becomes the first.
+    /// The reverse() method reverses an array in place. The first array
+    /// element becomes the last, and the last array element becomes the first.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse
     #[wasm_bindgen(method)]
     pub fn reverse(this: &Array) -> Array;
 
-    /// The slice() method returns a shallow copy of a portion of an array into a new array
-    /// object selected from begin to end (end not included).
+    /// The slice() method returns a shallow copy of a portion of an array into
+    /// a new array object selected from begin to end (end not included).
     /// The original array will not be modified.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
     #[wasm_bindgen(method)]
     pub fn slice(this: &Array, start: u32, end: u32) -> Array;
 
-    /// The shift() method removes the first element from an array and returns that removed element.
-    /// This method changes the length of the array.
+    /// The shift() method removes the first element from an array and returns
+    /// that removed element. This method changes the length of the array.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
     #[wasm_bindgen(method)]
@@ -174,14 +176,15 @@ extern {
     #[wasm_bindgen(method)]
     pub fn sort(this: &Array) -> Array;
 
-    /// The toString() method returns a string representing the specified array and its elements.
+    /// The toString() method returns a string representing the specified array
+    /// and its elements.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(this: &Array) -> JsString;
 
-    /// The unshift() method adds one or more elements to the beginning of an array
-    /// and returns the new length of the array.
+    /// The unshift() method adds one or more elements to the beginning of an
+    /// array and returns the new length of the array.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift
     #[wasm_bindgen(method)]
@@ -193,13 +196,15 @@ extern {
 extern {
     pub type ArrayIterator;
 
-    /// The keys() method returns a new Array Iterator object that contains the keys for each index in the array.
+    /// The keys() method returns a new Array Iterator object that contains the
+    /// keys for each index in the array.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
     #[wasm_bindgen(method)]
     pub fn keys(this: &Array) -> ArrayIterator;
 
-    /// The entries() method returns a new Array Iterator object that contains the key/value pairs for each index in the array.
+    /// The entries() method returns a new Array Iterator object that contains
+    /// the key/value pairs for each index in the array.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
     #[wasm_bindgen(method)]
@@ -217,8 +222,9 @@ extern {
     #[wasm_bindgen(method, getter, structural)]
     pub fn length(this: &JsFunction) -> u32;
 
-    /// A Function object's read-only name property indicates the function's name as specified when it was created
-    /// or "anonymous" for functions created anonymously.
+    /// A Function object's read-only name property indicates the function's
+    /// name as specified when it was created or "anonymous" for functions
+    /// created anonymously.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
     #[wasm_bindgen(method, getter, structural)]
@@ -314,8 +320,8 @@ extern {
     pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
 
     /// The toLocaleString() method returns a string representing the object.
-    /// This method is meant to be overridden by derived objects for locale-specific
-    /// purposes.
+    /// This method is meant to be overridden by derived objects for
+    /// locale-specific purposes.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toLocaleString
     #[wasm_bindgen(method, js_name = toLocaleString)]
