@@ -258,6 +258,14 @@ extern {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn acosh(number: i32) -> Number;
 
+    /// The Math.asin() function returns the arcsine (in radians) of a
+    /// number, that is ∀x ∊ [-1;1]
+    /// Math.asin(x) = arcsin(x) = the unique y∊[-π2;π2] such that sin(y) = x
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asin
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn asin(number: i32) -> Number;
+
 }
 
 // Number.
