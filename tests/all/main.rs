@@ -427,7 +427,6 @@ impl Project {
         if !Path::new("node_modules").exists() {
             panic!("\n\nfailed to find `node_modules`, have you run `npm install` yet?\n\n");
         }
-        fs::hard_link("package-lock.json", root.join("package-lock.json")).unwrap();
         let cwd = env::current_dir().unwrap();
         symlink_dir(&cwd.join("node_modules"), &root.join("node_modules")).unwrap();
 
