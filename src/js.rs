@@ -376,6 +376,13 @@ extern {
 #[wasm_bindgen]
 extern {
     pub type Date;
+    
+    /// The toUTCString() method converts a date to a string,
+    /// using the UTC time zone.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toUTCString
+    #[wasm_bindgen(method, js_name = toUTCString)]
+    pub fn to_utc_string(this: &Date) -> JsString;
 
     /// The valueOf() method  returns the primitive value of
     /// a Date object.
