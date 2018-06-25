@@ -250,6 +250,14 @@ extern {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn acos(adjacent: i32, hypotenuse: i32) -> Number;
 
+    /// The Math.acosh() function returns the hyperbolic arc-cosine of a
+    /// number, that is ∀x ≥ 1
+    /// Math.acosh(x) = arcosh(x) = the unique y ≥ 0 such that cosh(y) = x
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acosh
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn acosh(number: i32) -> Number;
+
 }
 
 // Number.
