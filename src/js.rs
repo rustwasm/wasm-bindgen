@@ -302,6 +302,12 @@ extern {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn cbrt(x: i32) -> Number;
 
+    /// The Math.ceil() function returns the smallest integer greater than
+    /// or equal to a given number.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn ceil(x: f32) -> Number;
 }
 
 // Number.

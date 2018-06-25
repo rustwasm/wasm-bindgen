@@ -238,3 +238,30 @@ fn cbrt() {
         "#)
         .test()
 }
+
+#[test]
+fn ceil() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn ceil(x: f32) -> js::Number {
+                js::Math::ceil(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.ceil(1.1), 2);
+                assert.equal(wasm.ceil(-1.1), -1);
+            }
+        "#)
+        .test()
+}
