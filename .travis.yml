@@ -69,7 +69,14 @@ matrix:
 
     # Build the guide.
     - rust: stable
-      script: (cd guide && cargo install mdbook --vers "^0.1.0" && mdbook build)
+      cache:
+        - cargo
+      before_script:
+        - (test -x $HOME/.cargo/bin/cargo-install-update || cargo install cargo-update)
+        - (test -x $HOME/.cargo/bin/mdbook || cargo install --vers "^0.1" mdbook)
+        - cargo install-update -a
+      script:
+        - (cd guide && mdbook build)
       deploy:
         provider: pages
         skip-cleanup: true
