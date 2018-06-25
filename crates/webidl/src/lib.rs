@@ -18,19 +18,19 @@ extern crate syn;
 extern crate wasm_bindgen_backend as backend;
 extern crate webidl;
 
+mod util;
+
 use std::fs;
 use std::io::{self, Read};
-use std::iter;
 use std::path::Path;
 
+use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::ResultExt;
 use quote::ToTokens;
 
-mod util;
-
 use util::{
-    create_basic_method, create_function, create_getter, create_setter, ident_ty, rust_ident,
-    webidl_ty_to_syn_ty, wrap_import_function, TypePosition,
+    create_basic_method, create_function, create_getter, create_setter, webidl_ty_to_syn_ty,
+    TypePosition,
 };
 
 /// Either `Ok(t)` or `Err(failure::Error)`.
