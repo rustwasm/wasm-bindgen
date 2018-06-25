@@ -132,8 +132,8 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_object_drop_ref", &|me| {
             me.expose_drop_ref();
-            Ok("function(i) { 
-                dropRef(i); 
+            Ok("function(i) {
+                dropRef(i);
             }".to_string())
         })?;
 
@@ -149,8 +149,8 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_number_new", &|me| {
             me.expose_add_heap_object();
-            Ok(String::from("function(i) { 
-                return addHeapObject(i); 
+            Ok(String::from("function(i) {
+                return addHeapObject(i);
             }"))
         })?;
 
@@ -169,8 +169,8 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_undefined_new", &|me| {
             me.expose_add_heap_object();
-            Ok(String::from("function() { 
-                return addHeapObject(undefined); 
+            Ok(String::from("function() {
+                return addHeapObject(undefined);
             }"))
         })?;
 
@@ -365,7 +365,7 @@ impl<'a> Context<'a> {
                                               module_name));
                 format!("var wasm;")
             } else {
-                format!("import * as wasm from './{}_bg';", module_name)
+                format!("import * as wasm from './{}_bg.wasm';", module_name)
             };
 
             format!("\
