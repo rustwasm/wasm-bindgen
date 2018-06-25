@@ -294,6 +294,14 @@ extern {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn atanh(x: i32) -> Number;
 
+
+    /// The Math.cbrt() function returns the cube root of a number, that is
+    /// Math.cbrt(x) = x^3 = the unique y such that y^3 = x
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cbrt
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn cbrt(x: i32) -> Number;
+
 }
 
 // Number.
