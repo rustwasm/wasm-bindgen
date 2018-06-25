@@ -266,6 +266,14 @@ extern {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn asin(number: i32) -> Number;
 
+    /// The Math.asinh() function returns the hyperbolic arcsine of a
+    /// number, that is Math.asinh(x) = arsinh(x) = the unique y such that sinh(y) = x
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asinh
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn asinh(number: i32) -> Number;
+
+
 }
 
 // Number.
