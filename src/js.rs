@@ -377,6 +377,13 @@ extern {
 extern {
     pub type Date;
 
+    /// The toString() method returns a string representing
+    /// the specified Date object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toString
+    #[wasm_bindgen(method, js_name = toString)]
+    pub fn to_string(this: &Date) -> JsString;
+
     /// The toTimeString() method returns the time portion of a Date object in human
     /// readable form in American English.
     ///
