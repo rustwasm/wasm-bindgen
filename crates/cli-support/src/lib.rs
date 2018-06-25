@@ -403,11 +403,11 @@ fn indent_recurse(mut lines: ::std::str::Lines, current_indent: usize) -> String
             next_indent += 1;
         }
         if trimmed.starts_with('}') || trimmed.ends_with('}') {
-            if current_indent > 0 { 
-                current_indent -= 1; 
+            if current_indent > 0 {
+                current_indent -= 1;
             }
-            if next_indent > 0 { 
-                next_indent -= 1; 
+            if next_indent > 0 {
+                next_indent -= 1;
             }
         }
         if trimmed.starts_with('?') || trimmed.starts_with(':') {
