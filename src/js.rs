@@ -77,7 +77,7 @@ extern {
     #[wasm_bindgen(method, js_name = copyWithin)]
     pub fn copy_within(this: &Array, target: i32, start: i32, end: i32) -> Array;
 
-    ///The concat() method is used to merge two or more arrays. This method
+    /// The concat() method is used to merge two or more arrays. This method
     /// does not change the existing arrays, but instead returns a new array.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat
