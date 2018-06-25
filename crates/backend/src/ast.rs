@@ -2,6 +2,7 @@ use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
 use syn;
+use util;
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Default)]
@@ -412,6 +413,11 @@ impl Program {
                 ty: class.clone(),
                 kind: MethodKind::Normal,
             }
+        } else if let Some(cls) = wasm.opts.static_method_of() {
+            let class = cls.to_string();
+            let kind = MethodKind::Static;
+            let ty = util::ident_ty(cls.clone());
+            ImportFunctionKind::Method { class, ty, kind }
         } else if wasm.opts.constructor() {
             let class = match wasm.ret {
                 Some(ref ty) => ty,
@@ -794,7 +800,7 @@ impl Struct {
                     ty: field.ty.clone(),
                     getter: Ident::new(&getter, Span::call_site()),
                     setter: Ident::new(&setter, Span::call_site()),
-                    comments
+                    comments,
                 });
             }
         }
@@ -886,6 +892,16 @@ impl BindgenAttrs {
             BindgenAttr::Constructor => true,
             _ => false,
         })
+    }
+
+    fn static_method_of(&self) -> Option<&Ident> {
+        self.attrs
+            .iter()
+            .filter_map(|a| match a {
+                BindgenAttr::StaticMethodOf(c) => Some(c),
+                _ => None,
+            })
+            .next()
     }
 
     fn method(&self) -> bool {
@@ -980,6 +996,7 @@ pub enum BindgenAttr {
     Catch,
     Constructor,
     Method,
+    StaticMethodOf(Ident),
     JsNamespace(Ident),
     Module(String),
     Version(String),
@@ -998,6 +1015,13 @@ impl syn::synom::Synom for BindgenAttr {
         call!(term, "constructor") => { |_| BindgenAttr::Constructor }
         |
         call!(term, "method") => { |_| BindgenAttr::Method }
+        |
+        do_parse!(
+            call!(term, "static_method_of") >>
+            punct!(=) >>
+            cls: call!(term2ident) >>
+            (cls)
+        )=> { BindgenAttr::StaticMethodOf }
         |
         do_parse!(
             call!(term, "getter") >>

@@ -1,63 +1,11 @@
-use std::iter::{self, FromIterator};
+use std::iter;
 
 use backend;
+use backend::util::{ident_ty, raw_ident, rust_ident, simple_path_ty};
 use heck::SnakeCase;
-use proc_macro2::{self, Ident};
+use proc_macro2::Ident;
 use syn;
 use webidl;
-
-fn is_rust_keyword(name: &str) -> bool {
-    match name {
-        "abstract" | "alignof" | "as" | "become" | "box" | "break" | "const" | "continue"
-        | "crate" | "do" | "else" | "enum" | "extern" | "false" | "final" | "fn" | "for" | "if"
-        | "impl" | "in" | "let" | "loop" | "macro" | "match" | "mod" | "move" | "mut"
-        | "offsetof" | "override" | "priv" | "proc" | "pub" | "pure" | "ref" | "return"
-        | "Self" | "self" | "sizeof" | "static" | "struct" | "super" | "trait" | "true"
-        | "type" | "typeof" | "unsafe" | "unsized" | "use" | "virtual" | "where" | "while"
-        | "yield" | "bool" | "_" => true,
-        _ => false,
-    }
-}
-
-// Create an `Ident`, possibly mangling it if it conflicts with a Rust keyword.
-pub fn rust_ident(name: &str) -> Ident {
-    if is_rust_keyword(name) {
-        Ident::new(&format!("{}_", name), proc_macro2::Span::call_site())
-    } else {
-        raw_ident(name)
-    }
-}
-
-// Create an `Ident` without checking to see if it conflicts with a Rust
-// keyword.
-fn raw_ident(name: &str) -> Ident {
-    Ident::new(name, proc_macro2::Span::call_site())
-}
-
-fn simple_path_ty<I>(segments: I) -> syn::Type
-where
-    I: IntoIterator<Item = Ident>,
-{
-    let segments: Vec<_> = segments
-        .into_iter()
-        .map(|i| syn::PathSegment {
-            ident: i,
-            arguments: syn::PathArguments::None,
-        })
-        .collect();
-
-    syn::TypePath {
-        qself: None,
-        path: syn::Path {
-            leading_colon: None,
-            segments: syn::punctuated::Punctuated::from_iter(segments),
-        },
-    }.into()
-}
-
-pub fn ident_ty(ident: Ident) -> syn::Type {
-    simple_path_ty(Some(ident))
-}
 
 fn shared_ref(ty: syn::Type) -> syn::Type {
     syn::TypeReference {
@@ -336,13 +284,4 @@ pub fn create_setter(
         None,
         vec![backend::ast::BindgenAttr::Setter(Some(raw_ident(name)))],
     )
-}
-
-pub fn wrap_import_function(function: backend::ast::ImportFunction) -> backend::ast::Import {
-    backend::ast::Import {
-        module: None,
-        version: None,
-        js_namespace: None,
-        kind: backend::ast::ImportKind::Function(function),
-    }
 }

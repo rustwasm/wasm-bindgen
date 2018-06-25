@@ -278,12 +278,6 @@ extern {
 extern {
     pub type Object;
 
-    /// The Object constructor creates an object wrapper.
-    ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> Object;
-
     /// The `hasOwnProperty()` method returns a boolean indicating whether the
     /// object has the specified property as its own property (as opposed to
     /// inheriting it).
@@ -291,6 +285,33 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty
     #[wasm_bindgen(method, js_name = hasOwnProperty)]
     pub fn has_own_property(this: &Object, property: &JsValue) -> bool;
+
+    /// The isPrototypeOf() method checks if an object exists in another
+    /// object's prototype chain.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isPrototypeOf
+    #[wasm_bindgen(method, js_name = isPrototypeOf)]
+    pub fn is_prototype_of(this: &Object, value: &JsValue) -> bool;
+
+    /// The Object.keys() method returns an array of a given object's property
+    /// names, in the same order as we get with a normal loop.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn keys(object: &Object) -> Array;
+
+    /// The Object constructor creates an object wrapper.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Object;
+
+    /// The propertyIsEnumerable() method returns a Boolean indicating
+    /// whether the specified property is enumerable.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable
+    #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
+    pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
 
     /// The toLocaleString() method returns a string representing the object.
     /// This method is meant to be overridden by derived objects for locale-specific
@@ -306,20 +327,6 @@ extern {
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(this: &Object) -> JsString;
 
-    /// The isPrototypeOf() method checks if an object exists in another
-    /// object's prototype chain.
-    ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isPrototypeOf
-    #[wasm_bindgen(method, js_name = isPrototypeOf)]
-    pub fn is_prototype_of(this: &Object, value: &JsValue) -> bool;
-
-    /// The propertyIsEnumerable() method returns a Boolean indicating
-    /// whether the specified property is enumerable.
-    ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable
-    #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
-    pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
-
     /// The valueOf() method returns the primitive value of the
     /// specified object.
     ///
@@ -333,6 +340,13 @@ extern {
 extern {
     #[wasm_bindgen(js_name = JsString)]
     pub type JsString;
+
+    /// The String object's charAt() method returns a new string consisting of the single
+    /// UTF-16 code unit located at the specified offset into the string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
+    #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
+    pub fn char_at(this: &JsString, index: u32) -> JsString;
 
     /// The slice() method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
