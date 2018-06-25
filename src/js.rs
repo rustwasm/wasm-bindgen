@@ -279,6 +279,13 @@ extern {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn atan(number: i32) -> Number;
 
+    /// The Math.atan2() function returns the arctangent of the quotient of
+    /// its arguments.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn atan2(y: i32, x: i32) -> Number;
+
 }
 
 // Number.
