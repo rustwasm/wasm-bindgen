@@ -286,6 +286,14 @@ extern {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn atan2(y: i32, x: i32) -> Number;
 
+    /// The Math.atanh() function returns the hyperbolic arctangent of a number,
+    /// that is ∀x ∊ (-1,1), Math.atanh(x) = arctanh(x) = the unique y such that
+    /// tanh(y) = x
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atanh
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn atanh(x: i32) -> Number;
+
 }
 
 // Number.
