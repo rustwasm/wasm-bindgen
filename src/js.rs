@@ -376,6 +376,12 @@ extern {
 #[wasm_bindgen]
 extern {
     pub type Date;
+    
+    /// The toJSON() method returns a string representation of the Date object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
+    #[wasm_bindgen(method, js_name = toJSON)]
+    pub fn to_json(this: &Date) -> JsString;
 
     /// The toLocaleDateString() method returns a string with a language sensitive
     /// representation of the date portion of this date. The new locales and options
