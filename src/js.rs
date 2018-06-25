@@ -372,6 +372,19 @@ extern {
     pub fn value_of(this: &Number) -> Number;
 }
 
+// Date.
+#[wasm_bindgen]
+extern {
+    pub type Date;
+
+    /// The valueOf() method  returns the primitive value of
+    /// a Date object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/valueOf
+    #[wasm_bindgen(method, js_name = valueOf)]
+    pub fn value_of(this: &Date) -> Date;
+}
+
 // Object.
 #[wasm_bindgen]
 extern {

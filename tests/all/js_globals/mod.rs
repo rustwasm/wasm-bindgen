@@ -9,6 +9,7 @@ mod JsFunction;
 mod JsString;
 mod Number;
 mod Math;
+mod Date;
 
 #[test]
 #[cfg(feature = "std")]
