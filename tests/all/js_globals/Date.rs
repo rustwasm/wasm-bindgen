@@ -3,6 +3,34 @@
 use super::project;
 
 #[test]
+fn to_date_string() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, JsString};
+
+            #[wasm_bindgen]
+            pub fn to_date_string(this: &Date) -> JsString {
+                this.to_date_string()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date(1993, 6, 28, 14, 39, 7);
+
+                assert.equal(wasm.to_date_string(date), 'Wed Jul 28 1993');
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn to_iso_string() {
     project()
         .file("src/lib.rs", r#"
@@ -82,7 +110,7 @@ fn to_locale_date_string() {
                 let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
                 let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
-                assert.equal(wasm.to_locale_date_string(date, 'de-DE', options), '2012 M12 20, Thu');
+                assert.equal(wasm.to_locale_date_string(date, 'de-DE', options), 'Thursday, December 20, 2012');
             }
         "#)
         .test()

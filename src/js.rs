@@ -377,6 +377,13 @@ extern {
 extern {
     pub type Date;
 
+    /// The toDateString() method returns the date portion of a Date object
+    /// in human readable form in American English.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toDateString
+    #[wasm_bindgen(method, js_name = toDateString)]
+    pub fn to_date_string(this: &Date) -> JsString;
+
     /// The toISOString() method returns a string in simplified extended ISO format (ISO
     /// 8601), which is always 24 or 27 characters long (YYYY-MM-DDTHH:mm:ss.sssZ or
     /// ±YYYYYY-MM-DDTHH:mm:ss.sssZ, respectively). The timezone is always zero UTC offset, 
