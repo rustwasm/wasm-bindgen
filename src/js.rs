@@ -376,7 +376,14 @@ extern {
 #[wasm_bindgen]
 extern {
     pub type Date;
-    
+
+    /// The toTimeString() method returns the time portion of a Date object in human
+    /// readable form in American English.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toTimeString
+    #[wasm_bindgen(method, js_name = toTimeString)]
+    pub fn to_time_string(this: &Date) -> JsString;
+
     /// The toUTCString() method converts a date to a string,
     /// using the UTC time zone.
     ///

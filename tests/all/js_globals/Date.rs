@@ -3,6 +3,33 @@
 use super::project;
 
 #[test]
+fn to_time_string() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, JsString};
+
+            #[wasm_bindgen]
+            pub fn to_time_string(this: &Date) -> JsString {
+                this.to_time_string()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('August 19, 1975 23:15:30');
+                assert.equal(wasm.to_time_string(date).substring(0, 8), "23:15:30");
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn to_utc_string() {
     project()
         .file("src/lib.rs", r#"
