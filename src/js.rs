@@ -231,6 +231,18 @@ extern {
     pub fn name(this: &JsFunction) -> JsString;
 }
 
+// Math
+#[wasm_bindgen]
+extern {
+    pub type Math;
+    /// The Math.abs() function returns the absolute value of a number, that is
+    /// Math.abs(x) = |x|
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/abs
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn abs(number: i32) -> Number;
+}
+
 // Number.
 #[wasm_bindgen]
 extern {
