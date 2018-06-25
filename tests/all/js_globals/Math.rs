@@ -265,3 +265,30 @@ fn ceil() {
         "#)
         .test()
 }
+
+#[test]
+fn clz32() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn clz32(x: i32) -> js::Number {
+                js::Math::clz32(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.clz32(1), 31);
+                assert.equal(wasm.clz32(1000), 22);
+            }
+        "#)
+        .test()
+}

@@ -308,6 +308,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil
     #[wasm_bindgen(static_method_of = Math)]
     pub fn ceil(x: f32) -> Number;
+
+    /// The Math.clz32() function returns the number of leading zero bits in
+    /// the 32-bit binary representation of a number.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/clz32
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn clz32(x: i32) -> Number;
 }
 
 // Number.
