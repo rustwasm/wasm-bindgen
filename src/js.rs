@@ -91,6 +91,13 @@ extern {
     #[wasm_bindgen(method)]
     pub fn fill(this: &Array, value: JsValue, start: u32, end: u32) -> Array;
 
+    /// The `filter()` method creates a new array with all elements that pass the
+    /// test implemented by the provided function.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+    #[wasm_bindgen(method)]
+    pub fn filter(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> Array;
+
     /// The length property of an object which is an instance of type Array
     /// sets or returns the number of elements in that array. The value is an
     /// unsigned, 32-bit integer that is always numerically greater than the

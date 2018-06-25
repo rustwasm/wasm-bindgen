@@ -3,6 +3,39 @@
 use project;
 
 #[test]
+fn filter() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn keep_numbers(array: &js::Array) -> js::Array {
+                array.filter(&mut |x, _, _| x.as_f64().is_some())
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let characters = ["a", "c", "x", "n"];
+                let numbers = [1, 2, 3, 4];
+                let mixed = ["a", 1, "b", 2];
+
+                assert.deepStrictEqual(wasm.keep_numbers(characters), []);
+                assert.deepStrictEqual(wasm.keep_numbers(numbers), numbers);
+                assert.deepStrictEqual(wasm.keep_numbers(mixed), [1, 2]);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn index_of() {
     project()
         .file("src/lib.rs", r#"
