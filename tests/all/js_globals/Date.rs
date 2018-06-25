@@ -3,6 +3,34 @@
 use super::project;
 
 #[test]
+fn to_locale_string() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use JsValue;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, JsString};
+
+            #[wasm_bindgen]
+            pub fn to_locale_string(this: &Date, locale: JsString, options: JsValue) -> JsString {
+                this.to_locale_string(locale, options)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
+                assert.equal(wasm.to_locale_string(date, 'en-GB', { timeZone: 'UTC' }), "12/20/2012, 3:00:00 AM");
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn to_locale_time_string() {
     project()
         .file("src/lib.rs", r#"

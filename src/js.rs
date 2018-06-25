@@ -376,7 +376,19 @@ extern {
 #[wasm_bindgen]
 extern {
     pub type Date;
-    
+
+    /// The toLocaleString() method returns a string with a language sensitive 
+    /// representation of this date. The new locales and options arguments 
+    /// let applications specify the language whose formatting conventions 
+    /// should be used and customize the behavior of the function. 
+    /// In older implementations, which ignore the locales 
+    /// and options arguments, the locale used and the form of the string 
+    /// returned are entirely implementation dependent.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
+    #[wasm_bindgen(method, js_name = toLocaleString)]
+    pub fn to_locale_string(this: &Date, locale: JsString, options: JsValue) -> JsString;
+
     /// The toLocaleTimeString() method returns a string with a language sensitive
     /// representation of the time portion of this date. The new locales and options
     /// arguments let applications specify the language whose formatting conventions should be
