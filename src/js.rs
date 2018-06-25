@@ -359,7 +359,6 @@ extern {
     /// the start index and a number of characters after it.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
-    /// TODO: Add `NaN` and `undefined` support
     #[wasm_bindgen(method, js_class = "String")]
     pub fn substr(this: &JsString, start: i32, length: i32) -> JsString;
 }
