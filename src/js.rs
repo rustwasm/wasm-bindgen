@@ -376,6 +376,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring
     #[wasm_bindgen(method, js_class = "String")]
     pub fn substring(this: &JsString, index_start: u32, index_end: u32) -> JsString;
+
+    /// The substr() method returns the part of a string between
+    /// the start index and a number of characters after it.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn substr(this: &JsString, start: i32, length: i32) -> JsString;
 }
 
 impl<'a> From<&'a str> for JsString {
