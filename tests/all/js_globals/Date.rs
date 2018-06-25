@@ -3,6 +3,33 @@
 use super::project;
 
 #[test]
+fn to_locale_time_string() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, JsString};
+
+            #[wasm_bindgen]
+            pub fn to_locale_time_string(this: &Date, locale: JsString) -> JsString {
+                this.to_locale_time_string(locale)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('August 19, 1975 23:15:30');
+                assert.equal(wasm.to_locale_time_string(date, 'en-US'), "11:15:30 PM");
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn to_string() {
     project()
         .file("src/lib.rs", r#"
