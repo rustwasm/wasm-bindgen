@@ -77,7 +77,7 @@ extern {
     #[wasm_bindgen(method, js_name = copyWithin)]
     pub fn copy_within(this: &Array, target: i32, start: i32, end: i32) -> Array;
 
-    ///The concat() method is used to merge two or more arrays. This method
+    /// The concat() method is used to merge two or more arrays. This method
     /// does not change the existing arrays, but instead returns a new array.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat
@@ -90,6 +90,13 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Array, value: JsValue, start: u32, end: u32) -> Array;
+
+    /// The `filter()` method creates a new array with all elements that pass the
+    /// test implemented by the provided function.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+    #[wasm_bindgen(method)]
+    pub fn filter(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> Array;
 
     /// The length property of an object which is an instance of type Array
     /// sets or returns the number of elements in that array. The value is an
