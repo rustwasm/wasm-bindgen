@@ -273,6 +273,11 @@ extern {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn asinh(number: i32) -> Number;
 
+    /// The Math.atan() function returns the arctangent (in radians) of a
+    /// number, that is Math.atan(x) = arctan(x) = the unique y ∊ [-π2;π2]such that
+    /// tan(y) = x
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn atan(number: i32) -> Number;
 
 }
 
