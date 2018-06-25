@@ -341,6 +341,13 @@ extern {
     #[wasm_bindgen(js_name = JsString)]
     pub type JsString;
 
+    /// The String object's charAt() method returns a new string consisting of the single
+    /// UTF-16 code unit located at the specified offset into the string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
+    #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
+    pub fn char_at(this: &JsString, index: u32) -> JsString;
+
     /// The slice() method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///
@@ -348,12 +355,12 @@ extern {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn slice(this: &JsString, start: u32, end: u32) -> JsString;
 
-    /// The String object's charAt() method returns a new string consisting of the single
-    /// UTF-16 code unit located at the specified offset into the string.
+    /// The substr() method returns the part of a string between
+    /// the start index and a number of characters after it.
     ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
-    #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
-    pub fn char_at(this: &JsString, index: u32) -> JsString;
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn substr(this: &JsString, start: i32, length: i32) -> JsString;
 }
 
 impl<'a> From<&'a str> for JsString {
