@@ -55,7 +55,6 @@ pub struct SubContext<'a, 'b: 'a> {
 
 impl<'a> Context<'a> {
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
-        let contents = contents;
         let contents = contents.trim();
         if let Some(ref c) = comments {
             self.globals.push_str(c);
