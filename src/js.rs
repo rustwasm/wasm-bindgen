@@ -241,6 +241,15 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/abs
     #[wasm_bindgen(static_method_of = Math)]
     pub fn abs(number: i32) -> Number;
+
+    /// The Math.acos() function returns the arccosine (in radians) of a
+    /// number, that is ∀x∊[-1;1]
+    /// Math.acos(x) = arccos(x) = the unique y∊[0;π] such that cos(y)=x
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acos
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn acos(adjacent: i32, hypotenuse: i32) -> Number;
+
 }
 
 // Number.
