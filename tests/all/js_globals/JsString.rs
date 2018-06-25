@@ -32,6 +32,115 @@ fn char_at() {
 }
 
 #[test]
+fn starts_with() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_starts_with(this: &js::JsString, search_string: &js::JsString, position: u32) -> bool {
+                this.starts_with(search_string, position)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "To be, or not to be, that is the question.";
+
+                // TODO: remove second parameter for both assertions once we have optional parameters
+                assert.ok(wasm.string_starts_with(str, 'To be', 0));
+                assert.ok(!wasm.string_starts_with(str, 'not to be', 0));
+                assert.ok(wasm.string_starts_with(str, 'not to be', 10));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn substring() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_substring(this: &js::JsString, index_start: u32, index_end: u32) -> js::JsString {
+                this.substring(index_start, index_end)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let anyString = "Mozilla";
+
+                assert.equal(wasm.string_substring(anyString, 0, 1), 'M');
+                assert.equal(wasm.string_substring(anyString, 1, 0), 'M');
+
+                assert.equal(wasm.string_substring(anyString, 0, 6), 'Mozill');
+
+                // TODO: Add test once we have optional parameters
+                // assert.equal(wasm.string_substring(anyString, 4), 'lla');
+                assert.equal(wasm.string_substring(anyString, 4, 7), 'lla');
+                assert.equal(wasm.string_substring(anyString, 7, 4), 'lla');
+
+                assert.equal(wasm.string_substring(anyString, 0, 7), 'Mozilla');
+                assert.equal(wasm.string_substring(anyString, 0, 10), 'Mozilla');
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn index_of() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_index_of(this: &js::JsString, search_value: &js::JsString, from_index: i32) -> i32 {
+                this.index_of(search_value, from_index)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "Blue Whale";
+
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_index_of(str, 'Blue', 0), 0);
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_index_of(str, 'Blute', 0), -1);
+                assert.equal(wasm.string_index_of(str, 'Whale', 0), 5);
+                assert.equal(wasm.string_index_of(str, 'Whale', 5), 5);
+                assert.equal(wasm.string_index_of(str, 'Whale', 7), -1);
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_index_of(str, '', 0), 0);
+                assert.equal(wasm.string_index_of(str, '', 9), 9);
+                assert.equal(wasm.string_index_of(str, '', 10), 10);
+                assert.equal(wasm.string_index_of(str, '', 11), 10);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn slice() {
     project()
         .file("src/lib.rs", r#"

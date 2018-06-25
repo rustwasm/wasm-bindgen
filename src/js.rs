@@ -348,12 +348,34 @@ extern {
     #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
     pub fn char_at(this: &JsString, index: u32) -> JsString;
 
+    /// The indexOf() method returns the index within the calling String object of
+    /// the first occurrence of the specified value, starting the search at fromIndex.
+    /// Returns -1 if the value is not found.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
+    #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
+    pub fn index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
+
     /// The slice() method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
     #[wasm_bindgen(method, js_class = "String")]
     pub fn slice(this: &JsString, start: u32, end: u32) -> JsString;
+
+    /// The startsWith() method determines whether a string begins with the characters
+    /// of a specified string, returning true or false as appropriate.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
+    #[wasm_bindgen(method, js_class = "String", js_name = startsWith)]
+    pub fn starts_with(this: &JsString, search_string: &JsString, position: u32) -> bool;
+
+    /// The substring() method returns the part of the string between the start and end indexes,
+    /// or to the end of the string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn substring(this: &JsString, index_start: u32, index_end: u32) -> JsString;
 
     /// The substr() method returns the part of a string between
     /// the start index and a number of characters after it.
