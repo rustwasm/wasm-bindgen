@@ -131,6 +131,12 @@ extern {
     #[wasm_bindgen(method, js_name = indexOf)]
     pub fn index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
 
+    /// The Array.isArray() method determines whether the passed value is an Array.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+    #[wasm_bindgen(static_method_of = Array, js_name = isArray)]
+    pub fn is_array(value: &JsValue) -> bool;
+
     /// The join() method joins all elements of an array (or an array-like object)
     /// into a string and returns this string.
     ///
