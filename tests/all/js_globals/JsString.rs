@@ -32,6 +32,35 @@ fn char_at() {
 }
 
 #[test]
+fn char_code_at() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_char_code_at(this: &js::JsString, index: u32) -> js::Number {
+                this.char_code_at(index)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            var anyString = 'Brave new world';
+
+            export function test() {
+                assert.equal(wasm.string_char_code_at(anyString, 0), 66);
+                assert.ok(isNaN(wasm.string_char_code_at(anyString, 999)));
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn starts_with() {
     project()
         .file("src/lib.rs", r#"
