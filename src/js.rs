@@ -391,6 +391,105 @@ extern {
     pub fn value_of(this: &Number) -> Number;
 }
 
+// Date.
+#[wasm_bindgen]
+extern {
+    pub type Date;
+
+    /// Creates a JavaScript Date instance that represents 
+    /// a single moment in time. Date objects are based on a time value that is 
+    /// the number of milliseconds since 1 January 1970 UTC.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Date;
+
+    /// The toDateString() method returns the date portion of a Date object
+    /// in human readable form in American English.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toDateString
+    #[wasm_bindgen(method, js_name = toDateString)]
+    pub fn to_date_string(this: &Date) -> JsString;
+
+    /// The toISOString() method returns a string in simplified extended ISO format (ISO
+    /// 8601), which is always 24 or 27 characters long (YYYY-MM-DDTHH:mm:ss.sssZ or
+    /// ±YYYYYY-MM-DDTHH:mm:ss.sssZ, respectively). The timezone is always zero UTC offset, 
+    /// as denoted by the suffix "Z"
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+    #[wasm_bindgen(method, js_name = toISOString)]
+    pub fn to_iso_string(this: &Date) -> JsString;
+
+    /// The toJSON() method returns a string representation of the Date object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
+    #[wasm_bindgen(method, js_name = toJSON)]
+    pub fn to_json(this: &Date) -> JsString;
+
+    /// The toLocaleDateString() method returns a string with a language sensitive
+    /// representation of the date portion of this date. The new locales and options
+    /// arguments let applications specify the language whose formatting conventions
+    /// should be used and allow to customize the behavior of the function.
+    /// In older implementations, which ignore the locales and options arguments,
+    /// the locale used and the form of the string
+    /// returned are entirely implementation dependent.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
+    #[wasm_bindgen(method, js_name = toLocaleDateString)]
+    pub fn to_locale_date_string(this: &Date, locale: JsString, options: JsValue) -> JsString;
+
+    /// The toLocaleString() method returns a string with a language sensitive 
+    /// representation of this date. The new locales and options arguments 
+    /// let applications specify the language whose formatting conventions 
+    /// should be used and customize the behavior of the function. 
+    /// In older implementations, which ignore the locales 
+    /// and options arguments, the locale used and the form of the string 
+    /// returned are entirely implementation dependent.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
+    #[wasm_bindgen(method, js_name = toLocaleString)]
+    pub fn to_locale_string(this: &Date, locale: JsString, options: JsValue) -> JsString;
+
+    /// The toLocaleTimeString() method returns a string with a language sensitive
+    /// representation of the time portion of this date. The new locales and options
+    /// arguments let applications specify the language whose formatting conventions should be
+    /// used and customize the behavior of the function. In older implementations, which ignore
+    /// the locales and options arguments, the locale used and the form of the string
+    /// returned are entirely implementation dependent.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
+    #[wasm_bindgen(method, js_name = toLocaleTimeString)]
+    pub fn to_locale_time_string(this: &Date, locale: JsString) -> JsString;
+
+    /// The toString() method returns a string representing
+    /// the specified Date object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toString
+    #[wasm_bindgen(method, js_name = toString)]
+    pub fn to_string(this: &Date) -> JsString;
+
+    /// The toTimeString() method returns the time portion of a Date object in human
+    /// readable form in American English.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toTimeString
+    #[wasm_bindgen(method, js_name = toTimeString)]
+    pub fn to_time_string(this: &Date) -> JsString;
+
+    /// The toUTCString() method converts a date to a string,
+    /// using the UTC time zone.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toUTCString
+    #[wasm_bindgen(method, js_name = toUTCString)]
+    pub fn to_utc_string(this: &Date) -> JsString;
+
+    /// The valueOf() method  returns the primitive value of
+    /// a Date object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/valueOf
+    #[wasm_bindgen(method, js_name = valueOf)]
+    pub fn value_of(this: &Date) -> Date;
+}
+
 // Object.
 #[wasm_bindgen]
 extern {
