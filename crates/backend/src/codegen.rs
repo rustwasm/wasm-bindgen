@@ -583,7 +583,7 @@ impl ToTokens for ast::ImportFunction {
                     subpat: None,
                     ..
                 }) => ident.clone(),
-                _ => panic!("unsupoported pattern in foreign function"),
+                _ => panic!("unsupported pattern in foreign function"),
             };
 
             abi_argument_names.push(name.clone());

@@ -64,6 +64,35 @@ fn concat() {
 }
 
 #[test]
+fn char_code_at() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_char_code_at(this: &js::JsString, index: u32) -> js::Number {
+                this.char_code_at(index)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            var anyString = 'Brave new world';
+
+            export function test() {
+                assert.equal(wasm.string_char_code_at(anyString, 0), 66);
+                assert.ok(isNaN(wasm.string_char_code_at(anyString, 999)));
+            }
+        "#)
+        .test()
+}
+  
+#[test]
 fn starts_with() {
     project()
         .file("src/lib.rs", r#"
@@ -232,6 +261,41 @@ fn substr() {
                 // assert.equal(wasm.create_substr(aString, 1), "ozilla");
                 assert.equal(wasm.create_substr(aString, -20, 2), "Mo");
                 assert.equal(wasm.create_substr(aString, 20, 2), "");
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn includes() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_includes(this: &js::JsString, search_value: &js::JsString, position: i32) -> bool {
+                this.includes(search_value, position)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "Blue Whale";
+
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_includes(str, 'Blue', 0), true);
+                assert.equal(wasm.string_includes(str, 'Blute', 0), false);
+                assert.equal(wasm.string_includes(str, 'Whale', 0), true);
+                assert.equal(wasm.string_includes(str, 'Whale', 5), true);
+                assert.equal(wasm.string_includes(str, 'Whale', 7), false);
+                assert.equal(wasm.string_includes(str, '', 0), true);
+                assert.equal(wasm.string_includes(str, '', 16), true);
             }
         "#)
         .test()
