@@ -74,6 +74,46 @@ fn index_of() {
 }
 
 #[test]
+fn is_array() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_array(value: &JsValue) -> bool {
+                js::Array::is_array(value)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert(wasm.is_array([]));
+                assert(wasm.is_array([1]));
+                assert(wasm.is_array(new Array()));
+                assert(wasm.is_array(new Array('a', 'b', 'c', 'd')));
+                assert(wasm.is_array(new Array(3)));
+                assert(wasm.is_array(Array.prototype));
+
+                assert(!wasm.is_array({}));
+                assert(!wasm.is_array(null));
+                assert(!wasm.is_array(undefined));
+                assert(!wasm.is_array(17));
+                assert(!wasm.is_array('Array'));
+                assert(!wasm.is_array(true));
+                assert(!wasm.is_array(false));
+                assert(!wasm.is_array({ __proto__: Array.prototype }));
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn sort() {
     project()
         .file("src/lib.rs", r#"
