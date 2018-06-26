@@ -65,6 +65,25 @@ extern {
     pub fn eval(js_source_text: &str) -> Result<JsValue, JsValue>;
 }
 
+// UInt8Array
+#[wasm_bindgen]
+extern {
+    pub type Uint8Array;
+
+    /// The `Uint8Array()` constructor creates an array of unsigned 8-bit integers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Uint8Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Uint8Array, value: JsValue, start: u32, end: u32) -> Uint8Array;
+}
+
 // Array
 #[wasm_bindgen]
 extern {
@@ -98,14 +117,12 @@ extern {
     #[wasm_bindgen(method)]
     pub fn filter(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> Array;
 
-    /// The length property of an object which is an instance of type Array
-    /// sets or returns the number of elements in that array. The value is an
-    /// unsigned, 32-bit integer that is always numerically greater than the
-    /// highest index in the array.
+    /// The includes() method determines whether an array includes a certain
+    /// element, returning true or false as appropriate.
     ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
-    #[wasm_bindgen(method, getter, structural)]
-    pub fn length(this: &Array) -> u32;
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+    #[wasm_bindgen(method)]
+    pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
 
     /// The indexOf() method returns the first index at which a given element
     /// can be found in the array, or -1 if it is not present.
@@ -113,13 +130,6 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
     #[wasm_bindgen(method, js_name = indexOf)]
     pub fn index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
-
-    /// The includes() method determines whether an array includes a certain
-    /// element, returning true or false as appropriate.
-    ///
-    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
-    #[wasm_bindgen(method)]
-    pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
 
     /// The join() method joins all elements of an array (or an array-like object)
     /// into a string and returns this string.
@@ -135,6 +145,15 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
     #[wasm_bindgen(method, js_name = lastIndexOf)]
     pub fn last_index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+
+    /// The length property of an object which is an instance of type Array
+    /// sets or returns the number of elements in that array. The value is an
+    /// unsigned, 32-bit integer that is always numerically greater than the
+    /// highest index in the array.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn length(this: &Array) -> u32;
 
     /// The pop() method removes the last element from an array and returns that
     /// element. This method changes the length of the array.
@@ -157,6 +176,13 @@ extern {
     #[wasm_bindgen(method)]
     pub fn reverse(this: &Array) -> Array;
 
+    /// The shift() method removes the first element from an array and returns
+    /// that removed element. This method changes the length of the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
+    #[wasm_bindgen(method)]
+    pub fn shift(this: &Array) -> JsValue;
+
     /// The slice() method returns a shallow copy of a portion of an array into
     /// a new array object selected from begin to end (end not included).
     /// The original array will not be modified.
@@ -164,13 +190,6 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
     #[wasm_bindgen(method)]
     pub fn slice(this: &Array, start: u32, end: u32) -> Array;
-
-    /// The shift() method removes the first element from an array and returns
-    /// that removed element. This method changes the length of the array.
-    ///
-    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
-    #[wasm_bindgen(method)]
-    pub fn shift(this: &Array) -> JsValue;
 
     /// The sort() method sorts the elements of an array in place and returns
     /// the array. The sort is not necessarily stable. The default sort
@@ -511,6 +530,14 @@ extern {
     #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
     pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
 
+    /// The Object.seal() method seals an object, preventing new properties
+    /// from being added to it and marking all existing properties as non-configurable.
+    /// Values of present properties can still be changed as long as they are writable.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/seal
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn seal(value: &JsValue) -> JsValue;
+
     /// The toLocaleString() method returns a string representing the object.
     /// This method is meant to be overridden by derived objects for
     /// locale-specific purposes.
@@ -546,6 +573,16 @@ extern {
     #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
     pub fn char_at(this: &JsString, index: u32) -> JsString;
 
+    /// The charCodeAt() method returns an integer between 0 and 65535 representing the UTF-16 code unit at
+    /// the given index (the UTF-16 code unit matches the Unicode code point for code points representable in
+    /// a single UTF-16 code unit, but might also be the first code unit of a surrogate pair for
+    /// code points not representable in a single UTF-16 code unit, e.g. Unicode code points > 0x10000).
+    /// If you want the entire code point value, use codePointAt().
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
+    #[wasm_bindgen(method, js_class = "String", js_name = charCodeAt)]
+    pub fn char_code_at(this: &JsString, index: u32) -> Number;
+
     /// The indexOf() method returns the index within the calling String object of
     /// the first occurrence of the specified value, starting the search at fromIndex.
     /// Returns -1 if the value is not found.
@@ -553,6 +590,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
     #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
     pub fn index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
+
+    /// The includes() method determines whether one string may be found within another string, returning true or false as appropriate.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn includes(this: &JsString, search_string: &JsString, position: i32) -> bool;
 
     /// The slice() method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
