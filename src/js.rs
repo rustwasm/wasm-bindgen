@@ -447,6 +447,12 @@ extern {
     #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
     pub fn char_at(this: &JsString, index: u32) -> JsString;
 
+    /// The codePointAt() method returns a non-negative integer that is the Unicode code point value.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/codePointAt
+    #[wasm_bindgen(method, js_class = "String", js_name = codePointAt)]
+    pub fn code_point_at(this: &JsString, pos: u32) -> JsValue;
+
     /// The indexOf() method returns the index within the calling String object of
     /// the first occurrence of the specified value, starting the search at fromIndex.
     /// Returns -1 if the value is not found.

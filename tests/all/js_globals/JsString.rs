@@ -32,6 +32,34 @@ fn char_at() {
 }
 
 #[test]
+fn code_point_at() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_code_point_at(this: &js::JsString, pos: u32) -> JsValue {
+                this.code_point_at(pos)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.string_code_point_at('ABC', 1), 66);
+                assert.equal(wasm.string_code_point_at('\uD800\uDC00', 0), 65536);
+                assert.equal(wasm.string_code_point_at('XYZ', 42), undefined);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn starts_with() {
     project()
         .file("src/lib.rs", r#"
