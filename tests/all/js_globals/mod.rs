@@ -9,6 +9,7 @@ mod JsFunction;
 mod JsString;
 mod Number;
 mod Math;
+mod TypedArray;
 
 #[test]
 #[cfg(feature = "std")]
