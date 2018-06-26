@@ -434,6 +434,45 @@ extern {
     pub fn value_of(this: &Object) -> Object;
 }
 
+// WeakMap
+#[wasm_bindgen]
+extern {
+    pub type WeakMap;
+
+    /// Returns the function that created an WeakMap wrapper.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WeakMap;
+
+    /// The set() method sets the value for the key in the WeakMap object. Returns 
+    /// the WeakMap object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/set
+    #[wasm_bindgen(method, js_class="WeakMap")]
+    pub fn set(this: &WeakMap, key: JsValue, value: JsValue) -> WeakMap;
+
+    /// The get() method returns a specified by key element 
+    /// from a WeakMap object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/get
+    #[wasm_bindgen(method)]
+    pub fn get(this: &WeakMap, key: JsValue) -> JsValue;
+
+    /// The has() method returns a boolean indicating whether an element with 
+    /// the specified key exists in the WeakMap object or not.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/has
+    #[wasm_bindgen(method)]
+    pub fn has(this: &WeakMap, key: JsValue) -> bool;
+
+    /// The delete() method removes the specified element from a WeakMap object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/delete
+    #[wasm_bindgen(method)]
+    pub fn delete(this: &WeakMap, key: JsValue) -> bool;
+}
+
 // JsString
 #[wasm_bindgen]
 extern {
