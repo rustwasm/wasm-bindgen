@@ -72,7 +72,7 @@ fn set() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set_value(this: &js::WeakMap, key: js::Object, value: js::JsValue) -> js::WeakMap {
+            pub fn set_value(this: &js::WeakMap, key: js::Object, value: JsValue) -> js::WeakMap {
                 this.set(key, value)
             }
         "#)
