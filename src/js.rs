@@ -566,6 +566,13 @@ extern {
     #[wasm_bindgen(js_name = JsString)]
     pub type JsString;
 
+    /// The length property of a String object indicates the length of a string,
+    /// in UTF-16 code units.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn length(this: &JsString) -> u32;
+
     /// The String object's charAt() method returns a new string consisting of the single
     /// UTF-16 code unit located at the specified offset into the string.
     ///
@@ -636,6 +643,42 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
     #[wasm_bindgen(method, js_class = "String")]
     pub fn substr(this: &JsString, start: i32, length: i32) -> JsString;
+
+    /// The trim() method removes whitespace from both ends of a string.
+    /// Whitespace in this context is all the whitespace characters
+    /// (space, tab, no-break space, etc.) and all the line terminator characters (LF, CR, etc.).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn trim(this: &JsString) -> JsString;
+
+    /// The trimEnd() method removes whitespace from the end of a string.
+    /// trimRight() is an alias of this method.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimEnd
+    #[wasm_bindgen(method, js_class = "String", js_name = trimEnd)]
+    pub fn trim_end(this: &JsString) -> JsString;
+
+    /// The trimEnd() method removes whitespace from the end of a string.
+    /// trimRight() is an alias of this method.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimEnd
+    #[wasm_bindgen(method, js_class = "String", js_name = trimRight)]
+    pub fn trim_right(this: &JsString) -> JsString;
+
+    /// The trimStart() method removes whitespace from the beginning of a string.
+    /// trimLeft() is an alias of this method.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimStart
+    #[wasm_bindgen(method, js_class = "String", js_name = trimStart)]
+    pub fn trim_start(this: &JsString) -> JsString;
+
+    /// The trimStart() method removes whitespace from the beginning of a string.
+    /// trimLeft() is an alias of this method.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimStart
+    #[wasm_bindgen(method, js_class = "String", js_name = trimLeft)]
+    pub fn trim_left(this: &JsString) -> JsString;
 }
 
 impl<'a> From<&'a str> for JsString {
