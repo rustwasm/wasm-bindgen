@@ -40,7 +40,7 @@ fn get() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_value(this: &js::WeakMap, key: JsValue) -> JsValue {
+            pub fn get_value(this: &js::WeakMap, key: js::Object) -> JsValue {
                 this.get(key)
             }
         "#)
@@ -72,7 +72,7 @@ fn set() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set_value(this: &js::WeakMap, key: JsValue, value: JsValue) -> js::WeakMap {
+            pub fn set_value(this: &js::WeakMap, key: js::Object, value: js::JsValue) -> js::WeakMap {
                 this.set(key, value)
             }
         "#)
@@ -101,7 +101,7 @@ fn has() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has_value(this: &js::WeakMap, key: JsValue) -> bool {
+            pub fn has_value(this: &js::WeakMap, key: js::Object) -> bool {
                 this.has(key)
             }
         "#)
@@ -133,7 +133,7 @@ fn delete() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn delete_key(this: &js::WeakMap, key: JsValue) -> bool {
+            pub fn delete_key(this: &js::WeakMap, key: js::Object) -> bool {
                 this.delete(key)
             }
         "#)
