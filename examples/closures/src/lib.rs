@@ -3,6 +3,8 @@
 extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::js::Date;
+use wasm_bindgen::js::JsString;
 
 #[wasm_bindgen]
 extern {
@@ -15,13 +17,6 @@ extern {
     // example though so the return value is ignored.
     #[wasm_bindgen(js_name = setInterval)]
     fn set_interval(cb: &Closure<FnMut()>, delay: u32) -> f64;
-
-    // Bindings for JS `Date` so we can update our local timer
-    type Date;
-    #[wasm_bindgen(constructor)]
-    fn new() -> Date;
-    #[wasm_bindgen(method, js_name = toLocaleString)]
-    fn to_locale_string(this: &Date) -> String;
 
     // Bindings for `document` and various methods of updating HTML elements.
     // Like with the `dom` example these'll ideally be upstream in a generated
@@ -57,7 +52,11 @@ pub fn run() {
     update_time();
     fn update_time() {
         document.get_element_by_id("current-time")
-            .set_inner_html(&Date::new().to_locale_string());
+            .set_inner_html(
+                &String::from(
+                    Date::new()
+                    .to_locale_string(
+                        JsString::from("en-GB"), JsValue::undefined())));
     }
 
     // We also want to count the number of times that our green square has been

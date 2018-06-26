@@ -2,13 +2,15 @@
 
 use super::project;
 
-mod Object;
 mod Array;
 mod ArrayIterator;
+mod Date;
 mod JsFunction;
 mod JsString;
-mod Number;
 mod Math;
+mod Number;
+mod Object;
+mod TypedArray;
 
 #[test]
 #[cfg(feature = "std")]
