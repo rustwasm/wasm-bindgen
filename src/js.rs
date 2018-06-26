@@ -447,6 +447,16 @@ extern {
     #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
     pub fn char_at(this: &JsString, index: u32) -> JsString;
 
+    /// The charCodeAt() method returns an integer between 0 and 65535 representing the UTF-16 code unit at
+    /// the given index (the UTF-16 code unit matches the Unicode code point for code points representable in
+    /// a single UTF-16 code unit, but might also be the first code unit of a surrogate pair for
+    /// code points not representable in a single UTF-16 code unit, e.g. Unicode code points > 0x10000).
+    /// If you want the entire code point value, use codePointAt().
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
+    #[wasm_bindgen(method, js_class = "String", js_name = charCodeAt)]
+    pub fn char_code_at(this: &JsString, index: u32) -> Number;
+
     /// The indexOf() method returns the index within the calling String object of
     /// the first occurrence of the specified value, starting the search at fromIndex.
     /// Returns -1 if the value is not found.
