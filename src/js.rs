@@ -583,13 +583,11 @@ extern {
     #[wasm_bindgen(method, js_class = "String", js_name = charCodeAt)]
     pub fn char_code_at(this: &JsString, index: u32) -> Number;
 
-    /// The indexOf() method returns the index within the calling String object of
-    /// the first occurrence of the specified value, starting the search at fromIndex.
-    /// Returns -1 if the value is not found.
+    /// The concat() method concatenates the string arguments to the calling string and returns a new string.
     ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
-    #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
-    pub fn index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/concat
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn concat(this: &JsString, string_2: &JsString) -> JsString;
 
     /// The includes() method determines whether one string may be found within another string, returning true or false as appropriate.
     ///
@@ -597,6 +595,14 @@ extern {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn includes(this: &JsString, search_string: &JsString, position: i32) -> bool;
 
+    /// The indexOf() method returns the index within the calling String object of
+    /// the first occurrence of the specified value, starting the search at fromIndex.
+    /// Returns -1 if the value is not found.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
+    #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
+    pub fn index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
+  
     /// The slice() method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///
