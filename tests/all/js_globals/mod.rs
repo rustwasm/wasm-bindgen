@@ -8,6 +8,7 @@ mod Date;
 mod Function;
 mod JsString;
 mod Math;
+mod WeakMap;
 mod Number;
 mod Object;
 mod TypedArray;
