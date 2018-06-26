@@ -377,6 +377,14 @@ extern {
 extern {
     pub type Date;
 
+    /// Creates a JavaScript Date instance that represents 
+    /// a single moment in time. Date objects are based on a time value that is 
+    /// the number of milliseconds since 1 January 1970 UTC.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Date;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     /// 
