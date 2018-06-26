@@ -32,6 +32,38 @@ fn char_at() {
 }
 
 #[test]
+fn concat() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_concat(this: &js::JsString, string_2: &js::JsString) -> js::JsString {
+                this.concat(string_2)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                // TODO: Implement ability to receive multiple optional arguments
+                assert.equal(wasm.string_concat('Hello ', 'World'), 'Hello World');
+                assert.equal(wasm.string_concat('foo', {}), 'foo[object Object]');
+                assert.equal(wasm.string_concat('foo', []), 'foo');
+                assert.equal(wasm.string_concat('foo', null), 'foonull');
+                assert.equal(wasm.string_concat('foo', true), 'footrue');
+                assert.equal(wasm.string_concat('foo', 1234), 'foo1234');
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn starts_with() {
     project()
         .file("src/lib.rs", r#"

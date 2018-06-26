@@ -447,6 +447,13 @@ extern {
     #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
     pub fn char_at(this: &JsString, index: u32) -> JsString;
 
+
+    /// The concat() method concatenates the string arguments to the calling string and returns a new string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/concat
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn concat(this: &JsString, string_2: &JsString) -> JsString;
+
     /// The indexOf() method returns the index within the calling String object of
     /// the first occurrence of the specified value, starting the search at fromIndex.
     /// Returns -1 if the value is not found.
