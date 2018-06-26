@@ -65,6 +65,25 @@ extern {
     pub fn eval(js_source_text: &str) -> Result<JsValue, JsValue>;
 }
 
+// UInt8Array
+#[wasm_bindgen]
+extern {
+    pub type Uint8Array;
+
+    /// The `Uint8Array()` constructor creates an array of unsigned 8-bit integers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Uint8Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Uint8Array, value: JsValue, start: u32, end: u32) -> Uint8Array;
+}
+
 // Array
 #[wasm_bindgen]
 extern {
