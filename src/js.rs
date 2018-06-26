@@ -196,6 +196,21 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift
     #[wasm_bindgen(method)]
     pub fn unshift(this: &Array, value: JsValue) -> u32;
+
+    /// The filter() method creates a new array with all elements that pass the test implemented 
+    /// by the provided function.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+    #[wasm_bindgen(method)]
+    pub fn filter(this: &Array, function: JsValue) -> Array;
+
+    /// The find() method returns the value of the first element in the array that satisfies the
+    /// provided testing function. Otherwise undefined is returned.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+    #[wasm_bindgen(method)]
+    pub fn find(this: &Array, function: JsValue) -> JsValue;
+
 }
 
 // Array Iterator
