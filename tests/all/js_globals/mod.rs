@@ -5,7 +5,7 @@ use super::project;
 mod Array;
 mod ArrayIterator;
 mod Date;
-mod JsFunction;
+mod Function;
 mod JsString;
 mod Math;
 mod Number;

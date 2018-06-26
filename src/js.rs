@@ -240,13 +240,20 @@ extern {
 // Function
 #[wasm_bindgen]
 extern {
-    pub type JsFunction;
+    pub type Function;
+
+    /// The apply() method calls a function with a given this value, and arguments provided as an array
+    /// (or an array-like object).
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
+    #[wasm_bindgen(method)]
+    pub fn apply(this: &Function, context: &JsValue, args: &Array) -> Function;
 
     /// The length property indicates the number of arguments expected by the function.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/length
     #[wasm_bindgen(method, getter, structural)]
-    pub fn length(this: &JsFunction) -> u32;
+    pub fn length(this: &Function) -> u32;
 
     /// A Function object's read-only name property indicates the function's
     /// name as specified when it was created or "anonymous" for functions
@@ -254,7 +261,13 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
     #[wasm_bindgen(method, getter, structural)]
-    pub fn name(this: &JsFunction) -> JsString;
+    pub fn name(this: &Function) -> JsString;
+
+    /// The toString() method returns a string representing the source code of the function.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/toString
+    #[wasm_bindgen(method, js_name = toString)]
+    pub fn to_string(this: &Function) -> JsString;
 }
 
 // Math
