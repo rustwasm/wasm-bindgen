@@ -644,6 +644,12 @@ extern {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn substr(this: &JsString, start: i32, length: i32) -> JsString;
 
+    /// The toString() method returns a string representing the specified object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toString
+    #[wasm_bindgen(method, js_class = "String", js_name = toString)]
+    pub fn to_string(this: &JsString) -> JsString;
+
     /// The trim() method removes whitespace from both ends of a string.
     /// Whitespace in this context is all the whitespace characters
     /// (space, tab, no-break space, etc.) and all the line terminator characters (LF, CR, etc.).
@@ -679,6 +685,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimStart
     #[wasm_bindgen(method, js_class = "String", js_name = trimLeft)]
     pub fn trim_left(this: &JsString) -> JsString;
+
+    /// The valueOf() method returns the primitive value of a String object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf
+    #[wasm_bindgen(method, js_class = "String", js_name = valueOf)]
+    pub fn value_of(this: &JsString) -> JsString;
 }
 
 impl<'a> From<&'a str> for JsString {
