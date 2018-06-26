@@ -412,6 +412,14 @@ extern {
     #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
     pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
 
+    /// The Object.seal() method seals an object, preventing new properties
+    /// from being added to it and marking all existing properties as non-configurable.
+    /// Values of present properties can still be changed as long as they are writable.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/seal
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn seal(value: &JsValue) -> JsValue;
+
     /// The toLocaleString() method returns a string representing the object.
     /// This method is meant to be overridden by derived objects for
     /// locale-specific purposes.
