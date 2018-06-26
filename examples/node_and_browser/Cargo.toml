@@ -1,0 +1,17 @@
+[package]
+name = "node-and-browser"
+version = "0.1.0"
+authors = ["Robert Masen <r@robertmasen.pizza>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Here we're using a path dependency to use what's already in this repository,
+# but you'd use the commented out version below if you're copying this into your
+# project.
+wasm-bindgen = { path = "../.." }
+#wasm-bindgen = "0.2"
+[dependencies.pulldown-cmark]
+version = "0.1.2"
+default-features = false

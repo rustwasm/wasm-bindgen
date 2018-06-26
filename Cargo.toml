@@ -53,7 +53,8 @@ members = [
   "examples/asm.js",
   "examples/char",
   "examples/import_js",
-  "examples/comments"
+  "examples/comments",
+  "examples/node_and_browser"
 ]
 
 [profile.release]
