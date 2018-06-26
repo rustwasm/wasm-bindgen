@@ -583,6 +583,12 @@ extern {
     #[wasm_bindgen(method, js_class = "String", js_name = charCodeAt)]
     pub fn char_code_at(this: &JsString, index: u32) -> Number;
 
+    /// The codePointAt() method returns a non-negative integer that is the Unicode code point value.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/codePointAt
+    #[wasm_bindgen(method, js_class = "String", js_name = codePointAt)]
+    pub fn code_point_at(this: &JsString, pos: u32) -> JsValue;
+
     /// The concat() method concatenates the string arguments to the calling string and returns a new string.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/concat
