@@ -67,7 +67,7 @@ matrix:
         - |
           (cd examples/comments && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
         - |
-          (cd examples/node-and-browser && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh && npm start)
+          (cd examples/node_and_browser && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh && npm start)
 
     # Build the guide.
     - rust: stable
