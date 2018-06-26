@@ -117,14 +117,12 @@ extern {
     #[wasm_bindgen(method)]
     pub fn filter(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> Array;
 
-    /// The length property of an object which is an instance of type Array
-    /// sets or returns the number of elements in that array. The value is an
-    /// unsigned, 32-bit integer that is always numerically greater than the
-    /// highest index in the array.
+    /// The includes() method determines whether an array includes a certain
+    /// element, returning true or false as appropriate.
     ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
-    #[wasm_bindgen(method, getter, structural)]
-    pub fn length(this: &Array) -> u32;
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+    #[wasm_bindgen(method)]
+    pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
 
     /// The indexOf() method returns the first index at which a given element
     /// can be found in the array, or -1 if it is not present.
@@ -132,13 +130,6 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
     #[wasm_bindgen(method, js_name = indexOf)]
     pub fn index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
-
-    /// The includes() method determines whether an array includes a certain
-    /// element, returning true or false as appropriate.
-    ///
-    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
-    #[wasm_bindgen(method)]
-    pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
 
     /// The join() method joins all elements of an array (or an array-like object)
     /// into a string and returns this string.
@@ -154,6 +145,15 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
     #[wasm_bindgen(method, js_name = lastIndexOf)]
     pub fn last_index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+
+    /// The length property of an object which is an instance of type Array
+    /// sets or returns the number of elements in that array. The value is an
+    /// unsigned, 32-bit integer that is always numerically greater than the
+    /// highest index in the array.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn length(this: &Array) -> u32;
 
     /// The pop() method removes the last element from an array and returns that
     /// element. This method changes the length of the array.
@@ -176,6 +176,13 @@ extern {
     #[wasm_bindgen(method)]
     pub fn reverse(this: &Array) -> Array;
 
+    /// The shift() method removes the first element from an array and returns
+    /// that removed element. This method changes the length of the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
+    #[wasm_bindgen(method)]
+    pub fn shift(this: &Array) -> JsValue;
+
     /// The slice() method returns a shallow copy of a portion of an array into
     /// a new array object selected from begin to end (end not included).
     /// The original array will not be modified.
@@ -183,13 +190,6 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
     #[wasm_bindgen(method)]
     pub fn slice(this: &Array, start: u32, end: u32) -> Array;
-
-    /// The shift() method removes the first element from an array and returns
-    /// that removed element. This method changes the length of the array.
-    ///
-    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
-    #[wasm_bindgen(method)]
-    pub fn shift(this: &Array) -> JsValue;
 
     /// The sort() method sorts the elements of an array in place and returns
     /// the array. The sort is not necessarily stable. The default sort
