@@ -204,3 +204,38 @@ fn substr() {
         "#)
         .test()
 }
+
+#[test]
+fn includes() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_includes(this: &js::JsString, search_value: &js::JsString, position: i32) -> bool {
+                this.includes(search_value, position)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "Blue Whale";
+
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_includes(str, 'Blue', 0), true);
+                assert.equal(wasm.string_includes(str, 'Blute', 0), false);
+                assert.equal(wasm.string_includes(str, 'Whale', 0), true);
+                assert.equal(wasm.string_includes(str, 'Whale', 5), true);
+                assert.equal(wasm.string_includes(str, 'Whale', 7), false);
+                assert.equal(wasm.string_includes(str, '', 0), true);
+                assert.equal(wasm.string_includes(str, '', 16), true);
+            }
+        "#)
+        .test()
+}

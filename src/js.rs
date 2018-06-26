@@ -455,6 +455,12 @@ extern {
     #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
     pub fn index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
 
+    /// The includes() method determines whether one string may be found within another string, returning true or false as appropriate.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn includes(this: &JsString, search_string: &JsString, position: i32) -> bool;
+
     /// The slice() method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///
