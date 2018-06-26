@@ -65,6 +65,25 @@ extern {
     pub fn eval(js_source_text: &str) -> Result<JsValue, JsValue>;
 }
 
+// UInt8Array
+#[wasm_bindgen]
+extern {
+    pub type Uint8Array;
+
+    /// The `Uint8Array()` constructor creates an array of unsigned 8-bit integers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Uint8Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Uint8Array, value: JsValue, start: u32, end: u32) -> Uint8Array;
+}
+
 // Array
 #[wasm_bindgen]
 extern {
@@ -98,14 +117,12 @@ extern {
     #[wasm_bindgen(method)]
     pub fn filter(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> Array;
 
-    /// The length property of an object which is an instance of type Array
-    /// sets or returns the number of elements in that array. The value is an
-    /// unsigned, 32-bit integer that is always numerically greater than the
-    /// highest index in the array.
+    /// The includes() method determines whether an array includes a certain
+    /// element, returning true or false as appropriate.
     ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
-    #[wasm_bindgen(method, getter, structural)]
-    pub fn length(this: &Array) -> u32;
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+    #[wasm_bindgen(method)]
+    pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
 
     /// The indexOf() method returns the first index at which a given element
     /// can be found in the array, or -1 if it is not present.
@@ -113,13 +130,6 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
     #[wasm_bindgen(method, js_name = indexOf)]
     pub fn index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
-
-    /// The includes() method determines whether an array includes a certain
-    /// element, returning true or false as appropriate.
-    ///
-    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
-    #[wasm_bindgen(method)]
-    pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
 
     /// The join() method joins all elements of an array (or an array-like object)
     /// into a string and returns this string.
@@ -135,6 +145,15 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
     #[wasm_bindgen(method, js_name = lastIndexOf)]
     pub fn last_index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+
+    /// The length property of an object which is an instance of type Array
+    /// sets or returns the number of elements in that array. The value is an
+    /// unsigned, 32-bit integer that is always numerically greater than the
+    /// highest index in the array.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn length(this: &Array) -> u32;
 
     /// The pop() method removes the last element from an array and returns that
     /// element. This method changes the length of the array.
@@ -157,6 +176,13 @@ extern {
     #[wasm_bindgen(method)]
     pub fn reverse(this: &Array) -> Array;
 
+    /// The shift() method removes the first element from an array and returns
+    /// that removed element. This method changes the length of the array.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
+    #[wasm_bindgen(method)]
+    pub fn shift(this: &Array) -> JsValue;
+
     /// The slice() method returns a shallow copy of a portion of an array into
     /// a new array object selected from begin to end (end not included).
     /// The original array will not be modified.
@@ -164,13 +190,6 @@ extern {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
     #[wasm_bindgen(method)]
     pub fn slice(this: &Array, start: u32, end: u32) -> Array;
-
-    /// The shift() method removes the first element from an array and returns
-    /// that removed element. This method changes the length of the array.
-    ///
-    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
-    #[wasm_bindgen(method)]
-    pub fn shift(this: &Array) -> JsValue;
 
     /// The sort() method sorts the elements of an array in place and returns
     /// the array. The sort is not necessarily stable. The default sort
@@ -372,6 +391,105 @@ extern {
     pub fn value_of(this: &Number) -> Number;
 }
 
+// Date.
+#[wasm_bindgen]
+extern {
+    pub type Date;
+
+    /// Creates a JavaScript Date instance that represents 
+    /// a single moment in time. Date objects are based on a time value that is 
+    /// the number of milliseconds since 1 January 1970 UTC.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Date;
+
+    /// The toDateString() method returns the date portion of a Date object
+    /// in human readable form in American English.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toDateString
+    #[wasm_bindgen(method, js_name = toDateString)]
+    pub fn to_date_string(this: &Date) -> JsString;
+
+    /// The toISOString() method returns a string in simplified extended ISO format (ISO
+    /// 8601), which is always 24 or 27 characters long (YYYY-MM-DDTHH:mm:ss.sssZ or
+    /// ±YYYYYY-MM-DDTHH:mm:ss.sssZ, respectively). The timezone is always zero UTC offset, 
+    /// as denoted by the suffix "Z"
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+    #[wasm_bindgen(method, js_name = toISOString)]
+    pub fn to_iso_string(this: &Date) -> JsString;
+
+    /// The toJSON() method returns a string representation of the Date object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toJSON
+    #[wasm_bindgen(method, js_name = toJSON)]
+    pub fn to_json(this: &Date) -> JsString;
+
+    /// The toLocaleDateString() method returns a string with a language sensitive
+    /// representation of the date portion of this date. The new locales and options
+    /// arguments let applications specify the language whose formatting conventions
+    /// should be used and allow to customize the behavior of the function.
+    /// In older implementations, which ignore the locales and options arguments,
+    /// the locale used and the form of the string
+    /// returned are entirely implementation dependent.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
+    #[wasm_bindgen(method, js_name = toLocaleDateString)]
+    pub fn to_locale_date_string(this: &Date, locale: JsString, options: JsValue) -> JsString;
+
+    /// The toLocaleString() method returns a string with a language sensitive 
+    /// representation of this date. The new locales and options arguments 
+    /// let applications specify the language whose formatting conventions 
+    /// should be used and customize the behavior of the function. 
+    /// In older implementations, which ignore the locales 
+    /// and options arguments, the locale used and the form of the string 
+    /// returned are entirely implementation dependent.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
+    #[wasm_bindgen(method, js_name = toLocaleString)]
+    pub fn to_locale_string(this: &Date, locale: JsString, options: JsValue) -> JsString;
+
+    /// The toLocaleTimeString() method returns a string with a language sensitive
+    /// representation of the time portion of this date. The new locales and options
+    /// arguments let applications specify the language whose formatting conventions should be
+    /// used and customize the behavior of the function. In older implementations, which ignore
+    /// the locales and options arguments, the locale used and the form of the string
+    /// returned are entirely implementation dependent.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
+    #[wasm_bindgen(method, js_name = toLocaleTimeString)]
+    pub fn to_locale_time_string(this: &Date, locale: JsString) -> JsString;
+
+    /// The toString() method returns a string representing
+    /// the specified Date object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toString
+    #[wasm_bindgen(method, js_name = toString)]
+    pub fn to_string(this: &Date) -> JsString;
+
+    /// The toTimeString() method returns the time portion of a Date object in human
+    /// readable form in American English.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toTimeString
+    #[wasm_bindgen(method, js_name = toTimeString)]
+    pub fn to_time_string(this: &Date) -> JsString;
+
+    /// The toUTCString() method converts a date to a string,
+    /// using the UTC time zone.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toUTCString
+    #[wasm_bindgen(method, js_name = toUTCString)]
+    pub fn to_utc_string(this: &Date) -> JsString;
+
+    /// The valueOf() method  returns the primitive value of
+    /// a Date object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/valueOf
+    #[wasm_bindgen(method, js_name = valueOf)]
+    pub fn value_of(this: &Date) -> Date;
+}
+
 // Object.
 #[wasm_bindgen]
 extern {
@@ -411,6 +529,14 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable
     #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
     pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
+
+    /// The Object.seal() method seals an object, preventing new properties
+    /// from being added to it and marking all existing properties as non-configurable.
+    /// Values of present properties can still be changed as long as they are writable.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/seal
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn seal(value: &JsValue) -> JsValue;
 
     /// The toLocaleString() method returns a string representing the object.
     /// This method is meant to be overridden by derived objects for
@@ -486,6 +612,34 @@ extern {
     #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
     pub fn char_at(this: &JsString, index: u32) -> JsString;
 
+    /// The charCodeAt() method returns an integer between 0 and 65535 representing the UTF-16 code unit at
+    /// the given index (the UTF-16 code unit matches the Unicode code point for code points representable in
+    /// a single UTF-16 code unit, but might also be the first code unit of a surrogate pair for
+    /// code points not representable in a single UTF-16 code unit, e.g. Unicode code points > 0x10000).
+    /// If you want the entire code point value, use codePointAt().
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
+    #[wasm_bindgen(method, js_class = "String", js_name = charCodeAt)]
+    pub fn char_code_at(this: &JsString, index: u32) -> Number;
+
+    /// The codePointAt() method returns a non-negative integer that is the Unicode code point value.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/codePointAt
+    #[wasm_bindgen(method, js_class = "String", js_name = codePointAt)]
+    pub fn code_point_at(this: &JsString, pos: u32) -> JsValue;
+
+    /// The concat() method concatenates the string arguments to the calling string and returns a new string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/concat
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn concat(this: &JsString, string_2: &JsString) -> JsString;
+
+    /// The includes() method determines whether one string may be found within another string, returning true or false as appropriate.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn includes(this: &JsString, search_string: &JsString, position: i32) -> bool;
+
     /// The indexOf() method returns the index within the calling String object of
     /// the first occurrence of the specified value, starting the search at fromIndex.
     /// Returns -1 if the value is not found.
@@ -493,7 +647,7 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
     #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
     pub fn index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
-
+  
     /// The slice() method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///

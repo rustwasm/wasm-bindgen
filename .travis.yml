@@ -10,13 +10,37 @@ matrix:
 
     # Tests pass on nightly
     - rust: nightly
-      before_install: rustup target add wasm32-unknown-unknown
+      before_install:
+        - rustup target add wasm32-unknown-unknown
+        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+        - source ~/.nvm/nvm.sh
+        - nvm install v10.5
+      install:
+        # dirties git repository, there doesn't seem to be a way to resolve this other than
+        # to run `npm install` twice or by using `npm ci` (which is currently broken)
+        - npm install
       script:
         - cargo test
         # Check JS output from all tests against eslint
         - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
       env: RUST_BACKTRACE=1
 
+    # Tests pass on nightly using yarn
+    - rust: nightly
+      before_install:
+        - rustup target add wasm32-unknown-unknown
+        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+        - source ~/.nvm/nvm.sh
+        - nvm install v10.5
+        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
+        - export PATH=$HOME/.yarn/bin:$PATH
+      install:
+        - yarn install --freeze-lockfile
+      script:
+        - cargo test
+        # Check JS output from all tests against eslint
+        - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
+      env: RUST_BACKTRACE=1
     # WebIDL tests pass on nightly
     - rust: nightly
       before_install: rustup component add rustfmt-preview --toolchain nightly
@@ -46,7 +70,11 @@ matrix:
 
     # All examples work
     - rust: nightly
-      before_install: rustup target add wasm32-unknown-unknown
+      before_install:
+        - rustup target add wasm32-unknown-unknown
+        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+        - source ~/.nvm/nvm.sh
+        - nvm install v10.5
       script:
         - |
           (cd examples/hello_world && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
@@ -86,13 +114,6 @@ matrix:
         on:
           branch: master
 
-
-
-install:
-  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
-  - source ~/.nvm/nvm.sh
-  - nvm install 10
-  - npm install
 
 notifications:
   email:

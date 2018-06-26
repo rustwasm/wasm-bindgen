@@ -186,6 +186,57 @@ fn property_is_enumerable() {
 }
 
 #[test]
+fn seal() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn seal(value: &JsValue) -> JsValue {
+                js::Object::seal(&value)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object: any = { foo: 'bar' };
+                const sealedObject = wasm.seal(object);
+                assert.strictEqual(object, sealedObject);
+                assert.throws(() => {
+                    'use strict';
+                    sealedObject.bar = 'foo';
+                }, TypeError);
+                assert.throws(() => {
+                    'use strict';
+                    delete sealedObject.foo;
+                }, TypeError);
+
+                const primitive = 42;
+                assert.doesNotThrow(() => {
+                    'use strict';
+                    // according to ES2015, this should not throw anymore
+                    // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/seal#Notes
+                    wasm.seal(primitive);
+                });
+
+                const array = [1, 2, 3];
+                const sealedArray = wasm.seal(array);
+                assert.throws(() => {
+                    'use strict';
+                    sealedArray.push(42);
+                }, TypeError);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn to_locale_string() {
     project()
         .file("src/lib.rs", r#"
