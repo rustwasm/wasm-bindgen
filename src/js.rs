@@ -628,6 +628,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet
     #[wasm_bindgen(constructor)]
     pub fn new() -> WeakSet;
+
+    /// The has() method returns a boolean indicating whether an object exists in a WeakSet or not.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/has
+    #[wasm_bindgen(method)]
+    pub fn has(this: &WeakSet, value: Object) -> bool;
 }
 
 // JsString
