@@ -35,9 +35,10 @@ if_std! {
 // * If a function or method can throw an exception, make it catchable by adding
 // `#[wasm_bindgen(catch)]`.
 //
-// * Add a new `#[test]` to the `tests/all/js_globals.rs` file. If the imported
-// function or method can throw an exception, make sure to also add test
-// coverage for that case.
+// * Add a new `#[test]` into the appropriate file in the
+// `tests/all/js_globals/` directory. If the imported function or
+// method can throw an exception, make sure to also add test coverage
+// for that case.
 
 #[wasm_bindgen]
 extern {
