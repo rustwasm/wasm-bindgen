@@ -640,6 +640,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/add
     #[wasm_bindgen(method)]
     pub fn add(this: &WeakSet, value: Object) -> WeakSet;
+
+    /// The delete() method removes the specified element from a WeakSet object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/delete
+    #[wasm_bindgen(method)]
+    pub fn delete(this: &WeakSet, value: Object) -> bool;
 }
 
 // JsString
