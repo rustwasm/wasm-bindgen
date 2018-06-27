@@ -431,6 +431,13 @@ extern {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Date;
 
+    /// The `Date.now()` method returns the number of milliseconds
+    /// elapsed since January 1, 1970 00:00:00 UTC.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
+    #[wasm_bindgen(static_method_of = Date)]
+    pub fn now() -> Number;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     /// 
