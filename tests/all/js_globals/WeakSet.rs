@@ -59,3 +59,38 @@ fn has() {
         "#)
         .test()
 }
+
+#[test]
+fn add() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn add_value(this: &js::WeakSet, value: js::Object) -> js::WeakSet {
+                this.add(value)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let set = new WeakSet();
+                let value = {some: "value"};
+                wasm.add_value(set, value);
+                assert.equal(set.has(value), true);
+
+                assert.throws(() => { wasm.add_value(set, 1) }, TypeError);
+                assert.throws(() => { wasm.add_value(set, true) }, TypeError);
+                assert.throws(() => { wasm.add_value(set, "fail") }, TypeError);
+                assert.throws(() => { wasm.add_value(set, null) }, TypeError);
+                assert.throws(() => { wasm.add_value(set, undefined) }, TypeError);
+            }
+        "#)
+        .test()
+}

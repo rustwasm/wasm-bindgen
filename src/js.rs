@@ -634,6 +634,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/has
     #[wasm_bindgen(method)]
     pub fn has(this: &WeakSet, value: Object) -> bool;
+
+    /// The add() method appends a new object to the end of a WeakSet object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/add
+    #[wasm_bindgen(method)]
+    pub fn add(this: &WeakSet, value: Object) -> WeakSet;
 }
 
 // JsString
