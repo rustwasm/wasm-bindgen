@@ -706,6 +706,9 @@ let's go through one-by-one:
   this function must be a bare type, like `Bar`.
 * `#[wasm_bindgen(js_namespace = Bar)]` - this attribute indicates that the
   function declaration is namespaced through the `Bar` class in JS.
+* `#[wasm_bindgen(static_method_of = SomeJsClass)]` - this attribute is similar
+  to `js_namespace`, but instead of producing a free function, produces a static
+  method of `SomeJsClass`.
 * `#[wasm_bindgen(method)]` - and finally, this attribute indicates that a
   method call is going to happen. The first argument must be a JS struct, like
   `Bar`, and the call in JS looks like `Bar.prototype.set.call(...)`.
