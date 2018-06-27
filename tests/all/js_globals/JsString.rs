@@ -3,6 +3,37 @@
 use project;
 
 #[test]
+fn length() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_length(this: &js::JsString) -> u32 {
+                this.length()
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let x = 'Mozilla';
+                assert.equal(wasm.string_length(x), 7);
+
+                let empty = '';
+                assert.equal(wasm.string_length(empty), 0);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn char_at() {
     project()
         .file("src/lib.rs", r#"
@@ -26,6 +57,35 @@ fn char_at() {
             export function test() {
                 assert.equal(wasm.string_char_at(anyString, 0), "B");
                 assert.equal(wasm.string_char_at(anyString, 999), "");
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn char_code_at() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_char_code_at(this: &js::JsString, index: u32) -> js::Number {
+                this.char_code_at(index)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            var anyString = 'Brave new world';
+
+            export function test() {
+                assert.equal(wasm.string_char_code_at(anyString, 0), 66);
+                assert.ok(isNaN(wasm.string_char_code_at(anyString, 999)));
             }
         "#)
         .test()
@@ -90,9 +150,9 @@ fn concat() {
         "#)
         .test()
 }
-    
+
 #[test]
-fn char_code_at() {
+fn includes() {
     project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
@@ -102,37 +162,8 @@ fn char_code_at() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_char_code_at(this: &js::JsString, index: u32) -> js::Number {
-                this.char_code_at(index)
-            }
-        "#)
-        .file("test.ts", r#"
-            import * as assert from "assert";
-            import * as wasm from "./out";
-
-            var anyString = 'Brave new world';
-
-            export function test() {
-                assert.equal(wasm.string_char_code_at(anyString, 0), 66);
-                assert.ok(isNaN(wasm.string_char_code_at(anyString, 999)));
-            }
-        "#)
-        .test()
-}
-  
-#[test]
-fn starts_with() {
-    project()
-        .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
-
-            extern crate wasm_bindgen;
-            use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-
-            #[wasm_bindgen]
-            pub fn string_starts_with(this: &js::JsString, search_string: &js::JsString, position: u32) -> bool {
-                this.starts_with(search_string, position)
+            pub fn string_includes(this: &js::JsString, search_value: &js::JsString, position: i32) -> bool {
+                this.includes(search_value, position)
             }
         "#)
         .file("test.ts", r#"
@@ -140,51 +171,16 @@ fn starts_with() {
             import * as wasm from "./out";
 
             export function test() {
-                let str = "To be, or not to be, that is the question.";
+                let str = "Blue Whale";
 
-                // TODO: remove second parameter for both assertions once we have optional parameters
-                assert.ok(wasm.string_starts_with(str, 'To be', 0));
-                assert.ok(!wasm.string_starts_with(str, 'not to be', 0));
-                assert.ok(wasm.string_starts_with(str, 'not to be', 10));
-            }
-        "#)
-        .test()
-}
-
-#[test]
-fn substring() {
-    project()
-        .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
-
-            extern crate wasm_bindgen;
-            use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-
-            #[wasm_bindgen]
-            pub fn string_substring(this: &js::JsString, index_start: u32, index_end: u32) -> js::JsString {
-                this.substring(index_start, index_end)
-            }
-        "#)
-        .file("test.ts", r#"
-            import * as assert from "assert";
-            import * as wasm from "./out";
-
-            export function test() {
-                let anyString = "Mozilla";
-
-                assert.equal(wasm.string_substring(anyString, 0, 1), 'M');
-                assert.equal(wasm.string_substring(anyString, 1, 0), 'M');
-
-                assert.equal(wasm.string_substring(anyString, 0, 6), 'Mozill');
-
-                // TODO: Add test once we have optional parameters
-                // assert.equal(wasm.string_substring(anyString, 4), 'lla');
-                assert.equal(wasm.string_substring(anyString, 4, 7), 'lla');
-                assert.equal(wasm.string_substring(anyString, 7, 4), 'lla');
-
-                assert.equal(wasm.string_substring(anyString, 0, 7), 'Mozilla');
-                assert.equal(wasm.string_substring(anyString, 0, 10), 'Mozilla');
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_includes(str, 'Blue', 0), true);
+                assert.equal(wasm.string_includes(str, 'Blute', 0), false);
+                assert.equal(wasm.string_includes(str, 'Whale', 0), true);
+                assert.equal(wasm.string_includes(str, 'Whale', 5), true);
+                assert.equal(wasm.string_includes(str, 'Whale', 7), false);
+                assert.equal(wasm.string_includes(str, '', 0), true);
+                assert.equal(wasm.string_includes(str, '', 16), true);
             }
         "#)
         .test()
@@ -259,6 +255,76 @@ fn slice() {
 }
 
 #[test]
+fn starts_with() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_starts_with(this: &js::JsString, search_string: &js::JsString, position: u32) -> bool {
+                this.starts_with(search_string, position)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "To be, or not to be, that is the question.";
+
+                // TODO: remove second parameter for both assertions once we have optional parameters
+                assert.ok(wasm.string_starts_with(str, 'To be', 0));
+                assert.ok(!wasm.string_starts_with(str, 'not to be', 0));
+                assert.ok(wasm.string_starts_with(str, 'not to be', 10));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn substring() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_substring(this: &js::JsString, index_start: u32, index_end: u32) -> js::JsString {
+                this.substring(index_start, index_end)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let anyString = "Mozilla";
+
+                assert.equal(wasm.string_substring(anyString, 0, 1), 'M');
+                assert.equal(wasm.string_substring(anyString, 1, 0), 'M');
+
+                assert.equal(wasm.string_substring(anyString, 0, 6), 'Mozill');
+
+                // TODO: Add test once we have optional parameters
+                // assert.equal(wasm.string_substring(anyString, 4), 'lla');
+                assert.equal(wasm.string_substring(anyString, 4, 7), 'lla');
+                assert.equal(wasm.string_substring(anyString, 7, 4), 'lla');
+
+                assert.equal(wasm.string_substring(anyString, 0, 7), 'Mozilla');
+                assert.equal(wasm.string_substring(anyString, 0, 10), 'Mozilla');
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn substr() {
     project()
         .file("src/lib.rs", r#"
@@ -295,7 +361,7 @@ fn substr() {
 }
 
 #[test]
-fn includes() {
+fn to_string() {
     project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
@@ -305,8 +371,8 @@ fn includes() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_includes(this: &js::JsString, search_value: &js::JsString, position: i32) -> bool {
-                this.includes(search_value, position)
+            pub fn string_to_string(this: &js::JsString) -> js::JsString {
+                this.to_string()
             }
         "#)
         .file("test.ts", r#"
@@ -314,16 +380,131 @@ fn includes() {
             import * as wasm from "./out";
 
             export function test() {
-                let str = "Blue Whale";
+                let greeting = 'Hello world!';
+                assert.equal(wasm.string_to_string(greeting), 'Hello world!');
+            }
+        "#)
+        .test()
+}
 
-                // TODO: remove second parameter once we have optional parameters
-                assert.equal(wasm.string_includes(str, 'Blue', 0), true);
-                assert.equal(wasm.string_includes(str, 'Blute', 0), false);
-                assert.equal(wasm.string_includes(str, 'Whale', 0), true);
-                assert.equal(wasm.string_includes(str, 'Whale', 5), true);
-                assert.equal(wasm.string_includes(str, 'Whale', 7), false);
-                assert.equal(wasm.string_includes(str, '', 0), true);
-                assert.equal(wasm.string_includes(str, '', 16), true);
+#[test]
+fn trim() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_trim(this: &js::JsString) -> js::JsString {
+                this.trim()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.string_trim('   foo  '), 'foo');
+                // Another example of .trim() removing whitespace from just one side.
+                assert.equal(wasm.string_trim('foo   '), 'foo');
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn trim_end_and_trim_right() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_trim_end(this: &js::JsString) -> js::JsString {
+                this.trim_end()
+            }
+
+            #[wasm_bindgen]
+            pub fn string_trim_right(this: &js::JsString) -> js::JsString {
+                this.trim_right()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let greeting = '   Hello world!   ';
+                let trimmed = '   Hello world!';
+                assert.equal(wasm.string_trim_end(greeting), trimmed);
+                assert.equal(wasm.string_trim_right(greeting), trimmed);
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn trim_start_and_trim_left() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_trim_start(this: &js::JsString) -> js::JsString {
+                this.trim_start()
+            }
+
+            #[wasm_bindgen]
+            pub fn string_trim_left(this: &js::JsString) -> js::JsString {
+                this.trim_left()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let greeting = '   Hello world!   ';
+                let trimmed = 'Hello world!   ';
+                assert.equal(wasm.string_trim_start(greeting), trimmed);
+                assert.equal(wasm.string_trim_left(greeting), trimmed);
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn value_of() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_value_of(this: &js::JsString) -> js::JsString {
+                this.value_of()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let greeting = new String('Hello world!');
+                assert.equal(wasm.string_value_of(greeting), 'Hello world!');
             }
         "#)
         .test()
