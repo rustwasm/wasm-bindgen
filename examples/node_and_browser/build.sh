@@ -10,7 +10,9 @@ cargo +nightly build --target wasm32-unknown-unknown
 #
 # Here we're using the version of the CLI in this repository, but for external
 # usage you'd use the commented out version below
-cargo +nightly run --manifest-path ../../crates/cli/Cargo.toml --bin wasm-bindgen -- ../../target/wasm32-unknown-unknown/debug/node_and_browser.wasm --out-dir . --both
+cargo +nightly run --manifest-path ../../crates/cli/Cargo.toml \
+  --bin wasm-bindgen -- \
+  ../../target/wasm32-unknown-unknown/debug/node_and_browser.wasm --out-dir . --both
 # wasm-bindgen ../../target/wasm32-unknown-unknown/hello_world.wasm --out-dir .
 
 # Finally, package everything up using Webpack and start a server so we can
