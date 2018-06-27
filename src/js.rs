@@ -360,6 +360,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/clz32
     #[wasm_bindgen(static_method_of = Math)]
     pub fn clz32(x: i32) -> Number;
+
+    /// The Math.floor() function returns the largest integer less than or
+    /// equal to a given number.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn floor(x: f32) -> Number;
 }
 
 // Number.
