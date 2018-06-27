@@ -619,6 +619,7 @@ extern {
     pub fn delete(this: &WeakMap, key: Object) -> bool;
 }
 
+// WeakSet
 #[wasm_bindgen]
 extern {
     pub type WeakSet;
