@@ -305,6 +305,32 @@ fn to_utc_string() {
 }
 
 #[test]
+fn utc() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, Number};
+
+            #[wasm_bindgen]
+            pub fn utc() -> Number {
+                Date::utc(Number::new(JsValue::from(2018)), Number::new(JsValue::from(6)))
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.utc(), 1530403200000);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn value_of() {
     project()
         .file("src/lib.rs", r#"

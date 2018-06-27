@@ -516,6 +516,15 @@ extern {
     #[wasm_bindgen(method, js_name = toUTCString)]
     pub fn to_utc_string(this: &Date) -> JsString;
 
+    /// The `Date.UTC()` method accepts the same parameters as the
+    /// longest form of the constructor, and returns the number of
+    /// milliseconds in a `Date` object since January 1, 1970,
+    /// 00:00:00, universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC
+    #[wasm_bindgen(static_method_of = Date, js_name = UTC)]
+    pub fn utc(year: Number, month: Number) -> Number;
+
     /// The valueOf() method  returns the primitive value of
     /// a Date object.
     ///
