@@ -634,6 +634,36 @@ extern {
     pub fn delete(this: &WeakMap, key: Object) -> bool;
 }
 
+// WeakSet
+#[wasm_bindgen]
+extern {
+    pub type WeakSet;
+
+    /// The WeakSet object lets you store weakly held objects in a collection.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WeakSet;
+
+    /// The has() method returns a boolean indicating whether an object exists in a WeakSet or not.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/has
+    #[wasm_bindgen(method)]
+    pub fn has(this: &WeakSet, value: Object) -> bool;
+
+    /// The add() method appends a new object to the end of a WeakSet object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/add
+    #[wasm_bindgen(method)]
+    pub fn add(this: &WeakSet, value: Object) -> WeakSet;
+
+    /// The delete() method removes the specified element from a WeakSet object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/delete
+    #[wasm_bindgen(method)]
+    pub fn delete(this: &WeakSet, value: Object) -> bool;
+}
+
 // JsString
 #[wasm_bindgen]
 extern {
