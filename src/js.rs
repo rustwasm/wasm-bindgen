@@ -367,6 +367,14 @@ extern {
 extern {
     pub type Number;
 
+    /// The `Number` JavaScript object is a wrapper object allowing
+    /// you to work with numerical values. A `Number` object is
+    /// created using the `Number()` constructor.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+    #[wasm_bindgen(constructor)]
+    pub fn new(value: JsValue) -> Number;
+
     /// The toLocaleString() method returns a string with a language sensitive
     /// representation of this number.
     ///
