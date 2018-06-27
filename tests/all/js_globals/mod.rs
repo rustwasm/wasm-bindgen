@@ -9,6 +9,7 @@ mod Function;
 mod JsString;
 mod Math;
 mod WeakMap;
+mod WeakSet;
 mod Number;
 mod Object;
 mod TypedArray;

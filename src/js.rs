@@ -619,6 +619,17 @@ extern {
     pub fn delete(this: &WeakMap, key: Object) -> bool;
 }
 
+#[wasm_bindgen]
+extern {
+    pub type WeakSet;
+
+    /// The WeakSet object lets you store weakly held objects in a collection.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WeakSet;
+}
+
 // JsString
 #[wasm_bindgen]
 extern {
