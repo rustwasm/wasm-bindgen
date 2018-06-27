@@ -104,6 +104,13 @@ extern {
     #[wasm_bindgen(method)]
     pub fn concat(this: &Array, array: &Array) -> Array;
 
+    /// The every() method tests whether all elements in the array pass the test
+    /// implemented by the provided function.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
+    #[wasm_bindgen(method)]
+    pub fn every(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> bool;
+
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
     ///

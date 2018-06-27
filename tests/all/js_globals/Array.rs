@@ -589,3 +589,35 @@ fn length() {
         "#)
         .test()
 }
+
+#[test]
+fn every() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn array_every_number_is_even(array: &js::Array) -> bool {
+                array.every(&mut |el, _, _| el.as_f64().unwrap() % 2f64 == 0f64)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const arrayEven = [2, 4, 6, 8];
+                const arrayOdd = [1, 3, 5, 7];
+                const arrayMixed = [2, 3, 4, 5];
+
+                assert(wasm.array_every_number_is_even(arrayEven));
+                assert(!wasm.array_every_number_is_even(arrayOdd));
+                assert(!wasm.array_every_number_is_even(arrayMixed));
+            }
+        "#)
+        .test()
+}
