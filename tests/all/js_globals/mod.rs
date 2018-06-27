@@ -4,6 +4,7 @@ use super::project;
 
 mod Array;
 mod ArrayIterator;
+mod Boolean;
 mod Date;
 mod Function;
 mod JsString;

@@ -243,6 +243,24 @@ extern {
     pub fn entries(this: &Array) -> ArrayIterator;
 }
 
+// Boolean
+#[wasm_bindgen]
+extern {
+    pub type Boolean;
+
+    /// The `Boolean()` constructor creates an object wrapper for a boolean value.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+    #[wasm_bindgen(constructor)]
+    pub fn new(value: JsValue) -> Boolean;
+
+    /// The `valueOf()` method returns the primitive value of a `Boolean` object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean/valueOf
+    #[wasm_bindgen(method, js_name = valueOf)]
+    pub fn value_of(this: &Boolean) -> bool;
+}
+
 // Function
 #[wasm_bindgen]
 extern {
