@@ -687,8 +687,21 @@ extern {
 extern {
     pub type JSON;
 
+    /// The JSON.stringify() method converts a JavaScript value to a JSON string, optionally 
+    /// replacing values if a replacer function is specified or optionally including only the specified 
+    /// properties if a replacer array is specified.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
     #[wasm_bindgen(static_method_of = JSON)]
     pub fn stringify(value: JsValue) -> JsString;
+
+    /// The JSON.parse() method parses a JSON string, constructing the JavaScript value or 
+    /// object described by the string. An optional reviver function can be provided to perform a 
+    /// transformation on the resulting object before it is returned.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+    #[wasm_bindgen(static_method_of = JSON)]
+    pub fn parse(value: JsString) -> JsValue;
 }
 
 // JsString
