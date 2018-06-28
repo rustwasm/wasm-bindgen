@@ -28,6 +28,7 @@ Options:
     --browser                Generate output that only works in a browser
     --no-modules             Generate output that only works in a browser (without modules)
     --no-modules-global VAR  Name of the global variable to initialize
+    --both                   Generate output that will work with both node.js and webpack
     --typescript             Output a TypeScript definition file (on by default)
     --no-typescript          Don't emit a *.d.ts file
     --debug                  Include otherwise-extraneous debug checks in output
@@ -40,6 +41,7 @@ struct Args {
     flag_nodejs: bool,
     flag_browser: bool,
     flag_no_modules: bool,
+    flag_both: bool,
     flag_typescript: bool,
     flag_no_typescript: bool,
     flag_out_dir: Option<PathBuf>,
@@ -83,6 +85,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .nodejs(args.flag_nodejs)
         .browser(args.flag_browser)
         .no_modules(args.flag_no_modules)
+        .both(args.flag_both)
         .debug(args.flag_debug)
         .demangle(!args.flag_no_demangle)
         .typescript(typescript);

@@ -94,6 +94,8 @@ matrix:
           (cd examples/closures && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
         - |
           (cd examples/comments && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+        - |
+          (cd examples/node_and_browser && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh && npm start)
 
     # Build the guide.
     - rust: stable

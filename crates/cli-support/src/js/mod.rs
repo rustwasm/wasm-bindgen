@@ -55,12 +55,11 @@ pub struct SubContext<'a, 'b: 'a> {
 
 impl<'a> Context<'a> {
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
-        let contents = contents;
         let contents = contents.trim();
         if let Some(ref c) = comments {
             self.globals.push_str(c);
         }
-        let global = if self.config.nodejs {
+        let global = if self.config.nodejs || self.config.both {
             if contents.starts_with("class") {
                 format!("{1}\nmodule.exports.{0} = {0};\n", name, contents)
             } else {
@@ -360,7 +359,7 @@ impl<'a> Context<'a> {
                         .unwrap_or("wasm_bindgen"),
             )
         } else {
-            let import_wasm = if self.config.nodejs {
+            let import_wasm = if self.config.nodejs || self.config.both {
                 self.footer.push_str(&format!("wasm = require('./{}_bg');",
                                               module_name));
                 format!("var wasm;")
@@ -870,7 +869,7 @@ impl<'a> Context<'a> {
             self.global(&format!("
                 const TextEncoder = require('util').TextEncoder;
             "));
-        } else if !(self.config.browser || self.config.no_modules) {
+        } else if !(self.config.browser || self.config.no_modules) || self.config.both {
             self.global(&format!("
                 const TextEncoder = typeof self === 'object' && self.TextEncoder
                     ? self.TextEncoder
@@ -890,7 +889,7 @@ impl<'a> Context<'a> {
             self.global(&format!("
                 const TextDecoder = require('util').TextDecoder;
             "));
-        } else if !(self.config.browser || self.config.no_modules) {
+        } else if !(self.config.browser || self.config.no_modules) || self.config.both {
             self.global(&format!("
                 const TextDecoder = typeof self === 'object' && self.TextDecoder
                     ? self.TextDecoder
@@ -1743,7 +1742,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
 
             if self.cx.imported_names.insert(name.to_string()) {
-                if self.cx.config.nodejs {
+                if self.cx.config.nodejs || self.cx.config.both {
                     self.cx.imports.push_str(&format!("\
                         const {} = require('{}').{};\n\
                     ", name, module, name));

@@ -26,6 +26,7 @@ pub struct Bindgen {
     nodejs: bool,
     browser: bool,
     no_modules: bool,
+    both: bool,
     no_modules_global: Option<String>,
     debug: bool,
     typescript: bool,
@@ -40,6 +41,7 @@ impl Bindgen {
             browser: false,
             no_modules: false,
             no_modules_global: None,
+            both: false,
             debug: false,
             typescript: false,
             demangle: true,
@@ -63,6 +65,11 @@ impl Bindgen {
 
     pub fn no_modules(&mut self, no_modules: bool) -> &mut Bindgen {
         self.no_modules = no_modules;
+        self
+    }
+
+    pub fn both(&mut self, both: bool) -> &mut Bindgen {
+        self.both = both;
         self
     }
 
@@ -178,13 +185,7 @@ impl Bindgen {
 
         let wasm_path = out_dir.join(format!("{}_bg", stem)).with_extension("wasm");
 
-        if self.nodejs {
-            let js_path = wasm_path.with_extension("js");
-            let shim = self.generate_node_wasm_import(&module, &wasm_path);
-            File::create(&js_path)
-                .and_then(|mut f| f.write_all(shim.as_bytes()))
-                .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
-        }
+        self.write_wasm_import(&module, &wasm_path)?;
 
         let wasm_bytes = parity_wasm::serialize(module)?;
         File::create(&wasm_path)
@@ -193,7 +194,56 @@ impl Bindgen {
         Ok(())
     }
 
+    fn write_wasm_import(&self, m: &Module, wasm_path: &PathBuf) -> Result<(), Error> {
+        let shim = if self.nodejs {
+            self.generate_node_wasm_import(m, &wasm_path)
+        } else if self.both {
+            self.generate_both_wasm_import(m, &wasm_path)
+        } else {
+            return Ok(())
+        };
+        let js_path = wasm_path.with_extension("js");
+        File::create(&js_path)
+            .and_then(|mut f| f.write_all(shim.as_bytes()))
+            .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
+        Ok(())
+    }
+
     fn generate_node_wasm_import(&self, m: &Module, path: &Path) -> String {
+        let mut shim = self.generate_import_shim(m);
+
+        shim.push_str(&format!("
+            const join = require('path').join;
+            const bytes = require('fs').readFileSync(join(__dirname, '{}'));
+            const wasmModule = new WebAssembly.Module(bytes);
+            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+            module.exports = wasmInstance.exports;
+        ", path.file_name().unwrap().to_str().unwrap()
+        ));
+
+        reset_indentation(&shim)
+    }
+
+    fn generate_both_wasm_import(&self, m: &Module, path: &Path) -> String {
+        reset_indentation(&format!("
+        const bytesScript = `const join = require('path').join;
+        require('fs').readFileSync(join(__dirname, '{path}'));`;
+        module.exports = resolve();
+        function resolve() {{
+            if (typeof self === 'object') {{
+                return require('./{path}');
+            }} else {{
+                {import}
+                const bytes = eval(bytesScript);
+                const wasmModule = new WebAssembly.Module(bytes);
+                return new WebAssembly.Instance(wasmModule, imports).exports;
+            }}
+        }}
+        ",path = path.file_name().unwrap().to_str().unwrap(),
+        import = &self.generate_import_shim(m)))
+    }
+
+    fn generate_import_shim(&self, m: &Module) -> String {
         let mut imports = BTreeSet::new();
         if let Some(i) = m.import_section() {
             for i in i.entries() {
@@ -206,16 +256,7 @@ impl Bindgen {
         for module in imports {
             shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
         }
-
-        shim.push_str(&format!("
-            const join = require('path').join;
-            const bytes = require('fs').readFileSync(join(__dirname, '{}'));
-            const wasmModule = new WebAssembly.Module(bytes);
-            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
-            module.exports = wasmInstance.exports;
-        ", path.file_name().unwrap().to_str().unwrap()));
-
-        reset_indentation(&shim)
+        shim
     }
 }
 
