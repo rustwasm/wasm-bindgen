@@ -612,6 +612,19 @@ extern {
     pub fn value_of(this: &Object) -> Object;
 }
 
+// Set
+#[wasm_bindgen]
+extern {
+    pub type Set;
+
+    /// The add() method appends a new element with a specified value to the 
+    /// end of a Set object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/add
+    #[wasm_bindgen(method)]
+    pub fn add(this: &Set, value: &JsValue) -> Set;
+}
+
 // WeakMap
 #[wasm_bindgen]
 extern {
