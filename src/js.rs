@@ -345,6 +345,14 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/set
     #[wasm_bindgen(method)]
     pub fn set(this: &Map, key: &JsValue, value: &JsValue) -> Map;
+
+    /// The value of size is an integer representing how many entries 
+    /// the Map object has. A set accessor function for size is undefined; 
+    /// you can not change this property.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/size
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn size(this: &Map) -> Number;
 }
 
 // Math
