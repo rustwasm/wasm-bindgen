@@ -338,6 +338,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
     #[wasm_bindgen(constructor)]
     pub fn new() -> Map;
+
+    /// The set() method adds or updates an element with a specified key 
+    /// and value to a Map object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/set
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Map, key: &JsValue, value: &JsValue) -> Map;
 }
 
 // Math
