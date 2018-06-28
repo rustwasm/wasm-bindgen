@@ -431,6 +431,40 @@ fn versions() {
 }
 
 #[test]
+fn underscore_pattern() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo(_: u8);
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                foo(1);
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export function foo(_a: number) {
+            }
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+}
+
+#[test]
 fn rust_keyword() {
     project()
         .file("src/lib.rs", r#"

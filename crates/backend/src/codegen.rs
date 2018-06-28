@@ -573,6 +573,7 @@ impl ToTokens for ast::ImportFunction {
         let mut abi_argument_names = Vec::new();
         let mut abi_arguments = Vec::new();
         let mut arg_conversions = Vec::new();
+        let mut arguments = Vec::new();
         let ret_ident = Ident::new("_ret", Span::call_site());
 
         for (i, syn::ArgCaptured { pat, ty, .. }) in self.function.arguments.iter().enumerate() {
@@ -583,6 +584,9 @@ impl ToTokens for ast::ImportFunction {
                     subpat: None,
                     ..
                 }) => ident.clone(),
+                syn::Pat::Wild(_) => {
+                    syn::Ident::new(&format!("__genarg_{}", i), Span::call_site())
+                }
                 _ => panic!("unsupported pattern in foreign function"),
             };
 
@@ -593,6 +597,7 @@ impl ToTokens for ast::ImportFunction {
             let var = if i == 0 && is_method {
                 quote! { self }
             } else {
+                arguments.push(quote! { #name: #ty });
                 quote! { #name }
             };
             arg_conversions.push(quote! {
@@ -651,12 +656,7 @@ impl ToTokens for ast::ImportFunction {
         let rust_name = &self.rust_name;
         let import_name = &self.shim;
         let attrs = &self.function.rust_attrs;
-
-        let arguments = if is_method {
-            &self.function.arguments[1..]
-        } else {
-            &self.function.arguments[..]
-        };
+        let arguments = &arguments;
 
         let me = if is_method {
             quote! { &self, }
