@@ -672,6 +672,14 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/entries
     #[wasm_bindgen(method)]
     pub fn entries(set: &Set) -> SetIterator;
+
+    /// The keys() method is an alias for this method (for similarity with 
+    /// Map objects); it behaves exactly the same and returns values 
+    /// of Set elements.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
+    #[wasm_bindgen(method)]
+    pub fn keys(set: &Set) -> SetIterator;
 }
 
 // WeakMap
