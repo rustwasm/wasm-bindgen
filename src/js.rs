@@ -324,6 +324,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get
     #[wasm_bindgen(method)]
     pub fn get(this: &Map, key: &JsValue) -> JsValue;
+
+    /// The has() method returns a boolean indicating whether an element with 
+    /// the specified key exists or not.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has
+    #[wasm_bindgen(method)]
+    pub fn has(this: &Map, key: &JsValue) -> bool;
 }
 
 // Math
