@@ -607,3 +607,64 @@ fn rust_keyword2() {
         )
         .test();
 }
+
+#[test]
+fn custom_type() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo(f: Foo) -> Foo;
+                fn bad2() -> Foo;
+            }
+
+            #[wasm_bindgen]
+            pub struct Foo(());
+
+            #[wasm_bindgen]
+            impl Foo {
+                pub fn touch(&self) {
+                    panic!()
+                }
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                foo(Foo(()));
+            }
+
+            #[wasm_bindgen]
+            pub fn bad() {
+                bad2();
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import { run, Foo, bad } from "./out";
+
+            let VAL: any = null;
+
+            export function foo(f: Foo): Foo {
+                VAL = f;
+                return f;
+            }
+
+            export function bad2(): number {
+                return 2;
+            }
+
+            export function test() {
+                run();
+                assert.throws(() => VAL.touch(), /Attempt to use a moved value/);
+                assert.throws(bad, /expected value of type Foo/);
+            }
+        "#)
+        .test();
+}

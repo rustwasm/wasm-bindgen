@@ -298,6 +298,26 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             );
             return Ok(());
         }
+
+        if let Some(class) = ty.rust_struct() {
+            if ty.is_by_ref() {
+                bail!("cannot invoke JS functions returning custom ref types yet")
+            }
+            // Insert an assertion to the type of the returned value as
+            // otherwise this will cause memory unsafety on the Rust side of
+            // things.
+            self.ret_expr = format!("\
+                const val = JS;
+                if (!(val instanceof {0})) {{
+                    throw new Error('expected value of type {0}');
+                }}
+                const ret = val.ptr;
+                val.ptr = 0;
+                return ret;\
+            ", class);
+            return Ok(())
+        }
+
         self.ret_expr = match *ty {
             Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
             Descriptor::Char => "return JS.codePointAt(0);".to_string(),
@@ -337,9 +357,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             invoc = format!(
                 "\
                 try {{\n\
-                {}
+                    {}
                 }} catch (e) {{\n\
-                {}
+                    {}
                 }}\
                 ",
                 &invoc, catch
@@ -350,9 +370,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             invoc = format!(
                 "\
                 try {{\n\
-                {}
+                    {}
                 }} finally {{\n\
-                {}
+                    {}
                 }}\
                 ",
                 &invoc, &self.finally
