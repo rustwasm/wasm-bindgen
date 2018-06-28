@@ -205,6 +205,13 @@ extern {
     #[wasm_bindgen(method)]
     pub fn slice(this: &Array, start: u32, end: u32) -> Array;
 
+    /// The some() method tests whether at least one element in the array passes the test implemented
+    /// by the provided function.
+    /// Note: This method returns false for any condition put on an empty array.
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+    #[wasm_bindgen(method)]
+    pub fn some(this: &Array, predicate: &mut FnMut(JsValue) -> bool) -> bool;
+
     /// The sort() method sorts the elements of an array in place and returns
     /// the array. The sort is not necessarily stable. The default sort
     /// order is according to string Unicode code points.
