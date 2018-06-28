@@ -680,6 +680,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
     #[wasm_bindgen(method)]
     pub fn keys(set: &Set) -> SetIterator;
+
+    /// The values() method returns a new Iterator object that contains the 
+    /// values for each element in the Set object in insertion order.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
+    #[wasm_bindgen(method)]
+    pub fn values(set: &Set) -> SetIterator;
 }
 
 // WeakMap
