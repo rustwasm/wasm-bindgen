@@ -355,6 +355,20 @@ extern {
     pub fn size(this: &Map) -> Number;
 }
 
+// Map Iterator
+#[wasm_bindgen]
+extern {
+    pub type MapIterator;
+
+    /// The entries() method returns a new Iterator object that contains 
+    /// the [key, value] pairs for each element in the Map object in 
+    /// insertion order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries
+    #[wasm_bindgen(method)]
+    pub fn entries(this: &Map) -> MapIterator;
+}
+
 // Math
 #[wasm_bindgen]
 extern {
