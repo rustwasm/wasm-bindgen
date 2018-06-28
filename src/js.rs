@@ -612,6 +612,84 @@ extern {
     pub fn value_of(this: &Object) -> Object;
 }
 
+// Set
+#[wasm_bindgen]
+extern {
+    pub type Set;
+
+    /// The add() method appends a new element with a specified value to the 
+    /// end of a Set object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/add
+    #[wasm_bindgen(method)]
+    pub fn add(this: &Set, value: &JsValue) -> Set;
+
+    /// The clear() method removes all elements from a Set object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/clear
+    #[wasm_bindgen(method)]
+    pub fn clear(this: &Set);
+
+    /// The delete() method removes the specified element from a Set object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/delete
+    #[wasm_bindgen(method)]
+    pub fn delete(this: &Set, value: &JsValue) -> bool;
+
+    /// The has() method returns a boolean indicating whether an element 
+    /// with the specified value exists in a Set object or not.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/has
+    #[wasm_bindgen(method)]
+    pub fn has(this: &Set, value: &JsValue) -> bool;
+
+    /// The Set object lets you store unique values of any type, whether primitive 
+    /// values or object references.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Set;
+
+    /// The size accessor property returns the number of elements in a Set object.
+    /// 
+    /// https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Set/size
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn size(this: &Set) -> Number;
+}
+
+// SetIterator
+#[wasm_bindgen]
+extern {
+    pub type SetIterator;
+
+    /// The entries() method returns a new Iterator object that contains 
+    /// an array of [value, value] for each element in the Set object, 
+    /// in insertion order. For Set objects there is no key like in 
+    /// Map objects. However, to keep the API similar to the Map object,
+    /// each entry has the same value for its key and value here, so that 
+    /// an array [value, value] is returned.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/entries
+    #[wasm_bindgen(method)]
+    pub fn entries(set: &Set) -> SetIterator;
+    
+    /// The keys() method is an alias for this method (for similarity with 
+    /// Map objects); it behaves exactly the same and returns values 
+    /// of Set elements.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
+    
+    #[wasm_bindgen(method)]
+    pub fn keys(set: &Set) -> SetIterator;
+    
+    /// The values() method returns a new Iterator object that contains the values for each 
+    /// element in the Set object in insertion order.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
+    #[wasm_bindgen(method)]
+    pub fn values(set: &Set) -> SetIterator;
+}
+
 // WeakMap
 #[wasm_bindgen]
 extern {
