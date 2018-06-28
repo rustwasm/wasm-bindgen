@@ -3,7 +3,9 @@ use super::project;
 #[test]
 fn c_style_enum() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -25,8 +27,11 @@ fn c_style_enum() {
                     Color::Red => Color::Green,
                 }
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -38,14 +43,17 @@ fn c_style_enum() {
 
                 assert.strictEqual(wasm.cycle(wasm.Color.Green), wasm.Color.Yellow);
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn c_style_enum_with_custom_values() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -73,8 +81,11 @@ fn c_style_enum_with_custom_values() {
                     Color::Red => Color::Green,
                 }
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -86,6 +97,7 @@ fn c_style_enum_with_custom_values() {
 
                 assert.strictEqual(wasm.cycle(wasm.Color.Green), wasm.Color.Yellow);
             }
-        "#)
+        "#,
+        )
         .test();
 }

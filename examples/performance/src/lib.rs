@@ -1,7 +1,7 @@
 #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
-extern crate wasm_bindgen;
 extern crate humantime;
+extern crate wasm_bindgen;
 
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
@@ -10,7 +10,7 @@ use wasm_bindgen::prelude::*;
 // Like with the `dom` example this block will eventually be auto-generated, but
 // for now we can write it by hand to get by!
 #[wasm_bindgen]
-extern {
+extern "C" {
     type Performance;
     static performance: Performance;
     #[wasm_bindgen(method)]

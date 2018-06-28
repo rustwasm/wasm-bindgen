@@ -5,7 +5,9 @@ use project;
 #[test]
 fn new_undefined() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -16,22 +18,28 @@ fn new_undefined() {
             pub fn new_array() -> js::Uint8Array {
                 js::Uint8Array::new(JsValue::undefined())
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 assert.equal(wasm.new_array().length, 0);
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn new_length() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -42,15 +50,19 @@ fn new_length() {
             pub fn new_array() -> js::Uint8Array {
                 js::Uint8Array::new(JsValue::from_f64(4.0))
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 assert.equal(wasm.new_array().length, 4);
             }
-        "#)
+        "#,
+        )
         .test()
 }
 

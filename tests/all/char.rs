@@ -3,7 +3,9 @@ use super::project;
 #[test]
 fn works() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -30,8 +32,11 @@ fn works() {
 
             #[wasm_bindgen]
             pub fn char_round(c: char)-> char { js_parrot(c) }
-        "#)
-        .file("test.js", r#"
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
             import * as wasm from './out';
 
             function assertEq(a, b) {
@@ -55,6 +60,7 @@ fn works() {
             }
 
             export function js_parrot(a) { return a; }
-        "#)
+        "#,
+        )
         .test();
 }

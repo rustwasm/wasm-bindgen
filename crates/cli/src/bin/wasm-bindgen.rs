@@ -10,8 +10,8 @@ use std::path::PathBuf;
 use std::process;
 
 use docopt::Docopt;
-use wasm_bindgen_cli_support::Bindgen;
 use failure::Error;
+use wasm_bindgen_cli_support::Bindgen;
 
 const USAGE: &'static str = "
 Generating JS bindings for a wasm file

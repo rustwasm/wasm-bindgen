@@ -76,16 +76,18 @@ const JSIDX_RESERVED: u32 = 8;
 
 impl JsValue {
     /// The `null` JS value constant.
-    pub const NULL: JsValue = JsValue { idx:  JSIDX_NULL };
+    pub const NULL: JsValue = JsValue { idx: JSIDX_NULL };
 
     /// The `undefined` JS value constant.
-    pub const UNDEFINED: JsValue = JsValue { idx:  JSIDX_UNDEFINED };
+    pub const UNDEFINED: JsValue = JsValue {
+        idx: JSIDX_UNDEFINED,
+    };
 
     /// The `true` JS value constant.
-    pub const TRUE: JsValue = JsValue { idx:  JSIDX_TRUE };
+    pub const TRUE: JsValue = JsValue { idx: JSIDX_TRUE };
 
     /// The `false` JS value constant.
-    pub const FALSE: JsValue = JsValue { idx:  JSIDX_FALSE };
+    pub const FALSE: JsValue = JsValue { idx: JSIDX_FALSE };
 
     /// Creates a new JS value which is a string.
     ///
@@ -93,7 +95,9 @@ impl JsValue {
     /// be owned by the JS garbage collector.
     pub fn from_str(s: &str) -> JsValue {
         unsafe {
-            JsValue { idx: __wbindgen_string_new(s.as_ptr(), s.len()) }
+            JsValue {
+                idx: __wbindgen_string_new(s.as_ptr(), s.len()),
+            }
         }
     }
 
@@ -103,7 +107,9 @@ impl JsValue {
     /// allocated number) and returns a handle to the JS version of it.
     pub fn from_f64(n: f64) -> JsValue {
         unsafe {
-            JsValue { idx: __wbindgen_number_new(n) }
+            JsValue {
+                idx: __wbindgen_number_new(n),
+            }
         }
     }
 
@@ -112,12 +118,16 @@ impl JsValue {
     /// This function creates a JS object representing a boolean (a heap
     /// allocated boolean) and returns a handle to the JS version of it.
     pub fn from_bool(b: bool) -> JsValue {
-        JsValue { idx: if b { JSIDX_TRUE } else { JSIDX_FALSE } }
+        JsValue {
+            idx: if b { JSIDX_TRUE } else { JSIDX_FALSE },
+        }
     }
 
     /// Creates a new JS value representing `undefined`.
     pub fn undefined() -> JsValue {
-        JsValue { idx: JSIDX_UNDEFINED }
+        JsValue {
+            idx: JSIDX_UNDEFINED,
+        }
     }
 
     /// Creates a new JS value representing `null`.
@@ -133,7 +143,9 @@ impl JsValue {
         unsafe {
             let ptr = description.map(|s| s.as_ptr()).unwrap_or(ptr::null());
             let len = description.map(|s| s.len()).unwrap_or(0);
-            JsValue { idx: __wbindgen_symbol_new(ptr, len) }
+            JsValue {
+                idx: __wbindgen_symbol_new(ptr, len),
+            }
         }
     }
 
@@ -154,7 +166,8 @@ impl JsValue {
     /// Returns any error encountered when serializing `T` into JSON.
     #[cfg(feature = "serde-serialize")]
     pub fn from_serde<T>(t: &T) -> serde_json::Result<JsValue>
-        where T: serde::ser::Serialize + ?Sized,
+    where
+        T: serde::ser::Serialize + ?Sized,
     {
         let s = serde_json::to_string(t)?;
         unsafe {
@@ -179,7 +192,8 @@ impl JsValue {
     /// Returns any error encountered when parsing the JSON into a `T`.
     #[cfg(feature = "serde-serialize")]
     pub fn into_serde<T>(&self) -> serde_json::Result<T>
-        where T: for<'a> serde::de::Deserialize<'a>,
+    where
+        T: for<'a> serde::de::Deserialize<'a>,
     {
         unsafe {
             let mut ptr = ptr::null_mut();
@@ -243,31 +257,23 @@ impl JsValue {
 
     /// Tests whether this JS value is `null`
     pub fn is_null(&self) -> bool {
-        unsafe {
-            __wbindgen_is_null(self.idx) == 1
-        }
+        unsafe { __wbindgen_is_null(self.idx) == 1 }
     }
 
     /// Tests whether this JS value is `undefined`
     pub fn is_undefined(&self) -> bool {
-        unsafe {
-            __wbindgen_is_undefined(self.idx) == 1
-        }
+        unsafe { __wbindgen_is_undefined(self.idx) == 1 }
     }
 
     /// Tests whether the type of this JS value is `symbol`
     pub fn is_symbol(&self) -> bool {
-        unsafe {
-            __wbindgen_is_symbol(self.idx) == 1
-        }
+        unsafe { __wbindgen_is_symbol(self.idx) == 1 }
     }
 }
 
 impl PartialEq for JsValue {
     fn eq(&self, other: &JsValue) -> bool {
-        unsafe {
-            __wbindgen_jsval_eq(self.idx, other.idx) != 0
-        }
+        unsafe { __wbindgen_jsval_eq(self.idx, other.idx) != 0 }
     }
 }
 
@@ -421,7 +427,7 @@ impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
             // `JsStatic` a bit as well.
             let ptr = self.__inner.get();
             if let Some(ref t) = *ptr {
-                return t
+                return t;
             }
             let init = Some((self.__init)());
             debug_assert!((*ptr).is_none());
@@ -455,7 +461,7 @@ pub mod __rt {
     #[macro_export]
     #[cfg(feature = "std")]
     macro_rules! __wbindgen_if_not_std {
-        ($($i:item)*) => ()
+        ($($i:item)*) => {};
     }
 
     #[macro_export]
@@ -500,7 +506,10 @@ pub mod __rt {
     }
 
     impl<T: ?Sized> WasmRefCell<T> {
-        pub fn new(value: T) -> WasmRefCell<T> where T: Sized {
+        pub fn new(value: T) -> WasmRefCell<T>
+        where
+            T: Sized,
+        {
             WasmRefCell {
                 value: UnsafeCell::new(value),
                 borrow: Cell::new(0),
@@ -508,9 +517,7 @@ pub mod __rt {
         }
 
         pub fn get_mut(&mut self) -> &mut T {
-            unsafe {
-                &mut *self.value.get()
-            }
+            unsafe { &mut *self.value.get() }
         }
 
         pub fn borrow(&self) -> Ref<T> {
@@ -539,7 +546,10 @@ pub mod __rt {
             }
         }
 
-        pub fn into_inner(self) -> T where T: Sized {
+        pub fn into_inner(self) -> T
+        where
+            T: Sized,
+        {
             self.value.into_inner()
         }
     }
@@ -592,8 +602,10 @@ pub mod __rt {
     }
 
     fn borrow_fail() -> ! {
-        super::throw("recursive use of an object detected which would lead to \
-                      unsafe aliasing in rust");
+        super::throw(
+            "recursive use of an object detected which would lead to \
+             unsafe aliasing in rust",
+        );
     }
 
     if_std! {
