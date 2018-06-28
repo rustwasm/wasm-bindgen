@@ -309,6 +309,87 @@ extern "C" {
     pub fn to_string(this: &Function) -> JsString;
 }
 
+// Map
+#[wasm_bindgen]
+extern {
+    pub type Map;
+
+    /// The clear() method removes all elements from a Map object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/clear
+    #[wasm_bindgen(method)]
+    pub fn clear(this: &Map);
+
+    /// The delete() method removes the specified element from a Map object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/delete
+    #[wasm_bindgen(method)]
+    pub fn delete(this: &Map, key: &str) -> bool;
+
+    /// The get() method returns a specified element from a Map object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get
+    #[wasm_bindgen(method)]
+    pub fn get(this: &Map, key: &JsValue) -> JsValue;
+
+    /// The has() method returns a boolean indicating whether an element with 
+    /// the specified key exists or not.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has
+    #[wasm_bindgen(method)]
+    pub fn has(this: &Map, key: &JsValue) -> bool;
+
+    /// The Map object holds key-value pairs. Any value (both objects and 
+    /// primitive values) maybe used as either a key or a value.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Map;
+
+    /// The set() method adds or updates an element with a specified key 
+    /// and value to a Map object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/set
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Map, key: &JsValue, value: &JsValue) -> Map;
+
+    /// The value of size is an integer representing how many entries 
+    /// the Map object has. A set accessor function for size is undefined; 
+    /// you can not change this property.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/size
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn size(this: &Map) -> Number;
+}
+
+// Map Iterator
+#[wasm_bindgen]
+extern {
+    pub type MapIterator;
+
+    /// The entries() method returns a new Iterator object that contains 
+    /// the [key, value] pairs for each element in the Map object in 
+    /// insertion order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries
+    #[wasm_bindgen(method)]
+    pub fn entries(this: &Map) -> MapIterator;
+
+    /// The keys() method returns a new Iterator object that contains the 
+    /// keys for each element in the Map object in insertion order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys
+    #[wasm_bindgen(method)]
+    pub fn keys(this: &Map) -> MapIterator;
+
+    /// The values() method returns a new Iterator object that contains the 
+    /// values for each element in the Map object in insertion order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/values
+    #[wasm_bindgen(method)]
+    pub fn values(this: &Map) -> MapIterator;
+}
+
 // Math
 #[wasm_bindgen]
 extern "C" {
