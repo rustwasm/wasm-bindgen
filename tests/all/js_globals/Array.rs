@@ -144,6 +144,37 @@ fn sort() {
 }
 
 #[test]
+fn some() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn has_elem(array: &js::Array, arg: JsValue) -> bool {
+                array.some(&mut |elem| arg == elem)
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let elements = ["z", 1, "y", 2];
+
+                assert.deepStrictEqual(wasm.has_elem(elements, 2), true);
+                assert.deepStrictEqual(wasm.has_elem(elements, "y"), true);
+                assert.deepStrictEqual(wasm.has_elem(elements, "not an element"), false);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn last_index_of() {
     project()
         .file("src/lib.rs", r#"
