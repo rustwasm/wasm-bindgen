@@ -66,14 +66,22 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
     /// Flag this shim as a method call into Rust, so the first Rust argument
     /// passed should be `this.ptr`.
-    pub fn method(&mut self, method: bool) -> &mut Self {
+    pub fn method(&mut self, method: bool, consumed: bool) -> &mut Self {
         if method {
             self.prelude(
                 "if (this.ptr === 0) {
-                throw new Error('Attempt to use a moved value');
-            }",
+                    throw new Error('Attempt to use a moved value');
+                }"
             );
-            self.rust_arguments.insert(0, "this.ptr".to_string());
+            if consumed {
+                self.prelude("\
+                    const ptr = this.ptr;\n\
+                    this.ptr = 0;\n\
+                ");
+                self.rust_arguments.insert(0, "ptr".to_string());
+            } else {
+                self.rust_arguments.insert(0, "this.ptr".to_string());
+            }
         }
         self
     }

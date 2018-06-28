@@ -17,11 +17,17 @@ pub struct Program {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub struct Export {
     pub class: Option<Ident>,
-    pub method: bool,
-    pub mutable: bool,
+    pub method_self: Option<MethodSelf>,
     pub constructor: Option<String>,
     pub function: Function,
     pub comments: Vec<String>,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub enum MethodSelf {
+    ByValue,
+    RefMutable,
+    RefShared,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -170,8 +176,7 @@ impl Program {
                 f.to_tokens(tokens);
                 self.exports.push(Export {
                     class: None,
-                    method: false,
-                    mutable: false,
+                    method_self: None,
                     constructor: None,
                     function: Function::from(f, opts),
                     comments,
@@ -263,7 +268,7 @@ impl Program {
             None
         };
 
-        let (function, mutable) = Function::from_decl(
+        let (function, method_self) = Function::from_decl(
             &method.sig.ident,
             Box::new(method.sig.decl.clone()),
             method.attrs.clone(),
@@ -274,8 +279,7 @@ impl Program {
 
         self.exports.push(Export {
             class: Some(class.clone()),
-            method: mutable.is_some(),
-            mutable: mutable.unwrap_or(false),
+            method_self,
             constructor,
             function,
             comments,
@@ -529,7 +533,7 @@ impl Function {
         opts: BindgenAttrs,
         vis: syn::Visibility,
         allow_self: bool,
-    ) -> (Function, Option<bool>) {
+    ) -> (Function, Option<MethodSelf>) {
         if decl.variadic.is_some() {
             panic!("can't bindgen variadic functions")
         }
@@ -541,17 +545,23 @@ impl Function {
 
         let syn::FnDecl { inputs, output, .. } = { *decl };
 
-        let mut mutable = None;
+        let mut method_self = None;
         let arguments = inputs
             .into_iter()
             .filter_map(|arg| match arg {
                 syn::FnArg::Captured(c) => Some(c),
                 syn::FnArg::SelfValue(_) => {
-                    panic!("by-value `self` not yet supported");
+                    assert!(method_self.is_none());
+                    method_self = Some(MethodSelf::ByValue);
+                    None
                 }
                 syn::FnArg::SelfRef(ref a) if allow_self => {
-                    assert!(mutable.is_none());
-                    mutable = Some(a.mutability.is_some());
+                    assert!(method_self.is_none());
+                    if a.mutability.is_some() {
+                        method_self = Some(MethodSelf::RefMutable);
+                    } else {
+                        method_self = Some(MethodSelf::RefShared);
+                    }
                     None
                 }
                 _ => panic!("arguments cannot be `self` or ignored"),
@@ -572,7 +582,7 @@ impl Function {
                 rust_vis: vis,
                 rust_attrs: attrs,
             },
-            mutable,
+            method_self,
         )
     }
 
@@ -618,9 +628,15 @@ impl Export {
     }
 
     fn shared(&self) -> shared::Export {
+        let (method, consumed) = match self.method_self {
+            Some(MethodSelf::ByValue) => (true, true),
+            Some(_) => (true, false),
+            None => (false, false),
+        };
         shared::Export {
             class: self.class.as_ref().map(|s| s.to_string()),
-            method: self.method,
+            method,
+            consumed,
             constructor: self.constructor.clone(),
             function: self.function.shared(),
             comments: self.comments.clone(),

@@ -32,6 +32,10 @@ fn simple() {
                     self.contents += amt;
                     self.contents
                 }
+
+                pub fn consume(self) -> u32 {
+                    self.contents
+                }
             }
         "#,
         )
@@ -46,7 +50,9 @@ fn simple() {
                 assert.strictEqual(r.add(0), 0);
                 assert.strictEqual(r.add(1), 1);
                 assert.strictEqual(r.add(1), 2);
-                r.free();
+                r.add(2);
+                assert.strictEqual(r.consume(), 4);
+                assert.throws(() => r.free(), /null pointer passed to rust/);
 
                 const r2 = Foo.with_contents(10);
                 assert.strictEqual(r2.add(1), 11);
@@ -670,5 +676,42 @@ fn readonly_fields() {
             }
         "#,
         )
+        .test();
+}
+
+#[test]
+fn double_consume() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub struct Foo { }
+
+            #[wasm_bindgen]
+            impl Foo {
+                #[wasm_bindgen(constructor)]
+                pub fn new() -> Foo {
+                    Foo {}
+                }
+
+                pub fn consume(self, other: Foo) {
+                    drop(other);
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import { Foo } from "./out";
+
+            export function test() {
+                const r = Foo.new();
+                assert.throws(() => r.consume(r), /Attempt to use a moved value/);
+            }
+        "#)
         .test();
 }
