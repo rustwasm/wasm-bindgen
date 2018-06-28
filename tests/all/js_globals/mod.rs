@@ -8,6 +8,7 @@ mod Boolean;
 mod Date;
 mod Function;
 mod JsString;
+mod Map;
 mod Math;
 mod WeakMap;
 mod WeakSet;

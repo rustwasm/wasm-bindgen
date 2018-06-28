@@ -302,6 +302,18 @@ extern {
     pub fn to_string(this: &Function) -> JsString;
 }
 
+// Map
+#[wasm_bindgen]
+extern {
+    pub type Map;
+
+    /// The clear() method removes all elements from a Map object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/clear
+    #[wasm_bindgen(method)]
+    pub fn clear(this: &Map);
+}
+
 // Math
 #[wasm_bindgen]
 extern {
