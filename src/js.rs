@@ -623,6 +623,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/add
     #[wasm_bindgen(method)]
     pub fn add(this: &Set, value: &JsValue) -> Set;
+
+    /// The clear() method removes all elements from a Set object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/clear
+    #[wasm_bindgen(method)]
+    pub fn clear(this: &Set);
 }
 
 // WeakMap
