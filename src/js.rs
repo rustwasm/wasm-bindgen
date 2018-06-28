@@ -657,6 +657,23 @@ extern {
     pub fn size(this: &Set) -> Number;
 }
 
+// SetIterator
+#[wasm_bindgen]
+extern {
+    pub type SetIterator;
+
+    /// The entries() method returns a new Iterator object that contains 
+    /// an array of [value, value] for each element in the Set object, 
+    /// in insertion order. For Set objects there is no key like in 
+    /// Map objects. However, to keep the API similar to the Map object,
+    /// each entry has the same value for its key and value here, so that 
+    /// an array [value, value] is returned.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/entries
+    #[wasm_bindgen(method)]
+    pub fn entries(set: &Set) -> SetIterator;
+}
+
 // WeakMap
 #[wasm_bindgen]
 extern {
