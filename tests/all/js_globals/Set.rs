@@ -94,3 +94,32 @@ fn delete() {
         "#)
         .test()
 }
+
+#[test]
+fn has() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn has(this: &js::Set, value: &JsValue) -> bool {
+                this.has(value)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let set = new Set([1, 2, 3]);
+
+                assert.equal(wasm.has(set, 4), false);
+                assert.equal(wasm.has(set, 2), true);
+            }
+        "#)
+        .test()
+}

@@ -635,6 +635,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/delete
     #[wasm_bindgen(method)]
     pub fn delete(this: &Set, value: &JsValue) -> bool;
+
+    /// The has() method returns a boolean indicating whether an element 
+    /// with the specified value exists in a Set object or not.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/has
+    #[wasm_bindgen(method)]
+    pub fn has(this: &Set, value: &JsValue) -> bool;
 }
 
 // WeakMap
