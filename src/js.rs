@@ -318,6 +318,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/delete
     #[wasm_bindgen(method)]
     pub fn delete(this: &Map, key: &str) -> bool;
+
+    /// The get() method returns a specified element from a Map object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get
+    #[wasm_bindgen(method)]
+    pub fn get(this: &Map, key: &JsValue) -> JsValue;
 }
 
 // Math
