@@ -2,7 +2,6 @@
 
 use super::project;
 
-
 #[test]
 fn to_locale_string() {
     project()
@@ -36,7 +35,9 @@ fn to_locale_string() {
 #[test]
 fn to_precision() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -52,8 +53,11 @@ fn to_precision() {
                 };
                 result
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -61,14 +65,17 @@ fn to_precision() {
                 assert.equal(wasm.to_precision(0.1, 3), "0.100");
                 assert.equal(wasm.to_precision(10, 101), "RangeError");
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn to_string() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -84,8 +91,11 @@ fn to_string() {
                 };
                 result
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -95,14 +105,17 @@ fn to_string() {
                 assert.equal(wasm.to_string(233, 16), "e9");
                 assert.equal(wasm.to_string(number, 100), "RangeError");
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn value_of() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -113,8 +126,11 @@ fn value_of() {
             pub fn js_value_of(this: &js::Number) -> js::Number {
                 this.value_of()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -123,14 +139,17 @@ fn value_of() {
                 assert.equal(wasm.js_value_of(number), 42);
                 assert.equal(typeof wasm.js_value_of(number), "number");
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn to_fixed() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -146,8 +165,11 @@ fn to_fixed() {
                 };
                 result
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -155,14 +177,17 @@ fn to_fixed() {
                 assert.equal(wasm.to_fixed(123.456, 2), "123.46");
                 assert.equal(wasm.to_fixed(10, 101), "RangeError");
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn to_exponential() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -178,8 +203,11 @@ fn to_exponential() {
                 };
                 result
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -187,6 +215,7 @@ fn to_exponential() {
                 assert.equal(wasm.to_exponential(123456, 2), "1.23e+5");
                 assert.equal(wasm.to_exponential(10, 101), "RangeError");
             }
-        "#)
+        "#,
+        )
         .test()
 }

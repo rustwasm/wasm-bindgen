@@ -5,7 +5,9 @@ use project;
 #[test]
 fn apply() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -16,8 +18,11 @@ fn apply() {
             pub fn apply(this: &js::Function, context: &JsValue, args: &js::Array) -> js::Function {
                 this.apply(context, args)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -28,14 +33,17 @@ fn apply() {
                 wasm.apply(Array.prototype.push, arr, [3]);
                 assert.equal(arr[2], 3);
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn length() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -46,8 +54,11 @@ fn length() {
             pub fn fn_length(this: &js::Function) -> u32 {
                 this.length()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -68,14 +79,17 @@ fn length() {
                 assert.equal(wasm.fn_length(fn1), 1);
                 assert.equal(wasm.fn_length(fn2), 2);
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn name() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -86,8 +100,11 @@ fn name() {
             pub fn fn_name(this: &js::Function) -> js::JsString {
                 this.name()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -109,14 +126,17 @@ fn name() {
                 const closure = () => {};
                 assert.equal(wasm.fn_name(closure), 'closure');
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn to_string() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -127,8 +147,11 @@ fn to_string() {
             pub fn get_source_code(this: &js::Function) -> js::JsString {
                 this.to_string()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -139,6 +162,7 @@ fn to_string() {
                 assert.equal(wasm.get_source_code(fn1), 'function fn1(a, b) { return a + b; }');
                 assert.equal(wasm.get_source_code(fn2), 'function (a) { return console.log(a); }');
             }
-        "#)
+        "#,
+        )
         .test()
 }

@@ -8,6 +8,11 @@ matrix:
       install: true
       script: cargo build --manifest-path crates/cli/Cargo.toml
 
+    # check formatting
+    - rust: nightly
+      before_install: rustup component add rustfmt-preview --toolchain nightly
+      script: cargo fmt -- --check
+
     # Tests pass on nightly
     - rust: nightly
       before_install:
@@ -41,6 +46,7 @@ matrix:
         # Check JS output from all tests against eslint
         - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
       env: RUST_BACKTRACE=1
+
     # WebIDL tests pass on nightly
     - rust: nightly
       before_install: rustup component add rustfmt-preview --toolchain nightly

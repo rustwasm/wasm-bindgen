@@ -405,7 +405,10 @@ impl Program {
             };
             let class_name = extract_path_ident(class_name)
                 .expect("first argument of method must be a bare type");
-            let class_name = wasm.opts.js_class().map(Into::into)
+            let class_name = wasm
+                .opts
+                .js_class()
+                .map(Into::into)
                 .unwrap_or_else(|| class_name.to_string());
 
             ImportFunctionKind::Method {

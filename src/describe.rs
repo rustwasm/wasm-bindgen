@@ -41,9 +41,7 @@ tys! {
 }
 
 pub fn inform(a: u32) {
-    unsafe {
-        super::__wbindgen_describe(a)
-    }
+    unsafe { super::__wbindgen_describe(a) }
 }
 
 pub trait WasmDescribe {
@@ -78,11 +76,15 @@ simple! {
 }
 
 impl<T> WasmDescribe for *const T {
-    fn describe() { inform(I32) }
+    fn describe() {
+        inform(I32)
+    }
 }
 
 impl<T> WasmDescribe for *mut T {
-    fn describe() { inform(I32) }
+    fn describe() {
+        inform(I32)
+    }
 }
 
 impl<T: WasmDescribe> WasmDescribe for [T] {
@@ -127,7 +129,9 @@ if_std! {
     }
 }
 
-fn _cnt<T: WasmDescribe>() -> u32 { 1 }
+fn _cnt<T: WasmDescribe>() -> u32 {
+    1
+}
 
 macro_rules! doit {
     ($( ($($var:ident)*))*) => ($(

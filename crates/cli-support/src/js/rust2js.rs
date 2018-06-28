@@ -1,7 +1,7 @@
 use failure::Error;
 
-use descriptor::{Descriptor, Function};
 use super::{Context, Js2Rust};
+use descriptor::{Descriptor, Function};
 
 /// Helper struct for manufacturing a shim in JS used to translate Rust types to
 /// JS, then invoking an imported JS function.
@@ -85,18 +85,27 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         if let Some(ty) = arg.vector_kind() {
             let abi2 = self.shim_argument();
             let f = self.cx.expose_get_vector_from_wasm(ty);
-            self.prelude(&format!("let v{0} = {func}({0}, {1});",
-                                  abi, abi2, func = f));
+            self.prelude(&format!(
+                "let v{0} = {func}({0}, {1});",
+                abi,
+                abi2,
+                func = f
+            ));
 
             if !arg.is_by_ref() {
-                self.prelude(&format!("\
-                    v{0} = v{0}.slice();\n\
-                    wasm.__wbindgen_free({0}, {1} * {size});\
-                ", abi, abi2, size = ty.size()));
+                self.prelude(&format!(
+                    "\
+                     v{0} = v{0}.slice();\n\
+                     wasm.__wbindgen_free({0}, {1} * {size});\
+                     ",
+                    abi,
+                    abi2,
+                    size = ty.size()
+                ));
                 self.cx.require_internal_export("__wbindgen_free")?;
             }
             self.js_arguments.push(format!("v{}", abi));
-            return Ok(())
+            return Ok(());
         }
 
         if let Some(signed) = arg.get_64bit() {
@@ -107,18 +116,19 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             };
             let hi = self.shim_argument();
             let name = format!("n{}", abi);
-            self.prelude(&format!("\
-                u32CvtShim[0] = {lo};\n\
-                u32CvtShim[1] = {hi};\n\
-                const {name} = {f}[0];\n\
-            ",
+            self.prelude(&format!(
+                "\
+                 u32CvtShim[0] = {lo};\n\
+                 u32CvtShim[1] = {hi};\n\
+                 const {name} = {f}[0];\n\
+                 ",
                 lo = abi,
                 hi = hi,
                 f = f,
                 name = name,
             ));
             self.js_arguments.push(name);
-            return Ok(())
+            return Ok(());
         }
 
         if let Some(class) = arg.rust_struct() {
@@ -128,14 +138,15 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             let assign = format!("let c{0} = {1}.__construct({0});", abi, class);
             self.prelude(&assign);
             self.js_arguments.push(format!("c{}", abi));
-            return Ok(())
+            return Ok(());
         }
 
         if let Some((f, mutable)) = arg.stack_closure() {
             let (js, _ts) = {
                 let mut builder = Js2Rust::new("", self.cx);
                 if mutable {
-                    builder.prelude("let a = this.a;\n")
+                    builder
+                        .prelude("let a = this.a;\n")
                         .prelude("this.a = 0;\n")
                         .rust_argument("a")
                         .finally("this.a = a;\n");
@@ -151,22 +162,28 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             self.cx.function_table_needed = true;
             let next_global = self.global_idx();
             self.global_idx();
-            self.prelude(&format!("\
-                let cb{0} = {js};\n\
-                cb{0}.f = wasm.__wbg_function_table.get({0});\n\
-                cb{0}.a = getGlobalArgument({next_global});\n\
-                cb{0}.b = getGlobalArgument({next_global} + 1);\n\
-            ", abi, js = js, next_global = next_global));
+            self.prelude(&format!(
+                "\
+                 let cb{0} = {js};\n\
+                 cb{0}.f = wasm.__wbg_function_table.get({0});\n\
+                 cb{0}.a = getGlobalArgument({next_global});\n\
+                 cb{0}.b = getGlobalArgument({next_global} + 1);\n\
+                 ",
+                abi,
+                js = js,
+                next_global = next_global
+            ));
             self.finally(&format!("cb{0}.a = cb{0}.b = 0;", abi));
             self.js_arguments.push(format!("cb{0}.bind(cb{0})", abi));
-            return Ok(())
+            return Ok(());
         }
 
         if let Some(closure) = arg.ref_closure() {
             let (js, _ts) = {
                 let mut builder = Js2Rust::new("", self.cx);
                 if closure.mutable {
-                    builder.prelude("let a = this.a;\n")
+                    builder
+                        .prelude("let a = this.a;\n")
                         .prelude("this.a = 0;\n")
                         .rust_argument("a")
                         .finally("this.a = a;\n");
@@ -182,38 +199,40 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             self.cx.expose_uint32_memory();
             self.cx.expose_add_heap_object();
             self.cx.function_table_needed = true;
-            let reset_idx  = format!("\
-                let cb{0} = {js};\n\
-                cb{0}.a = getGlobalArgument({a});\n\
-                cb{0}.b = getGlobalArgument({b});\n\
-                cb{0}.f = wasm.__wbg_function_table.get(getGlobalArgument({c}));\n\
-                let real = cb{0}.bind(cb{0});\n\
-                real.original = cb{0};\n\
-                idx{0} = getUint32Memory()[{0} / 4] = addHeapObject(real);\n\
-            ",
+            let reset_idx = format!(
+                "\
+                 let cb{0} = {js};\n\
+                 cb{0}.a = getGlobalArgument({a});\n\
+                 cb{0}.b = getGlobalArgument({b});\n\
+                 cb{0}.f = wasm.__wbg_function_table.get(getGlobalArgument({c}));\n\
+                 let real = cb{0}.bind(cb{0});\n\
+                 real.original = cb{0};\n\
+                 idx{0} = getUint32Memory()[{0} / 4] = addHeapObject(real);\n\
+                 ",
                 abi,
                 js = js,
                 a = self.global_idx(),
                 b = self.global_idx(),
                 c = self.global_idx(),
             );
-            self.prelude(&format!("\
-                let idx{0} = getUint32Memory()[{0} / 4];\n\
-                if (idx{0} === 0xffffffff) {{\n\
-                {1}\
-                }}\n\
-            ", abi, &reset_idx));
+            self.prelude(&format!(
+                "\
+                 let idx{0} = getUint32Memory()[{0} / 4];\n\
+                 if (idx{0} === 0xffffffff) {{\n\
+                 {1}\
+                 }}\n\
+                 ",
+                abi, &reset_idx
+            ));
             self.cx.expose_get_object();
             self.js_arguments.push(format!("getObject(idx{})", abi));
-            return Ok(())
+            return Ok(());
         }
 
         let invoc_arg = match *arg {
             ref d if d.is_number() => abi,
             Descriptor::Boolean => format!("{} !== 0", abi),
-            Descriptor::Char => {
-                format!("String.fromCodePoint({})", abi)
-            }
+            Descriptor::Char => format!("String.fromCodePoint({})", abi),
             Descriptor::Anyref => {
                 self.cx.expose_take_object();
                 format!("takeObject({})", abi)
@@ -222,7 +241,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 self.cx.expose_get_object();
                 format!("getObject({})", abi)
             }
-            _ => bail!("unimplemented argument type in imported function: {:?}", arg),
+            _ => bail!(
+                "unimplemented argument type in imported function: {:?}",
+                arg
+            ),
         };
         self.js_arguments.push(invoc_arg);
         Ok(())
@@ -233,7 +255,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             Some(ref t) => t,
             None => {
                 self.ret_expr = "JS;".to_string();
-                return Ok(())
+                return Ok(());
             }
         };
         if ty.is_by_ref() {
@@ -243,17 +265,20 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             let f = self.cx.pass_to_wasm_function(ty)?;
             self.cx.expose_uint32_memory();
             self.shim_arguments.insert(0, "ret".to_string());
-            self.ret_expr = format!("\
+            self.ret_expr = format!(
+                "\
                 const [retptr, retlen] = {}(JS);\n\
                 const mem = getUint32Memory();
                 mem[ret / 4] = retptr;
                 mem[ret / 4 + 1] = retlen;
-            ", f);
-            return Ok(())
+                ",
+                f
+            );
+            return Ok(());
         }
         if ty.is_number() {
             self.ret_expr = "return JS;".to_string();
-            return Ok(())
+            return Ok(());
         }
         if let Some(signed) = ty.get_64bit() {
             let f = if signed {
@@ -264,11 +289,14 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 "getUint64Memory"
             };
             self.shim_arguments.insert(0, "ret".to_string());
-            self.ret_expr = format!("\
-                const val = JS;\n\
-                {}()[ret / 8] = val;\n\
-            ", f);
-            return Ok(())
+            self.ret_expr = format!(
+                "\
+                 const val = JS;\n\
+                 {}()[ret / 8] = val;\n\
+                 ",
+                f
+            );
+            return Ok(());
         }
         self.ret_expr = match *ty {
             Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
@@ -301,33 +329,39 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         );
         if self.catch {
             let catch = "\
-                const view = getUint32Memory();\n\
-                view[exnptr / 4] = 1;\n\
-                view[exnptr / 4 + 1] = addHeapObject(e);\n\
-            ";
+                         const view = getUint32Memory();\n\
+                         view[exnptr / 4] = 1;\n\
+                         view[exnptr / 4 + 1] = addHeapObject(e);\n\
+                         ";
 
-            invoc = format!("\
-            try {{\n\
-            {}
-            }} catch (e) {{\n\
-            {}
-            }}\
-            ", &invoc, catch);
+            invoc = format!(
+                "\
+                try {{\n\
+                {}
+                }} catch (e) {{\n\
+                {}
+                }}\
+                ",
+                &invoc, catch
+            );
         };
 
         if self.finally.len() > 0 {
-            invoc = format!("\
-            try {{\n\
-            {}
-            }} finally {{\n\
-            {}
-            }}\
-            ", &invoc, &self.finally);
+            invoc = format!(
+                "\
+                try {{\n\
+                {}
+                }} finally {{\n\
+                {}
+                }}\
+                ",
+                &invoc, &self.finally
+            );
         }
         ret.push_str(&invoc);
 
         ret.push_str("\n}\n");
-        return ret
+        return ret;
     }
 
     fn global_idx(&mut self) -> usize {

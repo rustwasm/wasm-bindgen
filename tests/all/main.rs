@@ -411,15 +411,19 @@ impl Project {
 
         self.gen_bindings(&root, &target_dir);
         let mut wasm = Vec::new();
-        File::open(root.join("out_bg.wasm")).unwrap()
-            .read_to_end(&mut wasm).unwrap();
+        File::open(root.join("out_bg.wasm"))
+            .unwrap()
+            .read_to_end(&mut wasm)
+            .unwrap();
         let obj = cli::wasm2es6js::Config::new()
             .base64(true)
             .generate(&wasm)
             .expect("failed to convert wasm to js");
-        
-        File::create(root.join("out_bg.d.ts")).unwrap()
-            .write_all(obj.typescript().as_bytes()).unwrap();
+
+        File::create(root.join("out_bg.d.ts"))
+            .unwrap()
+            .write_all(obj.typescript().as_bytes())
+            .unwrap();
 
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
@@ -473,7 +477,6 @@ impl Project {
             }
             panic!("failed");
         }
-        
     }
     fn read_js(&self) -> String {
         let path = root().join("out.js");
@@ -522,12 +525,14 @@ mod api;
 mod char;
 mod classes;
 mod closures;
+mod comments;
 mod dependencies;
 mod enums;
 mod import_class;
 mod imports;
+#[cfg(feature = "js_globals")]
+mod js_globals;
 mod jsobjects;
-#[cfg(feature = "js_globals")] mod js_globals;
 mod math;
 mod node;
 mod non_debug;
@@ -536,6 +541,5 @@ mod simple;
 mod slice;
 mod structural;
 mod u64;
-mod webidl;
-mod comments;
 mod validate_prt;
+mod webidl;
