@@ -13,6 +13,8 @@ mod WeakMap;
 mod WeakSet;
 mod Number;
 mod Object;
+mod Set;
+mod SetIterator;
 mod TypedArray;
 
 #[test]
