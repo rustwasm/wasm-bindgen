@@ -374,6 +374,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys
     #[wasm_bindgen(method)]
     pub fn keys(this: &Map) -> MapIterator;
+
+    /// The values() method returns a new Iterator object that contains the 
+    /// values for each element in the Map object in insertion order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/values
+    #[wasm_bindgen(method)]
+    pub fn values(this: &Map) -> MapIterator;
 }
 
 // Math
