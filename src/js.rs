@@ -649,6 +649,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
     #[wasm_bindgen(constructor)]
     pub fn new() -> Set;
+
+    /// The size accessor property returns the number of elements in a Set object.
+    /// 
+    /// https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Set/size
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn size(this: &Set) -> Number;
 }
 
 // WeakMap

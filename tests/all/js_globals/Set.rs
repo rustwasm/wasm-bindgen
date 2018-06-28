@@ -151,3 +151,32 @@ fn new() {
         "#)
         .test()
 }
+
+#[test]
+fn size() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn size(this: &js::Set) -> js::Number {
+                this.size()
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let set = new Set([8, 5, 4, 3, 1, 2]);
+
+                assert.equal(wasm.size(set), 6);
+            }
+        "#)
+        .test()
+}
