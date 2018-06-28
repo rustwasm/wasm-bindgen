@@ -329,6 +329,13 @@ extern {
     #[wasm_bindgen(method)]
     pub fn has(this: &Map, key: &JsValue) -> bool;
 
+    /// The Map object holds key-value pairs. Any value (both objects and primitive values) may
+    /// be used as either a key or a value.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Map;
+
     /// The set() method adds or updates an element with a specified key and value to a Map object.
     /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/set
