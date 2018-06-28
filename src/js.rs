@@ -331,6 +331,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has
     #[wasm_bindgen(method)]
     pub fn has(this: &Map, key: &JsValue) -> bool;
+
+    /// The Map object holds key-value pairs. Any value (both objects and 
+    /// primitive values) maybe used as either a key or a value.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Map;
 }
 
 // Math
