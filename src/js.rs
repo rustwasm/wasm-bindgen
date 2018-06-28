@@ -389,6 +389,7 @@ extern {
 
     /// The Math.cos() static function returns the cosine of the specified angle,
     /// which must be specified in radians. This value is length(adjacent)/length(hypotenuse).
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cos
     #[wasm_bindgen(static_method_of = Math)]
     pub fn cos(x: f32) -> Number;
@@ -396,18 +397,21 @@ extern {
 
     /// The Math.cosh() function returns the hyperbolic cosine of a number,
     /// that can be expressed using the constant e.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cosh
     #[wasm_bindgen(static_method_of = Math)]
     pub fn cosh(x: f32) -> Number;
 
     /// The Math.exp() function returns e^x, where x is the argument, and e is Euler's number
     /// (also known as Napier's constant), the base of the natural logarithms.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/exp
     #[wasm_bindgen(static_method_of = Math)]
     pub fn exp(x: f32) -> Number;
 
     /// The Math.expm1() function returns e^x - 1, where x is the argument, and e the base of the
     /// natural logarithms.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1
     #[wasm_bindgen(static_method_of = Math)]
     pub fn expm1(x: f32) -> Number;
@@ -421,23 +425,27 @@ extern {
 
     /// The Math.fround() function returns the nearest 32-bit single precision float representation
     /// of a Number.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround
     #[wasm_bindgen(static_method_of = Math)]
     pub fn fround(x: f32) -> Number;
-    
+
     /// The Math.imul() function returns the result of the C-like 32-bit multiplication of the
     /// two parameters.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/imul
     #[wasm_bindgen(static_method_of = Math)]
     pub fn imul(x: i32, y: i32) -> Number;
 
     /// The Math.log() function returns the natural logarithm (base e) of a number.
     /// The JavaScript Math.log() function is equivalent to ln(x) in mathematics.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log
     #[wasm_bindgen(static_method_of = Math)]
     pub fn log(x: f32) -> Number;
 
     /// The Math.log10() function returns the base 10 logarithm of a number.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log10
     #[wasm_bindgen(static_method_of = Math)]
     pub fn log10(x: f32) -> Number;
@@ -448,6 +456,7 @@ extern {
     pub fn log1p(x: f32) -> Number;
 
     /// The Math.log2() function returns the base 2 logarithm of a number.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log2
     #[wasm_bindgen(static_method_of = Math)]
     pub fn log2(x: f32) -> Number;

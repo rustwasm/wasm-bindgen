@@ -78,7 +78,6 @@ fn acosh() {
             export function test() {
                 assert.equal(wasm.acosh(1), 0);
                 assert.equal(wasm.acosh(2), Math.acosh(2));
-                assert.equal(wasm.acosh(2), Math.acosh(2));
             }
         "#)
         .test()
@@ -315,7 +314,7 @@ fn cos() {
 
             export function test() {
                 assert.equal(wasm.cos(0), 1);
-                // other assertions failing due to rounding errors
+                assert.equal(wasm.cos(1.5), Math.cos(1.5));
             }
         "#)
         .test()
