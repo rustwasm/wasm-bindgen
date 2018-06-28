@@ -642,6 +642,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/has
     #[wasm_bindgen(method)]
     pub fn has(this: &Set, value: &JsValue) -> bool;
+
+    /// The Set object lets you store unique values of any type, whether primitive 
+    /// values or object references.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Set;
 }
 
 // WeakMap
