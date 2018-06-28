@@ -617,13 +617,6 @@ extern {
 extern {
     pub type Set;
 
-    /// The size accessor property returns the number of elements in a Set object.
-    /// 
-    /// https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Set/size
-    
-    #[wasm_bindgen(method, getter, structural)]
-    pub fn size(this: &Set) -> Number;
-
     /// The add() method appends a new element with a specified value to the end of a Set object.
     /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/add
@@ -654,6 +647,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
     #[wasm_bindgen(constructor)]
     pub fn new() -> Set;
+
+    /// The size accessor property returns the number of elements in a Set object.
+    /// 
+    /// https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Set/size
+    
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn size(this: &Set) -> Number;
 }
 
 // SetIterator
@@ -670,14 +670,6 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/entries
     #[wasm_bindgen(method)]
     pub fn entries(set: &Set) -> SetIterator;
-
-    /// The values() method returns a new Iterator object that contains the values for each 
-    /// element in the Set object in insertion order.
-    /// 
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
-    
-    #[wasm_bindgen(method)]
-    pub fn values(set: &Set) -> SetIterator;
     
     /// The keys() method is an alias for this method (for similarity with Map objects); 
     /// it behaves exactly the same and returns values of Set elements.
@@ -686,6 +678,14 @@ extern {
     
     #[wasm_bindgen(method)]
     pub fn keys(set: &Set) -> SetIterator;
+    
+    /// The values() method returns a new Iterator object that contains the values for each 
+    /// element in the Set object in insertion order.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
+    
+    #[wasm_bindgen(method)]
+    pub fn values(set: &Set) -> SetIterator;
 }
 
 // WeakMap
