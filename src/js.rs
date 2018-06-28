@@ -312,6 +312,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/clear
     #[wasm_bindgen(method)]
     pub fn clear(this: &Map);
+
+    /// The delete() method removes the specified element from a Map object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/delete
+    #[wasm_bindgen(method)]
+    pub fn delete(this: &Map, key: &str) -> bool;
 }
 
 // Math

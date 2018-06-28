@@ -33,3 +33,35 @@ fn clear() {
         "#)
         .test()
 }
+
+#[test]
+fn delete() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn map_delete(this: &js::Map, key: &str) -> bool {
+                this.delete(key)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const map = new Map();
+                map.set('foo', 'bar');
+                assert.equal(map.size, 1);
+                assert.equal(wasm.map_delete(map, 'foo'), true);
+                assert.equal(wasm.map_delete(map, 'bar'), false);
+                assert.equal(map.size, 0);
+
+            }
+        "#)
+        .test()
+}
