@@ -682,6 +682,15 @@ extern {
     pub fn delete(this: &WeakSet, value: Object) -> bool;
 }
 
+// JSON
+#[wasm_bindgen]
+extern {
+    pub type JSON;
+
+    #[wasm_bindgen(static_method_of = JSON)]
+    pub fn stringify(value: JsValue) -> JsString;
+}
+
 // JsString
 #[wasm_bindgen]
 extern {
