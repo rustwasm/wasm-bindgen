@@ -674,7 +674,9 @@ fn custom_type() {
 
 #[test]
 fn unused_imports_not_generated() {
-    project()
+    let mut project = project();
+
+    project
         .debug(false)
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
@@ -701,10 +703,7 @@ fn unused_imports_not_generated() {
         "#)
         .test();
 
-    let out = ::root().join("out.js");
-    let mut contents = String::new();
-    File::open(&out).unwrap()
-        .read_to_string(&mut contents).unwrap();
+    let contents = project.read_js();
     assert!(contents.contains("run"), "didn't find `run` in {}", contents);
     assert!(!contents.contains("foo"), "found `foo` in {}", contents);
 }
