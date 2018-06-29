@@ -1,3 +1,6 @@
+use std::fs::File;
+use std::io::Read;
+
 use super::project;
 
 #[test]
@@ -667,4 +670,41 @@ fn custom_type() {
             }
         "#)
         .test();
+}
+
+#[test]
+fn unused_imports_not_generated() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            extern {
+                pub fn foo();
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+
+    let out = ::root().join("out.js");
+    let mut contents = String::new();
+    File::open(&out).unwrap()
+        .read_to_string(&mut contents).unwrap();
+    assert!(contents.contains("run"), "didn't find `run` in {}", contents);
+    assert!(!contents.contains("foo"), "found `foo` in {}", contents);
 }
