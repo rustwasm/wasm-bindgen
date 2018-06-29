@@ -1783,6 +1783,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(d) => d,
         };
 
+        if !self.cx.wasm_import_needed(&import.shim) {
+            return Ok(())
+        }
+
         let target = match &import.method {
             Some(shared::MethodData {
                 class,
