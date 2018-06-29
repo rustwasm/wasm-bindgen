@@ -1778,6 +1778,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
         info: &shared::Import,
         import: &shared::ImportFunction,
     ) -> Result<(), Error> {
+        if !self.cx.wasm_import_needed(&import.shim) {
+            return Ok(())
+        }
+
         let descriptor = match self.cx.describe(&import.shim) {
             None => return Ok(()),
             Some(d) => d,
