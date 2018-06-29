@@ -7,6 +7,7 @@ mod ArrayIterator;
 mod Boolean;
 mod Date;
 mod Function;
+mod Error;
 mod JsString;
 mod Map;
 mod MapIterator;

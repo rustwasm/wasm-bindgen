@@ -276,6 +276,43 @@ extern "C" {
     pub fn value_of(this: &Boolean) -> bool;
 }
 
+// Error
+#[wasm_bindgen]
+extern "C" {
+    pub type Error;
+
+    /// The Error constructor creates an error object.
+    /// Instances of Error objects are thrown when runtime errors occur.
+    /// The Error object can also be used as a base object for user-defined exceptions.
+    /// See below for standard built-in error types.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &JsString) -> Error;
+
+    /// The message property is a human-readable description of the error.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/message
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn message(this: &Error) -> JsString;
+    #[wasm_bindgen(method, setter, structural)]
+    pub fn set_message(this: &Error, message: &JsString);
+
+    /// The name property represents a name for the type of error. The initial value is "Error".
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/name
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn name(this: &Error) -> JsString;
+    #[wasm_bindgen(method, setter, structural)]
+    pub fn set_name(this: &Error, name: &JsString);
+
+    /// The toString() method returns a string representing the specified Error object
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/toString
+    #[wasm_bindgen(method, js_name = toString)]
+    pub fn to_string(this: &Error) -> JsString;
+}
+
 // Function
 #[wasm_bindgen]
 extern "C" {
