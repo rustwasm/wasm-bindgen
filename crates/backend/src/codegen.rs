@@ -309,15 +309,60 @@ impl ToTokens for ast::Export {
         let ret = Ident::new("_ret", Span::call_site());
 
         let mut offset = 0;
-        if self.method {
-            let class = self.class.as_ref().unwrap();
-            args.push(quote! { me: *mut ::wasm_bindgen::__rt::WasmRefCell<#class> });
-            arg_conversions.push(quote! {
-                ::wasm_bindgen::__rt::assert_not_null(me);
-                let me = unsafe { &*me };
-            });
+        if self.method_self.is_some() {
+            args.push(quote! { me: u32 });
             offset = 1;
         }
+
+        let name = &self.function.name;
+        let receiver = match self.method_self {
+            Some(ast::MethodSelf::ByValue) => {
+                let class = self.class.as_ref().unwrap();
+                arg_conversions.push(quote! {
+                    let me = unsafe {
+                        <#class as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
+                            me,
+                            &mut ::wasm_bindgen::convert::GlobalStack::new(),
+                        )
+                    };
+                });
+                quote! { me.#name }
+            }
+            Some(ast::MethodSelf::RefMutable) => {
+                let class = self.class.as_ref().unwrap();
+                arg_conversions.push(quote! {
+                    let mut me = unsafe {
+                        <#class as ::wasm_bindgen::convert::RefMutFromWasmAbi>
+                            ::ref_mut_from_abi(
+                                me,
+                                &mut ::wasm_bindgen::convert::GlobalStack::new(),
+                            )
+                    };
+                    let me = &mut *me;
+                });
+                quote! { me.#name }
+            }
+            Some(ast::MethodSelf::RefShared) => {
+                let class = self.class.as_ref().unwrap();
+                arg_conversions.push(quote! {
+                    let me = unsafe {
+                        <#class as ::wasm_bindgen::convert::RefFromWasmAbi>
+                            ::ref_from_abi(
+                                me,
+                                &mut ::wasm_bindgen::convert::GlobalStack::new(),
+                            )
+                    };
+                    let me = &*me;
+                });
+                quote! { me.#name }
+            }
+            None => {
+                match &self.class {
+                    Some(class) => quote! { #class::#name },
+                    None => quote! { #name }
+                }
+            }
+        };
 
         for (i, syn::ArgCaptured { ty, .. }) in self.function.arguments.iter().enumerate() {
             let i = i + offset;
@@ -393,19 +438,6 @@ impl ToTokens for ast::Export {
                 }
             }
             None => quote! { inform(0); },
-        };
-
-        let name = &self.function.name;
-        let receiver = match &self.class {
-            Some(_) if self.method => {
-                if self.mutable {
-                    quote! { me.borrow_mut().#name }
-                } else {
-                    quote! { me.borrow().#name }
-                }
-            }
-            Some(class) => quote! { #class::#name },
-            None => quote!{ #name },
         };
         let descriptor_name = format!("__wbindgen_describe_{}", export_name);
         let descriptor_name = Ident::new(&descriptor_name, Span::call_site());

@@ -551,7 +551,7 @@ impl<'a> Context<'a> {
 
             let set = {
                 let mut cx = Js2Rust::new(&field.name, self);
-                cx.method(true).argument(&descriptor)?.ret(&None)?;
+                cx.method(true, false).argument(&descriptor)?.ret(&None)?;
                 ts_dst.push_str(&format!(
                     "{}{}: {}\n",
                     if field.readonly { "readonly " } else { "" },
@@ -561,7 +561,7 @@ impl<'a> Context<'a> {
                 cx.finish("", &format!("wasm.{}", wasm_setter)).0
             };
             let (get, _ts) = Js2Rust::new(&field.name, self)
-                .method(true)
+                .method(true, false)
                 .ret(&Some(descriptor))?
                 .finish("", &format!("wasm.{}", wasm_getter));
             if !dst.ends_with("\n") {
@@ -1657,7 +1657,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         };
 
         let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
-            .method(export.method)
+            .method(export.method, export.consumed)
             .process(descriptor.unwrap_function())?
             .finish("", &format!("wasm.{}", wasm_name));
         let class = self
