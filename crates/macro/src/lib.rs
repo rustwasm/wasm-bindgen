@@ -12,8 +12,8 @@ use quote::ToTokens;
 #[proc_macro_attribute]
 pub fn wasm_bindgen(attr: TokenStream, input: TokenStream) -> TokenStream {
     let item = syn::parse::<syn::Item>(input.clone()).expect("expected a valid Rust item");
-    let opts = syn::parse::<backend::ast::BindgenAttrs>(attr)
-        .expect("invalid arguments to #[wasm_bindgen]");
+    let context = backend::ast::BindgenAttrContext::from_item_toplevel(&item);
+    let opts = backend::ast::BindgenAttrs::parse(attr.into(), context);
 
     let mut ret = proc_macro2::TokenStream::new();
     let mut program = backend::ast::Program::default();

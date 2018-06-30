@@ -198,7 +198,10 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                     .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
                 kind,
                 Some(self_ty),
-                vec![backend::ast::BindgenAttr::Constructor],
+                backend::ast::BindgenAttrs {
+                    constructor: Some(()),
+                    ..Default::default()
+                },
             ).map(|function| {
                 program.imports.push(backend::ast::Import {
                     module: None,
