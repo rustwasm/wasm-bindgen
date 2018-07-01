@@ -1078,6 +1078,14 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = toString)]
     pub fn to_string(this: &JsString) -> JsString;
 
+    /// The toUpperCase() method returns the calling string value
+    /// converted to uppercase (the value will be converted to a
+    /// string if it isn't one).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase
+    #[wasm_bindgen(method, js_class = "String", js_name = toUpperCase)]
+    pub fn to_upper_case(this: &JsString) -> JsString;
+
     /// The trim() method removes whitespace from both ends of a string.
     /// Whitespace in this context is all the whitespace characters
     /// (space, tab, no-break space, etc.) and all the line terminator characters (LF, CR, etc.).
