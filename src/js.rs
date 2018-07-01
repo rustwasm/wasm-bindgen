@@ -325,6 +325,13 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn apply(this: &Function, context: &JsValue, args: &Array) -> Function;
 
+    /// The bind() method creates a new function that, when called, has its this keyword set to the provided value,
+    /// with a given sequence of arguments preceding any provided when the new function is called.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+    #[wasm_bindgen(method)]
+    pub fn bind(this: &Function, context: &JsValue) -> Function;
+
     /// The length property indicates the number of arguments expected by the function.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/length

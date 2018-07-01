@@ -39,6 +39,46 @@ fn apply() {
 }
 
 #[test]
+fn bind() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn bind(this: &js::Function, context: &JsValue) -> js::Function {
+                this.bind(context)
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const obj = {
+                    a: 0,
+                    fn: function () {
+                        return this.a + 1;
+                    }
+                }
+
+                const boundFn = wasm.bind(obj.fn, { a: 41 });
+                assert.equal(boundFn(), 42);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn length() {
     project()
         .file(
