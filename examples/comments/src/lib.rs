@@ -15,6 +15,7 @@ pub struct Comment {
     color: Color,
 }
 
+
 #[wasm_bindgen]
 impl Comment {
     #[wasm_bindgen(method)]

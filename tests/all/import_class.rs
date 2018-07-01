@@ -3,9 +3,7 @@ use super::project;
 #[test]
 fn simple() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -29,11 +27,8 @@ fn simple() {
                 #[wasm_bindgen(js_namespace = Math)]
                 fn log(a: f64) -> f64;
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as wasm from "./out";
             import * as assert from "assert";
 
@@ -41,17 +36,14 @@ fn simple() {
                 wasm.get_random();
                 assert.strictEqual(wasm.do_log(1.0), Math.log(1.0));
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn import_class() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -68,11 +60,8 @@ fn import_class() {
             pub fn baz() {
                 bar();
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import { baz } from "./out";
             import { called } from "./another";
             import * as assert from "assert";
@@ -81,11 +70,8 @@ fn import_class() {
                 baz();
                 assert.strictEqual(called, true);
             }
-        "#,
-        )
-        .file(
-            "another.ts",
-            r#"
+        "#)
+        .file("another.ts", r#"
             export let called = false;
 
             export class Foo {
@@ -93,17 +79,14 @@ fn import_class() {
                     called = true;
                 }
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn construct() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -130,11 +113,8 @@ fn construct() {
                 f.append_to_internal_string(" foo");
                 f.assert_internal_string("this foo");
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import { run } from "./out";
             import { called } from "./another";
             import * as assert from "assert";
@@ -143,11 +123,8 @@ fn construct() {
                 run();
                 assert.strictEqual(called, true);
             }
-        "#,
-        )
-        .file(
-            "another.ts",
-            r#"
+        "#)
+        .file("another.ts", r#"
             import * as assert from "assert";
 
             export let called = false;
@@ -174,17 +151,14 @@ fn construct() {
                     called = true;
                 }
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn new_constructors() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -205,21 +179,15 @@ fn new_constructors() {
                 let f = Foo::new(1);
                 assert_eq!(f.get(), 2);
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import { run } from "./out";
 
             export function test() {
                 run();
             }
-        "#,
-        )
-        .file(
-            "another.ts",
-            r#"
+        "#)
+        .file("another.ts", r#"
             export class Foo {
                 constructor(private field: number) {
                 }
@@ -228,17 +196,14 @@ fn new_constructors() {
                     return this.field + 1;
                 }
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn switch_methods() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -268,11 +233,8 @@ fn switch_methods() {
             pub fn b() {
                 Foo::new().b();
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import { a, b } from "./out";
             import { Foo, called } from "./another";
             import * as assert from "assert";
@@ -297,11 +259,8 @@ fn switch_methods() {
                 b();
                 assert.strictEqual(called.a, true);
             }
-        "#,
-        )
-        .file(
-            "another.ts",
-            r#"
+        "#)
+        .file("another.ts", r#"
             export let called = { a: false };
 
             export class Foo {
@@ -316,17 +275,14 @@ fn switch_methods() {
                     called.a = true;
                 }
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn properties() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -354,21 +310,15 @@ fn properties() {
                 a.set_a(2);
                 assert_eq!(a.a(), 2);
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import { run } from "./out";
 
             export function test() {
                 run();
             }
-        "#,
-        )
-        .file(
-            "another.ts",
-            r#"
+        "#)
+        .file("another.ts", r#"
             export class Foo {
                 constructor(private num: number) {
                     this.num = 1;
@@ -382,17 +332,14 @@ fn properties() {
                     this.num = val;
                 }
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn rename_setter_getter() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -420,21 +367,15 @@ fn rename_setter_getter() {
                 a.another(2);
                 assert_eq!(a.test(), 2);
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import { run } from "./out";
 
             export function test() {
                 run();
             }
-        "#,
-        )
-        .file(
-            "another.ts",
-            r#"
+        "#)
+        .file("another.ts", r#"
             export class Foo {
                 constructor(private num: number) {
                     this.num = 1;
@@ -448,7 +389,6 @@ fn rename_setter_getter() {
                     this.num = val;
                 }
             }
-        "#,
-        )
+        "#)
         .test();
 }

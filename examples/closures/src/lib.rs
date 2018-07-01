@@ -2,12 +2,12 @@
 
 extern crate wasm_bindgen;
 
+use wasm_bindgen::prelude::*;
 use wasm_bindgen::js::Date;
 use wasm_bindgen::js::JsString;
-use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-extern "C" {
+extern {
     // Binding for the `setInverval` method in JS. This function takes a "long
     // lived" closure as the first argument so we use `Closure` instead of
     // a bare `&Fn()` which only surives for that one stack frame.
@@ -51,11 +51,12 @@ pub fn run() {
     set_interval(&a, 1000);
     update_time();
     fn update_time() {
-        document
-            .get_element_by_id("current-time")
-            .set_inner_html(&String::from(
-                Date::new().to_locale_string(JsString::from("en-GB"), JsValue::undefined()),
-            ));
+        document.get_element_by_id("current-time")
+            .set_inner_html(
+                &String::from(
+                    Date::new()
+                    .to_locale_string(
+                        JsString::from("en-GB"), JsValue::undefined())));
     }
 
     // We also want to count the number of times that our green square has been
@@ -64,8 +65,7 @@ pub fn run() {
     let mut clicks = 0;
     let b = Closure::new(move || {
         clicks += 1;
-        document
-            .get_element_by_id("num-clicks")
+        document.get_element_by_id("num-clicks")
             .set_inner_html(&clicks.to_string());
     });
     square.set_onclick(&b);
@@ -84,12 +84,10 @@ pub fn run() {
 
     // And finally now that our demo is ready to go let's switch things up so
     // everything is displayed and our loading prompt is hidden.
-    document
-        .get_html_element_by_id("loading")
+    document.get_html_element_by_id("loading")
         .style()
         .set_display("none");
-    document
-        .get_html_element_by_id("script")
+    document.get_html_element_by_id("script")
         .style()
         .set_display("block");
 }

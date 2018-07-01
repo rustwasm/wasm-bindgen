@@ -3,9 +3,7 @@ use super::project;
 #[test]
 fn export() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -26,11 +24,8 @@ fn export() {
 
 
             doit! { i8 u8 i16 u16 i32 u32 f32 f64 }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -81,17 +76,14 @@ fn export() {
                 f64[1] = 2;
                 assert_arrays_equal(wasm.f64(f64), f64);
           }
-      "#,
-        )
+      "#)
         .test();
 }
 
 #[test]
 fn import() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -126,11 +118,8 @@ fn import() {
                 (rust_f32, js_f32, f32)
                 (rust_f64, js_f64, f64)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -236,17 +225,14 @@ fn import() {
                 f64[1] = 2;
                 assert_arrays_equal(wasm.rust_f64(f64), f64);
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn pass_array_works() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -275,11 +261,8 @@ fn pass_array_works() {
                 (rust_f32, f32)
                 (rust_f64, f64)
             }
-        "#,
-        )
-        .file(
-            "test.js",
-            r#"
+        "#)
+        .file("test.js", r#"
             const wasm = require("./out");
 
             module.exports.test = function() {
@@ -292,17 +275,14 @@ fn pass_array_works() {
                 wasm.rust_f32([1, 2]);
                 wasm.rust_f64([1, 2]);
             };
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn import_mut() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -348,11 +328,8 @@ fn import_mut() {
                 (rust_f32, js_f32, f32)
                 (rust_f64, js_f64, f64)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -376,17 +353,14 @@ fn import_mut() {
             export function test() {
                 wasm.run();
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn export_mut() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -409,11 +383,8 @@ fn export_mut() {
 
 
             doit! { i8 u8 i16 u16 i32 u32 f32 f64 }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -441,17 +412,14 @@ fn export_mut() {
                 run(new Float32Array(3), wasm.f32);
                 run(new Float64Array(3), wasm.f64);
           }
-      "#,
-        )
+      "#)
         .test();
 }
 
 #[test]
 fn return_vec_ok() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
             extern crate wasm_bindgen;
 
@@ -493,11 +461,8 @@ fn return_vec_ok() {
 
             pub fn main() {
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -520,7 +485,7 @@ fn return_vec_ok() {
                     assert.strictEqual(bad[8], 9);
                 }
             }
-      "#,
-        )
+      "#)
         .test();
 }
+

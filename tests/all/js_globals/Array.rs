@@ -5,9 +5,7 @@ use project;
 #[test]
 fn filter() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -19,11 +17,8 @@ fn filter() {
                 array.filter(&mut |x, _, _| x.as_f64().is_some())
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -36,17 +31,14 @@ fn filter() {
                 assert.deepStrictEqual(wasm.keep_numbers(numbers), numbers);
                 assert.deepStrictEqual(wasm.keep_numbers(mixed), [1, 2]);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn index_of() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -58,11 +50,8 @@ fn index_of() {
                 this.index_of(value, from_index)
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -80,17 +69,14 @@ fn index_of() {
                 assert.equal(withFromIndex, 2);
                 assert.equal(withFromIndexNotFound, -1);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn is_array() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -101,11 +87,8 @@ fn is_array() {
             pub fn is_array(value: &JsValue) -> bool {
                 js::Array::is_array(value)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -126,17 +109,14 @@ fn is_array() {
                 assert(!wasm.is_array(false));
                 assert(!wasm.is_array({ __proto__: Array.prototype }));
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn sort() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -148,11 +128,8 @@ fn sort() {
                 this.sort()
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -162,38 +139,6 @@ fn sort() {
 
                 assert.deepStrictEqual(sorted, [1, 2, 3, 6])
             }
-        "#,
-        )
-        .test()
-}
-
-#[test]
-fn some() {
-    project()
-        .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
-
-            extern crate wasm_bindgen;
-            use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-
-            #[wasm_bindgen]
-            pub fn has_elem(array: &js::Array, arg: JsValue) -> bool {
-                array.some(&mut |elem| arg == elem)
-            }
-
-        "#)
-        .file("test.ts", r#"
-            import * as assert from "assert";
-            import * as wasm from "./out";
-
-            export function test() {
-                let elements = ["z", 1, "y", 2];
-
-                assert.deepStrictEqual(wasm.has_elem(elements, 2), true);
-                assert.deepStrictEqual(wasm.has_elem(elements, "y"), true);
-                assert.deepStrictEqual(wasm.has_elem(elements, "not an element"), false);
-            }
         "#)
         .test()
 }
@@ -201,9 +146,7 @@ fn some() {
 #[test]
 fn last_index_of() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -215,11 +158,8 @@ fn last_index_of() {
                 this.last_index_of(value, from_index)
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -237,17 +177,14 @@ fn last_index_of() {
                 assert.equal(withFromIndex, 1);
                 assert.equal(withFromIndexNotFound, -1);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn join() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -259,11 +196,8 @@ fn join() {
                 this.join(delimiter)
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -275,17 +209,14 @@ fn join() {
                 let withForwardSlash = wasm.join_array(characters, "/");
                 assert.equal("a/c/x/n", withForwardSlash);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn slice() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -296,11 +227,8 @@ fn slice() {
             pub fn create_slice(this: &js::Array, start: u32, end: u32) -> js::Array {
                 this.slice(start, end)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -311,17 +239,14 @@ fn slice() {
                 assert.equal(subset[0], "c");
                 assert.equal(subset[1], "x");
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn fill() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -332,11 +257,8 @@ fn fill() {
             pub fn fill_with(this: &js::Array, value: JsValue, start: u32, end: u32) -> js::Array {
                 this.fill(value, start, end)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -347,8 +269,7 @@ fn fill() {
                 assert.equal(subset[0], 0);
                 assert.equal(subset[4], 1);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
@@ -389,9 +310,7 @@ fn copy_within() {
 #[test]
 fn pop() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -403,11 +322,8 @@ fn pop() {
                 this.pop()
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -417,17 +333,15 @@ fn pop() {
                 assert.equal(item, 2);
                 assert.equal(characters.length, 5);
             }
-        "#,
-        )
+        "#)
         .test()
 }
+
 
 #[test]
 fn push() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -439,11 +353,8 @@ fn push() {
                 this.push(value)
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -453,17 +364,14 @@ fn push() {
                 assert.equal(length, 7);
                 assert.equal(characters[6], "a");
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn reverse() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -475,11 +383,8 @@ fn reverse() {
                 this.reverse()
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -489,17 +394,14 @@ fn reverse() {
                 assert.equal(reversed[0], 2);
                 assert.equal(reversed[5], 8);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn shift() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -511,11 +413,8 @@ fn shift() {
                 this.shift()
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -526,17 +425,14 @@ fn shift() {
                 assert.equal(shiftedItem, 8);
                 assert.equal(characters.length, 5);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn unshift() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -548,11 +444,8 @@ fn unshift() {
                 this.unshift(value)
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -563,17 +456,14 @@ fn unshift() {
                 assert.equal(length, 7);
                 assert.equal(characters[0], "abba");
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn to_string() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -585,11 +475,8 @@ fn to_string() {
                 this.to_string()
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -599,17 +486,15 @@ fn to_string() {
 
                 assert.equal(arrayString, "8,5,4,3,1,2");
             }
-        "#,
-        )
+        "#)
         .test()
 }
+
 
 #[test]
 fn includes() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -621,11 +506,8 @@ fn includes() {
                 this.includes(value, from_index)
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -640,17 +522,14 @@ fn includes() {
                 let isThreeIncluded = wasm.array_includes(characters, 3, 4);
                 assert.ok(!isThreeIncluded);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn concat() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -662,11 +541,8 @@ fn concat() {
                 this.concat(arr)
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -677,17 +553,14 @@ fn concat() {
                 let new_array = wasm.array_concat(arr1, arr2)
                 assert.deepStrictEqual(new_array, [1, 2, 3, 4, 5, 6]);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn length() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -699,11 +572,8 @@ fn length() {
                 this.length()
             }
 
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -716,17 +586,14 @@ fn length() {
                 let emptyLength = wasm.array_length(empty);
                 assert.equal(emptyLength, 0);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn every() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -737,11 +604,8 @@ fn every() {
             pub fn array_every_number_is_even(array: &js::Array) -> bool {
                 array.every(&mut |el, _, _| el.as_f64().unwrap() % 2f64 == 0f64)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -754,7 +618,6 @@ fn every() {
                 assert(!wasm.array_every_number_is_even(arrayOdd));
                 assert(!wasm.array_every_number_is_even(arrayMixed));
             }
-        "#,
-        )
+        "#)
         .test()
 }

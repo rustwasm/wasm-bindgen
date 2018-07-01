@@ -1,9 +1,9 @@
 #![feature(proc_macro)]
 
+extern crate syn;
+extern crate quote;
 extern crate proc_macro;
 extern crate proc_macro2;
-extern crate quote;
-extern crate syn;
 extern crate wasm_bindgen_backend as backend;
 
 use proc_macro::TokenStream;

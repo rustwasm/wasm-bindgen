@@ -4,9 +4,7 @@ use super::project;
 fn works() {
     project()
         .debug(false)
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -28,11 +26,8 @@ fn works() {
                 drop(a.clone());
                 a.clone()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -42,7 +37,6 @@ fn works() {
                 let a = wasm.A.new();
                 a.free();
             }
-        "#,
-        )
+        "#)
         .test();
 }

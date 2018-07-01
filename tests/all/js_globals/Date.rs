@@ -5,9 +5,7 @@ use super::project;
 #[test]
 fn new() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -18,28 +16,22 @@ fn new() {
             pub fn new_date() -> Date {
                 Date::new()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 assert.equal(typeof wasm.new_date(), "object");
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn to_date_string() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -50,11 +42,8 @@ fn to_date_string() {
             pub fn to_date_string(this: &Date) -> JsString {
                 this.to_date_string()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -63,17 +52,14 @@ fn to_date_string() {
 
                 assert.equal(wasm.to_date_string(date), 'Wed Jul 28 1993');
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn to_iso_string() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -84,11 +70,8 @@ fn to_iso_string() {
             pub fn to_iso_string(this: &Date) -> JsString {
                 this.to_iso_string()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -97,17 +80,14 @@ fn to_iso_string() {
 
                 assert.equal(wasm.to_iso_string(date), '2011-10-05T14:48:00.000Z');
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn to_json() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -118,11 +98,8 @@ fn to_json() {
             pub fn to_json(this: &Date) -> JsString {
                 this.to_json()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -131,8 +108,7 @@ fn to_json() {
 
                 assert.equal(wasm.to_json(date), '1975-08-19T23:15:30.000Z');
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
@@ -197,9 +173,7 @@ fn to_locale_string() {
 #[test]
 fn to_locale_time_string() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -210,11 +184,8 @@ fn to_locale_time_string() {
             pub fn to_locale_time_string(this: &Date, locale: JsString) -> JsString {
                 this.to_locale_time_string(locale)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -222,17 +193,14 @@ fn to_locale_time_string() {
                 let date = new Date('August 19, 1975 23:15:30');
                 assert.equal(wasm.to_locale_time_string(date, 'en-US'), "11:15:30 PM");
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn to_string() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -243,11 +211,8 @@ fn to_string() {
             pub fn to_string(this: &Date) -> JsString {
                 this.to_string()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -255,17 +220,14 @@ fn to_string() {
                 let date = new Date('August 19, 1975 23:15:30');
                 assert.equal(wasm.to_string(date).substring(0, 15), "Tue Aug 19 1975");
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn to_time_string() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -276,11 +238,8 @@ fn to_time_string() {
             pub fn to_time_string(this: &Date) -> JsString {
                 this.to_time_string()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -288,17 +247,14 @@ fn to_time_string() {
                 let date = new Date('August 19, 1975 23:15:30');
                 assert.equal(wasm.to_time_string(date).substring(0, 8), "23:15:30");
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn to_utc_string() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -309,11 +265,8 @@ fn to_utc_string() {
             pub fn to_utc_string(this: &Date) -> JsString {
                 this.to_utc_string()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -321,17 +274,14 @@ fn to_utc_string() {
                 let date = new Date('14 Jun 2017 00:00:00 PDT');
                 assert.equal(wasm.to_utc_string(date), "Wed, 14 Jun 2017 07:00:00 GMT");
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn value_of() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -342,11 +292,8 @@ fn value_of() {
             pub fn js_value_of(this: &Date) -> Date {
                 this.value_of()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -354,7 +301,6 @@ fn value_of() {
                 let date = new Date(Date.UTC(96, 1, 2, 3, 4, 5));
                 assert.equal(wasm.js_value_of(date), 823230245000);
             }
-        "#,
-        )
+        "#)
         .test()
 }

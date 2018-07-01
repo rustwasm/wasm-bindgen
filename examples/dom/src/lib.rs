@@ -15,7 +15,7 @@ use wasm_bindgen::prelude::*;
 // In the meantime these are written out by hand and correspond to the names and
 // signatures documented on MDN, for example
 #[wasm_bindgen]
-extern "C" {
+extern {
     type HTMLDocument;
     static document: HTMLDocument;
     #[wasm_bindgen(method)]

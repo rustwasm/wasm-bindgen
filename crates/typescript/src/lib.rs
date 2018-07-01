@@ -1,7 +1,6 @@
 extern crate proc_macro2;
 extern crate serde;
-#[macro_use]
-extern crate serde_derive;
+#[macro_use] extern crate serde_derive;
 extern crate serde_json;
 extern crate syn;
 extern crate wasm_bindgen_backend as backend;

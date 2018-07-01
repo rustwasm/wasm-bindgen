@@ -66,22 +66,12 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
     /// Flag this shim as a method call into Rust, so the first Rust argument
     /// passed should be `this.ptr`.
-    pub fn method(&mut self, method: bool, consumed: bool) -> &mut Self {
+    pub fn method(&mut self, method: bool) -> &mut Self {
         if method {
-            self.prelude(
-                "if (this.ptr === 0) {
-                    throw new Error('Attempt to use a moved value');
-                }"
-            );
-            if consumed {
-                self.prelude("\
-                    const ptr = this.ptr;\n\
-                    this.ptr = 0;\n\
-                ");
-                self.rust_arguments.insert(0, "ptr".to_string());
-            } else {
-                self.rust_arguments.insert(0, "this.ptr".to_string());
-            }
+            self.prelude("if (this.ptr === 0) {
+                throw new Error('Attempt to use a moved value');
+            }");
+            self.rust_arguments.insert(0, "this.ptr".to_string());
         }
         self
     }
@@ -121,46 +111,30 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         let name = self.abi_arg();
 
         if let Some(kind) = arg.vector_kind() {
-            self.js_arguments
-                .push((name.clone(), kind.js_ty().to_string()));
+            self.js_arguments.push((name.clone(), kind.js_ty().to_string()));
 
             let func = self.cx.pass_to_wasm_function(kind)?;
-            self.prelude(&format!(
-                "\
-                 const [ptr{i}, len{i}] = {func}({arg});\n\
-                 ",
-                i = i,
-                func = func,
-                arg = name
-            ));
+            self.prelude(&format!("\
+                const [ptr{i}, len{i}] = {func}({arg});\n\
+            ", i = i, func = func, arg = name));
             if arg.is_by_ref() {
                 if arg.is_mut_ref() {
                     let get = self.cx.memview_function(kind);
-                    self.finally(&format!(
-                        "\
-                         {arg}.set({get}().subarray(\
-                         ptr{i} / {size}, \
-                         ptr{i} / {size} + len{i}\
-                         ));\n\
-                         ",
-                        i = i,
-                        arg = name,
-                        get = get,
-                        size = kind.size()
-                    ));
+                    self.finally(&format!("\
+                        {arg}.set({get}().subarray(\
+                            ptr{i} / {size}, \
+                            ptr{i} / {size} + len{i}\
+                        ));\n\
+                    ", i = i, arg = name, get = get, size = kind.size()));
                 }
-                self.finally(&format!(
-                    "\
-                     wasm.__wbindgen_free(ptr{i}, len{i} * {size});\n\
-                     ",
-                    i = i,
-                    size = kind.size()
-                ));
+                self.finally(&format!("\
+                    wasm.__wbindgen_free(ptr{i}, len{i} * {size});\n\
+                ", i = i, size = kind.size()));
                 self.cx.require_internal_export("__wbindgen_free")?;
             }
             self.rust_arguments.push(format!("ptr{}", i));
             self.rust_arguments.push(format!("len{}", i));
-            return Ok(self);
+            return Ok(self)
         }
 
         if let Some(s) = arg.rust_struct() {
@@ -168,32 +142,24 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
             if self.cx.config.debug {
                 self.cx.expose_assert_class();
-                self.prelude(&format!(
-                    "\
-                     _assertClass({arg}, {struct_});\n\
-                     ",
-                    arg = name,
-                    struct_ = s
-                ));
+                self.prelude(&format!("\
+                    _assertClass({arg}, {struct_});\n\
+                ", arg = name, struct_ = s));
             }
 
             if arg.is_by_ref() {
                 self.rust_arguments.push(format!("{}.ptr", name));
             } else {
-                self.prelude(&format!(
-                    "\
+                self.prelude(&format!("\
                     const ptr{i} = {arg}.ptr;\n\
                     if (ptr{i} === 0) {{
                         throw new Error('Attempt to use a moved value');
                     }}
                     {arg}.ptr = 0;\n\
-                ",
-                    i = i,
-                    arg = name
-                ));
+                ", i = i, arg = name));
                 self.rust_arguments.push(format!("ptr{}", i));
             }
-            return Ok(self);
+            return Ok(self)
         }
 
         if arg.is_number() {
@@ -205,7 +171,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             }
 
             self.rust_arguments.push(name);
-            return Ok(self);
+            return Ok(self)
         }
 
         if let Some(signed) = arg.get_64bit() {
@@ -217,55 +183,51 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.cx.expose_uint32_memory();
             self.cx.expose_global_argument_ptr()?;
             self.js_arguments.push((name.clone(), "BigInt".to_string()));
-            self.prelude(&format!(
-                "\
-                 {f}[0] = {name};\n\
-                 const lo{i} = u32CvtShim[0];\n\
-                 const hi{i} = u32CvtShim[1];\n\
-                 ",
+            self.prelude(&format!("\
+                {f}[0] = {name};\n\
+                const lo{i} = u32CvtShim[0];\n\
+                const hi{i} = u32CvtShim[1];\n\
+            ",
                 i = i,
                 f = f,
                 name = name,
             ));
             self.rust_arguments.push(format!("lo{}", i));
             self.rust_arguments.push(format!("hi{}", i));
-            return Ok(self);
+            return Ok(self)
         }
 
         if arg.is_ref_anyref() {
             self.js_arguments.push((name.clone(), "any".to_string()));
             self.cx.expose_borrowed_objects();
             self.finally("stack.pop();");
-            self.rust_arguments
-                .push(format!("addBorrowedObject({})", name));
-            return Ok(self);
+            self.rust_arguments.push(format!("addBorrowedObject({})", name));
+            return Ok(self)
         }
 
         match *arg {
             Descriptor::Boolean => {
-                self.js_arguments
-                    .push((name.clone(), "boolean".to_string()));
+                self.js_arguments.push((name.clone(), "boolean".to_string()));
                 if self.cx.config.debug {
                     self.cx.expose_assert_bool();
-                    self.prelude(&format!(
-                        "\
-                         _assertBoolean({name});\n\
-                         ",
-                        name = name
-                    ));
+                    self.prelude(&format!("\
+                        _assertBoolean({name});\n\
+                    ", name = name));
                 }
                 self.rust_arguments.push(format!("{} ? 1 : 0", name));
             }
             Descriptor::Char => {
                 self.js_arguments.push((name.clone(), "string".to_string()));
                 self.rust_arguments.push(format!("{}.codePointAt(0)", name))
-            }
+            },
             Descriptor::Anyref => {
                 self.js_arguments.push((name.clone(), "any".to_string()));
                 self.cx.expose_add_heap_object();
                 self.rust_arguments.push(format!("addHeapObject({})", name));
             }
-            _ => bail!("unsupported argument to rust function {:?}", arg),
+            _ => {
+                bail!("unsupported argument to rust function {:?}", arg)
+            }
         }
         Ok(self)
     }
@@ -276,7 +238,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             None => {
                 self.ret_ty = "void".to_string();
                 self.ret_expr = format!("return RET;");
-                return Ok(self);
+                return Ok(self)
             }
         };
 
@@ -284,7 +246,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.ret_ty = "any".to_string();
             self.cx.expose_get_object();
             self.ret_expr = format!("return getObject(RET);");
-            return Ok(self);
+            return Ok(self)
         }
 
         if ty.is_by_ref() {
@@ -299,32 +261,28 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.cx.require_internal_export("__wbindgen_free")?;
             self.prelude("const retptr = globalArgumentPtr();");
             self.rust_arguments.insert(0, "retptr".to_string());
-            self.ret_expr = format!(
-                "\
-                 RET;\n\
-                 const mem = getUint32Memory();\n\
-                 const ptr = mem[retptr / 4];\n\
-                 const len = mem[retptr / 4 + 1];\n\
-                 const realRet = {}(ptr, len).slice();\n\
-                 wasm.__wbindgen_free(ptr, len * {});\n\
-                 return realRet;\n\
-                 ",
-                f,
-                ty.size()
-            );
-            return Ok(self);
+            self.ret_expr = format!("\
+                RET;\n\
+                const mem = getUint32Memory();\n\
+                const ptr = mem[retptr / 4];\n\
+                const len = mem[retptr / 4 + 1];\n\
+                const realRet = {}(ptr, len).slice();\n\
+                wasm.__wbindgen_free(ptr, len * {});\n\
+                return realRet;\n\
+            ", f, ty.size());
+            return Ok(self)
         }
 
         if let Some(name) = ty.rust_struct() {
             self.ret_ty = name.to_string();
             self.ret_expr = format!("return {name}.__construct(RET);", name = name);
-            return Ok(self);
+            return Ok(self)
         }
 
         if ty.is_number() {
             self.ret_ty = "number".to_string();
             self.ret_expr = format!("return RET;");
-            return Ok(self);
+            return Ok(self)
         }
 
         if let Some(signed) = ty.get_64bit() {
@@ -339,14 +297,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             };
             self.prelude("const retptr = globalArgumentPtr();");
             self.rust_arguments.insert(0, "retptr".to_string());
-            self.ret_expr = format!(
-                "\
-                 RET;\n\
-                 return {}()[retptr / 8];\n\
-                 ",
-                f
-            );
-            return Ok(self);
+            self.ret_expr = format!("\
+                RET;\n\
+                return {}()[retptr / 8];\n\
+            ", f);
+            return Ok(self)
         }
 
         match *ty {
@@ -378,8 +333,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     /// generated function shim and the second is a TypeScript signature of the
     /// JS expression.
     pub fn finish(&self, prefix: &str, invoc: &str) -> (String, String) {
-        let js_args = self
-            .js_arguments
+        let js_args = self.js_arguments
             .iter()
             .map(|s| &s.0[..])
             .collect::<Vec<_>>()
@@ -388,35 +342,29 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         js.push_str(&self.prelude);
         let rust_args = self.rust_arguments.join(", ");
 
-        let invoc = self
-            .ret_expr
-            .replace("RET", &format!("{}({})", invoc, rust_args));
+        let invoc = self.ret_expr.replace("RET", &format!("{}({})", invoc, rust_args));
         let invoc = if self.finally.len() == 0 {
             invoc
         } else {
-            format!(
-                "\
+            format!("\
                 try {{\n\
                     {}
                 \n}} finally {{\n\
                     {}
                 }}\n\
-                ",
-                &invoc, &self.finally,
+            ",
+                &invoc,
+                &self.finally,
             )
         };
         js.push_str(&invoc);
         js.push_str("\n}");
-        let ts_args = self
-            .js_arguments
+        let ts_args = self.js_arguments
             .iter()
             .map(|s| format!("{}: {}", s.0, s.1))
             .collect::<Vec<_>>()
             .join(", ");
-        let ts = format!(
-            "{} {}({}): {};\n",
-            prefix, self.js_name, ts_args, self.ret_ty
-        );
+        let ts = format!("{} {}({}): {};\n", prefix, self.js_name, ts_args, self.ret_ty);
         (js, ts)
     }
 }

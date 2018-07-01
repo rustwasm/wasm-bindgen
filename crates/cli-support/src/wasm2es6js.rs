@@ -1,13 +1,13 @@
 extern crate base64;
 extern crate tempfile;
 
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashSet, HashMap};
 use std::fs::File;
-use std::io::{self, Read, Write};
+use std::io::{self, Write, Read};
 use std::process::Command;
 
-use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
+use failure::{Error, ResultExt};
 
 pub struct Config {
     base64: bool,
@@ -65,36 +65,31 @@ impl Output {
         let mut exports = format!("/* tslint:disable */\n");
 
         if let Some(i) = self.module.export_section() {
-            let imported_functions = self
-                .module
-                .import_section()
+            let imported_functions = self.module.import_section()
                 .map(|m| m.functions() as u32)
                 .unwrap_or(0);
             for entry in i.entries() {
                 let idx = match *entry.internal() {
                     Internal::Function(i) => i - imported_functions,
                     Internal::Memory(_) => {
-                        exports.push_str(&format!(
-                            "
+                        exports.push_str(&format!("
                             export const {}: WebAssembly.Memory;
-                            ",
-                            entry.field()
-                        ));
-                        continue;
+                        ", entry.field()));
+                        continue
                     }
-                    Internal::Table(_) => continue,
-                    Internal::Global(_) => continue,
+                    Internal::Table(_) => {
+                        continue
+                    }
+                    Internal::Global(_) => {
+                        continue
+                    }
                 };
 
-                let functions = self
-                    .module
-                    .function_section()
+                let functions = self.module.function_section()
                     .expect("failed to find function section");
                 let idx = functions.entries()[idx as usize].type_ref();
 
-                let types = self
-                    .module
-                    .type_section()
+                let types = self.module.type_section()
                     .expect("failed to find type section");
                 let ty = match types.types()[idx as usize] {
                     Type::Function(ref f) => f,
@@ -108,17 +103,12 @@ impl Output {
                     args.push_str(": number");
                 }
 
-                exports.push_str(&format!(
-                    "
+                exports.push_str(&format!("
                     export function {name}({args}): {ret};
-                    ",
+                ",
                     name = entry.field(),
                     args = args,
-                    ret = if ty.return_type().is_some() {
-                        "number"
-                    } else {
-                        "void"
-                    },
+                    ret = if ty.return_type().is_some() { "number" } else { "void" },
                 ));
             }
         }
@@ -127,7 +117,7 @@ impl Output {
             exports.push_str("export const booted: Promise<boolean>;");
         }
 
-        return exports;
+        return exports
     }
 
     pub fn js(self) -> Result<String, Error> {
@@ -156,23 +146,19 @@ impl Output {
                 }
 
                 if !set.insert(entry.module()) {
-                    continue;
+                    continue
                 }
 
                 let name = (b'a' + (set.len() as u8)) as char;
-                js_imports.push_str(&format!(
-                    "import * as import_{} from '{}';",
-                    name,
-                    entry.module()
-                ));
+                js_imports.push_str(&format!("import * as import_{} from '{}';",
+                                             name,
+                                             entry.module()));
                 imports.push_str(&format!("'{}': import_{}, ", entry.module(), name));
             }
         }
 
         if let Some(i) = self.module.export_section() {
-            let imported_functions = self
-                .module
-                .import_section()
+            let imported_functions = self.module.import_section()
                 .map(|m| m.functions() as u32)
                 .unwrap_or(0);
             for entry in i.entries() {
@@ -180,21 +166,21 @@ impl Output {
                     Internal::Function(i) => i - imported_functions,
                     Internal::Memory(_) => {
                         export_mem = true;
-                        continue;
+                        continue
                     }
-                    Internal::Table(_) => continue,
-                    Internal::Global(_) => continue,
+                    Internal::Table(_) => {
+                        continue
+                    }
+                    Internal::Global(_) => {
+                        continue
+                    }
                 };
 
-                let functions = self
-                    .module
-                    .function_section()
+                let functions = self.module.function_section()
                     .expect("failed to find function section");
                 let idx = functions.entries()[idx as usize].type_ref();
 
-                let types = self
-                    .module
-                    .type_section()
+                let types = self.module.type_section()
                     .expect("failed to find type section");
                 let ty = match types.types()[idx as usize] {
                     Type::Function(ref f) => f,
@@ -207,79 +193,57 @@ impl Output {
                     args.push((b'a' + (i as u8)) as char);
                 }
 
-                exports.push_str(&format!(
-                    "
+                exports.push_str(&format!("
                     export function {name}({args}) {{
                         {ret} wasm.exports.{name}({args});
                     }}
-                    ",
+                ",
                     name = entry.field(),
                     args = args,
-                    ret = if ty.return_type().is_some() {
-                        "return"
-                    } else {
-                        ""
-                    },
+                    ret = if ty.return_type().is_some() { "return" } else { "" },
                 ));
             }
         }
-        let inst = format!(
-            "
-            WebAssembly.instantiate(bytes,{{ {imports} }})
+        let inst = format!("WebAssembly.instantiate(bytes,{{ {imports} }})
                 .then(obj => {{
                     wasm = obj.instance;
                     {memory}
-                }})
-            ",
-            imports = imports,
-            memory = if export_mem {
-                "memory = wasm.exports.memory;"
-            } else {
-                ""
-            },
-        );
+                }})",
+                imports = imports,
+                memory = if export_mem { "memory = wasm.exports.memory;" } else { "" },
+            );
         let (bytes, booted) = if self.base64 {
-            let wasm = serialize(self.module).expect("failed to serialize");
+            let wasm = serialize(self.module)
+                .expect("failed to serialize");
             (
-                format!(
-                    "
+                format!("
                     let bytes;
                     const base64 = \"{base64}\";
                     if (typeof Buffer === 'undefined') {{
                         bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
                     }} else {{
                         bytes = Buffer.from(base64, 'base64');
-                    }}
-                    ",
-                    base64 = base64::encode(&wasm)
-                ),
-                inst,
+                    }}", base64 = base64::encode(&wasm)),
+                inst
             )
         } else if let Some(ref path) = self.fetch_path {
             (
                 String::new(),
-                format!(
-                    "
-                    fetch('{path}')
-                        .then(res => res.arrayBuffer())
-                        .then(bytes => {inst})
-                    ",
-                    path = path,
-                    inst = inst
-                ),
+                format!("fetch('{path}')
+                .then(res => res.arrayBuffer())
+                .then(bytes => {inst})", path = path, inst = inst)
             )
         } else {
             bail!("the option --base64 or --fetch is required");
         };
-        Ok(format!(
-            "
+        Ok(format!("
             {js_imports}
             let wasm;
             {bytes}
             {mem_export}
             export const booted = {booted};
             {exports}
-            ",
+        ",
             bytes = bytes,
             booted = booted,
             js_imports = js_imports,
@@ -309,20 +273,16 @@ impl Output {
 
                 let m = name_map.entry(entry.field()).or_insert(entry.module());
                 if *m != entry.module() {
-                    bail!(
-                        "the name `{}` is imported from two differnet \
-                         modules which currently isn't supported in `wasm2asm` \
-                         mode"
-                    );
+                    bail!("the name `{}` is imported from two differnet \
+                           modules which currently isn't supported in `wasm2asm` \
+                           mode");
                 }
 
                 let name = format!("import{}", i);
-                js_imports.push_str(&format!(
-                    "import {{ {} as {} }} from '{}';\n",
-                    entry.field(),
-                    name,
-                    entry.module()
-                ));
+                js_imports.push_str(&format!("import {{ {} as {} }} from '{}';\n",
+                                             entry.field(),
+                                             name,
+                                             entry.module()));
                 imported_items.push((entry.field().to_string(), name));
             }
         }
@@ -338,17 +298,18 @@ impl Output {
                     Internal::Global(_) => continue,
                 };
 
-                js_exports.push_str(&format!("export const {0} = ret.{0};\n", entry.field()));
+                js_exports.push_str(&format!("export const {0} = ret.{0};\n",
+                                             entry.field()));
             }
             if !export_mem {
-                bail!(
-                    "the `wasm2asm` mode is currently only compatible with \
-                     modules that export memory"
-                )
+                bail!("the `wasm2asm` mode is currently only compatible with \
+                       modules that export memory")
             }
         }
 
-        let memory_size = self.module.memory_section().unwrap().entries()[0]
+        let memory_size = self.module.memory_section()
+            .unwrap()
+            .entries()[0]
             .limits()
             .initial();
 
@@ -368,7 +329,9 @@ impl Output {
                 };
 
                 let base64 = base64::encode(entry.value());
-                js_init_mem.push_str(&format!("_assign({}, \"{}\");\n", offset, base64));
+                js_init_mem.push_str(&format!("_assign({}, \"{}\");\n",
+                                              offset,
+                                              base64));
             }
         }
 
@@ -377,7 +340,9 @@ impl Output {
         let wasm_file = td.as_ref().join("foo.wasm");
         File::create(&wasm_file)
             .and_then(|mut f| f.write_all(&wasm))
-            .with_context(|_| format!("failed to write wasm to `{}`", wasm_file.display()))?;
+            .with_context(|_| {
+                format!("failed to write wasm to `{}`", wasm_file.display())
+            })?;
 
         let wast_file = td.as_ref().join("foo.wast");
         run(
@@ -399,19 +364,19 @@ impl Output {
         let mut asm_func = String::new();
         File::open(&js_file)
             .and_then(|mut f| f.read_to_string(&mut asm_func))
-            .with_context(|_| format!("failed to read `{}`", js_file.display()))?;
+            .with_context(|_| {
+                format!("failed to read `{}`", js_file.display())
+            })?;
 
-        let mut make_imports = String::from(
-            "
+
+        let mut make_imports = String::from("
             var imports = {};
-        ",
-        );
+        ");
         for (name, import) in imported_items {
             make_imports.push_str(&format!("imports['{}'] = {};\n", name, import));
         }
 
-        Ok(format!(
-            "\
+        Ok(format!("\
             {js_imports}
 
             {asm_func}
@@ -445,7 +410,7 @@ impl Output {
                 Infinity,
             }}, imports, mem);
             {js_exports}
-            ",
+        ",
             js_imports = js_imports,
             js_init_mem = js_init_mem,
             asm_func = asm_func,
@@ -459,31 +424,28 @@ impl Output {
 fn run(cmd: &mut Command, program: &str) -> Result<(), Error> {
     let output = cmd.output().with_context(|e| {
         if e.kind() == io::ErrorKind::NotFound {
-            format!(
-                "failed to execute `{}`, is the tool installed \
-                 from the binaryen project?\ncommand line: {:?}",
-                program, cmd
-            )
+            format!("failed to execute `{}`, is the tool installed \
+                     from the binaryen project?\ncommand line: {:?}",
+                    program,
+                    cmd)
         } else {
             format!("failed to execute: {:?}", cmd)
         }
     })?;
     if output.status.success() {
-        return Ok(());
+        return Ok(())
     }
 
-    let mut s = format!("failed to execute: {:?}\nstatus: {}\n", cmd, output.status);
+    let mut s = format!("failed to execute: {:?}\nstatus: {}\n",
+                        cmd,
+                        output.status);
     if !output.stdout.is_empty() {
-        s.push_str(&format!(
-            "----- stdout ------\n{}\n",
-            String::from_utf8_lossy(&output.stdout)
-        ));
+        s.push_str(&format!("----- stdout ------\n{}\n",
+                            String::from_utf8_lossy(&output.stdout)));
     }
     if !output.stderr.is_empty() {
-        s.push_str(&format!(
-            "----- stderr ------\n{}\n",
-            String::from_utf8_lossy(&output.stderr)
-        ));
+        s.push_str(&format!("----- stderr ------\n{}\n",
+                            String::from_utf8_lossy(&output.stderr)));
     }
     bail!("{}", s)
 }

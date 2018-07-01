@@ -5,7 +5,7 @@ extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-extern "C" {
+extern {
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
 }
@@ -14,7 +14,7 @@ extern "C" {
 #[wasm_bindgen]
 pub struct Counter {
     key: char,
-    count: i32,
+    count: i32
 }
 
 #[wasm_bindgen]
@@ -25,10 +25,7 @@ impl Counter {
     }
     pub fn new(key: char, count: i32) -> Counter {
         log(&format!("Counter::new({}, {})", key, count));
-        Counter {
-            key: key,
-            count: count,
-        }
+        Counter { key: key, count: count }
     }
 
     pub fn key(&self) -> char {

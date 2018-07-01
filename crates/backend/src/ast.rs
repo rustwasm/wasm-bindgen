@@ -17,17 +17,11 @@ pub struct Program {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub struct Export {
     pub class: Option<Ident>,
-    pub method_self: Option<MethodSelf>,
+    pub method: bool,
+    pub mutable: bool,
     pub constructor: Option<String>,
     pub function: Function,
     pub comments: Vec<String>,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-pub enum MethodSelf {
-    ByValue,
-    RefMutable,
-    RefShared,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -176,7 +170,8 @@ impl Program {
                 f.to_tokens(tokens);
                 self.exports.push(Export {
                     class: None,
-                    method_self: None,
+                    method: false,
+                    mutable: false,
                     constructor: None,
                     function: Function::from(f, opts),
                     comments,
@@ -268,7 +263,7 @@ impl Program {
             None
         };
 
-        let (function, method_self) = Function::from_decl(
+        let (function, mutable) = Function::from_decl(
             &method.sig.ident,
             Box::new(method.sig.decl.clone()),
             method.attrs.clone(),
@@ -279,7 +274,8 @@ impl Program {
 
         self.exports.push(Export {
             class: Some(class.clone()),
-            method_self,
+            method: mutable.is_some(),
+            mutable: mutable.unwrap_or(false),
             constructor,
             function,
             comments,
@@ -409,10 +405,7 @@ impl Program {
             };
             let class_name = extract_path_ident(class_name)
                 .expect("first argument of method must be a bare type");
-            let class_name = wasm
-                .opts
-                .js_class()
-                .map(Into::into)
+            let class_name = wasm.opts.js_class().map(Into::into)
                 .unwrap_or_else(|| class_name.to_string());
 
             ImportFunctionKind::Method {
@@ -533,7 +526,7 @@ impl Function {
         opts: BindgenAttrs,
         vis: syn::Visibility,
         allow_self: bool,
-    ) -> (Function, Option<MethodSelf>) {
+    ) -> (Function, Option<bool>) {
         if decl.variadic.is_some() {
             panic!("can't bindgen variadic functions")
         }
@@ -545,23 +538,17 @@ impl Function {
 
         let syn::FnDecl { inputs, output, .. } = { *decl };
 
-        let mut method_self = None;
+        let mut mutable = None;
         let arguments = inputs
             .into_iter()
             .filter_map(|arg| match arg {
                 syn::FnArg::Captured(c) => Some(c),
                 syn::FnArg::SelfValue(_) => {
-                    assert!(method_self.is_none());
-                    method_self = Some(MethodSelf::ByValue);
-                    None
+                    panic!("by-value `self` not yet supported");
                 }
                 syn::FnArg::SelfRef(ref a) if allow_self => {
-                    assert!(method_self.is_none());
-                    if a.mutability.is_some() {
-                        method_self = Some(MethodSelf::RefMutable);
-                    } else {
-                        method_self = Some(MethodSelf::RefShared);
-                    }
+                    assert!(mutable.is_none());
+                    mutable = Some(a.mutability.is_some());
                     None
                 }
                 _ => panic!("arguments cannot be `self` or ignored"),
@@ -582,7 +569,7 @@ impl Function {
                 rust_vis: vis,
                 rust_attrs: attrs,
             },
-            method_self,
+            mutable,
         )
     }
 
@@ -628,15 +615,9 @@ impl Export {
     }
 
     fn shared(&self) -> shared::Export {
-        let (method, consumed) = match self.method_self {
-            Some(MethodSelf::ByValue) => (true, true),
-            Some(_) => (true, false),
-            None => (false, false),
-        };
         shared::Export {
             class: self.class.as_ref().map(|s| s.to_string()),
-            method,
-            consumed,
+            method: self.method,
             constructor: self.constructor.clone(),
             function: self.function.shared(),
             comments: self.comments.clone(),

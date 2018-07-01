@@ -1,14 +1,13 @@
-use super::{project, run};
 use std::process::Command;
+use super::{run, project};
 
 #[test]
 fn works() {
     let mut p = project();
     let name = p.crate_name();
-    p.rlib(true)
-        .file(
-            "src/lib.rs",
-            r#"
+    p
+        .rlib(true)
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -55,12 +54,8 @@ fn works() {
             #[wasm_bindgen]
             pub fn baz(_: JsValue) {
             }
-        "#,
-        )
-        .file(
-            "tests/foo.rs",
-            &format!(
-                "
+        "#)
+        .file("tests/foo.rs", &format!("
             extern crate {} as mytest;
 
             #[test]
@@ -68,14 +63,8 @@ fn works() {
                 mytest::foo(false);
                 mytest::A::new().foo();
             }}
-        ",
-                name
-            ),
-        )
-        .file(
-            "benches/foo.rs",
-            &format!(
-                "
+        ", name))
+        .file("benches/foo.rs", &format!("
             #![feature(test)]
             extern crate test;
             extern crate {} as mytest;
@@ -84,18 +73,14 @@ fn works() {
             fn foo(b: &mut test::Bencher) {{
                 b.iter(|| mytest::foo(false));
             }}
-        ",
-                name
-            ),
-        );
+        ", name));
     let (root, target_dir) = p.build();
     let mut cmd = Command::new("cargo");
     cmd.arg("test")
-        .arg("--test")
-        .arg("foo")
-        .arg("--bench")
-        .arg("foo")
+        .arg("--test").arg("foo")
+        .arg("--bench").arg("foo")
         .current_dir(&root)
         .env("CARGO_TARGET_DIR", &target_dir);
     run(&mut cmd, "cargo");
 }
+

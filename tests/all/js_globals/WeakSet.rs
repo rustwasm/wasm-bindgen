@@ -5,9 +5,7 @@ use project;
 #[test]
 fn new() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -18,28 +16,22 @@ fn new() {
             pub fn new_weak_set() -> js::WeakSet {
                 js::WeakSet::new()
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 assert.equal(typeof wasm.new_weak_set(), "object");
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn has() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -50,11 +42,8 @@ fn has() {
             pub fn has_value(this: &js::WeakSet, value: js::Object) -> bool {
                 this.has(value)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -67,17 +56,14 @@ fn has() {
                 let nonex = {nonexistent: "value"};
                 assert.equal(wasm.has_value(set, nonex), false);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn add() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -88,11 +74,8 @@ fn add() {
             pub fn add_value(this: &js::WeakSet, value: js::Object) -> js::WeakSet {
                 this.add(value)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -108,17 +91,14 @@ fn add() {
                 assert.throws(() => { wasm.add_value(set, null) }, TypeError);
                 assert.throws(() => { wasm.add_value(set, undefined) }, TypeError);
             }
-        "#,
-        )
+        "#)
         .test()
 }
 
 #[test]
 fn delete() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -129,11 +109,8 @@ fn delete() {
             pub fn delete_value(this: &js::WeakSet, value: js::Object) -> bool {
                 this.delete(value)
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -151,7 +128,6 @@ fn delete() {
                 assert.equal(wasm.delete_value(set, null), false);
                 assert.equal(wasm.delete_value(set, undefined), false);
             }
-        "#,
-        )
+        "#)
         .test()
 }
