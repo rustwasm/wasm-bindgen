@@ -6,8 +6,8 @@ mod Array;
 mod ArrayIterator;
 mod Boolean;
 mod Date;
-mod Function;
 mod Error;
+mod Function;
 mod JsString;
 mod Map;
 mod MapIterator;
@@ -41,6 +41,32 @@ fn decode_uri() {
                 assert_eq!(String::from(x), "https://mozilla.org/?x=шеллы");
 
                 assert!(js::decode_uri("%E0%A4%A").is_err());
+            }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn decode_uri_component() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                let x = js::decode_uri_component("%3Fx%3Dtest")
+                    .ok()
+                    .expect("should decode URI OK");
+                assert_eq!(String::from(x), "?x=test");
+
+                assert!(js::decode_uri_component("%E0%A4%A").is_err());
             }
         "#,
         )

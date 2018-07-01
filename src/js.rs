@@ -49,6 +49,13 @@ extern "C" {
     #[wasm_bindgen(catch, js_name = decodeURI)]
     pub fn decode_uri(encoded: &str) -> Result<JsString, JsValue>;
 
+    /// The decodeURIComponent() function decodes a Uniform Resource Identifier (URI)
+    /// component previously created by encodeURIComponent or by a similar routine.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent
+    #[wasm_bindgen(catch, js_name = decodeURIComponent)]
+    pub fn decode_uri_component(encoded: &str) -> Result<JsString, JsValue>;
+
     /// The `encodeURI()` function encodes a Uniform Resource Identifier (URI)
     /// by replacing each instance of certain characters by one, two, three, or
     /// four escape sequences representing the UTF-8 encoding of the character
