@@ -17,8 +17,8 @@ use std::path::{Path, PathBuf};
 use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
 
-mod descriptor;
 mod js;
+mod descriptor;
 pub mod wasm2es6js;
 
 pub struct Bindgen {
@@ -142,9 +142,11 @@ impl Bindgen {
                     let mut v = MyExternals(Vec::new());
                     match instance.invoke_export(name, &[], &mut v) {
                         Ok(None) => Some(v.0),
-                        Ok(Some(_)) => unreachable!(
-                            "there is only one export, and we only return None from it"
-                        ),
+                        Ok(Some(_)) => {
+                            unreachable!(
+                                "there is only one export, and we only return None from it"
+                            )
+                        },
                         // Allow missing exported describe functions. This can
                         // happen when a nested dependency crate exports things
                         // but the root crate doesn't use them.
@@ -205,16 +207,13 @@ impl Bindgen {
             shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
         }
 
-        shim.push_str(&format!(
-            "
+        shim.push_str(&format!("
             const join = require('path').join;
             const bytes = require('fs').readFileSync(join(__dirname, '{}'));
             const wasmModule = new WebAssembly.Module(bytes);
             const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
             module.exports = wasmInstance.exports;
-            ",
-            path.file_name().unwrap().to_str().unwrap()
-        ));
+        ", path.file_name().unwrap().to_str().unwrap()));
 
         reset_indentation(&shim)
     }
@@ -231,25 +230,27 @@ fn extract_programs(module: &mut Module) -> Result<Vec<shared::Program>, Error> 
             _ => continue,
         };
         if custom.name() != "__wasm_bindgen_unstable" {
-            continue;
+            continue
         }
         to_remove.push(i);
 
         let mut payload = custom.payload();
         while payload.len() > 0 {
-            let len = ((payload[0] as usize) << 0)
-                | ((payload[1] as usize) << 8)
-                | ((payload[2] as usize) << 16)
-                | ((payload[3] as usize) << 24);
+            let len =
+                ((payload[0] as usize) << 0) |
+                ((payload[1] as usize) << 8) |
+                ((payload[2] as usize) << 16) |
+                ((payload[3] as usize) << 24);
             let (a, b) = payload[4..].split_at(len as usize);
             payload = b;
             let p: shared::ProgramOnlySchema = match serde_json::from_slice(&a) {
                 Ok(f) => f,
-                Err(e) => bail!("failed to decode what looked like wasm-bindgen data: {}", e),
+                Err(e) => {
+                    bail!("failed to decode what looked like wasm-bindgen data: {}", e)
+                }
             };
             if p.schema_version != shared::SCHEMA_VERSION {
-                bail!(
-                    "
+                bail!("
 
 it looks like the Rust project used to create this wasm file was linked against
 a different version of wasm-bindgen than this binary:
@@ -271,13 +272,13 @@ or you can update the binary with
 if this warning fails to go away though and you're not sure what to do feel free
 to open an issue at https://github.com/alexcrichton/wasm-bindgen/issues!
 ",
-                    p.version,
-                    version
-                );
+    p.version, version);
             }
             let p: shared::Program = match serde_json::from_slice(&a) {
                 Ok(f) => f,
-                Err(e) => bail!("failed to decode what looked like wasm-bindgen data: {}", e),
+                Err(e) => {
+                    bail!("failed to decode what looked like wasm-bindgen data: {}", e)
+                }
             };
             ret.push(p);
         }
@@ -296,13 +297,13 @@ impl wasmi::ImportResolver for MyResolver {
         &self,
         module_name: &str,
         field_name: &str,
-        signature: &wasmi::Signature,
+        signature: &wasmi::Signature
     ) -> Result<wasmi::FuncRef, wasmi::Error> {
         // Route our special "describe" export to 1 and everything else to 0.
         // That way whenever the function 1 is invoked we know what to do and
         // when 0 is invoked (by accident) we'll trap and produce an error.
-        let idx = (module_name == "__wbindgen_placeholder__" && field_name == "__wbindgen_describe")
-            as usize;
+        let idx = (module_name == "__wbindgen_placeholder__" &&
+            field_name == "__wbindgen_describe") as usize;
         Ok(wasmi::FuncInstance::alloc_host(signature.clone(), idx))
     }
 
@@ -310,7 +311,7 @@ impl wasmi::ImportResolver for MyResolver {
         &self,
         _module_name: &str,
         _field_name: &str,
-        descriptor: &wasmi::GlobalDescriptor,
+        descriptor: &wasmi::GlobalDescriptor
     ) -> Result<wasmi::GlobalRef, wasmi::Error> {
         // dummy implementation to ensure instantiation succeeds
         let val = match descriptor.value_type() {
@@ -339,7 +340,7 @@ impl wasmi::ImportResolver for MyResolver {
         &self,
         _module_name: &str,
         _field_name: &str,
-        descriptor: &wasmi::TableDescriptor,
+        descriptor: &wasmi::TableDescriptor
     ) -> Result<wasmi::TableRef, wasmi::Error> {
         // dummy implementation to ensure instantiation succeeds
         let initial = descriptor.initial();
@@ -357,7 +358,7 @@ impl wasmi::Externals for MyExternals {
     fn invoke_index(
         &mut self,
         index: usize,
-        args: wasmi::RuntimeArgs,
+        args: wasmi::RuntimeArgs
     ) -> Result<Option<wasmi::RuntimeValue>, wasmi::Trap> {
         macro_rules! bail {
             ($($t:tt)*) => ({
@@ -412,12 +413,7 @@ fn indent_recurse(mut lines: ::std::str::Lines, current_indent: usize) -> String
         if trimmed.starts_with('?') || trimmed.starts_with(':') {
             current_indent += 1;
         }
-        format!(
-            "\n{}{}{}",
-            "    ".repeat(current_indent),
-            &trimmed,
-            &indent_recurse(lines, next_indent)
-        )
+        format!("\n{}{}{}", "    ".repeat(current_indent), &trimmed, &indent_recurse(lines, next_indent))
     } else {
         String::new()
     }

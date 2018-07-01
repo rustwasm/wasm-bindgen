@@ -309,60 +309,15 @@ impl ToTokens for ast::Export {
         let ret = Ident::new("_ret", Span::call_site());
 
         let mut offset = 0;
-        if self.method_self.is_some() {
-            args.push(quote! { me: u32 });
+        if self.method {
+            let class = self.class.as_ref().unwrap();
+            args.push(quote! { me: *mut ::wasm_bindgen::__rt::WasmRefCell<#class> });
+            arg_conversions.push(quote! {
+                ::wasm_bindgen::__rt::assert_not_null(me);
+                let me = unsafe { &*me };
+            });
             offset = 1;
         }
-
-        let name = &self.function.name;
-        let receiver = match self.method_self {
-            Some(ast::MethodSelf::ByValue) => {
-                let class = self.class.as_ref().unwrap();
-                arg_conversions.push(quote! {
-                    let me = unsafe {
-                        <#class as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
-                            me,
-                            &mut ::wasm_bindgen::convert::GlobalStack::new(),
-                        )
-                    };
-                });
-                quote! { me.#name }
-            }
-            Some(ast::MethodSelf::RefMutable) => {
-                let class = self.class.as_ref().unwrap();
-                arg_conversions.push(quote! {
-                    let mut me = unsafe {
-                        <#class as ::wasm_bindgen::convert::RefMutFromWasmAbi>
-                            ::ref_mut_from_abi(
-                                me,
-                                &mut ::wasm_bindgen::convert::GlobalStack::new(),
-                            )
-                    };
-                    let me = &mut *me;
-                });
-                quote! { me.#name }
-            }
-            Some(ast::MethodSelf::RefShared) => {
-                let class = self.class.as_ref().unwrap();
-                arg_conversions.push(quote! {
-                    let me = unsafe {
-                        <#class as ::wasm_bindgen::convert::RefFromWasmAbi>
-                            ::ref_from_abi(
-                                me,
-                                &mut ::wasm_bindgen::convert::GlobalStack::new(),
-                            )
-                    };
-                    let me = &*me;
-                });
-                quote! { me.#name }
-            }
-            None => {
-                match &self.class {
-                    Some(class) => quote! { #class::#name },
-                    None => quote! { #name }
-                }
-            }
-        };
 
         for (i, syn::ArgCaptured { ty, .. }) in self.function.arguments.iter().enumerate() {
             let i = i + offset;
@@ -438,6 +393,19 @@ impl ToTokens for ast::Export {
                 }
             }
             None => quote! { inform(0); },
+        };
+
+        let name = &self.function.name;
+        let receiver = match &self.class {
+            Some(_) if self.method => {
+                if self.mutable {
+                    quote! { me.borrow_mut().#name }
+                } else {
+                    quote! { me.borrow().#name }
+                }
+            }
+            Some(class) => quote! { #class::#name },
+            None => quote!{ #name },
         };
         let descriptor_name = format!("__wbindgen_describe_{}", export_name);
         let descriptor_name = Ident::new(&descriptor_name, Span::call_site());
@@ -605,7 +573,6 @@ impl ToTokens for ast::ImportFunction {
         let mut abi_argument_names = Vec::new();
         let mut abi_arguments = Vec::new();
         let mut arg_conversions = Vec::new();
-        let mut arguments = Vec::new();
         let ret_ident = Ident::new("_ret", Span::call_site());
 
         for (i, syn::ArgCaptured { pat, ty, .. }) in self.function.arguments.iter().enumerate() {
@@ -616,9 +583,6 @@ impl ToTokens for ast::ImportFunction {
                     subpat: None,
                     ..
                 }) => ident.clone(),
-                syn::Pat::Wild(_) => {
-                    syn::Ident::new(&format!("__genarg_{}", i), Span::call_site())
-                }
                 _ => panic!("unsupported pattern in foreign function"),
             };
 
@@ -629,7 +593,6 @@ impl ToTokens for ast::ImportFunction {
             let var = if i == 0 && is_method {
                 quote! { self }
             } else {
-                arguments.push(quote! { #name: #ty });
                 quote! { #name }
             };
             arg_conversions.push(quote! {
@@ -688,7 +651,12 @@ impl ToTokens for ast::ImportFunction {
         let rust_name = &self.rust_name;
         let import_name = &self.shim;
         let attrs = &self.function.rust_attrs;
-        let arguments = &arguments;
+
+        let arguments = if is_method {
+            &self.function.arguments[1..]
+        } else {
+            &self.function.arguments[..]
+        };
 
         let me = if is_method {
             quote! { &self, }

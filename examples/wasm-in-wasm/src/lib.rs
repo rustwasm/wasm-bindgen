@@ -7,7 +7,7 @@ use wasm_bindgen::prelude::*;
 // Like with the `dom` example this block will eventually be auto-generated, but
 // for now we can write it by hand to get by!
 #[wasm_bindgen]
-extern "C" {
+extern {
     type Module;
     #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
     fn new(data: &[u8]) -> Module;

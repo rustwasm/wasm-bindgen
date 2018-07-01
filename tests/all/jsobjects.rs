@@ -3,9 +3,7 @@ use super::project;
 #[test]
 fn simple() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -21,11 +19,8 @@ fn simple() {
             pub fn bar(s: &JsValue) {
                 foo(s);
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as wasm from "./out";
             import * as assert from "assert";
 
@@ -42,17 +37,14 @@ fn simple() {
                 wasm.bar(sym);
                 assert.strictEqual(ARG, sym);
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn owned() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -68,11 +60,8 @@ fn owned() {
             pub fn bar(s: JsValue) {
                 foo(s);
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as wasm from "./out";
             import * as assert from "assert";
 
@@ -89,17 +78,14 @@ fn owned() {
                 wasm.bar(sym);
                 assert.strictEqual(ARG, sym);
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn clone() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -123,11 +109,8 @@ fn clone() {
                 foo4(&s);
                 foo5(s);
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as wasm from "./out";
             import * as assert from "assert";
 
@@ -142,17 +125,14 @@ fn clone() {
             export function test() {
                 wasm.bar(ARG);
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn promote() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -174,11 +154,8 @@ fn promote() {
                 foo3(s);
                 foo4(s.clone());
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as wasm from "./out";
             import * as assert from "assert";
 
@@ -192,17 +169,14 @@ fn promote() {
             export function test() {
                 wasm.bar(ARG);
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn returning_vector() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -222,11 +196,8 @@ fn returning_vector() {
                 }
                 res
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as wasm from "./out";
             import * as assert from "assert";
 
@@ -236,17 +207,14 @@ fn returning_vector() {
                 const result = wasm.bar();
                 assert.strictEqual(result.length, 10);
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn another_vector_return() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -265,19 +233,15 @@ fn another_vector_return() {
                     JsValue::from(6),
                 ]
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import { get_array } from "./out";
             import * as assert from "assert";
 
             export function test() {
                 assert.deepStrictEqual(get_array(), [1, 2, 3, 4, 5, 6]);
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
@@ -287,9 +251,7 @@ fn serde() {
         .serde(true)
         .depend("serde = '1.0'")
         .depend("serde_derive = '1.0'")
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -341,11 +303,8 @@ fn serde() {
                 let s = j.into_serde::<String>().unwrap();
                 assert_eq!(s, "bar");
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import { run, parse } from "./out";
             import * as assert from "assert";
 
@@ -369,7 +328,6 @@ fn serde() {
                 run();
                 parse('bar');
             }
-        "#,
-        )
+        "#)
         .test();
 }

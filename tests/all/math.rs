@@ -3,9 +3,7 @@ use super::project;
 #[test]
 fn auto_bind_math() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -66,17 +64,14 @@ fn auto_bind_math() {
                     (a % (b as f32))) as f64) +
                     (b + 2.0f64.powf(a as f64))
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import { math } from "./out";
 
             export function test() {
                 math(1.0, 2.0);
             }
-        "#,
-        )
+        "#)
         .test();
 }
+

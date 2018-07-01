@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate serde_derive;
 
-pub const SCHEMA_VERSION: &str = "5";
+pub const SCHEMA_VERSION: &str = "4";
 
 #[derive(Deserialize)]
 pub struct ProgramOnlySchema {
@@ -72,7 +72,6 @@ pub struct ImportType {}
 pub struct Export {
     pub class: Option<String>,
     pub method: bool,
-    pub consumed: bool,
     pub constructor: Option<String>,
     pub function: Function,
     pub comments: Vec<String>,

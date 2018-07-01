@@ -7,26 +7,20 @@ mod ArrayIterator;
 mod Boolean;
 mod Date;
 mod Function;
-mod Error;
+mod JSON;
 mod JsString;
-mod Map;
-mod MapIterator;
 mod Math;
-mod Number;
-mod Object;
-mod Set;
-mod SetIterator;
-mod TypedArray;
 mod WeakMap;
 mod WeakSet;
+mod Number;
+mod Object;
+mod TypedArray;
 
 #[test]
 #[cfg(feature = "std")]
 fn decode_uri() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -42,8 +36,7 @@ fn decode_uri() {
 
                 assert!(js::decode_uri("%E0%A4%A").is_err());
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
@@ -51,9 +44,7 @@ fn decode_uri() {
 #[cfg(feature = "std")]
 fn encode_uri() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -65,17 +56,14 @@ fn encode_uri() {
                 let x = js::encode_uri("ABC abc 123");
                 assert_eq!(String::from(x), "ABC%20abc%20123");
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn eval() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -92,7 +80,6 @@ fn eval() {
                     .expect("eval should throw");
                 assert_eq!(err.as_f64().unwrap(), 42.0);
             }
-        "#,
-        )
+        "#)
         .test();
 }

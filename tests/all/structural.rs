@@ -3,9 +3,7 @@ use super::project;
 #[test]
 fn works() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
             extern crate wasm_bindgen;
 
@@ -30,11 +28,8 @@ fn works() {
                 a.set_baz(2);
                 assert_eq!(a.baz(), 2);
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import { run } from "./out";
 
@@ -46,7 +41,8 @@ fn works() {
                 });
                 assert.strictEqual(called, true);
             }
-        "#,
-        )
+        "#)
         .test();
 }
+
+

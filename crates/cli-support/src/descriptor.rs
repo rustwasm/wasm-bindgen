@@ -138,15 +138,15 @@ impl Descriptor {
 
     pub fn is_number(&self) -> bool {
         match *self {
-            Descriptor::I8
-            | Descriptor::U8
-            | Descriptor::I16
-            | Descriptor::U16
-            | Descriptor::I32
-            | Descriptor::U32
-            | Descriptor::F32
-            | Descriptor::F64
-            | Descriptor::Enum => true,
+            Descriptor::I8 |
+            Descriptor::U8 |
+            Descriptor::I16 |
+            Descriptor::U16 |
+            Descriptor::I32 |
+            Descriptor::U32 |
+            Descriptor::F32 |
+            Descriptor::F64 |
+            Descriptor::Enum => true,
             _ => return false,
         }
     }
@@ -191,15 +191,19 @@ impl Descriptor {
         let inner = match *self {
             Descriptor::String => return Some(VectorKind::String),
             Descriptor::Vector(ref d) => &**d,
-            Descriptor::Ref(ref d) => match **d {
-                Descriptor::Slice(ref d) => &**d,
-                Descriptor::String => return Some(VectorKind::String),
-                _ => return None,
-            },
-            Descriptor::RefMut(ref d) => match **d {
-                Descriptor::Slice(ref d) => &**d,
-                _ => return None,
-            },
+            Descriptor::Ref(ref d) => {
+                match **d {
+                    Descriptor::Slice(ref d) => &**d,
+                    Descriptor::String => return Some(VectorKind::String),
+                    _ => return None,
+                }
+            }
+            Descriptor::RefMut(ref d) => {
+                match **d {
+                    Descriptor::Slice(ref d) => &**d,
+                    _ => return None,
+                }
+            }
             _ => return None,
         };
         match *inner {
@@ -214,7 +218,7 @@ impl Descriptor {
             Descriptor::F32 => Some(VectorKind::F32),
             Descriptor::F64 => Some(VectorKind::F64),
             Descriptor::Anyref => Some(VectorKind::Anyref),
-            _ => None,
+            _ => None
         }
     }
 
@@ -244,7 +248,8 @@ impl Descriptor {
 
     pub fn is_by_ref(&self) -> bool {
         match *self {
-            Descriptor::Ref(_) | Descriptor::RefMut(_) => true,
+            Descriptor::Ref(_) |
+            Descriptor::RefMut(_) => true,
             _ => false,
         }
     }

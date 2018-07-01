@@ -5,7 +5,7 @@ extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-extern "C" {
+extern {
     #[wasm_bindgen(js_namespace = Math)]
     fn log2(a: f64) -> f64;
     #[wasm_bindgen(js_namespace = Math)]

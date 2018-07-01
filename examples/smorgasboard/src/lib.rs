@@ -7,10 +7,10 @@ use wasm_bindgen::prelude::*;
 // Strings can both be passed in and received
 #[wasm_bindgen]
 #[no_mangle]
-pub extern "C" fn concat(a: &str, b: &str) -> String {
+pub extern fn concat(a: &str, b: &str) -> String {
     let mut a = a.to_string();
     a.push_str(b);
-    return a;
+    return a
 }
 
 // A struct will show up as a class on the JS side of things
@@ -29,7 +29,7 @@ impl Foo {
     // can pass to a normal free function also all work in methods.
     pub fn add(&mut self, amt: u32) -> u32 {
         self.contents += amt;
-        return self.contents;
+        return self.contents
     }
 
     // You can also take a limited set of references to other types as well.
@@ -50,7 +50,7 @@ pub struct Bar {
 }
 
 #[wasm_bindgen(module = "./awesome")] // what ES6 module to import from
-extern "C" {
+extern {
     fn bar_on_reset(to: &str, opaque: &JsValue);
 
     // We can import classes and annotate functionality on those classes as well
@@ -64,7 +64,9 @@ extern "C" {
 #[wasm_bindgen]
 impl Bar {
     pub fn from_str(s: &str, opaque: JsValue) -> Bar {
-        let contents = s.parse().unwrap_or_else(|_| Awesome::new().get_internal());
+        let contents = s.parse().unwrap_or_else(|_| {
+            Awesome::new().get_internal()
+        });
         Bar { contents, opaque }
     }
 

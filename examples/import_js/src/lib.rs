@@ -5,7 +5,7 @@ extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(module = "./defined-in-js")]
-extern "C" {
+extern {
     fn name() -> String;
 
     type MyClass;
@@ -23,7 +23,7 @@ extern "C" {
 
 // Import `console.log` so we can log something to the console
 #[wasm_bindgen]
-extern "C" {
+extern {
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
 }

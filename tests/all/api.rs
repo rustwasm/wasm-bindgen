@@ -3,9 +3,7 @@ use super::project;
 #[test]
 fn works() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -110,11 +108,8 @@ fn works() {
             pub fn acquire_string2(a: &JsValue) -> String {
                 a.as_string().unwrap_or("wrong".to_string())
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -143,17 +138,14 @@ fn works() {
                 assert.strictEqual(wasm.acquire_string2(''), '');
                 assert.strictEqual(wasm.acquire_string2('a'), 'a');
             }
-        "#,
-        )
+        "#)
         .test();
 }
 
 #[test]
 fn eq_works() {
     project()
-        .file(
-            "src/lib.rs",
-            r#"
+        .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -169,11 +161,8 @@ fn eq_works() {
             pub fn test1(a: &JsValue) -> bool {
                 a == a
             }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
+        "#)
+        .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -187,7 +176,7 @@ fn eq_works() {
                 assert.strictEqual(wasm.test(x, x), true);
                 assert.strictEqual(wasm.test1(x), true);
             }
-        "#,
-        )
+        "#)
         .test();
 }
+
