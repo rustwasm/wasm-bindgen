@@ -273,6 +273,36 @@ fn seal() {
 }
 
 #[test]
+fn set_prototype_of() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn set_prototype_of(object: &js::Object, prototype: &js::Object) -> js::Object {
+                js::Object::set_prototype_of(&object, &prototype)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = { foo: 42 };
+                const newPrototype = { bar: 'baz' };
+
+                const modifiedObject = wasm.set_prototype_of(object, newPrototype);
+                assert(newPrototype.isPrototypeOf(modifiedObject));
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn to_locale_string() {
     project()
         .file(
