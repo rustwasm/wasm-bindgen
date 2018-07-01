@@ -782,6 +782,13 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Object)]
     pub fn seal(value: &JsValue) -> JsValue;
 
+    /// The Object.setPrototypeOf() method sets the prototype (i.e., the internal
+    /// [[Prototype]] property) of a specified object to another object or null.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf
+    #[wasm_bindgen(static_method_of = Object, js_name = setPrototypeOf)]
+    pub fn set_prototype_of(object: &Object, prototype: &Object) -> Object;
+
     /// The toLocaleString() method returns a string representing the object.
     /// This method is meant to be overridden by derived objects for
     /// locale-specific purposes.
