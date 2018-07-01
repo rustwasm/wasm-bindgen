@@ -4,7 +4,9 @@ use super::project;
 fn works() {
     project()
         .node(true)
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -111,8 +113,11 @@ fn works() {
                     (a % (b as f32))) as f64) +
                     (b + 2.0f64.powf(a as f64))
             }
-        "#)
-        .file("test.js", r#"
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
             const assert = require('assert');
 
             var called = false;
@@ -149,6 +154,7 @@ fn works() {
                 math(1.0, 2.0);
             };
 
-        "#)
+        "#,
+        )
         .test();
 }

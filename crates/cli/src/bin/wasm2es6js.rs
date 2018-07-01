@@ -1,12 +1,12 @@
 #[macro_use]
 extern crate serde_derive;
 extern crate docopt;
+extern crate failure;
 extern crate parity_wasm;
 extern crate wasm_bindgen_cli_support;
-extern crate failure;
 
 use std::fs::File;
-use std::io::{Write, Read};
+use std::io::{Read, Write};
 use std::path::PathBuf;
 use std::process;
 
@@ -76,9 +76,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
             let ts = object.typescript();
             File::create(&dst)
                 .and_then(|mut f| f.write_all(ts.as_bytes()))
-                .with_context(|_| {
-                    format!("failed to write `{}`", dst.display())
-                })?;
+                .with_context(|_| format!("failed to write `{}`", dst.display()))?;
         }
     }
 

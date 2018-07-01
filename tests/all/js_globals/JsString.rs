@@ -5,7 +5,9 @@ use project;
 #[test]
 fn length() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -17,8 +19,11 @@ fn length() {
                 this.length()
             }
 
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -29,14 +34,17 @@ fn length() {
                 let empty = '';
                 assert.equal(wasm.string_length(empty), 0);
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn char_at() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -47,8 +55,11 @@ fn char_at() {
             pub fn string_char_at(this: &js::JsString, index: u32) -> js::JsString {
                 this.char_at(index)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -58,14 +69,17 @@ fn char_at() {
                 assert.equal(wasm.string_char_at(anyString, 0), "B");
                 assert.equal(wasm.string_char_at(anyString, 999), "");
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn char_code_at() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -76,8 +90,11 @@ fn char_code_at() {
             pub fn string_char_code_at(this: &js::JsString, index: u32) -> js::Number {
                 this.char_code_at(index)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -87,14 +104,17 @@ fn char_code_at() {
                 assert.equal(wasm.string_char_code_at(anyString, 0), 66);
                 assert.ok(isNaN(wasm.string_char_code_at(anyString, 999)));
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn code_point_at() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -105,8 +125,11 @@ fn code_point_at() {
             pub fn string_code_point_at(this: &js::JsString, pos: u32) -> JsValue {
                 this.code_point_at(pos)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -115,14 +138,17 @@ fn code_point_at() {
                 assert.equal(wasm.string_code_point_at('\uD800\uDC00', 0), 65536);
                 assert.equal(wasm.string_code_point_at('XYZ', 42), undefined);
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn concat() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -133,8 +159,11 @@ fn concat() {
             pub fn string_concat(this: &js::JsString, string_2: &js::JsString) -> js::JsString {
                 this.concat(string_2)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -147,7 +176,8 @@ fn concat() {
                 assert.equal(wasm.string_concat('foo', true), 'footrue');
                 assert.equal(wasm.string_concat('foo', 1234), 'foo1234');
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
@@ -228,7 +258,9 @@ fn index_of() {
 #[test]
 fn slice() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -239,8 +271,11 @@ fn slice() {
             pub fn create_slice(this: &js::JsString, start: u32, end: u32) -> js::JsString {
                 this.slice(start, end)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -250,7 +285,8 @@ fn slice() {
 
                 assert.equal(subset, "cx");
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
@@ -363,7 +399,9 @@ fn substr() {
 #[test]
 fn to_string() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -374,8 +412,11 @@ fn to_string() {
             pub fn string_to_string(this: &js::JsString) -> js::JsString {
                 this.to_string()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -383,14 +424,17 @@ fn to_string() {
                 let greeting = 'Hello world!';
                 assert.equal(wasm.string_to_string(greeting), 'Hello world!');
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn trim() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -401,8 +445,11 @@ fn trim() {
             pub fn string_trim(this: &js::JsString) -> js::JsString {
                 this.trim()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -411,14 +458,17 @@ fn trim() {
                 // Another example of .trim() removing whitespace from just one side.
                 assert.equal(wasm.string_trim('foo   '), 'foo');
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn trim_end_and_trim_right() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -434,8 +484,11 @@ fn trim_end_and_trim_right() {
             pub fn string_trim_right(this: &js::JsString) -> js::JsString {
                 this.trim_right()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -445,14 +498,17 @@ fn trim_end_and_trim_right() {
                 assert.equal(wasm.string_trim_end(greeting), trimmed);
                 assert.equal(wasm.string_trim_right(greeting), trimmed);
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn trim_start_and_trim_left() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -468,8 +524,11 @@ fn trim_start_and_trim_left() {
             pub fn string_trim_left(this: &js::JsString) -> js::JsString {
                 this.trim_left()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -479,14 +538,17 @@ fn trim_start_and_trim_left() {
                 assert.equal(wasm.string_trim_start(greeting), trimmed);
                 assert.equal(wasm.string_trim_left(greeting), trimmed);
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn value_of() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -497,8 +559,11 @@ fn value_of() {
             pub fn string_value_of(this: &js::JsString) -> js::JsString {
                 this.value_of()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -506,6 +571,7 @@ fn value_of() {
                 let greeting = new String('Hello world!');
                 assert.equal(wasm.string_value_of(greeting), 'Hello world!');
             }
-        "#)
+        "#,
+        )
         .test()
 }

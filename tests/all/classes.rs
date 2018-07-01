@@ -3,7 +3,9 @@ use super::project;
 #[test]
 fn simple() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -30,9 +32,16 @@ fn simple() {
                     self.contents += amt;
                     self.contents
                 }
+
+                pub fn consume(self) -> u32 {
+                    self.contents
+                }
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import { Foo } from "./out";
 
@@ -41,7 +50,9 @@ fn simple() {
                 assert.strictEqual(r.add(0), 0);
                 assert.strictEqual(r.add(1), 1);
                 assert.strictEqual(r.add(1), 2);
-                r.free();
+                r.add(2);
+                assert.strictEqual(r.consume(), 4);
+                assert.throws(() => r.free(), /null pointer passed to rust/);
 
                 const r2 = Foo.with_contents(10);
                 assert.strictEqual(r2.add(1), 11);
@@ -53,14 +64,17 @@ fn simple() {
                 assert.strictEqual(r3.add(42), 42);
                 r3.free();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn strings() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -98,8 +112,11 @@ fn strings() {
                     self.contents.clone()
                 }
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import { Foo } from "./out";
 
@@ -111,14 +128,17 @@ fn strings() {
                 assert.strictEqual(bar.name(), "foo-baz-3");
                 bar.free();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn exceptions() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -152,8 +172,11 @@ fn exceptions() {
                     B {}
                 }
             }
-        "#)
-        .file("test.js", r#"
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
             import * as assert from "assert";
             import { A, B } from "./out";
 
@@ -173,17 +196,23 @@ fn exceptions() {
                 d.free();
                 c.free();
             };
-        "#)
-        .file("test.d.ts", r#"
+        "#,
+        )
+        .file(
+            "test.d.ts",
+            r#"
             export function test(): void;
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn pass_one_to_another() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -215,8 +244,11 @@ fn pass_one_to_another() {
                     B {}
                 }
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { A, B } from "./out";
 
             export function test() {
@@ -226,14 +258,17 @@ fn pass_one_to_another() {
                 a.bar(b);
                 a.free();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn pass_into_js() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -259,8 +294,11 @@ fn pass_into_js() {
             pub fn run() {
                 take_foo(Foo(13));
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run, Foo } from "./out";
             import * as assert from "assert";
 
@@ -273,14 +311,17 @@ fn pass_into_js() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn issue_27() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -309,21 +350,27 @@ fn issue_27() {
             pub fn context() -> Context {
                 Context {}
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { context } from "./out";
 
             export function test() {
                 context();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn pass_into_js_as_js_class() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -349,8 +396,11 @@ fn pass_into_js_as_js_class() {
             pub fn run() {
                 take_foo(Foo(13).into());
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run, Foo } from "./out";
             import * as assert from "assert";
 
@@ -363,14 +413,17 @@ fn pass_into_js_as_js_class() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn constructors() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -416,8 +469,11 @@ fn constructors() {
                     self.number + self.number2
                 }
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import { Foo, Bar, cross_item_construction } from "./out";
 
@@ -440,7 +496,8 @@ fn constructors() {
 
                 assert.strictEqual(cross_item_construction().get_sum(), 15);
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
@@ -448,7 +505,9 @@ fn constructors() {
 fn empty_structs() {
     project()
         .debug(false)
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -463,14 +522,18 @@ fn empty_structs() {
 
             #[wasm_bindgen]
             impl Other { pub fn return_a_value() -> MissingClass { MissingClass {} } }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { Other } from "./out";
 
             export function test() {
                 Other.return_a_value();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
@@ -478,7 +541,9 @@ fn empty_structs() {
 fn public_fields() {
     project()
         .debug(false)
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -500,8 +565,11 @@ fn public_fields() {
                     Foo::default()
                 }
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { Foo } from "./out";
             import * as assert from "assert";
 
@@ -523,7 +591,8 @@ fn public_fields() {
                 a.d = 3.3;
                 assert.strictEqual(a.d, 3);
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
@@ -531,7 +600,9 @@ fn public_fields() {
 fn using_self() {
     project()
         .debug(false)
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -548,14 +619,18 @@ fn using_self() {
                     Foo {}
                 }
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { Foo } from "./out";
 
             export function test() {
                 Foo.new().free();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
@@ -563,7 +638,9 @@ fn using_self() {
 fn readonly_fields() {
     project()
         .debug(false)
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -583,8 +660,11 @@ fn readonly_fields() {
                     Foo::default()
                 }
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { Foo } from "./out";
             import * as assert from "assert";
 
@@ -593,6 +673,44 @@ fn readonly_fields() {
                 assert.strictEqual(a.a, 0);
                 assert.throws(() => (a as any).a = 3, /has only a getter/);
                 a.free();
+            }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn double_consume() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub struct Foo { }
+
+            #[wasm_bindgen]
+            impl Foo {
+                #[wasm_bindgen(constructor)]
+                pub fn new() -> Foo {
+                    Foo {}
+                }
+
+                pub fn consume(self, other: Foo) {
+                    drop(other);
+                }
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import { Foo } from "./out";
+
+            export function test() {
+                const r = Foo.new();
+                assert.throws(() => r.consume(r), /Attempt to use a moved value/);
             }
         "#)
         .test();

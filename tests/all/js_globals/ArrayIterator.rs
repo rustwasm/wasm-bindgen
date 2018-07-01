@@ -5,7 +5,9 @@ use project;
 #[test]
 fn keys() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -17,8 +19,11 @@ fn keys() {
                 this.keys()
             }
 
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -30,14 +35,17 @@ fn keys() {
                 assert.equal(iterator.toString(), wasmIterator.toString());
                 assert.equal(Array.from(iterator)[0], Array.from(wasmIterator)[0]);
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn entries() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -49,8 +57,11 @@ fn entries() {
                 this.entries()
             }
 
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -64,6 +75,7 @@ fn entries() {
                 assert.equal(iterator.toString(), wasmIterator.toString());
                 assert.equal(jsItem.value[1], wasmItem.value[1]);
             }
-        "#)
+        "#,
+        )
         .test()
 }

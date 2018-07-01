@@ -2,11 +2,11 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 
-use backend::{self};
+use backend;
 use backend::ast::{BindgenAttrs, Export, Function};
-use proc_macro2::{self};
-use serde_json::{self};
-use syn::{self};
+use proc_macro2;
+use serde_json;
+use syn;
 
 use api_extractor;
 use definitions::*;
@@ -25,7 +25,11 @@ pub fn ts_to_program(file_name: &str) -> backend::ast::Program {
                     match member {
                         TsClassMembers::TsProperty { .. } => {}
                         TsClassMembers::TsConstructor { .. } => {}
-                        TsClassMembers::TsMethod  { parameters, return_value, .. } => {
+                        TsClassMembers::TsMethod {
+                            parameters,
+                            return_value,
+                            ..
+                        } => {
                             let function = build_function(member_name, parameters, return_value);
 
                             program.exports.push(Export {
@@ -33,14 +37,17 @@ pub fn ts_to_program(file_name: &str) -> backend::ast::Program {
                                 method: true,
                                 mutable: false,
                                 constructor: None,
-                                function, 
+                                function,
                             });
                         }
                     }
                 }
             }
 
-            TsExport::TsFunction { parameters, return_value } => {
+            TsExport::TsFunction {
+                parameters,
+                return_value,
+            } => {
                 let function = build_function(name, parameters, return_value);
 
                 program.exports.push(Export {
@@ -65,22 +72,29 @@ fn parse_json(file_name: &str) -> TsPackage {
     serde_json::from_str(&data).unwrap()
 }
 
-fn build_function(name: String, parameters: HashMap<String, TsMethodProperty>, return_value: TsReturnValue) -> Function {
-    let arguments = parameters.iter().map( |(_name, property)| {
-        let mut segments = syn::punctuated::Punctuated::new();
-        segments.push(syn::PathSegment {
-            ident: syn::Ident::new(&property.property_type, proc_macro2::Span::call_site()),
-            arguments: syn::PathArguments::None,
-        });
+fn build_function(
+    name: String,
+    parameters: HashMap<String, TsMethodProperty>,
+    return_value: TsReturnValue,
+) -> Function {
+    let arguments = parameters
+        .iter()
+        .map(|(_name, property)| {
+            let mut segments = syn::punctuated::Punctuated::new();
+            segments.push(syn::PathSegment {
+                ident: syn::Ident::new(&property.property_type, proc_macro2::Span::call_site()),
+                arguments: syn::PathArguments::None,
+            });
 
-        syn::Type::Path(syn::TypePath {
-            qself: None,
-            path: syn::Path {
-                leading_colon: None,
-                segments,
-            }
+            syn::Type::Path(syn::TypePath {
+                qself: None,
+                path: syn::Path {
+                    leading_colon: None,
+                    segments,
+                },
+            })
         })
-    }).collect::<Vec<_>>();
+        .collect::<Vec<_>>();
 
     let mut ret_segments = syn::punctuated::Punctuated::new();
     ret_segments.push(syn::PathSegment {
@@ -93,7 +107,7 @@ fn build_function(name: String, parameters: HashMap<String, TsMethodProperty>, r
         path: syn::Path {
             leading_colon: None,
             segments: ret_segments,
-        }
+        },
     });
 
     let rust_decl = Box::new(syn::FnDecl {

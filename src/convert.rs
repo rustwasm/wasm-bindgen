@@ -1,14 +1,14 @@
 //! This is mostly an internal module, no stability guarantees are provided. Use
 //! at your own risk.
 
+use core::char;
 use core::mem::{self, ManuallyDrop};
 use core::ops::{Deref, DerefMut};
 use core::slice;
 use core::str;
-use core::char;
 
-use {JsValue, throw};
 use describe::*;
+use {throw, JsValue};
 
 #[cfg(feature = "std")]
 use std::prelude::v1::*;
@@ -59,7 +59,7 @@ pub trait RefFromWasmAbi: WasmDescribe {
     /// invocation of the function that has an `&Self` parameter. This is
     /// required to ensure that the lifetimes don't persist beyond one function
     /// call, and so that they remain anonymous.
-    type Anchor: Deref<Target=Self>;
+    type Anchor: Deref<Target = Self>;
 
     /// Recover a `Self::Anchor` from `Self::Abi`.
     ///
@@ -71,7 +71,7 @@ pub trait RefFromWasmAbi: WasmDescribe {
 
 pub trait RefMutFromWasmAbi: WasmDescribe {
     type Abi: WasmAbi;
-    type Anchor: DerefMut<Target=Self>;
+    type Anchor: DerefMut<Target = Self>;
     unsafe fn ref_mut_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor;
 }
 
@@ -159,18 +159,24 @@ as_u32!(i8 u8 i16 u16 isize usize);
 impl IntoWasmAbi for bool {
     type Abi = u32;
 
-    fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
+    fn into_abi(self, _extra: &mut Stack) -> u32 {
+        self as u32
+    }
 }
 
 impl FromWasmAbi for bool {
     type Abi = u32;
 
-    unsafe fn from_abi(js: u32, _extra: &mut Stack) -> bool { js != 0 }
+    unsafe fn from_abi(js: u32, _extra: &mut Stack) -> bool {
+        js != 0
+    }
 }
 
 impl IntoWasmAbi for char {
     type Abi = u32;
-    fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
+    fn into_abi(self, _extra: &mut Stack) -> u32 {
+        self as u32
+    }
 }
 
 impl FromWasmAbi for char {
@@ -183,7 +189,9 @@ impl FromWasmAbi for char {
 impl<T> IntoWasmAbi for *const T {
     type Abi = u32;
 
-    fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
+    fn into_abi(self, _extra: &mut Stack) -> u32 {
+        self as u32
+    }
 }
 
 impl<T> FromWasmAbi for *const T {
@@ -197,7 +205,9 @@ impl<T> FromWasmAbi for *const T {
 impl<T> IntoWasmAbi for *mut T {
     type Abi = u32;
 
-    fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
+    fn into_abi(self, _extra: &mut Stack) -> u32 {
+        self as u32
+    }
 }
 
 impl<T> FromWasmAbi for *mut T {
@@ -343,7 +353,7 @@ impl IntoWasmAbi for JsValue {
     fn into_abi(self, _extra: &mut Stack) -> u32 {
         let ret = self.idx;
         mem::forget(self);
-        return ret
+        return ret;
     }
 }
 
@@ -397,7 +407,9 @@ if_std! {
     }
 }
 
-pub struct GlobalStack { next: usize }
+pub struct GlobalStack {
+    next: usize,
+}
 
 const GLOBAL_STACK_CAP: usize = 16;
 static mut GLOBAL_STACK: [u32; GLOBAL_STACK_CAP] = [0; GLOBAL_STACK_CAP];
@@ -429,7 +441,7 @@ impl Stack for GlobalStack {
 
 #[doc(hidden)]
 #[no_mangle]
-pub unsafe extern fn __wbindgen_global_argument_ptr() -> *mut u32 {
+pub unsafe extern "C" fn __wbindgen_global_argument_ptr() -> *mut u32 {
     GLOBAL_STACK.as_mut_ptr()
 }
 

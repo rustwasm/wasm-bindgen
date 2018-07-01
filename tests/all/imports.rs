@@ -1,9 +1,14 @@
+use std::fs::File;
+use std::io::Read;
+
 use super::project;
 
 #[test]
 fn simple() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -37,8 +42,11 @@ fn simple() {
             pub fn get_the_object() -> JsValue {
                 return_object()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as wasm from "./out";
             import * as assert from "assert";
 
@@ -78,14 +86,17 @@ fn simple() {
 
                 assert.strictEqual(wasm.get_the_object(), SYM);
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn unused() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
             #![allow(dead_code)]
 
@@ -100,8 +111,11 @@ fn unused() {
 
             #[wasm_bindgen]
             pub fn bar() {}
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as wasm from "./out";
 
             export function debug_print() {}
@@ -109,14 +123,17 @@ fn unused() {
             export function test() {
                 wasm.bar();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn string_ret() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -132,8 +149,11 @@ fn string_ret() {
             pub fn run() {
                 assert_eq!(foo(), "bar");
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as wasm from "./out";
 
             export function foo(): string {
@@ -143,14 +163,17 @@ fn string_ret() {
             export function test() {
                 wasm.run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn strings() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -171,8 +194,11 @@ fn strings() {
             pub fn bar2(a: String) -> String {
                 foo(a)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as wasm from "./out";
             import * as assert from "assert";
 
@@ -184,14 +210,17 @@ fn strings() {
                 assert.strictEqual(wasm.bar('a'), 'ab');
                 assert.strictEqual(wasm.bar2('a'), 'ab');
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn exceptions() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -217,8 +246,11 @@ fn exceptions() {
                 assert!(baz().is_err());
                 bar();
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run, run2 } from "./out";
             import * as assert from "assert";
 
@@ -242,14 +274,17 @@ fn exceptions() {
                 run2();
                 assert.strictEqual(called, true);
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn exn_caught() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -266,8 +301,11 @@ fn exn_caught() {
             pub fn run() -> JsValue {
                 foo().unwrap_err()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
             import * as assert from "assert";
 
@@ -280,14 +318,17 @@ fn exn_caught() {
                 assert.strictEqual(obj instanceof Error, true);
                 assert.strictEqual(obj.message, 'error!');
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn free_imports() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -303,14 +344,18 @@ fn free_imports() {
             pub fn run() {
                 assert_eq!(parseInt("3"), 3);
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
@@ -318,7 +363,9 @@ fn free_imports() {
 fn import_a_field() {
     project()
         .debug(false)
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -334,8 +381,11 @@ fn import_a_field() {
             pub fn run() {
                 assert_eq!(IMPORT.as_f64(), Some(1.0));
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             export const IMPORT = 1.0;
@@ -343,14 +393,17 @@ fn import_a_field() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn rename() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -367,8 +420,11 @@ fn rename() {
             pub fn run() {
                 foo();
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as wasm from "./out";
             import * as assert from "assert";
 
@@ -382,14 +438,17 @@ fn rename() {
                 wasm.run();
                 assert.strictEqual(called, true);
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn versions() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -405,8 +464,11 @@ fn versions() {
             pub fn run() {
                 foo();
             }
-        "#)
-        .file("test.js", r#"
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
             const fs = require("fs");
             const assert = require("assert");
 
@@ -426,6 +488,41 @@ fn versions() {
                     ]
                 });
             };
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn underscore_pattern() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo(_: u8);
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                foo(1);
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export function foo(_a: number) {
+            }
+
+            export function test() {
+                run();
+            }
         "#)
         .test();
 }
@@ -433,7 +530,9 @@ fn versions() {
 #[test]
 fn rust_keyword() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -450,8 +549,11 @@ fn rust_keyword() {
             pub fn run() {
                 assert_eq!(foo(), 2);
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             export function self() {
@@ -461,7 +563,8 @@ fn rust_keyword() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
@@ -469,7 +572,9 @@ fn rust_keyword() {
 fn rust_keyword2() {
     project()
         .debug(false)
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -487,8 +592,11 @@ fn rust_keyword2() {
             pub fn run() {
                 assert_eq!(FOO.as_f64(), Some(3.0));
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             export const bar = {
@@ -498,6 +606,104 @@ fn rust_keyword2() {
             export function test() {
                 run();
             }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn custom_type() {
+    project()
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen(module = "./test")]
+            extern {
+                fn foo(f: Foo) -> Foo;
+                fn bad2() -> Foo;
+            }
+
+            #[wasm_bindgen]
+            pub struct Foo(());
+
+            #[wasm_bindgen]
+            impl Foo {
+                pub fn touch(&self) {
+                    panic!()
+                }
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+                foo(Foo(()));
+            }
+
+            #[wasm_bindgen]
+            pub fn bad() {
+                bad2();
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import { run, Foo, bad } from "./out";
+
+            let VAL: any = null;
+
+            export function foo(f: Foo): Foo {
+                VAL = f;
+                return f;
+            }
+
+            export function bad2(): number {
+                return 2;
+            }
+
+            export function test() {
+                run();
+                assert.throws(() => VAL.touch(), /Attempt to use a moved value/);
+                assert.throws(bad, /expected value of type Foo/);
+            }
         "#)
         .test();
+}
+
+#[test]
+fn unused_imports_not_generated() {
+    let mut project = project();
+
+    project
+        .debug(false)
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            extern {
+                pub fn foo();
+            }
+
+            #[wasm_bindgen]
+            pub fn run() {
+            }
+        "#)
+        .file("test.ts", r#"
+            import { run } from "./out";
+
+            export function test() {
+                run();
+            }
+        "#)
+        .test();
+
+    let contents = project.read_js();
+    assert!(contents.contains("run"), "didn't find `run` in {}", contents);
+    assert!(!contents.contains("foo"), "found `foo` in {}", contents);
 }

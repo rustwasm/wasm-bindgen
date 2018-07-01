@@ -3,71 +3,7 @@
 use project;
 
 #[test]
-fn new_undefined() {
-    project()
-        .file(
-            "src/lib.rs",
-            r#"
-            #![feature(proc_macro, wasm_custom_section)]
-
-            extern crate wasm_bindgen;
-            use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-
-            #[wasm_bindgen]
-            pub fn new_array() -> js::Uint8Array {
-                js::Uint8Array::new(JsValue::undefined())
-            }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
-            import * as assert from "assert";
-            import * as wasm from "./out";
-
-            export function test() {
-                assert.equal(wasm.new_array().length, 0);
-            }
-        "#,
-        )
-        .test()
-}
-
-#[test]
-fn new_length() {
-    project()
-        .file(
-            "src/lib.rs",
-            r#"
-            #![feature(proc_macro, wasm_custom_section)]
-
-            extern crate wasm_bindgen;
-            use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-
-            #[wasm_bindgen]
-            pub fn new_array() -> js::Uint8Array {
-                js::Uint8Array::new(JsValue::from_f64(4.0))
-            }
-        "#,
-        )
-        .file(
-            "test.ts",
-            r#"
-            import * as assert from "assert";
-            import * as wasm from "./out";
-
-            export function test() {
-                assert.equal(wasm.new_array().length, 4);
-            }
-        "#,
-        )
-        .test()
-}
-
-#[test]
-fn fill() {
+fn entries() {
     project()
         .file("src/lib.rs", r#"
             #![feature(proc_macro, wasm_custom_section)]
@@ -77,20 +13,84 @@ fn fill() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn fill_with(this: &js::Uint8Array, value: JsValue, start: u32, end: u32) -> js::Uint8Array {
-                this.fill(value, start, end)
+            pub fn entries(this: &js::Set) -> js::SetIterator {
+                this.entries()
             }
+
         "#)
         .file("test.ts", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
-                let characters = new Uint8Array([0, 0, 0, 0, 0, 0]);
-                let subset = wasm.fill_with(characters, 1, 0, 3);
+                let set = new Set([8, 5, 4, 3, 1, 2]);
+                let wasmIterator = wasm.entries(set);
+                let nextValue = wasmIterator.next().value;
 
-                assert.equal(subset[0], 1);
-                assert.equal(subset[4], 0);
+                assert.equal(nextValue[0], 8);
+                assert.equal(nextValue[1], 8);
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn keys() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn keys(this: &js::Set) -> js::SetIterator {
+                this.keys()
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let set = new Set([8, 5, 4, 3, 1, 2]);
+                let wasmIterator = wasm.keys(set);
+                let nextValue = wasmIterator.next().value;
+
+                assert.equal(nextValue, 8);
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn values() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn values(this: &js::Set) -> js::SetIterator {
+                this.values()
+            }
+
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let set = new Set([8, 5, 4, 3, 1, 2]);
+                let wasmIterator = wasm.values(set);
+                let nextValue = wasmIterator.next().value;
+
+                assert.equal(nextValue, 8);
             }
         "#)
         .test()

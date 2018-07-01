@@ -3,7 +3,9 @@ use super::project;
 #[test]
 fn works() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -25,8 +27,11 @@ fn works() {
 
                 assert_eq!(thread(&|a| a + 1), 3);
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             export function call(a: any) {
@@ -40,14 +45,17 @@ fn works() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn cannot_reuse() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -66,8 +74,11 @@ fn cannot_reuse() {
                 call(&|| {});
                 assert!(call_again().is_err());
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             let CACHE: any = null;
@@ -83,14 +94,17 @@ fn cannot_reuse() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn long_lived() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -125,8 +139,11 @@ fn long_lived() {
                 }
                 assert!(hit.get());
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             export function call1(a: any) {
@@ -140,14 +157,17 @@ fn long_lived() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn many_arity() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -219,8 +239,11 @@ fn many_arity() {
                     assert_eq!((a, b, c, d, e, f, g), (1, 2, 3, 4, 5, 6, 7))
                 }));
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             export function call1(a: any) { a() }
@@ -235,14 +258,17 @@ fn many_arity() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn long_lived_dropping() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -270,8 +296,11 @@ fn long_lived_dropping() {
                 drop(a);
                 assert!(call().is_err());
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             let CACHE: any = null;
@@ -282,14 +311,17 @@ fn long_lived_dropping() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn long_fnmut_recursive() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -311,8 +343,11 @@ fn long_fnmut_recursive() {
                 cache(&a);
                 assert!(call().is_ok());
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             let CACHE: any = null;
@@ -323,14 +358,17 @@ fn long_fnmut_recursive() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn fnmut() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -356,8 +394,11 @@ fn fnmut() {
                 }), 3);
                 assert!(x);
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             export function call(a: any) {
@@ -371,14 +412,17 @@ fn fnmut() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn fnmut_bad() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -408,8 +452,11 @@ fn fnmut_bad() {
 
                 assert!(again(true).is_err());
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             let F: any = null;
@@ -426,14 +473,17 @@ fn fnmut_bad() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn string_arguments() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -454,8 +504,11 @@ fn string_arguments() {
                 });
                 assert!(x);
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
 
             export function call(a: any) {
@@ -465,14 +518,17 @@ fn string_arguments() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
 
 #[test]
 fn string_ret() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -495,8 +551,11 @@ fn string_ret() {
                 });
                 assert!(x);
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import { run } from "./out";
             import * as assert from "assert";
 
@@ -508,7 +567,7 @@ fn string_ret() {
             export function test() {
                 run();
             }
-        "#)
+        "#,
+        )
         .test();
 }
-
