@@ -1065,6 +1065,13 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn substr(this: &JsString, start: i32, length: i32) -> JsString;
 
+    /// The toLowerCase() method returns the calling string value
+    /// converted to lower case.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase
+    #[wasm_bindgen(method, js_class = "String", js_name = toLowerCase)]
+    pub fn to_lower_case(this: &JsString) -> JsString;
+
     /// The toString() method returns a string representing the specified object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toString
