@@ -49,6 +49,13 @@ extern "C" {
     #[wasm_bindgen(catch, js_name = decodeURI)]
     pub fn decode_uri(encoded: &str) -> Result<JsString, JsValue>;
 
+    /// The decodeURIComponent() function decodes a Uniform Resource Identifier (URI) component
+    /// previously created by encodeURIComponent or by a similar routine.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent
+    #[wasm_bindgen(catch, js_name = decodeURIComponent)]
+    pub fn decode_uri_component(encoded: &str) -> Result<JsString, JsValue>;
+
     /// The `encodeURI()` function encodes a Uniform Resource Identifier (URI)
     /// by replacing each instance of certain characters by one, two, three, or
     /// four escape sequences representing the UTF-8 encoding of the character
@@ -58,6 +65,15 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI
     #[wasm_bindgen(js_name = encodeURI)]
     pub fn encode_uri(decoded: &str) -> JsString;
+
+    /// The encodeURIComponent() function encodes a Uniform Resource Identifier (URI) component
+    /// by replacing each instance of certain characters by one, two, three, or four escape sequences
+    /// representing the UTF-8 encoding of the character
+    /// (will only be four escape sequences for characters composed of two "surrogate" characters).
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+    #[wasm_bindgen(js_name = encodeURIComponent)]
+    pub fn encode_uri_component(decoded: &str) -> JsString;
 
     /// The `eval()` function evaluates JavaScript code represented as a string.
     ///
@@ -324,6 +340,13 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
     #[wasm_bindgen(method)]
     pub fn apply(this: &Function, context: &JsValue, args: &Array) -> Function;
+
+    /// The bind() method creates a new function that, when called, has its this keyword set to the provided value,
+    /// with a given sequence of arguments preceding any provided when the new function is called.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+    #[wasm_bindgen(method)]
+    pub fn bind(this: &Function, context: &JsValue) -> Function;
 
     /// The length property indicates the number of arguments expected by the function.
     ///
