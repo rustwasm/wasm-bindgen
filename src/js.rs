@@ -790,6 +790,14 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Object;
 
+    /// The Object.preventExtensions() method prevents
+    /// new properties from ever being added to an object
+    /// (i.e. prevents future extensions to the object).
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions
+    #[wasm_bindgen(static_method_of = Object, js_name = preventExtensions)]
+    pub fn prevent_extensions(object: &Object);
+
     /// The propertyIsEnumerable() method returns a Boolean indicating
     /// whether the specified property is enumerable.
     ///

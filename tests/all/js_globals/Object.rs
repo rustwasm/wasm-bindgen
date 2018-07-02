@@ -181,6 +181,39 @@ fn keys() {
 }
 
 #[test]
+fn prevent_extensions() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn prevent_extensions(obj: &js::Object) {
+                js::Object::prevent_extensions(obj);
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                wasm.prevent_extensions(object);
+
+                assert(!Object.isExtensible(object));
+                assert.throws(() => {
+                    'use strict';
+                    Object.defineProperty(object, 'foo', { value: 42 });
+                }, TypeError);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn property_is_enumerable() {
     project()
         .file(
