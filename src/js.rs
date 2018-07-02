@@ -832,6 +832,15 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf
     #[wasm_bindgen(method, js_name = valueOf)]
     pub fn value_of(this: &Object) -> Object;
+
+    /// The Object.values() method returns an array of a given object's
+    /// own enumerable property values, in the same order as that provided
+    /// by a for...in loop (the difference being that a for-in loop
+    /// enumerates properties in the prototype chain as well).
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn values(object: &Object) -> Array;
 }
 
 // Set

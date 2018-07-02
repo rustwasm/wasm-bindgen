@@ -368,3 +368,32 @@ fn value_of() {
         )
         .test()
 }
+
+#[test]
+fn values() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn values(obj: &js::Object) -> js::Array {
+                js::Object::values(&obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = { foo: 'bar', baz: 'qux' };
+                const values = wasm.values(object);
+                assert.equal(values.length, 2);
+                assert.deepEqual(values.sort(), ['bar', 'qux']);
+            }
+        "#)
+        .test()
+}
