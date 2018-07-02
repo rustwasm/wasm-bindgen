@@ -738,6 +738,12 @@ extern "C" {
 extern "C" {
     pub type Number;
 
+    /// The Number.isInteger() method determines whether the passed value is an integer.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+    #[wasm_bindgen(static_method_of = Number, js_name = isInteger)]
+    pub fn is_integer(object: &Object) -> bool;
+
     /// The `Number` JavaScript object is a wrapper object allowing
     /// you to work with numerical values. A `Number` object is
     /// created using the `Number()` constructor.
