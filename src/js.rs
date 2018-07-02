@@ -459,7 +459,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/abs
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn abs(number: i32) -> Number;
+    pub fn abs(x: f64) -> Number;
 
     /// The Math.acos() function returns the arccosine (in radians) of a
     /// number, that is ∀x∊[-1;1]
@@ -467,7 +467,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acos
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn acos(adjacent: i32, hypotenuse: i32) -> Number;
+    pub fn acos(x: f64) -> Number;
 
     /// The Math.acosh() function returns the hyperbolic arc-cosine of a
     /// number, that is ∀x ≥ 1
@@ -475,7 +475,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acosh
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn acosh(number: i32) -> Number;
+    pub fn acosh(x: f64) -> Number;
 
     /// The Math.asin() function returns the arcsine (in radians) of a
     /// number, that is ∀x ∊ [-1;1]
@@ -483,27 +483,27 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asin
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn asin(number: i32) -> Number;
+    pub fn asin(x: f64) -> Number;
 
     /// The Math.asinh() function returns the hyperbolic arcsine of a
     /// number, that is Math.asinh(x) = arsinh(x) = the unique y such that sinh(y) = x
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asinh
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn asinh(number: i32) -> Number;
+    pub fn asinh(x: f64) -> Number;
 
     /// The Math.atan() function returns the arctangent (in radians) of a
     /// number, that is Math.atan(x) = arctan(x) = the unique y ∊ [-π2;π2]such that
     /// tan(y) = x
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn atan(number: i32) -> Number;
+    pub fn atan(x: f64) -> Number;
 
     /// The Math.atan2() function returns the arctangent of the quotient of
     /// its arguments.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn atan2(y: i32, x: i32) -> Number;
+    pub fn atan2(y: f64, x: f64) -> Number;
 
     /// The Math.atanh() function returns the hyperbolic arctangent of a number,
     /// that is ∀x ∊ (-1,1), Math.atanh(x) = arctanh(x) = the unique y such that
@@ -511,21 +511,21 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atanh
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn atanh(x: i32) -> Number;
+    pub fn atanh(x: f64) -> Number;
 
     /// The Math.cbrt() function returns the cube root of a number, that is
     /// Math.cbrt(x) = x^3 = the unique y such that y^3 = x
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cbrt
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn cbrt(x: i32) -> Number;
+    pub fn cbrt(x: f64) -> Number;
 
     /// The Math.ceil() function returns the smallest integer greater than
     /// or equal to a given number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn ceil(x: f32) -> Number;
+    pub fn ceil(x: f64) -> Number;
 
     /// The Math.clz32() function returns the number of leading zero bits in
     /// the 32-bit binary representation of a number.
@@ -539,7 +539,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cos
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn cos(x: f32) -> Number;
+    pub fn cos(x: f64) -> Number;
 
 
     /// The Math.cosh() function returns the hyperbolic cosine of a number,
@@ -547,35 +547,35 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cosh
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn cosh(x: f32) -> Number;
+    pub fn cosh(x: f64) -> Number;
 
     /// The Math.exp() function returns e^x, where x is the argument, and e is Euler's number
     /// (also known as Napier's constant), the base of the natural logarithms.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/exp
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn exp(x: f32) -> Number;
+    pub fn exp(x: f64) -> Number;
 
     /// The Math.expm1() function returns e^x - 1, where x is the argument, and e the base of the
     /// natural logarithms.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn expm1(x: f32) -> Number;
+    pub fn expm1(x: f64) -> Number;
 
     /// The Math.floor() function returns the largest integer less than or
     /// equal to a given number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn floor(x: f32) -> Number;
+    pub fn floor(x: f64) -> Number;
 
     /// The Math.fround() function returns the nearest 32-bit single precision float representation
     /// of a Number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn fround(x: f32) -> Number;
+    pub fn fround(x: f64) -> Number;
 
     /// The Math.imul() function returns the result of the C-like 32-bit multiplication of the
     /// two parameters.
@@ -589,24 +589,24 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn log(x: f32) -> Number;
+    pub fn log(x: f64) -> Number;
 
     /// The Math.log10() function returns the base 10 logarithm of a number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log10
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn log10(x: f32) -> Number;
+    pub fn log10(x: f64) -> Number;
 
     /// The Math.log1p() function returns the natural logarithm (base e) of 1 + a number.
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log1p
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn log1p(x: f32) -> Number;
+    pub fn log1p(x: f64) -> Number;
 
     /// The Math.log2() function returns the base 2 logarithm of a number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log2
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn log2(x: f32) -> Number;
+    pub fn log2(x: f64) -> Number;
 
 }
 
