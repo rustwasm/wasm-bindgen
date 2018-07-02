@@ -330,6 +330,7 @@ impl Project {
             ));
         }
     }
+
     /// build + cargo cmd execution
     fn cargo_build(&mut self) -> (PathBuf, PathBuf) {
         let (root, target_dir) = self.build();
@@ -457,6 +458,7 @@ impl Project {
             run(&mut cmd, "node");
         }
     }
+
     /// execute the cli against the current test .wasm
     fn gen_bindings(&self, root: &PathBuf, target_dir: &PathBuf) {
         let idx = IDX.with(|x| *x);
@@ -478,6 +480,7 @@ impl Project {
             panic!("failed");
         }
     }
+
     fn read_js(&self) -> String {
         let path = root().join("out.js");
         println!("js, {:?}", &path);
