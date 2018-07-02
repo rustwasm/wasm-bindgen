@@ -770,6 +770,25 @@ extern "C" {
     #[wasm_bindgen(method, js_name = hasOwnProperty)]
     pub fn has_own_property(this: &Object, property: &JsValue) -> bool;
 
+    /// The Object.isExtensible() method determines if an object is extensible
+    /// (whether it can have new properties added to it).
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isExtensible
+    #[wasm_bindgen(static_method_of = Object, js_name = isExtensible)]
+    pub fn is_extensible(object: &Object) -> bool;
+
+    /// The Object.isFrozen() determines if an object is frozen.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isFrozen
+    #[wasm_bindgen(static_method_of = Object, js_name = isFrozen)]
+    pub fn is_frozen(object: &Object) -> bool;
+
+    /// The Object.isSealed() method determines if an object is sealed.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isSealed
+    #[wasm_bindgen(static_method_of = Object, js_name = isSealed)]
+    pub fn is_sealed(object: &Object) -> bool;
+
     /// The isPrototypeOf() method checks if an object exists in another
     /// object's prototype chain.
     ///

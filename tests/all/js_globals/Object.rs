@@ -111,6 +111,96 @@ fn to_string() {
 }
 
 #[test]
+fn is_extensible() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_extensible(obj: &js::Object) -> bool {
+                js::Object::is_extensible(&obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                assert(wasm.is_extensible(object));
+
+                Object.preventExtensions(object);
+                assert(!wasm.is_extensible(object));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn is_frozen() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_frozen(obj: &js::Object) -> bool {
+                js::Object::is_frozen(&obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                assert(!wasm.is_frozen(object));
+
+                Object.freeze(object);
+                assert(wasm.is_frozen(object));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn is_sealed() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_sealed(obj: &js::Object) -> bool {
+                js::Object::is_sealed(&obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                assert(!wasm.is_sealed(object));
+
+                Object.seal(object);
+                assert(wasm.is_sealed(object));
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn is_prototype_of() {
     project()
         .file(
