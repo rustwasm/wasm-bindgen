@@ -171,6 +171,36 @@ fn is_frozen() {
 }
 
 #[test]
+fn is_sealed() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_sealed(obj: &js::Object) -> bool {
+                js::Object::is_sealed(&obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                assert(!wasm.is_sealed(object));
+
+                Object.seal(object);
+                assert(wasm.is_sealed(object));
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn is_prototype_of() {
     project()
         .file(
