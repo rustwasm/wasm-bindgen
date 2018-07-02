@@ -1060,6 +1060,13 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = startsWith)]
     pub fn starts_with(this: &JsString, search_string: &JsString, position: u32) -> bool;
 
+    /// The endsWith() method determines whether a string ends with the characters
+    /// of a specified string, returning true or false as appropriate.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+    #[wasm_bindgen(method, js_class = "String", js_name = endsWith)]
+    pub fn ends_with(this: &JsString, search_string: &JsString, length: u32) -> bool;
+
     /// The substring() method returns the part of the string between the start and end indexes,
     /// or to the end of the string.
     ///
