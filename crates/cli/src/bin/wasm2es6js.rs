@@ -2,7 +2,6 @@
 extern crate serde_derive;
 extern crate docopt;
 extern crate failure;
-extern crate parity_wasm;
 extern crate wasm_bindgen_cli_support;
 
 use std::fs::File;

@@ -15,7 +15,6 @@ information see https://github.com/alexcrichton/wasm-bindgen.
 [dependencies]
 docopt = "0.8"
 failure = "0.1"
-parity-wasm = "0.28"
 serde = "1.0"
 serde_derive = "1.0"
 wasm-bindgen-cli-support = { path = "../cli-support", version = "=0.2.11" }
