@@ -1074,11 +1074,26 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn substr(this: &JsString, start: i32, length: i32) -> JsString;
 
+    /// The toLowerCase() method returns the calling string value
+    /// converted to lower case.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase
+    #[wasm_bindgen(method, js_class = "String", js_name = toLowerCase)]
+    pub fn to_lower_case(this: &JsString) -> JsString;
+
     /// The toString() method returns a string representing the specified object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toString
     #[wasm_bindgen(method, js_class = "String", js_name = toString)]
     pub fn to_string(this: &JsString) -> JsString;
+
+    /// The toUpperCase() method returns the calling string value
+    /// converted to uppercase (the value will be converted to a
+    /// string if it isn't one).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase
+    #[wasm_bindgen(method, js_class = "String", js_name = toUpperCase)]
+    pub fn to_upper_case(this: &JsString) -> JsString;
 
     /// The trim() method removes whitespace from both ends of a string.
     /// Whitespace in this context is all the whitespace characters

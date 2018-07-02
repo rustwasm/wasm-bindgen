@@ -397,6 +397,32 @@ fn substr() {
 }
 
 #[test]
+fn to_lower_case() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_to_lower_case(this: &js::JsString) -> js::JsString {
+                this.to_lower_case()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.string_to_lower_case("Mozilla"), "mozilla");
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn to_string() {
     project()
         .file(
@@ -426,6 +452,32 @@ fn to_string() {
             }
         "#,
         )
+        .test()
+}
+
+#[test]
+fn to_upper_case() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_to_upper_case(this: &js::JsString) -> js::JsString {
+                this.to_upper_case()
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.string_to_upper_case("Mozilla"), "MOZILLA");
+            }
+        "#)
         .test()
 }
 
