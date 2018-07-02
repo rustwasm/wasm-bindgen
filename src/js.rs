@@ -794,6 +794,13 @@ extern "C" {
 extern "C" {
     pub type Date;
 
+    /// The getDate() method returns the day of the month for the
+    /// specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
+    #[wasm_bindgen(method, js_name = getDate)]
+    pub fn get_date(this: &Date) -> Number;
+
     /// The getDay() method returns the day of the week for the specified date according to local time,
     /// where 0 represents Sunday. For the day of the month see getDate().
     ///
