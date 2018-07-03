@@ -1,7 +1,7 @@
-const process = require('process');
-const { promisify } = require('util');
-const { Builder, By, Key, logging, promise, until } = require('selenium-webdriver');
-const firefox = require('selenium-webdriver/firefox');
+const process = require("process");
+const { promisify } = require("util");
+const { Builder, By, Key, logging, promise, until } = require("selenium-webdriver");
+const firefox = require("selenium-webdriver/firefox");
 
 promise.USE_PROMISE_MANAGER = false;
 
@@ -17,34 +17,67 @@ if (process.env.WASM_BINDGEN_FIREFOX_BIN_PATH) {
 }
 
 const driver = new Builder()
-  .forBrowser('firefox')
+  .forBrowser("firefox")
   .setFirefoxOptions(opts)
   .build();
 
-async function main() {
-  const body = driver.findElement(By.tagName('body'));
+async function logged(msg, promise) {
+  console.log("START:", msg);
   try {
-    await driver.get('http://localhost:8080/index.html');
-    await driver.wait(
-      until.elementTextContains(body, 'TESTDONE'),
-      6 * 1000
+    const value = await promise;
+    console.log("END:", msg);
+    return value;
+  } catch (e) {
+    console.log(`ERROR: ${msg}: ${e}\n\n${e.stack}`);
+    throw e;
+  }
+}
+
+async function main() {
+  const body = driver.findElement(By.tagName("body"));
+  try {
+    await logged(
+      "load http://localhost:8080/index.html",
+      driver.get("http://localhost:8080/index.html")
     );
 
-    const status = await body.findElement(By.id('status')).getText();
-    if (status != 'good')
-      throw new Error('test failed');
+    await logged(
+      "Waiting for <body> to include text 'TESTDONE'",
+      driver.wait(
+        until.elementTextContains(body, "TESTDONE"),
+        6 * 1000
+      )
+    );
+
+    const status = await logged(
+      "get #status text",
+      body.findElement(By.id("status")).getText()
+    );
+
+    console.log(`Test status is: "${status}"`);
+    if (status != "good") {
+      throw new Error(`test failed with status = ${status}`);
+    }
   } finally {
-    const logs = await body.findElement(By.id('logs')).getText();
+    const logs = await logged(
+      "getting browser logs",
+      body.findElement(By.id("logs")).getText()
+    );
+
     if (logs.length > 0) {
-      console.log('logs:');
+      console.log("logs:");
       logs.split("\n").forEach(line => {
         console.log(`    ${line}`);
       });
     }
 
-    const errors = await body.findElement(By.id('error')).getText();
+    const errors = await logged(
+      "getting browser errors",
+      body.findElement(By.id("error")).getText()
+    );
+
     if (errors.length > 0) {
-      console.log('errors:');
+      console.log("errors:");
       errors.split("\n").forEach(line => {
         console.log(`    ${line}`);
       });
