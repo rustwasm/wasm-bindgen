@@ -6,10 +6,12 @@ use std::env;
 use std::fs::{self, File};
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
-use std::process::{Child, Command, Stdio};
+use std::process::{Command, Stdio, ChildStdin, Child};
+use std::net::TcpStream;
 use std::sync::atomic::*;
 use std::sync::{Mutex, Once, ONCE_INIT};
-use std::time::Instant;
+use std::thread;
+use std::time::{Instant, Duration};
 
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
 thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
@@ -277,12 +279,7 @@ impl Project {
     }
 
     fn generate_js_entry(&mut self, modules: Vec<PathBuf>) {
-        let mut runjs = if self.headless {
-            "".to_string()
-        } else {
-            "import * as process from \"process\";".to_string()
-        };
-
+        let mut runjs = String::new();
         if !modules.is_empty() {
             runjs.push_str(r#"Promise.all(["#);
             for module in &modules {
@@ -303,6 +300,17 @@ impl Project {
             ",
         );
 
+        if self.headless {
+            runjs.push_str(r#"
+                console.log = function() {
+                    const logs = document.getElementById('logs');
+                    for (let i = 0; i < arguments.length; i++)
+                        logs.innerText += `${arguments[i]}`;
+                    logs.innerText += "\n";
+                };
+            "#);
+        }
+
         if !modules.is_empty() {
             runjs.push_str("return ");
         }
@@ -313,9 +321,9 @@ impl Project {
             runjs.push_str("})");
         }
 
-        runjs.push_str(&format!(
+        runjs.push_str(
             r#"
-                .then(results => {{
+                .then(results => {
                     let [test, wasm] = results;
                     test.test();
 
@@ -323,24 +331,34 @@ impl Project {
                         wasm.assertStackEmpty();
                     if (wasm.assertSlabEmpty)
                         wasm.assertSlabEmpty();
+                })
+            "#
+        );
 
-                    if (typeof window == "object" &&
-                        typeof window.document == "object" &&
-                        typeof window.document.body == "object") {{
-                        window.document.body.textContent = "PASSED";
-                    }}
-                }})
-                .catch(error => {{
-                      console.error(error);
-                      {}
-                    }});
-                "#,
-            if self.headless {
-                ""
-            } else {
-                "process.exit(1);"
-            }
-        ));
+        if self.headless {
+            runjs.push_str(
+                r#"
+                    .then(() => document.getElementById('status').innerHTML = 'good')
+                    .catch(e => {
+                        const errors = document.getElementById('error');
+                        let content = `exception: ${e.message}\nstack: ${e.stack}`;
+                        errors.innerHTML = `<pre>${content}</pre>`;
+                    })
+                    .finally(() => {
+                        window.document.body.innerHTML += "\n TESTDONE";
+                    })
+                "#
+            );
+        } else {
+            runjs.push_str(
+                r#"
+                    .catch(e => {
+                        console.error(e);
+                        require('process').exit(1);
+                    })
+                "#
+            );
+        }
         self.files.push(("run.js".to_string(), runjs));
     }
 
@@ -435,10 +453,9 @@ impl Project {
 
     fn test(&mut self) {
         if self.headless {
-            self.files
-                .iter_mut()
-                .filter(|f| f.0 == "webpack.config.js")
-                .map(|f| f.1 = f.1.replace("target: 'node'", "target: 'web'"));
+            for f in self.files.iter_mut().filter(|f| f.0 == "webpack.config.js") {
+                f.1 = f.1.replace("target: 'node'", "target: 'web'");
+            }
 
             self.ensure_index_html();
             self.ensure_run_headless_js();
@@ -479,14 +496,7 @@ impl Project {
         } else if self.headless {
             self.test_headless(&root);
         } else {
-            let mut cmd = if cfg!(windows) {
-                let mut c = Command::new("cmd");
-                c.arg("/c");
-                c.arg("npm");
-                c
-            } else {
-                Command::new("npm")
-            };
+            let mut cmd = self.npm();
             cmd.arg("run").arg("run-webpack").current_dir(&root);
             run(&mut cmd, "npm");
 
@@ -505,18 +515,22 @@ impl Project {
         }
         let _lock = MUTEX.lock().unwrap();
 
-        let mut cmd = if cfg!(windows) {
-            let mut c = Command::new("cmd");
-            c.arg("/c");
-            c.arg("npm");
-            c
-        } else {
-            Command::new("npm")
-        };
+        let mut cmd = self.npm();
         cmd.arg("run")
             .arg("run-webpack-dev-server")
+            .arg("--")
+            .arg("--quiet")
+            .arg("--watch-stdin")
             .current_dir(&root);
         let _server = run_in_background(&mut cmd, "webpack-dev-server".into());
+
+        // wait for webpack-dev-server to come online and bind its port
+        loop {
+            if TcpStream::connect("127.0.0.1:8080").is_ok() {
+                break
+            }
+            thread::sleep(Duration::from_millis(100));
+        }
 
         let mut cmd = Command::new("node");
         cmd.args(&self.node_args)
@@ -533,6 +547,17 @@ impl Project {
         run(&mut cmd, "node");
     }
 
+    fn npm(&self) -> Command {
+        if cfg!(windows) {
+            let mut c = Command::new("cmd");
+            c.arg("/c");
+            c.arg("npm");
+            c
+        } else {
+            Command::new("npm")
+        }
+    }
+
     fn ensure_index_html(&mut self) {
         if !self.has_file("index.html") {
             self.generate_index_html();
@@ -547,6 +572,9 @@ impl Project {
             <html>
                 <body>
                     <script src="bundle.js"></script>
+                    <div id='error'></div>
+                    <div id='logs'></div>
+                    <div id='status'></div>
                 </body>
             </html>
         "#,
@@ -562,38 +590,61 @@ impl Project {
     fn generate_run_headless_js(&mut self) {
         self.file(
             "run-headless.js",
-            "
-            const process = require('process');
-            const { promisify } = require('util');
-            const { Builder, By, Key, logging, promise, until } = require('selenium-webdriver');
-            const firefox = require('selenium-webdriver/firefox');
+            r#"
+                const process = require('process');
+                const { promisify } = require('util');
+                const { Builder, By, Key, logging, promise, until } = require('selenium-webdriver');
+                const firefox = require('selenium-webdriver/firefox');
 
-            promise.USE_PROMISE_MANAGER = false;
+                promise.USE_PROMISE_MANAGER = false;
 
-            const prefs = new logging.Preferences();
-            prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
+                const prefs = new logging.Preferences();
+                prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 
-            const driver = new Builder()
-                .forBrowser('firefox')
-                .setFirefoxOptions(new firefox.Options().headless().setLoggingPrefs(prefs))
-                .build();
+                const driver = new Builder()
+                    .forBrowser('firefox')
+                    .setFirefoxOptions(new firefox.Options().headless())
+                    .build();
 
-            async function main() {
-                try {
+                async function main() {
                     await driver.get('http://localhost:8080/index.html');
                     await driver.wait(
-                        until.elementTextIs(driver.findElement(By.tagName('body'), 'PASSED')),
-                        60 * 100
+                        until.elementTextContains(
+                            driver.findElement(By.tagName('body')),
+                            'TESTDONE'
+                        ),
+                        6 * 1000
                     );
-                    await driver.quit();
-                } catch (e) {
-                    console.error(`Got an error: ${e}\n\nStack: ${e.stack}`);
-                    process.exit(1);
-                }
-            }
+                    const body = driver.findElement(By.tagName('body'));
 
-            main();
-        ",
+                    let logs = await body.findElement(By.id('logs')).getText();
+                    if (logs.length > 0) {
+                        console.log('logs:');
+                        logs.split("\n").forEach(line => {
+                            console.log(`    ${line}`);
+                        });
+                    }
+
+                    let errors = await body.findElement(By.id('error')).getText();
+                    if (errors.length > 0) {
+                        console.log('errors:');
+                        errors.split("\n").forEach(line => {
+                            console.log(`    ${line}`);
+                        });
+                    }
+
+                    let status = await body.findElement(By.id('status')).getText();
+                    if (status != 'good')
+                        throw new Error('test failed');
+                }
+
+                main()
+                    .finally(() => driver.quit())
+                    .catch(e => {
+                        console.error(`Got an error: ${e}\n\nStack: ${e.stack}`);
+                        process.exit(1);
+                    })
+            "#,
         );
     }
 
@@ -626,31 +677,32 @@ impl Project {
     }
 }
 
-struct BackgroundChild(String, Child);
+struct BackgroundChild {
+    name: String,
+    child: Child,
+    stdin: Option<ChildStdin>,
+    stdout: Option<thread::JoinHandle<io::Result<String>>>,
+    stderr: Option<thread::JoinHandle<io::Result<String>>>,
+}
 
 impl Drop for BackgroundChild {
     fn drop(&mut self) {
-        let _ = self.1.kill();
-        let _ = self.1.wait();
-
-        let stdout = if let Some(mut stdout) = self.1.stdout.take() {
-            let mut s = String::new();
-            let _ = stdout.read_to_string(&mut s);
-            s
-        } else {
-            "".into()
-        };
-
-        let stderr = if let Some(mut stderr) = self.1.stderr.take() {
-            let mut s = String::new();
-            let _ = stderr.read_to_string(&mut s);
-            s
-        } else {
-            "".into()
-        };
+        drop(self.stdin.take());
+        let status = self.child.wait().expect("failed to wait on child");
+        let stdout = self.stdout.take()
+            .unwrap()
+            .join()
+            .unwrap()
+            .expect("failed to read stdout");
+        let stderr = self.stderr.take()
+            .unwrap()
+            .join()
+            .unwrap()
+            .expect("failed to read stderr");
 
         println!("···················································");
-        println!("background {}", self.0);
+        println!("background {}", self.name);
+        println!("status: {}", status);
         println!("stdout ---\n{}", stdout);
         println!("stderr ---\n{}", stderr);
     }
@@ -693,10 +745,30 @@ fn run(cmd: &mut Command, program: &str) {
 }
 
 fn run_in_background(cmd: &mut Command, name: String) -> BackgroundChild {
-    // cmd.stdout(Stdio::piped());
-    // cmd.stderr(Stdio::piped());
-    let child = cmd.spawn().expect(&format!("should spawn {} OK", name));
-    BackgroundChild(name, child)
+    cmd.stdout(Stdio::piped());
+    cmd.stderr(Stdio::piped());
+    cmd.stdin(Stdio::piped());
+    let mut child = cmd.spawn().expect(&format!("should spawn {} OK", name));
+    let mut stdout = child.stdout.take().unwrap();
+    let mut stderr = child.stderr.take().unwrap();
+    let stdin = child.stdin.take().unwrap();
+    let stdout = thread::spawn(move || {
+        let mut t = String::new();
+        stdout.read_to_string(&mut t)?;
+        Ok(t)
+    });
+    let stderr = thread::spawn(move || {
+        let mut t = String::new();
+        stderr.read_to_string(&mut t)?;
+        Ok(t)
+    });
+    BackgroundChild {
+        name,
+        child,
+        stdout: Some(stdout),
+        stderr: Some(stderr),
+        stdin: Some(stdin),
+    }
 }
 
 mod api;
