@@ -42,3 +42,16 @@ Finally, you can run the tests with `cargo`:
 ```shell
 cargo test
 ```
+
+### Headless Browser Tests
+
+Some tests are configured to run in a headless Firefox instance. To run these
+tests, you must have Firefox installed. If you have Firefox installed in a
+non-default, custom location you can set the `WASM_BINDGEN_FIREFOX_BIN_PATH`
+environment variable to the path to your `firefox-bin`.
+
+For example:
+
+```shell
+WASM_BINDGEN_FIREFOX_BIN_PATH=/home/fitzgen/firefox/firefox-bin cargo test
+```
