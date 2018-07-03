@@ -386,6 +386,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/next
     #[wasm_bindgen(method, structural)]
     pub fn next(this: &Generator, value: &JsValue) -> JsValue;
+
+    /// The throw() method resumes the execution of a generator by throwing an error into it
+    /// and returns an object with two properties done and value.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/throw
+    #[wasm_bindgen(method, structural)]
+    pub fn throw(this: &Generator, error: &Error) -> JsValue;
 }
 
 // Map

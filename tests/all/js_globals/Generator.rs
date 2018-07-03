@@ -89,3 +89,49 @@ fn next() {
         )
         .test()
 }
+
+#[test]
+fn throw() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn gen_throw(this: &js::Generator, error: &js::Error) -> JsValue {
+                this.throw(error)
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                function* generator() {
+                    yield 1;
+                    yield 2;
+                }
+
+                const gen = generator();
+                gen.next();
+
+                try {
+                    wasm.gen_throw(gen, new Error('Something went wrong'));
+                } catch(err) {
+                    assert.equal(err.message, 'Something went wrong');
+                }
+
+                assert.deepEqual(gen.next(), { value: undefined, done: true });
+            }
+        "#,
+        )
+        .test()
+}
