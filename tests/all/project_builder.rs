@@ -16,6 +16,7 @@ pub struct Project {
     files: Vec<(String, String)>,
     debug: bool,
     node: bool,
+    nodejs_experimental_modules: bool,
     no_std: bool,
     serde: bool,
     rlib: bool,
@@ -35,11 +36,12 @@ pub fn project() -> Project {
         debug: true,
         no_std: false,
         node: true,
+        nodejs_experimental_modules: true,
         webpack: false,
         serde: false,
         rlib: false,
         deps: Vec::new(),
-        node_args: vec!["--experimental-modules".to_string()],
+        node_args: Vec::new(),
         files: vec![
             ("Cargo.lock".to_string(), lockfile),
         ],
@@ -135,6 +137,12 @@ impl Project {
         self
     }
 
+    /// Enables or disables node.js experimental modules output
+    pub fn nodejs_experimental_modules(&mut self, node: bool) -> &mut Project {
+        self.nodejs_experimental_modules = node;
+        self
+    }
+
     /// Enables or disables the usage of webpack for this project
     pub fn webpack(&mut self, webpack: bool) -> &mut Project {
         self.webpack = webpack;
@@ -215,8 +223,7 @@ impl Project {
         drop(fs::remove_dir_all(&root));
         for &(ref file, ref contents) in self.files.iter() {
             let mut dst = root.join(file);
-            if self.node &&
-                !self.webpack &&
+            if self.nodejs_experimental_modules &&
                 dst.extension().and_then(|s| s.to_str()) == Some("js")
             {
                 dst = dst.with_extension("mjs");
@@ -381,11 +388,34 @@ impl Project {
     }
 
     fn generate_js_entry(&mut self, modules: Vec<PathBuf>) {
-        let mut runjs = r#"
-            import * as process from "process";
-        "#.to_string();
+        let mut runjs = String::new();
+        let esm_imports = !self.node || self.nodejs_experimental_modules;
+
+        if esm_imports {
+            runjs.push_str("import * as process from 'process';\n");
+        } else {
+            runjs.push_str("const process = require('process');\n");
+        }
+
+        runjs.push_str("
+            function run(test, wasm) {
+                test.test();
+
+                if (wasm.assertStackEmpty)
+                    wasm.assertStackEmpty();
+                if (wasm.assertSlabEmpty)
+                    wasm.assertSlabEmpty();
+            }
+
+            function onerror(error) {
+                console.error(error);
+                process.exit(1);
+            }
+        ");
 
         if !modules.is_empty() {
+            // Not compatible with other output modes yet.
+            assert!(esm_imports);
             runjs.push_str(r#"Promise.all(["#);
             for module in &modules {
                 runjs.push_str(&format!(
@@ -398,40 +428,38 @@ impl Project {
             );
         }
 
-        runjs.push_str("const test = import('./test');\n");
-        if self.debug {
-            runjs.push_str("const wasm = import('./out');\n");
+        if esm_imports {
+            runjs.push_str("const modules = [];\n");
+            for module in modules.iter() {
+                runjs.push_str(&format!("modules.push(import('{}'))",
+                                        module.display()));
+            }
+            let import_wasm = if self.debug {
+                "import('./out')"
+            } else {
+                "new Promise((a, b) => a({}))"
+            };
+            runjs.push_str(&format!("
+                Promise.all(modules)
+                    .then(results => {{
+                        results.map(module => Object.assign(global, module));
+                        return Promise.all([import('./test'), {}])
+                    }})
+                    .then(result => run(result[0], result[1]))
+                    .catch(onerror);
+            ", import_wasm));
         } else {
-            runjs.push_str("const wasm = new Promise((a, b) => a({}));\n");
+            assert!(!self.debug);
+            assert!(modules.is_empty());
+            runjs.push_str("
+                const test = require('./test');
+                try {
+                    run(test, {});
+                } catch (e) {
+                    onerror(e);
+                }
+            ");
         }
-
-        if !modules.is_empty() {
-            runjs.push_str("return ");
-        }
-
-        runjs.push_str(r#"Promise.all([test, wasm])"#);
-
-        if !modules.is_empty() {
-            runjs.push_str("})");
-        }
-
-        runjs.push_str(
-            r#"
-            .then(results => {
-                let [test, wasm] = results;
-                test.test();
-
-                if (wasm.assertStackEmpty)
-                    wasm.assertStackEmpty();
-                if (wasm.assertSlabEmpty)
-                    wasm.assertSlabEmpty();
-            })
-            .catch(error => {
-                  console.error(error);
-                  process.exit(1);
-                });
-            "#,
-        );
         self.files.push(("run.js".to_string(), runjs));
     }
 
@@ -627,7 +655,7 @@ impl Project {
             .typescript(true)
             .debug(self.debug)
             .nodejs(self.node)
-            .nodejs_experimental_modules(self.node)
+            .nodejs_experimental_modules(self.nodejs_experimental_modules)
             .generate(&root);
 
         if let Err(e) = res {
@@ -676,7 +704,12 @@ impl Project {
 
         let mut cmd = Command::new("node");
         cmd.args(&self.node_args);
-        cmd.arg(root.join("run.mjs")).current_dir(&root);
+        if self.nodejs_experimental_modules {
+            cmd.arg("--experimental-modules").arg("run.mjs");
+        } else {
+            cmd.arg("run.js");
+        }
+        cmd.current_dir(&root);
         run(&mut cmd, "node");
 
         // if self.node {
@@ -705,7 +738,7 @@ impl Project {
 
     /// Reads JS generated by `wasm-bindgen` to a string.
     pub fn read_js(&self) -> String {
-        let path = root().join(if self.node && !self.webpack {
+        let path = root().join(if self.nodejs_experimental_modules {
             "out.mjs"
         } else {
             "out.js"

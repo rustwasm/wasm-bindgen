@@ -4,6 +4,7 @@ use super::project;
 fn works() {
     project()
         .debug(false)
+        .nodejs_experimental_modules(false)
         .file(
             "src/lib.rs",
             r#"
@@ -118,18 +119,19 @@ fn works() {
         .file(
             "test.js",
             r#"
-                import * as assert from "assert";
-                import { math, run, Foo, Color, cycle } from './out';
+                const assert = require('assert');
 
                 var called = false;
 
-                export function hit() {
+                module.exports.hit = function() {
                     called = true;
-                }
+                };
 
-                export const FOO = 1.0;
+                module.exports.FOO = 1.0;
 
-                export function test() {
+                const { math, run, Foo, Color, cycle } = require('./out');
+
+                module.exports.test = function() {
                     run();
                     assert.strictEqual(called, true);
 
