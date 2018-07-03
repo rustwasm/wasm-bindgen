@@ -1,20 +1,38 @@
 language: rust
 sudo: false
 
+INSTALL_NODE_VIA_NVM: &INSTALL_NODE_VIA_NVM
+  - rustup target add wasm32-unknown-unknown
+  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+  - source ~/.nvm/nvm.sh
+  - nvm install v10.5
+
+
+DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
+  before_deploy:
+    |
+      name="wasm-bindgen-$TRAVIS_TAG-$TARGET"
+      mkdir "$name"
+      cp "target/$TARGET/release/{wasm-bindgen,wasm2es6js}" "$name/"
+      cp README.md LICENSE-MIT LICENSE-APACHE "$name/"
+      tar czvf "$name.tar.gz" "$name"
+  deploy:
+    api_key:
+      secure: "qCiELnEnvyKpWHDttgTNf+ElZGbWlvthu5aOIj5nYfov+h6g1+mkWnDFP6at/WPlE78zE/f/z/dL2KB2I7w/cxH/T4P1nWh0A9DvrpY6hqWkK2pgN5dPeWE/a4flI7AdH0A6wMRw7m00uMgDjlzN78v7XueccpJCxSO5allQN5jweAQvMX2QA07TbLRJc7Lq6lfVwSf8OfrcO8qCbcIzJTsC4vtbh6jkUYg1OAaU2tAYlskBy9ZYmHWCExIAu/zxzcJY9OpApPD9Ea4CyrsfjniAyRBJ87Weh/sP4XhiWeRPVmvA4HAzv4Pps9ps+Ar5QmsX53rhKQ3id7/VPR8ggaAHxrYUiJPvJRtbP6cKKOlDiK0ooP+vI4vjxWeNVj9ibEolSYOlT0ENIvPK1BppA6VgAoJOjwPr0Q16Ma4AmvLkIkowJiXCm2Jlje/5c0vPEAGJVgUtkj3jFQzgXwyEMpzxUlhHmYpmnfeaM0tK/Kiiwe1monL/ydMlyfV55kNylylCg+XoTnf420AFChKbD4DM5Z7ZsjU9g8fF3LUoN0sKpmLDp+GvwjLi9YtGogWB71Q2MFp43MSL0YLshkyYYoZKrVMiy5J9hKNUxhT2jNEq53Z69syIHHMCxHL9GoAcuHxIKOA7uTMW0aCoyy2I+dfAKKsrUGwGYaNC5LZdUQI="
+    file_glob: true
+    file:
+      - wasm-bindgen-$TRAVIS_TAG-$TARGET.tar.gz
+    on:
+      tags: true
+    provider: releases
+    skip_cleanup: true
+
 matrix:
   include:
-    # CLI builds on stable
-    - rust: stable
-      install: true
-      script: cargo build --manifest-path crates/cli/Cargo.toml
-
     # Tests pass on nightly
     - rust: nightly
-      before_install:
-        - rustup target add wasm32-unknown-unknown
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-        - source ~/.nvm/nvm.sh
-        - nvm install v10.5
+      env: JOB=test-bindgen
+      before_install: *INSTALL_NODE_VIA_NVM
       install:
         # dirties git repository, there doesn't seem to be a way to resolve this other than
         # to run `npm install` twice or by using `npm ci` (which is currently broken)
@@ -23,81 +41,65 @@ matrix:
         - cargo test
         # Check JS output from all tests against eslint
         - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
-      env: RUST_BACKTRACE=1
+
+    # All examples work
+    - rust: nightly
+      env: JOB=examples-build
+      install: *INSTALL_NODE_VIA_NVM
+      script:
+        - |
+          for dir in `ls examples | grep -v README`; do
+            (cd examples/$dir &&
+             sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json &&
+             ./build.sh) || exit 1;
+          done
 
     # Tests pass on nightly using yarn
     - rust: nightly
-      before_install:
-        - rustup target add wasm32-unknown-unknown
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-        - source ~/.nvm/nvm.sh
-        - nvm install v10.5
+      env: JOB=test-yarn-smoke
+      before_install: *INSTALL_NODE_VIA_NVM
+      install:
         - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
         - export PATH=$HOME/.yarn/bin:$PATH
-      install:
         - yarn install --freeze-lockfile
-      script:
-        - cargo test
-        # Check JS output from all tests against eslint
-        - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
-      env: RUST_BACKTRACE=1
+      script: cargo test api::works
 
     # WebIDL tests pass on nightly
     - rust: nightly
+      env: JOB=test-webidl
       before_install: rustup component add rustfmt-preview --toolchain nightly
-      script: (cd crates/webidl && cargo test)
-      env: RUST_BACKTRACE=1 RUST_LOG=wasm_bindgen_webidl
+      script: cargo test --manifest-path crates/webidl/Cargo.toml
 
     # Dist linux binary
-    - env: TARGET=x86_64-unknown-linux-musl DEPLOY=1
-      rust: nightly
+    - rust: nightly
+      env: JOB=dist-linux TARGET=x86_64-unknown-linux-musl
       before_script: rustup target add $TARGET
       script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
       addons:
         apt:
           packages:
           - musl-tools
+      <<: *DEPLOY_TO_GITHUB
 
     # Dist OSX binary
-    - os: osx
-      rust: nightly
-      env: MACOSX_DEPLOYMENT_TARGET=10.7 DEPLOY=1 TARGET=x86_64-apple-darwin
+    - rust: nightly
+      os: osx
+      env: JOB=dist-osx MACOSX_DEPLOYMENT_TARGET=10.7 TARGET=x86_64-apple-darwin
       script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
-      install: true
+      <<: *DEPLOY_TO_GITHUB
 
-    # We can build the tool on nightly
+    # CLI builds on stable
+    - rust: stable
+      env: JOB=check-stable-cli
+      script: cargo check --manifest-path crates/cli/Cargo.toml
+    # CLI builds on nightly
     - rust: nightly
-      script: cargo install --debug --path crates/cli
-
-    # All examples work
-    - rust: nightly
-      before_install:
-        - rustup target add wasm32-unknown-unknown
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
-        - source ~/.nvm/nvm.sh
-        - nvm install v10.5
-      script:
-        - |
-          (cd examples/hello_world && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/smorgasboard && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/console_log && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/math && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/dom && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/wasm-in-wasm && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/char && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/closures && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/comments && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+      env: JOB=check-nightly-cli
+      script: cargo check --manifest-path crates/cli/Cargo.toml
 
     # Build the guide.
     - rust: stable
+      env: JOB=guide-build-and-deploy
       cache:
         - cargo
       before_script:
@@ -119,25 +121,3 @@ matrix:
 notifications:
   email:
     on_success: never
-
-before_deploy:
-  |
-    if [[ "$DEPLOY" == "1" ]]; then
-        name="wasm-bindgen-$TRAVIS_TAG-$TARGET"
-        mkdir "$name"
-        cp "target/$TARGET/release/{wasm-bindgen,wasm2es6js}" "$name/"
-        cp README.md LICENSE-MIT LICENSE-APACHE "$name/"
-        tar czvf "$name.tar.gz" "$name"
-    fi
-
-deploy:
-  api_key:
-    secure: "qCiELnEnvyKpWHDttgTNf+ElZGbWlvthu5aOIj5nYfov+h6g1+mkWnDFP6at/WPlE78zE/f/z/dL2KB2I7w/cxH/T4P1nWh0A9DvrpY6hqWkK2pgN5dPeWE/a4flI7AdH0A6wMRw7m00uMgDjlzN78v7XueccpJCxSO5allQN5jweAQvMX2QA07TbLRJc7Lq6lfVwSf8OfrcO8qCbcIzJTsC4vtbh6jkUYg1OAaU2tAYlskBy9ZYmHWCExIAu/zxzcJY9OpApPD9Ea4CyrsfjniAyRBJ87Weh/sP4XhiWeRPVmvA4HAzv4Pps9ps+Ar5QmsX53rhKQ3id7/VPR8ggaAHxrYUiJPvJRtbP6cKKOlDiK0ooP+vI4vjxWeNVj9ibEolSYOlT0ENIvPK1BppA6VgAoJOjwPr0Q16Ma4AmvLkIkowJiXCm2Jlje/5c0vPEAGJVgUtkj3jFQzgXwyEMpzxUlhHmYpmnfeaM0tK/Kiiwe1monL/ydMlyfV55kNylylCg+XoTnf420AFChKbD4DM5Z7ZsjU9g8fF3LUoN0sKpmLDp+GvwjLi9YtGogWB71Q2MFp43MSL0YLshkyYYoZKrVMiy5J9hKNUxhT2jNEq53Z69syIHHMCxHL9GoAcuHxIKOA7uTMW0aCoyy2I+dfAKKsrUGwGYaNC5LZdUQI="
-  file_glob: true
-  file:
-    - wasm-bindgen-$TRAVIS_TAG-$TARGET.tar.gz
-  on:
-    condition: $DEPLOY = 1
-    tags: true
-  provider: releases
-  skip_cleanup: true
