@@ -245,6 +245,9 @@ impl Project {
     }
 
     fn ensure_webpack_config(&mut self) {
+        if !self.webpack {
+            return
+        }
         let needs_typescript = self.files.iter().any(|t| t.0.ends_with(".ts"));
 
         let mut rules = String::new();
