@@ -1388,3 +1388,17 @@ if_std! {
         }
     }
 }
+
+// Symbol
+#[wasm_bindgen]
+extern "C" {
+    pub type Symbol;
+
+    /// The Symbol.hasInstance well-known symbol is used to determine
+    /// if a constructor object recognizes an object as its instance.
+    /// The instanceof operator's behavior can be customized by this symbol.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = hasInstance)]
+    pub fn has_instance() -> Symbol;
+}

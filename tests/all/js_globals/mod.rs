@@ -19,6 +19,7 @@ mod Object;
 mod Proxy;
 mod Set;
 mod SetIterator;
+mod Symbol;
 mod TypedArray;
 mod WeakMap;
 mod WeakSet;
