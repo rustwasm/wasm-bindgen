@@ -49,13 +49,23 @@ fn project() -> Project {
                 r#"
                 const path = require('path');
                 const fs = require('fs');
-
+                
                 let nodeModules = {};
-                fs.readdirSync('node_modules').filter(function(x) {
-                    return ['.bin'].indexOf(x) === -1;
-                }).forEach(function(mod) {
-                    nodeModules[mod] = 'commonjs ' + mod;
-                });
+                
+                // Webpack bundles the modules from node_modules.
+                // For node target, we will not have `fs` module 
+                // inside the `node_modules` folder.
+                // This reads the directories in `node_modules`
+                // and give that to externals and webpack ignores 
+                // to bundle the modules listed as external. 
+                fs.readdirSync('node_modules')
+                    .filter(module => ['.bin'].indexOf(module) === -1)
+                    .forEach(mod => {
+                        // External however,expects browser environment. 
+                        // To make it work in `node` target we 
+                        // prefix commonjs here.
+                        nodeModules[mod] = 'commonjs ' + mod;
+                    });
 
                 module.exports = {
                   entry: './run.js',
