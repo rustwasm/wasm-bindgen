@@ -3,7 +3,9 @@ use super::project;
 #[test]
 fn works() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -26,8 +28,11 @@ fn works() {
             }
             #[wasm_bindgen]
             pub fn eat(_fruit: Fruit) { }
-        "#)
-        .file("test.js", r#"
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
             import * as wasm from './out';
             const targetMessage = 'Attempt to use a moved value';
             function assertEq(a, b) {
@@ -64,6 +69,7 @@ fn works() {
                     assertEq(e.message, targetMessage);
                 }
             }
-        "#)
+        "#,
+        )
         .test();
 }

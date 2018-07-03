@@ -5,7 +5,9 @@ use project;
 #[test]
 fn new() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -16,22 +18,28 @@ fn new() {
             pub fn new_object() -> js::Object {
                 js::Object::new()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 assert.equal(typeof wasm.new_object(), "object");
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn has_own_property() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -42,8 +50,11 @@ fn has_own_property() {
             pub fn has_own_foo_property(obj: &js::Object, property: &JsValue) -> bool {
                 obj.has_own_property(&property)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -55,14 +66,17 @@ fn has_own_property() {
                 const s = Symbol();
                 assert(wasm.has_own_foo_property({ [s]: "foo" }, s));
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn to_string() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -79,14 +93,108 @@ fn to_string() {
                 let object = js::Object::new();
                 assert_eq!(String::from(object.to_string()), "[object Object]");
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 assert.equal(wasm.to_string({ foo: 42 }), "[object Object]");
                 wasm.test();
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn is_extensible() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_extensible(obj: &js::Object) -> bool {
+                js::Object::is_extensible(&obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                assert(wasm.is_extensible(object));
+
+                Object.preventExtensions(object);
+                assert(!wasm.is_extensible(object));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn is_frozen() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_frozen(obj: &js::Object) -> bool {
+                js::Object::is_frozen(&obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                assert(!wasm.is_frozen(object));
+
+                Object.freeze(object);
+                assert(wasm.is_frozen(object));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn is_sealed() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_sealed(obj: &js::Object) -> bool {
+                js::Object::is_sealed(&obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                assert(!wasm.is_sealed(object));
+
+                Object.seal(object);
+                assert(wasm.is_sealed(object));
             }
         "#)
         .test()
@@ -95,7 +203,9 @@ fn to_string() {
 #[test]
 fn is_prototype_of() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -106,8 +216,11 @@ fn is_prototype_of() {
             pub fn obj_is_prototype_of_value(obj: &js::Object, value: &JsValue) -> bool {
                 obj.is_prototype_of(&value)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -119,14 +232,17 @@ fn is_prototype_of() {
                 assert(wasm.obj_is_prototype_of_value(Foo.prototype, foo));
                 assert(!wasm.obj_is_prototype_of_value(Bar.prototype, foo));
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn keys() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -137,14 +253,51 @@ fn keys() {
             pub fn keys(obj: &js::Object) -> js::Array {
                 js::Object::keys(obj)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 const obj = { a: 1, b: 2, c: 3 };
                 assert.deepStrictEqual(wasm.keys(obj), ["a", "b", "c"]);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn prevent_extensions() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn prevent_extensions(obj: &js::Object) {
+                js::Object::prevent_extensions(obj);
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                wasm.prevent_extensions(object);
+
+                assert(!Object.isExtensible(object));
+                assert.throws(() => {
+                    'use strict';
+                    Object.defineProperty(object, 'foo', { value: 42 });
+                }, TypeError);
             }
         "#)
         .test()
@@ -153,7 +306,9 @@ fn keys() {
 #[test]
 fn property_is_enumerable() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -164,8 +319,11 @@ fn property_is_enumerable() {
             pub fn property_is_enumerable(obj: &js::Object, property: &JsValue) -> bool {
                 obj.property_is_enumerable(&property)
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -181,7 +339,8 @@ fn property_is_enumerable() {
                 const s = Symbol();
                 assert.ok(wasm.property_is_enumerable({ [s]: true }, s));
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
@@ -237,9 +396,41 @@ fn seal() {
 }
 
 #[test]
-fn to_locale_string() {
+fn set_prototype_of() {
     project()
         .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn set_prototype_of(object: &js::Object, prototype: &js::Object) -> js::Object {
+                js::Object::set_prototype_of(&object, &prototype)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = { foo: 42 };
+                const newPrototype = { bar: 'baz' };
+
+                const modifiedObject = wasm.set_prototype_of(object, newPrototype);
+                assert(newPrototype.isPrototypeOf(modifiedObject));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn to_locale_string() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -251,22 +442,28 @@ fn to_locale_string() {
                 let object = js::Object::new();
                 object.to_locale_string()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 assert.equal(wasm.to_locale_string(), "[object Object]");
             }
-        "#)
+        "#,
+        )
         .test()
 }
 
 #[test]
 fn value_of() {
     project()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section)]
 
             extern crate wasm_bindgen;
@@ -277,8 +474,11 @@ fn value_of() {
             pub fn value_of(obj: &js::Object) -> js::Object {
                 obj.value_of()
             }
-        "#)
-        .file("test.ts", r#"
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -286,6 +486,36 @@ fn value_of() {
                 const obj = { foo: 42 };
                 assert.strictEqual(wasm.value_of(obj), obj);
                 assert.notStrictEqual(wasm.value_of(obj), { foo: 42 });
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn values() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn values(obj: &js::Object) -> js::Array {
+                js::Object::values(&obj)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = { foo: 'bar', baz: 'qux' };
+                const values = wasm.values(object);
+                assert.equal(values.length, 2);
+                assert.deepEqual(values.sort(), ['bar', 'qux']);
             }
         "#)
         .test()

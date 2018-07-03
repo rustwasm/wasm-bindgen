@@ -3,7 +3,7 @@
 use project;
 
 #[test]
-fn keys() {
+fn new_undefined() {
     project()
         .file(
             "src/lib.rs",
@@ -15,10 +15,9 @@ fn keys() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_keys(this: &js::Array) -> js::ArrayIterator {
-                this.keys()
+            pub fn new_boolean() -> js::Boolean {
+                js::Boolean::new(JsValue::undefined())
             }
-
         "#,
         )
         .file(
@@ -28,12 +27,7 @@ fn keys() {
             import * as wasm from "./out";
 
             export function test() {
-                let characters = [8, 5, 4, 3, 1, 2]
-                let iterator = characters.keys();
-                let wasmIterator = wasm.get_keys(characters);
-
-                assert.equal(iterator.toString(), wasmIterator.toString());
-                assert.equal(Array.from(iterator)[0], Array.from(wasmIterator)[0]);
+                assert.equal(wasm.new_boolean().valueOf(), false);
             }
         "#,
         )
@@ -41,7 +35,7 @@ fn keys() {
 }
 
 #[test]
-fn entries() {
+fn new_truely() {
     project()
         .file(
             "src/lib.rs",
@@ -53,10 +47,9 @@ fn entries() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_entries(this: &js::Array) -> js::ArrayIterator {
-                this.entries()
+            pub fn new_boolean() -> js::Boolean {
+                js::Boolean::new(JsValue::from("foo"))
             }
-
         "#,
         )
         .file(
@@ -66,14 +59,7 @@ fn entries() {
             import * as wasm from "./out";
 
             export function test() {
-                let characters = [8, 5, 4, 3, 1, 2]
-                let iterator = characters.entries();
-                let wasmIterator = wasm.get_entries(characters);
-                let jsItem = iterator.next();
-                let wasmItem = wasmIterator.next();
-
-                assert.equal(iterator.toString(), wasmIterator.toString());
-                assert.equal(jsItem.value[1], wasmItem.value[1]);
+                assert.equal(wasm.new_boolean().valueOf(), true);
             }
         "#,
         )

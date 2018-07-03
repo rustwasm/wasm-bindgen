@@ -4,7 +4,9 @@ use super::project;
 fn works() {
     project()
         .requires_bigint()
-        .file("src/lib.rs", r#"
+        .file(
+            "src/lib.rs",
+            r#"
             #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
             extern crate wasm_bindgen;
@@ -42,8 +44,11 @@ fn works() {
 
             #[wasm_bindgen]
             pub fn u64_slice(a: &[u64]) -> Vec<u64> { a.to_vec() }
-        "#)
-        .file("test.js", r#"
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
             import * as wasm from './out';
 
             function assertEq(a, b) {
@@ -95,6 +100,7 @@ fn works() {
 
             export function js_i64_round(a) { return a; }
             export function js_u64_round(a) { return a; }
-        "#)
+        "#,
+        )
         .test();
 }
