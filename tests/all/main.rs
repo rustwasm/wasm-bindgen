@@ -607,35 +607,33 @@ impl Project {
                     .build();
 
                 async function main() {
-                    await driver.get('http://localhost:8080/index.html');
-                    await driver.wait(
-                        until.elementTextContains(
-                            driver.findElement(By.tagName('body')),
-                            'TESTDONE'
-                        ),
-                        6 * 1000
-                    );
                     const body = driver.findElement(By.tagName('body'));
+                    try {
+                        await driver.get('http://localhost:8080/index.html');
+                        await driver.wait(
+                            until.elementTextContains(body, 'TESTDONE'),
+                            6 * 1000
+                        );
 
-                    let logs = await body.findElement(By.id('logs')).getText();
-                    if (logs.length > 0) {
-                        console.log('logs:');
-                        logs.split("\n").forEach(line => {
-                            console.log(`    ${line}`);
-                        });
-                    }
+                        let status = await body.findElement(By.id('status')).getText();
+                        if (status != 'good')
+                            throw new Error('test failed');
+                    } finally {
+                        let logs = await body.findElement(By.id('logs')).getText();
+                        if (logs.length > 0) {
+                            console.log('logs:');
+                            logs.split("\n").forEach(line => {
+                                console.log(`    ${line}`);
+                            });
+                        }
 
-                    let errors = await body.findElement(By.id('error')).getText();
-                    if (errors.length > 0) {
-                        console.log('errors:');
-                        errors.split("\n").forEach(line => {
-                            console.log(`    ${line}`);
-                        });
-                    }
-
-                    let status = await body.findElement(By.id('status')).getText();
-                    if (status != 'good')
-                        throw new Error('test failed');
+                        let errors = await body.findElement(By.id('error')).getText();
+                        if (errors.length > 0) {
+                            console.log('errors:');
+                            errors.split("\n").forEach(line => {
+                                console.log(`    ${line}`);
+                            });
+                        }
                 }
 
                 main()
