@@ -369,6 +369,32 @@ extern "C" {
     pub fn to_string(this: &Function) -> JsString;
 }
 
+// Generator
+#[wasm_bindgen]
+extern {
+    pub type Generator;
+
+    /// The next() method returns an object with two properties done and value.
+    /// You can also provide a parameter to the next method to send a value to the generator.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/next
+    #[wasm_bindgen(method, structural, catch)]
+    pub fn next(this: &Generator, value: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The return() method returns the given value and finishes the generator.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/return
+    #[wasm_bindgen(method, structural, js_name = return)]
+    pub fn return_(this: &Generator, value: &JsValue) -> JsValue;
+
+    /// The throw() method resumes the execution of a generator by throwing an error into it
+    /// and returns an object with two properties done and value.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/throw
+    #[wasm_bindgen(method, structural, catch)]
+    pub fn throw(this: &Generator, error: &Error) -> Result<JsValue, JsValue>;
+}
+
 // Map
 #[wasm_bindgen]
 extern {
