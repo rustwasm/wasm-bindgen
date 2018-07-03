@@ -53,45 +53,46 @@ fn owned() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
-            extern crate wasm_bindgen;
+                extern crate wasm_bindgen;
 
-            use wasm_bindgen::prelude::*;
+                use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen(module = "./test")]
-            extern {
-                fn foo(s: JsValue);
-            }
+                #[wasm_bindgen(module = "./test")]
+                extern {
+                    fn foo(s: JsValue);
+                }
 
-            #[wasm_bindgen]
-            pub fn bar(s: JsValue) {
-                foo(s);
-            }
-        "#,
+                #[wasm_bindgen]
+                pub fn bar(s: JsValue) {
+                    foo(s);
+                }
+            "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import * as wasm from "./out";
-            import * as assert from "assert";
+                import * as wasm from "./out";
+                import * as assert from "assert";
 
-            let ARG: any = null;
+                let ARG = null;
 
-            export function foo(s: any): void {
-                assert.strictEqual(ARG, null);
-                ARG = s;
-            }
+                export function foo(s) {
+                    assert.strictEqual(ARG, null);
+                    ARG = s;
+                }
 
-            export function test() {
-                assert.strictEqual(ARG, null);
-                let sym = (Symbol as any)('test');
-                wasm.bar(sym);
-                assert.strictEqual(ARG, sym);
-            }
-        "#,
+                export function test() {
+                    assert.strictEqual(ARG, null);
+                    let sym = Symbol('test');
+                    wasm.bar(sym);
+                    assert.strictEqual(ARG, sym);
+                }
+            "#,
         )
         .test();
+    panic!()
 }
 
 #[test]

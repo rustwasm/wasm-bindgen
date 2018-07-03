@@ -38,12 +38,12 @@ fn works() {
         "#,
     );
 
-    let (root, target) = p.cargo_build();
-    p.gen_bindings(&root, &target);
+    p.gen_bindings();
     let js = p.read_js();
     let comments = extract_doc_comments(&js);
     assert!(comments.iter().all(|c| c == "This comment should exist"));
 }
+
 /// Pull out all lines in a js string that start with
 /// '* ', all other lines will either be comment start, comment
 /// end or actual js lines.
