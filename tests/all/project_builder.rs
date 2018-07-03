@@ -673,13 +673,12 @@ impl Project {
     pub fn test(&mut self) {
         let (root, _target_dir) = self.gen_bindings();
 
-        let mut wasm = Vec::new();
-        File::open(root.join("out_bg.wasm"))
-            .unwrap()
-            .read_to_end(&mut wasm)
-            .unwrap();
-
         if self.webpack {
+            let mut wasm = Vec::new();
+            File::open(root.join("out_bg.wasm"))
+                .unwrap()
+                .read_to_end(&mut wasm)
+                .unwrap();
             let _x = wrap_step("running wasm2es6js");
             let obj = cli::wasm2es6js::Config::new()
                 .base64(true)
