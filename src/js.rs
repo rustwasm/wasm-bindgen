@@ -615,6 +615,14 @@ extern "C" {
 extern "C" {
     pub type Number;
 
+    /// The `Number` JavaScript object is a wrapper object allowing
+    /// you to work with numerical values. A `Number` object is
+    /// created using the `Number()` constructor.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+    #[wasm_bindgen(constructor)]
+    pub fn new(value: JsValue) -> Number;
+
     /// The toLocaleString() method returns a string with a language sensitive
     /// representation of this number.
     ///
@@ -670,6 +678,13 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
     #[wasm_bindgen(constructor)]
     pub fn new() -> Date;
+
+    /// The `Date.now()` method returns the number of milliseconds
+    /// elapsed since January 1, 1970 00:00:00 UTC.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
+    #[wasm_bindgen(static_method_of = Date)]
+    pub fn now() -> f64;
 
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
@@ -748,6 +763,15 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toUTCString
     #[wasm_bindgen(method, js_name = toUTCString)]
     pub fn to_utc_string(this: &Date) -> JsString;
+
+    /// The `Date.UTC()` method accepts the same parameters as the
+    /// longest form of the constructor, and returns the number of
+    /// milliseconds in a `Date` object since January 1, 1970,
+    /// 00:00:00, universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC
+    #[wasm_bindgen(static_method_of = Date, js_name = UTC)]
+    pub fn utc(year: f64, month: f64) -> f64;
 
     /// The valueOf() method  returns the primitive value of
     /// a Date object.
