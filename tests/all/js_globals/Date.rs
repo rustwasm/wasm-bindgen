@@ -21,7 +21,7 @@ fn get_day() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -91,7 +91,7 @@ fn new() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -149,7 +149,7 @@ fn to_date_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -183,7 +183,7 @@ fn to_iso_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -217,7 +217,7 @@ fn to_json() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -248,7 +248,7 @@ fn to_locale_date_string() {
                 this.to_locale_date_string(locale, options)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -280,7 +280,7 @@ fn to_locale_string() {
                 this.to_locale_string(locale, options)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -313,7 +313,7 @@ fn to_locale_time_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -346,7 +346,7 @@ fn to_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -379,7 +379,7 @@ fn to_time_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -412,7 +412,7 @@ fn to_utc_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";

@@ -21,7 +21,7 @@ fn apply() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -57,7 +57,7 @@ fn bind() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -97,21 +97,21 @@ fn length() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 assert.equal(wasm.fn_length(() => {}), 0);
-                assert.equal(wasm.fn_length((a: string) => console.log(a)), 1);
-                assert.equal(wasm.fn_length((a: string, b: string) => console.log({ a, b })), 2);
+                assert.equal(wasm.fn_length(a => console.log(a)), 1);
+                assert.equal(wasm.fn_length((a, b) => console.log({ a, b })), 2);
 
                 function fn0() {}
-                function fn1(a: string) {
+                function fn1(a) {
                     console.log(a);
                 }
-                function fn2(a: string, b: string) {
+                function fn2(a, b) {
                     console.log({ a, b });
                 }
 
@@ -143,7 +143,7 @@ fn name() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -190,17 +190,17 @@ fn to_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
-                function fn1(a: any, b: any) { return a + b }
-                const fn2 = (a: number) => console.log(a);
+                function fn1(a, b) { return a + b; }
+                const fn2 = a => console.log(a);
 
                 assert.equal(wasm.get_source_code(fn1), 'function fn1(a, b) { return a + b; }');
-                assert.equal(wasm.get_source_code(fn2), 'function (a) { return console.log(a); }');
+                assert.equal(wasm.get_source_code(fn2), 'a => console.log(a)');
             }
         "#,
         )

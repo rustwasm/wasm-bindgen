@@ -22,7 +22,7 @@ fn keys() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -60,7 +60,7 @@ fn entries() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";

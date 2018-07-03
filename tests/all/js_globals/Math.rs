@@ -21,7 +21,7 @@ fn abs() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -55,7 +55,7 @@ fn acos() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -63,7 +63,7 @@ fn acos() {
             export function test() {
                 assert.equal(wasm.acos(-1), Math.PI);
                 assert.equal(wasm.acos(0.5), 1.0471975511965979);
-                assert(Number.isNaN(wasm.acos(2)));
+                assert.ok(Number.isNaN(wasm.acos(2)));
             }
         "#,
         )
@@ -89,7 +89,7 @@ fn acosh() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -97,7 +97,7 @@ fn acosh() {
             export function test() {
                 assert.equal(wasm.acosh(1), 0);
                 assert.equal(wasm.acosh(2), Math.acosh(2));
-                assert(Number.isNaN(wasm.acosh(0.5)));
+                assert.ok(Number.isNaN(wasm.acosh(0.5)));
             }
         "#,
         )
@@ -123,7 +123,7 @@ fn asin() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -131,7 +131,7 @@ fn asin() {
             export function test() {
                 assert.equal(wasm.asin(1), Math.asin(1));
                 assert.equal(wasm.asin(0.5), Math.asin(0.5));
-                assert(Number.isNaN(wasm.asin(2)));
+                assert.ok(Number.isNaN(wasm.asin(2)));
             }
         "#,
         )
@@ -157,7 +157,7 @@ fn asinh() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -190,7 +190,7 @@ fn atan() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -223,7 +223,7 @@ fn atan2() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -256,7 +256,7 @@ fn atanh() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -264,7 +264,7 @@ fn atanh() {
             export function test() {
                 assert.equal(wasm.atanh(1), Math.atanh(1));
                 assert.equal(wasm.atanh(0.5), Math.atanh(0.5));
-                assert(Number.isNaN(wasm.atanh(2)));
+                assert.ok(Number.isNaN(wasm.atanh(2)));
             }
         "#,
         )
@@ -290,7 +290,7 @@ fn cbrt() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -323,7 +323,7 @@ fn ceil() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -356,7 +356,7 @@ fn clz32() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -385,7 +385,7 @@ fn cos() {
                 js::Math::cos(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -412,7 +412,7 @@ fn cosh() {
                 js::Math::cosh(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -439,7 +439,7 @@ fn exp() {
                 js::Math::exp(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -467,7 +467,7 @@ fn expm1() {
                 js::Math::expm1(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -500,7 +500,7 @@ fn floor() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -529,7 +529,7 @@ fn fround() {
                 js::Math::fround(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -558,7 +558,7 @@ fn imul() {
                 js::Math::imul(x, y)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -586,7 +586,7 @@ fn log() {
                 js::Math::log(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -613,7 +613,7 @@ fn log10() {
                 js::Math::log10(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -641,7 +641,7 @@ fn log1p() {
                 js::Math::log1p(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -649,7 +649,7 @@ fn log1p() {
                 assert.equal(wasm.log1p(1), 0.6931471805599453);
                 assert.equal(wasm.log1p(0), 0);
                 assert.equal(wasm.log1p(-1), -Infinity);
-                assert(isNaN(wasm.log1p(-2)));
+                assert.ok(isNaN(wasm.log1p(-2)));
             }
         "#)
         .test()
@@ -670,7 +670,7 @@ fn log2() {
                 js::Math::log2(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -699,7 +699,7 @@ fn pow() {
                 js::Math::pow(base, exponent)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -727,7 +727,7 @@ fn round() {
                 js::Math::round(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -757,7 +757,7 @@ fn sign() {
                 js::Math::sign(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -787,7 +787,7 @@ fn sin() {
                 js::Math::sin(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -815,7 +815,7 @@ fn sinh() {
                 js::Math::sinh(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -843,7 +843,7 @@ fn sqrt() {
                 js::Math::sqrt(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -873,7 +873,7 @@ fn tan() {
                 js::Math::tan(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -901,7 +901,7 @@ fn tanh() {
                 js::Math::tanh(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -929,7 +929,7 @@ fn trunc() {
                 js::Math::trunc(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 

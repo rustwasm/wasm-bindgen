@@ -44,7 +44,7 @@ fn to_locale_string() {
                 this.to_locale_string(locale)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -83,7 +83,7 @@ fn to_precision() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -121,7 +121,7 @@ fn to_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -156,7 +156,7 @@ fn value_of() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -195,7 +195,7 @@ fn to_fixed() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -233,7 +233,7 @@ fn to_exponential() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";

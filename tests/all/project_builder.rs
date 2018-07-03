@@ -19,6 +19,7 @@ pub struct Project {
     no_std: bool,
     serde: bool,
     rlib: bool,
+    webpack: bool,
     node_args: Vec<String>,
     deps: Vec<String>,
 }
@@ -32,18 +33,15 @@ pub fn project() -> Project {
         .unwrap();
     Project {
         debug: true,
-        node: false,
         no_std: false,
+        node: true,
+        webpack: false,
         serde: false,
         rlib: false,
         deps: Vec::new(),
-        node_args: Vec::new(),
+        node_args: vec!["--experimental-modules".to_string()],
         files: vec![
             ("Cargo.lock".to_string(), lockfile),
-            (
-                "run-node.js".to_string(),
-                r#"require("./test").test();"#.to_string(),
-            ),
         ],
     }
 }
@@ -107,12 +105,6 @@ impl Project {
         self
     }
 
-    /// Fl
-    pub fn node(&mut self, node: bool) -> &mut Project {
-        self.node = node;
-        self
-    }
-
     /// Depend on `wasm-bindgen` without the `std` feature enabled.
     pub fn no_std(&mut self, no_std: bool) -> &mut Project {
         self.no_std = no_std;
@@ -137,6 +129,18 @@ impl Project {
         self
     }
 
+    /// Enables or disables node.js-tailored output for this project
+    pub fn node(&mut self, node: bool) -> &mut Project {
+        self.node = node;
+        self
+    }
+
+    /// Enables or disables the usage of webpack for this project
+    pub fn webpack(&mut self, webpack: bool) -> &mut Project {
+        self.webpack = webpack;
+        self
+    }
+
     /// Add a path dependency to the generated project
     pub fn add_local_dependency(&mut self, name: &str, path: &str) -> &mut Project {
         self.deps
@@ -156,6 +160,157 @@ impl Project {
             self.node_args.push(arg.to_string());
         }
         self
+    }
+
+    /// Write this project to the filesystem, ensuring all files are ready to
+    /// go.
+    pub fn build(&mut self) -> (PathBuf, PathBuf) {
+        self.ensure_webpack_config();
+        self.ensure_test_entry();
+
+        let webidl_modules = self.generate_webidl_bindings();
+        self.generate_js_entry(webidl_modules);
+
+        let mut manifest = format!(
+            r#"
+            [package]
+            name = "test{}"
+            version = "0.0.1"
+            authors = []
+
+            [workspace]
+
+            [lib]
+        "#,
+            IDX.with(|x| *x)
+        );
+
+        if !self.rlib {
+            manifest.push_str("crate-type = [\"cdylib\"]\n");
+        }
+
+        manifest.push_str("[build-dependencies]\n");
+        manifest.push_str("wasm-bindgen-webidl = { path = '");
+        manifest.push_str(env!("CARGO_MANIFEST_DIR"));
+        manifest.push_str("/crates/webidl' }\n");
+
+        manifest.push_str("[dependencies]\n");
+        for dep in self.deps.iter() {
+            manifest.push_str(dep);
+            manifest.push_str("\n");
+        }
+        manifest.push_str("wasm-bindgen = { path = '");
+        manifest.push_str(env!("CARGO_MANIFEST_DIR"));
+        manifest.push_str("'");
+        if self.no_std {
+            manifest.push_str(", default-features = false");
+        }
+        if self.serde {
+            manifest.push_str(", features = ['serde-serialize']");
+        }
+        manifest.push_str(" }\n");
+        self.files.push(("Cargo.toml".to_string(), manifest));
+
+        let root = root();
+        drop(fs::remove_dir_all(&root));
+        for &(ref file, ref contents) in self.files.iter() {
+            let mut dst = root.join(file);
+            if self.node &&
+                !self.webpack &&
+                dst.extension().and_then(|s| s.to_str()) == Some("js")
+            {
+                dst = dst.with_extension("mjs");
+            }
+            if dst.extension().and_then(|s| s.to_str()) == Some("ts") &&
+                !self.webpack
+            {
+                panic!("webpack needs to be enabled to use typescript");
+            }
+            fs::create_dir_all(dst.parent().unwrap()).unwrap();
+            fs::File::create(&dst)
+                .unwrap()
+                .write_all(contents.as_ref())
+                .unwrap();
+        }
+        let target_dir = root.parent().unwrap() // chop off test name
+            .parent().unwrap(); // chop off `generated-tests`
+        (root.clone(), target_dir.to_path_buf())
+    }
+
+    fn ensure_webpack_config(&mut self) {
+        let needs_typescript = self.files.iter().any(|t| t.0.ends_with(".ts"));
+
+        let mut rules = String::new();
+        let mut extensions = format!("'.js', '.wasm'");
+        if needs_typescript {
+            rules.push_str("
+                {
+                    test: /.ts$/,
+                    use: 'ts-loader',
+                    exclude: /node_modules/,
+                }
+            ");
+            extensions.push_str(", '.ts'");
+        }
+        self.files.push((
+            "webpack.config.js".to_string(),
+            format!(r#"
+                const path = require('path');
+
+                module.exports = {{
+                  entry: './run.js',
+                  mode: "development",
+                  devtool: "source-map",
+                  module: {{
+                    rules: [{}]
+                  }},
+                  resolve: {{
+                    extensions: [{}]
+                  }},
+                  output: {{
+                    filename: 'bundle.js',
+                    path: path.resolve(__dirname, '.')
+                  }},
+                  target: 'node'
+                }};
+            "#, rules, extensions)
+        ));
+        if needs_typescript {
+            self.files.push((
+                "tsconfig.json".to_string(),
+                r#"
+                    {
+                      "compilerOptions": {
+                        "noEmitOnError": true,
+                        "noImplicitAny": true,
+                        "noImplicitThis": true,
+                        "noUnusedParameters": true,
+                        "noUnusedLocals": true,
+                        "noImplicitReturns": true,
+                        "strictFunctionTypes": true,
+                        "strictNullChecks": true,
+                        "alwaysStrict": true,
+                        "strict": true,
+                        "target": "es5",
+                        "lib": ["es2015"]
+                      }
+                    }
+                "#.to_string(),
+            ));
+        }
+    }
+
+    fn ensure_test_entry(&mut self) {
+        if !self
+            .files
+            .iter()
+            .any(|(path, _)| path == "test.ts" || path == "test.js")
+        {
+            self.files.push((
+                "test.js".to_string(),
+                r#"export {test} from './out';"#.to_string(),
+            ));
+        }
     }
 
     fn generate_webidl_bindings(&mut self) -> Vec<PathBuf> {
@@ -243,12 +398,12 @@ impl Project {
             );
         }
 
-        runjs.push_str(
-            r#"
-            let wasm = import('./out');
-            const test = import('./test');
-            "#,
-        );
+        runjs.push_str("const test = import('./test');\n");
+        if self.debug {
+            runjs.push_str("const wasm = import('./out');\n");
+        } else {
+            runjs.push_str("const wasm = new Promise((a, b) => a({}));\n");
+        }
 
         if !modules.is_empty() {
             runjs.push_str("return ");
@@ -470,8 +625,9 @@ impl Project {
         let res = cli::Bindgen::new()
             .input_path(&as_a_module)
             .typescript(true)
-            .nodejs(self.node)
             .debug(self.debug)
+            .nodejs(self.node)
+            .nodejs_experimental_modules(self.node)
             .generate(&root);
 
         if let Err(e) = res {
@@ -495,7 +651,7 @@ impl Project {
             .read_to_end(&mut wasm)
             .unwrap();
 
-        {
+        if self.webpack {
             let _x = wrap_step("running wasm2es6js");
             let obj = cli::wasm2es6js::Config::new()
                 .base64(true)
@@ -517,33 +673,43 @@ impl Project {
         let cwd = env::current_dir().unwrap();
         symlink_dir(&cwd.join("node_modules"), &root.join("node_modules")).unwrap();
 
-        if self.node {
-            let mut cmd = Command::new("node");
-            cmd.args(&self.node_args);
-            cmd.arg(root.join("run-node.js")).current_dir(&root);
-            run(&mut cmd, "node");
-        } else {
-            let mut cmd = if cfg!(windows) {
-                let mut c = Command::new("cmd");
-                c.arg("/c");
-                c.arg("npm");
-                c
-            } else {
-                Command::new("npm")
-            };
-            cmd.arg("run").arg("run-webpack").current_dir(&root);
-            run(&mut cmd, "npm");
 
-            let mut cmd = Command::new("node");
-            cmd.args(&self.node_args);
-            cmd.arg(root.join("bundle.js")).current_dir(&root);
-            run(&mut cmd, "node");
-        }
+        let mut cmd = Command::new("node");
+        cmd.args(&self.node_args);
+        cmd.arg(root.join("run.mjs")).current_dir(&root);
+        run(&mut cmd, "node");
+
+        // if self.node {
+        //     let mut cmd = Command::new("node");
+        //     cmd.args(&self.node_args);
+        //     cmd.arg(root.join("run-node.js")).current_dir(&root);
+        //     run(&mut cmd, "node");
+        // } else {
+        //     let mut cmd = if cfg!(windows) {
+        //         let mut c = Command::new("cmd");
+        //         c.arg("/c");
+        //         c.arg("npm");
+        //         c
+        //     } else {
+        //         Command::new("npm")
+        //     };
+        //     cmd.arg("run").arg("run-webpack").current_dir(&root);
+        //     run(&mut cmd, "npm");
+        //
+        //     let mut cmd = Command::new("node");
+        //     cmd.args(&self.node_args);
+        //     cmd.arg(root.join("bundle.js")).current_dir(&root);
+        //     run(&mut cmd, "node");
+        // }
     }
 
     /// Reads JS generated by `wasm-bindgen` to a string.
     pub fn read_js(&self) -> String {
-        let path = root().join("out.js");
+        let path = root().join(if self.node && !self.webpack {
+            "out.mjs"
+        } else {
+            "out.js"
+        });
         println!("js, {:?}", &path);
         fs::read_to_string(path).expect("Unable to read js")
     }

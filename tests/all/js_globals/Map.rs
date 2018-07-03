@@ -17,7 +17,7 @@ fn clear() {
                 this.clear();
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -49,7 +49,7 @@ fn delete() {
                 this.delete(key)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -81,7 +81,7 @@ fn get() {
                 this.get(key)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -112,7 +112,7 @@ fn has() {
                 this.has(key)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -141,7 +141,7 @@ fn new() {
                 js::Map::new()
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -169,7 +169,7 @@ fn set() {
                 this.set(key, value)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -198,7 +198,7 @@ fn size() {
                 this.size()
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 

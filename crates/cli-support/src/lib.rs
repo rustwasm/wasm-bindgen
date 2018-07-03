@@ -24,6 +24,7 @@ pub mod wasm2es6js;
 pub struct Bindgen {
     path: Option<PathBuf>,
     nodejs: bool,
+    nodejs_experimental_modules: bool,
     browser: bool,
     no_modules: bool,
     no_modules_global: Option<String>,
@@ -37,6 +38,7 @@ impl Bindgen {
         Bindgen {
             path: None,
             nodejs: false,
+            nodejs_experimental_modules: false,
             browser: false,
             no_modules: false,
             no_modules_global: None,
@@ -53,6 +55,11 @@ impl Bindgen {
 
     pub fn nodejs(&mut self, node: bool) -> &mut Bindgen {
         self.nodejs = node;
+        self
+    }
+
+    pub fn nodejs_experimental_modules(&mut self, node: bool) -> &mut Bindgen {
+        self.nodejs_experimental_modules = node;
         self
     }
 
@@ -162,7 +169,8 @@ impl Bindgen {
             cx.finalize(stem)?
         };
 
-        let js_path = out_dir.join(stem).with_extension("js");
+        let extension = if self.nodejs_experimental_modules { "mjs" } else { "js" };
+        let js_path = out_dir.join(stem).with_extension(extension);
         File::create(&js_path)
             .and_then(|mut f| f.write_all(reset_indentation(&js).as_bytes()))
             .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
@@ -177,7 +185,7 @@ impl Bindgen {
         let wasm_path = out_dir.join(format!("{}_bg", stem)).with_extension("wasm");
 
         if self.nodejs {
-            let js_path = wasm_path.with_extension("js");
+            let js_path = wasm_path.with_extension(extension);
             let shim = self.generate_node_wasm_import(&module, &wasm_path);
             File::create(&js_path)
                 .and_then(|mut f| f.write_all(shim.as_bytes()))
@@ -200,21 +208,55 @@ impl Bindgen {
         }
 
         let mut shim = String::new();
+
+        if self.nodejs_experimental_modules {
+            for (i, module) in imports.iter().enumerate() {
+                shim.push_str(&format!("import * as import{} from '{}';\n",
+                                       i, module));
+            }
+            shim.push_str(&format!("
+                import * as path from 'path';
+                import * as fs from 'fs';
+                import * as url from 'url';
+
+                const file = path.dirname(url.parse(import.meta.url).pathname);
+                const bytes = fs.readFileSync(path.join(file, '{}'));
+            ", path.file_name().unwrap().to_str().unwrap()));
+        } else {
+            shim.push_str(&format!("
+                const path = require('path').join(__dirname, '{}');
+                const bytes = require('fs').readFileSync(path);
+            ", path.file_name().unwrap().to_str().unwrap()));
+        }
         shim.push_str("let imports = {};\n");
-        for module in imports {
-            shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
+        for (i, module) in imports.iter().enumerate() {
+            if self.nodejs_experimental_modules {
+                shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
+            } else {
+                shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
+            }
         }
 
         shim.push_str(&format!(
             "
-            const join = require('path').join;
-            const bytes = require('fs').readFileSync(join(__dirname, '{}'));
-            const wasmModule = new WebAssembly.Module(bytes);
-            const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
-            module.exports = wasmInstance.exports;
+                const wasmModule = new WebAssembly.Module(bytes);
+                const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
             ",
-            path.file_name().unwrap().to_str().unwrap()
         ));
+
+        if self.nodejs_experimental_modules {
+            if let Some(e) = m.export_section() {
+                for name in e.entries().iter().map(|e| e.field()) {
+                    shim.push_str("export const ");
+                    shim.push_str(name);
+                    shim.push_str(" = wasmInstance.exports.");
+                    shim.push_str(name);
+                    shim.push_str(";\n");
+                }
+            }
+        } else {
+            shim.push_str("module.exports = wasmInstance.exports;\n");
+        }
 
         reset_indentation(&shim)
     }
