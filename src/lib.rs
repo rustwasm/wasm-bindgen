@@ -266,6 +266,11 @@ impl JsValue {
         unsafe { __wbindgen_is_undefined(self.idx) == 1 }
     }
 
+    /// Tests whether this JS value is `NaN`
+    pub fn is_nan(&self) -> bool {
+        unsafe { __wbindgen_is_nan(self.idx) == 1 }
+    }
+
     /// Tests whether the type of this JS value is `symbol`
     pub fn is_symbol(&self) -> bool {
         unsafe { __wbindgen_is_symbol(self.idx) == 1 }
@@ -338,6 +343,7 @@ externs! {
     fn __wbindgen_undefined_new() -> u32;
     fn __wbindgen_is_null(idx: u32) -> u32;
     fn __wbindgen_is_undefined(idx: u32) -> u32;
+    fn __wbindgen_is_nan(idx: u32) -> u32;
     fn __wbindgen_boolean_new(val: u32) -> u32;
     fn __wbindgen_boolean_get(idx: u32) -> u32;
     fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;

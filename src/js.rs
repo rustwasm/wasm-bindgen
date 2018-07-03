@@ -87,6 +87,19 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite
     #[wasm_bindgen(js_name = isFinite)]
     pub fn is_finite(value: &JsValue) -> bool;
+
+    /// The `parseInt()` function parses a string argument and returns an integer
+    /// of the specified radix (the base in mathematical numeral systems).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+    #[wasm_bindgen(js_name = parseInt)]
+    pub fn parse_int(value: &str, radix: u8) -> JsValue;
+
+    /// The parseFloat() function parses an argument and returns a floating point number.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
+    #[wasm_bindgen(js_name = parseFloat)]
+    pub fn parse_float(value: &str) -> JsValue;
 }
 
 // UInt8Array
