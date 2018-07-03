@@ -33,6 +33,9 @@ async function logged(msg, promise) {
   }
 }
 
+const SECONDS = 1000;
+const MINUTES = 60 * SECONDS;
+
 async function main() {
   const body = driver.findElement(By.tagName("body"));
   try {
@@ -45,7 +48,7 @@ async function main() {
       "Waiting for <body> to include text 'TESTDONE'",
       driver.wait(
         until.elementTextContains(body, "TESTDONE"),
-        6 * 1000
+        1 * MINUTES
       )
     );
 
