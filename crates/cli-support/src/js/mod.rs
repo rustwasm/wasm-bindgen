@@ -1817,8 +1817,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         if import.structural {
                             format!(
                                 "function() {{
-                                    return this.{};
+                                    return {}.{};
                                 }}",
+                                if is_static { &class } else { "this" },
                                 g
                             )
                         } else {
@@ -1835,8 +1836,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         if import.structural {
                             format!(
                                 "function(y) {{
-                                this.{} = y;
+                                {}.{} = y;
                             }}",
+                                if is_static { &class } else { "this" },
                                 s
                             )
                         } else {
