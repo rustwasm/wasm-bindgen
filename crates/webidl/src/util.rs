@@ -6,6 +6,7 @@ use heck::SnakeCase;
 use proc_macro2::Ident;
 use syn;
 use webidl;
+use webidl::ast::ExtendedAttribute;
 
 fn shared_ref(ty: syn::Type) -> syn::Type {
     syn::TypeReference {
@@ -284,4 +285,33 @@ pub fn create_setter(
         None,
         vec![backend::ast::BindgenAttr::Setter(Some(raw_ident(name)))],
     )
+}
+
+/// ChromeOnly is for things that are only exposed to priveleged code in Firefox.
+pub fn is_chrome_only(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
+    ext_attrs.iter().any(|external_attribute| {
+        return match &**external_attribute {
+            ExtendedAttribute::ArgumentList(al) => {
+                println!("ArgumentList");
+                al.name == "ChromeOnly"
+            },
+            ExtendedAttribute::Identifier(i) => {
+                println!("Identifier");
+                i.lhs == "ChromeOnly"
+            },
+            ExtendedAttribute::IdentifierList(il) => {
+                println!("IdentifierList");
+                il.lhs == "ChromeOnly"
+            },
+            ExtendedAttribute::NamedArgumentList(nal) => {
+                println!("NamedArgumentList");
+                nal.lhs_name == "ChromeOnly"
+            },
+            ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => name == "ChromeOnly",
+            ExtendedAttribute::NoArguments(_na) => {
+                println!("NoArguments");
+                false
+            }
+        };
+    })
 }
