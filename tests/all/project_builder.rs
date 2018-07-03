@@ -131,12 +131,6 @@ impl Project {
         self
     }
 
-    /// Enables or disables node.js-tailored output for this project
-    pub fn node(&mut self, node: bool) -> &mut Project {
-        self.node = node;
-        self
-    }
-
     /// Enables or disables node.js experimental modules output
     pub fn nodejs_experimental_modules(&mut self, node: bool) -> &mut Project {
         self.nodejs_experimental_modules = node;
