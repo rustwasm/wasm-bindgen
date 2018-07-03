@@ -588,62 +588,7 @@ impl Project {
     }
 
     fn generate_run_headless_js(&mut self) {
-        self.file(
-            "run-headless.js",
-            r#"
-                const process = require('process');
-                const { promisify } = require('util');
-                const { Builder, By, Key, logging, promise, until } = require('selenium-webdriver');
-                const firefox = require('selenium-webdriver/firefox');
-
-                promise.USE_PROMISE_MANAGER = false;
-
-                const prefs = new logging.Preferences();
-                prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
-
-                const driver = new Builder()
-                    .forBrowser('firefox')
-                    .setFirefoxOptions(new firefox.Options().headless())
-                    .build();
-
-                async function main() {
-                    const body = driver.findElement(By.tagName('body'));
-                    try {
-                        await driver.get('http://localhost:8080/index.html');
-                        await driver.wait(
-                            until.elementTextContains(body, 'TESTDONE'),
-                            6 * 1000
-                        );
-
-                        let status = await body.findElement(By.id('status')).getText();
-                        if (status != 'good')
-                            throw new Error('test failed');
-                    } finally {
-                        let logs = await body.findElement(By.id('logs')).getText();
-                        if (logs.length > 0) {
-                            console.log('logs:');
-                            logs.split("\n").forEach(line => {
-                                console.log(`    ${line}`);
-                            });
-                        }
-
-                        let errors = await body.findElement(By.id('error')).getText();
-                        if (errors.length > 0) {
-                            console.log('errors:');
-                            errors.split("\n").forEach(line => {
-                                console.log(`    ${line}`);
-                            });
-                        }
-                }
-
-                main()
-                    .finally(() => driver.quit())
-                    .catch(e => {
-                        console.error(`Got an error: ${e}\n\nStack: ${e.stack}`);
-                        process.exit(1);
-                    })
-            "#,
-        );
+        self.file("run-headless.js", include_str!("run-headless.js"));
     }
 
     /// execute the cli against the current test .wasm
