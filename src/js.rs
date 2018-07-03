@@ -608,6 +608,64 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn log2(x: f64) -> Number;
 
+    /// The Math.pow() function returns the base to the exponent power, that is, base^exponent.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn pow(base: f64, exponent: f64) -> Number;
+
+    /// The Math.round() function returns the value of a number rounded to the nearest integer.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn round(x: f64) -> Number;
+
+    /// The Math.sign() function returns the sign of a number, indicating whether the number is
+    /// positive, negative or zero.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn sign(x: f64) -> Number;
+
+    /// The Math.sin() function returns the sine of a number.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sin
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn sin(x: f64) -> Number;
+
+    /// The Math.sinh() function returns the hyperbolic sine of a number, that can be expressed
+    /// using the constant e: Math.sinh(x) = (e^x - e^-x)/2
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sinh
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn sinh(x: f64) -> Number;
+
+    /// The Math.sqrt() function returns the square root of a number, that is
+    /// ∀x ≥ 0, Math.sqrt(x) = √x = the unique y ≥ 0 such that y^2 = x
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sqrt
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn sqrt(x: f64) -> Number;
+
+    /// The Math.tan() function returns the tangent of a number.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tan
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn tan(x: f64) -> Number;
+
+    /// The Math.tanh() function returns the hyperbolic tangent of a number, that is
+    /// tanh x = sinh x / cosh x = (e^x - e^-x)/(e^x + e^-x) = (e^2x - 1)/(e^2x + 1)
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tanh
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn tanh(x: f64) -> Number;
+
+    /// The Math.trunc() function returns the integer part of a number by removing any fractional
+    /// digits.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn trunc(x: f64) -> Number;
 }
 
 // Number.

@@ -683,3 +683,262 @@ fn log2() {
         "#)
         .test()
 }
+
+#[test]
+fn pow() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn pow(base: f64, exponent: f64) -> js::Number {
+                js::Math::pow(base, exponent)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.pow(7, 2), 49);
+                assert.equal(wasm.pow(3.8, 0.5), Math.pow(3.8, 0.5));
+                assert(Number.isNaN(wasm.pow(-2, 0.5)));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn round() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn round(x: f64) -> js::Number {
+                js::Math::round(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.round(20.49), 20);
+                assert.equal(wasm.round(20.5), 21);
+                assert.equal(wasm.round(42), 42);
+                assert.equal(wasm.round(-20.5), -20);
+                assert.equal(wasm.round(-20.51), -21);
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn sign() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn sign(x: f64) -> js::Number {
+                js::Math::sign(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.sign(3), 1);
+                assert.equal(wasm.sign(-3), -1);
+                assert.equal(wasm.sign(2.3), 1);
+                assert.equal(wasm.sign(0), 0);
+                assert(Number.isNaN(wasm.sign(NaN)));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn sin() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn sin(x: f64) -> js::Number {
+                js::Math::sin(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.sin(0), 0);
+                assert.equal(wasm.sin(1), Math.sin(1));
+                assert.equal(wasm.sin(Math.PI / 2), 1);
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn sinh() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn sinh(x: f64) -> js::Number {
+                js::Math::sinh(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.sinh(0), 0);
+                assert.equal(wasm.sinh(1), Math.sinh(1));
+                assert.equal(wasm.sinh(2.3), Math.sinh(2.3));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn sqrt() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn sqrt(x: f64) -> js::Number {
+                js::Math::sqrt(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.sqrt(9), 3);
+                assert.equal(wasm.sqrt(2), Math.sqrt(2));
+                assert.equal(wasm.sqrt(42.42), Math.sqrt(42.42));
+                assert.equal(wasm.sqrt(1), 1);
+                assert(Number.isNaN(wasm.sqrt(-1)));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn tan() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn tan(x: f64) -> js::Number {
+                js::Math::tan(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.tan(0), 0);
+                assert.equal(wasm.tan(1), Math.tan(1));
+                assert.equal(wasm.tan(0.5), Math.tan(0.5));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn tanh() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn tanh(x: f64) -> js::Number {
+                js::Math::tanh(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.tanh(0), 0);
+                assert.equal(wasm.tanh(1), Math.tanh(1));
+                assert.equal(wasm.tanh(0.5), Math.tanh(0.5));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn trunc() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn trunc(x: f64) -> js::Number {
+                js::Math::trunc(x)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.trunc(13.37), 13);
+                assert.equal(wasm.trunc(42.84), 42);
+                assert.equal(wasm.trunc(0.123), 0);
+                assert.equal(wasm.trunc(-0.123), 0);
+            }
+        "#)
+        .test()
+}
