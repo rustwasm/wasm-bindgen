@@ -5,13 +5,13 @@ extern crate wasm_bindgen_cli_support as cli;
 use std::env;
 use std::fs::{self, File};
 use std::io::{self, Read, Write};
-use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio, ChildStdin, Child};
 use std::net::TcpStream;
+use std::path::{Path, PathBuf};
+use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::atomic::*;
 use std::sync::{Mutex, Once, ONCE_INIT};
 use std::thread;
-use std::time::{Instant, Duration};
+use std::time::{Duration, Instant};
 
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
 thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
@@ -301,14 +301,16 @@ impl Project {
         );
 
         if self.headless {
-            runjs.push_str(r#"
+            runjs.push_str(
+                r#"
                 console.log = function() {
                     const logs = document.getElementById('logs');
                     for (let i = 0; i < arguments.length; i++)
                         logs.innerText += `${arguments[i]}`;
                     logs.innerText += "\n";
                 };
-            "#);
+            "#,
+            );
         }
 
         if !modules.is_empty() {
@@ -332,7 +334,7 @@ impl Project {
                     if (wasm.assertSlabEmpty)
                         wasm.assertSlabEmpty();
                 })
-            "#
+            "#,
         );
 
         if self.headless {
@@ -347,7 +349,7 @@ impl Project {
                     .finally(() => {
                         window.document.body.innerHTML += "\n TESTDONE";
                     })
-                "#
+                "#,
             );
         } else {
             runjs.push_str(
@@ -356,7 +358,7 @@ impl Project {
                         console.error(e);
                         require('process').exit(1);
                     })
-                "#
+                "#,
             );
         }
         self.files.push(("run.js".to_string(), runjs));
@@ -527,7 +529,7 @@ impl Project {
         // wait for webpack-dev-server to come online and bind its port
         loop {
             if TcpStream::connect("127.0.0.1:8080").is_ok() {
-                break
+                break;
             }
             thread::sleep(Duration::from_millis(100));
         }
@@ -540,10 +542,7 @@ impl Project {
         cmd.args(&self.node_args)
             .arg(root.join("run-headless.js"))
             .current_dir(&root)
-            .env(
-                "PATH",
-                env::join_paths(&path).unwrap(),
-            );
+            .env("PATH", env::join_paths(&path).unwrap());
         run(&mut cmd, "node");
     }
 
@@ -632,12 +631,16 @@ impl Drop for BackgroundChild {
     fn drop(&mut self) {
         drop(self.stdin.take());
         let status = self.child.wait().expect("failed to wait on child");
-        let stdout = self.stdout.take()
+        let stdout = self
+            .stdout
+            .take()
             .unwrap()
             .join()
             .unwrap()
             .expect("failed to read stdout");
-        let stderr = self.stderr.take()
+        let stderr = self
+            .stderr
+            .take()
             .unwrap()
             .join()
             .unwrap()
