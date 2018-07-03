@@ -11,6 +11,8 @@ prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
 const opts = new firefox.Options();
 opts.headless();
 if (process.env.WASM_BINDGEN_FIREFOX_BIN_PATH) {
+  console.log("Using custom firefox-bin: $WASM_BINDGEN_FIREFOX_BIN_PATH =",
+              process.env.WASM_BINDGEN_FIREFOX_BIN_PATH);
   opts.setBinary(process.env.WASM_BINDGEN_FIREFOX_BIN_PATH);
 }
 
