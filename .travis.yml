@@ -27,7 +27,8 @@ matrix:
       addons:
         firefox: latest
 
-    # Tests pass on nightly using yarn
+    # Tests pass on nightly using yarn, but no need to run all the tests, just
+    # do one smoke test
     - rust: nightly
       before_install:
         - rustup target add wasm32-unknown-unknown
@@ -39,10 +40,7 @@ matrix:
       install:
         - yarn install --freeze-lockfile
       script:
-        - cargo test
-        # Check JS output from all tests against eslint
-        - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
-      env: RUST_BACKTRACE=1
+        - cargo test api::works
       addons:
         firefox: latest
 
