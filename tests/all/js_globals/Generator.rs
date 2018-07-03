@@ -3,7 +3,7 @@
 use project;
 
 #[test]
-fn gen_return() {
+fn return_() {
     project()
         .file(
             "src/lib.rs",
@@ -16,7 +16,7 @@ fn gen_return() {
 
             #[wasm_bindgen]
             pub fn gen_return(this: &js::Generator, value: &JsValue) -> JsValue {
-                this.gen_return(value)
+                this.return_(value)
             }
         "#,
         )
@@ -61,6 +61,13 @@ fn next() {
             #[wasm_bindgen]
             pub fn next(this: &js::Generator, value: &JsValue) -> JsValue {
                 this.next(value)
+                    .ok()
+                    .expect("generator throws an error")
+            }
+
+            #[wasm_bindgen]
+            pub fn next_throws_error(this: &js::Generator, value: &JsValue) -> bool {
+                this.next(value).is_err()
             }
         "#,
         )
@@ -84,6 +91,13 @@ fn next() {
 
                 const a = wasm.next(gen, 4);
                 assert.deepEqual(a, { value: true, done: true });
+
+                function* brokenGenerator() {
+                    throw new Error('Something went wrong');
+                    yield 1;
+                }
+
+                assert(wasm.next_throws_error(brokenGenerator(), undefined));
             }
         "#,
         )
@@ -103,8 +117,8 @@ fn throw() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn gen_throw(this: &js::Generator, error: &js::Error) -> JsValue {
-                this.throw(error)
+            pub fn gen_throws_error(this: &js::Generator, error: &js::Error) -> bool {
+                this.throw(error).is_err()
             }
         "#,
         )
@@ -123,12 +137,7 @@ fn throw() {
                 const gen = generator();
                 gen.next();
 
-                try {
-                    wasm.gen_throw(gen, new Error('Something went wrong'));
-                } catch(err) {
-                    assert.equal(err.message, 'Something went wrong');
-                }
-
+                assert(wasm.gen_throws_error(gen, new Error('Something went wrong')));
                 assert.deepEqual(gen.next(), { value: undefined, done: true });
             }
         "#,
