@@ -24,6 +24,8 @@ matrix:
         # Check JS output from all tests against eslint
         - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
       env: RUST_BACKTRACE=1
+      addons:
+        firefox: latest
 
     # Tests pass on nightly using yarn
     - rust: nightly
@@ -41,6 +43,8 @@ matrix:
         # Check JS output from all tests against eslint
         - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
       env: RUST_BACKTRACE=1
+      addons:
+        firefox: latest
 
     # WebIDL tests pass on nightly
     - rust: nightly
