@@ -26,10 +26,14 @@ fn has_instance() {
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
+            class Array1 {}
+            Object.defineProperty(Array1, wasm.symbol_has_instance(), {
+                value: (instance: any) => Array.isArray(instance)
+            });
 
             export function test() {
-                assert.ok(wasm.symbol_has_instance());
-                assert.ok([] instanceof Array);
+                assert.equal(typeof wasm.symbol_has_instance(), "symbol");
+                assert.ok([] instanceof Array1);
             }
         "#,
         )
