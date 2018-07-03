@@ -27,6 +27,7 @@ pub struct Foo {
 
 #[wasm_bindgen]
 impl Foo {
+    #[wasm_bindgen(constructor)]
     pub fn new() -> Foo {
         Foo { contents: 0 }
     }
@@ -110,16 +111,16 @@ function assertEq(a, b) {
 function main() {
   assertEq(concat('a', 'b'), 'ab');
 
-  // Note the `new Foo()` syntax cannot be used, static function
-  // constructors must be used instead. Additionally objects allocated
-  // corresponding to Rust structs will need to be deallocated on the
-  // Rust side of things with an explicit call to `free`.
-  let foo = Foo.new();
+  // Note that to use `new Foo()` the constructor function must be annotated
+  // with `#[wasm_bindgen(constructor)]`, otherwise only `Foo.new()` can be used.
+  // Additionally objects allocated corresponding to Rust structs will need to
+  // be deallocated on the Rust side of things with an explicit call to `free`.
+  let foo = new Foo();
   assertEq(foo.add(10), 10);
   foo.free();
 
   // Pass objects to one another
-  let foo1 = Foo.new();
+  let foo1 = new Foo();
   let bar = Bar.from_str("22", { opaque: 'object' });
   foo1.add_other(bar);
 
