@@ -128,6 +128,10 @@ impl WebidlParse<()> for webidl::ast::Interface {
 
 impl WebidlParse<()> for webidl::ast::Typedef {
     fn webidl_parse(&self, program: &mut backend::ast::Program, _: ()) -> Result<()> {
+        if util::is_chrome_only(&self.extended_attributes) {
+            return Ok(())
+        }
+
         let dest = rust_ident(&self.name);
         let src = match webidl_ty_to_syn_ty(&self.type_, TypePosition::Return) {
             Some(src) => src,
@@ -154,6 +158,10 @@ impl WebidlParse<()> for webidl::ast::Typedef {
 
 impl WebidlParse<()> for webidl::ast::NonPartialInterface {
     fn webidl_parse(&self, program: &mut backend::ast::Program, _: ()) -> Result<()> {
+        if util::is_chrome_only(&self.extended_attributes) {
+            return Ok(())
+        }
+
         program.imports.push(backend::ast::Import {
             module: None,
             version: None,
@@ -293,6 +301,10 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Operation {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
+        if util::is_chrome_only(&self.extended_attributes) {
+            return Ok(())
+        }
+
         create_getter(
             &self.name,
             &self.type_,
@@ -317,6 +329,10 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
+        if util::is_chrome_only(&self.extended_attributes) {
+            return Ok(())
+        }
+
         create_getter(
             &self.name,
             &self.type_,
@@ -341,6 +357,10 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
+        if util::is_chrome_only(&self.extended_attributes) {
+            return Ok(())
+        }
+
         create_basic_method(
             &self.arguments,
             self.name.as_ref(),
@@ -356,6 +376,10 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
 
 impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
     fn webidl_parse(&self, program: &mut backend::ast::Program, self_name: &'a str) -> Result<()> {
+        if util::is_chrome_only(&self.extended_attributes) {
+            return Ok(())
+        }
+        
         create_basic_method(
             &self.arguments,
             self.name.as_ref(),
