@@ -652,7 +652,7 @@ impl Project {
         let _x = wrap_step("running wasm-bindgen");
         let res = cli::Bindgen::new()
             .input_path(&as_a_module)
-            .typescript(true)
+            .typescript(self.webpack)
             .debug(self.debug)
             .nodejs(self.node)
             .nodejs_experimental_modules(self.nodejs_experimental_modules)
