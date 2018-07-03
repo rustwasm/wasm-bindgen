@@ -83,8 +83,10 @@ fn add_headless() {
                 import * as wasm from "./out";
 
                 export function test() {
+                    console.log("start `add_headless` test");
                     assert.strictEqual(wasm.add(1, 2), 3);
-                }
+                    console.log("end `add_headless` test");
+               }
             "#,
         )
         .test();
