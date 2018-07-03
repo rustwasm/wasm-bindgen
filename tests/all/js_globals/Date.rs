@@ -119,7 +119,7 @@ fn now() {
                 Date::now()
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -441,7 +441,7 @@ fn utc() {
                 Date::utc(2018f64, 6f64)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 

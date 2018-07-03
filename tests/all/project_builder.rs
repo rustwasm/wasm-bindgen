@@ -247,6 +247,7 @@ impl Project {
         if !self.webpack {
             return
         }
+
         let needs_typescript = self.files.iter().any(|t| t.0.ends_with(".ts"));
 
         let mut rules = String::new();
@@ -265,6 +266,24 @@ impl Project {
             "webpack.config.js".to_string(),
             format!(r#"
                 const path = require('path');
+                const fs = require('fs');
+
+                let nodeModules = {{}};
+
+                // Webpack bundles the modules from node_modules.
+                // For node target, we will not have `fs` module
+                // inside the `node_modules` folder.
+                // This reads the directories in `node_modules`
+                // and give that to externals and webpack ignores
+                // to bundle the modules listed as external.
+                fs.readdirSync('node_modules')
+                    .filter(module => module !== '.bin')
+                    .forEach(mod => {{
+                        // External however,expects browser environment.
+                        // To make it work in `node` target we
+                        // prefix commonjs here.
+                        nodeModules[mod] = 'commonjs ' + mod;
+                    }});
 
                 module.exports = {{
                   entry: './run.js',
@@ -280,7 +299,8 @@ impl Project {
                     filename: 'bundle.js',
                     path: path.resolve(__dirname, '.')
                   }},
-                  target: 'node'
+                  target: 'node',
+                  externals: nodeModules
                 }};
             "#, rules, extensions)
         ));
@@ -415,26 +435,11 @@ impl Project {
             }
         ");
 
-        if !modules.is_empty() {
-            // Not compatible with other output modes yet.
-            assert!(esm_imports);
-            runjs.push_str(r#"Promise.all(["#);
-            for module in &modules {
-                runjs.push_str(&format!(
-                    r#"import('./{}'),"#,
-                    module.with_extension("").to_str().unwrap()
-                ));
-            }
-            runjs.push_str(
-                r#"]).then(results => { results.map(module => Object.assign(global, module));"#,
-            );
-        }
-
         if esm_imports {
             runjs.push_str("const modules = [];\n");
             for module in modules.iter() {
-                runjs.push_str(&format!("modules.push(import('{}'))",
-                                        module.display()));
+                runjs.push_str(&format!("modules.push(import('./{}'))",
+                                        module.with_extension("").display()));
             }
             let import_wasm = if self.debug {
                 "import('./out')"
@@ -463,165 +468,6 @@ impl Project {
             ");
         }
         self.files.push(("run.js".to_string(), runjs));
-    }
-
-    fn ensure_test_entry(&mut self) {
-        if !self
-            .files
-            .iter()
-            .any(|(path, _)| path == "test.ts" || path == "test.js")
-        {
-            self.files.push((
-                "test.ts".to_string(),
-                r#"export {test} from './out';"#.to_string(),
-            ));
-        }
-    }
-
-    fn ensure_webpack_config(&mut self) {
-        let needs_typescript = self.files.iter().any(|t| t.0.ends_with(".ts"));
-
-        let mut rules = String::new();
-        let mut extensions = format!("'.js', '.wasm'");
-        if needs_typescript {
-            rules.push_str("
-                {
-                    test: /.ts$/,
-                    use: 'ts-loader',
-                    exclude: /node_modules/,
-                }
-            ");
-            extensions.push_str(", '.ts'");
-        }
-        self.files.push((
-            "webpack.config.js".to_string(),
-            format!(r#"
-                const path = require('path');
-                const fs = require('fs');
-
-                let nodeModules = {};
-
-                // Webpack bundles the modules from node_modules.
-                // For node target, we will not have `fs` module
-                // inside the `node_modules` folder.
-                // This reads the directories in `node_modules`
-                // and give that to externals and webpack ignores
-                // to bundle the modules listed as external.
-                fs.readdirSync('node_modules')
-                    .filter(module => module !== '.bin')
-                    .forEach(mod => {
-                        // External however,expects browser environment.
-                        // To make it work in `node` target we
-                        // prefix commonjs here.
-                        nodeModules[mod] = 'commonjs ' + mod;
-                    });
-
-                module.exports = {{
-                  entry: './run.js',
-                  mode: "development",
-                  devtool: "source-map",
-                  module: {{
-                    rules: [{}]
-                  }},
-                  resolve: {{
-                    extensions: [{}]
-                  }},
-                  output: {{
-                    filename: 'bundle.js',
-                    path: path.resolve(__dirname, '.')
-                  }},
-                  target: 'node',
-                  externals: nodeModules
-                }};
-            "#, rules, extensions)
-        ));
-        if needs_typescript {
-            self.files.push((
-                "tsconfig.json".to_string(),
-                r#"
-                    {
-                      "compilerOptions": {
-                        "noEmitOnError": true,
-                        "noImplicitAny": true,
-                        "noImplicitThis": true,
-                        "noUnusedParameters": true,
-                        "noUnusedLocals": true,
-                        "noImplicitReturns": true,
-                        "strictFunctionTypes": true,
-                        "strictNullChecks": true,
-                        "alwaysStrict": true,
-                        "strict": true,
-                        "target": "es5",
-                        "lib": ["es2015"]
-                      }
-                    }
-                "#.to_string(),
-            ));
-        }
-    }
-
-    /// Write this project to the filesystem, ensuring all files are ready to
-    /// go.
-    pub fn build(&mut self) -> (PathBuf, PathBuf) {
-        self.ensure_webpack_config();
-        self.ensure_test_entry();
-
-        let webidl_modules = self.generate_webidl_bindings();
-        self.generate_js_entry(webidl_modules);
-
-        let mut manifest = format!(
-            r#"
-            [package]
-            name = "test{}"
-            version = "0.0.1"
-            authors = []
-
-            [workspace]
-
-            [lib]
-        "#,
-            IDX.with(|x| *x)
-        );
-
-        if !self.rlib {
-            manifest.push_str("crate-type = [\"cdylib\"]\n");
-        }
-
-        manifest.push_str("[build-dependencies]\n");
-        manifest.push_str("wasm-bindgen-webidl = { path = '");
-        manifest.push_str(env!("CARGO_MANIFEST_DIR"));
-        manifest.push_str("/crates/webidl' }\n");
-
-        manifest.push_str("[dependencies]\n");
-        for dep in self.deps.iter() {
-            manifest.push_str(dep);
-            manifest.push_str("\n");
-        }
-        manifest.push_str("wasm-bindgen = { path = '");
-        manifest.push_str(env!("CARGO_MANIFEST_DIR"));
-        manifest.push_str("'");
-        if self.no_std {
-            manifest.push_str(", default-features = false");
-        }
-        if self.serde {
-            manifest.push_str(", features = ['serde-serialize']");
-        }
-        manifest.push_str(" }\n");
-        self.files.push(("Cargo.toml".to_string(), manifest));
-
-        let root = root();
-        drop(fs::remove_dir_all(&root));
-        for &(ref file, ref contents) in self.files.iter() {
-            let dst = root.join(file);
-            fs::create_dir_all(dst.parent().unwrap()).unwrap();
-            fs::File::create(&dst)
-                .unwrap()
-                .write_all(contents.as_ref())
-                .unwrap();
-        }
-        let target_dir = root.parent().unwrap() // chop off test name
-            .parent().unwrap(); // chop off `generated-tests`
-        (root.clone(), target_dir.to_path_buf())
     }
 
     /// Build the Cargo project for the wasm target, returning the root of the

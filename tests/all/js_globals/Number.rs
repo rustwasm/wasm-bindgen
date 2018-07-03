@@ -17,7 +17,7 @@ fn new() {
                 Number::new(JsValue::from(42))
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 

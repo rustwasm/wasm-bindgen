@@ -706,7 +706,7 @@ fn pow() {
             export function test() {
                 assert.equal(wasm.pow(7, 2), 49);
                 assert.equal(wasm.pow(3.8, 0.5), Math.pow(3.8, 0.5));
-                assert(Number.isNaN(wasm.pow(-2, 0.5)));
+                assert.ok(Number.isNaN(wasm.pow(-2, 0.5)));
             }
         "#)
         .test()
@@ -766,7 +766,7 @@ fn sign() {
                 assert.equal(wasm.sign(-3), -1);
                 assert.equal(wasm.sign(2.3), 1);
                 assert.equal(wasm.sign(0), 0);
-                assert(Number.isNaN(wasm.sign(NaN)));
+                assert.ok(Number.isNaN(wasm.sign(NaN)));
             }
         "#)
         .test()
@@ -852,7 +852,7 @@ fn sqrt() {
                 assert.equal(wasm.sqrt(2), Math.sqrt(2));
                 assert.equal(wasm.sqrt(42.42), Math.sqrt(42.42));
                 assert.equal(wasm.sqrt(1), 1);
-                assert(Number.isNaN(wasm.sqrt(-1)));
+                assert.ok(Number.isNaN(wasm.sqrt(-1)));
             }
         "#)
         .test()
