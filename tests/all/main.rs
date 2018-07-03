@@ -532,17 +532,17 @@ impl Project {
             thread::sleep(Duration::from_millis(100));
         }
 
+        let path = env::var_os("PATH").unwrap_or_default();
+        let mut path = env::split_paths(&path).collect::<Vec<_>>();
+        path.push(root.join("node_modules/geckodriver"));
+
         let mut cmd = Command::new("node");
         cmd.args(&self.node_args)
             .arg(root.join("run-headless.js"))
             .current_dir(&root)
             .env(
                 "PATH",
-                format!(
-                    "{}:{}",
-                    env::var("PATH").unwrap(),
-                    root.join("node_modules/geckodriver").display()
-                ),
+                env::join_paths(&path).unwrap(),
             );
         run(&mut cmd, "node");
     }
