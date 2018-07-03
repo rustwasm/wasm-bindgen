@@ -8,6 +8,7 @@ mod Boolean;
 mod Date;
 mod Error;
 mod Function;
+mod Generator;
 mod JsString;
 mod Map;
 mod MapIterator;
