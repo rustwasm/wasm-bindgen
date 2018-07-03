@@ -434,15 +434,19 @@ impl Project {
             .unwrap()
             .read_to_end(&mut wasm)
             .unwrap();
-        let obj = cli::wasm2es6js::Config::new()
-            .base64(true)
-            .generate(&wasm)
-            .expect("failed to convert wasm to js");
 
-        File::create(root.join("out_bg.d.ts"))
-            .unwrap()
-            .write_all(obj.typescript().as_bytes())
-            .unwrap();
+        {
+            let _x = wrap_step("running wasm2es6js");
+            let obj = cli::wasm2es6js::Config::new()
+                .base64(true)
+                .generate(&wasm)
+                .expect("failed to convert wasm to js");
+
+            File::create(root.join("out_bg.d.ts"))
+                .unwrap()
+                .write_all(obj.typescript().as_bytes())
+                .unwrap();
+        }
 
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
@@ -484,6 +488,7 @@ impl Project {
         let as_a_module = root.join("out.wasm");
         fs::copy(&out, &as_a_module).unwrap();
 
+        let _x = wrap_step("running wasm-bindgen");
         let res = cli::Bindgen::new()
             .input_path(&as_a_module)
             .typescript(true)
@@ -516,21 +521,32 @@ fn symlink_dir(a: &Path, b: &Path) -> io::Result<()> {
     symlink_dir(a, b)
 }
 
-fn run(cmd: &mut Command, program: &str) {
+fn wrap_step(desc: &str) -> WrapStep {
     println!("···················································");
-    println!("running {:?}", cmd);
-    let start = Instant::now();
+    println!("{}", desc);
+    WrapStep { start: Instant::now() }
+}
+
+struct WrapStep { start: Instant }
+
+impl Drop for WrapStep {
+    fn drop(&mut self) {
+        let dur = self.start.elapsed();
+        println!(
+            "dur: {}.{:03}s",
+            dur.as_secs(),
+            dur.subsec_nanos() / 1_000_000
+        );
+    }
+}
+
+fn run(cmd: &mut Command, program: &str) {
+    let _x = wrap_step(&format!("running {:?}", cmd));
     let output = match cmd.output() {
         Ok(output) => output,
         Err(err) => panic!("failed to spawn `{}`: {}", program, err),
     };
     println!("exit: {}", output.status);
-    let dur = start.elapsed();
-    println!(
-        "dur: {}.{:03}ms",
-        dur.as_secs(),
-        dur.subsec_nanos() / 1_000_000
-    );
     if output.stdout.len() > 0 {
         println!("stdout ---\n{}", String::from_utf8_lossy(&output.stdout));
     }
