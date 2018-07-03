@@ -51,7 +51,7 @@ fn project() -> Project {
                 const fs = require('fs');
                 
                 let nodeModules = {};
-                
+
                 // Webpack bundles the modules from node_modules.
                 // For node target, we will not have `fs` module 
                 // inside the `node_modules` folder.
@@ -59,7 +59,7 @@ fn project() -> Project {
                 // and give that to externals and webpack ignores 
                 // to bundle the modules listed as external. 
                 fs.readdirSync('node_modules')
-                    .filter(module => ['.bin'].indexOf(module) === -1)
+                    .filter(module => module !== '.bin')
                     .forEach(mod => {
                         // External however,expects browser environment. 
                         // To make it work in `node` target we 
