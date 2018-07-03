@@ -1,14 +1,19 @@
 {
   "license": "MIT",
   "scripts": {
-    "run-webpack": "webpack"
+    "run-webpack": "webpack",
+    "run-webpack-dev-server": "webpack-dev-server",
+    "run-geckodriver": "geckodriver"
   },
   "devDependencies": {
     "@types/node": "^9.4.6",
+    "eslint": "^4.19.1",
+    "geckodriver": "^1.11.0",
+    "selenium-webdriver": "^4.0.0-alpha.1",
     "ts-loader": "^4.0.1",
     "typescript": "^2.7.2",
     "webpack": "^4.11.1",
     "webpack-cli": "^2.0.10",
-    "eslint": "^4.19.1"
+    "webpack-dev-server": "^3.1.4"
   }
 }

@@ -1,12 +1,14 @@
+#[macro_use]
+extern crate lazy_static;
 extern crate wasm_bindgen_cli_support as cli;
 
 use std::env;
 use std::fs::{self, File};
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use std::process::{Child, Command, Stdio};
 use std::sync::atomic::*;
-use std::sync::{Once, ONCE_INIT};
+use std::sync::{Mutex, Once, ONCE_INIT};
 use std::time::Instant;
 
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
@@ -16,6 +18,7 @@ struct Project {
     files: Vec<(String, String)>,
     debug: bool,
     node: bool,
+    headless: bool,
     no_std: bool,
     serde: bool,
     rlib: bool,
@@ -33,6 +36,7 @@ fn project() -> Project {
     Project {
         debug: true,
         node: false,
+        headless: false,
         no_std: false,
         serde: false,
         rlib: false,
@@ -149,6 +153,10 @@ impl Project {
         self
     }
 
+    fn has_file(&self, name: &str) -> bool {
+        self.files.iter().any(|&(ref f, _)| f == name)
+    }
+
     fn debug(&mut self, debug: bool) -> &mut Project {
         self.debug = debug;
         self
@@ -156,6 +164,11 @@ impl Project {
 
     fn node(&mut self, node: bool) -> &mut Project {
         self.node = node;
+        self
+    }
+
+    fn headless(&mut self, headless: bool) -> &mut Project {
+        self.headless = headless;
         self
     }
 
@@ -264,28 +277,30 @@ impl Project {
     }
 
     fn generate_js_entry(&mut self, modules: Vec<PathBuf>) {
-        let mut runjs = r#"
-            import * as process from "process";
-        "#.to_string();
+        let mut runjs = if self.headless {
+            "".to_string()
+        } else {
+            "import * as process from \"process\";".to_string()
+        };
 
         if !modules.is_empty() {
             runjs.push_str(r#"Promise.all(["#);
             for module in &modules {
                 runjs.push_str(&format!(
-                    r#"import('./{}'),"#,
+                    "import('./{}'),",
                     module.with_extension("").to_str().unwrap()
                 ));
             }
             runjs.push_str(
-                r#"]).then(results => { results.map(module => Object.assign(global, module));"#,
+                "]).then(results => { results.map(module => Object.assign(global, module));",
             );
         }
 
         runjs.push_str(
-            r#"
+            "
             let wasm = import('./out');
             const test = import('./test');
-            "#,
+            ",
         );
 
         if !modules.is_empty() {
@@ -298,23 +313,34 @@ impl Project {
             runjs.push_str("})");
         }
 
-        runjs.push_str(
+        runjs.push_str(&format!(
             r#"
-            .then(results => {
-                let [test, wasm] = results;
-                test.test();
+                .then(results => {{
+                    let [test, wasm] = results;
+                    test.test();
 
-                if (wasm.assertStackEmpty)
-                    wasm.assertStackEmpty();
-                if (wasm.assertSlabEmpty)
-                    wasm.assertSlabEmpty();
-            })
-            .catch(error => {
-                  console.error(error);
-                  process.exit(1);
-                });
-            "#,
-        );
+                    if (wasm.assertStackEmpty)
+                        wasm.assertStackEmpty();
+                    if (wasm.assertSlabEmpty)
+                        wasm.assertSlabEmpty();
+
+                    if (typeof window == "object" &&
+                        typeof window.document == "object" &&
+                        typeof window.document.body == "object") {{
+                        window.document.body.textContent = "PASSED";
+                    }}
+                }})
+                .catch(error => {{
+                      console.error(error);
+                      {}
+                    }});
+                "#,
+            if self.headless {
+                ""
+            } else {
+                "process.exit(1);"
+            }
+        ));
         self.files.push(("run.js".to_string(), runjs));
     }
 
@@ -408,9 +434,19 @@ impl Project {
     }
 
     fn test(&mut self) {
-        let (root, target_dir) = self.cargo_build();
+        if self.headless {
+            self.files
+                .iter_mut()
+                .filter(|f| f.0 == "webpack.config.js")
+                .map(|f| f.1 = f.1.replace("target: 'node'", "target: 'web'"));
 
+            self.ensure_index_html();
+            self.ensure_run_headless_js();
+        }
+
+        let (root, target_dir) = self.cargo_build();
         self.gen_bindings(&root, &target_dir);
+
         let mut wasm = Vec::new();
         File::open(root.join("out_bg.wasm"))
             .unwrap()
@@ -440,6 +476,8 @@ impl Project {
             cmd.args(&self.node_args);
             cmd.arg(root.join("run-node.js")).current_dir(&root);
             run(&mut cmd, "node");
+        } else if self.headless {
+            self.test_headless(&root);
         } else {
             let mut cmd = if cfg!(windows) {
                 let mut c = Command::new("cmd");
@@ -457,6 +495,106 @@ impl Project {
             cmd.arg(root.join("bundle.js")).current_dir(&root);
             run(&mut cmd, "node");
         }
+    }
+
+    fn test_headless(&mut self, root: &Path) {
+        // Serialize all headless tests since they require starting
+        // webpack-dev-server on the same port.
+        lazy_static! {
+            static ref MUTEX: Mutex<()> = Mutex::new(());
+        }
+        let _lock = MUTEX.lock().unwrap();
+
+        let mut cmd = if cfg!(windows) {
+            let mut c = Command::new("cmd");
+            c.arg("/c");
+            c.arg("npm");
+            c
+        } else {
+            Command::new("npm")
+        };
+        cmd.arg("run")
+            .arg("run-webpack-dev-server")
+            .current_dir(&root);
+        let _server = run_in_background(&mut cmd, "webpack-dev-server".into());
+
+        let mut cmd = Command::new("node");
+        cmd.args(&self.node_args)
+            .arg(root.join("run-headless.js"))
+            .current_dir(&root)
+            .env(
+                "PATH",
+                format!(
+                    "{}:{}",
+                    env::var("PATH").unwrap(),
+                    root.join("node_modules/geckodriver").display()
+                ),
+            );
+        run(&mut cmd, "node");
+    }
+
+    fn ensure_index_html(&mut self) {
+        if !self.has_file("index.html") {
+            self.generate_index_html();
+        }
+    }
+
+    fn generate_index_html(&mut self) {
+        self.file(
+            "index.html",
+            r#"
+            <!DOCTYPE html>
+            <html>
+                <body>
+                    <script src="bundle.js"></script>
+                </body>
+            </html>
+        "#,
+        );
+    }
+
+    fn ensure_run_headless_js(&mut self) {
+        if !self.has_file("run-headless.js") {
+            self.generate_run_headless_js();
+        }
+    }
+
+    fn generate_run_headless_js(&mut self) {
+        self.file(
+            "run-headless.js",
+            "
+            const process = require('process');
+            const { promisify } = require('util');
+            const { Builder, By, Key, logging, promise, until } = require('selenium-webdriver');
+            const firefox = require('selenium-webdriver/firefox');
+
+            promise.USE_PROMISE_MANAGER = false;
+
+            const prefs = new logging.Preferences();
+            prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
+
+            const driver = new Builder()
+                .forBrowser('firefox')
+                .setFirefoxOptions(new firefox.Options().headless().setLoggingPrefs(prefs))
+                .build();
+
+            async function main() {
+                try {
+                    await driver.get('http://localhost:8080/index.html');
+                    await driver.wait(
+                        until.elementTextIs(driver.findElement(By.tagName('body'), 'PASSED')),
+                        60 * 100
+                    );
+                    await driver.quit();
+                } catch (e) {
+                    console.error(`Got an error: ${e}\n\nStack: ${e.stack}`);
+                    process.exit(1);
+                }
+            }
+
+            main();
+        ",
+        );
     }
 
     /// execute the cli against the current test .wasm
@@ -485,6 +623,36 @@ impl Project {
         let path = root().join("out.js");
         println!("js, {:?}", &path);
         fs::read_to_string(path).expect("Unable to read js")
+    }
+}
+
+struct BackgroundChild(String, Child);
+
+impl Drop for BackgroundChild {
+    fn drop(&mut self) {
+        let _ = self.1.kill();
+        let _ = self.1.wait();
+
+        let stdout = if let Some(mut stdout) = self.1.stdout.take() {
+            let mut s = String::new();
+            let _ = stdout.read_to_string(&mut s);
+            s
+        } else {
+            "".into()
+        };
+
+        let stderr = if let Some(mut stderr) = self.1.stderr.take() {
+            let mut s = String::new();
+            let _ = stderr.read_to_string(&mut s);
+            s
+        } else {
+            "".into()
+        };
+
+        println!("···················································");
+        println!("background {}", self.0);
+        println!("stdout ---\n{}", stdout);
+        println!("stderr ---\n{}", stderr);
     }
 }
 
@@ -522,6 +690,13 @@ fn run(cmd: &mut Command, program: &str) {
         println!("stderr ---\n{}", String::from_utf8_lossy(&output.stderr));
     }
     assert!(output.status.success());
+}
+
+fn run_in_background(cmd: &mut Command, name: String) -> BackgroundChild {
+    // cmd.stdout(Stdio::piped());
+    // cmd.stderr(Stdio::piped());
+    let child = cmd.spawn().expect(&format!("should spawn {} OK", name));
+    BackgroundChild(name, child)
 }
 
 mod api;
