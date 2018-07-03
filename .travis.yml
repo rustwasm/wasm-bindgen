@@ -3,10 +3,10 @@ sudo: false
 
 matrix:
   include:
-    # CLI builds on stable
-    - rust: stable
-      install: true
-      script: cargo build --manifest-path crates/cli/Cargo.toml
+    # # CLI builds on stable
+    # - rust: stable
+    #   install: true
+    #   script: cargo build --manifest-path crates/cli/Cargo.toml
 
     # Tests pass on nightly
     - rust: nightly
@@ -20,102 +20,102 @@ matrix:
         # to run `npm install` twice or by using `npm ci` (which is currently broken)
         - npm install
       script:
-        - cargo test
+        - cargo test add_headless
         # Check JS output from all tests against eslint
         - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
       env: RUST_BACKTRACE=1
       addons:
         firefox: latest
 
-    # Tests pass on nightly using yarn, but no need to run all the tests, just
-    # do one smoke test
-    - rust: nightly
-      before_install:
-        - rustup target add wasm32-unknown-unknown
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-        - source ~/.nvm/nvm.sh
-        - nvm install v10.5
-        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
-        - export PATH=$HOME/.yarn/bin:$PATH
-      install:
-        - yarn install --freeze-lockfile
-      script:
-        - cargo test api::works
-      addons:
-        firefox: latest
+    # # Tests pass on nightly using yarn, but no need to run all the tests, just
+    # # do one smoke test
+    # - rust: nightly
+    #   before_install:
+    #     - rustup target add wasm32-unknown-unknown
+    #     - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+    #     - source ~/.nvm/nvm.sh
+    #     - nvm install v10.5
+    #     - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
+    #     - export PATH=$HOME/.yarn/bin:$PATH
+    #   install:
+    #     - yarn install --freeze-lockfile
+    #   script:
+    #     - cargo test api::works
+    #   addons:
+    #     firefox: latest
 
-    # WebIDL tests pass on nightly
-    - rust: nightly
-      before_install: rustup component add rustfmt-preview --toolchain nightly
-      script: (cd crates/webidl && cargo test)
-      env: RUST_BACKTRACE=1 RUST_LOG=wasm_bindgen_webidl
+    # # WebIDL tests pass on nightly
+    # - rust: nightly
+    #   before_install: rustup component add rustfmt-preview --toolchain nightly
+    #   script: (cd crates/webidl && cargo test)
+    #   env: RUST_BACKTRACE=1 RUST_LOG=wasm_bindgen_webidl
 
-    # Dist linux binary
-    - env: TARGET=x86_64-unknown-linux-musl DEPLOY=1
-      rust: nightly
-      before_script: rustup target add $TARGET
-      script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
-      addons:
-        apt:
-          packages:
-          - musl-tools
+    # # Dist linux binary
+    # - env: TARGET=x86_64-unknown-linux-musl DEPLOY=1
+    #   rust: nightly
+    #   before_script: rustup target add $TARGET
+    #   script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
+    #   addons:
+    #     apt:
+    #       packages:
+    #       - musl-tools
 
-    # Dist OSX binary
-    - os: osx
-      rust: nightly
-      env: MACOSX_DEPLOYMENT_TARGET=10.7 DEPLOY=1 TARGET=x86_64-apple-darwin
-      script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
-      install: true
+    # # Dist OSX binary
+    # - os: osx
+    #   rust: nightly
+    #   env: MACOSX_DEPLOYMENT_TARGET=10.7 DEPLOY=1 TARGET=x86_64-apple-darwin
+    #   script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
+    #   install: true
 
-    # We can build the tool on nightly
-    - rust: nightly
-      script: cargo install --debug --path crates/cli
+    # # We can build the tool on nightly
+    # - rust: nightly
+    #   script: cargo install --debug --path crates/cli
 
-    # All examples work
-    - rust: nightly
-      before_install:
-        - rustup target add wasm32-unknown-unknown
-        - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
-        - source ~/.nvm/nvm.sh
-        - nvm install v10.5
-      script:
-        - |
-          (cd examples/hello_world && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/smorgasboard && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/console_log && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/math && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/dom && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/wasm-in-wasm && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/char && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/closures && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
-        - |
-          (cd examples/comments && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+    # # All examples work
+    # - rust: nightly
+    #   before_install:
+    #     - rustup target add wasm32-unknown-unknown
+    #     - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+    #     - source ~/.nvm/nvm.sh
+    #     - nvm install v10.5
+    #   script:
+    #     - |
+    #       (cd examples/hello_world && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+    #     - |
+    #       (cd examples/smorgasboard && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+    #     - |
+    #       (cd examples/console_log && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+    #     - |
+    #       (cd examples/math && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+    #     - |
+    #       (cd examples/dom && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+    #     - |
+    #       (cd examples/wasm-in-wasm && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+    #     - |
+    #       (cd examples/char && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+    #     - |
+    #       (cd examples/closures && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
+    #     - |
+    #       (cd examples/comments && sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json && ./build.sh)
 
-    # Build the guide.
-    - rust: stable
-      cache:
-        - cargo
-      before_script:
-        - (test -x $HOME/.cargo/bin/cargo-install-update || cargo install cargo-update)
-        - (test -x $HOME/.cargo/bin/mdbook || cargo install --vers "^0.1" mdbook)
-        - cargo install-update -a
-      script:
-        - (cd guide && mdbook build)
-      deploy:
-        provider: pages
-        skip-cleanup: true
-        github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
-        local-dir: guide/book
-        keep-history: false
-        on:
-          branch: master
+    # # Build the guide.
+    # - rust: stable
+    #   cache:
+    #     - cargo
+    #   before_script:
+    #     - (test -x $HOME/.cargo/bin/cargo-install-update || cargo install cargo-update)
+    #     - (test -x $HOME/.cargo/bin/mdbook || cargo install --vers "^0.1" mdbook)
+    #     - cargo install-update -a
+    #   script:
+    #     - (cd guide && mdbook build)
+    #   deploy:
+    #     provider: pages
+    #     skip-cleanup: true
+    #     github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+    #     local-dir: guide/book
+    #     keep-history: false
+    #     on:
+    #       branch: master
 
 
 notifications:
