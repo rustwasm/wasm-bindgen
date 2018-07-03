@@ -42,10 +42,10 @@ fn now() {
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, Number};
+            use wasm_bindgen::js::Date;
 
             #[wasm_bindgen]
-            pub fn now() -> Number {
+            pub fn now() -> f64 {
                 Date::now()
             }
         "#)
@@ -360,11 +360,11 @@ fn utc() {
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, Number};
+            use wasm_bindgen::js::Date;
 
             #[wasm_bindgen]
-            pub fn utc() -> Number {
-                Date::utc(Number::new(JsValue::from(2018)), Number::new(JsValue::from(6)))
+            pub fn utc() -> f64 {
+                Date::utc(2018f64, 6f64)
             }
         "#)
         .file("test.ts", r#"

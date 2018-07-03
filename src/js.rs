@@ -684,7 +684,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
     #[wasm_bindgen(static_method_of = Date)]
-    pub fn now() -> Number;
+    pub fn now() -> f64;
 
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
@@ -771,7 +771,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC
     #[wasm_bindgen(static_method_of = Date, js_name = UTC)]
-    pub fn utc(year: Number, month: Number) -> Number;
+    pub fn utc(year: f64, month: f64) -> f64;
 
     /// The valueOf() method  returns the primitive value of
     /// a Date object.
