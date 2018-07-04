@@ -15,6 +15,7 @@ mod MapIterator;
 mod Math;
 mod Number;
 mod Object;
+mod Reflect;
 mod Set;
 mod SetIterator;
 mod TypedArray;

@@ -978,6 +978,18 @@ extern "C" {
     pub fn values(object: &Object) -> Array;
 }
 
+// Reflect
+#[wasm_bindgen]
+extern "C" {
+    pub type Reflect;
+
+    /// The static Reflect.apply() method calls a target function with arguments as specified.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/apply
+    #[wasm_bindgen(static_method_of = Reflect, catch)]
+    pub fn apply(target: &Function, this_argument: &JsValue, arguments_list: &Array) -> Result<JsValue, JsValue>;
+}
+
 // Set
 #[wasm_bindgen]
 extern {
