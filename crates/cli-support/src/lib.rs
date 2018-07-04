@@ -214,6 +214,8 @@ impl Bindgen {
                 shim.push_str(&format!("import * as import{} from '{}';\n",
                                        i, module));
             }
+            // On windows skip the leading `/` which comes out when we parse a
+            // url to use `C:\...` instead of `\C:\...`
             shim.push_str(&format!("
                 import * as path from 'path';
                 import * as fs from 'fs';
