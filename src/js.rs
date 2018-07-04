@@ -755,6 +755,19 @@ extern "C" {
 extern "C" {
     pub type Date;
 
+    /// The getDay() method returns the day of the week for the specified date according to local time,
+    /// where 0 represents Sunday. For the day of the month see getDate().
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay
+    #[wasm_bindgen(method, js_name = getDay)]
+    pub fn get_day(this: &Date) -> Number;
+
+    /// The getFullYear() method returns the year of the specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getFullYear
+    #[wasm_bindgen(method, js_name = getFullYear)]
+    pub fn get_full_year(this: &Date) -> Number;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.

@@ -3,6 +3,76 @@
 use super::project;
 
 #[test]
+fn get_day() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, Number};
+
+            #[wasm_bindgen]
+            pub fn get_day(this: &Date) -> Number {
+                this.get_day()
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('August 19, 1975 23:15:30');
+
+                assert.equal(wasm.get_day(date), 2);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_full_year() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, Number};
+
+            #[wasm_bindgen]
+            pub fn get_full_year(this: &Date) -> Number {
+                this.get_full_year()
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('July 20, 1969 00:20:18');
+                let abbrDate = new Date('Thu, 06 Sep 12 00:00:00');
+
+                assert.equal(wasm.get_full_year(date), 1969);
+                assert.equal(wasm.get_full_year(abbrDate), 2012);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file(
