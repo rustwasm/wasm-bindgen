@@ -434,3 +434,53 @@ fn has() {
         )
         .test()
 }
+
+#[test]
+fn is_extensible() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_extensible(target: &js::Object) -> JsValue {
+                let result = js::Reflect::is_extensible(target);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {
+                    property: 42
+                };
+
+                assert.equal(wasm.is_extensible(object), true);
+
+                Reflect.preventExtensions(object);
+
+                assert.equal(wasm.is_extensible(object), false);
+
+                const object2 = Object.seal({});
+
+                assert.equal(wasm.is_extensible(object2), false);
+                assert.equal(wasm.is_extensible(""), "TypeError");
+            }
+        "#,
+        )
+        .test()
+}

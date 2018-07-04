@@ -1042,6 +1042,14 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/has
     #[wasm_bindgen(static_method_of = Reflect, catch)]
     pub fn has(target: &JsValue, property_key: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.isExtensible() method determines if an object is extensible 
+    /// (whether it can have new properties added to it). It is similar to 
+    /// Object.isExtensible(), but with some differences.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/isExtensible
+    #[wasm_bindgen(static_method_of = Reflect, js_name = isExtensible, catch)]
+    pub fn is_extensible(target: &Object) -> Result<JsValue, JsValue>;
 }
 
 // Set
