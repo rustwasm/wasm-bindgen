@@ -1042,6 +1042,12 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
     #[wasm_bindgen(constructor)]
     pub fn new(target: &JsValue, handler: &Object) -> Proxy;
+
+    /// The Proxy.revocable() method is used to create a revocable Proxy object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/revocable
+    #[wasm_bindgen(static_method_of = Proxy)]
+    pub fn revocable(target: &JsValue, handler: &Object) -> Object;
 }
 
 // Set
