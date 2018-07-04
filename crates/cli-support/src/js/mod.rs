@@ -1807,8 +1807,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     let target = if let Some(g) = getter {
                         if import.structural {
                             format!(
-                                "function(y) {{
-                                return this.{};
+                                "function() {{
+                                    return this.{};
                                 }}",
                                 g
                             )
