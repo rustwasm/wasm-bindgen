@@ -16,12 +16,7 @@ fn apply() {
 
             #[wasm_bindgen]
             pub fn apply(target: &js::Function, this_argument: &JsValue, arguments_list: &js::Array) -> JsValue {
-                let result = js::Reflect::apply(target, this_argument, arguments_list);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+                js::Reflect::apply(target, this_argument, arguments_list)
             }
         "#,
         )
@@ -33,7 +28,6 @@ fn apply() {
 
             export function test() {
                 assert.equal(wasm.apply("".charAt, "ponies", [3]), "i");
-                assert.equal(wasm.apply("", "ponies", [3]), "TypeError: Function.prototype.apply was called on , which is a string and not a function");
             }
         "#,
         )
@@ -54,12 +48,7 @@ fn construct() {
 
             #[wasm_bindgen]
             pub fn construct(target: &js::Function, arguments_list: &js::Array) -> JsValue {
-                let result = js::Reflect::construct(target, arguments_list);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+                js::Reflect::construct(target, arguments_list)
             }
         "#,
         )
@@ -88,7 +77,6 @@ fn construct() {
                 const args = [10, 10];
 
                 assert.equal(wasm.construct(Rectangle, args).x, 10);
-                assert.equal(wasm.construct("", args), "TypeError:  is not a constructor");
             }
         "#,
         )
@@ -109,12 +97,7 @@ fn construct_with_new_target() {
 
             #[wasm_bindgen]
             pub fn construct_with_new_target(target: &js::Function, arguments_list: &js::Array, new_target: &js::Function) -> JsValue {
-                let result = js::Reflect::construct_with_new_target(target, arguments_list, new_target);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+                js::Reflect::construct_with_new_target(target, arguments_list, new_target)
             }
         "#,
         )
@@ -158,7 +141,6 @@ fn construct_with_new_target() {
                 const args = [10, 10];
 
                 assert.equal(wasm.construct_with_new_target(Rectangle, args, Rectangle2).x, 10);
-                assert.equal(wasm.construct_with_new_target(Rectangle, args, ""), "TypeError:  is not a constructor");
             }
         "#,
         )
@@ -218,13 +200,8 @@ fn delete_property() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn delete_property(target: &JsValue, property_key: &JsValue) -> JsValue {
-                let result = js::Reflect::delete_property(target, property_key);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn delete_property(target: &js::Object, property_key: &JsValue) -> bool {
+                js::Reflect::delete_property(target, property_key)
             }
         "#,
         )
@@ -247,8 +224,6 @@ fn delete_property() {
                 wasm.delete_property(array, 3);
 
                 assert.equal(array[3], undefined);
-
-                assert.equal(wasm.delete_property("", 3), "TypeError: Reflect.deleteProperty called on non-object");
             }
         "#,
         )
@@ -268,13 +243,8 @@ fn get() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get(target: &JsValue, property_key: &JsValue) -> JsValue {
-                let result = js::Reflect::get(target, property_key);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn get(target: &js::Object, property_key: &JsValue) -> JsValue {
+                js::Reflect::get(target, property_key)
             }
         "#,
         )
@@ -294,8 +264,6 @@ fn get() {
                 const array = [1, 2, 3, 4, 5];
 
                 assert.equal(wasm.get(array, 3), 4);
-
-                assert.equal(wasm.get("", 3), "TypeError: Reflect.get called on non-object");
             }
         "#,
         )
@@ -315,13 +283,8 @@ fn get_own_property_descriptor() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_own_property_descriptor(target: &JsValue, property_key: &JsValue) -> JsValue {
-                let result = js::Reflect::get_own_property_descriptor(target, property_key);
-
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn get_own_property_descriptor(target: &js::Object, property_key: &JsValue) -> JsValue {
+                js::Reflect::get_own_property_descriptor(target, property_key)
             }
         "#,
         )
@@ -338,7 +301,6 @@ fn get_own_property_descriptor() {
 
                 assert.equal(wasm.get_own_property_descriptor(object, "property").value, 42);
                 assert.equal(wasm.get_own_property_descriptor(object, "property1"), undefined);
-                assert.equal(wasm.get_own_property_descriptor("", "property1"), "TypeError: Reflect.getOwnPropertyDescriptor called on non-object");
             }
         "#,
         )
@@ -358,13 +320,8 @@ fn get_prototype_of() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_prototype_of(target: &JsValue) -> JsValue {
-                let result = js::Reflect::get_prototype_of(target);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn get_prototype_of(target: &js::Object) -> js::Object {
+                js::Reflect::get_prototype_of(target)
             }
         "#,
         )
@@ -382,7 +339,6 @@ fn get_prototype_of() {
 
                 assert.equal(wasm.get_prototype_of(object), Object.prototype);
                 assert.equal(wasm.get_prototype_of(array), Array.prototype);
-                assert.equal(wasm.get_prototype_of(""), "TypeError: Reflect.getPrototypeOf called on non-object");
             }
         "#,
         )
@@ -442,13 +398,8 @@ fn is_extensible() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn is_extensible(target: &js::Object) -> JsValue {
-                let result = js::Reflect::is_extensible(target);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn is_extensible(target: &js::Object) -> bool {
+                js::Reflect::is_extensible(target)
             }
         "#,
         )
@@ -472,7 +423,6 @@ fn is_extensible() {
                 const object2 = Object.seal({});
 
                 assert.equal(wasm.is_extensible(object2), false);
-                assert.equal(wasm.is_extensible(""), "TypeError: Reflect.isExtensible called on non-object");
             }
         "#,
         )
@@ -492,13 +442,8 @@ fn own_keys() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn own_keys(target: &js::Object) -> JsValue {
-                let result = js::Reflect::own_keys(target);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn own_keys(target: &js::Object) -> js::Array {
+                js::Reflect::own_keys(target)
             }
         "#,
         )
@@ -516,8 +461,6 @@ fn own_keys() {
 
                 assert.equal(wasm.own_keys(object)[0], "property");
                 assert.equal(wasm.own_keys(array)[0], "length");
-
-                assert.equal(wasm.own_keys(""), "TypeError: Reflect.ownKeys called on non-object");
             }
         "#,
         )
@@ -537,12 +480,8 @@ fn prevent_extensions() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn prevent_extensions(target: &js::Object) -> JsValue {
-                let result = js::Reflect::prevent_extensions(target);
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn prevent_extensions(target: &js::Object) -> bool {
+                js::Reflect::prevent_extensions(target)
             }
         "#,
         )
@@ -558,7 +497,6 @@ fn prevent_extensions() {
                 wasm.prevent_extensions(object1);
 
                 assert.equal(Reflect.isExtensible(object1), false);
-                assert.equal(wasm.prevent_extensions(""), "TypeError: Reflect.preventExtensions called on non-object");
             }
         "#,
         )
@@ -578,12 +516,8 @@ fn set() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set(target: &JsValue, property_key: &JsValue, value: &JsValue) -> JsValue {
-                let result = js::Reflect::set(target, property_key, value);
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn set(target: &js::Object, property_key: &JsValue, value: &JsValue) -> bool {
+                js::Reflect::set(target, property_key, value)
             }
         "#,
         )
@@ -601,7 +535,6 @@ fn set() {
 
                 assert.equal(Reflect.get(object, "key"), "value");
                 assert.equal(array[0], 100);
-                assert.equal(wasm.set("", "key", "value"), "TypeError: Reflect.set called on non-object");
             }
         "#,
         )
@@ -621,12 +554,8 @@ fn set_with_receiver() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set_with_receiver(target: &JsValue, property_key: &JsValue, value: &JsValue, receiver: &JsValue) -> JsValue {
-                let result = js::Reflect::set_with_receiver(target, property_key, value, receiver);
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn set_with_receiver(target: &js::Object, property_key: &JsValue, value: &JsValue, receiver: &js::Object) -> bool {
+                js::Reflect::set_with_receiver(target, property_key, value, receiver)
             }
         "#,
         )
@@ -644,7 +573,6 @@ fn set_with_receiver() {
 
                 assert.equal(Reflect.get(object, "key"), "value");
                 assert.equal(array[0], 100);
-                assert.equal(wasm.set_with_receiver("", "key", "value", ""), "TypeError: Reflect.set called on non-object");
             }
         "#,
         )
@@ -664,13 +592,8 @@ fn set_prototype_of() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set_prototype_of(target: &JsValue, prototype: &JsValue) -> JsValue {
-                let result = js::Reflect::set_prototype_of(target, prototype);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn set_prototype_of(target: &js::Object, prototype: &JsValue) -> bool {
+                js::Reflect::set_prototype_of(target, prototype)
             }
         "#,
         )
@@ -686,8 +609,6 @@ fn set_prototype_of() {
                 assert.equal(Object.getPrototypeOf(object), Object.prototype);
                 assert.equal(wasm.set_prototype_of(object, null), true);
                 assert.equal(Object.getPrototypeOf(object), null);
-
-                assert.equal(wasm.set_prototype_of("", Object.prototype), "TypeError: Reflect.setPrototypeOf called on non-object");
             }
         "#,
         )
