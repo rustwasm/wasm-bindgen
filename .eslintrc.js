@@ -25,5 +25,9 @@ module.exports = {
         ],
         'no-console': 0,
         'no-undef': 'warn'
+    },
+    globals: {
+      BigInt64Array: true,
+      BigUint64Array: true
     }
 };
