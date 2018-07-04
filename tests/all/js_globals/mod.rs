@@ -3,6 +3,7 @@
 use super::project;
 
 mod Array;
+mod ArrayBuffer;
 mod ArrayIterator;
 mod Boolean;
 mod Date;
