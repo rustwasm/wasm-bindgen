@@ -24,7 +24,6 @@ module.exports = {
             'always'
         ],
         'no-console': 0,
-        'no-undef': 'warn',
-        'no-unused-vars': 'warn'
+        'no-undef': 'warn'
     }
 };
