@@ -2,6 +2,8 @@ use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
 use syn;
+use syn::spanned::Spanned;
+use syn::synom::Parser;
 use util;
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -156,9 +158,10 @@ impl Program {
         opts: Option<BindgenAttrs>,
         tokens: &mut TokenStream,
     ) {
+        let context = BindgenAttrContext::from_item_toplevel(&item);
         match item {
             syn::Item::Fn(mut f) => {
-                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs, context));
 
                 let no_mangle = f
                     .attrs
@@ -183,21 +186,21 @@ impl Program {
                 });
             }
             syn::Item::Struct(mut s) => {
-                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut s.attrs));
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut s.attrs, context));
                 self.structs.push(Struct::from(&mut s, opts));
                 s.to_tokens(tokens);
             }
             syn::Item::Impl(mut i) => {
-                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut i.attrs));
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut i.attrs, context));
                 self.push_impl(&mut i, opts);
                 i.to_tokens(tokens);
             }
             syn::Item::ForeignMod(mut f) => {
-                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs, context));
                 self.push_foreign_mod(f, opts);
             }
             syn::Item::Enum(mut e) => {
-                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut e.attrs));
+                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut e.attrs, context));
                 e.to_tokens(tokens);
                 self.push_enum(e, opts);
             }
@@ -259,7 +262,7 @@ impl Program {
             panic!("can only bindgen safe functions");
         }
 
-        let opts = BindgenAttrs::find(&mut method.attrs);
+        let opts = BindgenAttrs::find(&mut method.attrs, BindgenAttrContext::Method);
         let comments = extract_doc_comments(&method.attrs);
         let is_constructor = opts.constructor();
         let constructor = if is_constructor {
@@ -340,13 +343,14 @@ impl Program {
         }
         for mut item in f.items.into_iter() {
             let item_opts = {
+                let context = BindgenAttrContext::from_foreign_item(&item);
                 let attrs = match item {
                     syn::ForeignItem::Fn(ref mut f) => &mut f.attrs,
                     syn::ForeignItem::Type(ref mut t) => &mut t.attrs,
                     syn::ForeignItem::Static(ref mut s) => &mut s.attrs,
                     _ => panic!("only foreign functions/types allowed for now"),
                 };
-                BindgenAttrs::find(attrs)
+                BindgenAttrs::find(attrs, context)
             };
             let module = item_opts.module().or(opts.module()).map(|s| s.to_string());
             let version = item_opts
@@ -810,7 +814,7 @@ impl Struct {
                 let name_str = name.to_string();
                 let getter = shared::struct_field_get(&ident, &name_str);
                 let setter = shared::struct_field_set(&ident, &name_str);
-                let opts = BindgenAttrs::find(&mut field.attrs);
+                let opts = BindgenAttrs::find(&mut field.attrs, BindgenAttrContext::Field);
                 let comments = extract_doc_comments(&field.attrs);
                 fields.push(StructField {
                     opts,
@@ -853,11 +857,158 @@ impl StructField {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Default)]
 pub struct BindgenAttrs {
-    pub attrs: Vec<BindgenAttr>,
+    pub catch: Option<()>,
+    pub constructor: Option<()>,
+    pub method: Option<()>,
+    pub static_method_of: Option<Ident>,
+    pub js_namespace: Option<Ident>,
+    pub module: Option<String>,
+    pub version: Option<String>,
+    pub getter: Option<Option<Ident>>,
+    pub setter: Option<Option<Ident>>,
+    pub structural: Option<()>,
+    pub readonly: Option<()>,
+    pub js_name: Option<Ident>,
+    pub js_class: Option<String>,
 }
 
 impl BindgenAttrs {
-    pub fn find(attrs: &mut Vec<syn::Attribute>) -> BindgenAttrs {
+    pub fn parse(input: TokenStream, context: BindgenAttrContext) -> BindgenAttrs {
+        let mut result = BindgenAttrs::default();
+        let attrs = attrs_parser.parse(input.into())
+            .expect("malformed #[wasm_bindgen] attribute");
+        let mut valid = true;
+        for attr in attrs {
+            macro_rules! attr {
+                ($member:ident, boolean, $($context:tt)+) => ({
+                    attr!($member, $($context)+);
+                    if let Some(ref value) = attr.value {
+                        #[cfg(feature = "spans")]
+                        value.span().unstable()
+                            .error(format!("attribute \"{}\" doesn't take a value", attr.name))
+                            .emit();
+                        valid = false;
+                    }
+                    result.$member = Some(());
+                });
+                ($member:ident, required($parser:ident), $($context:tt)+) => ({
+                    attr!($member, $($context)+);
+                    let value = attr.value.as_ref().map(|v| $parser.parse(::std::iter::once(v.clone()).collect::<TokenStream>().into()));
+                    match value {
+                        None => {
+                            #[cfg(feature = "spans")]
+                            attr.name.span().unstable()
+                                .error(format!("attribute \"{}\" requires a value", attr.name))
+                                .emit();
+                            valid = false;
+                        },
+                        Some(Err(_)) => {
+                            #[cfg(feature = "spans")]
+                            attr.value.span().unstable()
+                                .error(format!("failed to parse value for attribute \"{}\"", attr.name))
+                                .help(format!("expected {}", stringify!($parser)))
+                                .emit();
+                            valid = false;
+                        },
+                        Some(Ok(value)) => {
+                            result.$member = Some(value);
+                        }
+                    }
+                });
+                ($member:ident, optional($parser:ident), $($context:tt)+) => ({
+                    attr!($member, $($context)+);
+                    let value = attr.value.as_ref().map(|v| $parser.parse(::std::iter::once(v.clone()).collect::<TokenStream>().into()));
+                    match value {
+                        None => {
+                            result.$member = Some(None);
+                        },
+                        Some(Err(_)) => {
+                            #[cfg(feature = "spans")]
+                            attr.value.span().unstable()
+                                .error(format!("failed to parse value for attribute \"{}\"", attr.name))
+                                .help(format!("expected {}", stringify!($parser)))
+                                .emit();
+                            valid = false;
+                        },
+                        Some(Ok(value)) => {
+                            result.$member = Some(Some(value));
+                        }
+                    }
+                });
+                ($member:ident, $($context:tt)+) => ({
+                    #[allow(unreachable_patterns)]
+                    match context {
+                        $($context)+ => {},
+                        _ => {
+                            #[cfg(feature = "spans")]
+                            attr.span().unstable()
+                                .error("attribute is not available in this context")
+                                .help(format!("attribute \"{}\" is not allowed before {}", attr.name, context))
+                                .emit();
+                            valid = false;
+                        }
+                    }
+                    if result.$member.is_some() {
+                        #[cfg(feature = "spans")]
+                        attr.span().unstable()
+                            .error(format!("duplicate attribute \"{}\"", attr.name))
+                            .emit();
+                        valid = false;
+                    }
+                });
+            }
+            named!(ident -> Ident, call!(term2ident));
+            named!(string -> String, map!(syn!(syn::LitStr), |s| s.value()));
+            use self::BindgenAttrContext::*;
+            match &attr.name.to_string()[..] {
+                "catch" => attr!(catch, boolean, ForeignFn),
+                "constructor" => attr!(constructor, boolean, ForeignFn | Method),
+                "method" => attr!(method, boolean, ForeignFn | Method),
+                "static_method_of" => attr!(static_method_of, required(ident), ForeignFn),
+                "js_namespace" => attr!(
+                    js_namespace,
+                    required(ident),
+                    ForeignFn | ForeignType | ForeignStatic
+                ),
+                "module" => attr!(module, required(string), ForeignMod),
+                "version" => attr!(version, required(string), ForeignMod),
+                "getter" => attr!(getter, optional(ident), ForeignFn),
+                "setter" => attr!(setter, optional(ident), ForeignFn),
+                "structural" => attr!(structural, boolean, ForeignFn),
+                "readonly" => attr!(readonly, boolean, Field),
+                "js_name" => attr!(
+                    js_name,
+                    required(ident),
+                    Fn | Method | Struct | Field | Enum | ForeignFn | ForeignType | ForeignStatic
+                ),
+                "js_class" => attr!(js_class, required(string), ForeignFn),
+                name => {
+                    #[cfg(feature = "spans")]
+                    attr.name.span().unstable()
+                        .error(format!("unrecognized attribute \"{}\"", name))
+                        .emit();
+                    valid = false;
+                }
+            }
+        }
+        if !valid {
+            #[cfg(not(feature = "spans"))]
+            panic!("malformed #[wasm_bindgen] attribute");
+            #[cfg(feature = "spans")]
+            // workaround for https://github.com/rust-lang/rust/issues/47941
+            match context {
+                BindgenAttrContext::ForeignFn |
+                BindgenAttrContext::ForeignType |
+                BindgenAttrContext::ForeignStatic => {
+                    panic!("malformed #[wasm_bindgen] attribute");
+                }
+                _ => {}
+            }
+        }
+        result
+    }
+
+    pub fn find(attrs: &mut Vec<syn::Attribute>, context: BindgenAttrContext) -> BindgenAttrs {
         let pos = attrs
             .iter()
             .enumerate()
@@ -876,231 +1027,164 @@ impl BindgenAttrs {
         if tts.next().is_some() {
             panic!("malformed #[wasm_bindgen] attribute");
         }
-        syn::parse(tt.into()).expect("malformed #[wasm_bindgen] attribute")
+        BindgenAttrs::parse(tt, context)
     }
 
     fn module(&self) -> Option<&str> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::Module(s) => Some(&s[..]),
-                _ => None,
-            })
-            .next()
+        self.module.as_ref().map(|s| s.as_str())
     }
 
     fn version(&self) -> Option<&str> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::Version(s) => Some(&s[..]),
-                _ => None,
-            })
-            .next()
+        self.version.as_ref().map(|s| s.as_str())
     }
 
     pub fn catch(&self) -> bool {
-        self.attrs.iter().any(|a| match a {
-            BindgenAttr::Catch => true,
-            _ => false,
-        })
+        self.catch.is_some()
     }
 
     fn constructor(&self) -> bool {
-        self.attrs.iter().any(|a| match a {
-            BindgenAttr::Constructor => true,
-            _ => false,
-        })
+        self.constructor.is_some()
     }
 
     fn static_method_of(&self) -> Option<&Ident> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::StaticMethodOf(c) => Some(c),
-                _ => None,
-            })
-            .next()
+        self.static_method_of.as_ref()
     }
 
     fn method(&self) -> bool {
-        self.attrs.iter().any(|a| match a {
-            BindgenAttr::Method => true,
-            _ => false,
-        })
+        self.method.is_some()
     }
 
     fn js_namespace(&self) -> Option<&Ident> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::JsNamespace(s) => Some(s),
-                _ => None,
-            })
-            .next()
+        self.js_namespace.as_ref()
     }
 
     pub fn getter(&self) -> Option<Option<&Ident>> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::Getter(s) => Some(s.as_ref()),
-                _ => None,
-            })
-            .next()
+        self.getter.as_ref().map(Option::as_ref)
     }
 
     pub fn setter(&self) -> Option<Option<&Ident>> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::Setter(s) => Some(s.as_ref()),
-                _ => None,
-            })
-            .next()
+        self.setter.as_ref().map(Option::as_ref)
     }
 
     pub fn structural(&self) -> bool {
-        self.attrs.iter().any(|a| match *a {
-            BindgenAttr::Structural => true,
-            _ => false,
-        })
+        self.structural.is_some()
     }
 
     pub fn readonly(&self) -> bool {
-        self.attrs.iter().any(|a| match *a {
-            BindgenAttr::Readonly => true,
-            _ => false,
-        })
+        self.readonly.is_some()
     }
 
     pub fn js_name(&self) -> Option<&Ident> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::JsName(s) => Some(s),
-                _ => None,
-            })
-            .next()
+        self.js_name.as_ref()
     }
 
     fn js_class(&self) -> Option<&str> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::JsClass(s) => Some(&s[..]),
-                _ => None,
-            })
-            .next()
+        self.js_class.as_ref().map(|s| s.as_str())
     }
 }
 
-impl syn::synom::Synom for BindgenAttrs {
-    named!(parse -> Self, alt!(
-        do_parse!(
-            opts: call!(
-                syn::punctuated::Punctuated::<_, syn::token::Comma>::parse_terminated
-            ) >>
-            (BindgenAttrs {
-                attrs: opts.into_iter().collect(),
-            })
-        ) => { |s| s }
-        |
-        epsilon!() => { |_| BindgenAttrs { attrs: Vec::new() } }
-    ));
-}
+named!(attrs_parser -> Vec<BindgenAttr>, alt!(
+    do_parse!(
+        opts: call!(
+            syn::punctuated::Punctuated::<_, syn::token::Comma>::parse_terminated
+        ) >>
+        (opts.into_iter().collect())
+    ) => { |s| s }
+    |
+    epsilon!() => { |_| Vec::new() }
+));
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-pub enum BindgenAttr {
-    Catch,
-    Constructor,
-    Method,
-    StaticMethodOf(Ident),
-    JsNamespace(Ident),
-    Module(String),
-    Version(String),
-    Getter(Option<Ident>),
-    Setter(Option<Ident>),
-    Structural,
-    Readonly,
-    JsName(Ident),
-    JsClass(String),
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
+struct BindgenAttr {
+    name: Ident,
+    value: Option<TokenTree>,
 }
 
 impl syn::synom::Synom for BindgenAttr {
-    named!(parse -> Self, alt!(
-        call!(term, "catch") => { |_| BindgenAttr::Catch }
-        |
-        call!(term, "constructor") => { |_| BindgenAttr::Constructor }
-        |
-        call!(term, "method") => { |_| BindgenAttr::Method }
-        |
-        do_parse!(
-            call!(term, "static_method_of") >>
+    named!(parse -> Self, do_parse!(
+        name: call!(term2ident) >>
+        value: option!(do_parse!(
             punct!(=) >>
-            cls: call!(term2ident) >>
-            (cls)
-        )=> { BindgenAttr::StaticMethodOf }
-        |
-        do_parse!(
-            call!(term, "getter") >>
-            val: option!(do_parse!(
-                punct!(=) >>
-                s: call!(term2ident) >>
-                (s)
-            )) >>
-            (val)
-        )=> { BindgenAttr::Getter }
-        |
-        do_parse!(
-            call!(term, "setter") >>
-            val: option!(do_parse!(
-                punct!(=) >>
-                s: call!(term2ident) >>
-                (s)
-            )) >>
-            (val)
-        )=> { BindgenAttr::Setter }
-        |
-        call!(term, "structural") => { |_| BindgenAttr::Structural }
-        |
-        call!(term, "readonly") => { |_| BindgenAttr::Readonly }
-        |
-        do_parse!(
-            call!(term, "js_namespace") >>
-            punct!(=) >>
-            ns: call!(term2ident) >>
-            (ns)
-        )=> { BindgenAttr::JsNamespace }
-        |
-        do_parse!(
-            call!(term, "module") >>
-            punct!(=) >>
-            s: syn!(syn::LitStr) >>
-            (s.value())
-        )=> { BindgenAttr::Module }
-        |
-        do_parse!(
-            call!(term, "version") >>
-            punct!(=) >>
-            s: syn!(syn::LitStr) >>
-            (s.value())
-        )=> { BindgenAttr::Version }
-        |
-        do_parse!(
-            call!(term, "js_name") >>
-            punct!(=) >>
-            ns: call!(term2ident) >>
-            (ns)
-        )=> { BindgenAttr::JsName }
-        |
-        do_parse!(
-            call!(term, "js_class") >>
-            punct!(=) >>
-            s: syn!(syn::LitStr) >>
-            (s.value())
-        )=> { BindgenAttr::JsClass }
+            value: syn!(TokenTree) >>
+            (value)
+        )) >>
+        (BindgenAttr { name, value })
     ));
+}
+
+impl Spanned for BindgenAttr {
+    fn span(&self) -> Span {
+        #[cfg(feature = "spans")]
+        match self.value {
+            None => self.name.span(),
+            Some(ref value) => self
+                .name
+                .span()
+                .unstable()
+                .join(value.span().unstable())
+                .unwrap()
+                .into(),
+        }
+        #[cfg(not(feature = "spans"))]
+        Span::call_site()
+    }
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Copy, Clone)]
+pub enum BindgenAttrContext {
+    Fn,
+    Method,
+    Struct,
+    Field,
+    Enum,
+    Impl,
+    ForeignMod,
+    ForeignFn,
+    ForeignType,
+    ForeignStatic,
+    Unknown,
+}
+
+impl BindgenAttrContext {
+    pub fn from_item_toplevel(item: &syn::Item) -> BindgenAttrContext {
+        match item {
+            syn::Item::Fn(_) => BindgenAttrContext::Fn,
+            syn::Item::Struct(_) => BindgenAttrContext::Struct,
+            syn::Item::Enum(_) => BindgenAttrContext::Enum,
+            syn::Item::Impl(_) => BindgenAttrContext::Impl,
+            syn::Item::ForeignMod(_) => BindgenAttrContext::ForeignMod,
+            _ => BindgenAttrContext::Unknown,
+        }
+    }
+
+    pub fn from_foreign_item(item: &syn::ForeignItem) -> BindgenAttrContext {
+        match item {
+            syn::ForeignItem::Fn(_) => BindgenAttrContext::ForeignFn,
+            syn::ForeignItem::Type(_) => BindgenAttrContext::ForeignType,
+            syn::ForeignItem::Static(_) => BindgenAttrContext::ForeignStatic,
+            _ => BindgenAttrContext::Unknown,
+        }
+    }
+}
+
+impl ::std::fmt::Display for BindgenAttrContext {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        let s = match self {
+            BindgenAttrContext::Fn => "exported function",
+            BindgenAttrContext::Method => "exported method",
+            BindgenAttrContext::Struct => "exported struct",
+            BindgenAttrContext::Field => "exported struct field",
+            BindgenAttrContext::Enum => "exported enum",
+            BindgenAttrContext::Impl => "exported impl block",
+            BindgenAttrContext::ForeignMod => "extern block",
+            BindgenAttrContext::ForeignFn => "imported function",
+            BindgenAttrContext::ForeignType => "imported type",
+            BindgenAttrContext::ForeignStatic => "imported static",
+            BindgenAttrContext::Unknown => "unknown",
+        };
+        write!(f, "{}", s)
+    }
 }
 
 fn extract_first_ty_param(ty: Option<&syn::Type>) -> Option<Option<syn::Type>> {
@@ -1129,15 +1213,6 @@ fn extract_first_ty_param(ty: Option<&syn::Type>) -> Option<Option<syn::Type>> {
         _ => {}
     }
     Some(Some(ty.clone()))
-}
-
-fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<'a, ()> {
-    if let Some((ident, next)) = cursor.ident() {
-        if ident == name {
-            return Ok(((), next));
-        }
-    }
-    syn::parse_error()
 }
 
 fn term2ident<'a>(cursor: syn::buffer::Cursor<'a>) -> syn::synom::PResult<'a, Ident> {

@@ -148,7 +148,7 @@ pub fn create_function<'a, I>(
     arguments: I,
     kind: backend::ast::ImportFunctionKind,
     ret: Option<syn::Type>,
-    mut attrs: Vec<backend::ast::BindgenAttr>,
+    mut opts: backend::ast::BindgenAttrs,
 ) -> Option<backend::ast::ImportFunction>
 where
     I: Iterator<Item = (&'a str, &'a webidl::ast::Type, bool)>,
@@ -161,10 +161,8 @@ where
     let js_ret = ret.clone();
 
     if let backend::ast::ImportFunctionKind::Method { .. } = kind {
-        attrs.push(backend::ast::BindgenAttr::Method);
+        opts.method = Some(());
     }
-
-    let opts = backend::ast::BindgenAttrs { attrs };
 
     let shim = {
         let ns = match kind {
@@ -233,7 +231,7 @@ pub fn create_basic_method(
             .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
         kind,
         ret,
-        Vec::new(),
+        Default::default(),
     )
 }
 
@@ -262,7 +260,10 @@ pub fn create_getter(
         iter::empty(),
         kind,
         ret,
-        vec![backend::ast::BindgenAttr::Getter(Some(raw_ident(name)))],
+        backend::ast::BindgenAttrs {
+            getter: Some(Some(raw_ident(name))),
+            ..Default::default()
+        },
     )
 }
 
@@ -283,7 +284,10 @@ pub fn create_setter(
         iter::once((name, ty, false)),
         kind,
         None,
-        vec![backend::ast::BindgenAttr::Setter(Some(raw_ident(name)))],
+        backend::ast::BindgenAttrs {
+            setter: Some(Some(raw_ident(name))),
+            ..Default::default()
+        },
     )
 }
 
