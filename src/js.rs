@@ -254,6 +254,39 @@ extern "C" {
     pub fn unshift(this: &Array, value: JsValue) -> u32;
 }
 
+// ArrayBuffer
+#[wasm_bindgen]
+extern "C" {
+    pub type ArrayBuffer;
+
+    /// The `ArrayBuffer` object is used to represent a generic,
+    /// fixed-length raw binary data buffer. You cannot directly
+    /// manipulate the contents of an `ArrayBuffer`; instead, you
+    /// create one of the typed array objects or a `DataView` object
+    /// which represents the buffer in a specific format, and use that
+    /// to read and write the contents of the buffer.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
+    #[wasm_bindgen(constructor)]
+    pub fn new(length: f64) -> ArrayBuffer;
+
+    /// The `slice()` method returns a new `ArrayBuffer` whose contents
+    /// are a copy of this `ArrayBuffer`'s bytes from begin, inclusive,
+    /// up to end, exclusive.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice
+    #[wasm_bindgen(static_method_of = ArrayBuffer, js_name = isView)]
+    pub fn is_view(value: JsValue) -> bool;
+
+    /// The `slice()` method returns a new `ArrayBuffer` whose contents
+    /// are a copy of this `ArrayBuffer`'s bytes from begin, inclusive,
+    /// up to end, exclusive.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &ArrayBuffer, begin: f64) -> ArrayBuffer;
+}
+
 // Array Iterator
 #[wasm_bindgen]
 extern "C" {
