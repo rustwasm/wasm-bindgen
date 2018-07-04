@@ -988,6 +988,16 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/apply
     #[wasm_bindgen(static_method_of = Reflect, catch)]
     pub fn apply(target: &Function, this_argument: &JsValue, arguments_list: &Array) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.construct() method acts like the new operator, but as a function.
+    /// It is equivalent to calling new target(...args). It gives also the added option to 
+    /// specify a different prototype.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct
+    #[wasm_bindgen(static_method_of = Reflect, catch)]
+    pub fn construct(target: &Function, arguments_list: &Array) -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = construct, catch)]
+    pub fn construct_with_new_target(target: &Function, arguments_list: &Array, new_target: &Function) -> Result<JsValue, JsValue>;
 }
 
 // Set
