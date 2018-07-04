@@ -956,7 +956,6 @@ impl<'a> Context<'a> {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_malloc")?;
-        self.expose_uint64_memory();
         self.global(&format!(
             "
             function {}(arg) {{
