@@ -199,7 +199,6 @@ fn parse_int_float() {
 
             #[wasm_bindgen]
             pub fn test() {
-                println!("------xx");
                 let i = js::parse_int("42", 10);
                 assert!(!i.is_nan());
                 assert_eq!(i.as_f64(), Some(42.0));

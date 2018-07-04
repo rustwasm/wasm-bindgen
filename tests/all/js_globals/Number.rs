@@ -119,6 +119,46 @@ fn new() {
 }
 
 #[test]
+fn parse_int_float() {
+    project()
+        .file(
+            "src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Number;
+
+            #[wasm_bindgen]
+            pub fn parse_int(text: &str, radix: u8) -> Number {
+                Number::parse_int(text, radix)
+            }
+
+            #[wasm_bindgen]
+            pub fn parse_float(text: &str) -> Number {
+                Number::parse_float(text)
+            }
+        "#,
+        )
+        .file(
+            "test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.parse_int("42", 10), 42);
+                assert.equal(wasm.parse_int("42", 16), 66); // 0x42 == 66
+                assert.ok(Number.isNaN(wasm.parse_int("invalid int", 10)), "should be NaN");
+
+                assert.equal(wasm.parse_float("123456.789"), 123456.789);
+                assert.ok(Number.isNaN(wasm.parse_float("invalid float")), "should be NaN");
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn to_locale_string() {
     project()
         .file("src/lib.rs", r#"
