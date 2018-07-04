@@ -32,8 +32,8 @@ fn apply() {
             import * as wasm from "./out";
 
             export function test() {
-                assert.equal(wasm.apply(''.charAt, 'ponies', [3]), 'i');
-                assert.equal(wasm.apply('', 'ponies', [3]), "TypeError");
+                assert.equal(wasm.apply("".charAt, "ponies", [3]), "i");
+                assert.equal(wasm.apply("", "ponies", [3]), "TypeError");
             }
         "#,
         )
@@ -88,7 +88,7 @@ fn construct() {
                 const args = [10, 10];
 
                 assert.equal(wasm.construct(Rectangle, args).x, 10);
-                assert.equal(wasm.construct('', args), "TypeError");
+                assert.equal(wasm.construct("", args), "TypeError");
             }
         "#,
         )
@@ -158,7 +158,7 @@ fn construct_with_new_target() {
                 const args = [10, 10];
 
                 assert.equal(wasm.construct_with_new_target(Rectangle, args, Rectangle2).x, 10);
-                assert.equal(wasm.construct_with_new_target(Rectangle, args, ''), "TypeError");
+                assert.equal(wasm.construct_with_new_target(Rectangle, args, ""), "TypeError");
             }
         "#,
         )
@@ -178,7 +178,7 @@ fn define_property() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn define_property(target: &js::Object, property_key: &js::JsString, attributes: &js::Object) -> JsValue {
+            pub fn define_property(target: &js::Object, property_key: &JsValue, attributes: &js::Object) -> JsValue {
                 let result = js::Reflect::define_property(target, property_key, attributes);
                 let result = match result {
                     Ok(val) => val,
@@ -239,7 +239,7 @@ fn delete_property() {
                     property: 42
                 };
 
-                wasm.delete_property(object, 'property');
+                wasm.delete_property(object, "property");
 
                 assert.equal(object.property, undefined);
 
@@ -247,6 +247,55 @@ fn delete_property() {
                 wasm.delete_property(array, 3);
 
                 assert.equal(array[3], undefined);
+
+                assert.equal(wasm.delete_property("", 3), "TypeError");
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn get(target: &JsValue, property_key: &JsValue) -> JsValue {
+                let result = js::Reflect::get(target, property_key);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {
+                    property: 42
+                };
+
+                assert.equal(wasm.get(object, "property"), 42);
+
+                const array = [1, 2, 3, 4, 5];
+
+                assert.equal(wasm.get(array, 3), 4);
+
+                assert.equal(wasm.get("", 3), "TypeError");
             }
         "#,
         )
