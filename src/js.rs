@@ -1004,7 +1004,14 @@ extern "C" {
     /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/defineProperty
     #[wasm_bindgen(static_method_of = Reflect, js_name = defineProperty, catch)]
-    pub fn define_property(target: &Object, property_key: &JsString, attributes: &Object) -> Result<JsValue, JsValue>;
+    pub fn define_property(target: &Object, property_key: &JsValue, attributes: &Object) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.deleteProperty() method allows to delete properties. 
+    /// It is like the delete operator as a function.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/deleteProperty
+    #[wasm_bindgen(static_method_of = Reflect, js_name = deleteProperty, catch)]
+    pub fn delete_property(target: &JsValue, key: &JsValue) -> Result<JsValue, JsValue>;
 }
 
 // Set
