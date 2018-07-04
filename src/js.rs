@@ -268,13 +268,13 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
     #[wasm_bindgen(constructor)]
-    pub fn new(length: f64) -> ArrayBuffer;
+    pub fn new(length: u32) -> ArrayBuffer;
 
     /// The `slice()` method returns a new `ArrayBuffer` whose contents
     /// are a copy of this `ArrayBuffer`'s bytes from begin, inclusive,
     /// up to end, exclusive.
     ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/isView
     #[wasm_bindgen(static_method_of = ArrayBuffer, js_name = isView)]
     pub fn is_view(value: JsValue) -> bool;
 
@@ -284,7 +284,13 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice
     #[wasm_bindgen(method)]
-    pub fn slice(this: &ArrayBuffer, begin: f64) -> ArrayBuffer;
+    pub fn slice(this: &ArrayBuffer, begin: u32) -> ArrayBuffer;
+
+    /// Like `slice()` but with the `end` argument.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice
+    #[wasm_bindgen(method, js_name = slice)]
+    pub fn slice_with_end(this: &ArrayBuffer, begin: u32, end: u32) -> ArrayBuffer;
 }
 
 // Array Iterator

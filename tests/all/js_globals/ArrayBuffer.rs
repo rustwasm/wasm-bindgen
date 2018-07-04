@@ -14,7 +14,7 @@ fn new() {
 
             #[wasm_bindgen]
             pub fn new_arraybuffer() -> ArrayBuffer {
-                ArrayBuffer::new(42f64)
+                ArrayBuffer::new(42)
             }
         "#)
         .file("test.ts", r#"
@@ -66,8 +66,8 @@ fn slice() {
             use wasm_bindgen::js::ArrayBuffer;
 
             #[wasm_bindgen]
-            pub fn slice_at_2(arraybuffer: ArrayBuffer) -> ArrayBuffer {
-                ArrayBuffer::slice(&arraybuffer, 2f64)
+            pub fn slice(arraybuffer: &ArrayBuffer, begin: u32) -> ArrayBuffer {
+                arraybuffer.slice(begin)
             }
         "#)
         .file("test.ts", r#"
@@ -76,7 +76,34 @@ fn slice() {
 
             export function test() {
                 const arraybuffer = new ArrayBuffer(4);
-                assert.equal(typeof wasm.slice_at_2(arraybuffer), "object");
+                assert.equal(typeof wasm.slice(arraybuffer, 2), "object");
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn slice_with_end() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::ArrayBuffer;
+
+            #[wasm_bindgen]
+            pub fn slice_with_end(arraybuffer: &ArrayBuffer, begin: u32, end: u32) -> ArrayBuffer {
+                arraybuffer.slice_with_end(begin, end)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const arraybuffer = new ArrayBuffer(4);
+                assert.equal(typeof wasm.slice_with_end(arraybuffer, 1, 2), "object");
             }
         "#)
         .test()
