@@ -48,7 +48,7 @@ matrix:
       install: *INSTALL_NODE_VIA_NVM
       script:
         - |
-          for dir in `ls examples | grep -v README | grep -v asmjs`; do
+          for dir in `ls examples | grep -v README | grep -v asm.js`; do
             (cd examples/$dir &&
              sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json &&
              ./build.sh) || exit 1;
