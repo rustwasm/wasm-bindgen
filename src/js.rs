@@ -998,6 +998,13 @@ extern "C" {
     pub fn construct(target: &Function, arguments_list: &Array) -> Result<JsValue, JsValue>;
     #[wasm_bindgen(static_method_of = Reflect, js_name = construct, catch)]
     pub fn construct_with_new_target(target: &Function, arguments_list: &Array, new_target: &Function) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.defineProperty() method is like Object.defineProperty() 
+    /// but returns a Boolean.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/defineProperty
+    #[wasm_bindgen(static_method_of = Reflect, js_name = defineProperty, catch)]
+    pub fn define_property(target: &Object, property_key: &JsString, attributes: &Object) -> Result<JsValue, JsValue>;
 }
 
 // Set

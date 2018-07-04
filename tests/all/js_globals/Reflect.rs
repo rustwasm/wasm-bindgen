@@ -164,3 +164,43 @@ fn construct_with_new_target() {
         )
         .test()
 }
+
+#[test]
+fn define_property() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn define_property(target: &js::Object, property_key: &js::JsString, attributes: &js::Object) -> JsValue {
+                let result = js::Reflect::define_property(target, property_key, attributes);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+
+                assert.equal(wasm.define_property(object, "key", { value: 42}), true)
+                assert.equal(wasm.define_property("", "key", { value: 42 }), "TypeError");
+            }
+        "#,
+        )
+        .test()
+}
