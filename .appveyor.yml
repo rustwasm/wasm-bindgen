@@ -20,7 +20,7 @@ build: false
 test_script:
   - rustup target add wasm32-unknown-unknown
   - npm install # dirties repo, see .travis.yml
-  - cargo test
+  - cargo test add_headless
   - cargo build --release -p wasm-bindgen-cli
 
 before_deploy:

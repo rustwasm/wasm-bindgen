@@ -47,13 +47,14 @@ async function logged(msg, promise) {
 }
 
 async function main() {
-  const body = driver.findElement(By.tagName("body"));
-
+  let body;
   try {
     await logged(
       "load http://localhost:8080/index.html",
       driver.get("http://localhost:8080/index.html")
     );
+
+    body = driver.findElement(By.tagName("body"));
 
     await logged(
       "Waiting for <body> to include text 'TEST_START'",
