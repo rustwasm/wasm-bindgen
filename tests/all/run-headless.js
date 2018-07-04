@@ -16,28 +16,39 @@ if (process.env.WASM_BINDGEN_FIREFOX_BIN_PATH) {
   opts.setBinary(process.env.WASM_BINDGEN_FIREFOX_BIN_PATH);
 }
 
+console.log("Using Firefox options:", opts);
+
 const driver = new Builder()
   .forBrowser("firefox")
   .setFirefoxOptions(opts)
   .build();
 
+const SECONDS = 1000;
+const MINUTES = 60 * SECONDS;
+
+const start = Date.now();
+const timeSinceStart = () => {
+  const elapsed = Date.now() - start;
+  const minutes = Math.floor(elapsed / MINUTES);
+  const seconds = elapsed % MINUTES / SECONDS;
+  return `${minutes}m${seconds.toFixed(3)}s`;
+};
+
 async function logged(msg, promise) {
-  console.log("START:", msg);
+  console.log(`${timeSinceStart()}: START: ${msg}`);
   try {
     const value = await promise;
-    console.log("END:", msg);
+    console.log(`${timeSinceStart()}: END: ${msg}`);
     return value;
   } catch (e) {
-    console.log(`ERROR: ${msg}: ${e}\n\n${e.stack}`);
+    console.log(`${timeSinceStart()}: ERROR: ${msg}: ${e}\n\n${e.stack}`);
     throw e;
   }
 }
 
-const SECONDS = 1000;
-const MINUTES = 60 * SECONDS;
-
 async function main() {
   const body = driver.findElement(By.tagName("body"));
+
   try {
     await logged(
       "load http://localhost:8080/index.html",
@@ -45,9 +56,17 @@ async function main() {
     );
 
     await logged(
-      "Waiting for <body> to include text 'TESTDONE'",
+      "Waiting for <body> to include text 'TEST_START'",
       driver.wait(
-        until.elementTextContains(body, "TESTDONE"),
+        until.elementTextContains(body, "TEST_START"),
+        1 * MINUTES
+      )
+    );
+
+    await logged(
+      "Waiting for <body> to include text 'TEST_DONE'",
+      driver.wait(
+        until.elementTextContains(body, "TEST_DONE"),
         1 * MINUTES
       )
     );

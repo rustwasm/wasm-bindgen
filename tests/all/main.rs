@@ -280,6 +280,25 @@ impl Project {
 
     fn generate_js_entry(&mut self, modules: Vec<PathBuf>) {
         let mut runjs = String::new();
+
+        if self.headless {
+            runjs.push_str(
+                r#"
+                window.document.body.innerHTML += "\nTEST_START\n";
+                console.log = function(...args) {
+                    const logs = document.getElementById('logs');
+                    for (let msg of args) {
+                        logs.innerHTML += `${msg}<br/>\n`;
+                    }
+                };
+            "#,
+            );
+        }
+
+        runjs.push_str(r#"
+            console.log("Importing modules...");
+        "#);
+
         if !modules.is_empty() {
             runjs.push_str(r#"Promise.all(["#);
             for module in &modules {
@@ -300,19 +319,6 @@ impl Project {
             ",
         );
 
-        if self.headless {
-            runjs.push_str(
-                r#"
-                console.log = function() {
-                    const logs = document.getElementById('logs');
-                    for (let i = 0; i < arguments.length; i++)
-                        logs.innerText += `${arguments[i]}`;
-                    logs.innerText += "\n";
-                };
-            "#,
-            );
-        }
-
         if !modules.is_empty() {
             runjs.push_str("return ");
         }
@@ -326,13 +332,19 @@ impl Project {
         runjs.push_str(
             r#"
                 .then(results => {
+                    console.log("Modules imported, running test...");
+
                     let [test, wasm] = results;
                     test.test();
+
+                    console.log("Test finished, asserting stack and slab are empty...");
 
                     if (wasm.assertStackEmpty)
                         wasm.assertStackEmpty();
                     if (wasm.assertSlabEmpty)
                         wasm.assertSlabEmpty();
+
+                    console.log("OK, all done!");
                 })
             "#,
         );
@@ -347,8 +359,8 @@ impl Project {
                         errors.innerHTML = `<pre>${content}</pre>`;
                     })
                     .finally(() => {
-                        window.document.body.innerHTML += "\n TESTDONE";
-                    })
+                        window.document.body.innerHTML += "\nTEST_DONE";
+                    });
                 "#,
             );
         } else {
@@ -357,10 +369,11 @@ impl Project {
                     .catch(e => {
                         console.error(e);
                         require('process').exit(1);
-                    })
+                    });
                 "#,
             );
         }
+
         self.files.push(("run.js".to_string(), runjs));
     }
 
@@ -570,10 +583,10 @@ impl Project {
             <!DOCTYPE html>
             <html>
                 <body>
+                    <div id="error"></div>
+                    <div id="logs"></div>
+                    <div id="status"></div>
                     <script src="bundle.js"></script>
-                    <div id='error'></div>
-                    <div id='logs'></div>
-                    <div id='status'></div>
                 </body>
             </html>
         "#,
