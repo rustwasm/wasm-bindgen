@@ -344,3 +344,47 @@ fn get_own_property_descriptor() {
         )
         .test()
 }
+
+#[test]
+fn get_prototype_of() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn get_prototype_of(target: &JsValue) -> JsValue {
+                let result = js::Reflect::get_prototype_of(target);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {
+                    property: 42
+                };
+                const array: number[] = [1, 2, 3];
+
+                assert.equal(wasm.get_prototype_of(object), Object.prototype);
+                assert.equal(wasm.get_prototype_of(array), Array.prototype);
+                assert.equal(wasm.get_prototype_of(""), "TypeError");
+            }
+        "#,
+        )
+        .test()
+}

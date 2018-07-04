@@ -1027,6 +1027,15 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getOwnPropertyDescriptor
     #[wasm_bindgen(static_method_of = Reflect, js_name = getOwnPropertyDescriptor, catch)]
     pub fn get_own_property_descriptor(target: &JsValue, property_key: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.getPrototypeOf() method is almost the same 
+    /// method as Object.getPrototypeOf(). It returns the prototype 
+    /// (i.e. the value of the internal [[Prototype]] property) of 
+    /// the specified object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getPrototypeOf
+    #[wasm_bindgen(static_method_of = Reflect, js_name = getPrototypeOf, catch)]
+    pub fn get_prototype_of(target: &JsValue) -> Result<JsValue, JsValue>;
 }
 
 // Set
