@@ -658,3 +658,46 @@ fn set_with_receiver() {
         )
         .test()
 }
+
+#[test]
+fn set_prototype_of() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn set_prototype_of(target: &JsValue, prototype: &JsValue) -> JsValue {
+                let result = js::Reflect::set_prototype_of(target, prototype);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                assert.equal(wasm.set_prototype_of(object, Object.prototype), true);
+                assert.equal(Object.getPrototypeOf(object), Object.prototype);
+                assert.equal(wasm.set_prototype_of(object, null), true);
+                assert.equal(Object.getPrototypeOf(object), null);
+
+                assert.equal(wasm.set_prototype_of("", Object.prototype), "TypeError");
+            }
+        "#,
+        )
+        .test()
+}

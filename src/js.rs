@@ -1075,6 +1075,15 @@ extern "C" {
     pub fn set(target: &JsValue, property_key: &JsValue, value: &JsValue) -> Result<JsValue, JsValue>;
     #[wasm_bindgen(static_method_of = Reflect, js_name = set, catch)]
     pub fn set_with_receiver(target: &JsValue, property_key: &JsValue, value: &JsValue, receiver: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.setPrototypeOf() method is the same 
+    /// method as Object.setPrototypeOf(). It sets the prototype 
+    /// (i.e., the internal [[Prototype]] property) of a specified 
+    /// object to another object or to null.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/setPrototypeOf
+    #[wasm_bindgen(static_method_of = Reflect, js_name = setPrototypeOf, catch)]
+    pub fn set_prototype_of(target: &JsValue, prototype: &JsValue) -> Result<JsValue, JsValue>;
 }
 
 // Set
