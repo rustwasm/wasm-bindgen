@@ -402,13 +402,8 @@ fn has() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has(target: &JsValue, property_key: &JsValue) -> JsValue {
-                let result = js::Reflect::has(target, property_key);
-                let result = match result {
-                    Ok(val) => val,
-                    Err(_err) => "TypeError".into()
-                };
-                result
+            pub fn has(target: &js::Object, property_key: &JsValue) -> bool {
+                js::Reflect::has(target, property_key)
             }
         "#,
         )
@@ -428,7 +423,6 @@ fn has() {
                 assert.equal(wasm.has(object, "foo"), false);
                 assert.equal(wasm.has(array, 3), true);
                 assert.equal(wasm.has(array, 10), false);
-                assert.equal(wasm.has("", "property"), "TypeError");
             }
         "#,
         )

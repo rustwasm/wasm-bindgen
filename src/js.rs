@@ -1040,8 +1040,8 @@ extern "C" {
     /// The static Reflect.has() method works like the in operator as a function.
     /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/has
-    #[wasm_bindgen(static_method_of = Reflect, catch)]
-    pub fn has(target: &JsValue, property_key: &JsValue) -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(static_method_of = Reflect)]
+    pub fn has(target: &Object, property_key: &JsValue) -> bool;
 
     /// The static Reflect.isExtensible() method determines if an object is extensible 
     /// (whether it can have new properties added to it). It is similar to 
