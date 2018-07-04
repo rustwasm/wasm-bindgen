@@ -1057,6 +1057,15 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys
     #[wasm_bindgen(static_method_of = Reflect, js_name = ownKeys, catch)]
     pub fn own_keys(target: &Object) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.preventExtensions() method prevents new 
+    /// properties from ever being added to an object (i.e. prevents 
+    /// future extensions to the object). It is similar to 
+    /// Object.preventExtensions(), but with some differences.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/preventExtensions
+    #[wasm_bindgen(static_method_of = Reflect, js_name = preventExtensions, catch)]
+    pub fn prevent_extensions(target: &Object) -> Result<JsValue, JsValue>;
 }
 
 // Set

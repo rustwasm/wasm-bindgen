@@ -529,3 +529,44 @@ fn own_keys() {
         )
         .test()
 }
+
+#[test]
+fn prevent_extensions() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn prevent_extensions(target: &js::Object) -> JsValue {
+                let result = js::Reflect::prevent_extensions(target);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                var object1 = {};
+
+                wasm.prevent_extensions(object1);
+
+                assert.equal(Reflect.isExtensible(object1), false);
+            }
+        "#,
+        )
+        .test()
+}
