@@ -410,7 +410,9 @@ impl<'a> Context<'a> {
                         .unwrap_or("wasm_bindgen"),
             )
         } else {
-            let import_wasm = if self.config.nodejs {
+            let import_wasm = if self.globals.len() == 0 {
+                String::new()
+            } else if self.config.nodejs {
                 self.footer
                     .push_str(&format!("wasm = require('./{}_bg');", module_name));
                 format!("var wasm;")
