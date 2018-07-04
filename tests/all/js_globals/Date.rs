@@ -160,7 +160,9 @@ fn to_locale_date_string() {
                 let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
                 let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
-                assert.equal(wasm.to_locale_date_string(date, 'de-DE', options), 'Donnerstag, 20. Dezember 2012');
+                let output = wasm.to_locale_date_string(date, 'de-DE', options)
+                assert.equal(typeof output, 'string');
+                assert.ok(output.length > 0);
             }
         "#)
         .test()
@@ -188,7 +190,9 @@ fn to_locale_string() {
 
             export function test() {
                 let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
-                assert.equal(wasm.to_locale_string(date, 'en-GB', { timeZone: 'UTC' }), "20/12/2012, 03:00:00");
+                let output = wasm.to_locale_string(date, 'en-GB', { timeZone: 'UTC' });
+                assert.equal(typeof output, 'string');
+                assert.ok(output.length > 0);
             }
         "#)
         .test()
