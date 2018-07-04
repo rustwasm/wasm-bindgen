@@ -1059,7 +1059,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_js_value_from_wasm") {
             return;
         }
-        self.expose_get_array_u32_from_wasm();
+        self.expose_uint32_memory();
         self.expose_take_object();
         self.global(
             "
