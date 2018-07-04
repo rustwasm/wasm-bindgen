@@ -105,6 +105,18 @@ async function main() {
         console.log(`    ${line}`);
       });
     }
+
+    const bodyText = await logged(
+      "getting browser body",
+      body.getText()
+    );
+
+    if (bodyText.length > 0) {
+      console.log("body:");
+      bodyText.split("\n").forEach(line => {
+        console.log(`    ${line}`);
+      });
+    }
   }
 }
 
