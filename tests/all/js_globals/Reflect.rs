@@ -388,3 +388,49 @@ fn get_prototype_of() {
         )
         .test()
 }
+
+#[test]
+fn has() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn has(target: &JsValue, property_key: &JsValue) -> JsValue {
+                let result = js::Reflect::has(target, property_key);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {
+                    property: 42
+                };
+                const array: number[] = [1, 2, 3, 4]
+
+                assert.equal(wasm.has(object, "property"), true);
+                assert.equal(wasm.has(object, "foo"), false);
+                assert.equal(wasm.has(array, 3), true);
+                assert.equal(wasm.has(array, 10), false);
+                assert.equal(wasm.has("", "property"), "TypeError");
+            }
+        "#,
+        )
+        .test()
+}

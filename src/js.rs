@@ -1036,6 +1036,12 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getPrototypeOf
     #[wasm_bindgen(static_method_of = Reflect, js_name = getPrototypeOf, catch)]
     pub fn get_prototype_of(target: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.has() method works like the in operator as a function.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/has
+    #[wasm_bindgen(static_method_of = Reflect, catch)]
+    pub fn has(target: &JsValue, property_key: &JsValue) -> Result<JsValue, JsValue>;
 }
 
 // Set
