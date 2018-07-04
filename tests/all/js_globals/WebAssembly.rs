@@ -15,7 +15,7 @@ fn validate() {
 
             #[wasm_bindgen]
             pub fn validate_wasm(wasm: JsValue) -> bool {
-                WebAssembly::validate(wasm)
+                WebAssembly::validate(wasm).unwrap_or(false)
             }
         "#)
         .file("test.ts", r#"

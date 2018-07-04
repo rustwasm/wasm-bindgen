@@ -1148,8 +1148,8 @@ extern "C" {
     /// form a valid wasm module (`true`) or not (`false`).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/validate
-    #[wasm_bindgen(static_method_of = WebAssembly)]
-    pub fn validate(bufferSource: JsValue) -> bool;
+    #[wasm_bindgen(static_method_of = WebAssembly, catch)]
+    pub fn validate(bufferSource: JsValue) -> Result<bool, JsValue>;
 }
 
 // JsString
