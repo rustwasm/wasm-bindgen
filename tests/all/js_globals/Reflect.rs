@@ -484,3 +484,48 @@ fn is_extensible() {
         )
         .test()
 }
+
+#[test]
+fn own_keys() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn own_keys(target: &js::Object) -> JsValue {
+                let result = js::Reflect::own_keys(target);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {
+                    property: 42
+                };
+                const array: number[] = [];
+
+                assert.equal(wasm.own_keys(object)[0], "property");
+                assert.equal(wasm.own_keys(array)[0], "length");
+
+                assert.equal(wasm.own_keys(""), "TypeError");
+            }
+        "#,
+        )
+        .test()
+}
