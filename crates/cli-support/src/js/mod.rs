@@ -410,7 +410,9 @@ impl<'a> Context<'a> {
                         .unwrap_or("wasm_bindgen"),
             )
         } else {
-            let import_wasm = if self.config.nodejs {
+            let import_wasm = if self.globals.len() == 0 {
+                String::new()
+            } else if self.config.nodejs {
                 self.footer
                     .push_str(&format!("wasm = require('./{}_bg');", module_name));
                 format!("var wasm;")
@@ -956,7 +958,6 @@ impl<'a> Context<'a> {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_malloc")?;
-        self.expose_uint64_memory();
         self.global(&format!(
             "
             function {}(arg) {{
@@ -1059,7 +1060,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_js_value_from_wasm") {
             return;
         }
-        self.expose_get_array_u32_from_wasm();
+        self.expose_uint32_memory();
         self.expose_take_object();
         self.global(
             "
@@ -1807,8 +1808,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     let target = if let Some(g) = getter {
                         if import.structural {
                             format!(
-                                "function(y) {{
-                                return this.{};
+                                "function() {{
+                                    return this.{};
                                 }}",
                                 g
                             )
