@@ -40,7 +40,7 @@ fn is_view() {
             use wasm_bindgen::js::ArrayBuffer;
 
             #[wasm_bindgen]
-            pub fn is_uint8array(value: JsValue) -> bool {
+            pub fn is_view(value: JsValue) -> bool {
                 ArrayBuffer::is_view(value)
             }
         "#)
@@ -49,7 +49,7 @@ fn is_view() {
             import * as wasm from "./out";
 
             export function test() {
-                assert.equal(wasm.is_uint8array(new Uint8Array(42)), true);
+                assert.equal(wasm.is_view(new Uint8Array(42)), true);
             }
         "#)
         .test()
