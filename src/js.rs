@@ -1019,6 +1019,14 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/get
     #[wasm_bindgen(static_method_of = Reflect, catch)]
     pub fn get(target: &JsValue, key: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.getOwnPropertyDescriptor() method is similar to 
+    /// Object.getOwnPropertyDescriptor(). It returns a property descriptor 
+    /// of the given property if it exists on the object, undefined otherwise.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getOwnPropertyDescriptor
+    #[wasm_bindgen(static_method_of = Reflect, js_name = getOwnPropertyDescriptor, catch)]
+    pub fn get_own_property_descriptor(target: &JsValue, property_key: &JsValue) -> Result<JsValue, JsValue>;
 }
 
 // Set
