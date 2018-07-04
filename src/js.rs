@@ -1066,6 +1066,15 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/preventExtensions
     #[wasm_bindgen(static_method_of = Reflect, js_name = preventExtensions, catch)]
     pub fn prevent_extensions(target: &Object) -> Result<JsValue, JsValue>;
+
+    /// The static Reflect.set() method works like setting a 
+    /// property on an object.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set
+    #[wasm_bindgen(static_method_of = Reflect, catch)]
+    pub fn set(target: &JsValue, property_key: &JsValue, value: &JsValue) -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = set, catch)]
+    pub fn set_with_receiver(target: &JsValue, property_key: &JsValue, value: &JsValue, receiver: &JsValue) -> Result<JsValue, JsValue>;
 }
 
 // Set

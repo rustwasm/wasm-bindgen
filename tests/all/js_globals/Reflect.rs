@@ -560,11 +560,99 @@ fn prevent_extensions() {
             import * as wasm from "./out";
 
             export function test() {
-                var object1 = {};
+                const object1 = {};
 
                 wasm.prevent_extensions(object1);
 
                 assert.equal(Reflect.isExtensible(object1), false);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn set(target: &JsValue, property_key: &JsValue, value: &JsValue) -> JsValue {
+                let result = js::Reflect::set(target, property_key, value);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                const array: number[] = [1, 2, 3, 4];
+                assert.equal(wasm.set(object, "key", "value"), true);
+                assert.equal(wasm.set(array, 0, 100), true);
+
+                assert.equal(Reflect.get(object, "key"), "value");
+                assert.equal(array[0], 100);
+                assert.equal(wasm.set("", "key", "value"), "TypeError");
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_with_receiver() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn set_with_receiver(target: &JsValue, property_key: &JsValue, value: &JsValue, receiver: &JsValue) -> JsValue {
+                let result = js::Reflect::set_with_receiver(target, property_key, value, receiver);
+                let result = match result {
+                    Ok(val) => val,
+                    Err(_err) => "TypeError".into()
+                };
+                result
+            }
+        "#,
+        )
+        .file(
+            "test.ts",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                const object = {};
+                const array: number[] = [1, 2, 3, 4];
+                assert.equal(wasm.set_with_receiver({}, "key", "value", object), true);
+                assert.equal(wasm.set_with_receiver([], 0, 100, array), true);
+
+                assert.equal(Reflect.get(object, "key"), "value");
+                assert.equal(array[0], 100);
+                assert.equal(wasm.set_with_receiver("", "key", "value", ""), "TypeError");
             }
         "#,
         )
