@@ -20,6 +20,7 @@ mod SetIterator;
 mod TypedArray;
 mod WeakMap;
 mod WeakSet;
+mod WebAssembly;
 
 #[test]
 #[cfg(feature = "std")]
