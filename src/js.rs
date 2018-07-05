@@ -1030,6 +1030,26 @@ extern "C" {
     pub fn values(object: &Object) -> Array;
 }
 
+// Proxy
+#[wasm_bindgen]
+extern {
+    pub type Proxy;
+
+    /// The Proxy object is used to define custom behavior for fundamental
+    /// operations (e.g. property lookup, assignment, enumeration, function
+    /// invocation, etc).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+    #[wasm_bindgen(constructor)]
+    pub fn new(target: &JsValue, handler: &Object) -> Proxy;
+
+    /// The Proxy.revocable() method is used to create a revocable Proxy object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/revocable
+    #[wasm_bindgen(static_method_of = Proxy)]
+    pub fn revocable(target: &JsValue, handler: &Object) -> Object;
+}
+
 // Set
 #[wasm_bindgen]
 extern {
