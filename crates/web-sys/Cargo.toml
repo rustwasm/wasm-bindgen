@@ -2,5 +2,6 @@
 name = "web-sys"
 version = "0.1.0"
 authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
+readme = "./README.md"
 
 [dependencies]
