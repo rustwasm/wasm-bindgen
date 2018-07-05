@@ -12,10 +12,10 @@ fn get_date() {
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, Number};
+            use wasm_bindgen::js::Date;
 
             #[wasm_bindgen]
-            pub fn get_date(this: &Date) -> Number {
+            pub fn get_date(this: &Date) -> u32 {
                 this.get_date()
             }
         "#,
@@ -46,10 +46,10 @@ fn get_day() {
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, Number};
+            use wasm_bindgen::js::Date;
 
             #[wasm_bindgen]
-            pub fn get_day(this: &Date) -> Number {
+            pub fn get_day(this: &Date) -> u32 {
                 this.get_day()
             }
         "#,
@@ -80,10 +80,10 @@ fn get_full_year() {
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, Number};
+            use wasm_bindgen::js::Date;
 
             #[wasm_bindgen]
-            pub fn get_full_year(this: &Date) -> Number {
+            pub fn get_full_year(this: &Date) -> u32 {
                 this.get_full_year()
             }
         "#,
