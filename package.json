@@ -9,6 +9,7 @@
     "typescript": "^2.7.2",
     "webpack": "^4.11.1",
     "webpack-cli": "^2.0.10",
-    "eslint": "^4.19.1"
+    "babel-eslint": "^8.2.5",
+    "eslint": "^5.0.1"
   }
 }

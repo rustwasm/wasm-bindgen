@@ -223,8 +223,9 @@ impl Bindgen {
                 import * as process from 'process';
 
                 let file = path.dirname(url.parse(import.meta.url).pathname);
-                if (process.platform === 'win32')
+                if (process.platform === 'win32') {{
                     file = file.substring(1);
+                }}
                 const bytes = fs.readFileSync(path.join(file, '{}'));
             ", path.file_name().unwrap().to_str().unwrap()));
         } else {
