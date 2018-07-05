@@ -2,12 +2,14 @@ use wasm_bindgen_cli_support as cli;
 
 use std::env;
 use std::fs::{self, File};
+use std::thread;
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use std::process::{Command, Stdio, Child, ChildStdin};
+use std::net::TcpStream;
 use std::sync::atomic::*;
-use std::sync::{Once, ONCE_INIT};
-use std::time::Instant;
+use std::sync::{Once, ONCE_INIT, Mutex};
+use std::time::{Duration, Instant};
 
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
 thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
@@ -23,6 +25,7 @@ pub struct Project {
     webpack: bool,
     node_args: Vec<String>,
     deps: Vec<String>,
+    headless: bool,
 }
 
 pub fn project() -> Project {
@@ -40,6 +43,7 @@ pub fn project() -> Project {
         webpack: false,
         serde: false,
         rlib: false,
+        headless: false,
         deps: Vec::new(),
         node_args: Vec::new(),
         files: vec![
@@ -164,9 +168,18 @@ impl Project {
         self
     }
 
+    /// This test requires a headless web browser
+    pub fn headless(&mut self, headless: bool) -> &mut Project {
+        self.headless = headless;
+        self
+    }
+
     /// Write this project to the filesystem, ensuring all files are ready to
     /// go.
     pub fn build(&mut self) -> (PathBuf, PathBuf) {
+        if self.headless {
+            self.webpack = true;
+        }
         if self.webpack {
             self.node = false;
             self.nodejs_experimental_modules = false;
@@ -174,6 +187,11 @@ impl Project {
 
         self.ensure_webpack_config();
         self.ensure_test_entry();
+
+        if self.headless {
+            self.ensure_index_html();
+            self.ensure_run_headless_js();
+        }
 
         let webidl_modules = self.generate_webidl_bindings();
         self.generate_js_entry(webidl_modules);
@@ -262,6 +280,7 @@ impl Project {
             ");
             extensions.push_str(", '.ts'");
         }
+        let target = if self.headless { "web" } else { "node" };
         self.files.push((
             "webpack.config.js".to_string(),
             format!(r#"
@@ -276,14 +295,16 @@ impl Project {
                 // This reads the directories in `node_modules`
                 // and give that to externals and webpack ignores
                 // to bundle the modules listed as external.
-                fs.readdirSync('node_modules')
-                    .filter(module => module !== '.bin')
-                    .forEach(mod => {{
-                        // External however,expects browser environment.
-                        // To make it work in `node` target we
-                        // prefix commonjs here.
-                        nodeModules[mod] = 'commonjs ' + mod;
-                    }});
+                if ('{2}' == 'node') {{
+                    fs.readdirSync('node_modules')
+                        .filter(module => module !== '.bin')
+                        .forEach(mod => {{
+                            // External however,expects browser environment.
+                            // To make it work in `node` target we
+                            // prefix commonjs here.
+                            nodeModules[mod] = 'commonjs ' + mod;
+                        }});
+                }}
 
                 module.exports = {{
                   entry: './run.js',
@@ -299,10 +320,10 @@ impl Project {
                     filename: 'bundle.js',
                     path: path.resolve(__dirname, '.')
                   }},
-                  target: 'node',
+                  target: '{}',
                   externals: nodeModules
                 }};
-            "#, rules, extensions)
+            "#, rules, extensions, target)
         ));
         if needs_typescript {
             self.files.push((
@@ -340,6 +361,27 @@ impl Project {
                 r#"export {test} from './out';"#.to_string(),
             ));
         }
+    }
+
+    fn ensure_index_html(&mut self) {
+        self.file(
+            "index.html",
+            r#"
+                <!DOCTYPE html>
+                <html>
+                    <body>
+                        <div id="error"></div>
+                        <div id="logs"></div>
+                        <div id="status"></div>
+                        <script src="bundle.js"></script>
+                    </body>
+                </html>
+            "#,
+        );
+    }
+
+    fn ensure_run_headless_js(&mut self) {
+        self.file("run-headless.js", include_str!("run-headless.js"));
     }
 
     fn generate_webidl_bindings(&mut self) -> Vec<PathBuf> {
@@ -413,7 +455,20 @@ impl Project {
         let mut runjs = String::new();
         let esm_imports = self.webpack || !self.node || self.nodejs_experimental_modules;
 
-        if esm_imports {
+
+        if self.headless {
+            runjs.push_str(
+                r#"
+                    window.document.body.innerHTML += "\nTEST_START\n";
+                    console.log = function(...args) {
+                        const logs = document.getElementById('logs');
+                        for (let msg of args) {
+                            logs.innerHTML += `${msg}<br/>\n`;
+                        }
+                    };
+                "#,
+            );
+        } else if esm_imports {
             runjs.push_str("import * as process from 'process';\n");
         } else {
             runjs.push_str("const process = require('process');\n");
@@ -428,14 +483,27 @@ impl Project {
                 if (wasm.assertSlabEmpty)
                     wasm.assertSlabEmpty();
             }
-
-            function onerror(error) {
-                console.error(error);
-                process.exit(1);
-            }
         ");
 
+        if self.headless {
+            runjs.push_str("
+                function onerror(error) {
+                    const errors = document.getElementById('error');
+                    let content = `exception: ${e.message}\\nstack: ${e.stack}`;
+                    errors.innerHTML = `<pre>${content}</pre>`;
+                }
+            ");
+        } else {
+            runjs.push_str("
+                function onerror(error) {
+                    console.error(error);
+                    process.exit(1);
+                }
+            ");
+        }
+
         if esm_imports {
+            runjs.push_str("console.log('importing modules...');\n");
             runjs.push_str("const modules = [];\n");
             for module in modules.iter() {
                 runjs.push_str(&format!("modules.push(import('./{}'))",
@@ -453,8 +521,22 @@ impl Project {
                         return Promise.all([import('./test'), {}])
                     }})
                     .then(result => run(result[0], result[1]))
-                    .catch(onerror);
             ", import_wasm));
+
+            if self.headless {
+                runjs.push_str(".then(() => {
+                    document.getElementById('status').innerHTML = 'good';
+                })");
+            }
+            runjs.push_str(".catch(onerror)\n");
+
+            if self.headless {
+                runjs.push_str("
+                    .finally(() => {
+                        window.document.body.innerHTML += \"\\nTEST_DONE\";
+                    })
+                ");
+            }
         } else {
             assert!(!self.debug);
             assert!(modules.is_empty());
@@ -561,21 +643,66 @@ impl Project {
         let cwd = env::current_dir().unwrap();
         symlink_dir(&cwd.join("node_modules"), &root.join("node_modules")).unwrap();
 
+        if self.headless {
+            return self.test_headless(&root)
+        }
+
         // Execute webpack to generate a bundle
-        let mut cmd = if cfg!(windows) {
-            let mut c = Command::new("cmd");
-            c.arg("/c");
-            c.arg("npm");
-            c
-        } else {
-            Command::new("npm")
-        };
+        let mut cmd = self.npm();
         cmd.arg("run").arg("run-webpack").current_dir(&root);
         run(&mut cmd, "npm");
 
         let mut cmd = Command::new("node");
         cmd.args(&self.node_args);
         cmd.arg(root.join("bundle.js")).current_dir(&root);
+        run(&mut cmd, "node");
+    }
+
+    fn npm(&self) -> Command {
+        if cfg!(windows) {
+            let mut c = Command::new("cmd");
+            c.arg("/c");
+            c.arg("npm");
+            c
+        } else {
+            Command::new("npm")
+        }
+    }
+
+    fn test_headless(&mut self, root: &Path) {
+        // Serialize all headless tests since they require starting
+        // webpack-dev-server on the same port.
+        lazy_static! {
+            static ref MUTEX: Mutex<()> = Mutex::new(());
+        }
+        let _lock = MUTEX.lock().unwrap();
+
+        let mut cmd = self.npm();
+        cmd.arg("run")
+            .arg("run-webpack-dev-server")
+            .arg("--")
+            .arg("--quiet")
+            .arg("--watch-stdin")
+            .current_dir(&root);
+        let _server = run_in_background(&mut cmd, "webpack-dev-server".into());
+
+        // wait for webpack-dev-server to come online and bind its port
+        loop {
+            if TcpStream::connect("127.0.0.1:8080").is_ok() {
+                break;
+            }
+            thread::sleep(Duration::from_millis(100));
+        }
+
+        let path = env::var_os("PATH").unwrap_or_default();
+        let mut path = env::split_paths(&path).collect::<Vec<_>>();
+        path.push(root.join("node_modules/geckodriver"));
+
+        let mut cmd = Command::new("node");
+        cmd.args(&self.node_args)
+            .arg(root.join("run-headless.js"))
+            .current_dir(&root)
+            .env("PATH", env::join_paths(&path).unwrap());
         run(&mut cmd, "node");
     }
 
@@ -636,5 +763,67 @@ pub fn run(cmd: &mut Command, program: &str) {
         println!("stderr ---\n{}", String::from_utf8_lossy(&output.stderr));
     }
     assert!(output.status.success());
+}
+
+struct BackgroundChild {
+    name: String,
+    child: Child,
+    stdin: Option<ChildStdin>,
+    stdout: Option<thread::JoinHandle<io::Result<String>>>,
+    stderr: Option<thread::JoinHandle<io::Result<String>>>,
+}
+
+impl Drop for BackgroundChild {
+    fn drop(&mut self) {
+        drop(self.stdin.take());
+        let status = self.child.wait().expect("failed to wait on child");
+        let stdout = self
+            .stdout
+            .take()
+            .unwrap()
+            .join()
+            .unwrap()
+            .expect("failed to read stdout");
+        let stderr = self
+            .stderr
+            .take()
+            .unwrap()
+            .join()
+            .unwrap()
+            .expect("failed to read stderr");
+
+        println!("···················································");
+        println!("background {}", self.name);
+        println!("status: {}", status);
+        println!("stdout ---\n{}", stdout);
+        println!("stderr ---\n{}", stderr);
+    }
+}
+
+fn run_in_background(cmd: &mut Command, name: String) -> BackgroundChild {
+    cmd.stdout(Stdio::piped());
+    cmd.stderr(Stdio::piped());
+    cmd.stdin(Stdio::piped());
+    let mut child = cmd.spawn().expect(&format!("should spawn {} OK", name));
+    let mut stdout = child.stdout.take().unwrap();
+    let mut stderr = child.stderr.take().unwrap();
+    let stdin = child.stdin.take().unwrap();
+    let stdout = thread::spawn(move || {
+        let mut t = String::new();
+        stdout.read_to_string(&mut t)?;
+        Ok(t)
+    });
+    let stderr = thread::spawn(move || {
+        let mut t = String::new();
+        stderr.read_to_string(&mut t)?;
+        Ok(t)
+    });
+    BackgroundChild {
+        name,
+        child,
+        stdout: Some(stdout),
+        stderr: Some(stderr),
+        stdin: Some(stdin),
+    }
 }
 

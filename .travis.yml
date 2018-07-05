@@ -41,6 +41,8 @@ matrix:
         - cargo test
         # Check JS output from all tests against eslint
         - ./node_modules/.bin/eslint ./target/generated-tests/*/out*js
+      addons:
+        firefox: latest
 
     # All examples work
     - rust: nightly

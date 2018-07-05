@@ -33,6 +33,7 @@ serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 
 [dev-dependencies]
+lazy_static = "1"
 wasm-bindgen-cli-support = { path = "crates/cli-support", version = '=0.2.11' }
 
 [workspace]

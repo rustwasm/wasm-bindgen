@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate lazy_static;
 extern crate wasm_bindgen_cli_support;
 
 mod project_builder;
