@@ -627,3 +627,33 @@ fn value_of() {
         )
         .test()
 }
+
+#[test]
+fn ends_with() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_ends_with(this: &js::JsString, search_string: &js::JsString, length: u32) -> bool {
+                this.ends_with(search_string, length)
+            }
+        "#)
+        .file("test.ts", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "To be, or not to be, that is the question.";
+
+                assert.ok(wasm.string_ends_with(str, 'question', 0));
+                assert.ok(!wasm.string_ends_with(str, 'to be', 0));
+                assert.ok(wasm.string_ends_with(str, 'to be', 19));
+            }
+        "#)
+        .test()
+}
