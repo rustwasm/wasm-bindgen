@@ -38,7 +38,7 @@ matrix:
         # to run `npm install` twice or by using `npm ci` (which is currently broken)
         - npm install
       script:
-        - cargo test add_headless
+        - cargo test
         # Check JS output from all tests against eslint
         - ./node_modules/.bin/eslint ./target/generated-tests/*/out*js
       addons:
