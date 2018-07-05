@@ -489,7 +489,7 @@ impl Project {
             runjs.push_str("
                 function onerror(error) {
                     const errors = document.getElementById('error');
-                    let content = `exception: ${e.message}\nstack: ${e.stack}`;
+                    let content = `exception: ${e.message}\\nstack: ${e.stack}`;
                     errors.innerHTML = `<pre>${content}</pre>`;
                 }
             ");
