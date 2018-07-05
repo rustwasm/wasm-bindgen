@@ -163,7 +163,7 @@ fn size() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn size(this: &js::Set) -> js::Number {
+            pub fn size(this: &js::Set) -> u32 {
                 this.size()
             }
 

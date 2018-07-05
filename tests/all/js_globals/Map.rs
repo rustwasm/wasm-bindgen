@@ -194,7 +194,7 @@ fn size() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn map_size(this: &js::Map) -> js::Number {
+            pub fn map_size(this: &js::Map) -> u32 {
                 this.size()
             }
         "#)

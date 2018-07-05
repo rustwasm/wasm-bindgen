@@ -15,7 +15,7 @@ fn abs() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn abs(x: f64) -> js::Number {
+            pub fn abs(x: f64) -> f64 {
                 js::Math::abs(x)
             }
         "#,
@@ -49,7 +49,7 @@ fn acos() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn acos(x: f64) -> js::Number {
+            pub fn acos(x: f64) -> f64 {
                 js::Math::acos(x)
             }
         "#,
@@ -83,7 +83,7 @@ fn acosh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn acosh(x: f64) -> js::Number {
+            pub fn acosh(x: f64) -> f64 {
                 js::Math::acosh(x)
             }
         "#,
@@ -117,7 +117,7 @@ fn asin() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn asin(x: f64) -> js::Number {
+            pub fn asin(x: f64) -> f64 {
                 js::Math::asin(x)
             }
         "#,
@@ -151,7 +151,7 @@ fn asinh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn asinh(x: f64) -> js::Number {
+            pub fn asinh(x: f64) -> f64 {
                 js::Math::asinh(x)
             }
         "#,
@@ -184,7 +184,7 @@ fn atan() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn atan(x: f64) -> js::Number {
+            pub fn atan(x: f64) -> f64 {
                 js::Math::atan(x)
             }
         "#,
@@ -217,7 +217,7 @@ fn atan2() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn atan2(y: f64, x: f64) -> js::Number {
+            pub fn atan2(y: f64, x: f64) -> f64 {
                 js::Math::atan2(y, x)
             }
         "#,
@@ -250,7 +250,7 @@ fn atanh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn atanh(x: f64) -> js::Number {
+            pub fn atanh(x: f64) -> f64 {
                 js::Math::atanh(x)
             }
         "#,
@@ -284,7 +284,7 @@ fn cbrt() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn cbrt(x: f64) -> js::Number {
+            pub fn cbrt(x: f64) -> f64 {
                 js::Math::cbrt(x)
             }
         "#,
@@ -317,7 +317,7 @@ fn ceil() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn ceil(x: f64) -> js::Number {
+            pub fn ceil(x: f64) -> i32 {
                 js::Math::ceil(x)
             }
         "#,
@@ -350,7 +350,7 @@ fn clz32() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn clz32(x: i32) -> js::Number {
+            pub fn clz32(x: i32) -> u32 {
                 js::Math::clz32(x)
             }
         "#,
@@ -381,7 +381,7 @@ fn cos() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn cos(x: f64) -> js::Number {
+            pub fn cos(x: f64) -> f64 {
                 js::Math::cos(x)
             }
         "#)
@@ -408,7 +408,7 @@ fn cosh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn cosh(x: f64) -> js::Number {
+            pub fn cosh(x: f64) -> f64 {
                 js::Math::cosh(x)
             }
         "#)
@@ -435,7 +435,7 @@ fn exp() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn exp(x: f64) -> js::Number {
+            pub fn exp(x: f64) -> f64 {
                 js::Math::exp(x)
             }
         "#)
@@ -463,7 +463,7 @@ fn expm1() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn expm1(x: f64) -> js::Number {
+            pub fn expm1(x: f64) -> f64 {
                 js::Math::expm1(x)
             }
         "#)
@@ -494,7 +494,7 @@ fn floor() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn floor(x: f64) -> js::Number {
+            pub fn floor(x: f64) -> i32 {
                 js::Math::floor(x)
             }
         "#,
@@ -525,7 +525,7 @@ fn fround() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn fround(x: f64) -> js::Number {
+            pub fn fround(x: f64) -> f32 {
                 js::Math::fround(x)
             }
         "#)
@@ -554,7 +554,7 @@ fn imul() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn imul(x: i32, y:i32) -> js::Number {
+            pub fn imul(x: i32, y:i32) -> i32 {
                 js::Math::imul(x, y)
             }
         "#)
@@ -582,7 +582,7 @@ fn log() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn log(x: f64) -> js::Number {
+            pub fn log(x: f64) -> f64 {
                 js::Math::log(x)
             }
         "#)
@@ -609,7 +609,7 @@ fn log10() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn log10(x: f64) -> js::Number {
+            pub fn log10(x: f64) -> f64 {
                 js::Math::log10(x)
             }
         "#)
@@ -637,7 +637,7 @@ fn log1p() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn log1p(x: f64) -> js::Number {
+            pub fn log1p(x: f64) -> f64 {
                 js::Math::log1p(x)
             }
         "#)
@@ -666,7 +666,7 @@ fn log2() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn log2(x: f64) -> js::Number {
+            pub fn log2(x: f64) -> f64 {
                 js::Math::log2(x)
             }
         "#)
@@ -695,7 +695,7 @@ fn pow() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn pow(base: f64, exponent: f64) -> js::Number {
+            pub fn pow(base: f64, exponent: f64) -> f64 {
                 js::Math::pow(base, exponent)
             }
         "#)
@@ -723,7 +723,7 @@ fn round() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn round(x: f64) -> js::Number {
+            pub fn round(x: f64) -> i32 {
                 js::Math::round(x)
             }
         "#)
@@ -753,7 +753,7 @@ fn sign() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn sign(x: f64) -> js::Number {
+            pub fn sign(x: f64) -> f64 {
                 js::Math::sign(x)
             }
         "#)
@@ -783,7 +783,7 @@ fn sin() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn sin(x: f64) -> js::Number {
+            pub fn sin(x: f64) -> f64 {
                 js::Math::sin(x)
             }
         "#)
@@ -811,7 +811,7 @@ fn sinh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn sinh(x: f64) -> js::Number {
+            pub fn sinh(x: f64) -> f64 {
                 js::Math::sinh(x)
             }
         "#)
@@ -839,7 +839,7 @@ fn sqrt() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn sqrt(x: f64) -> js::Number {
+            pub fn sqrt(x: f64) -> f64 {
                 js::Math::sqrt(x)
             }
         "#)
@@ -869,7 +869,7 @@ fn tan() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn tan(x: f64) -> js::Number {
+            pub fn tan(x: f64) -> f64 {
                 js::Math::tan(x)
             }
         "#)
@@ -897,7 +897,7 @@ fn tanh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn tanh(x: f64) -> js::Number {
+            pub fn tanh(x: f64) -> f64 {
                 js::Math::tanh(x)
             }
         "#)
@@ -925,7 +925,7 @@ fn trunc() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn trunc(x: f64) -> js::Number {
+            pub fn trunc(x: f64) -> i32 {
                 js::Math::trunc(x)
             }
         "#)

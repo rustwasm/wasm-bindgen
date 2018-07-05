@@ -177,7 +177,7 @@ fn value_of() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn js_value_of(this: &js::Number) -> js::Number {
+            pub fn js_value_of(this: &js::Number) -> f64 {
                 this.value_of()
             }
         "#,

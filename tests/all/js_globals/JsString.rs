@@ -87,7 +87,7 @@ fn char_code_at() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_char_code_at(this: &js::JsString, index: u32) -> js::Number {
+            pub fn string_char_code_at(this: &js::JsString, index: u32) -> f64 {
                 this.char_code_at(index)
             }
         "#,
@@ -101,8 +101,14 @@ fn char_code_at() {
             var anyString = 'Brave new world';
 
             export function test() {
-                assert.equal(wasm.string_char_code_at(anyString, 0), 66);
-                assert.ok(isNaN(wasm.string_char_code_at(anyString, 999)));
+                for (let i = 0; i < anyString.length; i++) {
+                    assert.equal(wasm.string_char_code_at(anyString, i),
+                                 anyString.charCodeAt(i),
+                                 `charCodeAt(${i})`);
+                }
+
+                const outOfBounds = wasm.string_char_code_at(anyString, 999);
+                assert.ok(Number.isNaN(outOfBounds));
             }
         "#,
         )
