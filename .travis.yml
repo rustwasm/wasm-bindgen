@@ -47,10 +47,12 @@ matrix:
       env: JOB=examples-build
       install: *INSTALL_NODE_VIA_NVM
       script:
+        - mkdir node_modules
         - |
           for dir in `ls examples | grep -v README | grep -v asm.js | grep -v no_modules`; do
             (cd examples/$dir &&
              sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json &&
+             ln -s ../../node_modules . &&
              ./build.sh) || exit 1;
           done
 
