@@ -1,8 +1,5 @@
-#[macro_use]
-extern crate lazy_static;
-extern crate wasm_bindgen_cli_support;
+extern crate wasm_bindgen_test_project_builder as project_builder;
 
-mod project_builder;
 use project_builder::{project, run};
 
 mod api;
