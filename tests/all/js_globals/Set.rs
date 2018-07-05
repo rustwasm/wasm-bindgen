@@ -18,7 +18,7 @@ fn add() {
             }
 
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -51,7 +51,7 @@ fn clear() {
             }
 
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -81,7 +81,7 @@ fn delete() {
                 this.delete(value)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -110,7 +110,7 @@ fn has() {
                 this.has(value)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -139,7 +139,7 @@ fn new() {
                 js::Set::new()
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -168,7 +168,7 @@ fn size() {
             }
 
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 

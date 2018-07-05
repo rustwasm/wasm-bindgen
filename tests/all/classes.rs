@@ -40,7 +40,7 @@ fn simple() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import { Foo } from "./out";
@@ -115,7 +115,7 @@ fn strings() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import { Foo } from "./out";
@@ -139,70 +139,64 @@ fn exceptions() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
-            extern crate wasm_bindgen;
+                extern crate wasm_bindgen;
 
-            use wasm_bindgen::prelude::*;
+                use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen]
-            pub struct A {
-            }
-
-            #[wasm_bindgen]
-            impl A {
-                pub fn new() -> A {
-                    A {}
+                #[wasm_bindgen]
+                pub struct A {
                 }
 
-                pub fn foo(&self, _: &A) {
+                #[wasm_bindgen]
+                impl A {
+                    pub fn new() -> A {
+                        A {}
+                    }
+
+                    pub fn foo(&self, _: &A) {
+                    }
+
+                    pub fn bar(&mut self, _: &mut A) {
+                    }
                 }
 
-                pub fn bar(&mut self, _: &mut A) {
+                #[wasm_bindgen]
+                pub struct B {
                 }
-            }
 
-            #[wasm_bindgen]
-            pub struct B {
-            }
-
-            #[wasm_bindgen]
-            impl B {
-                pub fn new() -> B {
-                    B {}
+                #[wasm_bindgen]
+                impl B {
+                    pub fn new() -> B {
+                        B {}
+                    }
                 }
-            }
-        "#,
+            "#,
         )
         .file(
             "test.js",
             r#"
-            import * as assert from "assert";
-            import { A, B } from "./out";
+                import * as assert from "assert";
+                import { A, B } from "./out";
 
-            export function test() {
-                assert.throws(() => new A(), /cannot invoke `new` directly/);
-                let a = A.new();
-                a.free();
-                assert.throws(() => a.free(), /null pointer passed to rust/);
+                export function test() {
+                    assert.throws(() => new A(), /cannot invoke `new` directly/);
+                    let a = A.new();
+                    a.free();
+                    assert.throws(() => a.free(), /null pointer passed to rust/);
 
-                let b = A.new();
-                b.foo(b);
-                assert.throws(() => b.bar(b), /recursive use of an object/);
+                    let b = A.new();
+                    b.foo(b);
+                    assert.throws(() => b.bar(b), /recursive use of an object/);
 
-                let c = A.new();
-                let d = B.new();
-                assert.throws(() => c.foo(d), /expected instance of A/);
-                d.free();
-                c.free();
-            };
-        "#,
-        )
-        .file(
-            "test.d.ts",
-            r#"
-            export function test(): void;
-        "#,
+                    let c = A.new();
+                    let d = B.new();
+                    assert.throws(() => c.foo(d), /expected instance of A/);
+                    d.free();
+                    c.free();
+                };
+            "#,
         )
         .test();
 }
@@ -247,7 +241,7 @@ fn pass_one_to_another() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { A, B } from "./out";
 
@@ -269,49 +263,49 @@ fn pass_into_js() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
-            extern crate wasm_bindgen;
+                extern crate wasm_bindgen;
 
-            use wasm_bindgen::prelude::*;
+                use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen]
-            pub struct Foo(i32);
+                #[wasm_bindgen]
+                pub struct Foo(i32);
 
-            #[wasm_bindgen]
-            impl Foo {
-                pub fn inner(&self) -> i32 {
-                    self.0
+                #[wasm_bindgen]
+                impl Foo {
+                    pub fn inner(&self) -> i32 {
+                        self.0
+                    }
                 }
-            }
 
-            #[wasm_bindgen(module = "./test")]
-            extern {
-                fn take_foo(foo: Foo);
-            }
+                #[wasm_bindgen(module = "./test")]
+                extern {
+                    fn take_foo(foo: Foo);
+                }
 
-            #[wasm_bindgen]
-            pub fn run() {
-                take_foo(Foo(13));
-            }
-        "#,
+                #[wasm_bindgen]
+                pub fn run() {
+                    take_foo(Foo(13));
+                }
+            "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import { run, Foo } from "./out";
-            import * as assert from "assert";
+                import { run, Foo } from "./out";
+                import * as assert from "assert";
 
-            export function take_foo(foo: Foo) {
-                assert.strictEqual(foo.inner(), 13);
-                foo.free();
-                assert.throws(() => foo.free(), /null pointer passed to rust/);
-            }
+                export function take_foo(foo) {
+                    assert.strictEqual(foo.inner(), 13);
+                    foo.free();
+                    assert.throws(() => foo.free(), /null pointer passed to rust/);
+                }
 
-            export function test() {
-                run();
-            }
-        "#,
+                export function test() {
+                    run();
+                }
+            "#,
         )
         .test();
 }
@@ -353,7 +347,7 @@ fn issue_27() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { context } from "./out";
 
@@ -399,21 +393,21 @@ fn pass_into_js_as_js_class() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import { run, Foo } from "./out";
-            import * as assert from "assert";
+                import { run, Foo } from "./out";
+                import * as assert from "assert";
 
-            export function take_foo(foo: any) {
-                assert(foo instanceof Foo);
-                assert.strictEqual(foo.inner(), 13);
-                foo.free();
-            }
+                export function take_foo(foo) {
+                    assert.ok(foo instanceof Foo);
+                    assert.strictEqual(foo.inner(), 13);
+                    foo.free();
+                }
 
-            export function test() {
-                run();
-            }
-        "#,
+                export function test() {
+                    run();
+                }
+            "#,
         )
         .test();
 }
@@ -472,31 +466,31 @@ fn constructors() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import * as assert from "assert";
-            import { Foo, Bar, cross_item_construction } from "./out";
+                import * as assert from "assert";
+                import { Foo, Bar, cross_item_construction } from "./out";
 
-            export function test() {
-                const foo = new Foo(1);
-                assert.strictEqual(foo.get_number(), 1);
-                foo.free();
+                export function test() {
+                    const foo = new Foo(1);
+                    assert.strictEqual(foo.get_number(), 1);
+                    foo.free();
 
-                const foo2 = Foo.new(2);
-                assert.strictEqual(foo2.get_number(), 2);
-                foo2.free();
+                    const foo2 = Foo.new(2);
+                    assert.strictEqual(foo2.get_number(), 2);
+                    foo2.free();
 
-                const bar = new Bar(3, 4);
-                assert.strictEqual(bar.get_sum(), 7);
-                bar.free();
+                    const bar = new Bar(3, 4);
+                    assert.strictEqual(bar.get_sum(), 7);
+                    bar.free();
 
-                const bar2 = Bar.other_name(5, 6);
-                assert.strictEqual(bar2.get_sum(), 11);
-                bar2.free();
+                    const bar2 = Bar.other_name(5, 6);
+                    assert.strictEqual(bar2.get_sum(), 11);
+                    bar2.free();
 
-                assert.strictEqual(cross_item_construction().get_sum(), 15);
-            }
-        "#,
+                    assert.strictEqual(cross_item_construction().get_sum(), 15);
+                }
+            "#,
         )
         .test();
 }
@@ -525,14 +519,14 @@ fn empty_structs() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import { Other } from "./out";
+                import { Other } from "./out";
 
-            export function test() {
-                Other.return_a_value();
-            }
-        "#,
+                export function test() {
+                    Other.return_a_value();
+                }
+            "#,
         )
         .test();
 }
@@ -568,7 +562,7 @@ fn public_fields() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { Foo } from "./out";
             import * as assert from "assert";
@@ -622,7 +616,7 @@ fn using_self() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { Foo } from "./out";
 
@@ -641,40 +635,40 @@ fn readonly_fields() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
-            extern crate wasm_bindgen;
+                extern crate wasm_bindgen;
 
-            use wasm_bindgen::prelude::*;
+                use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen]
-            #[derive(Default)]
-            pub struct Foo {
-                #[wasm_bindgen(readonly)]
-                pub a: u32,
-            }
-
-            #[wasm_bindgen]
-            impl Foo {
-                pub fn new() -> Foo {
-                    Foo::default()
+                #[wasm_bindgen]
+                #[derive(Default)]
+                pub struct Foo {
+                    #[wasm_bindgen(readonly)]
+                    pub a: u32,
                 }
-            }
-        "#,
+
+                #[wasm_bindgen]
+                impl Foo {
+                    pub fn new() -> Foo {
+                        Foo::default()
+                    }
+                }
+            "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import { Foo } from "./out";
-            import * as assert from "assert";
+                import { Foo } from "./out";
+                import * as assert from "assert";
 
-            export function test() {
-                const a = Foo.new();
-                assert.strictEqual(a.a, 0);
-                assert.throws(() => (a as any).a = 3, /has only a getter/);
-                a.free();
-            }
-        "#,
+                export function test() {
+                    const a = Foo.new();
+                    assert.strictEqual(a.a, 0);
+                    assert.throws(() => a.a = 3, /has only a getter/);
+                    a.free();
+                }
+            "#,
         )
         .test();
 }
@@ -704,7 +698,7 @@ fn double_consume() {
                 }
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import { Foo } from "./out";
 

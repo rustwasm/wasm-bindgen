@@ -17,7 +17,7 @@ fn new() {
                 ArrayBuffer::new(42)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -44,7 +44,7 @@ fn is_view() {
                 ArrayBuffer::is_view(value)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -70,7 +70,7 @@ fn slice() {
                 arraybuffer.slice(begin)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -97,7 +97,7 @@ fn slice_with_end() {
                 arraybuffer.slice_with_end(begin, end)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
