@@ -58,6 +58,17 @@ matrix:
              ./build.sh) || exit 1;
           done
 
+    # The `web-sys` crate's tests pass on nightly.
+    - rust: nightly
+      env: JOB=test-web-sys
+      before_install: *INSTALL_NODE_VIA_NVM
+      install:
+        - npm install
+      script:
+        - (cd crates/web-sys && cargo test)
+      addons:
+        firefox: latest
+
     # Tests pass on nightly using yarn
     - rust: nightly
       env: JOB=test-yarn-smoke
