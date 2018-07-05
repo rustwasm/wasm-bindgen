@@ -22,8 +22,8 @@ fn is_integer() {
             import * as wasm from "./out";
 
             export function test() {
-                assert(wasm.is_integer(123));
-                assert(!wasm.is_integer(123.45));
+                assert.ok(wasm.is_integer(123));
+                assert.ok(!wasm.is_integer(123.45));
             }
         "#)
         .test()
