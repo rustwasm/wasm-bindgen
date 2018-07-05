@@ -17,14 +17,14 @@ fn new() {
                 js::Proxy::new(&target, &handler)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 const target = { a: 100 };
                 const handler = {
-                     get: function(obj: any, prop: any) {
+                     get: function(obj, prop) {
                          return prop in obj ? obj[prop] : 37;
                      }
                 };
@@ -51,14 +51,14 @@ fn revocable() {
                 js::Proxy::revocable(&target, &handler)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 const target = { a: 100 };
                 const handler = {
-                     get: function(obj: any, prop: any) {
+                     get: function(obj, prop) {
                          return prop in obj ? obj[prop] : 37;
                      }
                 };
