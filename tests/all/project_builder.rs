@@ -2,12 +2,14 @@ use wasm_bindgen_cli_support as cli;
 
 use std::env;
 use std::fs::{self, File};
+use std::thread;
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use std::process::{Command, Stdio, Child, ChildStdin};
+use std::net::TcpStream;
 use std::sync::atomic::*;
-use std::sync::{Once, ONCE_INIT};
-use std::time::Instant;
+use std::sync::{Once, ONCE_INIT, Mutex};
+use std::time::{Duration, Instant};
 
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
 thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
@@ -103,10 +105,6 @@ impl Project {
         self
     }
 
-    fn has_file(&self, name: &str) -> bool {
-        self.files.iter().any(|&(ref f, _)| f == name)
-    }
-
     /// Enable debug mode in wasm-bindgen for this test
     pub fn debug(&mut self, debug: bool) -> &mut Project {
         self.debug = debug;
@@ -179,6 +177,9 @@ impl Project {
     /// Write this project to the filesystem, ensuring all files are ready to
     /// go.
     pub fn build(&mut self) -> (PathBuf, PathBuf) {
+        if self.headless {
+            self.webpack = true;
+        }
         if self.webpack {
             self.node = false;
             self.nodejs_experimental_modules = false;
@@ -294,14 +295,16 @@ impl Project {
                 // This reads the directories in `node_modules`
                 // and give that to externals and webpack ignores
                 // to bundle the modules listed as external.
-                fs.readdirSync('node_modules')
-                    .filter(module => module !== '.bin')
-                    .forEach(mod => {{
-                        // External however,expects browser environment.
-                        // To make it work in `node` target we
-                        // prefix commonjs here.
-                        nodeModules[mod] = 'commonjs ' + mod;
-                    }});
+                if ('{2}' == 'node') {{
+                    fs.readdirSync('node_modules')
+                        .filter(module => module !== '.bin')
+                        .forEach(mod => {{
+                            // External however,expects browser environment.
+                            // To make it work in `node` target we
+                            // prefix commonjs here.
+                            nodeModules[mod] = 'commonjs ' + mod;
+                        }});
+                }}
 
                 module.exports = {{
                   entry: './run.js',
@@ -518,8 +521,22 @@ impl Project {
                         return Promise.all([import('./test'), {}])
                     }})
                     .then(result => run(result[0], result[1]))
-                    .catch(onerror);
             ", import_wasm));
+
+            if self.headless {
+                runjs.push_str(".then(() => {
+                    document.getElementById('status').innerHTML = 'good';
+                })");
+            }
+            runjs.push_str(".catch(onerror)\n");
+
+            if self.headless {
+                runjs.push_str("
+                    .finally(() => {
+                        window.document.body.innerHTML += \"\\nTEST_DONE\";
+                    })
+                ");
+            }
         } else {
             assert!(!self.debug);
             assert!(modules.is_empty());
@@ -631,14 +648,7 @@ impl Project {
         }
 
         // Execute webpack to generate a bundle
-        let mut cmd = if cfg!(windows) {
-            let mut c = Command::new("cmd");
-            c.arg("/c");
-            c.arg("npm");
-            c
-        } else {
-            Command::new("npm")
-        };
+        let mut cmd = self.npm();
         cmd.arg("run").arg("run-webpack").current_dir(&root);
         run(&mut cmd, "npm");
 
@@ -646,6 +656,17 @@ impl Project {
         cmd.args(&self.node_args);
         cmd.arg(root.join("bundle.js")).current_dir(&root);
         run(&mut cmd, "node");
+    }
+
+    fn npm(&self) -> Command {
+        if cfg!(windows) {
+            let mut c = Command::new("cmd");
+            c.arg("/c");
+            c.arg("npm");
+            c
+        } else {
+            Command::new("npm")
+        }
     }
 
     fn test_headless(&mut self, root: &Path) {
