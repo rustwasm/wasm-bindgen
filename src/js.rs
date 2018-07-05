@@ -1003,8 +1003,8 @@ extern "C" {
     /// but returns a Boolean.
     /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/defineProperty
-    #[wasm_bindgen(static_method_of = Reflect, js_name = defineProperty, catch)]
-    pub fn define_property(target: &Object, property_key: &JsValue, attributes: &Object) -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = defineProperty)]
+    pub fn define_property(target: &Object, property_key: &JsValue, attributes: &Object) -> bool;
 
     /// The static Reflect.deleteProperty() method allows to delete properties. 
     /// It is like the delete operator as a function.

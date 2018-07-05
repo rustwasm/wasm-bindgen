@@ -160,13 +160,8 @@ fn define_property() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn define_property(target: &js::Object, property_key: &JsValue, attributes: &js::Object) -> JsValue {
-                let result = js::Reflect::define_property(target, property_key, attributes);
-                
-                match result {
-                    Ok(val) => val,
-                    Err(_err) => _err
-                }
+            pub fn define_property(target: &js::Object, property_key: &JsValue, attributes: &js::Object) -> bool {
+                js::Reflect::define_property(target, property_key, attributes)
             }
         "#,
         )
@@ -180,7 +175,6 @@ fn define_property() {
                 const object = {};
 
                 assert.equal(wasm.define_property(object, "key", { value: 42}), true)
-                assert.equal(wasm.define_property("", "key", { value: 42 }), "TypeError: Reflect.defineProperty called on non-object");
             }
         "#,
         )
