@@ -134,7 +134,6 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn fill(this: &Array, value: JsValue, start: u32, end: u32) -> Array;
 
-
     /// The `filter()` method creates a new array with all elements that pass the
     /// test implemented by the provided function.
     ///
