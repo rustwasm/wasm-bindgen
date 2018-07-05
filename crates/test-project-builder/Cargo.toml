@@ -1,0 +1,8 @@
+[package]
+name = "wasm-bindgen-test-project-builder"
+version = "0.2.11"
+authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
+
+[dependencies]
+lazy_static = "1"
+wasm-bindgen-cli-support = { path = "../cli-support", version = '=0.2.11' }

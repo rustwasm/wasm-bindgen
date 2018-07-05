@@ -1,4 +1,6 @@
-use wasm_bindgen_cli_support as cli;
+#[macro_use]
+extern crate lazy_static;
+extern crate wasm_bindgen_cli_support as cli;
 
 use std::env;
 use std::fs::{self, File};
@@ -29,7 +31,7 @@ pub struct Project {
 }
 
 pub fn project() -> Project {
-    let dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let mut lockfile = String::new();
     fs::File::open(&dir.join("Cargo.lock"))
         .unwrap()
@@ -217,7 +219,7 @@ impl Project {
         manifest.push_str("[build-dependencies]\n");
         manifest.push_str("wasm-bindgen-webidl = { path = '");
         manifest.push_str(env!("CARGO_MANIFEST_DIR"));
-        manifest.push_str("/crates/webidl' }\n");
+        manifest.push_str("/../webidl' }\n");
 
         manifest.push_str("[dependencies]\n");
         for dep in self.deps.iter() {
@@ -226,7 +228,7 @@ impl Project {
         }
         manifest.push_str("wasm-bindgen = { path = '");
         manifest.push_str(env!("CARGO_MANIFEST_DIR"));
-        manifest.push_str("'");
+        manifest.push_str("/../..'");
         if self.no_std {
             manifest.push_str(", default-features = false");
         }
@@ -826,4 +828,3 @@ fn run_in_background(cmd: &mut Command, name: String) -> BackgroundChild {
         stdin: Some(stdin),
     }
 }
-
