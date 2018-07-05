@@ -4,4 +4,10 @@ version = "0.1.0"
 authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
 readme = "./README.md"
 
+[build-dependencies]
+env_logger = "0.5.10"
+failure = "0.1"
+wasm-bindgen-webidl = { path = "../webidl", version = "=0.2.11" }
+
 [dependencies]
+wasm-bindgen = { path = "../..", version = "=0.2.11" }
