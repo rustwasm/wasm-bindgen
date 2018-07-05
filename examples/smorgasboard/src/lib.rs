@@ -21,6 +21,7 @@ pub struct Foo {
 
 #[wasm_bindgen]
 impl Foo {
+    #[wasm_bindgen(constructor)]
     pub fn new() -> Foo {
         Foo { contents: 0 }
     }

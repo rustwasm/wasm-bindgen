@@ -1,31 +1,34 @@
-module.exports = { 
-    env: { 
-        es6: true, 
-        browser: true, 
-        commonjs: true, 
-        node: true 
-    }, 
-    extends: 'eslint:recommended', 
-    parserOptions: { 
-        sourceType: 'module' 
-    }, 
-    rules: { 
-        indent: ['error', 4], 
+module.exports = {
+    env: {
+        es6: true,
+        browser: true,
+        commonjs: true,
+        node: true
+    },
+    extends: 'eslint:recommended',
+    parser: 'babel-eslint',
+    parserOptions: {
+        sourceType: 'module'
+    },
+    rules: {
+        indent: ['error', 4],
         'linebreak-style': [
-            'error', 
+            'error',
             'unix'
-        ], 
+        ],
         quotes: [
-            'error', 
+            'error',
             'single'
-        ], 
+        ],
         semi: [
-            'error', 
+            'error',
             'always'
-        ], 
-        'no-console': 0, 
-        'no-undef': 
-        'warn', 
-        'no-unused-vars': 'warn' 
-    } 
+        ],
+        'no-console': 0,
+        'no-undef': 'warn'
+    },
+    globals: {
+      BigInt64Array: true,
+      BigUint64Array: true
+    }
 };

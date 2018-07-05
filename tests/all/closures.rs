@@ -6,46 +6,46 @@ fn works() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
-            extern crate wasm_bindgen;
+                extern crate wasm_bindgen;
 
-            use std::cell::Cell;
-            use wasm_bindgen::prelude::*;
+                use std::cell::Cell;
+                use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen(module = "./test")]
-            extern {
-                fn call(a: &Fn());
-                fn thread(a: &Fn(u32) -> u32) -> u32;
-            }
+                #[wasm_bindgen(module = "./test")]
+                extern {
+                    fn call(a: &Fn());
+                    fn thread(a: &Fn(u32) -> u32) -> u32;
+                }
 
-            #[wasm_bindgen]
-            pub fn run() {
-                let a = Cell::new(false);
-                call(&|| a.set(true));
-                assert!(a.get());
+                #[wasm_bindgen]
+                pub fn run() {
+                    let a = Cell::new(false);
+                    call(&|| a.set(true));
+                    assert!(a.get());
 
-                assert_eq!(thread(&|a| a + 1), 3);
-            }
-        "#,
+                    assert_eq!(thread(&|a| a + 1), 3);
+                }
+            "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import { run } from "./out";
+                import { run } from "./out";
 
-            export function call(a: any) {
-                a();
-            }
+                export function call(a) {
+                    a();
+                }
 
-            export function thread(a: any) {
-                return a(2);
-            }
+                export function thread(a) {
+                    return a(2);
+                }
 
-            export function test() {
-                run();
-            }
-        "#,
+                export function test() {
+                    run();
+                }
+            "#,
         )
         .test();
 }
@@ -56,34 +56,34 @@ fn cannot_reuse() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
-            extern crate wasm_bindgen;
+                extern crate wasm_bindgen;
 
-            use wasm_bindgen::prelude::*;
+                use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen(module = "./test")]
-            extern {
-                fn call(a: &Fn());
-                #[wasm_bindgen(catch)]
-                fn call_again() -> Result<(), JsValue>;
-            }
+                #[wasm_bindgen(module = "./test")]
+                extern {
+                    fn call(a: &Fn());
+                    #[wasm_bindgen(catch)]
+                    fn call_again() -> Result<(), JsValue>;
+                }
 
-            #[wasm_bindgen]
-            pub fn run() {
-                call(&|| {});
-                assert!(call_again().is_err());
-            }
-        "#,
+                #[wasm_bindgen]
+                pub fn run() {
+                    call(&|| {});
+                    assert!(call_again().is_err());
+                }
+            "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { run } from "./out";
 
-            let CACHE: any = null;
+            let CACHE = null;
 
-            export function call(a: any) {
+            export function call(a) {
                 CACHE = a;
             }
 
@@ -142,15 +142,15 @@ fn long_lived() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { run } from "./out";
 
-            export function call1(a: any) {
+            export function call1(a) {
                 a();
             }
 
-            export function call2(a: any) {
+            export function call2(a) {
                 return a(2);
             }
 
@@ -242,18 +242,18 @@ fn many_arity() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { run } from "./out";
 
-            export function call1(a: any) { a() }
-            export function call2(a: any) { a(1) }
-            export function call3(a: any) { a(1, 2) }
-            export function call4(a: any) { a(1, 2, 3) }
-            export function call5(a: any) { a(1, 2, 3, 4) }
-            export function call6(a: any) { a(1, 2, 3, 4, 5) }
-            export function call7(a: any) { a(1, 2, 3, 4, 5, 6) }
-            export function call8(a: any) { a(1, 2, 3, 4, 5, 6, 7) }
+            export function call1(a) { a() }
+            export function call2(a) { a(1) }
+            export function call3(a) { a(1, 2) }
+            export function call4(a) { a(1, 2, 3) }
+            export function call5(a) { a(1, 2, 3, 4) }
+            export function call6(a) { a(1, 2, 3, 4, 5) }
+            export function call7(a) { a(1, 2, 3, 4, 5, 6) }
+            export function call8(a) { a(1, 2, 3, 4, 5, 6, 7) }
 
             export function test() {
                 run();
@@ -299,13 +299,13 @@ fn long_lived_dropping() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { run } from "./out";
 
-            let CACHE: any = null;
+            let CACHE = null;
 
-            export function cache(a: any) { CACHE = a; }
+            export function cache(a) { CACHE = a; }
             export function call() { CACHE() }
 
             export function test() {
@@ -346,13 +346,13 @@ fn long_fnmut_recursive() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { run } from "./out";
 
-            let CACHE: any = null;
+            let CACHE = null;
 
-            export function cache(a: any) { CACHE = a; }
+            export function cache(a) { CACHE = a; }
             export function call() { CACHE() }
 
             export function test() {
@@ -397,15 +397,15 @@ fn fnmut() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { run } from "./out";
 
-            export function call(a: any) {
+            export function call(a) {
                 a();
             }
 
-            export function thread(a: any) {
+            export function thread(a) {
                 return a(2);
             }
 
@@ -455,18 +455,18 @@ fn fnmut_bad() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import { run } from "./out";
 
-            let F: any = null;
+            let F = null;
 
-            export function call(a: any) {
+            export function call(a) {
                 F = a;
                 a();
             }
 
-            export function again(x: boolean) {
+            export function again(x) {
                 if (x) F();
             }
 
@@ -507,18 +507,18 @@ fn string_arguments() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import { run } from "./out";
+                import { run } from "./out";
 
-            export function call(a: any) {
-                a("foo")
-            }
+                export function call(a) {
+                    a("foo")
+                }
 
-            export function test() {
-                run();
-            }
-        "#,
+                export function test() {
+                    run();
+                }
+            "#,
         )
         .test();
 }
@@ -529,45 +529,45 @@ fn string_ret() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
 
-            extern crate wasm_bindgen;
+                extern crate wasm_bindgen;
 
-            use wasm_bindgen::prelude::*;
+                use wasm_bindgen::prelude::*;
 
-            #[wasm_bindgen(module = "./test")]
-            extern {
-                fn call(a: &mut FnMut(String) -> String);
-            }
+                #[wasm_bindgen(module = "./test")]
+                extern {
+                    fn call(a: &mut FnMut(String) -> String);
+                }
 
-            #[wasm_bindgen]
-            pub fn run() {
-                let mut x = false;
-                call(&mut |mut s| {
-                    assert_eq!(s, "foo");
-                    s.push_str("bar");
-                    x = true;
-                    s
-                });
-                assert!(x);
-            }
-        "#,
+                #[wasm_bindgen]
+                pub fn run() {
+                    let mut x = false;
+                    call(&mut |mut s| {
+                        assert_eq!(s, "foo");
+                        s.push_str("bar");
+                        x = true;
+                        s
+                    });
+                    assert!(x);
+                }
+            "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import { run } from "./out";
-            import * as assert from "assert";
+                import { run } from "./out";
+                import * as assert from "assert";
 
-            export function call(a: any) {
-                const s = a("foo");
-                assert.strictEqual(s, "foobar");
-            }
+                export function call(a) {
+                    const s = a("foo");
+                    assert.strictEqual(s, "foobar");
+                }
 
-            export function test() {
-                run();
-            }
-        "#,
+                export function test() {
+                    run();
+                }
+            "#,
         )
         .test();
 }

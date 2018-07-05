@@ -3,6 +3,33 @@
 use super::project;
 
 #[test]
+fn new() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Number;
+
+            #[wasm_bindgen]
+            pub fn new_number() -> Number {
+                Number::new(JsValue::from(42))
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(typeof wasm.new_number(), "object");
+                assert.equal(wasm.new_number(), 42);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn to_locale_string() {
     project()
         .file("src/lib.rs", r#"
@@ -17,7 +44,7 @@ fn to_locale_string() {
                 this.to_locale_string(locale)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -56,7 +83,7 @@ fn to_precision() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -94,7 +121,7 @@ fn to_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -129,7 +156,7 @@ fn value_of() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -168,7 +195,7 @@ fn to_fixed() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -206,7 +233,7 @@ fn to_exponential() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";

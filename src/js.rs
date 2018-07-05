@@ -254,6 +254,45 @@ extern "C" {
     pub fn unshift(this: &Array, value: JsValue) -> u32;
 }
 
+// ArrayBuffer
+#[wasm_bindgen]
+extern "C" {
+    pub type ArrayBuffer;
+
+    /// The `ArrayBuffer` object is used to represent a generic,
+    /// fixed-length raw binary data buffer. You cannot directly
+    /// manipulate the contents of an `ArrayBuffer`; instead, you
+    /// create one of the typed array objects or a `DataView` object
+    /// which represents the buffer in a specific format, and use that
+    /// to read and write the contents of the buffer.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
+    #[wasm_bindgen(constructor)]
+    pub fn new(length: u32) -> ArrayBuffer;
+
+    /// The `slice()` method returns a new `ArrayBuffer` whose contents
+    /// are a copy of this `ArrayBuffer`'s bytes from begin, inclusive,
+    /// up to end, exclusive.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/isView
+    #[wasm_bindgen(static_method_of = ArrayBuffer, js_name = isView)]
+    pub fn is_view(value: JsValue) -> bool;
+
+    /// The `slice()` method returns a new `ArrayBuffer` whose contents
+    /// are a copy of this `ArrayBuffer`'s bytes from begin, inclusive,
+    /// up to end, exclusive.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &ArrayBuffer, begin: u32) -> ArrayBuffer;
+
+    /// Like `slice()` but with the `end` argument.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice
+    #[wasm_bindgen(method, js_name = slice)]
+    pub fn slice_with_end(this: &ArrayBuffer, begin: u32, end: u32) -> ArrayBuffer;
+}
+
 // Array Iterator
 #[wasm_bindgen]
 extern "C" {
@@ -369,6 +408,32 @@ extern "C" {
     pub fn to_string(this: &Function) -> JsString;
 }
 
+// Generator
+#[wasm_bindgen]
+extern {
+    pub type Generator;
+
+    /// The next() method returns an object with two properties done and value.
+    /// You can also provide a parameter to the next method to send a value to the generator.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/next
+    #[wasm_bindgen(method, structural, catch)]
+    pub fn next(this: &Generator, value: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The return() method returns the given value and finishes the generator.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/return
+    #[wasm_bindgen(method, structural, js_name = return)]
+    pub fn return_(this: &Generator, value: &JsValue) -> JsValue;
+
+    /// The throw() method resumes the execution of a generator by throwing an error into it
+    /// and returns an object with two properties done and value.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/throw
+    #[wasm_bindgen(method, structural, catch)]
+    pub fn throw(this: &Generator, error: &Error) -> Result<JsValue, JsValue>;
+}
+
 // Map
 #[wasm_bindgen]
 extern {
@@ -459,7 +524,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/abs
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn abs(number: i32) -> Number;
+    pub fn abs(x: f64) -> Number;
 
     /// The Math.acos() function returns the arccosine (in radians) of a
     /// number, that is ∀x∊[-1;1]
@@ -467,7 +532,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acos
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn acos(adjacent: i32, hypotenuse: i32) -> Number;
+    pub fn acos(x: f64) -> Number;
 
     /// The Math.acosh() function returns the hyperbolic arc-cosine of a
     /// number, that is ∀x ≥ 1
@@ -475,7 +540,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acosh
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn acosh(number: i32) -> Number;
+    pub fn acosh(x: f64) -> Number;
 
     /// The Math.asin() function returns the arcsine (in radians) of a
     /// number, that is ∀x ∊ [-1;1]
@@ -483,27 +548,27 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asin
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn asin(number: i32) -> Number;
+    pub fn asin(x: f64) -> Number;
 
     /// The Math.asinh() function returns the hyperbolic arcsine of a
     /// number, that is Math.asinh(x) = arsinh(x) = the unique y such that sinh(y) = x
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asinh
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn asinh(number: i32) -> Number;
+    pub fn asinh(x: f64) -> Number;
 
     /// The Math.atan() function returns the arctangent (in radians) of a
     /// number, that is Math.atan(x) = arctan(x) = the unique y ∊ [-π2;π2]such that
     /// tan(y) = x
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn atan(number: i32) -> Number;
+    pub fn atan(x: f64) -> Number;
 
     /// The Math.atan2() function returns the arctangent of the quotient of
     /// its arguments.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn atan2(y: i32, x: i32) -> Number;
+    pub fn atan2(y: f64, x: f64) -> Number;
 
     /// The Math.atanh() function returns the hyperbolic arctangent of a number,
     /// that is ∀x ∊ (-1,1), Math.atanh(x) = arctanh(x) = the unique y such that
@@ -511,21 +576,21 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atanh
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn atanh(x: i32) -> Number;
+    pub fn atanh(x: f64) -> Number;
 
     /// The Math.cbrt() function returns the cube root of a number, that is
     /// Math.cbrt(x) = x^3 = the unique y such that y^3 = x
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cbrt
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn cbrt(x: i32) -> Number;
+    pub fn cbrt(x: f64) -> Number;
 
     /// The Math.ceil() function returns the smallest integer greater than
     /// or equal to a given number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn ceil(x: f32) -> Number;
+    pub fn ceil(x: f64) -> Number;
 
     /// The Math.clz32() function returns the number of leading zero bits in
     /// the 32-bit binary representation of a number.
@@ -539,7 +604,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cos
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn cos(x: f32) -> Number;
+    pub fn cos(x: f64) -> Number;
 
 
     /// The Math.cosh() function returns the hyperbolic cosine of a number,
@@ -547,35 +612,35 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cosh
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn cosh(x: f32) -> Number;
+    pub fn cosh(x: f64) -> Number;
 
     /// The Math.exp() function returns e^x, where x is the argument, and e is Euler's number
     /// (also known as Napier's constant), the base of the natural logarithms.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/exp
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn exp(x: f32) -> Number;
+    pub fn exp(x: f64) -> Number;
 
     /// The Math.expm1() function returns e^x - 1, where x is the argument, and e the base of the
     /// natural logarithms.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn expm1(x: f32) -> Number;
+    pub fn expm1(x: f64) -> Number;
 
     /// The Math.floor() function returns the largest integer less than or
     /// equal to a given number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn floor(x: f32) -> Number;
+    pub fn floor(x: f64) -> Number;
 
     /// The Math.fround() function returns the nearest 32-bit single precision float representation
     /// of a Number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn fround(x: f32) -> Number;
+    pub fn fround(x: f64) -> Number;
 
     /// The Math.imul() function returns the result of the C-like 32-bit multiplication of the
     /// two parameters.
@@ -589,31 +654,97 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn log(x: f32) -> Number;
+    pub fn log(x: f64) -> Number;
 
     /// The Math.log10() function returns the base 10 logarithm of a number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log10
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn log10(x: f32) -> Number;
+    pub fn log10(x: f64) -> Number;
 
     /// The Math.log1p() function returns the natural logarithm (base e) of 1 + a number.
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log1p
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn log1p(x: f32) -> Number;
+    pub fn log1p(x: f64) -> Number;
 
     /// The Math.log2() function returns the base 2 logarithm of a number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log2
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn log2(x: f32) -> Number;
+    pub fn log2(x: f64) -> Number;
 
+    /// The Math.pow() function returns the base to the exponent power, that is, base^exponent.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn pow(base: f64, exponent: f64) -> Number;
+
+    /// The Math.round() function returns the value of a number rounded to the nearest integer.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn round(x: f64) -> Number;
+
+    /// The Math.sign() function returns the sign of a number, indicating whether the number is
+    /// positive, negative or zero.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn sign(x: f64) -> Number;
+
+    /// The Math.sin() function returns the sine of a number.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sin
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn sin(x: f64) -> Number;
+
+    /// The Math.sinh() function returns the hyperbolic sine of a number, that can be expressed
+    /// using the constant e: Math.sinh(x) = (e^x - e^-x)/2
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sinh
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn sinh(x: f64) -> Number;
+
+    /// The Math.sqrt() function returns the square root of a number, that is
+    /// ∀x ≥ 0, Math.sqrt(x) = √x = the unique y ≥ 0 such that y^2 = x
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sqrt
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn sqrt(x: f64) -> Number;
+
+    /// The Math.tan() function returns the tangent of a number.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tan
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn tan(x: f64) -> Number;
+
+    /// The Math.tanh() function returns the hyperbolic tangent of a number, that is
+    /// tanh x = sinh x / cosh x = (e^x - e^-x)/(e^x + e^-x) = (e^2x - 1)/(e^2x + 1)
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tanh
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn tanh(x: f64) -> Number;
+
+    /// The Math.trunc() function returns the integer part of a number by removing any fractional
+    /// digits.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn trunc(x: f64) -> Number;
 }
 
 // Number.
 #[wasm_bindgen]
 extern "C" {
     pub type Number;
+
+    /// The `Number` JavaScript object is a wrapper object allowing
+    /// you to work with numerical values. A `Number` object is
+    /// created using the `Number()` constructor.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
+    #[wasm_bindgen(constructor)]
+    pub fn new(value: JsValue) -> Number;
 
     /// The toLocaleString() method returns a string with a language sensitive
     /// representation of this number.
@@ -663,6 +794,19 @@ extern "C" {
 extern "C" {
     pub type Date;
 
+    /// The getDay() method returns the day of the week for the specified date according to local time,
+    /// where 0 represents Sunday. For the day of the month see getDate().
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDay
+    #[wasm_bindgen(method, js_name = getDay)]
+    pub fn get_day(this: &Date) -> Number;
+
+    /// The getFullYear() method returns the year of the specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getFullYear
+    #[wasm_bindgen(method, js_name = getFullYear)]
+    pub fn get_full_year(this: &Date) -> Number;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
@@ -670,6 +814,13 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
     #[wasm_bindgen(constructor)]
     pub fn new() -> Date;
+
+    /// The `Date.now()` method returns the number of milliseconds
+    /// elapsed since January 1, 1970 00:00:00 UTC.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
+    #[wasm_bindgen(static_method_of = Date)]
+    pub fn now() -> f64;
 
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
@@ -748,6 +899,15 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toUTCString
     #[wasm_bindgen(method, js_name = toUTCString)]
     pub fn to_utc_string(this: &Date) -> JsString;
+
+    /// The `Date.UTC()` method accepts the same parameters as the
+    /// longest form of the constructor, and returns the number of
+    /// milliseconds in a `Date` object since January 1, 1970,
+    /// 00:00:00, universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC
+    #[wasm_bindgen(static_method_of = Date, js_name = UTC)]
+    pub fn utc(year: f64, month: f64) -> f64;
 
     /// The valueOf() method  returns the primitive value of
     /// a Date object.

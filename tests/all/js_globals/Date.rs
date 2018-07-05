@@ -3,6 +3,76 @@
 use super::project;
 
 #[test]
+fn get_day() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, Number};
+
+            #[wasm_bindgen]
+            pub fn get_day(this: &Date) -> Number {
+                this.get_day()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('August 19, 1975 23:15:30');
+
+                assert.equal(wasm.get_day(date), 2);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_full_year() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, Number};
+
+            #[wasm_bindgen]
+            pub fn get_full_year(this: &Date) -> Number {
+                this.get_full_year()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('July 20, 1969 00:20:18');
+                let abbrDate = new Date('Thu, 06 Sep 12 00:00:00');
+
+                assert.equal(wasm.get_full_year(date), 1969);
+                assert.equal(wasm.get_full_year(abbrDate), 2012);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file(
@@ -21,7 +91,7 @@ fn new() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -31,6 +101,32 @@ fn new() {
             }
         "#,
         )
+        .test()
+}
+
+#[test]
+fn now() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn now() -> f64 {
+                Date::now()
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(typeof wasm.now(), "number");
+            }
+        "#)
         .test()
 }
 
@@ -53,7 +149,7 @@ fn to_date_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -87,7 +183,7 @@ fn to_iso_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -121,7 +217,7 @@ fn to_json() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -152,7 +248,7 @@ fn to_locale_date_string() {
                 this.to_locale_date_string(locale, options)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -160,7 +256,9 @@ fn to_locale_date_string() {
                 let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
                 let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
-                assert.equal(wasm.to_locale_date_string(date, 'de-DE', options), 'Thursday, December 20, 2012');
+                let output = wasm.to_locale_date_string(date, 'de-DE', options)
+                assert.equal(typeof output, 'string');
+                assert.ok(output.length > 0);
             }
         "#)
         .test()
@@ -182,13 +280,15 @@ fn to_locale_string() {
                 this.to_locale_string(locale, options)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 let date = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
-                assert.equal(wasm.to_locale_string(date, 'en-GB', { timeZone: 'UTC' }), "12/20/2012, 3:00:00 AM");
+                let output = wasm.to_locale_string(date, 'en-GB', { timeZone: 'UTC' });
+                assert.equal(typeof output, 'string');
+                assert.ok(output.length > 0);
             }
         "#)
         .test()
@@ -213,7 +313,7 @@ fn to_locale_time_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -246,7 +346,7 @@ fn to_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -279,7 +379,7 @@ fn to_time_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -312,7 +412,7 @@ fn to_utc_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -323,6 +423,32 @@ fn to_utc_string() {
             }
         "#,
         )
+        .test()
+}
+
+#[test]
+fn utc() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn utc() -> f64 {
+                Date::utc(2018f64, 6f64)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.utc(), 1530403200000);
+            }
+        "#)
         .test()
 }
 
@@ -345,7 +471,7 @@ fn value_of() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";

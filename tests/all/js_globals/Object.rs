@@ -21,7 +21,7 @@ fn new() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -53,18 +53,18 @@ fn has_own_property() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
-                assert(wasm.has_own_foo_property({ foo: 42 }, "foo"));
-                assert(wasm.has_own_foo_property({ 42: "foo" }, 42));
-                assert(!wasm.has_own_foo_property({ foo: 42 }, "bar"));
+                assert.ok(wasm.has_own_foo_property({ foo: 42 }, "foo"));
+                assert.ok(wasm.has_own_foo_property({ 42: "foo" }, 42));
+                assert.ok(!wasm.has_own_foo_property({ foo: 42 }, "bar"));
 
                 const s = Symbol();
-                assert(wasm.has_own_foo_property({ [s]: "foo" }, s));
+                assert.ok(wasm.has_own_foo_property({ [s]: "foo" }, s));
             }
         "#,
         )
@@ -96,7 +96,7 @@ fn to_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -125,16 +125,16 @@ fn is_extensible() {
                 js::Object::is_extensible(&obj)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 const object = {};
-                assert(wasm.is_extensible(object));
+                assert.ok(wasm.is_extensible(object));
 
                 Object.preventExtensions(object);
-                assert(!wasm.is_extensible(object));
+                assert.ok(!wasm.is_extensible(object));
             }
         "#)
         .test()
@@ -155,16 +155,16 @@ fn is_frozen() {
                 js::Object::is_frozen(&obj)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 const object = {};
-                assert(!wasm.is_frozen(object));
+                assert.ok(!wasm.is_frozen(object));
 
                 Object.freeze(object);
-                assert(wasm.is_frozen(object));
+                assert.ok(wasm.is_frozen(object));
             }
         "#)
         .test()
@@ -185,16 +185,16 @@ fn is_sealed() {
                 js::Object::is_sealed(&obj)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 const object = {};
-                assert(!wasm.is_sealed(object));
+                assert.ok(!wasm.is_sealed(object));
 
                 Object.seal(object);
-                assert(wasm.is_sealed(object));
+                assert.ok(wasm.is_sealed(object));
             }
         "#)
         .test()
@@ -219,7 +219,7 @@ fn is_prototype_of() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -229,8 +229,8 @@ fn is_prototype_of() {
 
             export function test() {
                 const foo = new Foo();
-                assert(wasm.obj_is_prototype_of_value(Foo.prototype, foo));
-                assert(!wasm.obj_is_prototype_of_value(Bar.prototype, foo));
+                assert.ok(wasm.obj_is_prototype_of_value(Foo.prototype, foo));
+                assert.ok(!wasm.obj_is_prototype_of_value(Bar.prototype, foo));
             }
         "#,
         )
@@ -256,7 +256,7 @@ fn keys() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -285,7 +285,7 @@ fn prevent_extensions() {
                 js::Object::prevent_extensions(obj);
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -293,7 +293,7 @@ fn prevent_extensions() {
                 const object = {};
                 wasm.prevent_extensions(object);
 
-                assert(!Object.isExtensible(object));
+                assert.ok(!Object.isExtensible(object));
                 assert.throws(() => {
                     'use strict';
                     Object.defineProperty(object, 'foo', { value: 42 });
@@ -322,19 +322,19 @@ fn property_is_enumerable() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
-                assert(wasm.property_is_enumerable({ foo: 42 }, "foo"));
-                assert(wasm.property_is_enumerable({ 42: "foo" }, 42));
-                assert(!wasm.property_is_enumerable({}, 42));
+                assert.ok(wasm.property_is_enumerable({ foo: 42 }, "foo"));
+                assert.ok(wasm.property_is_enumerable({ 42: "foo" }, 42));
+                assert.ok(!wasm.property_is_enumerable({}, 42));
 
                 const obj = {};
                 Object.defineProperty(obj, "foo", { enumerable: false });
-                assert(!wasm.property_is_enumerable(obj, "foo"));
+                assert.ok(!wasm.property_is_enumerable(obj, "foo"));
 
                 const s = Symbol();
                 assert.ok(wasm.property_is_enumerable({ [s]: true }, s));
@@ -359,12 +359,12 @@ fn seal() {
                 js::Object::seal(&value)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
-                const object: any = { foo: 'bar' };
+                const object = { foo: 'bar' };
                 const sealedObject = wasm.seal(object);
                 assert.strictEqual(object, sealedObject);
                 assert.throws(() => {
@@ -410,7 +410,7 @@ fn set_prototype_of() {
                 js::Object::set_prototype_of(&object, &prototype)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -419,7 +419,7 @@ fn set_prototype_of() {
                 const newPrototype = { bar: 'baz' };
 
                 const modifiedObject = wasm.set_prototype_of(object, newPrototype);
-                assert(newPrototype.isPrototypeOf(modifiedObject));
+                assert.ok(newPrototype.isPrototypeOf(modifiedObject));
             }
         "#)
         .test()
@@ -445,7 +445,7 @@ fn to_locale_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -477,7 +477,7 @@ fn value_of() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -507,7 +507,7 @@ fn values() {
                 js::Object::values(&obj)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 

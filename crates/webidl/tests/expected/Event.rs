@@ -99,7 +99,7 @@ impl Event {
     pub extern "C" fn new(type_: &str, event_init_dict: EventInit) -> Event {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -143,7 +143,7 @@ impl Event {
     pub extern "C" fn event_phase(&self) -> u16 {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -183,7 +183,7 @@ impl Event {
     pub extern "C" fn stop_propagation(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -223,7 +223,7 @@ impl Event {
     pub extern "C" fn stop_immediate_propagation(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -267,7 +267,7 @@ impl Event {
     pub extern "C" fn bubbles(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -311,7 +311,7 @@ impl Event {
     pub extern "C" fn cancelable(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -351,7 +351,7 @@ impl Event {
     pub extern "C" fn prevent_default(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -395,95 +395,7 @@ impl Event {
     pub extern "C" fn default_prevented(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
-        );
-    }
-}
-#[no_mangle]
-#[allow(non_snake_case)]
-#[doc(hidden)]
-pub extern "C" fn __wbindgen_describe___widl_f_default_prevented_by_chrome_Event() {
-    use wasm_bindgen::describe::*;
-    inform(FUNCTION);
-    inform(1u32);
-    <&Event as WasmDescribe>::describe();
-    inform(1);
-    <bool as WasmDescribe>::describe();
-}
-impl Event {
-    #[allow(bad_style)]
-    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-    pub extern "C" fn default_prevented_by_chrome(&self) -> bool {
-        ::wasm_bindgen::__rt::link_this_library();
-        #[wasm_import_module = "__wbindgen_placeholder__"]
-        extern "C" {
-            fn __widl_f_default_prevented_by_chrome_Event(
-                self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
-            ) -> <bool as ::wasm_bindgen::convert::FromWasmAbi>::Abi;
-        }
-        unsafe {
-            let _ret = {
-                let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
-                let self_ =
-                    <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(self, &mut __stack);
-                __widl_f_default_prevented_by_chrome_Event(self_)
-            };
-            <bool as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
-                _ret,
-                &mut ::wasm_bindgen::convert::GlobalStack::new(),
-            )
-        }
-    }
-    #[allow(bad_style, unused_variables)]
-    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn default_prevented_by_chrome(&self) -> bool {
-        panic!(
-            "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
-        );
-    }
-}
-#[no_mangle]
-#[allow(non_snake_case)]
-#[doc(hidden)]
-pub extern "C" fn __wbindgen_describe___widl_f_default_prevented_by_content_Event() {
-    use wasm_bindgen::describe::*;
-    inform(FUNCTION);
-    inform(1u32);
-    <&Event as WasmDescribe>::describe();
-    inform(1);
-    <bool as WasmDescribe>::describe();
-}
-impl Event {
-    #[allow(bad_style)]
-    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-    pub extern "C" fn default_prevented_by_content(&self) -> bool {
-        ::wasm_bindgen::__rt::link_this_library();
-        #[wasm_import_module = "__wbindgen_placeholder__"]
-        extern "C" {
-            fn __widl_f_default_prevented_by_content_Event(
-                self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
-            ) -> <bool as ::wasm_bindgen::convert::FromWasmAbi>::Abi;
-        }
-        unsafe {
-            let _ret = {
-                let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
-                let self_ =
-                    <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(self, &mut __stack);
-                __widl_f_default_prevented_by_content_Event(self_)
-            };
-            <bool as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
-                _ret,
-                &mut ::wasm_bindgen::convert::GlobalStack::new(),
-            )
-        }
-    }
-    #[allow(bad_style, unused_variables)]
-    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn default_prevented_by_content(&self) -> bool {
-        panic!(
-            "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -527,7 +439,7 @@ impl Event {
     pub extern "C" fn composed(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -571,7 +483,7 @@ impl Event {
     pub extern "C" fn is_trusted(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -615,7 +527,7 @@ impl Event {
     pub extern "C" fn time_stamp(&self) -> DOMHighResTimeStamp {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -669,7 +581,7 @@ impl Event {
     pub extern "C" fn init_event(&self, type_: &str, bubbles: bool, cancelable: bool) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -713,7 +625,7 @@ impl Event {
     pub extern "C" fn cancel_bubble(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }
@@ -759,7 +671,7 @@ impl Event {
     pub extern "C" fn set_cancel_bubble(&self, cancel_bubble: bool) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
+            non-wasm targets"
         );
     }
 }

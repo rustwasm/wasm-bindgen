@@ -22,7 +22,7 @@ fn filter() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -61,7 +61,7 @@ fn index_of() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -104,27 +104,27 @@ fn is_array() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
-                assert(wasm.is_array([]));
-                assert(wasm.is_array([1]));
-                assert(wasm.is_array(new Array()));
-                assert(wasm.is_array(new Array('a', 'b', 'c', 'd')));
-                assert(wasm.is_array(new Array(3)));
-                assert(wasm.is_array(Array.prototype));
+                assert.ok(wasm.is_array([]));
+                assert.ok(wasm.is_array([1]));
+                assert.ok(wasm.is_array(new Array()));
+                assert.ok(wasm.is_array(new Array('a', 'b', 'c', 'd')));
+                assert.ok(wasm.is_array(new Array(3)));
+                assert.ok(wasm.is_array(Array.prototype));
 
-                assert(!wasm.is_array({}));
-                assert(!wasm.is_array(null));
-                assert(!wasm.is_array(undefined));
-                assert(!wasm.is_array(17));
-                assert(!wasm.is_array('Array'));
-                assert(!wasm.is_array(true));
-                assert(!wasm.is_array(false));
-                assert(!wasm.is_array({ __proto__: Array.prototype }));
+                assert.ok(!wasm.is_array({}));
+                assert.ok(!wasm.is_array(null));
+                assert.ok(!wasm.is_array(undefined));
+                assert.ok(!wasm.is_array(17));
+                assert.ok(!wasm.is_array('Array'));
+                assert.ok(!wasm.is_array(true));
+                assert.ok(!wasm.is_array(false));
+                assert.ok(!wasm.is_array({ __proto__: Array.prototype }));
             }
         "#,
         )
@@ -151,7 +151,7 @@ fn sort() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -183,7 +183,7 @@ fn some() {
             }
 
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -218,7 +218,7 @@ fn last_index_of() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -262,7 +262,7 @@ fn join() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -299,7 +299,7 @@ fn slice() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -335,7 +335,7 @@ fn fill() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -368,7 +368,7 @@ fn copy_within() {
             }
 
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -406,7 +406,7 @@ fn pop() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -442,7 +442,7 @@ fn push() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -478,7 +478,7 @@ fn reverse() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -514,7 +514,7 @@ fn shift() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -551,7 +551,7 @@ fn unshift() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -588,7 +588,7 @@ fn to_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -624,7 +624,7 @@ fn includes() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -665,7 +665,7 @@ fn concat() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -702,20 +702,20 @@ fn length() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import * as assert from "assert";
-            import * as wasm from "./out";
+                import * as assert from "assert";
+                import * as wasm from "./out";
 
-            export function test() {
-                let characters = [8, 5, 4, 3, 1, 2]
-                let charactersLength = wasm.array_length(characters);
-                assert.equal(charactersLength, 6);
+                export function test() {
+                    let characters = [8, 5, 4, 3, 1, 2]
+                    let charactersLength = wasm.array_length(characters);
+                    assert.equal(charactersLength, 6);
 
-                var empty : number[] = [];
-                let emptyLength = wasm.array_length(empty);
-                assert.equal(emptyLength, 0);
-            }
+                    var empty = [];
+                    let emptyLength = wasm.array_length(empty);
+                    assert.equal(emptyLength, 0);
+                }
         "#,
         )
         .test()
@@ -727,34 +727,34 @@ fn every() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+                #![feature(proc_macro, wasm_custom_section)]
 
-            extern crate wasm_bindgen;
-            use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
 
-            #[wasm_bindgen]
-            pub fn array_every_number_is_even(array: &js::Array) -> bool {
-                array.every(&mut |el, _, _| el.as_f64().unwrap() % 2f64 == 0f64)
-            }
-        "#,
+                #[wasm_bindgen]
+                pub fn array_every_number_is_even(array: &js::Array) -> bool {
+                    array.every(&mut |el, _, _| el.as_f64().unwrap() % 2f64 == 0f64)
+                }
+            "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
-            import * as assert from "assert";
-            import * as wasm from "./out";
+                import * as assert from "assert";
+                import * as wasm from "./out";
 
-            export function test() {
-                const arrayEven = [2, 4, 6, 8];
-                const arrayOdd = [1, 3, 5, 7];
-                const arrayMixed = [2, 3, 4, 5];
+                export function test() {
+                    const arrayEven = [2, 4, 6, 8];
+                    const arrayOdd = [1, 3, 5, 7];
+                    const arrayMixed = [2, 3, 4, 5];
 
-                assert(wasm.array_every_number_is_even(arrayEven));
-                assert(!wasm.array_every_number_is_even(arrayOdd));
-                assert(!wasm.array_every_number_is_even(arrayMixed));
-            }
-        "#,
+                    assert.ok(wasm.array_every_number_is_even(arrayEven));
+                    assert.ok(!wasm.array_every_number_is_even(arrayOdd));
+                    assert.ok(!wasm.array_every_number_is_even(arrayMixed));
+                }
+            "#,
         )
         .test()
 }
