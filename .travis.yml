@@ -40,7 +40,7 @@ matrix:
       script:
         - cargo test
         # Check JS output from all tests against eslint
-        - ./node_modules/.bin/eslint ./target/generated-tests/*/out*.js
+        - ./node_modules/.bin/eslint ./target/generated-tests/*/out*js
 
     # All examples work
     - rust: nightly
