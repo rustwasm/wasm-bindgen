@@ -3,6 +3,40 @@
 use super::project;
 
 #[test]
+fn get_date() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, Number};
+
+            #[wasm_bindgen]
+            pub fn get_date(this: &Date) -> Number {
+                this.get_date()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date(1993, 6, 28, 14, 39, 7);
+
+                assert.equal(wasm.get_date(date), 28);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn get_day() {
     project()
         .file(

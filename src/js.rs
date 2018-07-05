@@ -738,6 +738,12 @@ extern "C" {
 extern "C" {
     pub type Number;
 
+    /// The Number.isInteger() method determines whether the passed value is an integer.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+    #[wasm_bindgen(static_method_of = Number, js_name = isInteger)]
+    pub fn is_integer(object: &Object) -> bool;
+
     /// The `Number` JavaScript object is a wrapper object allowing
     /// you to work with numerical values. A `Number` object is
     /// created using the `Number()` constructor.
@@ -793,6 +799,13 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     pub type Date;
+
+    /// The getDate() method returns the day of the month for the
+    /// specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getDate
+    #[wasm_bindgen(method, js_name = getDate)]
+    pub fn get_date(this: &Date) -> Number;
 
     /// The getDay() method returns the day of the week for the specified date according to local time,
     /// where 0 represents Sunday. For the day of the month see getDate().
