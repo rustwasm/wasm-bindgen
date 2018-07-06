@@ -14,11 +14,14 @@ fn validate() {
             use wasm_bindgen::js::WebAssembly;
 
             #[wasm_bindgen]
-            pub fn validate_wasm(wasm: JsValue) -> bool {
-                WebAssembly::validate(wasm).unwrap_or(false)
+            pub fn validate_wasm(wasm: JsValue) -> JsValue {
+                match WebAssembly::validate(wasm) {
+                    Ok(value) => value.into(),
+                    Err(err) => err
+                }
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
