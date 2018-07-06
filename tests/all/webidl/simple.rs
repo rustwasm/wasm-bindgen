@@ -281,3 +281,46 @@ fn static_property() {
         )
         .test();
 }
+
+#[test]
+fn one_method_using_an_undefined_import_doesnt_break_all_other_methods() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+                [Constructor()]
+                interface Foo {
+                    boolean ok_method();
+                    boolean bad_method(UndefinedType undef);
+                };
+            "#,
+        )
+        .file(
+            "foo.js",
+            r#"
+                export class Foo {
+                    constructor() {}
+                    ok_method() {
+                        return true;
+                    }
+                }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+
+                pub mod foo;
+
+                #[wasm_bindgen]
+                pub fn test() {
+                    let f = foo::Foo::new();
+                    assert!(f.ok_method());
+                }
+            "#,
+        )
+        .test();
+}

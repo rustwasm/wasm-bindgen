@@ -20,10 +20,13 @@ extern crate webidl;
 
 mod util;
 
+use std::collections::BTreeSet;
 use std::fs;
 use std::io::{self, Read};
+use std::iter::FromIterator;
 use std::path::Path;
 
+use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::ResultExt;
 use quote::ToTokens;
@@ -60,17 +63,29 @@ fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
 pub fn compile_file(webidl_path: &Path) -> Result<String> {
     let ast = parse_file(webidl_path)?;
-    Ok(compile_ast(&ast))
+    Ok(compile_ast(ast))
 }
 
 /// Compile the given WebIDL source text into Rust source text containing
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
 pub fn compile(webidl_source: &str) -> Result<String> {
     let ast = parse(webidl_source)?;
-    Ok(compile_ast(&ast))
+    Ok(compile_ast(ast))
 }
 
-fn compile_ast(ast: &backend::ast::Program) -> String {
+fn compile_ast(mut ast: backend::ast::Program) -> String {
+    let mut defined = BTreeSet::from_iter(
+        vec![
+            "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
+            "usize", "isize", "f32", "f64",
+        ].into_iter()
+            .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
+    );
+    ast.imported_type_definitions(&mut |id| {
+        defined.insert(id.clone());
+    });
+    ast.remove_undefined_imports(&|id| defined.contains(id));
+
     let mut tokens = proc_macro2::TokenStream::new();
     ast.to_tokens(&mut tokens);
     tokens.to_string()
