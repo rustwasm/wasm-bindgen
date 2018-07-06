@@ -7,7 +7,7 @@ authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
 diff = "0.1.11"
 env_logger = "0.5.10"
 wasm-bindgen = { path = "../..", default-features = false }
-wasm-bindgen-backend = { path = "../backend", features = ["extra-traits"] }
+wasm-bindgen-backend = { version = "=0.2.11", path = "../backend", features = ["extra-traits"] }
 
 [dependencies]
 failure = "0.1"
