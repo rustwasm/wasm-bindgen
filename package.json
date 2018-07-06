@@ -6,7 +6,7 @@
     "run-geckodriver": "geckodriver"
   },
   "devDependencies": {
-    "@types/node": "^9.4.6",
+    "@types/node": "^10.5.2",
     "eslint": "^5.0.1",
     "geckodriver": "^1.11.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
