@@ -10,7 +10,7 @@
     "eslint": "^5.0.1",
     "geckodriver": "^1.11.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
-    "ts-loader": "^4.0.1",
+    "ts-loader": "^4.4.2",
     "typescript": "^2.7.2",
     "webpack": "^4.11.1",
     "webpack-cli": "^2.0.10",
