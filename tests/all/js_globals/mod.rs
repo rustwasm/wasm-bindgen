@@ -17,6 +17,7 @@ mod Math;
 mod Number;
 mod Object;
 mod Proxy;
+mod Reflect;
 mod Set;
 mod SetIterator;
 mod Symbol;
