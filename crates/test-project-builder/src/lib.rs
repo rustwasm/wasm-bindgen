@@ -690,14 +690,21 @@ impl Project {
             .arg("--quiet")
             .arg("--watch-stdin")
             .current_dir(&root);
-        let _server = run_in_background(&mut cmd, "webpack-dev-server".into());
+        let mut server = run_in_background(&mut cmd, "webpack-dev-server".into());
 
         // wait for webpack-dev-server to come online and bind its port
-        loop {
-            if TcpStream::connect("127.0.0.1:8080").is_ok() {
-                break;
+        {
+            let _x = wrap_step("waiting for webpack-dev-server");
+
+            loop {
+                if TcpStream::connect("127.0.0.1:8080").is_ok() {
+                    break;
+                }
+                if server.exited() {
+                    panic!("webpack-dev-server exited during headless test initialization")
+                }
+                thread::sleep(Duration::from_millis(100));
             }
-            thread::sleep(Duration::from_millis(100));
         }
 
         let path = env::var_os("PATH").unwrap_or_default();
@@ -779,6 +786,12 @@ struct BackgroundChild {
     stdin: Option<ChildStdin>,
     stdout: Option<thread::JoinHandle<io::Result<String>>>,
     stderr: Option<thread::JoinHandle<io::Result<String>>>,
+}
+
+impl BackgroundChild {
+    pub fn exited(&mut self) -> bool {
+        self.child.try_wait().expect("should try_wait OK").is_some()
+    }
 }
 
 impl Drop for BackgroundChild {
