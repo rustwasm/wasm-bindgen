@@ -22,14 +22,15 @@ fn has_instance() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
-            class Array1 {}
-            Object.defineProperty(Array1, wasm.symbol_has_instance(), {
-                value: (instance: any) => Array.isArray(instance)
-            });
+            class Array1 {
+                static [wasm.symbol_has_instance()](instance) {
+                    return Array.isArray(instance);
+                }
+            }
 
             export function test() {
                 assert.equal(typeof wasm.symbol_has_instance(), "symbol");
