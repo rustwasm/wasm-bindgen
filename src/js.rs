@@ -1530,4 +1530,70 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = hasInstance)]
     pub fn has_instance() -> Symbol;
+
+    /// The Symbol.isConcatSpreadable well-known symbol is used to configure if an object should be flattened to
+    /// its array elements when using the Array.prototype.concat() method.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/isConcatSpreadable
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = isConcatSpreadable)]
+    pub fn is_concat_spreadable() -> Symbol;
+
+    /// The Symbol.iterator well-known symbol specifies the default iterator for an object.
+    /// Used by for...of.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    pub fn iterator() -> Symbol;
+
+    /// The Symbol.match well-known symbol specifies the matching of a regular expression against a string.
+    /// This function is called by the String.prototype.match() method.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/match
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = match)]
+    pub fn match_() -> Symbol;
+
+    /// The Symbol.replace well-known symbol specifies the method that replaces matched substrings of a string.
+    /// This function is called by the String.prototype.replace() method.
+    ///
+    /// For more information, see RegExp.prototype[@@replace]() and String.prototype.replace().
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/replace
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    pub fn replace() -> Symbol;
+
+    /// The Symbol.search well-known symbol specifies the method that returns the index within a string that matches the regular expression.
+    /// This function is called by the String.prototype.search() method.
+    ///
+    /// For more information, see RegExp.prototype[@@search]() and String.prototype.search().
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/search
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    pub fn search() -> Symbol;
+
+    /// The well-known symbol Symbol.species specifies a function-valued property that the constructor function uses to create derived objects.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/species
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    pub fn species() -> Symbol;
+
+    /// The Symbol.split well-known symbol specifies the method that splits a string at the indices that match a regular expression.
+    /// This function is called by the String.prototype.split() method.
+    ///
+    /// For more information, see RegExp.prototype[@@split]() and String.prototype.split().
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/split
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    pub fn split() -> Symbol;
+
+    /// The Symbol.toPrimitive is a symbol that specifies a function valued property that is called to convert an object to a corresponding primitive value.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = toPrimitive)]
+    pub fn to_primitive() -> Symbol;
+
+    /// The Symbol.toStringTag well-known symbol is a string valued property that is used in the creation of the default string description of an object.
+    /// It is accessed internally by the Object.prototype.toString() method.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toString
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = toStringTag)]
+    pub fn to_string_tag() -> Symbol;
 }
