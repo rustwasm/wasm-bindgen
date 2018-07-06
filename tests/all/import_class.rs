@@ -112,6 +112,7 @@ fn construct() {
 
                 #[wasm_bindgen(module = "./another")]
                 extern {
+                    #[derive(Clone)]
                     type Foo;
                     #[wasm_bindgen(js_namespace = Foo)]
                     fn create() -> Foo;
@@ -127,6 +128,7 @@ fn construct() {
                 pub fn run() {
                     let f = Foo::create();
                     assert_eq!(f.get_internal_string(), "this");
+                    assert_eq!(f.clone().get_internal_string(), "this");
                     f.append_to_internal_string(" foo");
                     f.assert_internal_string("this foo");
                 }

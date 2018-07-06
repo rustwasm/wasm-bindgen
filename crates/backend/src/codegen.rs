@@ -505,8 +505,10 @@ impl ToTokens for ast::ImportType {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let vis = &self.vis;
         let name = &self.name;
+        let attrs = &self.attrs;
         (quote! {
             #[allow(bad_style)]
+            #(#attrs)*
             #vis struct #name {
                 obj: ::wasm_bindgen::JsValue,
             }
