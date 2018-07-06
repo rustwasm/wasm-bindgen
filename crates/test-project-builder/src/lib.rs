@@ -678,7 +678,10 @@ impl Project {
         lazy_static! {
             static ref MUTEX: Mutex<()> = Mutex::new(());
         }
-        let _lock = MUTEX.lock().unwrap();
+        let _lock = {
+            let _x = wrap_step("waiting on headless test lock");
+            MUTEX.lock().unwrap()
+        };
 
         let mut cmd = self.npm();
         cmd.arg("run")
@@ -700,6 +703,8 @@ impl Project {
         let path = env::var_os("PATH").unwrap_or_default();
         let mut path = env::split_paths(&path).collect::<Vec<_>>();
         path.push(root.join("node_modules/geckodriver"));
+
+        let _x = wrap_step("running headless test");
 
         let mut cmd = Command::new("node");
         cmd.args(&self.node_args)
