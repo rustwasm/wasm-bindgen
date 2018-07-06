@@ -12,7 +12,7 @@
     "selenium-webdriver": "^4.0.0-alpha.1",
     "ts-loader": "^4.4.2",
     "typescript": "^2.7.2",
-    "webpack": "^4.11.1",
+    "webpack": "^4.15.1",
     "webpack-cli": "^2.0.10",
     "webpack-dev-server": "^3.1.4",
     "babel-eslint": "^8.2.5"
