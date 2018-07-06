@@ -560,6 +560,7 @@ impl Project {
         let (root, target_dir) = self.build();
         let mut cmd = Command::new("cargo");
         cmd.arg("build")
+            .arg("-vv")
             .arg("--target")
             .arg("wasm32-unknown-unknown")
             .current_dir(&root)
