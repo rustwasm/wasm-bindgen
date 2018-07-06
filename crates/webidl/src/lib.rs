@@ -37,7 +37,7 @@ use util::{
 pub type Result<T> = ::std::result::Result<T, failure::Error>;
 
 /// Parse the WebIDL at the given path into a wasm-bindgen AST.
-pub fn parse_file(webidl_path: &Path) -> Result<backend::ast::Program> {
+fn parse_file(webidl_path: &Path) -> Result<backend::ast::Program> {
     let file = fs::File::open(webidl_path).context("opening WebIDL file")?;
     let mut file = io::BufReader::new(file);
     let mut source = String::new();
@@ -47,7 +47,7 @@ pub fn parse_file(webidl_path: &Path) -> Result<backend::ast::Program> {
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
-pub fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
+fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
     let definitions = webidl::parse_string(webidl_source).context("parsing WebIDL source text")?;
 
     let mut program = backend::ast::Program::default();
