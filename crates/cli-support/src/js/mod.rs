@@ -60,7 +60,7 @@ impl<'a> Context<'a> {
         if let Some(ref c) = comments {
             self.globals.push_str(c);
         }
-        let global = if self.config.nodejs {
+        let global = if self.use_node_require() {
             if contents.starts_with("class") {
                 format!("{1}\nmodule.exports.{0} = {0};\n", name, contents)
             } else {
@@ -410,12 +410,14 @@ impl<'a> Context<'a> {
                         .unwrap_or("wasm_bindgen"),
             )
         } else {
-            let import_wasm = if self.config.nodejs {
+            let import_wasm = if self.globals.len() == 0 {
+                String::new()
+            } else if self.use_node_require() {
                 self.footer
                     .push_str(&format!("wasm = require('./{}_bg');", module_name));
                 format!("var wasm;")
             } else {
-                format!("import * as wasm from './{}_bg.wasm';", module_name)
+                format!("import * as wasm from './{}_bg';", module_name)
             };
 
             format!(
@@ -956,7 +958,6 @@ impl<'a> Context<'a> {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_malloc")?;
-        self.expose_uint64_memory();
         self.global(&format!(
             "
             function {}(arg) {{
@@ -976,7 +977,9 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("text_encoder") {
             return;
         }
-        if self.config.nodejs {
+        if self.config.nodejs_experimental_modules {
+            self.imports.push_str("import { TextEncoder } from 'util';\n");
+        } else if self.config.nodejs {
             self.global(
                 "
                 const TextEncoder = require('util').TextEncoder;
@@ -1002,7 +1005,9 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("text_decoder") {
             return;
         }
-        if self.config.nodejs {
+        if self.config.nodejs_experimental_modules {
+            self.imports.push_str("import { TextDecoder } from 'util';\n");
+        } else if self.config.nodejs {
             self.global(
                 "
                 const TextDecoder = require('util').TextDecoder;
@@ -1059,7 +1064,7 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("get_array_js_value_from_wasm") {
             return;
         }
-        self.expose_get_array_u32_from_wasm();
+        self.expose_uint32_memory();
         self.expose_take_object();
         self.global(
             "
@@ -1584,6 +1589,10 @@ impl<'a> Context<'a> {
         *section.payload_mut() = contents.into_bytes();
         self.module.sections_mut().push(Section::Custom(section));
     }
+
+    fn use_node_require(&self) -> bool {
+        self.config.nodejs && !self.config.nodejs_experimental_modules
+    }
 }
 
 impl<'a, 'b> SubContext<'a, 'b> {
@@ -1807,9 +1816,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     let target = if let Some(g) = getter {
                         if import.structural {
                             format!(
-                                "function(y) {{
-                                return this.{};
+                                "function() {{
+                                    return {}.{};
                                 }}",
+                                if is_static { &class } else { "this" },
                                 g
                             )
                         } else {
@@ -1826,8 +1836,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         if import.structural {
                             format!(
                                 "function(y) {{
-                                this.{} = y;
+                                {}.{} = y;
                             }}",
+                                if is_static { &class } else { "this" },
                                 s
                             )
                         } else {
@@ -1943,7 +1954,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
 
             if self.cx.imported_names.insert(name.to_string()) {
-                if self.cx.config.nodejs {
+                if self.cx.use_node_require() {
                     self.cx.imports.push_str(&format!(
                         "\
                          const {} = require('{}').{};\n\

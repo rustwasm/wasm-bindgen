@@ -15,13 +15,13 @@ fn abs() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn abs(x: f64) -> js::Number {
+            pub fn abs(x: f64) -> f64 {
                 js::Math::abs(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -49,13 +49,13 @@ fn acos() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn acos(x: f64) -> js::Number {
+            pub fn acos(x: f64) -> f64 {
                 js::Math::acos(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -63,7 +63,7 @@ fn acos() {
             export function test() {
                 assert.equal(wasm.acos(-1), Math.PI);
                 assert.equal(wasm.acos(0.5), 1.0471975511965979);
-                assert(Number.isNaN(wasm.acos(2)));
+                assert.ok(Number.isNaN(wasm.acos(2)));
             }
         "#,
         )
@@ -83,13 +83,13 @@ fn acosh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn acosh(x: f64) -> js::Number {
+            pub fn acosh(x: f64) -> f64 {
                 js::Math::acosh(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -97,7 +97,7 @@ fn acosh() {
             export function test() {
                 assert.equal(wasm.acosh(1), 0);
                 assert.equal(wasm.acosh(2), Math.acosh(2));
-                assert(Number.isNaN(wasm.acosh(0.5)));
+                assert.ok(Number.isNaN(wasm.acosh(0.5)));
             }
         "#,
         )
@@ -117,13 +117,13 @@ fn asin() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn asin(x: f64) -> js::Number {
+            pub fn asin(x: f64) -> f64 {
                 js::Math::asin(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -131,7 +131,7 @@ fn asin() {
             export function test() {
                 assert.equal(wasm.asin(1), Math.asin(1));
                 assert.equal(wasm.asin(0.5), Math.asin(0.5));
-                assert(Number.isNaN(wasm.asin(2)));
+                assert.ok(Number.isNaN(wasm.asin(2)));
             }
         "#,
         )
@@ -151,13 +151,13 @@ fn asinh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn asinh(x: f64) -> js::Number {
+            pub fn asinh(x: f64) -> f64 {
                 js::Math::asinh(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -184,13 +184,13 @@ fn atan() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn atan(x: f64) -> js::Number {
+            pub fn atan(x: f64) -> f64 {
                 js::Math::atan(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -217,13 +217,13 @@ fn atan2() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn atan2(y: f64, x: f64) -> js::Number {
+            pub fn atan2(y: f64, x: f64) -> f64 {
                 js::Math::atan2(y, x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -250,13 +250,13 @@ fn atanh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn atanh(x: f64) -> js::Number {
+            pub fn atanh(x: f64) -> f64 {
                 js::Math::atanh(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -264,7 +264,7 @@ fn atanh() {
             export function test() {
                 assert.equal(wasm.atanh(1), Math.atanh(1));
                 assert.equal(wasm.atanh(0.5), Math.atanh(0.5));
-                assert(Number.isNaN(wasm.atanh(2)));
+                assert.ok(Number.isNaN(wasm.atanh(2)));
             }
         "#,
         )
@@ -284,13 +284,13 @@ fn cbrt() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn cbrt(x: f64) -> js::Number {
+            pub fn cbrt(x: f64) -> f64 {
                 js::Math::cbrt(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -317,13 +317,13 @@ fn ceil() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn ceil(x: f64) -> js::Number {
+            pub fn ceil(x: f64) -> i32 {
                 js::Math::ceil(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -350,13 +350,13 @@ fn clz32() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn clz32(x: i32) -> js::Number {
+            pub fn clz32(x: i32) -> u32 {
                 js::Math::clz32(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -381,11 +381,11 @@ fn cos() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn cos(x: f64) -> js::Number {
+            pub fn cos(x: f64) -> f64 {
                 js::Math::cos(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -408,11 +408,11 @@ fn cosh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn cosh(x: f64) -> js::Number {
+            pub fn cosh(x: f64) -> f64 {
                 js::Math::cosh(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -435,11 +435,11 @@ fn exp() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn exp(x: f64) -> js::Number {
+            pub fn exp(x: f64) -> f64 {
                 js::Math::exp(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -463,11 +463,11 @@ fn expm1() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn expm1(x: f64) -> js::Number {
+            pub fn expm1(x: f64) -> f64 {
                 js::Math::expm1(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -494,13 +494,13 @@ fn floor() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn floor(x: f64) -> js::Number {
+            pub fn floor(x: f64) -> i32 {
                 js::Math::floor(x)
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -525,11 +525,11 @@ fn fround() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn fround(x: f64) -> js::Number {
+            pub fn fround(x: f64) -> f32 {
                 js::Math::fround(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -554,11 +554,11 @@ fn imul() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn imul(x: i32, y:i32) -> js::Number {
+            pub fn imul(x: i32, y:i32) -> i32 {
                 js::Math::imul(x, y)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -582,11 +582,11 @@ fn log() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn log(x: f64) -> js::Number {
+            pub fn log(x: f64) -> f64 {
                 js::Math::log(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -609,11 +609,11 @@ fn log10() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn log10(x: f64) -> js::Number {
+            pub fn log10(x: f64) -> f64 {
                 js::Math::log10(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -637,11 +637,11 @@ fn log1p() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn log1p(x: f64) -> js::Number {
+            pub fn log1p(x: f64) -> f64 {
                 js::Math::log1p(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -649,7 +649,7 @@ fn log1p() {
                 assert.equal(wasm.log1p(1), 0.6931471805599453);
                 assert.equal(wasm.log1p(0), 0);
                 assert.equal(wasm.log1p(-1), -Infinity);
-                assert(isNaN(wasm.log1p(-2)));
+                assert.ok(isNaN(wasm.log1p(-2)));
             }
         "#)
         .test()
@@ -666,11 +666,11 @@ fn log2() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn log2(x: f64) -> js::Number {
+            pub fn log2(x: f64) -> f64 {
                 js::Math::log2(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -695,18 +695,18 @@ fn pow() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn pow(base: f64, exponent: f64) -> js::Number {
+            pub fn pow(base: f64, exponent: f64) -> f64 {
                 js::Math::pow(base, exponent)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 assert.equal(wasm.pow(7, 2), 49);
                 assert.equal(wasm.pow(3.8, 0.5), Math.pow(3.8, 0.5));
-                assert(Number.isNaN(wasm.pow(-2, 0.5)));
+                assert.ok(Number.isNaN(wasm.pow(-2, 0.5)));
             }
         "#)
         .test()
@@ -723,11 +723,11 @@ fn round() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn round(x: f64) -> js::Number {
+            pub fn round(x: f64) -> i32 {
                 js::Math::round(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -753,11 +753,11 @@ fn sign() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn sign(x: f64) -> js::Number {
+            pub fn sign(x: f64) -> f64 {
                 js::Math::sign(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -766,7 +766,7 @@ fn sign() {
                 assert.equal(wasm.sign(-3), -1);
                 assert.equal(wasm.sign(2.3), 1);
                 assert.equal(wasm.sign(0), 0);
-                assert(Number.isNaN(wasm.sign(NaN)));
+                assert.ok(Number.isNaN(wasm.sign(NaN)));
             }
         "#)
         .test()
@@ -783,11 +783,11 @@ fn sin() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn sin(x: f64) -> js::Number {
+            pub fn sin(x: f64) -> f64 {
                 js::Math::sin(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -811,11 +811,11 @@ fn sinh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn sinh(x: f64) -> js::Number {
+            pub fn sinh(x: f64) -> f64 {
                 js::Math::sinh(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -839,11 +839,11 @@ fn sqrt() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn sqrt(x: f64) -> js::Number {
+            pub fn sqrt(x: f64) -> f64 {
                 js::Math::sqrt(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -852,7 +852,7 @@ fn sqrt() {
                 assert.equal(wasm.sqrt(2), Math.sqrt(2));
                 assert.equal(wasm.sqrt(42.42), Math.sqrt(42.42));
                 assert.equal(wasm.sqrt(1), 1);
-                assert(Number.isNaN(wasm.sqrt(-1)));
+                assert.ok(Number.isNaN(wasm.sqrt(-1)));
             }
         "#)
         .test()
@@ -869,11 +869,11 @@ fn tan() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn tan(x: f64) -> js::Number {
+            pub fn tan(x: f64) -> f64 {
                 js::Math::tan(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -897,11 +897,11 @@ fn tanh() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn tanh(x: f64) -> js::Number {
+            pub fn tanh(x: f64) -> f64 {
                 js::Math::tanh(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -925,11 +925,11 @@ fn trunc() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn trunc(x: f64) -> js::Number {
+            pub fn trunc(x: f64) -> i32 {
                 js::Math::trunc(x)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 

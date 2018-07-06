@@ -40,7 +40,7 @@ Rust arguments of JS functions imported to Rust.
 ### From JS to Rust
 
 Unfortunately the opposite direction from above, going from JS to Rust, is a bit
-mroe complicated. Here we've got three traits:
+more complicated. Here we've got three traits:
 
 ```rust
 pub trait FromWasmAbi: WasmDescribe {

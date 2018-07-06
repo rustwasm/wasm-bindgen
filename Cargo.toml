@@ -33,7 +33,7 @@ serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 
 [dev-dependencies]
-wasm-bindgen-cli-support = { path = "crates/cli-support", version = '=0.2.11' }
+wasm-bindgen-test-project-builder = { path = "crates/test-project-builder", version = '=0.2.11' }
 
 [workspace]
 members = [

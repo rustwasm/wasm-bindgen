@@ -18,7 +18,7 @@ fn new() {
                 Error::new(message)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -48,7 +48,7 @@ fn message() {
                 this.message()
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -78,7 +78,7 @@ fn set_message() {
                 this.set_message(message);
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -109,7 +109,7 @@ fn name() {
                 this.name()
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -140,7 +140,7 @@ fn set_name() {
                 this.set_name(name);
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -171,7 +171,7 @@ fn to_string() {
                 this.to_string()
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -180,13 +180,13 @@ fn to_string() {
 
                 assert.equal(wasm.error_to_string(error), 'Error: error message 1');
 
-                (error.name as any) = undefined;
+                error.name = undefined;
                 assert.equal(wasm.error_to_string(error), 'Error: error message 1');
 
                 error.name = 'error_name_1';
                 assert.equal(wasm.error_to_string(error), 'error_name_1: error message 1');
 
-                (error.message as any) = undefined;
+                error.message = undefined;
                 assert.equal(wasm.error_to_string(error), 'error_name_1');
 
                 error.name = 'error_name_2';

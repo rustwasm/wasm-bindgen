@@ -3,6 +3,33 @@
 use super::project;
 
 #[test]
+fn is_integer() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_integer(obj: &js::Object) -> bool {
+                js::Number::is_integer(&obj)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.ok(wasm.is_integer(123));
+                assert.ok(!wasm.is_integer(123.45));
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file("src/lib.rs", r#"
@@ -17,7 +44,7 @@ fn new() {
                 Number::new(JsValue::from(42))
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -44,7 +71,7 @@ fn to_locale_string() {
                 this.to_locale_string(locale)
             }
         "#)
-        .file("test.ts", r#"
+        .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
@@ -83,7 +110,7 @@ fn to_precision() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -121,7 +148,7 @@ fn to_string() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -150,13 +177,13 @@ fn value_of() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn js_value_of(this: &js::Number) -> js::Number {
+            pub fn js_value_of(this: &js::Number) -> f64 {
                 this.value_of()
             }
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -195,7 +222,7 @@ fn to_fixed() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -233,7 +260,7 @@ fn to_exponential() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
