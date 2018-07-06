@@ -17,6 +17,7 @@ extern crate serde_json;
 extern crate wasm_bindgen_macro;
 
 use core::cell::UnsafeCell;
+use core::fmt;
 use core::ops::Deref;
 use core::ptr;
 
@@ -360,6 +361,33 @@ impl Clone for JsValue {
             let idx = __wbindgen_object_clone_ref(self.idx);
             JsValue { idx }
         }
+    }
+}
+
+impl fmt::Debug for JsValue {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if let Some(n) = self.as_f64() {
+            return n.fmt(f)
+        }
+        #[cfg(feature = "std")]
+        {
+            if let Some(n) = self.as_string() {
+                return n.fmt(f)
+            }
+        }
+        if let Some(n) = self.as_bool() {
+            return n.fmt(f)
+        }
+        if self.is_null() {
+            return fmt::Display::fmt("null", f)
+        }
+        if self.is_undefined() {
+            return fmt::Display::fmt("undefined", f)
+        }
+        if self.is_symbol() {
+            return fmt::Display::fmt("Symbol(..)", f)
+        }
+        fmt::Display::fmt("[object]", f)
     }
 }
 

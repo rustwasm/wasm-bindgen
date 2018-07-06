@@ -76,6 +76,7 @@ fn works() {
                     c: &JsValue,
                 ) {
                     assert_eq!(a.as_bool(), Some(true));
+                    assert_eq!(format!("{:?}", a), "true");
                     assert_eq!(b.as_bool(), Some(false));
                     assert_eq!(c.as_bool(), None);
                 }
@@ -84,6 +85,7 @@ fn works() {
                 pub fn mk_symbol() -> JsValue {
                     let a = JsValue::symbol(None);
                     assert!(a.is_symbol());
+                    assert_eq!(format!("{:?}", a), "Symbol(..)");
                     return a
                 }
 
@@ -103,6 +105,7 @@ fn works() {
                 #[wasm_bindgen]
                 pub fn acquire_string(a: &JsValue, b: &JsValue) {
                     assert_eq!(a.as_string().unwrap(), "foo");
+                    assert_eq!(format!("{:?}", a), "\"foo\"");
                     assert_eq!(b.as_string(), None);
                 }
 
