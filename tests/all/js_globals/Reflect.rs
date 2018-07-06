@@ -21,7 +21,7 @@ fn apply() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -53,22 +53,19 @@ fn construct() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 class Rectangle {
-                    public x: number;
-                    public y: number;
-
-                    constructor(x: number, y: number){
+                    constructor(x, y){
                         this.x = x,
                         this.y = y
                     }
 
-                    static eq(x: number, y: number) { 
+                    static eq(x, y) { 
                         return x === y;
                     }
 
@@ -102,37 +99,31 @@ fn construct_with_new_target() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 class Rectangle {
-                    public x: number;
-                    public y: number;
-
-                    constructor(x: number, y: number){
+                    constructor(x, y){
                         this.x = x,
                         this.y = y
                     }
 
-                    static eq(x: number, y: number) { 
+                    static eq(x, y) { 
                         return x === y;
                     }
 
                 }
 
                 class Rectangle2 {
-                    public x: number;
-                    public y: number;
-
-                    constructor(x: number, y: number){
+                    constructor(x, y){
                         this.x = x,
                         this.y = y
                     }
 
-                    static eq(x: number, y: number) { 
+                    static eq(x, y) { 
                         return x === y;
                     }
 
@@ -166,7 +157,7 @@ fn define_property() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -200,7 +191,7 @@ fn delete_property() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -243,7 +234,7 @@ fn get() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -283,7 +274,7 @@ fn get_own_property_descriptor() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -320,7 +311,7 @@ fn get_prototype_of() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -329,7 +320,7 @@ fn get_prototype_of() {
                 const object = {
                     property: 42
                 };
-                const array: number[] = [1, 2, 3];
+                const array = [1, 2, 3];
 
                 assert.equal(wasm.get_prototype_of(object), Object.prototype);
                 assert.equal(wasm.get_prototype_of(array), Array.prototype);
@@ -358,7 +349,7 @@ fn has() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -367,7 +358,7 @@ fn has() {
                 const object = {
                     property: 42
                 };
-                const array: number[] = [1, 2, 3, 4]
+                const array = [1, 2, 3, 4]
 
                 assert.equal(wasm.has(object, "property"), true);
                 assert.equal(wasm.has(object, "foo"), false);
@@ -398,7 +389,7 @@ fn is_extensible() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -442,7 +433,7 @@ fn own_keys() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -451,7 +442,7 @@ fn own_keys() {
                 const object = {
                     property: 42
                 };
-                const array: number[] = [];
+                const array = [];
 
                 assert.equal(wasm.own_keys(object)[0], "property");
                 assert.equal(wasm.own_keys(array)[0], "length");
@@ -480,7 +471,7 @@ fn prevent_extensions() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
@@ -516,14 +507,14 @@ fn set() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 const object = {};
-                const array: number[] = [1, 2, 3, 4];
+                const array = [1, 2, 3, 4];
                 assert.equal(wasm.set(object, "key", "value"), true);
                 assert.equal(wasm.set(array, 0, 100), true);
 
@@ -554,14 +545,14 @@ fn set_with_receiver() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
                 const object = {};
-                const array: number[] = [1, 2, 3, 4];
+                const array = [1, 2, 3, 4];
                 assert.equal(wasm.set_with_receiver({}, "key", "value", object), true);
                 assert.equal(wasm.set_with_receiver([], 0, 100, array), true);
 
@@ -592,7 +583,7 @@ fn set_prototype_of() {
         "#,
         )
         .file(
-            "test.ts",
+            "test.js",
             r#"
             import * as assert from "assert";
             import * as wasm from "./out";
