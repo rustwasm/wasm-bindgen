@@ -141,6 +141,13 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn filter(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> Array;
 
+    /// The `find()` method returns the value of the first element in the array that satisfies
+    ///  the provided testing function. Otherwise `undefined` is returned.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+    #[wasm_bindgen(method)]
+    pub fn find(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> JsValue;
+
     /// The includes() method determines whether an array includes a certain
     /// element, returning true or false as appropriate.
     ///

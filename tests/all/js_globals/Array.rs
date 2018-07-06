@@ -758,3 +758,41 @@ fn every() {
         )
         .test()
 }
+
+#[test]
+fn find() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+
+                #[wasm_bindgen]
+                pub fn array_find_first_even_number(array: &js::Array) -> JsValue {
+                    array.find(&mut |el, _, _| el.as_f64().unwrap() % 2f64 == 0f64)
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    const arrayEven = [2, 4, 6, 8];
+                    const arrayOdd = [1, 3, 5, 7];
+                    const arrayMixed = [3, 5, 7, 10];
+
+                    assert.equal(wasm.array_find_first_even_number(arrayEven), 2);
+                    assert.equal(wasm.array_find_first_even_number(arrayOdd), undefined);
+                    assert.equal(wasm.array_find_first_even_number(arrayMixed), 10);
+                }
+            "#,
+        )
+        .test()
+}
