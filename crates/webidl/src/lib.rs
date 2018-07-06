@@ -171,6 +171,7 @@ impl WebidlParse<()> for webidl::ast::NonPartialInterface {
                     pub_token: Default::default(),
                 }),
                 name: rust_ident(&self.name),
+                attrs: Vec::new(),
             }),
         });
 
@@ -379,7 +380,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
         if util::is_chrome_only(&self.extended_attributes) {
             return Ok(())
         }
-        
+
         create_basic_method(
             &self.arguments,
             self.name.as_ref(),

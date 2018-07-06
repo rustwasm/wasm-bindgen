@@ -84,6 +84,7 @@ pub struct ImportStatic {
 pub struct ImportType {
     pub vis: syn::Visibility,
     pub name: Ident,
+    pub attrs: Vec<syn::Attribute>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -469,6 +470,7 @@ impl Program {
         ImportKind::Type(ImportType {
             vis: f.vis,
             name: f.ident,
+            attrs: f.attrs,
         })
     }
 
