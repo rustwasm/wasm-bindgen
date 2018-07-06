@@ -1218,6 +1218,20 @@ extern "C" {
     pub fn delete(this: &WeakSet, value: Object) -> bool;
 }
 
+// WebAssembly
+#[wasm_bindgen]
+extern "C" {
+    pub type WebAssembly;
+
+    /// The `WebAssembly.validate()` function validates a given typed
+    /// array of WebAssembly binary code, returning whether the bytes
+    /// form a valid wasm module (`true`) or not (`false`).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/validate
+    #[wasm_bindgen(static_method_of = WebAssembly, catch)]
+    pub fn validate(bufferSource: JsValue) -> Result<bool, JsValue>;
+}
+
 // JsString
 #[wasm_bindgen]
 extern "C" {
