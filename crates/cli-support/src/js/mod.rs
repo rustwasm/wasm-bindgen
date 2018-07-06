@@ -228,19 +228,6 @@ impl<'a> Context<'a> {
             ))
         })?;
 
-        self.bind("__wbindgen_is_nan", &|me| {
-            me.expose_get_object();
-            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
-            Ok(String::from(
-                "
-                function(idx) {
-                    var n = getObject(idx);
-                    return n !== n ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
         self.bind("__wbindgen_boolean_new", &|me| {
             me.expose_add_heap_object();
             Ok(String::from(
