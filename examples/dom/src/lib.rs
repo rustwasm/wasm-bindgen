@@ -10,7 +10,7 @@ use wasm_bindgen::prelude::*;
 // These definitions need to be hand-written today but the current vision is
 // that we'll use WebIDL to generate this `extern` block into a crate which you
 // can link and import. There's a tracking issue for this at
-// https://github.com/alexcrichton/wasm-bindgen/issues/42
+// https://github.com/rustwasm/wasm-bindgen/issues/42
 //
 // In the meantime these are written out by hand and correspond to the names and
 // signatures documented on MDN, for example
