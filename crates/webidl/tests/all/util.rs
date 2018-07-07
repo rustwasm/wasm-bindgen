@@ -1,8 +1,11 @@
-use diff;
-use env_logger;
+use std::env;
+use std::fs::File;
 use std::io::{self, Write};
 use std::process;
 use std::sync::{Once, ONCE_INIT};
+
+use diff;
+use env_logger;
 use wb_webidl;
 
 fn rustfmt<S: Into<String>>(source: S) -> (String, String) {
@@ -82,7 +85,7 @@ The latest `rustfmt` is required to run the `wasm-bindgen` test suite. Install
     (formatted, stderr)
 }
 
-fn strip_wasm_bindgen_generated(source: String) -> String {
+fn strip_wasm_bindgen_generated(source: &str) -> String {
     let lines: Vec<_> = source
         .lines()
         .filter(|l| !l.contains("__WASM_BINDGEN_GENERATED"))
@@ -90,7 +93,7 @@ fn strip_wasm_bindgen_generated(source: String) -> String {
     lines.join("\n")
 }
 
-pub fn assert_compile(webidl: &str, expected: &str) {
+pub fn assert_compile(webidl: &str, expected: &str, expected_file: &str) {
     static INIT_ENV_LOGGER: Once = ONCE_INIT;
     INIT_ENV_LOGGER.call_once(|| {
         env_logger::init();
@@ -98,14 +101,22 @@ pub fn assert_compile(webidl: &str, expected: &str) {
 
     let actual = wb_webidl::compile(webidl).expect("should compile the webidl source OK");
 
-    let (actual, actual_stderr) = rustfmt(actual);
+    let (actual_orig, actual_stderr) = rustfmt(actual);
     let (expected, expected_stderr) = rustfmt(expected);
 
-    let actual = strip_wasm_bindgen_generated(actual);
-    let expected = strip_wasm_bindgen_generated(expected);
+    let actual = strip_wasm_bindgen_generated(&actual_orig);
+    let expected = strip_wasm_bindgen_generated(&expected);
 
     if expected == actual {
         return;
+    }
+
+    if env::var("UPDATE_EXPECTED").is_ok() {
+        File::create(expected_file)
+            .unwrap()
+            .write_all(actual_orig.as_bytes())
+            .unwrap();
+        return
     }
 
     eprintln!("rustfmt(expected) stderr:");
@@ -149,7 +160,13 @@ macro_rules! assert_compile {
                 stringify!($test_name),
                 ".rs"
             ));
-            $crate::assert_compile(webidl_source, expected_output);
+            let expected_file = concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/tests/expected/",
+                stringify!($test_name),
+                ".rs"
+            );
+            $crate::assert_compile(webidl_source, expected_output, expected_file);
         }
     };
 }
