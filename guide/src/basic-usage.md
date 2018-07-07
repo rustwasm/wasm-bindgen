@@ -177,3 +177,4 @@ as well as a script to set it all up.
 
 [hello-tree]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world
 [hello-readme]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world/README.md
+[hello-online]: https://webassembly.studio/?f=gzubao6tg3
