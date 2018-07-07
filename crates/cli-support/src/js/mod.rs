@@ -978,7 +978,8 @@ impl<'a> Context<'a> {
             return;
         }
         if self.config.nodejs_experimental_modules {
-            self.imports.push_str("import { TextEncoder } from 'util';\n");
+            self.imports
+                .push_str("import { TextEncoder } from 'util';\n");
         } else if self.config.nodejs {
             self.global(
                 "
@@ -1006,7 +1007,8 @@ impl<'a> Context<'a> {
             return;
         }
         if self.config.nodejs_experimental_modules {
-            self.imports.push_str("import { TextDecoder } from 'util';\n");
+            self.imports
+                .push_str("import { TextDecoder } from 'util';\n");
         } else if self.config.nodejs {
             self.global(
                 "
@@ -1788,7 +1790,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         import: &shared::ImportFunction,
     ) -> Result<(), Error> {
         if !self.cx.wasm_import_needed(&import.shim) {
-            return Ok(())
+            return Ok(());
         }
 
         let descriptor = match self.cx.describe(&import.shim) {
@@ -1797,101 +1799,85 @@ impl<'a, 'b> SubContext<'a, 'b> {
         };
 
         let target = match &import.method {
-            Some(shared::MethodData {
-                class,
-                kind,
-                getter,
-                setter,
-            }) => {
+            Some(shared::MethodData { class, kind }) => {
                 let class = self.import_name(info, class)?;
-                if let shared::MethodKind::Constructor = kind {
-                    format!("new {}", class)
-                } else {
-                    let is_static = if let shared::MethodKind::Static = kind {
-                        true
-                    } else {
-                        false
-                    };
+                match kind {
+                    shared::MethodKind::Constructor => format!("new {}", class),
+                    shared::MethodKind::Operation(shared::Operation { is_static, kind }) => {
+                        let target = if import.structural {
+                            let location = if *is_static { &class } else { "this" };
 
-                    let target = if let Some(g) = getter {
-                        if import.structural {
-                            format!(
-                                "function() {{
-                                    return {}.{};
-                                }}",
-                                if is_static { &class } else { "this" },
-                                g
-                            )
-                        } else {
-                            self.cx.expose_get_inherited_descriptor();
-                            format!(
-                                "GetOwnOrInheritedPropertyDescriptor\
-                                 ({}{}, '{}').get",
-                                class,
-                                if is_static { "" } else { ".prototype" },
-                                g,
-                            )
-                        }
-                    } else if let Some(s) = setter {
-                        if import.structural {
-                            format!(
-                                "function(y) {{
-                                {}.{} = y;
-                            }}",
-                                if is_static { &class } else { "this" },
-                                s
-                            )
-                        } else {
-                            self.cx.expose_get_inherited_descriptor();
-                            format!(
-                                "GetOwnOrInheritedPropertyDescriptor\
-                                 ({}{}, '{}').set",
-                                class,
-                                if is_static { "" } else { ".prototype" },
-                                s,
-                            )
-                        }
-                    } else {
-                        if import.structural {
-                            let nargs = descriptor.unwrap_function().arguments.len();
-                            let mut s = format!("function(");
-                            for i in 0..nargs - 1 {
-                                if i > 0 {
-                                    drop(write!(s, ", "));
+                            match kind {
+                                shared::OperationKind::Getter(g) => format!(
+                                    "function() {{
+                                        return {}.{};
+                                    }}",
+                                    location, g
+                                ),
+                                shared::OperationKind::Setter(s) => format!(
+                                    "function(y) {{
+                                            {}.{} = y;
+                                    }}",
+                                    location, s
+                                ),
+                                shared::OperationKind::Regular => {
+                                    let nargs = descriptor.unwrap_function().arguments.len();
+                                    let mut s = format!("function(");
+                                    for i in 0..nargs - 1 {
+                                        if i > 0 {
+                                            drop(write!(s, ", "));
+                                        }
+                                        drop(write!(s, "x{}", i));
+                                    }
+                                    s.push_str(") { \nreturn this.");
+                                    s.push_str(&import.function.name);
+                                    s.push_str("(");
+                                    for i in 0..nargs - 1 {
+                                        if i > 0 {
+                                            drop(write!(s, ", "));
+                                        }
+                                        drop(write!(s, "x{}", i));
+                                    }
+                                    s.push_str(");\n}");
+                                    s
                                 }
-                                drop(write!(s, "x{}", i));
                             }
-                            s.push_str(") { \nreturn this.");
-                            s.push_str(&import.function.name);
-                            s.push_str("(");
-                            for i in 0..nargs - 1 {
-                                if i > 0 {
-                                    drop(write!(s, ", "));
-                                }
-                                drop(write!(s, "x{}", i));
-                            }
-                            s.push_str(");\n}");
-                            s
                         } else {
-                            format!(
-                                "{}{}.{}",
-                                class,
-                                if is_static { "" } else { ".prototype" },
-                                import.function.name
-                            )
-                        }
-                    };
-                    self.cx.global(&format!(
-                        "
-                        const {}_target = {};
-                        ",
-                        import.shim, target
-                    ));
-                    format!(
-                        "{}_target{}",
-                        import.shim,
-                        if is_static { "" } else { ".call" }
-                    )
+                            let location = if *is_static { "" } else { ".prototype" };
+
+                            match kind {
+                                shared::OperationKind::Getter(g) => {
+                                    self.cx.expose_get_inherited_descriptor();
+                                    format!(
+                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').get",
+                                        class, location, g,
+                                    )
+                                }
+                                shared::OperationKind::Setter(s) => {
+                                    self.cx.expose_get_inherited_descriptor();
+                                    format!(
+                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').set",
+                                        class, location, s,
+                                    )
+                                }
+                                shared::OperationKind::Regular => {
+                                    format!("{}{}.{}", class, location, import.function.name)
+                                }
+                            }
+                        };
+
+                        self.cx.global(&format!(
+                            "
+                            const {}_target = {};
+                            ",
+                            import.shim, target
+                        ));
+                        format!(
+                            "{}_target{}",
+                            import.shim,
+                            if *is_static { "" } else { ".call" }
+                        )
+                    }
                 }
             }
             None => {

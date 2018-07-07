@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate serde_derive;
 
-pub const SCHEMA_VERSION: &str = "5";
+pub const SCHEMA_VERSION: &str = "6";
 
 #[derive(Deserialize)]
 pub struct ProgramOnlySchema {
@@ -48,15 +48,25 @@ pub struct ImportFunction {
 pub struct MethodData {
     pub class: String,
     pub kind: MethodKind,
-    pub getter: Option<String>,
-    pub setter: Option<String>,
 }
 
 #[derive(Deserialize, Serialize)]
 pub enum MethodKind {
-    Normal,
     Constructor,
-    Static,
+    Operation(Operation),
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct Operation {
+    pub is_static: bool,
+    pub kind: OperationKind,
+}
+
+#[derive(Deserialize, Serialize)]
+pub enum OperationKind {
+    Regular,
+    Getter(String),
+    Setter(String),
 }
 
 #[derive(Deserialize, Serialize)]

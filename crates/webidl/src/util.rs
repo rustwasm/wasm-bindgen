@@ -114,7 +114,10 @@ where
     let len = estimate.1.unwrap_or(estimate.0);
     let mut res = if let backend::ast::ImportFunctionKind::Method {
         ty,
-        kind: backend::ast::MethodKind::Normal,
+        kind:
+            backend::ast::MethodKind::Operation(backend::ast::Operation {
+                is_static: false, ..
+            }),
         ..
     } = kind
     {
@@ -146,9 +149,8 @@ where
 pub fn create_function<'a, I>(
     name: &str,
     arguments: I,
-    kind: backend::ast::ImportFunctionKind,
     ret: Option<syn::Type>,
-    mut attrs: Vec<backend::ast::BindgenAttr>,
+    kind: backend::ast::ImportFunctionKind,
 ) -> Option<backend::ast::ImportFunction>
 where
     I: Iterator<Item = (&'a str, &'a webidl::ast::Type, bool)>,
@@ -159,12 +161,6 @@ where
     let arguments = webidl_arguments_to_syn_arg_captured(arguments, &kind)?;
 
     let js_ret = ret.clone();
-
-    if let backend::ast::ImportFunctionKind::Method { .. } = kind {
-        attrs.push(backend::ast::BindgenAttr::Method);
-    }
-
-    let opts = backend::ast::BindgenAttrs { attrs };
 
     let shim = {
         let ns = match kind {
@@ -180,7 +176,6 @@ where
             name,
             arguments,
             ret,
-            opts,
             rust_attrs: vec![],
             rust_vis: syn::Visibility::Public(syn::VisPublic {
                 pub_token: Default::default(),
@@ -188,6 +183,8 @@ where
         },
         rust_name,
         js_ret,
+        catch: false,
+        structural: false,
         kind,
         shim,
     })
@@ -198,7 +195,7 @@ pub fn create_basic_method(
     name: Option<&String>,
     return_type: &webidl::ast::ReturnType,
     self_name: &str,
-    kind: backend::ast::MethodKind,
+    is_static: bool,
 ) -> Option<backend::ast::ImportFunction> {
     let name = match name {
         None => {
@@ -211,7 +208,10 @@ pub fn create_basic_method(
     let kind = backend::ast::ImportFunctionKind::Method {
         class: self_name.to_string(),
         ty: ident_ty(rust_ident(self_name)),
-        kind,
+        kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
+            is_static,
+            kind: backend::ast::OperationKind::Regular,
+        }),
     };
 
     let ret = match return_type {
@@ -231,9 +231,8 @@ pub fn create_basic_method(
         arguments
             .iter()
             .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
-        kind,
         ret,
-        Vec::new(),
+        kind,
     )
 }
 
@@ -241,7 +240,7 @@ pub fn create_getter(
     name: &str,
     ty: &webidl::ast::Type,
     self_name: &str,
-    kind: backend::ast::MethodKind,
+    is_static: bool,
 ) -> Option<backend::ast::ImportFunction> {
     let ret = match webidl_ty_to_syn_ty(ty, TypePosition::Return) {
         None => {
@@ -254,36 +253,35 @@ pub fn create_getter(
     let kind = backend::ast::ImportFunctionKind::Method {
         class: self_name.to_string(),
         ty: ident_ty(rust_ident(self_name)),
-        kind,
+        kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
+            is_static,
+            kind: backend::ast::OperationKind::Getter(Some(raw_ident(name))),
+        }),
     };
 
-    create_function(
-        name,
-        iter::empty(),
-        kind,
-        ret,
-        vec![backend::ast::BindgenAttr::Getter(Some(raw_ident(name)))],
-    )
+    create_function(name, iter::empty(), ret, kind)
 }
 
 pub fn create_setter(
     name: &str,
     ty: &webidl::ast::Type,
     self_name: &str,
-    kind: backend::ast::MethodKind,
+    is_static: bool,
 ) -> Option<backend::ast::ImportFunction> {
     let kind = backend::ast::ImportFunctionKind::Method {
         class: self_name.to_string(),
         ty: ident_ty(rust_ident(self_name)),
-        kind,
+        kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
+            is_static,
+            kind: backend::ast::OperationKind::Setter(Some(raw_ident(name))),
+        }),
     };
 
     create_function(
         &format!("set_{}", name),
         iter::once((name, ty, false)),
-        kind,
         None,
-        vec![backend::ast::BindgenAttr::Setter(Some(raw_ident(name)))],
+        kind,
     )
 }
 
@@ -294,20 +292,22 @@ pub fn is_chrome_only(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
             ExtendedAttribute::ArgumentList(al) => {
                 println!("ArgumentList");
                 al.name == "ChromeOnly"
-            },
+            }
             ExtendedAttribute::Identifier(i) => {
                 println!("Identifier");
                 i.lhs == "ChromeOnly"
-            },
+            }
             ExtendedAttribute::IdentifierList(il) => {
                 println!("IdentifierList");
                 il.lhs == "ChromeOnly"
-            },
+            }
             ExtendedAttribute::NamedArgumentList(nal) => {
                 println!("NamedArgumentList");
                 nal.lhs_name == "ChromeOnly"
-            },
-            ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => name == "ChromeOnly",
+            }
+            ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => {
+                name == "ChromeOnly"
+            }
             ExtendedAttribute::NoArguments(_na) => {
                 println!("NoArguments");
                 false
