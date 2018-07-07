@@ -273,7 +273,7 @@ impl ToTokens for ast::StructField {
             }
         }).to_tokens(tokens);
 
-        if self.opts.readonly() {
+        if self.readonly {
             return;
         }
 
@@ -356,12 +356,10 @@ impl ToTokens for ast::Export {
                 });
                 quote! { me.#name }
             }
-            None => {
-                match &self.class {
-                    Some(class) => quote! { #class::#name },
-                    None => quote! { #name }
-                }
-            }
+            None => match &self.class {
+                Some(class) => quote! { #class::#name },
+                None => quote! { #name },
+            },
         };
 
         for (i, syn::ArgCaptured { ty, .. }) in self.function.arguments.iter().enumerate() {
@@ -591,7 +589,10 @@ impl ToTokens for ast::ImportFunction {
             ast::ImportFunctionKind::Method {
                 ref ty, ref kind, ..
             } => {
-                if let ast::MethodKind::Normal = kind {
+                if let ast::MethodKind::Operation(ast::Operation {
+                    is_static: false, ..
+                }) = kind
+                {
                     is_method = true;
                 }
                 class_ty = Some(ty);
@@ -618,9 +619,7 @@ impl ToTokens for ast::ImportFunction {
                     subpat: None,
                     ..
                 }) => ident.clone(),
-                syn::Pat::Wild(_) => {
-                    syn::Ident::new(&format!("__genarg_{}", i), Span::call_site())
-                }
+                syn::Pat::Wild(_) => syn::Ident::new(&format!("__genarg_{}", i), Span::call_site()),
                 _ => panic!("unsupported pattern in foreign function"),
             };
 
@@ -664,7 +663,7 @@ impl ToTokens for ast::ImportFunction {
         }
 
         let mut exceptional_ret = quote!();
-        let exn_data = if self.function.opts.catch() {
+        let exn_data = if self.catch {
             let exn_data = Ident::new("exn_data", Span::call_site());
             let exn_data_ptr = Ident::new("exn_data_ptr", Span::call_site());
             abi_argument_names.push(exn_data_ptr.clone());
@@ -702,7 +701,7 @@ impl ToTokens for ast::ImportFunction {
             #(#attrs)*
             #[allow(bad_style)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            #vis extern fn #rust_name(#me #(#arguments),*) #ret {
+            #vis fn #rust_name(#me #(#arguments),*) #ret {
                 ::wasm_bindgen::__rt::link_this_library();
                 #[wasm_import_module = "__wbindgen_placeholder__"]
                 extern {

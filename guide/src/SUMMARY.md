@@ -10,6 +10,7 @@
 - [Closures](./closures.md)
 - [Feature Reference](./feature-reference.md)
 - [CLI Reference](./cli-reference.md)
+- [Type Reference](./reference.md)
 
 --------------------------------------------------------------------------------
 

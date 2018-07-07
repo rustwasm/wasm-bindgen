@@ -23,6 +23,10 @@ test_script:
   - cargo test
   - cargo build --release -p wasm-bindgen-cli
 
+branches:
+  only:
+    - master
+
 before_deploy:
   - ps: |
         $NAME = "wasm-bindgen-${env:APPVEYOR_REPO_TAG_NAME}-${env:TARGET}"

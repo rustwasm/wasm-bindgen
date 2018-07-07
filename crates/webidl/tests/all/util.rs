@@ -85,6 +85,14 @@ The latest `rustfmt` is required to run the `wasm-bindgen` test suite. Install
     (formatted, stderr)
 }
 
+fn strip_wasm_bindgen_generated(source: &str) -> String {
+    let lines: Vec<_> = source
+        .lines()
+        .filter(|l| !l.contains("__WASM_BINDGEN_GENERATED"))
+        .collect();
+    lines.join("\n")
+}
+
 pub fn assert_compile(webidl: &str, expected: &str, expected_file: &str) {
     static INIT_ENV_LOGGER: Once = ONCE_INIT;
     INIT_ENV_LOGGER.call_once(|| {
@@ -93,8 +101,11 @@ pub fn assert_compile(webidl: &str, expected: &str, expected_file: &str) {
 
     let actual = wb_webidl::compile(webidl).expect("should compile the webidl source OK");
 
-    let (actual, actual_stderr) = rustfmt(actual);
+    let (actual_orig, actual_stderr) = rustfmt(actual);
     let (expected, expected_stderr) = rustfmt(expected);
+
+    let actual = strip_wasm_bindgen_generated(&actual_orig);
+    let expected = strip_wasm_bindgen_generated(&expected);
 
     if expected == actual {
         return;
@@ -103,7 +114,7 @@ pub fn assert_compile(webidl: &str, expected: &str, expected_file: &str) {
     if env::var("UPDATE_EXPECTED").is_ok() {
         File::create(expected_file)
             .unwrap()
-            .write_all(actual.as_bytes())
+            .write_all(actual_orig.as_bytes())
             .unwrap();
         return
     }

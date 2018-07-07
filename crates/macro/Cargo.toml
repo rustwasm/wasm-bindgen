@@ -22,3 +22,4 @@ syn = { version = '0.14', features = ['full'] }
 quote = '0.6'
 proc-macro2 = "0.4.4"
 wasm-bindgen-backend = { path = "../backend", version = "=0.2.11" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.11" }

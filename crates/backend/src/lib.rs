@@ -4,9 +4,8 @@
 extern crate proc_macro2;
 #[macro_use]
 extern crate quote;
-#[macro_use]
-extern crate syn;
 extern crate serde_json;
+extern crate syn;
 
 extern crate wasm_bindgen_shared as shared;
 

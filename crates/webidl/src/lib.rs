@@ -220,9 +220,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                 arguments
                     .iter()
                     .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
-                kind,
                 Some(self_ty),
-                vec![backend::ast::BindgenAttr::Constructor],
+                kind,
             ).map(|function| {
                 program.imports.push(backend::ast::Import {
                     module: None,
@@ -321,21 +320,13 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
             return Ok(());
         }
 
-        create_getter(
-            &self.name,
-            &self.type_,
-            self_name,
-            backend::ast::MethodKind::Normal,
-        ).map(wrap_import_function)
+        create_getter(&self.name, &self.type_, self_name, false)
+            .map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(
-                &self.name,
-                &self.type_,
-                self_name,
-                backend::ast::MethodKind::Normal,
-            ).map(wrap_import_function)
+            create_setter(&self.name, &self.type_, self_name, false)
+                .map(wrap_import_function)
                 .map(|import| program.imports.push(import));
         }
 
@@ -349,21 +340,13 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
             return Ok(());
         }
 
-        create_getter(
-            &self.name,
-            &self.type_,
-            self_name,
-            backend::ast::MethodKind::Static,
-        ).map(wrap_import_function)
+        create_getter(&self.name, &self.type_, self_name, true)
+            .map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(
-                &self.name,
-                &self.type_,
-                self_name,
-                backend::ast::MethodKind::Static,
-            ).map(wrap_import_function)
+            create_setter(&self.name, &self.type_, self_name, true)
+                .map(wrap_import_function)
                 .map(|import| program.imports.push(import));
         }
 
@@ -382,7 +365,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
             self.name.as_ref(),
             &self.return_type,
             self_name,
-            backend::ast::MethodKind::Normal,
+            false,
         ).map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
@@ -401,7 +384,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
             self.name.as_ref(),
             &self.return_type,
             self_name,
-            backend::ast::MethodKind::Static,
+            true,
         ).map(wrap_import_function)
             .map(|import| program.imports.push(import));
 

@@ -107,6 +107,212 @@ fn get_full_year() {
 }
 
 #[test]
+fn get_hours() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_hours(this: &Date) -> u32 {
+                this.get_hours()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('March 13, 08 04:20');
+
+                assert.equal(wasm.get_hours(date), 4);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_milliseconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_milliseconds(this: &Date) -> u32 {
+                this.get_milliseconds()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('July 20, 69 00:20:18');
+                let dateWithMs = new Date('July 20, 69 00:20:18:123');
+
+                assert.equal(wasm.get_milliseconds(date), 0);
+                assert.equal(wasm.get_milliseconds(dateWithMs), 123);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_minutes() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_minutes(this: &Date) -> u32 {
+                this.get_minutes()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('March 13, 08 04:20');
+
+                assert.equal(wasm.get_minutes(date), 20);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_month() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_month(this: &Date) -> u32 {
+                this.get_month()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('July 20, 69 00:20:18');
+
+                assert.equal(wasm.get_month(date), 6);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_seconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_seconds(this: &Date) -> u32 {
+                this.get_seconds()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('July 20, 69 00:20:18');
+
+                assert.equal(wasm.get_seconds(date), 18);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_time() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_time(this: &Date) -> f64 {
+                this.get_time()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('July 20, 69 00:20:18 GMT+00:00');
+
+                assert.equal(wasm.get_time(date), -14254782000);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file(
@@ -161,6 +367,42 @@ fn now() {
                 assert.equal(typeof wasm.now(), "number");
             }
         "#)
+        .test()
+}
+
+#[test]
+fn parse() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, JsString};
+
+            #[wasm_bindgen]
+            pub fn parse(date: JsString) -> f64 {
+                Date::parse(date)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = wasm.parse('04 Dec 1995 00:12:00 GMT');
+                let unixTimeZero = wasm.parse('01 Jan 1970 00:00:00 GMT');
+
+                assert.equal(date, 818035920000);
+                assert.equal(unixTimeZero, 0);
+            }
+        "#,
+        )
         .test()
 }
 

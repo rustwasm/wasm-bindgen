@@ -186,22 +186,22 @@ fn replace() {
         .file(
             "test.js",
             r#"
-            import * as assert from "assert";
-            import * as wasm from "./out";
+                import * as assert from "assert";
+                import * as wasm from "./out";
 
-            class Replace1 {
-                constructor(value) {
-                    this.value = value;
+                class Replace1 {
+                    constructor(value) {
+                        this.value = value;
+                    }
+                    [wasm.symbol_replace()](string) {
+                        return `s/${string}/${this.value}/g`;
+                    }
                 }
-                [Symbol.replace](string) {
-                    return `s/${string}/${this.value}/g`;
-                }
-            }
 
-            export function test() {
-                assert.equal('foo'.replace(new Replace1('bar')), 's/foo/bar/g');
-            }
-        "#,
+                export function test() {
+                    assert.equal('foo'.replace(new Replace1('bar')), 's/foo/bar/g');
+                }
+            "#,
         )
         .test();
 }
@@ -404,7 +404,7 @@ fn to_string_tag() {
             import * as wasm from "./out";
 
             class ValidatorClass {
-                get [Symbol.toStringTag]() {
+                get [wasm.symbol_to_string_tag()]() {
                     return 'Validator';
                 }
             }
