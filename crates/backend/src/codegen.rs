@@ -702,7 +702,7 @@ impl ToTokens for ast::ImportFunction {
             #(#attrs)*
             #[allow(bad_style)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            #vis extern fn #rust_name(#me #(#arguments),*) #ret {
+            #vis fn #rust_name(#me #(#arguments),*) #ret {
                 ::wasm_bindgen::__rt::link_this_library();
                 #[wasm_import_module = "__wbindgen_placeholder__"]
                 extern {

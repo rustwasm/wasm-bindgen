@@ -418,7 +418,8 @@ fn rename_setter_getter() {
 
                 #[wasm_bindgen]
                 pub fn run() {
-                    let a = Foo::new();
+                    let x: fn() -> Foo = Foo::new;
+                    let a = x();
                     assert_eq!(a.test(), 1);
                     a.another(2);
                     assert_eq!(a.test(), 2);
