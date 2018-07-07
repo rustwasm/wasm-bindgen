@@ -828,6 +828,44 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getFullYear)]
     pub fn get_full_year(this: &Date) -> u32;
 
+    /// The getHours() method returns the hour for the specified date, according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getHours
+    #[wasm_bindgen(method, js_name = getHours)]
+    pub fn get_hours(this: &Date) -> u32;
+
+    /// The getMilliseconds() method returns the milliseconds in the specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMilliseconds
+    #[wasm_bindgen(method, js_name = getMilliseconds)]
+    pub fn get_milliseconds(this: &Date) -> u32;
+
+    /// The getMinutes() method returns the minutes in the specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMinutes
+    #[wasm_bindgen(method, js_name = getMinutes)]
+    pub fn get_minutes(this: &Date) -> u32;
+
+    /// The getMonth() method returns the month in the specified date according to local time,
+    /// as a zero-based value (where zero indicates the first month of the year).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
+    #[wasm_bindgen(method, js_name = getMonth)]
+    pub fn get_month(this: &Date) -> u32;
+
+    /// The getSeconds() method returns the seconds in the specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getSeconds
+    #[wasm_bindgen(method, js_name = getSeconds)]
+    pub fn get_seconds(this: &Date) -> u32;
+
+    /// The getTime() method returns the numeric value corresponding to the time for the specified date
+    /// according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
+    #[wasm_bindgen(method, js_name = getTime)]
+    pub fn get_time(this: &Date) -> f64;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
@@ -842,6 +880,14 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
     #[wasm_bindgen(static_method_of = Date)]
     pub fn now() -> f64;
+
+    /// The Date.parse() method parses a string representation of a date, and returns the number of milliseconds
+    /// since January 1, 1970, 00:00:00 UTC or NaN if the string is unrecognized or, in some cases,
+    /// contains illegal date values (e.g. 2015-02-31).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
+    #[wasm_bindgen(static_method_of = Date)]
+    pub fn parse(date: JsString) -> f64;
 
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
