@@ -853,6 +853,12 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getMonth)]
     pub fn get_month(this: &Date) -> u32;
 
+    /// The getSeconds() method returns the seconds in the specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getSeconds
+    #[wasm_bindgen(method, js_name = getSeconds)]
+    pub fn get_seconds(this: &Date) -> u32;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
