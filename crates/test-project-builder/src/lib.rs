@@ -374,7 +374,7 @@ impl Project {
                     <body>
                         <div id="error"></div>
                         <div id="logs"></div>
-                        <div id="status"></div>
+                        <div id="status">incomplete</div>
                         <script src="bundle.js"></script>
                     </body>
                 </html>
