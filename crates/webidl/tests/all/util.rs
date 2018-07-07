@@ -1,8 +1,11 @@
-use diff;
-use env_logger;
+use std::env;
+use std::fs::File;
 use std::io::{self, Write};
 use std::process;
 use std::sync::{Once, ONCE_INIT};
+
+use diff;
+use env_logger;
 use wb_webidl;
 
 fn rustfmt<S: Into<String>>(source: S) -> (String, String) {
@@ -90,7 +93,7 @@ fn strip_wasm_bindgen_generated(source: String) -> String {
     lines.join("\n")
 }
 
-pub fn assert_compile(webidl: &str, expected: &str) {
+pub fn assert_compile(webidl: &str, expected: &str, expected_file: &str) {
     static INIT_ENV_LOGGER: Once = ONCE_INIT;
     INIT_ENV_LOGGER.call_once(|| {
         env_logger::init();
@@ -106,6 +109,14 @@ pub fn assert_compile(webidl: &str, expected: &str) {
 
     if expected == actual {
         return;
+    }
+
+    if env::var("UPDATE_EXPECTED").is_ok() {
+        File::create(expected_file)
+            .unwrap()
+            .write_all(actual.as_bytes())
+            .unwrap();
+        return
     }
 
     eprintln!("rustfmt(expected) stderr:");
@@ -149,7 +160,13 @@ macro_rules! assert_compile {
                 stringify!($test_name),
                 ".rs"
             ));
-            $crate::assert_compile(webidl_source, expected_output);
+            let expected_file = concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/tests/expected/",
+                stringify!($test_name),
+                ".rs"
+            );
+            $crate::assert_compile(webidl_source, expected_output, expected_file);
         }
     };
 }
