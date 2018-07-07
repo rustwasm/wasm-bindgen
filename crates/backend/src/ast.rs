@@ -50,6 +50,8 @@ pub struct ImportFunction {
     pub function: Function,
     pub rust_name: Ident,
     pub js_ret: Option<syn::Type>,
+    pub catch: bool,
+    pub structural: bool,
     pub kind: ImportFunctionKind,
     pub shim: Ident,
 }
@@ -66,9 +68,21 @@ pub enum ImportFunctionKind {
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub enum MethodKind {
-    Normal,
     Constructor,
-    Static,
+    Operation(Operation),
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub struct Operation {
+    pub is_static: bool,
+    pub kind: OperationKind,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub enum OperationKind {
+    Regular,
+    Setter(Option<Ident>),
+    Getter(Option<Ident>),
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -92,7 +106,6 @@ pub struct Function {
     pub name: Ident,
     pub arguments: Vec<syn::ArgCaptured>,
     pub ret: Option<syn::Type>,
-    pub opts: BindgenAttrs,
     pub rust_attrs: Vec<syn::Attribute>,
     pub rust_vis: syn::Visibility,
 }
@@ -106,9 +119,9 @@ pub struct Struct {
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub struct StructField {
-    pub opts: BindgenAttrs,
     pub name: Ident,
     pub struct_name: Ident,
+    pub readonly: bool,
     pub ty: syn::Type,
     pub getter: Ident,
     pub setter: Ident,
@@ -159,8 +172,6 @@ impl Program {
     ) {
         match item {
             syn::Item::Fn(mut f) => {
-                let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
-
                 let no_mangle = f
                     .attrs
                     .iter()
@@ -179,7 +190,7 @@ impl Program {
                     class: None,
                     method_self: None,
                     constructor: None,
-                    function: Function::from(f, opts),
+                    function: Function::from(f),
                     comments,
                 });
             }
@@ -273,7 +284,6 @@ impl Program {
             &method.sig.ident,
             Box::new(method.sig.decl.clone()),
             method.attrs.clone(),
-            opts,
             method.vis.clone(),
             true,
         );
@@ -373,8 +383,9 @@ impl Program {
 
     pub fn push_foreign_fn(&mut self, f: syn::ForeignItemFn, opts: BindgenAttrs) -> ImportKind {
         let js_name = opts.js_name().unwrap_or(&f.ident).clone();
-        let wasm = Function::from_decl(&js_name, f.decl, f.attrs, opts, f.vis, false).0;
-        let js_ret = if wasm.opts.catch() {
+        let wasm = Function::from_decl(&js_name, f.decl, f.attrs, f.vis, false).0;
+        let catch = opts.catch();
+        let js_ret = if catch {
             // TODO: this assumes a whole bunch:
             //
             // * The outer type is actually a `Result`
@@ -388,7 +399,15 @@ impl Program {
             wasm.ret.clone()
         };
 
-        let kind = if wasm.opts.method() {
+        let mut operation_kind = OperationKind::Regular;
+        if let Some(g) = opts.getter() {
+            operation_kind = OperationKind::Getter(g);
+        }
+        if let Some(s) = opts.setter() {
+            operation_kind = OperationKind::Setter(s);
+        }
+
+        let kind = if opts.method() {
             let class = wasm
                 .arguments
                 .get(0)
@@ -410,23 +429,32 @@ impl Program {
             };
             let class_name = extract_path_ident(class_name)
                 .expect("first argument of method must be a bare type");
-            let class_name = wasm
-                .opts
+            let class_name = opts
                 .js_class()
                 .map(Into::into)
                 .unwrap_or_else(|| class_name.to_string());
 
+            let kind = MethodKind::Operation(Operation {
+                is_static: false,
+                kind: operation_kind,
+            });
+
             ImportFunctionKind::Method {
                 class: class_name,
                 ty: class.clone(),
-                kind: MethodKind::Normal,
+                kind,
             }
-        } else if let Some(cls) = wasm.opts.static_method_of() {
+        } else if let Some(cls) = opts.static_method_of() {
             let class = cls.to_string();
-            let kind = MethodKind::Static;
             let ty = util::ident_ty(cls.clone());
+
+            let kind = MethodKind::Operation(Operation {
+                is_static: true,
+                kind: operation_kind,
+            });
+
             ImportFunctionKind::Method { class, ty, kind }
-        } else if wasm.opts.constructor() {
+        } else if opts.constructor() {
             let class = match wasm.ret {
                 Some(ref ty) => ty,
                 _ => panic!("constructor returns must be bare types"),
@@ -461,6 +489,8 @@ impl Program {
             function: wasm,
             kind,
             js_ret,
+            catch,
+            structural: opts.structural(),
             rust_name: f.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
         })
@@ -506,7 +536,7 @@ impl Program {
 }
 
 impl Function {
-    pub fn from(input: syn::ItemFn, opts: BindgenAttrs) -> Function {
+    pub fn from(input: syn::ItemFn) -> Function {
         match input.vis {
             syn::Visibility::Public(_) => {}
             _ => panic!("can only bindgen public functions"),
@@ -518,21 +548,13 @@ impl Function {
             panic!("can only bindgen safe functions");
         }
 
-        Function::from_decl(
-            &input.ident,
-            input.decl,
-            input.attrs,
-            opts,
-            input.vis,
-            false,
-        ).0
+        Function::from_decl(&input.ident, input.decl, input.attrs, input.vis, false).0
     }
 
     pub fn from_decl(
         name: &Ident,
         mut decl: Box<syn::FnDecl>,
         attrs: Vec<syn::Attribute>,
-        opts: BindgenAttrs,
         vis: syn::Visibility,
         allow_self: bool,
     ) -> (Function, Option<MethodSelf>) {
@@ -580,7 +602,6 @@ impl Function {
                 name: name.clone(),
                 arguments,
                 ret,
-                opts,
                 rust_vis: vis,
                 rust_attrs: attrs,
             },
@@ -730,45 +751,47 @@ impl ImportFunction {
     }
 
     fn shared(&self) -> shared::ImportFunction {
-        let mut getter = None;
-        let mut setter = None;
-
-        if let Some(s) = self.function.opts.getter() {
-            let s = s.map(|s| s.to_string());
-            getter = Some(s.unwrap_or_else(|| self.infer_getter_property()));
-        }
-        if let Some(s) = self.function.opts.setter() {
-            let s = s.map(|s| s.to_string());
-            setter = Some(s.unwrap_or_else(|| self.infer_setter_property()));
-        }
-
-        let mut method = None;
-        match self.kind {
+        let method = match self.kind {
             ImportFunctionKind::Method {
                 ref class,
                 ref kind,
                 ..
             } => {
                 let kind = match kind {
-                    MethodKind::Normal => shared::MethodKind::Normal,
                     MethodKind::Constructor => shared::MethodKind::Constructor,
-                    MethodKind::Static => shared::MethodKind::Static,
+                    MethodKind::Operation(Operation { is_static, kind }) => {
+                        let is_static = *is_static;
+                        let kind = match kind {
+                            OperationKind::Regular => shared::OperationKind::Regular,
+                            OperationKind::Getter(g) => {
+                                let g = g.as_ref().map(|g| g.to_string());
+                                shared::OperationKind::Getter(
+                                    g.unwrap_or_else(|| self.infer_getter_property()),
+                                )
+                            }
+                            OperationKind::Setter(s) => {
+                                let s = s.as_ref().map(|s| s.to_string());
+                                shared::OperationKind::Setter(
+                                    s.unwrap_or_else(|| self.infer_setter_property()),
+                                )
+                            }
+                        };
+                        shared::MethodKind::Operation(shared::Operation { is_static, kind })
+                    }
                 };
-                method = Some(shared::MethodData {
+                Some(shared::MethodData {
                     class: class.clone(),
                     kind,
-                    getter,
-                    setter,
-                });
+                })
             }
-            ImportFunctionKind::Normal => {}
-        }
+            ImportFunctionKind::Normal => None,
+        };
 
         shared::ImportFunction {
             shim: self.shim.to_string(),
-            catch: self.function.opts.catch(),
+            catch: self.catch,
             method,
-            structural: self.function.opts.structural(),
+            structural: self.structural,
             function: self.function.shared(),
         }
     }
@@ -815,9 +838,9 @@ impl Struct {
                 let opts = BindgenAttrs::find(&mut field.attrs);
                 let comments = extract_doc_comments(&field.attrs);
                 fields.push(StructField {
-                    opts,
                     name: name.clone(),
                     struct_name: s.ident.clone(),
+                    readonly: opts.readonly(),
                     ty: field.ty.clone(),
                     getter: Ident::new(&getter, Span::call_site()),
                     setter: Ident::new(&setter, Span::call_site()),
@@ -846,7 +869,7 @@ impl StructField {
     fn shared(&self) -> shared::StructField {
         shared::StructField {
             name: self.name.to_string(),
-            readonly: self.opts.readonly(),
+            readonly: self.readonly,
             comments: self.comments.clone(),
         }
     }
@@ -942,21 +965,21 @@ impl BindgenAttrs {
             .next()
     }
 
-    pub fn getter(&self) -> Option<Option<&Ident>> {
+    pub fn getter(&self) -> Option<Option<Ident>> {
         self.attrs
             .iter()
             .filter_map(|a| match a {
-                BindgenAttr::Getter(s) => Some(s.as_ref()),
+                BindgenAttr::Getter(g) => Some(g.clone()),
                 _ => None,
             })
             .next()
     }
 
-    pub fn setter(&self) -> Option<Option<&Ident>> {
+    pub fn setter(&self) -> Option<Option<Ident>> {
         self.attrs
             .iter()
             .filter_map(|a| match a {
-                BindgenAttr::Setter(s) => Some(s.as_ref()),
+                BindgenAttr::Setter(s) => Some(s.clone()),
                 _ => None,
             })
             .next()
