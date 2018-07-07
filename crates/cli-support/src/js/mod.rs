@@ -766,7 +766,7 @@ impl<'a> Context<'a> {
         }
         self.global(&format!(
             "
-            let stack = [];
+            const stack = [];
         "
         ));
         if self.config.debug {
@@ -793,7 +793,7 @@ impl<'a> Context<'a> {
             "{ obj: true }",
             "{ obj: false }",
         ];
-        self.global(&format!("let slab = [{}];", initial_values.join(", ")));
+        self.global(&format!("const slab = [{}];", initial_values.join(", ")));
         if self.config.debug {
             self.export(
                 "assertSlabEmpty",

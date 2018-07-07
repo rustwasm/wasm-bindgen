@@ -47,7 +47,7 @@ and what we actually generate looks something like:
 // foo.js
 import * as wasm from './foo_bg';
 
-let stack = [];
+const stack = [];
 
 function addBorrowedObject(obj) {
   stack.push(obj);
@@ -135,7 +135,7 @@ different. Let's see the generated JS's slab in action:
 ```js
 import * as wasm from './foo_bg'; // imports from wasm file
 
-let slab = [];
+const slab = [];
 let slab_next = 0;
 
 function addHeapObject(obj) {
