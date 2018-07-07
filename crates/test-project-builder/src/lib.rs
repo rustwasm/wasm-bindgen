@@ -639,7 +639,7 @@ impl Project {
 
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
-        let mut cwd = env::current_dir().unwrap();
+        let mut cwd = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         cwd.pop(); // chop off test-project-builder
         cwd.pop(); // chop off crates
         fs::copy(cwd.join("package.json"), root.join("package.json")).unwrap();
