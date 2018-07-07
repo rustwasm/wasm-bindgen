@@ -125,7 +125,7 @@ pub fn assert_compile(webidl: &str, expected: &str, expected_file: &str) {
         match d {
             diff::Result::Left(l) => eprintln!("-{}", l),
             diff::Result::Right(r) => eprintln!("+{}", r),
-            diff::Result::Both(b, _) => exprintln!(" {}", b),
+            diff::Result::Both(b, _) => eprintln!(" {}", b),
         }
     }
 
