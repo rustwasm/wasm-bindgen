@@ -639,12 +639,15 @@ impl Project {
 
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
-        fs::hard_link("package.json", root.join("package.json")).unwrap();
-        if !Path::new("node_modules").exists() {
+        let mut cwd = env::current_dir().unwrap();
+        cwd.pop(); // chop off test-project-builder
+        cwd.pop(); // chop off crates
+        fs::copy(cwd.join("package.json"), root.join("package.json")).unwrap();
+        let modules = cwd.join("node_modules");
+        if !modules.exists() {
             panic!("\n\nfailed to find `node_modules`, have you run `npm install` yet?\n\n");
         }
-        let cwd = env::current_dir().unwrap();
-        symlink_dir(&cwd.join("node_modules"), &root.join("node_modules")).unwrap();
+        symlink_dir(&modules, &root.join("node_modules")).unwrap();
 
         if self.headless {
             return self.test_headless(&root)
