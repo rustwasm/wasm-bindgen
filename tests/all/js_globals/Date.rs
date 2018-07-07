@@ -141,6 +141,42 @@ fn get_hours() {
 }
 
 #[test]
+fn get_milliseconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_milliseconds(this: &Date) -> u32 {
+                this.get_milliseconds()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('July 20, 69 00:20:18');
+                let dateWithMs = new Date('July 20, 69 00:20:18:123');
+
+                assert.equal(wasm.get_milliseconds(date), 0);
+                assert.equal(wasm.get_milliseconds(dateWithMs), 123);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file(
