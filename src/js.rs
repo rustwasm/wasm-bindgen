@@ -951,76 +951,78 @@ extern "C" {
     #[wasm_bindgen(method, js_name = hasOwnProperty)]
     pub fn has_own_property(this: &Object, property: &JsValue) -> bool;
 
-    /// The Object.isExtensible() method determines if an object is extensible
+    /// The `Object.isExtensible()` method determines if an object is extensible
     /// (whether it can have new properties added to it).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isExtensible
     #[wasm_bindgen(static_method_of = Object, js_name = isExtensible)]
     pub fn is_extensible(object: &Object) -> bool;
 
-    /// The Object.isFrozen() determines if an object is frozen.
+    /// The `Object.isFrozen()` determines if an object is frozen.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isFrozen
     #[wasm_bindgen(static_method_of = Object, js_name = isFrozen)]
     pub fn is_frozen(object: &Object) -> bool;
 
-    /// The Object.isSealed() method determines if an object is sealed.
+    /// The `Object.isSealed()` method determines if an object is sealed.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isSealed
     #[wasm_bindgen(static_method_of = Object, js_name = isSealed)]
     pub fn is_sealed(object: &Object) -> bool;
 
-    /// The isPrototypeOf() method checks if an object exists in another
+    /// The `isPrototypeOf()` method checks if an object exists in another
     /// object's prototype chain.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isPrototypeOf
     #[wasm_bindgen(method, js_name = isPrototypeOf)]
     pub fn is_prototype_of(this: &Object, value: &JsValue) -> bool;
 
-    /// The Object.keys() method returns an array of a given object's property
+    /// The `Object.keys()` method returns an array of a given object's property
     /// names, in the same order as we get with a normal loop.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
     #[wasm_bindgen(static_method_of = Object)]
     pub fn keys(object: &Object) -> Array;
 
-    /// The Object constructor creates an object wrapper.
+    /// The [`Object`] constructor creates an object wrapper.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
     #[wasm_bindgen(constructor)]
     pub fn new() -> Object;
 
-    /// The Object.preventExtensions() method prevents
-    /// new properties from ever being added to an object
-    /// (i.e. prevents future extensions to the object).
+    /// The `Object.preventExtensions()` method prevents new properties from
+    /// ever being added to an object (i.e. prevents future extensions to the
+    /// object).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions
     #[wasm_bindgen(static_method_of = Object, js_name = preventExtensions)]
     pub fn prevent_extensions(object: &Object);
 
-    /// The propertyIsEnumerable() method returns a Boolean indicating
+    /// The `propertyIsEnumerable()` method returns a Boolean indicating
     /// whether the specified property is enumerable.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/propertyIsEnumerable
     #[wasm_bindgen(method, js_name = propertyIsEnumerable)]
     pub fn property_is_enumerable(this: &Object, property: &JsValue) -> bool;
 
-    /// The Object.seal() method seals an object, preventing new properties
-    /// from being added to it and marking all existing properties as non-configurable.
-    /// Values of present properties can still be changed as long as they are writable.
+    /// The `Object.seal()` method seals an object, preventing new properties
+    /// from being added to it and marking all existing properties as
+    /// non-configurable.  Values of present properties can still be changed as
+    /// long as they are writable.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/seal
     #[wasm_bindgen(static_method_of = Object)]
     pub fn seal(value: &JsValue) -> JsValue;
 
-    /// The Object.setPrototypeOf() method sets the prototype (i.e., the internal
-    /// [[Prototype]] property) of a specified object to another object or null.
+    /// The `Object.setPrototypeOf()` method sets the prototype (i.e., the
+    /// internal `[[Prototype]]` property) of a specified object to another
+    /// object or `null`.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf
     #[wasm_bindgen(static_method_of = Object, js_name = setPrototypeOf)]
     pub fn set_prototype_of(object: &Object, prototype: &Object) -> Object;
 
-    /// The toLocaleString() method returns a string representing the object.
+    /// The `toLocaleString()` method returns a string representing the object.
     /// This method is meant to be overridden by derived objects for
     /// locale-specific purposes.
     ///
@@ -1028,23 +1030,23 @@ extern "C" {
     #[wasm_bindgen(method, js_name = toLocaleString)]
     pub fn to_locale_string(this: &Object) -> JsString;
 
-    /// The toString() method returns a string representing the object.
+    /// The `toString()` method returns a string representing the object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(this: &Object) -> JsString;
 
-    /// The valueOf() method returns the primitive value of the
+    /// The `valueOf()` method returns the primitive value of the
     /// specified object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/valueOf
     #[wasm_bindgen(method, js_name = valueOf)]
     pub fn value_of(this: &Object) -> Object;
 
-    /// The Object.values() method returns an array of a given object's
-    /// own enumerable property values, in the same order as that provided
-    /// by a for...in loop (the difference being that a for-in loop
-    /// enumerates properties in the prototype chain as well).
+    /// The `Object.values()` method returns an array of a given object's own
+    /// enumerable property values, in the same order as that provided by a
+    /// `for...in` loop (the difference being that a for-in loop enumerates
+    /// properties in the prototype chain as well).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
     #[wasm_bindgen(static_method_of = Object)]
@@ -1056,7 +1058,7 @@ extern "C" {
 extern {
     pub type Proxy;
 
-    /// The Proxy object is used to define custom behavior for fundamental
+    /// The [`Proxy`] object is used to define custom behavior for fundamental
     /// operations (e.g. property lookup, assignment, enumeration, function
     /// invocation, etc).
     ///
@@ -1064,7 +1066,8 @@ extern {
     #[wasm_bindgen(constructor)]
     pub fn new(target: &JsValue, handler: &Object) -> Proxy;
 
-    /// The Proxy.revocable() method is used to create a revocable Proxy object.
+    /// The `Proxy.revocable()` method is used to create a revocable [`Proxy`]
+    /// object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/revocable
     #[wasm_bindgen(static_method_of = Proxy)]
@@ -1076,104 +1079,106 @@ extern {
 extern "C" {
     pub type Reflect;
 
-    /// The static Reflect.apply() method calls a target function with arguments as specified.
-    /// 
+    /// The static `Reflect.apply()` method calls a target function with
+    /// arguments as specified.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/apply
     #[wasm_bindgen(static_method_of = Reflect)]
     pub fn apply(target: &Function, this_argument: &JsValue, arguments_list: &Array) -> JsValue;
 
-    /// The static Reflect.construct() method acts like the new operator, but as a function.
-    /// It is equivalent to calling new target(...args). It gives also the added option to 
-    /// specify a different prototype.
-    /// 
+    /// The static `Reflect.construct()` method acts like the new operator, but
+    /// as a function.  It is equivalent to calling `new target(...args)`. It
+    /// gives also the added option to specify a different prototype.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct
     #[wasm_bindgen(static_method_of = Reflect)]
     pub fn construct(target: &Function, arguments_list: &Array) -> JsValue;
     #[wasm_bindgen(static_method_of = Reflect, js_name = construct)]
     pub fn construct_with_new_target(target: &Function, arguments_list: &Array, new_target: &Function) -> JsValue;
 
-    /// The static Reflect.defineProperty() method is like Object.defineProperty() 
-    /// but returns a Boolean.
-    /// 
+    /// The static `Reflect.defineProperty()` method is like
+    /// `Object.defineProperty()` but returns a `Boolean`.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/defineProperty
     #[wasm_bindgen(static_method_of = Reflect, js_name = defineProperty)]
     pub fn define_property(target: &Object, property_key: &JsValue, attributes: &Object) -> bool;
 
-    /// The static Reflect.deleteProperty() method allows to delete properties. 
-    /// It is like the delete operator as a function.
-    /// 
+    /// The static `Reflect.deleteProperty()` method allows to delete
+    /// properties.  It is like the `delete` operator as a function.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/deleteProperty
     #[wasm_bindgen(static_method_of = Reflect, js_name = deleteProperty)]
     pub fn delete_property(target: &Object, key: &JsValue) -> bool;
 
-    /// The static Reflect.get() method works like getting a property from 
-    /// an object (target[propertyKey]) as a function.
-    /// 
+    /// The static `Reflect.get()` method works like getting a property from
+    /// an object (`target[propertyKey]`) as a function.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/get
     #[wasm_bindgen(static_method_of = Reflect)]
     pub fn get(target: &Object, key: &JsValue) -> JsValue;
 
-    /// The static Reflect.getOwnPropertyDescriptor() method is similar to 
-    /// Object.getOwnPropertyDescriptor(). It returns a property descriptor 
-    /// of the given property if it exists on the object, undefined otherwise.
-    /// 
+    /// The static `Reflect.getOwnPropertyDescriptor()` method is similar to
+    /// `Object.getOwnPropertyDescriptor()`. It returns a property descriptor
+    /// of the given property if it exists on the object, `undefined` otherwise.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getOwnPropertyDescriptor
     #[wasm_bindgen(static_method_of = Reflect, js_name = getOwnPropertyDescriptor)]
     pub fn get_own_property_descriptor(target: &Object, property_key: &JsValue) -> JsValue;
 
-    /// The static Reflect.getPrototypeOf() method is almost the same 
-    /// method as Object.getPrototypeOf(). It returns the prototype 
-    /// (i.e. the value of the internal [[Prototype]] property) of 
+    /// The static `Reflect.getPrototypeOf()` method is almost the same
+    /// method as `Object.getPrototypeOf()`. It returns the prototype
+    /// (i.e. the value of the internal `[[Prototype]]` property) of
     /// the specified object.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getPrototypeOf
     #[wasm_bindgen(static_method_of = Reflect, js_name = getPrototypeOf)]
     pub fn get_prototype_of(target: &Object) -> Object;
 
-    /// The static Reflect.has() method works like the in operator as a function.
-    /// 
+    /// The static `Reflect.has()` method works like the in operator as a
+    /// function.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/has
     #[wasm_bindgen(static_method_of = Reflect)]
     pub fn has(target: &Object, property_key: &JsValue) -> bool;
 
-    /// The static Reflect.isExtensible() method determines if an object is extensible 
-    /// (whether it can have new properties added to it). It is similar to 
-    /// Object.isExtensible(), but with some differences.
-    /// 
+    /// The static `Reflect.isExtensible()` method determines if an object is
+    /// extensible (whether it can have new properties added to it). It is
+    /// similar to `Object.isExtensible()`, but with some differences.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/isExtensible
     #[wasm_bindgen(static_method_of = Reflect, js_name = isExtensible)]
     pub fn is_extensible(target: &Object) -> bool;
 
-    /// The static Reflect.ownKeys() method returns an array of the 
+    /// The static `Reflect.ownKeys()` method returns an array of the
     /// target object's own property keys.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys
     #[wasm_bindgen(static_method_of = Reflect, js_name = ownKeys)]
     pub fn own_keys(target: &Object) -> Array;
 
-    /// The static Reflect.preventExtensions() method prevents new 
-    /// properties from ever being added to an object (i.e. prevents 
-    /// future extensions to the object). It is similar to 
-    /// Object.preventExtensions(), but with some differences.
-    /// 
+    /// The static `Reflect.preventExtensions()` method prevents new
+    /// properties from ever being added to an object (i.e. prevents
+    /// future extensions to the object). It is similar to
+    /// `Object.preventExtensions()`, but with some differences.
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/preventExtensions
     #[wasm_bindgen(static_method_of = Reflect, js_name = preventExtensions)]
     pub fn prevent_extensions(target: &Object) -> bool;
 
-    /// The static Reflect.set() method works like setting a 
+    /// The static `Reflect.set()` method works like setting a
     /// property on an object.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set
     #[wasm_bindgen(static_method_of = Reflect)]
     pub fn set(target: &Object, property_key: &JsValue, value: &JsValue) -> bool;
     #[wasm_bindgen(static_method_of = Reflect, js_name = set)]
     pub fn set_with_receiver(target: &Object, property_key: &JsValue, value: &JsValue, receiver: &Object) -> bool;
 
-    /// The static Reflect.setPrototypeOf() method is the same 
-    /// method as Object.setPrototypeOf(). It sets the prototype 
-    /// (i.e., the internal [[Prototype]] property) of a specified 
+    /// The static `Reflect.setPrototypeOf()` method is the same
+    /// method as `Object.setPrototypeOf()`. It sets the prototype
+    /// (i.e., the internal `[[Prototype]]` property) of a specified
     /// object to another object or to null.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/setPrototypeOf
     #[wasm_bindgen(static_method_of = Reflect, js_name = setPrototypeOf)]
     pub fn set_prototype_of(target: &Object, prototype: &JsValue) -> bool;
@@ -1184,40 +1189,42 @@ extern "C" {
 extern {
     pub type Set;
 
-    /// The add() method appends a new element with a specified value to the
-    /// end of a Set object.
+    /// The `add()` method appends a new element with a specified value to the
+    /// end of a [`Set`] object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/add
     #[wasm_bindgen(method)]
     pub fn add(this: &Set, value: &JsValue) -> Set;
 
-    /// The clear() method removes all elements from a Set object.
+    /// The `clear()` method removes all elements from a [`Set`] object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/clear
     #[wasm_bindgen(method)]
     pub fn clear(this: &Set);
 
-    /// The delete() method removes the specified element from a Set object.
+    /// The `delete()` method removes the specified element from a [`Set`]
+    /// object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/delete
     #[wasm_bindgen(method)]
     pub fn delete(this: &Set, value: &JsValue) -> bool;
 
-    /// The has() method returns a boolean indicating whether an element
-    /// with the specified value exists in a Set object or not.
+    /// The `has()` method returns a boolean indicating whether an element with
+    /// the specified value exists in a [`Set`] object or not.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/has
     #[wasm_bindgen(method)]
     pub fn has(this: &Set, value: &JsValue) -> bool;
 
-    /// The Set object lets you store unique values of any type, whether primitive
-    /// values or object references.
+    /// The [`Set`] object lets you store unique values of any type, whether
+    /// primitive values or object references.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
     #[wasm_bindgen(constructor)]
     pub fn new() -> Set;
 
-    /// The size accessor property returns the number of elements in a Set object.
+    /// The size accessor property returns the number of elements in a [`Set`]
+    /// object.
     ///
     /// https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Set/size
     #[wasm_bindgen(method, getter, structural)]
@@ -1229,18 +1236,17 @@ extern {
 extern {
     pub type SetIterator;
 
-    /// The entries() method returns a new Iterator object that contains
-    /// an array of [value, value] for each element in the Set object,
-    /// in insertion order. For Set objects there is no key like in
-    /// Map objects. However, to keep the API similar to the Map object,
-    /// each entry has the same value for its key and value here, so that
-    /// an array [value, value] is returned.
+    /// The `entries()` method returns a new Iterator object that contains an
+    /// array of [value, value] for each element in the Set object, in insertion
+    /// order. For Set objects there is no key like in Map objects. However, to
+    /// keep the API similar to the Map object, each entry has the same value
+    /// for its key and value here, so that an array [value, value] is returned.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/entries
     #[wasm_bindgen(method)]
     pub fn entries(set: &Set) -> SetIterator;
 
-    /// The keys() method is an alias for this method (for similarity with
+    /// The `keys()` method is an alias for this method (for similarity with
     /// Map objects); it behaves exactly the same and returns values
     /// of Set elements.
     ///
@@ -1248,7 +1254,7 @@ extern {
     #[wasm_bindgen(method)]
     pub fn keys(set: &Set) -> SetIterator;
 
-    /// The values() method returns a new Iterator object that contains the
+    /// The `values()` method returns a new Iterator object that contains the
     /// values for each element in the Set object in insertion order.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
@@ -1261,35 +1267,37 @@ extern {
 extern "C" {
     pub type WeakMap;
 
-    /// The WeakMap object is a collection of key/value pairs in which the keys are weakly referenced.
-    /// The keys must be objects and the values can be arbitrary values.
+    /// The [`WeakMap`] object is a collection of key/value pairs in which the
+    /// keys are weakly referenced.  The keys must be objects and the values can
+    /// be arbitrary values.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
     #[wasm_bindgen(constructor)]
     pub fn new() -> WeakMap;
 
-    /// The set() method sets the value for the key in the WeakMap object. Returns
-    /// the WeakMap object.
+    /// The `set()` method sets the value for the key in the [`WeakMap`] object.
+    /// Returns the [`WeakMap`] object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/set
     #[wasm_bindgen(method, js_class = "WeakMap")]
     pub fn set(this: &WeakMap, key: Object, value: JsValue) -> WeakMap;
 
     /// The get() method returns a specified by key element
-    /// from a WeakMap object.
+    /// from a [`WeakMap`] object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/get
     #[wasm_bindgen(method)]
     pub fn get(this: &WeakMap, key: Object) -> JsValue;
 
-    /// The has() method returns a boolean indicating whether an element with
-    /// the specified key exists in the WeakMap object or not.
+    /// The `has()` method returns a boolean indicating whether an element with
+    /// the specified key exists in the [`WeakMap`] object or not.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/has
     #[wasm_bindgen(method)]
     pub fn has(this: &WeakMap, key: Object) -> bool;
 
-    /// The delete() method removes the specified element from a WeakMap object.
+    /// The `delete()` method removes the specified element from a [`WeakMap`]
+    /// object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/delete
     #[wasm_bindgen(method)]
@@ -1301,25 +1309,27 @@ extern "C" {
 extern "C" {
     pub type WeakSet;
 
-    /// The WeakSet object lets you store weakly held objects in a collection.
+    /// The `WeakSet` object lets you store weakly held objects in a collection.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet
     #[wasm_bindgen(constructor)]
     pub fn new() -> WeakSet;
 
-    /// The has() method returns a boolean indicating whether an object exists in a WeakSet or not.
+    /// The `has()` method returns a boolean indicating whether an object exists
+    /// in a WeakSet or not.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/has
     #[wasm_bindgen(method)]
     pub fn has(this: &WeakSet, value: Object) -> bool;
 
-    /// The add() method appends a new object to the end of a WeakSet object.
+    /// The `add()` method appends a new object to the end of a WeakSet object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/add
     #[wasm_bindgen(method)]
     pub fn add(this: &WeakSet, value: Object) -> WeakSet;
 
-    /// The delete() method removes the specified element from a WeakSet object.
+    /// The `delete()` method removes the specified element from a WeakSet
+    /// object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet/delete
     #[wasm_bindgen(method)]
@@ -1353,18 +1363,21 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn length(this: &JsString) -> u32;
 
-    /// The String object's charAt() method returns a new string consisting of the single
-    /// UTF-16 code unit located at the specified offset into the string.
+    /// The String object's `charAt()` method returns a new string consisting of
+    /// the single UTF-16 code unit located at the specified offset into the
+    /// string.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt
     #[wasm_bindgen(method, js_class = "String", js_name = charAt)]
     pub fn char_at(this: &JsString, index: u32) -> JsString;
 
-    /// The charCodeAt() method returns an integer between 0 and 65535 representing the UTF-16 code unit at
-    /// the given index (the UTF-16 code unit matches the Unicode code point for code points representable in
-    /// a single UTF-16 code unit, but might also be the first code unit of a surrogate pair for
-    /// code points not representable in a single UTF-16 code unit, e.g. Unicode code points > 0x10000).
-    /// If you want the entire code point value, use codePointAt().
+    /// The `charCodeAt()` method returns an integer between 0 and 65535
+    /// representing the UTF-16 code unit at the given index (the UTF-16 code
+    /// unit matches the Unicode code point for code points representable in a
+    /// single UTF-16 code unit, but might also be the first code unit of a
+    /// surrogate pair for code points not representable in a single UTF-16 code
+    /// unit, e.g. Unicode code points > 0x10000).  If you want the entire code
+    /// point value, use `codePointAt()`.
     ///
     /// Returns `NaN` if index is out of range.
     ///
@@ -1372,118 +1385,123 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = charCodeAt)]
     pub fn char_code_at(this: &JsString, index: u32) -> f64;
 
-    /// The codePointAt() method returns a non-negative integer that is the Unicode code point value.
+    /// The `codePointAt()` method returns a non-negative integer that is the
+    /// Unicode code point value.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/codePointAt
     #[wasm_bindgen(method, js_class = "String", js_name = codePointAt)]
     pub fn code_point_at(this: &JsString, pos: u32) -> JsValue;
 
-    /// The concat() method concatenates the string arguments to the calling string and returns a new string.
+    /// The `concat()` method concatenates the string arguments to the calling
+    /// string and returns a new string.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/concat
     #[wasm_bindgen(method, js_class = "String")]
     pub fn concat(this: &JsString, string_2: &JsString) -> JsString;
 
-    /// The includes() method determines whether one string may be found within another string, returning true or false as appropriate.
+    /// The `includes()` method determines whether one string may be found
+    /// within another string, returning true or false as appropriate.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
     #[wasm_bindgen(method, js_class = "String")]
     pub fn includes(this: &JsString, search_string: &JsString, position: i32) -> bool;
 
-    /// The indexOf() method returns the index within the calling String object of
-    /// the first occurrence of the specified value, starting the search at fromIndex.
-    /// Returns -1 if the value is not found.
+    /// The `indexOf()` method returns the index within the calling String
+    /// object of the first occurrence of the specified value, starting the
+    /// search at fromIndex.  Returns -1 if the value is not found.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
     #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
     pub fn index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
 
-    /// The slice() method extracts a section of a string and returns it as a
+    /// The `slice()` method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
     #[wasm_bindgen(method, js_class = "String")]
     pub fn slice(this: &JsString, start: u32, end: u32) -> JsString;
 
-    /// The startsWith() method determines whether a string begins with the characters
-    /// of a specified string, returning true or false as appropriate.
+    /// The `startsWith()` method determines whether a string begins with the
+    /// characters of a specified string, returning true or false as
+    /// appropriate.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
     #[wasm_bindgen(method, js_class = "String", js_name = startsWith)]
     pub fn starts_with(this: &JsString, search_string: &JsString, position: u32) -> bool;
 
-    /// The substring() method returns the part of the string between the start and end indexes,
-    /// or to the end of the string.
+    /// The `substring()` method returns the part of the string between the
+    /// start and end indexes, or to the end of the string.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring
     #[wasm_bindgen(method, js_class = "String")]
     pub fn substring(this: &JsString, index_start: u32, index_end: u32) -> JsString;
 
-    /// The substr() method returns the part of a string between
+    /// The `substr()` method returns the part of a string between
     /// the start index and a number of characters after it.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
     #[wasm_bindgen(method, js_class = "String")]
     pub fn substr(this: &JsString, start: i32, length: i32) -> JsString;
 
-    /// The toLowerCase() method returns the calling string value
+    /// The `toLowerCase()` method returns the calling string value
     /// converted to lower case.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase
     #[wasm_bindgen(method, js_class = "String", js_name = toLowerCase)]
     pub fn to_lower_case(this: &JsString) -> JsString;
 
-    /// The toString() method returns a string representing the specified object.
+    /// The `toString()` method returns a string representing the specified
+    /// object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toString
     #[wasm_bindgen(method, js_class = "String", js_name = toString)]
     pub fn to_string(this: &JsString) -> JsString;
 
-    /// The toUpperCase() method returns the calling string value
-    /// converted to uppercase (the value will be converted to a
-    /// string if it isn't one).
+    /// The `toUpperCase()` method returns the calling string value converted to
+    /// uppercase (the value will be converted to a string if it isn't one).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase
     #[wasm_bindgen(method, js_class = "String", js_name = toUpperCase)]
     pub fn to_upper_case(this: &JsString) -> JsString;
 
-    /// The trim() method removes whitespace from both ends of a string.
-    /// Whitespace in this context is all the whitespace characters
-    /// (space, tab, no-break space, etc.) and all the line terminator characters (LF, CR, etc.).
+    /// The `trim()` method removes whitespace from both ends of a string.
+    /// Whitespace in this context is all the whitespace characters (space, tab,
+    /// no-break space, etc.) and all the line terminator characters (LF, CR,
+    /// etc.).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim
     #[wasm_bindgen(method, js_class = "String")]
     pub fn trim(this: &JsString) -> JsString;
 
-    /// The trimEnd() method removes whitespace from the end of a string.
-    /// trimRight() is an alias of this method.
+    /// The `trimEnd()` method removes whitespace from the end of a string.
+    /// `trimRight()` is an alias of this method.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimEnd
     #[wasm_bindgen(method, js_class = "String", js_name = trimEnd)]
     pub fn trim_end(this: &JsString) -> JsString;
 
-    /// The trimEnd() method removes whitespace from the end of a string.
-    /// trimRight() is an alias of this method.
+    /// The `trimEnd()` method removes whitespace from the end of a string.
+    /// `trimRight()` is an alias of this method.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimEnd
     #[wasm_bindgen(method, js_class = "String", js_name = trimRight)]
     pub fn trim_right(this: &JsString) -> JsString;
 
-    /// The trimStart() method removes whitespace from the beginning of a string.
-    /// trimLeft() is an alias of this method.
+    /// The `trimStart()` method removes whitespace from the beginning of a
+    /// string.  `trimLeft()` is an alias of this method.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimStart
     #[wasm_bindgen(method, js_class = "String", js_name = trimStart)]
     pub fn trim_start(this: &JsString) -> JsString;
 
-    /// The trimStart() method removes whitespace from the beginning of a string.
-    /// trimLeft() is an alias of this method.
+    /// The `trimStart()` method removes whitespace from the beginning of a
+    /// string.  `trimLeft()` is an alias of this method.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimStart
     #[wasm_bindgen(method, js_class = "String", js_name = trimLeft)]
     pub fn trim_left(this: &JsString) -> JsString;
 
-    /// The valueOf() method returns the primitive value of a String object.
+    /// The `valueOf()` method returns the primitive value of a `String` object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf
     #[wasm_bindgen(method, js_class = "String", js_name = valueOf)]
@@ -1523,75 +1541,88 @@ if_std! {
 extern "C" {
     pub type Symbol;
 
-    /// The Symbol.hasInstance well-known symbol is used to determine
+    /// The `Symbol.hasInstance` well-known symbol is used to determine
     /// if a constructor object recognizes an object as its instance.
-    /// The instanceof operator's behavior can be customized by this symbol.
+    /// The `instanceof` operator's behavior can be customized by this symbol.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = hasInstance)]
     pub fn has_instance() -> Symbol;
 
-    /// The Symbol.isConcatSpreadable well-known symbol is used to configure if an object should be flattened to
-    /// its array elements when using the Array.prototype.concat() method.
+    /// The `Symbol.isConcatSpreadable` well-known symbol is used to configure
+    /// if an object should be flattened to its array elements when using the
+    /// `Array.prototype.concat()` method.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/isConcatSpreadable
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = isConcatSpreadable)]
     pub fn is_concat_spreadable() -> Symbol;
 
-    /// The Symbol.iterator well-known symbol specifies the default iterator for an object.
-    /// Used by for...of.
+    /// The `Symbol.iterator` well-known symbol specifies the default iterator
+    /// for an object.  Used by `for...of`.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator
     #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
     pub fn iterator() -> Symbol;
 
-    /// The Symbol.match well-known symbol specifies the matching of a regular expression against a string.
-    /// This function is called by the String.prototype.match() method.
+    /// The `Symbol.match` well-known symbol specifies the matching of a regular
+    /// expression against a string. This function is called by the
+    /// `String.prototype.match()` method.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/match
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = match)]
     pub fn match_() -> Symbol;
 
-    /// The Symbol.replace well-known symbol specifies the method that replaces matched substrings of a string.
-    /// This function is called by the String.prototype.replace() method.
+    /// The `Symbol.replace` well-known symbol specifies the method that
+    /// replaces matched substrings of a string.  This function is called by the
+    /// `String.prototype.replace()` method.
     ///
-    /// For more information, see RegExp.prototype[@@replace]() and String.prototype.replace().
+    /// For more information, see `RegExp.prototype[@@replace]()` and
+    /// `String.prototype.replace()`.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/replace
     #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
     pub fn replace() -> Symbol;
 
-    /// The Symbol.search well-known symbol specifies the method that returns the index within a string that matches the regular expression.
-    /// This function is called by the String.prototype.search() method.
+    /// The `Symbol.search` well-known symbol specifies the method that returns
+    /// the index within a string that matches the regular expression.  This
+    /// function is called by the `String.prototype.search()` method.
     ///
-    /// For more information, see RegExp.prototype[@@search]() and String.prototype.search().
+    /// For more information, see `RegExp.prototype[@@search]()` and
+    /// `String.prototype.search()`.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/search
     #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
     pub fn search() -> Symbol;
 
-    /// The well-known symbol Symbol.species specifies a function-valued property that the constructor function uses to create derived objects.
+    /// The well-known symbol `Symbol.species` specifies a function-valued
+    /// property that the constructor function uses to create derived objects.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/species
     #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
     pub fn species() -> Symbol;
 
-    /// The Symbol.split well-known symbol specifies the method that splits a string at the indices that match a regular expression.
-    /// This function is called by the String.prototype.split() method.
+    /// The `Symbol.split` well-known symbol specifies the method that splits a
+    /// string at the indices that match a regular expression.  This function is
+    /// called by the `String.prototype.split()` method.
     ///
-    /// For more information, see RegExp.prototype[@@split]() and String.prototype.split().
+    /// For more information, see `RegExp.prototype[@@split]()` and
+    /// `String.prototype.split()`.
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/split
     #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
     pub fn split() -> Symbol;
 
-    /// The Symbol.toPrimitive is a symbol that specifies a function valued property that is called to convert an object to a corresponding primitive value.
+    /// The `Symbol.toPrimitive` is a symbol that specifies a function valued
+    /// property that is called to convert an object to a corresponding
+    /// primitive value.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = toPrimitive)]
     pub fn to_primitive() -> Symbol;
 
-    /// The Symbol.toStringTag well-known symbol is a string valued property that is used in the creation of the default string description of an object.
-    /// It is accessed internally by the Object.prototype.toString() method.
+    /// The `Symbol.toStringTag` well-known symbol is a string valued property
+    /// that is used in the creation of the default string description of an
+    /// object.  It is accessed internally by the `Object.prototype.toString()`
+    /// method.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toString
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = toStringTag)]
