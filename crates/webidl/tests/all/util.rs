@@ -85,14 +85,6 @@ The latest `rustfmt` is required to run the `wasm-bindgen` test suite. Install
     (formatted, stderr)
 }
 
-fn strip_wasm_bindgen_generated(source: String) -> String {
-    let lines: Vec<_> = source
-        .lines()
-        .filter(|l| !l.contains("__WASM_BINDGEN_GENERATED"))
-        .collect();
-    lines.join("\n")
-}
-
 pub fn assert_compile(webidl: &str, expected: &str, expected_file: &str) {
     static INIT_ENV_LOGGER: Once = ONCE_INIT;
     INIT_ENV_LOGGER.call_once(|| {
@@ -103,9 +95,6 @@ pub fn assert_compile(webidl: &str, expected: &str, expected_file: &str) {
 
     let (actual, actual_stderr) = rustfmt(actual);
     let (expected, expected_stderr) = rustfmt(expected);
-
-    let actual = strip_wasm_bindgen_generated(actual);
-    let expected = strip_wasm_bindgen_generated(expected);
 
     if expected == actual {
         return;
@@ -136,7 +125,7 @@ pub fn assert_compile(webidl: &str, expected: &str, expected_file: &str) {
         match d {
             diff::Result::Left(l) => eprintln!("-{}", l),
             diff::Result::Right(r) => eprintln!("+{}", r),
-            diff::Result::Both(b, _) => eprintln!(" {}", b),
+            diff::Result::Both(b, _) => exprintln!(" {}", b),
         }
     }
 
