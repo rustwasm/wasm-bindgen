@@ -167,7 +167,7 @@ $ npm install
 $ npm run serve
 ```
 
-If you open https://localhost:8080 in a browser you should see a `Hello, world!`
+If you open [http://localhost:8080](http://localhost:8080) in a browser you should see a `Hello, world!`
 dialog pop up!
 
 If that was all a bit much, no worries! You can [execute this code
