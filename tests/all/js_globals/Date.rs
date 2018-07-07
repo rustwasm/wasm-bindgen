@@ -371,6 +371,42 @@ fn now() {
 }
 
 #[test]
+fn parse() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::{Date, JsString};
+
+            #[wasm_bindgen]
+            pub fn parse(date: JsString) -> f64 {
+                Date::parse(date)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = wasm.parse('04 Dec 1995 00:12:00 GMT');
+                let unixTimeZero = wasm.parse('01 Jan 1970 00:00:00 GMT');
+
+                assert.equal(date, 818035920000);
+                assert.equal(unixTimeZero, 0);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn to_date_string() {
     project()
         .file(

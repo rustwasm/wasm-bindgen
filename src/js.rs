@@ -881,6 +881,14 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Date)]
     pub fn now() -> f64;
 
+    /// The Date.parse() method parses a string representation of a date, and returns the number of milliseconds
+    /// since January 1, 1970, 00:00:00 UTC or NaN if the string is unrecognized or, in some cases,
+    /// contains illegal date values (e.g. 2015-02-31).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
+    #[wasm_bindgen(static_method_of = Date)]
+    pub fn parse(date: JsString) -> f64;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     ///
