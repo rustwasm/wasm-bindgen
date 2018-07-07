@@ -859,6 +859,13 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getSeconds)]
     pub fn get_seconds(this: &Date) -> u32;
 
+    /// The getTime() method returns the numeric value corresponding to the time for the specified date
+    /// according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
+    #[wasm_bindgen(method, js_name = getTime)]
+    pub fn get_time(this: &Date) -> f64;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
