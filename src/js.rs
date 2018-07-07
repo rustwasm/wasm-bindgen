@@ -846,6 +846,13 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getMinutes)]
     pub fn get_minutes(this: &Date) -> u32;
 
+    /// The getMonth() method returns the month in the specified date according to local time,
+    /// as a zero-based value (where zero indicates the first month of the year).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
+    #[wasm_bindgen(method, js_name = getMonth)]
+    pub fn get_month(this: &Date) -> u32;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
