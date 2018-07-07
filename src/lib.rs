@@ -487,12 +487,14 @@ pub mod __rt {
     pub extern crate std;
 
     #[macro_export]
+    #[doc(hidden)]
     #[cfg(feature = "std")]
     macro_rules! __wbindgen_if_not_std {
         ($($i:item)*) => {};
     }
 
     #[macro_export]
+    #[doc(hidden)]
     #[cfg(not(feature = "std"))]
     macro_rules! __wbindgen_if_not_std {
         ($($i:item)*) => ($($i)*)
