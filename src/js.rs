@@ -828,6 +828,12 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getFullYear)]
     pub fn get_full_year(this: &Date) -> u32;
 
+    /// The getHours() method returns the hour for the specified date, according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getHours
+    #[wasm_bindgen(method, js_name = getHours)]
+    pub fn get_hours(this: &Date) -> u32;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
