@@ -177,6 +177,7 @@ fn is_finite() {
 
             export function test() {
                 assert.equal(wasm.is_finite(42), true);
+                assert.equal(wasm.is_finite(42.1), true);
                 assert.equal(wasm.is_finite('42'), true);
                 assert.equal(wasm.is_finite(NaN), false);
                 assert.equal(wasm.is_finite(Infinity), false);
