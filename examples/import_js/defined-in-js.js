@@ -1,21 +1,21 @@
 export function name() {
-  return 'World';
+    return 'World';
 }
 
 export class MyClass {
-  constructor() {
-    this._number = 42;
-  }
+    constructor() {
+        this._number = 42;
+    }
 
-  get number() {
-    return this._number;
-  }
+    get number() {
+        return this._number;
+    }
 
-  set number(n) {
-    return this._number = n;
-  }
+    set number(n) {
+        return this._number = n;
+    }
 
-  render() {
-    return `My number is: ${this.number}`;
-  }
+    render() {
+        return `My number is: ${this.number}`;
+    }
 }

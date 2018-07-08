@@ -40,7 +40,9 @@ matrix:
       script:
         - cargo test
         # Check JS output from all tests against eslint
-        - ./node_modules/.bin/eslint ./target/generated-tests/*/out*js
+        - npm run run-lint-generated-tests
+        # Check Examples against eslint
+        - npm run run-lint-examples        
       addons:
         firefox: latest
 
