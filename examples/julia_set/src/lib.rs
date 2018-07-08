@@ -28,7 +28,7 @@ extern "C" {
     pub type CanvasRenderingContext2D;
 
     #[wasm_bindgen(method, js_name = putImageData)]
-    pub fn put_image_data(this: &CanvasRenderingContext2D, image_data: &ImageData, _1: i32, p_2: i32);
+    pub fn put_image_data(this: &CanvasRenderingContext2D, image_data: &ImageData, p_1: i32, p_2: i32);
 }
 
 #[wasm_bindgen]
