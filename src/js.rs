@@ -80,6 +80,13 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
     #[wasm_bindgen(catch)]
     pub fn eval(js_source_text: &str) -> Result<JsValue, JsValue>;
+
+    /// The global isFinite() function determines whether the passed value is a finite number.
+    /// If  needed, the parameter is first converted to a number.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite
+    #[wasm_bindgen(js_name = isFinite)]
+    pub fn is_finite(value: &JsValue) -> bool;
 }
 
 // UInt8Array
@@ -746,11 +753,24 @@ extern "C" {
 extern "C" {
     pub type Number;
 
+    /// The Number.isFinite() method determines whether the passed value is a finite number.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
+    #[wasm_bindgen(static_method_of = Number, js_name = isFinite)]
+    pub fn is_finite(value: &JsValue) -> bool;
+
     /// The Number.isInteger() method determines whether the passed value is an integer.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
     #[wasm_bindgen(static_method_of = Number, js_name = isInteger)]
-    pub fn is_integer(object: &Object) -> bool;
+    pub fn is_integer(value: &JsValue) -> bool;
+
+    /// The Number.isSafeInteger() method determines whether the provided value is a number
+    /// that is a safe integer.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
+    #[wasm_bindgen(static_method_of = Number, js_name = isSafeInteger)]
+    pub fn is_safe_integer(value: &JsValue) -> bool;
 
     /// The `Number` JavaScript object is a wrapper object allowing
     /// you to work with numerical values. A `Number` object is
