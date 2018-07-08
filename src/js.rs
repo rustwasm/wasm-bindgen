@@ -80,6 +80,13 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
     #[wasm_bindgen(catch)]
     pub fn eval(js_source_text: &str) -> Result<JsValue, JsValue>;
+
+    /// The global isFinite() function determines whether the passed value is a finite number.
+    /// If  needed, the parameter is first converted to a number.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite
+    #[wasm_bindgen(js_name = isFinite)]
+    pub fn is_finite(value: &JsValue) -> bool;
 }
 
 // UInt8Array

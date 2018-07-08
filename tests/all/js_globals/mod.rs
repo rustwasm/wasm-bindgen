@@ -150,3 +150,38 @@ fn eval() {
         )
         .test();
 }
+
+#[test]
+fn is_finite() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+
+                #[wasm_bindgen]
+                pub fn is_finite(value: &JsValue) -> bool {
+                    js::is_finite(value)
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.is_finite(42), true);
+                assert.equal(wasm.is_finite('42'), true);
+                assert.equal(wasm.is_finite(NaN), false);
+                assert.equal(wasm.is_finite(Infinity), false);
+            }
+        "#,
+        )
+        .test();
+}
