@@ -765,6 +765,13 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Number, js_name = isInteger)]
     pub fn is_integer(value: &JsValue) -> bool;
 
+    /// The Number.isSafeInteger() method determines whether the provided value is a number
+    /// that is a safe integer.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
+    #[wasm_bindgen(static_method_of = Number, js_name = isSafeInteger)]
+    pub fn is_safe_integer(value: &JsValue) -> bool;
+
     /// The `Number` JavaScript object is a wrapper object allowing
     /// you to work with numerical values. A `Number` object is
     /// created using the `Number()` constructor.

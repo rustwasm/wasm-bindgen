@@ -60,6 +60,38 @@ fn is_integer() {
 }
 
 #[test]
+fn is_safe_integer() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_safe_integer(value: &JsValue) -> bool {
+                js::Number::is_safe_integer(value)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.is_safe_integer(42), true);
+                assert.equal(wasm.is_safe_integer(Math.pow(2, 53) - 1), true);
+                assert.equal(wasm.is_safe_integer(Math.pow(2, 53)), false);
+                assert.equal(wasm.is_safe_integer('42'), false);
+                assert.equal(wasm.is_safe_integer(42.1), false);
+                assert.equal(wasm.is_safe_integer(NaN), false);
+                assert.equal(wasm.is_safe_integer(Infinity), false);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file("src/lib.rs", r#"
