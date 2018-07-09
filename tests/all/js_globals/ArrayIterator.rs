@@ -83,7 +83,31 @@ fn entries() {
 #[test]
 fn values() {
     project()
-        .headless(true) // Node.js does not have values()
+        // Node.js does not have values()
+        .headless(true)
+        // Use a custom index.html so we can add a polyfill for Array#values for
+        // older browsers.
+        .file(
+            "index.html",
+            r#"
+                <!DOCTYPE html>
+                <html>
+                    <body>
+                        <div id="error"></div>
+                        <div id="logs"></div>
+                        <div id="status">incomplete</div>
+                        <script>
+                          Array.prototype.values = Array.prototype.values || function *() {
+                            for (let i = 0; i < this.length; i++) {
+                              yield this[i];
+                            }
+                          };
+                        <script>
+                        <script src="bundle.js"></script>
+                    </body>
+                </html>
+            "#,
+        )
         .file(
             "src/lib.rs",
             r#"
