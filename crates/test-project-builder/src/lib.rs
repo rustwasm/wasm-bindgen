@@ -677,7 +677,7 @@ impl Project {
         lazy_static! {
             static ref MUTEX: Mutex<()> = Mutex::new(());
         }
-        let _lock = MUTEX.lock().unwrap();
+        let _lock = MUTEX.lock();
 
         let mut cmd = self.npm();
         cmd.arg("run")
