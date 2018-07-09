@@ -900,6 +900,13 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getUTCDate)]
     pub fn get_utc_date(this: &Date) -> u32;
 
+    /// The getUTCDay() method returns the day of the week in the specified date according to universal time,
+    /// where 0 represents Sunday.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDay
+    #[wasm_bindgen(method, js_name = getUTCDay)]
+    pub fn get_utc_day(this: &Date) -> u32;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
