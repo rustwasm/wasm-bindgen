@@ -684,7 +684,9 @@ impl Project {
         }
         let _lock = {
             let _x = wrap_step("waiting on headless test lock");
-            MUTEX.lock().unwrap()
+            // Don't panic on a poisoned mutex, since we only use it to
+            // serialize servers.
+            MUTEX.lock().unwrap_or_else(|poisoned| poisoned.into_inner())
         };
 
         let mut cmd = self.npm();
