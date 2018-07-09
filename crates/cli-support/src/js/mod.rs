@@ -1501,7 +1501,7 @@ impl<'a> Context<'a> {
                 if (desc) return desc;
                 obj = Object.getPrototypeOf(obj);
               }
-              throw new Error('descriptor not found');
+              throw new Error(`descriptor for id='${id}' not found`);
             }
             ",
         );
