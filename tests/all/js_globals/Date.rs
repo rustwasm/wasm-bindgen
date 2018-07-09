@@ -457,6 +457,42 @@ fn get_utc_full_year() {
 }
 
 #[test]
+fn get_utc_hours() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_hours(this: &Date) -> u32 {
+                this.get_utc_hours()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('December 31, 1975, 23:15:30 GMT+11:00');
+                let date2 = new Date('December 31, 1975, 23:15:30 GMT-11:00');
+
+                assert.equal(wasm.get_utc_hours(date1), 12);
+                assert.equal(wasm.get_utc_hours(date2), 10);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file(
