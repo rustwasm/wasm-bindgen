@@ -29,99 +29,46 @@ DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
 
 matrix:
   include:
-    # Tests pass on nightly
     - rust: nightly
       env: JOB=test-bindgen
       before_install: *INSTALL_NODE_VIA_NVM
       install:
-        # dirties git repository, there doesn't seem to be a way to resolve this other than
-        # to run `npm install` twice or by using `npm ci` (which is currently broken)
         - npm install
       script:
         - cargo test
-        # Check JS output from all tests against eslint
-        - npm run run-lint-generated-tests
-        # Check Examples against eslint
-        - npm run run-lint-examples        
       addons:
         firefox: latest
 
-    # All examples work
     - rust: nightly
-      env: JOB=examples-build
-      install: *INSTALL_NODE_VIA_NVM
-      script:
-        - mkdir node_modules
-        - |
-          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v no_modules`; do
-            (cd examples/$dir &&
-             sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json &&
-             ln -s ../../node_modules . &&
-             ./build.sh) || exit 1;
-          done
-
-    # Tests pass on nightly using yarn
-    - rust: nightly
-      env: JOB=test-yarn-smoke
+      env: JOB=test-bindgen
       before_install: *INSTALL_NODE_VIA_NVM
       install:
-        - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
-        - export PATH=$HOME/.yarn/bin:$PATH
-        - yarn install --freeze-lockfile
-      script: cargo test api::works
-
-    # WebIDL tests pass on nightly
-    - rust: nightly
-      env: JOB=test-webidl
-      before_install: rustup component add rustfmt-preview --toolchain nightly
-      script: cargo test --manifest-path crates/webidl/Cargo.toml
-
-    # Dist linux binary
-    - rust: nightly
-      env: JOB=dist-linux TARGET=x86_64-unknown-linux-musl
-      before_script: rustup target add $TARGET
-      script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
-      addons:
-        apt:
-          packages:
-          - musl-tools
-      <<: *DEPLOY_TO_GITHUB
-
-    # Dist OSX binary
-    - rust: nightly
-      os: osx
-      env: JOB=dist-osx MACOSX_DEPLOYMENT_TARGET=10.7 TARGET=x86_64-apple-darwin
-      script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
-      <<: *DEPLOY_TO_GITHUB
-
-    # CLI builds on stable
-    - rust: stable
-      env: JOB=check-stable-cli
-      script: cargo check --manifest-path crates/cli/Cargo.toml
-    # CLI builds on nightly
-    - rust: nightly
-      env: JOB=check-nightly-cli
-      script: cargo check --manifest-path crates/cli/Cargo.toml
-
-    # Build the guide.
-    - rust: stable
-      env: JOB=guide-build-and-deploy
-      cache:
-        - cargo
-      before_script:
-        - (test -x $HOME/.cargo/bin/cargo-install-update || cargo install cargo-update)
-        - (test -x $HOME/.cargo/bin/mdbook || cargo install --vers "^0.1" mdbook)
-        - cargo install-update -a
+        - npm install
       script:
-        - (cd guide && mdbook build)
-      deploy:
-        provider: pages
-        skip-cleanup: true
-        github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
-        local-dir: guide/book
-        keep-history: false
-        on:
-          branch: master
+        - cargo test -- --test-threads=1
+      addons:
+        firefox: latest
+
+    - rust: nightly
+      env: JOB=test-bindgen
+      before_install: *INSTALL_NODE_VIA_NVM
+      install:
+        - npm install
+      script:
+        - cargo test --release
+      addons:
+        firefox: latest
+
+    - rust: nightly
+      env: JOB=test-bindgen
+      before_install: *INSTALL_NODE_VIA_NVM
+      install:
+        - npm install
+      script:
+        - cargo test --release -- --test-threads=1
+      addons:
+        firefox: latest
+
 
 branches:
   only:
