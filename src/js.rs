@@ -939,6 +939,12 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getUTCMonth)]
     pub fn get_utc_month(this: &Date) -> u32;
 
+    /// The getUTCSeconds() method returns the seconds in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCSeconds
+    #[wasm_bindgen(method, js_name = getUTCSeconds)]
+    pub fn get_utc_seconds(this: &Date) -> u32;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
