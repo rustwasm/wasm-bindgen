@@ -16,6 +16,7 @@ use std::time::{Duration, Instant};
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
 thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
 
+#[derive(Clone)]
 pub struct Project {
     files: Vec<(String, String)>,
     debug: bool,

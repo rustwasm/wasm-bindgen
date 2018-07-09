@@ -82,33 +82,8 @@ fn entries() {
 
 #[test]
 fn values() {
-    project()
-        // Node.js does not have values()
-        .headless(true)
-        // Use a custom index.html so we can add a polyfill for Array#values for
-        // older browsers.
-        .file(
-            "index.html",
-            r#"
-                <!DOCTYPE html>
-                <html>
-                    <body>
-                        <div id="error"></div>
-                        <div id="logs"></div>
-                        <div id="status">incomplete</div>
-                        <script>
-                          Array.prototype.values = Array.prototype.values || function *() {
-                            for (let i = 0; i < this.length; i++) {
-                              yield this[i];
-                            }
-                          };
-                        <script>
-                        <script src="bundle.js"></script>
-                    </body>
-                </html>
-            "#,
-        )
-        .file(
+    let mut project = project();
+    project.file(
             "src/lib.rs",
             r#"
             #![feature(proc_macro, wasm_custom_section)]
@@ -130,6 +105,10 @@ fn values() {
             import * as wasm from "./out";
 
             export function test() {
+                if (typeof Array.prototype.values !== "function") {
+                    return;
+                }
+
                 let numbers = [8, 3, 2];
                 let wasmIterator = wasm.get_values(numbers);
 
@@ -139,6 +118,11 @@ fn values() {
                 assert.ok(wasmIterator.next().done);
             }
         "#,
-        )
-        .test()
+        );
+
+    let mut headless = project.clone();
+    headless.headless(true);
+
+    project.test();
+    headless.test();
 }
