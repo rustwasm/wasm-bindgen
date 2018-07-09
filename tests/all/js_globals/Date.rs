@@ -313,6 +313,326 @@ fn get_time() {
 }
 
 #[test]
+fn get_timezone_offset() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_timezone_offset(this: &Date) -> f64 {
+                this.get_timezone_offset()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('August 19, 1975 23:15:30 GMT+07:00');
+                let date2 = new Date('August 19, 1975 23:15:30 GMT-02:00');
+
+                assert.equal(typeof wasm.get_timezone_offset(date1), "number");
+                assert.equal(wasm.get_timezone_offset(date1), wasm.get_timezone_offset(date2));
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_utc_date() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_date(this: &Date) -> u32 {
+                this.get_utc_date()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('August 19, 1975 23:15:30 GMT+11:00');
+                let date2 = new Date('August 19, 1975 23:15:30 GMT-11:00');
+
+                assert.equal(wasm.get_utc_date(date1), 19);
+                assert.equal(wasm.get_utc_date(date2), 20);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_utc_day() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_day(this: &Date) -> u32 {
+                this.get_utc_day()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('August 19, 1975 23:15:30 GMT+11:00');
+                let date2 = new Date('August 19, 1975 23:15:30 GMT-11:00');
+
+                assert.equal(wasm.get_utc_day(date1), 2);
+                assert.equal(wasm.get_utc_day(date2), 3);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_utc_full_year() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_full_year(this: &Date) -> u32 {
+                this.get_utc_full_year()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('December 31, 1975, 23:15:30 GMT+11:00');
+                let date2 = new Date('December 31, 1975, 23:15:30 GMT-11:00');
+
+                assert.equal(wasm.get_utc_full_year(date1), 1975);
+                assert.equal(wasm.get_utc_full_year(date2), 1976);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_utc_hours() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_hours(this: &Date) -> u32 {
+                this.get_utc_hours()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('December 31, 1975, 23:15:30 GMT+11:00');
+                let date2 = new Date('December 31, 1975, 23:15:30 GMT-11:00');
+
+                assert.equal(wasm.get_utc_hours(date1), 12);
+                assert.equal(wasm.get_utc_hours(date2), 10);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_utc_milliseconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_milliseconds(this: &Date) -> u32 {
+                this.get_utc_milliseconds()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('2018-01-02T03:04:05.678Z');
+
+                assert.equal(wasm.get_utc_milliseconds(date), 678);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_utc_minutes() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_minutes(this: &Date) -> u32 {
+                this.get_utc_minutes()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('1 January 2000 03:15:30 GMT+07:00');
+                let date2 = new Date('1 January 2000 03:15:30 GMT+03:30');
+
+                assert.equal(wasm.get_utc_minutes(date1), 15);
+                assert.equal(wasm.get_utc_minutes(date2), 45);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_utc_month() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_month(this: &Date) -> u32 {
+                this.get_utc_month()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('December 31, 1975, 23:15:30 GMT+11:00');
+                let date2 = new Date('December 31, 1975, 23:15:30 GMT-11:00');
+
+                assert.equal(wasm.get_utc_month(date1), 11);
+                assert.equal(wasm.get_utc_month(date2), 0);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn get_utc_seconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_seconds(this: &Date) -> u32 {
+                this.get_utc_seconds()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('July 20, 1969, 20:18:04 UTC');
+
+                assert.equal(wasm.get_utc_seconds(date), 4);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file(

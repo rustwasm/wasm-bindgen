@@ -886,6 +886,65 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getTime)]
     pub fn get_time(this: &Date) -> f64;
 
+    /// The getTimezoneOffset() method returns the time zone difference, in minutes,
+    /// from current locale (host system settings) to UTC.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTimezoneOffset
+    #[wasm_bindgen(method, js_name = getTimezoneOffset)]
+    pub fn get_timezone_offset(this: &Date) -> f64;
+
+    /// The getUTCDate() method returns the day (date) of the month in the specified date
+    /// according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDate
+    #[wasm_bindgen(method, js_name = getUTCDate)]
+    pub fn get_utc_date(this: &Date) -> u32;
+
+    /// The getUTCDay() method returns the day of the week in the specified date according to universal time,
+    /// where 0 represents Sunday.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDay
+    #[wasm_bindgen(method, js_name = getUTCDay)]
+    pub fn get_utc_day(this: &Date) -> u32;
+
+    /// The getUTCFullYear() method returns the year in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCFullYear
+    #[wasm_bindgen(method, js_name = getUTCFullYear)]
+    pub fn get_utc_full_year(this: &Date) -> u32;
+
+    /// The getUTCHours() method returns the hours in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCHours
+    #[wasm_bindgen(method, js_name = getUTCHours)]
+    pub fn get_utc_hours(this: &Date) -> u32;
+
+    /// The getUTCMilliseconds() method returns the milliseconds in the specified date
+    /// according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMilliseconds
+    #[wasm_bindgen(method, js_name = getUTCMilliseconds)]
+    pub fn get_utc_milliseconds(this: &Date) -> u32;
+
+    /// The getUTCMinutes() method returns the minutes in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMinutes
+    #[wasm_bindgen(method, js_name = getUTCMinutes)]
+    pub fn get_utc_minutes(this: &Date) -> u32;
+
+    /// The getUTCMonth() returns the month of the specified date according to universal time,
+    /// as a zero-based value (where zero indicates the first month of the year).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMonth
+    #[wasm_bindgen(method, js_name = getUTCMonth)]
+    pub fn get_utc_month(this: &Date) -> u32;
+
+    /// The getUTCSeconds() method returns the seconds in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCSeconds
+    #[wasm_bindgen(method, js_name = getUTCSeconds)]
+    pub fn get_utc_seconds(this: &Date) -> u32;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
