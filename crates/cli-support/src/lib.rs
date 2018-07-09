@@ -438,35 +438,23 @@ impl fmt::Display for MyError {
 }
 
 fn reset_indentation(s: &str) -> String {
-    indent_recurse(s.lines(), 0)
-}
+    let mut indent: u32 = 0;
+    let mut dst = String::new();
 
-fn indent_recurse(mut lines: ::std::str::Lines, current_indent: usize) -> String {
-    if let Some(line) = lines.next() {
-        let mut trimmed = line.trim().to_owned();
-        let mut next_indent = current_indent;
-        let mut current_indent = current_indent;
-        if trimmed.ends_with('{') {
-            next_indent += 1;
+    for line in s.lines() {
+        let line = line.trim();
+        if line.starts_with('}') || line.ends_with('}') {
+            indent = indent.saturating_sub(1);
         }
-        if trimmed.starts_with('}') || trimmed.ends_with('}') {
-            if current_indent > 0 {
-                current_indent -= 1;
-            }
-            if next_indent > 0 {
-                next_indent -= 1;
-            }
+        let extra = if line.starts_with(':') || line.starts_with('?') { 1 } else { 0 };
+        for _ in 0..indent + extra {
+            dst.push_str("    ");
         }
-        if trimmed.starts_with('?') || trimmed.starts_with(':') {
-            current_indent += 1;
+        dst.push_str(line);
+        dst.push_str("\n");
+        if line.ends_with('{') {
+            indent += 1;
         }
-        format!(
-            "\n{}{}{}",
-            "    ".repeat(current_indent),
-            &trimmed,
-            &indent_recurse(lines, next_indent)
-        )
-    } else {
-        String::new()
     }
+    return dst
 }
