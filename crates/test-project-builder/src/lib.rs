@@ -423,18 +423,17 @@ impl Project {
             buildrs.push_str(&format!(
                 r#"
                 fs::create_dir_all("{}").unwrap();
+                let bindings = compile_file(Path::new("{}")).expect("should compile OK");
+                println!("generated WebIDL bindings = '''\n{{}}\n'''", bindings);
+
                 File::create(&Path::new(&dest).join("{}"))
                     .unwrap()
-                    .write_all(
-                        compile_file(Path::new("{}"))
-                            .unwrap()
-                            .as_bytes()
-                    )
+                    .write_all(bindings.as_bytes())
                     .unwrap();
                 "#,
                 path.parent().unwrap().to_str().unwrap(),
-                path.to_str().unwrap(),
                 origpath.to_str().unwrap(),
+                path.to_str().unwrap(),
             ));
 
             self.files.push((
