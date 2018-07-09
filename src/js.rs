@@ -907,6 +907,12 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getUTCDay)]
     pub fn get_utc_day(this: &Date) -> u32;
 
+    /// The getUTCFullYear() method returns the year in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCFullYear
+    #[wasm_bindgen(method, js_name = getUTCFullYear)]
+    pub fn get_utc_full_year(this: &Date) -> u32;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
