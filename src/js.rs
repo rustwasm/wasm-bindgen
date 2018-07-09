@@ -339,6 +339,13 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
     #[wasm_bindgen(method)]
     pub fn entries(this: &Array) -> ArrayIterator;
+
+    /// The values() method returns a new Array Iterator object that
+    /// contains the values for each index in the array.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values
+    #[wasm_bindgen(method)]
+    pub fn values(this: &Array) -> ArrayIterator;
 }
 
 // Boolean
