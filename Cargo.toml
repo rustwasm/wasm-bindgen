@@ -40,6 +40,7 @@ members = [
   "crates/cli",
   "crates/typescript",
   "crates/webidl",
+  "crates/web-sys",
   "examples/hello_world",
   "examples/smorgasboard",
   "examples/console_log",

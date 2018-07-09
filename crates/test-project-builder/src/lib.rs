@@ -16,6 +16,7 @@ use std::time::{Duration, Instant};
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
 thread_local!(static IDX: usize = CNT.fetch_add(1, Ordering::SeqCst));
 
+#[derive(Clone)]
 pub struct Project {
     files: Vec<(String, String)>,
     debug: bool,
@@ -423,18 +424,17 @@ impl Project {
             buildrs.push_str(&format!(
                 r#"
                 fs::create_dir_all("{}").unwrap();
+                let bindings = compile_file(Path::new("{}")).expect("should compile OK");
+                println!("generated WebIDL bindings = '''\n{{}}\n'''", bindings);
+
                 File::create(&Path::new(&dest).join("{}"))
                     .unwrap()
-                    .write_all(
-                        compile_file(Path::new("{}"))
-                            .unwrap()
-                            .as_bytes()
-                    )
+                    .write_all(bindings.as_bytes())
                     .unwrap();
                 "#,
                 path.parent().unwrap().to_str().unwrap(),
-                path.to_str().unwrap(),
                 origpath.to_str().unwrap(),
+                path.to_str().unwrap(),
             ));
 
             self.files.push((
@@ -477,8 +477,8 @@ impl Project {
         }
 
         runjs.push_str("
-            function run(test, wasm) {
-                test.test();
+            async function run(test, wasm) {
+                await test.test();
 
                 if (wasm.assertStackEmpty)
                     wasm.assertStackEmpty();
@@ -544,11 +544,13 @@ impl Project {
             assert!(modules.is_empty());
             runjs.push_str("
                 const test = require('./test');
-                try {
-                    run(test, {});
-                } catch (e) {
-                    onerror(e);
-                }
+                (async function () {
+                    try {
+                        await run(test, {});
+                    } catch (e) {
+                        onerror(e);
+                    }
+                }());
             ");
         }
         self.files.push(("run.js".to_string(), runjs));
@@ -560,6 +562,7 @@ impl Project {
         let (root, target_dir) = self.build();
         let mut cmd = Command::new("cargo");
         cmd.arg("build")
+            .arg("-vv")
             .arg("--target")
             .arg("wasm32-unknown-unknown")
             .current_dir(&root)
@@ -638,12 +641,15 @@ impl Project {
 
         // move files from the root into each test, it looks like this may be
         // needed for webpack to work well when invoked concurrently.
-        fs::hard_link("package.json", root.join("package.json")).unwrap();
-        if !Path::new("node_modules").exists() {
+        let mut cwd = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        cwd.pop(); // chop off test-project-builder
+        cwd.pop(); // chop off crates
+        fs::copy(cwd.join("package.json"), root.join("package.json")).unwrap();
+        let modules = cwd.join("node_modules");
+        if !modules.exists() {
             panic!("\n\nfailed to find `node_modules`, have you run `npm install` yet?\n\n");
         }
-        let cwd = env::current_dir().unwrap();
-        symlink_dir(&cwd.join("node_modules"), &root.join("node_modules")).unwrap();
+        symlink_dir(&modules, &root.join("node_modules")).unwrap();
 
         if self.headless {
             return self.test_headless(&root)
@@ -677,7 +683,12 @@ impl Project {
         lazy_static! {
             static ref MUTEX: Mutex<()> = Mutex::new(());
         }
-        let _lock = MUTEX.lock();
+        let _lock = {
+            let _x = wrap_step("waiting on headless test lock");
+            // Don't panic on a poisoned mutex, since we only use it to
+            // serialize servers.
+            MUTEX.lock().unwrap_or_else(|poisoned| poisoned.into_inner())
+        };
 
         let mut cmd = self.npm();
         cmd.arg("run")
@@ -686,19 +697,28 @@ impl Project {
             .arg("--quiet")
             .arg("--watch-stdin")
             .current_dir(&root);
-        let _server = run_in_background(&mut cmd, "webpack-dev-server".into());
+        let mut server = run_in_background(&mut cmd, "webpack-dev-server".into());
 
         // wait for webpack-dev-server to come online and bind its port
-        loop {
-            if TcpStream::connect("127.0.0.1:8080").is_ok() {
-                break;
+        {
+            let _x = wrap_step("waiting for webpack-dev-server");
+
+            loop {
+                if TcpStream::connect("127.0.0.1:8080").is_ok() {
+                    break;
+                }
+                if server.exited() {
+                    panic!("webpack-dev-server exited during headless test initialization")
+                }
+                thread::sleep(Duration::from_millis(100));
             }
-            thread::sleep(Duration::from_millis(100));
         }
 
         let path = env::var_os("PATH").unwrap_or_default();
         let mut path = env::split_paths(&path).collect::<Vec<_>>();
         path.push(root.join("node_modules/geckodriver"));
+
+        let _x = wrap_step("running headless test");
 
         let mut cmd = Command::new("node");
         cmd.args(&self.node_args)
@@ -773,6 +793,12 @@ struct BackgroundChild {
     stdin: Option<ChildStdin>,
     stdout: Option<thread::JoinHandle<io::Result<String>>>,
     stderr: Option<thread::JoinHandle<io::Result<String>>>,
+}
+
+impl BackgroundChild {
+    pub fn exited(&mut self) -> bool {
+        self.child.try_wait().expect("should try_wait OK").is_some()
+    }
 }
 
 impl Drop for BackgroundChild {

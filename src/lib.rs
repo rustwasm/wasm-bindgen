@@ -222,8 +222,17 @@ impl JsValue {
         }
     }
 
-    /// Returns the `String` of this JS value if it's an instance of a
-    /// string and it's valid utf-8.
+    /// Tests whether this JS value is a JS string.
+    pub fn is_string(&self) -> bool {
+        unsafe { __wbindgen_is_string(self.idx) == 1 }
+    }
+
+    /// If this JS value is a string value, this function copies the JS string
+    /// value into wasm linear memory, encoded as UTF-8, and returns it as a
+    /// Rust `String`.
+    ///
+    /// To avoid the copying and re-encoding, consider the `as_js_string()`
+    /// method instead.
     ///
     /// If this JS value is not an instance of a string or if it's not valid
     /// utf-8 then this returns `None`.
@@ -269,6 +278,16 @@ impl JsValue {
     /// Tests whether the type of this JS value is `symbol`
     pub fn is_symbol(&self) -> bool {
         unsafe { __wbindgen_is_symbol(self.idx) == 1 }
+    }
+
+    /// Tests whether `typeof self == "object" && self !== null`.
+    pub fn is_object(&self) -> bool {
+        unsafe { __wbindgen_is_object(self.idx) == 1 }
+    }
+
+    /// Tests whether the type of this JS value is `function`.
+    pub fn is_function(&self) -> bool {
+        unsafe { __wbindgen_is_function(self.idx) == 1 }
     }
 }
 
@@ -342,6 +361,9 @@ externs! {
     fn __wbindgen_boolean_get(idx: u32) -> u32;
     fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_is_symbol(idx: u32) -> u32;
+    fn __wbindgen_is_object(idx: u32) -> u32;
+    fn __wbindgen_is_function(idx: u32) -> u32;
+    fn __wbindgen_is_string(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
     fn __wbindgen_throw(a: *const u8, b: usize) -> !;
 
@@ -367,25 +389,25 @@ impl Clone for JsValue {
 impl fmt::Debug for JsValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if let Some(n) = self.as_f64() {
-            return n.fmt(f)
+            return n.fmt(f);
         }
         #[cfg(feature = "std")]
         {
             if let Some(n) = self.as_string() {
-                return n.fmt(f)
+                return n.fmt(f);
             }
         }
         if let Some(n) = self.as_bool() {
-            return n.fmt(f)
+            return n.fmt(f);
         }
         if self.is_null() {
-            return fmt::Display::fmt("null", f)
+            return fmt::Display::fmt("null", f);
         }
         if self.is_undefined() {
-            return fmt::Display::fmt("undefined", f)
+            return fmt::Display::fmt("undefined", f);
         }
         if self.is_symbol() {
-            return fmt::Display::fmt("Symbol(..)", f)
+            return fmt::Display::fmt("Symbol(..)", f);
         }
         fmt::Display::fmt("[object]", f)
     }

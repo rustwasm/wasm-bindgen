@@ -82,9 +82,8 @@ fn entries() {
 
 #[test]
 fn values() {
-    project()
-        .headless(true) // Node.js does not have values()
-        .file(
+    let mut project = project();
+    project.file(
             "src/lib.rs",
             r#"
             #![feature(proc_macro, wasm_custom_section)]
@@ -106,6 +105,10 @@ fn values() {
             import * as wasm from "./out";
 
             export function test() {
+                if (typeof Array.prototype.values !== "function") {
+                    return;
+                }
+
                 let numbers = [8, 3, 2];
                 let wasmIterator = wasm.get_values(numbers);
 
@@ -115,6 +118,11 @@ fn values() {
                 assert.ok(wasmIterator.next().done);
             }
         "#,
-        )
-        .test()
+        );
+
+    let mut headless = project.clone();
+    headless.headless(true);
+
+    project.test();
+    headless.test();
 }

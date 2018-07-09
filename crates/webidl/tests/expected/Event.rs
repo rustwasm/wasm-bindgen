@@ -56,56 +56,6 @@ impl From<Event> for ::wasm_bindgen::JsValue {
 #[no_mangle]
 #[allow(non_snake_case)]
 #[doc(hidden)]
-pub extern "C" fn __wbindgen_describe___widl_f_new_Event() {
-    use wasm_bindgen::describe::*;
-    inform(FUNCTION);
-    inform(2u32);
-    <&str as WasmDescribe>::describe();
-    <EventInit as WasmDescribe>::describe();
-    inform(1);
-    <Event as WasmDescribe>::describe();
-}
-impl Event {
-    #[allow(bad_style)]
-    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-    pub fn new(type_: &str, event_init_dict: EventInit) -> Event {
-        ::wasm_bindgen::__rt::link_this_library();
-        #[wasm_import_module = "__wbindgen_placeholder__"]
-        extern "C" {
-            fn __widl_f_new_Event(
-                type_: <&str as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
-                event_init_dict: <EventInit as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
-            ) -> <Event as ::wasm_bindgen::convert::FromWasmAbi>::Abi;
-        }
-        unsafe {
-            let _ret = {
-                let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
-                let type_ =
-                    <&str as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(type_, &mut __stack);
-                let event_init_dict = <EventInit as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(
-                    event_init_dict,
-                    &mut __stack,
-                );
-                __widl_f_new_Event(type_, event_init_dict)
-            };
-            <Event as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
-                _ret,
-                &mut ::wasm_bindgen::convert::GlobalStack::new(),
-            )
-        }
-    }
-    #[allow(bad_style, unused_variables)]
-    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub fn new(type_: &str, event_init_dict: EventInit) -> Event {
-        panic!(
-            "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
-        );
-    }
-}
-#[no_mangle]
-#[allow(non_snake_case)]
-#[doc(hidden)]
 pub extern "C" fn __wbindgen_describe___widl_f_event_phase_Event() {
     use wasm_bindgen::describe::*;
     inform(FUNCTION);
@@ -490,50 +440,6 @@ impl Event {
 #[no_mangle]
 #[allow(non_snake_case)]
 #[doc(hidden)]
-pub extern "C" fn __wbindgen_describe___widl_f_time_stamp_Event() {
-    use wasm_bindgen::describe::*;
-    inform(FUNCTION);
-    inform(1u32);
-    <&Event as WasmDescribe>::describe();
-    inform(1);
-    <DOMHighResTimeStamp as WasmDescribe>::describe();
-}
-impl Event {
-    #[allow(bad_style)]
-    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-    pub fn time_stamp(&self) -> DOMHighResTimeStamp {
-        ::wasm_bindgen::__rt::link_this_library();
-        #[wasm_import_module = "__wbindgen_placeholder__"]
-        extern "C" {
-            fn __widl_f_time_stamp_Event(
-                self_: <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::Abi,
-            ) -> <DOMHighResTimeStamp as ::wasm_bindgen::convert::FromWasmAbi>::Abi;
-        }
-        unsafe {
-            let _ret = {
-                let mut __stack = ::wasm_bindgen::convert::GlobalStack::new();
-                let self_ =
-                    <&Event as ::wasm_bindgen::convert::IntoWasmAbi>::into_abi(self, &mut __stack);
-                __widl_f_time_stamp_Event(self_)
-            };
-            <DOMHighResTimeStamp as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
-                _ret,
-                &mut ::wasm_bindgen::convert::GlobalStack::new(),
-            )
-        }
-    }
-    #[allow(bad_style, unused_variables)]
-    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub fn time_stamp(&self) -> DOMHighResTimeStamp {
-        panic!(
-            "cannot call wasm-bindgen imported functions on \
-             non-wasm targets"
-        );
-    }
-}
-#[no_mangle]
-#[allow(non_snake_case)]
-#[doc(hidden)]
 pub extern "C" fn __wbindgen_describe___widl_f_init_event_Event() {
     use wasm_bindgen::describe::*;
     inform(FUNCTION);
@@ -675,10 +581,6 @@ impl Event {
         );
     }
 }
-#[allow(non_camel_case_types)]
-pub type DOMHighResTimeStamp = f64;
-#[allow(non_camel_case_types)]
-pub type EventInit = bool;
 #[allow(non_upper_case_globals)]
 #[wasm_custom_section = "__wasm_bindgen_unstable"]
-const __WASM_BINDGEN_GENERATED_wasm_bindgen_webidl_0_2_11_0 : [ u8 ; 4023usize ] = * b"\xB3\x0F\0\0{\"exports\":[],\"enums\":[],\"imports\":[{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"type\"}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_new_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Constructor\"},\"structural\":false,\"function\":{\"name\":\"new\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_event_phase_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"eventPhase\"}}}},\"structural\":false,\"function\":{\"name\":\"eventPhase\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_stop_propagation_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"stopPropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_stop_immediate_propagation_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"stopImmediatePropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_bubbles_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"bubbles\"}}}},\"structural\":false,\"function\":{\"name\":\"bubbles\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_cancelable_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"cancelable\"}}}},\"structural\":false,\"function\":{\"name\":\"cancelable\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_prevent_default_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"preventDefault\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_default_prevented_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"defaultPrevented\"}}}},\"structural\":false,\"function\":{\"name\":\"defaultPrevented\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_composed_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"composed\"}}}},\"structural\":false,\"function\":{\"name\":\"composed\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_is_trusted_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"isTrusted\"}}}},\"structural\":false,\"function\":{\"name\":\"isTrusted\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_time_stamp_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"timeStamp\"}}}},\"structural\":false,\"function\":{\"name\":\"timeStamp\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_init_event_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"initEvent\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_cancel_bubble_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"cancelBubble\"}}}},\"structural\":false,\"function\":{\"name\":\"cancelBubble\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_set_cancel_bubble_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Setter\":\"cancelBubble\"}}}},\"structural\":false,\"function\":{\"name\":\"set_cancelBubble\"}}}],\"structs\":[],\"version\":\"0.2.11 (bfec9e640)\",\"schema_version\":\"6\"}" ;
+const __WASM_BINDGEN_GENERATED_wasm_bindgen_webidl_0_2_11_0 : [ u8 ; 3534usize ] = * b"\xCA\r\0\0{\"exports\":[],\"enums\":[],\"imports\":[{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"type\"}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_event_phase_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"eventPhase\"}}}},\"structural\":false,\"function\":{\"name\":\"eventPhase\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_stop_propagation_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"stopPropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_stop_immediate_propagation_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"stopImmediatePropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_bubbles_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"bubbles\"}}}},\"structural\":false,\"function\":{\"name\":\"bubbles\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_cancelable_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"cancelable\"}}}},\"structural\":false,\"function\":{\"name\":\"cancelable\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_prevent_default_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"preventDefault\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_default_prevented_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"defaultPrevented\"}}}},\"structural\":false,\"function\":{\"name\":\"defaultPrevented\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_composed_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"composed\"}}}},\"structural\":false,\"function\":{\"name\":\"composed\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_is_trusted_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"isTrusted\"}}}},\"structural\":false,\"function\":{\"name\":\"isTrusted\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_init_event_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"initEvent\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_cancel_bubble_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"cancelBubble\"}}}},\"structural\":false,\"function\":{\"name\":\"cancelBubble\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_set_cancel_bubble_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Setter\":\"cancelBubble\"}}}},\"structural\":false,\"function\":{\"name\":\"set_cancelBubble\"}}}],\"structs\":[],\"version\":\"0.2.11 (fab125d6e)\",\"schema_version\":\"6\"}" ;

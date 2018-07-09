@@ -18,6 +18,9 @@
 
 use wasm_bindgen_macro::*;
 use JsValue;
+
+use core::mem;
+
 if_std! {
     use std::prelude::v1::*;
 }
@@ -83,7 +86,7 @@ extern "C" {
 
     /// The global isFinite() function determines whether the passed value is a finite number.
     /// If  needed, the parameter is first converted to a number.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite
     #[wasm_bindgen(js_name = isFinite)]
     pub fn is_finite(value: &JsValue) -> bool;
@@ -443,6 +446,21 @@ extern "C" {
     pub fn to_string(this: &Function) -> JsString;
 }
 
+impl JsValue {
+    /// Returns the `Function` value of this JS value if it's an instance of a
+    /// function.
+    ///
+    /// If this JS value is not an instance of a function then this returns
+    /// `None`.
+    pub fn as_function(&self) -> Option<&Function> {
+        if self.is_function() {
+            Some(unsafe { mem::transmute(self) })
+        } else {
+            None
+        }
+    }
+}
+
 // Generator
 #[wasm_bindgen]
 extern {
@@ -775,7 +793,7 @@ extern "C" {
     pub type Number;
 
     /// The Number.isFinite() method determines whether the passed value is a finite number.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
     #[wasm_bindgen(static_method_of = Number, js_name = isFinite)]
     pub fn is_finite(value: &JsValue) -> bool;
@@ -788,7 +806,7 @@ extern "C" {
 
     /// The Number.isSafeInteger() method determines whether the provided value is a number
     /// that is a safe integer.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
     #[wasm_bindgen(static_method_of = Number, js_name = isSafeInteger)]
     pub fn is_safe_integer(value: &JsValue) -> bool;
@@ -801,14 +819,14 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(value: JsValue) -> Number;
 
-    /// The Number.parseInt() method parses a string argument and returns an 
+    /// The Number.parseInt() method parses a string argument and returns an
     /// integer of the specified radix or base.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseInt
     #[wasm_bindgen(static_method_of = Number, js_name = parseInt)]
     pub fn parse_int(text: &str, radix: u8) -> Number;
 
-    /// The Number.parseFloat() method parses a string argument and returns a 
+    /// The Number.parseFloat() method parses a string argument and returns a
     /// floating point number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseFloat
@@ -1211,6 +1229,21 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
     #[wasm_bindgen(static_method_of = Object)]
     pub fn values(object: &Object) -> Array;
+}
+
+impl JsValue {
+    /// Returns the `Object` value of this JS value if it's an instance of an
+    /// object.
+    ///
+    /// If this JS value is not an instance of an object then this returns
+    /// `None`.
+    pub fn as_object(&self) -> Option<&Object> {
+        if self.is_object() {
+            Some(unsafe { mem::transmute(self) })
+        } else {
+            None
+        }
+    }
 }
 
 // Proxy
@@ -1666,6 +1699,21 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf
     #[wasm_bindgen(method, js_class = "String", js_name = valueOf)]
     pub fn value_of(this: &JsString) -> JsString;
+}
+
+impl JsValue {
+    /// Returns the `JsString` value of this JS value if it's an instance of a
+    /// string.
+    ///
+    /// If this JS value is not an instance of a string then this returns
+    /// `None`.
+    pub fn as_js_string(&self) -> Option<&JsString> {
+        if self.is_string() {
+            Some(unsafe { mem::transmute(self) })
+        } else {
+            None
+        }
+    }
 }
 
 impl<'a> From<&'a str> for JsString {

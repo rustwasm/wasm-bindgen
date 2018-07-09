@@ -11,4 +11,5 @@ extern crate wasm_bindgen_shared as shared;
 
 pub mod ast;
 mod codegen;
+pub mod defined;
 pub mod util;

@@ -368,3 +368,94 @@ fn no_std_class() {
         )
         .test();
 }
+
+#[test]
+fn jsvalue_typeof() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+
+                #[wasm_bindgen]
+                pub fn is_object(val: &JsValue) -> bool {
+                    val.is_object()
+                }
+
+                #[wasm_bindgen]
+                pub fn is_function(val: &JsValue) -> bool {
+                    val.is_function()
+                }
+
+                #[wasm_bindgen]
+                pub fn is_string(val: &JsValue) -> bool {
+                    val.is_string()
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    assert.ok(wasm.is_object({}));
+                    assert.ok(!wasm.is_object(42));
+                    assert.ok(wasm.is_function(function() {}));
+                    assert.ok(!wasm.is_function(42));
+                    assert.ok(wasm.is_string("2b or !2b"));
+                    assert.ok(!wasm.is_string(42));
+                }
+            "#,
+        )
+        .test();
+}
+
+#[test]
+fn binding_to_unimplemented_apis_doesnt_break_everything() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js::*;
+
+                #[wasm_bindgen]
+                extern {
+                    #[derive(Clone)]
+                    type Array;
+
+                    #[wasm_bindgen(constructor)]
+                    fn new() -> Array;
+
+                    #[wasm_bindgen(method)]
+                    fn standardized_method_this_js_runtime_doesnt_implement_yet(this: &Array);
+                }
+
+                #[wasm_bindgen]
+                pub fn test() {
+                    let array = Array::new();
+
+                    let array_obj: JsValue = array.clone().into();
+                    let array_obj = array_obj.as_object().unwrap();
+
+                    let array_proto = Reflect::get_prototype_of(&array_obj);
+
+                    let unimplemented = Reflect::get(
+                        &array_proto,
+                        &JsValue::from_str("standardized_method_this_js_runtime_doesnt_implement_yet")
+                    );
+
+                    if unimplemented.is_function() {
+                        array.standardized_method_this_js_runtime_doesnt_implement_yet();
+                    }
+                }
+            "#,
+        )
+        .test();
+}

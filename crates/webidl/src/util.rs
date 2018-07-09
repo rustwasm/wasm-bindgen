@@ -151,6 +151,7 @@ pub fn create_function<'a, I>(
     arguments: I,
     ret: Option<syn::Type>,
     kind: backend::ast::ImportFunctionKind,
+    structural: bool,
 ) -> Option<backend::ast::ImportFunction>
 where
     I: Iterator<Item = (&'a str, &'a webidl::ast::Type, bool)>,
@@ -184,7 +185,7 @@ where
         rust_name,
         js_ret,
         catch: false,
-        structural: false,
+        structural,
         kind,
         shim,
     })
@@ -233,6 +234,7 @@ pub fn create_basic_method(
             .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
         ret,
         kind,
+        false,
     )
 }
 
@@ -241,6 +243,7 @@ pub fn create_getter(
     ty: &webidl::ast::Type,
     self_name: &str,
     is_static: bool,
+    is_structural: bool,
 ) -> Option<backend::ast::ImportFunction> {
     let ret = match webidl_ty_to_syn_ty(ty, TypePosition::Return) {
         None => {
@@ -259,7 +262,7 @@ pub fn create_getter(
         }),
     };
 
-    create_function(name, iter::empty(), ret, kind)
+    create_function(name, iter::empty(), ret, kind, is_structural)
 }
 
 pub fn create_setter(
@@ -267,6 +270,7 @@ pub fn create_setter(
     ty: &webidl::ast::Type,
     self_name: &str,
     is_static: bool,
+    is_structural: bool,
 ) -> Option<backend::ast::ImportFunction> {
     let kind = backend::ast::ImportFunctionKind::Method {
         class: self_name.to_string(),
@@ -282,6 +286,7 @@ pub fn create_setter(
         iter::once((name, ty, false)),
         None,
         kind,
+        is_structural,
     )
 }
 
@@ -289,29 +294,24 @@ pub fn create_setter(
 pub fn is_chrome_only(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
     ext_attrs.iter().any(|external_attribute| {
         return match &**external_attribute {
-            ExtendedAttribute::ArgumentList(al) => {
-                println!("ArgumentList");
-                al.name == "ChromeOnly"
-            }
-            ExtendedAttribute::Identifier(i) => {
-                println!("Identifier");
-                i.lhs == "ChromeOnly"
-            }
-            ExtendedAttribute::IdentifierList(il) => {
-                println!("IdentifierList");
-                il.lhs == "ChromeOnly"
-            }
-            ExtendedAttribute::NamedArgumentList(nal) => {
-                println!("NamedArgumentList");
-                nal.lhs_name == "ChromeOnly"
-            }
+            ExtendedAttribute::ArgumentList(al) => al.name == "ChromeOnly",
+            ExtendedAttribute::Identifier(i) => i.lhs == "ChromeOnly",
+            ExtendedAttribute::IdentifierList(il) => il.lhs == "ChromeOnly",
+            ExtendedAttribute::NamedArgumentList(nal) => nal.lhs_name == "ChromeOnly",
             ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => {
                 name == "ChromeOnly"
             }
-            ExtendedAttribute::NoArguments(_na) => {
-                println!("NoArguments");
-                false
-            }
+            ExtendedAttribute::NoArguments(_na) => false,
         };
+    })
+}
+
+pub fn is_structural(attrs: &[Box<ExtendedAttribute>]) -> bool {
+    attrs.iter().any(|attr| {
+        if let ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(ref name)) = **attr {
+            name == "Unforgeable"
+        } else {
+            false
+        }
     })
 }

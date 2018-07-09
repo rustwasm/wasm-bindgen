@@ -284,6 +284,40 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_is_object", &|me| {
+            me.expose_get_object();
+            Ok(String::from(
+                "
+                function(i) {
+                    const val = getObject(i);
+                    return typeof(val) === 'object' && val !== null ? 1 : 0;
+                }
+                ",
+            ))
+        })?;
+
+        self.bind("__wbindgen_is_function", &|me| {
+            me.expose_get_object();
+            Ok(String::from(
+                "
+                function(i) {
+                    return typeof(getObject(i)) === 'function' ? 1 : 0;
+                }
+                ",
+            ))
+        })?;
+
+        self.bind("__wbindgen_is_string", &|me| {
+            me.expose_get_object();
+            Ok(String::from(
+                "
+                function(i) {
+                    return typeof(getObject(i)) === 'string' ? 1 : 0;
+                }
+                ",
+            ))
+        })?;
+
         self.bind("__wbindgen_string_get", &|me| {
             me.expose_pass_string_to_wasm()?;
             me.expose_get_object();
@@ -1501,7 +1535,7 @@ impl<'a> Context<'a> {
                 if (desc) return desc;
                 obj = Object.getPrototypeOf(obj);
               }
-              throw new Error('descriptor not found');
+              throw new Error(`descriptor for id='${id}' not found`);
             }
             ",
         );
@@ -1866,11 +1900,24 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             }
                         };
 
+                        let fallback = if import.structural {
+                            "".to_string()
+                        } else {
+                            format!(
+                                " || function() {{
+                                    throw new Error(`wasm-bindgen: {} does not exist`);
+                                }}",
+                                target
+                            )
+                        };
+
                         self.cx.global(&format!(
                             "
-                            const {}_target = {};
+                            const {}_target = {} {} ;
                             ",
-                            import.shim, target
+                            import.shim,
+                            target,
+                            fallback
                         ));
                         format!(
                             "{}_target{}",

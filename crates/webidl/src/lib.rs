@@ -20,10 +20,13 @@ extern crate webidl;
 
 mod util;
 
+use std::collections::BTreeSet;
 use std::fs;
 use std::io::{self, Read};
+use std::iter::FromIterator;
 use std::path::Path;
 
+use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::ResultExt;
 use quote::ToTokens;
@@ -37,7 +40,7 @@ use util::{
 pub type Result<T> = ::std::result::Result<T, failure::Error>;
 
 /// Parse the WebIDL at the given path into a wasm-bindgen AST.
-pub fn parse_file(webidl_path: &Path) -> Result<backend::ast::Program> {
+fn parse_file(webidl_path: &Path) -> Result<backend::ast::Program> {
     let file = fs::File::open(webidl_path).context("opening WebIDL file")?;
     let mut file = io::BufReader::new(file);
     let mut source = String::new();
@@ -47,7 +50,7 @@ pub fn parse_file(webidl_path: &Path) -> Result<backend::ast::Program> {
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
-pub fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
+fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
     let definitions = webidl::parse_string(webidl_source).context("parsing WebIDL source text")?;
 
     let mut program = backend::ast::Program::default();
@@ -60,17 +63,29 @@ pub fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
 pub fn compile_file(webidl_path: &Path) -> Result<String> {
     let ast = parse_file(webidl_path)?;
-    Ok(compile_ast(&ast))
+    Ok(compile_ast(ast))
 }
 
 /// Compile the given WebIDL source text into Rust source text containing
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
 pub fn compile(webidl_source: &str) -> Result<String> {
     let ast = parse(webidl_source)?;
-    Ok(compile_ast(&ast))
+    Ok(compile_ast(ast))
 }
 
-fn compile_ast(ast: &backend::ast::Program) -> String {
+fn compile_ast(mut ast: backend::ast::Program) -> String {
+    let mut defined = BTreeSet::from_iter(
+        vec![
+            "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
+            "usize", "isize", "f32", "f64",
+        ].into_iter()
+            .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
+    );
+    ast.imported_type_definitions(&mut |id| {
+        defined.insert(id.clone());
+    });
+    ast.remove_undefined_imports(&|id| defined.contains(id));
+
     let mut tokens = proc_macro2::TokenStream::new();
     ast.to_tokens(&mut tokens);
     tokens.to_string()
@@ -207,6 +222,7 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                     .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
                 Some(self_ty),
                 kind,
+                false,
             ).map(|function| {
                 program.imports.push(backend::ast::Import {
                     module: None,
@@ -305,12 +321,14 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
             return Ok(());
         }
 
-        create_getter(&self.name, &self.type_, self_name, false)
+        let is_structural = util::is_structural(&self.extended_attributes);
+
+        create_getter(&self.name, &self.type_, self_name, false, is_structural)
             .map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(&self.name, &self.type_, self_name, false)
+            create_setter(&self.name, &self.type_, self_name, false, is_structural)
                 .map(wrap_import_function)
                 .map(|import| program.imports.push(import));
         }
@@ -325,12 +343,14 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
             return Ok(());
         }
 
-        create_getter(&self.name, &self.type_, self_name, true)
+        let is_structural = util::is_structural(&self.extended_attributes);
+
+        create_getter(&self.name, &self.type_, self_name, true, is_structural)
             .map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(&self.name, &self.type_, self_name, true)
+            create_setter(&self.name, &self.type_, self_name, true, is_structural)
                 .map(wrap_import_function)
                 .map(|import| program.imports.push(import));
         }
