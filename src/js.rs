@@ -87,6 +87,20 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite
     #[wasm_bindgen(js_name = isFinite)]
     pub fn is_finite(value: &JsValue) -> bool;
+
+    /// The `parseInt()` function parses a string argument and returns an integer
+    /// of the specified radix (the base in mathematical numeral systems), or NaN on error.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+    #[wasm_bindgen(js_name = parseInt)]
+    pub fn parse_int(text: &str, radix: u8) -> f64;
+
+    /// The parseFloat() function parses an argument and returns a floating point number,
+    /// or NaN on error.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
+    #[wasm_bindgen(js_name = parseFloat)]
+    pub fn parse_float(text: &str) -> f64;
 }
 
 // UInt8Array
@@ -779,6 +793,20 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
     #[wasm_bindgen(constructor)]
     pub fn new(value: JsValue) -> Number;
+
+    /// The Number.parseInt() method parses a string argument and returns an 
+    /// integer of the specified radix or base.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseInt
+    #[wasm_bindgen(static_method_of = Number, js_name = parseInt)]
+    pub fn parse_int(text: &str, radix: u8) -> Number;
+
+    /// The Number.parseFloat() method parses a string argument and returns a 
+    /// floating point number.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseFloat
+    #[wasm_bindgen(static_method_of = Number, js_name = parseFloat)]
+    pub fn parse_float(text: &str) -> Number;
 
     /// The toLocaleString() method returns a string with a language sensitive
     /// representation of this number.

@@ -186,3 +186,34 @@ fn is_finite() {
         )
         .test();
 }
+
+#[test]
+fn parse_int_float() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                let i = js::parse_int("42", 10);
+                assert_eq!(i as i64, 42);
+
+                let i = js::parse_int("42", 16);
+                assert_eq!(i as i64, 66); // 0x42 == 66
+
+                let i = js::parse_int("invalid int", 10);
+                assert!(i.is_nan());
+
+                let f = js::parse_float("123456.789");
+                assert_eq!(f, 123456.789);
+
+                let f = js::parse_float("invalid float");
+                assert!(f.is_nan());
+            }
+        "#)
+        .test();
+}
