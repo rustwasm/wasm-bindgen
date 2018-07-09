@@ -324,3 +324,49 @@ fn one_method_using_an_undefined_import_doesnt_break_all_other_methods() {
         )
         .test();
 }
+
+#[test]
+fn unforgeable_is_structural() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+                [Constructor()]
+                interface Foo {
+                    [Unforgeable] readonly attribute short uno;
+                                  readonly attribute short dos;
+                };
+            "#,
+        )
+        .file(
+            "foo.js",
+            r#"
+                export class Foo {
+                    constructor() {
+                        this.uno = 1;
+                    }
+                    get dos() {
+                        return 2;
+                    }
+                }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+
+                pub mod foo;
+
+                #[wasm_bindgen]
+                pub fn test() {
+                    let f = foo::Foo::new();
+                    assert_eq!(f.uno(), 1);
+                    assert_eq!(f.dos(), 2);
+                }
+            "#,
+        )
+        .test();
+}

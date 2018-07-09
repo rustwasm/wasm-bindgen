@@ -222,6 +222,7 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                     .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
                 Some(self_ty),
                 kind,
+                false,
             ).map(|function| {
                 program.imports.push(backend::ast::Import {
                     module: None,
@@ -320,12 +321,14 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
             return Ok(());
         }
 
-        create_getter(&self.name, &self.type_, self_name, false)
+        let is_structural = util::is_structural(&self.extended_attributes);
+
+        create_getter(&self.name, &self.type_, self_name, false, is_structural)
             .map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(&self.name, &self.type_, self_name, false)
+            create_setter(&self.name, &self.type_, self_name, false, is_structural)
                 .map(wrap_import_function)
                 .map(|import| program.imports.push(import));
         }
@@ -340,12 +343,14 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
             return Ok(());
         }
 
-        create_getter(&self.name, &self.type_, self_name, true)
+        let is_structural = util::is_structural(&self.extended_attributes);
+
+        create_getter(&self.name, &self.type_, self_name, true, is_structural)
             .map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(&self.name, &self.type_, self_name, true)
+            create_setter(&self.name, &self.type_, self_name, true, is_structural)
                 .map(wrap_import_function)
                 .map(|import| program.imports.push(import));
         }
