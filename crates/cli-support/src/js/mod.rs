@@ -1900,15 +1900,24 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             }
                         };
 
+                        let fallback = if import.structural {
+                            "".to_string()
+                        } else {
+                            format!(
+                                " || function() {{
+                                    throw new Error(`wasm-bindgen: {} does not exist`);
+                                }}",
+                                target
+                            )
+                        };
+
                         self.cx.global(&format!(
                             "
-                            const {}_target = {} || function() {{
-                                throw new Error(`wasm-bindgen: {} does not exist`);
-                            }};
+                            const {}_target = {} {} ;
                             ",
                             import.shim,
                             target,
-                            target
+                            fallback
                         ));
                         format!(
                             "{}_target{}",
