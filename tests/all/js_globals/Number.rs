@@ -141,7 +141,7 @@ fn parse_int_float() {
         "#,
         )
         .file(
-            "test.ts", r#"
+            "test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 

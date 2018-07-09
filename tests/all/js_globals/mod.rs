@@ -197,26 +197,22 @@ fn parse_int_float() {
             use wasm_bindgen::prelude::*;
             use wasm_bindgen::js;
 
-            fn is_nan(value: JsValue) -> bool {
-                value.as_f64().map_or(false, |f| f.is_nan())
-            }
-
             #[wasm_bindgen]
             pub fn test() {
                 let i = js::parse_int("42", 10);
-                assert_eq!(i.as_f64(), Some(42.0));
+                assert_eq!(i as i64, 42);
 
                 let i = js::parse_int("42", 16);
-                assert_eq!(i.as_f64(), Some(66.0)); // 0x42 == 66
+                assert_eq!(i as i64, 66); // 0x42 == 66
 
                 let i = js::parse_int("invalid int", 10);
-                assert!(is_nan(i));
+                assert!(i.is_nan());
 
                 let f = js::parse_float("123456.789");
-                assert_eq!(f.as_f64(), Some(123456.789));
+                assert_eq!(f, 123456.789);
 
                 let f = js::parse_float("invalid float");
-                assert!(is_nan(f));
+                assert!(f.is_nan());
             }
         "#)
         .test();
