@@ -368,3 +368,41 @@ fn no_std_class() {
         )
         .test();
 }
+
+#[test]
+fn jsvalue_typeof() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+
+                #[wasm_bindgen]
+                pub fn is_object(val: &JsValue) -> bool {
+                    val.is_object()
+                }
+
+                #[wasm_bindgen]
+                pub fn is_function(val: &JsValue) -> bool {
+                    val.is_function()
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    assert.ok(wasm.is_object({}));
+                    assert.ok(!wasm.is_object(42));
+                    assert.ok(wasm.is_function(function() {}));
+                    assert.ok(!wasm.is_function(42));
+                }
+            "#,
+        )
+        .test();
+}

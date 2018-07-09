@@ -270,6 +270,16 @@ impl JsValue {
     pub fn is_symbol(&self) -> bool {
         unsafe { __wbindgen_is_symbol(self.idx) == 1 }
     }
+
+    /// Tests whether `typeof self == "object" && self !== null`.
+    pub fn is_object(&self) -> bool {
+        unsafe { __wbindgen_is_object(self.idx) == 1 }
+    }
+
+    /// Tests whether the type of this JS value is `function`.
+    pub fn is_function(&self) -> bool {
+        unsafe { __wbindgen_is_function(self.idx) == 1 }
+    }
 }
 
 impl PartialEq for JsValue {
@@ -342,6 +352,8 @@ externs! {
     fn __wbindgen_boolean_get(idx: u32) -> u32;
     fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_is_symbol(idx: u32) -> u32;
+    fn __wbindgen_is_object(idx: u32) -> u32;
+    fn __wbindgen_is_function(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
     fn __wbindgen_throw(a: *const u8, b: usize) -> !;
 

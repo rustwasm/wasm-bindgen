@@ -284,6 +284,29 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_is_object", &|me| {
+            me.expose_get_object();
+            Ok(String::from(
+                "
+                function(i) {
+                    const val = getObject(i);
+                    return typeof(val) === 'object' && val !== null ? 1 : 0;
+                }
+                ",
+            ))
+        })?;
+
+        self.bind("__wbindgen_is_function", &|me| {
+            me.expose_get_object();
+            Ok(String::from(
+                "
+                function(i) {
+                    return typeof(getObject(i)) === 'function' ? 1 : 0;
+                }
+                ",
+            ))
+        })?;
+
         self.bind("__wbindgen_string_get", &|me| {
             me.expose_pass_string_to_wasm()?;
             me.expose_get_object();

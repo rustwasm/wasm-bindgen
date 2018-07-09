@@ -443,6 +443,16 @@ extern "C" {
     pub fn to_string(this: &Function) -> JsString;
 }
 
+impl JsValue {
+    pub fn as_function(&self) -> Option<Function> {
+        if self.is_function() {
+            Some(Function { obj: self.clone() })
+        } else {
+            None
+        }
+    }
+}
+
 // Generator
 #[wasm_bindgen]
 extern {
@@ -1211,6 +1221,16 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
     #[wasm_bindgen(static_method_of = Object)]
     pub fn values(object: &Object) -> Array;
+}
+
+impl JsValue {
+    pub fn as_object(&self) -> Option<Object> {
+        if self.is_object() {
+            Some(Object { obj: self.clone() })
+        } else {
+            None
+        }
+    }
 }
 
 // Proxy
