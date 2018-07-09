@@ -893,6 +893,13 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getTimezoneOffset)]
     pub fn get_timezone_offset(this: &Date) -> f64;
 
+    /// The getUTCDate() method returns the day (date) of the month in the specified date
+    /// according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDate
+    #[wasm_bindgen(method, js_name = getUTCDate)]
+    pub fn get_utc_date(this: &Date) -> u32;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
