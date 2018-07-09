@@ -527,6 +527,42 @@ fn get_utc_milliseconds() {
 }
 
 #[test]
+fn get_utc_minutes() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_minutes(this: &Date) -> u32 {
+                this.get_utc_minutes()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('1 January 2000 03:15:30 GMT+07:00');
+                let date2 = new Date('1 January 2000 03:15:30 GMT+03:30');
+
+                assert.equal(wasm.get_utc_minutes(date1), 15);
+                assert.equal(wasm.get_utc_minutes(date2), 45);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file(
