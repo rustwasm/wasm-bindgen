@@ -306,7 +306,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             // Insert an assertion to the type of the returned value as
             // otherwise this will cause memory unsafety on the Rust side of
             // things.
-            self.ret_expr = format!("\
+            self.ret_expr = format!(
+                "\
                 const val = JS;
                 if (!(val instanceof {0})) {{
                     throw new Error('expected value of type {0}');
@@ -314,8 +315,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 const ret = val.ptr;
                 val.ptr = 0;
                 return ret;\
-            ", class);
-            return Ok(())
+            ",
+                class
+            );
+            return Ok(());
         }
 
         self.ret_expr = match *ty {

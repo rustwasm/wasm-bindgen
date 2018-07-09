@@ -71,13 +71,15 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.prelude(
                 "if (this.ptr === 0) {
                     throw new Error('Attempt to use a moved value');
-                }"
+                }",
             );
             if consumed {
-                self.prelude("\
-                    const ptr = this.ptr;\n\
-                    this.ptr = 0;\n\
-                ");
+                self.prelude(
+                    "\
+                     const ptr = this.ptr;\n\
+                     this.ptr = 0;\n\
+                     ",
+                );
                 self.rust_arguments.insert(0, "ptr".to_string());
             } else {
                 self.rust_arguments.insert(0, "this.ptr".to_string());

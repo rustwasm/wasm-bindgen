@@ -29,6 +29,7 @@ use std::path::Path;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::ResultExt;
+use heck::CamelCase;
 use quote::ToTokens;
 
 use util::{
@@ -111,10 +112,10 @@ impl WebidlParse<()> for webidl::ast::Definition {
                 interface.webidl_parse(program, ())
             }
             webidl::ast::Definition::Typedef(ref typedef) => typedef.webidl_parse(program, ()),
+            webidl::ast::Definition::Enum(ref enumeration) => enumeration.webidl_parse(program, ()),
             // TODO
             webidl::ast::Definition::Callback(..)
             | webidl::ast::Definition::Dictionary(..)
-            | webidl::ast::Definition::Enum(..)
             | webidl::ast::Definition::Implements(..)
             | webidl::ast::Definition::Includes(..)
             | webidl::ast::Definition::Mixin(..)
@@ -236,7 +237,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
         match self {
             webidl::ast::ExtendedAttribute::ArgumentList(
                 webidl::ast::ArgumentListExtendedAttribute { arguments, name },
-            ) if name == "Constructor" =>
+            )
+                if name == "Constructor" =>
             {
                 add_constructor(arguments, &interface.name);
             }
@@ -251,7 +253,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                     rhs_arguments,
                     rhs_name,
                 },
-            ) if lhs_name == "NamedConstructor" =>
+            )
+                if lhs_name == "NamedConstructor" =>
             {
                 add_constructor(rhs_arguments, rhs_name);
             }
@@ -392,6 +395,30 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
             true,
         ).map(wrap_import_function)
             .map(|import| program.imports.push(import));
+
+        Ok(())
+    }
+}
+
+impl<'a> WebidlParse<()> for webidl::ast::Enum {
+    fn webidl_parse(&self, program: &mut backend::ast::Program, _: ()) -> Result<()> {
+        program.imports.push(backend::ast::Import {
+            module: None,
+            version: None,
+            js_namespace: None,
+            kind: backend::ast::ImportKind::Enum(backend::ast::ImportEnum {
+                vis: syn::Visibility::Public(syn::VisPublic {
+                    pub_token: Default::default(),
+                }),
+                name: rust_ident(self.name.to_camel_case().as_str()),
+                variants: self
+                    .variants
+                    .iter()
+                    .map(|v| rust_ident(v.to_camel_case().as_str()))
+                    .collect(),
+                variant_values: self.variants.clone(),
+            }),
+        });
 
         Ok(())
     }

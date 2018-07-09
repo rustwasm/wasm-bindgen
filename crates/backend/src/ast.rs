@@ -41,6 +41,7 @@ pub enum ImportKind {
     Function(ImportFunction),
     Static(ImportStatic),
     Type(ImportType),
+    Enum(ImportEnum),
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -97,6 +98,18 @@ pub struct ImportType {
     pub vis: syn::Visibility,
     pub name: Ident,
     pub attrs: Vec<syn::Attribute>,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub struct ImportEnum {
+    /// The Rust enum's visibility
+    pub vis: syn::Visibility,
+    /// The Rust enum's identifiers
+    pub name: Ident,
+    /// The Rust identifiers for the variants
+    pub variants: Vec<Ident>,
+    /// The JS string values of the variants
+    pub variant_values: Vec<String>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -279,6 +292,7 @@ impl ImportKind {
             ImportKind::Function(_) => true,
             ImportKind::Static(_) => false,
             ImportKind::Type(_) => false,
+            ImportKind::Enum(_) => false,
         }
     }
 
@@ -287,6 +301,7 @@ impl ImportKind {
             ImportKind::Function(ref f) => shared::ImportKind::Function(f.shared()),
             ImportKind::Static(ref f) => shared::ImportKind::Static(f.shared()),
             ImportKind::Type(ref f) => shared::ImportKind::Type(f.shared()),
+            ImportKind::Enum(ref f) => shared::ImportKind::Enum(f.shared()),
         }
     }
 }
@@ -361,6 +376,12 @@ impl ImportStatic {
 impl ImportType {
     fn shared(&self) -> shared::ImportType {
         shared::ImportType {}
+    }
+}
+
+impl ImportEnum {
+    fn shared(&self) -> shared::ImportEnum {
+        shared::ImportEnum {}
     }
 }
 
