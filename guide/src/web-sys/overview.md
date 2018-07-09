@@ -18,15 +18,13 @@ The `web-sys` crate has this file and directory layout:
 
 ### `webidls/available/*.webidl`
 
-These are all the different WebIDL definitions we intend to support. At the time
-of writing, we don't even attempt to generate bindings for most of these.
+These are all the different WebIDL definitions we intend to support, but don't
+yet. At the time of writing, these are the majority of `.webidl`s.
 
 ### `webidls/enabled/*.webidl`
 
 These are the WebIDL interfaces that we will actually generate bindings for (or
 at least bindings for *some* of the things defined in these files).
-
-These are all symlinks into the `webidls/available` directory.
 
 ### `build.rs`
 
