@@ -932,6 +932,13 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getUTCMinutes)]
     pub fn get_utc_minutes(this: &Date) -> u32;
 
+    /// The getUTCMonth() returns the month of the specified date according to universal time,
+    /// as a zero-based value (where zero indicates the first month of the year).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMonth
+    #[wasm_bindgen(method, js_name = getUTCMonth)]
+    pub fn get_utc_month(this: &Date) -> u32;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
