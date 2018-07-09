@@ -142,7 +142,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
 
         if let Some((f, mutable)) = arg.stack_closure() {
-            let (js, _ts) = {
+            let (js, _ts, _js_doc) = {
                 let mut builder = Js2Rust::new("", self.cx);
                 if mutable {
                     builder
@@ -179,7 +179,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
 
         if let Some(closure) = arg.ref_closure() {
-            let (js, _ts) = {
+            let (js, _ts, _js_doc) = {
                 let mut builder = Js2Rust::new("", self.cx);
                 if closure.mutable {
                     builder

@@ -368,6 +368,14 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         Ok(self)
     }
 
+    pub fn js_doc_comments(&self) -> String {
+        let mut ret: String = self.js_arguments.iter().map(|a| {
+            format!("@param {{{}}} {}\n", a.1, a.0)
+        }).collect();
+        ret.push_str(&format!("@returns {{{}}}", self.ret_ty));
+        ret
+    }
+
     /// Generate the actual function.
     ///
     /// The `prefix` specified is typically the string "function" but may be
@@ -377,7 +385,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     /// Returns two strings, the first of which is the JS expression for the
     /// generated function shim and the second is a TypeScript signature of the
     /// JS expression.
-    pub fn finish(&self, prefix: &str, invoc: &str) -> (String, String) {
+    pub fn finish(&self, prefix: &str, invoc: &str) -> (String, String, String) {
         let js_args = self
             .js_arguments
             .iter()
@@ -417,6 +425,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             "{} {}({}): {};\n",
             prefix, self.js_name, ts_args, self.ret_ty
         );
-        (js, ts)
+        (js, ts, self.js_doc_comments())
     }
 }

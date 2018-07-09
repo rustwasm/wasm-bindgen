@@ -43,7 +43,7 @@ pub struct ExportedClass {
 }
 
 struct ClassField {
-    comments: String,
+    comments: Vec<String>,
     name: String,
     readonly: bool,
 }
@@ -55,7 +55,6 @@ pub struct SubContext<'a, 'b: 'a> {
 
 impl<'a> Context<'a> {
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
-        let contents = contents;
         let contents = contents.trim();
         if let Some(ref c) = comments {
             self.globals.push_str(c);
@@ -596,14 +595,14 @@ impl<'a> Context<'a> {
                 ));
                 cx.finish("", &format!("wasm.{}", wasm_setter)).0
             };
-            let (get, _ts) = Js2Rust::new(&field.name, self)
+            let (get, _ts, js_doc) = Js2Rust::new(&field.name, self)
                 .method(true, false)
                 .ret(&Some(descriptor))?
                 .finish("", &format!("wasm.{}", wasm_getter));
             if !dst.ends_with("\n") {
                 dst.push_str("\n");
             }
-            dst.push_str(&field.comments);
+            dst.push_str(&format_doc_comments(&field.comments, Some(js_doc)));
             dst.push_str("get ");
             dst.push_str(&field.name);
             dst.push_str(&get);
@@ -1653,11 +1652,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 .exported_classes
                 .entry(s.name.clone())
                 .or_insert_with(Default::default);
-            class.comments = format_doc_comments(&s.comments);
+            class.comments = format_doc_comments(&s.comments, None);
             class.fields.extend(s.fields.iter().map(|f| ClassField {
                 name: f.name.clone(),
                 readonly: f.readonly,
-                comments: format_doc_comments(&f.comments),
+                comments: f.comments.clone(),
             }));
         }
 
@@ -1674,13 +1673,13 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(d) => d,
         };
 
-        let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
+        let (js, ts, js_doc) = Js2Rust::new(&export.function.name, self.cx)
             .process(descriptor.unwrap_function())?
             .finish("function", &format!("wasm.{}", export.function.name));
         self.cx.export(
             &export.function.name,
             &js,
-            Some(format_doc_comments(&export.comments)),
+            Some(format_doc_comments(&export.comments, Some(js_doc))),
         );
         self.cx.globals.push_str("\n");
         self.cx.typescript.push_str("export ");
@@ -1701,10 +1700,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(d) => d,
         };
 
-        let (js, ts) = Js2Rust::new(&export.function.name, self.cx)
+        let (js, ts, js_doc) = Js2Rust::new(&export.function.name, self.cx)
             .method(export.method, export.consumed)
             .process(descriptor.unwrap_function())?
             .finish("", &format!("wasm.{}", wasm_name));
+
         let class = self
             .cx
             .exported_classes
@@ -1712,7 +1712,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .or_insert(ExportedClass::default());
         class
             .contents
-            .push_str(&format_doc_comments(&export.comments));
+            .push_str(&format_doc_comments(&export.comments, Some(js_doc)));
         if !export.method {
             class.contents.push_str("static ");
             class.typescript.push_str("static ");
@@ -1960,7 +1960,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.export(
             &enum_.name,
             &format!("Object.freeze({{ {} }})", variants),
-            Some(format_doc_comments(&enum_.comments)),
+            Some(format_doc_comments(&enum_.comments, None)),
         );
         self.cx
             .typescript
@@ -2011,10 +2011,17 @@ impl<'a, 'b> SubContext<'a, 'b> {
     }
 }
 
-fn format_doc_comments(comments: &Vec<String>) -> String {
+fn format_doc_comments(comments: &Vec<String>, js_doc_comments: Option<String>) -> String {
     let body: String = comments
         .iter()
         .map(|c| format!("*{}\n", c.trim_matches('"')))
         .collect();
-    format!("/**\n{}*/\n", body)
+    let doc = if let Some(docs) = js_doc_comments {
+        docs.lines()
+            .map(|l| format!("* {} \n", l))
+            .collect()
+    } else {
+        String::new()
+    };
+    format!("/**\n{}{}*/\n", body, doc)
 }
