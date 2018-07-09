@@ -66,8 +66,7 @@ matrix:
       before_install: *INSTALL_NODE_VIA_NVM
       install:
         - npm install
-      script:
-        - (cd crates/web-sys && cargo test)
+      script: cargo test --manifest-path crates/web-sys/Cargo.toml
       addons:
         firefox: latest
 
