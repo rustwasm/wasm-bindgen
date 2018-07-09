@@ -222,8 +222,17 @@ impl JsValue {
         }
     }
 
-    /// Returns the `String` of this JS value if it's an instance of a
-    /// string and it's valid utf-8.
+    /// Tests whether this JS value is a JS string.
+    pub fn is_string(&self) -> bool {
+        unsafe { __wbindgen_is_string(self.idx) == 1 }
+    }
+
+    /// If this JS value is a string value, this function copies the JS string
+    /// value into wasm linear memory, encoded as UTF-8, and returns it as a
+    /// Rust `String`.
+    ///
+    /// To avoid the copying and re-encoding, consider the `as_js_string()`
+    /// method instead.
     ///
     /// If this JS value is not an instance of a string or if it's not valid
     /// utf-8 then this returns `None`.
@@ -354,6 +363,7 @@ externs! {
     fn __wbindgen_is_symbol(idx: u32) -> u32;
     fn __wbindgen_is_object(idx: u32) -> u32;
     fn __wbindgen_is_function(idx: u32) -> u32;
+    fn __wbindgen_is_string(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
     fn __wbindgen_throw(a: *const u8, b: usize) -> !;
 

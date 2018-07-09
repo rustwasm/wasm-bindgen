@@ -388,6 +388,11 @@ fn jsvalue_typeof() {
                 pub fn is_function(val: &JsValue) -> bool {
                     val.is_function()
                 }
+
+                #[wasm_bindgen]
+                pub fn is_string(val: &JsValue) -> bool {
+                    val.is_string()
+                }
             "#,
         )
         .file(
@@ -401,6 +406,8 @@ fn jsvalue_typeof() {
                     assert.ok(!wasm.is_object(42));
                     assert.ok(wasm.is_function(function() {}));
                     assert.ok(!wasm.is_function(42));
+                    assert.ok(wasm.is_string("2b or !2b"));
+                    assert.ok(!wasm.is_string(42));
                 }
             "#,
         )

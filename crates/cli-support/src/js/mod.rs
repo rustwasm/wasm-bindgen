@@ -307,6 +307,17 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_is_string", &|me| {
+            me.expose_get_object();
+            Ok(String::from(
+                "
+                function(i) {
+                    return typeof(getObject(i)) === 'string' ? 1 : 0;
+                }
+                ",
+            ))
+        })?;
+
         self.bind("__wbindgen_string_get", &|me| {
             me.expose_pass_string_to_wasm()?;
             me.expose_get_object();

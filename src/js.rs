@@ -18,6 +18,9 @@
 
 use wasm_bindgen_macro::*;
 use JsValue;
+
+use core::mem;
+
 if_std! {
     use std::prelude::v1::*;
 }
@@ -444,9 +447,14 @@ extern "C" {
 }
 
 impl JsValue {
-    pub fn as_function(&self) -> Option<Function> {
+    /// Returns the `Function` value of this JS value if it's an instance of a
+    /// function.
+    ///
+    /// If this JS value is not an instance of a function then this returns
+    /// `None`.
+    pub fn as_function(&self) -> Option<&Function> {
         if self.is_function() {
-            Some(Function { obj: self.clone() })
+            Some(unsafe { mem::transmute(self) })
         } else {
             None
         }
@@ -1224,9 +1232,14 @@ extern "C" {
 }
 
 impl JsValue {
-    pub fn as_object(&self) -> Option<Object> {
+    /// Returns the `Object` value of this JS value if it's an instance of an
+    /// object.
+    ///
+    /// If this JS value is not an instance of an object then this returns
+    /// `None`.
+    pub fn as_object(&self) -> Option<&Object> {
         if self.is_object() {
-            Some(Object { obj: self.clone() })
+            Some(unsafe { mem::transmute(self) })
         } else {
             None
         }
@@ -1686,6 +1699,21 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf
     #[wasm_bindgen(method, js_class = "String", js_name = valueOf)]
     pub fn value_of(this: &JsString) -> JsString;
+}
+
+impl JsValue {
+    /// Returns the `JsString` value of this JS value if it's an instance of a
+    /// string.
+    ///
+    /// If this JS value is not an instance of a string then this returns
+    /// `None`.
+    pub fn as_js_string(&self) -> Option<&JsString> {
+        if self.is_string() {
+            Some(unsafe { mem::transmute(self) })
+        } else {
+            None
+        }
+    }
 }
 
 impl<'a> From<&'a str> for JsString {
