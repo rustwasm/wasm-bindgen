@@ -83,7 +83,7 @@ extern "C" {
 
     /// The global isFinite() function determines whether the passed value is a finite number.
     /// If  needed, the parameter is first converted to a number.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite
     #[wasm_bindgen(js_name = isFinite)]
     pub fn is_finite(value: &JsValue) -> bool;
@@ -785,7 +785,7 @@ extern "C" {
     pub type Number;
 
     /// The Number.isFinite() method determines whether the passed value is a finite number.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
     #[wasm_bindgen(static_method_of = Number, js_name = isFinite)]
     pub fn is_finite(value: &JsValue) -> bool;
@@ -798,7 +798,7 @@ extern "C" {
 
     /// The Number.isSafeInteger() method determines whether the provided value is a number
     /// that is a safe integer.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
     #[wasm_bindgen(static_method_of = Number, js_name = isSafeInteger)]
     pub fn is_safe_integer(value: &JsValue) -> bool;
@@ -811,14 +811,14 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(value: JsValue) -> Number;
 
-    /// The Number.parseInt() method parses a string argument and returns an 
+    /// The Number.parseInt() method parses a string argument and returns an
     /// integer of the specified radix or base.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseInt
     #[wasm_bindgen(static_method_of = Number, js_name = parseInt)]
     pub fn parse_int(text: &str, radix: u8) -> Number;
 
-    /// The Number.parseFloat() method parses a string argument and returns a 
+    /// The Number.parseFloat() method parses a string argument and returns a
     /// floating point number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseFloat
