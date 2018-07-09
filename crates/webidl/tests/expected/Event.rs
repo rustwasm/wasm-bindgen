@@ -96,7 +96,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn new(type_: &str, event_init_dict: EventInit) -> Event {
+    pub fn new(type_: &str, event_init_dict: EventInit) -> Event {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -140,7 +140,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn event_phase(&self) -> u16 {
+    pub fn event_phase(&self) -> u16 {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -180,7 +180,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn stop_propagation(&self) {
+    pub fn stop_propagation(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -220,7 +220,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn stop_immediate_propagation(&self) {
+    pub fn stop_immediate_propagation(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -264,7 +264,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn bubbles(&self) -> bool {
+    pub fn bubbles(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -308,7 +308,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn cancelable(&self) -> bool {
+    pub fn cancelable(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -348,7 +348,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn prevent_default(&self) {
+    pub fn prevent_default(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -392,7 +392,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn default_prevented(&self) -> bool {
+    pub fn default_prevented(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -436,7 +436,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn composed(&self) -> bool {
+    pub fn composed(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -480,7 +480,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn is_trusted(&self) -> bool {
+    pub fn is_trusted(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -524,7 +524,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn time_stamp(&self) -> DOMHighResTimeStamp {
+    pub fn time_stamp(&self) -> DOMHighResTimeStamp {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -578,7 +578,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn init_event(&self, type_: &str, bubbles: bool, cancelable: bool) {
+    pub fn init_event(&self, type_: &str, bubbles: bool, cancelable: bool) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -622,7 +622,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn cancel_bubble(&self) -> bool {
+    pub fn cancel_bubble(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -668,7 +668,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn set_cancel_bubble(&self, cancel_bubble: bool) {
+    pub fn set_cancel_bubble(&self, cancel_bubble: bool) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -681,4 +681,4 @@ pub type DOMHighResTimeStamp = f64;
 pub type EventInit = bool;
 #[allow(non_upper_case_globals)]
 #[wasm_custom_section = "__wasm_bindgen_unstable"]
-const __WASM_BINDGEN_GENERATED_wasm_bindgen_webidl_0_2_11_0 : [ u8 ; 3815usize ] = * b"\xE3\x0E\0\0{\"exports\":[],\"enums\":[],\"imports\":[{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"type\"}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_new_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Constructor\",\"getter\":null,\"setter\":null},\"structural\":false,\"function\":{\"name\":\"new\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_event_phase_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":\"eventPhase\",\"setter\":null},\"structural\":false,\"function\":{\"name\":\"eventPhase\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_stop_propagation_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":null,\"setter\":null},\"structural\":false,\"function\":{\"name\":\"stopPropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_stop_immediate_propagation_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":null,\"setter\":null},\"structural\":false,\"function\":{\"name\":\"stopImmediatePropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_bubbles_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":\"bubbles\",\"setter\":null},\"structural\":false,\"function\":{\"name\":\"bubbles\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_cancelable_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":\"cancelable\",\"setter\":null},\"structural\":false,\"function\":{\"name\":\"cancelable\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_prevent_default_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":null,\"setter\":null},\"structural\":false,\"function\":{\"name\":\"preventDefault\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_default_prevented_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":\"defaultPrevented\",\"setter\":null},\"structural\":false,\"function\":{\"name\":\"defaultPrevented\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_composed_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":\"composed\",\"setter\":null},\"structural\":false,\"function\":{\"name\":\"composed\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_is_trusted_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":\"isTrusted\",\"setter\":null},\"structural\":false,\"function\":{\"name\":\"isTrusted\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_time_stamp_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":\"timeStamp\",\"setter\":null},\"structural\":false,\"function\":{\"name\":\"timeStamp\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_init_event_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":null,\"setter\":null},\"structural\":false,\"function\":{\"name\":\"initEvent\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_cancel_bubble_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":\"cancelBubble\",\"setter\":null},\"structural\":false,\"function\":{\"name\":\"cancelBubble\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_set_cancel_bubble_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Normal\",\"getter\":null,\"setter\":\"cancelBubble\"},\"structural\":false,\"function\":{\"name\":\"set_cancelBubble\"}}}],\"structs\":[],\"version\":\"0.2.11 (13c93c46f)\",\"schema_version\":\"5\"}" ;
+const __WASM_BINDGEN_GENERATED_wasm_bindgen_webidl_0_2_11_0 : [ u8 ; 4023usize ] = * b"\xB3\x0F\0\0{\"exports\":[],\"enums\":[],\"imports\":[{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"type\"}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_new_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":\"Constructor\"},\"structural\":false,\"function\":{\"name\":\"new\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_event_phase_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"eventPhase\"}}}},\"structural\":false,\"function\":{\"name\":\"eventPhase\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_stop_propagation_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"stopPropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_stop_immediate_propagation_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"stopImmediatePropagation\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_bubbles_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"bubbles\"}}}},\"structural\":false,\"function\":{\"name\":\"bubbles\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_cancelable_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"cancelable\"}}}},\"structural\":false,\"function\":{\"name\":\"cancelable\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_prevent_default_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"preventDefault\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_default_prevented_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"defaultPrevented\"}}}},\"structural\":false,\"function\":{\"name\":\"defaultPrevented\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_composed_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"composed\"}}}},\"structural\":false,\"function\":{\"name\":\"composed\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_is_trusted_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"isTrusted\"}}}},\"structural\":false,\"function\":{\"name\":\"isTrusted\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_time_stamp_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"timeStamp\"}}}},\"structural\":false,\"function\":{\"name\":\"timeStamp\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_init_event_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":\"Regular\"}}},\"structural\":false,\"function\":{\"name\":\"initEvent\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_cancel_bubble_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Getter\":\"cancelBubble\"}}}},\"structural\":false,\"function\":{\"name\":\"cancelBubble\"}}},{\"module\":null,\"version\":null,\"js_namespace\":null,\"kind\":{\"kind\":\"function\",\"shim\":\"__widl_f_set_cancel_bubble_Event\",\"catch\":false,\"method\":{\"class\":\"Event\",\"kind\":{\"Operation\":{\"is_static\":false,\"kind\":{\"Setter\":\"cancelBubble\"}}}},\"structural\":false,\"function\":{\"name\":\"set_cancelBubble\"}}}],\"structs\":[],\"version\":\"0.2.11 (bfec9e640)\",\"schema_version\":\"6\"}" ;
