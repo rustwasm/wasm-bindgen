@@ -14,7 +14,6 @@ fn add_headless() {
 
                 #[wasm_bindgen]
                 pub fn add(a: u32, b: u32) -> u32 {
-                    unimplemented!("TODO FITZGEN");
                     a + b
                 }
             "#,

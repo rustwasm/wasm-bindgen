@@ -477,8 +477,8 @@ impl Project {
         }
 
         runjs.push_str("
-            function run(test, wasm) {
-                test.test();
+            async function run(test, wasm) {
+                await test.test();
 
                 if (wasm.assertStackEmpty)
                     wasm.assertStackEmpty();
@@ -544,11 +544,13 @@ impl Project {
             assert!(modules.is_empty());
             runjs.push_str("
                 const test = require('./test');
-                try {
-                    run(test, {});
-                } catch (e) {
-                    onerror(e);
-                }
+                (async function () {
+                    try {
+                        await run(test, {});
+                    } catch (e) {
+                        onerror(e);
+                    }
+                }());
             ");
         }
         self.files.push(("run.js".to_string(), runjs));
