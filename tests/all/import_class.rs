@@ -456,3 +456,52 @@ fn rename_setter_getter() {
         )
         .test();
 }
+
+#[test]
+fn deny_missing_docs() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                //! dox
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                #![deny(missing_docs)]
+                #![allow(dead_code)]
+
+                extern crate wasm_bindgen;
+
+                use wasm_bindgen::prelude::*;
+
+                /// dox
+                #[wasm_bindgen]
+                pub struct Bar {
+                    /// dox
+                    pub a: u32,
+                    b: i64,
+                }
+
+                #[wasm_bindgen]
+                extern {
+                    /// dox
+                    pub type Foo;
+
+                    /// dox
+                    #[wasm_bindgen(constructor)]
+                    pub fn new() -> Foo;
+
+                    /// dox
+                    #[wasm_bindgen(getter = a, method)]
+                    pub fn test(this: &Foo) -> i32;
+
+                    /// dox
+                    pub fn foo();
+                }
+
+                /// dox
+                #[wasm_bindgen]
+                pub fn test() {
+                }
+            "#,
+        )
+        .test();
+}

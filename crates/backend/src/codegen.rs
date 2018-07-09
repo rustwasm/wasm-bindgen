@@ -191,6 +191,7 @@ impl ToTokens for ast::Struct {
 
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[no_mangle]
+            #[doc(hidden)]
             pub unsafe extern fn #free_fn(ptr: u32) {
                 <#name as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
                     ptr,
@@ -246,6 +247,7 @@ impl ToTokens for ast::StructField {
         );
         (quote! {
             #[no_mangle]
+            #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub unsafe extern fn #getter(js: u32)
                 -> <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
@@ -279,6 +281,7 @@ impl ToTokens for ast::StructField {
 
         (quote! {
             #[no_mangle]
+            #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub unsafe extern fn #setter(
                 js: u32,
@@ -441,8 +444,10 @@ impl ToTokens for ast::Export {
         let descriptor_name = Ident::new(&descriptor_name, Span::call_site());
         let nargs = self.function.arguments.len() as u32;
         let argtys = self.function.arguments.iter().map(|arg| &arg.ty);
+        let attrs = &self.function.rust_attrs;
 
         let tokens = quote! {
+            #(#attrs)*
             #[export_name = #export_name]
             #[allow(non_snake_case)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
