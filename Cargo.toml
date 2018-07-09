@@ -45,6 +45,7 @@ members = [
   "examples/smorgasboard",
   "examples/console_log",
   "examples/dom",
+  "examples/julia_set",
   "examples/math",
   "examples/performance",
   "examples/wasm-in-wasm",

@@ -90,7 +90,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn event_phase(&self) -> u16 {
+    pub fn event_phase(&self) -> u16 {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -130,7 +130,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn stop_propagation(&self) {
+    pub fn stop_propagation(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -170,7 +170,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn stop_immediate_propagation(&self) {
+    pub fn stop_immediate_propagation(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -214,7 +214,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn bubbles(&self) -> bool {
+    pub fn bubbles(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -258,7 +258,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn cancelable(&self) -> bool {
+    pub fn cancelable(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -298,7 +298,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn prevent_default(&self) {
+    pub fn prevent_default(&self) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -342,7 +342,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn default_prevented(&self) -> bool {
+    pub fn default_prevented(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -386,7 +386,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn composed(&self) -> bool {
+    pub fn composed(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -430,7 +430,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn is_trusted(&self) -> bool {
+    pub fn is_trusted(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -484,7 +484,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn init_event(&self, type_: &str, bubbles: bool, cancelable: bool) {
+    pub fn init_event(&self, type_: &str, bubbles: bool, cancelable: bool) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -528,7 +528,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn cancel_bubble(&self) -> bool {
+    pub fn cancel_bubble(&self) -> bool {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"
@@ -574,7 +574,7 @@ impl Event {
     }
     #[allow(bad_style, unused_variables)]
     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-    pub extern "C" fn set_cancel_bubble(&self, cancel_bubble: bool) {
+    pub fn set_cancel_bubble(&self, cancel_bubble: bool) {
         panic!(
             "cannot call wasm-bindgen imported functions on \
              non-wasm targets"

@@ -3,6 +3,36 @@
 use super::project;
 
 #[test]
+fn is_finite() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_finite(value: &JsValue) -> bool {
+                js::Number::is_finite(value)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.is_finite(42), true);
+                assert.equal(wasm.is_finite(42.1), true);
+                assert.equal(wasm.is_finite('42'), false);
+                assert.equal(wasm.is_finite(NaN), false);
+                assert.equal(wasm.is_finite(Infinity), false);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn is_integer() {
     project()
         .file("src/lib.rs", r#"
@@ -13,8 +43,8 @@ fn is_integer() {
             use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn is_integer(obj: &js::Object) -> bool {
-                js::Number::is_integer(&obj)
+            pub fn is_integer(value: &JsValue) -> bool {
+                js::Number::is_integer(value)
             }
         "#)
         .file("test.js", r#"
@@ -24,6 +54,38 @@ fn is_integer() {
             export function test() {
                 assert.ok(wasm.is_integer(123));
                 assert.ok(!wasm.is_integer(123.45));
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn is_safe_integer() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn is_safe_integer(value: &JsValue) -> bool {
+                js::Number::is_safe_integer(value)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.is_safe_integer(42), true);
+                assert.equal(wasm.is_safe_integer(Math.pow(2, 53) - 1), true);
+                assert.equal(wasm.is_safe_integer(Math.pow(2, 53)), false);
+                assert.equal(wasm.is_safe_integer('42'), false);
+                assert.equal(wasm.is_safe_integer(42.1), false);
+                assert.equal(wasm.is_safe_integer(NaN), false);
+                assert.equal(wasm.is_safe_integer(Infinity), false);
             }
         "#)
         .test()
@@ -53,6 +115,46 @@ fn new() {
                 assert.equal(wasm.new_number(), 42);
             }
         "#)
+        .test()
+}
+
+#[test]
+fn parse_int_float() {
+    project()
+        .file(
+            "src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Number;
+
+            #[wasm_bindgen]
+            pub fn parse_int(text: &str, radix: u8) -> Number {
+                Number::parse_int(text, radix)
+            }
+
+            #[wasm_bindgen]
+            pub fn parse_float(text: &str) -> Number {
+                Number::parse_float(text)
+            }
+        "#,
+        )
+        .file(
+            "test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.parse_int("42", 10), 42);
+                assert.equal(wasm.parse_int("42", 16), 66); // 0x42 == 66
+                assert.ok(Number.isNaN(wasm.parse_int("invalid int", 10)), "should be NaN");
+
+                assert.equal(wasm.parse_float("123456.789"), 123456.789);
+                assert.ok(Number.isNaN(wasm.parse_float("invalid float")), "should be NaN");
+            }
+        "#,
+        )
         .test()
 }
 

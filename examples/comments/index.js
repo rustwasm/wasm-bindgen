@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const mod = import('./comments');
 let wasm;
 mod.then(m => {
@@ -48,7 +49,7 @@ function storeComments() {
             name: c.name(),
             comment: c.comment(),
             count: c.count,
-        }
+        };
     });
     localStorage.setItem('comments', JSON.stringify(json));
 }
@@ -118,10 +119,10 @@ function renderComment(comment) {
     bottom.appendChild(title);
     let text = document.createElement('span');
     text.setAttribute('class', 'comment-text');
-    text.appendChild(document.createTextNode(comment.comment()))
+    text.appendChild(document.createTextNode(comment.comment()));
     bottom.appendChild(text);
     div.appendChild(top);
-    div.appendChild(bottom)
+    div.appendChild(bottom);
     return div;
 }
 

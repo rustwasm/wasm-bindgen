@@ -3,18 +3,20 @@
   "scripts": {
     "run-webpack": "webpack",
     "run-webpack-dev-server": "webpack-dev-server",
-    "run-geckodriver": "geckodriver"
+    "run-geckodriver": "geckodriver",
+    "run-lint-examples": "eslint ./examples",
+    "run-lint-generated-tests": "eslint ./target/generated-tests/*/out*js"
   },
   "devDependencies": {
     "@types/node": "^10.5.2",
-    "eslint": "^5.0.1",
+    "babel-eslint": "^8.2.5",
+    "eslint": "^5.1.0",
     "geckodriver": "^1.11.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "ts-loader": "^4.4.2",
     "typescript": "^2.7.2",
     "webpack": "^4.15.1",
     "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4",
-    "babel-eslint": "^8.2.5"
+    "webpack-dev-server": "^3.1.4"
   }
 }

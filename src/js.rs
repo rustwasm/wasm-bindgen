@@ -80,6 +80,27 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
     #[wasm_bindgen(catch)]
     pub fn eval(js_source_text: &str) -> Result<JsValue, JsValue>;
+
+    /// The global isFinite() function determines whether the passed value is a finite number.
+    /// If  needed, the parameter is first converted to a number.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/isFinite
+    #[wasm_bindgen(js_name = isFinite)]
+    pub fn is_finite(value: &JsValue) -> bool;
+
+    /// The `parseInt()` function parses a string argument and returns an integer
+    /// of the specified radix (the base in mathematical numeral systems), or NaN on error.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt
+    #[wasm_bindgen(js_name = parseInt)]
+    pub fn parse_int(text: &str, radix: u8) -> f64;
+
+    /// The parseFloat() function parses an argument and returns a floating point number,
+    /// or NaN on error.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
+    #[wasm_bindgen(js_name = parseFloat)]
+    pub fn parse_float(text: &str) -> f64;
 }
 
 // UInt8Array
@@ -318,6 +339,13 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
     #[wasm_bindgen(method)]
     pub fn entries(this: &Array) -> ArrayIterator;
+
+    /// The values() method returns a new Array Iterator object that
+    /// contains the values for each index in the array.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values
+    #[wasm_bindgen(method)]
+    pub fn values(this: &Array) -> ArrayIterator;
 }
 
 // Boolean
@@ -746,11 +774,24 @@ extern "C" {
 extern "C" {
     pub type Number;
 
+    /// The Number.isFinite() method determines whether the passed value is a finite number.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
+    #[wasm_bindgen(static_method_of = Number, js_name = isFinite)]
+    pub fn is_finite(value: &JsValue) -> bool;
+
     /// The Number.isInteger() method determines whether the passed value is an integer.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
     #[wasm_bindgen(static_method_of = Number, js_name = isInteger)]
-    pub fn is_integer(object: &Object) -> bool;
+    pub fn is_integer(value: &JsValue) -> bool;
+
+    /// The Number.isSafeInteger() method determines whether the provided value is a number
+    /// that is a safe integer.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
+    #[wasm_bindgen(static_method_of = Number, js_name = isSafeInteger)]
+    pub fn is_safe_integer(value: &JsValue) -> bool;
 
     /// The `Number` JavaScript object is a wrapper object allowing
     /// you to work with numerical values. A `Number` object is
@@ -759,6 +800,20 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
     #[wasm_bindgen(constructor)]
     pub fn new(value: JsValue) -> Number;
+
+    /// The Number.parseInt() method parses a string argument and returns an 
+    /// integer of the specified radix or base.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseInt
+    #[wasm_bindgen(static_method_of = Number, js_name = parseInt)]
+    pub fn parse_int(text: &str, radix: u8) -> Number;
+
+    /// The Number.parseFloat() method parses a string argument and returns a 
+    /// floating point number.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseFloat
+    #[wasm_bindgen(static_method_of = Number, js_name = parseFloat)]
+    pub fn parse_float(text: &str) -> Number;
 
     /// The toLocaleString() method returns a string with a language sensitive
     /// representation of this number.
@@ -865,6 +920,65 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTime
     #[wasm_bindgen(method, js_name = getTime)]
     pub fn get_time(this: &Date) -> f64;
+
+    /// The getTimezoneOffset() method returns the time zone difference, in minutes,
+    /// from current locale (host system settings) to UTC.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTimezoneOffset
+    #[wasm_bindgen(method, js_name = getTimezoneOffset)]
+    pub fn get_timezone_offset(this: &Date) -> f64;
+
+    /// The getUTCDate() method returns the day (date) of the month in the specified date
+    /// according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDate
+    #[wasm_bindgen(method, js_name = getUTCDate)]
+    pub fn get_utc_date(this: &Date) -> u32;
+
+    /// The getUTCDay() method returns the day of the week in the specified date according to universal time,
+    /// where 0 represents Sunday.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCDay
+    #[wasm_bindgen(method, js_name = getUTCDay)]
+    pub fn get_utc_day(this: &Date) -> u32;
+
+    /// The getUTCFullYear() method returns the year in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCFullYear
+    #[wasm_bindgen(method, js_name = getUTCFullYear)]
+    pub fn get_utc_full_year(this: &Date) -> u32;
+
+    /// The getUTCHours() method returns the hours in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCHours
+    #[wasm_bindgen(method, js_name = getUTCHours)]
+    pub fn get_utc_hours(this: &Date) -> u32;
+
+    /// The getUTCMilliseconds() method returns the milliseconds in the specified date
+    /// according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMilliseconds
+    #[wasm_bindgen(method, js_name = getUTCMilliseconds)]
+    pub fn get_utc_milliseconds(this: &Date) -> u32;
+
+    /// The getUTCMinutes() method returns the minutes in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMinutes
+    #[wasm_bindgen(method, js_name = getUTCMinutes)]
+    pub fn get_utc_minutes(this: &Date) -> u32;
+
+    /// The getUTCMonth() returns the month of the specified date according to universal time,
+    /// as a zero-based value (where zero indicates the first month of the year).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCMonth
+    #[wasm_bindgen(method, js_name = getUTCMonth)]
+    pub fn get_utc_month(this: &Date) -> u32;
+
+    /// The getUTCSeconds() method returns the seconds in the specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getUTCSeconds
+    #[wasm_bindgen(method, js_name = getUTCSeconds)]
+    pub fn get_utc_seconds(this: &Date) -> u32;
 
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
@@ -1673,4 +1787,18 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toString
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = toStringTag)]
     pub fn to_string_tag() -> Symbol;
+}
+
+// Intl
+#[wasm_bindgen]
+extern "C" {
+    pub type Intl;
+
+    /// The `Intl.getCanonicalLocales()` method returns an array containing
+    /// the canonical locale names. Duplicates will be omitted and elements
+    /// will be validated as structurally valid language tags.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales
+    #[wasm_bindgen(static_method_of = Intl, js_name = getCanonicalLocales)]
+    pub fn get_canonical_locales(s: &JsValue) -> Array;
 }

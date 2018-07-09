@@ -722,7 +722,7 @@ impl ToTokens for ast::ImportFunction {
             #(#attrs)*
             #[allow(bad_style, unused_variables)]
             #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-            #vis extern fn #rust_name(#me #(#arguments),*) #ret {
+            #vis fn #rust_name(#me #(#arguments),*) #ret {
                 panic!("cannot call wasm-bindgen imported functions on \
                         non-wasm targets");
             }

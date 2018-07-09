@@ -10,6 +10,7 @@ mod Date;
 mod Error;
 mod Function;
 mod Generator;
+mod Intl;
 mod JsString;
 mod Map;
 mod MapIterator;
@@ -148,5 +149,72 @@ fn eval() {
                 }
             "#,
         )
+        .test();
+}
+
+#[test]
+fn is_finite() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+
+                #[wasm_bindgen]
+                pub fn is_finite(value: &JsValue) -> bool {
+                    js::is_finite(value)
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.is_finite(42), true);
+                assert.equal(wasm.is_finite(42.1), true);
+                assert.equal(wasm.is_finite('42'), true);
+                assert.equal(wasm.is_finite(NaN), false);
+                assert.equal(wasm.is_finite(Infinity), false);
+            }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn parse_int_float() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                let i = js::parse_int("42", 10);
+                assert_eq!(i as i64, 42);
+
+                let i = js::parse_int("42", 16);
+                assert_eq!(i as i64, 66); // 0x42 == 66
+
+                let i = js::parse_int("invalid int", 10);
+                assert!(i.is_nan());
+
+                let f = js::parse_float("123456.789");
+                assert_eq!(f, 123456.789);
+
+                let f = js::parse_float("invalid float");
+                assert!(f.is_nan());
+            }
+        "#)
         .test();
 }

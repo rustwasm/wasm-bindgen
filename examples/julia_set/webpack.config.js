@@ -7,5 +7,7 @@ module.exports = {
         filename: 'index.js',
     },
     mode: 'development',
-    devtool: 'source-map',
+    devServer: {
+        open: true
+    }
 };

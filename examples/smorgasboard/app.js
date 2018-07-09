@@ -1,9 +1,9 @@
-import { Foo, Bar, concat } from "./smorgasboard";
+import { Foo, Bar, concat } from './smorgasboard';
 
 function assertEq(a, b) {
-  if (a !== b)
-    throw new Error(`${a} != ${b}`);
-  console.log(`found ${a} === ${b}`);
+    if (a !== b)
+        throw new Error(`${a} != ${b}`);
+    console.log(`found ${a} === ${b}`);
 }
 
 assertEq(concat('a', 'b'), 'ab');
@@ -18,7 +18,7 @@ foo.free();
 
 // Pass objects to one another
 let foo1 = new Foo();
-let bar = Bar.from_str("22", { opaque: 'object' });
+let bar = Bar.from_str('22', { opaque: 'object' });
 foo1.add_other(bar);
 
 // We also don't have to `free` the `bar` variable as this function is
@@ -29,4 +29,4 @@ foo1.consume_other(bar);
 assertEq(foo1.add(2), 22 + 34 + 2);
 foo1.free();
 
-alert('all passed!')
+alert('all passed!');

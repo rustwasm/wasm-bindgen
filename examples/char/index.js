@@ -1,5 +1,6 @@
-import {chars} from './chars.js'
-let imp = import('./char.js')
+/* eslint-disable no-unused-vars */
+import {chars} from './chars.js';
+let imp = import('./char.js');
 let mod;
 
 let counters = [];
@@ -8,7 +9,7 @@ imp.then(wasm => {
     addCounter();
     let b = document.getElementById('add-counter');
     if (!b) throw new Error('Unable to find #add-counter');
-    b.addEventListener('click', ev => addCounter())
+    b.addEventListener('click', ev => addCounter());
 });
 
 function addCounter() {
@@ -21,7 +22,7 @@ function update() {
     let container = document.getElementById('container');
     if (!container) throw new Error('Unable to find #container in dom');
     while (container.hasChildNodes()) {
-        if (container.lastChild.id == "add-counter") break;
+        if (container.lastChild.id == 'add-counter') break;
         container.removeChild(container.lastChild);
     }
     for (var i = 0; i < counters.length; i++) {
@@ -29,7 +30,7 @@ function update() {
         container.appendChild(newCounter(counter.key(), counter.count(), ev => {
             counter.increment();
             update();
-        }))
+        }));
     }
 }
 
