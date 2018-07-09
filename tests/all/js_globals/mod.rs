@@ -10,6 +10,7 @@ mod Date;
 mod Error;
 mod Function;
 mod Generator;
+mod Intl;
 mod JsString;
 mod Map;
 mod MapIterator;

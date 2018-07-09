@@ -1781,3 +1781,17 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = toStringTag)]
     pub fn to_string_tag() -> Symbol;
 }
+
+// Intl
+#[wasm_bindgen]
+extern "C" {
+    pub type Intl;
+
+    /// The `Intl.getCanonicalLocales()` method returns an array containing
+    /// the canonical locale names. Duplicates will be omitted and elements
+    /// will be validated as structurally valid language tags.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales
+    #[wasm_bindgen(static_method_of = Intl, js_name = getCanonicalLocales)]
+    pub fn get_canonical_locales(s: &JsValue) -> Array;
+}
