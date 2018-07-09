@@ -493,6 +493,40 @@ fn get_utc_hours() {
 }
 
 #[test]
+fn get_utc_milliseconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_utc_milliseconds(this: &Date) -> u32 {
+                this.get_utc_milliseconds()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date = new Date('2018-01-02T03:04:05.678Z');
+
+                assert.equal(wasm.get_utc_milliseconds(date), 678);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file(
