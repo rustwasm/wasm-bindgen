@@ -1891,9 +1891,13 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
                         self.cx.global(&format!(
                             "
-                            const {}_target = {};
+                            const {}_target = {} || function() {{
+                                throw new Error(`wasm-bindgen: {} does not exist`);
+                            }};
                             ",
-                            import.shim, target
+                            import.shim,
+                            target,
+                            target
                         ));
                         format!(
                             "{}_target{}",
