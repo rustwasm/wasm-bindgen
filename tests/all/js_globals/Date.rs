@@ -313,6 +313,42 @@ fn get_time() {
 }
 
 #[test]
+fn get_timezone_offset() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn get_timezone_offset(this: &Date) -> f64 {
+                this.get_timezone_offset()
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let date1 = new Date('August 19, 1975 23:15:30 GMT+07:00');
+                let date2 = new Date('August 19, 1975 23:15:30 GMT-02:00');
+
+                assert.equal(typeof wasm.get_timezone_offset(date1), "number");
+                assert.equal(wasm.get_timezone_offset(date1), wasm.get_timezone_offset(date2));
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn new() {
     project()
         .file(

@@ -886,6 +886,13 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getTime)]
     pub fn get_time(this: &Date) -> f64;
 
+    /// The getTimezoneOffset() method returns the time zone difference, in minutes,
+    /// from current locale (host system settings) to UTC.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTimezoneOffset
+    #[wasm_bindgen(method, js_name = getTimezoneOffset)]
+    pub fn get_timezone_offset(this: &Date) -> f64;
+
     /// Creates a JavaScript Date instance that represents
     /// a single moment in time. Date objects are based on a time value that is
     /// the number of milliseconds since 1 January 1970 UTC.
