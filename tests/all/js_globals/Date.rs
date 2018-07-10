@@ -727,6 +727,315 @@ fn parse() {
 }
 
 #[test]
+fn set_date() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_date(this: &Date, day: u32) -> f64 {
+                this.set_date(day)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30');
+                let event2 = new Date('August 24, 1975 23:15:30');
+
+                let eventMsFromUnixEpoch = wasm.set_date(event1, 24);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getDate(), 24);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_full_year() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_full_year(this: &Date, year: u32) -> f64 {
+                this.set_full_year(year)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30');
+                let event2 = new Date('August 19, 1976 23:15:30');
+
+                let eventMsFromUnixEpoch = wasm.set_full_year(event1, 1976);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getFullYear(), 1976);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_hours() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_hours(this: &Date, hours: u32) -> f64 {
+                this.set_hours(hours)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30');
+                let event2 = new Date('August 19, 1975 20:15:30');
+
+                let eventMsFromUnixEpoch = wasm.set_hours(event1, 20);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getHours(), 20);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_milliseconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_milliseconds(this: &Date, milliseconds: u32) -> f64 {
+                this.set_milliseconds(milliseconds)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event = new Date('August 19, 1975 23:15:30');
+
+                let eventMsFromUnixEpoch = wasm.set_milliseconds(event, 456);
+
+                assert.equal(eventMsFromUnixEpoch, event.getTime());
+                assert.equal(event.getMilliseconds(), 456);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_minutes() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_minutes(this: &Date, minutes: u32) -> f64 {
+                this.set_minutes(minutes)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30');
+                let event2 = new Date('August 19, 1975 23:45:30');
+
+                let eventMsFromUnixEpoch = wasm.set_minutes(event1, 45);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getMinutes(), 45);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_month() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_month(this: &Date, month: u32) -> f64 {
+                this.set_month(month)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30');
+                let event2 = new Date('April 19, 1975 23:15:30');
+
+                let eventMsFromUnixEpoch = wasm.set_month(event1, 3);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getMonth(), 3);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_seconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_seconds(this: &Date, seconds: u32) -> f64 {
+                this.set_seconds(seconds)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30');
+                let event2 = new Date('August 19, 1975 23:15:42');
+
+                let eventMsFromUnixEpoch = wasm.set_seconds(event1, 42);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getSeconds(), 42);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_time() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_time(this: &Date, time: f64) -> f64 {
+                this.set_time(time)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('July 1, 1999');
+                let event2 = new Date();
+
+                let eventMsFromUnixEpoch = wasm.set_time(event2, event1.getTime());
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.valueOf(), event2.getTime());
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn to_date_string() {
     project()
         .file(

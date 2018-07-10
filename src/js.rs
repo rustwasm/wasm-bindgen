@@ -1020,6 +1020,58 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Date)]
     pub fn parse(date: JsString) -> f64;
 
+    /// The setDate() method sets the day of the Date object relative to the beginning of the currently set month.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setDate
+    #[wasm_bindgen(method, js_name = setDate)]
+    pub fn set_date(this: &Date, day: u32) -> f64;
+
+    /// The setFullYear() method sets the full year for a specified date according to local time.
+    /// Returns new timestamp.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear
+    #[wasm_bindgen(method, js_name = setFullYear)]
+    pub fn set_full_year(this: &Date, year: u32) -> f64;
+
+    /// The setHours() method sets the hours for a specified date according to local time,
+    /// and returns the number of milliseconds since January 1, 1970 00:00:00 UTC until the time represented
+    /// by the updated Date instance.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours
+    #[wasm_bindgen(method, js_name = setHours)]
+    pub fn set_hours(this: &Date, hours: u32) -> f64;
+
+    /// The setMilliseconds() method sets the milliseconds for a specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMilliseconds
+    #[wasm_bindgen(method, js_name = setMilliseconds)]
+    pub fn set_milliseconds(this: &Date, milliseconds: u32) -> f64;
+
+    /// The setMinutes() method sets the minutes for a specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMinutes
+    #[wasm_bindgen(method, js_name = setMinutes)]
+    pub fn set_minutes(this: &Date, minutes: u32) -> f64;
+
+    /// The setMonth() method sets the month for a specified date according to the currently set year.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMonth
+    #[wasm_bindgen(method, js_name = setMonth)]
+    pub fn set_month(this: &Date, month: u32) -> f64;
+
+    /// The setSeconds() method sets the seconds for a specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setSeconds
+    #[wasm_bindgen(method, js_name = setSeconds)]
+    pub fn set_seconds(this: &Date, seconds: u32) -> f64;
+
+    /// The setTime() method sets the Date object to the time represented by a number of milliseconds
+    /// since January 1, 1970, 00:00:00 UTC.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setTime
+    #[wasm_bindgen(method, js_name = setTime)]
+    pub fn set_time(this: &Date, time: f64) -> f64;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     ///
