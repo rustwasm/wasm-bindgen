@@ -844,6 +844,43 @@ fn set_hours() {
 }
 
 #[test]
+fn set_milliseconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_milliseconds(this: &Date, milliseconds: u32) -> f64 {
+                this.set_milliseconds(milliseconds)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event = new Date('August 19, 1975 23:15:30');
+
+                let eventMsFromUnixEpoch = wasm.set_milliseconds(event, 456);
+
+                assert.equal(eventMsFromUnixEpoch, 177689730456);
+                assert.equal(event.getMilliseconds(), 456);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn to_date_string() {
     project()
         .file(

@@ -1042,6 +1042,12 @@ extern "C" {
     #[wasm_bindgen(method, js_name = setHours)]
     pub fn set_hours(this: &Date, hours: u32) -> f64;
 
+    /// The setMilliseconds() method sets the milliseconds for a specified date according to local time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMilliseconds
+    #[wasm_bindgen(method, js_name = setMilliseconds)]
+    pub fn set_milliseconds(this: &Date, milliseconds: u32) -> f64;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     ///
