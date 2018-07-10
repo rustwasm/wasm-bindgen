@@ -805,6 +805,45 @@ fn set_full_year() {
 }
 
 #[test]
+fn set_hours() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_hours(this: &Date, hours: u32) -> f64 {
+                this.set_hours(hours)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30');
+                let event2 = new Date('August 19, 1975 20:15:30');
+
+                let eventMsFromUnixEpoch = wasm.set_hours(event1, 20);
+
+                assert.equal(eventMsFromUnixEpoch, 177678930000);
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getHours(), 20);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn to_date_string() {
     project()
         .file(

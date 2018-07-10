@@ -1034,6 +1034,14 @@ extern "C" {
     #[wasm_bindgen(method, js_name = setFullYear)]
     pub fn set_full_year(this: &Date, year: u32) -> f64;
 
+    /// The setHours() method sets the hours for a specified date according to local time,
+    /// and returns the number of milliseconds since January 1, 1970 00:00:00 UTC until the time represented
+    /// by the updated Date instance.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setHours
+    #[wasm_bindgen(method, js_name = setHours)]
+    pub fn set_hours(this: &Date, hours: u32) -> f64;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     ///
