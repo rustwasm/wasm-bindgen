@@ -4,10 +4,7 @@ version = "0.2.11"
 authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
 
 [dev-dependencies]
-diff = "0.1.11"
-env_logger = "0.5.10"
-wasm-bindgen = { path = "../..", default-features = false }
-wasm-bindgen-backend = { version = "=0.2.11", path = "../backend", features = ["extra-traits"] }
+wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.11' }
 
 [dependencies]
 failure = "0.1"

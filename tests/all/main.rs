@@ -24,4 +24,3 @@ mod structural;
 mod typescript;
 mod u64;
 mod validate_prt;
-mod webidl;
