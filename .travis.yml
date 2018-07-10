@@ -114,8 +114,8 @@ matrix:
       env: JOB=check-nightly-cli
       script: cargo check --manifest-path crates/cli/Cargo.toml
 
-    # Build the guide.
-    - rust: stable
+    # Build documentation for the gh-pages branch
+    - rust: nightly
       env: JOB=guide-build-and-deploy
       cache:
         - cargo
@@ -125,6 +125,9 @@ matrix:
         - cargo install-update -a
       script:
         - (cd guide && mdbook build)
+        - cargo doc -p wasm-bindgen --no-deps
+        - cargo doc -p web-sys --no-deps
+        - mv target/doc guide/book/api
       deploy:
         provider: pages
         skip-cleanup: true
