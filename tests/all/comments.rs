@@ -41,7 +41,8 @@ fn works() {
     p.gen_bindings();
     let js = p.read_js();
     let comments = extract_doc_comments(&js);
-    assert!(comments.iter().all(|c| c == "This comment should exist"));
+    assert!(comments.iter().all(|c| c == "This comment should exist" ||
+                                    c.starts_with("@")));
 }
 
 /// Pull out all lines in a js string that start with

@@ -443,7 +443,7 @@ fn reset_indentation(s: &str) -> String {
 
     for line in s.lines() {
         let line = line.trim();
-        if line.starts_with('}') || line.ends_with('}') {
+        if line.starts_with('}') || (line.ends_with('}') && !line.starts_with('*')) {
             indent = indent.saturating_sub(1);
         }
         let extra = if line.starts_with(':') || line.starts_with('?') { 1 } else { 0 };
