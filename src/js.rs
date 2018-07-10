@@ -216,6 +216,16 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn length(this: &Array) -> u32;
 
+    /// map calls a provided callback function once for each element in an array, 
+    /// in order, and constructs a new array from the results. callback is invoked 
+    /// only for indexes of the array which have assigned values, including undefined. 
+    /// It is not called for missing elements of the array (that is, indexes that have 
+    /// never been set, which have been deleted or which have never been assigned a value).
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+    #[wasm_bindgen(method)]
+    pub fn map(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> JsValue) -> Array;
+
     /// The pop() method removes the last element from an array and returns that
     /// element. This method changes the length of the array.
     ///
