@@ -301,10 +301,9 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(length: u32) -> ArrayBuffer;
 
-    /// The `slice()` method returns a new `ArrayBuffer` whose contents
-    /// are a copy of this `ArrayBuffer`'s bytes from begin, inclusive,
-    /// up to end, exclusive.
-    ///
+    /// The `isView()` method returns true if arg is one of the `ArrayBuffer`
+    /// views, such as typed array objects or a DataView; false otherwise.
+    /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/isView
     #[wasm_bindgen(static_method_of = ArrayBuffer, js_name = isView)]
     pub fn is_view(value: JsValue) -> bool;
