@@ -416,3 +416,156 @@ fn to_string_tag() {
         )
         .test();
 }
+
+#[test]
+fn for_() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn symbol_for(key: &js::JsString) -> js::Symbol {
+                js::Symbol::for_(key)
+            }
+
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.strictEqual(wasm.symbol_for("bar"), wasm.symbol_for("bar"));
+                assert.strictEqual(wasm.symbol_for("bar"), Symbol.for("bar"));
+
+                assert.notStrictEqual(wasm.symbol_for("foo"), Symbol("bar"));
+                assert.notStrictEqual(wasm.symbol_for("foo"), wasm.symbol_for("bar"));
+
+                var sym = wasm.symbol_for("mario");
+                assert.equal(sym.toString(), "Symbol(mario)");
+            }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn key_for() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn symbol_key_for(sym: &js::Symbol) -> js::JsString {
+                js::Symbol::key_for(sym)
+            }
+
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                var globalSym = Symbol.for("foo");
+                assert.strictEqual(wasm.symbol_key_for(globalSym), 'foo');
+
+                var localSym = Symbol();
+                assert.strictEqual(wasm.symbol_key_for(localSym), undefined);
+
+                assert.strictEqual(wasm.symbol_key_for(Symbol.iterator), undefined);
+            }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn to_string() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn symbol_to_string(this: &js::Symbol) -> js::JsString {
+                js::Symbol::to_string(this)
+            }
+
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.strictEqual(wasm.symbol_to_string(Symbol('desc')), 'Symbol(desc)');
+
+                assert.strictEqual(wasm.symbol_to_string(Symbol.iterator), 'Symbol(Symbol.iterator)');
+
+                assert.strictEqual(wasm.symbol_to_string(Symbol.for('foo')), 'Symbol(foo)');
+            }
+        "#,
+        )
+        .test();
+}
+
+#[test]
+fn value_of() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn symbol_value_of(this: &js::Symbol) -> js::Symbol {
+                js::Symbol::value_of(this)
+            }
+
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                var globalSym = Symbol.for("foo");
+                assert.strictEqual(wasm.symbol_value_of(globalSym), globalSym);
+
+                var localSym = Symbol();
+                assert.strictEqual(wasm.symbol_value_of(localSym), localSym);
+            }
+        "#,
+        )
+        .test();
+}

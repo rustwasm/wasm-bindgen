@@ -1834,6 +1834,32 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toString
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = toStringTag)]
     pub fn to_string_tag() -> Symbol;
+
+    /// The Symbol.for(key) method searches for existing symbols in a runtime-wide symbol registry with
+    /// the given key and returns it if found.
+    /// Otherwise a new symbol gets created in the global symbol registry with this key.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/for
+    #[wasm_bindgen(static_method_of = Symbol, js_name = for)]
+    pub fn for_(key: &JsString) -> Symbol;
+
+    /// The Symbol.keyFor(sym) method retrieves a shared symbol key from the global symbol registry for the given symbol.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/keyFor
+    #[wasm_bindgen(static_method_of = Symbol, js_name = keyFor)]
+    pub fn key_for(sym: &Symbol) -> JsString;
+
+    /// The toString() method returns a string representing the specified Symbol object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toString
+    #[wasm_bindgen(method, js_name = toString)]
+    pub fn to_string(this: &Symbol) -> JsString;
+
+    /// The valueOf() method returns the primitive value of a Symbol object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/valueOf
+    #[wasm_bindgen(method, js_name = valueOf)]
+    pub fn value_of(this: &Symbol) -> Symbol;
 }
 
 // Intl
