@@ -1054,6 +1054,12 @@ extern "C" {
     #[wasm_bindgen(method, js_name = setMinutes)]
     pub fn set_minutes(this: &Date, minutes: u32) -> f64;
 
+    /// The setMonth() method sets the month for a specified date according to the currently set year.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setMonth
+    #[wasm_bindgen(method, js_name = setMonth)]
+    pub fn set_month(this: &Date, month: u32) -> f64;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     ///

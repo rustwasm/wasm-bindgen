@@ -920,6 +920,45 @@ fn set_minutes() {
 }
 
 #[test]
+fn set_month() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_month(this: &Date, month: u32) -> f64 {
+                this.set_month(month)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30');
+                let event2 = new Date('April 19, 1975 23:15:30');
+
+                let eventMsFromUnixEpoch = wasm.set_month(event1, 3);
+
+                assert.equal(eventMsFromUnixEpoch, 167148930000);
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getMonth(), 3);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn to_date_string() {
     project()
         .file(
