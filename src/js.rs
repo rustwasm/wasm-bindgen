@@ -1066,6 +1066,13 @@ extern "C" {
     #[wasm_bindgen(method, js_name = setSeconds)]
     pub fn set_seconds(this: &Date, seconds: u32) -> f64;
 
+    /// The setTime() method sets the Date object to the time represented by a number of milliseconds
+    /// since January 1, 1970, 00:00:00 UTC.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setTime
+    #[wasm_bindgen(method, js_name = setTime)]
+    pub fn set_time(this: &Date, time: f64) -> f64;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     ///
