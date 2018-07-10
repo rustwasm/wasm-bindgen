@@ -756,7 +756,7 @@ fn set_date() {
 
                 let eventMsFromUnixEpoch = wasm.set_date(event1, 24);
 
-                assert.equal(eventMsFromUnixEpoch, 178121730000);
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
                 assert.equal(event1.getTime(), event2.valueOf());
                 assert.equal(event1.getDate(), 24);
             }
@@ -795,7 +795,7 @@ fn set_full_year() {
 
                 let eventMsFromUnixEpoch = wasm.set_full_year(event1, 1976);
 
-                assert.equal(eventMsFromUnixEpoch, 209312130000);
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
                 assert.equal(event1.getTime(), event2.valueOf());
                 assert.equal(event1.getFullYear(), 1976);
             }
@@ -834,7 +834,7 @@ fn set_hours() {
 
                 let eventMsFromUnixEpoch = wasm.set_hours(event1, 20);
 
-                assert.equal(eventMsFromUnixEpoch, 177678930000);
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
                 assert.equal(event1.getTime(), event2.valueOf());
                 assert.equal(event1.getHours(), 20);
             }
@@ -872,7 +872,7 @@ fn set_milliseconds() {
 
                 let eventMsFromUnixEpoch = wasm.set_milliseconds(event, 456);
 
-                assert.equal(eventMsFromUnixEpoch, 177689730456);
+                assert.equal(eventMsFromUnixEpoch, event.getTime());
                 assert.equal(event.getMilliseconds(), 456);
             }
         "#,
@@ -910,7 +910,7 @@ fn set_minutes() {
 
                 let eventMsFromUnixEpoch = wasm.set_minutes(event1, 45);
 
-                assert.equal(eventMsFromUnixEpoch, 177691530000);
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
                 assert.equal(event1.getTime(), event2.valueOf());
                 assert.equal(event1.getMinutes(), 45);
             }
@@ -949,7 +949,7 @@ fn set_month() {
 
                 let eventMsFromUnixEpoch = wasm.set_month(event1, 3);
 
-                assert.equal(eventMsFromUnixEpoch, 167148930000);
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
                 assert.equal(event1.getTime(), event2.valueOf());
                 assert.equal(event1.getMonth(), 3);
             }
@@ -988,7 +988,7 @@ fn set_seconds() {
 
                 let eventMsFromUnixEpoch = wasm.set_seconds(event1, 42);
 
-                assert.equal(eventMsFromUnixEpoch, 177689742000);
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
                 assert.equal(event1.getTime(), event2.valueOf());
                 assert.equal(event1.getSeconds(), 42);
             }
@@ -1027,7 +1027,7 @@ fn set_time() {
 
                 let eventMsFromUnixEpoch = wasm.set_time(event2, event1.getTime());
 
-                assert.equal(eventMsFromUnixEpoch, 930754800000);
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
                 assert.equal(event1.valueOf(), event2.getTime());
             }
         "#,
