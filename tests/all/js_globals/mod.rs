@@ -6,6 +6,7 @@ mod Array;
 mod ArrayBuffer;
 mod ArrayIterator;
 mod Boolean;
+mod DataView;
 mod Date;
 mod Error;
 mod Function;
