@@ -83,7 +83,8 @@ matrix:
     # WebIDL tests pass on nightly
     - rust: nightly
       env: JOB=test-webidl
-      before_install: rustup component add rustfmt-preview --toolchain nightly
+      before_install: *INSTALL_NODE_VIA_NVM
+      install: npm install
       script: cargo test --manifest-path crates/webidl/Cargo.toml
 
     # Dist linux binary
