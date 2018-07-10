@@ -796,3 +796,37 @@ fn find() {
         )
         .test()
 }
+
+#[test]
+fn map() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+                use JsValue;
+
+                #[wasm_bindgen]
+                pub fn array_map(array: &js::Array) -> js::Array {
+                    array.map(&mut |el, _, _| JsValue::from_f64(el.as_f64().unwrap().sqrt()))
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    const numbers = [1, 4, 9];
+                    assert.deepStrictEqual(wasm.array_map(numbers), [1, 2, 3]);
+                }
+            "#,
+        )
+        .test()
+}
