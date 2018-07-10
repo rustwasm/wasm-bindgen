@@ -426,12 +426,18 @@ impl<'a> Context<'a> {
                         {globals}
                         function init(wasm_path) {{
                             return fetch(wasm_path)
-                                .then(response => response.arrayBuffer())
-                                .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
-                                .then(({{instance}}) => {{
-                                    wasm = init.wasm = instance.exports;
-                                    return;
-                                }});
+                                .then(response => response.arrayBuffer(), reason => console.log('Error start fetching', wasm_path, ':', reason))
+                                .then(
+                                    buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}),
+                                    reason => console.log('Error on streaming', wasm_path, ':', reason)
+                                )
+                                .then(
+                                    ({{instance}}) => {{
+                                        wasm = init.wasm = instance.exports;
+                                        return;
+                                    }},
+                                    reason => console.log('Error on instantiating', wasm_path, ':', reason)
+                                );
                         }};
                         self.{global_name} = Object.assign(init, __exports);
                     }})();
