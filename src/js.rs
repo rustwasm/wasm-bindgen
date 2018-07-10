@@ -1021,6 +1021,12 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Date)]
     pub fn parse(date: JsString) -> f64;
 
+    /// The setDate() method sets the day of the Date object relative to the beginning of the currently set month.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setDate
+    #[wasm_bindgen(method, js_name = setDate)]
+    pub fn set_date(this: &Date, day: u32) -> f64;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     ///
