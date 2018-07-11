@@ -1082,6 +1082,52 @@ extern "C" {
     #[wasm_bindgen(method, js_name = setTime)]
     pub fn set_time(this: &Date, time: f64) -> f64;
 
+    /// The setUTCDate() method sets the day of the month for a specified date
+    /// according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCDate
+    #[wasm_bindgen(method, js_name = setUTCDate)]
+    pub fn set_utc_date(this: &Date, day: u32) -> f64;
+
+    /// The setUTCFullYear() method sets the full year for a specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear
+    #[wasm_bindgen(method, js_name = setUTCFullYear)]
+    pub fn set_utc_full_year(this: &Date, year: u32) -> f64;
+
+    /// The setUTCHours() method sets the hour for a specified date according to universal time,
+    /// and returns the number of milliseconds since  January 1, 1970 00:00:00 UTC until the time
+    /// represented by the updated Date instance.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCHours
+    #[wasm_bindgen(method, js_name = setUTCHours)]
+    pub fn set_utc_hours(this: &Date, hours: u32) -> f64;
+
+    /// The setUTCMilliseconds() method sets the milliseconds for a specified date
+    /// according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMilliseconds
+    #[wasm_bindgen(method, js_name = setUTCMilliseconds)]
+    pub fn set_utc_milliseconds(this: &Date, milliseconds: u32) -> f64;
+
+    /// The setUTCMinutes() method sets the minutes for a specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMinutes
+    #[wasm_bindgen(method, js_name = setUTCMinutes)]
+    pub fn set_utc_minutes(this: &Date, minutes: u32) -> f64;
+
+    /// The setUTCMonth() method sets the month for a specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCMonth
+    #[wasm_bindgen(method, js_name = setUTCMonth)]
+    pub fn set_utc_month(this: &Date, month: u32) -> f64;
+
+    /// The setUTCSeconds() method sets the seconds for a specified date according to universal time.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCSeconds
+    #[wasm_bindgen(method, js_name = setUTCSeconds)]
+    pub fn set_utc_seconds(this: &Date, seconds: u32) -> f64;
+
     /// The toDateString() method returns the date portion of a Date object
     /// in human readable form in American English.
     ///
