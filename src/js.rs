@@ -394,21 +394,21 @@ extern "C" {
     /// The ArrayBuffer referenced by this view. Fixed at construction time and thus read only.
     /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/buffer
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, getter, structural)]
     pub fn buffer(this: &DataView) -> ArrayBuffer;
 
     /// The length (in bytes) of this view from the start of its ArrayBuffer.
     /// Fixed at construction time and thus read only.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/byteLength
-    #[wasm_bindgen(method, js_name = byteLength)]
+    #[wasm_bindgen(method, getter, structural, js_name = byteLength)]
     pub fn byte_length(this: &DataView) -> usize;
 
     /// The offset (in bytes) of this view from the start of its ArrayBuffer.
     /// Fixed at construction time and thus read only.
     /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/byteOffset
-    #[wasm_bindgen(method, js_name = byteOffset)]
+    #[wasm_bindgen(method, getter, structural, js_name = byteOffset)]
     pub fn byte_offset(this: &DataView) -> usize;
 
     /// The getInt8() method gets a signed 8-bit integer (byte) at the 
