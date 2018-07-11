@@ -41,17 +41,17 @@ fn method() {
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let pi = Foo::new(3.14159);
-                    let e = Foo::new(2.71828);
+                    let pi = Foo::new(3.14159).unwrap();
+                    let e = Foo::new(2.71828).unwrap();
                     // TODO: figure out why the following doesn't fail
-                    // assert!(!pi.my_cmp(Foo::new(3.14159)));
-                    let tmp = pi.my_cmp(Foo::new(3.14159));
+                    // assert!(!pi.my_cmp(Foo::new(3.14159).unwrap()));
+                    let tmp = pi.my_cmp(Foo::new(3.14159).unwrap());
                     assert!(tmp);
-                    let tmp =!pi.my_cmp(Foo::new(2.71828));
+                    let tmp =!pi.my_cmp(Foo::new(2.71828).unwrap());
                     assert!(tmp);
-                    let tmp = !e.my_cmp(Foo::new(3.14159));
+                    let tmp = !e.my_cmp(Foo::new(3.14159).unwrap());
                     assert!(tmp);
-                    let tmp = e.my_cmp(Foo::new(2.71828));
+                    let tmp = e.my_cmp(Foo::new(2.71828).unwrap());
                     assert!(tmp);
                 }
             "#,
@@ -105,7 +105,7 @@ fn property() {
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let x = Foo::new(3.14159);
+                    let x = Foo::new(3.14159).unwrap();
                     assert_eq!(x.value(), 3.14159);
                     assert_ne!(x.value(), 2.71828);
                     x.set_value(2.71828);
@@ -167,7 +167,7 @@ fn named_constructor() {
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let x = Foo::new(3.14159);
+                    let x = Foo::new(3.14159).unwrap();
                     assert_eq!(x.value(), 3.14159);
                     assert_ne!(x.value(), 0.);
                 }
@@ -317,7 +317,7 @@ fn one_method_using_an_undefined_import_doesnt_break_all_other_methods() {
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let f = foo::Foo::new();
+                    let f = foo::Foo::new().unwrap();
                     assert!(f.ok_method());
                 }
             "#,
@@ -362,7 +362,7 @@ fn unforgeable_is_structural() {
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let f = foo::Foo::new();
+                    let f = foo::Foo::new().unwrap();
                     assert_eq!(f.uno(), 1);
                     assert_eq!(f.dos(), 2);
                 }

@@ -1,7 +1,7 @@
-use std::iter;
+use std::iter::{self, FromIterator};
 
 use backend;
-use backend::util::{ident_ty, raw_ident, rust_ident, simple_path_ty};
+use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident, simple_path_ty};
 use heck::SnakeCase;
 use proc_macro2::Ident;
 use syn;
@@ -146,12 +146,40 @@ where
     Some(res)
 }
 
+fn unit_ty() -> syn::Type {
+    syn::Type::Tuple(syn::TypeTuple {
+        paren_token: Default::default(),
+        elems: syn::punctuated::Punctuated::new(),
+    })
+}
+
+fn result_ty(t: syn::Type) -> syn::Type {
+    let js_value = leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]);
+
+    let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
+        colon2_token: None,
+        lt_token: Default::default(),
+        args: FromIterator::from_iter(vec![
+            syn::GenericArgument::Type(t),
+            syn::GenericArgument::Type(js_value),
+        ]),
+        gt_token: Default::default(),
+    });
+
+    let ident = raw_ident("Result");
+    let seg = syn::PathSegment { ident, arguments };
+    let path: syn::Path = seg.into();
+    let ty = syn::TypePath { qself: None, path };
+    ty.into()
+}
+
 pub fn create_function<'a, I>(
     name: &str,
     arguments: I,
-    ret: Option<syn::Type>,
+    mut ret: Option<syn::Type>,
     kind: backend::ast::ImportFunctionKind,
     structural: bool,
+    catch: bool,
 ) -> Option<backend::ast::ImportFunction>
 where
     I: Iterator<Item = (&'a str, &'a webidl::ast::Type, bool)>,
@@ -162,6 +190,10 @@ where
     let arguments = webidl_arguments_to_syn_arg_captured(arguments, &kind)?;
 
     let js_ret = ret.clone();
+
+    if catch {
+        ret = Some(ret.map_or_else(|| result_ty(unit_ty()), |ret| result_ty(ret)))
+    }
 
     let shim = {
         let ns = match kind {
@@ -184,7 +216,7 @@ where
         },
         rust_name,
         js_ret,
-        catch: false,
+        catch,
         structural,
         kind,
         shim,
@@ -197,6 +229,7 @@ pub fn create_basic_method(
     return_type: &webidl::ast::ReturnType,
     self_name: &str,
     is_static: bool,
+    catch: bool,
 ) -> Option<backend::ast::ImportFunction> {
     let name = match name {
         None => {
@@ -235,6 +268,7 @@ pub fn create_basic_method(
         ret,
         kind,
         false,
+        catch,
     )
 }
 
@@ -244,6 +278,7 @@ pub fn create_getter(
     self_name: &str,
     is_static: bool,
     is_structural: bool,
+    catch: bool,
 ) -> Option<backend::ast::ImportFunction> {
     let ret = match webidl_ty_to_syn_ty(ty, TypePosition::Return) {
         None => {
@@ -262,7 +297,7 @@ pub fn create_getter(
         }),
     };
 
-    create_function(name, iter::empty(), ret, kind, is_structural)
+    create_function(name, iter::empty(), ret, kind, is_structural, catch)
 }
 
 pub fn create_setter(
@@ -271,6 +306,7 @@ pub fn create_setter(
     self_name: &str,
     is_static: bool,
     is_structural: bool,
+    catch: bool,
 ) -> Option<backend::ast::ImportFunction> {
     let kind = backend::ast::ImportFunctionKind::Method {
         class: self_name.to_string(),
@@ -287,6 +323,7 @@ pub fn create_setter(
         None,
         kind,
         is_structural,
+        catch,
     )
 }
 
@@ -310,6 +347,16 @@ pub fn is_structural(attrs: &[Box<ExtendedAttribute>]) -> bool {
     attrs.iter().any(|attr| {
         if let ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(ref name)) = **attr {
             name == "Unforgeable"
+        } else {
+            false
+        }
+    })
+}
+
+pub fn throws(attrs: &[Box<ExtendedAttribute>]) -> bool {
+    attrs.iter().any(|attr| {
+        if let ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(ref name)) = **attr {
+            name == "Throws"
         } else {
             false
         }

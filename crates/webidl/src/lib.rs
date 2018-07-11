@@ -77,7 +77,7 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
     let mut defined = BTreeSet::from_iter(
         vec![
             "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
-            "usize", "isize", "f32", "f64",
+            "usize", "isize", "f32", "f64", "Result",
         ].into_iter()
             .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
     );
@@ -210,11 +210,29 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
     ) -> Result<()> {
         let mut add_constructor = |arguments: &[webidl::ast::Argument], class: &str| {
             let self_ty = ident_ty(rust_ident(&interface.name));
+
             let kind = backend::ast::ImportFunctionKind::Method {
                 class: class.to_string(),
                 ty: self_ty.clone(),
                 kind: backend::ast::MethodKind::Constructor,
             };
+
+            let structural = false;
+
+            // Constructors aren't annotated with `[Throws]` extended attributes
+            // (how could they be, since they themselves are extended
+            // attributes?) so we must conservatively assume that they can
+            // always throw.
+            //
+            // From https://heycam.github.io/webidl/#Constructor (emphasis
+            // mine):
+            //
+            // > The prose definition of a constructor must either return an IDL
+            // > value of a type corresponding to the interface the
+            // > `[Constructor]` extended attribute appears on, **or throw an
+            // > exception**.
+            let throws = true;
+
             create_function(
                 "new",
                 arguments
@@ -222,7 +240,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                     .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
                 Some(self_ty),
                 kind,
-                false,
+                structural,
+                throws,
             ).map(|function| {
                 program.imports.push(backend::ast::Import {
                     module: None,
@@ -236,7 +255,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
         match self {
             webidl::ast::ExtendedAttribute::ArgumentList(
                 webidl::ast::ArgumentListExtendedAttribute { arguments, name },
-            ) if name == "Constructor" =>
+            )
+                if name == "Constructor" =>
             {
                 add_constructor(arguments, &interface.name);
             }
@@ -251,7 +271,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                     rhs_arguments,
                     rhs_name,
                 },
-            ) if lhs_name == "NamedConstructor" =>
+            )
+                if lhs_name == "NamedConstructor" =>
             {
                 add_constructor(rhs_arguments, rhs_name);
             }
@@ -322,14 +343,27 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
         }
 
         let is_structural = util::is_structural(&self.extended_attributes);
+        let throws = util::throws(&self.extended_attributes);
 
-        create_getter(&self.name, &self.type_, self_name, false, is_structural)
-            .map(wrap_import_function)
+        create_getter(
+            &self.name,
+            &self.type_,
+            self_name,
+            false,
+            is_structural,
+            throws,
+        ).map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(&self.name, &self.type_, self_name, false, is_structural)
-                .map(wrap_import_function)
+            create_setter(
+                &self.name,
+                &self.type_,
+                self_name,
+                false,
+                is_structural,
+                throws,
+            ).map(wrap_import_function)
                 .map(|import| program.imports.push(import));
         }
 
@@ -344,14 +378,27 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
         }
 
         let is_structural = util::is_structural(&self.extended_attributes);
+        let throws = util::throws(&self.extended_attributes);
 
-        create_getter(&self.name, &self.type_, self_name, true, is_structural)
-            .map(wrap_import_function)
+        create_getter(
+            &self.name,
+            &self.type_,
+            self_name,
+            true,
+            is_structural,
+            throws,
+        ).map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
         if !self.read_only {
-            create_setter(&self.name, &self.type_, self_name, true, is_structural)
-                .map(wrap_import_function)
+            create_setter(
+                &self.name,
+                &self.type_,
+                self_name,
+                true,
+                is_structural,
+                throws,
+            ).map(wrap_import_function)
                 .map(|import| program.imports.push(import));
         }
 
@@ -365,12 +412,15 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
             return Ok(());
         }
 
+        let throws = util::throws(&self.extended_attributes);
+
         create_basic_method(
             &self.arguments,
             self.name.as_ref(),
             &self.return_type,
             self_name,
             false,
+            throws,
         ).map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
@@ -384,12 +434,15 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
             return Ok(());
         }
 
+        let throws = util::throws(&self.extended_attributes);
+
         create_basic_method(
             &self.arguments,
             self.name.as_ref(),
             &self.return_type,
             self_name,
             true,
+            throws,
         ).map(wrap_import_function)
             .map(|import| program.imports.push(import));
 
