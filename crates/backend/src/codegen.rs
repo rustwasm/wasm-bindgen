@@ -645,9 +645,7 @@ impl ToTokens for ast::ImportEnum {
                     ::wasm_bindgen::convert::IntoWasmAbi>::Abi;
 
                 fn into_abi(self, extra: &mut ::wasm_bindgen::convert::Stack) -> Self::Abi {
-                    match self {
-                        #(#variant_paths_ref => ::wasm_bindgen::JsValue::from_str(#variant_strings).into_abi(extra),)*
-                    }
+                    ::wasm_bindgen::JsValue::from(self).into_abi(extra)
                 }
             }
 
