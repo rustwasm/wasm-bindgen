@@ -38,6 +38,23 @@ pub fn simple_path_ty<I>(segments: I) -> syn::Type
 where
     I: IntoIterator<Item = Ident>,
 {
+    path_ty(false, segments)
+}
+
+/// Create a global path type from the given segments. For example an iterator
+/// yielding the idents `[foo, bar, baz]` will result in the path type
+/// `::foo::bar::baz`.
+pub fn leading_colon_path_ty<I>(segments: I) -> syn::Type
+where
+    I: IntoIterator<Item = Ident>,
+{
+    path_ty(true, segments)
+}
+
+fn path_ty<I>(leading_colon: bool, segments: I) -> syn::Type
+where
+    I: IntoIterator<Item = Ident>,
+{
     let segments: Vec<_> = segments
         .into_iter()
         .map(|i| syn::PathSegment {
@@ -49,7 +66,11 @@ where
     syn::TypePath {
         qself: None,
         path: syn::Path {
-            leading_colon: None,
+            leading_colon: if leading_colon {
+                Some(Default::default())
+            } else {
+                None
+            },
             segments: syn::punctuated::Punctuated::from_iter(segments),
         },
     }.into()

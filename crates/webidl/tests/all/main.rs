@@ -3,3 +3,4 @@ use project_builder::project;
 
 mod simple;
 mod enums;
+mod throws;
