@@ -4,7 +4,7 @@ use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
 
 use ast;
-use proc_macro2::{Ident, Span, TokenStream};
+use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::ToTokens;
 use serde_json;
 use shared;
@@ -500,6 +500,7 @@ impl ToTokens for ast::ImportKind {
             ast::ImportKind::Function(ref f) => f.to_tokens(tokens),
             ast::ImportKind::Static(ref s) => s.to_tokens(tokens),
             ast::ImportKind::Type(ref t) => t.to_tokens(tokens),
+            ast::ImportKind::Enum(ref e) => e.to_tokens(tokens),
         }
     }
 }
@@ -580,6 +581,91 @@ impl ToTokens for ast::ImportType {
             impl From<#name> for ::wasm_bindgen::JsValue {
                 fn from(obj: #name) -> ::wasm_bindgen::JsValue {
                     obj.obj
+                }
+            }
+        }).to_tokens(tokens);
+    }
+}
+
+impl ToTokens for ast::ImportEnum {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let vis = &self.vis;
+        let name = &self.name;
+        let expect_string = format!("attempted to convert invalid JSValue into {}", name);
+        let variants = &self.variants;
+        let variant_strings = &self.variant_values;
+
+        let mut current_idx: usize = 0;
+        let variant_indexes: Vec<Literal> = variants
+            .iter()
+            .map(|_| {
+                let this_index = current_idx;
+                current_idx += 1;
+                Literal::usize_unsuffixed(this_index)
+            })
+            .collect();
+
+        // Borrow variant_indexes because we need to use it multiple times inside the quote! macro
+        let variant_indexes_ref = &variant_indexes;
+
+        // A vector of EnumName::VariantName tokens for this enum
+        let variant_paths: Vec<TokenStream> = self
+            .variants
+            .iter()
+            .map(|v| quote!(#name::#v).into_token_stream())
+            .collect();
+
+        // Borrow variant_paths because we need to use it multiple times inside the quote! macro
+        let variant_paths_ref = &variant_paths;
+
+        (quote! {
+            #[allow(bad_style)]
+            #[derive(Copy, Clone, Debug)]
+            #vis enum #name {
+                #(#variants = #variant_indexes_ref,)*
+            }
+
+            impl #name {
+                #vis fn from_js_value(obj: ::wasm_bindgen::JsValue) -> Option<#name> {
+                    obj.as_string().and_then(|obj_str| match obj_str.as_str() {
+                        #(#variant_strings => Some(#variant_paths_ref),)*
+                        _ => None,
+                    })
+                }
+            }
+
+            impl ::wasm_bindgen::describe::WasmDescribe for #name {
+                fn describe() {
+                    ::wasm_bindgen::JsValue::describe()
+                }
+            }
+
+            impl ::wasm_bindgen::convert::IntoWasmAbi for #name {
+                type Abi = <::wasm_bindgen::JsValue as
+                    ::wasm_bindgen::convert::IntoWasmAbi>::Abi;
+
+                fn into_abi(self, extra: &mut ::wasm_bindgen::convert::Stack) -> Self::Abi {
+                    ::wasm_bindgen::JsValue::from(self).into_abi(extra)
+                }
+            }
+
+            impl ::wasm_bindgen::convert::FromWasmAbi for #name {
+                type Abi = <::wasm_bindgen::JsValue as
+                    ::wasm_bindgen::convert::FromWasmAbi>::Abi;
+
+                unsafe fn from_abi(
+                    js: Self::Abi,
+                    extra: &mut ::wasm_bindgen::convert::Stack,
+                ) -> Self {
+                    #name::from_js_value(::wasm_bindgen::JsValue::from_abi(js, extra)).expect(#expect_string)
+                }
+            }
+
+            impl From<#name> for ::wasm_bindgen::JsValue {
+                fn from(obj: #name) -> ::wasm_bindgen::JsValue {
+                    match obj {
+                        #(#variant_paths_ref => ::wasm_bindgen::JsValue::from_str(#variant_strings)),*
+                    }
                 }
             }
         }).to_tokens(tokens);
@@ -755,6 +841,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
             ast::ImportKind::Function(ref f) => f,
             ast::ImportKind::Static(_) => return,
             ast::ImportKind::Type(_) => return,
+            ast::ImportKind::Enum(_) => return,
         };
         let describe_name = format!("__wbindgen_describe_{}", f.shim);
         let describe_name = Ident::new(&describe_name, Span::call_site());

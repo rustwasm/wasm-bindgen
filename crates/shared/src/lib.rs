@@ -33,6 +33,7 @@ pub enum ImportKind {
     Function(ImportFunction),
     Static(ImportStatic),
     Type(ImportType),
+    Enum(ImportEnum),
 }
 
 #[derive(Deserialize, Serialize)]
@@ -77,6 +78,9 @@ pub struct ImportStatic {
 
 #[derive(Deserialize, Serialize)]
 pub struct ImportType {}
+
+#[derive(Deserialize, Serialize)]
+pub struct ImportEnum {}
 
 #[derive(Deserialize, Serialize)]
 pub struct Export {
