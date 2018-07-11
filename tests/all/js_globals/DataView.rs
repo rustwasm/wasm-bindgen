@@ -17,9 +17,9 @@ fn test() {
                 let v = DataView::new(buffer, offset, len);
                 assert_eq!(v.byte_offset(), offset);
                 assert_eq!(v.byte_length(), len);
-                assert_eq!(v.get_int8(0), 3);
-                assert_eq!(v.get_uint8(0), 3);
-
+                assert_eq!(v.get_int8(0), 2);
+                assert_eq!(v.get_uint8(0), 2);
+                
                 v.set_int8(0, 42);
                 assert_eq!(v.get_int8(0), 42);
                 v.set_uint8(0, 255);
@@ -37,7 +37,7 @@ fn test() {
                 v.set_float64(0, 123456789.123456);
                 assert_eq!(v.get_float64(0), 123456789.123456);
 
-                v.set_int8(0, 4+2);
+                v.set_int8(0, 42);
             }
         "#)
         .file("test.js", r#"
@@ -45,9 +45,10 @@ fn test() {
             import * as wasm from "./out";
 
             export function test() {
-                var buffer = Uint8Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-                wasm.test_data_view(buffer, 2, 8);
-                assert.equal(buffer[2], 42);
+                var bytes = new Int8Array(10);
+                bytes[2] = 2;
+                wasm.test_data_view(bytes.buffer, 2, 8);
+                assert.equal(bytes[2], 42);
             }
         "#)
         .test()
