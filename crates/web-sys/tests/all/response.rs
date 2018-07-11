@@ -1,10 +1,8 @@
-use super::project;
+use super::websys_project;
 
 #[test]
 fn response() {
-    project()
-        .add_local_dependency("web-sys", env!("CARGO_MANIFEST_DIR"))
-        .headless(true)
+    websys_project()
         .file(
             "src/lib.rs",
             r#"
