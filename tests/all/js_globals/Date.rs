@@ -1036,6 +1036,279 @@ fn set_time() {
 }
 
 #[test]
+fn set_utc_date() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_utc_date(this: &Date, day: u32) -> f64 {
+                this.set_utc_date(day)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30 GMT-3:00');
+                let event2 = new Date('August 19, 1975 02:15:30 GMT');
+
+                let eventMsFromUnixEpoch = wasm.set_utc_date(event1, 19);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getUTCDate(), 19);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_utc_full_year() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_utc_full_year(this: &Date, year: u32) -> f64 {
+                this.set_utc_full_year(year)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('December 31, 1975 23:15:30 GMT-3:00');
+                let event2 = new Date('January 01, 1975 02:15:30 GMT');
+
+                let eventMsFromUnixEpoch = wasm.set_utc_full_year(event1, 1975);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getUTCFullYear(), 1975);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_utc_hours() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_utc_hours(this: &Date, hours: u32) -> f64 {
+                this.set_utc_hours(hours)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30 GMT-3:00');
+                let event2 = new Date('August 20, 1975 23:15:30 GMT');
+
+                let eventMsFromUnixEpoch = wasm.set_utc_hours(event1, 23);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getUTCHours(), 23);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_utc_milliseconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_utc_milliseconds(this: &Date, milliseconds: u32) -> f64 {
+                this.set_utc_milliseconds(milliseconds)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('August 19, 1975 23:15:30 GMT-3:00');
+                let event2 = new Date('August 20, 1975 02:15:30.420Z GMT');
+
+                let eventMsFromUnixEpoch = wasm.set_utc_milliseconds(event1, 420);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getUTCMilliseconds(), 420);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_utc_minutes() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_utc_minutes(this: &Date, minutes: u32) -> f64 {
+                this.set_utc_minutes(minutes)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('December 31, 1975, 23:15:30 GMT-3:00');
+                let event2 = new Date('January 01, 1976 02:25:30 GMT');
+
+                let eventMsFromUnixEpoch = wasm.set_utc_minutes(event1, 25);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getUTCMinutes(), 25);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_utc_month() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_utc_month(this: &Date, minutes: u32) -> f64 {
+                this.set_utc_month(minutes)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('December 31, 1975 23:15:30 GMT-3:00');
+                let event2 = new Date('December 01, 1976 02:15:30 GMT');
+
+                let eventMsFromUnixEpoch = wasm.set_utc_month(event1, 11);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getUTCMonth(), 11);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn set_utc_seconds() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js::Date;
+
+            #[wasm_bindgen]
+            pub fn set_utc_seconds(this: &Date, seconds: u32) -> f64 {
+                this.set_utc_seconds(seconds)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let event1 = new Date('December 31, 1975 23:15:30 GMT-3:00');
+                let event2 = new Date('January 01, 1976 02:15:39 GMT');
+
+                let eventMsFromUnixEpoch = wasm.set_utc_seconds(event1, 39);
+
+                assert.equal(eventMsFromUnixEpoch, event2.getTime());
+                assert.equal(event1.getTime(), event2.valueOf());
+                assert.equal(event1.getUTCSeconds(), 39);
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn to_date_string() {
     project()
         .file(
