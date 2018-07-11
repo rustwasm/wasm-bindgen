@@ -626,7 +626,7 @@ impl ToTokens for ast::ImportEnum {
             }
 
             impl #name {
-                fn from_js_value(obj: ::wasm_bindgen::JsValue) -> Option<#name> {
+                #vis fn from_js_value(obj: ::wasm_bindgen::JsValue) -> Option<#name> {
                     obj.as_string().and_then(|obj_str| match obj_str.as_str() {
                         #(#variant_strings => Some(#variant_paths_ref),)*
                         _ => None,
