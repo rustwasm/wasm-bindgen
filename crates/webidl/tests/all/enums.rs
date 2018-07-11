@@ -51,8 +51,8 @@ fn top_level_enum() {
 
             #[wasm_bindgen]
             pub fn test() {
-                let circle = Shape::new(ShapeType::Circle);
-                let square = Shape::new(ShapeType::Square);
+                let circle = Shape::new(ShapeType::Circle).unwrap();
+                let square = Shape::new(ShapeType::Square).unwrap();
                 assert!(circle.is_circle());
                 assert!(!circle.is_square());
                 assert!(square.is_square());
