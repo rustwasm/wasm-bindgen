@@ -591,7 +591,7 @@ impl ToTokens for ast::ImportEnum {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let vis = &self.vis;
         let name = &self.name;
-        let name_string = &self.name.to_string();
+        let expect_string = format!("attempted to convert invalid JSValue into {}", name);
         let variants = &self.variants;
         let variant_strings = &self.variant_values;
 
@@ -625,6 +625,15 @@ impl ToTokens for ast::ImportEnum {
                 #(#variants = #variant_indexes_ref,)*
             }
 
+            impl #name {
+                fn from_js_value(obj: ::wasm_bindgen::JsValue) -> Option<#name> {
+                    obj.as_string().and_then(|obj_str| match obj_str.as_str() {
+                        #(#variant_strings => Some(#variant_paths_ref),)*
+                        _ => None,
+                    })
+                }
+            }
+
             impl ::wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     ::wasm_bindgen::JsValue::describe()
@@ -650,21 +659,7 @@ impl ToTokens for ast::ImportEnum {
                     js: Self::Abi,
                     extra: &mut ::wasm_bindgen::convert::Stack,
                 ) -> Self {
-                    #name::from(::wasm_bindgen::JsValue::from_abi(js, extra))
-                }
-            }
-
-            impl From<::wasm_bindgen::JsValue> for #name {
-                fn from(obj: ::wasm_bindgen::JsValue) -> #name {
-                    let obj_str = match obj.as_string() {
-                        Some(string_value) => string_value,
-                        None => panic!("Can't convert a non-string into {}", #name_string),
-                    };
-
-                    match obj_str.as_str() {
-                        #(#variant_strings => #variant_paths_ref,)*
-                        unknown_value => panic!("Can't convert \"{}\" into {}", unknown_value, #name_string),
-                    }
+                    #name::from_js_value(::wasm_bindgen::JsValue::from_abi(js, extra)).expect(#expect_string)
                 }
             }
 
