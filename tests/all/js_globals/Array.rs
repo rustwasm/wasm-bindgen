@@ -830,3 +830,69 @@ fn map() {
         )
         .test()
 }
+
+#[test]
+fn reduce() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+                use JsValue;
+
+                #[wasm_bindgen]
+                pub fn array_reduce(array: &js::Array) -> JsValue {
+                    array.reduce(&mut |ac, cr, _, _| JsValue::from_str(&format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap().as_str())), JsValue::from_str(""))
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    assert.equal(wasm.array_reduce(['0', '1', '2', '3', '4']), '01234');
+                }
+            "#,
+        )
+        .test()
+}
+
+#[test]
+fn reduce_right() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+                use JsValue;
+
+                #[wasm_bindgen]
+                pub fn array_reduce_right(array: &js::Array) -> JsValue {
+                    array.reduce_right(&mut |ac, cr, _, _| JsValue::from_str(&format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap().as_str())), JsValue::from_str(""))
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    assert.equal(wasm.array_reduce_right(['0', '1', '2', '3', '4']), '43210');
+                }
+            "#,
+        )
+        .test()
+}
