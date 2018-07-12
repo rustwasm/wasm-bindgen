@@ -240,6 +240,20 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn push(this: &Array, value: JsValue) -> u32;
 
+    /// The reduce() method applies a function against an accumulator and each element in 
+    /// the array (from left to right) to reduce it to a single value.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+    #[wasm_bindgen(method)]
+    pub fn reduce(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: JsValue) -> JsValue;
+
+    /// The reduceRight() method applies a function against an accumulator and each value 
+    /// of the array (from right-to-left) to reduce it to a single value.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/ReduceRight
+    #[wasm_bindgen(method, js_name = reduceRight)]
+    pub fn reduce_right(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: JsValue) -> JsValue;
+
     /// The reverse() method reverses an array in place. The first array
     /// element becomes the last, and the last array element becomes the first.
     ///
