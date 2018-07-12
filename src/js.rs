@@ -418,7 +418,7 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getInt8)]
     pub fn get_int8(this: &DataView, byte_offset: usize) -> i8;
 
-    /// The getInt8() method gets a signed 8-bit integer (byte) at the specified
+    /// The getUint8() method gets a unsigned 8-bit integer (byte) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint8

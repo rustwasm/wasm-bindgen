@@ -45,7 +45,7 @@ fn test() {
             import * as wasm from "./out";
 
             export function test() {
-                var bytes = new Int8Array(10);
+                const bytes = new Int8Array(10);
                 bytes[2] = 2;
                 wasm.test_data_view(bytes.buffer, 2, 8);
                 assert.equal(bytes[2], 42);
