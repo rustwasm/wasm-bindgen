@@ -29,12 +29,12 @@ use std::path::Path;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::ResultExt;
-use heck::CamelCase;
+use heck::{CamelCase, ShoutySnakeCase};
 use quote::ToTokens;
 
 use util::{
-    create_basic_method, create_function, create_getter, create_setter, webidl_ty_to_syn_ty,
-    TypePosition,
+    create_basic_method, create_function, create_getter, create_setter, webidl_const_ty_to_syn_ty,
+    webidl_const_v_to_backend_const_v, webidl_ty_to_syn_ty, TypePosition,
 };
 
 /// Either `Ok(t)` or `Err(failure::Error)`.
@@ -297,9 +297,9 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::InterfaceMember {
                 attr.webidl_parse(program, self_name)
             }
             webidl::ast::InterfaceMember::Operation(ref op) => op.webidl_parse(program, self_name),
+            webidl::ast::InterfaceMember::Const(ref c) => c.webidl_parse(program, self_name),
             // TODO
-            webidl::ast::InterfaceMember::Const(_)
-            | webidl::ast::InterfaceMember::Iterable(_)
+            webidl::ast::InterfaceMember::Iterable(_)
             | webidl::ast::InterfaceMember::Maplike(_)
             | webidl::ast::InterfaceMember::Setlike(_) => {
                 warn!("Unsupported WebIDL interface member: {:?}", self);
@@ -471,6 +471,31 @@ impl<'a> WebidlParse<()> for webidl::ast::Enum {
             }),
         });
 
+        Ok(())
+    }
+}
+
+impl<'a> WebidlParse<&'a str> for webidl::ast::Const {
+    fn webidl_parse(
+        &self,
+        program: &mut backend::ast::Program,
+        interface_name: &'a str,
+    ) -> Result<()> {
+        let syn_ty = webidl_const_ty_to_syn_ty(&self.type_);
+        program.imports.push(backend::ast::Import {
+            module: None,
+            version: None,
+            js_namespace: None,
+            kind: backend::ast::ImportKind::Const(backend::ast::Const {
+                vis: syn::Visibility::Public(syn::VisPublic {
+                    pub_token: Default::default(),
+                }),
+                name: rust_ident(self.name.to_shouty_snake_case().as_str()),
+                interface_name: rust_ident(interface_name),
+                ty: syn_ty,
+                value: webidl_const_v_to_backend_const_v(&self.value),
+            }),
+        });
         Ok(())
     }
 }
