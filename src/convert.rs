@@ -77,7 +77,6 @@ pub trait RefMutFromWasmAbi: WasmDescribe {
 
 pub trait Stack {
     fn push(&mut self, bits: u32);
-    fn pop(&mut self) -> u32;
 }
 
 /// An unsafe trait which represents types that are ABI-safe to pass via wasm
@@ -426,15 +425,6 @@ impl Stack for GlobalStack {
             assert!(self.next < GLOBAL_STACK_CAP);
             GLOBAL_STACK[self.next] = val;
             self.next += 1;
-        }
-    }
-
-    fn pop(&mut self) -> u32 {
-        unsafe {
-            assert!(self.next < GLOBAL_STACK_CAP);
-            let ret = GLOBAL_STACK[self.next];
-            self.next += 1;
-            ret
         }
     }
 }
