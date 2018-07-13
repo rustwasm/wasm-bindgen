@@ -5,7 +5,7 @@
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
 
-#![feature(use_extern_macros, wasm_import_module, try_reserve, unsize)]
+#![feature(use_extern_macros, wasm_import_module, unsize)]
 #![cfg_attr(feature = "js_globals", feature(proc_macro, wasm_custom_section))]
 #![no_std]
 
@@ -661,24 +661,29 @@ pub mod __rt {
     }
 
     if_std! {
-        use std::prelude::v1::*;
+        use std::alloc::{System, GlobalAlloc, Layout};
+        use std::mem;
 
         #[no_mangle]
         pub extern fn __wbindgen_malloc(size: usize) -> *mut u8 {
-            use core::mem;
-
-            let mut ret = Vec::new();
-            if ret.try_reserve_exact(size).is_err() {
-                super::throw("invalid malloc request");
+            let align = mem::align_of::<usize>();
+            if let Ok(layout) = Layout::from_size_align(size, align) {
+                unsafe {
+                    let ptr = System.alloc(layout);
+                    if !ptr.is_null() {
+                        return ptr
+                    }
+                }
             }
-            let ptr = ret.as_mut_ptr();
-            mem::forget(ret);
-            return ptr
+
+            super::throw("invalid malloc request");
         }
 
         #[no_mangle]
         pub unsafe extern fn __wbindgen_free(ptr: *mut u8, size: usize) {
-            drop(Vec::<u8>::from_raw_parts(ptr, 0, size));
+            let align = mem::align_of::<usize>();
+            let layout = Layout::from_size_align_unchecked(size, align);
+            System.dealloc(ptr, layout);
         }
     }
 
