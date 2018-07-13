@@ -501,6 +501,7 @@ impl ToTokens for ast::ImportKind {
             ast::ImportKind::Static(ref s) => s.to_tokens(tokens),
             ast::ImportKind::Type(ref t) => t.to_tokens(tokens),
             ast::ImportKind::Enum(ref e) => e.to_tokens(tokens),
+            ast::ImportKind::Const(ref c) => c.to_tokens(tokens),
         }
     }
 }
@@ -842,6 +843,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
             ast::ImportKind::Static(_) => return,
             ast::ImportKind::Type(_) => return,
             ast::ImportKind::Enum(_) => return,
+            ast::ImportKind::Const(_) => return,
         };
         let describe_name = format!("__wbindgen_describe_{}", f.shim);
         let describe_name = Ident::new(&describe_name, Span::call_site());
@@ -956,5 +958,43 @@ impl ToTokens for ast::TypeAlias {
             #[allow(non_camel_case_types)]
             #vis type #dest = #src;
         }).to_tokens(into);
+    }
+}
+
+impl ToTokens for ast::Const {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        use ast::ConstValue::*;
+
+        let vis = &self.vis;
+        let name = &self.name;
+        let interface_name = &self.interface_name;
+        let ty = &self.ty;
+
+        let value: TokenStream = match self.value {
+            BooleanLiteral(false) => quote!(false),
+            BooleanLiteral(true) => quote!(true),
+            // the actual type is unknown because of typedefs
+            // so we cannot use std::fxx::INFINITY
+            // but we can use type inference
+            FloatLiteral(f) if f.is_infinite() && f.is_sign_positive() => quote!(1.0 / 0.0),
+            FloatLiteral(f) if f.is_infinite() && f.is_sign_negative() => quote!(-1.0 / 0.0),
+            FloatLiteral(f) if f.is_nan() => quote!(0.0 / 0.0),
+            // again no suffix
+            // panics on +-inf, nan
+            FloatLiteral(f) => {
+                let f = Literal::f64_unsuffixed(f);
+                quote!(#f)
+            },
+            IntegerLiteral(i) => {
+                let i = Literal::i64_unsuffixed(i);
+                quote!(#i)
+            },
+            Null => unimplemented!(),
+        };
+        (quote! {
+            impl #interface_name {
+                #vis const #name: #ty = #value;
+            }
+        }).to_tokens(tokens);
     }
 }
