@@ -687,5 +687,53 @@ pub mod __rt {
         }
     }
 
-    pub fn link_this_library() {}
+    /// This is a curious function necessary to get wasm-bindgen working today,
+    /// and it's a bit of an unfortunate hack.
+    ///
+    /// The general problem is that somehow we need the above two symbols to
+    /// exist in the final output binary (__wbindgen_malloc and
+    /// __wbindgen_free). These symbols may be called by JS for various
+    /// bindings, so we for sure need to make sure they're exported.
+    ///
+    /// The problem arises, though, when what if no Rust code uses the symbols?
+    /// For all intents and purposes it looks to LLVM and the linker like the
+    /// above two symbols are dead code, so they're completely discarded!
+    ///
+    /// Specifically what happens is this:
+    ///
+    /// * The above two symbols are generated into some object file inside of
+    ///   libwasm_bindgen.rlib
+    /// * The linker, LLD, will not load this object file unless *some* symbol
+    ///   is loaded from the object. In this case, if the Rust code never calls
+    ///   __wbindgen_malloc or __wbindgen_free then the symbols never get linked
+    ///   in.
+    /// * Later when `wasm-bindgen` attempts to use the symbols they don't
+    ///   exist, causing an error.
+    ///
+    /// This function is a weird hack for this problem. We inject a call to this
+    /// function in all generated code. Usage of this function should then
+    /// ensure that the above two intrinsics are translated.
+    ///
+    /// Due to how rustc creates object files this function (and anything inside
+    /// it) will be placed into the same object file as the two intrinsics
+    /// above. That means if this function is called and referenced we'll pull
+    /// in the object file and link the intrinsics.
+    ///
+    /// Note that this is an #[inline] function to remove the function call
+    /// overhead we inject in functions, but right now it's unclear how to do
+    /// this in a zero-cost fashion. The lowest cost seems to be generating a
+    /// store that can't be optimized away (to a global), which is listed below.
+    ///
+    /// Ideas for how to improve this are most welcome!
+    #[inline]
+    pub fn link_mem_intrinsics() {
+        // the above symbols only exist with the `std` feature enabled.
+        if !cfg!(feature = "std") {
+            return
+        }
+
+        use core::sync::atomic::*;
+        static FOO: AtomicUsize = ATOMIC_USIZE_INIT;
+        FOO.store(0, Ordering::SeqCst);
+    }
 }
