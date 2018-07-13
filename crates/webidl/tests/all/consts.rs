@@ -127,3 +127,64 @@ fn ints() {
         )
         .test();
 }
+
+#[test]
+fn floats() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+                interface floats {
+                    const float f = 0.0;
+                    const unrestricted float neg_inf = -Infinity;
+                    const unrestricted float inf = Infinity;
+                    const unrestricted float nan = NaN;
+                };
+                interface doubles {
+                    const double d = 0.0;
+                    const unrestricted double neg_inf = -Infinity;
+                    const unrestricted double inf = Infinity;
+                    const unrestricted double nan = NaN;
+                };
+            "#,
+        )
+        // a corresponding const in the js implementation is not required
+        // value is taken directly from idl
+        .file(
+            "foo.js",
+            r#"
+                export class floats {
+                }
+                export class doubles {
+                }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+
+                pub mod foo;
+
+                #[wasm_bindgen]
+                pub fn test() {
+                    assert_eq!(foo::floats::F, 0.0);
+                    assert!(foo::floats::NEG_INF.is_infinite());
+                    assert!(foo::floats::NEG_INF.is_sign_negative());
+                    assert!(foo::floats::INF.is_infinite());
+                    assert!(foo::floats::INF.is_sign_positive());
+                    assert!(foo::floats::NAN.is_nan());
+
+                    assert_eq!(foo::doubles::D, 0.0);
+                    assert!(foo::doubles::NEG_INF.is_infinite());
+                    assert!(foo::doubles::NEG_INF.is_sign_negative());
+                    assert!(foo::doubles::INF.is_infinite());
+                    assert!(foo::doubles::INF.is_sign_positive());
+                    assert!(foo::doubles::NAN.is_nan());
+                }
+            "#,
+        )
+        .test();
+}
