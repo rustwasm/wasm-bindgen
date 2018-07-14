@@ -43,16 +43,10 @@ fn method() {
                 pub fn test() {
                     let pi = Foo::new(3.14159).unwrap();
                     let e = Foo::new(2.71828).unwrap();
-                    // TODO: figure out why the following doesn't fail
-                    // assert!(!pi.my_cmp(Foo::new(3.14159).unwrap()));
-                    let tmp = pi.my_cmp(Foo::new(3.14159).unwrap());
-                    assert!(tmp);
-                    let tmp =!pi.my_cmp(Foo::new(2.71828).unwrap());
-                    assert!(tmp);
-                    let tmp = !e.my_cmp(Foo::new(3.14159).unwrap());
-                    assert!(tmp);
-                    let tmp = e.my_cmp(Foo::new(2.71828).unwrap());
-                    assert!(tmp);
+                    assert!(pi.my_cmp(&pi));
+                    assert!(!pi.my_cmp(&e));
+                    assert!(!e.my_cmp(&pi));
+                    assert!(e.my_cmp(&e));
                 }
             "#,
         )
@@ -365,6 +359,133 @@ fn unforgeable_is_structural() {
                     let f = foo::Foo::new().unwrap();
                     assert_eq!(f.uno(), 1);
                     assert_eq!(f.dos(), 2);
+                }
+            "#,
+        )
+        .test();
+}
+
+#[test]
+fn partial_interface() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+                [Constructor]
+                interface Foo {
+                    readonly attribute short un;
+                    short deux();
+                };
+
+                partial interface Foo {
+                    readonly attribute short trois;
+                    short quatre();
+                };
+            "#,
+        )
+        .file(
+            "foo.js",
+            r#"
+                export class Foo {
+                    get un() {
+                        return 1;
+                    }
+                    deux() {
+                        return 2;
+                    }
+                    get trois() {
+                        return 3;
+                    }
+                    quatre() {
+                        return 4;
+                    }
+                }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+
+                pub mod foo;
+
+                #[wasm_bindgen]
+                pub fn test() {
+                    let f = foo::Foo::new().unwrap();
+                    assert_eq!(f.un(), 1);
+                    assert_eq!(f.deux(), 2);
+                    assert_eq!(f.trois(), 3);
+                    assert_eq!(f.quatre(), 4);
+                }
+            "#,
+        )
+        .test();
+}
+
+#[test]
+fn mixin() {
+    project()
+        .file(
+            "foo.webidl",
+            r#"
+                [Constructor(short bar)]
+                interface Foo {
+                    static attribute short defaultBar;
+                };
+
+                interface mixin Bar {
+                    readonly attribute short bar;
+                };
+
+                partial interface mixin Bar {
+                    void addToBar(short other);
+                };
+
+                Foo includes Bar;
+            "#,
+        )
+        .file(
+            "foo.js",
+            r#"
+                export class Foo {
+                    constructor(bar) {
+                        this._bar = bar | Foo.defaultBar;
+                    }
+                    static get defaultBar() {
+                        return Foo._defaultBar;
+                    }
+                    static set defaultBar(defaultBar) {
+                        Foo._defaultBar = defaultBar;
+                    }
+                    get bar() {
+                        return this._bar;
+                    }
+                    addToBar(other) {
+                        this._bar += other;
+                    }
+                }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section, wasm_import_module)]
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+
+                pub mod foo;
+
+                use foo::Foo;
+
+                #[wasm_bindgen]
+                pub fn test() {
+                    let f = Foo::new(1).unwrap();
+                    assert_eq!(f.bar(), 1);
+                    Foo::set_default_bar(7);
+                    f.add_to_bar(Foo::default_bar());
+                    assert_eq!(f.bar(), 8);
                 }
             "#,
         )

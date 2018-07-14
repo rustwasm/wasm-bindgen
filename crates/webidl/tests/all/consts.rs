@@ -170,19 +170,19 @@ fn floats() {
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    assert_eq!(foo::floats::F, 0.0);
-                    assert!(foo::floats::NEG_INF.is_infinite());
-                    assert!(foo::floats::NEG_INF.is_sign_negative());
-                    assert!(foo::floats::INF.is_infinite());
-                    assert!(foo::floats::INF.is_sign_positive());
-                    assert!(foo::floats::NAN.is_nan());
+                    assert_eq!(foo::Floats::F, 0.0_f32);
+                    assert!(foo::Floats::NEG_INF.is_infinite());
+                    assert!(foo::Floats::NEG_INF.is_sign_negative());
+                    assert!(foo::Floats::INF.is_infinite());
+                    assert!(foo::Floats::INF.is_sign_positive());
+                    assert!(foo::Floats::NAN.is_nan());
 
-                    assert_eq!(foo::doubles::D, 0.0);
-                    assert!(foo::doubles::NEG_INF.is_infinite());
-                    assert!(foo::doubles::NEG_INF.is_sign_negative());
-                    assert!(foo::doubles::INF.is_infinite());
-                    assert!(foo::doubles::INF.is_sign_positive());
-                    assert!(foo::doubles::NAN.is_nan());
+                    assert_eq!(foo::Doubles::D, 0.0_f64);
+                    assert!(foo::Doubles::NEG_INF.is_infinite());
+                    assert!(foo::Doubles::NEG_INF.is_sign_negative());
+                    assert!(foo::Doubles::INF.is_infinite());
+                    assert!(foo::Doubles::INF.is_sign_positive());
+                    assert!(foo::Doubles::NAN.is_nan());
                 }
             "#,
         )

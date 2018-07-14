@@ -1758,7 +1758,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
             shared::ImportKind::Type(_) => {}
             shared::ImportKind::Enum(_) => {}
-            shared::ImportKind::Const(_) => {}
         }
         Ok(())
     }
@@ -1918,9 +1917,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             "
                             const {}_target = {} {} ;
                             ",
-                            import.shim,
-                            target,
-                            fallback
+                            import.shim, target, fallback
                         ));
                         format!(
                             "{}_target{}",
@@ -2020,9 +2017,7 @@ fn format_doc_comments(comments: &Vec<String>, js_doc_comments: Option<String>) 
         .map(|c| format!("*{}\n", c.trim_matches('"')))
         .collect();
     let doc = if let Some(docs) = js_doc_comments {
-        docs.lines()
-            .map(|l| format!("* {} \n", l))
-            .collect()
+        docs.lines().map(|l| format!("* {} \n", l)).collect()
     } else {
         String::new()
     };

@@ -70,6 +70,7 @@ impl ImportedTypes for ast::Program {
     {
         self.imports.imported_types(f);
         self.type_aliases.imported_types(f);
+        self.consts.imported_types(f);
     }
 }
 
@@ -106,7 +107,6 @@ impl ImportedTypes for ast::ImportKind {
             ast::ImportKind::Function(fun) => fun.imported_types(f),
             ast::ImportKind::Type(ty) => ty.imported_types(f),
             ast::ImportKind::Enum(enm) => enm.imported_types(f),
-            ast::ImportKind::Const(c) => c.imported_types(f),
         }
     }
 }
@@ -254,6 +254,7 @@ impl RemoveUndefinedImports for ast::Program {
     {
         self.imports.remove_undefined_imports(is_defined);
         self.type_aliases.remove_undefined_imports(is_defined);
+        self.consts.remove_undefined_imports(is_defined);
     }
 }
 
