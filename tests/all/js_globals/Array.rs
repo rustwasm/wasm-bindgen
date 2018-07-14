@@ -42,6 +42,57 @@ fn filter() {
 }
 
 #[test]
+fn for_each() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(proc_macro, wasm_custom_section)]
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn for_each(this: &js::Array, callback: &js::Function) -> JsValue {
+                this.for_each(callback)
+            }
+
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            const testArray = [1, 2, 3, 4];
+
+            export function test() {
+                const callbackArgs = [];
+
+                let count = 0;
+
+                function callback(...args){
+                    count++;
+                    callbackArgs.push(args);
+                }
+
+                wasm.for_each(testArray, callback);
+
+                assert.equal(count, testArray.length);
+
+                callbackArgs.forEach(([value, index, arr], idx) => {
+                    assert.equal(value, testArray[idx]);
+                    assert.equal(index, idx);
+                    assert.equal(arr, testArray);
+                });
+            }
+        "#,
+        )
+        .test()
+}
+#[test]
 fn index_of() {
     project()
         .file(

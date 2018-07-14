@@ -172,6 +172,12 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn find(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> JsValue;
 
+    /// The forEach() method executes a provided function once for each array element.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Array, callback: &Function) -> JsValue;
+
     /// The includes() method determines whether an array includes a certain
     /// element, returning true or false as appropriate.
     ///
