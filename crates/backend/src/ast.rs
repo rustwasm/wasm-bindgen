@@ -42,6 +42,7 @@ pub enum ImportKind {
     Static(ImportStatic),
     Type(ImportType),
     Enum(ImportEnum),
+    Const(Const),
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -174,6 +175,24 @@ pub struct TypeAlias {
     pub src: syn::Type,
 }
 
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub struct Const {
+    pub vis: syn::Visibility,
+    pub name: Ident,
+    pub interface_name: Ident,
+    pub ty: syn::Type,
+    pub value: ConstValue,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+/// same as webidl::ast::ConstValue
+pub enum ConstValue {
+    BooleanLiteral(bool),
+    FloatLiteral(f64),
+    IntegerLiteral(i64),
+    Null,
+}
+
 impl Program {
     pub(crate) fn shared(&self) -> shared::Program {
         shared::Program {
@@ -293,6 +312,7 @@ impl ImportKind {
             ImportKind::Static(_) => false,
             ImportKind::Type(_) => false,
             ImportKind::Enum(_) => false,
+            ImportKind::Const(_) => false,
         }
     }
 
@@ -302,6 +322,7 @@ impl ImportKind {
             ImportKind::Static(ref f) => shared::ImportKind::Static(f.shared()),
             ImportKind::Type(ref f) => shared::ImportKind::Type(f.shared()),
             ImportKind::Enum(ref f) => shared::ImportKind::Enum(f.shared()),
+            ImportKind::Const(ref f) => shared::ImportKind::Const(f.shared()),
         }
     }
 }
@@ -402,5 +423,11 @@ impl StructField {
             readonly: self.readonly,
             comments: self.comments.clone(),
         }
+    }
+}
+
+impl Const {
+    fn shared(&self) -> shared::Const {
+        shared::Const {}
     }
 }

@@ -106,6 +106,7 @@ impl ImportedTypes for ast::ImportKind {
             ast::ImportKind::Function(fun) => fun.imported_types(f),
             ast::ImportKind::Type(ty) => ty.imported_types(f),
             ast::ImportKind::Enum(enm) => enm.imported_types(f),
+            ast::ImportKind::Const(c) => c.imported_types(f),
         }
     }
 }
@@ -226,6 +227,15 @@ impl ImportedTypes for ast::TypeAlias {
         F: FnMut(&Ident, ImportedTypeKind),
     {
         f(&self.dest, ImportedTypeKind::Reference);
+    }
+}
+
+impl ImportedTypes for ast::Const {
+    fn imported_types<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        self.ty.imported_types(f);
     }
 }
 

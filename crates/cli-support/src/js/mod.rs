@@ -1580,6 +1580,7 @@ impl<'a> Context<'a> {
         let wasm_bytes = parity_wasm::serialize(module)?;
         let bytes = wasm_gc::Config::new()
             .demangle(self.config.demangle)
+            .keep_debug(self.config.keep_debug || self.config.debug)
             .gc(&wasm_bytes)?;
         *self.module = deserialize_buffer(&bytes)?;
         Ok(())
@@ -1757,6 +1758,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
             shared::ImportKind::Type(_) => {}
             shared::ImportKind::Enum(_) => {}
+            shared::ImportKind::Const(_) => {}
         }
         Ok(())
     }

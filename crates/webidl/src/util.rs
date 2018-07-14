@@ -19,6 +19,35 @@ fn shared_ref(ty: syn::Type) -> syn::Type {
     }.into()
 }
 
+pub fn webidl_const_ty_to_syn_ty(ty: &webidl::ast::ConstType) -> syn::Type {
+    use webidl::ast::ConstType::*;
+
+    // similar to webidl_ty_to_syn_ty
+    match ty {
+        Boolean => ident_ty(raw_ident("bool")),
+        Byte => ident_ty(raw_ident("i8")),
+        Octet => ident_ty(raw_ident("u8")),
+        RestrictedDouble | UnrestrictedDouble => ident_ty(raw_ident("f64")),
+        RestrictedFloat | UnrestrictedFloat => ident_ty(raw_ident("f32")),
+        SignedLong => ident_ty(raw_ident("i32")),
+        SignedLongLong => ident_ty(raw_ident("i64")),
+        SignedShort => ident_ty(raw_ident("i16")),
+        UnsignedLong => ident_ty(raw_ident("u32")),
+        UnsignedLongLong => ident_ty(raw_ident("u64")),
+        UnsignedShort => ident_ty(raw_ident("u16")),
+        Identifier(ref id) => ident_ty(rust_ident(id)),
+    }
+}
+
+pub fn webidl_const_v_to_backend_const_v(v: &webidl::ast::ConstValue) -> backend::ast::ConstValue {
+    match *v {
+        webidl::ast::ConstValue::BooleanLiteral(b) => backend::ast::ConstValue::BooleanLiteral(b),
+        webidl::ast::ConstValue::FloatLiteral(f) => backend::ast::ConstValue::FloatLiteral(f),
+        webidl::ast::ConstValue::IntegerLiteral(i) => backend::ast::ConstValue::IntegerLiteral(i),
+        webidl::ast::ConstValue::Null => backend::ast::ConstValue::Null,
+    }
+}
+
 fn simple_fn_arg(ident: Ident, ty: syn::Type) -> syn::ArgCaptured {
     syn::ArgCaptured {
         pat: syn::Pat::Ident(syn::PatIdent {

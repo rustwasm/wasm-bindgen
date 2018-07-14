@@ -30,11 +30,11 @@ use std::path::Path;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::ResultExt;
-use heck::CamelCase;
+use heck::{CamelCase, ShoutySnakeCase};
 use quote::ToTokens;
 
 use first_pass::{FirstPass, FirstPassRecord};
-use util::{public, TypePosition};
+use util::{public, webidl_const_ty_to_syn_ty, webidl_const_v_to_backend_const_v, TypePosition};
 
 /// Either `Ok(t)` or `Err(failure::Error)`.
 pub type Result<T> = ::std::result::Result<T, failure::Error>;
@@ -250,7 +250,7 @@ impl WebidlParse<()> for webidl::ast::NonPartialInterface {
             js_namespace: None,
             kind: backend::ast::ImportKind::Type(backend::ast::ImportType {
                 vis: public(),
-                name: rust_ident(&self.name),
+                name: rust_ident(self.name.to_camel_case().as_str()),
                 attrs: Vec::new(),
             }),
         });
@@ -343,7 +343,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
         match self {
             webidl::ast::ExtendedAttribute::ArgumentList(
                 webidl::ast::ArgumentListExtendedAttribute { arguments, name },
-            ) if name == "Constructor" =>
+            )
+                if name == "Constructor" =>
             {
                 add_constructor(arguments, &interface.name)
             }
@@ -358,7 +359,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                     rhs_arguments,
                     rhs_name,
                 },
-            ) if lhs_name == "NamedConstructor" =>
+            )
+                if lhs_name == "NamedConstructor" =>
             {
                 add_constructor(rhs_arguments, rhs_name)
             }
@@ -389,9 +391,11 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::InterfaceMember {
             webidl::ast::InterfaceMember::Operation(op) => {
                 op.webidl_parse(program, first_pass, self_name)
             }
+            webidl::ast::InterfaceMember::Const(cnst) => {
+                cnst.webidl_parse(program, first_pass, self_name)
+            }
             // TODO
-            webidl::ast::InterfaceMember::Const(_)
-            | webidl::ast::InterfaceMember::Iterable(_)
+            webidl::ast::InterfaceMember::Iterable(_)
             | webidl::ast::InterfaceMember::Maplike(_)
             | webidl::ast::InterfaceMember::Setlike(_) => {
                 warn!("Unsupported WebIDL interface member: {:?}", self);
@@ -634,6 +638,32 @@ impl<'a> WebidlParse<()> for webidl::ast::Enum {
             }),
         });
 
+        Ok(())
+    }
+}
+
+impl<'a> WebidlParse<&'a str> for webidl::ast::Const {
+    fn webidl_parse(
+        &self,
+        program: &mut backend::ast::Program,
+        _: &FirstPassRecord<'_>,
+        interface_name: &'a str,
+    ) -> Result<()> {
+        let syn_ty = webidl_const_ty_to_syn_ty(&self.type_);
+        program.imports.push(backend::ast::Import {
+            module: None,
+            version: None,
+            js_namespace: None,
+            kind: backend::ast::ImportKind::Const(backend::ast::Const {
+                vis: syn::Visibility::Public(syn::VisPublic {
+                    pub_token: Default::default(),
+                }),
+                name: rust_ident(self.name.to_shouty_snake_case().as_str()),
+                interface_name: rust_ident(interface_name.to_camel_case().as_str()),
+                ty: syn_ty,
+                value: webidl_const_v_to_backend_const_v(&self.value),
+            }),
+        });
         Ok(())
     }
 }

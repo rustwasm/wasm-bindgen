@@ -9,13 +9,13 @@
   },
   "devDependencies": {
     "@types/node": "^10.5.2",
-    "babel-eslint": "^8.2.5",
+    "babel-eslint": "^8.2.6",
     "eslint": "^5.1.0",
     "geckodriver": "^1.11.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "ts-loader": "^4.4.2",
     "typescript": "^2.7.2",
-    "webpack": "^4.15.1",
+    "webpack": "^4.16.0",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4"
   }

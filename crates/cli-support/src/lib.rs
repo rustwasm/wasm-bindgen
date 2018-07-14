@@ -31,6 +31,7 @@ pub struct Bindgen {
     debug: bool,
     typescript: bool,
     demangle: bool,
+    keep_debug: bool,
 }
 
 impl Bindgen {
@@ -45,6 +46,7 @@ impl Bindgen {
             debug: false,
             typescript: false,
             demangle: true,
+            keep_debug: false,
         }
     }
 
@@ -90,6 +92,11 @@ impl Bindgen {
 
     pub fn demangle(&mut self, demangle: bool) -> &mut Bindgen {
         self.demangle = demangle;
+        self
+    }
+
+    pub fn keep_debug(&mut self, keep_debug: bool) -> &mut Bindgen {
+        self.keep_debug = keep_debug;
         self
     }
 

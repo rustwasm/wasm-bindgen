@@ -14,7 +14,7 @@ development.
 
 [install Rust]: https://www.rust-lang.org/en-US/install.html
 
-2. The tests for this project use Node. Make sure you have node >= 8 installed,
+2. The tests for this project use Node. Make sure you have node >= 10 installed,
    as that is when WebAssembly support was introduced. [Install Node].
 
 [Install Node]: https://nodejs.org/en/
