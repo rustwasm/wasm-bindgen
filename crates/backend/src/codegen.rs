@@ -986,11 +986,15 @@ impl ToTokens for ast::Const {
             FloatLiteral(f) => {
                 let f = Literal::f64_unsuffixed(f);
                 quote!(#f)
-            }
-            IntegerLiteral(i) => {
+            },
+            SignedIntegerLiteral(i) => {
                 let i = Literal::i64_unsuffixed(i);
                 quote!(#i)
-            }
+            },
+            UnsignedIntegerLiteral(i) => {
+                let i = Literal::u64_unsuffixed(i);
+                quote!(#i)
+            },
             Null => unimplemented!(),
         };
 

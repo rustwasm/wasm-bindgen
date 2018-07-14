@@ -43,7 +43,8 @@ pub fn webidl_const_v_to_backend_const_v(v: &webidl::ast::ConstValue) -> backend
     match *v {
         webidl::ast::ConstValue::BooleanLiteral(b) => backend::ast::ConstValue::BooleanLiteral(b),
         webidl::ast::ConstValue::FloatLiteral(f) => backend::ast::ConstValue::FloatLiteral(f),
-        webidl::ast::ConstValue::IntegerLiteral(i) => backend::ast::ConstValue::IntegerLiteral(i),
+        webidl::ast::ConstValue::SignedIntegerLiteral(i) => backend::ast::ConstValue::SignedIntegerLiteral(i),
+        webidl::ast::ConstValue::UnsignedIntegerLiteral(u) => backend::ast::ConstValue::UnsignedIntegerLiteral(u),
         webidl::ast::ConstValue::Null => backend::ast::ConstValue::Null,
     }
 }

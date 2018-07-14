@@ -189,7 +189,8 @@ pub struct Const {
 pub enum ConstValue {
     BooleanLiteral(bool),
     FloatLiteral(f64),
-    IntegerLiteral(i64),
+    SignedIntegerLiteral(i64),
+    UnsignedIntegerLiteral(u64),
     Null,
 }
 
