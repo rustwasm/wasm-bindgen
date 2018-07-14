@@ -1,4 +1,3 @@
-use std::collections::{BTreeMap, BTreeSet};
 use std::iter::{self, FromIterator};
 
 use backend;
@@ -8,6 +7,8 @@ use proc_macro2::Ident;
 use syn;
 use webidl;
 use webidl::ast::ExtendedAttribute;
+
+use first_pass::FirstPassRecord;
 
 fn shared_ref(ty: syn::Type) -> syn::Type {
     syn::TypeReference {
@@ -64,21 +65,7 @@ pub enum TypePosition {
     Return,
 }
 
-#[derive(Default)]
-pub struct FirstPass<'a> {
-    pub interfaces: BTreeSet<String>,
-    pub dictionaries: BTreeSet<String>,
-    pub enums: BTreeSet<String>,
-    pub mixins: BTreeMap<String, MixinData<'a>>,
-}
-
-#[derive(Default)]
-pub struct MixinData<'a> {
-    pub non_partial: Option<&'a webidl::ast::NonPartialMixin>,
-    pub partials: Vec<&'a webidl::ast::PartialMixin>,
-}
-
-impl<'a> FirstPass<'a> {
+impl<'a> FirstPassRecord<'a> {
     pub fn webidl_ty_to_syn_ty(
         &self,
         ty: &webidl::ast::Type,

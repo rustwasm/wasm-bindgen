@@ -43,16 +43,10 @@ fn method() {
                 pub fn test() {
                     let pi = Foo::new(3.14159).unwrap();
                     let e = Foo::new(2.71828).unwrap();
-                    // TODO: figure out why the following doesn't fail
-                    // assert!(!pi.my_cmp(&pi));
-                    let tmp = pi.my_cmp(&pi);
-                    assert!(tmp);
-                    let tmp =!pi.my_cmp(&e);
-                    assert!(tmp);
-                    let tmp = !e.my_cmp(&pi);
-                    assert!(tmp);
-                    let tmp = e.my_cmp(&e);
-                    assert!(tmp);
+                    assert!(pi.my_cmp(&pi));
+                    assert!(!pi.my_cmp(&e));
+                    assert!(!e.my_cmp(&pi));
+                    assert!(e.my_cmp(&e));
                 }
             "#,
         )
