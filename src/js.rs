@@ -301,6 +301,14 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn sort(this: &Array) -> Array;
 
+    /// The toLocaleString() method returns a string representing the elements of the array. 
+    /// The elements are converted to Strings using their toLocaleString methods and these
+    /// Strings are separated by a locale-specific String (such as a comma “,”).
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toLocaleString
+    #[wasm_bindgen(method, js_name = toLocaleString)]
+    pub fn to_locale_string(this: &Array, locales: &JsValue, options: &JsValue) -> JsString;
+
     /// The toString() method returns a string representing the specified array
     /// and its elements.
     ///

@@ -935,3 +935,36 @@ fn find_index() {
         )
         .test()
 }
+
+#[test]
+fn to_locale_string() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+                use JsValue;
+
+                #[wasm_bindgen]
+                pub fn array_to_locale_string(array: &js::Array, locale: &JsValue, options: &JsValue) -> js::JsString {
+                    array.to_locale_string(locale, options)
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    assert.equal(wasm.array_to_locale_string([1, 'a', new Date('21 Dec 1997 14:12:00 UTC')], 'en', {timeZone: 'UTC'}), '1,a,12/21/1997, 2:12:00 PM');
+                }
+            "#,
+        )
+        .test()
+}
