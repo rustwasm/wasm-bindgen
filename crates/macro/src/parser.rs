@@ -432,7 +432,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemFn {
             };
             format!("__wbg_f_{}_{}_{}", js_name, self.ident, ns)
         };
-        ast::ImportKind::Function(ast::ImportFunction {
+        ast::ImportKind::Function(Box::new(ast::ImportFunction {
             function: wasm,
             kind,
             js_ret,
@@ -440,7 +440,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemFn {
             structural: opts.structural(),
             rust_name: self.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
-        })
+        }))
     }
 }
 

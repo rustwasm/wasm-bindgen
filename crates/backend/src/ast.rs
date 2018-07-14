@@ -39,7 +39,7 @@ pub struct Import {
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub enum ImportKind {
-    Function(ImportFunction),
+    Function(Box<ImportFunction>),
     Static(ImportStatic),
     Type(ImportType),
     Enum(ImportEnum),

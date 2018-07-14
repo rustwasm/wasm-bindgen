@@ -85,6 +85,6 @@ pub fn wrap_import_function(function: ast::ImportFunction) -> ast::Import {
         module: None,
         version: None,
         js_namespace: None,
-        kind: ast::ImportKind::Function(function),
+        kind: ast::ImportKind::Function(Box::new(function)),
     }
 }
