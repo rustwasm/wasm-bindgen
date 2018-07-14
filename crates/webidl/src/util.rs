@@ -246,7 +246,7 @@ impl<'a> FirstPassRecord<'a> {
         let js_ret = ret.clone();
 
         if catch {
-            ret = Some(ret.map_or_else(|| result_ty(unit_ty()), |ret| result_ty(ret)))
+            ret = Some(ret.map_or_else(|| result_ty(unit_ty()), result_ty))
         }
 
         let shim = {
