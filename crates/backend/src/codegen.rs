@@ -314,11 +314,12 @@ impl ToTokens for ast::Export {
         let mut converted_arguments = vec![];
         let ret = Ident::new("_ret", Span::call_site());
 
-        let mut offset = 0;
-        if self.method_self.is_some() {
+        let offset = if self.method_self.is_some() {
             args.push(quote! { me: u32 });
-            offset = 1;
-        }
+            1
+        } else {
+            0
+        };
 
         let name = &self.function.name;
         let receiver = match self.method_self {
