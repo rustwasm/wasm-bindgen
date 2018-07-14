@@ -10,6 +10,7 @@ pub struct Program {
     pub enums: Vec<Enum>,
     pub structs: Vec<Struct>,
     pub type_aliases: Vec<TypeAlias>,
+    pub consts: Vec<Const>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -42,7 +43,6 @@ pub enum ImportKind {
     Static(ImportStatic),
     Type(ImportType),
     Enum(ImportEnum),
-    Const(Const),
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -179,7 +179,7 @@ pub struct TypeAlias {
 pub struct Const {
     pub vis: syn::Visibility,
     pub name: Ident,
-    pub interface_name: Ident,
+    pub class: Option<Ident>,
     pub ty: syn::Type,
     pub value: ConstValue,
 }
@@ -312,7 +312,6 @@ impl ImportKind {
             ImportKind::Static(_) => false,
             ImportKind::Type(_) => false,
             ImportKind::Enum(_) => false,
-            ImportKind::Const(_) => false,
         }
     }
 
@@ -322,7 +321,6 @@ impl ImportKind {
             ImportKind::Static(ref f) => shared::ImportKind::Static(f.shared()),
             ImportKind::Type(ref f) => shared::ImportKind::Type(f.shared()),
             ImportKind::Enum(ref f) => shared::ImportKind::Enum(f.shared()),
-            ImportKind::Const(ref f) => shared::ImportKind::Const(f.shared()),
         }
     }
 }
@@ -423,11 +421,5 @@ impl StructField {
             readonly: self.readonly,
             comments: self.comments.clone(),
         }
-    }
-}
-
-impl Const {
-    fn shared(&self) -> shared::Const {
-        shared::Const {}
     }
 }

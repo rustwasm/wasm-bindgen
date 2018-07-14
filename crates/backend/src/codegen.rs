@@ -62,6 +62,9 @@ impl ToTokens for ast::Program {
         for a in self.type_aliases.iter() {
             a.to_tokens(tokens);
         }
+        for c in self.consts.iter() {
+            c.to_tokens(tokens);
+        }
 
         // Generate a static which will eventually be what lives in a custom section
         // of the wasm executable. For now it's just a plain old static, but we'll
@@ -501,7 +504,6 @@ impl ToTokens for ast::ImportKind {
             ast::ImportKind::Static(ref s) => s.to_tokens(tokens),
             ast::ImportKind::Type(ref t) => t.to_tokens(tokens),
             ast::ImportKind::Enum(ref e) => e.to_tokens(tokens),
-            ast::ImportKind::Const(ref c) => c.to_tokens(tokens),
         }
     }
 }
@@ -843,7 +845,6 @@ impl<'a> ToTokens for DescribeImport<'a> {
             ast::ImportKind::Static(_) => return,
             ast::ImportKind::Type(_) => return,
             ast::ImportKind::Enum(_) => return,
-            ast::ImportKind::Const(_) => return,
         };
         let describe_name = format!("__wbindgen_describe_{}", f.shim);
         let describe_name = Ident::new(&describe_name, Span::call_site());
@@ -967,7 +968,6 @@ impl ToTokens for ast::Const {
 
         let vis = &self.vis;
         let name = &self.name;
-        let interface_name = &self.interface_name;
         let ty = &self.ty;
 
         let value: TokenStream = match self.value {
@@ -984,17 +984,24 @@ impl ToTokens for ast::Const {
             FloatLiteral(f) => {
                 let f = Literal::f64_unsuffixed(f);
                 quote!(#f)
-            },
+            }
             IntegerLiteral(i) => {
                 let i = Literal::i64_unsuffixed(i);
                 quote!(#i)
-            },
+            }
             Null => unimplemented!(),
         };
-        (quote! {
-            impl #interface_name {
-                #vis const #name: #ty = #value;
-            }
-        }).to_tokens(tokens);
+
+        let declaration = quote!(#vis const #name: #ty = #value;);
+
+        if let Some(class) = &self.class {
+            (quote! {
+                impl #class {
+                    #declaration
+                }
+            }).to_tokens(tokens);
+        } else {
+            declaration.to_tokens(tokens);
+        }
     }
 }

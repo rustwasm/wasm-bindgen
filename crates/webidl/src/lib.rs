@@ -647,23 +647,18 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Const {
         &self,
         program: &mut backend::ast::Program,
         _: &FirstPassRecord<'_>,
-        interface_name: &'a str,
+        self_name: &'a str,
     ) -> Result<()> {
-        let syn_ty = webidl_const_ty_to_syn_ty(&self.type_);
-        program.imports.push(backend::ast::Import {
-            module: None,
-            version: None,
-            js_namespace: None,
-            kind: backend::ast::ImportKind::Const(backend::ast::Const {
-                vis: syn::Visibility::Public(syn::VisPublic {
-                    pub_token: Default::default(),
-                }),
-                name: rust_ident(self.name.to_shouty_snake_case().as_str()),
-                interface_name: rust_ident(interface_name.to_camel_case().as_str()),
-                ty: syn_ty,
-                value: webidl_const_v_to_backend_const_v(&self.value),
-            }),
+        let ty = webidl_const_ty_to_syn_ty(&self.type_);
+
+        program.consts.push(backend::ast::Const {
+            vis: public(),
+            name: rust_ident(self.name.to_shouty_snake_case().as_str()),
+            class: Some(rust_ident(self_name.to_camel_case().as_str())),
+            ty,
+            value: webidl_const_v_to_backend_const_v(&self.value),
         });
+
         Ok(())
     }
 }

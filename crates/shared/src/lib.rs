@@ -34,7 +34,6 @@ pub enum ImportKind {
     Static(ImportStatic),
     Type(ImportType),
     Enum(ImportEnum),
-    Const(Const)
 }
 
 #[derive(Deserialize, Serialize)]
@@ -124,9 +123,6 @@ pub struct StructField {
     pub readonly: bool,
     pub comments: Vec<String>,
 }
-
-#[derive(Deserialize, Serialize)]
-pub struct Const {}
 
 pub fn new_function(struct_name: &str) -> String {
     let mut name = format!("__wbg_");
