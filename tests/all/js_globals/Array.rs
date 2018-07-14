@@ -896,3 +896,42 @@ fn reduce_right() {
         )
         .test()
 }
+
+#[test]
+fn find_index() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(proc_macro, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+                use JsValue;
+
+                #[wasm_bindgen]
+                pub fn array_find_first_even_number_index(array: &js::Array) -> u32 {
+                    array.find_index(&mut |el, _, _| el.as_f64().unwrap() % 2. == 0., &JsValue::undefined())
+                }
+            "#,
+        )
+        .file(
+            "test.js",
+            r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    const arrayEven = [2, 4, 6, 8];
+                    const arrayOdd = [1, 3, 5, 7];
+                    const arrayMixed = [3, 5, 7, 10];
+
+                    assert.equal(wasm.array_find_first_even_number_index(arrayEven), 0);
+                    assert.equal(wasm.array_find_first_even_number_index(arrayOdd), -1);
+                    assert.equal(wasm.array_find_first_even_number_index(arrayMixed), 3);
+                }
+            "#,
+        )
+        .test()
+}
