@@ -4,6 +4,7 @@ extern crate wasm_bindgen_webidl;
 
 use failure::ResultExt;
 use std::env;
+use std::ffi::OsStr;
 use std::fs;
 use std::io::Write;
 use std::path;
@@ -28,12 +29,14 @@ fn try_main() -> Result<(), failure::Error> {
 
     let mut contents = String::new();
     for entry in entries {
-        let entry = entry.context("getting webidls/enabled/* entry")?;
-        println!("cargo:rerun-if-changed={}", entry.path().display());
+        let entry = entry.context("getting webidls/enabled/*.webidl entry")?;
+        if entry.path().extension() == Some(OsStr::new("webidl")) {
+            println!("cargo:rerun-if-changed={}", entry.path().display());
 
-        let this_contents =
-            fs::read_to_string(entry.path()).context("reading WebIDL file contents")?;
-        contents.push_str(&this_contents);
+            let this_contents =
+                fs::read_to_string(entry.path()).context("reading WebIDL file contents")?;
+            contents.push_str(&this_contents);
+        }
     }
 
     let bindings = wasm_bindgen_webidl::compile(&contents)
