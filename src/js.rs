@@ -172,6 +172,13 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn find(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> JsValue;
 
+    /// The findIndex() method returns the index of the first element in the array that 
+    /// satisfies the provided testing function. Otherwise -1 is returned.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+    #[wasm_bindgen(method, js_name = findIndex)]
+    pub fn find_index(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool, this_arg: &JsValue) -> u32;
+
     /// The includes() method determines whether an array includes a certain
     /// element, returning true or false as appropriate.
     ///
@@ -293,6 +300,14 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
     #[wasm_bindgen(method)]
     pub fn sort(this: &Array) -> Array;
+
+    /// The toLocaleString() method returns a string representing the elements of the array. 
+    /// The elements are converted to Strings using their toLocaleString methods and these
+    /// Strings are separated by a locale-specific String (such as a comma “,”).
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toLocaleString
+    #[wasm_bindgen(method, js_name = toLocaleString)]
+    pub fn to_locale_string(this: &Array, locales: &JsValue, options: &JsValue) -> JsString;
 
     /// The toString() method returns a string representing the specified array
     /// and its elements.
