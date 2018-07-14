@@ -447,7 +447,13 @@ pub struct GlobalStack {
 }
 
 const GLOBAL_STACK_CAP: usize = 16;
-static mut GLOBAL_STACK: [u32; GLOBAL_STACK_CAP] = [0; GLOBAL_STACK_CAP];
+
+// Increase the alignment to 8 here because this can be used as a
+// BigUint64Array pointer base which requires alignment 8
+#[repr(align(8))]
+struct GlobalData([u32; GLOBAL_STACK_CAP]);
+
+static mut GLOBAL_STACK: GlobalData = GlobalData([0; GLOBAL_STACK_CAP]);
 
 impl GlobalStack {
     #[inline]
@@ -461,7 +467,7 @@ impl Stack for GlobalStack {
     fn push(&mut self, val: u32) {
         unsafe {
             assert!(self.next < GLOBAL_STACK_CAP);
-            GLOBAL_STACK[self.next] = val;
+            GLOBAL_STACK.0[self.next] = val;
             self.next += 1;
         }
     }
@@ -470,7 +476,7 @@ impl Stack for GlobalStack {
 #[doc(hidden)]
 #[no_mangle]
 pub unsafe extern "C" fn __wbindgen_global_argument_ptr() -> *mut u32 {
-    GLOBAL_STACK.as_mut_ptr()
+    GLOBAL_STACK.0.as_mut_ptr()
 }
 
 macro_rules! stack_closures {

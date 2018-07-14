@@ -452,7 +452,8 @@ impl ToTokens for ast::Export {
             #[allow(non_snake_case)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub extern fn #generated_name(#(#args),*) #ret_ty {
-                ::wasm_bindgen::__rt::link_this_library();
+                // See definition of `link_mem_intrinsics` for what this is doing
+                ::wasm_bindgen::__rt::link_mem_intrinsics();
                 let #ret = {
                     let mut __stack = unsafe {
                         ::wasm_bindgen::convert::GlobalStack::new()
@@ -794,7 +795,8 @@ impl ToTokens for ast::ImportFunction {
             #[allow(bad_style)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #vis fn #rust_name(#me #(#arguments),*) #ret {
-                ::wasm_bindgen::__rt::link_this_library();
+                // See definition of `link_mem_intrinsics` for what this is doing
+                ::wasm_bindgen::__rt::link_mem_intrinsics();
                 #[wasm_import_module = "__wbindgen_placeholder__"]
                 extern {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
