@@ -216,7 +216,7 @@ impl Function {
 
 impl Export {
     pub(crate) fn rust_symbol(&self) -> Ident {
-        let mut generated_name = format!("__wasm_bindgen_generated");
+        let mut generated_name = String::from("__wasm_bindgen_generated");
         if let Some(class) = &self.class {
             generated_name.push_str("_");
             generated_name.push_str(&class.to_string());
