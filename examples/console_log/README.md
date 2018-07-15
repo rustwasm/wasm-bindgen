@@ -18,4 +18,4 @@ and then opening up `index.html` in a web browser should show a dialog!
 For more information about this example be sure to check out
 [`hello_world`][hello] which also has more comments about caveats and such.
 
-[hello]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/hello_world
+[hello]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world
