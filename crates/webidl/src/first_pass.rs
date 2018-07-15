@@ -125,7 +125,7 @@ impl FirstPass for webidl::ast::NonPartialMixin {
         let entry = record
             .mixins
             .entry(self.name.clone())
-            .or_insert(Default::default());
+            .or_insert_with(Default::default);
         if mem::replace(&mut entry.non_partial, Some(self)).is_some() {
             warn!(
                 "Encounterd multiple declarations of {}, using last encountered",
@@ -142,7 +142,7 @@ impl FirstPass for webidl::ast::PartialMixin {
         let entry = record
             .mixins
             .entry(self.name.clone())
-            .or_insert(Default::default());
+            .or_insert_with(Default::default);
         entry.partials.push(self);
 
         Ok(())
