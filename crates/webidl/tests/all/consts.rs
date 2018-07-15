@@ -71,9 +71,7 @@ fn ints() {
                     const long long imin = -9223372036854775808;
                     const long long imax = 9223372036854775807;
                     const unsigned long long umin = 0;
-                    // bug in webidl
-                    // https://github.com/sgodwincs/webidl-rs/issues/15
-                    //const unsigned long long umax = 18446744073709551615;
+                    const unsigned long long umax = 18446744073709551615;
                 };
             "#,
         )
@@ -121,7 +119,7 @@ fn ints() {
                     assert_eq!(foo::LongLong::IMIN, i64::min_value());
                     assert_eq!(foo::LongLong::IMAX, i64::max_value());
                     assert_eq!(foo::LongLong::UMIN, u64::min_value());
-                    //assert_eq!(foo::LongLong::UMAX, u64::max_value());
+                    assert_eq!(foo::LongLong::UMAX, u64::max_value());
                 }
             "#,
         )
