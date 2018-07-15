@@ -31,19 +31,19 @@ fn to_ident_name(s: &str) -> Cow<str> {
 impl ToTokens for ast::Program {
     // Generate wrappers for all the items that we've found
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        for export in &self.exports {
+        for export in self.exports.iter() {
             export.to_tokens(tokens);
         }
-        for s in &self.structs {
+        for s in self.structs.iter() {
             s.to_tokens(tokens);
         }
         let mut types = HashSet::new();
-        for i in &self.imports {
+        for i in self.imports.iter() {
             if let ast::ImportKind::Type(t) = &i.kind {
                 types.insert(t.name.clone());
             }
         }
-        for i in &self.imports {
+        for i in self.imports.iter() {
             DescribeImport(&i.kind).to_tokens(tokens);
 
             if let Some(ns) = &i.js_namespace {
@@ -56,13 +56,13 @@ impl ToTokens for ast::Program {
 
             i.kind.to_tokens(tokens);
         }
-        for e in &self.enums {
+        for e in self.enums.iter() {
             e.to_tokens(tokens);
         }
-        for a in &self.type_aliases {
+        for a in self.type_aliases.iter() {
             a.to_tokens(tokens);
         }
-        for c in &self.consts {
+        for c in self.consts.iter() {
             c.to_tokens(tokens);
         }
 
@@ -231,7 +231,7 @@ impl ToTokens for ast::Struct {
             }
         }).to_tokens(tokens);
 
-        for field in &self.fields {
+        for field in self.fields.iter() {
             field.to_tokens(tokens);
         }
     }
