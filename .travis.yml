@@ -34,9 +34,7 @@ matrix:
       env: JOB=test-bindgen
       before_install: *INSTALL_NODE_VIA_NVM
       install:
-        # dirties git repository, there doesn't seem to be a way to resolve this other than
-        # to run `npm install` twice or by using `npm ci` (which is currently broken)
-        - npm install
+        - npm ci
       script:
         - cargo test --release
         # Check JS output from all tests against eslint
@@ -65,7 +63,7 @@ matrix:
       env: JOB=test-web-sys
       before_install: *INSTALL_NODE_VIA_NVM
       install:
-        - npm install
+        - npm ci
       script: cargo test --manifest-path crates/web-sys/Cargo.toml
       addons:
         firefox: latest
@@ -84,7 +82,7 @@ matrix:
     - rust: nightly
       env: JOB=test-webidl
       before_install: *INSTALL_NODE_VIA_NVM
-      install: npm install
+      install: npm ci
       script: cargo test --manifest-path crates/webidl/Cargo.toml
 
     # Dist linux binary
