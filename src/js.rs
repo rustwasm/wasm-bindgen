@@ -177,7 +177,7 @@ extern "C" {
     /// 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
     #[wasm_bindgen(method, js_name = findIndex)]
-    pub fn find_index(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool, this_arg: &JsValue) -> u32;
+    pub fn find_index(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> u32;
 
     /// The includes() method determines whether an array includes a certain
     /// element, returning true or false as appropriate.

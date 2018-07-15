@@ -908,11 +908,10 @@ fn find_index() {
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
                 use wasm_bindgen::js;
-                use JsValue;
 
                 #[wasm_bindgen]
                 pub fn array_find_first_even_number_index(array: &js::Array) -> u32 {
-                    array.find_index(&mut |el, _, _| el.as_f64().unwrap() % 2. == 0., &JsValue::undefined())
+                    array.find_index(&mut |el, _, _| el.as_f64().unwrap() % 2. == 0.)
                 }
             "#,
         )
