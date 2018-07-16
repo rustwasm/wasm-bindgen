@@ -291,6 +291,7 @@ fn extract_programs(module: &mut Module) -> Result<Vec<shared::Program>, Error> 
         to_remove.push(i);
 
         let mut payload = custom.payload();
+        let mut added_programs = Vec::new();
         while payload.len() > 0 {
             let len = ((payload[0] as usize) << 0)
                 | ((payload[1] as usize) << 8)
@@ -298,6 +299,20 @@ fn extract_programs(module: &mut Module) -> Result<Vec<shared::Program>, Error> 
                 | ((payload[3] as usize) << 24);
             let (a, b) = payload[4..].split_at(len as usize);
             payload = b;
+
+            // Due to a nasty LLVM bug it's currently possible for LLVM to
+            // duplicate custom section directives in intermediate object files.
+            // This means that we could see multiple program directives when in
+            // fact we were originally only meant to see one!
+            //
+            // Work around the issue here until the upstream bug,
+            // https://bugs.llvm.org/show_bug.cgi?id=38184, is hopefully fixed
+            // via some other means.
+            if added_programs.iter().any(|p| a == *p) {
+                continue
+            }
+            added_programs.push(a);
+
             let p: shared::ProgramOnlySchema = match serde_json::from_slice(&a) {
                 Ok(f) => f,
                 Err(e) => bail!("failed to decode what looked like wasm-bindgen data: {}", e),
