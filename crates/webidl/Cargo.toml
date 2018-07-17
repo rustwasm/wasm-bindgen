@@ -10,7 +10,7 @@ wasm-bindgen-test-project-builder = { path = "../test-project-builder", version 
 failure = "0.1"
 heck = "0.3"
 log = "0.4.1"
-proc-macro2 = "0.4"
+proc-macro2 = "0.4.8"
 quote = '0.6'
 syn = { version = '0.14', features = ['full'] }
 wasm-bindgen-backend = { version = "=0.2.11", path = "../backend" }

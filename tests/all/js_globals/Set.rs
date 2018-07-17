@@ -6,7 +6,7 @@ use project;
 fn add() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -39,7 +39,7 @@ fn add() {
 fn clear() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -70,7 +70,7 @@ fn clear() {
 fn delete() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -99,7 +99,7 @@ fn delete() {
 fn has() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -128,7 +128,7 @@ fn has() {
 fn new() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -156,7 +156,7 @@ fn new() {
 fn size() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;

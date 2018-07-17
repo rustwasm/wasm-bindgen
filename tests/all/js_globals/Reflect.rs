@@ -8,7 +8,7 @@ fn apply() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -40,7 +40,7 @@ fn construct() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -86,7 +86,7 @@ fn construct_with_new_target() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -144,7 +144,7 @@ fn define_property() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -178,7 +178,7 @@ fn delete_property() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -221,7 +221,7 @@ fn get() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -261,7 +261,7 @@ fn get_own_property_descriptor() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -298,7 +298,7 @@ fn get_prototype_of() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -336,7 +336,7 @@ fn has() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -376,7 +376,7 @@ fn is_extensible() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -420,7 +420,7 @@ fn own_keys() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -458,7 +458,7 @@ fn prevent_extensions() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -494,7 +494,7 @@ fn set() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -532,7 +532,7 @@ fn set_with_receiver() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -570,7 +570,7 @@ fn set_prototype_of() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;

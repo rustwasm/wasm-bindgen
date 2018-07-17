@@ -35,7 +35,7 @@ fn decode_uri() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(proc_macro, wasm_custom_section)]
+                #![feature(use_extern_macros, wasm_custom_section)]
 
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
@@ -61,7 +61,7 @@ fn decode_uri_component() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(proc_macro, wasm_custom_section)]
+                #![feature(use_extern_macros, wasm_custom_section)]
 
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
@@ -88,7 +88,7 @@ fn encode_uri() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(proc_macro, wasm_custom_section)]
+                #![feature(use_extern_macros, wasm_custom_section)]
 
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
@@ -110,7 +110,7 @@ fn encode_uri_component() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(proc_macro, wasm_custom_section)]
+                #![feature(use_extern_macros, wasm_custom_section)]
 
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
@@ -132,7 +132,7 @@ fn eval() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(proc_macro, wasm_custom_section)]
+                #![feature(use_extern_macros, wasm_custom_section)]
 
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
@@ -159,7 +159,7 @@ fn is_finite() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(proc_macro, wasm_custom_section)]
+                #![feature(use_extern_macros, wasm_custom_section)]
 
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
@@ -193,7 +193,7 @@ fn is_finite() {
 fn parse_int_float() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;

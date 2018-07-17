@@ -6,7 +6,7 @@ use super::project;
 fn is_finite() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -36,7 +36,7 @@ fn is_finite() {
 fn is_integer() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -63,7 +63,7 @@ fn is_integer() {
 fn is_safe_integer() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -95,7 +95,7 @@ fn is_safe_integer() {
 fn new() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -123,7 +123,7 @@ fn parse_int_float() {
     project()
         .file(
             "src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -162,7 +162,7 @@ fn parse_int_float() {
 fn to_locale_string() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -194,7 +194,7 @@ fn to_precision() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -232,7 +232,7 @@ fn to_string() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -272,7 +272,7 @@ fn value_of() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -306,7 +306,7 @@ fn to_fixed() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -344,7 +344,7 @@ fn to_exponential() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;

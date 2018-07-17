@@ -6,7 +6,7 @@ use super::project;
 fn validate() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use JsValue;
@@ -36,7 +36,7 @@ fn validate() {
 fn validate_with_invalid_input() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(proc_macro, wasm_custom_section)]
+            #![feature(use_extern_macros, wasm_custom_section)]
 
             extern crate wasm_bindgen;
             use JsValue;
