@@ -301,6 +301,85 @@ fn last_index_of() {
 }
 
 #[test]
+fn pad_end() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(use_extern_macros, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_pad_end(
+                this: &js::JsString,
+                target_length: u32,
+                pad_string: &js::JsString
+            ) -> js::JsString
+            {
+                this.pad_end(target_length, pad_string)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "abc";
+
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_pad_end(str, 10, " "), "abc       ");
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_pad_end(str, 10, " "), "abc       ");
+                assert.equal(wasm.string_pad_end(str, 10, "foo"), "abcfoofoof");
+                assert.equal(wasm.string_pad_end(str, 6, "123456"), "abc123");
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_pad_end(str, 1, " "), "abc");
+            }
+        "#)
+        .test()
+}
+
+#[test]
+fn pad_start() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(use_extern_macros, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_pad_start(
+                this: &js::JsString,
+                target_length: u32,
+                pad_string: &js::JsString
+            ) -> js::JsString
+            {
+                this.pad_start(target_length, pad_string)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "abc";
+
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_pad_start(str, 10, " "), "       abc");
+                assert.equal(wasm.string_pad_start(str, 10, "foo"), "foofoofabc");
+                assert.equal(wasm.string_pad_start(str, 6, "123465"), "123abc");
+                assert.equal(wasm.string_pad_start(str, 8, "0"), "00000abc");
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_pad_start(str, 1, " "), "abc");
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn slice() {
     project()
         .file(

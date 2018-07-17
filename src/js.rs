@@ -172,9 +172,9 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn find(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> JsValue;
 
-    /// The findIndex() method returns the index of the first element in the array that 
+    /// The findIndex() method returns the index of the first element in the array that
     /// satisfies the provided testing function. Otherwise -1 is returned.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
     #[wasm_bindgen(method, js_name = findIndex)]
     pub fn find_index(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> u32;
@@ -223,12 +223,12 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn length(this: &Array) -> u32;
 
-    /// map calls a provided callback function once for each element in an array, 
-    /// in order, and constructs a new array from the results. callback is invoked 
-    /// only for indexes of the array which have assigned values, including undefined. 
-    /// It is not called for missing elements of the array (that is, indexes that have 
+    /// map calls a provided callback function once for each element in an array,
+    /// in order, and constructs a new array from the results. callback is invoked
+    /// only for indexes of the array which have assigned values, including undefined.
+    /// It is not called for missing elements of the array (that is, indexes that have
     /// never been set, which have been deleted or which have never been assigned a value).
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
     #[wasm_bindgen(method)]
     pub fn map(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> JsValue) -> Array;
@@ -247,16 +247,16 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn push(this: &Array, value: JsValue) -> u32;
 
-    /// The reduce() method applies a function against an accumulator and each element in 
+    /// The reduce() method applies a function against an accumulator and each element in
     /// the array (from left to right) to reduce it to a single value.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
     #[wasm_bindgen(method)]
     pub fn reduce(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: JsValue) -> JsValue;
 
-    /// The reduceRight() method applies a function against an accumulator and each value 
+    /// The reduceRight() method applies a function against an accumulator and each value
     /// of the array (from right-to-left) to reduce it to a single value.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/ReduceRight
     #[wasm_bindgen(method, js_name = reduceRight)]
     pub fn reduce_right(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: JsValue) -> JsValue;
@@ -301,10 +301,10 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn sort(this: &Array) -> Array;
 
-    /// The toLocaleString() method returns a string representing the elements of the array. 
+    /// The toLocaleString() method returns a string representing the elements of the array.
     /// The elements are converted to Strings using their toLocaleString methods and these
     /// Strings are separated by a locale-specific String (such as a comma “,”).
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toLocaleString
     #[wasm_bindgen(method, js_name = toLocaleString)]
     pub fn to_locale_string(this: &Array, locales: &JsValue, options: &JsValue) -> JsString;
@@ -342,7 +342,7 @@ extern "C" {
 
     /// The `isView()` method returns true if arg is one of the `ArrayBuffer`
     /// views, such as typed array objects or a DataView; false otherwise.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/isView
     #[wasm_bindgen(static_method_of = ArrayBuffer, js_name = isView)]
     pub fn is_view(value: JsValue) -> bool;
@@ -412,7 +412,7 @@ extern "C" {
 extern "C" {
     pub type DataView;
 
-    /// The `DataView` view provides a low-level interface for reading and 
+    /// The `DataView` view provides a low-level interface for reading and
     /// writing multiple number types in an `ArrayBuffer` irrespective of the
     /// platform's endianness.
     ///
@@ -421,7 +421,7 @@ extern "C" {
     pub fn new(buffer: &ArrayBuffer, byteOffset: usize, byteLength: usize) -> DataView;
 
     /// The ArrayBuffer referenced by this view. Fixed at construction time and thus read only.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/buffer
     #[wasm_bindgen(method, getter, structural)]
     pub fn buffer(this: &DataView) -> ArrayBuffer;
@@ -435,12 +435,12 @@ extern "C" {
 
     /// The offset (in bytes) of this view from the start of its ArrayBuffer.
     /// Fixed at construction time and thus read only.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/byteOffset
     #[wasm_bindgen(method, getter, structural, js_name = byteOffset)]
     pub fn byte_offset(this: &DataView) -> usize;
 
-    /// The getInt8() method gets a signed 8-bit integer (byte) at the 
+    /// The getInt8() method gets a signed 8-bit integer (byte) at the
     /// specified byte offset from the start of the DataView.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt8
@@ -463,7 +463,7 @@ extern "C" {
 
     /// The getUint16() an unsigned 16-bit integer (unsigned byte) at the specified
     /// byte offset from the start of the view.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint16
     #[wasm_bindgen(method, js_name = getUint16)]
     pub fn get_uint16(this: &DataView, byte_offset: usize) -> u16;
@@ -477,21 +477,21 @@ extern "C" {
 
     /// The getUint32() an unsigned 16-bit integer (unsigned byte) at the specified
     /// byte offset from the start of the view.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32
     #[wasm_bindgen(method, js_name = getUint32)]
     pub fn get_uint32(this: &DataView, byte_offset: usize) -> u32;
 
-    /// The getFloat32() method gets a signed 32-bit float (float) at the specified 
+    /// The getFloat32() method gets a signed 32-bit float (float) at the specified
     /// byte offset from the start of the DataView.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat32
     #[wasm_bindgen(method, js_name = getFloat32)]
     pub fn get_float32(this: &DataView, byte_offset: usize) -> f32;
 
-    /// The getFloat64() method gets a signed 32-bit float (float) at the specified 
+    /// The getFloat64() method gets a signed 32-bit float (float) at the specified
     /// byte offset from the start of the DataView.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat64
     #[wasm_bindgen(method, js_name = getFloat64)]
     pub fn get_float64(this: &DataView, byte_offset: usize) -> f64;
@@ -505,7 +505,7 @@ extern "C" {
 
     /// The setUint8() method stores an unsigned 8-bit integer (byte) value at the
     /// specified byte offset from the start of the DataView.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint8
     #[wasm_bindgen(method, js_name = setUint8)]
     pub fn set_uint8(this: &DataView, byte_offset: usize, value: u8);
@@ -519,7 +519,7 @@ extern "C" {
 
     /// The setUint16() method stores an unsigned 16-bit integer (byte) value at the
     /// specified byte offset from the start of the DataView.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint16
     #[wasm_bindgen(method, js_name = setUint16)]
     pub fn set_uint16(this: &DataView, byte_offset: usize, value: u16);
@@ -533,21 +533,21 @@ extern "C" {
 
     /// The setUint32() method stores an unsigned 32-bit integer (byte) value at the
     /// specified byte offset from the start of the DataView.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint32
     #[wasm_bindgen(method, js_name = setUint32)]
     pub fn set_uint32(this: &DataView, byte_offset: usize, value: u32);
 
-    /// The setFloat32() method stores a signed 32-bit float (float) value at the 
+    /// The setFloat32() method stores a signed 32-bit float (float) value at the
     /// specified byte offset from the start of the DataView.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat32
     #[wasm_bindgen(method, js_name = setFloat32)]
     pub fn set_float32(this: &DataView, byte_offset: usize, value: f32);
 
-    /// The setFloat64() method stores a signed 64-bit float (float) value at the 
+    /// The setFloat64() method stores a signed 64-bit float (float) value at the
     /// specified byte offset from the start of the DataView.
-    /// 
+    ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat64
     #[wasm_bindgen(method, js_name = setFloat64)]
     pub fn set_float64(this: &DataView, byte_offset: usize, value: f64);
@@ -1896,6 +1896,24 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/lastIndexOf
     #[wasm_bindgen(method, js_class = "String", js_name = lastIndexOf)]
     pub fn last_index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
+
+    /// The `padEnd()` method pads the current string with a given string
+    /// (repeated, if needed) so that the resulting string reaches a given
+    /// length. The padding is applied from the end (right) of the current
+    /// string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd
+    #[wasm_bindgen(method, js_class = "String", js_name = padEnd)]
+    pub fn pad_end(this: &JsString, target_length: u32, pad_string: &JsString) -> JsString;
+
+    /// The `padStart()` method pads the current string with another string
+    /// (repeated, if needed) so that the resulting string reaches the given
+    /// length. The padding is applied from the start (left) of the current
+    /// string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
+    #[wasm_bindgen(method, js_class = "String", js_name = padStart)]
+    pub fn pad_start(this: &JsString, target_length: u32, pad_string: &JsString) -> JsString;
 
     /// The `slice()` method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
