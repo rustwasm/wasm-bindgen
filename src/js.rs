@@ -106,25 +106,6 @@ extern "C" {
     pub fn parse_float(text: &str) -> f64;
 }
 
-// UInt8Array
-#[wasm_bindgen]
-extern "C" {
-    pub type Uint8Array;
-
-    /// The `Uint8Array()` constructor creates an array of unsigned 8-bit integers.
-    ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Uint8Array;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Uint8Array, value: JsValue, start: u32, end: u32) -> Uint8Array;
-}
-
 // Array
 #[wasm_bindgen]
 extern "C" {
@@ -590,6 +571,44 @@ extern "C" {
     pub fn to_string(this: &Error) -> JsString;
 }
 
+// Float32Array
+#[wasm_bindgen]
+extern "C" {
+    pub type Float32Array;
+
+    /// The `Float32Array()` constructor creates an array of 32-bit floats.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Float32Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Float32Array, value: JsValue, start: u32, end: u32) -> Float32Array;
+}
+
+// Float64Array
+#[wasm_bindgen]
+extern "C" {
+    pub type Float64Array;
+
+    /// The `Float64Array()` constructor creates an array of 64-bit floats.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Float64Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Float64Array, value: JsValue, start: u32, end: u32) -> Float64Array;
+}
+
 // Function
 #[wasm_bindgen]
 extern "C" {
@@ -669,6 +688,63 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/throw
     #[wasm_bindgen(method, structural, catch)]
     pub fn throw(this: &Generator, error: &Error) -> Result<JsValue, JsValue>;
+}
+
+// Int8Array
+#[wasm_bindgen]
+extern "C" {
+    pub type Int8Array;
+
+    /// The `Int8Array()` constructor creates an array of signed 8-bit integers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Int8Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Int8Array, value: JsValue, start: u32, end: u32) -> Int8Array;
+}
+
+// Int16Array
+#[wasm_bindgen]
+extern "C" {
+    pub type Int16Array;
+
+    /// The `Int16Array()` constructor creates an array of signed 16-bit integers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Int16Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Int16Array, value: JsValue, start: u32, end: u32) -> Int16Array;
+}
+
+// Int32Array
+#[wasm_bindgen]
+extern "C" {
+    pub type Int32Array;
+
+    /// The `Int32Array()` constructor creates an array of signed 32-bit integers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Int32Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Int32Array, value: JsValue, start: u32, end: u32) -> Int32Array;
 }
 
 // Map
@@ -1735,6 +1811,84 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
     #[wasm_bindgen(method)]
     pub fn values(set: &Set) -> SetIterator;
+}
+
+// Uint8Array
+#[wasm_bindgen]
+extern "C" {
+    pub type Uint8Array;
+
+    /// The `Uint8Array()` constructor creates an array of unsigned 8-bit integers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Uint8Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Uint8Array, value: JsValue, start: u32, end: u32) -> Uint8Array;
+}
+
+// Uint8ClampedArray
+#[wasm_bindgen]
+extern "C" {
+    pub type Uint8ClampedArray;
+
+    /// The `Uint8ClampedArray()` constructor creates an array of unsigned 8-bit integers clamped
+    /// to 0-255; if you specified a value that is out of the range of [0,255], 0 or 255 will be
+    /// set instead.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Uint8ClampedArray;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Uint8ClampedArray, value: JsValue, start: u32, end: u32) -> Uint8ClampedArray;
+}
+
+// Uint16Array
+#[wasm_bindgen]
+extern "C" {
+    pub type Uint16Array;
+
+    /// The `Uint16Array()` constructor creates an array of unsigned 16-bit integers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Uint16Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Uint16Array, value: JsValue, start: u32, end: u32) -> Uint16Array;
+}
+
+// Uint32Array
+#[wasm_bindgen]
+extern "C" {
+    pub type Uint32Array;
+
+    /// The `Uint32Array()` constructor creates an array of unsigned 32-bit integers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array
+    #[wasm_bindgen(constructor)]
+    pub fn new(constructor_arg: JsValue) -> Uint32Array;
+
+    /// The fill() method fills all the elements of an array from a start index
+    /// to an end index with a static value. The end index is not included.
+    ///
+    /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
+    #[wasm_bindgen(method)]
+    pub fn fill(this: &Uint32Array, value: JsValue, start: u32, end: u32) -> Uint32Array;
 }
 
 // WeakMap
