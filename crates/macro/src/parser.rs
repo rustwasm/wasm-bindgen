@@ -1,4 +1,5 @@
-use backend::{ast, util::ident_ty};
+use backend::ast;
+use backend::util::{ident_ty, ShortHash};
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
@@ -427,10 +428,11 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemFn {
 
         let shim = {
             let ns = match kind {
-                ast::ImportFunctionKind::Normal => "n",
-                ast::ImportFunctionKind::Method { ref class, .. } => class,
+                ast::ImportFunctionKind::Normal => (0, "n"),
+                ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };
-            format!("__wbg_f_{}_{}_{}", js_name, self.ident, ns)
+            let data = (ns, &self.ident);
+            format!("__wbg_{}_{}", js_name, ShortHash(data))
         };
         ast::ImportKind::Function(ast::ImportFunction {
             function: wasm,
