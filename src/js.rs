@@ -1889,6 +1889,14 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
     pub fn index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
 
+    /// The `lastIndexOf()` method returns the index within the calling String
+    /// object of the last occurrence of the specified value, searching
+    /// backwards from fromIndex.  Returns -1 if the value is not found.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/lastIndexOf
+    #[wasm_bindgen(method, js_class = "String", js_name = lastIndexOf)]
+    pub fn last_index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
+
     /// The `slice()` method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///
