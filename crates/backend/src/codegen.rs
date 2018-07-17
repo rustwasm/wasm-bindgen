@@ -1,6 +1,4 @@
-use std::borrow::Cow;
 use std::collections::HashSet;
-use std::env;
 use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
 
 use ast;
@@ -9,24 +7,7 @@ use quote::ToTokens;
 use serde_json;
 use shared;
 use syn;
-
-fn to_ident_name(s: &str) -> Cow<str> {
-    if s.chars().all(|c| match c {
-        'a'...'z' | 'A'...'Z' | '0'...'9' | '_' => true,
-        _ => false,
-    }) {
-        return Cow::from(s);
-    }
-
-    Cow::from(
-        s.chars()
-            .map(|c| match c {
-                'a'...'z' | 'A'...'Z' | '0'...'9' | '_' => c,
-                _ => '_',
-            })
-            .collect::<String>(),
-    )
-}
+use util::ShortHash;
 
 impl ToTokens for ast::Program {
     // Generate wrappers for all the items that we've found
@@ -72,15 +53,9 @@ impl ToTokens for ast::Program {
 
         static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
 
-        let crate_name = env::var("CARGO_PKG_NAME").expect("should have CARGO_PKG_NAME env var");
-        let crate_vers =
-            env::var("CARGO_PKG_VERSION").expect("should have CARGO_PKG_VERSION env var");
-
         let generated_static_name = format!(
-            "__WASM_BINDGEN_GENERATED_{}_{}_{}",
-            to_ident_name(&crate_name),
-            to_ident_name(&crate_vers),
-            CNT.fetch_add(1, Ordering::SeqCst)
+            "__WASM_BINDGEN_GENERATED_{}",
+            ShortHash(CNT.fetch_add(1, Ordering::SeqCst)),
         );
         let generated_static_name = Ident::new(&generated_static_name, Span::call_site());
 
