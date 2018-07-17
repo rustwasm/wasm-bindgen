@@ -6,7 +6,7 @@ fn auto_bind_math() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(proc_macro, wasm_custom_section)]
+                #![feature(use_extern_macros, wasm_custom_section)]
 
                 extern crate wasm_bindgen;
 
