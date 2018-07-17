@@ -2,7 +2,7 @@ use proc_macro2::{Ident, Span};
 use shared;
 use syn;
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
 #[derive(Default)]
 pub struct Program {
     pub exports: Vec<Export>,
@@ -175,7 +175,7 @@ pub struct TypeAlias {
     pub src: syn::Type,
 }
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
 pub struct Const {
     pub vis: syn::Visibility,
     pub name: Ident,
@@ -184,7 +184,7 @@ pub struct Const {
     pub value: ConstValue,
 }
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
 /// same as webidl::ast::ConstValue
 pub enum ConstValue {
     BooleanLiteral(bool),
