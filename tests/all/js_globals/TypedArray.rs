@@ -199,7 +199,7 @@ fn new_Float64Array_length() {
         .test()
 }
 
-fn fill_lib(array_type: &str) -> String {
+fn fill_lib(array_type: &str, el_type: &str) -> String {
     format!(r#"
     #![feature(use_extern_macros, wasm_custom_section)]
 
@@ -208,10 +208,10 @@ fn fill_lib(array_type: &str) -> String {
     use wasm_bindgen::js;
 
     #[wasm_bindgen]
-    pub fn fill_with(this: &js::{}, value: JsValue, start: u32, end: u32) -> js::{} {{
+    pub fn fill_with(this: &js::{}, value: {}, start: u32, end: u32) -> js::{} {{
         this.fill(value, start, end)
     }}
-    "#, array_type, array_type)
+    "#, array_type, el_type, array_type)
 }
 
 fn fill_test_js(array_type: &str) -> String {
@@ -232,7 +232,7 @@ fn fill_test_js(array_type: &str) -> String {
 #[test]
 fn fill_Uint8Array() {
     project()
-        .file("src/lib.rs", &fill_lib("Uint8Array"),)
+        .file("src/lib.rs", &fill_lib("Uint8Array", "u8"),)
         .file("test.js", &fill_test_js("Uint8Array"))
         .test()
 }
@@ -240,7 +240,7 @@ fn fill_Uint8Array() {
 #[test]
 fn fill_Uint8ClampedArray() {
     project()
-        .file("src/lib.rs", &fill_lib("Uint8ClampedArray"),)
+        .file("src/lib.rs", &fill_lib("Uint8ClampedArray", "u8"),)
         .file("test.js", &fill_test_js("Uint8ClampedArray"))
         .test()
 }
@@ -248,7 +248,7 @@ fn fill_Uint8ClampedArray() {
 #[test]
 fn fill_Uint16Array() {
     project()
-        .file("src/lib.rs", &fill_lib("Uint16Array"),)
+        .file("src/lib.rs", &fill_lib("Uint16Array", "u16"),)
         .file("test.js", &fill_test_js("Uint16Array"))
         .test()
 }
@@ -256,7 +256,7 @@ fn fill_Uint16Array() {
 #[test]
 fn fill_Uint32Array() {
     project()
-        .file("src/lib.rs", &fill_lib("Uint32Array"),)
+        .file("src/lib.rs", &fill_lib("Uint32Array", "u32"),)
         .file("test.js", &fill_test_js("Uint32Array"))
         .test()
 }
@@ -264,7 +264,7 @@ fn fill_Uint32Array() {
 #[test]
 fn fill_Int8Array() {
     project()
-        .file("src/lib.rs", &fill_lib("Int8Array"),)
+        .file("src/lib.rs", &fill_lib("Int8Array", "i8"),)
         .file("test.js", &fill_test_js("Int8Array"))
         .test()
 }
@@ -272,7 +272,7 @@ fn fill_Int8Array() {
 #[test]
 fn fill_Int16Array() {
     project()
-        .file("src/lib.rs", &fill_lib("Int16Array"),)
+        .file("src/lib.rs", &fill_lib("Int16Array", "i16"),)
         .file("test.js", &fill_test_js("Int16Array"))
         .test()
 }
@@ -280,7 +280,7 @@ fn fill_Int16Array() {
 #[test]
 fn fill_Int32Array() {
     project()
-        .file("src/lib.rs", &fill_lib("Int32Array"),)
+        .file("src/lib.rs", &fill_lib("Int32Array", "i32"),)
         .file("test.js", &fill_test_js("Int32Array"))
         .test()
 }
@@ -288,7 +288,7 @@ fn fill_Int32Array() {
 #[test]
 fn fill_Float32Array() {
     project()
-        .file("src/lib.rs", &fill_lib("Float32Array"),)
+        .file("src/lib.rs", &fill_lib("Float32Array", "f32"),)
         .file("test.js", &fill_test_js("Float32Array"))
         .test()
 }
@@ -296,7 +296,7 @@ fn fill_Float32Array() {
 #[test]
 fn fill_Float64Array() {
     project()
-        .file("src/lib.rs", &fill_lib("Float64Array"),)
+        .file("src/lib.rs", &fill_lib("Float64Array", "f64"),)
         .file("test.js", &fill_test_js("Float64Array"))
         .test()
 }

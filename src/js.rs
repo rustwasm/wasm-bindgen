@@ -587,7 +587,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Float32Array, value: JsValue, start: u32, end: u32) -> Float32Array;
+    pub fn fill(this: &Float32Array, value: f32, start: u32, end: u32) -> Float32Array;
 }
 
 // Float64Array
@@ -606,7 +606,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Float64Array, value: JsValue, start: u32, end: u32) -> Float64Array;
+    pub fn fill(this: &Float64Array, value: f64, start: u32, end: u32) -> Float64Array;
 }
 
 // Function
@@ -706,7 +706,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Int8Array, value: JsValue, start: u32, end: u32) -> Int8Array;
+    pub fn fill(this: &Int8Array, value: i8, start: u32, end: u32) -> Int8Array;
 }
 
 // Int16Array
@@ -725,7 +725,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Int16Array, value: JsValue, start: u32, end: u32) -> Int16Array;
+    pub fn fill(this: &Int16Array, value: i16, start: u32, end: u32) -> Int16Array;
 }
 
 // Int32Array
@@ -744,7 +744,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Int32Array, value: JsValue, start: u32, end: u32) -> Int32Array;
+    pub fn fill(this: &Int32Array, value: i32, start: u32, end: u32) -> Int32Array;
 }
 
 // Map
@@ -1829,7 +1829,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Uint8Array, value: JsValue, start: u32, end: u32) -> Uint8Array;
+    pub fn fill(this: &Uint8Array, value: u8, start: u32, end: u32) -> Uint8Array;
 }
 
 // Uint8ClampedArray
@@ -1850,7 +1850,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Uint8ClampedArray, value: JsValue, start: u32, end: u32) -> Uint8ClampedArray;
+    pub fn fill(this: &Uint8ClampedArray, value: u8, start: u32, end: u32) -> Uint8ClampedArray;
 }
 
 // Uint16Array
@@ -1869,7 +1869,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Uint16Array, value: JsValue, start: u32, end: u32) -> Uint16Array;
+    pub fn fill(this: &Uint16Array, value: u16, start: u32, end: u32) -> Uint16Array;
 }
 
 // Uint32Array
@@ -1888,7 +1888,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Uint32Array, value: JsValue, start: u32, end: u32) -> Uint32Array;
+    pub fn fill(this: &Uint32Array, value: u32, start: u32, end: u32) -> Uint32Array;
 }
 
 // WeakMap
