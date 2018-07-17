@@ -262,6 +262,45 @@ fn index_of() {
 }
 
 #[test]
+fn last_index_of() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(use_extern_macros, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_last_index_of(this: &js::JsString, search_value: &js::JsString, from_index: i32) -> i32 {
+                this.last_index_of(search_value, from_index)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "canal";
+                let len = str.length;
+
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_last_index_of(str, 'a', len), 3);
+                assert.equal(wasm.string_last_index_of(str, 'a', 2), 1);
+                assert.equal(wasm.string_last_index_of(str, 'a', 0), -1);
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_last_index_of(str, 'x', len), -1);
+                assert.equal(wasm.string_last_index_of(str, 'c', -5), 0);
+                assert.equal(wasm.string_last_index_of(str, 'c', 0), 0);
+                // TODO: remove second parameter once we have optional parameters
+                assert.equal(wasm.string_last_index_of(str, '', len), 5);
+                assert.equal(wasm.string_last_index_of(str, '', 2), 2);
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn slice() {
     project()
         .file(
