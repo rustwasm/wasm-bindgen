@@ -188,6 +188,38 @@ fn concat() {
 }
 
 #[test]
+fn ends_with() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(use_extern_macros, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn ends_with(this: &js::JsString, search_value: &js::JsString, length: i32) -> bool {
+                this.ends_with(search_value, length)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "To be, or not to be, that is the question.";
+                let len = str.length;
+
+                // TODO: remove third parameter once we have optional parameters
+                assert.equal(wasm.ends_with(str, "question.", len), true);
+                assert.equal(wasm.ends_with(str, "to be", len), false);
+                assert.equal(wasm.ends_with(str, "to be", 19), true);         
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn includes() {
     project()
         .file("src/lib.rs", r#"
@@ -301,6 +333,38 @@ fn last_index_of() {
 }
 
 #[test]
+fn normalize() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(use_extern_macros, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_normalize(this: &js::JsString, form: &js::JsString) -> js::JsString {
+                this.normalize(form)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "\u1E9B\u0323";
+
+                // TODO: Handle undefined
+                assert.equal(wasm.string_normalize(str, "NFC"), "\u1E9B\u0323");
+                assert.equal(wasm.string_normalize(str, "NFD"), "\u017F\u0323\u0307");
+                assert.equal(wasm.string_normalize(str, "NFKC"), "\u1E69");
+                assert.equal(wasm.string_normalize(str, "NFKD"), "\u0073\u0323\u0307");
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn pad_end() {
     project()
         .file("src/lib.rs", r#"
@@ -376,6 +440,39 @@ fn pad_start() {
                 assert.equal(wasm.string_pad_start(str, 1, " "), "abc");
             }
         "#)
+        .test()
+}
+
+#[test]
+fn repeat() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(use_extern_macros, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_repeat(this: &js::JsString, count: i32) -> js::JsString {
+                this.repeat(count)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "test";
+                assert.equal(wasm.string_repeat(str, 3), "testtesttest");
+            }
+        "#,
+        )
         .test()
 }
 

@@ -104,6 +104,13 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
     #[wasm_bindgen(js_name = parseFloat)]
     pub fn parse_float(text: &str) -> f64;
+
+    /// The escape() function computes a new string in which certain characters have been
+    /// replaced by a hexadecimal escape sequence.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/escape
+    #[wasm_bindgen]
+    pub fn escape(string: &str) -> JsString;
 }
 
 // Array
@@ -992,6 +999,16 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow
     #[wasm_bindgen(static_method_of = Math)]
     pub fn pow(base: f64, exponent: f64) -> f64;
+
+    /// The Math.random() function returns a floating-point, pseudo-random number 
+    /// in the range 0–1 (inclusive of 0, but not 1) with approximately uniform distribution 
+    /// over that range — which you can then scale to your desired range. 
+    /// The implementation selects the initial seed to the random number generation algorithm; 
+    /// it cannot be chosen or reset by the user.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random    
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn random() -> f64;
 
     /// The Math.round() function returns the value of a number rounded to the nearest integer.
     ///
@@ -2028,6 +2045,13 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn concat(this: &JsString, string_2: &JsString) -> JsString;
 
+    /// The endsWith() method determines whether a string ends with the characters of a 
+    /// specified string, returning true or false as appropriate.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+    #[wasm_bindgen(method, js_class = "String", js_name = endsWith)]
+    pub fn ends_with(this: &JsString, search_string: &JsString, length: i32) -> bool;
+
     /// The `includes()` method determines whether one string may be found
     /// within another string, returning true or false as appropriate.
     ///
@@ -2051,6 +2075,13 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = lastIndexOf)]
     pub fn last_index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
 
+    /// The normalize() method returns the Unicode Normalization Form 
+    /// of a given string (if the value isn't a string, it will be converted to one first).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn normalize(this: &JsString, form: &JsString) -> JsString;
+
     /// The `padEnd()` method pads the current string with a given string
     /// (repeated, if needed) so that the resulting string reaches a given
     /// length. The padding is applied from the end (right) of the current
@@ -2068,6 +2099,13 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
     #[wasm_bindgen(method, js_class = "String", js_name = padStart)]
     pub fn pad_start(this: &JsString, target_length: u32, pad_string: &JsString) -> JsString;
+
+    /// The repeat() method constructs and returns a new string which contains the specified 
+    /// number of copies of the string on which it was called, concatenated together.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn repeat(this: &JsString, count: i32) -> JsString;
 
     /// The `slice()` method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
