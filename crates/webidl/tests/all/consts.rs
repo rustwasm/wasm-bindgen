@@ -54,6 +54,11 @@ fn ints() {
                     const byte imax = 127;
                     const octet umin = 0;
                     const octet umax = 255;
+                    const byte oct_imin = -0200;
+                    const byte oct_imax = 0177;
+                    const byte hex_imin = -0x80;
+                    const byte hex_imax = 0x7F;
+                    const byte oct_neg_zero = -0;
                 };
                 interface Short {
                     const short imin = -32768;
@@ -105,6 +110,12 @@ fn ints() {
                     assert_eq!(foo::Byte::IMAX, i8::max_value());
                     assert_eq!(foo::Byte::UMIN, u8::min_value());
                     assert_eq!(foo::Byte::UMAX, u8::max_value());
+
+                    assert_eq!(foo::Byte::OCT_IMIN, i8::min_value());
+                    assert_eq!(foo::Byte::OCT_IMAX, i8::max_value());
+                    assert_eq!(foo::Byte::HEX_IMIN, i8::min_value());
+                    assert_eq!(foo::Byte::HEX_IMAX, i8::max_value());
+                    assert_eq!(foo::Byte::OCT_NEG_ZERO, 0);
 
                     assert_eq!(foo::Short::IMIN, i16::min_value());
                     assert_eq!(foo::Short::IMAX, i16::max_value());

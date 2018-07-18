@@ -1,16 +1,21 @@
-use std::iter::{self, FromIterator};
+use std::iter::FromIterator;
 
 use backend;
-use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident, simple_path_ty};
-use heck::{CamelCase, SnakeCase};
+use backend::util::{leading_colon_path_ty, raw_ident, rust_ident};
 use proc_macro2::Ident;
 use syn;
-use webidl;
-use webidl::ast::ExtendedAttribute;
+use weedle;
 
 use first_pass::FirstPassRecord;
+use type_conversion::ToSynType;
 
-fn shared_ref(ty: syn::Type) -> syn::Type {
+pub(crate) fn public() -> syn::Visibility {
+    syn::Visibility::Public(syn::VisPublic {
+        pub_token: Default::default(),
+    })
+}
+
+pub(crate) fn shared_ref(ty: syn::Type) -> syn::Type {
     syn::TypeReference {
         and_token: Default::default(),
         lifetime: None,
@@ -19,33 +24,81 @@ fn shared_ref(ty: syn::Type) -> syn::Type {
     }.into()
 }
 
-pub fn webidl_const_ty_to_syn_ty(ty: &webidl::ast::ConstType) -> syn::Type {
-    use webidl::ast::ConstType::*;
-
-    // similar to webidl_ty_to_syn_ty
-    match ty {
-        Boolean => ident_ty(raw_ident("bool")),
-        Byte => ident_ty(raw_ident("i8")),
-        Octet => ident_ty(raw_ident("u8")),
-        RestrictedDouble | UnrestrictedDouble => ident_ty(raw_ident("f64")),
-        RestrictedFloat | UnrestrictedFloat => ident_ty(raw_ident("f32")),
-        SignedLong => ident_ty(raw_ident("i32")),
-        SignedLongLong => ident_ty(raw_ident("i64")),
-        SignedShort => ident_ty(raw_ident("i16")),
-        UnsignedLong => ident_ty(raw_ident("u32")),
-        UnsignedLongLong => ident_ty(raw_ident("u64")),
-        UnsignedShort => ident_ty(raw_ident("u16")),
-        Identifier(ref id) => ident_ty(rust_ident(id)),
-    }
+pub(crate) fn unit_ty() -> syn::Type {
+    syn::Type::Tuple(syn::TypeTuple {
+        paren_token: Default::default(),
+        elems: syn::punctuated::Punctuated::new(),
+    })
 }
 
-pub fn webidl_const_v_to_backend_const_v(v: &webidl::ast::ConstValue) -> backend::ast::ConstValue {
-    match *v {
-        webidl::ast::ConstValue::BooleanLiteral(b) => backend::ast::ConstValue::BooleanLiteral(b),
-        webidl::ast::ConstValue::FloatLiteral(f) => backend::ast::ConstValue::FloatLiteral(f),
-        webidl::ast::ConstValue::SignedIntegerLiteral(i) => backend::ast::ConstValue::SignedIntegerLiteral(i),
-        webidl::ast::ConstValue::UnsignedIntegerLiteral(u) => backend::ast::ConstValue::UnsignedIntegerLiteral(u),
-        webidl::ast::ConstValue::Null => backend::ast::ConstValue::Null,
+pub(crate) fn js_value() -> syn::Type {
+    leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")])
+}
+
+pub(crate) fn rust_type_name(identifier: &weedle::common::Identifier) -> String {
+    use heck::CamelCase;
+    identifier.name.to_camel_case()
+}
+
+pub(crate) fn rust_type_ident(identifier: &weedle::common::Identifier) -> Ident {
+    rust_ident(&rust_type_name(identifier))
+}
+
+pub(crate) fn rust_variable_name(identifier: &weedle::common::Identifier) -> String {
+    use heck::SnakeCase;
+    identifier.name.to_snake_case()
+}
+
+pub(crate) fn rust_variable_ident(identifier: &weedle::common::Identifier) -> Ident {
+    rust_ident(&rust_variable_name(identifier))
+}
+
+pub(crate) fn rust_const_name(identifier: &weedle::common::Identifier) -> String {
+    use heck::ShoutySnakeCase;
+    identifier.name.to_shouty_snake_case()
+}
+
+pub(crate) fn rust_const_ident(identifier: &weedle::common::Identifier) -> Ident {
+    rust_ident(&rust_const_name(identifier))
+}
+
+pub fn weedle_const_v_to_backend_const_v(
+    value: &weedle::literal::ConstValue,
+) -> backend::ast::ConstValue {
+    use weedle::{
+        literal::{BooleanLit, ConstValue::*, DecI64, FloatLit::*, HexI64, IntegerLit::*, OctI64},
+        term,
+    };
+
+    match value {
+        Boolean(BooleanLit(boolean)) => backend::ast::ConstValue::Boolean(*boolean),
+        Float(Value(value)) => {
+            backend::ast::ConstValue::Float(backend::ast::FloatValue::Literal(value.to_string()))
+        }
+        Float(NegInfinity(term::NegInfinity)) => {
+            backend::ast::ConstValue::Float(backend::ast::FloatValue::NegInfinity)
+        }
+        Float(Infinity(term::Infinity)) => {
+            backend::ast::ConstValue::Float(backend::ast::FloatValue::Infinity)
+        }
+        Float(NaN(term::NaN)) => backend::ast::ConstValue::Float(backend::ast::FloatValue::NaN),
+        Integer(Dec(DecI64(dec_i64))) => backend::ast::ConstValue::Integer(
+            backend::ast::IntegerValue::Literal(dec_i64.to_string()),
+        ),
+        Integer(Hex(HexI64(hex_i64))) => backend::ast::ConstValue::Integer(
+            backend::ast::IntegerValue::Literal(hex_i64.to_string()),
+        ),
+        Integer(Oct(OctI64(oct_i64))) => {
+            let literal = if oct_i64 == "0" || oct_i64 == "-0" {
+                oct_i64.to_string()
+            } else if oct_i64.starts_with('-') {
+                format!("-0o{}", &oct_i64[2..])
+            } else {
+                format!("0o{}", &oct_i64[1..])
+            };
+            backend::ast::ConstValue::Integer(backend::ast::IntegerValue::Literal(literal))
+        }
+        Null(weedle::term::Null) => backend::ast::ConstValue::Null,
     }
 }
 
@@ -62,22 +115,13 @@ fn simple_fn_arg(ident: Ident, ty: syn::Type) -> syn::ArgCaptured {
     }
 }
 
-fn unit_ty() -> syn::Type {
-    syn::Type::Tuple(syn::TypeTuple {
-        paren_token: Default::default(),
-        elems: syn::punctuated::Punctuated::new(),
-    })
-}
-
 fn result_ty(t: syn::Type) -> syn::Type {
-    let js_value = leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]);
-
     let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
         colon2_token: None,
         lt_token: Default::default(),
         args: FromIterator::from_iter(vec![
             syn::GenericArgument::Type(t),
-            syn::GenericArgument::Type(js_value),
+            syn::GenericArgument::Type(js_value()),
         ]),
         gt_token: Default::default(),
     });
@@ -89,108 +133,16 @@ fn result_ty(t: syn::Type) -> syn::Type {
     ty.into()
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum TypePosition {
-    Argument,
-    Return,
-}
-
 impl<'a> FirstPassRecord<'a> {
-    pub fn webidl_ty_to_syn_ty(
-        &self,
-        ty: &webidl::ast::Type,
-        pos: TypePosition,
-    ) -> Option<syn::Type> {
-        // nullable types are not yet supported (see issue #14)
-        if ty.nullable {
-            return None;
-        }
-        Some(match ty.kind {
-            // `any` becomes `::wasm_bindgen::JsValue`.
-            webidl::ast::TypeKind::Any => {
-                simple_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")])
-            }
-
-            // A reference to a type by name becomes the same thing in the
-            // bindings.
-            webidl::ast::TypeKind::Identifier(ref id) => {
-                let ty = ident_ty(rust_ident(id.to_camel_case().as_str()));
-                if self.interfaces.contains(id) {
-                    if pos == TypePosition::Argument {
-                        shared_ref(ty)
-                    } else {
-                        ty
-                    }
-                } else if self.dictionaries.contains(id) {
-                    ty
-                } else if self.enums.contains(id) {
-                    ty
-                } else {
-                    warn!("unrecognized type {}", id);
-                    ty
-                }
-            }
-
-            // Scalars.
-            webidl::ast::TypeKind::Boolean => ident_ty(raw_ident("bool")),
-            webidl::ast::TypeKind::Byte => ident_ty(raw_ident("i8")),
-            webidl::ast::TypeKind::Octet => ident_ty(raw_ident("u8")),
-            webidl::ast::TypeKind::RestrictedDouble | webidl::ast::TypeKind::UnrestrictedDouble => {
-                ident_ty(raw_ident("f64"))
-            }
-            webidl::ast::TypeKind::RestrictedFloat | webidl::ast::TypeKind::UnrestrictedFloat => {
-                ident_ty(raw_ident("f32"))
-            }
-            webidl::ast::TypeKind::SignedLong => ident_ty(raw_ident("i32")),
-            webidl::ast::TypeKind::SignedLongLong => ident_ty(raw_ident("i64")),
-            webidl::ast::TypeKind::SignedShort => ident_ty(raw_ident("i16")),
-            webidl::ast::TypeKind::UnsignedLong => ident_ty(raw_ident("u32")),
-            webidl::ast::TypeKind::UnsignedLongLong => ident_ty(raw_ident("u64")),
-            webidl::ast::TypeKind::UnsignedShort => ident_ty(raw_ident("u16")),
-
-            // `DOMString -> `&str` for arguments
-            webidl::ast::TypeKind::DOMString if pos == TypePosition::Argument => {
-                shared_ref(ident_ty(raw_ident("str")))
-            }
-            // `DOMString` is not supported yet in other positions.
-            webidl::ast::TypeKind::DOMString => return None,
-
-            // Support for these types is not yet implemented, so skip
-            // generating any bindings for this function.
-            webidl::ast::TypeKind::ArrayBuffer
-            | webidl::ast::TypeKind::ByteString
-            | webidl::ast::TypeKind::DataView
-            | webidl::ast::TypeKind::Error
-            | webidl::ast::TypeKind::Float32Array
-            | webidl::ast::TypeKind::Float64Array
-            | webidl::ast::TypeKind::FrozenArray(_)
-            | webidl::ast::TypeKind::Int16Array
-            | webidl::ast::TypeKind::Int32Array
-            | webidl::ast::TypeKind::Int8Array
-            | webidl::ast::TypeKind::Object
-            | webidl::ast::TypeKind::Promise(_)
-            | webidl::ast::TypeKind::Record(..)
-            | webidl::ast::TypeKind::Sequence(_)
-            | webidl::ast::TypeKind::Symbol
-            | webidl::ast::TypeKind::USVString
-            | webidl::ast::TypeKind::Uint16Array
-            | webidl::ast::TypeKind::Uint32Array
-            | webidl::ast::TypeKind::Uint8Array
-            | webidl::ast::TypeKind::Uint8ClampedArray
-            | webidl::ast::TypeKind::Union(_) => {
-                return None;
-            }
-        })
-    }
-
-    fn webidl_arguments_to_syn_arg_captured<'b, I>(
+    fn weedle_arguments_to_syn_arg_captured<'b, I>(
         &self,
         arguments: I,
         kind: &backend::ast::ImportFunctionKind,
     ) -> Option<Vec<syn::ArgCaptured>>
     where
-        I: Iterator<Item = (&'b str, &'b webidl::ast::Type, bool)>,
+        I: IntoIterator<Item = &'b weedle::argument::Argument>,
     {
+        let arguments = arguments.into_iter();
         let estimate = arguments.size_hint();
         let len = estimate.1.unwrap_or(estimate.0);
         let mut res = if let backend::ast::ImportFunctionKind::Method {
@@ -209,40 +161,49 @@ impl<'a> FirstPassRecord<'a> {
             Vec::with_capacity(len)
         };
 
-        for (name, ty, variadic) in arguments {
-            if variadic {
-                warn!("Variadic arguments are not supported yet",);
-                return None;
-            }
-
-            match self.webidl_ty_to_syn_ty(ty, TypePosition::Argument) {
-                None => {
-                    warn!("Argument's type is not yet supported: {:?}", ty);
+        for arg in arguments {
+            use weedle::argument::Argument::*;
+            match arg {
+                Single(arg) => {
+                    // TODO: deal with arg.{attributes, optional, default}
+                    match arg.type_.to_syn_type(self, false) {
+                        None => return None,
+                        Some(ty) => {
+                            res.push(simple_fn_arg(rust_variable_ident(&arg.identifier), ty))
+                        }
+                    }
+                }
+                Variadic(_) => {
+                    warn!("Variadic arguments are not supported yet");
                     return None;
                 }
-                Some(ty) => res.push(simple_fn_arg(rust_ident(&name.to_snake_case()), ty)),
             }
         }
 
         Some(res)
     }
 
-    pub fn create_function<'b, I>(
+    pub fn create_function<'b, I, T>(
         &self,
-        name: &str,
+        identifier: &weedle::common::Identifier,
         arguments: I,
-        mut ret: Option<syn::Type>,
+        ret: Option<T>,
         kind: backend::ast::ImportFunctionKind,
         structural: bool,
         catch: bool,
     ) -> Option<backend::ast::ImportFunction>
     where
-        I: Iterator<Item = (&'b str, &'b webidl::ast::Type, bool)>,
+        I: IntoIterator<Item = &'b weedle::argument::Argument>,
+        T: ToSynType,
     {
-        let rust_name = rust_ident(&name.to_snake_case());
-        let name = raw_ident(name);
+        let rust_name = rust_variable_ident(identifier);
+        let name = raw_ident(&identifier.name);
 
-        let arguments = self.webidl_arguments_to_syn_arg_captured(arguments, &kind)?;
+        let arguments = self.weedle_arguments_to_syn_arg_captured(arguments, &kind)?;
+        let mut ret = match ret {
+            Some(ret) => Some(ret.to_syn_type(self, true)?),
+            None => None,
+        };
 
         let js_ret = ret.clone();
 
@@ -276,52 +237,64 @@ impl<'a> FirstPassRecord<'a> {
         })
     }
 
-    pub fn create_basic_method(
+    pub fn create_method<T>(
         &self,
-        arguments: &[webidl::ast::Argument],
-        name: Option<&String>,
-        return_type: &webidl::ast::ReturnType,
-        self_name: &str,
+        identifier: Option<&weedle::common::Identifier>,
+        arguments: &[weedle::argument::Argument],
+        return_type: Option<T>,
+        self_identifier: &weedle::common::Identifier,
         is_static: bool,
+        kind: backend::ast::OperationKind,
+        is_structural: bool,
         catch: bool,
-    ) -> Option<backend::ast::ImportFunction> {
-        let name = match name {
+    ) -> Option<backend::ast::ImportFunction>
+    where
+        T: ToSynType,
+    {
+        let identifier = match identifier {
             None => {
                 warn!("Operations without a name are unsupported");
                 return None;
             }
-            Some(ref name) => name,
+            Some(identifier) => identifier,
         };
 
         let kind = backend::ast::ImportFunctionKind::Method {
-            class: self_name.to_string(),
-            ty: ident_ty(rust_ident(self_name.to_camel_case().as_str())),
-            kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
-                is_static,
-                kind: backend::ast::OperationKind::Regular,
-            }),
-        };
-
-        let ret = match return_type {
-            webidl::ast::ReturnType::Void => None,
-            webidl::ast::ReturnType::NonVoid(ty) => {
-                match self.webidl_ty_to_syn_ty(ty, TypePosition::Return) {
-                    None => {
-                        warn!("Operation's return type is not yet supported: {:?}", ty);
-                        return None;
-                    }
-                    Some(ty) => Some(ty),
-                }
-            }
+            class: self_identifier.name.to_string(),
+            ty: self_identifier.to_syn_type(self, true)?,
+            kind: backend::ast::MethodKind::Operation(backend::ast::Operation { is_static, kind }),
         };
 
         self.create_function(
-            &name,
-            arguments
-                .iter()
-                .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
-            ret,
+            identifier,
+            arguments,
+            return_type,
             kind,
+            is_structural,
+            catch,
+        )
+    }
+
+    pub fn create_regular_method(
+        &self,
+        identifier: &Option<weedle::common::Identifier>,
+        arguments: &[weedle::argument::Argument],
+        return_type: &weedle::types::ReturnType,
+        self_identifier: &weedle::common::Identifier,
+        is_static: bool,
+        catch: bool,
+    ) -> Option<backend::ast::ImportFunction> {
+        let return_type = match return_type {
+            weedle::types::ReturnType::Void(weedle::term::Void) => None,
+            weedle::types::ReturnType::Type(type_) => Some(type_),
+        };
+        self.create_method(
+            identifier.as_ref(),
+            arguments,
+            return_type,
+            self_identifier,
+            is_static,
+            backend::ast::OperationKind::Regular,
             false,
             catch,
         )
@@ -329,98 +302,103 @@ impl<'a> FirstPassRecord<'a> {
 
     pub fn create_getter(
         &self,
-        name: &str,
-        ty: &webidl::ast::Type,
-        self_name: &str,
+        identifier: &weedle::common::Identifier,
+        ty: &weedle::types::AttributedType,
+        self_identifier: &weedle::common::Identifier,
         is_static: bool,
         is_structural: bool,
         catch: bool,
     ) -> Option<backend::ast::ImportFunction> {
-        let ret = match self.webidl_ty_to_syn_ty(ty, TypePosition::Return) {
-            None => {
-                warn!("Attribute's type does not yet support reading: {:?}", ty);
-                return None;
-            }
-            Some(ty) => Some(ty),
-        };
-
-        let kind = backend::ast::ImportFunctionKind::Method {
-            class: self_name.to_string(),
-            ty: ident_ty(rust_ident(self_name.to_camel_case().as_str())),
-            kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
-                is_static,
-                kind: backend::ast::OperationKind::Getter(Some(raw_ident(name))),
-            }),
-        };
-
-        self.create_function(name, iter::empty(), ret, kind, is_structural, catch)
+        self.create_method(
+            Some(identifier),
+            &[],
+            Some(ty),
+            self_identifier,
+            is_static,
+            backend::ast::OperationKind::Getter(Some(raw_ident(&identifier.name))),
+            is_structural,
+            catch,
+        )
     }
 
     pub fn create_setter(
         &self,
-        name: &str,
-        ty: &webidl::ast::Type,
-        self_name: &str,
+        identifier: &weedle::common::Identifier,
+        ty: &weedle::types::AttributedType,
+        self_identifier: &weedle::common::Identifier,
         is_static: bool,
         is_structural: bool,
         catch: bool,
     ) -> Option<backend::ast::ImportFunction> {
-        let kind = backend::ast::ImportFunctionKind::Method {
-            class: self_name.to_string(),
-            ty: ident_ty(rust_ident(self_name.to_camel_case().as_str())),
-            kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
-                is_static,
-                kind: backend::ast::OperationKind::Setter(Some(raw_ident(name))),
-            }),
-        };
+        enum AlwaysVoidReturn {}
 
-        self.create_function(
-            &format!("set_{}", name),
-            iter::once((name, ty, false)),
-            None,
-            kind,
+        impl ToSynType for AlwaysVoidReturn {
+            fn to_syn_type(&self, _: &FirstPassRecord<'_>, _: bool) -> Option<syn::Type> {
+                match *self {}
+            }
+        }
+
+        const RETURN_TYPE: Option<AlwaysVoidReturn> = None;
+
+        self.create_method(
+            Some(&weedle::common::Identifier {
+                name: format!("set_{}", identifier.name),
+            }),
+            &[weedle::argument::Argument::Single(
+                weedle::argument::SingleArgument {
+                    attributes: None,
+                    optional: None,
+                    type_: ty.clone(),
+                    identifier: identifier.clone(),
+                    default: None,
+                },
+            )],
+            RETURN_TYPE,
+            self_identifier,
+            is_static,
+            backend::ast::OperationKind::Setter(Some(raw_ident(&identifier.name))),
             is_structural,
             catch,
         )
     }
 }
 
-fn has_named_attribute(ext_attrs: &[Box<ExtendedAttribute>], attribute: &str) -> bool {
-    ext_attrs.iter().any(|attr| match &**attr {
-        ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => {
-            name == attribute
-        }
-        _ => false,
-    })
+mod extended_attribute_helpers {
+    use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
+
+    fn search<F>(attrs: &Option<ExtendedAttributeList>, f: F) -> bool
+    where
+        F: FnMut(&ExtendedAttribute) -> bool,
+    {
+        attrs
+            .as_ref()
+            .map(|attrs| attrs.body.list.iter().any(f))
+            .unwrap_or(false)
+    }
+
+    fn has_named_attribute(attrs: &Option<ExtendedAttributeList>, attribute: &str) -> bool {
+        search(attrs, |attr| match attr {
+            ExtendedAttribute::NoArgs(attr) => attr.identifier.name == attribute,
+            _ => false,
+        })
+    }
+
+    /// ChromeOnly is for things that are only exposed to priveleged code in Firefox.
+    pub(crate) fn is_chrome_only(attrs: &Option<ExtendedAttributeList>) -> bool {
+        has_named_attribute(attrs, "ChromeOnly")
+    }
+
+    pub fn is_no_interface_object(attrs: &Option<ExtendedAttributeList>) -> bool {
+        has_named_attribute(attrs, "NoInterfaceObject")
+    }
+
+    pub(crate) fn is_structural(attrs: &Option<ExtendedAttributeList>) -> bool {
+        has_named_attribute(attrs, "Unforgeable")
+    }
+
+    pub(crate) fn throws(attrs: &Option<ExtendedAttributeList>) -> bool {
+        has_named_attribute(attrs, "Throws")
+    }
 }
 
-/// ChromeOnly is for things that are only exposed to privileged code in Firefox.
-pub fn is_chrome_only(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
-    has_named_attribute(ext_attrs, "ChromeOnly")
-}
-
-pub fn is_no_interface_object(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
-    has_named_attribute(ext_attrs, "NoInterfaceObject")
-}
-
-pub fn is_structural(attrs: &[Box<ExtendedAttribute>]) -> bool {
-    attrs.iter().any(|attr| match &**attr {
-        ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => {
-            name == "Unforgeable"
-        }
-        _ => false,
-    })
-}
-
-pub fn throws(attrs: &[Box<ExtendedAttribute>]) -> bool {
-    attrs.iter().any(|attr| match &**attr {
-        ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => name == "Throws",
-        _ => false,
-    })
-}
-
-pub fn public() -> syn::Visibility {
-    syn::Visibility::Public(syn::VisPublic {
-        pub_token: Default::default(),
-    })
-}
+pub(crate) use self::extended_attribute_helpers::*;

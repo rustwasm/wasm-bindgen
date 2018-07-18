@@ -948,29 +948,54 @@ impl ToTokens for ast::Const {
         let name = &self.name;
         let ty = &self.ty;
 
-        let value: TokenStream = match self.value {
-            BooleanLiteral(false) => quote!(false),
-            BooleanLiteral(true) => quote!(true),
-            // the actual type is unknown because of typedefs
-            // so we cannot use std::fxx::INFINITY
-            // but we can use type inference
-            FloatLiteral(f) if f.is_infinite() && f.is_sign_positive() => quote!(1.0 / 0.0),
-            FloatLiteral(f) if f.is_infinite() && f.is_sign_negative() => quote!(-1.0 / 0.0),
-            FloatLiteral(f) if f.is_nan() => quote!(0.0 / 0.0),
-            // again no suffix
-            // panics on +-inf, nan
-            FloatLiteral(f) => {
-                let f = Literal::f64_unsuffixed(f);
-                quote!(#f)
-            },
-            SignedIntegerLiteral(i) => {
-                let i = Literal::i64_unsuffixed(i);
-                quote!(#i)
-            },
-            UnsignedIntegerLiteral(i) => {
-                let i = Literal::u64_unsuffixed(i);
-                quote!(#i)
-            },
+        let value: TokenStream = match &self.value {
+            Boolean(false) => quote!(false),
+            Boolean(true) => quote!(true),
+            Float(float) => {
+                use ast::FloatValue;
+
+                let float = match float {
+                    FloatValue::Value(value) if value.is_infinite() && value.is_sign_negative() => {
+                        &FloatValue::NegInfinity
+                    }
+                    FloatValue::Value(value) if value.is_infinite() && value.is_sign_positive() => {
+                        &FloatValue::Infinity
+                    }
+                    FloatValue::Value(value) if value.is_nan() => &FloatValue::NaN,
+                    float @ _ => float,
+                };
+
+                match float {
+                    FloatValue::Literal(literal) => literal.parse::<TokenStream>().unwrap(),
+                    FloatValue::Value(value) => {
+                        // the actual type is unknown because of typedefs
+                        // so we leverage type inference by using an unsuffixed value
+                        // panics on +-inf, nan
+                        let literal = Literal::f64_unsuffixed(*value);
+                        quote!(#literal)
+                    }
+                    // again, we don't know the actual type
+                    // so we cannot use std::fxx::INFINITY
+                    FloatValue::NegInfinity => quote!(-1.0 / 0.0),
+                    FloatValue::Infinity => quote!(1.0 / 0.0),
+                    FloatValue::NaN => quote!(0.0 / 0.0),
+                }
+            }
+            Integer(integer) => {
+                use ast::IntegerValue;
+
+                match integer {
+                    IntegerValue::Literal(literal) => literal.parse::<TokenStream>().unwrap(),
+                    IntegerValue::SignedValue(value) => {
+                        let literal = Literal::i64_unsuffixed(*value);
+                        quote!(#literal)
+                    }
+                    IntegerValue::UnsignedValue(value) => {
+                        let literal = Literal::u64_unsuffixed(*value);
+                        quote!(#literal)
+                    }
+                }
+            }
             Null => unimplemented!(),
         };
 
