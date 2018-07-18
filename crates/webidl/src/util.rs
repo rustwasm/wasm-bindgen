@@ -89,6 +89,30 @@ fn result_ty(t: syn::Type) -> syn::Type {
     ty.into()
 }
 
+fn slice_ty(t: syn::Type) -> syn::Type {
+    syn::TypeSlice {
+        bracket_token: Default::default(),
+        elem: Box::new(t),
+    }.into()
+}
+
+fn vec_ty(t: syn::Type) -> syn::Type {
+    let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
+        colon2_token: None,
+        lt_token: Default::default(),
+        args: FromIterator::from_iter(vec![
+            syn::GenericArgument::Type(t),
+        ]),
+        gt_token: Default::default(),
+    });
+
+    let ident = raw_ident("Vec");
+    let seg = syn::PathSegment { ident, arguments };
+    let path: syn::Path = seg.into();
+    let ty = syn::TypePath { qself: None, path };
+    ty.into()
+}
+
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum TypePosition {
     Argument,
@@ -155,10 +179,18 @@ impl<'a> FirstPassRecord<'a> {
             // `DOMString` is not supported yet in other positions.
             webidl::ast::TypeKind::DOMString => return None,
 
+            // `ByteString -> `&[u8]` for arguments
+            webidl::ast::TypeKind::ByteString if pos == TypePosition::Argument => {
+                shared_ref(slice_ty(ident_ty(raw_ident("u8"))))
+            }
+            // ... and `Vec<u8>` for arguments
+            webidl::ast::TypeKind::ByteString => {
+                vec_ty(ident_ty(raw_ident("u8")))
+            }
+
             // Support for these types is not yet implemented, so skip
             // generating any bindings for this function.
             webidl::ast::TypeKind::ArrayBuffer
-            | webidl::ast::TypeKind::ByteString
             | webidl::ast::TypeKind::DataView
             | webidl::ast::TypeKind::Error
             | webidl::ast::TypeKind::Float32Array
