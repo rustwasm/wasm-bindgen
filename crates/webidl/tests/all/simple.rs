@@ -439,10 +439,6 @@ fn mixin() {
                     readonly attribute short bar;
                 };
 
-                partial interface mixin Bar {
-                    void addToBar(short other);
-                };
-
                 Foo includes Bar;
             "#,
         )
@@ -484,8 +480,7 @@ fn mixin() {
                     let f = Foo::new(1).unwrap();
                     assert_eq!(f.bar(), 1);
                     Foo::set_default_bar(7);
-                    f.add_to_bar(Foo::default_bar());
-                    assert_eq!(f.bar(), 8);
+                    assert_eq!(Foo::default_bar(), 7);
                 }
             "#,
         )

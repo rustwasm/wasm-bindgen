@@ -1,32 +1,33 @@
 use std::{
-    collections::{BTreeMap, BTreeSet}, mem,
+    collections::{BTreeMap, BTreeSet},
+    mem,
 };
 
-use webidl;
+use weedle;
 
 use super::Result;
 
 #[derive(Default)]
 pub(crate) struct FirstPassRecord<'a> {
-    pub(crate) interfaces: BTreeSet<String>,
-    pub(crate) dictionaries: BTreeSet<String>,
-    pub(crate) enums: BTreeSet<String>,
-    pub(crate) mixins: BTreeMap<String, MixinData<'a>>,
+    pub(crate) interfaces: BTreeSet<&'a str>,
+    pub(crate) dictionaries: BTreeSet<&'a str>,
+    pub(crate) enums: BTreeSet<&'a str>,
+    pub(crate) interface_mixins: BTreeMap<&'a str, MixinData<'a>>,
 }
 
 #[derive(Default)]
 pub(crate) struct MixinData<'a> {
-    pub(crate) non_partial: Option<&'a webidl::ast::NonPartialMixin>,
-    pub(crate) partials: Vec<&'a webidl::ast::PartialMixin>,
+    pub(crate) non_partial: Option<&'a weedle::InterfaceMixinDefinition>,
+    pub(crate) partials: Vec<&'a weedle::PartialInterfaceMixinDefinition>,
 }
 
 pub(crate) trait FirstPass {
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()>;
 }
 
-impl FirstPass for [webidl::ast::Definition] {
+impl FirstPass for weedle::Definitions {
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
-        for def in self {
+        for def in &self.definitions {
             def.first_pass(record)?;
         }
 
@@ -34,15 +35,18 @@ impl FirstPass for [webidl::ast::Definition] {
     }
 }
 
-impl FirstPass for webidl::ast::Definition {
+impl FirstPass for weedle::Definition {
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
-        use webidl::ast::Definition::*;
+        use weedle::Definition::*;
 
         match self {
             Dictionary(dictionary) => dictionary.first_pass(record),
             Enum(enum_) => enum_.first_pass(record),
             Interface(interface) => interface.first_pass(record),
-            Mixin(mixin) => mixin.first_pass(record),
+            InterfaceMixin(interface_mixin) => interface_mixin.first_pass(record),
+            PartialInterfaceMixin(partial_interface_mixin) => {
+                partial_interface_mixin.first_pass(record)
+            }
             _ => {
                 // Other definitions aren't currently used in the first pass
                 Ok(())
@@ -51,85 +55,12 @@ impl FirstPass for webidl::ast::Definition {
     }
 }
 
-impl FirstPass for webidl::ast::Dictionary {
+impl FirstPass for weedle::DictionaryDefinition {
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
-        use webidl::ast::Dictionary::*;
-
-        match self {
-            NonPartial(dictionary) => dictionary.first_pass(record),
-            _ => {
-                // Other dictionaries aren't currently used in the first pass
-                Ok(())
-            }
-        }
-    }
-}
-
-impl FirstPass for webidl::ast::NonPartialDictionary {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
-        if record.dictionaries.insert(self.name.clone()) {
-            warn!("Encountered multiple declarations of {}", self.name);
-        }
-
-        Ok(())
-    }
-}
-
-impl FirstPass for webidl::ast::Enum {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
-        if record.enums.insert(self.name.clone()) {
-            warn!("Encountered multiple declarations of {}", self.name);
-        }
-
-        Ok(())
-    }
-}
-
-impl FirstPass for webidl::ast::Interface {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
-        use webidl::ast::Interface::*;
-
-        match self {
-            NonPartial(interface) => interface.first_pass(record),
-            _ => {
-                // Other interfaces aren't currently used in the first pass
-                Ok(())
-            }
-        }
-    }
-}
-
-impl FirstPass for webidl::ast::NonPartialInterface {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
-        if record.interfaces.insert(self.name.clone()) {
-            warn!("Encountered multiple declarations of {}", self.name);
-        }
-
-        Ok(())
-    }
-}
-
-impl FirstPass for webidl::ast::Mixin {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
-        use webidl::ast::Mixin::*;
-
-        match self {
-            NonPartial(mixin) => mixin.first_pass(record),
-            Partial(mixin) => mixin.first_pass(record),
-        }
-    }
-}
-
-impl FirstPass for webidl::ast::NonPartialMixin {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
-        let entry = record
-            .mixins
-            .entry(self.name.clone())
-            .or_insert_with(Default::default);
-        if mem::replace(&mut entry.non_partial, Some(self)).is_some() {
+        if record.dictionaries.insert(&self.identifier.name) {
             warn!(
-                "Encounterd multiple declarations of {}, using last encountered",
-                self.name
+                "Encountered multiple declarations of {}",
+                self.identifier.name
             );
         }
 
@@ -137,11 +68,54 @@ impl FirstPass for webidl::ast::NonPartialMixin {
     }
 }
 
-impl FirstPass for webidl::ast::PartialMixin {
+impl FirstPass for weedle::EnumDefinition {
+    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
+        if record.enums.insert(&self.identifier.name) {
+            warn!(
+                "Encountered multiple declarations of {}",
+                self.identifier.name
+            );
+        }
+
+        Ok(())
+    }
+}
+
+impl FirstPass for weedle::InterfaceDefinition {
+    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
+        if record.interfaces.insert(&self.identifier.name) {
+            warn!(
+                "Encountered multiple declarations of {}",
+                self.identifier.name
+            );
+        }
+
+        Ok(())
+    }
+}
+
+impl FirstPass for weedle::InterfaceMixinDefinition {
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
         let entry = record
-            .mixins
-            .entry(self.name.clone())
+            .interface_mixins
+            .entry(&self.identifier.name)
+            .or_insert_with(Default::default);
+        if mem::replace(&mut entry.non_partial, Some(self)).is_some() {
+            warn!(
+                "Encounterd multiple declarations of {}, using last encountered",
+                self.identifier.name
+            );
+        }
+
+        Ok(())
+    }
+}
+
+impl FirstPass for weedle::PartialInterfaceMixinDefinition {
+    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()> {
+        let entry = record
+            .interface_mixins
+            .entry(&self.identifier.name)
             .or_insert_with(Default::default);
         entry.partials.push(self);
 

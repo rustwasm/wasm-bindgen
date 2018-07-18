@@ -184,14 +184,28 @@ pub struct Const {
     pub value: ConstValue,
 }
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
-/// same as webidl::ast::ConstValue
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub enum ConstValue {
-    BooleanLiteral(bool),
-    FloatLiteral(f64),
-    SignedIntegerLiteral(i64),
-    UnsignedIntegerLiteral(u64),
+    Boolean(bool),
+    Float(FloatValue),
+    Integer(IntegerValue),
     Null,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub enum FloatValue {
+    Literal(String),
+    Value(f64),
+    NegInfinity,
+    Infinity,
+    NaN,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub enum IntegerValue {
+    Literal(String),
+    SignedValue(i64),
+    UnsignedValue(u64),
 }
 
 impl Program {
