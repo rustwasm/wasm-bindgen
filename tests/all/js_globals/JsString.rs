@@ -380,6 +380,41 @@ fn pad_start() {
 }
 
 #[test]
+fn repeat() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(use_extern_macros, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn repeat(this: &js::JsString, count: u32) -> js::JsString {
+                this.repeat(count)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.repeat('abc', 0), '');
+                assert.equal(wasm.repeat('abc', 1), 'abc');
+                assert.equal(wasm.repeat('abc', 2), 'abcabc');
+                assert.equal(wasm.repeat('abc', 3.5), 'abcabcabc');
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn slice() {
     project()
         .file(
