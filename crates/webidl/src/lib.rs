@@ -244,6 +244,10 @@ impl WebidlParse<()> for webidl::ast::NonPartialInterface {
             return Ok(());
         }
 
+        if util::is_no_interface_object(&self.extended_attributes) {
+            return Ok(());
+        }
+
         program.imports.push(backend::ast::Import {
             module: None,
             version: None,

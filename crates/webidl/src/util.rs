@@ -385,14 +385,22 @@ impl<'a> FirstPassRecord<'a> {
     }
 }
 
-/// ChromeOnly is for things that are only exposed to priveleged code in Firefox.
-pub fn is_chrome_only(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
+fn has_named_attribute(ext_attrs: &[Box<ExtendedAttribute>], attribute: &str) -> bool {
     ext_attrs.iter().any(|attr| match &**attr {
         ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => {
-            name == "ChromeOnly"
+            name == attribute
         }
         _ => false,
     })
+}
+
+/// ChromeOnly is for things that are only exposed to privileged code in Firefox.
+pub fn is_chrome_only(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
+    has_named_attribute(ext_attrs, "ChromeOnly")
+}
+
+pub fn is_no_interface_object(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
+    has_named_attribute(ext_attrs, "NoInterfaceObject")
 }
 
 pub fn is_structural(attrs: &[Box<ExtendedAttribute>]) -> bool {
