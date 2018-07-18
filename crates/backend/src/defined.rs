@@ -269,7 +269,12 @@ where
         self.retain(|x| {
             let mut all_defined = true;
             x.imported_type_references(&mut |id| {
-                all_defined = all_defined && is_defined(id);
+                if all_defined {
+                    if !is_defined(id) {
+                        info!("removing due to {} not being defined", id);
+                        all_defined = false;
+                    }
+                }
             });
             all_defined
         });
