@@ -2038,6 +2038,13 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn concat(this: &JsString, string_2: &JsString) -> JsString;
 
+    /// The endsWith() method determines whether a string ends with the characters of a 
+    /// specified string, returning true or false as appropriate.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+    #[wasm_bindgen(method, js_class = "String", js_name = endsWith)]
+    pub fn ends_with(this: &JsString, search_string: &JsString, length: i32) -> bool;
+
     /// The `includes()` method determines whether one string may be found
     /// within another string, returning true or false as appropriate.
     ///
