@@ -219,3 +219,24 @@ fn parse_int_float() {
         "#)
         .test();
 }
+
+#[test]
+fn escape() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(use_extern_macros, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn test() {
+                assert_eq!(String::from(js::escape("test")), "test");
+                assert_eq!(String::from(js::escape("äöü")), "%E4%F6%FC");
+                assert_eq!(String::from(js::escape("ć")), "%u0107");
+                assert_eq!(String::from(js::escape("@*_+-./")), "@*_+-./");
+            }
+        "#)
+        .test();
+}

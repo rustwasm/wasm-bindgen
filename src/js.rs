@@ -104,6 +104,13 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
     #[wasm_bindgen(js_name = parseFloat)]
     pub fn parse_float(text: &str) -> f64;
+
+    /// The escape() function computes a new string in which certain characters have been
+    /// replaced by a hexadecimal escape sequence.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/escape
+    #[wasm_bindgen]
+    pub fn escape(string: &str) -> JsString;
 }
 
 // Array
