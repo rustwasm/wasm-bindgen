@@ -333,6 +333,38 @@ fn last_index_of() {
 }
 
 #[test]
+fn normalize() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(use_extern_macros, wasm_custom_section)]
+
+            extern crate wasm_bindgen;
+            use wasm_bindgen::prelude::*;
+            use wasm_bindgen::js;
+
+            #[wasm_bindgen]
+            pub fn string_normalize(this: &js::JsString, form: &js::JsString) -> js::JsString {
+                this.normalize(form)
+            }
+        "#)
+        .file("test.js", r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                let str = "\u1E9B\u0323";
+
+                // TODO: Handle undefined
+                assert.equal(wasm.string_normalize(str, "NFC"), "\u1E9B\u0323");
+                assert.equal(wasm.string_normalize(str, "NFD"), "\u017F\u0323\u0307");
+                assert.equal(wasm.string_normalize(str, "NFKC"), "\u1E69");
+                assert.equal(wasm.string_normalize(str, "NFKD"), "\u0073\u0323\u0307");
+            }
+        "#)
+        .test()
+}
+
+#[test]
 fn pad_end() {
     project()
         .file("src/lib.rs", r#"

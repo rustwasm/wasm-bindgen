@@ -2068,6 +2068,14 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = lastIndexOf)]
     pub fn last_index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
 
+    /// The normalize() method returns the Unicode Normalization Form 
+    /// of a given string (if the value isn't a string, it will be converted to one first).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn normalize(this: &JsString, form: &JsString) -> JsString;
+
+
     /// The `padEnd()` method pads the current string with a given string
     /// (repeated, if needed) so that the resulting string reaches a given
     /// length. The padding is applied from the end (right) of the current
