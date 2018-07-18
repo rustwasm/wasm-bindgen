@@ -167,6 +167,12 @@ extern "C" {
     #[wasm_bindgen(method, js_name = findIndex)]
     pub fn find_index(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> u32;
 
+    /// The `forEach()` method executes a provided function once for each array element.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Array, callback: &mut FnMut(JsValue, u32, Array));
+
     /// The includes() method determines whether an array includes a certain
     /// element, returning true or false as appropriate.
     ///
@@ -1783,6 +1789,13 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/delete
     #[wasm_bindgen(method)]
     pub fn delete(this: &Set, value: &JsValue) -> bool;
+
+    /// The forEach() method executes a provided function once for each value
+    /// in the Set object, in insertion order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Set, callback: &mut FnMut(JsValue, JsValue, Set));
 
     /// The `has()` method returns a boolean indicating whether an element with
     /// the specified value exists in a [`Set`] object or not.
