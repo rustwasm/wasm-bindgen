@@ -764,6 +764,13 @@ extern {
     #[wasm_bindgen(method)]
     pub fn delete(this: &Map, key: &str) -> bool;
 
+    /// The forEach() method executes a provided function once per each
+    /// key/value pair in the Map object, in insertion order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Map, callback: &mut FnMut(JsValue, JsValue));
+
     /// The get() method returns a specified element from a Map object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get
