@@ -96,6 +96,52 @@ fn delete() {
 }
 
 #[test]
+fn for_each() {
+    project()
+        .file("src/lib.rs", r#"
+                #![feature(use_extern_macros, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+
+                #[wasm_bindgen]
+                pub fn count_evens(set: &js::Set) -> u32 {
+                    let mut res = 0;
+                    set.for_each(&mut |value, _, _| {
+                        match value.as_f64() {
+                            Some(val) if val % 2. == 0. => res += 1,
+                            _ => { }
+                        }
+                    });
+                    res
+                }
+        "#)
+        .file("test.js", r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    let setEven = new Set([2, 4, 6, 8]);
+                    let setEvenExpected = 4;
+                    let setEvenActual = wasm.count_evens(setEven);
+                    assert.equal(setEvenExpected, setEvenActual);
+
+                    let setOdd = new Set([1, 3, 5, 7]);
+                    let setOddExpected = 0;
+                    let setOddActual = wasm.count_evens(setOdd);
+                    assert.equal(setOddExpected, setOddActual);
+
+                    let setMixed = new Set([3, 5, 7, 10]);
+                    let setMixedExpected = 1;
+                    let setMixedActual = wasm.count_evens(setMixed);
+                    assert.equal(setMixedExpected, setMixedActual);
+                }
+        "#)
+        .test()
+}
+
+#[test]
 fn has() {
     project()
         .file("src/lib.rs", r#"

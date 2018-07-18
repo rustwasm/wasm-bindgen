@@ -1790,6 +1790,13 @@ extern {
     #[wasm_bindgen(method)]
     pub fn delete(this: &Set, value: &JsValue) -> bool;
 
+    /// The forEach() method executes a provided function once for each value
+    /// in the Set object, in insertion order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Set, callback: &mut FnMut(JsValue, JsValue, Set));
+
     /// The `has()` method returns a boolean indicating whether an element with
     /// the specified value exists in a [`Set`] object or not.
     ///
