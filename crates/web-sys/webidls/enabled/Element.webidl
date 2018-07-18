@@ -65,12 +65,14 @@ interface Element : Node {
   [Throws, Pure, BinaryName="matches"]
   boolean webkitMatchesSelector(DOMString selector);
 
+/*TODO
   [Pure]
   HTMLCollection getElementsByTagName(DOMString localName);
   [Throws, Pure]
   HTMLCollection getElementsByTagNameNS(DOMString? namespace, DOMString localName);
   [Pure]
   HTMLCollection getElementsByClassName(DOMString classNames);
+*/
   [ChromeOnly, Pure]
   sequence<Element> getElementsWithGrid();
 
@@ -101,8 +103,10 @@ interface Element : Node {
    *
    * See <http://dev.w3.org/2006/webapi/selectors-api2/#matchesselector>
    */
+/* Non standard
   [Throws, Pure, BinaryName="matches"]
   boolean mozMatchesSelector(DOMString selector);
+*/
 
   // Pointer events methods.
   [Throws, Pref="dom.w3c_pointer_events.enabled"]
@@ -244,8 +248,10 @@ partial interface Element {
 partial interface Element {
   [Throws, Pure]
   Element?  querySelector(DOMString selectors);
+/*TODO
   [Throws, Pure]
   NodeList  querySelectorAll(DOMString selectors);
+*/
 };
 
 // https://dom.spec.whatwg.org/#dictdef-shadowrootinit
@@ -280,8 +286,10 @@ Element implements GeometryUtils;
 partial interface Element {
   [Throws, Func="nsDocument::IsUnprefixedFullscreenEnabled", NeedsCallerType]
   void requestFullscreen();
+/*Non standard
   [Throws, BinaryName="requestFullscreen", NeedsCallerType]
   void mozRequestFullScreen();
+*/
 };
 
 // https://w3c.github.io/pointerlock/#extensions-to-the-element-interface
