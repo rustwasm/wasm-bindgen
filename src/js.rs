@@ -2075,7 +2075,6 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn normalize(this: &JsString, form: &JsString) -> JsString;
 
-
     /// The `padEnd()` method pads the current string with a given string
     /// (repeated, if needed) so that the resulting string reaches a given
     /// length. The padding is applied from the end (right) of the current
@@ -2093,6 +2092,13 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
     #[wasm_bindgen(method, js_class = "String", js_name = padStart)]
     pub fn pad_start(this: &JsString, target_length: u32, pad_string: &JsString) -> JsString;
+
+    /// The repeat() method constructs and returns a new string which contains the specified 
+    /// number of copies of the string on which it was called, concatenated together.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn repeat(this: &JsString, count: i32) -> JsString;
 
     /// The `slice()` method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
