@@ -969,3 +969,50 @@ fn to_locale_string() {
         )
         .test()
 }
+
+#[test]
+fn for_each() {
+    project()
+        .file("src/lib.rs", r#"
+                #![feature(use_extern_macros, wasm_custom_section)]
+
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+                use wasm_bindgen::js;
+
+                #[wasm_bindgen]
+                pub fn sum_indices_of_evens(array: &js::Array) -> u32 {
+                    let mut res = 0;
+                    array.for_each(&mut |elem: JsValue, i, _| {
+                        match elem.as_f64() {
+                            Some(val) if val % 2. == 0. => res += i,
+                            _ => { }
+                        }
+                    });
+
+                    res
+                }
+        "#)
+        .file("test.js", r#"
+                import * as assert from "assert";
+                import * as wasm from "./out";
+
+                export function test() {
+                    const arrayEven = [2, 4, 6, 8];
+                    const arrayEvenExpected = 0 + 1 + 2 + 3;
+                    const arrayEvenActual = wasm.sum_indices_of_evens(arrayEven);
+                    assert.equal(arrayEvenActual, arrayEvenExpected);
+
+                    const arrayOdd = [1, 3, 5, 7];
+                    const arrayOddExpected = 0;
+                    const arrayOddActual = wasm.sum_indices_of_evens(arrayOdd);
+                    assert.equal(arrayOddActual, arrayOddExpected);
+
+                    const arrayMixed = [3, 5, 7, 10];
+                    const arrayMixedExpected = 3;
+                    const arrayMixedActual = wasm.sum_indices_of_evens(arrayMixed);
+                    assert.equal(arrayMixedActual, arrayMixedExpected);
+                }
+        "#)
+        .test()
+}
