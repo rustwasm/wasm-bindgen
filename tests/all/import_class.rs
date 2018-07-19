@@ -6,7 +6,7 @@ fn simple() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -52,7 +52,7 @@ fn import_class() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -104,7 +104,7 @@ fn construct() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -187,7 +187,7 @@ fn new_constructors() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -242,7 +242,7 @@ fn switch_methods() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -330,7 +330,7 @@ fn properties() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -396,7 +396,7 @@ fn rename_setter_getter() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -464,7 +464,7 @@ fn deny_missing_docs() {
             "src/lib.rs",
             r#"
                 //! dox
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
                 #![deny(missing_docs)]
                 #![allow(dead_code)]
 

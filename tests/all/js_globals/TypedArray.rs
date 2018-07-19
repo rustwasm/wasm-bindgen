@@ -5,7 +5,7 @@ use std::string::String;
 
 fn new_undefined_lib(array_type: &str) -> String {
     format!(r#"
-    #![feature(use_extern_macros, wasm_custom_section)]
+    #![feature(use_extern_macros)]
 
     extern crate wasm_bindgen;
     use wasm_bindgen::prelude::*;
@@ -103,7 +103,7 @@ fn new_Float64Array_undefined() {
 
 fn new_length_lib(array_type: &str) -> String {
     format!(r#"
-    #![feature(use_extern_macros, wasm_custom_section)]
+    #![feature(use_extern_macros)]
 
     extern crate wasm_bindgen;
     use wasm_bindgen::prelude::*;
@@ -201,7 +201,7 @@ fn new_Float64Array_length() {
 
 fn fill_lib(array_type: &str, el_type: &str) -> String {
     format!(r#"
-    #![feature(use_extern_macros, wasm_custom_section)]
+    #![feature(use_extern_macros)]
 
     extern crate wasm_bindgen;
     use wasm_bindgen::prelude::*;
