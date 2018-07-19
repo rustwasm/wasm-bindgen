@@ -1,13 +1,11 @@
 #[cfg(feature = "std")]
 use std::prelude::v1::*;
 
-use core::mem;
 use core::slice;
 use core::str;
 
-use JsValue;
 use convert::{WasmAbi, IntoWasmAbi, FromWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi};
-use convert::{Stack, OptionIntoWasmAbi, OptionFromWasmAbi};
+use convert::{Stack, OptionIntoWasmAbi};
 
 #[repr(C)]
 pub struct WasmSlice {
@@ -25,6 +23,9 @@ fn null_slice() -> WasmSlice {
 macro_rules! vectors {
     ($($t:ident)*) => ($(
         if_std! {
+            use core::mem;
+            use convert::OptionFromWasmAbi;
+
             impl IntoWasmAbi for Box<[$t]> {
                 type Abi = WasmSlice;
 
@@ -199,6 +200,8 @@ impl RefFromWasmAbi for str {
 }
 
 if_std! {
+    use JsValue;
+
     impl IntoWasmAbi for Box<[JsValue]> {
         type Abi = WasmSlice;
 
