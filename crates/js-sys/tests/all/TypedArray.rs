@@ -8,12 +8,12 @@ fn new_undefined_lib(array_type: &str) -> String {
     #![feature(use_extern_macros)]
 
     extern crate wasm_bindgen;
+    extern crate js_sys;
     use wasm_bindgen::prelude::*;
-    use wasm_bindgen::js;
 
     #[wasm_bindgen]
-    pub fn new_array() -> js::{} {{
-        js::{}::new(JsValue::undefined())
+    pub fn new_array() -> js_sys::{} {{
+        js_sys::{}::new(JsValue::undefined())
     }}
     "#, array_type, array_type)
 }
@@ -106,12 +106,12 @@ fn new_length_lib(array_type: &str) -> String {
     #![feature(use_extern_macros)]
 
     extern crate wasm_bindgen;
+    extern crate js_sys;
     use wasm_bindgen::prelude::*;
-    use wasm_bindgen::js;
 
     #[wasm_bindgen]
-    pub fn new_array() -> js::{} {{
-        js::{}::new(JsValue::from_f64(4.0))
+    pub fn new_array() -> js_sys::{} {{
+        js_sys::{}::new(JsValue::from_f64(4.0))
     }}
     "#, array_type, array_type)
 }
@@ -204,11 +204,11 @@ fn fill_lib(array_type: &str, el_type: &str) -> String {
     #![feature(use_extern_macros)]
 
     extern crate wasm_bindgen;
+    extern crate js_sys;
     use wasm_bindgen::prelude::*;
-    use wasm_bindgen::js;
 
     #[wasm_bindgen]
-    pub fn fill_with(this: &js::{}, value: {}, start: u32, end: u32) -> js::{} {{
+    pub fn fill_with(this: &js_sys::{}, value: {}, start: u32, end: u32) -> js_sys::{} {{
         this.fill(value, start, end)
     }}
     "#, array_type, el_type, array_type)

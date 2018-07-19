@@ -9,11 +9,11 @@ fn entries() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn entries(this: &js::Set) -> js::SetIterator {
+            pub fn entries(this: &js_sys::Set) -> js_sys::SetIterator {
                 this.entries()
             }
 
@@ -41,11 +41,11 @@ fn keys() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn keys(this: &js::Set) -> js::SetIterator {
+            pub fn keys(this: &js_sys::Set) -> js_sys::SetIterator {
                 this.keys()
             }
 
@@ -72,11 +72,11 @@ fn values() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn values(this: &js::Set) -> js::SetIterator {
+            pub fn values(this: &js_sys::Set) -> js_sys::SetIterator {
                 this.values()
             }
 

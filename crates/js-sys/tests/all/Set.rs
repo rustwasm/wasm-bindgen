@@ -9,11 +9,11 @@ fn add() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn add(this: &js::Set, value: &JsValue) -> js::Set {
+            pub fn add(this: &js_sys::Set, value: &JsValue) -> js_sys::Set {
                 this.add(value)
             }
 
@@ -42,11 +42,11 @@ fn clear() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn clear(this: &js::Set) {
+            pub fn clear(this: &js_sys::Set) {
                 this.clear();
             }
 
@@ -73,11 +73,11 @@ fn delete() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set_delete(this: &js::Set, value: &JsValue) -> bool {
+            pub fn set_delete(this: &js_sys::Set, value: &JsValue) -> bool {
                 this.delete(value)
             }
         "#)
@@ -102,11 +102,11 @@ fn for_each() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
-                pub fn count_evens(set: &js::Set) -> u32 {
+                pub fn count_evens(set: &js_sys::Set) -> u32 {
                     let mut res = 0;
                     set.for_each(&mut |value, _, _| {
                         match value.as_f64() {
@@ -148,11 +148,11 @@ fn has() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has(this: &js::Set, value: &JsValue) -> bool {
+            pub fn has(this: &js_sys::Set, value: &JsValue) -> bool {
                 this.has(value)
             }
         "#)
@@ -177,12 +177,12 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn new_set() -> js::Set {
-                js::Set::new()
+            pub fn new_set() -> js_sys::Set {
+                js_sys::Set::new()
             }
         "#)
         .file("test.js", r#"
@@ -205,11 +205,11 @@ fn size() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn size(this: &js::Set) -> u32 {
+            pub fn size(this: &js_sys::Set) -> u32 {
                 this.size()
             }
 

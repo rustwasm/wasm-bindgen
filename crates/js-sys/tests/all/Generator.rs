@@ -11,11 +11,11 @@ fn return_() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
-                pub fn gen_return(this: &js::Generator, value: &JsValue) -> JsValue {
+                pub fn gen_return(this: &js_sys::Generator, value: &JsValue) -> JsValue {
                     this.return_(value)
                 }
             "#,
@@ -55,18 +55,18 @@ fn next() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
-                pub fn next(this: &js::Generator, value: &JsValue) -> JsValue {
+                pub fn next(this: &js_sys::Generator, value: &JsValue) -> JsValue {
                     this.next(value)
                         .ok()
                         .expect("generator throws an error")
                 }
 
                 #[wasm_bindgen]
-                pub fn next_throws_error(this: &js::Generator, value: &JsValue) -> bool {
+                pub fn next_throws_error(this: &js_sys::Generator, value: &JsValue) -> bool {
                     this.next(value).is_err()
                 }
             "#,
@@ -113,11 +113,11 @@ fn throw() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
-                pub fn gen_throws_error(this: &js::Generator, error: &js::Error) -> bool {
+                pub fn gen_throws_error(this: &js_sys::Generator, error: &js_sys::Error) -> bool {
                     this.throw(error).is_err()
                 }
             "#,

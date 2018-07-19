@@ -11,11 +11,11 @@ fn length() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_length(this: &js::JsString) -> u32 {
+            pub fn string_length(this: &js_sys::JsString) -> u32 {
                 this.length()
             }
 
@@ -48,11 +48,11 @@ fn char_at() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_char_at(this: &js::JsString, index: u32) -> js::JsString {
+            pub fn string_char_at(this: &js_sys::JsString, index: u32) -> js_sys::JsString {
                 this.char_at(index)
             }
         "#,
@@ -83,11 +83,11 @@ fn char_code_at() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_char_code_at(this: &js::JsString, index: u32) -> f64 {
+            pub fn string_char_code_at(this: &js_sys::JsString, index: u32) -> f64 {
                 this.char_code_at(index)
             }
         "#,
@@ -124,11 +124,11 @@ fn code_point_at() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_code_point_at(this: &js::JsString, pos: u32) -> JsValue {
+            pub fn string_code_point_at(this: &js_sys::JsString, pos: u32) -> JsValue {
                 this.code_point_at(pos)
             }
         "#,
@@ -158,11 +158,11 @@ fn concat() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_concat(this: &js::JsString, string_2: &js::JsString) -> js::JsString {
+            pub fn string_concat(this: &js_sys::JsString, string_2: &js_sys::JsString) -> js_sys::JsString {
                 this.concat(string_2)
             }
         "#,
@@ -194,11 +194,11 @@ fn ends_with() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn ends_with(this: &js::JsString, search_value: &js::JsString, length: i32) -> bool {
+            pub fn ends_with(this: &js_sys::JsString, search_value: &js_sys::JsString, length: i32) -> bool {
                 this.ends_with(search_value, length)
             }
         "#)
@@ -226,11 +226,11 @@ fn includes() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_includes(this: &js::JsString, search_value: &js::JsString, position: i32) -> bool {
+            pub fn string_includes(this: &js_sys::JsString, search_value: &js_sys::JsString, position: i32) -> bool {
                 this.includes(search_value, position)
             }
         "#)
@@ -261,11 +261,11 @@ fn index_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_index_of(this: &js::JsString, search_value: &js::JsString, from_index: i32) -> i32 {
+            pub fn string_index_of(this: &js_sys::JsString, search_value: &js_sys::JsString, from_index: i32) -> i32 {
                 this.index_of(search_value, from_index)
             }
         "#)
@@ -300,11 +300,11 @@ fn last_index_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_last_index_of(this: &js::JsString, search_value: &js::JsString, from_index: i32) -> i32 {
+            pub fn string_last_index_of(this: &js_sys::JsString, search_value: &js_sys::JsString, from_index: i32) -> i32 {
                 this.last_index_of(search_value, from_index)
             }
         "#)
@@ -339,11 +339,11 @@ fn normalize() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_normalize(this: &js::JsString, form: &js::JsString) -> js::JsString {
+            pub fn string_normalize(this: &js_sys::JsString, form: &js_sys::JsString) -> js_sys::JsString {
                 this.normalize(form)
             }
         "#)
@@ -371,15 +371,15 @@ fn pad_end() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn string_pad_end(
-                this: &js::JsString,
+                this: &js_sys::JsString,
                 target_length: u32,
-                pad_string: &js::JsString
-            ) -> js::JsString
+                pad_string: &js_sys::JsString
+            ) -> js_sys::JsString
             {
                 this.pad_end(target_length, pad_string)
             }
@@ -411,15 +411,15 @@ fn pad_start() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn string_pad_start(
-                this: &js::JsString,
+                this: &js_sys::JsString,
                 target_length: u32,
-                pad_string: &js::JsString
-            ) -> js::JsString
+                pad_string: &js_sys::JsString
+            ) -> js_sys::JsString
             {
                 this.pad_start(target_length, pad_string)
             }
@@ -452,11 +452,11 @@ fn repeat() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_repeat(this: &js::JsString, count: i32) -> js::JsString {
+            pub fn string_repeat(this: &js_sys::JsString, count: i32) -> js_sys::JsString {
                 this.repeat(count)
             }
         "#,
@@ -485,11 +485,11 @@ fn slice() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn create_slice(this: &js::JsString, start: u32, end: u32) -> js::JsString {
+            pub fn create_slice(this: &js_sys::JsString, start: u32, end: u32) -> js_sys::JsString {
                 this.slice(start, end)
             }
         "#,
@@ -518,11 +518,11 @@ fn starts_with() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_starts_with(this: &js::JsString, search_string: &js::JsString, position: u32) -> bool {
+            pub fn string_starts_with(this: &js_sys::JsString, search_string: &js_sys::JsString, position: u32) -> bool {
                 this.starts_with(search_string, position)
             }
         "#)
@@ -549,11 +549,11 @@ fn substring() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_substring(this: &js::JsString, index_start: u32, index_end: u32) -> js::JsString {
+            pub fn string_substring(this: &js_sys::JsString, index_start: u32, index_end: u32) -> js_sys::JsString {
                 this.substring(index_start, index_end)
             }
         "#)
@@ -588,11 +588,11 @@ fn substr() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn create_substr(this: &js::JsString, start: i32, length: i32) -> js::JsString {
+            pub fn create_substr(this: &js_sys::JsString, start: i32, length: i32) -> js_sys::JsString {
                 this.substr(start, length)
             }
         "#)
@@ -624,11 +624,11 @@ fn to_lower_case() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_to_lower_case(this: &js::JsString) -> js::JsString {
+            pub fn string_to_lower_case(this: &js_sys::JsString) -> js_sys::JsString {
                 this.to_lower_case()
             }
         "#)
@@ -652,11 +652,11 @@ fn to_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_to_string(this: &js::JsString) -> js::JsString {
+            pub fn string_to_string(this: &js_sys::JsString) -> js_sys::JsString {
                 this.to_string()
             }
         "#,
@@ -683,11 +683,11 @@ fn to_upper_case() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_to_upper_case(this: &js::JsString) -> js::JsString {
+            pub fn string_to_upper_case(this: &js_sys::JsString) -> js_sys::JsString {
                 this.to_upper_case()
             }
         "#)
@@ -711,11 +711,11 @@ fn trim() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_trim(this: &js::JsString) -> js::JsString {
+            pub fn string_trim(this: &js_sys::JsString) -> js_sys::JsString {
                 this.trim()
             }
         "#,
@@ -745,16 +745,16 @@ fn trim_end_and_trim_right() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_trim_end(this: &js::JsString) -> js::JsString {
+            pub fn string_trim_end(this: &js_sys::JsString) -> js_sys::JsString {
                 this.trim_end()
             }
 
             #[wasm_bindgen]
-            pub fn string_trim_right(this: &js::JsString) -> js::JsString {
+            pub fn string_trim_right(this: &js_sys::JsString) -> js_sys::JsString {
                 this.trim_right()
             }
         "#,
@@ -785,16 +785,16 @@ fn trim_start_and_trim_left() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_trim_start(this: &js::JsString) -> js::JsString {
+            pub fn string_trim_start(this: &js_sys::JsString) -> js_sys::JsString {
                 this.trim_start()
             }
 
             #[wasm_bindgen]
-            pub fn string_trim_left(this: &js::JsString) -> js::JsString {
+            pub fn string_trim_left(this: &js_sys::JsString) -> js_sys::JsString {
                 this.trim_left()
             }
         "#,
@@ -825,11 +825,11 @@ fn value_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn string_value_of(this: &js::JsString) -> js::JsString {
+            pub fn string_value_of(this: &js_sys::JsString) -> js_sys::JsString {
                 this.value_of()
             }
         "#,

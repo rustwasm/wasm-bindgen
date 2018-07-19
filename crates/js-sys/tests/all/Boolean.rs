@@ -11,12 +11,12 @@ fn new_undefined() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn new_boolean() -> js::Boolean {
-                js::Boolean::new(JsValue::undefined())
+            pub fn new_boolean() -> js_sys::Boolean {
+                js_sys::Boolean::new(JsValue::undefined())
             }
         "#,
         )
@@ -43,12 +43,12 @@ fn new_truely() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn new_boolean() -> js::Boolean {
-                js::Boolean::new(JsValue::from("foo"))
+            pub fn new_boolean() -> js_sys::Boolean {
+                js_sys::Boolean::new(JsValue::from("foo"))
             }
         "#,
         )

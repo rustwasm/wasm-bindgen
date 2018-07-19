@@ -43,17 +43,17 @@ fn decode_uri() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let x = js::decode_uri("https://mozilla.org/?x=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B")
+                    let x = js_sys::decode_uri("https://mozilla.org/?x=%D1%88%D0%B5%D0%BB%D0%BB%D1%8B")
                         .ok()
                         .expect("should decode URI OK");
                     assert_eq!(String::from(x), "https://mozilla.org/?x=шеллы");
 
-                    assert!(js::decode_uri("%E0%A4%A").is_err());
+                    assert!(js_sys::decode_uri("%E0%A4%A").is_err());
                 }
             "#,
         )
@@ -69,17 +69,17 @@ fn decode_uri_component() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let x = js::decode_uri_component("%3Fx%3Dtest")
+                    let x = js_sys::decode_uri_component("%3Fx%3Dtest")
                         .ok()
                         .expect("should decode URI OK");
                     assert_eq!(String::from(x), "?x=test");
 
-                    assert!(js::decode_uri_component("%E0%A4%A").is_err());
+                    assert!(js_sys::decode_uri_component("%E0%A4%A").is_err());
                 }
             "#,
         )
@@ -95,12 +95,12 @@ fn encode_uri() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let x = js::encode_uri("ABC abc 123");
+                    let x = js_sys::encode_uri("ABC abc 123");
                     assert_eq!(String::from(x), "ABC%20abc%20123");
                 }
             "#,
@@ -117,12 +117,12 @@ fn encode_uri_component() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let x = js::encode_uri_component("?x=шеллы");
+                    let x = js_sys::encode_uri_component("?x=шеллы");
                     assert_eq!(String::from(x), "%3Fx%3D%D1%88%D0%B5%D0%BB%D0%BB%D1%8B");
                 }
             "#,
@@ -139,15 +139,15 @@ fn eval() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
                 pub fn test() {
-                    let x = js::eval("42").ok().expect("should eval OK");
+                    let x = js_sys::eval("42").ok().expect("should eval OK");
                     assert_eq!(x.as_f64().unwrap(), 42.0);
 
-                    let err = js::eval("(function () { throw 42; }())")
+                    let err = js_sys::eval("(function () { throw 42; }())")
                         .err()
                         .expect("eval should throw");
                     assert_eq!(err.as_f64().unwrap(), 42.0);
@@ -166,12 +166,12 @@ fn is_finite() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
                 pub fn is_finite(value: &JsValue) -> bool {
-                    js::is_finite(value)
+                    js_sys::is_finite(value)
                 }
             "#,
         )
@@ -200,24 +200,24 @@ fn parse_int_float() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn test() {
-                let i = js::parse_int("42", 10);
+                let i = js_sys::parse_int("42", 10);
                 assert_eq!(i as i64, 42);
 
-                let i = js::parse_int("42", 16);
+                let i = js_sys::parse_int("42", 16);
                 assert_eq!(i as i64, 66); // 0x42 == 66
 
-                let i = js::parse_int("invalid int", 10);
+                let i = js_sys::parse_int("invalid int", 10);
                 assert!(i.is_nan());
 
-                let f = js::parse_float("123456.789");
+                let f = js_sys::parse_float("123456.789");
                 assert_eq!(f, 123456.789);
 
-                let f = js::parse_float("invalid float");
+                let f = js_sys::parse_float("invalid float");
                 assert!(f.is_nan());
             }
         "#)
@@ -231,15 +231,15 @@ fn escape() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn test() {
-                assert_eq!(String::from(js::escape("test")), "test");
-                assert_eq!(String::from(js::escape("äöü")), "%E4%F6%FC");
-                assert_eq!(String::from(js::escape("ć")), "%u0107");
-                assert_eq!(String::from(js::escape("@*_+-./")), "@*_+-./");
+                assert_eq!(String::from(js_sys::escape("test")), "test");
+                assert_eq!(String::from(js_sys::escape("äöü")), "%E4%F6%FC");
+                assert_eq!(String::from(js_sys::escape("ć")), "%u0107");
+                assert_eq!(String::from(js_sys::escape("@*_+-./")), "@*_+-./");
             }
         "#)
         .test();

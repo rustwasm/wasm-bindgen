@@ -11,11 +11,11 @@ fn keys() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_keys(this: &js::Array) -> js::ArrayIterator {
+            pub fn get_keys(this: &js_sys::Array) -> js_sys::ArrayIterator {
                 this.keys()
             }
 
@@ -49,11 +49,11 @@ fn entries() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_entries(this: &js::Array) -> js::ArrayIterator {
+            pub fn get_entries(this: &js_sys::Array) -> js_sys::ArrayIterator {
                 this.entries()
             }
 
@@ -89,11 +89,11 @@ fn values() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_values(this: &js::Array) -> js::ArrayIterator {
+            pub fn get_values(this: &js_sys::Array) -> js_sys::ArrayIterator {
                 this.values()
             }
         "#,

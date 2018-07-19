@@ -9,8 +9,9 @@ fn test() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{ArrayBuffer, DataView};
+            use js_sys::{ArrayBuffer, DataView};
 
             #[wasm_bindgen]
             pub fn test_data_view(buffer: &ArrayBuffer, offset: usize, len: usize) {

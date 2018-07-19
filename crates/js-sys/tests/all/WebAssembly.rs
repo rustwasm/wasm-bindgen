@@ -9,9 +9,10 @@ fn validate() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use JsValue;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::WebAssembly;
+            use js_sys::WebAssembly;
 
             #[wasm_bindgen]
             pub fn validate_wasm(wasm: JsValue) -> JsValue {
@@ -39,9 +40,10 @@ fn validate_with_invalid_input() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use JsValue;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::WebAssembly;
+            use js_sys::WebAssembly;
 
             #[wasm_bindgen]
             pub fn validate_wasm(wasm: JsValue) -> JsValue {

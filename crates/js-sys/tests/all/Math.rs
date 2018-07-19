@@ -11,12 +11,12 @@ fn abs() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn abs(x: f64) -> f64 {
-                js::Math::abs(x)
+                js_sys::Math::abs(x)
             }
         "#,
         )
@@ -45,12 +45,12 @@ fn acos() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn acos(x: f64) -> f64 {
-                js::Math::acos(x)
+                js_sys::Math::acos(x)
             }
         "#,
         )
@@ -79,12 +79,12 @@ fn acosh() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn acosh(x: f64) -> f64 {
-                js::Math::acosh(x)
+                js_sys::Math::acosh(x)
             }
         "#,
         )
@@ -113,12 +113,12 @@ fn asin() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn asin(x: f64) -> f64 {
-                js::Math::asin(x)
+                js_sys::Math::asin(x)
             }
         "#,
         )
@@ -147,12 +147,12 @@ fn asinh() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn asinh(x: f64) -> f64 {
-                js::Math::asinh(x)
+                js_sys::Math::asinh(x)
             }
         "#,
         )
@@ -180,12 +180,12 @@ fn atan() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn atan(x: f64) -> f64 {
-                js::Math::atan(x)
+                js_sys::Math::atan(x)
             }
         "#,
         )
@@ -213,12 +213,12 @@ fn atan2() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn atan2(y: f64, x: f64) -> f64 {
-                js::Math::atan2(y, x)
+                js_sys::Math::atan2(y, x)
             }
         "#,
         )
@@ -246,12 +246,12 @@ fn atanh() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn atanh(x: f64) -> f64 {
-                js::Math::atanh(x)
+                js_sys::Math::atanh(x)
             }
         "#,
         )
@@ -280,12 +280,12 @@ fn cbrt() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn cbrt(x: f64) -> f64 {
-                js::Math::cbrt(x)
+                js_sys::Math::cbrt(x)
             }
         "#,
         )
@@ -313,12 +313,12 @@ fn ceil() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn ceil(x: f64) -> i32 {
-                js::Math::ceil(x)
+                js_sys::Math::ceil(x)
             }
         "#,
         )
@@ -346,12 +346,12 @@ fn clz32() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn clz32(x: i32) -> u32 {
-                js::Math::clz32(x)
+                js_sys::Math::clz32(x)
             }
         "#,
         )
@@ -377,12 +377,12 @@ fn cos() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn cos(x: f64) -> f64 {
-                js::Math::cos(x)
+                js_sys::Math::cos(x)
             }
         "#)
         .file("test.js", r#"
@@ -404,12 +404,12 @@ fn cosh() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn cosh(x: f64) -> f64 {
-                js::Math::cosh(x)
+                js_sys::Math::cosh(x)
             }
         "#)
         .file("test.js", r#"
@@ -431,12 +431,12 @@ fn exp() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn exp(x: f64) -> f64 {
-                js::Math::exp(x)
+                js_sys::Math::exp(x)
             }
         "#)
         .file("test.js", r#"
@@ -459,12 +459,12 @@ fn expm1() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn expm1(x: f64) -> f64 {
-                js::Math::expm1(x)
+                js_sys::Math::expm1(x)
             }
         "#)
         .file("test.js", r#"
@@ -490,12 +490,12 @@ fn floor() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn floor(x: f64) -> i32 {
-                js::Math::floor(x)
+                js_sys::Math::floor(x)
             }
         "#,
         )
@@ -521,12 +521,12 @@ fn fround() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn fround(x: f64) -> f32 {
-                js::Math::fround(x)
+                js_sys::Math::fround(x)
             }
         "#)
         .file("test.js", r#"
@@ -550,12 +550,12 @@ fn imul() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn imul(x: i32, y:i32) -> i32 {
-                js::Math::imul(x, y)
+                js_sys::Math::imul(x, y)
             }
         "#)
         .file("test.js", r#"
@@ -578,12 +578,12 @@ fn log() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn log(x: f64) -> f64 {
-                js::Math::log(x)
+                js_sys::Math::log(x)
             }
         "#)
         .file("test.js", r#"
@@ -605,12 +605,12 @@ fn log10() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn log10(x: f64) -> f64 {
-                js::Math::log10(x)
+                js_sys::Math::log10(x)
             }
         "#)
         .file("test.js", r#"
@@ -633,12 +633,12 @@ fn log1p() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn log1p(x: f64) -> f64 {
-                js::Math::log1p(x)
+                js_sys::Math::log1p(x)
             }
         "#)
         .file("test.js", r#"
@@ -662,12 +662,12 @@ fn log2() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn log2(x: f64) -> f64 {
-                js::Math::log2(x)
+                js_sys::Math::log2(x)
             }
         "#)
         .file("test.js", r#"
@@ -691,12 +691,12 @@ fn pow() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn pow(base: f64, exponent: f64) -> f64 {
-                js::Math::pow(base, exponent)
+                js_sys::Math::pow(base, exponent)
             }
         "#)
         .file("test.js", r#"
@@ -719,12 +719,12 @@ fn random() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn random() -> f64 {
-                js::Math::random()
+                js_sys::Math::random()
             }
         "#)
         .file("test.js", r#"
@@ -746,12 +746,12 @@ fn round() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn round(x: f64) -> i32 {
-                js::Math::round(x)
+                js_sys::Math::round(x)
             }
         "#)
         .file("test.js", r#"
@@ -776,12 +776,12 @@ fn sign() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn sign(x: f64) -> f64 {
-                js::Math::sign(x)
+                js_sys::Math::sign(x)
             }
         "#)
         .file("test.js", r#"
@@ -806,12 +806,12 @@ fn sin() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn sin(x: f64) -> f64 {
-                js::Math::sin(x)
+                js_sys::Math::sin(x)
             }
         "#)
         .file("test.js", r#"
@@ -834,12 +834,12 @@ fn sinh() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn sinh(x: f64) -> f64 {
-                js::Math::sinh(x)
+                js_sys::Math::sinh(x)
             }
         "#)
         .file("test.js", r#"
@@ -862,12 +862,12 @@ fn sqrt() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn sqrt(x: f64) -> f64 {
-                js::Math::sqrt(x)
+                js_sys::Math::sqrt(x)
             }
         "#)
         .file("test.js", r#"
@@ -892,12 +892,12 @@ fn tan() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn tan(x: f64) -> f64 {
-                js::Math::tan(x)
+                js_sys::Math::tan(x)
             }
         "#)
         .file("test.js", r#"
@@ -920,12 +920,12 @@ fn tanh() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn tanh(x: f64) -> f64 {
-                js::Math::tanh(x)
+                js_sys::Math::tanh(x)
             }
         "#)
         .file("test.js", r#"
@@ -948,12 +948,12 @@ fn trunc() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn trunc(x: f64) -> i32 {
-                js::Math::trunc(x)
+                js_sys::Math::trunc(x)
             }
         "#)
         .file("test.js", r#"

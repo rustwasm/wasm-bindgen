@@ -10,11 +10,11 @@ fn entries() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_entries(this: &js::Map) -> js::MapIterator {
+            pub fn get_entries(this: &js_sys::Map) -> js_sys::MapIterator {
                 this.entries()
             }
         "#)
@@ -42,11 +42,11 @@ fn keys() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_keys(this: &js::Map) -> js::MapIterator {
+            pub fn get_keys(this: &js_sys::Map) -> js_sys::MapIterator {
                 this.keys()
             }
         "#)
@@ -74,11 +74,11 @@ fn values() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_values(this: &js::Map) -> js::MapIterator {
+            pub fn get_values(this: &js_sys::Map) -> js_sys::MapIterator {
                 this.values()
             }
         "#)
