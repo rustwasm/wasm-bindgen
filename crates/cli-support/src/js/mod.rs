@@ -53,6 +53,8 @@ pub struct SubContext<'a, 'b: 'a> {
     pub cx: &'a mut Context<'b>,
 }
 
+const INITIAL_SLAB_VALUES: &[&str] = &["undefined", "null", "true", "false"];
+
 impl<'a> Context<'a> {
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
         let contents = contents.trim();
@@ -782,14 +784,16 @@ impl<'a> Context<'a> {
             "
             function dropRef(idx) {{
                 {}
-                let obj = slab[idx >> 1];
+                idx = idx >> 1;
+                if (idx < {}) return;
+                let obj = slab[idx];
                 {}
                 // If we hit 0 then free up our space in the slab
-                slab[idx >> 1] = slab_next;
-                slab_next = idx >> 1;
+                slab[idx] = slab_next;
+                slab_next = idx;
             }}
             ",
-            validate_owned, dec_ref
+            validate_owned, INITIAL_SLAB_VALUES.len(), dec_ref
         ));
     }
 
@@ -820,12 +824,9 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("slab") {
             return;
         }
-        let initial_values = [
-            "{ obj: null }",
-            "{ obj: undefined }",
-            "{ obj: true }",
-            "{ obj: false }",
-        ];
+        let initial_values = INITIAL_SLAB_VALUES.iter()
+            .map(|s| format!("{{ obj: {} }}", s))
+            .collect::<Vec<_>>();
         self.global(&format!("const slab = [{}];", initial_values.join(", ")));
         if self.config.debug {
             self.export(
