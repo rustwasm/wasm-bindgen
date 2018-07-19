@@ -1575,6 +1575,17 @@ impl<'a> Context<'a> {
         name
     }
 
+    fn expose_is_like_none(&mut self) {
+        if !self.exposed_globals.insert("is_like_none") {
+            return
+        }
+        self.global("
+            function isLikeNone(x) {
+                return x === undefined || x === null;
+            }
+        ");
+    }
+
     fn gc(&mut self) -> Result<(), Error> {
         let module = mem::replace(self.module, Module::default());
         let wasm_bytes = parity_wasm::serialize(module)?;

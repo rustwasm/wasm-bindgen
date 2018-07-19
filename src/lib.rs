@@ -681,6 +681,11 @@ pub mod __rt {
 
         #[no_mangle]
         pub unsafe extern fn __wbindgen_free(ptr: *mut u8, size: usize) {
+            // This happens for zero-length slices, and in that case `ptr` is
+            // likely bogus so don't actually send this to the system allocator
+            if size == 0 {
+                return
+            }
             let align = mem::align_of::<usize>();
             let layout = Layout::from_size_align_unchecked(size, align);
             System.dealloc(ptr, layout);

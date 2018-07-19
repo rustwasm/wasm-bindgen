@@ -122,20 +122,31 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         let i = self.arg_idx;
         let name = self.abi_arg();
 
+        let (arg, optional) = match arg {
+            Descriptor::Option(t) => (&**t, true),
+            _ => (arg, false),
+        };
+
         if let Some(kind) = arg.vector_kind() {
             self.js_arguments
                 .push((name.clone(), kind.js_ty().to_string()));
 
             let func = self.cx.pass_to_wasm_function(kind)?;
+            let val = if optional {
+                self.cx.expose_is_like_none();
+                format!("isLikeNone({}) ? [0, 0] : {}({})", name, func, name)
+            } else {
+                format!("{}({})", func, name)
+            };
             self.prelude(&format!(
-                "\
-                 const [ptr{i}, len{i}] = {func}({arg});\n\
-                 ",
+                "const [ptr{i}, len{i}] = {val};",
                 i = i,
-                func = func,
-                arg = name
+                val = val,
             ));
             if arg.is_by_ref() {
+                if optional {
+                    bail!("optional slices aren't currently supported");
+                }
                 if arg.is_mut_ref() {
                     let get = self.cx.memview_function(kind);
                     self.finally(&format!(
@@ -163,6 +174,10 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.rust_arguments.push(format!("ptr{}", i));
             self.rust_arguments.push(format!("len{}", i));
             return Ok(self);
+        }
+
+        if optional {
+            bail!("unsupported optional argument to rust function {:?}", arg);
         }
 
         if let Some(s) = arg.rust_struct() {
@@ -282,16 +297,10 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             }
         };
 
-        if ty.is_ref_anyref() {
-            self.ret_ty = "any".to_string();
-            self.cx.expose_get_object();
-            self.ret_expr = format!("return getObject(RET);");
-            return Ok(self);
-        }
-
-        if ty.is_by_ref() {
-            bail!("cannot return references from Rust to JS yet")
-        }
+        let (ty, optional) = match ty {
+            Descriptor::Option(t) => (&**t, true),
+            _ => (ty, false),
+        };
 
         if let Some(ty) = ty.vector_kind() {
             self.ret_ty = ty.js_ty().to_string();
@@ -307,14 +316,31 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                  const mem = getUint32Memory();\n\
                  const ptr = mem[retptr / 4];\n\
                  const len = mem[retptr / 4 + 1];\n\
+                 {guard}
                  const realRet = {}(ptr, len).slice();\n\
                  wasm.__wbindgen_free(ptr, len * {});\n\
                  return realRet;\n\
                  ",
                 f,
-                ty.size()
+                ty.size(),
+                guard = if optional { "if (ptr === 0) return;" } else { "" },
             );
             return Ok(self);
+        }
+
+        if optional {
+            bail!("unsupported optional argument to rust function {:?}", ty);
+        }
+
+        if ty.is_ref_anyref() {
+            self.ret_ty = "any".to_string();
+            self.cx.expose_get_object();
+            self.ret_expr = format!("return getObject(RET);");
+            return Ok(self);
+        }
+
+        if ty.is_by_ref() {
+            bail!("cannot return references from Rust to JS yet")
         }
 
         if let Some(name) = ty.rust_struct() {
