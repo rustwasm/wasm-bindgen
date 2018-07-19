@@ -194,3 +194,40 @@ fn eq_works() {
         )
         .test();
 }
+
+#[test]
+fn null_keeps_working() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(use_extern_macros, wasm_import_module)]
+
+                extern crate wasm_bindgen;
+
+                use wasm_bindgen::prelude::*;
+
+                #[wasm_bindgen(module = "./foo")]
+                extern {
+                    fn take_null(val: JsValue);
+                }
+
+                #[wasm_bindgen]
+                pub fn test() {
+                    take_null(JsValue::null());
+                    take_null(JsValue::null());
+                }
+            "#,
+        )
+        .file(
+            "foo.js",
+            r#"
+                import { strictEqual } from "assert";
+
+                export function take_null(n) {
+                    strictEqual(n, null);
+                }
+            "#,
+        )
+        .test();
+}

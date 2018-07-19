@@ -33,6 +33,7 @@ tys! {
     ENUM
     RUST_STRUCT
     CHAR
+    OPTIONAL
 }
 
 #[derive(Debug)]
@@ -59,6 +60,7 @@ pub enum Descriptor {
     Enum,
     RustStruct(String),
     Char,
+    Option(Box<Descriptor>),
 }
 
 #[derive(Debug)]
@@ -115,6 +117,7 @@ impl Descriptor {
             REFMUT => Descriptor::RefMut(Box::new(Descriptor::_decode(data))),
             SLICE => Descriptor::Slice(Box::new(Descriptor::_decode(data))),
             VECTOR => Descriptor::Vector(Box::new(Descriptor::_decode(data))),
+            OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data))),
             STRING => Descriptor::String,
             ANYREF => Descriptor::Anyref,
             ENUM => Descriptor::Enum,

@@ -82,30 +82,53 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
     fn argument(&mut self, arg: &Descriptor) -> Result<(), Error> {
         let abi = self.shim_argument();
 
+        let (arg, optional) = match arg {
+            Descriptor::Option(t) => (&**t, true),
+            _ => (arg, false),
+        };
+
         if let Some(ty) = arg.vector_kind() {
             let abi2 = self.shim_argument();
             let f = self.cx.expose_get_vector_from_wasm(ty);
             self.prelude(&format!(
-                "let v{0} = {func}({0}, {1});",
+                "let v{0} = {prefix}{func}({0}, {1});",
                 abi,
                 abi2,
-                func = f
+                func = f,
+                prefix = if optional { format!("{} == 0 ? undefined : ", abi) } else { String::new() },
             ));
 
             if !arg.is_by_ref() {
                 self.prelude(&format!(
                     "\
-                     v{0} = v{0}.slice();\n\
-                     wasm.__wbindgen_free({0}, {1} * {size});\
+                     {start}
+                     v{0} = v{0}.slice();
+                     wasm.__wbindgen_free({0}, {1} * {size});
+                     {end}\
                      ",
                     abi,
                     abi2,
-                    size = ty.size()
+                    size = ty.size(),
+                    start = if optional { format!("if ({} !== 0) {{", abi) } else { String::new() },
+                    end = if optional { "}" } else { "" },
+
                 ));
                 self.cx.require_internal_export("__wbindgen_free")?;
             }
             self.js_arguments.push(format!("v{}", abi));
             return Ok(());
+        }
+
+        // No need to special case `optional` here because `takeObject` will
+        // naturally work.
+        if arg.is_anyref() {
+            self.cx.expose_take_object();
+            self.js_arguments.push(format!("takeObject({})", abi));
+            return Ok(())
+        }
+
+        if optional {
+            bail!("unsupported optional argument {:?}", arg);
         }
 
         if let Some(signed) = arg.get_64bit() {
@@ -233,10 +256,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ref d if d.is_number() => abi,
             Descriptor::Boolean => format!("{} !== 0", abi),
             Descriptor::Char => format!("String.fromCodePoint({})", abi),
-            Descriptor::Anyref => {
-                self.cx.expose_take_object();
-                format!("takeObject({})", abi)
-            }
             ref d if d.is_ref_anyref() => {
                 self.cx.expose_get_object();
                 format!("getObject({})", abi)
@@ -258,6 +277,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 return Ok(());
             }
         };
+        let (ty, optional) = match ty {
+            Descriptor::Option(t) => (&**t, true),
+            _ => (ty, false),
+        };
         if ty.is_by_ref() {
             bail!("cannot return a reference from JS to Rust")
         }
@@ -265,16 +288,42 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             let f = self.cx.pass_to_wasm_function(ty)?;
             self.cx.expose_uint32_memory();
             self.shim_arguments.insert(0, "ret".to_string());
+            let mut prelude = String::new();
+            let expr = if optional {
+                prelude.push_str("const val = JS;");
+                self.cx.expose_is_like_none();
+                format!("isLikeNone(val) ? [0, 0] : {}(val)", f)
+            } else {
+                format!("{}(JS)", f)
+            };
             self.ret_expr = format!(
                 "\
-                const [retptr, retlen] = {}(JS);\n\
+                {}
+                const [retptr, retlen] = {};
                 const mem = getUint32Memory();
                 mem[ret / 4] = retptr;
                 mem[ret / 4 + 1] = retlen;
                 ",
-                f
+                prelude,
+                expr
             );
             return Ok(());
+        }
+        if ty.is_anyref() {
+            self.cx.expose_add_heap_object();
+            if optional {
+                self.cx.expose_is_like_none();
+                self.ret_expr = "
+                    const val = JS;
+                    return isLikeNone(val) ? 0 : addHeapObject(val);
+                ".to_string();
+            } else {
+                self.ret_expr = "return addHeapObject(JS);".to_string()
+            }
+            return Ok(())
+        }
+        if optional {
+            bail!("unsupported optional return type {:?}", ty);
         }
         if ty.is_number() {
             self.ret_expr = "return JS;".to_string();
@@ -324,10 +373,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         self.ret_expr = match *ty {
             Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
             Descriptor::Char => "return JS.codePointAt(0);".to_string(),
-            Descriptor::Anyref => {
-                self.cx.expose_add_heap_object();
-                "return addHeapObject(JS);".to_string()
-            }
             _ => bail!("unimplemented return from JS to Rust: {:?}", ty),
         };
         Ok(())

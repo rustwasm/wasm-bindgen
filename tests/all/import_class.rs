@@ -505,3 +505,103 @@ fn deny_missing_docs() {
         )
         .test();
 }
+
+#[test]
+fn options() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(use_extern_macros, wasm_import_module)]
+
+                extern crate wasm_bindgen;
+
+                use wasm_bindgen::prelude::*;
+
+                #[wasm_bindgen(module = "./foo")]
+                extern {
+                    pub type Foo;
+                    #[wasm_bindgen(constructor)]
+                    fn new() -> Foo;
+
+                    fn take_none(val: Option<Foo>);
+                    fn take_some(val: Option<Foo>);
+                    fn return_null() -> Option<Foo>;
+                    fn return_undefined() -> Option<Foo>;
+                    fn return_some() -> Option<Foo>;
+                    fn run_rust_tests();
+                }
+
+                #[wasm_bindgen]
+                pub fn test() {
+                    take_none(None);
+                    take_some(Some(Foo::new()));
+                    assert!(return_null().is_none());
+                    assert!(return_undefined().is_none());
+                    assert!(return_some().is_some());
+                    run_rust_tests();
+                }
+
+                #[wasm_bindgen]
+                pub fn rust_take_none(a: Option<Foo>) {
+                    assert!(a.is_none());
+                }
+
+                #[wasm_bindgen]
+                pub fn rust_take_some(a: Option<Foo>) {
+                    assert!(a.is_some());
+                }
+
+                #[wasm_bindgen]
+                pub fn rust_return_none() -> Option<Foo> {
+                    None
+                }
+
+                #[wasm_bindgen]
+                pub fn rust_return_some() -> Option<Foo> {
+                    Some(Foo::new())
+                }
+            "#,
+        )
+        .file(
+            "foo.js",
+            r#"
+                import { strictEqual } from "assert";
+                import * as wasm from "./out";
+
+                export class Foo {
+                }
+
+                export function take_none(val) {
+                    strictEqual(val, undefined);
+                }
+
+                export function take_some(val) {
+                    strictEqual(val === undefined, false);
+                }
+
+                export function return_null() {
+                    return null;
+                }
+
+                export function return_undefined() {
+                    return undefined;
+                }
+
+                export function return_some() {
+                    return new Foo();
+                }
+
+                export function run_rust_tests() {
+                    wasm.rust_take_none();
+                    wasm.rust_take_none(null);
+                    wasm.rust_take_none(undefined);
+                    wasm.rust_take_some(new Foo());
+                    strictEqual(wasm.rust_return_none(), undefined);
+                    strictEqual(wasm.rust_return_none(), undefined);
+                    strictEqual(wasm.rust_return_some() === undefined, false);
+                }
+            "#,
+        )
+        .test();
+}

@@ -53,6 +53,8 @@ pub struct SubContext<'a, 'b: 'a> {
     pub cx: &'a mut Context<'b>,
 }
 
+const INITIAL_SLAB_VALUES: &[&str] = &["undefined", "null", "true", "false"];
+
 impl<'a> Context<'a> {
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
         let contents = contents.trim();
@@ -183,28 +185,6 @@ impl<'a> Context<'a> {
             ))
         })?;
 
-        self.bind("__wbindgen_undefined_new", &|me| {
-            me.expose_add_heap_object();
-            Ok(String::from(
-                "
-                function() {
-                    return addHeapObject(undefined);
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_null_new", &|me| {
-            me.expose_add_heap_object();
-            Ok(String::from(
-                "
-                function() {
-                    return addHeapObject(null);
-                }
-                ",
-            ))
-        })?;
-
         self.bind("__wbindgen_is_null", &|me| {
             me.expose_get_object();
             Ok(String::from(
@@ -222,17 +202,6 @@ impl<'a> Context<'a> {
                 "
                 function(idx) {
                     return getObject(idx) === undefined ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_boolean_new", &|me| {
-            me.expose_add_heap_object();
-            Ok(String::from(
-                "
-                function(v) {
-                    return addHeapObject(v === 1);
                 }
                 ",
             ))
@@ -782,14 +751,16 @@ impl<'a> Context<'a> {
             "
             function dropRef(idx) {{
                 {}
-                let obj = slab[idx >> 1];
+                idx = idx >> 1;
+                if (idx < {}) return;
+                let obj = slab[idx];
                 {}
                 // If we hit 0 then free up our space in the slab
-                slab[idx >> 1] = slab_next;
-                slab_next = idx >> 1;
+                slab[idx] = slab_next;
+                slab_next = idx;
             }}
             ",
-            validate_owned, dec_ref
+            validate_owned, INITIAL_SLAB_VALUES.len(), dec_ref
         ));
     }
 
@@ -820,12 +791,9 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("slab") {
             return;
         }
-        let initial_values = [
-            "{ obj: null }",
-            "{ obj: undefined }",
-            "{ obj: true }",
-            "{ obj: false }",
-        ];
+        let initial_values = INITIAL_SLAB_VALUES.iter()
+            .map(|s| format!("{{ obj: {} }}", s))
+            .collect::<Vec<_>>();
         self.global(&format!("const slab = [{}];", initial_values.join(", ")));
         if self.config.debug {
             self.export(
@@ -1573,6 +1541,17 @@ impl<'a> Context<'a> {
             name, n
         ));
         name
+    }
+
+    fn expose_is_like_none(&mut self) {
+        if !self.exposed_globals.insert("is_like_none") {
+            return
+        }
+        self.global("
+            function isLikeNone(x) {
+                return x === undefined || x === null;
+            }
+        ");
     }
 
     fn gc(&mut self) -> Result<(), Error> {

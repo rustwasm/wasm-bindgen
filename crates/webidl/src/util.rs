@@ -125,10 +125,6 @@ impl<'a> FirstPassRecord<'a> {
         ty: &webidl::ast::Type,
         pos: TypePosition,
     ) -> Option<syn::Type> {
-        // nullable types are not yet supported (see issue #14)
-        if ty.nullable {
-            return None;
-        }
         let array = |base_ty: &str| {
             match pos {
                 TypePosition::Argument => {
@@ -140,7 +136,7 @@ impl<'a> FirstPassRecord<'a> {
             }
         };
 
-        Some(match ty.kind {
+        let base_ty = match ty.kind {
             // `any` becomes `::wasm_bindgen::JsValue`.
             webidl::ast::TypeKind::Any => {
                 simple_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")])
@@ -223,7 +219,25 @@ impl<'a> FirstPassRecord<'a> {
             | webidl::ast::TypeKind::Union(_) => {
                 return None;
             }
-        })
+        };
+        if ty.nullable {
+            let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
+                colon2_token: None,
+                lt_token: Default::default(),
+                args: FromIterator::from_iter(vec![
+                    syn::GenericArgument::Type(base_ty),
+                ]),
+                gt_token: Default::default(),
+            });
+
+            let ident = raw_ident("Option");
+            let seg = syn::PathSegment { ident, arguments };
+            let path: syn::Path = seg.into();
+            let ty = syn::TypePath { qself: None, path };
+            Some(ty.into())
+        } else {
+            Some(base_ty)
+        }
     }
 
     fn webidl_arguments_to_syn_arg_captured<'b, I>(

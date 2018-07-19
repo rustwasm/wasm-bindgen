@@ -6,14 +6,31 @@ fn headers() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros)]
+                #![feature(use_extern_macros, wasm_import_module)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
                 extern crate web_sys;
 
                 #[wasm_bindgen]
-                pub fn test_headers(_headers: &web_sys::Headers) {
-                    // empty for now...
+                pub fn test_headers(headers: &web_sys::Headers) {
+                    assert_eq!(headers.get("foo").unwrap(), None);
+                    assert_eq!(
+                        headers.get("content-type").unwrap(),
+                        Some("text/plain".to_string()),
+                    );
+                    assert_eq!(
+                        headers.get("Content-Type").unwrap(),
+                        Some("text/plain".to_string()),
+                    );
+                    assert!(headers.get("").is_err());
+                    assert!(headers.set("", "").is_err());
+                    assert!(headers.set("x", "").is_ok());
+                    assert_eq!(headers.get("x").unwrap(), Some(String::new()));
+                    assert!(headers.delete("x").is_ok());
+                    assert_eq!(headers.get("x").unwrap(), None);
+                    assert!(headers.append("a", "y").is_ok());
+                    assert!(headers.append("a", "z").is_ok());
+                    assert_eq!(headers.get("a").unwrap(), Some("y, z".to_string()));
                 }
             "#,
         )

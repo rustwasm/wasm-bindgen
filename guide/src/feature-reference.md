@@ -28,6 +28,7 @@ are:
 * Borrowed exported structs (`&Foo` or `&mut Bar`)
 * The `JsValue` type and `&JsValue` (not mutable references)
 * Vectors and slices of supported integer types and of the `JsValue` type.
+* Optional vectors/slices
 
 All of the above can also be returned except borrowed references. Passing
 `Vec<JsValue>` as an argument to a function is not currently supported. Strings are

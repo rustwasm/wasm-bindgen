@@ -61,8 +61,8 @@ pub struct JsValue {
     idx: u32,
 }
 
-const JSIDX_NULL: u32 = 0;
-const JSIDX_UNDEFINED: u32 = 2;
+const JSIDX_UNDEFINED: u32 = 0;
+const JSIDX_NULL: u32 = 2;
 const JSIDX_TRUE: u32 = 4;
 const JSIDX_FALSE: u32 = 6;
 const JSIDX_RESERVED: u32 = 8;
@@ -345,11 +345,8 @@ externs! {
     fn __wbindgen_string_new(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_number_new(f: f64) -> u32;
     fn __wbindgen_number_get(idx: u32, invalid: *mut u8) -> f64;
-    fn __wbindgen_null_new() -> u32;
-    fn __wbindgen_undefined_new() -> u32;
     fn __wbindgen_is_null(idx: u32) -> u32;
     fn __wbindgen_is_undefined(idx: u32) -> u32;
-    fn __wbindgen_boolean_new(val: u32) -> u32;
     fn __wbindgen_boolean_get(idx: u32) -> u32;
     fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_is_symbol(idx: u32) -> u32;
@@ -673,6 +670,11 @@ pub mod __rt {
 
         #[no_mangle]
         pub unsafe extern fn __wbindgen_free(ptr: *mut u8, size: usize) {
+            // This happens for zero-length slices, and in that case `ptr` is
+            // likely bogus so don't actually send this to the system allocator
+            if size == 0 {
+                return
+            }
             let align = mem::align_of::<usize>();
             let layout = Layout::from_size_align_unchecked(size, align);
             System.dealloc(ptr, layout);

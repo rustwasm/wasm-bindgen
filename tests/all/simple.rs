@@ -447,3 +447,118 @@ fn binding_to_unimplemented_apis_doesnt_break_everything() {
         )
         .test();
 }
+
+#[test]
+fn optional_slices() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                extern crate wasm_bindgen;
+                use wasm_bindgen::prelude::*;
+
+                #[wasm_bindgen(module = "./foo")]
+                extern {
+                    fn optional_str_none(a: Option<&str>);
+                    fn optional_str_some(a: Option<&str>);
+                    fn optional_slice_none(a: Option<&[u8]>);
+                    fn optional_slice_some(a: Option<&[u8]>);
+
+                    fn optional_string_none(a: Option<String>);
+                    fn optional_string_some(a: Option<String>);
+                    fn optional_string_some_empty(a: Option<String>);
+
+                    fn return_string_none() -> Option<String>;
+                    fn return_string_some() -> Option<String>;
+
+                    fn run_rust_tests();
+                }
+
+                #[wasm_bindgen]
+                pub fn test() {
+                    optional_str_none(None);
+                    optional_str_some(Some("x"));
+                    optional_slice_none(None);
+                    optional_slice_some(Some(&[1, 2, 3]));
+                    optional_string_none(None);
+                    optional_string_some_empty(Some(String::new()));
+                    optional_string_some(Some("abcd".to_string()));
+
+                    assert_eq!(return_string_none(), None);
+                    assert_eq!(return_string_some(), Some("foo".to_string()));
+                    run_rust_tests();
+                }
+
+                #[wasm_bindgen]
+                pub fn take_optional_str_none(x: Option<String>) {
+                    assert!(x.is_none())
+                }
+                #[wasm_bindgen]
+                pub fn take_optional_str_some(x: Option<String>) {
+                    assert_eq!(x, Some(String::from("hello")));
+                }
+                #[wasm_bindgen]
+                pub fn return_optional_str_none() -> Option<String> {
+                    None
+                }
+                #[wasm_bindgen]
+                pub fn return_optional_str_some() -> Option<String> {
+                    Some("world".to_string())
+                }
+            "#,
+        )
+        .file(
+            "foo.js",
+            r#"
+                import { strictEqual } from "assert";
+                import * as wasm from "./out";
+
+                export function optional_str_none(x) {
+                    strictEqual(x, undefined);
+                }
+
+                export function optional_str_some(x) {
+                    strictEqual(x, 'x');
+                }
+
+                export function optional_slice_none(x) {
+                    strictEqual(x, undefined);
+                }
+
+                export function optional_slice_some(x) {
+                    strictEqual(x.length, 3);
+                    strictEqual(x[0], 1);
+                    strictEqual(x[1], 2);
+                    strictEqual(x[2], 3);
+                }
+
+                export function optional_string_none(x) {
+                    strictEqual(x, undefined);
+                }
+
+                export function optional_string_some(x) {
+                    strictEqual(x, 'abcd');
+                }
+
+                export function optional_string_some_empty(x) {
+                    strictEqual(x, '');
+                }
+
+                export function return_string_none() {}
+                export function return_string_some() {
+                    return 'foo';
+                }
+
+                export function run_rust_tests() {
+                    wasm.take_optional_str_none();
+                    wasm.take_optional_str_none(null);
+                    wasm.take_optional_str_none(undefined);
+                    wasm.take_optional_str_some('hello');
+                    strictEqual(wasm.return_optional_str_none(), undefined);
+                    strictEqual(wasm.return_optional_str_some(), 'world');
+                }
+            "#
+        )
+        .test();
+}
