@@ -176,8 +176,9 @@ impl<'a> FirstPassRecord<'a> {
             webidl::ast::TypeKind::DOMString if pos == TypePosition::Argument => {
                 shared_ref(ident_ty(raw_ident("str")))
             }
-            // `DOMString` is not supported yet in other positions.
-            webidl::ast::TypeKind::DOMString => return None,
+            webidl::ast::TypeKind::DOMString => {
+                ident_ty(raw_ident("String"))
+            },
 
             // `ByteString -> `&[u8]` for arguments
             webidl::ast::TypeKind::ByteString if pos == TypePosition::Argument => {

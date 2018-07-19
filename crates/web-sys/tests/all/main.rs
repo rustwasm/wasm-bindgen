@@ -4,6 +4,7 @@ use project_builder::{project, Project};
 mod event;
 mod headers;
 mod response;
+mod element;
 
 fn websys_project() -> Project {
     project()
