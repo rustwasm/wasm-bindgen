@@ -185,28 +185,6 @@ impl<'a> Context<'a> {
             ))
         })?;
 
-        self.bind("__wbindgen_undefined_new", &|me| {
-            me.expose_add_heap_object();
-            Ok(String::from(
-                "
-                function() {
-                    return addHeapObject(undefined);
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_null_new", &|me| {
-            me.expose_add_heap_object();
-            Ok(String::from(
-                "
-                function() {
-                    return addHeapObject(null);
-                }
-                ",
-            ))
-        })?;
-
         self.bind("__wbindgen_is_null", &|me| {
             me.expose_get_object();
             Ok(String::from(
@@ -224,17 +202,6 @@ impl<'a> Context<'a> {
                 "
                 function(idx) {
                     return getObject(idx) === undefined ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_boolean_new", &|me| {
-            me.expose_add_heap_object();
-            Ok(String::from(
-                "
-                function(v) {
-                    return addHeapObject(v === 1);
                 }
                 ",
             ))
