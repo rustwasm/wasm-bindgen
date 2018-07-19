@@ -5,3 +5,4 @@ mod consts;
 mod enums;
 mod simple;
 mod throws;
+mod array;
