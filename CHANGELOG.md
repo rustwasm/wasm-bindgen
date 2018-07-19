@@ -4,7 +4,7 @@
 
 ## 0.2.12
 
-Released 2018/07/19.
+Released 2018-07-19.
 
 This release is mostly internal refactorings and minor improvements to the
 existing crates and functionality, but the bigs news is an upcoming `js-sys` and
@@ -39,16 +39,16 @@ expose all APIs browsers have. More info on this soon!
 
 ## 0.2.11
 
-Released 2018/05/24.
+Released 2018-05-24.
 
 --------------------------------------------------------------------------------
 
 ## 0.2.10
 
-Released 2018/05/17.
+Released 2018-05-17.
 
 --------------------------------------------------------------------------------
 
 ## 0.2.9
 
-Released 2018/05/11.
+Released 2018-05-11.
