@@ -16,14 +16,13 @@
 //! example, `decodeURI` in JavaScript is exposed as `decode_uri` in these
 //! bindings.
 
-use wasm_bindgen_macro::*;
-use JsValue;
+#![feature(use_extern_macros, wasm_import_module)]
 
-use core::mem;
+extern crate wasm_bindgen;
 
-if_std! {
-    use std::prelude::v1::*;
-}
+use std::mem;
+
+use wasm_bindgen::prelude::*;
 
 // When adding new imports:
 //
@@ -662,15 +661,15 @@ extern "C" {
     pub fn to_string(this: &Function) -> JsString;
 }
 
-impl JsValue {
+impl Function {
     /// Returns the `Function` value of this JS value if it's an instance of a
     /// function.
     ///
     /// If this JS value is not an instance of a function then this returns
     /// `None`.
-    pub fn as_function(&self) -> Option<&Function> {
-        if self.is_function() {
-            Some(unsafe { mem::transmute(self) })
+    pub fn try_from(val: &JsValue) -> Option<&Function> {
+        if val.is_function() {
+            Some(unsafe { mem::transmute(val) })
         } else {
             None
         }
@@ -1013,13 +1012,13 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn pow(base: f64, exponent: f64) -> f64;
 
-    /// The Math.random() function returns a floating-point, pseudo-random number 
-    /// in the range 0–1 (inclusive of 0, but not 1) with approximately uniform distribution 
-    /// over that range — which you can then scale to your desired range. 
-    /// The implementation selects the initial seed to the random number generation algorithm; 
+    /// The Math.random() function returns a floating-point, pseudo-random number
+    /// in the range 0–1 (inclusive of 0, but not 1) with approximately uniform distribution
+    /// over that range — which you can then scale to your desired range.
+    /// The implementation selects the initial seed to the random number generation algorithm;
     /// it cannot be chosen or reset by the user.
-    /// 
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random    
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
     #[wasm_bindgen(static_method_of = Math)]
     pub fn random() -> f64;
 
@@ -1619,15 +1618,15 @@ extern "C" {
     pub fn values(object: &Object) -> Array;
 }
 
-impl JsValue {
+impl Object {
     /// Returns the `Object` value of this JS value if it's an instance of an
     /// object.
     ///
     /// If this JS value is not an instance of an object then this returns
     /// `None`.
-    pub fn as_object(&self) -> Option<&Object> {
-        if self.is_object() {
-            Some(unsafe { mem::transmute(self) })
+    pub fn try_from(val: &JsValue) -> Option<&Object> {
+        if val.is_object() {
+            Some(unsafe { mem::transmute(val) })
         } else {
             None
         }
@@ -2065,7 +2064,7 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn concat(this: &JsString, string_2: &JsString) -> JsString;
 
-    /// The endsWith() method determines whether a string ends with the characters of a 
+    /// The endsWith() method determines whether a string ends with the characters of a
     /// specified string, returning true or false as appropriate.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
@@ -2095,7 +2094,7 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = lastIndexOf)]
     pub fn last_index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
 
-    /// The normalize() method returns the Unicode Normalization Form 
+    /// The normalize() method returns the Unicode Normalization Form
     /// of a given string (if the value isn't a string, it will be converted to one first).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
@@ -2120,7 +2119,7 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = padStart)]
     pub fn pad_start(this: &JsString, target_length: u32, pad_string: &JsString) -> JsString;
 
-    /// The repeat() method constructs and returns a new string which contains the specified 
+    /// The repeat() method constructs and returns a new string which contains the specified
     /// number of copies of the string on which it was called, concatenated together.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat
@@ -2221,15 +2220,15 @@ extern "C" {
     pub fn value_of(this: &JsString) -> JsString;
 }
 
-impl JsValue {
+impl JsString {
     /// Returns the `JsString` value of this JS value if it's an instance of a
     /// string.
     ///
     /// If this JS value is not an instance of a string then this returns
     /// `None`.
-    pub fn as_js_string(&self) -> Option<&JsString> {
-        if self.is_string() {
-            Some(unsafe { mem::transmute(self) })
+    pub fn try_from(val: &JsValue) -> Option<&JsString> {
+        if val.is_string() {
+            Some(unsafe { mem::transmute(val) })
         } else {
             None
         }
@@ -2244,23 +2243,21 @@ impl<'a> From<&'a str> for JsString {
     }
 }
 
-if_std! {
-    impl From<String> for JsString {
-        fn from(s: String) -> Self {
-            From::from(&*s)
-        }
+impl From<String> for JsString {
+    fn from(s: String) -> Self {
+        From::from(&*s)
     }
+}
 
-    impl<'a> From<&'a JsString> for String {
-        fn from(s: &'a JsString) -> Self {
-            s.obj.as_string().unwrap()
-        }
+impl<'a> From<&'a JsString> for String {
+    fn from(s: &'a JsString) -> Self {
+        s.obj.as_string().unwrap()
     }
+}
 
-    impl From<JsString> for String {
-        fn from(s: JsString) -> Self {
-            From::from(&s)
-        }
+impl From<JsString> for String {
+    fn from(s: JsString) -> Self {
+        From::from(&s)
     }
 }
 

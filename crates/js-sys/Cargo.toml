@@ -1,0 +1,14 @@
+[package]
+name = "js-sys"
+version = "0.2.11"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+wasm-bindgen = { path = "../..", version = "0.2.11" }
+
+[dev-dependencies]
+wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.11' }

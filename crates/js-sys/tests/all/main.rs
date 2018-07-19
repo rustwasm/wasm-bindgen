@@ -1,6 +1,12 @@
-// Keep these tests in alphabetical order, just like the imports in `src/js.rs`.
+extern crate wasm_bindgen_test_project_builder as project_builder;
 
-use super::project;
+fn project() -> project_builder::Project {
+    let mut p = project_builder::project();
+    p.add_local_dependency("js-sys", env!("CARGO_MANIFEST_DIR"));
+    return p
+}
+
+// Keep these tests in alphabetical order, just like the imports in `src/js.rs`.
 
 mod Array;
 mod ArrayBuffer;
@@ -29,7 +35,6 @@ mod WeakSet;
 mod WebAssembly;
 
 #[test]
-#[cfg(feature = "std")]
 fn decode_uri() {
     project()
         .file(
@@ -82,7 +87,6 @@ fn decode_uri_component() {
 }
 
 #[test]
-#[cfg(feature = "std")]
 fn encode_uri() {
     project()
         .file(

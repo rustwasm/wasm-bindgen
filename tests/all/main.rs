@@ -11,8 +11,6 @@ mod dependencies;
 mod enums;
 mod import_class;
 mod imports;
-#[cfg(feature = "js_globals")]
-mod js_globals;
 mod jsobjects;
 mod math;
 mod node;

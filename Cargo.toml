@@ -17,8 +17,7 @@ test = false
 doctest = false
 
 [features]
-default = ["spans", "std", "js_globals"]
-js_globals = []
+default = ["spans", "std"]
 spans = ["wasm-bindgen-macro/spans"]
 std = []
 serde-serialize = ["serde", "serde_json", "std"]
@@ -38,9 +37,10 @@ wasm-bindgen-test-project-builder = { path = "crates/test-project-builder", vers
 [workspace]
 members = [
   "crates/cli",
+  "crates/js-sys",
   "crates/typescript",
-  "crates/webidl",
   "crates/web-sys",
+  "crates/webidl",
   "examples/hello_world",
   "examples/smorgasboard",
   "examples/console_log",
