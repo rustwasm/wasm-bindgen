@@ -513,6 +513,10 @@ impl ToTokens for ast::ImportType {
                 }
             }
 
+            impl ::wasm_bindgen::convert::OptionIntoWasmAbi for #name {
+                fn none() -> Self::Abi { 0 }
+            }
+
             impl ::wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = <::wasm_bindgen::JsValue as
                     ::wasm_bindgen::convert::FromWasmAbi>::Abi;
@@ -525,6 +529,10 @@ impl ToTokens for ast::ImportType {
                         obj: ::wasm_bindgen::JsValue::from_abi(js, extra),
                     }
                 }
+            }
+
+            impl ::wasm_bindgen::convert::OptionFromWasmAbi for #name {
+                fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
             }
 
             impl<'a> ::wasm_bindgen::convert::IntoWasmAbi for &'a #name {

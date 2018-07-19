@@ -119,6 +119,14 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             return Ok(());
         }
 
+        // No need to special case `optional` here because `takeObject` will
+        // naturally work.
+        if arg.is_anyref() {
+            self.cx.expose_take_object();
+            self.js_arguments.push(format!("takeObject({})", abi));
+            return Ok(())
+        }
+
         if optional {
             bail!("unsupported optional argument {:?}", arg);
         }
@@ -248,10 +256,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ref d if d.is_number() => abi,
             Descriptor::Boolean => format!("{} !== 0", abi),
             Descriptor::Char => format!("String.fromCodePoint({})", abi),
-            Descriptor::Anyref => {
-                self.cx.expose_take_object();
-                format!("takeObject({})", abi)
-            }
             ref d if d.is_ref_anyref() => {
                 self.cx.expose_get_object();
                 format!("getObject({})", abi)
@@ -305,6 +309,19 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             );
             return Ok(());
         }
+        if ty.is_anyref() {
+            self.cx.expose_add_heap_object();
+            if optional {
+                self.cx.expose_is_like_none();
+                self.ret_expr = "
+                    const val = JS;
+                    return isLikeNone(val) ? 0 : addHeapObject(val);
+                ".to_string();
+            } else {
+                self.ret_expr = "return addHeapObject(JS);".to_string()
+            }
+            return Ok(())
+        }
         if optional {
             bail!("unsupported optional return type {:?}", ty);
         }
@@ -356,10 +373,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         self.ret_expr = match *ty {
             Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
             Descriptor::Char => "return JS.codePointAt(0);".to_string(),
-            Descriptor::Anyref => {
-                self.cx.expose_add_heap_object();
-                "return addHeapObject(JS);".to_string()
-            }
             _ => bail!("unimplemented return from JS to Rust: {:?}", ty),
         };
         Ok(())

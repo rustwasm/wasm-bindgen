@@ -69,8 +69,8 @@ pub struct JsValue {
     idx: u32,
 }
 
-const JSIDX_NULL: u32 = 0;
-const JSIDX_UNDEFINED: u32 = 2;
+const JSIDX_UNDEFINED: u32 = 0;
+const JSIDX_NULL: u32 = 2;
 const JSIDX_TRUE: u32 = 4;
 const JSIDX_FALSE: u32 = 6;
 const JSIDX_RESERVED: u32 = 8;

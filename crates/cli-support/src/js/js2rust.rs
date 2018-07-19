@@ -176,6 +176,21 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             return Ok(self);
         }
 
+        if arg.is_anyref() {
+            self.js_arguments.push((name.clone(), "any".to_string()));
+            self.cx.expose_add_heap_object();
+            if optional {
+                self.cx.expose_is_like_none();
+                self.rust_arguments.push(format!(
+                    "isLikeNone({0}) ? 0 : addHeapObject({0})",
+                    name,
+                ));
+            } else {
+                self.rust_arguments.push(format!("addHeapObject({})", name));
+            }
+            return Ok(self);
+        }
+
         if optional {
             bail!("unsupported optional argument to rust function {:?}", arg);
         }
@@ -277,11 +292,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.js_arguments.push((name.clone(), "string".to_string()));
                 self.rust_arguments.push(format!("{}.codePointAt(0)", name))
             }
-            Descriptor::Anyref => {
-                self.js_arguments.push((name.clone(), "any".to_string()));
-                self.cx.expose_add_heap_object();
-                self.rust_arguments.push(format!("addHeapObject({})", name));
-            }
             _ => bail!("unsupported argument to rust function {:?}", arg),
         }
         Ok(self)
@@ -325,6 +335,15 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 ty.size(),
                 guard = if optional { "if (ptr === 0) return;" } else { "" },
             );
+            return Ok(self);
+        }
+
+        // No need to worry about `optional` here, the abi representation means
+        // that `takeObject` will naturally pluck out `undefined`.
+        if ty.is_anyref() {
+            self.ret_ty = "any".to_string();
+            self.cx.expose_take_object();
+            self.ret_expr = format!("return takeObject(RET);");
             return Ok(self);
         }
 
@@ -385,11 +404,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             Descriptor::Char => {
                 self.ret_ty = "string".to_string();
                 self.ret_expr = format!("return String.fromCodePoint(RET);")
-            }
-            Descriptor::Anyref => {
-                self.ret_ty = "any".to_string();
-                self.cx.expose_take_object();
-                self.ret_expr = format!("return takeObject(RET);");
             }
             _ => bail!("unsupported return from Rust to JS {:?}", ty),
         }
