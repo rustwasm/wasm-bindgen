@@ -1,6 +1,3 @@
-//! This is mostly an internal module, no stability guarantees are provided. Use
-//! at your own risk.
-
 use core::ops::{Deref, DerefMut};
 
 use describe::*;
@@ -61,10 +58,36 @@ pub trait RefFromWasmAbi: WasmDescribe {
     unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor;
 }
 
+/// Dual of the `RefFromWasmAbi` trait, except for mutable references.
 pub trait RefMutFromWasmAbi: WasmDescribe {
+    /// Same as `RefFromWasmAbi::Abi`
     type Abi: WasmAbi;
+    /// Same as `RefFromWasmAbi::Anchor`
     type Anchor: DerefMut<Target = Self>;
+    /// Same as `RefFromWasmAbi::ref_from_abi`
     unsafe fn ref_mut_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor;
+}
+
+/// Indicates that this type can be passed to JS as `Option<Self>`.
+///
+/// This trait is used when implementing `IntoWasmAbi for Option<T>`.
+pub trait OptionIntoWasmAbi: IntoWasmAbi {
+    /// Returns an ABI instance indicating "none", which JS will interpret as
+    /// the `None` branch of this option.
+    ///
+    /// It should be guaranteed that the `IntoWasmAbi` can never produce the ABI
+    /// value returned here.
+    fn none() -> Self::Abi;
+}
+
+/// Indicates that this type can be received from JS as `Option<Self>`.
+///
+/// This trait is used when implementing `FromWasmAbi for Option<T>`.
+pub trait OptionFromWasmAbi: FromWasmAbi {
+    /// Tests whether the argument is a "none" instance. If so it will be
+    /// deserialized as `None`, and otherwise it will be passed to
+    /// `FromWasmAbi`.
+    fn is_none(abi: &Self::Abi) -> bool;
 }
 
 pub trait Stack {

@@ -38,6 +38,7 @@ tys! {
     ENUM
     RUST_STRUCT
     CHAR
+    OPTIONAL
 }
 
 pub fn inform(a: u32) {
@@ -194,4 +195,11 @@ doit! {
     (A B C D E)
     (A B C D E F)
     (A B C D E F G)
+}
+
+impl<T: WasmDescribe> WasmDescribe for Option<T> {
+    fn describe() {
+        inform(OPTIONAL);
+        T::describe();
+    }
 }

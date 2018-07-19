@@ -3,6 +3,7 @@ use core::mem::{self, ManuallyDrop};
 
 use convert::slices::WasmSlice;
 use convert::{Stack, FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
+use convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
 use JsValue;
 
 macro_rules! simple {
@@ -176,5 +177,28 @@ impl RefFromWasmAbi for JsValue {
     #[inline]
     unsafe fn ref_from_abi(js: u32, _extra: &mut Stack) -> Self::Anchor {
         ManuallyDrop::new(JsValue { idx: js })
+    }
+}
+
+impl<T: OptionIntoWasmAbi> IntoWasmAbi for Option<T> {
+    type Abi = T::Abi;
+
+    fn into_abi(self, extra: &mut Stack) -> T::Abi {
+        match self {
+            Some(me) => me.into_abi(extra),
+            None => T::none(),
+        }
+    }
+}
+
+impl<T: OptionFromWasmAbi> FromWasmAbi for Option<T> {
+    type Abi = T::Abi;
+
+    unsafe fn from_abi(js: T::Abi, extra: &mut Stack) -> Self {
+        if T::is_none(&js) {
+            None
+        } else {
+            Some(T::from_abi(js, extra))
+        }
     }
 }
