@@ -13,4 +13,4 @@ wasm-bindgen-webidl = { path = "../webidl", version = "=0.2.12" }
 wasm-bindgen = { path = "../..", version = "=0.2.12" }
 
 [dev-dependencies]
-wasm-bindgen-test-project-builder = { path = "../test-project-builder" }
+wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.12' }
