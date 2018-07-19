@@ -2,6 +2,7 @@
 
 use project;
 
+
 #[test]
 fn entries() {
     project()
@@ -9,26 +10,26 @@ fn entries() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn entries(this: &js::Set) -> js::SetIterator {
+            pub fn get_entries(this: &js_sys::Map) -> js_sys::MapIterator {
                 this.entries()
             }
-
         "#)
         .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
-                let set = new Set([8, 5, 4, 3, 1, 2]);
-                let wasmIterator = wasm.entries(set);
-                let nextValue = wasmIterator.next().value;
+                const map = new Map();
+                const iterator = map.entries();
+                const wasmIterator = wasm.get_entries(map);
+                map.set('foo', 'bar');
+                map.set('bar', 'baz');
 
-                assert.equal(nextValue[0], 8);
-                assert.equal(nextValue[1], 8);
+                assert.equal(iterator.toString(), wasmIterator.toString());
             }
         "#)
         .test()
@@ -41,25 +42,26 @@ fn keys() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn keys(this: &js::Set) -> js::SetIterator {
+            pub fn get_keys(this: &js_sys::Map) -> js_sys::MapIterator {
                 this.keys()
             }
-
         "#)
         .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
-                let set = new Set([8, 5, 4, 3, 1, 2]);
-                let wasmIterator = wasm.keys(set);
-                let nextValue = wasmIterator.next().value;
+                const map = new Map();
+                const iterator = map.keys();
+                const wasmIterator = wasm.get_keys(map);
+                map.set('foo', 'bar');
+                map.set('bar', 'baz');
 
-                assert.equal(nextValue, 8);
+                assert.equal(iterator.toString(), wasmIterator.toString());
             }
         "#)
         .test()
@@ -72,25 +74,26 @@ fn values() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn values(this: &js::Set) -> js::SetIterator {
+            pub fn get_values(this: &js_sys::Map) -> js_sys::MapIterator {
                 this.values()
             }
-
         "#)
         .file("test.js", r#"
             import * as assert from "assert";
             import * as wasm from "./out";
 
             export function test() {
-                let set = new Set([8, 5, 4, 3, 1, 2]);
-                let wasmIterator = wasm.values(set);
-                let nextValue = wasmIterator.next().value;
+                const map = new Map();
+                const iterator = map.keys();
+                const wasmIterator = wasm.get_values(map);
+                map.set('foo', 'bar');
+                map.set('bar', 'baz');
 
-                assert.equal(nextValue, 8);
+                assert.equal(iterator.toString(), wasmIterator.toString());
             }
         "#)
         .test()

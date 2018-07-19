@@ -11,12 +11,12 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn new_object() -> js::Object {
-                js::Object::new()
+            pub fn new_object() -> js_sys::Object {
+                js_sys::Object::new()
             }
         "#,
         )
@@ -43,11 +43,11 @@ fn has_own_property() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has_own_foo_property(obj: &js::Object, property: &JsValue) -> bool {
+            pub fn has_own_foo_property(obj: &js_sys::Object, property: &JsValue) -> bool {
                 obj.has_own_property(&property)
             }
         "#,
@@ -80,17 +80,17 @@ fn to_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_string(obj: &js::Object) -> js::JsString {
+            pub fn to_string(obj: &js_sys::Object) -> js_sys::JsString {
                 obj.to_string()
             }
 
             #[wasm_bindgen]
             pub fn test() {
-                let object = js::Object::new();
+                let object = js_sys::Object::new();
                 assert_eq!(String::from(object.to_string()), "[object Object]");
             }
         "#,
@@ -117,12 +117,12 @@ fn is_extensible() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn is_extensible(obj: &js::Object) -> bool {
-                js::Object::is_extensible(&obj)
+            pub fn is_extensible(obj: &js_sys::Object) -> bool {
+                js_sys::Object::is_extensible(&obj)
             }
         "#)
         .file("test.js", r#"
@@ -147,12 +147,12 @@ fn is_frozen() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn is_frozen(obj: &js::Object) -> bool {
-                js::Object::is_frozen(&obj)
+            pub fn is_frozen(obj: &js_sys::Object) -> bool {
+                js_sys::Object::is_frozen(&obj)
             }
         "#)
         .file("test.js", r#"
@@ -177,12 +177,12 @@ fn is_sealed() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn is_sealed(obj: &js::Object) -> bool {
-                js::Object::is_sealed(&obj)
+            pub fn is_sealed(obj: &js_sys::Object) -> bool {
+                js_sys::Object::is_sealed(&obj)
             }
         "#)
         .file("test.js", r#"
@@ -209,11 +209,11 @@ fn is_prototype_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn obj_is_prototype_of_value(obj: &js::Object, value: &JsValue) -> bool {
+            pub fn obj_is_prototype_of_value(obj: &js_sys::Object, value: &JsValue) -> bool {
                 obj.is_prototype_of(&value)
             }
         "#,
@@ -246,12 +246,12 @@ fn keys() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn keys(obj: &js::Object) -> js::Array {
-                js::Object::keys(obj)
+            pub fn keys(obj: &js_sys::Object) -> js_sys::Array {
+                js_sys::Object::keys(obj)
             }
         "#,
         )
@@ -277,12 +277,12 @@ fn prevent_extensions() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn prevent_extensions(obj: &js::Object) {
-                js::Object::prevent_extensions(obj);
+            pub fn prevent_extensions(obj: &js_sys::Object) {
+                js_sys::Object::prevent_extensions(obj);
             }
         "#)
         .file("test.js", r#"
@@ -312,11 +312,11 @@ fn property_is_enumerable() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn property_is_enumerable(obj: &js::Object, property: &JsValue) -> bool {
+            pub fn property_is_enumerable(obj: &js_sys::Object, property: &JsValue) -> bool {
                 obj.property_is_enumerable(&property)
             }
         "#,
@@ -351,12 +351,12 @@ fn seal() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn seal(value: &JsValue) -> JsValue {
-                js::Object::seal(&value)
+                js_sys::Object::seal(&value)
             }
         "#)
         .file("test.js", r#"
@@ -402,12 +402,12 @@ fn set_prototype_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set_prototype_of(object: &js::Object, prototype: &js::Object) -> js::Object {
-                js::Object::set_prototype_of(&object, &prototype)
+            pub fn set_prototype_of(object: &js_sys::Object, prototype: &js_sys::Object) -> js_sys::Object {
+                js_sys::Object::set_prototype_of(&object, &prototype)
             }
         "#)
         .file("test.js", r#"
@@ -434,12 +434,12 @@ fn to_locale_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_locale_string() -> js::JsString {
-                let object = js::Object::new();
+            pub fn to_locale_string() -> js_sys::JsString {
+                let object = js_sys::Object::new();
                 object.to_locale_string()
             }
         "#,
@@ -467,11 +467,11 @@ fn value_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn value_of(obj: &js::Object) -> js::Object {
+            pub fn value_of(obj: &js_sys::Object) -> js_sys::Object {
                 obj.value_of()
             }
         "#,
@@ -499,12 +499,12 @@ fn values() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn values(obj: &js::Object) -> js::Array {
-                js::Object::values(&obj)
+            pub fn values(obj: &js_sys::Object) -> js_sys::Array {
+                js_sys::Object::values(&obj)
             }
         "#)
         .file("test.js", r#"

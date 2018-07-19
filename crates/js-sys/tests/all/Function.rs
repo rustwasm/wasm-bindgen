@@ -11,11 +11,11 @@ fn apply() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn apply(this: &js::Function, context: &JsValue, args: &js::Array) -> js::Function {
+            pub fn apply(this: &js_sys::Function, context: &JsValue, args: &js_sys::Array) -> js_sys::Function {
                 this.apply(context, args)
             }
         "#,
@@ -47,11 +47,11 @@ fn bind() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn bind(this: &js::Function, context: &JsValue) -> js::Function {
+            pub fn bind(this: &js_sys::Function, context: &JsValue) -> js_sys::Function {
                 this.bind(context)
             }
         "#,
@@ -87,11 +87,11 @@ fn length() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn fn_length(this: &js::Function) -> u32 {
+            pub fn fn_length(this: &js_sys::Function) -> u32 {
                 this.length()
             }
         "#,
@@ -133,11 +133,11 @@ fn name() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn fn_name(this: &js::Function) -> js::JsString {
+            pub fn fn_name(this: &js_sys::Function) -> js_sys::JsString {
                 this.name()
             }
         "#,
@@ -180,11 +180,11 @@ fn to_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_source_code(this: &js::Function) -> js::JsString {
+            pub fn get_source_code(this: &js_sys::Function) -> js_sys::JsString {
                 this.to_string()
             }
         "#,

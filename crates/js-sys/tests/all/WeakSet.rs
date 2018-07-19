@@ -11,12 +11,12 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn new_weak_set() -> js::WeakSet {
-                js::WeakSet::new()
+            pub fn new_weak_set() -> js_sys::WeakSet {
+                js_sys::WeakSet::new()
             }
         "#,
         )
@@ -43,11 +43,11 @@ fn has() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has_value(this: &js::WeakSet, value: js::Object) -> bool {
+            pub fn has_value(this: &js_sys::WeakSet, value: js_sys::Object) -> bool {
                 this.has(value)
             }
         "#,
@@ -81,11 +81,11 @@ fn add() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn add_value(this: &js::WeakSet, value: js::Object) -> js::WeakSet {
+            pub fn add_value(this: &js_sys::WeakSet, value: js_sys::Object) -> js_sys::WeakSet {
                 this.add(value)
             }
         "#,
@@ -122,11 +122,11 @@ fn delete() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn delete_value(this: &js::WeakSet, value: js::Object) -> bool {
+            pub fn delete_value(this: &js_sys::WeakSet, value: js_sys::Object) -> bool {
                 this.delete(value)
             }
         "#,

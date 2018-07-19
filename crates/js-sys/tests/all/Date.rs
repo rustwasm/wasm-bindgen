@@ -11,8 +11,9 @@ fn get_date() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_date(this: &Date) -> u32 {
@@ -45,8 +46,9 @@ fn get_day() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_day(this: &Date) -> u32 {
@@ -79,8 +81,9 @@ fn get_full_year() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_full_year(this: &Date) -> u32 {
@@ -115,8 +118,9 @@ fn get_hours() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_hours(this: &Date) -> u32 {
@@ -149,8 +153,9 @@ fn get_milliseconds() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_milliseconds(this: &Date) -> u32 {
@@ -185,8 +190,9 @@ fn get_minutes() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_minutes(this: &Date) -> u32 {
@@ -219,8 +225,9 @@ fn get_month() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_month(this: &Date) -> u32 {
@@ -253,8 +260,9 @@ fn get_seconds() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_seconds(this: &Date) -> u32 {
@@ -287,8 +295,9 @@ fn get_time() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_time(this: &Date) -> f64 {
@@ -321,8 +330,9 @@ fn get_timezone_offset() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_timezone_offset(this: &Date) -> f64 {
@@ -357,8 +367,9 @@ fn get_utc_date() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_utc_date(this: &Date) -> u32 {
@@ -393,8 +404,9 @@ fn get_utc_day() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_utc_day(this: &Date) -> u32 {
@@ -429,8 +441,9 @@ fn get_utc_full_year() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_utc_full_year(this: &Date) -> u32 {
@@ -465,8 +478,9 @@ fn get_utc_hours() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_utc_hours(this: &Date) -> u32 {
@@ -501,8 +515,9 @@ fn get_utc_milliseconds() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_utc_milliseconds(this: &Date) -> u32 {
@@ -535,8 +550,9 @@ fn get_utc_minutes() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_utc_minutes(this: &Date) -> u32 {
@@ -571,8 +587,9 @@ fn get_utc_month() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_utc_month(this: &Date) -> u32 {
@@ -607,8 +624,9 @@ fn get_utc_seconds() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn get_utc_seconds(this: &Date) -> u32 {
@@ -641,8 +659,9 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn new_date() -> Date {
@@ -671,8 +690,9 @@ fn now() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn now() -> f64 {
@@ -699,8 +719,9 @@ fn parse() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn parse(date: JsString) -> f64 {
@@ -735,8 +756,9 @@ fn set_date() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_date(this: &Date, day: u32) -> f64 {
@@ -774,8 +796,9 @@ fn set_full_year() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_full_year(this: &Date, year: u32) -> f64 {
@@ -813,8 +836,9 @@ fn set_hours() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_hours(this: &Date, hours: u32) -> f64 {
@@ -852,8 +876,9 @@ fn set_milliseconds() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_milliseconds(this: &Date, milliseconds: u32) -> f64 {
@@ -889,8 +914,9 @@ fn set_minutes() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_minutes(this: &Date, minutes: u32) -> f64 {
@@ -928,8 +954,9 @@ fn set_month() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_month(this: &Date, month: u32) -> f64 {
@@ -967,8 +994,9 @@ fn set_seconds() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_seconds(this: &Date, seconds: u32) -> f64 {
@@ -1006,8 +1034,9 @@ fn set_time() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_time(this: &Date, time: f64) -> f64 {
@@ -1044,8 +1073,9 @@ fn set_utc_date() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_utc_date(this: &Date, day: u32) -> f64 {
@@ -1083,8 +1113,9 @@ fn set_utc_full_year() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_utc_full_year(this: &Date, year: u32) -> f64 {
@@ -1122,8 +1153,9 @@ fn set_utc_hours() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_utc_hours(this: &Date, hours: u32) -> f64 {
@@ -1161,8 +1193,9 @@ fn set_utc_milliseconds() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_utc_milliseconds(this: &Date, milliseconds: u32) -> f64 {
@@ -1200,8 +1233,9 @@ fn set_utc_minutes() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_utc_minutes(this: &Date, minutes: u32) -> f64 {
@@ -1239,8 +1273,9 @@ fn set_utc_month() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_utc_month(this: &Date, minutes: u32) -> f64 {
@@ -1278,8 +1313,9 @@ fn set_utc_seconds() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn set_utc_seconds(this: &Date, seconds: u32) -> f64 {
@@ -1317,8 +1353,9 @@ fn to_date_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn to_date_string(this: &Date) -> JsString {
@@ -1351,8 +1388,9 @@ fn to_iso_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn to_iso_string(this: &Date) -> JsString {
@@ -1385,8 +1423,9 @@ fn to_json() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn to_json(this: &Date) -> JsString {
@@ -1417,9 +1456,10 @@ fn to_locale_date_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use JsValue;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn to_locale_date_string(this: &Date, locale: JsString, options: JsValue) -> JsString {
@@ -1449,9 +1489,10 @@ fn to_locale_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use JsValue;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn to_locale_string(this: &Date, locale: JsString, options: JsValue) -> JsString {
@@ -1481,8 +1522,9 @@ fn to_locale_time_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn to_locale_time_string(this: &Date, locale: JsString) -> JsString {
@@ -1514,8 +1556,9 @@ fn to_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn to_string(this: &Date) -> JsString {
@@ -1547,8 +1590,9 @@ fn to_time_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn to_time_string(this: &Date) -> JsString {
@@ -1580,8 +1624,9 @@ fn to_utc_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::{Date, JsString};
+            use js_sys::{Date, JsString};
 
             #[wasm_bindgen]
             pub fn to_utc_string(this: &Date) -> JsString {
@@ -1611,8 +1656,9 @@ fn utc() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn utc() -> f64 {
@@ -1639,8 +1685,9 @@ fn value_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Date;
+            use js_sys::Date;
 
             #[wasm_bindgen]
             pub fn js_value_of(this: &Date) -> Date {

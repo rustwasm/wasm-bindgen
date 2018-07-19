@@ -9,11 +9,11 @@ fn clear() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn map_clear(this: &js::Map) {
+            pub fn map_clear(this: &js_sys::Map) {
                 this.clear();
             }
         "#)
@@ -41,11 +41,11 @@ fn delete() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn map_delete(this: &js::Map, key: &str) -> bool {
+            pub fn map_delete(this: &js_sys::Map, key: &str) -> bool {
                 this.delete(key)
             }
         "#)
@@ -73,12 +73,12 @@ fn for_each() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_bool_vals(this: &js::Map) -> js::Map {
-                let res = js::Map::new();
+            pub fn get_bool_vals(this: &js_sys::Map) -> js_sys::Map {
+                let res = js_sys::Map::new();
                 this.for_each(&mut |value, key| {
                     if value.as_bool().is_some() {
                         res.set(&key, &value);
@@ -118,11 +118,11 @@ fn get() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn map_get(this: &js::Map, key: &JsValue) -> JsValue {
+            pub fn map_get(this: &js_sys::Map, key: &JsValue) -> JsValue {
                 this.get(key)
             }
         "#)
@@ -149,11 +149,11 @@ fn has() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has(this: &js::Map, key: &JsValue) -> bool {
+            pub fn has(this: &js_sys::Map, key: &JsValue) -> bool {
                 this.has(key)
             }
         "#)
@@ -178,12 +178,12 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn new_map() -> js::Map {
-                js::Map::new()
+            pub fn new_map() -> js_sys::Map {
+                js_sys::Map::new()
             }
         "#)
         .file("test.js", r#"
@@ -206,11 +206,11 @@ fn set() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set(this: &js::Map, key: &JsValue, value: &JsValue) -> js::Map {
+            pub fn set(this: &js_sys::Map, key: &JsValue, value: &JsValue) -> js_sys::Map {
                 this.set(key, value)
             }
         "#)
@@ -235,11 +235,11 @@ fn size() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn map_size(this: &js::Map) -> u32 {
+            pub fn map_size(this: &js_sys::Map) -> u32 {
                 this.size()
             }
         "#)

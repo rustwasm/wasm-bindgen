@@ -11,12 +11,12 @@ fn has_instance() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_has_instance() -> js::Symbol {
-                js::Symbol::has_instance()
+            pub fn symbol_has_instance() -> js_sys::Symbol {
+                js_sys::Symbol::has_instance()
             }
 
         "#,
@@ -50,12 +50,12 @@ fn is_concat_spreadable() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_is_cancat_spreadable() -> js::Symbol {
-                js::Symbol::is_concat_spreadable()
+            pub fn symbol_is_cancat_spreadable() -> js_sys::Symbol {
+                js_sys::Symbol::is_concat_spreadable()
             }
 
         "#,
@@ -92,12 +92,12 @@ fn iterator() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_iterator() -> js::Symbol {
-                js::Symbol::iterator()
+            pub fn symbol_iterator() -> js_sys::Symbol {
+                js_sys::Symbol::iterator()
             }
 
         "#,
@@ -133,12 +133,12 @@ fn match_() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_match() -> js::Symbol {
-                js::Symbol::match_()
+            pub fn symbol_match() -> js_sys::Symbol {
+                js_sys::Symbol::match_()
             }
 
         "#,
@@ -173,12 +173,12 @@ fn replace() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_replace() -> js::Symbol {
-                js::Symbol::replace()
+            pub fn symbol_replace() -> js_sys::Symbol {
+                js_sys::Symbol::replace()
             }
 
         "#,
@@ -215,12 +215,12 @@ fn search() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_search() -> js::Symbol {
-                js::Symbol::search()
+            pub fn symbol_search() -> js_sys::Symbol {
+                js_sys::Symbol::search()
             }
 
         "#,
@@ -258,12 +258,12 @@ fn species() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_species() -> js::Symbol {
-                js::Symbol::species()
+            pub fn symbol_species() -> js_sys::Symbol {
+                js_sys::Symbol::species()
             }
 
         "#,
@@ -300,12 +300,12 @@ fn split() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_split() -> js::Symbol {
-                js::Symbol::split()
+            pub fn symbol_split() -> js_sys::Symbol {
+                js_sys::Symbol::split()
             }
 
         "#,
@@ -345,12 +345,12 @@ fn to_primitive() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_to_primitive() -> js::Symbol {
-                js::Symbol::to_primitive()
+            pub fn symbol_to_primitive() -> js_sys::Symbol {
+                js_sys::Symbol::to_primitive()
             }
 
         "#,
@@ -387,12 +387,12 @@ fn to_string_tag() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_to_string_tag() -> js::Symbol {
-                js::Symbol::to_string_tag()
+            pub fn symbol_to_string_tag() -> js_sys::Symbol {
+                js_sys::Symbol::to_string_tag()
             }
 
         "#,
@@ -426,12 +426,12 @@ fn for_() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_for(key: &js::JsString) -> js::Symbol {
-                js::Symbol::for_(key)
+            pub fn symbol_for(key: &js_sys::JsString) -> js_sys::Symbol {
+                js_sys::Symbol::for_(key)
             }
 
         "#,
@@ -466,12 +466,12 @@ fn key_for() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_key_for(sym: &js::Symbol) -> js::JsString {
-                js::Symbol::key_for(sym)
+            pub fn symbol_key_for(sym: &js_sys::Symbol) -> js_sys::JsString {
+                js_sys::Symbol::key_for(sym)
             }
 
         "#,
@@ -505,12 +505,12 @@ fn to_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_to_string(this: &js::Symbol) -> js::JsString {
-                js::Symbol::to_string(this)
+            pub fn symbol_to_string(this: &js_sys::Symbol) -> js_sys::JsString {
+                js_sys::Symbol::to_string(this)
             }
 
         "#,
@@ -542,12 +542,12 @@ fn value_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn symbol_value_of(this: &js::Symbol) -> js::Symbol {
-                js::Symbol::value_of(this)
+            pub fn symbol_value_of(this: &js_sys::Symbol) -> js_sys::Symbol {
+                js_sys::Symbol::value_of(this)
             }
 
         "#,

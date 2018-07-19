@@ -1,0 +1,23 @@
+[package]
+name = "js-sys"
+version = "0.2.11"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+readme = "./README.md"
+categories = ["wasm"]
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/js-sys"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
+documentation = "https://docs.rs/wasm-bindgen"
+description = """
+Bindings for all JS global objects and functions in all JS environments like
+Node.js and browsers, built on `#[wasm_bindgen]` using the `wasm-bindgen` crate.
+"""
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+wasm-bindgen = { path = "../..", version = "0.2.11" }
+
+[dev-dependencies]
+wasm-bindgen-test-project-builder = { path = "../test-project-builder" }

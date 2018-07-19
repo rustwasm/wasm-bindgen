@@ -9,12 +9,12 @@ fn get_canonical_locales() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_canonical_locales(v: &JsValue) -> js::Array {
-                js::Intl::get_canonical_locales(v)
+            pub fn get_canonical_locales(v: &JsValue) -> js_sys::Array {
+                js_sys::Intl::get_canonical_locales(v)
             }
         "#)
         .file("test.js", r#"

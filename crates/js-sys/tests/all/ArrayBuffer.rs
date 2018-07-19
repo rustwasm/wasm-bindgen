@@ -9,8 +9,9 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::ArrayBuffer;
+            use js_sys::ArrayBuffer;
 
             #[wasm_bindgen]
             pub fn new_arraybuffer() -> ArrayBuffer {
@@ -35,9 +36,10 @@ fn is_view() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use JsValue;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::ArrayBuffer;
+            use js_sys::ArrayBuffer;
 
             #[wasm_bindgen]
             pub fn is_view(value: JsValue) -> bool {
@@ -62,8 +64,9 @@ fn slice() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::ArrayBuffer;
+            use js_sys::ArrayBuffer;
 
             #[wasm_bindgen]
             pub fn slice(arraybuffer: &ArrayBuffer, begin: u32) -> ArrayBuffer {
@@ -89,8 +92,9 @@ fn slice_with_end() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::ArrayBuffer;
+            use js_sys::ArrayBuffer;
 
             #[wasm_bindgen]
             pub fn slice_with_end(arraybuffer: &ArrayBuffer, begin: u32, end: u32) -> ArrayBuffer {

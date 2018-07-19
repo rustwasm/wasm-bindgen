@@ -9,12 +9,12 @@ fn is_finite() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn is_finite(value: &JsValue) -> bool {
-                js::Number::is_finite(value)
+                js_sys::Number::is_finite(value)
             }
         "#)
         .file("test.js", r#"
@@ -39,12 +39,12 @@ fn is_integer() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn is_integer(value: &JsValue) -> bool {
-                js::Number::is_integer(value)
+                js_sys::Number::is_integer(value)
             }
         "#)
         .file("test.js", r#"
@@ -66,12 +66,12 @@ fn is_safe_integer() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn is_safe_integer(value: &JsValue) -> bool {
-                js::Number::is_safe_integer(value)
+                js_sys::Number::is_safe_integer(value)
             }
         "#)
         .file("test.js", r#"
@@ -98,8 +98,9 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Number;
+            use js_sys::Number;
 
             #[wasm_bindgen]
             pub fn new_number() -> Number {
@@ -126,8 +127,9 @@ fn parse_int_float() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js::Number;
+            use js_sys::Number;
 
             #[wasm_bindgen]
             pub fn parse_int(text: &str, radix: u8) -> Number {
@@ -165,11 +167,11 @@ fn to_locale_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_locale_string(this: &js::Number, locale: &str) -> js::JsString {
+            pub fn to_locale_string(this: &js_sys::Number, locale: &str) -> js_sys::JsString {
                 this.to_locale_string(locale)
             }
         "#)
@@ -197,11 +199,11 @@ fn to_precision() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_precision(this: &js::Number, precision: u8) -> js::JsString {
+            pub fn to_precision(this: &js_sys::Number, precision: u8) -> js_sys::JsString {
                 let result = this.to_precision(precision);
                 let result = match result {
                     Ok(num) => num,
@@ -235,11 +237,11 @@ fn to_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_string(this: &js::Number, radix: u8) -> js::JsString {
+            pub fn to_string(this: &js_sys::Number, radix: u8) -> js_sys::JsString {
                 let result = this.to_string(radix);
                 let result = match result {
                     Ok(num) => num,
@@ -275,11 +277,11 @@ fn value_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn js_value_of(this: &js::Number) -> f64 {
+            pub fn js_value_of(this: &js_sys::Number) -> f64 {
                 this.value_of()
             }
         "#,
@@ -309,11 +311,11 @@ fn to_fixed() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_fixed(this: &js::Number, digits: u8) -> js::JsString {
+            pub fn to_fixed(this: &js_sys::Number, digits: u8) -> js_sys::JsString {
                 let result = this.to_fixed(digits);
                 let result = match result {
                     Ok(num) => num,
@@ -347,11 +349,11 @@ fn to_exponential() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn to_exponential(this: &js::Number, fraction_digits: u8) -> js::JsString {
+            pub fn to_exponential(this: &js_sys::Number, fraction_digits: u8) -> js_sys::JsString {
                 let result = this.to_exponential(fraction_digits);
                 let result = match result {
                     Ok(num) => num,

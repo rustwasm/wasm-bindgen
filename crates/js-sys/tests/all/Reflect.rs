@@ -11,12 +11,12 @@ fn apply() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn apply(target: &js::Function, this_argument: &JsValue, arguments_list: &js::Array) -> JsValue {
-                js::Reflect::apply(target, this_argument, arguments_list)
+            pub fn apply(target: &js_sys::Function, this_argument: &JsValue, arguments_list: &js_sys::Array) -> JsValue {
+                js_sys::Reflect::apply(target, this_argument, arguments_list)
             }
         "#,
         )
@@ -43,12 +43,12 @@ fn construct() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn construct(target: &js::Function, arguments_list: &js::Array) -> JsValue {
-                js::Reflect::construct(target, arguments_list)
+            pub fn construct(target: &js_sys::Function, arguments_list: &js_sys::Array) -> JsValue {
+                js_sys::Reflect::construct(target, arguments_list)
             }
         "#,
         )
@@ -89,12 +89,12 @@ fn construct_with_new_target() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn construct_with_new_target(target: &js::Function, arguments_list: &js::Array, new_target: &js::Function) -> JsValue {
-                js::Reflect::construct_with_new_target(target, arguments_list, new_target)
+            pub fn construct_with_new_target(target: &js_sys::Function, arguments_list: &js_sys::Array, new_target: &js_sys::Function) -> JsValue {
+                js_sys::Reflect::construct_with_new_target(target, arguments_list, new_target)
             }
         "#,
         )
@@ -147,12 +147,12 @@ fn define_property() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn define_property(target: &js::Object, property_key: &JsValue, attributes: &js::Object) -> bool {
-                js::Reflect::define_property(target, property_key, attributes)
+            pub fn define_property(target: &js_sys::Object, property_key: &JsValue, attributes: &js_sys::Object) -> bool {
+                js_sys::Reflect::define_property(target, property_key, attributes)
             }
         "#,
         )
@@ -181,12 +181,12 @@ fn delete_property() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn delete_property(target: &js::Object, property_key: &JsValue) -> bool {
-                js::Reflect::delete_property(target, property_key)
+            pub fn delete_property(target: &js_sys::Object, property_key: &JsValue) -> bool {
+                js_sys::Reflect::delete_property(target, property_key)
             }
         "#,
         )
@@ -224,12 +224,12 @@ fn get() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get(target: &js::Object, property_key: &JsValue) -> JsValue {
-                js::Reflect::get(target, property_key)
+            pub fn get(target: &js_sys::Object, property_key: &JsValue) -> JsValue {
+                js_sys::Reflect::get(target, property_key)
             }
         "#,
         )
@@ -264,12 +264,12 @@ fn get_own_property_descriptor() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_own_property_descriptor(target: &js::Object, property_key: &JsValue) -> JsValue {
-                js::Reflect::get_own_property_descriptor(target, property_key)
+            pub fn get_own_property_descriptor(target: &js_sys::Object, property_key: &JsValue) -> JsValue {
+                js_sys::Reflect::get_own_property_descriptor(target, property_key)
             }
         "#,
         )
@@ -301,12 +301,12 @@ fn get_prototype_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_prototype_of(target: &js::Object) -> js::Object {
-                js::Reflect::get_prototype_of(target)
+            pub fn get_prototype_of(target: &js_sys::Object) -> js_sys::Object {
+                js_sys::Reflect::get_prototype_of(target)
             }
         "#,
         )
@@ -339,12 +339,12 @@ fn has() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has(target: &js::Object, property_key: &JsValue) -> bool {
-                js::Reflect::has(target, property_key)
+            pub fn has(target: &js_sys::Object, property_key: &JsValue) -> bool {
+                js_sys::Reflect::has(target, property_key)
             }
         "#,
         )
@@ -379,12 +379,12 @@ fn is_extensible() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn is_extensible(target: &js::Object) -> bool {
-                js::Reflect::is_extensible(target)
+            pub fn is_extensible(target: &js_sys::Object) -> bool {
+                js_sys::Reflect::is_extensible(target)
             }
         "#,
         )
@@ -423,12 +423,12 @@ fn own_keys() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn own_keys(target: &js::Object) -> js::Array {
-                js::Reflect::own_keys(target)
+            pub fn own_keys(target: &js_sys::Object) -> js_sys::Array {
+                js_sys::Reflect::own_keys(target)
             }
         "#,
         )
@@ -461,12 +461,12 @@ fn prevent_extensions() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn prevent_extensions(target: &js::Object) -> bool {
-                js::Reflect::prevent_extensions(target)
+            pub fn prevent_extensions(target: &js_sys::Object) -> bool {
+                js_sys::Reflect::prevent_extensions(target)
             }
         "#,
         )
@@ -497,12 +497,12 @@ fn set() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set(target: &js::Object, property_key: &JsValue, value: &JsValue) -> bool {
-                js::Reflect::set(target, property_key, value)
+            pub fn set(target: &js_sys::Object, property_key: &JsValue, value: &JsValue) -> bool {
+                js_sys::Reflect::set(target, property_key, value)
             }
         "#,
         )
@@ -535,12 +535,12 @@ fn set_with_receiver() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set_with_receiver(target: &js::Object, property_key: &JsValue, value: &JsValue, receiver: &js::Object) -> bool {
-                js::Reflect::set_with_receiver(target, property_key, value, receiver)
+            pub fn set_with_receiver(target: &js_sys::Object, property_key: &JsValue, value: &JsValue, receiver: &js_sys::Object) -> bool {
+                js_sys::Reflect::set_with_receiver(target, property_key, value, receiver)
             }
         "#,
         )
@@ -573,12 +573,12 @@ fn set_prototype_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set_prototype_of(target: &js::Object, prototype: &JsValue) -> bool {
-                js::Reflect::set_prototype_of(target, prototype)
+            pub fn set_prototype_of(target: &js_sys::Object, prototype: &JsValue) -> bool {
+                js_sys::Reflect::set_prototype_of(target, prototype)
             }
         "#,
         )

@@ -11,11 +11,11 @@ fn filter() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn keep_numbers(array: &js::Array) -> js::Array {
+            pub fn keep_numbers(array: &js_sys::Array) -> js_sys::Array {
                 array.filter(&mut |x, _, _| x.as_f64().is_some())
             }
 
@@ -50,11 +50,11 @@ fn index_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_index_of(this: &js::Array, value: JsValue, from_index: i32) -> i32 {
+            pub fn get_index_of(this: &js_sys::Array, value: JsValue, from_index: i32) -> i32 {
                 this.index_of(value, from_index)
             }
 
@@ -94,12 +94,12 @@ fn is_array() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
             pub fn is_array(value: &JsValue) -> bool {
-                js::Array::is_array(value)
+                js_sys::Array::is_array(value)
             }
         "#,
         )
@@ -140,11 +140,11 @@ fn sort() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn sort_array(this: &js::Array) -> js::Array {
+            pub fn sort_array(this: &js_sys::Array) -> js_sys::Array {
                 this.sort()
             }
 
@@ -174,11 +174,11 @@ fn some() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has_elem(array: &js::Array, arg: JsValue) -> bool {
+            pub fn has_elem(array: &js_sys::Array, arg: JsValue) -> bool {
                 array.some(&mut |elem| arg == elem)
             }
 
@@ -207,11 +207,11 @@ fn last_index_of() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_last_index_of(this: &js::Array, value: JsValue, from_index: i32) -> i32 {
+            pub fn get_last_index_of(this: &js_sys::Array, value: JsValue, from_index: i32) -> i32 {
                 this.last_index_of(value, from_index)
             }
 
@@ -251,11 +251,11 @@ fn join() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn join_array(this: &js::Array, delimiter: &str) -> js::JsString {
+            pub fn join_array(this: &js_sys::Array, delimiter: &str) -> js_sys::JsString {
                 this.join(delimiter)
             }
 
@@ -289,11 +289,11 @@ fn slice() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn create_slice(this: &js::Array, start: u32, end: u32) -> js::Array {
+            pub fn create_slice(this: &js_sys::Array, start: u32, end: u32) -> js_sys::Array {
                 this.slice(start, end)
             }
         "#,
@@ -325,11 +325,11 @@ fn fill() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn fill_with(this: &js::Array, value: JsValue, start: u32, end: u32) -> js::Array {
+            pub fn fill_with(this: &js_sys::Array, value: JsValue, start: u32, end: u32) -> js_sys::Array {
                 this.fill(value, start, end)
             }
         "#,
@@ -359,11 +359,11 @@ fn copy_within() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn copy_values_within_array(this: &js::Array, target: i32, start: i32, end: i32) -> js::Array {
+            pub fn copy_values_within_array(this: &js_sys::Array, target: i32, start: i32, end: i32) -> js_sys::Array {
                 this.copy_within(target, start, end)
             }
 
@@ -395,11 +395,11 @@ fn pop() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn pop_in_it(this: &js::Array) -> JsValue {
+            pub fn pop_in_it(this: &js_sys::Array) -> JsValue {
                 this.pop()
             }
 
@@ -431,11 +431,11 @@ fn push() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn push_it_along(this: &js::Array, value: JsValue) -> u32 {
+            pub fn push_it_along(this: &js_sys::Array, value: JsValue) -> u32 {
                 this.push(value)
             }
 
@@ -467,11 +467,11 @@ fn reverse() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn reverse_array(this: &js::Array) -> js::Array {
+            pub fn reverse_array(this: &js_sys::Array) -> js_sys::Array {
                 this.reverse()
             }
 
@@ -503,11 +503,11 @@ fn shift() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn shift_item(this: &js::Array) -> JsValue {
+            pub fn shift_item(this: &js_sys::Array) -> JsValue {
                 this.shift()
             }
 
@@ -540,11 +540,11 @@ fn unshift() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn unshift_item(this: &js::Array, value: JsValue) -> u32 {
+            pub fn unshift_item(this: &js_sys::Array, value: JsValue) -> u32 {
                 this.unshift(value)
             }
 
@@ -577,11 +577,11 @@ fn to_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn array_to_string(this: &js::Array) -> js::JsString {
+            pub fn array_to_string(this: &js_sys::Array) -> js_sys::JsString {
                 this.to_string()
             }
 
@@ -613,11 +613,11 @@ fn includes() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn array_includes(this: &js::Array, value: JsValue, from_index: i32) -> bool {
+            pub fn array_includes(this: &js_sys::Array, value: JsValue, from_index: i32) -> bool {
                 this.includes(value, from_index)
             }
 
@@ -654,11 +654,11 @@ fn concat() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn array_concat(this: &js::Array, arr: &js::Array) -> js::Array {
+            pub fn array_concat(this: &js_sys::Array, arr: &js_sys::Array) -> js_sys::Array {
                 this.concat(arr)
             }
 
@@ -691,11 +691,11 @@ fn length() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn array_length(this: &js::Array) -> u32 {
+            pub fn array_length(this: &js_sys::Array) -> u32 {
                 this.length()
             }
 
@@ -730,11 +730,11 @@ fn every() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
-                pub fn array_every_number_is_even(array: &js::Array) -> bool {
+                pub fn array_every_number_is_even(array: &js_sys::Array) -> bool {
                     array.every(&mut |el, _, _| el.as_f64().unwrap() % 2f64 == 0f64)
                 }
             "#,
@@ -768,11 +768,11 @@ fn find() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
-                pub fn array_find_first_even_number(array: &js::Array) -> JsValue {
+                pub fn array_find_first_even_number(array: &js_sys::Array) -> JsValue {
                     array.find(&mut |el, _, _| el.as_f64().unwrap() % 2f64 == 0f64)
                 }
             "#,
@@ -806,12 +806,12 @@ fn map() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
                 use JsValue;
 
                 #[wasm_bindgen]
-                pub fn array_map(array: &js::Array) -> js::Array {
+                pub fn array_map(array: &js_sys::Array) -> js_sys::Array {
                     array.map(&mut |el, _, _| JsValue::from_f64(el.as_f64().unwrap().sqrt()))
                 }
             "#,
@@ -840,12 +840,12 @@ fn reduce() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
                 use JsValue;
 
                 #[wasm_bindgen]
-                pub fn array_reduce(array: &js::Array) -> JsValue {
+                pub fn array_reduce(array: &js_sys::Array) -> JsValue {
                     array.reduce(&mut |ac, cr, _, _| JsValue::from_str(&format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap().as_str())), JsValue::from_str(""))
                 }
             "#,
@@ -873,12 +873,12 @@ fn reduce_right() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
                 use JsValue;
 
                 #[wasm_bindgen]
-                pub fn array_reduce_right(array: &js::Array) -> JsValue {
+                pub fn array_reduce_right(array: &js_sys::Array) -> JsValue {
                     array.reduce_right(&mut |ac, cr, _, _| JsValue::from_str(&format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap().as_str())), JsValue::from_str(""))
                 }
             "#,
@@ -906,11 +906,11 @@ fn find_index() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
-                pub fn array_find_first_even_number_index(array: &js::Array) -> u32 {
+                pub fn array_find_first_even_number_index(array: &js_sys::Array) -> u32 {
                     array.find_index(&mut |el, _, _| el.as_f64().unwrap() % 2. == 0.)
                 }
             "#,
@@ -944,12 +944,12 @@ fn to_locale_string() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
                 use JsValue;
 
                 #[wasm_bindgen]
-                pub fn array_to_locale_string(array: &js::Array, locale: &JsValue, options: &JsValue) -> js::JsString {
+                pub fn array_to_locale_string(array: &js_sys::Array, locale: &JsValue, options: &JsValue) -> js_sys::JsString {
                     array.to_locale_string(locale, options)
                 }
             "#,
@@ -977,11 +977,11 @@ fn for_each() {
                 #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
+                extern crate js_sys;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js;
 
                 #[wasm_bindgen]
-                pub fn sum_indices_of_evens(array: &js::Array) -> u32 {
+                pub fn sum_indices_of_evens(array: &js_sys::Array) -> u32 {
                     let mut res = 0;
                     array.for_each(&mut |elem: JsValue, i, _| {
                         match elem.as_f64() {

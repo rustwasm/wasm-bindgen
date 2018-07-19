@@ -9,12 +9,12 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn new_proxy(target: JsValue, handler: js::Object) -> js::Proxy {
-                js::Proxy::new(&target, &handler)
+            pub fn new_proxy(target: JsValue, handler: js_sys::Object) -> js_sys::Proxy {
+                js_sys::Proxy::new(&target, &handler)
             }
         "#)
         .file("test.js", r#"
@@ -43,12 +43,12 @@ fn revocable() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn new_revocable_proxy(target: JsValue, handler: js::Object) -> js::Object {
-                js::Proxy::revocable(&target, &handler)
+            pub fn new_revocable_proxy(target: JsValue, handler: js_sys::Object) -> js_sys::Object {
+                js_sys::Proxy::revocable(&target, &handler)
             }
         "#)
         .file("test.js", r#"

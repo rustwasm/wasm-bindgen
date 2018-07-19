@@ -11,12 +11,12 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn new_weak_map() -> js::WeakMap {
-                js::WeakMap::new()
+            pub fn new_weak_map() -> js_sys::WeakMap {
+                js_sys::WeakMap::new()
             }
         "#,
         )
@@ -43,11 +43,11 @@ fn get() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn get_value(this: &js::WeakMap, key: js::Object) -> JsValue {
+            pub fn get_value(this: &js_sys::WeakMap, key: js_sys::Object) -> JsValue {
                 this.get(key)
             }
         "#,
@@ -81,11 +81,11 @@ fn set() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn set_value(this: &js::WeakMap, key: js::Object, value: JsValue) -> js::WeakMap {
+            pub fn set_value(this: &js_sys::WeakMap, key: js_sys::Object, value: JsValue) -> js_sys::WeakMap {
                 this.set(key, value)
             }
         "#,
@@ -116,11 +116,11 @@ fn has() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn has_value(this: &js::WeakMap, key: js::Object) -> bool {
+            pub fn has_value(this: &js_sys::WeakMap, key: js_sys::Object) -> bool {
                 this.has(key)
             }
         "#,
@@ -154,11 +154,11 @@ fn delete() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
 
             #[wasm_bindgen]
-            pub fn delete_key(this: &js::WeakMap, key: js::Object) -> bool {
+            pub fn delete_key(this: &js_sys::WeakMap, key: js_sys::Object) -> bool {
                 this.delete(key)
             }
         "#,

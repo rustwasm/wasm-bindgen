@@ -423,7 +423,6 @@ fn binding_to_unimplemented_apis_doesnt_break_everything() {
                 #![feature(use_extern_macros, wasm_import_module)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
-                use wasm_bindgen::js::*;
 
                 #[wasm_bindgen]
                 extern {
@@ -433,27 +432,16 @@ fn binding_to_unimplemented_apis_doesnt_break_everything() {
                     #[wasm_bindgen(constructor)]
                     fn new() -> Array;
 
-                    #[wasm_bindgen(method)]
-                    fn standardized_method_this_js_runtime_doesnt_implement_yet(this: &Array);
+                    #[wasm_bindgen(method, catch)]
+                    fn standardized_method_this_js_runtime_doesnt_implement_yet(this: &Array)
+                         -> Result<(), JsValue>;
                 }
 
                 #[wasm_bindgen]
                 pub fn test() {
                     let array = Array::new();
-
-                    let array_obj: JsValue = array.clone().into();
-                    let array_obj = array_obj.as_object().unwrap();
-
-                    let array_proto = Reflect::get_prototype_of(&array_obj);
-
-                    let unimplemented = Reflect::get(
-                        &array_proto,
-                        &JsValue::from_str("standardized_method_this_js_runtime_doesnt_implement_yet")
-                    );
-
-                    if unimplemented.is_function() {
-                        array.standardized_method_this_js_runtime_doesnt_implement_yet();
-                    }
+                    let res = array.standardized_method_this_js_runtime_doesnt_implement_yet();
+                    assert!(res.is_err());
                 }
             "#,
         )

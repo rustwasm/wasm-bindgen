@@ -9,12 +9,12 @@ fn new() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-            use wasm_bindgen::js::Error;
+            use js_sys::Error;
 
             #[wasm_bindgen]
-            pub fn new_error(message: &js::JsString) -> Error {
+            pub fn new_error(message: &js_sys::JsString) -> Error {
                 Error::new(message)
             }
         "#)
@@ -39,12 +39,12 @@ fn message() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-            use wasm_bindgen::js::Error;
+            use js_sys::Error;
 
             #[wasm_bindgen]
-            pub fn error_message(this: &Error) -> js::JsString {
+            pub fn error_message(this: &Error) -> js_sys::JsString {
                 this.message()
             }
         "#)
@@ -69,12 +69,12 @@ fn set_message() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-            use wasm_bindgen::js::Error;
+            use js_sys::Error;
 
             #[wasm_bindgen]
-            pub fn error_set_message(this: &Error, message: &js::JsString) {
+            pub fn error_set_message(this: &Error, message: &js_sys::JsString) {
                 this.set_message(message);
             }
         "#)
@@ -100,12 +100,12 @@ fn name() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-            use wasm_bindgen::js::Error;
+            use js_sys::Error;
 
             #[wasm_bindgen]
-            pub fn error_name(this: &Error) -> js::JsString {
+            pub fn error_name(this: &Error) -> js_sys::JsString {
                 this.name()
             }
         "#)
@@ -131,12 +131,12 @@ fn set_name() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-            use wasm_bindgen::js::Error;
+            use js_sys::Error;
 
             #[wasm_bindgen]
-            pub fn error_set_name(this: &Error, name: &js::JsString) {
+            pub fn error_set_name(this: &Error, name: &js_sys::JsString) {
                 this.set_name(name);
             }
         "#)
@@ -162,12 +162,12 @@ fn to_string() {
             #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
+            extern crate js_sys;
             use wasm_bindgen::prelude::*;
-            use wasm_bindgen::js;
-            use wasm_bindgen::js::Error;
+            use js_sys::Error;
 
             #[wasm_bindgen]
-            pub fn error_to_string(this: &Error) -> js::JsString {
+            pub fn error_to_string(this: &Error) -> js_sys::JsString {
                 this.to_string()
             }
         "#)
