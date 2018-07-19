@@ -1,9 +1,10 @@
 #![feature(use_extern_macros, wasm_import_module)]
 
 extern crate wasm_bindgen;
+extern crate js_sys;
 
-use wasm_bindgen::js::Date;
-use wasm_bindgen::js::JsString;
+use js_sys::Date;
+use js_sys::JsString;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
