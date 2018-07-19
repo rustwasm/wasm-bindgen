@@ -1,3 +1,5 @@
+#![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
+
 extern crate parity_wasm;
 extern crate wasm_bindgen_shared as shared;
 #[macro_use]
@@ -339,7 +341,7 @@ or you can update the binary with
     cargo install -f wasm-bindgen-cli
 
 if this warning fails to go away though and you're not sure what to do feel free
-to open an issue at https://github.com/alexcrichton/wasm-bindgen/issues!
+to open an issue at https://github.com/rustwasm/wasm-bindgen/issues!
 ",
                     p.version,
                     version

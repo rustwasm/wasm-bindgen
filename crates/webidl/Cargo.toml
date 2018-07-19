@@ -1,10 +1,18 @@
 [package]
 name = "wasm-bindgen-webidl"
-version = "0.2.11"
-authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
+version = "0.2.12"
+authors = ["The wasm-bindgen Developers"]
+license = "MIT/Apache-2.0"
+categories = ["wasm"]
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/webidl"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
+documentation = "https://docs.rs/wasm-bindgen"
+description = """
+Support for parsing WebIDL specific to wasm-bindgen
+"""
 
 [dev-dependencies]
-wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.11' }
+wasm-bindgen-test-project-builder = { path = "../test-project-builder" }
 
 [dependencies]
 failure = "0.1"
@@ -13,5 +21,5 @@ log = "0.4.1"
 proc-macro2 = "0.4.8"
 quote = '0.6'
 syn = { version = '0.14', features = ['full'] }
-wasm-bindgen-backend = { version = "=0.2.11", path = "../backend" }
+wasm-bindgen-backend = { version = "=0.2.12", path = "../backend" }
 webidl = "0.7.0"

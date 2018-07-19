@@ -1,3 +1,5 @@
+#![doc(html_root_url = "https://docs.rs/wasm-bindgen-shared/0.2")]
+
 #[macro_use]
 extern crate serde_derive;
 

@@ -7,6 +7,7 @@
 
 #![feature(use_extern_macros, wasm_import_module, unsize)]
 #![no_std]
+#![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 
 #[cfg(feature = "serde-serialize")]
 extern crate serde;

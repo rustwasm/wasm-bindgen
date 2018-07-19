@@ -1,10 +1,10 @@
 [package]
 name = "wasm-bindgen-macro"
-version = "0.2.11"
-authors = ["Alex Crichton <alex@alexcrichton.com>"]
+version = "0.2.12"
+authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
-repository = "https://github.com/alexcrichton/wasm-bindgen"
-homepage = "https://github.com/alexcrichton/wasm-bindgen"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/macro"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
 documentation = "https://docs.rs/wasm-bindgen"
 description = """
 Definition of the `#[wasm_bindgen]` attribute, an internal dependency
@@ -21,5 +21,5 @@ xxx_debug_only_print_generated_code = []
 syn = { version = '0.14', features = ['full'] }
 quote = '0.6'
 proc-macro2 = "0.4.8"
-wasm-bindgen-backend = { path = "../backend", version = "=0.2.11" }
-wasm-bindgen-shared = { path = "../shared", version = "=0.2.11" }
+wasm-bindgen-backend = { path = "../backend", version = "=0.2.12" }
+wasm-bindgen-shared = { path = "../shared", version = "=0.2.12" }

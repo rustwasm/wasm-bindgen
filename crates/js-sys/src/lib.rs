@@ -16,6 +16,7 @@
 //! example, `decodeURI` in JavaScript is exposed as `decode_uri` in these
 //! bindings.
 
+#![doc(html_root_url = "https://docs.rs/js-sys/0.2")]
 #![feature(use_extern_macros, wasm_import_module)]
 
 extern crate wasm_bindgen;
