@@ -29,4 +29,4 @@ some notable options are:
   JS file, but this flag will disable generating this TypeScript file.
 
 * `--debug`: generates a bit more JS and wasm in "debug mode" to help catch
-  programmer errors, but this output isn't intended to be shipped to production
+  programmer errors, but this output isn't intended to be shipped to production.
