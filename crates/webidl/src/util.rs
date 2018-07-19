@@ -129,6 +129,17 @@ impl<'a> FirstPassRecord<'a> {
         if ty.nullable {
             return None;
         }
+        let array = |base_ty: &str| {
+            match pos {
+                TypePosition::Argument => {
+                    shared_ref(slice_ty(ident_ty(raw_ident(base_ty))))
+                }
+                TypePosition::Return => {
+                    vec_ty(ident_ty(raw_ident(base_ty)))
+                }
+            }
+        };
+
         Some(match ty.kind {
             // `any` becomes `::wasm_bindgen::JsValue`.
             webidl::ast::TypeKind::Any => {
@@ -172,21 +183,30 @@ impl<'a> FirstPassRecord<'a> {
             webidl::ast::TypeKind::UnsignedLongLong => ident_ty(raw_ident("u64")),
             webidl::ast::TypeKind::UnsignedShort => ident_ty(raw_ident("u16")),
 
-            // `DOMString -> `&str` for arguments
-            webidl::ast::TypeKind::DOMString if pos == TypePosition::Argument => {
-                shared_ref(ident_ty(raw_ident("str")))
-            }
-            webidl::ast::TypeKind::DOMString => {
-                ident_ty(raw_ident("String"))
-            },
+            webidl::ast::TypeKind::Float32Array => array("f32"),
+            webidl::ast::TypeKind::Float64Array => array("f64"),
+            webidl::ast::TypeKind::Int8Array => array("i8"),
+            webidl::ast::TypeKind::Int16Array => array("i16"),
+            webidl::ast::TypeKind::Int32Array => array("i32"),
+            webidl::ast::TypeKind::Uint8Array => array("u8"),
+            webidl::ast::TypeKind::Uint8ClampedArray => array("u8"),
+            webidl::ast::TypeKind::Uint16Array => array("u16"),
+            webidl::ast::TypeKind::Uint32Array => array("u32"),
 
-            // `ByteString -> `&[u8]` for arguments
-            webidl::ast::TypeKind::ByteString if pos == TypePosition::Argument => {
-                shared_ref(slice_ty(ident_ty(raw_ident("u8"))))
-            }
-            // ... and `Vec<u8>` for arguments
-            webidl::ast::TypeKind::ByteString => {
-                vec_ty(ident_ty(raw_ident("u8")))
+            // strings -> `&str` for arguments and `String` for return
+            //
+            // Note that DOMString mostly makes sense here, ByteString maps to
+            // String in JS [1], along with USVString
+            //
+            // [1]: https://developer.mozilla.org/en-US/docs/Web/API/ByteString
+            // [2]: https://developer.mozilla.org/en-US/docs/Web/API/USVString
+            webidl::ast::TypeKind::DOMString
+            | webidl::ast::TypeKind::ByteString
+            | webidl::ast::TypeKind::USVString => {
+                match pos {
+                    TypePosition::Argument => shared_ref(ident_ty(raw_ident("str"))),
+                    TypePosition::Return => ident_ty(raw_ident("String")),
+                }
             }
 
             // Support for these types is not yet implemented, so skip
@@ -194,22 +214,12 @@ impl<'a> FirstPassRecord<'a> {
             webidl::ast::TypeKind::ArrayBuffer
             | webidl::ast::TypeKind::DataView
             | webidl::ast::TypeKind::Error
-            | webidl::ast::TypeKind::Float32Array
-            | webidl::ast::TypeKind::Float64Array
             | webidl::ast::TypeKind::FrozenArray(_)
-            | webidl::ast::TypeKind::Int16Array
-            | webidl::ast::TypeKind::Int32Array
-            | webidl::ast::TypeKind::Int8Array
             | webidl::ast::TypeKind::Object
             | webidl::ast::TypeKind::Promise(_)
             | webidl::ast::TypeKind::Record(..)
             | webidl::ast::TypeKind::Sequence(_)
             | webidl::ast::TypeKind::Symbol
-            | webidl::ast::TypeKind::USVString
-            | webidl::ast::TypeKind::Uint16Array
-            | webidl::ast::TypeKind::Uint32Array
-            | webidl::ast::TypeKind::Uint8Array
-            | webidl::ast::TypeKind::Uint8ClampedArray
             | webidl::ast::TypeKind::Union(_) => {
                 return None;
             }
