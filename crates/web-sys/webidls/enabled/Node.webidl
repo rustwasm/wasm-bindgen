@@ -10,8 +10,10 @@
  * liability, trademark and document use rules apply.
  */
 
+/*TODO
 interface Principal;
 interface URI;
+*/
 
 interface Node : EventTarget {
   const unsigned short ELEMENT_NODE = 1;
@@ -38,8 +40,10 @@ interface Node : EventTarget {
   readonly attribute boolean isConnected;
   [Pure]
   readonly attribute Document? ownerDocument;
+/*TODO
   [Pure]
   Node getRootNode(optional GetRootNodeOptions options);
+*/
   [Pure]
   readonly attribute Node? parentNode;
   [Pure]
@@ -207,12 +211,16 @@ interface Node : EventTarget {
   [ChromeOnly, Throws]
   Promise<void> localize(L10nCallback l10nCallback);
 
+/*Unsupported ifdef
 #ifdef ACCESSIBILITY
   [Func="mozilla::dom::AccessibleNode::IsAOMEnabled", SameObject]
   readonly attribute AccessibleNode? accessibleNode;
 #endif
+*/
 };
 
+/*TODO
 dictionary GetRootNodeOptions {
   boolean composed = false;
 };
+*/
