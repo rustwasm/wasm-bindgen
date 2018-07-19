@@ -1,4 +1,4 @@
-#![feature(use_extern_macros, wasm_custom_section, wasm_import_module, js_globals)]
+#![feature(use_extern_macros, wasm_import_module, js_globals)]
 
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;

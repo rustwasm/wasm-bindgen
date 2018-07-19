@@ -29,7 +29,7 @@ fn method() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -87,7 +87,7 @@ fn property() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -149,7 +149,7 @@ fn named_constructor() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -198,7 +198,7 @@ fn static_method() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -251,7 +251,7 @@ fn static_property() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
 
                 extern crate wasm_bindgen;
 
@@ -303,7 +303,7 @@ fn one_method_using_an_undefined_import_doesnt_break_all_other_methods() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 
@@ -348,7 +348,7 @@ fn unforgeable_is_structural() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 
@@ -405,7 +405,7 @@ fn partial_interface() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 
@@ -471,7 +471,7 @@ fn mixin() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 

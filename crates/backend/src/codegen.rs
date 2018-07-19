@@ -76,8 +76,9 @@ impl ToTokens for ast::Program {
 
         (quote! {
             #[allow(non_upper_case_globals)]
-            #[wasm_custom_section = "__wasm_bindgen_unstable"]
-            const #generated_static_name: [u8; #generated_static_length] =
+            #[link_section = "__wasm_bindgen_unstable"]
+            #[doc(hidden)]
+            pub static #generated_static_name: [u8; #generated_static_length] =
                 *#generated_static_value;
         }).to_tokens(tokens);
     }

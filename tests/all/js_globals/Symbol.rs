@@ -8,7 +8,7 @@ fn has_instance() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -47,7 +47,7 @@ fn is_concat_spreadable() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -89,7 +89,7 @@ fn iterator() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -130,7 +130,7 @@ fn match_() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -170,7 +170,7 @@ fn replace() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -212,7 +212,7 @@ fn search() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -255,7 +255,7 @@ fn species() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -297,7 +297,7 @@ fn split() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -342,7 +342,7 @@ fn to_primitive() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -384,7 +384,7 @@ fn to_string_tag() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -423,7 +423,7 @@ fn for_() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -463,7 +463,7 @@ fn key_for() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -502,7 +502,7 @@ fn to_string() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -539,7 +539,7 @@ fn value_of() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;

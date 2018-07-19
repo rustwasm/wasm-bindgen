@@ -6,7 +6,7 @@ fn works() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -157,7 +157,7 @@ fn eq_works() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 

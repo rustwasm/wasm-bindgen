@@ -6,7 +6,7 @@ use project;
 fn new() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -40,7 +40,7 @@ fn new() {
 fn revocable() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;

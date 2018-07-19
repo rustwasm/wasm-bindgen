@@ -8,7 +8,7 @@ fn get_date() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -42,7 +42,7 @@ fn get_day() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -76,7 +76,7 @@ fn get_full_year() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -112,7 +112,7 @@ fn get_hours() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -146,7 +146,7 @@ fn get_milliseconds() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -182,7 +182,7 @@ fn get_minutes() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -216,7 +216,7 @@ fn get_month() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -250,7 +250,7 @@ fn get_seconds() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -284,7 +284,7 @@ fn get_time() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -318,7 +318,7 @@ fn get_timezone_offset() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -354,7 +354,7 @@ fn get_utc_date() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -390,7 +390,7 @@ fn get_utc_day() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -426,7 +426,7 @@ fn get_utc_full_year() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -462,7 +462,7 @@ fn get_utc_hours() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -498,7 +498,7 @@ fn get_utc_milliseconds() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -532,7 +532,7 @@ fn get_utc_minutes() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -568,7 +568,7 @@ fn get_utc_month() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -604,7 +604,7 @@ fn get_utc_seconds() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -638,7 +638,7 @@ fn new() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -668,7 +668,7 @@ fn new() {
 fn now() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -696,7 +696,7 @@ fn parse() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -732,7 +732,7 @@ fn set_date() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -771,7 +771,7 @@ fn set_full_year() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -810,7 +810,7 @@ fn set_hours() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -849,7 +849,7 @@ fn set_milliseconds() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -886,7 +886,7 @@ fn set_minutes() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -925,7 +925,7 @@ fn set_month() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -964,7 +964,7 @@ fn set_seconds() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1003,7 +1003,7 @@ fn set_time() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1041,7 +1041,7 @@ fn set_utc_date() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1080,7 +1080,7 @@ fn set_utc_full_year() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1119,7 +1119,7 @@ fn set_utc_hours() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1158,7 +1158,7 @@ fn set_utc_milliseconds() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1197,7 +1197,7 @@ fn set_utc_minutes() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1236,7 +1236,7 @@ fn set_utc_month() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1275,7 +1275,7 @@ fn set_utc_seconds() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1314,7 +1314,7 @@ fn to_date_string() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1348,7 +1348,7 @@ fn to_iso_string() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1382,7 +1382,7 @@ fn to_json() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1414,7 +1414,7 @@ fn to_json() {
 fn to_locale_date_string() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use JsValue;
@@ -1446,7 +1446,7 @@ fn to_locale_date_string() {
 fn to_locale_string() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use JsValue;
@@ -1478,7 +1478,7 @@ fn to_locale_time_string() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1511,7 +1511,7 @@ fn to_string() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1544,7 +1544,7 @@ fn to_time_string() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1577,7 +1577,7 @@ fn to_utc_string() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1608,7 +1608,7 @@ fn to_utc_string() {
 fn utc() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -1636,7 +1636,7 @@ fn value_of() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_custom_section)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;

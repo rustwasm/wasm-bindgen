@@ -24,7 +24,7 @@ fn bool() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 
@@ -93,7 +93,7 @@ fn ints() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 
@@ -160,7 +160,7 @@ fn floats() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_import_module)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 

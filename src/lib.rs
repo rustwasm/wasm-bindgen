@@ -6,7 +6,7 @@
 //! interface.
 
 #![feature(use_extern_macros, wasm_import_module, unsize)]
-#![cfg_attr(feature = "js_globals", feature(use_extern_macros, wasm_custom_section))]
+#![cfg_attr(feature = "js_globals", feature(use_extern_macros))]
 #![no_std]
 
 #[cfg(feature = "serde-serialize")]
