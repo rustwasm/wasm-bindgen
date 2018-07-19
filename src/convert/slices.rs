@@ -7,6 +7,11 @@ use core::str;
 use convert::{WasmAbi, IntoWasmAbi, FromWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi};
 use convert::{Stack, OptionIntoWasmAbi};
 
+if_std! {
+    use core::mem;
+    use convert::OptionFromWasmAbi;
+}
+
 #[repr(C)]
 pub struct WasmSlice {
     pub ptr: u32,
@@ -23,9 +28,6 @@ fn null_slice() -> WasmSlice {
 macro_rules! vectors {
     ($($t:ident)*) => ($(
         if_std! {
-            use core::mem;
-            use convert::OptionFromWasmAbi;
-
             impl IntoWasmAbi for Box<[$t]> {
                 type Abi = WasmSlice;
 
