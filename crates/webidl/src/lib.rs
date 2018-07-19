@@ -7,6 +7,7 @@ emitted for the types and methods described in the WebIDL.
 
 #![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
+#![doc(html_root_url = "https://docs.rs/wasm-bindgen-webidl/0.2")]
 
 extern crate failure;
 extern crate heck;

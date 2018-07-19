@@ -1,3 +1,5 @@
+#![doc(html_root_url = "https://docs.rs/wasm-bindgen-test-project-builder/0.2")]
+
 #[macro_use]
 extern crate lazy_static;
 extern crate wasm_bindgen_cli_support as cli;
