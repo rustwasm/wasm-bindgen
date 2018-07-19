@@ -133,8 +133,7 @@ matrix:
         - cargo install-update -a
       script:
         - (cd guide && mdbook build)
-        - cargo doc -p wasm-bindgen --no-deps
-        - cargo doc -p web-sys --no-deps
+        - cargo doc --no-deps -p wasm-bindgen -p web-sys -p js-sys
         - mv target/doc guide/book/api
       deploy:
         provider: pages
