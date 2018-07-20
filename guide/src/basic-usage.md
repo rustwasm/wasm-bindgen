@@ -7,7 +7,7 @@ Let's implement the equivalent of "Hello, world!" for this crate.
 
 [rustup]: https://rustup.rs
 
-If you'd like you dive [straight into an online example][hello-online], but
+If you'd like you can dive [straight into an online example][hello-online], but
 if you'd prefer to follow along in your own console let's install the tools we
 need:
 
@@ -98,7 +98,7 @@ At this point you'll probably plug these files into a larger build system.
 Files emitted by `wasm-bindgen` act like normal ES6 modules (one just happens to
 be wasm). As of the time of this writing there's unfortunately not a lot of
 tools that natively do this, but Webpack's 4.0 beta release has native wasm
-support!. Let's take a look at that and see how it works.
+support! Let's take a look at that and see how it works.
 
 First create an `index.js` file:
 
