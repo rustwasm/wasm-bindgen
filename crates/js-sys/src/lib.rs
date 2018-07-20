@@ -627,6 +627,21 @@ extern "C" {
     /// types here.
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Float32Array, callback: &mut FnMut(f32, u32, Float32Array));
+
+    /// The `length` accessor property represents the length (in elements) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter)]
+    pub fn length(this: &Float32Array) -> u32;
+
+    /// The `byteLength` accessor property represents the length (in bytes) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &Float32Array) -> u32;
+
+    /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    /// typed array from the start of its `ArrayBuffer`.
+    #[wasm_bindgen(method, getter, js_name = byteOffset)]
+    pub fn byte_offset(this: &Float32Array) -> u32;
 }
 
 // Float64Array
@@ -655,14 +670,29 @@ extern "C" {
     /// The `subarray()` method stores multiple values in the typed array,
     /// reading input values from a specified array.
     #[wasm_bindgen(method)]
-    pub fn subarray(this: &Float64Array, begin: u64, end: u64) -> Float64Array;
+    pub fn subarray(this: &Float64Array, begin: u32, end: u32) -> Float64Array;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
     /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
     /// types here.
     #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Float64Array, callback: &mut FnMut(f64, u64, Float64Array));
+    pub fn for_each(this: &Float64Array, callback: &mut FnMut(f64, u32, Float64Array));
+
+    /// The `length` accessor property represents the length (in elements) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter)]
+    pub fn length(this: &Float64Array) -> u32;
+
+    /// The `byteLength` accessor property represents the length (in bytes) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &Float64Array) -> u32;
+
+    /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    /// typed array from the start of its `ArrayBuffer`.
+    #[wasm_bindgen(method, getter, js_name = byteOffset)]
+    pub fn byte_offset(this: &Float64Array) -> u32;
 }
 
 // Function
@@ -780,6 +810,21 @@ extern "C" {
     /// types here.
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Int8Array, callback: &mut FnMut(i8, u32, Int8Array));
+
+    /// The `length` accessor property represents the length (in elements) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter)]
+    pub fn length(this: &Int8Array) -> u32;
+
+    /// The `byteLength` accessor property represents the length (in bytes) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &Int8Array) -> u32;
+
+    /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    /// typed array from the start of its `ArrayBuffer`.
+    #[wasm_bindgen(method, getter, js_name = byteOffset)]
+    pub fn byte_offset(this: &Int8Array) -> u32;
 }
 
 // Int16Array
@@ -816,6 +861,21 @@ extern "C" {
     /// types here.
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Int16Array, callback: &mut FnMut(i16, u32, Int16Array));
+
+    /// The `length` accessor property represents the length (in elements) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter)]
+    pub fn length(this: &Int16Array) -> u32;
+
+    /// The `byteLength` accessor property represents the length (in bytes) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &Int16Array) -> u32;
+
+    /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    /// typed array from the start of its `ArrayBuffer`.
+    #[wasm_bindgen(method, getter, js_name = byteOffset)]
+    pub fn byte_offset(this: &Int16Array) -> u32;
 }
 
 // Int32Array
@@ -852,6 +912,21 @@ extern "C" {
     /// types here.
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Int32Array, callback: &mut FnMut(i32, u32, Int32Array));
+
+    /// The `length` accessor property represents the length (in elements) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter)]
+    pub fn length(this: &Int32Array) -> u32;
+
+    /// The `byteLength` accessor property represents the length (in bytes) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &Int32Array) -> u32;
+
+    /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    /// typed array from the start of its `ArrayBuffer`.
+    #[wasm_bindgen(method, getter, js_name = byteOffset)]
+    pub fn byte_offset(this: &Int32Array) -> u32;
 }
 
 // Map
@@ -1988,6 +2063,21 @@ extern "C" {
     /// types here.
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Uint8Array, callback: &mut FnMut(u8, u32, Uint8Array));
+
+    /// The `length` accessor property represents the length (in elements) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter)]
+    pub fn length(this: &Uint8Array) -> u32;
+
+    /// The `byteLength` accessor property represents the length (in bytes) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &Uint8Array) -> u32;
+
+    /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    /// typed array from the start of its `ArrayBuffer`.
+    #[wasm_bindgen(method, getter, js_name = byteOffset)]
+    pub fn byte_offset(this: &Uint8Array) -> u32;
 }
 
 // Uint8ClampedArray
@@ -2026,6 +2116,21 @@ extern "C" {
     /// types here.
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Uint8ClampedArray, callback: &mut FnMut(u8, u32, Uint8ClampedArray));
+
+    /// The `length` accessor property represents the length (in elements) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter)]
+    pub fn length(this: &Uint8ClampedArray) -> u32;
+
+    /// The `byteLength` accessor property represents the length (in bytes) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &Uint8ClampedArray) -> u32;
+
+    /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    /// typed array from the start of its `ArrayBuffer`.
+    #[wasm_bindgen(method, getter, js_name = byteOffset)]
+    pub fn byte_offset(this: &Uint8ClampedArray) -> u32;
 }
 
 // Uint16Array
@@ -2062,6 +2167,21 @@ extern "C" {
     /// types here.
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Uint16Array, callback: &mut FnMut(u16, u32, Uint16Array));
+
+    /// The `length` accessor property represents the length (in elements) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter)]
+    pub fn length(this: &Uint16Array) -> u32;
+
+    /// The `byteLength` accessor property represents the length (in bytes) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &Uint16Array) -> u32;
+
+    /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    /// typed array from the start of its `ArrayBuffer`.
+    #[wasm_bindgen(method, getter, js_name = byteOffset)]
+    pub fn byte_offset(this: &Uint16Array) -> u32;
 }
 
 // Uint32Array
@@ -2098,6 +2218,21 @@ extern "C" {
     /// types here.
     #[wasm_bindgen(method, js_name = forEach)]
     pub fn for_each(this: &Uint32Array, callback: &mut FnMut(u32, u32, Uint32Array));
+
+    /// The `length` accessor property represents the length (in elements) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter)]
+    pub fn length(this: &Uint32Array) -> u32;
+
+    /// The `byteLength` accessor property represents the length (in bytes) of a
+    /// typed array.
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &Uint32Array) -> u32;
+
+    /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    /// typed array from the start of its `ArrayBuffer`.
+    #[wasm_bindgen(method, getter, js_name = byteOffset)]
+    pub fn byte_offset(this: &Uint32Array) -> u32;
 }
 
 // WeakMap
