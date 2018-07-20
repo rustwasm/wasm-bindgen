@@ -20,3 +20,4 @@ pub mod JsString;
 pub mod Map;
 pub mod MapIterator;
 pub mod Math;
+pub mod Number;
