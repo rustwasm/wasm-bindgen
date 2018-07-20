@@ -8,6 +8,7 @@
 - [What Just Happened?](./what-just-happened.md)
 - [What Else Can We Do?](./what-else-can-we-do.md)
 - [Closures](./closures.md)
+- [No ES Modules](./no-esm.md)
 - [Feature Reference](./feature-reference.md)
 - [CLI Reference](./cli-reference.md)
 - [Type Reference](./reference.md)
