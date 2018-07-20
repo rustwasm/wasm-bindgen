@@ -12,8 +12,6 @@ fn project() -> project_builder::Project {
 
 mod ArrayIterator;
 mod Reflect;
-mod SetIterator;
-mod Symbol;
 mod TypedArray;
 mod WeakMap;
 mod WeakSet;

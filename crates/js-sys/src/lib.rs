@@ -2582,7 +2582,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/keyFor
     #[wasm_bindgen(static_method_of = Symbol, js_name = keyFor)]
-    pub fn key_for(sym: &Symbol) -> JsString;
+    pub fn key_for(sym: &Symbol) -> JsValue;
 
     /// The toString() method returns a string representing the specified Symbol object.
     ///
