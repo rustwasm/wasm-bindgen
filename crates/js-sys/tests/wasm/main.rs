@@ -23,3 +23,4 @@ pub mod Math;
 pub mod Number;
 pub mod Object;
 pub mod Proxy;
+pub mod Set;

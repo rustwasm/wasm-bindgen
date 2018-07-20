@@ -1913,7 +1913,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Set;
+    pub fn new(init: &JsValue) -> Set;
 
     /// The size accessor property returns the number of elements in a [`Set`]
     /// object.

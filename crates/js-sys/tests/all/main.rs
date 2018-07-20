@@ -12,7 +12,6 @@ fn project() -> project_builder::Project {
 
 mod ArrayIterator;
 mod Reflect;
-mod Set;
 mod SetIterator;
 mod Symbol;
 mod TypedArray;
