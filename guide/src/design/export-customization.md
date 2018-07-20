@@ -51,3 +51,35 @@ possibilities!
   const f = new Foo();
   console.log(f.get_contents());
   ```
+
+* `js_name` - this can be used to export a different name in JS than what
+  something is named in Rust, for example:
+
+  ```rust
+  #[wasm_bindgen]
+  pub struct Foo {
+      contents: u32,
+  }
+
+  #[wasm_bindgen(js_name = makeFoo)]
+  pub fn make_foo() -> Foo {
+      Foo { contents: 6 }
+  }
+
+  #[wasm_bindgen]
+  impl Foo {
+      #[wasm_bindgen(js_name = getContents)]
+      pub fn get_contents(&self) -> u32 {
+          self.contents
+      }
+  }
+  ```
+
+  Here this can be used in JS as:
+
+  ```js
+  import { makeFoo } from './my_module';
+
+  const foo = makeFoo();
+  console.log(foo.getContents());
+  ```

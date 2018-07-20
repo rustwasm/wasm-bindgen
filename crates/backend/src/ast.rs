@@ -20,6 +20,7 @@ pub struct Export {
     pub constructor: Option<String>,
     pub function: Function,
     pub comments: Vec<String>,
+    pub rust_name: Ident,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]

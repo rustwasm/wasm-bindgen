@@ -2,6 +2,19 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.13
+
+Currently unreleased
+
+### Added
+
+* Support the `#[wasm_bindgen(js_name = foo)]` attribute on exported functions
+  and methods to allow renaming an export to JS. This allows JS to call it by
+  one name and Rust to call it by another, for example using `camelCase` in JS
+  and `snake_case` in Rust
+
+--------------------------------------------------------------------------------
+
 ## 0.2.12
 
 Released 2018-07-19.
