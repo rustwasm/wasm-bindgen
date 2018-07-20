@@ -20,7 +20,7 @@ fn apply() {
     args.push(1.into());
     args.push(2.into());
     args.push(3.into());
-    assert_eq!(MAX.apply(&JsValue::undefined(), &args), 3);
+    assert_eq!(MAX.apply(&JsValue::undefined(), &args).unwrap(), 3);
 
     let arr = JsValue::from(Array::new());
     let args = Array::new();

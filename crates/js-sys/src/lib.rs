@@ -673,8 +673,8 @@ extern "C" {
     /// (or an array-like object).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
-    #[wasm_bindgen(method)]
-    pub fn apply(this: &Function, context: &JsValue, args: &Array) -> JsValue;
+    #[wasm_bindgen(method, catch)]
+    pub fn apply(this: &Function, context: &JsValue, args: &Array) -> Result<JsValue, JsValue>;
 
     /// The bind() method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.

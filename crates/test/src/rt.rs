@@ -3,7 +3,7 @@ use std::fmt;
 use std::mem;
 
 use console_error_panic_hook;
-use js_sys::Array;
+use js_sys::{Array, Function};
 use wasm_bindgen::prelude::*;
 
 /// Runtime test harness support instantiated in JS.
@@ -24,11 +24,6 @@ pub struct Context {
 
 #[wasm_bindgen]
 extern {
-    // Redefined from `js_sys` so we can catch the error
-    pub type Function;
-    #[wasm_bindgen(method, catch)]
-    fn apply(this: &Function, new_this: &JsValue, args: &Array) -> Result<JsValue, JsValue>;
-
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     #[doc(hidden)]
     pub fn console_log(s: &str);
