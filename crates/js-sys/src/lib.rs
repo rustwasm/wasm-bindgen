@@ -1603,6 +1603,16 @@ extern "C" {
 extern "C" {
     pub type Object;
 
+    /// The `Object.freeze()` method freezes an object: that is, prevents new
+    /// properties from being added to it; prevents existing properties from
+    /// being removed; and prevents existing properties, or their enumerability,
+    /// configurability, or writability, from being changed, it also prevents
+    /// the prototype from being changed. The method returns the passed object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn freeze(value: &Object) -> Object;
+
     /// The `hasOwnProperty()` method returns a boolean indicating whether the
     /// object has the specified property as its own property (as opposed to
     /// inheriting it).
@@ -1672,7 +1682,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/seal
     #[wasm_bindgen(static_method_of = Object)]
-    pub fn seal(value: &JsValue) -> JsValue;
+    pub fn seal(value: &Object) -> Object;
 
     /// The `Object.setPrototypeOf()` method sets the prototype (i.e., the
     /// internal `[[Prototype]]` property) of a specified object to another
