@@ -618,6 +618,74 @@ fn substr() {
 }
 
 #[test]
+fn to_locale_lower_case() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(use_extern_macros)]
+
+            extern crate wasm_bindgen;
+            extern crate js_sys;
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub fn string_to_locale_lower_case(this: &js_sys::JsString, local: Option<String>) -> js_sys::JsString {
+                this.to_locale_lower_case(local)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.string_to_locale_lower_case("Mozilla"), "mozilla");
+                assert.equal(wasm.string_to_locale_lower_case("\u0130", "tr"), "i");
+                assert.notStrictEqual(wasm.string_to_locale_lower_case("\u0130", "en-US"), "i");
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
+fn to_locale_upper_case() {
+    project()
+        .file(
+            "src/lib.rs",
+            r#"
+            #![feature(use_extern_macros)]
+
+            extern crate wasm_bindgen;
+            extern crate js_sys;
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub fn string_to_locale_upper_case(this: &js_sys::JsString, local: Option<String>) -> js_sys::JsString {
+                this.to_locale_upper_case(local)
+            }
+        "#,
+        )
+        .file(
+            "test.js",
+            r#"
+            import * as assert from "assert";
+            import * as wasm from "./out";
+
+            export function test() {
+                assert.equal(wasm.string_to_locale_upper_case("mozilla"), "MOZILLA");
+                assert.equal(wasm.string_to_locale_upper_case("i\u0307", "lt"), "I");
+                assert.notStrictEqual(wasm.string_to_locale_upper_case("i\u0307", "en-US"), "I");
+            }
+        "#,
+        )
+        .test()
+}
+
+#[test]
 fn to_lower_case() {
     project()
         .file("src/lib.rs", r#"
