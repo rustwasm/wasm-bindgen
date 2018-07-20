@@ -118,6 +118,15 @@ extern "C" {
 extern "C" {
     pub type Array;
 
+    /// Creates a new empty array
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Array;
+
+    /// The `Array.from()` method creates a new, shallow-copied `Array` instance
+    /// from an array-like or iterable object.
+    #[wasm_bindgen(static_method_of = Array)]
+    pub fn from(val: JsValue) -> Array;
+
     /// The copyWithin() method shallow copies part of an array to another
     /// location in the same array and returns it, without modifying its size.
     ///
@@ -720,6 +729,43 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Int8Array, value: i8, start: u32, end: u32) -> Int8Array;
+
+    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+    /// by a `TypedArray` at construction time.
+    #[wasm_bindgen(getter, method)]
+    pub fn buffer(this: &Int8Array) -> ArrayBuffer;
+
+    // /// The `byteLength` accessor property represents the length (in bytes) of a
+    // /// typed array.
+    // #[wasm_bindgen(getter, method, js_name = byteLength)]
+    // pub fn byte_length(this: &Int8Array) -> u32;
+    //
+    // /// The `byteOffset` accessor property represents the offset (in bytes) of a
+    // /// typed array from the start of its `ArrayBuffer`.
+    // #[wasm_bindgen(getter, method, js_name = byteOffset)]
+    // pub fn byte_offset(this: &Int8Array) -> u32;
+    //
+    // /// The `length` accessor property represents the length (in elements) of a
+    // /// typed array.
+    // #[wasm_bindgen(getter, method)]
+    // pub fn length(this: &Int8Array) -> u32;
+    //
+    // /// The `set()` method stores multiple values in the typed array, reading
+    // /// input values from a specified array.
+    // #[wasm_bindgen(method)]
+    // pub fn set(this: &Int8Array, value: &JsValue, offset: u32);
+
+    /// The `subarray()` method stores multiple values in the typed array,
+    /// reading input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn subarray(this: &Int8Array, begin: u32, end: u32) -> Int8Array;
+
+    /// The `forEach()` method executes a provided function once per array
+    /// element. This method has the same algorithm as
+    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+    /// types here.
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Int8Array, callback: &mut FnMut(i8, u32, Int8Array));
 }
 
 // Int16Array
