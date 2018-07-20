@@ -74,7 +74,9 @@ matrix:
       before_install: *INSTALL_NODE_VIA_NVM
       install:
         - npm ci --verbose
-      script: cargo test --manifest-path crates/js-sys/Cargo.toml
+      script:
+        - cargo test -p js-sys
+        - cargo test -p js-sys --target wasm32-unknown-unknown
       addons:
         firefox: latest
 

@@ -1,3 +1,5 @@
+#![cfg(not(target_arch = "wasm32"))]
+
 extern crate wasm_bindgen_test_project_builder as project_builder;
 
 fn project() -> project_builder::Project {
@@ -9,10 +11,7 @@ fn project() -> project_builder::Project {
 // Keep these tests in alphabetical order, just like the imports in `src/js.rs`.
 
 mod Array;
-mod ArrayBuffer;
 mod ArrayIterator;
-mod Boolean;
-mod DataView;
 mod Date;
 mod Error;
 mod Function;

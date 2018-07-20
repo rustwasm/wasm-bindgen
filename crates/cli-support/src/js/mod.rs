@@ -949,6 +949,27 @@ impl<'a> Context<'a> {
         self.pass_array_to_wasm("passArrayF64ToWasm", "getFloat64Memory", 8)
     }
 
+    fn expose_pass_array_jsvalue_to_wasm(&mut self) -> Result<(), Error> {
+        if !self.exposed_globals.insert("pass_array_jsvalue") {
+            return Ok(());
+        }
+        self.require_internal_export("__wbindgen_malloc")?;
+        self.expose_uint32_memory();
+        self.expose_add_heap_object();
+        self.global("
+            function passArrayJsValueToWasm(array) {
+                const ptr = wasm.__wbindgen_malloc(array.length * 4);
+                const mem = getUint32Memory();
+                for (let i = 0; i < array.length; i++) {
+                    mem[ptr / 4 + i] = addHeapObject(array[i]);
+                }
+                return [ptr, array.length];
+            }
+
+        ");
+        Ok(())
+    }
+
     fn pass_array_to_wasm(
         &mut self,
         name: &'static str,
@@ -1387,7 +1408,10 @@ impl<'a> Context<'a> {
                 self.expose_pass_array_f64_to_wasm()?;
                 "passArrayF64ToWasm"
             }
-            VectorKind::Anyref => bail!("cannot pass list of JsValue to wasm yet"),
+            VectorKind::Anyref => {
+                self.expose_pass_array_jsvalue_to_wasm()?;
+                "passArrayJsValueToWasm"
+            }
         };
         Ok(s)
     }

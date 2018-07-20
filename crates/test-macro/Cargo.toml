@@ -1,0 +1,11 @@
+[package]
+name = "wasm-bindgen-test-macro"
+version = "0.2.12"
+authors = ["The wasm-bindgen Developers"]
+
+[dependencies]
+proc-macro2 = { version = "0.4", features = ['nightly'] }
+quote = "0.6"
+
+[lib]
+proc-macro = true
