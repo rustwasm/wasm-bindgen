@@ -16,3 +16,4 @@ pub mod Error;
 pub mod Function;
 pub mod Generator;
 pub mod Intl;
+pub mod JsString;

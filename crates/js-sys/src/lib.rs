@@ -22,6 +22,7 @@
 extern crate wasm_bindgen;
 
 use std::mem;
+use std::fmt;
 
 use wasm_bindgen::prelude::*;
 
@@ -2224,7 +2225,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/concat
     #[wasm_bindgen(method, js_class = "String")]
-    pub fn concat(this: &JsString, string_2: &JsString) -> JsString;
+    pub fn concat(this: &JsString, string_2: &JsValue) -> JsString;
 
     /// The endsWith() method determines whether a string ends with the characters of a
     /// specified string, returning true or false as appropriate.
@@ -2411,6 +2412,30 @@ impl JsString {
     }
 }
 
+impl PartialEq<str> for JsString {
+    fn eq(&self, other: &str) -> bool {
+        String::from(self) == other
+    }
+}
+
+impl<'a> PartialEq<&'a str> for JsString {
+    fn eq(&self, other: &&'a str) -> bool {
+        <JsString as PartialEq<str>>::eq(self, other)
+    }
+}
+
+impl PartialEq<String> for JsString {
+    fn eq(&self, other: &String) -> bool {
+        <JsString as PartialEq<str>>::eq(self, other)
+    }
+}
+
+impl<'a> PartialEq<&'a String> for JsString {
+    fn eq(&self, other: &&'a String) -> bool {
+        <JsString as PartialEq<str>>::eq(self, other)
+    }
+}
+
 impl<'a> From<&'a str> for JsString {
     fn from(s: &'a str) -> Self {
         JsString {
@@ -2434,6 +2459,12 @@ impl<'a> From<&'a JsString> for String {
 impl From<JsString> for String {
     fn from(s: JsString) -> Self {
         From::from(&s)
+    }
+}
+
+impl fmt::Debug for JsString {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        String::from(self).fmt(f)
     }
 }
 
