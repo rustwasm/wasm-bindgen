@@ -51,6 +51,14 @@
      and look for warning messages that mention your new API. Figure out why
      bindings weren't generated and then add support to `wasm_bindgen_webidl` for
      whatever is needed to generate your API's bindings.
+     
+     > You might find it helpful to view the generated rust bindings, to see if 
+     they are what you would expect. The file will be located at 
+     `target/wasm32-unknown-unknown/debug/build/web-sys-xxx/out/bindings.rs`,
+     where `xxx` is a combinations of numbers and letters that represents your
+     build. This file is pretty unintelligable until you run `rustfmt` on it, like
+     `rustfmt target/wasm32-unknown-unknown/debug/build/web-sys-xxx/out/bindings.rs`.
+     
 
 4. <input type="checkbox"/> Add a simple test for your new API to
    `crates/web-sys/tests/all/`. See the [`web-sys` testing
