@@ -59,7 +59,6 @@
      build. This file is pretty unintelligable until you run `rustfmt` on it, like
      `rustfmt target/wasm32-unknown-unknown/debug/build/web-sys-xxx/out/bindings.rs`.
      
-
 4. <input type="checkbox"/> Add a simple test for your new API to
    `crates/web-sys/tests/all/`. See the [`web-sys` testing
    documentation](/web-sys/testing.html) for details.
