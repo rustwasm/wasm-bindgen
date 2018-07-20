@@ -13,3 +13,4 @@ pub mod Boolean;
 pub mod DataView;
 pub mod Date;
 pub mod Error;
+pub mod Function;
