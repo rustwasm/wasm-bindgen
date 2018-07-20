@@ -6,6 +6,7 @@ extern crate js_sys;
 extern crate wasm_bindgen;
 extern crate wasm_bindgen_test;
 
+pub mod Array;
 pub mod ArrayBuffer;
 pub mod ArrayIterator;
 pub mod Boolean;

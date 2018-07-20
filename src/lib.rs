@@ -290,6 +290,37 @@ impl PartialEq for JsValue {
     }
 }
 
+impl PartialEq<bool> for JsValue {
+    fn eq(&self, other: &bool) -> bool {
+        self.as_bool() == Some(*other)
+    }
+}
+
+impl PartialEq<str> for JsValue {
+    fn eq(&self, other: &str) -> bool {
+        *self == JsValue::from_str(other)
+    }
+}
+
+impl<'a> PartialEq<&'a str> for JsValue {
+    fn eq(&self, other: &&'a str) -> bool {
+        <JsValue as PartialEq<str>>::eq(self, other)
+    }
+}
+
+if_std! {
+    impl PartialEq<String> for JsValue {
+        fn eq(&self, other: &String) -> bool {
+            <JsValue as PartialEq<str>>::eq(self, other)
+        }
+    }
+    impl<'a> PartialEq<&'a String> for JsValue {
+        fn eq(&self, other: &&'a String) -> bool {
+            <JsValue as PartialEq<str>>::eq(self, other)
+        }
+    }
+}
+
 impl<'a> From<&'a str> for JsValue {
     fn from(s: &'a str) -> JsValue {
         JsValue::from_str(s)
@@ -302,6 +333,12 @@ if_std! {
             JsValue::from_str(s)
         }
     }
+
+    impl From<String> for JsValue {
+        fn from(s: String) -> JsValue {
+            JsValue::from_str(&s)
+        }
+    }
 }
 
 impl From<bool> for JsValue {
@@ -312,6 +349,12 @@ impl From<bool> for JsValue {
 
 macro_rules! numbers {
     ($($n:ident)*) => ($(
+        impl PartialEq<$n> for JsValue {
+            fn eq(&self, other: &$n) -> bool {
+                self.as_f64() == Some(f64::from(*other))
+            }
+        }
+
         impl From<$n> for JsValue {
             fn from(n: $n) -> JsValue {
                 JsValue::from_f64(n.into())

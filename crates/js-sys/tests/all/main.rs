@@ -10,7 +10,6 @@ fn project() -> project_builder::Project {
 
 // Keep these tests in alphabetical order, just like the imports in `src/js.rs`.
 
-mod Array;
 mod ArrayIterator;
 mod Date;
 mod Error;

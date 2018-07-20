@@ -174,7 +174,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
     #[wasm_bindgen(method, js_name = findIndex)]
-    pub fn find_index(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> u32;
+    pub fn find_index(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> i32;
 
     /// The `forEach()` method executes a provided function once for each array element.
     ///
@@ -610,6 +610,23 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Float32Array, value: f32, start: u32, end: u32) -> Float32Array;
+
+    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+    /// by a `TypedArray` at construction time.
+    #[wasm_bindgen(getter, method)]
+    pub fn buffer(this: &Float32Array) -> ArrayBuffer;
+
+    /// The `subarray()` method stores multiple values in the typed array,
+    /// reading input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn subarray(this: &Float32Array, begin: u32, end: u32) -> Float32Array;
+
+    /// The `forEach()` method executes a provided function once per array
+    /// element. This method has the same algorithm as
+    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+    /// types here.
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Float32Array, callback: &mut FnMut(f32, u32, Float32Array));
 }
 
 // Float64Array
@@ -629,6 +646,23 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Float64Array, value: f64, start: u32, end: u32) -> Float64Array;
+
+    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+    /// by a `TypedArray` at construction time.
+    #[wasm_bindgen(getter, method)]
+    pub fn buffer(this: &Float64Array) -> ArrayBuffer;
+
+    /// The `subarray()` method stores multiple values in the typed array,
+    /// reading input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn subarray(this: &Float64Array, begin: u64, end: u64) -> Float64Array;
+
+    /// The `forEach()` method executes a provided function once per array
+    /// element. This method has the same algorithm as
+    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+    /// types here.
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Float64Array, callback: &mut FnMut(f64, u64, Float64Array));
 }
 
 // Function
@@ -735,26 +769,6 @@ extern "C" {
     #[wasm_bindgen(getter, method)]
     pub fn buffer(this: &Int8Array) -> ArrayBuffer;
 
-    // /// The `byteLength` accessor property represents the length (in bytes) of a
-    // /// typed array.
-    // #[wasm_bindgen(getter, method, js_name = byteLength)]
-    // pub fn byte_length(this: &Int8Array) -> u32;
-    //
-    // /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    // /// typed array from the start of its `ArrayBuffer`.
-    // #[wasm_bindgen(getter, method, js_name = byteOffset)]
-    // pub fn byte_offset(this: &Int8Array) -> u32;
-    //
-    // /// The `length` accessor property represents the length (in elements) of a
-    // /// typed array.
-    // #[wasm_bindgen(getter, method)]
-    // pub fn length(this: &Int8Array) -> u32;
-    //
-    // /// The `set()` method stores multiple values in the typed array, reading
-    // /// input values from a specified array.
-    // #[wasm_bindgen(method)]
-    // pub fn set(this: &Int8Array, value: &JsValue, offset: u32);
-
     /// The `subarray()` method stores multiple values in the typed array,
     /// reading input values from a specified array.
     #[wasm_bindgen(method)]
@@ -785,6 +799,23 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Int16Array, value: i16, start: u32, end: u32) -> Int16Array;
+
+    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+    /// by a `TypedArray` at construction time.
+    #[wasm_bindgen(getter, method)]
+    pub fn buffer(this: &Int16Array) -> ArrayBuffer;
+
+    /// The `subarray()` method stores multiple values in the typed array,
+    /// reading input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn subarray(this: &Int16Array, begin: u32, end: u32) -> Int16Array;
+
+    /// The `forEach()` method executes a provided function once per array
+    /// element. This method has the same algorithm as
+    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+    /// types here.
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Int16Array, callback: &mut FnMut(i16, u32, Int16Array));
 }
 
 // Int32Array
@@ -804,6 +835,23 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Int32Array, value: i32, start: u32, end: u32) -> Int32Array;
+
+    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+    /// by a `TypedArray` at construction time.
+    #[wasm_bindgen(getter, method)]
+    pub fn buffer(this: &Int32Array) -> ArrayBuffer;
+
+    /// The `subarray()` method stores multiple values in the typed array,
+    /// reading input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn subarray(this: &Int32Array, begin: u32, end: u32) -> Int32Array;
+
+    /// The `forEach()` method executes a provided function once per array
+    /// element. This method has the same algorithm as
+    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+    /// types here.
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Int32Array, callback: &mut FnMut(i32, u32, Int32Array));
 }
 
 // Map
@@ -1340,7 +1388,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Date;
+    pub fn new(init: JsValue) -> Date;
 
     /// The `Date.now()` method returns the number of milliseconds
     /// elapsed since January 1, 1970 00:00:00 UTC.
@@ -1913,6 +1961,23 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Uint8Array, value: u8, start: u32, end: u32) -> Uint8Array;
+
+    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+    /// by a `TypedArray` at construction time.
+    #[wasm_bindgen(getter, method)]
+    pub fn buffer(this: &Uint8Array) -> ArrayBuffer;
+
+    /// The `subarray()` method stores multiple values in the typed array,
+    /// reading input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn subarray(this: &Uint8Array, begin: u32, end: u32) -> Uint8Array;
+
+    /// The `forEach()` method executes a provided function once per array
+    /// element. This method has the same algorithm as
+    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+    /// types here.
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Uint8Array, callback: &mut FnMut(u8, u32, Uint8Array));
 }
 
 // Uint8ClampedArray
@@ -1934,6 +1999,23 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Uint8ClampedArray, value: u8, start: u32, end: u32) -> Uint8ClampedArray;
+
+    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+    /// by a `TypedArray` at construction time.
+    #[wasm_bindgen(getter, method)]
+    pub fn buffer(this: &Uint8ClampedArray) -> ArrayBuffer;
+
+    /// The `subarray()` method stores multiple values in the typed array,
+    /// reading input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn subarray(this: &Uint8ClampedArray, begin: u32, end: u32) -> Uint8ClampedArray;
+
+    /// The `forEach()` method executes a provided function once per array
+    /// element. This method has the same algorithm as
+    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+    /// types here.
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Uint8ClampedArray, callback: &mut FnMut(u8, u32, Uint8ClampedArray));
 }
 
 // Uint16Array
@@ -1953,6 +2035,23 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Uint16Array, value: u16, start: u32, end: u32) -> Uint16Array;
+
+    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+    /// by a `TypedArray` at construction time.
+    #[wasm_bindgen(getter, method)]
+    pub fn buffer(this: &Uint16Array) -> ArrayBuffer;
+
+    /// The `subarray()` method stores multiple values in the typed array,
+    /// reading input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn subarray(this: &Uint16Array, begin: u32, end: u32) -> Uint16Array;
+
+    /// The `forEach()` method executes a provided function once per array
+    /// element. This method has the same algorithm as
+    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+    /// types here.
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Uint16Array, callback: &mut FnMut(u16, u32, Uint16Array));
 }
 
 // Uint32Array
@@ -1972,6 +2071,23 @@ extern "C" {
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill
     #[wasm_bindgen(method)]
     pub fn fill(this: &Uint32Array, value: u32, start: u32, end: u32) -> Uint32Array;
+
+    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+    /// by a `TypedArray` at construction time.
+    #[wasm_bindgen(getter, method)]
+    pub fn buffer(this: &Uint32Array) -> ArrayBuffer;
+
+    /// The `subarray()` method stores multiple values in the typed array,
+    /// reading input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn subarray(this: &Uint32Array, begin: u32, end: u32) -> Uint32Array;
+
+    /// The `forEach()` method executes a provided function once per array
+    /// element. This method has the same algorithm as
+    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+    /// types here.
+    #[wasm_bindgen(method, js_name = forEach)]
+    pub fn for_each(this: &Uint32Array, callback: &mut FnMut(u32, u32, Uint32Array));
 }
 
 // WeakMap
