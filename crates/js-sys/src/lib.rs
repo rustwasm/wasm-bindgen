@@ -39,9 +39,8 @@ use wasm_bindgen::prelude::*;
 // `#[wasm_bindgen(catch)]`.
 //
 // * Add a new `#[test]` into the appropriate file in the
-// `tests/all/js_globals/` directory. If the imported function or
-// method can throw an exception, make sure to also add test coverage
-// for that case.
+//   `crates/js-sys/tests/wasm/` directory. If the imported function or method
+//   can throw an exception, make sure to also add test coverage for that case.
 
 #[wasm_bindgen]
 extern "C" {
