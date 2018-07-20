@@ -1,0 +1,9 @@
+[package]
+name = "wasm-bindgen-test-runner"
+version = "0.2.12"
+authors = ["The wasm-bindgen Developers"]
+
+[dependencies]
+wasm-bindgen-cli-support = { path = '../cli-support', version = '=0.2.12' }
+failure = "0.1"
+parity-wasm = "0.31"

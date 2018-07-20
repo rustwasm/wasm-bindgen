@@ -38,6 +38,8 @@ wasm-bindgen-test-project-builder = { path = "crates/test-project-builder", vers
 members = [
   "crates/cli",
   "crates/js-sys",
+  "crates/test",
+  "crates/test-runner",
   "crates/typescript",
   "crates/web-sys",
   "crates/webidl",
@@ -58,7 +60,5 @@ members = [
   "examples/comments"
 ]
 
-[profile.release]
-lto = true
-opt-level = 's'
-panic = 'abort'
+[patch.crates-io]
+wasm-bindgen = { path = '.' }

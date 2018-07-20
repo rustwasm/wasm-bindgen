@@ -1,0 +1,13 @@
+[package]
+name = "wasm-bindgen-test"
+version = "0.2.12"
+authors = ["The wasm-bindgen Developers"]
+
+[dependencies]
+wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.2.12' }
+wasm-bindgen = { path = '../..', version = '0.2.12' }
+js-sys = { path = '../js-sys', version = '0.2.12' }
+console_error_panic_hook = '0.1'
+
+[lib]
+test = false
