@@ -25,7 +25,7 @@ fn apply() {
     let arr = JsValue::from(Array::new());
     let args = Array::new();
     args.push(1.into());
-    ARRAY_PROTOTYPE.push().apply(&arr, &args);
+    ARRAY_PROTOTYPE.push().apply(&arr, &args).unwrap();
     assert_eq!(Array::from(arr).length(), 1);
 }
 
