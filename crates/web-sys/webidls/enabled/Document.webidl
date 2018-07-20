@@ -147,10 +147,9 @@ partial interface Document {
   [SameObject] readonly attribute HTMLCollection links;
   [SameObject] readonly attribute HTMLCollection forms;
   [SameObject] readonly attribute HTMLCollection scripts;
-/*TODO
   [Pure]
   NodeList getElementsByName(DOMString elementName);
-*/
+
   //(Not implemented)readonly attribute DOMElementMap cssElementMap;
 
   // dynamic markup insertion
@@ -341,10 +340,8 @@ partial interface Document {
 partial interface Document {
   [Throws, Pure]
   Element?  querySelector(DOMString selectors);
-/*TODO
   [Throws, Pure]
   NodeList  querySelectorAll(DOMString selectors);
-*/
 
   //(Not implemented)Element?  find(DOMString selectors, optional (Element or sequence<Node>)? refNodes);
   //(Not implemented)NodeList  findAll(DOMString selectors, optional (Element or sequence<Node>)? refNodes);
@@ -406,10 +403,12 @@ partial interface Document {
   // XXXbz and another hack for the fact that we can't usefully have optional
   // distinguishing arguments but need a working zero-arg form of
   // createTouchList().
+/*TODO
   [NewObject, Func="nsGenericHTMLElement::TouchEventsEnabled"]
   TouchList createTouchList();
   [NewObject, Func="nsGenericHTMLElement::TouchEventsEnabled"]
   TouchList createTouchList(sequence<Touch> touches);
+*/
 
   [ChromeOnly]
   attribute boolean styleSheetChangeEventsEnabled;
@@ -489,8 +488,10 @@ partial interface Document {
 
 // http://w3c.github.io/selection-api/#extensions-to-document-interface
 partial interface Document {
+/*TODO
   [Throws]
   Selection? getSelection();
+*/
 };
 
 // Extension to give chrome JS the ability to determine whether
