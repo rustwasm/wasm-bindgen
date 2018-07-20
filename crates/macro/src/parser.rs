@@ -477,10 +477,10 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemStatic {
     }
 }
 
-impl ConvertToAst<()> for syn::ItemFn {
+impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
     type Target = ast::Function;
 
-    fn convert(self, (): ()) -> Self::Target {
+    fn convert(self, attrs: BindgenAttrs) -> Self::Target {
         match self.vis {
             syn::Visibility::Public(_) => {}
             _ => panic!("can only bindgen public functions"),
@@ -492,7 +492,8 @@ impl ConvertToAst<()> for syn::ItemFn {
             panic!("can only bindgen safe functions");
         }
 
-        function_from_decl(&self.ident, self.decl, self.attrs, self.vis, false).0
+        let name = attrs.js_name().unwrap_or(&self.ident);
+        function_from_decl(name, self.decl, self.attrs, self.vis, false).0
     }
 }
 
@@ -584,8 +585,9 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     class: None,
                     method_self: None,
                     constructor: None,
-                    function: f.convert(()),
                     comments,
+                    rust_name: f.ident.clone(),
+                    function: f.convert(opts.unwrap_or_default()),
                 });
             }
             syn::Item::Struct(mut s) => {
@@ -677,7 +679,7 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
         };
 
         let (function, method_self) = function_from_decl(
-            &method.sig.ident,
+            opts.js_name().unwrap_or(&method.sig.ident),
             Box::new(method.sig.decl.clone()),
             method.attrs.clone(),
             method.vis.clone(),
@@ -690,6 +692,7 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
             constructor,
             function,
             comments,
+            rust_name: method.sig.ident.clone(),
         });
     }
 }

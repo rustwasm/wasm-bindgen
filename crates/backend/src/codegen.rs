@@ -297,7 +297,7 @@ impl ToTokens for ast::Export {
             0
         };
 
-        let name = &self.function.name;
+        let name = &self.rust_name;
         let receiver = match self.method_self {
             Some(ast::MethodSelf::ByValue) => {
                 let class = self.class.as_ref().unwrap();

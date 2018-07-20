@@ -709,3 +709,51 @@ fn double_consume() {
         "#)
         .test();
 }
+
+#[test]
+fn rename_function_for_js() {
+    project()
+        .file("src/lib.rs", r#"
+            #![feature(use_extern_macros, wasm_import_module)]
+
+            extern crate wasm_bindgen;
+
+            use wasm_bindgen::prelude::*;
+
+            #[wasm_bindgen]
+            pub struct Foo { }
+
+            #[wasm_bindgen]
+            impl Foo {
+                #[wasm_bindgen(constructor)]
+                pub fn new() -> Foo {
+                    let f = Foo {};
+                    f.foo();
+                    return f
+                }
+
+                #[wasm_bindgen(js_name = bar)]
+                pub fn foo(&self) {
+                }
+
+            }
+
+            #[wasm_bindgen(js_name = js_foo)]
+            pub fn foo() {}
+
+            #[wasm_bindgen]
+            pub fn bar() {
+                foo();
+            }
+        "#)
+        .file("test.js", r#"
+            import { Foo, js_foo, bar } from "./out";
+
+            export function test() {
+                Foo.new().bar();
+                js_foo();
+                bar();
+            }
+        "#)
+        .test();
+}
