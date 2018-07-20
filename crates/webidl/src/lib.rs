@@ -353,14 +353,6 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
             {
                 add_constructor(arguments, &interface.name)
             }
-            webidl::ast::ExtendedAttribute::IdentifierList(
-                webidl::ast::IdentifierListExtendedAttribute { lhs, .. },
-            )
-                if lhs == "Exposed" =>
-            {
-                // ignore these attributes for now, we just splat everything in
-                // the crate whether it's workable in a web worker or not.
-            }
             webidl::ast::ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name))
                 if name == "Constructor" =>
             {
