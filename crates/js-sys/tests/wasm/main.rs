@@ -18,3 +18,4 @@ pub mod Generator;
 pub mod Intl;
 pub mod JsString;
 pub mod Map;
+pub mod MapIterator;
