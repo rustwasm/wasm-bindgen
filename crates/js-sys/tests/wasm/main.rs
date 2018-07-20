@@ -12,3 +12,4 @@ pub mod ArrayIterator;
 pub mod Boolean;
 pub mod DataView;
 pub mod Date;
+pub mod Error;
