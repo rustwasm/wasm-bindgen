@@ -19,3 +19,4 @@ pub mod Intl;
 pub mod JsString;
 pub mod Map;
 pub mod MapIterator;
+pub mod Math;

@@ -1018,7 +1018,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn ceil(x: f64) -> i32;
+    pub fn ceil(x: f64) -> f64;
 
     /// The Math.clz32() function returns the number of leading zero bits in
     /// the 32-bit binary representation of a number.
@@ -1061,7 +1061,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn floor(x: f64) -> i32;
+    pub fn floor(x: f64) -> f64;
 
     /// The Math.fround() function returns the nearest 32-bit single precision float representation
     /// of a Number.
@@ -1121,7 +1121,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn round(x: f64) -> i32;
+    pub fn round(x: f64) -> f64;
 
     /// The Math.sign() function returns the sign of a number, indicating whether the number is
     /// positive, negative or zero.
@@ -1168,7 +1168,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
     #[wasm_bindgen(static_method_of = Math)]
-    pub fn trunc(x: f64) -> i32;
+    pub fn trunc(x: f64) -> f64;
 }
 
 // Number.
