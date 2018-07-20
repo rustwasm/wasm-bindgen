@@ -11,3 +11,4 @@ pub mod ArrayBuffer;
 pub mod ArrayIterator;
 pub mod Boolean;
 pub mod DataView;
+pub mod Date;

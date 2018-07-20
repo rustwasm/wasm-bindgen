@@ -1595,7 +1595,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/valueOf
     #[wasm_bindgen(method, js_name = valueOf)]
-    pub fn value_of(this: &Date) -> Date;
+    pub fn value_of(this: &Date) -> f64;
 }
 
 // Object.
