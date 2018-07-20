@@ -869,7 +869,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/delete
     #[wasm_bindgen(method)]
-    pub fn delete(this: &Map, key: &str) -> bool;
+    pub fn delete(this: &Map, key: &JsValue) -> bool;
 
     /// The forEach() method executes a provided function once per each
     /// key/value pair in the Map object, in insertion order.

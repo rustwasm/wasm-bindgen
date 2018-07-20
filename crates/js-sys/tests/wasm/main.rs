@@ -17,3 +17,4 @@ pub mod Function;
 pub mod Generator;
 pub mod Intl;
 pub mod JsString;
+pub mod Map;
