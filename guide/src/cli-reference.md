@@ -19,11 +19,9 @@ some notable options are:
 
 * `--no-modules`: the default output of `wasm-bindgen` uses ES modules but this
   option indicates that ES modules should not be used and output should be
-  tailored for a web browser. In this mode `window.wasm_bindgen` will be a
-  function that takes a path to the wasm file to fetch and instantiate.
-  Afterwards exported functions from the wasm are available through
-  `window.wasm_bindgen.foo`. Note that the name `wasm_bindgen` can be configured
-  with the `--no-modules-global FOO` flag.
+  tailored for a web browser. More information on this flag, and
+  `--no-modules-global`, can be found in the [no ES modules
+  documentation](./no-esm.html).
 
 * `--no-typescript`: by default a `*.d.ts` file is generated for the generated
   JS file, but this flag will disable generating this TypeScript file.
