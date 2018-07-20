@@ -22,3 +22,4 @@ pub mod MapIterator;
 pub mod Math;
 pub mod Number;
 pub mod Object;
+pub mod Proxy;
