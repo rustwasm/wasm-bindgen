@@ -80,3 +80,11 @@ fn test_escape() {
     assert_eq!(String::from(escape("ć")), "%u0107");
     assert_eq!(String::from(escape("@*_+-./")), "@*_+-./");
 }
+
+#[wasm_bindgen_test]
+fn test_unescape() {
+    assert_eq!(String::from(unescape("abc123")), "abc123");
+    assert_eq!(String::from(unescape("%E4%F6%FC")), "äöü");
+    assert_eq!(String::from(unescape("%u0107")), "ć");
+    assert_eq!(String::from(unescape("@*_+-./")), "@*_+-./");
+}
