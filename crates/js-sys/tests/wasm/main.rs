@@ -27,3 +27,4 @@ pub mod Set;
 pub mod SetIterator;
 pub mod Symbol;
 pub mod TypedArray;
+pub mod WeakMap;
