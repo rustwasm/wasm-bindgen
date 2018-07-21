@@ -1,12 +1,12 @@
 # Passing arbitrary data to JS
 
 It's possible to pass data from Rust to JS not explicitly supported
-in the [Feature Reference]: ./feature-reference by serializing vis [Serde]: https://github.com/serde-rs/serde
+in the [Feature Reference](./feature-reference.md) by serializing vis [Serde] (https://github.com/serde-rs/serde).
 
-Wasm_bindgen includes the JsValue type, which handles serializing and
-deserializing smoothly.
+Wasm_bindgen includes the JsValue type, which streamlines serializing and deserializing.
+This page describes how to use it.
 
-In order to make this work, you must include the serde and serde_derive
+In order accomplish this, we must include the serde and serde_derive
 crates in Cargo.toml, and configure wasm_bindgen to work with this feature:
 
 Cargo.toml
@@ -20,14 +20,14 @@ version = "^0.2"
 features = ["serde-serialize"]
 ```
 
-In our top-level Rust file (eg lib.rs or main.rs), we must enable the Serialize
+In our top-level Rust file (eg lib.rs or main.rs), weenable the Serialize
 macro: 
 ```rust
 #[macro_use]
 extern crate serde_derive;
 ```
 
-The data you pass must be supported by serde, or be a struct or enum that
+The data we pass at all nesting levels must be supported by serde, or be a struct or enum that
 derives the Serialize trait. For example, let's say we'd like to pass this
 struct to JS; doing so is not possible in bindgen directly due to the use
 of public fields, HashMaps, arrays, and nested Vecs. Note that we do not
@@ -58,7 +58,7 @@ pub fn pass_example() -> JsValue {
 }
 ```
 
-When calling this function from JS, its result will automatically be deserialized.
+When calling this function from JS, its output will automatically be deserialized.
 In this example, fied1 will be a JS object (Not a JS Map), field2 will be a 
 2d JS array, and field3 will be a 1d JS array. Example calling code:
 
