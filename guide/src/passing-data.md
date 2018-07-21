@@ -3,11 +3,11 @@
 It's possible to pass data from Rust to JS not explicitly supported
 in the [Feature Reference](./feature-reference.md) by serializing via [Serde](https://github.com/serde-rs/serde).
 
-Wasm_bindgen includes the JsValue type, which streamlines serializing and deserializing.
+`wasm-bindgen` includes the `JsValue` type, which streamlines serializing and deserializing.
 This page describes how to use it.
 
 In order accomplish this, we must include the serde and serde_derive
-crates in Cargo.toml, and configure wasm_bindgen to work with this feature:
+crates in `Cargo.toml`, and configure `wasm-bindgen` to work with this feature:
 
 Cargo.toml
 ```toml
@@ -20,18 +20,18 @@ version = "^0.2"
 features = ["serde-serialize"]
 ```
 
-In our top-level Rust file (eg lib.rs or main.rs), weenable the Serialize
+In our top-level Rust file (eg `lib.rs` or `main.rs`), we enable the `Serialize`
 macro: 
 ```rust
 #[macro_use]
 extern crate serde_derive;
 ```
 
-The data we pass at all nesting levels must be supported by serde, or be a struct or enum that
+The data we pass at all nesting levels must be supported by serde, or be a `struct` or `enum` that
 derives the Serialize trait. For example, let's say we'd like to pass this
 struct to JS; doing so is not possible in bindgen directly due to the use
-of public fields, HashMaps, arrays, and nested Vecs. Note that we do not
-need to use the #[wasm_bindgen] macro.
+of public fields, `HashMap`s, arrays, and nested `Vec`s. Note that we do not
+need to use the `#[wasm_bindgen]` macro.
 
 ```rust
 #[derive(Serialize)]
@@ -42,7 +42,7 @@ pub struct Example {
 }
 ```
 
-Here's a function that will pass an instance of this struct to JS:
+Here's a function that will pass an instance of this `struct` to JS:
 ```rust
 #[wasm_bindgen]
 pub fn pass_example() -> JsValue {
@@ -59,8 +59,8 @@ pub fn pass_example() -> JsValue {
 ```
 
 When calling this function from JS, its output will automatically be deserialized.
-In this example, fied1 will be a JS object (Not a JS Map), field2 will be a 
-2d JS array, and field3 will be a 1d JS array. Example calling code:
+In this example, `fied1` will be a JS `object` (Not a JS `Map`), `field2` will be a 
+2d JS `array`, and `field3` will be a 1d JS `array`. Example calling code:
 
 ```typescript
 const rust = import("./from_rust");
