@@ -1263,6 +1263,13 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Number, js_name = isInteger)]
     pub fn is_integer(value: &JsValue) -> bool;
 
+    /// The Number.isNaN() method determines whether the passed value is NaN and its type is Number.
+    /// It is a more robust version of the original, global isNaN().
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
+    #[wasm_bindgen(static_method_of = Number, js_name = isNaN)]
+    pub fn is_nan(value: &JsValue) -> bool;
+
     /// The Number.isSafeInteger() method determines whether the provided value is a number
     /// that is a safe integer.
     ///

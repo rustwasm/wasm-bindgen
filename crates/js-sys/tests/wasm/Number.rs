@@ -20,6 +20,24 @@ fn is_integer() {
 }
 
 #[wasm_bindgen_test]
+fn is_nan() {
+    assert!(Number::is_nan(&NAN.into()));
+
+    assert!(!Number::is_nan(&JsValue::TRUE));
+    assert!(!Number::is_nan(&JsValue::NULL));
+    assert!(!Number::is_nan(&37.into()));
+    assert!(!Number::is_nan(&"37".into()));
+    assert!(!Number::is_nan(&"37.37".into()));
+    assert!(!Number::is_nan(&"".into()));
+    assert!(!Number::is_nan(&" ".into()));
+
+    // These would all return true with the global isNaN()
+    assert!(!Number::is_nan(&"NaN".into()));
+    assert!(!Number::is_nan(&JsValue::UNDEFINED));
+    assert!(!Number::is_nan(&"blabla".into()));
+}
+
+#[wasm_bindgen_test]
 fn is_safe_integer() {
     assert_eq!(Number::is_safe_integer(&42.into()), true);
     assert_eq!(Number::is_safe_integer(&(Math::pow(2., 53.) - 1.).into()), true);
