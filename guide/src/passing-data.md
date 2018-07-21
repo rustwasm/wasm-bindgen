@@ -1,7 +1,7 @@
 # Passing arbitrary data to JS
 
 It's possible to pass data from Rust to JS not explicitly supported
-in the [Feature Reference](./feature-reference.md) by serializing vis [Serde] (https://github.com/serde-rs/serde).
+in the [Feature Reference](./feature-reference.md) by serializing via [Serde](https://github.com/serde-rs/serde).
 
 Wasm_bindgen includes the JsValue type, which streamlines serializing and deserializing.
 This page describes how to use it.
