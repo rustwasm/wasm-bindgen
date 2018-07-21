@@ -12,7 +12,6 @@ fn project() -> project_builder::Project {
 
 mod ArrayIterator;
 mod Reflect;
-mod WebAssembly;
 
 #[test]
 fn decode_uri() {
