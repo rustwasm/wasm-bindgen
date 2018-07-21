@@ -9,6 +9,7 @@
 - [What Else Can We Do?](./what-else-can-we-do.md)
 - [Closures](./closures.md)
 - [No ES Modules](./no-esm.md)
+- [Passing Arbitrary data](./passing-data.md)
 - [Feature Reference](./feature-reference.md)
 - [CLI Reference](./cli-reference.md)
 - [Type Reference](./reference.md)
