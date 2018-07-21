@@ -14,8 +14,10 @@ ton of documentation just yet, but a taste of how it works is:
 * First, install the test runner.
 
   ```
-  cargo install --path crates/test-runner
+  cargo install --path crates/cli
   ```
+
+  (this comes with the normal `wasm-bindgen` CLI tool
 
 * Next, add this to your `.cargo/config`:
 

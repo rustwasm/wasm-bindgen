@@ -13,7 +13,7 @@ DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
     |
       name="wasm-bindgen-$TRAVIS_TAG-$TARGET"
       mkdir "$name"
-      cp "target/$TARGET/release/{wasm-bindgen,wasm2es6js}" "$name/"
+      cp "target/$TARGET/release/{wasm-bindgen,wasm2es6js,wasm-bindgen-test-runner}" "$name/"
       cp README.md LICENSE-MIT LICENSE-APACHE "$name/"
       tar czvf "$name.tar.gz" "$name"
   deploy:

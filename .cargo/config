@@ -1,4 +1,4 @@
 # TODO: we shouldn't check this in to git, need to figure out how to avoid doing
 # that.
 [target.wasm32-unknown-unknown]
-runner = 'cargo +nightly run --release -p wasm-bindgen-test-runner --'
+runner = 'cargo +nightly run --release -p wasm-bindgen-cli --bin wasm-bindgen-test-runner --'

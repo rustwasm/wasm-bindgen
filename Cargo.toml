@@ -39,7 +39,6 @@ members = [
   "crates/cli",
   "crates/js-sys",
   "crates/test",
-  "crates/test-runner",
   "crates/typescript",
   "crates/web-sys",
   "crates/webidl",
