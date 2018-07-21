@@ -28,3 +28,4 @@ pub mod SetIterator;
 pub mod Symbol;
 pub mod TypedArray;
 pub mod WeakMap;
+pub mod WeakSet;
