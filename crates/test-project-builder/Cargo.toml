@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-test-project-builder"
-version = "0.2.12"
+version = "0.2.13"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/test-project-builder"
@@ -12,4 +12,4 @@ Internal test support for wasm-bindgen
 
 [dependencies]
 lazy_static = "1"
-wasm-bindgen-cli-support = { path = "../cli-support", version = '=0.2.12' }
+wasm-bindgen-cli-support = { path = "../cli-support", version = '=0.2.13' }
