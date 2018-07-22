@@ -7,10 +7,10 @@ readme = "./README.md"
 [build-dependencies]
 env_logger = "0.5.10"
 failure = "0.1"
-wasm-bindgen-webidl = { path = "../webidl", version = "=0.2.12" }
+wasm-bindgen-webidl = { path = "../webidl", version = "=0.2.13" }
 
 [dependencies]
-wasm-bindgen = { path = "../..", version = "=0.2.12" }
+wasm-bindgen = { path = "../..", version = "=0.2.13" }
 
 [dev-dependencies]
-wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.12' }
+wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.13' }

@@ -1,6 +1,6 @@
 [package]
 name = "js-sys"
-version = "0.2.12"
+version = "0.2.13"
 authors = ["Alex Crichton <alex@alexcrichton.com>"]
 readme = "./README.md"
 categories = ["wasm"]
@@ -17,10 +17,10 @@ test = false
 doctest = false
 
 [dependencies]
-wasm-bindgen = { path = "../..", version = "0.2.12" }
+wasm-bindgen = { path = "../..", version = "0.2.13" }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-wasm-bindgen-test = { path = '../test', version = '=0.2.12' }
+wasm-bindgen-test = { path = '../test', version = '=0.2.13' }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.12' }
+wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.13' }

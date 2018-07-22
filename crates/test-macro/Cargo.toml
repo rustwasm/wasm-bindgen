@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-test-macro"
-version = "0.2.12"
+version = "0.2.13"
 authors = ["The wasm-bindgen Developers"]
 
 [dependencies]

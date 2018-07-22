@@ -4,7 +4,7 @@
 
 ## 0.2.13
 
-Currently unreleased
+Released 2018-07-22
 
 ### Added
 
@@ -12,6 +12,11 @@ Currently unreleased
   and methods to allow renaming an export to JS. This allows JS to call it by
   one name and Rust to call it by another, for example using `camelCase` in JS
   and `snake_case` in Rust
+
+### Fixed
+
+* Compilation with the latest nightly compiler has been fixed (nightlies on and
+  after 2018-07-21)
 
 --------------------------------------------------------------------------------
 
