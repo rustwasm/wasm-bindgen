@@ -60,6 +60,12 @@ fn is() {
     assert!(Object::is(&"foo".into(), &"foo".into()));
     assert!(Object::is(&JsValue::from(42), &JsValue::from(42)));
     assert!(Object::is(&JsValue::from(NAN), &JsValue::from(NAN)));
+
+    let another_object = JsValue::from(Object::new());
+    assert!(!Object::is(&object, &another_object));
+    assert!(!Object::is(&JsValue::TRUE, &JsValue::FALSE));
+    assert!(!Object::is(&"foo".into(), &"bar".into()));
+    assert!(!Object::is(&JsValue::from(23), &JsValue::from(42)));
 }
 
 #[wasm_bindgen_test]
