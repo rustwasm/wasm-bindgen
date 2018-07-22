@@ -5,7 +5,7 @@
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
 
-#![feature(use_extern_macros, wasm_import_module, unsize)]
+#![feature(use_extern_macros, unsize)]
 #![no_std]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 
@@ -368,7 +368,7 @@ numbers! { i8 u8 i16 u16 i32 u32 f32 f64 }
 macro_rules! externs {
     ($(fn $name:ident($($args:tt)*) -> $ret:ty;)*) => (
         #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-        #[wasm_import_module = "__wbindgen_placeholder__"]
+        #[link(wasm_import_module = "__wbindgen_placeholder__")]
         extern {
             $(fn $name($($args)*) -> $ret;)*
         }

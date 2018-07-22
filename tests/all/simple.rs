@@ -269,7 +269,7 @@ fn no_std() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 #![no_std]
                 #![allow(dead_code)]
 
@@ -322,7 +322,7 @@ fn no_std_class() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 #![no_std]
                 #![allow(dead_code)]
 
@@ -375,7 +375,7 @@ fn jsvalue_typeof() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 
@@ -420,7 +420,7 @@ fn binding_to_unimplemented_apis_doesnt_break_everything() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 
@@ -454,7 +454,7 @@ fn optional_slices() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_custom_section, wasm_import_module)]
+                #![feature(use_extern_macros, wasm_custom_section)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 

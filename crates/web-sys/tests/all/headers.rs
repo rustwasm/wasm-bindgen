@@ -6,7 +6,7 @@ fn headers() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
                 extern crate web_sys;

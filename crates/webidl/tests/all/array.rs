@@ -102,7 +102,7 @@ fn take_and_return_a_bunch_of_slices() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 

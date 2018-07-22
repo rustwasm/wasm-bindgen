@@ -148,7 +148,7 @@ impl ToTokens for ast::Struct {
                         unsafe { &mut ::wasm_bindgen::convert::GlobalStack::new() },
                     );
 
-                    #[wasm_import_module = "__wbindgen_placeholder__"]
+                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
                     extern {
                         fn #new_fn(ptr: u32) -> u32;
                     }
@@ -784,7 +784,7 @@ impl ToTokens for ast::ImportFunction {
             #vis fn #rust_name(#me #(#arguments),*) #ret {
                 // See definition of `link_mem_intrinsics` for what this is doing
                 ::wasm_bindgen::__rt::link_mem_intrinsics();
-                #[wasm_import_module = "__wbindgen_placeholder__"]
+                #[link(wasm_import_module = "__wbindgen_placeholder__")]
                 extern {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
                 }
@@ -910,7 +910,7 @@ impl ToTokens for ast::ImportStatic {
             #vis static #name: ::wasm_bindgen::JsStatic<#ty> = {
                 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 fn init() -> #ty {
-                    #[wasm_import_module = "__wbindgen_placeholder__"]
+                    #[link(wasm_import_module = "__wbindgen_placeholder__")]
                     extern {
                         fn #shim_name() -> <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi;
                     }

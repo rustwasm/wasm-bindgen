@@ -1,5 +1,5 @@
 #![cfg(target_arch = "wasm32")]
-#![feature(use_extern_macros, wasm_import_module)]
+#![feature(use_extern_macros)]
 #![allow(non_snake_case)]
 
 extern crate js_sys;

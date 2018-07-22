@@ -17,7 +17,7 @@
 //! bindings.
 
 #![doc(html_root_url = "https://docs.rs/js-sys/0.2")]
-#![feature(use_extern_macros, wasm_import_module)]
+#![feature(use_extern_macros)]
 
 extern crate wasm_bindgen;
 
@@ -111,6 +111,15 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/escape
     #[wasm_bindgen]
     pub fn escape(string: &str) -> JsString;
+
+    /// The unescape() function computes a new string in which hexadecimal escape 
+    /// sequences are replaced with the character that it represents. The escape sequences might 
+    /// be introduced by a function like escape. Usually, decodeURI or decodeURIComponent
+    /// are preferred over unescape.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/unescape
+    #[wasm_bindgen]
+    pub fn unescape(string: &str) -> JsString;
 }
 
 // Array

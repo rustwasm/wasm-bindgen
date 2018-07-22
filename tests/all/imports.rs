@@ -6,7 +6,7 @@ fn simple() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -94,7 +94,7 @@ fn unused() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 #![allow(dead_code)]
 
                 extern crate wasm_bindgen;
@@ -131,7 +131,7 @@ fn string_ret() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -171,7 +171,7 @@ fn strings() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -218,7 +218,7 @@ fn exceptions() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -282,7 +282,7 @@ fn exn_caught() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -326,7 +326,7 @@ fn free_imports() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -363,7 +363,7 @@ fn import_a_field() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -401,7 +401,7 @@ fn rename() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -447,7 +447,7 @@ fn versions() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -496,7 +496,7 @@ fn underscore_pattern() {
     project()
         .debug(false)
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -531,7 +531,7 @@ fn rust_keyword() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -573,7 +573,7 @@ fn rust_keyword2() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -614,7 +614,7 @@ fn custom_type() {
     project()
         .debug(false)
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -677,7 +677,7 @@ fn unused_imports_not_generated() {
     project
         .debug(false)
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 

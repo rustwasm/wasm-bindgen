@@ -6,7 +6,7 @@ fn simple() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -53,7 +53,7 @@ fn owned() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -100,7 +100,7 @@ fn clone() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -153,7 +153,7 @@ fn promote() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -203,7 +203,7 @@ fn returning_vector() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -247,7 +247,7 @@ fn another_vector_return() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -290,7 +290,7 @@ fn serde() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
                 #[macro_use]
