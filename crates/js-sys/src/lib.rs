@@ -1712,6 +1712,12 @@ extern "C" {
     #[wasm_bindgen(method, js_name = hasOwnProperty)]
     pub fn has_own_property(this: &Object, property: &JsValue) -> bool;
 
+    /// The Object.is() method determines whether two values are the same value.
+    /// 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn is(value_1: &JsValue, value_2: &JsValue) -> bool;
+
     /// The `Object.isExtensible()` method determines if an object is extensible
     /// (whether it can have new properties added to it).
     ///

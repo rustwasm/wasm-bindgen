@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use std::f64::NAN;
 use js_sys::*;
 
 #[wasm_bindgen]
@@ -46,6 +47,19 @@ fn has_own_property() {
 fn to_string() {
     assert_eq!(Object::new().to_string(), "[object Object]");
     assert_eq!(foo_42().to_string(), "[object Object]");
+}
+
+#[wasm_bindgen_test]
+fn is() {
+    let object = JsValue::from(Object::new());
+    assert!(Object::is(&object, &object));
+    assert!(Object::is(&JsValue::undefined(), &JsValue::undefined()));
+    assert!(Object::is(&JsValue::null(), &JsValue::null()));
+    assert!(Object::is(&JsValue::TRUE, &JsValue::TRUE));
+    assert!(Object::is(&JsValue::FALSE, &JsValue::FALSE));
+    assert!(Object::is(&"foo".into(), &"foo".into()));
+    assert!(Object::is(&JsValue::from(42), &JsValue::from(42)));
+    assert!(Object::is(&JsValue::from(NAN), &JsValue::from(NAN)));
 }
 
 #[wasm_bindgen_test]
