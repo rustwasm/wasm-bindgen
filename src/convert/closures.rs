@@ -1,3 +1,5 @@
+#![allow(const_err)] // FIXME(rust-lang/rust#52603)
+
 use core::mem;
 
 use convert::{FromWasmAbi, IntoWasmAbi, GlobalStack, Stack};
