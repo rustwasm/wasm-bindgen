@@ -6,7 +6,7 @@ fn simple() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -75,7 +75,7 @@ fn strings() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -139,7 +139,7 @@ fn exceptions() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -207,7 +207,7 @@ fn pass_one_to_another() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -263,7 +263,7 @@ fn pass_into_js() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -316,7 +316,7 @@ fn issue_27() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
             use wasm_bindgen::prelude::*;
@@ -365,7 +365,7 @@ fn pass_into_js_as_js_class() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -418,7 +418,7 @@ fn constructors() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -502,7 +502,7 @@ fn empty_structs() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -538,7 +538,7 @@ fn public_fields() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -597,7 +597,7 @@ fn using_self() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -635,7 +635,7 @@ fn readonly_fields() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -677,7 +677,7 @@ fn readonly_fields() {
 fn double_consume() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -714,7 +714,7 @@ fn double_consume() {
 fn rename_function_for_js() {
     project()
         .file("src/lib.rs", r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 

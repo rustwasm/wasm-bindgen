@@ -92,7 +92,7 @@ fn import() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -247,7 +247,7 @@ fn pass_array_works() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -303,7 +303,7 @@ fn import_mut() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -452,7 +452,7 @@ fn return_vec_ok() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 extern crate wasm_bindgen;
 
                 use wasm_bindgen::prelude::*;

@@ -2,7 +2,7 @@
 //!
 //! More documentation can be found in the README for this crate!
 
-#![feature(use_extern_macros, wasm_import_module)]
+#![feature(use_extern_macros)]
 
 extern crate wasm_bindgen_test_macro;
 extern crate wasm_bindgen;

@@ -6,7 +6,7 @@ fn dependencies_work() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 extern crate wasm_bindgen;
                 extern crate dependency;
                 use wasm_bindgen::prelude::*;
@@ -51,7 +51,7 @@ fn dependencies_work() {
         .file(
             "vendor/dependency/src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 extern crate wasm_bindgen;
                 use wasm_bindgen::prelude::*;
 
@@ -97,7 +97,7 @@ fn same_api_two_crates() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 extern crate wasm_bindgen;
                 extern crate a;
                 extern crate b;
@@ -158,7 +158,7 @@ fn same_api_two_crates() {
         .file(
             "a/src/lib.rs",
             "
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 extern crate wasm_bindgen;
 
                 use wasm_bindgen::prelude::*;
@@ -190,7 +190,7 @@ fn same_api_two_crates() {
         .file(
             "b/src/lib.rs",
             "
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
                 extern crate wasm_bindgen;
 
                 use wasm_bindgen::prelude::*;

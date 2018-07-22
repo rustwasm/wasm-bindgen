@@ -6,7 +6,7 @@ fn works() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -56,7 +56,7 @@ fn cannot_reuse() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 
@@ -105,7 +105,7 @@ fn long_lived() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -168,7 +168,7 @@ fn many_arity() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -269,7 +269,7 @@ fn long_lived_dropping() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -322,7 +322,7 @@ fn long_fnmut_recursive() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -369,7 +369,7 @@ fn fnmut() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -423,7 +423,7 @@ fn fnmut_bad() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -484,7 +484,7 @@ fn string_arguments() {
         .file(
             "src/lib.rs",
             r#"
-            #![feature(use_extern_macros, wasm_import_module)]
+            #![feature(use_extern_macros)]
 
             extern crate wasm_bindgen;
 
@@ -529,7 +529,7 @@ fn string_ret() {
         .file(
             "src/lib.rs",
             r#"
-                #![feature(use_extern_macros, wasm_import_module)]
+                #![feature(use_extern_macros)]
 
                 extern crate wasm_bindgen;
 

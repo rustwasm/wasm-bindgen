@@ -5,7 +5,7 @@ can also [explore this code online](https://webassembly.studio/?f=t61j18noqz):
 
 ```rust,ignore
 // src/lib.rs
-#![feature(use_extern_macros, wasm_import_module)]
+#![feature(use_extern_macros)]
 
 extern crate wasm_bindgen;
 
