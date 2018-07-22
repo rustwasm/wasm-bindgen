@@ -1,9 +1,20 @@
+#![cfg(not(target_arch = "wasm32"))]
 #![allow(non_snake_case)]
 
-use super::project;
+extern crate wasm_bindgen_test_project_builder as project_builder;
+
+fn project() -> project_builder::Project {
+    let mut p = project_builder::project();
+    p.add_local_dependency("js-sys", env!("CARGO_MANIFEST_DIR"));
+    return p
+}
+
+// NB: currently this older test suite is only used for tests which require
+// headless browser support, otherwise all new tests should go in the `wasm`
+// test suite next to this one.
 
 #[test]
-fn values() {
+fn ArrayIterator_values() {
     let mut project = project();
     project.file(
             "src/lib.rs",
