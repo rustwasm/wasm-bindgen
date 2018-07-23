@@ -1154,6 +1154,12 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn fround(x: f64) -> f32;
 
+    /// The Math.hypot() function returns the square root of the sum of squares of its arguments.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn hypot(x: f64, y: f64) -> f64;
+
     /// The Math.imul() function returns the result of the C-like 32-bit multiplication of the
     /// two parameters.
     ///
