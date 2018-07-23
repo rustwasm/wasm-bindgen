@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen"
-version = "0.2.12"
+version = "0.2.13"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
@@ -27,12 +27,12 @@ serde-serialize = ["serde", "serde_json", "std"]
 xxx_debug_only_print_generated_code = ["wasm-bindgen-macro/xxx_debug_only_print_generated_code"]
 
 [dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.12" }
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.13" }
 serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 
 [dev-dependencies]
-wasm-bindgen-test-project-builder = { path = "crates/test-project-builder", version = '=0.2.12' }
+wasm-bindgen-test-project-builder = { path = "crates/test-project-builder", version = '=0.2.13' }
 
 [workspace]
 members = [
