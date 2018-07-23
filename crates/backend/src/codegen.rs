@@ -580,7 +580,7 @@ impl ToTokens for ast::ImportEnum {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let vis = &self.vis;
         let name = &self.name;
-        let expect_string = format!("attempted to convert invalid JSValue into {}", name);
+        let expect_string = format!("attempted to convert invalid {} into JSValue", name);
         let variants = &self.variants;
         let variant_strings = &self.variant_values;
         let attrs = &self.rust_attrs;
@@ -613,6 +613,8 @@ impl ToTokens for ast::ImportEnum {
             #(#attrs)*
             #vis enum #name {
                 #(#variants = #variant_indexes_ref,)*
+                #[doc(hidden)]
+                __Nonexhaustive,
             }
 
             impl #name {
@@ -647,14 +649,15 @@ impl ToTokens for ast::ImportEnum {
                     js: Self::Abi,
                     extra: &mut ::wasm_bindgen::convert::Stack,
                 ) -> Self {
-                    #name::from_js_value(&::wasm_bindgen::JsValue::from_abi(js, extra)).expect(#expect_string)
+                    #name::from_js_value(&::wasm_bindgen::JsValue::from_abi(js, extra)).unwrap_or(#name::__Nonexhaustive)
                 }
             }
 
             impl From<#name> for ::wasm_bindgen::JsValue {
                 fn from(obj: #name) -> ::wasm_bindgen::JsValue {
                     match obj {
-                        #(#variant_paths_ref => ::wasm_bindgen::JsValue::from_str(#variant_strings)),*
+                        #(#variant_paths_ref => ::wasm_bindgen::JsValue::from_str(#variant_strings),)*
+                        #name::__Nonexhaustive => panic!(#expect_string),
                     }
                 }
             }
