@@ -583,6 +583,7 @@ impl ToTokens for ast::ImportEnum {
         let expect_string = format!("attempted to convert invalid JSValue into {}", name);
         let variants = &self.variants;
         let variant_strings = &self.variant_values;
+        let attrs = &self.rust_attrs;
 
         let mut current_idx: usize = 0;
         let variant_indexes: Vec<Literal> = variants
@@ -609,7 +610,7 @@ impl ToTokens for ast::ImportEnum {
 
         (quote! {
             #[allow(bad_style)]
-            #[derive(Copy, Clone, Debug)]
+            #(#attrs)*
             #vis enum #name {
                 #(#variants = #variant_indexes_ref,)*
             }

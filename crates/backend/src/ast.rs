@@ -112,6 +112,8 @@ pub struct ImportEnum {
     pub variants: Vec<Ident>,
     /// The JS string values of the variants
     pub variant_values: Vec<String>,
+    /// Attributes to apply to the Rust enum
+    pub rust_attrs: Vec<syn::Attribute>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
