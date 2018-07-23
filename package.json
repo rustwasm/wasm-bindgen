@@ -10,7 +10,7 @@
   "devDependencies": {
     "@types/node": "^10.5.2",
     "babel-eslint": "^8.2.6",
-    "eslint": "^5.1.0",
+    "eslint": "^5.2.0",
     "geckodriver": "^1.11.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "ts-loader": "^4.4.2",
