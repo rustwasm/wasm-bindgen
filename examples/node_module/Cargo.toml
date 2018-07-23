@@ -1,0 +1,10 @@
+[package]
+name = "node_module"
+version = "0.1.0"
+authors = ["Corbin Uselton <c@decimal.io>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { path = "../.." }
