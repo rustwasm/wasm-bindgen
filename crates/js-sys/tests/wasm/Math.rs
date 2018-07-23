@@ -129,6 +129,14 @@ fn fround() {
 }
 
 #[wasm_bindgen_test]
+fn hypot() {
+    assert!(Math::hypot(3., 4.) == 5.);
+    assert!(Math::hypot(3.9, 5.2) == 6.5);
+    assert!(Math::hypot(6., 8.) == 10.);
+    assert!(Math::hypot(7., 24.) == 25.);
+}
+
+#[wasm_bindgen_test]
 fn imul() {
     assert!(Math::imul(3, 4) == 12);
     assert!(Math::imul(-5, 12) == -60);
