@@ -82,7 +82,15 @@ impl Output {
                         ));
                         continue;
                     }
-                    Internal::Table(_) => continue,
+                    Internal::Table(_) => {
+                        exports.push_str(&format!(
+                            "
+                            export const {}: WebAssembly.Table;
+                            ",
+                            entry.field()
+                        ));
+                        continue;
+                    }
                     Internal::Global(_) => continue,
                 };
 
@@ -136,8 +144,8 @@ impl Output {
         }
         let mut js_imports = String::new();
         let mut exports = String::new();
+        let mut set_exports = String::new();
         let mut imports = String::new();
-        let mut export_mem = false;
 
         if let Some(i) = self.module.import_section() {
             let mut set = HashSet::new();
@@ -170,73 +178,26 @@ impl Output {
         }
 
         if let Some(i) = self.module.export_section() {
-            let imported_functions = self
-                .module
-                .import_section()
-                .map(|m| m.functions() as u32)
-                .unwrap_or(0);
             for entry in i.entries() {
-                let idx = match *entry.internal() {
-                    Internal::Function(i) => i - imported_functions,
-                    Internal::Memory(_) => {
-                        export_mem = true;
-                        continue;
-                    }
-                    Internal::Table(_) => continue,
-                    Internal::Global(_) => continue,
-                };
-
-                let functions = self
-                    .module
-                    .function_section()
-                    .expect("failed to find function section");
-                let idx = functions.entries()[idx as usize].type_ref();
-
-                let types = self
-                    .module
-                    .type_section()
-                    .expect("failed to find type section");
-                let ty = match types.types()[idx as usize] {
-                    Type::Function(ref f) => f,
-                };
-                let mut args = String::new();
-                for (i, _) in ty.params().iter().enumerate() {
-                    if i > 0 {
-                        args.push_str(", ");
-                    }
-                    args.push((b'a' + (i as u8)) as char);
-                }
-
-                exports.push_str(&format!(
-                    "
-                    export function {name}({args}) {{
-                        {ret} wasm.exports.{name}({args});
-                    }}
-                    ",
-                    name = entry.field(),
-                    args = args,
-                    ret = if ty.return_type().is_some() {
-                        "return"
-                    } else {
-                        ""
-                    },
-                ));
+                exports.push_str("export let ");
+                exports.push_str(entry.field());
+                exports.push_str(";\n");
+                set_exports.push_str(entry.field());
+                set_exports.push_str(" = wasm.exports.");
+                set_exports.push_str(entry.field());
+                set_exports.push_str(";\n");
             }
         }
         let inst = format!(
             "
             WebAssembly.instantiate(bytes,{{ {imports} }})
                 .then(obj => {{
-                    wasm = obj.instance;
-                    {memory}
+                    const wasm = obj.instance;
+                    {set_exports}
                 }})
             ",
             imports = imports,
-            memory = if export_mem {
-                "memory = wasm.exports.memory;"
-            } else {
-                ""
-            },
+            set_exports = set_exports,
         );
         let (bytes, booted) = if self.base64 {
             let wasm = serialize(self.module).expect("failed to serialize");
@@ -274,9 +235,7 @@ impl Output {
         Ok(format!(
             "
             {js_imports}
-            let wasm;
             {bytes}
-            {mem_export}
             export const booted = {booted};
             {exports}
             ",
@@ -284,7 +243,6 @@ impl Output {
             booted = booted,
             js_imports = js_imports,
             exports = exports,
-            mem_export = if export_mem { "export let memory;" } else { "" },
         ))
     }
 
