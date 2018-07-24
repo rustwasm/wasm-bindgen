@@ -82,7 +82,7 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
     let mut defined = BTreeSet::from_iter(
         vec![
             "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
-            "usize", "isize", "f32", "f64", "Result", "String", "Vec",
+            "usize", "isize", "f32", "f64", "Result", "String", "Vec", "Option",
         ].into_iter()
             .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
     );
@@ -533,6 +533,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Iterable {
             return Ok(());
         }
 
+/* TODO
         let throws = util::throws(&self.extended_attributes);
         let return_value = webidl::ast::ReturnType::NonVoid(self.value_type.clone());
         let args = [];
@@ -543,7 +544,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Iterable {
                 &return_value,
                 self_name,
                 false,
-                true, // Should be false
+                false, // Should be false
             )
             .map(wrap_import_function)
             .map(|import| program.imports.push(import));
@@ -551,14 +552,15 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Iterable {
         first_pass
             .create_basic_method(
                 &args,
-                Some(&"item".to_string()),
-                &return_value,
+                Some(&"keys".to_string()),
+                &return_value, // Should be a number
                 self_name,
                 false,
-                true, // Should be false
+                false, // Should be false
             )
             .map(wrap_import_function)
             .map(|import| program.imports.push(import));
+*/
 
         Ok(())
     }
