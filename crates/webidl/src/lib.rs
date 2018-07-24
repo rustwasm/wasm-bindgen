@@ -14,7 +14,9 @@ extern crate heck;
 #[macro_use]
 extern crate log;
 extern crate proc_macro2;
+#[macro_use]
 extern crate quote;
+#[macro_use]
 extern crate syn;
 extern crate wasm_bindgen_backend as backend;
 extern crate webidl;
@@ -640,6 +642,7 @@ impl<'a> WebidlParse<()> for webidl::ast::Enum {
                     .map(|v| rust_ident(v.to_camel_case().as_str()))
                     .collect(),
                 variant_values: self.variants.clone(),
+                rust_attrs: vec![parse_quote!(#[derive(Copy, Clone, PartialEq, Debug)])],
             }),
         });
 
