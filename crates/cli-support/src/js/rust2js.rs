@@ -214,7 +214,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     builder.rust_argument("this.a");
                 }
                 builder
-                    .rust_argument("this.b")
                     .process(&closure.function)?
                     .finish("function", "this.f")
             };
@@ -225,18 +224,16 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             let reset_idx = format!(
                 "\
                  let cb{0} = {js};\n\
+                 cb{0}.f = wasm.__wbg_function_table.get(getGlobalArgument({f}));\n\
                  cb{0}.a = getGlobalArgument({a});\n\
-                 cb{0}.b = getGlobalArgument({b});\n\
-                 cb{0}.f = wasm.__wbg_function_table.get(getGlobalArgument({c}));\n\
                  let real = cb{0}.bind(cb{0});\n\
                  real.original = cb{0};\n\
                  idx{0} = getUint32Memory()[{0} / 4] = addHeapObject(real);\n\
                  ",
                 abi,
                 js = js,
+                f = self.global_idx(),
                 a = self.global_idx(),
-                b = self.global_idx(),
-                c = self.global_idx(),
             );
             self.prelude(&format!(
                 "\

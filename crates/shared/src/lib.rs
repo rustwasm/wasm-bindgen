@@ -3,7 +3,7 @@
 #[macro_use]
 extern crate serde_derive;
 
-pub const SCHEMA_VERSION: &str = "6";
+pub const SCHEMA_VERSION: &str = "7";
 
 #[derive(Deserialize)]
 pub struct ProgramOnlySchema {

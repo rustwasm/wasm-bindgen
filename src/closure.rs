@@ -4,14 +4,18 @@
 //! closures" from Rust to JS. Some more details can be found on the `Closure`
 //! type itself.
 
+#![allow(const_err)] // FIXME(rust-lang/rust#52603)
+
 use std::cell::UnsafeCell;
 use std::marker::Unsize;
 use std::mem::{self, ManuallyDrop};
 use std::prelude::v1::*;
+use std::rc::Rc;
 
 use JsValue;
 use convert::*;
 use describe::*;
+use throw;
 
 /// A handle to both a closure in Rust as well as JS closure which will invoke
 /// the Rust closure.
@@ -65,7 +69,9 @@ use describe::*;
 /// }
 /// ```
 pub struct Closure<T: ?Sized> {
-    inner: UnsafeCell<Box<T>>,
+    // Actuall a `Rc` pointer, but in raw form so we can easily make copies.
+    // See below documentation for why this is in an `Rc`.
+    inner: *const UnsafeCell<Box<T>>,
     js: UnsafeCell<ManuallyDrop<JsValue>>,
 }
 
@@ -96,7 +102,7 @@ impl<T> Closure<T>
     /// This is the function where the JS closure is manufactured.
     pub fn wrap(t: Box<T>) -> Closure<T> {
         Closure {
-            inner: UnsafeCell::new(t),
+            inner: Rc::into_raw(Rc::new(UnsafeCell::new(t))),
             js: UnsafeCell::new(ManuallyDrop::new(JsValue { idx: !0 })),
         }
     }
@@ -140,8 +146,8 @@ impl<'a, T> IntoWasmAbi for &'a Closure<T>
 
     fn into_abi(self, extra: &mut Stack) -> u32 {
         unsafe {
-            let fnptr = WasmClosure::into_abi(&mut **self.inner.get(), extra);
-            extra.push(fnptr);
+            extra.push(T::invoke_fn());
+            extra.push(self.inner as u32);
             &mut (*self.js.get()).idx as *const u32 as u32
         }
     }
@@ -166,6 +172,7 @@ impl<T> Drop for Closure<T>
             if idx != !0 {
                 super::__wbindgen_cb_drop(idx);
             }
+            drop(Rc::from_raw(self.inner));
         }
     }
 }
@@ -178,8 +185,22 @@ impl<T> Drop for Closure<T>
 pub unsafe trait WasmClosure: 'static {
     fn describe();
 
-    unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32;
+    fn invoke_fn() -> u32;
 }
+
+// The memory safety here in these implementations below is a bit tricky. We
+// want to be able to drop the `Closure` object from within the invocation of a
+// `Closure` for cases like promises. That means that while it's running we
+// might drop the `Closure`, but that shouldn't invalidate the environment yet.
+//
+// Instead what we do is to wrap closures in `Rc` variables. The main `Closure`
+// has a strong reference count which keeps the trait object alive. Each
+// invocation of a closure then *also* clones this and gets a new reference
+// count. When the closure returns it will release the reference count.
+//
+// This means that if the main `Closure` is dropped while it's being invoked
+// then destruction is deferred until execution returns. Otherwise it'll
+// deallocate data immediately.
 
 macro_rules! doit {
     ($(
@@ -193,11 +214,30 @@ macro_rules! doit {
                 <&Self>::describe();
             }
 
-            unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32 {
-                IntoWasmAbi::into_abi(&*me, extra)
+            fn invoke_fn() -> u32 {
+                #[allow(non_snake_case)]
+                unsafe extern fn invoke<$($var: FromWasmAbi,)*>(
+                    a: *const UnsafeCell<Box<Fn($($var),*)>>,
+                    $($var: <$var as FromWasmAbi>::Abi),*
+                ) {
+                    if a.is_null() {
+                        throw("closure invoked recursively or destroyed already");
+                    }
+                    let a = Rc::from_raw(a);
+                    let my_handle = a.clone();
+                    drop(Rc::into_raw(a));
+                    let f: &Fn($($var),*) = &**my_handle.get();
+                    let mut _stack = GlobalStack::new();
+                    $(
+                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    )*
+                    f($($var),*)
+                }
+                invoke::<$($var,)*> as u32
             }
         }
-        // Fn with return
+
+        // Fn with no return
         unsafe impl<$($var,)* R> WasmClosure for Fn($($var),*) -> R
             where $($var: FromWasmAbi + 'static,)*
                   R: IntoWasmAbi + 'static,
@@ -206,8 +246,26 @@ macro_rules! doit {
                 <&Self>::describe();
             }
 
-            unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32 {
-                IntoWasmAbi::into_abi(&*me, extra)
+            fn invoke_fn() -> u32 {
+                #[allow(non_snake_case)]
+                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: IntoWasmAbi>(
+                    a: *const UnsafeCell<Box<Fn($($var),*) -> R>>,
+                    $($var: <$var as FromWasmAbi>::Abi),*
+                ) -> <R as IntoWasmAbi>::Abi {
+                    if a.is_null() {
+                        throw("closure invoked recursively or destroyed already");
+                    }
+                    let a = Rc::from_raw(a);
+                    let my_handle = a.clone();
+                    drop(Rc::into_raw(a));
+                    let f: &Fn($($var),*) -> R = &**my_handle.get();
+                    let mut _stack = GlobalStack::new();
+                    $(
+                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    )*
+                    f($($var),*).into_abi(&mut GlobalStack::new())
+                }
+                invoke::<$($var,)* R> as u32
             }
         }
         // FnMut with no return
@@ -218,11 +276,30 @@ macro_rules! doit {
                 <&mut Self>::describe();
             }
 
-            unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32 {
-                IntoWasmAbi::into_abi(&mut *me, extra)
+            fn invoke_fn() -> u32 {
+                #[allow(non_snake_case)]
+                unsafe extern fn invoke<$($var: FromWasmAbi,)*>(
+                    a: *const UnsafeCell<Box<FnMut($($var),*)>>,
+                    $($var: <$var as FromWasmAbi>::Abi),*
+                ) {
+                    if a.is_null() {
+                        throw("closure invoked recursively or destroyed already");
+                    }
+                    let a = Rc::from_raw(a);
+                    let my_handle = a.clone();
+                    drop(Rc::into_raw(a));
+                    let f: &mut FnMut($($var),*) = &mut **my_handle.get();
+                    let mut _stack = GlobalStack::new();
+                    $(
+                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    )*
+                    f($($var),*)
+                }
+                invoke::<$($var,)*> as u32
             }
         }
-        // FnMut with return
+
+        // Fn with no return
         unsafe impl<$($var,)* R> WasmClosure for FnMut($($var),*) -> R
             where $($var: FromWasmAbi + 'static,)*
                   R: IntoWasmAbi + 'static,
@@ -231,8 +308,26 @@ macro_rules! doit {
                 <&mut Self>::describe();
             }
 
-            unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32 {
-                IntoWasmAbi::into_abi(&mut *me, extra)
+            fn invoke_fn() -> u32 {
+                #[allow(non_snake_case)]
+                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: IntoWasmAbi>(
+                    a: *const UnsafeCell<Box<FnMut($($var),*) -> R>>,
+                    $($var: <$var as FromWasmAbi>::Abi),*
+                ) -> <R as IntoWasmAbi>::Abi {
+                    if a.is_null() {
+                        throw("closure invoked recursively or destroyed already");
+                    }
+                    let a = Rc::from_raw(a);
+                    let my_handle = a.clone();
+                    drop(Rc::into_raw(a));
+                    let f: &mut FnMut($($var),*) -> R = &mut **my_handle.get();
+                    let mut _stack = GlobalStack::new();
+                    $(
+                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    )*
+                    f($($var),*).into_abi(&mut GlobalStack::new())
+                }
+                invoke::<$($var,)* R> as u32
             }
         }
     )*)
