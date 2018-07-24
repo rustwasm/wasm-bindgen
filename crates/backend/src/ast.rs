@@ -2,22 +2,39 @@ use proc_macro2::{Ident, Span};
 use shared;
 use syn;
 
+/// An abstract syntax tree representing a rust program. Contains
+/// extra information for joining up this rust code with javascript.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
 #[derive(Default)]
 pub struct Program {
+    /// rust -> js interfaces
     pub exports: Vec<Export>,
+    /// js -> rust interfaces
     pub imports: Vec<Import>,
+    /// rust enums
     pub enums: Vec<Enum>,
+    /// rust structs
     pub structs: Vec<Struct>,
+    /// rust type aliases
     pub type_aliases: Vec<TypeAlias>,
+    /// rust consts
     pub consts: Vec<Const>,
 }
 
+/// A rust to js interface. Allows interaction with rust objects/functions
+/// from javascript.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub struct Export {
+    /// The javascript class name.
     pub class: Option<Ident>,
+    /// The type of `self` (either `self`, `&self`, or `&mut self`)
     pub method_self: Option<MethodSelf>,
+    /// The name of the constructor function (e.g. new).
+    ///
+    /// This allows javascript to expose an `Object` interface, where calling
+    /// the constructor maps correctly to rust.
     pub constructor: Option<String>,
+    /// The rust function
     pub function: Function,
     pub comments: Vec<String>,
     pub rust_name: Ident,
@@ -219,6 +236,8 @@ impl Function {
 }
 
 impl Export {
+    /// Mangles a rust -> javascript export, so that the created Ident will be unique over function
+    /// name and class name, if the function belongs to a javascript class.
     pub(crate) fn rust_symbol(&self) -> Ident {
         let mut generated_name = String::from("__wasm_bindgen_generated");
         if let Some(class) = &self.class {
@@ -230,6 +249,7 @@ impl Export {
         Ident::new(&generated_name, Span::call_site())
     }
 
+    /// ???
     pub(crate) fn export_name(&self) -> String {
         let fn_name = self.function.name.to_string();
         match &self.class {
@@ -254,6 +274,7 @@ impl Export {
         }
     }
 }
+
 
 impl Enum {
     fn shared(&self) -> shared::Enum {
@@ -310,6 +331,7 @@ impl Import {
 }
 
 impl ImportKind {
+    /// Whether this type can be inside an `impl` block.
     pub fn fits_on_impl(&self) -> bool {
         match *self {
             ImportKind::Function(_) => true,
@@ -330,10 +352,14 @@ impl ImportKind {
 }
 
 impl ImportFunction {
+    /// If the rust object has a `fn xxx(&self) -> MyType` method, get the name for a getter in
+    /// javascript (in this case `xxx`, so you can write `val = obj.xxx`)
     fn infer_getter_property(&self) -> String {
         self.function.name.to_string()
     }
 
+    /// If the rust object has a `fn set_xxx(&mut self, MyType)` style method, get the name
+    /// for a setter in javascript (in this case `xxx`, so you can write `obj.xxx = val`)
     fn infer_setter_property(&self) -> String {
         let name = self.function.name.to_string();
         assert!(name.starts_with("set_"), "setters must start with `set_`");
