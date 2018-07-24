@@ -228,7 +228,7 @@ macro_rules! doit {
                   R: IntoWasmAbi + 'static,
         {
             fn describe() {
-                <&Self>::describe();
+                <&mut Self>::describe();
             }
 
             unsafe fn into_abi(me: *mut Self, extra: &mut Stack) -> u32 {
