@@ -173,6 +173,24 @@ fn log2() {
 }
 
 #[wasm_bindgen_test]
+fn max() {
+    assert_eq!(Math::max(3., 1.), 3.);
+    assert_eq!(Math::max(-3., 1.), 1.);
+    assert_eq!(Math::max(9913., 43.4), 9913.);
+    assert_eq!(Math::max(-27., -43.), -27.);
+    assert_eq!(Math::max(-423.27, -43.1), -43.1);
+}
+
+#[wasm_bindgen_test]
+fn min() {
+    assert_eq!(Math::min(3., 1.), 1.);
+    assert_eq!(Math::min(-3., 1.), -3.);
+    assert_eq!(Math::min(9913., 43.4), 43.4);
+    assert_eq!(Math::min(-27., -43.), -43.);
+    assert_eq!(Math::min(-423.27, -43.1), -423.27);
+}
+
+#[wasm_bindgen_test]
 fn pow() {
     assert_eq!(Math::pow(7., 2.), 49.);
     assert_eq!(Math::pow(3.8, 0.5), 3.8f64.powf(0.5f64));

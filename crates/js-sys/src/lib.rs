@@ -1191,6 +1191,18 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Math)]
     pub fn log2(x: f64) -> f64;
 
+    /// The Math.max() function returns the largest of two numbers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn max(x: f64, y: f64) -> f64;
+
+    /// The static function Math.min() returns the lowest-valued number passed into it.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/min
+    #[wasm_bindgen(static_method_of = Math)]
+    pub fn min(x: f64, y: f64) -> f64;
+
     /// The Math.pow() function returns the base to the exponent power, that is, base^exponent.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow
