@@ -31,8 +31,8 @@ fn get_hours() {
 
 #[wasm_bindgen_test]
 fn get_milliseconds() {
-    let date = Date::new(&"July 20, 69 00:20:18".into());
-    let ms = Date::new(&"July 20, 69 00:20:18:123".into());
+    let date = Date::new(&"1995-12-17T09:24:00Z".into());
+    let ms = Date::new(&"1995-12-17T09:24:00.123Z".into());
 
     assert_eq!(date.get_milliseconds(), 0);
     assert_eq!(ms.get_milliseconds(), 123);
@@ -287,8 +287,8 @@ fn set_utc_hours() {
 
 #[wasm_bindgen_test]
 fn set_utc_milliseconds() {
-    let event1 = Date::new(&"August 19, 1975 23:15:30 GMT-3:00".into());
-    let event2 = Date::new(&"August 20, 1975 02:15:30.420Z GMT".into());
+    let event1 = Date::new(&"1995-12-17T09:24:00Z".into());
+    let event2 = Date::new(&"1995-12-17T09:24:00.420Z".into());
 
     let ms = event1.set_utc_milliseconds(420);
 
