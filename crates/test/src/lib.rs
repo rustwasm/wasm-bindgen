@@ -20,6 +20,6 @@ macro_rules! console_log {
     )
 }
 
-#[path = "rt.rs"]
+#[path = "rt/mod.rs"]
 #[doc(hidden)]
 pub mod __rt;
