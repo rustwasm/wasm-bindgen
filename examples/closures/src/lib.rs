@@ -55,7 +55,7 @@ pub fn run() {
             .get_element_by_id("current-time")
             .set_inner_html(&String::from(
                 Date::new(&JsValue::undefined())
-                    .to_locale_string(&"en-GB".into(), &JsValue::undefined()),
+                    .to_locale_string("en-GB", &JsValue::undefined()),
             ));
     }
 

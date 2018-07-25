@@ -74,19 +74,19 @@ fn to_string_tag() {
 
 #[wasm_bindgen_test]
 fn for_() {
-    let foo = JsValue::from(Symbol::for_(&"foo".into()));
-    let bar = JsValue::from(Symbol::for_(&"bar".into()));
+    let foo = JsValue::from(Symbol::for_("foo"));
+    let bar = JsValue::from(Symbol::for_("bar"));
     assert_eq!(foo, foo);
     assert_eq!(bar, bar);
     assert_ne!(foo, bar);
     assert_ne!(bar, foo);
 
-    assert_eq!(Symbol::for_(&"mario".into()).to_string(), "Symbol(mario)");
+    assert_eq!(Symbol::for_("mario").to_string(), "Symbol(mario)");
 }
 
 #[wasm_bindgen_test]
 fn key_for() {
-    let sym = Symbol::for_(&"foo".into());
+    let sym = Symbol::for_("foo");
     assert_eq!(Symbol::key_for(&sym), "foo");
     assert!(Symbol::key_for(&Symbol::iterator()).is_undefined());
     assert!(Symbol::key_for(&gensym(JsValue::undefined())).is_undefined());
@@ -95,13 +95,13 @@ fn key_for() {
 #[wasm_bindgen_test]
 fn to_string() {
     assert_eq!(Symbol::iterator().to_string(), "Symbol(Symbol.iterator)");
-    assert_eq!(Symbol::for_(&"foo".into()).to_string(), "Symbol(foo)");
+    assert_eq!(Symbol::for_("foo").to_string(), "Symbol(foo)");
     assert_eq!(gensym("desc".into()).to_string(), "Symbol(desc)");
 }
 
 #[wasm_bindgen_test]
 fn value_of() {
-    let a = Symbol::for_(&"foo".into());
+    let a = Symbol::for_("foo");
     assert_eq!(JsValue::from(a.value_of()), JsValue::from(a));
     let a = gensym(JsValue::undefined());
     assert_eq!(JsValue::from(a.value_of()), JsValue::from(a));
