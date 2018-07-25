@@ -78,6 +78,7 @@ pub fn compile(webidl_source: &str) -> Result<String> {
     Ok(compile_ast(ast))
 }
 
+/// Run codegen on the AST to generate rust code.
 fn compile_ast(mut ast: backend::ast::Program) -> String {
     let mut defined = BTreeSet::from_iter(
         vec![
@@ -96,7 +97,9 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
     tokens.to_string()
 }
 
+/// The main trait for parsing WebIDL AST into wasm-bindgen AST.
 trait WebidlParse<Ctx> {
+    /// Parse `self` into wasm-bindgen AST, and insert it into `program`.
     fn webidl_parse(
         &self,
         program: &mut backend::ast::Program,

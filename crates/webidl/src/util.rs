@@ -10,6 +10,7 @@ use webidl::ast::ExtendedAttribute;
 
 use first_pass::FirstPassRecord;
 
+/// Take a type and create an immutable shared reference to that type.
 fn shared_ref(ty: syn::Type) -> syn::Type {
     syn::TypeReference {
         and_token: Default::default(),
@@ -19,6 +20,7 @@ fn shared_ref(ty: syn::Type) -> syn::Type {
     }.into()
 }
 
+/// For a webidl const type node, get the corresponding syn type node.
 pub fn webidl_const_ty_to_syn_ty(ty: &webidl::ast::ConstType) -> syn::Type {
     use webidl::ast::ConstType::*;
 
@@ -39,6 +41,7 @@ pub fn webidl_const_ty_to_syn_ty(ty: &webidl::ast::ConstType) -> syn::Type {
     }
 }
 
+/// Map a webidl const value to the correct wasm-bindgen const value
 pub fn webidl_const_v_to_backend_const_v(v: &webidl::ast::ConstValue) -> backend::ast::ConstValue {
     match *v {
         webidl::ast::ConstValue::BooleanLiteral(b) => backend::ast::ConstValue::BooleanLiteral(b),
@@ -49,6 +52,7 @@ pub fn webidl_const_v_to_backend_const_v(v: &webidl::ast::ConstValue) -> backend
     }
 }
 
+/// From `ident` and `Ty`, create `ident: Ty` for use in e.g. `fn(ident: Ty)`.
 fn simple_fn_arg(ident: Ident, ty: syn::Type) -> syn::ArgCaptured {
     syn::ArgCaptured {
         pat: syn::Pat::Ident(syn::PatIdent {
@@ -62,6 +66,7 @@ fn simple_fn_arg(ident: Ident, ty: syn::Type) -> syn::ArgCaptured {
     }
 }
 
+/// Create `()`.
 fn unit_ty() -> syn::Type {
     syn::Type::Tuple(syn::TypeTuple {
         paren_token: Default::default(),
@@ -69,6 +74,7 @@ fn unit_ty() -> syn::Type {
     })
 }
 
+/// From `T` create `Result<T, ::wasm_bindgen::JsValue>`.
 fn result_ty(t: syn::Type) -> syn::Type {
     let js_value = leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]);
 
@@ -89,6 +95,7 @@ fn result_ty(t: syn::Type) -> syn::Type {
     ty.into()
 }
 
+/// From `T` create `[T]`.
 fn slice_ty(t: syn::Type) -> syn::Type {
     syn::TypeSlice {
         bracket_token: Default::default(),
@@ -96,6 +103,7 @@ fn slice_ty(t: syn::Type) -> syn::Type {
     }.into()
 }
 
+/// From `T` create `Vec<T>`.
 fn vec_ty(t: syn::Type) -> syn::Type {
     let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
         colon2_token: None,
@@ -113,6 +121,7 @@ fn vec_ty(t: syn::Type) -> syn::Type {
     ty.into()
 }
 
+/// Possible positions for a type in a function signature.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum TypePosition {
     Argument,
@@ -120,11 +129,14 @@ pub enum TypePosition {
 }
 
 impl<'a> FirstPassRecord<'a> {
+    /// Use information from the first pass to work out the correct Rust type to use for
+    /// a given WebIDL type.
     pub fn webidl_ty_to_syn_ty(
         &self,
         ty: &webidl::ast::Type,
         pos: TypePosition,
     ) -> Option<syn::Type> {
+        // Array type is borrowed for arguments (`&[T]`) and owned for return value (`Vec<T>`).
         let array = |base_ty: &str| {
             match pos {
                 TypePosition::Argument => {
@@ -220,6 +232,8 @@ impl<'a> FirstPassRecord<'a> {
                 return None;
             }
         };
+
+        // Map nullable to an option.
         if ty.nullable {
             let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
                 colon2_token: None,
@@ -240,6 +254,10 @@ impl<'a> FirstPassRecord<'a> {
         }
     }
 
+    /// Use the first pass to convert webidl function arguments to rust arguments.
+    ///
+    /// `kind` is whether the function is a method, in which case we would need a `self`
+    /// parameter.
     fn webidl_arguments_to_syn_arg_captured<'b, I>(
         &self,
         arguments: I,
@@ -284,6 +302,7 @@ impl<'a> FirstPassRecord<'a> {
         Some(res)
     }
 
+    /// Create a wasm-bindgen function, if possible.
     pub fn create_function<'b, I>(
         &self,
         name: &str,
@@ -333,6 +352,7 @@ impl<'a> FirstPassRecord<'a> {
         })
     }
 
+    /// Create a wasm-bindgen method, if possible.
     pub fn create_basic_method(
         &self,
         arguments: &[webidl::ast::Argument],
@@ -384,6 +404,7 @@ impl<'a> FirstPassRecord<'a> {
         )
     }
 
+    /// Create a wasm-bindgen getter method, if possible.
     pub fn create_getter(
         &self,
         name: &str,
@@ -413,6 +434,7 @@ impl<'a> FirstPassRecord<'a> {
         self.create_function(name, iter::empty(), ret, kind, is_structural, catch)
     }
 
+    /// Create a wasm-bindgen setter method, if possible.
     pub fn create_setter(
         &self,
         name: &str,
@@ -442,6 +464,7 @@ impl<'a> FirstPassRecord<'a> {
     }
 }
 
+/// Search for an attribute by name in some webidl object's attributes.
 fn has_named_attribute(ext_attrs: &[Box<ExtendedAttribute>], attribute: &str) -> bool {
     ext_attrs.iter().any(|attr| match &**attr {
         ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => {
@@ -456,10 +479,12 @@ pub fn is_chrome_only(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
     has_named_attribute(ext_attrs, "ChromeOnly")
 }
 
+/// Whether a webidl object is marked as a no interface object.
 pub fn is_no_interface_object(ext_attrs: &[Box<ExtendedAttribute>]) -> bool {
     has_named_attribute(ext_attrs, "NoInterfaceObject")
 }
 
+/// Whether a webidl object is marked as structural.
 pub fn is_structural(attrs: &[Box<ExtendedAttribute>]) -> bool {
     attrs.iter().any(|attr| match &**attr {
         ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => {
@@ -469,6 +494,7 @@ pub fn is_structural(attrs: &[Box<ExtendedAttribute>]) -> bool {
     })
 }
 
+/// Whether a webidl object is marked as throwing.
 pub fn throws(attrs: &[Box<ExtendedAttribute>]) -> bool {
     attrs.iter().any(|attr| match &**attr {
         ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name)) => name == "Throws",
@@ -476,6 +502,7 @@ pub fn throws(attrs: &[Box<ExtendedAttribute>]) -> bool {
     })
 }
 
+/// Create a syn `pub` token
 pub fn public() -> syn::Visibility {
     syn::Visibility::Public(syn::VisPublic {
         pub_token: Default::default(),

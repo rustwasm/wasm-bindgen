@@ -36,7 +36,9 @@ pub struct Export {
     pub constructor: Option<String>,
     /// The rust function
     pub function: Function,
+    ///
     pub comments: Vec<String>,
+    /// The name of the rust object the function belongs to TODO is this correct?
     pub rust_name: Ident,
 }
 

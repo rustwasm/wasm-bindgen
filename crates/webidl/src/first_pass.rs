@@ -1,3 +1,12 @@
+//! Because some WebIDL constructs are defined in multiple places
+//! (keyword `partial` is used to add to an existing construct),
+//! We need to first walk the webidl to collect all non-partial
+//! constructs so that we have containers in which to put the
+//! partial ones.
+//!
+//! Only `interface`s, `dictionary`s, `enum`s and `mixin`s can
+//! be partial.
+
 use std::{
     collections::{BTreeMap, BTreeSet}, mem,
 };
@@ -6,21 +15,30 @@ use webidl;
 
 use super::Result;
 
+/// Collection of constructs that may use partial.
 #[derive(Default)]
 pub(crate) struct FirstPassRecord<'a> {
     pub(crate) interfaces: BTreeSet<String>,
     pub(crate) dictionaries: BTreeSet<String>,
     pub(crate) enums: BTreeSet<String>,
+    /// The mixins, mapping their name to the webidl ast node for the mixin.
     pub(crate) mixins: BTreeMap<String, MixinData<'a>>,
 }
 
+/// We need to collect mixin data during the first pass, to be used later.
 #[derive(Default)]
 pub(crate) struct MixinData<'a> {
+    /// The non partial mixin, if present. If there is more than one, we are
+    /// parsing is a malformed WebIDL file, but the parser will recover by
+    /// using the last parsed mixin.
     pub(crate) non_partial: Option<&'a webidl::ast::NonPartialMixin>,
+    /// 0 or more partial mixins.
     pub(crate) partials: Vec<&'a webidl::ast::PartialMixin>,
 }
 
+/// Implemented on an AST node to populate the `FirstPassRecord` struct.
 pub(crate) trait FirstPass {
+    /// Populate `record` with any constructs in `self`.
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>) -> Result<()>;
 }
 
