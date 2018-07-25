@@ -125,6 +125,7 @@ extern "C" {
 // Array
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Array;
 
     /// Creates a new empty array
@@ -339,6 +340,7 @@ extern "C" {
 // ArrayBuffer
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type ArrayBuffer;
 
     /// The `ArrayBuffer` object is used to represent a generic,
@@ -377,6 +379,7 @@ extern "C" {
 // Array Iterator
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type ArrayIterator;
 
     /// The keys() method returns a new Array Iterator object that contains the
@@ -404,6 +407,7 @@ extern "C" {
 // Boolean
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Boolean;
 
     /// The `Boolean()` constructor creates an object wrapper for a boolean value.
@@ -422,6 +426,7 @@ extern "C" {
 // DataView
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type DataView;
 
     /// The `DataView` view provides a low-level interface for reading and
@@ -568,6 +573,7 @@ extern "C" {
 // Error
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Error;
 
     /// The Error constructor creates an error object.
@@ -605,6 +611,7 @@ extern "C" {
 // Float32Array
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Float32Array;
 
     /// The `Float32Array()` constructor creates an array of 32-bit floats.
@@ -656,6 +663,7 @@ extern "C" {
 // Float64Array
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Float64Array;
 
     /// The `Float64Array()` constructor creates an array of 64-bit floats.
@@ -707,6 +715,7 @@ extern "C" {
 // Function
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Function;
 
     /// The apply() method calls a function with a given this value, and arguments provided as an array
@@ -762,6 +771,7 @@ impl Function {
 // Generator
 #[wasm_bindgen]
 extern {
+    #[derive(Clone, Debug)]
     pub type Generator;
 
     /// The next() method returns an object with two properties done and value.
@@ -788,6 +798,7 @@ extern {
 // Int8Array
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Int8Array;
 
     /// The `Int8Array()` constructor creates an array of signed 8-bit integers.
@@ -839,6 +850,7 @@ extern "C" {
 // Int16Array
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Int16Array;
 
     /// The `Int16Array()` constructor creates an array of signed 16-bit integers.
@@ -890,6 +902,7 @@ extern "C" {
 // Int32Array
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Int32Array;
 
     /// The `Int32Array()` constructor creates an array of signed 32-bit integers.
@@ -941,6 +954,7 @@ extern "C" {
 // Map
 #[wasm_bindgen]
 extern {
+    #[derive(Clone, Debug)]
     pub type Map;
 
     /// The clear() method removes all elements from a Map object.
@@ -1001,6 +1015,7 @@ extern {
 // Map Iterator
 #[wasm_bindgen]
 extern {
+    #[derive(Clone, Debug)]
     pub type MapIterator;
 
     /// The entries() method returns a new Iterator object that contains
@@ -1029,6 +1044,7 @@ extern {
 // Math
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Math;
 
     /// The Math.abs() function returns the absolute value of a number, that is
@@ -1276,6 +1292,7 @@ extern "C" {
 // Number.
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Number;
 
     /// The Number.isFinite() method determines whether the passed value is a finite number.
@@ -1372,6 +1389,7 @@ extern "C" {
 // Date.
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Date;
 
     /// The getDate() method returns the day of the month for the
@@ -1710,6 +1728,7 @@ extern "C" {
 // Object.
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Object;
 
     /// The `Object.freeze()` method freezes an object: that is, prevents new
@@ -1856,6 +1875,7 @@ impl Object {
 // Proxy
 #[wasm_bindgen]
 extern {
+    #[derive(Clone, Debug)]
     pub type Proxy;
 
     /// The [`Proxy`] object is used to define custom behavior for fundamental
@@ -1877,6 +1897,7 @@ extern {
 // Reflect
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Reflect;
 
     /// The static `Reflect.apply()` method calls a target function with
@@ -1988,6 +2009,7 @@ extern "C" {
 // Set
 #[wasm_bindgen]
 extern {
+    #[derive(Clone, Debug)]
     pub type Set;
 
     /// The `add()` method appends a new element with a specified value to the
@@ -2042,6 +2064,7 @@ extern {
 // SetIterator
 #[wasm_bindgen]
 extern {
+    #[derive(Clone, Debug)]
     pub type SetIterator;
 
     /// The `entries()` method returns a new Iterator object that contains an
@@ -2073,6 +2096,7 @@ extern {
 // Uint8Array
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Uint8Array;
 
     /// The `Uint8Array()` constructor creates an array of unsigned 8-bit integers.
@@ -2124,6 +2148,7 @@ extern "C" {
 // Uint8ClampedArray
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Uint8ClampedArray;
 
     /// The `Uint8ClampedArray()` constructor creates an array of unsigned 8-bit integers clamped
@@ -2177,6 +2202,7 @@ extern "C" {
 // Uint16Array
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Uint16Array;
 
     /// The `Uint16Array()` constructor creates an array of unsigned 16-bit integers.
@@ -2228,6 +2254,7 @@ extern "C" {
 // Uint32Array
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Uint32Array;
 
     /// The `Uint32Array()` constructor creates an array of unsigned 32-bit integers.
@@ -2279,6 +2306,7 @@ extern "C" {
 // WeakMap
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type WeakMap;
 
     /// The [`WeakMap`] object is a collection of key/value pairs in which the
@@ -2321,6 +2349,7 @@ extern "C" {
 // WeakSet
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type WeakSet;
 
     /// The `WeakSet` object lets you store weakly held objects in a collection.
@@ -2353,6 +2382,7 @@ extern "C" {
 // WebAssembly
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type WebAssembly;
 
     /// The `WebAssembly.validate()` function validates a given typed
@@ -2367,7 +2397,8 @@ extern "C" {
 // JsString
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = JsString)]
+    #[wasm_bindgen(js_name = String)]
+    #[derive(Clone)]
     pub type JsString;
 
     /// The length property of a String object indicates the length of a string,
@@ -2657,6 +2688,7 @@ impl fmt::Debug for JsString {
 // Symbol
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Symbol;
 
     /// The `Symbol.hasInstance` well-known symbol is used to determine
@@ -2776,6 +2808,7 @@ extern "C" {
 // Intl
 #[wasm_bindgen]
 extern "C" {
+    #[derive(Clone, Debug)]
     pub type Intl;
 
     /// The `Intl.getCanonicalLocales()` method returns an array containing
