@@ -1580,12 +1580,14 @@ impl<'a> Context<'a> {
 
     fn gc(&mut self) -> Result<(), Error> {
         let module = mem::replace(self.module, Module::default());
-        let wasm_bytes = parity_wasm::serialize(module)?;
-        let bytes = wasm_gc::Config::new()
+        let result = wasm_gc::Config::new()
             .demangle(self.config.demangle)
             .keep_debug(self.config.keep_debug || self.config.debug)
-            .gc(&wasm_bytes)?;
-        *self.module = deserialize_buffer(&bytes)?;
+            .run(module, |m| parity_wasm::serialize(m).unwrap())?;
+        *self.module = match result.into_module() {
+            Ok(m) => m,
+            Err(result) => deserialize_buffer(&result.into_bytes()?)?,
+        };
         Ok(())
     }
 
