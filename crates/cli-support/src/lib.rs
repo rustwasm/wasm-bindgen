@@ -13,8 +13,7 @@ extern crate failure;
 use std::any::Any;
 use std::collections::BTreeSet;
 use std::fmt;
-use std::fs::File;
-use std::io::{Read, Write};
+use std::fs;
 use std::mem;
 use std::path::{Path, PathBuf};
 
@@ -158,9 +157,7 @@ impl Bindgen {
                 (module, &name[..])
             }
             Input::Path(ref path) => {
-                let mut contents = Vec::new();
-                File::open(&path)
-                    .and_then(|mut f| f.read_to_end(&mut contents))
+                let contents = fs::read(&path)
                     .with_context(|_| format!("failed to read `{}`", path.display()))?;
                 let module = parity_wasm::deserialize_buffer::<Module>(&contents)
                     .context("failed to parse input file as wasm")?;
@@ -232,14 +229,12 @@ impl Bindgen {
 
         let extension = if self.nodejs_experimental_modules { "mjs" } else { "js" };
         let js_path = out_dir.join(stem).with_extension(extension);
-        File::create(&js_path)
-            .and_then(|mut f| f.write_all(reset_indentation(&js).as_bytes()))
+        fs::write(&js_path, reset_indentation(&js))
             .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
 
         if self.typescript {
             let ts_path = out_dir.join(stem).with_extension("d.ts");
-            File::create(&ts_path)
-                .and_then(|mut f| f.write_all(ts.as_bytes()))
+            fs::write(&ts_path, ts)
                 .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
         }
 
@@ -248,14 +243,12 @@ impl Bindgen {
         if self.nodejs {
             let js_path = wasm_path.with_extension(extension);
             let shim = self.generate_node_wasm_import(&module, &wasm_path);
-            File::create(&js_path)
-                .and_then(|mut f| f.write_all(shim.as_bytes()))
+            fs::write(&js_path, shim)
                 .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
         }
 
         let wasm_bytes = parity_wasm::serialize(module)?;
-        File::create(&wasm_path)
-            .and_then(|mut f| f.write_all(&wasm_bytes))
+        fs::write(&wasm_path, wasm_bytes)
             .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
         Ok(())
     }

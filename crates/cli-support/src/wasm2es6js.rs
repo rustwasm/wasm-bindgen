@@ -2,8 +2,8 @@ extern crate base64;
 extern crate tempfile;
 
 use std::collections::{HashMap, HashSet};
-use std::fs::File;
-use std::io::{self, Read, Write};
+use std::fs;
+use std::io;
 use std::process::Command;
 
 use failure::{Error, ResultExt};
@@ -375,8 +375,7 @@ impl Output {
         let td = tempfile::tempdir()?;
         let wasm = serialize(self.module)?;
         let wasm_file = td.as_ref().join("foo.wasm");
-        File::create(&wasm_file)
-            .and_then(|mut f| f.write_all(&wasm))
+        fs::write(&wasm_file, wasm)
             .with_context(|_| format!("failed to write wasm to `{}`", wasm_file.display()))?;
 
         let wast_file = td.as_ref().join("foo.wast");
@@ -396,9 +395,7 @@ impl Output {
             "wasm2asm",
         )?;
 
-        let mut asm_func = String::new();
-        File::open(&js_file)
-            .and_then(|mut f| f.read_to_string(&mut asm_func))
+        let asm_func = fs::read_to_string(&js_file)
             .with_context(|_| format!("failed to read `{}`", js_file.display()))?;
 
         let mut make_imports = String::from(

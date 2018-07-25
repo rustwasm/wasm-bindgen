@@ -4,8 +4,7 @@ extern crate wasm_bindgen_cli_support;
 extern crate parity_wasm;
 
 use std::env;
-use std::fs::{self, File};
-use std::io::{Write, Read};
+use std::fs;
 use std::path::PathBuf;
 use std::process::{self, Command};
 
@@ -107,9 +106,7 @@ fn rmain() -> Result<(), Error> {
     // Note that we're collecting *JS objects* that represent the functions to
     // execute, and then those objects are passed into wasm for it to execute
     // when it sees fit.
-    let mut wasm = Vec::new();
-    File::open(&wasm_file_to_test)
-        .and_then(|mut f| f.read_to_end(&mut wasm))
+    let wasm = fs::read(&wasm_file_to_test)
         .context("failed to read wasm file")?;
     let wasm = Module::deserialize(&mut &wasm[..])
         .context("failed to deserialize wasm module")?;
@@ -136,8 +133,7 @@ fn rmain() -> Result<(), Error> {
         .context("executing `wasm-bindgen` over the wasm file")?;
 
     let js_path = tmpdir.join("run.js");
-    File::create(&js_path)
-        .and_then(|mut f| f.write_all(js_to_execute.as_bytes()))
+    fs::write(&js_path, js_to_execute)
         .context("failed to write JS file")?;
 
     // Last but not least, execute `node`! Add an entry to `NODE_PATH` for the
