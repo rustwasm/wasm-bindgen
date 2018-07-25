@@ -22,7 +22,7 @@ fn entries() {
     let iter = GenericIterator::from(JsValue::from(s.entries()));
     let obj = iter.next();
     assert!(!obj.done());
-    let array = Array::from(obj.value());
+    let array = Array::from(&obj.value());
     assert_eq!(array.length(), 2);
     array.for_each(&mut |a, _, _| {
         assert_eq!(a, 1);

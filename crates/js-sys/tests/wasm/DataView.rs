@@ -4,7 +4,7 @@ use js_sys::*;
 
 #[wasm_bindgen_test]
 fn test() {
-    let bytes = Int8Array::new(JsValue::from(10));
+    let bytes = Int8Array::new(&JsValue::from(10));
 
     // TODO: figure out how to do `bytes[2] = 2`
     bytes.subarray(2, 3).fill(2, 0, 1);

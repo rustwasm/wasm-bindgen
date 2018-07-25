@@ -4,7 +4,6 @@ extern crate wasm_bindgen;
 extern crate js_sys;
 
 use js_sys::Date;
-use js_sys::JsString;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -55,8 +54,8 @@ pub fn run() {
         document
             .get_element_by_id("current-time")
             .set_inner_html(&String::from(
-                Date::new(JsValue::undefined())
-                    .to_locale_string("en-GB".into(), JsValue::undefined()),
+                Date::new(&JsValue::undefined())
+                    .to_locale_string(&"en-GB".into(), &JsValue::undefined()),
             ));
     }
 

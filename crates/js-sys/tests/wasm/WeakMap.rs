@@ -24,7 +24,7 @@ fn new() {
 fn get_and_set() {
     let map = WeakMap::new();
     let key = some_key();
-    map.set(&key, "value".into());
+    map.set(&key, &"value".into());
     assert_eq!(map.get(&key), "value");
     assert_eq!(map.get(&Object::new()), JsValue::undefined());
     assert_eq!(map.get(&some_key()), JsValue::undefined());
@@ -34,7 +34,7 @@ fn get_and_set() {
 fn has() {
     let map = WeakMap::new();
     let key = some_key();
-    map.set(&key, "value".into());
+    map.set(&key, &"value".into());
     assert!(map.has(&key));
     assert!(!map.has(&Object::new()));
     assert!(!map.has(&some_key()));
@@ -45,7 +45,7 @@ fn delete() {
     let map = WeakMap::new();
     let key = some_key();
     assert!(!map.has(&key));
-    map.set(&key, "value".into());
+    map.set(&key, &"value".into());
     assert!(map.has(&key));
     map.delete(&key);
     assert!(!map.has(&key));
