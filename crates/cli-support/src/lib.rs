@@ -287,7 +287,7 @@ fn extract_programs(module: &mut Module) -> Result<Vec<shared::Program>, Error> 
             Section::Custom(ref s) => s,
             _ => continue,
         };
-        if custom.name() != "__wasm_bindgen,unstable" {
+        if custom.name() != "__wasm_bindgen_unstable" {
             continue;
         }
         to_remove.push(i);
