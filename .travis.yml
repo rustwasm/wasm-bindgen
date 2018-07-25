@@ -78,10 +78,8 @@ matrix:
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_GECKODRIVER
-        - npm ci --verbose
       script:
-        - cargo test --manifest-path crates/web-sys/Cargo.toml
-        - cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown
+        - cargo test -p web-sys --target wasm32-unknown-unknown
       addons:
         firefox: latest
       if: branch = master
@@ -93,7 +91,6 @@ matrix:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_GECKODRIVER
       script:
-        - cargo test -p js-sys
         - cargo test -p js-sys --target wasm32-unknown-unknown
       addons:
         firefox: latest
@@ -168,7 +165,7 @@ matrix:
         - cargo install-update -a
       script:
         - (cd guide && mdbook build)
-        - cargo doc --no-deps -p wasm-bindgen -p web-sys -p js-sys
+        - cargo doc --no-deps -p wasm-bindgen -p web-sys -p js-sys -p wasm-bindgen-futures
         - mv target/doc guide/book/api
       deploy:
         provider: pages

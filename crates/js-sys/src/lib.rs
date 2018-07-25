@@ -3009,3 +3009,101 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Intl, js_name = getCanonicalLocales)]
     pub fn get_canonical_locales(s: &JsValue) -> Array;
 }
+
+// Promise
+#[wasm_bindgen]
+extern {
+    /// The `Promise` object represents the eventual completion (or failure) of
+    /// an asynchronous operation, and its resulting value.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+    pub type Promise;
+
+    /// Creates a new `Promise` with the provided executor `cb`
+    ///
+    /// The `cb` is a function that is passed with the arguments `resolve` and
+    /// `reject`. The `cb` function is executed immediately by the `Promise`
+    /// implementation, passing `resolve` and `reject` functions (the executor
+    /// is called before the `Promise` constructor even returns the created
+    /// object). The `resolve` and `reject` functions, when called, resolve or
+    /// reject the promise, respectively. The executor normally initiates
+    /// some asynchronous work, and then, once that completes, either calls
+    /// the `resolve` function to resolve the promise or else rejects it if an
+    /// error occurred.
+    ///
+    /// If an error is thrown in the executor function, the promise is rejected.
+    /// The return value of the executor is ignored.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+    #[wasm_bindgen(constructor)]
+    pub fn new(cb: &mut FnMut(Function, Function)) -> Promise;
+
+    /// The `Promise.all(iterable)` method returns a single `Promise` that
+    /// resolves when all of the promises in the iterable argument have resolved
+    /// or when the iterable argument contains no promises. It rejects with the
+    /// reason of the first promise that rejects.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+    #[wasm_bindgen(static_method_of = Promise)]
+    pub fn all(obj: JsValue) -> Promise;
+
+    /// The `Promise.race(iterable)` method returns a promise that resolves or
+    /// rejects as soon as one of the promises in the iterable resolves or
+    /// rejects, with the value or reason from that promise.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
+    #[wasm_bindgen(static_method_of = Promise)]
+    pub fn race(obj: JsValue) -> Promise;
+
+    /// The `Promise.reject(reason)` method returns a `Promise` object that is
+    /// rejected with the given reason.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject
+    #[wasm_bindgen(static_method_of = Promise)]
+    pub fn reject(obj: JsValue) -> Promise;
+
+    /// The `Promise.resolve(value)` method returns a `Promise` object that is
+    /// resolved with the given value. If the value is a promise, that promise
+    /// is returned; if the value is a thenable (i.e. has a "then" method), the
+    /// returned promise will "follow" that thenable, adopting its eventual
+    /// state; otherwise the returned promise will be fulfilled with the value.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
+    #[wasm_bindgen(static_method_of = Promise)]
+    pub fn resolve(obj: JsValue) -> Promise;
+
+    /// The `catch()` method returns a `Promise` and deals with rejected cases
+    /// only.  It behaves the same as calling `Promise.prototype.then(undefined,
+    /// onRejected)` (in fact, calling `obj.catch(onRejected)` internally calls
+    /// `obj.then(undefined, onRejected)`).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch
+    #[wasm_bindgen(method)]
+    pub fn catch(this: &Promise, cb: &Closure<FnMut(JsValue)>) -> Promise;
+
+    /// The `then()` method returns a `Promise`. It takes up to two arguments:
+    /// callback functions for the success and failure cases of the `Promise`.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
+    #[wasm_bindgen(method)]
+    pub fn then(this: &Promise, cb: &Closure<FnMut(JsValue)>) -> Promise;
+
+    /// Same as `then`, only with both arguments provided.
+    #[wasm_bindgen(method, js_name = then)]
+    pub fn then2(this: &Promise,
+                 resolve: &Closure<FnMut(JsValue)>,
+                 reject: &Closure<FnMut(JsValue)>) -> Promise;
+
+    /// The `finally()` method returns a `Promise`. When the promise is settled,
+    /// whether fulfilled or rejected, the specified callback function is
+    /// executed. This provides a way for code that must be executed once the
+    /// `Promise` has been dealt with to be run whether the promise was
+    /// fulfilled successfully or rejected.
+    ///
+    /// This lets you avoid duplicating code in both the promise's `then()` and
+    /// `catch()` handlers.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally
+    #[wasm_bindgen(method)]
+    pub fn finally(this: &Promise, cb: &Closure<FnMut()>) -> Promise;
+}

@@ -52,32 +52,14 @@ impl super::Formatter for Browser {
         self.pre.set_inner_html(&html);
     }
 
-    fn log_start(&self, name: &str) {
-        let data = format!("test {} ... ", name);
-        let mut html = self.pre.inner_html();
-        html.push_str(&data);
-        self.pre.set_inner_html(&html);
+    fn log_test(&self, name: &str, result: &Result<(), JsValue>) {
+        let s = if result.is_ok() { "ok" } else { "FAIL" };
+        self.writeln(&format!("test {} ... {}", name, s));
     }
 
-    fn log_success(&self) {
-        let mut html = self.pre.inner_html();
-        html.push_str("ok\n");
-        self.pre.set_inner_html(&html);
-    }
-
-    fn log_ignored(&self) {
-        let mut html = self.pre.inner_html();
-        html.push_str("ignored\n");
-        self.pre.set_inner_html(&html);
-    }
-
-    fn log_failure(&self, err: JsValue) -> String {
-        let mut html = self.pre.inner_html();
-        html.push_str("FAIL\n");
-        self.pre.set_inner_html(&html);
-
+    fn stringify_error(&self, err: &JsValue) -> String {
         // TODO: this should be a checked cast to `Error`
-        let err = Error::from(err);
+        let err = Error::from(err.clone());
         let name = String::from(err.name());
         let message = String::from(err.message());
         let err = BrowserError::from(JsValue::from(err));

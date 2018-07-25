@@ -16,8 +16,18 @@ pub fn wasm_bindgen_test(
     attr: proc_macro::TokenStream,
     body: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-    if attr.into_iter().next().is_some() {
-        panic!("this attribute currently takes no arguments");
+    let mut attr = attr.into_iter();
+    let mut async = false;
+    while let Some(token) = attr.next() {
+        match &token {
+            proc_macro::TokenTree::Ident(i) if i.to_string() == "async" => async = true,
+            _ => panic!("malformed `#[wasm_bindgen_test]` attribute"),
+        }
+        match &attr.next() {
+            Some(proc_macro::TokenTree::Punct(op)) if op.as_char() == ',' => {}
+            Some(_) => panic!("malformed `#[wasm_bindgen_test]` attribute"),
+            None => break,
+        }
     }
 
     let mut body = TokenStream::from(body).into_iter();
@@ -32,6 +42,12 @@ pub fn wasm_bindgen_test(
 
     let mut tokens = Vec::<TokenTree>::new();
 
+    let test_body = if async {
+        quote! { cx.execute_async(test_name, #ident); }
+    } else {
+        quote! { cx.execute_sync(test_name, #ident); }
+    };
+
     // We generate a `#[no_mangle]` with a known prefix so the test harness can
     // later slurp up all of these functions and pass them as arguments to the
     // main test harness. This is the entry point for all tests.
@@ -41,7 +57,9 @@ pub fn wasm_bindgen_test(
         #[no_mangle]
         pub extern fn #name(cx: *const ::wasm_bindgen_test::__rt::Context) {
             unsafe {
-                (*cx).execute(concat!(module_path!(), "::", stringify!(#ident)), #ident);
+                let cx = &*cx;
+                let test_name = concat!(module_path!(), "::", stringify!(#ident));
+                #test_body
             }
         }
     }).into_iter());
