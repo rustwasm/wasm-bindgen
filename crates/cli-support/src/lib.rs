@@ -10,10 +10,12 @@ extern crate wasmi;
 #[macro_use]
 extern crate failure;
 
+use std::any::Any;
 use std::collections::BTreeSet;
 use std::fmt;
 use std::fs::File;
 use std::io::{Read, Write};
+use std::mem;
 use std::path::{Path, PathBuf};
 
 use failure::{Error, ResultExt};
@@ -24,7 +26,7 @@ mod js;
 pub mod wasm2es6js;
 
 pub struct Bindgen {
-    path: Option<PathBuf>,
+    input: Input,
     nodejs: bool,
     nodejs_experimental_modules: bool,
     browser: bool,
@@ -36,10 +38,17 @@ pub struct Bindgen {
     keep_debug: bool,
 }
 
+enum Input {
+    Path(PathBuf),
+    Bytes(Vec<u8>, String),
+    Module(Module, String),
+    None,
+}
+
 impl Bindgen {
     pub fn new() -> Bindgen {
         Bindgen {
-            path: None,
+            input: Input::None,
             nodejs: false,
             nodejs_experimental_modules: false,
             browser: false,
@@ -53,7 +62,37 @@ impl Bindgen {
     }
 
     pub fn input_path<P: AsRef<Path>>(&mut self, path: P) -> &mut Bindgen {
-        self.path = Some(path.as_ref().to_path_buf());
+        self.input = Input::Path(path.as_ref().to_path_buf());
+        self
+    }
+
+    /// Explicitly specify the already parsed input module.
+    ///
+    /// Note that this API is a little wonky to avoid tying itself with a public
+    /// dependency on the `parity-wasm` crate, what we currently use to parse
+    /// wasm mdoules.
+    ///
+    /// If the `module` argument is a `parity_wasm::Module` then it will be used
+    /// directly. Otherwise it will be passed to `into_bytes` to serialize the
+    /// module to a vector of bytes, and this will deserialize the module later.
+    ///
+    /// Note that even if the argument passed in is a `parity_wasm::Module` it
+    /// doesn't mean that this won't invoke `into_bytes`, if the `parity_wasm`
+    /// crate versions are different we'll have to go through serialization.
+    pub fn input_module<T: Any>(
+        &mut self,
+        name: &str,
+        mut module: T,
+        into_bytes: impl FnOnce(T) -> Vec<u8>,
+    ) -> &mut Bindgen {
+        let name = name.to_string();
+        if let Some(module) = (&mut module as &mut Any).downcast_mut::<Module>() {
+            let blank = Module::new(Vec::new());
+            self.input = Input::Module(mem::replace(module, blank), name);
+            return self
+        }
+
+        self.input = Input::Bytes(into_bytes(module), name);
         self
     }
 
@@ -107,17 +146,28 @@ impl Bindgen {
     }
 
     fn _generate(&mut self, out_dir: &Path) -> Result<(), Error> {
-        let input = match self.path {
-            Some(ref path) => path,
-            None => bail!("must have a path input for now"),
+        let (mut module, stem) = match self.input {
+            Input::None => bail!("must have an input by now"),
+            Input::Module(ref mut m, ref name) => {
+                let blank_module = Module::new(Vec::new());
+                (mem::replace(m, blank_module), &name[..])
+            }
+            Input::Bytes(ref b, ref name) => {
+                let module = parity_wasm::deserialize_buffer::<Module>(&b)
+                    .context("failed to parse input file as wasm")?;
+                (module, &name[..])
+            }
+            Input::Path(ref path) => {
+                let mut contents = Vec::new();
+                File::open(&path)
+                    .and_then(|mut f| f.read_to_end(&mut contents))
+                    .with_context(|_| format!("failed to read `{}`", path.display()))?;
+                let module = parity_wasm::deserialize_buffer::<Module>(&contents)
+                    .context("failed to parse input file as wasm")?;
+                let stem = path.file_stem().unwrap().to_str().unwrap();
+                (module, stem)
+            }
         };
-        let stem = input.file_stem().unwrap().to_str().unwrap();
-        let mut contents = Vec::new();
-        File::open(&input)
-            .and_then(|mut f| f.read_to_end(&mut contents))
-            .with_context(|_| format!("failed to read `{}`", input.display()))?;
-        let mut module = parity_wasm::deserialize_buffer::<Module>(&contents)
-            .with_context(|_| "failed to parse input file as wasm")?;
         let programs = extract_programs(&mut module)
             .with_context(|_| "failed to extract wasm-bindgen custom sections")?;
 

@@ -50,16 +50,6 @@ fn rmain() -> Result<(), Error> {
     fs::create_dir(&tmpdir)
         .context("creating temporary directory")?;
 
-    // For now unconditionally generate wasm-bindgen code tailored for node.js,
-    // but eventually we'll want more options here for browsers!
-    let mut b = Bindgen::new();
-    b.debug(true)
-        .nodejs(true)
-        .input_path(&wasm_file_to_test)
-        .keep_debug(false)
-        .generate(&tmpdir)
-        .context("executing `wasm-bindgen` over the wasm file")?;
-
     let module = wasm_file_to_test.file_stem()
         .and_then(|s| s.to_str())
         .ok_or_else(|| format_err!("invalid filename passed in"))?;
@@ -118,12 +108,12 @@ fn rmain() -> Result<(), Error> {
     // execute, and then those objects are passed into wasm for it to execute
     // when it sees fit.
     let mut wasm = Vec::new();
-    let wasm_file = tmpdir.join(format!("{}_bg.wasm", module));
-    File::open(wasm_file).and_then(|mut f| f.read_to_end(&mut wasm))
+    File::open(&wasm_file_to_test)
+        .and_then(|mut f| f.read_to_end(&mut wasm))
         .context("failed to read wasm file")?;
-    let module = Module::deserialize(&mut &wasm[..])
+    let wasm = Module::deserialize(&mut &wasm[..])
         .context("failed to deserialize wasm module")?;
-    if let Some(exports) = module.export_section() {
+    if let Some(exports) = wasm.export_section() {
         for export in exports.entries() {
             if !export.field().starts_with("__wbg_test") {
                 continue
@@ -134,6 +124,16 @@ fn rmain() -> Result<(), Error> {
 
     // And as a final addendum, exit with a nonzero code if any tests fail.
     js_to_execute.push_str("if (!cx.run(tests)) exit(1);\n");
+
+    // For now unconditionally generate wasm-bindgen code tailored for node.js,
+    // but eventually we'll want more options here for browsers!
+    let mut b = Bindgen::new();
+    b.debug(true)
+        .nodejs(true)
+        .input_module(module, wasm, |m| parity_wasm::serialize(m).unwrap())
+        .keep_debug(false)
+        .generate(&tmpdir)
+        .context("executing `wasm-bindgen` over the wasm file")?;
 
     let js_path = tmpdir.join("run.js");
     File::create(&js_path)
