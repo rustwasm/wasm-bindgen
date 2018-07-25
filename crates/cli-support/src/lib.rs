@@ -134,7 +134,9 @@ impl Bindgen {
         // This means that whenever we encounter an import or export we'll
         // execute a shim function which informs us about its type so we can
         // then generate the appropriate bindings.
-        let instance = wasmi::Module::from_buffer(&contents)
+        //
+        // TODO: avoid a `clone` here of the module if we can
+        let instance = wasmi::Module::from_parity_wasm_module(module.clone())
             .with_context(|_| "failed to create wasmi module")?;
         let instance = wasmi::ModuleInstance::new(&instance, &MyResolver)
             .with_context(|_| "failed to instantiate wasm module")?;
