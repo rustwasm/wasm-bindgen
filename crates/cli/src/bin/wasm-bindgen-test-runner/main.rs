@@ -1,23 +1,35 @@
+extern crate curl;
+extern crate env_logger;
 #[macro_use]
 extern crate failure;
+#[macro_use]
+extern crate log;
 extern crate parity_wasm;
 extern crate rouille;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
+#[macro_use]
+extern crate serde_json;
 extern crate wasm_bindgen_cli_support;
 
 use std::env;
 use std::fs;
-use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process;
+use std::thread;
 
 use failure::{ResultExt, Error};
-use parity_wasm::elements::{Module, Deserialize};
+use parity_wasm::elements::{Module, Deserialize, Section};
 use wasm_bindgen_cli_support::Bindgen;
 
+mod headless;
 mod node;
 mod server;
+mod shell;
 
 fn main() {
+    env_logger::init();
     let err = match rmain() {
         Ok(()) => return,
         Err(e) => e,
@@ -31,6 +43,7 @@ fn main() {
 
 fn rmain() -> Result<(), Error> {
     let mut args = env::args_os().skip(1);
+    let shell = shell::Shell::new();
 
     // Currently no flags are supported, and assume there's only one argument
     // which is the wasm file to test. This'll want to improve over time!
@@ -61,10 +74,6 @@ fn rmain() -> Result<(), Error> {
     // Collect all tests that the test harness is supposed to run. We assume
     // that any exported function with the prefix `__wbg_test` is a test we need
     // to execute.
-    //
-    // Note that we're collecting *JS objects* that represent the functions to
-    // execute, and then those objects are passed into wasm for it to execute
-    // when it sees fit.
     let wasm = fs::read(&wasm_file_to_test)
         .context("failed to read wasm file")?;
     let wasm = Module::deserialize(&mut &wasm[..])
@@ -78,18 +87,34 @@ fn rmain() -> Result<(), Error> {
             tests.push(export.field().to_string());
         }
     }
+
+    // Right now there's a bug where if no tests are present then the
+    // `wasm-bindgen-test` runtime support isn't linked in, so just bail out
+    // early saying everything is ok.
     if tests.len() == 0 {
         println!("no tests to run!");
         return Ok(())
     }
 
-    let node = true;
+    // Figure out if this tests is supposed to execute in node.js or a browser.
+    // That's done on a per-test-binary basis with the
+    // `wasm_bindgen_test_configure` macro, which emits a custom section for us
+    // to read later on.
+    let mut node = true;
+    for section in wasm.sections() {
+        let custom = match section {
+            Section::Custom(section) => section,
+            _ => continue,
+        };
+        if custom.name() != "__wasm_bindgen_test_unstable" {
+            continue
+        }
+        node = !custom.payload().contains(&0x01);
+    }
+    let headless = env::var("CI").is_ok();
 
-    print!("Executing bindgen ...\r");
-    io::stdout().flush()?;
-
-    // For now unconditionally generate wasm-bindgen code tailored for node.js,
-    // but eventually we'll want more options here for browsers!
+    // Make the generated bindings available for the tests to execute against.
+    shell.status("Executing bindgen...");
     let mut b = Bindgen::new();
     b.debug(true)
         .nodejs(node)
@@ -97,13 +122,37 @@ fn rmain() -> Result<(), Error> {
         .keep_debug(false)
         .generate(&tmpdir)
         .context("executing `wasm-bindgen` over the wasm file")?;
+    shell.clear();
 
-    print!("                     \r");
-    io::stdout().flush()?;
-
+    // If we're executing in node.js, that module will take it from here.
     if node {
         return node::execute(&module, &tmpdir, &args.collect::<Vec<_>>(), &tests)
     }
 
-    server::spawn(&module, &tmpdir, &args.collect::<Vec<_>>(), &tests)
+    // Otherwise we're executing in a browser. Spawn a server which serves up
+    // the local generated files over an HTTP server.
+    let srv = server::spawn(
+        &if headless {
+            "127.0.0.1:0".parse().unwrap()
+        } else {
+            "127.0.0.1:8000".parse().unwrap()
+        },
+        headless,
+        &module,
+        &tmpdir,
+        &args.collect::<Vec<_>>(),
+        &tests,
+    )?;
+    let addr = srv.server_addr();
+
+    // TODO: eventually we should provide the ability to exit at some point
+    // (gracefully) here, but for now this just runs forever.
+    if !headless {
+        println!("Running server on http://{}", addr);
+        return Ok(srv.run())
+    }
+
+    thread::spawn(|| srv.run());
+    headless::run(&addr, &shell)?;
+    Ok(())
 }

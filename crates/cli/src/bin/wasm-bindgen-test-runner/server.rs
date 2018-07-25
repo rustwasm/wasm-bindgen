@@ -1,14 +1,20 @@
 use std::ffi::OsString;
 use std::path::Path;
 use std::fs;
+use std::net::SocketAddr;
 
 use failure::{ResultExt, Error};
-use rouille::{self, Response, Request};
+use rouille::{self, Response, Request, Server};
 use wasm_bindgen_cli_support::wasm2es6js::Config;
 
-pub fn spawn(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
-    -> Result<(), Error>
-{
+pub fn spawn(
+    addr: &SocketAddr,
+    headless: bool,
+    module: &str,
+    tmpdir: &Path,
+    args: &[OsString],
+    tests: &[String],
+) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
     let mut js_to_execute = format!(r#"
         import {{ Context }} from './{0}';
         import * as wasm from './{0}_bg';
@@ -55,12 +61,16 @@ pub fn spawn(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
         .context("failed to write JS file")?;
 
     // For now, always run forever on this port. We may update this later!
-    println!("Listening on port 8000");
     let tmpdir = tmpdir.to_path_buf();
-    rouille::start_server("localhost:8000", move |request| {
+    let srv = Server::new(addr, move |request| {
         // The root path gets our canned `index.html`
         if request.url() == "/" {
-            return Response::from_data("text/html", include_str!("index.html"));
+            let s = if headless {
+                include_str!("index-headless.html")
+            } else {
+                include_str!("index.html")
+            };
+            return Response::from_data("text/html", s)
         }
 
         // Otherwise we need to find the asset here. It may either be in our
@@ -74,7 +84,8 @@ pub fn spawn(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
         // header?)
         response.headers.retain(|(k, _)| k != "Cache-Control");
         return response
-    });
+    }).map_err(|e| format_err!("{}", e))?;
+    return Ok(srv);
 
     fn try_asset(request: &Request, dir: &Path) -> Response {
         let response = rouille::match_assets(request, dir);

@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+  </head>
+  <body>
+    <pre id='output'>Loading scripts...</pre>
+    <pre id='console_log'></pre>
+    <pre id='console_error'></pre>
+    <script>
+      const orig_console_log = function(...args) {
+        const logs = document.getElementById('console_log');
+        for (let msg of args) {
+          logs.innerHTML += `${msg}\n`;
+        }
+      };
+      const orig_console_error = function(...args) {
+        const logs = document.getElementById('console_error');
+        for (let msg of args) {
+          logs.innerHTML += `${msg}\n`;
+        }
+      };
+      console.log = function() {
+        if (window.global_cx)
+          window.global_cx.console_log(orig_console_log, arguments);
+        else
+          orig_console_log.apply(this, arguments);
+      };
+      console.error = function() {
+        if (window.global_cx)
+          window.global_cx.console_error(orig_console_error, arguments);
+        else
+          orig_console_error.apply(this, arguments);
+      };
+    </script>
+    <script src='run.js' type=module></script>
+  </body>
+</html>

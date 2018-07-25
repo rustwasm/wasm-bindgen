@@ -66,7 +66,6 @@ pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
     for test in tests {
         js_to_execute.push_str(&format!("tests.push('{}')\n", test));
     }
-
     // And as a final addendum, exit with a nonzero code if any tests fail.
     js_to_execute.push_str("
         main(tests)

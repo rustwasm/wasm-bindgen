@@ -11,7 +11,7 @@ extern {
     #[wasm_bindgen(method, getter, structural)]
     pub fn push(this: &ArrayPrototype) -> Function;
     #[wasm_bindgen(js_name = prototype, js_namespace = Array)]
-    static ARRAY_PROTOTYPE: ArrayPrototype;
+    static ARRAY_PROTOTYPE2: ArrayPrototype;
 }
 
 #[wasm_bindgen_test]
@@ -25,7 +25,7 @@ fn apply() {
     let arr = JsValue::from(Array::new());
     let args = Array::new();
     args.push(&1.into());
-    ARRAY_PROTOTYPE.push().apply(&arr, &args).unwrap();
+    ARRAY_PROTOTYPE2.push().apply(&arr, &args).unwrap();
     assert_eq!(Array::from(&arr).length(), 1);
 }
 
@@ -47,13 +47,13 @@ fn bind() {
 #[wasm_bindgen_test]
 fn length() {
     assert_eq!(MAX.length(), 2);
-    assert_eq!(ARRAY_PROTOTYPE.push().length(), 1);
+    assert_eq!(ARRAY_PROTOTYPE2.push().length(), 1);
 }
 
 #[wasm_bindgen_test]
 fn name() {
     assert_eq!(JsValue::from(MAX.name()), "max");
-    assert_eq!(JsValue::from(ARRAY_PROTOTYPE.push().name()), "push");
+    assert_eq!(JsValue::from(ARRAY_PROTOTYPE2.push().name()), "push");
 }
 
 #[wasm_bindgen_test]
