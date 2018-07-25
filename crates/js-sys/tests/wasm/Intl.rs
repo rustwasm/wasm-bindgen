@@ -5,8 +5,8 @@ use js_sys::*;
 #[wasm_bindgen_test]
 fn get_canonical_locales() {
     let locales = Array::new();
-    locales.push("EN-US".into());
-    locales.push("Fr".into());
+    locales.push(&"EN-US".into());
+    locales.push(&"Fr".into());
     let locales = JsValue::from(locales);
     let canonical_locales = Intl::get_canonical_locales(&locales);
     assert_eq!(canonical_locales.length(), 2);

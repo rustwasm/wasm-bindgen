@@ -18,7 +18,7 @@ macro_rules! each {
 
 macro_rules! test_undefined {
     ($arr:ident) => ({
-        let arr = $arr::new(JsValue::undefined());
+        let arr = $arr::new(&JsValue::undefined());
         assert_eq!(arr.length(), 0);
         assert_eq!(arr.byte_length(), 0);
         assert_eq!(arr.byte_offset(), 0);
@@ -32,7 +32,7 @@ fn new_undefined() {
 
 macro_rules! test_length {
     ($arr:ident) => ({
-        let arr = $arr::new(4.into());
+        let arr = $arr::new(&4.into());
         assert_eq!(arr.length(), 4);
         assert!(arr.byte_length() != 0);
         assert_eq!(arr.byte_offset(), 0);
@@ -46,7 +46,7 @@ fn new_length() {
 
 macro_rules! test_subarray {
     ($arr:ident) => ({
-        assert_eq!($arr::new(4.into()).subarray(0, 1).length(), 1);
+        assert_eq!($arr::new(&4.into()).subarray(0, 1).length(), 1);
     })
 }
 #[wasm_bindgen_test]
@@ -56,7 +56,7 @@ fn new_subarray() {
 
 macro_rules! test_fill {
     ($arr:ident) => ({
-        let arr = $arr::new(4.into());
+        let arr = $arr::new(&4.into());
         arr.for_each(&mut |x, _, _| {
             assert_eq!(x as f64, 0.0);
         });

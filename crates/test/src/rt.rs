@@ -92,7 +92,7 @@ impl Context {
     pub fn run(&self, tests: Vec<JsValue>) -> bool {
         let this = JsValue::null();
         let args = Array::new();
-        args.push(JsValue::from(self as *const Context as u32));
+        args.push(&JsValue::from(self as *const Context as u32));
 
         let noun = if tests.len() == 1 { "test" } else { "tests" };
         console_log!("running {} {}", tests.len(), noun);

@@ -135,7 +135,7 @@ extern "C" {
     /// The `Array.from()` method creates a new, shallow-copied `Array` instance
     /// from an array-like or iterable object.
     #[wasm_bindgen(static_method_of = Array)]
-    pub fn from(val: JsValue) -> Array;
+    pub fn from(val: &JsValue) -> Array;
 
     /// The copyWithin() method shallow copies part of an array to another
     /// location in the same array and returns it, without modifying its size.
@@ -163,7 +163,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
     #[wasm_bindgen(method)]
-    pub fn fill(this: &Array, value: JsValue, start: u32, end: u32) -> Array;
+    pub fn fill(this: &Array, value: &JsValue, start: u32, end: u32) -> Array;
 
     /// The `filter()` method creates a new array with all elements that pass the
     /// test implemented by the provided function.
@@ -197,14 +197,14 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
     #[wasm_bindgen(method)]
-    pub fn includes(this: &Array, value: JsValue, from_index: i32) -> bool;
+    pub fn includes(this: &Array, value: &JsValue, from_index: i32) -> bool;
 
     /// The indexOf() method returns the first index at which a given element
     /// can be found in the array, or -1 if it is not present.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
     #[wasm_bindgen(method, js_name = indexOf)]
-    pub fn index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+    pub fn index_of(this: &Array, value: &JsValue, from_index: i32) -> i32;
 
     /// The Array.isArray() method determines whether the passed value is an Array.
     ///
@@ -225,7 +225,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
     #[wasm_bindgen(method, js_name = lastIndexOf)]
-    pub fn last_index_of(this: &Array, value: JsValue, from_index: i32) -> i32;
+    pub fn last_index_of(this: &Array, value: &JsValue, from_index: i32) -> i32;
 
     /// The length property of an object which is an instance of type Array
     /// sets or returns the number of elements in that array. The value is an
@@ -258,21 +258,21 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
     #[wasm_bindgen(method)]
-    pub fn push(this: &Array, value: JsValue) -> u32;
+    pub fn push(this: &Array, value: &JsValue) -> u32;
 
     /// The reduce() method applies a function against an accumulator and each element in
     /// the array (from left to right) to reduce it to a single value.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
     #[wasm_bindgen(method)]
-    pub fn reduce(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: JsValue) -> JsValue;
+    pub fn reduce(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: &JsValue) -> JsValue;
 
     /// The reduceRight() method applies a function against an accumulator and each value
     /// of the array (from right-to-left) to reduce it to a single value.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/ReduceRight
     #[wasm_bindgen(method, js_name = reduceRight)]
-    pub fn reduce_right(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: JsValue) -> JsValue;
+    pub fn reduce_right(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: &JsValue) -> JsValue;
 
     /// The reverse() method reverses an array in place. The first array
     /// element becomes the last, and the last array element becomes the first.
@@ -334,7 +334,7 @@ extern "C" {
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift
     #[wasm_bindgen(method)]
-    pub fn unshift(this: &Array, value: JsValue) -> u32;
+    pub fn unshift(this: &Array, value: &JsValue) -> u32;
 }
 
 // ArrayBuffer
@@ -359,7 +359,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/isView
     #[wasm_bindgen(static_method_of = ArrayBuffer, js_name = isView)]
-    pub fn is_view(value: JsValue) -> bool;
+    pub fn is_view(value: &JsValue) -> bool;
 
     /// The `slice()` method returns a new `ArrayBuffer` whose contents
     /// are a copy of this `ArrayBuffer`'s bytes from begin, inclusive,
@@ -414,7 +414,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean
     #[wasm_bindgen(constructor)]
-    pub fn new(value: JsValue) -> Boolean;
+    pub fn new(value: &JsValue) -> Boolean;
 
     /// The `valueOf()` method returns the primitive value of a `Boolean` object.
     ///
@@ -618,7 +618,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array
     #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Float32Array;
+    pub fn new(constructor_arg: &JsValue) -> Float32Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -670,7 +670,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array
     #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Float64Array;
+    pub fn new(constructor_arg: &JsValue) -> Float64Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -805,7 +805,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array
     #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Int8Array;
+    pub fn new(constructor_arg: &JsValue) -> Int8Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -857,7 +857,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array
     #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Int16Array;
+    pub fn new(constructor_arg: &JsValue) -> Int16Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -909,7 +909,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array
     #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Int32Array;
+    pub fn new(constructor_arg: &JsValue) -> Int32Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -1327,7 +1327,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number
     #[wasm_bindgen(constructor)]
-    pub fn new(value: JsValue) -> Number;
+    pub fn new(value: &JsValue) -> Number;
 
     /// The Number.parseInt() method parses a string argument and returns an
     /// integer of the specified radix or base.
@@ -1515,7 +1515,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
     #[wasm_bindgen(constructor)]
-    pub fn new(init: JsValue) -> Date;
+    pub fn new(init: &JsValue) -> Date;
 
     /// The `Date.now()` method returns the number of milliseconds
     /// elapsed since January 1, 1970 00:00:00 UTC.
@@ -1530,7 +1530,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
     #[wasm_bindgen(static_method_of = Date)]
-    pub fn parse(date: JsString) -> f64;
+    pub fn parse(date: &JsString) -> f64;
 
     /// The setDate() method sets the day of the Date object relative to the beginning of the currently set month.
     ///
@@ -1662,7 +1662,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
     #[wasm_bindgen(method, js_name = toLocaleDateString)]
-    pub fn to_locale_date_string(this: &Date, locale: JsString, options: JsValue) -> JsString;
+    pub fn to_locale_date_string(this: &Date, locale: &JsString, options: &JsValue) -> JsString;
 
     /// The toLocaleString() method returns a string with a language sensitive
     /// representation of this date. The new locales and options arguments
@@ -1674,7 +1674,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
     #[wasm_bindgen(method, js_name = toLocaleString)]
-    pub fn to_locale_string(this: &Date, locale: JsString, options: JsValue) -> JsString;
+    pub fn to_locale_string(this: &Date, locale: &JsString, options: &JsValue) -> JsString;
 
     /// The toLocaleTimeString() method returns a string with a language sensitive
     /// representation of the time portion of this date. The new locales and options
@@ -1685,7 +1685,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
     #[wasm_bindgen(method, js_name = toLocaleTimeString)]
-    pub fn to_locale_time_string(this: &Date, locale: JsString) -> JsString;
+    pub fn to_locale_time_string(this: &Date, locale: &JsString) -> JsString;
 
     /// The toString() method returns a string representing
     /// the specified Date object.
@@ -2103,7 +2103,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
     #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Uint8Array;
+    pub fn new(constructor_arg: &JsValue) -> Uint8Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -2157,7 +2157,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray
     #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Uint8ClampedArray;
+    pub fn new(constructor_arg: &JsValue) -> Uint8ClampedArray;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -2209,7 +2209,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array
     #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Uint16Array;
+    pub fn new(constructor_arg: &JsValue) -> Uint16Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -2261,7 +2261,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array
     #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: JsValue) -> Uint32Array;
+    pub fn new(constructor_arg: &JsValue) -> Uint32Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -2322,7 +2322,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap/set
     #[wasm_bindgen(method, js_class = "WeakMap")]
-    pub fn set(this: &WeakMap, key: &Object, value: JsValue) -> WeakMap;
+    pub fn set(this: &WeakMap, key: &Object, value: &JsValue) -> WeakMap;
 
     /// The get() method returns a specified by key element
     /// from a [`WeakMap`] object.
@@ -2391,7 +2391,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/validate
     #[wasm_bindgen(static_method_of = WebAssembly, catch)]
-    pub fn validate(bufferSource: JsValue) -> Result<bool, JsValue>;
+    pub fn validate(bufferSource: &JsValue) -> Result<bool, JsValue>;
 }
 
 // JsString
