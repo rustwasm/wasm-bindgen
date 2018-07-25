@@ -2540,14 +2540,14 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleLowerCase
     #[wasm_bindgen(method, js_class = "String", js_name = toLocaleLowerCase)]
-    pub fn to_locale_lower_case(this: &JsString, local: Option<String>) -> JsString;
+    pub fn to_locale_lower_case(this: &JsString, local: Option<&str>) -> JsString;
 
     /// The toLocaleUpperCase() method returns the calling string value converted to upper case,
     /// according to any locale-specific case mappings.
     ///
     /// https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleUpperCase
     #[wasm_bindgen(method, js_class = "String", js_name = toLocaleUpperCase)]
-    pub fn to_locale_upper_case(this: &JsString, local: Option<String>) -> JsString;
+    pub fn to_locale_upper_case(this: &JsString, local: Option<&str>) -> JsString;
 
     /// The `toLowerCase()` method returns the calling string value
     /// converted to lower case.
