@@ -5,13 +5,16 @@ use quote::ToTokens;
 use shared;
 use syn;
 
+/// Parsed attributes from a `#[wasm_bindgen(..)]`.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Default)]
 pub struct BindgenAttrs {
+    /// List of parsed attributes
     pub attrs: Vec<BindgenAttr>,
 }
 
 impl BindgenAttrs {
+    /// Find and parse the wasm_bindgen attributes.
     fn find(attrs: &mut Vec<syn::Attribute>) -> BindgenAttrs {
         let pos = attrs
             .iter()
@@ -34,6 +37,7 @@ impl BindgenAttrs {
         syn::parse(tt.into()).expect("malformed #[wasm_bindgen] attribute")
     }
 
+    /// Get the first module attribute
     fn module(&self) -> Option<&str> {
         self.attrs
             .iter()
@@ -44,6 +48,7 @@ impl BindgenAttrs {
             .next()
     }
 
+    /// Get the first version attribute
     fn version(&self) -> Option<&str> {
         self.attrs
             .iter()
@@ -54,6 +59,7 @@ impl BindgenAttrs {
             .next()
     }
 
+    /// Whether the catch attribute is present
     fn catch(&self) -> bool {
         self.attrs.iter().any(|a| match a {
             BindgenAttr::Catch => true,
@@ -61,6 +67,7 @@ impl BindgenAttrs {
         })
     }
 
+    /// Whether the constructor attribute is present
     fn constructor(&self) -> bool {
         self.attrs.iter().any(|a| match a {
             BindgenAttr::Constructor => true,
@@ -68,6 +75,7 @@ impl BindgenAttrs {
         })
     }
 
+    /// Get the first static_method_of attribute
     fn static_method_of(&self) -> Option<&Ident> {
         self.attrs
             .iter()
@@ -78,6 +86,7 @@ impl BindgenAttrs {
             .next()
     }
 
+    /// Whether the method attributes is present
     fn method(&self) -> bool {
         self.attrs.iter().any(|a| match a {
             BindgenAttr::Method => true,
@@ -85,6 +94,7 @@ impl BindgenAttrs {
         })
     }
 
+    /// Get the first js_namespace attribute
     fn js_namespace(&self) -> Option<&Ident> {
         self.attrs
             .iter()
@@ -95,6 +105,7 @@ impl BindgenAttrs {
             .next()
     }
 
+    /// Get the first getter attribute
     fn getter(&self) -> Option<Option<Ident>> {
         self.attrs
             .iter()
@@ -105,6 +116,7 @@ impl BindgenAttrs {
             .next()
     }
 
+    /// Get the first setter attribute
     fn setter(&self) -> Option<Option<Ident>> {
         self.attrs
             .iter()
@@ -115,6 +127,7 @@ impl BindgenAttrs {
             .next()
     }
 
+    /// Whether the structural attributes is present
     fn structural(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
             BindgenAttr::Structural => true,
@@ -122,6 +135,7 @@ impl BindgenAttrs {
         })
     }
 
+    /// Whether the readonly attributes is present
     fn readonly(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
             BindgenAttr::Readonly => true,
@@ -129,6 +143,7 @@ impl BindgenAttrs {
         })
     }
 
+    /// Get the first js_name attribute
     fn js_name(&self) -> Option<&Ident> {
         self.attrs
             .iter()
@@ -139,6 +154,7 @@ impl BindgenAttrs {
             .next()
     }
 
+    /// Get the first js_name attribute
     fn js_class(&self) -> Option<&str> {
         self.attrs
             .iter()
@@ -165,6 +181,7 @@ impl syn::synom::Synom for BindgenAttrs {
     ));
 }
 
+/// The possible attributes in the `#[wasm_bindgen]`.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub enum BindgenAttr {
     Catch,
@@ -258,6 +275,7 @@ impl syn::synom::Synom for BindgenAttr {
     ));
 }
 
+/// Consumes a `Ident` with the given name
 fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<'a, ()> {
     if let Some((ident, next)) = cursor.ident() {
         if ident == name {
@@ -267,6 +285,7 @@ fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<
     syn::parse_error()
 }
 
+/// Consumes a `Ident` and returns it.
 fn term2ident<'a>(cursor: syn::buffer::Cursor<'a>) -> syn::synom::PResult<'a, Ident> {
     match cursor.ident() {
         Some(pair) => Ok(pair),
@@ -274,8 +293,16 @@ fn term2ident<'a>(cursor: syn::buffer::Cursor<'a>) -> syn::synom::PResult<'a, Id
     }
 }
 
+/// Conversion trait with context.
+///
+/// Used to convert syn tokens into an AST, that we can then use to generate glue code. The context
+/// (`Ctx`) is used to pass in the attributes from the `#[wasm_bindgen]`, if needed.
 trait ConvertToAst<Ctx> {
+    /// What we are converting to.
     type Target;
+    /// Convert into our target.
+    ///
+    /// Since this is used in a procedural macro, use panic to fail.
     fn convert(self, context: Ctx) -> Self::Target;
 }
 
@@ -497,6 +524,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
     }
 }
 
+/// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 fn function_from_decl(
     name: &Ident,
     mut decl: Box<syn::FnDecl>,
@@ -556,6 +584,10 @@ fn function_from_decl(
 }
 
 pub(crate) trait MacroParse<Ctx> {
+    /// Parse the contents of an object into our AST, with a context if necessary.
+    ///
+    /// The context is used to have access to the attributes on `#[wasm_bindgen]`, and to allow
+    /// writing to the output `TokenStream`.
     fn macro_parse(self, program: &mut ast::Program, context: Ctx);
 }
 
@@ -785,34 +817,36 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
     }
 }
 
-fn extract_first_ty_param(ty: Option<&syn::Type>) -> Option<Option<syn::Type>> {
+/// Get the first type parameter of a generic type, errors on incorrect input.
+fn extract_first_ty_param(ty: Option<&syn::Type>) -> Result<Option<syn::Type>, ()> {
     let t = match ty {
         Some(t) => t,
-        None => return Some(None),
+        None => return Ok(None),
     };
     let path = match *t {
         syn::Type::Path(syn::TypePath {
             qself: None,
             ref path,
         }) => path,
-        _ => return None,
+        _ => return Err(()),
     };
-    let seg = path.segments.last()?.into_value();
+    let seg = path.segments.last().ok_or(())?.into_value();
     let generics = match seg.arguments {
         syn::PathArguments::AngleBracketed(ref t) => t,
-        _ => return None,
+        _ => return Err(()),
     };
-    let ty = match *generics.args.first()?.into_value() {
+    let ty = match *generics.args.first().ok_or(())?.into_value() {
         syn::GenericArgument::Type(ref t) => t,
-        _ => return None,
+        _ => return Err(()),
     };
     match *ty {
-        syn::Type::Tuple(ref t) if t.elems.len() == 0 => return Some(None),
+        syn::Type::Tuple(ref t) if t.elems.len() == 0 => return Ok(None),
         _ => {}
     }
-    Some(Some(ty.clone()))
+    Ok(Some(ty.clone()))
 }
 
+/// Replace `Self` with the given name in `item`.
 fn replace_self(name: &Ident, item: &mut syn::ImplItem) {
     struct Walk<'a>(&'a Ident);
 
@@ -854,6 +888,7 @@ fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
     .fold(vec![], |mut acc, a| {acc.extend(a); acc})
 }
 
+/// Check there are no lifetimes on the function.
 fn assert_no_lifetimes(decl: &mut syn::FnDecl) {
     struct Walk;
 
@@ -869,6 +904,7 @@ fn assert_no_lifetimes(decl: &mut syn::FnDecl) {
     syn::visit_mut::VisitMut::visit_fn_decl_mut(&mut Walk, decl);
 }
 
+/// If the path is a single ident, return it.
 fn extract_path_ident(path: &syn::Path) -> Option<Ident> {
     if path.leading_colon.is_some() {
         return None;
