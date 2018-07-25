@@ -149,8 +149,8 @@ fn now() {
 
 #[wasm_bindgen_test]
 fn parse() {
-    let date = Date::parse(&"04 Dec 1995 00:12:00 GMT".into());
-    let zero = Date::parse(&"01 Jan 1970 00:00:00 GMT".into());
+    let date = Date::parse("04 Dec 1995 00:12:00 GMT");
+    let zero = Date::parse("01 Jan 1970 00:00:00 GMT");
 
     assert_eq!(date, 818035920000.0);
     assert_eq!(zero, 0.0);
@@ -355,14 +355,14 @@ fn to_json() {
 #[wasm_bindgen_test]
 fn to_locale_date_string() {
     let date = Date::new(&"August 19, 1975 23:15:30 UTC".into());
-    let s = date.to_locale_date_string(&"de-DE".into(), &JsValue::undefined());
+    let s = date.to_locale_date_string("de-DE", &JsValue::undefined());
     assert!(s.length() > 0);
 }
 
 #[wasm_bindgen_test]
 fn to_locale_string() {
     let date = Date::new(&"August 19, 1975 23:15:30 UTC".into());
-    let s = date.to_locale_string(&"de-DE".into(), &JsValue::undefined());
+    let s = date.to_locale_string("de-DE", &JsValue::undefined());
     assert!(s.length() > 0);
 }
 
@@ -370,7 +370,7 @@ fn to_locale_string() {
 fn to_locale_time_string() {
     let date = Date::new(&"August 19, 1975 23:15:30".into());
     assert_eq!(
-        JsValue::from(date.to_locale_time_string(&"en-US".into())),
+        JsValue::from(date.to_locale_time_string("en-US")),
         "11:15:30 PM",
     );
 }

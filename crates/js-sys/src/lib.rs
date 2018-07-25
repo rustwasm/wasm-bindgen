@@ -583,7 +583,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
     #[wasm_bindgen(constructor)]
-    pub fn new(message: &JsString) -> Error;
+    pub fn new(message: &str) -> Error;
 
     /// The message property is a human-readable description of the error.
     ///
@@ -591,7 +591,7 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn message(this: &Error) -> JsString;
     #[wasm_bindgen(method, setter, structural)]
-    pub fn set_message(this: &Error, message: &JsString);
+    pub fn set_message(this: &Error, message: &str);
 
     /// The name property represents a name for the type of error. The initial value is "Error".
     ///
@@ -599,7 +599,7 @@ extern "C" {
     #[wasm_bindgen(method, getter, structural)]
     pub fn name(this: &Error) -> JsString;
     #[wasm_bindgen(method, setter, structural)]
-    pub fn set_name(this: &Error, name: &JsString);
+    pub fn set_name(this: &Error, name: &str);
 
     /// The toString() method returns a string representing the specified Error object
     ///
@@ -1530,7 +1530,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse
     #[wasm_bindgen(static_method_of = Date)]
-    pub fn parse(date: &JsString) -> f64;
+    pub fn parse(date: &str) -> f64;
 
     /// The setDate() method sets the day of the Date object relative to the beginning of the currently set month.
     ///
@@ -1662,7 +1662,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
     #[wasm_bindgen(method, js_name = toLocaleDateString)]
-    pub fn to_locale_date_string(this: &Date, locale: &JsString, options: &JsValue) -> JsString;
+    pub fn to_locale_date_string(this: &Date, locale: &str, options: &JsValue) -> JsString;
 
     /// The toLocaleString() method returns a string with a language sensitive
     /// representation of this date. The new locales and options arguments
@@ -1674,7 +1674,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
     #[wasm_bindgen(method, js_name = toLocaleString)]
-    pub fn to_locale_string(this: &Date, locale: &JsString, options: &JsValue) -> JsString;
+    pub fn to_locale_string(this: &Date, locale: &str, options: &JsValue) -> JsString;
 
     /// The toLocaleTimeString() method returns a string with a language sensitive
     /// representation of the time portion of this date. The new locales and options
@@ -1685,7 +1685,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
     #[wasm_bindgen(method, js_name = toLocaleTimeString)]
-    pub fn to_locale_time_string(this: &Date, locale: &JsString) -> JsString;
+    pub fn to_locale_time_string(this: &Date, locale: &str) -> JsString;
 
     /// The toString() method returns a string representing
     /// the specified Date object.
@@ -2449,14 +2449,14 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
     #[wasm_bindgen(method, js_class = "String", js_name = endsWith)]
-    pub fn ends_with(this: &JsString, search_string: &JsString, length: i32) -> bool;
+    pub fn ends_with(this: &JsString, search_string: &str, length: i32) -> bool;
 
     /// The `includes()` method determines whether one string may be found
     /// within another string, returning true or false as appropriate.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
     #[wasm_bindgen(method, js_class = "String")]
-    pub fn includes(this: &JsString, search_string: &JsString, position: i32) -> bool;
+    pub fn includes(this: &JsString, search_string: &str, position: i32) -> bool;
 
     /// The `indexOf()` method returns the index within the calling String
     /// object of the first occurrence of the specified value, starting the
@@ -2464,7 +2464,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
     #[wasm_bindgen(method, js_class = "String", js_name = indexOf)]
-    pub fn index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
+    pub fn index_of(this: &JsString, search_value: &str, from_index: i32) -> i32;
 
     /// The `lastIndexOf()` method returns the index within the calling String
     /// object of the last occurrence of the specified value, searching
@@ -2472,14 +2472,14 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/lastIndexOf
     #[wasm_bindgen(method, js_class = "String", js_name = lastIndexOf)]
-    pub fn last_index_of(this: &JsString, search_value: &JsString, from_index: i32) -> i32;
+    pub fn last_index_of(this: &JsString, search_value: &str, from_index: i32) -> i32;
 
     /// The normalize() method returns the Unicode Normalization Form
     /// of a given string (if the value isn't a string, it will be converted to one first).
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
     #[wasm_bindgen(method, js_class = "String")]
-    pub fn normalize(this: &JsString, form: &JsString) -> JsString;
+    pub fn normalize(this: &JsString, form: &str) -> JsString;
 
     /// The `padEnd()` method pads the current string with a given string
     /// (repeated, if needed) so that the resulting string reaches a given
@@ -2488,7 +2488,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd
     #[wasm_bindgen(method, js_class = "String", js_name = padEnd)]
-    pub fn pad_end(this: &JsString, target_length: u32, pad_string: &JsString) -> JsString;
+    pub fn pad_end(this: &JsString, target_length: u32, pad_string: &str) -> JsString;
 
     /// The `padStart()` method pads the current string with another string
     /// (repeated, if needed) so that the resulting string reaches the given
@@ -2497,7 +2497,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
     #[wasm_bindgen(method, js_class = "String", js_name = padStart)]
-    pub fn pad_start(this: &JsString, target_length: u32, pad_string: &JsString) -> JsString;
+    pub fn pad_start(this: &JsString, target_length: u32, pad_string: &str) -> JsString;
 
     /// The repeat() method constructs and returns a new string which contains the specified
     /// number of copies of the string on which it was called, concatenated together.
@@ -2519,7 +2519,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
     #[wasm_bindgen(method, js_class = "String", js_name = startsWith)]
-    pub fn starts_with(this: &JsString, search_string: &JsString, position: u32) -> bool;
+    pub fn starts_with(this: &JsString, search_string: &str, position: u32) -> bool;
 
     /// The `substring()` method returns the part of the string between the
     /// start and end indexes, or to the end of the string.
@@ -2784,7 +2784,7 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/for
     #[wasm_bindgen(static_method_of = Symbol, js_name = for)]
-    pub fn for_(key: &JsString) -> Symbol;
+    pub fn for_(key: &str) -> Symbol;
 
     /// The Symbol.keyFor(sym) method retrieves a shared symbol key from the global symbol registry for the given symbol.
     ///
