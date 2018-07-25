@@ -58,12 +58,12 @@ fn new() {
 
 #[wasm_bindgen_test]
 fn parse_int_float() {
-    assert_eq!(Number::parse_int("42", 10).value_of(), 42.);
-    assert_eq!(Number::parse_int("42", 16).value_of(), 66.); // 0x42 == 66
-    assert!(Number::parse_int("invalid int", 10).value_of().is_nan());
+    assert_eq!(Number::parse_int("42", 10), 42.);
+    assert_eq!(Number::parse_int("42", 16), 66.); // 0x42 == 66
+    assert!(Number::parse_int("invalid int", 10).is_nan());
 
-    assert_eq!(Number::parse_float("123456.789").value_of(), 123456.789);
-    assert!(Number::parse_float("invalid float").value_of().is_nan());
+    assert_eq!(Number::parse_float("123456.789"), 123456.789);
+    assert!(Number::parse_float("invalid float").is_nan());
 }
 
 #[wasm_bindgen_test]

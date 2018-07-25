@@ -1317,14 +1317,14 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseInt
     #[wasm_bindgen(static_method_of = Number, js_name = parseInt)]
-    pub fn parse_int(text: &str, radix: u8) -> Number;
+    pub fn parse_int(text: &str, radix: u8) -> f64;
 
     /// The Number.parseFloat() method parses a string argument and returns a
     /// floating point number.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/parseFloat
     #[wasm_bindgen(static_method_of = Number, js_name = parseFloat)]
-    pub fn parse_float(text: &str) -> Number;
+    pub fn parse_float(text: &str) -> f64;
 
     /// The toLocaleString() method returns a string with a language sensitive
     /// representation of this number.
