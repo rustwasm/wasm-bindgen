@@ -36,16 +36,20 @@ pub struct Export {
     pub constructor: Option<String>,
     /// The rust function
     pub function: Function,
-    ///
+    /// Comments extracted from the rust source.
     pub comments: Vec<String>,
-    /// The name of the rust object the function belongs to TODO is this correct?
+    /// The name of the rust function/method on the rust side.
     pub rust_name: Ident,
 }
 
+/// The 3 types variations of `self`.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub enum MethodSelf {
+    /// `self`
     ByValue,
+    /// `&mut self`
     RefMutable,
+    /// `&self`
     RefShared,
 }
 
@@ -251,7 +255,9 @@ impl Export {
         Ident::new(&generated_name, Span::call_site())
     }
 
-    /// ???
+    /// This is the name of the shim function that gets exported and takes the raw
+    /// ABI form of its arguments and converts them back into their normal,
+    /// "high level" form before calling the actual function.
     pub(crate) fn export_name(&self) -> String {
         let fn_name = self.function.name.to_string();
         match &self.class {
@@ -276,7 +282,6 @@ impl Export {
         }
     }
 }
-
 
 impl Enum {
     fn shared(&self) -> shared::Enum {

@@ -48,7 +48,7 @@ impl BindgenAttrs {
             .next()
     }
 
-    /// Get the first module attribute
+    /// Get the first version attribute
     fn version(&self) -> Option<&str> {
         self.attrs
             .iter()
