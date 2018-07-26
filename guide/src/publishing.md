@@ -49,3 +49,16 @@
   cd crates/cli && cargo publish && cd -
   cargo publish --allow-dirty # because of uncommitted, commented out [patch] section
   ```
+
+* [ ] Push the commit:
+
+  ```
+  git push origin master
+  ```
+
+* [ ] Tag the release and push it:
+
+  ```
+  git tag 0.X.Z
+  git push origin --tags
+  ```
