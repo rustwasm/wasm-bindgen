@@ -1,6 +1,5 @@
 language: rust
 sudo: false
-if: branch = master
 
 INSTALL_NODE_VIA_NVM: &INSTALL_NODE_VIA_NVM
   - rustup target add wasm32-unknown-unknown
@@ -47,6 +46,7 @@ matrix:
         - npm run run-lint-examples
       addons:
         firefox: latest
+      if: branch = master
 
     # All examples work
     - rust: nightly
@@ -61,6 +61,7 @@ matrix:
              ln -s ../../node_modules . &&
              ./build.sh) || exit 1;
           done
+      if: branch = master
 
     # The `web-sys` crate's tests pass on nightly.
     - rust: nightly
@@ -71,6 +72,7 @@ matrix:
       script: cargo test --manifest-path crates/web-sys/Cargo.toml
       addons:
         firefox: latest
+      if: branch = master
 
     # The `js-sys` crate's tests pass on nightly.
     - rust: nightly
@@ -83,6 +85,7 @@ matrix:
         - cargo test -p js-sys --target wasm32-unknown-unknown
       addons:
         firefox: latest
+      if: branch = master
 
     # Tests pass on nightly using yarn
     - rust: nightly
@@ -93,6 +96,7 @@ matrix:
         - export PATH=$HOME/.yarn/bin:$PATH
         - yarn install --freeze-lockfile
       script: cargo test api::works
+      if: branch = master
 
     # WebIDL tests pass on nightly
     - rust: nightly
@@ -100,6 +104,7 @@ matrix:
       before_install: *INSTALL_NODE_VIA_NVM
       install: npm ci --verbose
       script: cargo test --manifest-path crates/webidl/Cargo.toml
+      if: branch = master
 
     # Dist linux binary
     - rust: nightly
@@ -123,10 +128,12 @@ matrix:
     - rust: stable
       env: JOB=check-stable-cli
       script: cargo check --manifest-path crates/cli/Cargo.toml
+      if: branch = master
     # CLI builds on nightly
     - rust: nightly
       env: JOB=check-nightly-cli
       script: cargo check --manifest-path crates/cli/Cargo.toml
+      if: branch = master
 
     # Build documentation for the gh-pages branch
     - rust: nightly
@@ -148,6 +155,7 @@ matrix:
         github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
         local-dir: guide/book
         keep-history: false
+      if: branch = master
 
 notifications:
   email:
