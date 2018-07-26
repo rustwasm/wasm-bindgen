@@ -47,5 +47,5 @@
   cd crates/cli-support && cargo publish && cd -
   cd crates/test-project-builder && cargo publish && cd -
   cd crates/cli && cargo publish && cd -
-  cargo publish
+  cargo publish --allow-dirty # because of uncommitted, commented out [patch] section
   ```
