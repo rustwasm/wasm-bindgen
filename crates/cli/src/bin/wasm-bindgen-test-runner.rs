@@ -4,8 +4,7 @@ extern crate wasm_bindgen_cli_support;
 extern crate parity_wasm;
 
 use std::env;
-use std::fs::{self, File};
-use std::io::{Write, Read};
+use std::fs;
 use std::path::PathBuf;
 use std::process::{self, Command};
 
@@ -49,16 +48,6 @@ fn rmain() -> Result<(), Error> {
     drop(fs::remove_dir_all(&tmpdir));
     fs::create_dir(&tmpdir)
         .context("creating temporary directory")?;
-
-    // For now unconditionally generate wasm-bindgen code tailored for node.js,
-    // but eventually we'll want more options here for browsers!
-    let mut b = Bindgen::new();
-    b.debug(true)
-        .nodejs(true)
-        .input_path(&wasm_file_to_test)
-        .keep_debug(false)
-        .generate(&tmpdir)
-        .context("executing `wasm-bindgen` over the wasm file")?;
 
     let module = wasm_file_to_test.file_stem()
         .and_then(|s| s.to_str())
@@ -117,13 +106,11 @@ fn rmain() -> Result<(), Error> {
     // Note that we're collecting *JS objects* that represent the functions to
     // execute, and then those objects are passed into wasm for it to execute
     // when it sees fit.
-    let mut wasm = Vec::new();
-    let wasm_file = tmpdir.join(format!("{}_bg.wasm", module));
-    File::open(wasm_file).and_then(|mut f| f.read_to_end(&mut wasm))
+    let wasm = fs::read(&wasm_file_to_test)
         .context("failed to read wasm file")?;
-    let module = Module::deserialize(&mut &wasm[..])
+    let wasm = Module::deserialize(&mut &wasm[..])
         .context("failed to deserialize wasm module")?;
-    if let Some(exports) = module.export_section() {
+    if let Some(exports) = wasm.export_section() {
         for export in exports.entries() {
             if !export.field().starts_with("__wbg_test") {
                 continue
@@ -135,9 +122,18 @@ fn rmain() -> Result<(), Error> {
     // And as a final addendum, exit with a nonzero code if any tests fail.
     js_to_execute.push_str("if (!cx.run(tests)) exit(1);\n");
 
+    // For now unconditionally generate wasm-bindgen code tailored for node.js,
+    // but eventually we'll want more options here for browsers!
+    let mut b = Bindgen::new();
+    b.debug(true)
+        .nodejs(true)
+        .input_module(module, wasm, |m| parity_wasm::serialize(m).unwrap())
+        .keep_debug(false)
+        .generate(&tmpdir)
+        .context("executing `wasm-bindgen` over the wasm file")?;
+
     let js_path = tmpdir.join("run.js");
-    File::create(&js_path)
-        .and_then(|mut f| f.write_all(js_to_execute.as_bytes()))
+    fs::write(&js_path, js_to_execute)
         .context("failed to write JS file")?;
 
     // Last but not least, execute `node`! Add an entry to `NODE_PATH` for the

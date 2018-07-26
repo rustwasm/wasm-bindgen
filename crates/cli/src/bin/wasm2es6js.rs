@@ -4,8 +4,7 @@ extern crate docopt;
 extern crate failure;
 extern crate wasm_bindgen_cli_support;
 
-use std::fs::File;
-use std::io::{Read, Write};
+use std::fs;
 use std::path::PathBuf;
 use std::process;
 
@@ -58,9 +57,7 @@ fn main() {
 }
 
 fn rmain(args: &Args) -> Result<(), Error> {
-    let mut wasm = Vec::new();
-    File::open(&args.arg_input)
-        .and_then(|mut f| f.read_to_end(&mut wasm))
+    let wasm = fs::read(&args.arg_input)
         .with_context(|_| format!("failed to read `{}`", args.arg_input.display()))?;
 
     let object = wasm_bindgen_cli_support::wasm2es6js::Config::new()
@@ -73,8 +70,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         if let Some(ref p) = args.flag_output {
             let dst = p.with_extension("d.ts");
             let ts = object.typescript();
-            File::create(&dst)
-                .and_then(|mut f| f.write_all(ts.as_bytes()))
+            fs::write(&dst, ts)
                 .with_context(|_| format!("failed to write `{}`", dst.display()))?;
         }
     }
@@ -83,8 +79,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
 
     match args.flag_output {
         Some(ref p) => {
-            File::create(p)
-                .and_then(|mut f| f.write_all(js.as_bytes()))
+            fs::write(p, js)
                 .with_context(|_| format!("failed to write `{}`", p.display()))?;
         }
         None => {
