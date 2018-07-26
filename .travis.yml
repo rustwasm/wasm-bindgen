@@ -1,5 +1,6 @@
 language: rust
 sudo: false
+if: branch = master
 
 INSTALL_NODE_VIA_NVM: &INSTALL_NODE_VIA_NVM
   - rustup target add wasm32-unknown-unknown
@@ -13,7 +14,9 @@ DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
     |
       name="wasm-bindgen-$TRAVIS_TAG-$TARGET"
       mkdir "$name"
-      cp "target/$TARGET/release/{wasm-bindgen,wasm2es6js,wasm-bindgen-test-runner}" "$name/"
+      cp "target/$TARGET/release/wasm-bindgen" "$name/"
+      cp "target/$TARGET/release/wasm2es6js" "$name/"
+      cp "target/$TARGET/release/wasm-bindgen-test-runner" "$name/"
       cp README.md LICENSE-MIT LICENSE-APACHE "$name/"
       tar czvf "$name.tar.gz" "$name"
   deploy:
@@ -26,6 +29,7 @@ DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
       tags: true
     provider: releases
     skip_cleanup: true
+  if: branch = master OR tag IS present
 
 matrix:
   include:
@@ -128,7 +132,8 @@ matrix:
     - rust: nightly
       env: JOB=guide-build-and-deploy
       cache:
-        - cargo
+        directories:
+          - $HOME/.cargo
       before_script:
         - (test -x $HOME/.cargo/bin/cargo-install-update || cargo install cargo-update)
         - (test -x $HOME/.cargo/bin/mdbook || cargo install --vers "^0.1" mdbook)
@@ -143,13 +148,6 @@ matrix:
         github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
         local-dir: guide/book
         keep-history: false
-        on:
-          branch: master
-
-branches:
-  only:
-  - master
-  - /\d/
 
 notifications:
   email:

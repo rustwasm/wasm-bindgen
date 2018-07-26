@@ -33,6 +33,7 @@ before_deploy:
         New-Item -Path $NAME -ItemType directory
         Copy-Item target/release/wasm-bindgen.exe "${NAME}/"
         Copy-Item target/release/wasm2es6js.exe "${NAME}/"
+        Copy-Item target/release/wasm-bindgen-test-runner.exe "${NAME}/"
         Copy-Item LICENSE-MIT "${NAME}/"
         Copy-Item LICENSE-APACHE "${NAME}/"
         Copy-Item README.md "${NAME}/"
