@@ -379,29 +379,26 @@ extern "C" {
 // Array Iterator
 #[wasm_bindgen]
 extern "C" {
-    #[derive(Clone, Debug)]
-    pub type ArrayIterator;
-
     /// The keys() method returns a new Array Iterator object that contains the
     /// keys for each index in the array.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
     #[wasm_bindgen(method)]
-    pub fn keys(this: &Array) -> ArrayIterator;
+    pub fn keys(this: &Array) -> Iterator;
 
     /// The entries() method returns a new Array Iterator object that contains
     /// the key/value pairs for each index in the array.
     ///
     /// http://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
     #[wasm_bindgen(method)]
-    pub fn entries(this: &Array) -> ArrayIterator;
+    pub fn entries(this: &Array) -> Iterator;
 
     /// The values() method returns a new Array Iterator object that
     /// contains the values for each index in the array.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values
     #[wasm_bindgen(method)]
-    pub fn values(this: &Array) -> ArrayIterator;
+    pub fn values(this: &Array) -> Iterator;
 }
 
 // Boolean
@@ -1015,30 +1012,70 @@ extern {
 // Map Iterator
 #[wasm_bindgen]
 extern {
-    #[derive(Clone, Debug)]
-    pub type MapIterator;
-
     /// The entries() method returns a new Iterator object that contains
     /// the [key, value] pairs for each element in the Map object in
     /// insertion order.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries
     #[wasm_bindgen(method)]
-    pub fn entries(this: &Map) -> MapIterator;
+    pub fn entries(this: &Map) -> Iterator;
 
     /// The keys() method returns a new Iterator object that contains the
     /// keys for each element in the Map object in insertion order.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys
     #[wasm_bindgen(method)]
-    pub fn keys(this: &Map) -> MapIterator;
+    pub fn keys(this: &Map) -> Iterator;
 
     /// The values() method returns a new Iterator object that contains the
     /// values for each element in the Map object in insertion order.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/values
     #[wasm_bindgen(method)]
-    pub fn values(this: &Map) -> MapIterator;
+    pub fn values(this: &Map) -> Iterator;
+}
+
+// Iterator
+#[wasm_bindgen]
+extern {
+    /// Any object that conforms to the JS iterator protocol. For example,
+    /// something returned by `myArray[Symbol.iterator]()`.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+    #[derive(Clone, Debug)]
+    pub type Iterator;
+
+    /// The next method always has to return an object with appropriate
+    /// properties including done and value. If a non-object value gets returned
+    /// (such as false or undefined), a TypeError ("iterator.next() returned a
+    /// non-object value") will be thrown.
+    #[wasm_bindgen(catch, method, structural)]
+    pub fn next(this: &Iterator) -> Result<IteratorNext, JsValue>;
+}
+
+// IteratorNext
+#[wasm_bindgen]
+extern {
+    /// The result of calling `next()` on a JS iterator.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+    #[derive(Clone, Debug)]
+    pub type IteratorNext;
+
+    /// Has the value `true` if the iterator is past the end of the iterated
+    /// sequence. In this case value optionally specifies the return value of
+    /// the iterator.
+    ///
+    /// Has the value `false` if the iterator was able to produce the next value
+    /// in the sequence. This is equivalent of not specifying the done property
+    /// altogether.
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn done(this: &IteratorNext) -> bool;
+
+    /// Any JavaScript value returned by the iterator. Can be omitted when done
+    /// is true.
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn value(this: &IteratorNext) -> JsValue;
 }
 
 // Math
@@ -2064,9 +2101,6 @@ extern {
 // SetIterator
 #[wasm_bindgen]
 extern {
-    #[derive(Clone, Debug)]
-    pub type SetIterator;
-
     /// The `entries()` method returns a new Iterator object that contains an
     /// array of [value, value] for each element in the Set object, in insertion
     /// order. For Set objects there is no key like in Map objects. However, to
@@ -2075,7 +2109,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/entries
     #[wasm_bindgen(method)]
-    pub fn entries(set: &Set) -> SetIterator;
+    pub fn entries(set: &Set) -> Iterator;
 
     /// The `keys()` method is an alias for this method (for similarity with
     /// Map objects); it behaves exactly the same and returns values
@@ -2083,14 +2117,14 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
     #[wasm_bindgen(method)]
-    pub fn keys(set: &Set) -> SetIterator;
+    pub fn keys(set: &Set) -> Iterator;
 
     /// The `values()` method returns a new Iterator object that contains the
     /// values for each element in the Set object in insertion order.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
     #[wasm_bindgen(method)]
-    pub fn values(set: &Set) -> SetIterator;
+    pub fn values(set: &Set) -> Iterator;
 }
 
 // Uint8Array
