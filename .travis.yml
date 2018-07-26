@@ -149,6 +149,7 @@ matrix:
 branches:
   only:
   - master
+  - /\d/
 
 notifications:
   email:
