@@ -1,8 +1,10 @@
 extern crate env_logger;
 extern crate failure;
 extern crate wasm_bindgen_webidl;
+extern crate sourcefile;
 
-use failure::ResultExt;
+use failure::{Fail, ResultExt};
+use sourcefile::SourceFile;
 use std::env;
 use std::ffi::OsStr;
 use std::fs;
@@ -27,20 +29,34 @@ fn try_main() -> Result<(), failure::Error> {
     println!("cargo:rerun-if-changed=webidls/enabled");
     let entries = fs::read_dir("webidls/enabled").context("reading webidls/enabled directory")?;
 
-    let mut contents = String::new();
+    let mut source = SourceFile::default();
     for entry in entries {
         let entry = entry.context("getting webidls/enabled/*.webidl entry")?;
         if entry.path().extension() == Some(OsStr::new("webidl")) {
             println!("cargo:rerun-if-changed={}", entry.path().display());
-
-            let this_contents =
-                fs::read_to_string(entry.path()).context("reading WebIDL file contents")?;
-            contents.push_str(&this_contents);
+            source = source.add_file(entry.path())
+                .with_context(|_| format!("reading contents of file \"{}\"",
+                                          entry.path().display()))?;
         }
     }
 
-    let bindings = wasm_bindgen_webidl::compile(&contents)
-        .context("compiling WebIDL into wasm-bindgen bindings")?;
+    let bindings = match wasm_bindgen_webidl::compile(&source.contents) {
+        Ok(bindings) => bindings,
+        Err(e) => match e.kind() {
+            wasm_bindgen_webidl::ErrorKind::ParsingWebIDLSourcePos(pos) => {
+                if let Some(pos) = source.resolve_offset(pos) {
+                    let ctx = format!("compiling WebIDL into wasm-bindgen bindings in file \
+                        \"{}\", line {} column {}", pos.filename, pos.line + 1, pos.col + 1);
+                    return Err(e.context(ctx).into());
+                } else {
+                    return Err(e.context("compiling WebIDL into wasm-bindgen bindings").into());
+                }
+            }
+            _ => {
+                return Err(e.context("compiling WebIDL into wasm-bindgen bindings").into());
+            }
+        }
+    };
 
     let out_dir = env::var("OUT_DIR").context("reading OUT_DIR environment variable")?;
     let mut out_file = fs::File::create(path::Path::new(&out_dir).join("bindings.rs"))
@@ -51,3 +67,4 @@ fn try_main() -> Result<(), failure::Error> {
 
     Ok(())
 }
+

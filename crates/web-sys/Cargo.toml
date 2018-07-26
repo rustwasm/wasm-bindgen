@@ -8,6 +8,7 @@ readme = "./README.md"
 env_logger = "0.5.10"
 failure = "0.1"
 wasm-bindgen-webidl = { path = "../webidl", version = "=0.2.14" }
+sourcefile = "0.1"
 
 [dependencies]
 wasm-bindgen = { path = "../..", version = "=0.2.14" }

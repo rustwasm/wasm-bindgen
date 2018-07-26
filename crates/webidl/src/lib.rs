@@ -10,6 +10,8 @@ emitted for the types and methods described in the WebIDL.
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-webidl/0.2")]
 
 extern crate failure;
+#[macro_use]
+extern crate failure_derive;
 extern crate heck;
 #[macro_use]
 extern crate log;
@@ -23,38 +25,54 @@ extern crate webidl;
 
 mod first_pass;
 mod util;
+mod error;
 
 use std::collections::BTreeSet;
 use std::fs;
 use std::io::{self, Read};
-use std::iter::{self, FromIterator};
+use std::iter::FromIterator;
 use std::path::Path;
 
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
-use backend::util::{ident_ty, raw_ident, rust_ident, wrap_import_function};
-use failure::ResultExt;
+use backend::util::{ident_ty, rust_ident, wrap_import_function};
+use failure::{ResultExt, Fail};
 use heck::{CamelCase, ShoutySnakeCase};
 use quote::ToTokens;
 
 use first_pass::{FirstPass, FirstPassRecord};
 use util::{public, webidl_const_ty_to_syn_ty, webidl_const_v_to_backend_const_v, TypePosition};
 
-/// Either `Ok(t)` or `Err(failure::Error)`.
-pub type Result<T> = ::std::result::Result<T, failure::Error>;
+pub use error::{Error, ErrorKind, Result};
 
 /// Parse the WebIDL at the given path into a wasm-bindgen AST.
 fn parse_file(webidl_path: &Path) -> Result<backend::ast::Program> {
-    let file = fs::File::open(webidl_path).context("opening WebIDL file")?;
+    let file = fs::File::open(webidl_path).context(ErrorKind::OpeningWebIDLFile)?;
     let mut file = io::BufReader::new(file);
     let mut source = String::new();
-    file.read_to_string(&mut source)
-        .context("reading WebIDL file")?;
+    file.read_to_string(&mut source).context(ErrorKind::ReadingWebIDLFile)?;
     parse(&source)
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
 fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
-    let definitions = webidl::parse_string(webidl_source).context("parsing WebIDL source text")?;
+    let definitions = match webidl::parse_string(webidl_source) {
+        Ok(def) => def,
+        Err(e) => {
+            let kind = match &e {
+                webidl::ParseError::InvalidToken { location } => {
+                    ErrorKind::ParsingWebIDLSourcePos(*location)
+                }
+                webidl::ParseError::UnrecognizedToken { token: Some((start, ..)), .. } => {
+                    ErrorKind::ParsingWebIDLSourcePos(*start)
+                }
+                webidl::ParseError::ExtraToken { token: (start, ..) } => {
+                    ErrorKind::ParsingWebIDLSourcePos(*start)
+                },
+                _ => ErrorKind::ParsingWebIDLSource
+            };
+            return Err(e.context(kind).into());
+        }
+    };
 
     let mut first_pass_record = Default::default();
     definitions.first_pass(&mut first_pass_record)?;
@@ -528,9 +546,9 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
 impl<'a> WebidlParse<&'a str> for webidl::ast::Iterable {
     fn webidl_parse(
         &self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'_>,
-        self_name: &'a str,
+        _program: &mut backend::ast::Program,
+        _first_pass: &FirstPassRecord<'_>,
+        _self_name: &'a str,
     ) -> Result<()> {
         if util::is_chrome_only(&self.extended_attributes) {
             return Ok(());
