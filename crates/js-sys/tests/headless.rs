@@ -26,7 +26,7 @@ fn ArrayIterator_values() {
             use wasm_bindgen::prelude::*;
 
             #[wasm_bindgen]
-            pub fn get_values(this: &js_sys::Array) -> js_sys::ArrayIterator {
+            pub fn get_values(this: &js_sys::Array) -> js_sys::Iterator {
                 this.values()
             }
         "#,
