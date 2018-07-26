@@ -6,11 +6,12 @@ readme = "./README.md"
 categories = ["wasm"]
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/js-sys"
 homepage = "https://rustwasm.github.io/wasm-bindgen/"
-documentation = "https://docs.rs/wasm-bindgen"
+documentation = "https://docs.rs/js-sys"
 description = """
 Bindings for all JS global objects and functions in all JS environments like
 Node.js and browsers, built on `#[wasm_bindgen]` using the `wasm-bindgen` crate.
 """
+license = "MIT/Apache-2.0"
 
 [lib]
 test = false
