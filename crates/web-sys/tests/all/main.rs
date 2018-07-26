@@ -5,6 +5,7 @@ mod event;
 mod headers;
 mod response;
 mod element;
+mod history;
 
 fn websys_project() -> Project {
     project()
