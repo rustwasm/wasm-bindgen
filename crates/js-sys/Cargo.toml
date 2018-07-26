@@ -1,7 +1,7 @@
 [package]
 name = "js-sys"
-version = "0.2.14"
-authors = ["Alex Crichton <alex@alexcrichton.com>"]
+version = "0.2.0"
+authors = ["The wasm-bindgen Developers"]
 readme = "./README.md"
 categories = ["wasm"]
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/js-sys"
@@ -17,10 +17,10 @@ test = false
 doctest = false
 
 [dependencies]
-wasm-bindgen = { path = "../..", version = "0.2.14" }
+wasm-bindgen = { path = "../..", version = "0.2.15" }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-wasm-bindgen-test = { path = '../test', version = '=0.2.14' }
+wasm-bindgen-test = { path = '../test', version = '=0.2.15' }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.14' }
+wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.15' }

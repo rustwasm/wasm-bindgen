@@ -32,4 +32,5 @@
     - [Testing](./web-sys/testing.md)
     - [Logging](./web-sys/logging.md)
     - [Supporting More Web APIs](./web-sys/supporting-more-web-apis.md)
+  - [Publishing](./publishing.md)
   - [Team](./team.md)
