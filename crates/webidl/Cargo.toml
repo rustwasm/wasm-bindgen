@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-webidl"
-version = "0.2.13"
+version = "0.2.14"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 categories = ["wasm"]
@@ -12,7 +12,7 @@ Support for parsing WebIDL specific to wasm-bindgen
 """
 
 [dev-dependencies]
-wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.13' }
+wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.14' }
 
 [dependencies]
 failure = "0.1"
@@ -21,5 +21,5 @@ log = "0.4.1"
 proc-macro2 = "0.4.8"
 quote = '0.6'
 syn = { version = '0.14', features = ['full'] }
-wasm-bindgen-backend = { version = "=0.2.13", path = "../backend" }
+wasm-bindgen-backend = { version = "=0.2.14", path = "../backend" }
 webidl = "0.7.0"

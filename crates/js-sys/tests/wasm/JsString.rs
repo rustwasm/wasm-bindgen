@@ -53,9 +53,9 @@ fn ends_with() {
     let js = JsString::from(s);
 
     // TODO: remove third parameter once we have optional parameters
-    assert_eq!(js.ends_with(&"question.".into(), s.len() as i32), true);
-    assert_eq!(js.ends_with(&"to be".into(), s.len() as i32), false);
-    assert_eq!(js.ends_with(&"to be".into(), 19), true);
+    assert_eq!(js.ends_with("question.", s.len() as i32), true);
+    assert_eq!(js.ends_with("to be", s.len() as i32), false);
+    assert_eq!(js.ends_with("to be", 19), true);
 }
 
 #[wasm_bindgen_test]
@@ -63,13 +63,13 @@ fn includes() {
     let str = JsString::from("Blue Whale");
 
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(str.includes(&"Blue".into(), 0), true);
-    assert_eq!(str.includes(&"Blute".into(), 0), false);
-    assert_eq!(str.includes(&"Whale".into(), 0), true);
-    assert_eq!(str.includes(&"Whale".into(), 5), true);
-    assert_eq!(str.includes(&"Whale".into(), 7), false);
-    assert_eq!(str.includes(&"".into(), 0), true);
-    assert_eq!(str.includes(&"".into(), 16), true);
+    assert_eq!(str.includes("Blue", 0), true);
+    assert_eq!(str.includes("Blute", 0), false);
+    assert_eq!(str.includes("Whale", 0), true);
+    assert_eq!(str.includes("Whale", 5), true);
+    assert_eq!(str.includes("Whale", 7), false);
+    assert_eq!(str.includes("", 0), true);
+    assert_eq!(str.includes("", 16), true);
 }
 
 #[wasm_bindgen_test]
@@ -77,17 +77,17 @@ fn index_of() {
     let str = JsString::from("Blue Whale");
 
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(str.index_of(&"Blue".into(), 0), 0);
+    assert_eq!(str.index_of("Blue", 0), 0);
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(str.index_of(&"Blute".into(), 0), -1);
-    assert_eq!(str.index_of(&"Whale".into(), 0), 5);
-    assert_eq!(str.index_of(&"Whale".into(), 5), 5);
-    assert_eq!(str.index_of(&"Whale".into(), 7), -1);
+    assert_eq!(str.index_of("Blute", 0), -1);
+    assert_eq!(str.index_of("Whale", 0), 5);
+    assert_eq!(str.index_of("Whale", 5), 5);
+    assert_eq!(str.index_of("Whale", 7), -1);
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(str.index_of(&"".into(), 0), 0);
-    assert_eq!(str.index_of(&"".into(), 9), 9);
-    assert_eq!(str.index_of(&"".into(), 10), 10);
-    assert_eq!(str.index_of(&"".into(), 11), 10);
+    assert_eq!(str.index_of("", 0), 0);
+    assert_eq!(str.index_of("", 9), 9);
+    assert_eq!(str.index_of("", 10), 10);
+    assert_eq!(str.index_of("", 11), 10);
 }
 
 #[wasm_bindgen_test]
@@ -96,16 +96,16 @@ fn last_index_of() {
     let len = js.length() as i32;
 
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(js.last_index_of(&"a".into(), len), 3);
-    assert_eq!(js.last_index_of(&"a".into(), 2), 1);
-    assert_eq!(js.last_index_of(&"a".into(), 0), -1);
+    assert_eq!(js.last_index_of("a", len), 3);
+    assert_eq!(js.last_index_of("a", 2), 1);
+    assert_eq!(js.last_index_of("a", 0), -1);
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(js.last_index_of(&"x".into(), len), -1);
-    assert_eq!(js.last_index_of(&"c".into(), -5), 0);
-    assert_eq!(js.last_index_of(&"c".into(), 0), 0);
+    assert_eq!(js.last_index_of("x", len), -1);
+    assert_eq!(js.last_index_of("c", -5), 0);
+    assert_eq!(js.last_index_of("c", 0), 0);
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(js.last_index_of(&"".into(), len), 5);
-    assert_eq!(js.last_index_of(&"".into(), 2), 2);
+    assert_eq!(js.last_index_of("", len), 5);
+    assert_eq!(js.last_index_of("", 2), 2);
 }
 
 #[wasm_bindgen_test]
@@ -113,10 +113,10 @@ fn normalize() {
     let js = JsString::from("\u{1E9B}\u{0323}");
 
     // TODO: Handle undefined
-    assert_eq!(JsValue::from(js.normalize(&"NFC".into())), "\u{1E9B}\u{0323}");
-    assert_eq!(JsValue::from(js.normalize(&"NFD".into())), "\u{017F}\u{0323}\u{0307}");
-    assert_eq!(JsValue::from(js.normalize(&"NFKC".into())), "\u{1E69}");
-    assert_eq!(JsValue::from(js.normalize(&"NFKD".into())), "\u{0073}\u{0323}\u{0307}");
+    assert_eq!(JsValue::from(js.normalize("NFC")), "\u{1E9B}\u{0323}");
+    assert_eq!(JsValue::from(js.normalize("NFD")), "\u{017F}\u{0323}\u{0307}");
+    assert_eq!(JsValue::from(js.normalize("NFKC")), "\u{1E69}");
+    assert_eq!(JsValue::from(js.normalize("NFKD")), "\u{0073}\u{0323}\u{0307}");
 }
 
 #[wasm_bindgen_test]
@@ -124,13 +124,13 @@ fn pad_end() {
     let js = JsString::from("abc");
 
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(JsValue::from(js.pad_end(10, &" ".into())), "abc       ");
+    assert_eq!(JsValue::from(js.pad_end(10, " ")), "abc       ");
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(JsValue::from(js.pad_end(10, &" ".into())), "abc       ");
-    assert_eq!(JsValue::from(js.pad_end(10, &"foo".into())), "abcfoofoof");
-    assert_eq!(JsValue::from(js.pad_end(6, &"123456".into())), "abc123");
+    assert_eq!(JsValue::from(js.pad_end(10, " ")), "abc       ");
+    assert_eq!(JsValue::from(js.pad_end(10, "foo")), "abcfoofoof");
+    assert_eq!(JsValue::from(js.pad_end(6, "123456")), "abc123");
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(JsValue::from(js.pad_end(1, &" ".into())), "abc");
+    assert_eq!(JsValue::from(js.pad_end(1, " ")), "abc");
 }
 
 #[wasm_bindgen_test]
@@ -138,12 +138,12 @@ fn pad_start() {
     let js = JsString::from("abc");
 
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(js.pad_start(10, &" ".into()), "       abc");
-    assert_eq!(js.pad_start(10, &"foo".into()), "foofoofabc");
-    assert_eq!(js.pad_start(6, &"123465".into()), "123abc");
-    assert_eq!(js.pad_start(8, &"0".into()), "00000abc");
+    assert_eq!(js.pad_start(10, " "), "       abc");
+    assert_eq!(js.pad_start(10, "foo"), "foofoofabc");
+    assert_eq!(js.pad_start(6, "123465"), "123abc");
+    assert_eq!(js.pad_start(8, "0"), "00000abc");
     // TODO: remove second parameter once we have optional parameters
-    assert_eq!(js.pad_start(1, &" ".into()), "abc");
+    assert_eq!(js.pad_start(1, " "), "abc");
 }
 
 #[wasm_bindgen_test]
@@ -162,9 +162,9 @@ fn starts_with() {
     let js = JsString::from("To be, or not to be, that is the question.");
 
     // TODO: remove second parameter for both assertions once we have optional parameters
-    assert!(js.starts_with(&"To be".into(), 0));
-    assert!(!js.starts_with(&"not to be".into(), 0));
-    assert!(js.starts_with(&"not to be".into(), 10));
+    assert!(js.starts_with("To be", 0));
+    assert!(!js.starts_with("not to be", 0));
+    assert!(js.starts_with("not to be", 10));
 }
 
 #[wasm_bindgen_test]

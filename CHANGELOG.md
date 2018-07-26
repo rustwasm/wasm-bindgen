@@ -2,9 +2,20 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.14
+
+Released 2018-07-25.
+
+### Fixed
+
+* Fixed compilation errors on targets that use
+  Mach-O. [#545](https://github.com/rustwasm/wasm-bindgen/issues/545)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.13
 
-Released 2018-07-22
+Released 2018-07-22.
 
 ### Added
 

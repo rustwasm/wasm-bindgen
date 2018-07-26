@@ -14,6 +14,7 @@
  * https://drafts.csswg.org/cssom-view/#extensions-to-the-document-interface
  */
 
+/*TODO
 interface WindowProxy;
 interface nsISupports;
 interface URI;
@@ -21,6 +22,7 @@ interface nsIDocShell;
 interface nsILoadGroup;
 
 enum VisibilityState { "hidden", "visible" };
+*/
 
 /* https://dom.spec.whatwg.org/#dictdef-elementcreationoptions */
 dictionary ElementCreationOptions {
@@ -33,8 +35,11 @@ dictionary ElementCreationOptions {
 /* https://dom.spec.whatwg.org/#interface-document */
 [Constructor]
 interface Document : Node {
+
+/*TODO
   [Throws]
   readonly attribute DOMImplementation implementation;
+*/
   [Pure, Throws, BinaryName="documentURIFromJS", NeedsCallerType]
   readonly attribute DOMString URL;
   [Pure, Throws, BinaryName="documentURIFromJS", NeedsCallerType]
@@ -54,6 +59,7 @@ interface Document : Node {
   readonly attribute DocumentType? doctype;
   [Pure]
   readonly attribute Element? documentElement;
+
   [Pure]
   HTMLCollection getElementsByTagName(DOMString localName);
   [Pure, Throws]
@@ -73,8 +79,10 @@ interface Document : Node {
   Text createTextNode(DOMString data);
   [NewObject]
   Comment createComment(DOMString data);
+/*TODO
   [NewObject, Throws]
   ProcessingInstruction createProcessingInstruction(DOMString target, DOMString data);
+*/
 
   [CEReactions, Throws]
   Node importNode(Node node, optional boolean deep = false);
@@ -84,8 +92,10 @@ interface Document : Node {
   [NewObject, Throws, NeedsCallerType]
   Event createEvent(DOMString interface);
 
+/*TODO
   [NewObject, Throws]
   Range createRange();
+*/
 
   // NodeFilter.SHOW_ALL = 0xFFFFFFFF
   [NewObject, Throws]
@@ -100,22 +110,26 @@ interface Document : Node {
 
   // These are not in the spec, but leave them for now for backwards compat.
   // So sort of like Gecko extensions
+/*TODO
   [NewObject, Throws]
   CDATASection createCDATASection(DOMString data);
   [NewObject, Throws]
   Attr createAttribute(DOMString name);
   [NewObject, Throws]
   Attr createAttributeNS(DOMString? namespace, DOMString name);
+*/
 };
 
 // https://html.spec.whatwg.org/multipage/dom.html#the-document-object
 partial interface Document {
+/*TODO
   [PutForwards=href, Unforgeable] readonly attribute Location? location;
   //(HTML only)         attribute DOMString domain;
   readonly attribute DOMString referrer;
   //(HTML only)         attribute DOMString cookie;
   readonly attribute DOMString lastModified;
   readonly attribute DOMString readyState;
+*/
 
   // DOM tree accessors
   //(Not proxy yet)getter object (DOMString name);
@@ -135,6 +149,7 @@ partial interface Document {
   [SameObject] readonly attribute HTMLCollection scripts;
   [Pure]
   NodeList getElementsByName(DOMString elementName);
+
   //(Not implemented)readonly attribute DOMElementMap cssElementMap;
 
   // dynamic markup insertion
@@ -174,7 +189,9 @@ partial interface Document {
    * True if this document is synthetic : stand alone image, video, audio file,
    * etc.
    */
+/*Non standard
   [Func="IsChromeOrXBL"] readonly attribute boolean mozSyntheticDocument;
+*/
   /**
    * Returns the script element whose script is currently being processed.
    *
@@ -257,17 +274,23 @@ partial interface Document {
   // versions have it uppercase.
   [LenientSetter, Unscopable, Func="nsDocument::IsUnprefixedFullscreenEnabled"]
   readonly attribute boolean fullscreen;
+/*Non standard
   [BinaryName="fullscreen"]
   readonly attribute boolean mozFullScreen;
+*/
   [LenientSetter, Func="nsDocument::IsUnprefixedFullscreenEnabled", NeedsCallerType]
   readonly attribute boolean fullscreenEnabled;
+/*Non standard
   [BinaryName="fullscreenEnabled", NeedsCallerType]
   readonly attribute boolean mozFullScreenEnabled;
+*/
 
   [Func="nsDocument::IsUnprefixedFullscreenEnabled"]
   void exitFullscreen();
+/*Non standard
   [BinaryName="exitFullscreen"]
   void mozCancelFullScreen();
+*/
 
   // Events handlers
   [Func="nsDocument::IsUnprefixedFullscreenEnabled"]
@@ -289,8 +312,11 @@ partial interface Document {
 // https://w3c.github.io/page-visibility/#extensions-to-the-document-interface
 partial interface Document {
   readonly attribute boolean hidden;
+
+/*TODO
   readonly attribute VisibilityState visibilityState;
            attribute EventHandler onvisibilitychange;
+*/
 };
 
 // https://drafts.csswg.org/cssom/#extensions-to-the-document-interface
@@ -339,6 +365,7 @@ partial interface Document {
 partial interface Document {
   // XBL support.  Wish we could make these [ChromeOnly], but
   // that would likely break bindings running with the page principal.
+/*Non standard
   [Func="IsChromeOrXBL"]
   NodeList? getAnonymousNodes(Element elt);
   [Func="IsChromeOrXBL"]
@@ -348,6 +375,7 @@ partial interface Document {
   Element? getBindingParent(Node node);
   [Throws, Func="IsChromeOrXBL", NeedsSubjectPrincipal]
   void loadBindingDocument(DOMString documentURL);
+*/
 
   // Touch bits
   // XXXbz I can't find the sane spec for this stuff, so just cribbing
@@ -375,10 +403,12 @@ partial interface Document {
   // XXXbz and another hack for the fact that we can't usefully have optional
   // distinguishing arguments but need a working zero-arg form of
   // createTouchList().
+/*TODO
   [NewObject, Func="nsGenericHTMLElement::TouchEventsEnabled"]
   TouchList createTouchList();
   [NewObject, Func="nsGenericHTMLElement::TouchEventsEnabled"]
   TouchList createTouchList(sequence<Touch> touches);
+*/
 
   [ChromeOnly]
   attribute boolean styleSheetChangeEventsEnabled;
@@ -458,8 +488,10 @@ partial interface Document {
 
 // http://w3c.github.io/selection-api/#extensions-to-document-interface
 partial interface Document {
+/*TODO
   [Throws]
   Selection? getSelection();
+*/
 };
 
 // Extension to give chrome JS the ability to determine whether
@@ -478,10 +510,12 @@ partial interface Document {
 // Extension to give chrome and XBL JS the ability to determine whether
 // the document is sandboxed without permission to run scripts
 // and whether inline scripts are blocked by the document's CSP.
+/*Non standard
 partial interface Document {
   [Func="IsChromeOrXBL"] readonly attribute boolean hasScriptsBlockedBySandbox;
   [Func="IsChromeOrXBL"] readonly attribute boolean inlineScriptAllowedByCSP;
 };
+*/
 
 // For more information on Flash classification, see
 // toolkit/components/url-classifier/flash-block-lists.rst

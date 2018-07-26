@@ -29,8 +29,10 @@ interface Element : Node {
            attribute DOMString id;
   [CEReactions, Pure]
            attribute DOMString className;
+/*TODO
   [Constant, PutForwards=value]
   readonly attribute DOMTokenList classList;
+*/
 
   [SameObject]
   readonly attribute NamedNodeMap attributes;
@@ -248,10 +250,8 @@ partial interface Element {
 partial interface Element {
   [Throws, Pure]
   Element?  querySelector(DOMString selectors);
-/*TODO
   [Throws, Pure]
   NodeList  querySelectorAll(DOMString selectors);
-*/
 };
 
 // https://dom.spec.whatwg.org/#dictdef-shadowrootinit

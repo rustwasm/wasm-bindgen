@@ -5,13 +5,13 @@ use js_sys::*;
 #[wasm_bindgen_test]
 fn keys() {
     let array = Array::new();
-    array.push(JsValue::from(1));
-    array.push(JsValue::from(2));
-    array.push(JsValue::from(3));
-    array.push(JsValue::from(4));
-    array.push(JsValue::from(5));
+    array.push(&JsValue::from(1));
+    array.push(&JsValue::from(2));
+    array.push(&JsValue::from(3));
+    array.push(&JsValue::from(4));
+    array.push(&JsValue::from(5));
 
-    let new_array = Array::from(array.keys().into());
+    let new_array = Array::from(&array.keys().into());
 
     let mut result = Vec::new();
     new_array.for_each(&mut |i, _, _| result.push(i.as_f64().unwrap()));
@@ -21,13 +21,13 @@ fn keys() {
 #[wasm_bindgen_test]
 fn entries() {
     let array = Array::new();
-    array.push(JsValue::from(1));
-    array.push(JsValue::from(2));
-    array.push(JsValue::from(3));
-    array.push(JsValue::from(4));
-    array.push(JsValue::from(5));
+    array.push(&JsValue::from(1));
+    array.push(&JsValue::from(2));
+    array.push(&JsValue::from(3));
+    array.push(&JsValue::from(4));
+    array.push(&JsValue::from(5));
 
-    let new_array = Array::from(array.entries().into());
+    let new_array = Array::from(&array.entries().into());
 
     new_array.for_each(&mut |a, i, _| {
         assert!(a.is_object());

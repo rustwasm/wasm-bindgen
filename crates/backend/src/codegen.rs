@@ -76,6 +76,7 @@ impl ToTokens for ast::Program {
 
         (quote! {
             #[allow(non_upper_case_globals)]
+            #[cfg(target_arch = "wasm32")]
             #[link_section = "__wasm_bindgen_unstable"]
             #[doc(hidden)]
             pub static #generated_static_name: [u8; #generated_static_length] =
@@ -514,6 +515,10 @@ impl ToTokens for ast::ImportType {
             }
 
             impl ::wasm_bindgen::convert::OptionIntoWasmAbi for #name {
+                fn none() -> Self::Abi { 0 }
+            }
+
+            impl<'a> ::wasm_bindgen::convert::OptionIntoWasmAbi for &'a #name {
                 fn none() -> Self::Abi { 0 }
             }
 

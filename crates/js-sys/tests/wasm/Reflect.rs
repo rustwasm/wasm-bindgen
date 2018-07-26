@@ -42,15 +42,15 @@ extern {
 #[wasm_bindgen_test]
 fn apply() {
     let args = Array::new();
-    args.push(3.into());
+    args.push(&3.into());
     assert_eq!(Reflect::apply(&get_char_at(), &"ponies".into(), &args).unwrap(), "i");
 }
 
 #[wasm_bindgen_test]
 fn construct() {
     let args = Array::new();
-    args.push(10.into());
-    args.push(10.into());
+    args.push(&10.into());
+    args.push(&10.into());
     let instance = Reflect::construct(&RECTANGLE_CLASS, &args);
     assert_eq!(Rectangle::from(instance).x(), 10);
 }
@@ -58,8 +58,8 @@ fn construct() {
 #[wasm_bindgen_test]
 fn construct_with_new_target() {
     let args = Array::new();
-    args.push(10.into());
-    args.push(10.into());
+    args.push(&10.into());
+    args.push(&10.into());
     let instance = Reflect::construct_with_new_target(
         &RECTANGLE_CLASS,
         &args,
@@ -86,10 +86,10 @@ fn delete_property() {
     assert!(r.x_jsval().is_undefined());
 
     let array = Array::new();
-    array.push(1.into());
+    array.push(&1.into());
     let obj = Object::from(JsValue::from(array));
     Reflect::delete_property(&obj, &0.into());
-    let array = Array::from(JsValue::from(obj));
+    let array = Array::from(&JsValue::from(obj));
     assert!(array.length() == 1);
     array.for_each(&mut |x, _, _| assert!(x.is_undefined()));
 }

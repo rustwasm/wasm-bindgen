@@ -11,8 +11,8 @@ fn new() {
 
 #[wasm_bindgen_test]
 fn is_view() {
-    let x = Uint8Array::new(JsValue::from(42));
-    assert!(ArrayBuffer::is_view(JsValue::from(x)));
+    let x = Uint8Array::new(&JsValue::from(42));
+    assert!(ArrayBuffer::is_view(&JsValue::from(x)));
 }
 
 #[test]

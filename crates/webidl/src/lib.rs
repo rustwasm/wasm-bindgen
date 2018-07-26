@@ -27,11 +27,11 @@ mod util;
 use std::collections::BTreeSet;
 use std::fs;
 use std::io::{self, Read};
-use std::iter::FromIterator;
+use std::iter::{self, FromIterator};
 use std::path::Path;
 
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
-use backend::util::{ident_ty, rust_ident, wrap_import_function};
+use backend::util::{ident_ty, raw_ident, rust_ident, wrap_import_function};
 use failure::ResultExt;
 use heck::{CamelCase, ShoutySnakeCase};
 use quote::ToTokens;
@@ -78,11 +78,12 @@ pub fn compile(webidl_source: &str) -> Result<String> {
     Ok(compile_ast(ast))
 }
 
+/// Run codegen on the AST to generate rust code.
 fn compile_ast(mut ast: backend::ast::Program) -> String {
     let mut defined = BTreeSet::from_iter(
         vec![
             "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
-            "usize", "isize", "f32", "f64", "Result", "String", "Vec",
+            "usize", "isize", "f32", "f64", "Result", "String", "Vec", "Option",
         ].into_iter()
             .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
     );
@@ -96,7 +97,9 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
     tokens.to_string()
 }
 
+/// The main trait for parsing WebIDL AST into wasm-bindgen AST.
 trait WebidlParse<Ctx> {
+    /// Parse `self` into wasm-bindgen AST, and insert it into `program`.
     fn webidl_parse(
         &self,
         program: &mut backend::ast::Program,
@@ -401,8 +404,10 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::InterfaceMember {
             webidl::ast::InterfaceMember::Const(cnst) => {
                 cnst.webidl_parse(program, first_pass, self_name)
             }
+            webidl::ast::InterfaceMember::Iterable(iterable) => {
+                iterable.webidl_parse(program, first_pass, self_name)
+            }
             // TODO
-            webidl::ast::InterfaceMember::Iterable(_)
             | webidl::ast::InterfaceMember::Maplike(_)
             | webidl::ast::InterfaceMember::Setlike(_) => {
                 warn!("Unsupported WebIDL interface member: {:?}", self);
@@ -515,6 +520,50 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
                 .map(wrap_import_function)
                 .map(|import| program.imports.push(import));
         }
+
+        Ok(())
+    }
+}
+
+impl<'a> WebidlParse<&'a str> for webidl::ast::Iterable {
+    fn webidl_parse(
+        &self,
+        program: &mut backend::ast::Program,
+        first_pass: &FirstPassRecord<'_>,
+        self_name: &'a str,
+    ) -> Result<()> {
+        if util::is_chrome_only(&self.extended_attributes) {
+            return Ok(());
+        }
+
+/* TODO
+        let throws = util::throws(&self.extended_attributes);
+        let return_value = webidl::ast::ReturnType::NonVoid(self.value_type.clone());
+        let args = [];
+        first_pass
+            .create_basic_method(
+                &args,
+                Some(&"values".to_string()),
+                &return_value,
+                self_name,
+                false,
+                false, // Should be false
+            )
+            .map(wrap_import_function)
+            .map(|import| program.imports.push(import));
+
+        first_pass
+            .create_basic_method(
+                &args,
+                Some(&"keys".to_string()),
+                &return_value, // Should be a number
+                self_name,
+                false,
+                false, // Should be false
+            )
+            .map(wrap_import_function)
+            .map(|import| program.imports.push(import));
+*/
 
         Ok(())
     }

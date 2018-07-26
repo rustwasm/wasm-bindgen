@@ -5,7 +5,7 @@ use js_sys::*;
 macro_rules! js_array {
     ($($e:expr),*) => ({
         let __x = Array::new();
-        $(__x.push(JsValue::from($e));)*
+        $(__x.push(&JsValue::from($e));)*
         __x
     })
 }
@@ -39,10 +39,10 @@ fn filter() {
 #[wasm_bindgen_test]
 fn index_of() {
     let chars = js_array!["a", "c", "x", "n"];
-    assert_eq!(chars.index_of("x".into(), 0), 2);
-    assert_eq!(chars.index_of("z".into(), 0), -1);
-    assert_eq!(chars.index_of("x".into(), -3), 2);
-    assert_eq!(chars.index_of("z".into(), -2), -1);
+    assert_eq!(chars.index_of(&"x".into(), 0), 2);
+    assert_eq!(chars.index_of(&"z".into(), 0), -1);
+    assert_eq!(chars.index_of(&"x".into(), -3), 2);
+    assert_eq!(chars.index_of(&"z".into(), -2), -1);
 }
 
 #[wasm_bindgen_test]
@@ -75,10 +75,10 @@ fn some() {
 #[wasm_bindgen_test]
 fn last_index_of() {
     let characters = js_array!["a", "x", "c", "x", "n"];
-    assert_eq!(characters.last_index_of("x".into(), 5), 3);
-    assert_eq!(characters.last_index_of("z".into(), 5), -1);
-    assert_eq!(characters.last_index_of("x".into(), 2), 1);
-    assert_eq!(characters.last_index_of("x".into(), 0), -1);
+    assert_eq!(characters.last_index_of(&"x".into(), 5), 3);
+    assert_eq!(characters.last_index_of(&"z".into(), 5), -1);
+    assert_eq!(characters.last_index_of(&"x".into(), 2), 1);
+    assert_eq!(characters.last_index_of(&"x".into(), 0), -1);
 }
 
 #[wasm_bindgen_test]
@@ -99,7 +99,7 @@ fn slice() {
 #[wasm_bindgen_test]
 fn fill() {
     let characters = js_array!["a", "c", "x", "n", 1, "8"];
-    let subset = characters.fill(0.into(), 0, 3);
+    let subset = characters.fill(&0.into(), 0, 3);
 
     assert_eq!(to_rust(&subset), array![0, 0, 0, "n", 1, "8"]);
 }
@@ -127,7 +127,7 @@ fn pop() {
 #[wasm_bindgen_test]
 fn push() {
     let characters = js_array![8, 5, 4, 3, 1, 2];
-    let length = characters.push("a".into());
+    let length = characters.push(&"a".into());
     assert_eq!(length, 7);
     assert_eq!(to_rust(&characters)[6], "a");
 }
@@ -151,7 +151,7 @@ fn shift() {
 #[wasm_bindgen_test]
 fn unshift() {
     let characters = js_array![8, 5, 4, 3, 1, 2];
-    let length = characters.unshift("abba".into());
+    let length = characters.unshift(&"abba".into());
 
     assert_eq!(length, 7);
     assert_eq!(to_rust(&characters)[0], "abba");
@@ -166,9 +166,9 @@ fn to_string() {
 #[wasm_bindgen_test]
 fn includes() {
     let characters = js_array![8, 5, 4, 3, 1, 2];
-    assert!(characters.includes(2.into(), 0));
-    assert!(!characters.includes(9.into(), 0));
-    assert!(!characters.includes(3.into(), 4));
+    assert!(characters.includes(&2.into(), 0));
+    assert!(!characters.includes(&9.into(), 0));
+    assert!(!characters.includes(&3.into(), 4));
 }
 
 #[wasm_bindgen_test]
@@ -225,7 +225,7 @@ fn reduce() {
                 format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap())
                     .into()
             },
-            "".into(),
+            &"".into(),
         );
     assert_eq!(arr, "01234");
 }
@@ -238,7 +238,7 @@ fn reduce_right() {
                 format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap())
                     .into()
             },
-            "".into(),
+            &"".into(),
         );
     assert_eq!(arr, "43210");
 }
@@ -255,7 +255,7 @@ fn find_index() {
 
 #[wasm_bindgen_test]
 fn to_locale_string() {
-    let output = js_array![1, "a", Date::new("21 Dec 1997 14:12:00 UTC".into())]
+    let output = js_array![1, "a", Date::new(&"21 Dec 1997 14:12:00 UTC".into())]
         .to_locale_string(&"en".into(), &JsValue::undefined());
     assert!(String::from(output).len() > 0);
 }

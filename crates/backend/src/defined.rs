@@ -10,6 +10,20 @@ pub enum ImportedTypeKind {
     Reference,
 }
 
+impl<T> ImportedTypes for Option<T>
+where
+    T: ImportedTypes,
+{
+    fn imported_types<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        if let Some(inner) = self {
+            inner.imported_types(f);
+        }
+    }
+}
+
 /// Iterate over definitions of and references to imported types in the AST.
 pub trait ImportedTypes {
     fn imported_types<F>(&self, f: &mut F)
@@ -147,18 +161,73 @@ impl ImportedTypes for syn::TypePath {
     where
         F: FnMut(&Ident, ImportedTypeKind),
     {
-        if self.qself.is_some()
-            || self.path.leading_colon.is_some()
-            || self.path.segments.len() != 1
-        {
-            return;
+        self.qself.imported_types(f);
+        self.path.imported_types(f);
+    }
+}
+
+impl ImportedTypes for syn::QSelf {
+    fn imported_types<F>(&self, _: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        // TODO
+    }
+}
+
+impl ImportedTypes for syn::Path {
+    fn imported_types<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        for seg in self.segments.iter() {
+            seg.arguments.imported_types(f);
         }
         f(
-            &self.path.segments.last().unwrap().value().ident,
+            &self.segments.last().unwrap().value().ident,
             ImportedTypeKind::Reference,
         );
     }
 }
+
+impl ImportedTypes for syn::PathArguments {
+    fn imported_types<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        match self {
+            syn::PathArguments::AngleBracketed(data) => {
+                for arg in data.args.iter() {
+                    arg.imported_types(f);
+                }
+            }
+//TOCHECK
+            syn::PathArguments::Parenthesized(data) => {
+                for input in data.inputs.iter() {
+                    input.imported_types(f);
+                }
+                // TODO do we need to handle output here? 
+                // https://docs.rs/syn/0.14.0/syn/struct.ParenthesizedGenericArguments.html
+            }
+            syn::PathArguments::None => {}
+        }
+    }
+}
+
+impl ImportedTypes for syn::GenericArgument {
+    fn imported_types<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        match self {
+            syn::GenericArgument::Lifetime(_) => {}
+            syn::GenericArgument::Type(ty) => ty.imported_types(f),
+            syn::GenericArgument::Binding(_) => {}, // TODO
+            syn::GenericArgument::Const(_) => {}, // TODO
+        }
+    }
+}
+
 
 impl ImportedTypes for ast::ImportFunction {
     fn imported_types<F>(&self, f: &mut F)
