@@ -28,7 +28,7 @@ DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
       tags: true
     provider: releases
     skip_cleanup: true
-  if: branch = master OR tag IS present
+  if: branch = master OR branch =~ /^\d/
 
 matrix:
   include:
