@@ -97,6 +97,15 @@ fn slice() {
 }
 
 #[wasm_bindgen_test]
+fn splice() {
+    let characters = js_array!["a", "c", "x", "n", 1, "8"];
+    let removed = characters.splice(1, 3, &"b".into());
+
+    assert_eq!(to_rust(&removed), array!["c", "x", "n"]);
+    assert_eq!(to_rust(&characters), array!["a", "b", 1, "8"]);
+}
+
+#[wasm_bindgen_test]
 fn fill() {
     let characters = js_array!["a", "c", "x", "n", 1, "8"];
     let subset = characters.fill(&0.into(), 0, 3);
