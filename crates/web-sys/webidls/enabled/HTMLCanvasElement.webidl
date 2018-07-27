@@ -9,9 +9,10 @@
  * Opera Software ASA. You are granted a license to use, reproduce
  * and create derivative works of this document.
  */
-
+/* TODO
 interface nsISupports;
 interface Variant;
+*/
 
 [HTMLConstructor]
 interface HTMLCanvasElement : HTMLElement {

@@ -11,10 +11,12 @@
  * and create derivative works of this document.
  */
 
+/* TODO
 interface imgINotificationObserver;
 interface imgIRequest;
 interface URI;
 interface nsIStreamListener;
+*/
 
 [HTMLConstructor,
  NamedConstructor=Image(optional unsigned long width, optional unsigned long height)]

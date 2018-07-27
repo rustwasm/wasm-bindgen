@@ -10,9 +10,10 @@
  * Opera Software ASA. You are granted a license to use, reproduce
  * and create derivative works of this document.
  */
-
+/* TODO
 interface nsIEditor;
 interface XULControllers;
+*/
 
 [HTMLConstructor]
 interface HTMLTextAreaElement : HTMLElement {
@@ -63,10 +64,12 @@ interface HTMLTextAreaElement : HTMLElement {
   readonly attribute NodeList labels;
 
   void select();
+/* TODO Optional u32 not supported
   [Throws]
            attribute unsigned long? selectionStart;
   [Throws]
            attribute unsigned long? selectionEnd;
+*/
   [Throws]
            attribute DOMString? selectionDirection;
   [Throws]

@@ -36,11 +36,11 @@ use std::path::Path;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::{ResultExt, Fail};
-use heck::{CamelCase, ShoutySnakeCase};
+use heck::{ShoutySnakeCase};
 use quote::ToTokens;
 
 use first_pass::{FirstPass, FirstPassRecord};
-use util::{public, webidl_const_ty_to_syn_ty, webidl_const_v_to_backend_const_v, TypePosition};
+use util::{public, webidl_const_ty_to_syn_ty, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident};
 
 pub use error::{Error, ErrorKind, Result};
 
@@ -235,7 +235,7 @@ impl WebidlParse<()> for webidl::ast::Typedef {
             return Ok(());
         }
 
-        let dest = rust_ident(self.name.to_camel_case().as_str());
+        let dest = rust_ident(camel_case_ident(&self.name).as_str());
         let src = match first_pass.webidl_ty_to_syn_ty(&self.type_, TypePosition::Return) {
             Some(src) => src,
             None => {
@@ -278,7 +278,7 @@ impl WebidlParse<()> for webidl::ast::NonPartialInterface {
             js_namespace: None,
             kind: backend::ast::ImportKind::Type(backend::ast::ImportType {
                 vis: public(),
-                name: rust_ident(self.name.to_camel_case().as_str()),
+                name: rust_ident(camel_case_ident(&self.name).as_str()),
                 attrs: Vec::new(),
             }),
         });
@@ -329,7 +329,7 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
         interface: &'a webidl::ast::NonPartialInterface,
     ) -> Result<()> {
         let mut add_constructor = |arguments: &[webidl::ast::Argument], class: &str| {
-            let self_ty = ident_ty(rust_ident(interface.name.to_camel_case().as_str()));
+            let self_ty = ident_ty(rust_ident(camel_case_ident(&interface.name).as_str()));
 
             let kind = backend::ast::ImportFunctionKind::Method {
                 class: class.to_string(),
@@ -702,11 +702,11 @@ impl<'a> WebidlParse<()> for webidl::ast::Enum {
             js_namespace: None,
             kind: backend::ast::ImportKind::Enum(backend::ast::ImportEnum {
                 vis: public(),
-                name: rust_ident(self.name.to_camel_case().as_str()),
+                name: rust_ident(camel_case_ident(&self.name).as_str()),
                 variants: self
                     .variants
                     .iter()
-                    .map(|v| rust_ident(v.to_camel_case().as_str()))
+                    .map(|v| rust_ident(camel_case_ident(&v).as_str()))
                     .collect(),
                 variant_values: self.variants.clone(),
                 rust_attrs: vec![parse_quote!(#[derive(Copy, Clone, PartialEq, Debug)])],
@@ -729,7 +729,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Const {
         program.consts.push(backend::ast::Const {
             vis: public(),
             name: rust_ident(self.name.to_shouty_snake_case().as_str()),
-            class: Some(rust_ident(self_name.to_camel_case().as_str())),
+            class: Some(rust_ident(camel_case_ident(&self_name).as_str())),
             ty,
             value: webidl_const_v_to_backend_const_v(&self.value),
         });

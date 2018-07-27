@@ -12,7 +12,9 @@
  * and create derivative works of this document.
  */
 
+/* TODO
 interface MenuBuilder;
+*/
 
 // http://www.whatwg.org/specs/web-apps/current-work/#the-menu-element
 [HTMLConstructor]
