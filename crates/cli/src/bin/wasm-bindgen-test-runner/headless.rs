@@ -1,9 +1,8 @@
-use std::cell::{Cell, RefCell};
 use std::env;
 use std::io::{self, Read};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::path::{PathBuf, Path};
-use std::process::{Command, Stdio};
+use std::process::{Child, Command, Stdio};
 use std::thread;
 use std::time::{Instant, Duration};
 
@@ -35,38 +34,10 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
     // Spawn the driver binary, collecting its stdout/stderr in separate
     // threads. We'll print this output later.
     shell.status("Spawning Geckodriver...");
-    let mut cmd = Command::new(&driver.path());
+    let mut cmd = Command::new(driver.path());
     cmd.args(&args)
-        .arg(format!("--port={}", driver_addr.port().to_string()))
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .stdin(Stdio::null());
-    let mut child = cmd.spawn()
-        .context(format!("failed to spawn {:?} binary", driver.path()))?;
-    let mut stdout = child.stdout.take().unwrap();
-    let mut stderr = child.stderr.take().unwrap();
-    let mut stdout = Some(thread::spawn(move || read(&mut stdout)));
-    let mut stderr = Some(thread::spawn(move || read(&mut stderr)));
-    let print_driver_stdio = Cell::new(true);
-    let _f = OnDrop(|| {
-        child.kill().unwrap();
-        let status = child.wait().unwrap();
-        if !print_driver_stdio.get() {
-            return
-        }
-
-        shell.clear();
-        println!("driver status: {}", status);
-
-        let stdout = stdout.take().unwrap().join().unwrap().unwrap();
-        if stdout.len() > 0 {
-            println!("driver stdout:\n{}", tab(&String::from_utf8_lossy(&stdout)));
-        }
-        let stderr = stderr.take().unwrap().join().unwrap().unwrap();
-        if stderr.len() > 0 {
-            println!("driver stderr:\n{}", tab(&String::from_utf8_lossy(&stderr)));
-        }
-    });
+        .arg(format!("--port={}", driver_addr.port().to_string()));
+    let mut child = BackgroundChild::spawn(driver.path(), &mut cmd, shell)?;
 
     // Wait for the driver to come online and bind its port before we try to
     // connect to it.
@@ -84,19 +55,16 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
         bail!("driver failed to bind port during startup")
     }
 
-    let client = Client {
-        handle: RefCell::new(Easy::new()),
+    let mut client = Client {
+        handle: Easy::new(),
         driver_addr,
+        session: None,
     };
     shell.status("Starting new webdriver session...");
     // Allocate a new session with the webdriver protocol, and once we've done
     // so schedule the browser to get closed with a call to `close_window`.
     let id = client.new_session(&driver)?;
-    let _f = OnDrop(|| {
-        if let Err(e) = client.close_window(&id) {
-            warn!("failed to close window {:?}", e);
-        }
-    });
+    client.session = Some(id.clone());
 
     // Visit our local server to open up the page that runs tests, and then get
     // some handles to objects on the page which we'll be scraping output from.
@@ -146,7 +114,7 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
         // If the tests harness finished (either successfully or unsuccessfully)
         // then in theory all the info needed to debug the failure is in its own
         // output, so we shouldn't need the driver logs to get printed.
-        print_driver_stdio.set(false);
+        child.print_stdio_on_drop = false;
     } else {
         println!("failed to detect test as having been run");
         if output.len() > 0 {
@@ -251,8 +219,9 @@ impl Driver {
 }
 
 struct Client {
-    handle: RefCell<Easy>,
+    handle: Easy,
     driver_addr: SocketAddr,
+    session: Option<String>,
 }
 
 enum Method<'a> {
@@ -266,7 +235,7 @@ enum Method<'a> {
 // copied the `webdriver-client` crate when writing the below bindings.
 
 impl Client {
-    fn new_session(&self, driver: &Driver) -> Result<String, Error> {
+    fn new_session(&mut self, driver: &Driver) -> Result<String, Error> {
         match driver {
             Driver::Gecko(_) => {
                 #[derive(Deserialize)]
@@ -320,7 +289,7 @@ impl Client {
         }
     }
 
-    fn close_window(&self, id: &str) -> Result<(), Error> {
+    fn close_window(&mut self, id: &str) -> Result<(), Error> {
         #[derive(Deserialize)]
         struct Response {
         }
@@ -329,7 +298,7 @@ impl Client {
         Ok(())
     }
 
-    fn goto(&self, id: &str, url: &str) -> Result<(), Error> {
+    fn goto(&mut self, id: &str, url: &str) -> Result<(), Error> {
         #[derive(Serialize)]
         struct Request {
             url: String,
@@ -346,7 +315,7 @@ impl Client {
         Ok(())
     }
 
-    fn element(&self, id: &str, selector: &str) -> Result<String, Error> {
+    fn element(&mut self, id: &str, selector: &str) -> Result<String, Error> {
         #[derive(Serialize)]
         struct Request {
             using: String,
@@ -375,7 +344,7 @@ impl Client {
 
     }
 
-    fn text(&self, id: &str, element: &str) -> Result<String, Error> {
+    fn text(&mut self, id: &str, element: &str) -> Result<String, Error> {
         #[derive(Deserialize)]
         struct Response {
             value: String,
@@ -384,7 +353,7 @@ impl Client {
         Ok(x.value)
     }
 
-    fn get<U>(&self, path: &str) -> Result<U, Error>
+    fn get<U>(&mut self, path: &str) -> Result<U, Error>
         where U: for<'a> Deserialize<'a>,
     {
         debug!("GET {}", path);
@@ -392,7 +361,7 @@ impl Client {
         Ok(serde_json::from_str(&result)?)
     }
 
-    fn post<T, U>(&self, path: &str, data: &T) -> Result<U, Error>
+    fn post<T, U>(&mut self, path: &str, data: &T) -> Result<U, Error>
         where T: Serialize,
               U: for<'a> Deserialize<'a>,
     {
@@ -402,7 +371,7 @@ impl Client {
         Ok(serde_json::from_str(&result)?)
     }
 
-    fn delete<U>(&self, path: &str) -> Result<U, Error>
+    fn delete<U>(&mut self, path: &str) -> Result<U, Error>
         where U: for<'a> Deserialize<'a>,
     {
         debug!("DELETE {}", path);
@@ -410,22 +379,21 @@ impl Client {
         Ok(serde_json::from_str(&result)?)
     }
 
-    fn doit(&self, path: &str, method: Method) -> Result<String, Error> {
+    fn doit(&mut self, path: &str, method: Method) -> Result<String, Error> {
         let url = format!("http://{}{}", self.driver_addr, path);
-        let mut handle = self.handle.borrow_mut();
-        handle.reset();
-        handle.url(&url)?;
+        self.handle.reset();
+        self.handle.url(&url)?;
         match method {
             Method::Post(data) => {
-                handle.post(true)?;
-                handle.post_fields_copy(data.as_bytes())?;
+                self.handle.post(true)?;
+                self.handle.post_fields_copy(data.as_bytes())?;
             }
-            Method::Delete => handle.custom_request("DELETE")?,
-            Method::Get => handle.get(true)?,
+            Method::Delete => self.handle.custom_request("DELETE")?,
+            Method::Get => self.handle.get(true)?,
         }
         let mut result = Vec::new();
         {
-            let mut t = handle.transfer();
+            let mut t = self.handle.transfer();
             t.write_function(|buf| {
                 result.extend_from_slice(buf);
                 Ok(buf.len())
@@ -433,11 +401,23 @@ impl Client {
             t.perform()?
         }
         let result = String::from_utf8_lossy(&result);
-        if handle.response_code()? != 200 {
-            bail!("non-200 response code: {}\n{}", handle.response_code()?, result);
+        if self.handle.response_code()? != 200 {
+            bail!("non-200 response code: {}\n{}", self.handle.response_code()?, result);
         }
         debug!("got: {}", result);
         Ok(result.into_owned())
+    }
+}
+
+impl Drop for Client {
+    fn drop(&mut self) {
+        let id = match &self.session {
+            Some(id) => id.clone(),
+            None => return,
+        };
+        if let Err(e) = self.close_window(&id) {
+            warn!("failed to close window {:?}", e);
+        }
     }
 }
 
@@ -457,10 +437,56 @@ fn tab(s: &str) -> String {
     return result;
 }
 
-struct OnDrop<F: FnMut()>(F);
+struct BackgroundChild<'a> {
+    child: Child,
+    stdout: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
+    stderr: Option<thread::JoinHandle<io::Result<Vec<u8>>>>,
+    shell: &'a Shell,
+    print_stdio_on_drop: bool,
+}
 
-impl<F: FnMut()> Drop for OnDrop<F> {
+impl<'a> BackgroundChild<'a> {
+    fn spawn(path: &Path, cmd: &mut Command, shell: &'a Shell)
+        -> Result<BackgroundChild<'a>, Error>
+    {
+        cmd
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .stdin(Stdio::null());
+        let mut child = cmd.spawn()
+            .context(format!("failed to spawn {:?} binary", path))?;
+        let mut stdout = child.stdout.take().unwrap();
+        let mut stderr = child.stderr.take().unwrap();
+        let stdout = Some(thread::spawn(move || read(&mut stdout)));
+        let stderr = Some(thread::spawn(move || read(&mut stderr)));
+        Ok(BackgroundChild {
+            child,
+            stdout,
+            stderr,
+            shell,
+            print_stdio_on_drop: true,
+        })
+    }
+}
+
+impl<'a> Drop for BackgroundChild<'a> {
     fn drop(&mut self) {
-        (self.0)();
+        self.child.kill().unwrap();
+        let status = self.child.wait().unwrap();
+        if !self.print_stdio_on_drop {
+            return
+        }
+
+        self.shell.clear();
+        println!("driver status: {}", status);
+
+        let stdout = self.stdout.take().unwrap().join().unwrap().unwrap();
+        if stdout.len() > 0 {
+            println!("driver stdout:\n{}", tab(&String::from_utf8_lossy(&stdout)));
+        }
+        let stderr = self.stderr.take().unwrap().join().unwrap().unwrap();
+        if stderr.len() > 0 {
+            println!("driver stderr:\n{}", tab(&String::from_utf8_lossy(&stderr)));
+        }
     }
 }
