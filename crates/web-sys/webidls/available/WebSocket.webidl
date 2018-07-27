@@ -66,7 +66,8 @@ interface WebSocket : EventTarget {
 
 // Support for creating server-side chrome-only WebSocket. Used in
 // devtools remote debugging server.
-interface nsITransportProvider;
+// invalid widl
+// interface nsITransportProvider;
 
 partial interface WebSocket {
   [ChromeOnly, NewObject, Throws]

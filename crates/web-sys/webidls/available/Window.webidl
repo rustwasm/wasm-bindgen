@@ -18,10 +18,11 @@
  * https://drafts.css-houdini.org/css-paint-api-1/#dom-window-paintworklet
  */
 
-interface ApplicationCache;
-interface IID;
-interface nsIBrowserDOMWindow;
-interface XULControllers;
+// invalid widl
+// interface ApplicationCache;
+// interface IID;
+// interface nsIBrowserDOMWindow;
+// interface XULControllers;
 
 // http://www.whatwg.org/specs/web-apps/current-work/
 [PrimaryGlobal, LegacyUnenumerableNamedProperties, NeedResolve]
@@ -67,9 +68,9 @@ interface XULControllers;
 
   // the user agent
   readonly attribute Navigator navigator;
-#ifdef HAVE_SIDEBAR
+//#ifdef HAVE_SIDEBAR
   [Replaceable, Throws] readonly attribute External external;
-#endif
+//#endif
   [Throws, Pref="browser.cache.offline.enable", Func="nsGlobalWindowInner::OfflineCacheAllowedForContext"] readonly attribute ApplicationCache applicationCache;
 
   // user prompts
@@ -217,7 +218,7 @@ Window implements GlobalCrypto;
 // https://fidoalliance.org/specifications/download/
 Window implements GlobalU2F;
 
-#ifdef MOZ_WEBSPEECH
+//#ifdef MOZ_WEBSPEECH
 // http://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html
 [NoInterfaceObject]
 interface SpeechSynthesisGetter {
@@ -225,7 +226,7 @@ interface SpeechSynthesisGetter {
 };
 
 Window implements SpeechSynthesisGetter;
-#endif
+//#endif
 
 // Mozilla-specific stuff
 partial interface Window {
@@ -328,9 +329,9 @@ partial interface Window {
                                                any... extraArguments);
 
   [
-#ifdef NIGHTLY_BUILD
-   ChromeOnly,
-#endif
+//#ifdef NIGHTLY_BUILD
+//   ChromeOnly,
+//#endif
    NonEnumerable, Replaceable, Throws, NeedsCallerType]
   readonly attribute object? content;
 
@@ -362,22 +363,22 @@ Window implements TouchEventHandlers;
 
 Window implements OnErrorEventHandlerForWindow;
 
-#if defined(MOZ_WIDGET_ANDROID)
+//#if defined(MOZ_WIDGET_ANDROID)
 // https://compat.spec.whatwg.org/#windoworientation-interface
 partial interface Window {
   [NeedsCallerType]
   readonly attribute short orientation;
            attribute EventHandler onorientationchange;
 };
-#endif
+//#endif
 
-#ifdef HAVE_SIDEBAR
+//#ifdef HAVE_SIDEBAR
 // Mozilla extension
 partial interface Window {
   [Replaceable, Throws, UseCounter]
   readonly attribute (External or WindowProxy) sidebar;
 };
-#endif
+//#endif
 
 callback PromiseDocumentFlushedCallback = any ();
 

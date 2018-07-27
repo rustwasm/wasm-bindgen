@@ -1,4 +1,5 @@
 extern crate env_logger;
+#[macro_use]
 extern crate failure;
 extern crate wasm_bindgen_webidl;
 extern crate sourcefile;
@@ -59,11 +60,18 @@ fn try_main() -> Result<(), failure::Error> {
     };
 
     let out_dir = env::var("OUT_DIR").context("reading OUT_DIR environment variable")?;
-    let mut out_file = fs::File::create(path::Path::new(&out_dir).join("bindings.rs"))
+    let out_file_path = path::Path::new(&out_dir).join("bindings.rs");
+    let mut out_file = fs::File::create(&out_file_path)
         .context("creating output bindings file")?;
     out_file
         .write_all(bindings.as_bytes())
         .context("writing bindings to output file")?;
+
+    // run rustfmt on the generated file - really handy for debugging
+    //if ! process::Command::new("rustfmt").arg(&out_file_path).status()
+    //    .context("running rustfmt")?.success() {
+    //    return Err(format_err!("rustfmt failed to format {}", out_file_path.display()));
+    //}
 
     Ok(())
 }

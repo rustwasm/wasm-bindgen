@@ -72,8 +72,9 @@ namespace console {
   [UseCounter]
   void profileEnd(any... data);
 
-  [ChromeOnly]
-  const boolean IS_NATIVE_CONSOLE = true;
+  // invalid widl
+  // [ChromeOnly]
+  // const boolean IS_NATIVE_CONSOLE = true;
 
   [ChromeOnly, NewObject]
   ConsoleInstance createInstance(optional ConsoleInstanceOptions options);

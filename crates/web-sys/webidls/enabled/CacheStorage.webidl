@@ -10,7 +10,8 @@
 
 // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#cache-storage
 
-interface Principal;
+// invalid widl
+// interface Principal;
 
 [Exposed=(Window,Worker),
  ChromeConstructor(CacheStorageNamespace namespace, Principal principal),

@@ -7,7 +7,8 @@
 * https://w3c.github.io/push-api/
 */
 
-interface Principal;
+// invalid widl
+// interface Principal;
 
 enum PushEncryptionKeyName
 {

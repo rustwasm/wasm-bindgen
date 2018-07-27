@@ -26,7 +26,9 @@ fn is_rust_keyword(name: &str) -> bool {
 
 // Create an `Ident`, possibly mangling it if it conflicts with a Rust keyword.
 pub fn rust_ident(name: &str) -> Ident {
-    if is_rust_keyword(name) {
+    if name == "" {
+        Ident::new("BlankName", proc_macro2::Span::call_site())
+    } else if is_rust_keyword(name) {
         Ident::new(&format!("{}_", name), proc_macro2::Span::call_site())
     } else {
         raw_ident(name)

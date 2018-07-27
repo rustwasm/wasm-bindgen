@@ -6,9 +6,10 @@
  * http://domparsing.spec.whatwg.org/#the-domparser-interface
  */
 
-interface Principal;
-interface URI;
-interface InputStream;
+// invalid widl
+// interface Principal;
+// interface URI;
+// interface InputStream;
 
 enum SupportedType {
   "text/html",

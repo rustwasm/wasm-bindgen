@@ -4,13 +4,14 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-interface LoadContext;
-interface TabParent;
-interface URI;
-interface nsIDocShell;
-interface nsIPrintSettings;
-interface nsIWebBrowserPersistDocumentReceiver;
-interface nsIWebProgressListener;
+// invalid widl
+//interface LoadContext;
+//interface TabParent;
+//interface URI;
+//interface nsIDocShell;
+//interface nsIPrintSettings;
+//interface nsIWebBrowserPersistDocumentReceiver;
+//interface nsIWebProgressListener;
 
 [ChromeOnly]
 interface FrameLoader {

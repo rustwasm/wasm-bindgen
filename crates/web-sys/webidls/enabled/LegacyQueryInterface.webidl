@@ -4,8 +4,9 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-interface nsISupports;
-interface IID;
+// invalid widl
+//interface nsISupports;
+//interface IID;
 
 [NoInterfaceObject,
  // Need Exposed here, because this is a mixin onto things like Event

@@ -5,8 +5,9 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-interface MozTreeView;
-interface nsIScriptableRegion;
+// invalid widl
+//interface MozTreeView;
+//interface nsIScriptableRegion;
 
 dictionary TreeCellInfo {
     long row = 0;
