@@ -28,6 +28,11 @@
      git mv webidls/available/MyWebApi.webidl webidls/enabled/MyWebApi.webidl
      ```
 
+     Note that not all the existing WebIDL files in `available/*` have valid
+     syntax, so if you get a syntax error on a new WebIDL file (or otherwise hit
+     an unsupported operation), feel free to comment it out with a `TODO` to fix
+     later.
+
 2. <input type="checkbox"/> Verify that the `web-sys` crate still builds and
    that its tests still pass with the new `.webidl` file enabled:
 
