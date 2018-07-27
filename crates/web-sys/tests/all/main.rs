@@ -4,6 +4,7 @@ use project_builder::{project, Project};
 mod event;
 mod headers;
 mod anchor_element;
+mod br_element;
 mod body_element;
 mod div_element;
 mod html_element;
@@ -30,7 +31,6 @@ mod history;
     web_sys::HtmlHeadElement,
     web_sys::HtmlObjectElement,
     web_sys::HtmlTableCellElement,
-    web_sys::HtmlBRElement,
     web_sys::HtmlHeadingElement,
     web_sys::HtmlOListElement,
     web_sys::HtmlTableColElement,
@@ -68,7 +68,6 @@ mod history;
     web_sys::HtmlLinkElement,
     web_sys::HtmlQuoteElement,
     web_sys::HtmlUListElement,
-    web_sys::HtmlElement,
     web_sys::HtmlMapElement,
     web_sys::HtmlScriptElement,
     web_sys::HtmlVideoElement,

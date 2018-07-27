@@ -20,6 +20,12 @@ fn shared_ref(ty: syn::Type) -> syn::Type {
     }.into()
 }
 
+/// Fix camelcase of identifiers like HTMLBRElement
+pub fn camel_case_ident(identifier: &str) -> String {
+  identifier.replace("HTML", "HTML_").to_camel_case()
+}
+
+
 /// For a webidl const type node, get the corresponding syn type node.
 pub fn webidl_const_ty_to_syn_ty(ty: &webidl::ast::ConstType) -> syn::Type {
     use webidl::ast::ConstType::*;
@@ -157,7 +163,7 @@ impl<'a> FirstPassRecord<'a> {
             // A reference to a type by name becomes the same thing in the
             // bindings.
             webidl::ast::TypeKind::Identifier(ref id) => {
-                let ty = ident_ty(rust_ident(id.to_camel_case().as_str()));
+                let ty = ident_ty(rust_ident(camel_case_ident(&id).as_str()));
                 if self.interfaces.contains(id) {
                     if pos == TypePosition::Argument {
                         shared_ref(ty)
@@ -372,7 +378,7 @@ impl<'a> FirstPassRecord<'a> {
 
         let kind = backend::ast::ImportFunctionKind::Method {
             class: self_name.to_string(),
-            ty: ident_ty(rust_ident(self_name.to_camel_case().as_str())),
+            ty: ident_ty(rust_ident(camel_case_ident(&self_name).as_str())),
             kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
                 is_static,
                 kind: backend::ast::OperationKind::Regular,
@@ -424,7 +430,7 @@ impl<'a> FirstPassRecord<'a> {
 
         let kind = backend::ast::ImportFunctionKind::Method {
             class: self_name.to_string(),
-            ty: ident_ty(rust_ident(self_name.to_camel_case().as_str())),
+            ty: ident_ty(rust_ident(camel_case_ident(&self_name).as_str())),
             kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
                 is_static,
                 kind: backend::ast::OperationKind::Getter(Some(raw_ident(name))),
@@ -446,7 +452,7 @@ impl<'a> FirstPassRecord<'a> {
     ) -> Option<backend::ast::ImportFunction> {
         let kind = backend::ast::ImportFunctionKind::Method {
             class: self_name.to_string(),
-            ty: ident_ty(rust_ident(self_name.to_camel_case().as_str())),
+            ty: ident_ty(rust_ident(camel_case_ident(&self_name).as_str())),
             kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
                 is_static,
                 kind: backend::ast::OperationKind::Setter(Some(raw_ident(name))),
