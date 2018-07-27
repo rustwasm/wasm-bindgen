@@ -34,7 +34,8 @@ macro_rules! console_log {
 /// * `run_in_browser` - requires that this test is run in a browser rather than
 ///   node.js, which is the default for executing tests.
 ///
-/// This macro may be invoked at most one time per test suite.
+/// This macro may be invoked at most one time per test suite (an entire binary
+/// like `tests/foo.rs`, not per module)
 #[macro_export]
 macro_rules! wasm_bindgen_test_configure {
     (run_in_browser $($others:tt)*) => (
