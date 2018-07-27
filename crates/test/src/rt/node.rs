@@ -6,12 +6,16 @@
 use wasm_bindgen::prelude::*;
 use js_sys::eval;
 
+/// Implementation of the `Formatter` trait for node.js
 pub struct Node {
+    /// Handle to node's imported `fs` module, imported dynamically because we
+    /// can't statically do it as it doesn't work in a browser.
     fs: NodeFs,
 }
 
 #[wasm_bindgen]
 extern {
+    // Type declarations for the `writeSync` function in node
     type NodeFs;
     #[wasm_bindgen(method, js_name = writeSync, structural)]
     fn write_sync(this: &NodeFs, fd: i32, data: &[u8]);
@@ -24,11 +28,15 @@ extern {
 }
 
 impl Node {
+    /// Attempts to create a new formatter for node.js, returning `None` if this
+    /// is executing in a browser and Node won't work.
     pub fn new() -> Option<Node> {
         if super::detect::is_browser() {
             return None
         }
 
+        // Use `eval` for now as a quick fix around static imports not working
+        // for dual browser/node support.
         let import = eval("require(\"fs\")").unwrap();
         Some(Node { fs: import.into() })
     }

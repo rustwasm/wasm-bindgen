@@ -6,6 +6,10 @@
 use wasm_bindgen::prelude::*;
 use js_sys::Error;
 
+/// Implementation of `Formatter` for browsers.
+///
+/// Routes all output to a `pre` on the page currently. Eventually this probably
+/// wants to be a pretty table with colors and folding and whatnot.
 pub struct Browser {
     pre: Element,
 }
@@ -29,6 +33,8 @@ extern {
 }
 
 impl Browser {
+    /// Creates a new instance of `Browser`, assuming that its APIs will work
+    /// (requires `Node::new()` to have return `None` first).
     pub fn new() -> Browser {
         let pre = document.getElementById("output");
         pre.set_inner_html("");

@@ -1,3 +1,16 @@
+//! A "wrapper binary" used to execute wasm files as tests
+//!
+//! This binary is intended to be used as a "test runner" for wasm binaries,
+//! being compatible with `cargo test` for the wasm target. It will
+//! automatically execute `wasm-bindgen` (or the equivalent thereof) and then
+//! execute either Node.js over the tests or start a server which a browser can
+//! be used to run against to execute tests. In a browser mode if `CI` is in the
+//! environment then it'll also attempt headless testing, spawning the server in
+//! the background and then using the WebDriver protocol to execute tests.
+//!
+//! For more documentation about this see the `wasm-bindgen-test` crate README
+//! and source code.
+
 extern crate curl;
 extern crate env_logger;
 #[macro_use]

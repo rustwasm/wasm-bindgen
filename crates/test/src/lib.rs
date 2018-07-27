@@ -3,6 +3,7 @@
 //! More documentation can be found in the README for this crate!
 
 #![feature(use_extern_macros)]
+#![deny(missing_docs)]
 
 extern crate wasm_bindgen_test_macro;
 extern crate wasm_bindgen;
@@ -46,5 +47,4 @@ macro_rules! wasm_bindgen_test_configure {
 }
 
 #[path = "rt/mod.rs"]
-#[doc(hidden)]
 pub mod __rt;

@@ -38,11 +38,6 @@ pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
             const support = require("./{0}");
             const wasm = require("./{0}_bg");
 
-            // Hack for now to support 0 tests in a binary. This should be done
-            // better...
-            if (support.Context === undefined)
-                process.exit(0);
-
             cx = new support.Context();
 
             // Forward runtime arguments. These arguments are also arguments to the
@@ -75,6 +70,9 @@ pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
     fs::write(&js_path, js_to_execute)
         .context("failed to write JS file")?;
 
+    // Augment `NODE_PATH` so things like `require("tests/my-custom.js")` work
+    // and Rust code can import from custom JS shims. This is a bit of a hack
+    // and should probably be removed at some point.
     let path = env::var("NODE_PATH").unwrap_or_default();
     let mut path = env::split_paths(&path).collect::<Vec<_>>();
     path.push(env::current_dir().unwrap());

@@ -1,3 +1,5 @@
+//! Runtime detection of whether we're in node.js or a browser.
+
 use wasm_bindgen::prelude::*;
 use js_sys::{Array, Function};
 

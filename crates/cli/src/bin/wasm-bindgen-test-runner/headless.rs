@@ -16,6 +16,11 @@ use shell::Shell;
 
 /// Execute a headless browser tests against a server running on `server`
 /// address.
+///
+/// This function will take care of everything from spawning the WebDriver
+/// binary, controlling it, running tests, scraping output, displaying output,
+/// etc. It will return `Ok` if all tests finish successfully, and otherwise it
+/// will return an error if some tests failed.
 pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
     let (driver, args) = Driver::find()?;
     println!("Running headless tests in {} with `{}`",
@@ -155,6 +160,10 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
         println!("console.log div contained:\n{}", tab(&errors));
     }
 
+    if !output.contains("test result: ok") {
+        bail!("some tests failed")
+    }
+
     Ok(())
 }
 
@@ -165,6 +174,15 @@ enum Driver {
 }
 
 impl Driver {
+    /// Attempts to find an appropriate WebDriver server binary to execute tests
+    /// with. Performs a number of heuristics to find one available, including:
+    ///
+    /// * Env vars like `GECKODRIVER` point to the path to a binary to execute.
+    /// * Otherwise, `PATH` is searched for an appropriate binary.
+    ///
+    /// In both cases a list of auxiliary arguments is also returned which is
+    /// configured through env vars like `GECKODRIVER_ARGS` to support extra
+    /// arguments to the driver's invocation.
     fn find() -> Result<(Driver, Vec<String>), Error> {
         let env_args = |name: &str| {
             env::var(format!("{}_ARGS", name.to_uppercase()))
@@ -242,6 +260,10 @@ enum Method<'a> {
     Post(&'a str),
     Delete,
 }
+
+// Below here is a bunch of details of the WebDriver protocol implementation.
+// I'm not too too familiar with them myself, but these seem to work! I mostly
+// copied the `webdriver-client` crate when writing the below bindings.
 
 impl Client {
     fn new_session(&self, driver: &Driver) -> Result<String, Error> {

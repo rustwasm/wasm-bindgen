@@ -19,10 +19,16 @@ pub fn spawn(
         import {{ Context }} from './{0}';
         import * as wasm from './{0}_bg';
 
+        // Now that we've gotten to the point where JS is executing, update our
+        // status text as at this point we should be asynchronously fetching the
+        // wasm module.
         document.getElementById('output').innerHTML = "Loading wasm module...";
 
         async function main(test) {{
+            // this is a facet of using wasm2es6js, a hack until browsers have
+            // native ESM support for wasm modules.
             await wasm.booted;
+
             const cx = Context.new();
             window.global_cx = cx;
 
@@ -51,6 +57,11 @@ pub fn spawn(
     // No browser today supports a wasm file as ES modules natively, so we need
     // to shim it. Use `wasm2es6js` here to fetch an appropriate URL and look
     // like an ES module with the wasm module under the hood.
+    //
+    // TODO: don't reparse the wasm module here, should pass the
+    //       `parity_wasm::Module struct` directly from the output of
+    //       `wasm-bindgen` previously here and avoid unnecessary
+    //       parsing.
     let wasm_name = format!("{}_bg.wasm", module);
     let wasm = fs::read(tmpdir.join(&wasm_name))?;
     let output = Config::new()
@@ -63,7 +74,10 @@ pub fn spawn(
     // For now, always run forever on this port. We may update this later!
     let tmpdir = tmpdir.to_path_buf();
     let srv = Server::new(addr, move |request| {
-        // The root path gets our canned `index.html`
+        // The root path gets our canned `index.html`. The two templates here
+        // differ slightly in the default routing of `console.log`, going to an
+        // HTML element during headless testing so we can try to scrape its
+        // output.
         if request.url() == "/" {
             let s = if headless {
                 include_str!("index-headless.html")
