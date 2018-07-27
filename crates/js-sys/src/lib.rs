@@ -1209,7 +1209,7 @@ extern "C" {
 
     /// The Math.hypot() function returns the square root of the sum of squares of its arguments.
     ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot
     #[wasm_bindgen(static_method_of = Math)]
     pub fn hypot(x: f64, y: f64) -> f64;
 
