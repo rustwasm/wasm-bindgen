@@ -80,7 +80,9 @@ matrix:
       env: JOB=test-js-sys
       before_install: *INSTALL_NODE_VIA_NVM
       install:
-        - npm ci --verbose
+        - curl --retry 5 -LO https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
+        - tar xf geckodriver-v0.21.0-linux64.tar.gz
+        - export GECKODRIVER=`pwd`/geckodriver
       script:
         - cargo test -p js-sys
         - cargo test -p js-sys --target wasm32-unknown-unknown
