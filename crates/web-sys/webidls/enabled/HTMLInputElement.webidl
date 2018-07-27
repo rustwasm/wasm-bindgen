@@ -12,6 +12,7 @@
  * and create derivative works of this document.
  */
 
+/*TODO
 enum SelectionMode {
   "select",
   "start",
@@ -20,6 +21,7 @@ enum SelectionMode {
 };
 
 interface XULControllers;
+*/
 
 [HTMLConstructor]
 interface HTMLInputElement : HTMLElement {
@@ -97,11 +99,12 @@ interface HTMLInputElement : HTMLElement {
            attribute unrestricted double valueAsNumber;
   [CEReactions, SetterThrows]
            attribute unsigned long width;
-
+/* TODO
   [Throws]
   void stepUp(optional long n = 1);
   [Throws]
   void stepDown(optional long n = 1);
+*/
 
   [Pure]
   readonly attribute boolean willValidate;
@@ -117,14 +120,17 @@ interface HTMLInputElement : HTMLElement {
 
   void select();
 
+/* TODO optional u32 not supported
   [Throws]
            attribute unsigned long? selectionStart;
   [Throws]
            attribute unsigned long? selectionEnd;
+*/
   [Throws]
            attribute DOMString? selectionDirection;
   [Throws]
   void setRangeText(DOMString replacement);
+
   [Throws]
   void setRangeText(DOMString replacement, unsigned long start,
     unsigned long end, optional SelectionMode selectionMode = "preserve");
