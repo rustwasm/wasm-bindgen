@@ -10,7 +10,7 @@ cargo test
 
 These tests all use a headless Firefox browser. See the [*Headless Browser
 Tests* section for details on setup and
-configuration.](../contributing.html#headless-browser-tests)
+configuration.](contributing.html#headless-browser-tests)
 
 ## Grouping Tests
 
