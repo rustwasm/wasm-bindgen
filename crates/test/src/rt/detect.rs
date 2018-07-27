@@ -5,9 +5,6 @@ use js_sys::{Array, Function};
 
 #[wasm_bindgen]
 extern {
-    #[wasm_bindgen(js_name = Function)]
-    fn new_function(s: &str) -> Function;
-
     type This;
     #[wasm_bindgen(method, getter, structural, js_name = self)]
     fn self_(me: &This) -> JsValue;
@@ -56,7 +53,7 @@ pub fn is_browser() -> bool {
     // * Last but not least, test whether `self` is defined or not.
     //
     // Whew!
-    let this = new_function("return this")
+    let this = Function::new_no_args("return this")
         .apply(&JsValue::undefined(), &Array::new())
         .unwrap();
     assert!(this != JsValue::undefined());
