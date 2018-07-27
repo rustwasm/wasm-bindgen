@@ -112,6 +112,14 @@ matrix:
     - rust: nightly
       env: JOB=dist-linux TARGET=x86_64-unknown-linux-musl
       before_script: rustup target add $TARGET
+      install:
+        - travis_retry curl -O https://www.openssl.org/source/openssl-1.0.2o.tar.gz
+        - tar xf openssl-1.0.2o.tar.gz
+        - (cd openssl-1.0.2o &&
+          CC=musl-gcc ./Configure --prefix=$HOME/openssl-musl no-dso no-ssl2 no-ssl3 linux-x86_64 -fPIC &&
+          make -j$(nproc) &&
+          make install)
+        - export OPENSSL_DIR=$HOME/openssl-musl
       script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
       addons:
         apt:
