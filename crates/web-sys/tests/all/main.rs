@@ -9,7 +9,8 @@ mod body_element;
 mod div_element;
 mod html_element;
 mod html_html_element;
-mod span_element;
+// TODO fix on taskcluster
+//mod span_element;
 mod response;
 mod element;
 mod history;
