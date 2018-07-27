@@ -96,20 +96,6 @@ impl super::Formatter for Browser {
             return stack
         }
 
-        // Check for a firefox-like error where all lines have a `@` in them
-        // separating the symbol and source
-        if stack.lines().all(|s| s.contains("@")) {
-            for line in stack.lines() {
-                header.push_str("\n");
-                header.push_str("  at");
-                for part in line.split("@") {
-                    header.push_str(" ");
-                    header.push_str(part);
-                }
-            }
-            return header
-        }
-
         // Fallback to make sure we don't lose any info
         format!("{}\n{}", header, stack)
     }
