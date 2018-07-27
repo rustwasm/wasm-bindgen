@@ -51,13 +51,14 @@ matrix:
     # All examples work
     - rust: nightly
       env: JOB=examples-build
-      install: *INSTALL_NODE_VIA_NVM
+      before_install: *INSTALL_NODE_VIA_NVM
+      install: npm ci --verbose
       script:
-        - mkdir node_modules
         - |
           for dir in `ls examples | grep -v README | grep -v asm.js | grep -v no_modules`; do
             (cd examples/$dir &&
              sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json &&
+             sed -i 's/npm install//' build.sh &&
              ln -s ../../node_modules . &&
              ./build.sh) || exit 1;
           done
