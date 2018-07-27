@@ -83,7 +83,7 @@ impl super::Formatter for Browser {
         let err = BrowserError::from(JsValue::from(err));
         let stack = err.stack();
 
-        let mut header = format!("{}: {}", name, message);
+        let header = format!("{}: {}", name, message);
         let stack = match stack.as_string() {
             Some(stack) => stack,
             None => return header,
