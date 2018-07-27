@@ -314,6 +314,13 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn sort(this: &Array) -> Array;
 
+    /// The splice() method changes the contents of an array by removing existing elements and/or
+    /// adding new elements.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+    #[wasm_bindgen(method)]
+    pub fn splice(this: &Array, start: u32, delete_count: u32, item: &JsValue) -> Array;
+
     /// The toLocaleString() method returns a string representing the elements of the array.
     /// The elements are converted to Strings using their toLocaleString methods and these
     /// Strings are separated by a locale-specific String (such as a comma “,”).
