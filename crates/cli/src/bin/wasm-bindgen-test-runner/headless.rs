@@ -197,8 +197,22 @@ impl Driver {
         // TODO: download an appropriate driver? How to know which one to
         //       download?
 
-        bail!("failed to find a suitable WebDriver binary to drive headless \
-               testing")
+        bail!("\
+failed to find a suitable WebDriver binary to drive headless testing; to
+configure the location of the webdriver binary you can use environment
+variables like `GECKODRIVER=/path/to/geckodriver` or make sure that the binary
+is in `PATH`
+
+This crate currently supports `geckodriver`, `chromedriver`, and `safaridriver`,
+although more driver support may be added! You can download these at:
+
+    * geckodriver - https://github.com/mozilla/geckodriver/releases
+    * chromedriver - http://chromedriver.chromium.org/downloads
+    * safaridriver - should be preinstalled on OSX
+
+If you're still having difficulty resolving this error, please feel free to open
+an issue against rustwasm/wasm-bindgen!
+    ")
     }
 
     fn path(&self) -> &Path {
