@@ -92,6 +92,7 @@ fn exec(cmd: &mut Command) -> Result<(), Error> {
 
 #[cfg(windows)]
 fn exec(cmd: &mut Command) -> Result<(), Error> {
+    use std::process;
     let status = cmd.status()?;
     process::exit(status.code().unwrap_or(3));
 }
