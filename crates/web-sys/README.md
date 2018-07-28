@@ -178,13 +178,13 @@ bindings are fully working and have full test coverage.
  - [ ] HiddenPluginEvent.webidl
  - [ ] History.webidl
  - [ ] HTMLAllCollection.webidl
- - [ ] HTMLAnchorElement.webidl
+ - [x] HTMLAnchorElement.webidl
  - [ ] HTMLAreaElement.webidl
  - [ ] HTMLAudioElement.webidl
  - [ ] HTMLBaseElement.webidl
- - [ ] HTMLBodyElement.webidl
- - [ ] HTMLBRElement.webidl
- - [ ] HTMLButtonElement.webidl
+ - [x] HTMLBodyElement.webidl
+ - [x] HTMLBRElement.webidl
+ - [x] HTMLButtonElement.webidl
  - [ ] HTMLCanvasElement.webidl
  - [ ] HTMLCollection.webidl
  - [ ] HTMLDataElement.webidl
@@ -192,10 +192,10 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLDetailsElement.webidl
  - [ ] HTMLDialogElement.webidl
  - [ ] HTMLDirectoryElement.webidl
- - [ ] HTMLDivElement.webidl
+ - [x] HTMLDivElement.webidl
  - [ ] HTMLDListElement.webidl
  - [ ] HTMLDocument.webidl
- - [ ] HTMLElement.webidl
+ - [x] HTMLElement.webidl
  - [ ] HTMLEmbedElement.webidl
  - [ ] HTMLFieldSetElement.webidl
  - [ ] HTMLFontElement.webidl
@@ -204,13 +204,13 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLFrameElement.webidl
  - [ ] HTMLFrameSetElement.webidl
  - [ ] HTMLHeadElement.webidl
- - [ ] HTMLHeadingElement.webidl
+ - [x] HTMLHeadingElement.webidl
  - [x] HTMLHRElement.webidl
- - [ ] HTMLHtmlElement.webidl
+ - [x] HTMLHtmlElement.webidl
  - [ ] HTMLHyperlinkElementUtils.webidl
  - [ ] HTMLIFrameElement.webidl
  - [ ] HTMLImageElement.webidl
- - [ ] HTMLInputElement.webidl
+ - [x] HTMLInputElement.webidl
  - [ ] HTMLLabelElement.webidl
  - [ ] HTMLLegendElement.webidl
  - [ ] HTMLLIElement.webidl
@@ -234,12 +234,12 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLPreElement.webidl
  - [ ] HTMLProgressElement.webidl
  - [ ] HTMLQuoteElement.webidl
- - [ ] HTMLScriptElement.webidl
+ - [x] HTMLScriptElement.webidl
  - [ ] HTMLSelectElement.webidl
  - [ ] HTMLSlotElement.webidl
  - [ ] HTMLSourceElement.webidl
  - [ ] HTMLSpanElement.webidl
- - [ ] HTMLStyleElement.webidl
+ - [x] HTMLStyleElement.webidl
  - [ ] HTMLTableCaptionElement.webidl
  - [ ] HTMLTableCellElement.webidl
  - [ ] HTMLTableColElement.webidl
@@ -249,7 +249,7 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLTemplateElement.webidl
  - [ ] HTMLTextAreaElement.webidl
  - [ ] HTMLTimeElement.webidl
- - [ ] HTMLTitleElement.webidl
+ - [x] HTMLTitleElement.webidl
  - [ ] HTMLTrackElement.webidl
  - [ ] HTMLUListElement.webidl
  - [ ] HTMLVideoElement.webidl

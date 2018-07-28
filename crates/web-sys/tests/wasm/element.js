@@ -46,6 +46,18 @@ export function new_style() {
   return document.createElement("style");
 }
 
+export function new_input() {
+  return document.createElement("input");
+}
+
+export function new_title() {
+  return document.createElement("title");
+}
+
+export function new_heading() {
+  return document.createElement("h1");
+}
+
 export function new_xpath_result() {
     let xmlDoc = new DOMParser().parseFromString("<root><value>tomato</value></root>", "application/xml");
     let xpathResult = xmlDoc.evaluate("/root//value", xmlDoc, null, XPathResult.ANY_TYPE, null);
