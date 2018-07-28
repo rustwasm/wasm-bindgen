@@ -197,5 +197,5 @@ possibilities!
   }
   ```
 
-  All of these functions will call `console.log` in Rust, but each identifier
+  All of these functions will call `console.log` in JS, but each identifier
   will have only one signature in Rust.

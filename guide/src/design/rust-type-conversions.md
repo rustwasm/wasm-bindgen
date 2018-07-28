@@ -5,7 +5,7 @@ values enter Rust. Here we'll go into some more depth about how this is
 implemented. There are two categories of traits for converting values, traits
 for converting values from Rust to JS and traits for the other way around.
 
-### From Rust to JS
+## From Rust to JS
 
 First up let's take a look at going from Rust to JS:
 
@@ -37,7 +37,7 @@ The `IntoWasmAbi` trait is used in two locations. First it's used to convert
 return values of Rust exported functions to JS. Second it's used to convert the
 Rust arguments of JS functions imported to Rust.
 
-### From JS to Rust
+## From JS to Rust
 
 Unfortunately the opposite direction from above, going from JS to Rust, is a bit
 more complicated. Here we've got three traits:
@@ -81,7 +81,7 @@ The `From*` family of traits are used for converting the Rust arguments in Rust
 exported functions to JS. They are also used for the return value in JS
 functions imported into Rust.
 
-### Global stack
+## Global stack
 
 Mentioned above not all Rust types will fit within 32 bits. While we can
 communicate an `f64` we don't necessarily have the ability to use all the bits.
