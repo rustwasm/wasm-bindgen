@@ -4,10 +4,13 @@ use project_builder::{project, Project};
 mod event;
 mod headers;
 mod anchor_element;
-mod br_element;
 mod body_element;
+mod br_element;
+mod button_element;
 mod div_element;
 mod html_element;
+// TODO fix on taskcluster
+// mod head_element;
 mod html_html_element;
 // TODO fix on taskcluster
 //mod span_element;
@@ -29,13 +32,11 @@ mod history;
     web_sys::HtmlFrameSetElement,
     web_sys::HtmlModElement,
     web_sys::HtmlTableCaptionElement,
-    web_sys::HtmlHeadElement,
     web_sys::HtmlObjectElement,
     web_sys::HtmlTableCellElement,
     web_sys::HtmlHeadingElement,
     web_sys::HtmlOListElement,
     web_sys::HtmlTableColElement,
-    web_sys::HtmlButtonElement,
     web_sys::HtmlHRElement,
     web_sys::HtmlOptGroupElement,
     web_sys::HtmlTableElement,
