@@ -12,6 +12,8 @@ mod html_element;
 // TODO fix on taskcluster
 // mod head_element;
 mod html_html_element;
+mod script_element;
+mod style_element;
 // TODO fix on taskcluster
 //mod span_element;
 mod response;
@@ -27,7 +29,6 @@ mod history;
     web_sys::HtmlAudioElement,
     web_sys::HtmlFrameElement,
     web_sys::HtmlMeterElement,
-    web_sys::HtmlStyleElement,
     web_sys::HtmlBaseElement,
     web_sys::HtmlFrameSetElement,
     web_sys::HtmlModElement,
@@ -71,7 +72,6 @@ mod history;
     web_sys::HtmlQuoteElement,
     web_sys::HtmlUListElement,
     web_sys::HtmlMapElement,
-    web_sys::HtmlScriptElement,
     web_sys::HtmlVideoElement,
     web_sys::HtmlEmbedElement,
     web_sys::HtmlMediaElement,
