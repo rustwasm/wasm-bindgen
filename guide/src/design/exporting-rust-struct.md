@@ -135,7 +135,7 @@ same as [`RefCell`] and can be mostly glossed over.
 
 The purpose for this type, if you're interested though, is to uphold Rust's
 guarantees about aliasing in a world where aliasing is rampant (JS).
-Specifically the `&Foo` type means that there can be as much alaising as you'd
+Specifically the `&Foo` type means that there can be as much aliasing as you'd
 like, but crucially `&mut Foo` means that it is the sole pointer to the data
 (no other `&Foo` to the same instance exists). The [`RefCell`] type in libstd
 is a way of dynamically enforcing this at runtime (as opposed to compile time
