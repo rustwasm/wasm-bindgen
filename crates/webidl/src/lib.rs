@@ -75,7 +75,7 @@ fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
     };
 
     let mut first_pass_record = Default::default();
-    definitions.first_pass(&mut first_pass_record)?;
+    definitions.first_pass(&mut first_pass_record, ())?;
     let mut program = Default::default();
     definitions.webidl_parse(&mut program, &first_pass_record, ())?;
 
@@ -306,7 +306,7 @@ impl WebidlParse<()> for webidl::ast::PartialInterface {
             return Ok(());
         }
 
-        if !first_pass.interfaces.contains(&self.name) {
+        if !first_pass.interfaces.contains_key(&self.name) {
             warn!(
                 "Partial interface {} missing non-partial interface",
                 self.name
@@ -356,6 +356,10 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
             first_pass
                 .create_function(
                     "new",
+                    first_pass.interfaces
+                        .get(&interface.name)
+                        .map(|interface_data| interface_data.has_conflicting_constructors)
+                        .unwrap_or(false),
                     arguments
                         .iter()
                         .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
@@ -648,6 +652,12 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
             .create_basic_method(
                 &self.arguments,
                 self.name.as_ref(),
+                first_pass.interfaces
+                    .get(self_name)
+                    .map(|interface_data| {
+                        interface_data.conflicting_operations.contains(&self.name)
+                    })
+                    .unwrap_or(false),
                 &self.return_type,
                 self_name,
                 false,
@@ -677,6 +687,12 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
             .create_basic_method(
                 &self.arguments,
                 self.name.as_ref(),
+                first_pass.interfaces
+                    .get(self_name)
+                    .map(|interface_data| {
+                        interface_data.conflicting_operations.contains(&self.name)
+                    })
+                    .unwrap_or(false),
                 &self.return_type,
                 self_name,
                 true,

@@ -134,6 +134,91 @@ pub enum TypePosition {
     Return,
 }
 
+trait TypeToString {
+    fn type_to_string(&self) -> String;
+}
+
+impl TypeToString for webidl::ast::Type {
+    fn type_to_string(&self) -> String {
+        if self.nullable {
+            "nullable_".to_owned() + &self.kind.type_to_string()
+        } else {
+            self.kind.type_to_string()
+        }
+    }
+}
+
+impl TypeToString for webidl::ast::ReturnType {
+    fn type_to_string(&self) -> String {
+        match self {
+            webidl::ast::ReturnType::NonVoid(ty) => (*ty).type_to_string(),
+            webidl::ast::ReturnType::Void => "void".to_owned(),
+        }
+    }
+}
+
+impl TypeToString for webidl::ast::StringType {
+    fn type_to_string(&self) -> String {
+        match self {
+            webidl::ast::StringType::ByteString => "byte_string".to_owned(),
+            webidl::ast::StringType::DOMString => "dom_string".to_owned(),
+            webidl::ast::StringType::USVString => "usv_string".to_owned(),
+        }
+    }
+}
+
+impl TypeToString for webidl::ast::TypeKind {
+    fn type_to_string(&self) -> String {
+        match self {
+            webidl::ast::TypeKind::Any => "any".to_owned(),
+            webidl::ast::TypeKind::ArrayBuffer => "array_buffer".to_owned(),
+            webidl::ast::TypeKind::Boolean => "boolean".to_owned(),
+            webidl::ast::TypeKind::Byte => "byte".to_owned(),
+            webidl::ast::TypeKind::ByteString => "byte_string".to_owned(),
+            webidl::ast::TypeKind::DOMString => "dom_string".to_owned(),
+            webidl::ast::TypeKind::DataView => "data_view".to_owned(),
+            webidl::ast::TypeKind::Error => "error".to_owned(),
+            webidl::ast::TypeKind::Float32Array => "float32_array".to_owned(),
+            webidl::ast::TypeKind::Float64Array => "float64_array".to_owned(),
+            webidl::ast::TypeKind::FrozenArray(ty) => "frozen_array_of_".to_owned() + &ty.type_to_string(),
+            webidl::ast::TypeKind::Identifier(identifier) => identifier.to_snake_case(),
+            webidl::ast::TypeKind::Int16Array => "int16_array".to_owned(),
+            webidl::ast::TypeKind::Int32Array => "int32_array".to_owned(),
+            webidl::ast::TypeKind::Int8Array => "int8_array".to_owned(),
+            webidl::ast::TypeKind::Octet => "octet".to_owned(),
+            webidl::ast::TypeKind::Object => "object".to_owned(),
+            webidl::ast::TypeKind::Promise(ty) => "promise_of_".to_owned() + &(*ty).type_to_string(),
+            webidl::ast::TypeKind::Record(string_type, ty) => format!(
+                "record_from_{}_to_{}",
+                string_type.type_to_string(),
+                (*ty).type_to_string()
+            ),
+            webidl::ast::TypeKind::RestrictedDouble => "restricted_double".to_owned(),
+            webidl::ast::TypeKind::RestrictedFloat => "restricted_float".to_owned(),
+            webidl::ast::TypeKind::Sequence(ty) => "sequence_of".to_owned() + &ty.type_to_string(),
+            webidl::ast::TypeKind::SignedLong => "signed_long".to_owned(),
+            webidl::ast::TypeKind::SignedLongLong => "signed_long_long".to_owned(),
+            webidl::ast::TypeKind::SignedShort => "signed_short".to_owned(),
+            webidl::ast::TypeKind::Symbol => "symbol".to_owned(),
+            webidl::ast::TypeKind::USVString => "usv_string".to_owned(),
+            webidl::ast::TypeKind::Uint16Array => "uint16_array".to_owned(),
+            webidl::ast::TypeKind::Uint32Array => "uint32_array".to_owned(),
+            webidl::ast::TypeKind::Uint8Array => "uint8_array".to_owned(),
+            webidl::ast::TypeKind::Uint8ClampedArray => "uint8_clampedarray".to_owned(),
+            webidl::ast::TypeKind::Union(types) => "union_of_".to_owned() + &types
+                .iter()
+                .map(|ty| (*ty).type_to_string())
+                .collect::<Vec<_>>()
+                .join("_and_"),
+            webidl::ast::TypeKind::UnrestrictedDouble => "unrestricted_double".to_owned(),
+            webidl::ast::TypeKind::UnrestrictedFloat => "unrestricted_float".to_owned(),
+            webidl::ast::TypeKind::UnsignedLong => "unsigned_long".to_owned(),
+            webidl::ast::TypeKind::UnsignedLongLong => "unsigned_long_long".to_owned(),
+            webidl::ast::TypeKind::UnsignedShort => "unsigned_short".to_owned(),
+        }
+    }
+}
+
 impl<'a> FirstPassRecord<'a> {
     /// Use information from the first pass to work out the correct Rust type to use for
     /// a given WebIDL type.
@@ -164,7 +249,7 @@ impl<'a> FirstPassRecord<'a> {
             // bindings.
             webidl::ast::TypeKind::Identifier(ref id) => {
                 let ty = ident_ty(rust_ident(camel_case_ident(&id).as_str()));
-                if self.interfaces.contains(id) {
+                if self.interfaces.contains_key(id) {
                     if pos == TypePosition::Argument {
                         shared_ref(ty)
                     } else {
@@ -312,6 +397,7 @@ impl<'a> FirstPassRecord<'a> {
     pub fn create_function<'b, I>(
         &self,
         name: &str,
+        conflicting: bool,
         arguments: I,
         mut ret: Option<syn::Type>,
         kind: backend::ast::ImportFunctionKind,
@@ -321,10 +407,28 @@ impl<'a> FirstPassRecord<'a> {
     where
         I: Iterator<Item = (&'b str, &'b webidl::ast::Type, bool)>,
     {
-        let rust_name = rust_ident(&name.to_snake_case());
+        let arguments: Vec<_> = arguments.collect();
+        let rust_name = rust_ident(
+            &if conflicting && !arguments.is_empty() {
+                let argument_type_names = arguments
+                    .iter()
+                    .map(|&(_, ty, variadic)| {
+                        if variadic {
+                            "variadic_".to_owned() + &ty.type_to_string()
+                        } else {
+                            ty.type_to_string()
+                        }
+                    })
+                    .collect::<Vec<_>>()
+                    .join("_and_");
+                name.to_snake_case() + "_with_" + &argument_type_names
+            } else {
+                name.to_snake_case()
+            }
+        );
         let name = raw_ident(name);
 
-        let arguments = self.webidl_arguments_to_syn_arg_captured(arguments, &kind)?;
+        let arguments = self.webidl_arguments_to_syn_arg_captured(arguments.into_iter(), &kind)?;
 
         let js_ret = ret.clone();
 
@@ -363,6 +467,7 @@ impl<'a> FirstPassRecord<'a> {
         &self,
         arguments: &[webidl::ast::Argument],
         name: Option<&String>,
+        conflicting: bool,
         return_type: &webidl::ast::ReturnType,
         self_name: &str,
         is_static: bool,
@@ -400,6 +505,7 @@ impl<'a> FirstPassRecord<'a> {
 
         self.create_function(
             &name,
+            conflicting,
             arguments
                 .iter()
                 .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
@@ -437,7 +543,7 @@ impl<'a> FirstPassRecord<'a> {
             }),
         };
 
-        self.create_function(name, iter::empty(), ret, kind, is_structural, catch)
+        self.create_function(name, false, iter::empty(), ret, kind, is_structural, catch)
     }
 
     /// Create a wasm-bindgen setter method, if possible.
@@ -461,6 +567,7 @@ impl<'a> FirstPassRecord<'a> {
 
         self.create_function(
             &format!("set_{}", name),
+            false,
             iter::once((name, ty, false)),
             None,
             kind,
