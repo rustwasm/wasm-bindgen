@@ -397,7 +397,7 @@ impl<'a> FirstPassRecord<'a> {
     pub fn create_function<'b, I>(
         &self,
         name: &str,
-        conflicting: bool,
+        overloaded: bool,
         arguments: I,
         mut ret: Option<syn::Type>,
         kind: backend::ast::ImportFunctionKind,
@@ -409,7 +409,7 @@ impl<'a> FirstPassRecord<'a> {
     {
         let arguments: Vec<_> = arguments.collect();
         let rust_name = rust_ident(
-            &if conflicting && !arguments.is_empty() {
+            &if overloaded && !arguments.is_empty() {
                 let argument_type_names = arguments
                     .iter()
                     .map(|&(_, ty, variadic)| {
@@ -467,7 +467,7 @@ impl<'a> FirstPassRecord<'a> {
         &self,
         arguments: &[webidl::ast::Argument],
         name: Option<&String>,
-        conflicting: bool,
+        overloaded: bool,
         return_type: &webidl::ast::ReturnType,
         self_name: &str,
         is_static: bool,
@@ -505,7 +505,7 @@ impl<'a> FirstPassRecord<'a> {
 
         self.create_function(
             &name,
-            conflicting,
+            overloaded,
             arguments
                 .iter()
                 .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),

@@ -31,9 +31,9 @@ pub(crate) struct InterfaceData {
     /// Whether only partial interfaces were encountered
     pub(crate) partial: bool,
     pub(crate) operations: BTreeSet<Option<String>>,
-    pub(crate) conflicting_operations: BTreeSet<Option<String>>,
+    pub(crate) overloaded_operations: BTreeSet<Option<String>>,
     pub(crate) has_constructor: bool,
-    pub(crate) has_conflicting_constructors: bool,
+    pub(crate) has_overloaded_constructors: bool,
 }
 
 /// We need to collect mixin data during the first pass, to be used later.
@@ -145,9 +145,9 @@ impl FirstPass<()> for webidl::ast::NonPartialInterface {
                 InterfaceData {
                     partial: false,
                     operations: Default::default(),
-                    conflicting_operations: Default::default(),
+                    overloaded_operations: Default::default(),
                     has_constructor: false,
-                    has_conflicting_constructors: false,
+                    has_overloaded_constructors: false,
                 },
             );
         }
@@ -176,9 +176,9 @@ impl FirstPass<()> for webidl::ast::PartialInterface {
                 InterfaceData {
                     partial: true,
                     operations: Default::default(),
-                    conflicting_operations: Default::default(),
+                    overloaded_operations: Default::default(),
                     has_constructor: false,
-                    has_conflicting_constructors: false,
+                    has_overloaded_constructors: false,
                 },
             );
         }
@@ -212,7 +212,7 @@ impl<'b> FirstPass<&'b str> for webidl::ast::ExtendedAttribute {
             _ => false,
         } {
             if interface_data.has_constructor {
-                interface_data.has_conflicting_constructors = true;
+                interface_data.has_overloaded_constructors = true;
             } else {
                 interface_data.has_constructor = true;
             }
@@ -250,7 +250,7 @@ impl<'b> FirstPass<&'b str> for webidl::ast::RegularOperation {
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, self_name: &'b str) -> Result<()> {
         let interface_data = record.interfaces.get_mut(self_name).unwrap();
         if interface_data.operations.contains(&self.name) {
-            interface_data.conflicting_operations.insert(self.name.clone());
+            interface_data.overloaded_operations.insert(self.name.clone());
         } else {
             interface_data.operations.insert(self.name.clone());
         }
@@ -262,7 +262,7 @@ impl<'b> FirstPass<&'b str> for webidl::ast::StaticOperation {
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, self_name: &'b str) -> Result<()> {
         let interface_data = record.interfaces.get_mut(self_name).unwrap();
         if interface_data.operations.contains(&self.name) {
-            interface_data.conflicting_operations.insert(self.name.clone());
+            interface_data.overloaded_operations.insert(self.name.clone());
         } else {
             interface_data.operations.insert(self.name.clone());
         }

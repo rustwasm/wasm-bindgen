@@ -358,7 +358,7 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                     "new",
                     first_pass.interfaces
                         .get(&interface.name)
-                        .map(|interface_data| interface_data.has_conflicting_constructors)
+                        .map(|interface_data| interface_data.has_overloaded_constructors)
                         .unwrap_or(false),
                     arguments
                         .iter()
@@ -655,7 +655,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
                 first_pass.interfaces
                     .get(self_name)
                     .map(|interface_data| {
-                        interface_data.conflicting_operations.contains(&self.name)
+                        interface_data.overloaded_operations.contains(&self.name)
                     })
                     .unwrap_or(false),
                 &self.return_type,
@@ -690,7 +690,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
                 first_pass.interfaces
                     .get(self_name)
                     .map(|interface_data| {
-                        interface_data.conflicting_operations.contains(&self.name)
+                        interface_data.overloaded_operations.contains(&self.name)
                     })
                     .unwrap_or(false),
                 &self.return_type,
