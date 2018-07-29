@@ -407,6 +407,7 @@ impl<'a> FirstPassRecord<'a> {
         &self,
         name: &str,
         overloaded: bool,
+        same_argument_names: bool,
         arguments: I,
         mut ret: Option<syn::Type>,
         kind: backend::ast::ImportFunctionKind,
@@ -422,11 +423,15 @@ impl<'a> FirstPassRecord<'a> {
             &if overloaded && !arguments.is_empty() {
                 let argument_type_names = arguments
                     .iter()
-                    .map(|&(_, ty, variadic)| {
-                        if variadic {
-                            "variadic_".to_owned() + &ty.type_to_string()
+                    .map(|&(name, ty, variadic)| {
+                        if same_argument_names {
+                            if variadic {
+                                "variadic_".to_owned() + &ty.type_to_string()
+                            } else {
+                                ty.type_to_string()
+                            }
                         } else {
-                            ty.type_to_string()
+                            name.to_snake_case()
                         }
                     })
                     .collect::<Vec<_>>()
@@ -478,12 +483,17 @@ impl<'a> FirstPassRecord<'a> {
         &self,
         arguments: &[webidl::ast::Argument],
         name: Option<&String>,
-        overloaded: bool,
         return_type: &webidl::ast::ReturnType,
         self_name: &str,
         is_static: bool,
         catch: bool,
     ) -> Option<backend::ast::ImportFunction> {
+        let (overloaded, same_argument_names) = self.get_operation_overloading(
+            arguments,
+            ::first_pass::OperationId::Operation(name.cloned()),
+            self_name,
+        );
+
         let name = match name {
             None => {
                 warn!("Operations without a name are unsupported");
@@ -518,6 +528,7 @@ impl<'a> FirstPassRecord<'a> {
         self.create_function(
             &name,
             overloaded,
+            same_argument_names,
             arguments
                 .iter()
                 .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
@@ -527,6 +538,40 @@ impl<'a> FirstPassRecord<'a> {
             catch,
             doc_comment,
         )
+    }
+
+    /// Whether operation is overloaded and
+    /// whether there overloads with same argument names for given argument types
+    pub fn get_operation_overloading(
+        &self,
+        arguments: &[webidl::ast::Argument],
+        id: ::first_pass::OperationId,
+        self_name: &str,
+    ) -> (bool, bool) {
+        self
+            .interfaces
+            .get(self_name)
+            .map(|interface_data| {
+                interface_data
+                    .operations
+                    .get(&id)
+                    .map(|operation_data|
+                        (
+                            operation_data.overloaded,
+                            *operation_data
+                                .argument_names_same
+                                .get(
+                                    &arguments
+                                        .iter()
+                                        .map(|argument| argument.name.clone())
+                                        .collect::<Vec<_>>()
+                                )
+                                .unwrap_or(&false)
+                        )
+                    )
+                    .unwrap_or((false, false))
+            })
+            .unwrap_or((false, false))
     }
 
     /// Create a wasm-bindgen getter method, if possible.
@@ -558,7 +603,7 @@ impl<'a> FirstPassRecord<'a> {
         let doc_comment = Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))));
 
 
-        self.create_function(name, false, iter::empty(), ret, kind, is_structural, catch, doc_comment)
+        self.create_function(name, false, false, iter::empty(), ret, kind, is_structural, catch, doc_comment)
     }
 
     /// Create a wasm-bindgen setter method, if possible.
@@ -583,6 +628,7 @@ impl<'a> FirstPassRecord<'a> {
 
         self.create_function(
             &format!("set_{}", name),
+            false,
             false,
             iter::once((name, ty, false)),
             None,

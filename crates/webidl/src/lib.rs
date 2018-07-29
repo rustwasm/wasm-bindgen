@@ -332,6 +332,12 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
         interface: &'a webidl::ast::NonPartialInterface,
     ) -> Result<()> {
         let mut add_constructor = |arguments: &[webidl::ast::Argument], class: &str| {
+            let (overloaded, same_argument_names) = first_pass.get_operation_overloading(
+                arguments,
+                ::first_pass::OperationId::Constructor,
+                &interface.name,
+            );
+
             let self_ty = ident_ty(rust_ident(camel_case_ident(&interface.name).as_str()));
 
             let kind = backend::ast::ImportFunctionKind::Method {
@@ -359,10 +365,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
             first_pass
                 .create_function(
                     "new",
-                    first_pass.interfaces
-                        .get(&interface.name)
-                        .map(|interface_data| interface_data.has_overloaded_constructors)
-                        .unwrap_or(false),
+                    overloaded,
+                    same_argument_names,
                     arguments
                         .iter()
                         .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
@@ -656,12 +660,6 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
             .create_basic_method(
                 &self.arguments,
                 self.name.as_ref(),
-                first_pass.interfaces
-                    .get(self_name)
-                    .map(|interface_data| {
-                        interface_data.overloaded_operations.contains(&self.name)
-                    })
-                    .unwrap_or(false),
                 &self.return_type,
                 self_name,
                 false,
@@ -691,12 +689,6 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
             .create_basic_method(
                 &self.arguments,
                 self.name.as_ref(),
-                first_pass.interfaces
-                    .get(self_name)
-                    .map(|interface_data| {
-                        interface_data.overloaded_operations.contains(&self.name)
-                    })
-                    .unwrap_or(false),
                 &self.return_type,
                 self_name,
                 true,
