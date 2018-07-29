@@ -7,7 +7,8 @@
  * https://w3c.github.io/FileAPI/#file
  */
 
-interface nsIFile;
+// invalid widl
+//interface nsIFile;
 
 [Constructor(sequence<BlobPart> fileBits,
              USVString fileName, optional FilePropertyBag options),

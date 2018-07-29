@@ -6,7 +6,8 @@
  * http://domparsing.spec.whatwg.org/#the-xmlserializer-interface
  */
 
-interface OutputStream;
+// invalid widl
+// interface OutputStream;
 
 [Constructor]
 interface XMLSerializer {

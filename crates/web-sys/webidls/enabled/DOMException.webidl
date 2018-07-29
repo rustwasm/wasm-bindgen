@@ -13,7 +13,8 @@
 
 // This is the WebIDL version of nsIException.  This is mostly legacy stuff.
 
-interface StackFrame;
+// invalid widl
+//interface StackFrame;
 
 [NoInterfaceObject,
  Exposed=(Window,Worker,System)]
