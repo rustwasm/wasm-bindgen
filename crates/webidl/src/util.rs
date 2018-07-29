@@ -606,7 +606,6 @@ impl<'a> FirstPassRecord<'a> {
         };
         let doc_comment = Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))));
 
-
         self.create_function(name, false, false, iter::empty(), ret, kind, is_structural, catch, doc_comment)
     }
 
