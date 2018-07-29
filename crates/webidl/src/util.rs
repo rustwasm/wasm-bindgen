@@ -169,9 +169,9 @@ impl TypeToString for webidl::ast::ReturnType {
 impl TypeToString for webidl::ast::StringType {
     fn type_to_string(&self) -> String {
         match self {
-            webidl::ast::StringType::ByteString => "byte_string".to_owned(),
-            webidl::ast::StringType::DOMString => "dom_string".to_owned(),
-            webidl::ast::StringType::USVString => "usv_string".to_owned(),
+            webidl::ast::StringType::ByteString => "byte_str".to_owned(),
+            webidl::ast::StringType::DOMString => "dom_str".to_owned(),
+            webidl::ast::StringType::USVString => "usv_str".to_owned(),
         }
     }
 }
@@ -181,20 +181,20 @@ impl TypeToString for webidl::ast::TypeKind {
         match self {
             webidl::ast::TypeKind::Any => "any".to_owned(),
             webidl::ast::TypeKind::ArrayBuffer => "array_buffer".to_owned(),
-            webidl::ast::TypeKind::Boolean => "boolean".to_owned(),
-            webidl::ast::TypeKind::Byte => "byte".to_owned(),
-            webidl::ast::TypeKind::ByteString => "byte_string".to_owned(),
-            webidl::ast::TypeKind::DOMString => "dom_string".to_owned(),
+            webidl::ast::TypeKind::Boolean => "bool".to_owned(),
+            webidl::ast::TypeKind::Byte => "i8".to_owned(),
+            webidl::ast::TypeKind::ByteString => "byte_str".to_owned(),
+            webidl::ast::TypeKind::DOMString => "dom_str".to_owned(),
             webidl::ast::TypeKind::DataView => "data_view".to_owned(),
             webidl::ast::TypeKind::Error => "error".to_owned(),
-            webidl::ast::TypeKind::Float32Array => "float32_array".to_owned(),
-            webidl::ast::TypeKind::Float64Array => "float64_array".to_owned(),
+            webidl::ast::TypeKind::Float32Array => "f32_array".to_owned(),
+            webidl::ast::TypeKind::Float64Array => "f64_array".to_owned(),
             webidl::ast::TypeKind::FrozenArray(ty) => "frozen_array_of_".to_owned() + &ty.type_to_string(),
             webidl::ast::TypeKind::Identifier(identifier) => identifier.to_snake_case(),
-            webidl::ast::TypeKind::Int16Array => "int16_array".to_owned(),
-            webidl::ast::TypeKind::Int32Array => "int32_array".to_owned(),
-            webidl::ast::TypeKind::Int8Array => "int8_array".to_owned(),
-            webidl::ast::TypeKind::Octet => "octet".to_owned(),
+            webidl::ast::TypeKind::Int16Array => "i16_array".to_owned(),
+            webidl::ast::TypeKind::Int32Array => "i32_array".to_owned(),
+            webidl::ast::TypeKind::Int8Array => "i8_array".to_owned(),
+            webidl::ast::TypeKind::Octet => "u8".to_owned(),
             webidl::ast::TypeKind::Object => "object".to_owned(),
             webidl::ast::TypeKind::Promise(ty) => "promise_of_".to_owned() + &(*ty).type_to_string(),
             webidl::ast::TypeKind::Record(string_type, ty) => format!(
@@ -202,28 +202,28 @@ impl TypeToString for webidl::ast::TypeKind {
                 string_type.type_to_string(),
                 (*ty).type_to_string()
             ),
-            webidl::ast::TypeKind::RestrictedDouble => "restricted_double".to_owned(),
-            webidl::ast::TypeKind::RestrictedFloat => "restricted_float".to_owned(),
-            webidl::ast::TypeKind::Sequence(ty) => "sequence_of".to_owned() + &ty.type_to_string(),
-            webidl::ast::TypeKind::SignedLong => "signed_long".to_owned(),
-            webidl::ast::TypeKind::SignedLongLong => "signed_long_long".to_owned(),
-            webidl::ast::TypeKind::SignedShort => "signed_short".to_owned(),
+            webidl::ast::TypeKind::RestrictedDouble => "restricted_f64".to_owned(),
+            webidl::ast::TypeKind::RestrictedFloat => "restricted_f32".to_owned(),
+            webidl::ast::TypeKind::Sequence(ty) => "sequence_of_".to_owned() + &ty.type_to_string(),
+            webidl::ast::TypeKind::SignedLong => "i32".to_owned(),
+            webidl::ast::TypeKind::SignedLongLong => "i64".to_owned(),
+            webidl::ast::TypeKind::SignedShort => "i16".to_owned(),
             webidl::ast::TypeKind::Symbol => "symbol".to_owned(),
-            webidl::ast::TypeKind::USVString => "usv_string".to_owned(),
-            webidl::ast::TypeKind::Uint16Array => "uint16_array".to_owned(),
-            webidl::ast::TypeKind::Uint32Array => "uint32_array".to_owned(),
-            webidl::ast::TypeKind::Uint8Array => "uint8_array".to_owned(),
-            webidl::ast::TypeKind::Uint8ClampedArray => "uint8_clampedarray".to_owned(),
+            webidl::ast::TypeKind::USVString => "usv_str".to_owned(),
+            webidl::ast::TypeKind::Uint16Array => "u16_array".to_owned(),
+            webidl::ast::TypeKind::Uint32Array => "u32_array".to_owned(),
+            webidl::ast::TypeKind::Uint8Array => "u8_array".to_owned(),
+            webidl::ast::TypeKind::Uint8ClampedArray => "u8_clamped_array".to_owned(),
             webidl::ast::TypeKind::Union(types) => "union_of_".to_owned() + &types
                 .iter()
                 .map(|ty| (*ty).type_to_string())
                 .collect::<Vec<_>>()
                 .join("_and_"),
-            webidl::ast::TypeKind::UnrestrictedDouble => "unrestricted_double".to_owned(),
-            webidl::ast::TypeKind::UnrestrictedFloat => "unrestricted_float".to_owned(),
-            webidl::ast::TypeKind::UnsignedLong => "unsigned_long".to_owned(),
-            webidl::ast::TypeKind::UnsignedLongLong => "unsigned_long_long".to_owned(),
-            webidl::ast::TypeKind::UnsignedShort => "unsigned_short".to_owned(),
+            webidl::ast::TypeKind::UnrestrictedDouble => "unrestricted_f64".to_owned(),
+            webidl::ast::TypeKind::UnrestrictedFloat => "unrestricted_f32".to_owned(),
+            webidl::ast::TypeKind::UnsignedLong => "u32".to_owned(),
+            webidl::ast::TypeKind::UnsignedLongLong => "u64".to_owned(),
+            webidl::ast::TypeKind::UnsignedShort => "u16".to_owned(),
         }
     }
 }
