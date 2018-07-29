@@ -2050,6 +2050,152 @@ extern "C" {
     pub fn set_prototype_of(target: &Object, prototype: &JsValue) -> bool;
 }
 
+// RegExp
+#[wasm_bindgen]
+extern {
+    #[derive(Clone, Debug)]
+    pub type RegExp;
+
+    /// The exec() method executes a search for a match in a specified
+    /// string. Returns a result array, or null.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec
+    #[wasm_bindgen(method)]
+    pub fn exec(this: &RegExp, text: &str) -> Option<Array>;
+
+    /// The flags property returns a string consisting of the flags of
+    /// the current regular expression object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/flags
+    #[wasm_bindgen(method, getter)]
+    pub fn flags(this: &RegExp) -> JsString;
+
+    /// The global property indicates whether or not the "g" flag is
+    /// used with the regular expression. global is a read-only
+    /// property of an individual regular expression instance.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/global
+    #[wasm_bindgen(method, getter)]
+    pub fn global(this: &RegExp) -> bool;
+
+    /// The ignoreCase property indicates whether or not the "i" flag
+    /// is used with the regular expression. ignoreCase is a read-only
+    /// property of an individual regular expression instance.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/ignoreCase
+    #[wasm_bindgen(method, getter, js_name = ignoreCase)]
+    pub fn ignore_case(this: &RegExp) -> bool;
+
+    /// The non-standard input property is a static property of
+    /// regular expressions that contains the string against which a
+    /// regular expression is matched. RegExp.$_ is an alias for this
+    /// property.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/input
+    #[wasm_bindgen(static_method_of = RegExp, getter)]
+    pub fn input() -> JsString;
+
+    /// The lastIndex is a read/write integer property of regular
+    /// expression instances that specifies the index at which to
+    /// start the next match.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex
+    #[wasm_bindgen(method, getter, structural, js_name = lastIndex)]
+    pub fn last_index(this: &RegExp) -> u32;
+    #[wasm_bindgen(method, setter, structural, js_name = set_lastIndex)]
+    pub fn set_last_index(this: &RegExp, index: u32);
+
+    /// The non-standard lastMatch property is a static and read-only
+    /// property of regular expressions that contains the last matched
+    /// characters. RegExp.$& is an alias for this property.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastMatch
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = lastMatch)]
+    pub fn last_match() -> JsString;
+
+    /// The non-standard lastParen property is a static and read-only
+    /// property of regular expressions that contains the last
+    /// parenthesized substring match, if any. RegExp.$+ is an alias
+    /// for this property.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastParen
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = lastParen)]
+    pub fn last_paren() -> JsString;
+
+    /// The non-standard leftContext property is a static and
+    /// read-only property of regular expressions that contains the
+    /// substring preceding the most recent match. RegExp.$` is an
+    /// alias for this property.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/leftContext
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = leftContext)]
+    pub fn left_context() -> JsString;
+
+    /// The multiline property indicates whether or not the "m" flag
+    /// is used with the regular expression. multiline is a read-only
+    /// property of an individual regular expression instance.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/multiline
+    #[wasm_bindgen(method, getter)]
+    pub fn multiline(this: &RegExp) -> bool;
+
+    /// The RegExp constructor creates a regular expression object for matching text with a pattern.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+    #[wasm_bindgen(constructor)]
+    pub fn new(pattern: &JsValue, flags: &str) -> RegExp;
+
+    /// The non-standard rightContext property is a static and
+    /// read-only property of regular expressions that contains the
+    /// substring following the most recent match. RegExp.$' is an
+    /// alias for this property.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/rightContext
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = rightContext)]
+    pub fn right_context() -> JsString;
+
+    /// The source property returns a String containing the source
+    /// text of the regexp object, and it doesn't contain the two
+    /// forward slashes on both sides and any flags.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/source
+    #[wasm_bindgen(method, getter)]
+    pub fn source(this: &RegExp) -> JsString;
+
+    /// The sticky property reflects whether or not the search is
+    /// sticky (searches in strings only from the index indicated by
+    /// the lastIndex property of this regular expression). sticky is
+    /// a read-only property of an individual regular expression
+    /// object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/sticky
+    #[wasm_bindgen(method, getter)]
+    pub fn sticky(this: &RegExp) -> bool;
+
+    /// The test() method executes a search for a match between a
+    /// regular expression and a specified string. Returns true or
+    /// false.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test
+    #[wasm_bindgen(method)]
+    pub fn test(this: &RegExp, text: &str) -> bool;
+
+    /// The toString() method returns a string representing the
+    /// regular expression.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/toString
+    #[wasm_bindgen(method, js_name = toString)]
+    pub fn to_string(this: &RegExp) -> JsString;
+
+    /// The unicode property indicates whether or not the "u" flag is
+    /// used with a regular expression. unicode is a read-only
+    /// property of an individual regular expression instance.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/unicode
+    #[wasm_bindgen(method, getter)]
+    pub fn unicode(this: &RegExp) -> bool;
+}
+
 // Set
 #[wasm_bindgen]
 extern {
