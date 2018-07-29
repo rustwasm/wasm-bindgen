@@ -150,7 +150,7 @@ trait TypeToString {
 impl TypeToString for webidl::ast::Type {
     fn type_to_string(&self) -> String {
         if self.nullable {
-            "nullable_".to_owned() + &self.kind.type_to_string()
+            "opt_".to_owned() + &self.kind.type_to_string()
         } else {
             self.kind.type_to_string()
         }
