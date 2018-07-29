@@ -40,7 +40,7 @@ use heck::{ShoutySnakeCase};
 use quote::ToTokens;
 
 use first_pass::{FirstPass, FirstPassRecord};
-use util::{public, webidl_const_ty_to_syn_ty, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident};
+use util::{public, webidl_const_ty_to_syn_ty, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, mdn_doc};
 
 pub use error::{Error, ErrorKind, Result};
 
@@ -272,6 +272,8 @@ impl WebidlParse<()> for webidl::ast::NonPartialInterface {
             return Ok(());
         }
 
+        let doc_comment = Some(format!("The `{}` object\n\n{}", &self.name, mdn_doc(&self.name, None)));
+
         program.imports.push(backend::ast::Import {
             module: None,
             version: None,
@@ -280,6 +282,7 @@ impl WebidlParse<()> for webidl::ast::NonPartialInterface {
                 vis: public(),
                 name: rust_ident(camel_case_ident(&self.name).as_str()),
                 attrs: Vec::new(),
+                doc_comment,
             }),
         });
 
@@ -363,6 +366,7 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
                     kind,
                     structural,
                     throws,
+                    None,
                 )
                 .map(wrap_import_function)
                 .map(|import| program.imports.push(import));

@@ -469,6 +469,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemFn {
             structural: opts.structural(),
             rust_name: self.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
+            doc_comment: None,
         })
     }
 }
@@ -481,6 +482,7 @@ impl ConvertToAst<()> for syn::ForeignItemType {
             vis: self.vis,
             name: self.ident,
             attrs: self.attrs,
+            doc_comment: None,
         })
     }
 }
