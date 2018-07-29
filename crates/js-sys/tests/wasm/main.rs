@@ -25,6 +25,7 @@ pub mod Number;
 pub mod Object;
 pub mod Proxy;
 pub mod Reflect;
+pub mod RegExp;
 pub mod Set;
 pub mod SetIterator;
 pub mod Symbol;
