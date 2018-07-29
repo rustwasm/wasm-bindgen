@@ -436,7 +436,11 @@ impl<'a> FirstPassRecord<'a> {
                     })
                     .collect::<Vec<_>>()
                     .join("_and_");
-                name.to_snake_case() + "_with_" + &argument_type_names
+                if name == "new" {
+                    "with_".to_owned() + &argument_type_names
+                } else {
+                    name.to_snake_case() + "_with_" + &argument_type_names
+                }
             } else {
                 name.to_snake_case()
             }
