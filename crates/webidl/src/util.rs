@@ -25,6 +25,14 @@ pub fn camel_case_ident(identifier: &str) -> String {
   identifier.replace("HTML", "HTML_").to_camel_case()
 }
 
+// Returns a link to MDN
+pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
+    let mut link = format!("https://developer.mozilla.org/en-US/docs/Web/API/{}", class);
+    if let Some(method) = method {
+        link.push_str(&format!("/{}", method));
+    }
+    format!("[Documentation]({})", link).into()
+}
 
 /// For a webidl const type node, get the corresponding syn type node.
 pub fn webidl_const_ty_to_syn_ty(ty: &webidl::ast::ConstType) -> syn::Type {
@@ -317,6 +325,7 @@ impl<'a> FirstPassRecord<'a> {
         kind: backend::ast::ImportFunctionKind,
         structural: bool,
         catch: bool,
+        doc_comment: Option<String>,
     ) -> Option<backend::ast::ImportFunction>
     where
         I: Iterator<Item = (&'b str, &'b webidl::ast::Type, bool)>,
@@ -355,6 +364,7 @@ impl<'a> FirstPassRecord<'a> {
             structural,
             kind,
             shim,
+            doc_comment,
         })
     }
 
@@ -397,6 +407,7 @@ impl<'a> FirstPassRecord<'a> {
                 }
             }
         };
+        let doc_comment = Some(format!("The `{}()` method\n\n{}", name, mdn_doc(self_name, Some(name))));
 
         self.create_function(
             &name,
@@ -407,6 +418,7 @@ impl<'a> FirstPassRecord<'a> {
             kind,
             false,
             catch,
+            doc_comment,
         )
     }
 
@@ -436,8 +448,9 @@ impl<'a> FirstPassRecord<'a> {
                 kind: backend::ast::OperationKind::Getter(Some(raw_ident(name))),
             }),
         };
+        let doc_comment = Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))));
 
-        self.create_function(name, iter::empty(), ret, kind, is_structural, catch)
+        self.create_function(name, iter::empty(), ret, kind, is_structural, catch, doc_comment)
     }
 
     /// Create a wasm-bindgen setter method, if possible.
@@ -458,6 +471,7 @@ impl<'a> FirstPassRecord<'a> {
                 kind: backend::ast::OperationKind::Setter(Some(raw_ident(name))),
             }),
         };
+        let doc_comment = Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name))));
 
         self.create_function(
             &format!("set_{}", name),
@@ -466,6 +480,7 @@ impl<'a> FirstPassRecord<'a> {
             kind,
             is_structural,
             catch,
+            doc_comment,
         )
     }
 }

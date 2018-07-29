@@ -78,6 +78,7 @@ pub struct ImportFunction {
     pub structural: bool,
     pub kind: ImportFunctionKind,
     pub shim: Ident,
+    pub doc_comment: Option<String>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -123,6 +124,7 @@ pub struct ImportType {
     pub vis: syn::Visibility,
     pub name: Ident,
     pub attrs: Vec<syn::Attribute>,
+    pub doc_comment: Option<String>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
