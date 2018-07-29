@@ -492,9 +492,14 @@ impl ToTokens for ast::ImportType {
         let vis = &self.vis;
         let name = &self.name;
         let attrs = &self.attrs;
+        let doc_comment = match &self.doc_comment {
+            None => "",
+            Some(comment) => comment,
+        };
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
+            #[doc = #doc_comment]
             #vis struct #name {
                 obj: ::wasm_bindgen::JsValue,
             }
@@ -780,6 +785,10 @@ impl ToTokens for ast::ImportFunction {
         let attrs = &self.function.rust_attrs;
         let arguments = &arguments;
 
+        let doc_comment = match &self.doc_comment {
+            None => "",
+            Some(doc_string) => doc_string,
+        };
         let me = if is_method {
             quote! { &self, }
         } else {
@@ -790,6 +799,7 @@ impl ToTokens for ast::ImportFunction {
             #(#attrs)*
             #[allow(bad_style)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+            #[doc = #doc_comment]
             #vis fn #rust_name(#me #(#arguments),*) #ret {
                 // See definition of `link_mem_intrinsics` for what this is doing
                 ::wasm_bindgen::__rt::link_mem_intrinsics();
@@ -812,6 +822,7 @@ impl ToTokens for ast::ImportFunction {
             #(#attrs)*
             #[allow(bad_style, unused_variables)]
             #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+            #[doc = #doc_comment]
             #vis fn #rust_name(#me #(#arguments),*) #ret {
                 panic!("cannot call wasm-bindgen imported functions on \
                         non-wasm targets");
