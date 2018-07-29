@@ -2095,16 +2095,6 @@ extern {
     #[wasm_bindgen(static_method_of = RegExp, getter)]
     pub fn input() -> JsString;
 
-    /// The lastIndex is a read/write integer property of regular
-    /// expression instances that specifies the index at which to
-    /// start the next match.
-    ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex
-    #[wasm_bindgen(method, getter, structural, js_name = lastIndex)]
-    pub fn last_index(this: &RegExp) -> u32;
-    #[wasm_bindgen(method, setter, structural, js_name = set_lastIndex)]
-    pub fn set_last_index(this: &RegExp, index: u32);
-
     /// The non-standard lastMatch property is a static and read-only
     /// property of regular expressions that contains the last matched
     /// characters. RegExp.$& is an alias for this property.
@@ -2143,7 +2133,9 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
     #[wasm_bindgen(constructor)]
-    pub fn new(pattern: &JsValue, flags: &str) -> RegExp;
+    pub fn new(pattern: &str, flags: &str) -> RegExp;
+    #[wasm_bindgen(constructor)]
+    pub fn new_regexp(pattern: &RegExp, flags: &str) -> RegExp;
 
     /// The non-standard rightContext property is a static and
     /// read-only property of regular expressions that contains the
