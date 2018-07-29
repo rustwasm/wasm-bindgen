@@ -132,17 +132,17 @@ impl FirstPass<()> for webidl::ast::Interface {
 
 impl FirstPass<()> for webidl::ast::NonPartialInterface {
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        if record.interfaces.contains_key(&self.name) {
-            if let Some(interface_data) = record.interfaces.get_mut(&self.name) {
+        record
+            .interfaces
+            .entry(self.name.clone())
+            .and_modify(|interface_data| {
                 if interface_data.partial {
                     interface_data.partial = false;
                 } else {
                     warn!("Encountered multiple declarations of {}", self.name);
                 }
-            }
-        } else {
-            record.interfaces.insert(
-                self.name.clone(),
+            })
+            .or_insert_with(||
                 InterfaceData {
                     partial: false,
                     operations: Default::default(),
@@ -151,7 +151,6 @@ impl FirstPass<()> for webidl::ast::NonPartialInterface {
                     has_overloaded_constructors: false,
                 },
             );
-        }
 
         if ::util::is_chrome_only(&self.extended_attributes) {
             return Ok(())
@@ -171,9 +170,10 @@ impl FirstPass<()> for webidl::ast::NonPartialInterface {
 
 impl FirstPass<()> for webidl::ast::PartialInterface {
     fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        if !record.interfaces.contains_key(&self.name) {
-            record.interfaces.insert(
-                self.name.clone(),
+        record
+            .interfaces
+            .entry(self.name.clone())
+            .or_insert_with(||
                 InterfaceData {
                     partial: true,
                     operations: Default::default(),
@@ -182,7 +182,6 @@ impl FirstPass<()> for webidl::ast::PartialInterface {
                     has_overloaded_constructors: false,
                 },
             );
-        }
 
         if ::util::is_chrome_only(&self.extended_attributes) {
             return Ok(())

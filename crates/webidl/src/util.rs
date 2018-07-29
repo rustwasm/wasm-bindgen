@@ -134,6 +134,7 @@ pub enum TypePosition {
     Return,
 }
 
+/// Implemented on an AST type node to generate a snake case name.
 trait TypeToString {
     fn type_to_string(&self) -> String;
 }
