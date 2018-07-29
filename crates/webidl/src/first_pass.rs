@@ -121,8 +121,9 @@ impl FirstPass<()> for webidl::ast::Interface {
         match self {
             Partial(interface) => interface.first_pass(record, ()),
             NonPartial(interface) => interface.first_pass(record, ()),
-            _ => {
-                // Other interfaces aren't currently used in the first pass
+            // TODO
+            Callback(..) => {
+                warn!("Unsupported WebIDL interface: {:?}", self);
                 Ok(())
             }
         }
@@ -219,7 +220,6 @@ impl<'b> FirstPass<&'b str> for webidl::ast::ExtendedAttribute {
         }
 
         Ok(())
-
     }
 }
 
@@ -254,6 +254,7 @@ impl<'b> FirstPass<&'b str> for webidl::ast::RegularOperation {
         } else {
             interface_data.operations.insert(self.name.clone());
         }
+
         Ok(())
     }
 }
@@ -266,6 +267,7 @@ impl<'b> FirstPass<&'b str> for webidl::ast::StaticOperation {
         } else {
             interface_data.operations.insert(self.name.clone());
         }
+
         Ok(())
     }
 }
