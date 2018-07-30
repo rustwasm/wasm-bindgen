@@ -70,7 +70,9 @@ matrix:
       before_install: *INSTALL_NODE_VIA_NVM
       install:
         - npm ci --verbose
-      script: cargo test --manifest-path crates/web-sys/Cargo.toml
+      script:
+        - cargo test --manifest-path crates/web-sys/Cargo.toml
+        - cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown
       addons:
         firefox: latest
       if: branch = master

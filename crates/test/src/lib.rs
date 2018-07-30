@@ -42,7 +42,7 @@ macro_rules! wasm_bindgen_test_configure {
         #[link_section = "__wasm_bindgen_test_unstable"]
         #[cfg(target_arch = "wasm32")]
         pub static __WBG_TEST_RUN_IN_BROWSER: [u8; 1] = [0x01];
-        wasm_bindgen_test_configure!($($others)*);
+        $crate::wasm_bindgen_test_configure!($($others)*);
     );
     () => ()
 }

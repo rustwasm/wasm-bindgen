@@ -1,5 +1,4 @@
 extern crate env_logger;
-#[macro_use]
 extern crate failure;
 extern crate wasm_bindgen_webidl;
 extern crate sourcefile;
