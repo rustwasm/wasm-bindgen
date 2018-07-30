@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::sync::Mutex;
 use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
 
 use ast;
@@ -221,10 +222,6 @@ impl ToTokens for ast::StructField {
         let ty = &self.ty;
         let getter = &self.getter;
         let setter = &self.setter;
-        let desc = Ident::new(
-            &format!("__wbindgen_describe_{}", getter),
-            Span::call_site(),
-        );
         (quote! {
             #[no_mangle]
             #[doc(hidden)]
@@ -246,13 +243,10 @@ impl ToTokens for ast::StructField {
                     &mut GlobalStack::new(),
                 )
             }
+        }).to_tokens(tokens);
 
-            #[no_mangle]
-            #[doc(hidden)]
-            pub extern fn #desc() {
-                use wasm_bindgen::describe::*;
-                <#ty as WasmDescribe>::describe();
-            }
+        Descriptor(&getter, quote! {
+            <#ty as WasmDescribe>::describe();
         }).to_tokens(tokens);
 
         if self.readonly {
@@ -421,13 +415,11 @@ impl ToTokens for ast::Export {
             }
             None => quote! { inform(0); },
         };
-        let descriptor_name = format!("__wbindgen_describe_{}", export_name);
-        let descriptor_name = Ident::new(&descriptor_name, Span::call_site());
         let nargs = self.function.arguments.len() as u32;
         let argtys = self.function.arguments.iter().map(|arg| &arg.ty);
         let attrs = &self.function.rust_attrs;
 
-        let tokens = quote! {
+        (quote! {
             #(#attrs)*
             #[export_name = #export_name]
             #[allow(non_snake_case)]
@@ -444,35 +436,31 @@ impl ToTokens for ast::Export {
                 };
                 #convert_ret
             }
+        }).to_tokens(into);
 
-            // In addition to generating the shim function above which is what
-            // our generated JS will invoke, we *also* generate a "descriptor"
-            // shim. This descriptor shim uses the `WasmDescribe` trait to
-            // programmatically describe the type signature of the generated
-            // shim above. This in turn is then used to inform the
-            // `wasm-bindgen` CLI tool exactly what types and such it should be
-            // using in JS.
-            //
-            // Note that this descriptor function is a purely an internal detail
-            // of `#[wasm_bindgen]` and isn't intended to be exported to anyone
-            // or actually part of the final was binary. Additionally, this is
-            // literally executed when the `wasm-bindgen` tool executes.
-            //
-            // In any case, there's complications in `wasm-bindgen` to handle
-            // this, but the tl;dr; is that this is stripped from the final wasm
-            // binary along with anything it references.
-            #[no_mangle]
-            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            #[doc(hidden)]
-            pub extern fn #descriptor_name() {
-                use wasm_bindgen::describe::*;
-                inform(FUNCTION);
-                inform(#nargs);
-                #(<#argtys as WasmDescribe>::describe();)*
-                #describe_ret
-            }
-        };
-        tokens.to_tokens(into);
+        // In addition to generating the shim function above which is what
+        // our generated JS will invoke, we *also* generate a "descriptor"
+        // shim. This descriptor shim uses the `WasmDescribe` trait to
+        // programmatically describe the type signature of the generated
+        // shim above. This in turn is then used to inform the
+        // `wasm-bindgen` CLI tool exactly what types and such it should be
+        // using in JS.
+        //
+        // Note that this descriptor function is a purely an internal detail
+        // of `#[wasm_bindgen]` and isn't intended to be exported to anyone
+        // or actually part of the final was binary. Additionally, this is
+        // literally executed when the `wasm-bindgen` tool executes.
+        //
+        // In any case, there's complications in `wasm-bindgen` to handle
+        // this, but the tl;dr; is that this is stripped from the final wasm
+        // binary along with anything it references.
+        let export = Ident::new(&export_name, Span::call_site());
+        Descriptor(&export, quote! {
+            inform(FUNCTION);
+            inform(#nargs);
+            #(<#argtys as WasmDescribe>::describe();)*
+            #describe_ret
+        }).to_tokens(into);
     }
 }
 
@@ -853,25 +841,18 @@ impl<'a> ToTokens for DescribeImport<'a> {
             ast::ImportKind::Type(_) => return,
             ast::ImportKind::Enum(_) => return,
         };
-        let describe_name = format!("__wbindgen_describe_{}", f.shim);
-        let describe_name = Ident::new(&describe_name, Span::call_site());
         let argtys = f.function.arguments.iter().map(|arg| &arg.ty);
         let nargs = f.function.arguments.len() as u32;
         let inform_ret = match &f.js_ret {
             Some(ref t) => quote! { inform(1); <#t as WasmDescribe>::describe(); },
             None => quote! { inform(0); },
         };
-        (quote! {
-            #[no_mangle]
-            #[allow(non_snake_case)]
-            #[doc(hidden)]
-            pub extern fn #describe_name() {
-                use wasm_bindgen::describe::*;
-                inform(FUNCTION);
-                inform(#nargs);
-                #(<#argtys as WasmDescribe>::describe();)*
-                #inform_ret
-            }
+
+        Descriptor(&f.shim, quote! {
+            inform(FUNCTION);
+            inform(#nargs);
+            #(<#argtys as WasmDescribe>::describe();)*
+            #inform_ret
         }).to_tokens(tokens);
     }
 }
@@ -1014,5 +995,41 @@ impl ToTokens for ast::Const {
         } else {
             declaration.to_tokens(tokens);
         }
+    }
+}
+
+/// Emits the necessary glue tokens for "descriptor", generating an appropriate
+/// symbol name as well as attributes around the descriptor function itself.
+struct Descriptor<'a, T>(&'a Ident, T);
+
+impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        // It's possible for the same descriptor to be emitted in two different
+        // modules (aka a value imported twice in a crate, each in a separate
+        // module). In this case no need to emit duplicate descriptors (which
+        // leads to duplicate symbol errors), instead just emit one.
+        //
+        // It's up to the descriptors themselves to ensure they have unique
+        // names for unique items imported, currently done via `ShortHash` and
+        // hashing appropriate data into the symbol name.
+        lazy_static! {
+            static ref DESCRIPTORS_EMITTED: Mutex<HashSet<String>> = Default::default();
+        }
+        if !DESCRIPTORS_EMITTED.lock().unwrap().insert(self.0.to_string()) {
+            return
+        }
+
+        let name = Ident::new(&format!("__wbindgen_describe_{}", self.0), self.0.span());
+        let inner = &self.1;
+        (quote! {
+            #[no_mangle]
+            #[allow(non_snake_case)]
+            #[doc(hidden)]
+            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+            pub extern fn #name() {
+                use wasm_bindgen::describe::*;
+                #inner
+            }
+        }).to_tokens(tokens);
     }
 }

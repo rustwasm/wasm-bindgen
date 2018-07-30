@@ -198,6 +198,7 @@ impl Bindgen {
                 exposed_globals: Default::default(),
                 required_internal_exports: Default::default(),
                 imported_names: Default::default(),
+                imported_identifiers: Default::default(),
                 exported_classes: Default::default(),
                 config: &self,
                 module: &mut module,

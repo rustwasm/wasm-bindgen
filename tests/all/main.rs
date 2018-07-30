@@ -8,6 +8,7 @@ mod classes;
 mod closures;
 mod comments;
 mod dependencies;
+mod duplicates;
 mod enums;
 mod import_class;
 mod imports;
