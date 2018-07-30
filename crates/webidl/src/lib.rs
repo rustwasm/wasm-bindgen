@@ -75,7 +75,7 @@ fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
     };
 
     let mut first_pass_record = Default::default();
-    definitions.first_pass(&mut first_pass_record)?;
+    definitions.first_pass(&mut first_pass_record, ())?;
     let mut program = Default::default();
     definitions.webidl_parse(&mut program, &first_pass_record, ())?;
 
@@ -309,7 +309,7 @@ impl WebidlParse<()> for webidl::ast::PartialInterface {
             return Ok(());
         }
 
-        if !first_pass.interfaces.contains(&self.name) {
+        if !first_pass.interfaces.contains_key(&self.name) {
             warn!(
                 "Partial interface {} missing non-partial interface",
                 self.name
@@ -332,6 +332,12 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
         interface: &'a webidl::ast::NonPartialInterface,
     ) -> Result<()> {
         let mut add_constructor = |arguments: &[webidl::ast::Argument], class: &str| {
+            let (overloaded, same_argument_names) = first_pass.get_operation_overloading(
+                arguments,
+                ::first_pass::OperationId::Constructor,
+                &interface.name,
+            );
+
             let self_ty = ident_ty(rust_ident(camel_case_ident(&interface.name).as_str()));
 
             let kind = backend::ast::ImportFunctionKind::Method {
@@ -359,6 +365,8 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
             first_pass
                 .create_function(
                     "new",
+                    overloaded,
+                    same_argument_names,
                     arguments
                         .iter()
                         .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),

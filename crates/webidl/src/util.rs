@@ -142,6 +142,92 @@ pub enum TypePosition {
     Return,
 }
 
+/// Implemented on an AST type node to generate a snake case name.
+trait TypeToString {
+    fn type_to_string(&self) -> String;
+}
+
+impl TypeToString for webidl::ast::Type {
+    fn type_to_string(&self) -> String {
+        if self.nullable {
+            "opt_".to_owned() + &self.kind.type_to_string()
+        } else {
+            self.kind.type_to_string()
+        }
+    }
+}
+
+impl TypeToString for webidl::ast::ReturnType {
+    fn type_to_string(&self) -> String {
+        match self {
+            webidl::ast::ReturnType::NonVoid(ty) => (*ty).type_to_string(),
+            webidl::ast::ReturnType::Void => "void".to_owned(),
+        }
+    }
+}
+
+impl TypeToString for webidl::ast::StringType {
+    fn type_to_string(&self) -> String {
+        match self {
+            webidl::ast::StringType::ByteString => "byte_str".to_owned(),
+            webidl::ast::StringType::DOMString => "dom_str".to_owned(),
+            webidl::ast::StringType::USVString => "usv_str".to_owned(),
+        }
+    }
+}
+
+impl TypeToString for webidl::ast::TypeKind {
+    fn type_to_string(&self) -> String {
+        match self {
+            webidl::ast::TypeKind::Any => "any".to_owned(),
+            webidl::ast::TypeKind::ArrayBuffer => "array_buffer".to_owned(),
+            webidl::ast::TypeKind::Boolean => "bool".to_owned(),
+            webidl::ast::TypeKind::Byte => "i8".to_owned(),
+            webidl::ast::TypeKind::ByteString => "byte_str".to_owned(),
+            webidl::ast::TypeKind::DOMString => "dom_str".to_owned(),
+            webidl::ast::TypeKind::DataView => "data_view".to_owned(),
+            webidl::ast::TypeKind::Error => "error".to_owned(),
+            webidl::ast::TypeKind::Float32Array => "f32_array".to_owned(),
+            webidl::ast::TypeKind::Float64Array => "f64_array".to_owned(),
+            webidl::ast::TypeKind::FrozenArray(ty) => "frozen_array_of_".to_owned() + &ty.type_to_string(),
+            webidl::ast::TypeKind::Identifier(identifier) => identifier.to_snake_case(),
+            webidl::ast::TypeKind::Int16Array => "i16_array".to_owned(),
+            webidl::ast::TypeKind::Int32Array => "i32_array".to_owned(),
+            webidl::ast::TypeKind::Int8Array => "i8_array".to_owned(),
+            webidl::ast::TypeKind::Octet => "u8".to_owned(),
+            webidl::ast::TypeKind::Object => "object".to_owned(),
+            webidl::ast::TypeKind::Promise(ty) => "promise_of_".to_owned() + &(*ty).type_to_string(),
+            webidl::ast::TypeKind::Record(string_type, ty) => format!(
+                "record_from_{}_to_{}",
+                string_type.type_to_string(),
+                (*ty).type_to_string()
+            ),
+            webidl::ast::TypeKind::RestrictedDouble => "restricted_f64".to_owned(),
+            webidl::ast::TypeKind::RestrictedFloat => "restricted_f32".to_owned(),
+            webidl::ast::TypeKind::Sequence(ty) => "sequence_of_".to_owned() + &ty.type_to_string(),
+            webidl::ast::TypeKind::SignedLong => "i32".to_owned(),
+            webidl::ast::TypeKind::SignedLongLong => "i64".to_owned(),
+            webidl::ast::TypeKind::SignedShort => "i16".to_owned(),
+            webidl::ast::TypeKind::Symbol => "symbol".to_owned(),
+            webidl::ast::TypeKind::USVString => "usv_str".to_owned(),
+            webidl::ast::TypeKind::Uint16Array => "u16_array".to_owned(),
+            webidl::ast::TypeKind::Uint32Array => "u32_array".to_owned(),
+            webidl::ast::TypeKind::Uint8Array => "u8_array".to_owned(),
+            webidl::ast::TypeKind::Uint8ClampedArray => "u8_clamped_array".to_owned(),
+            webidl::ast::TypeKind::Union(types) => "union_of_".to_owned() + &types
+                .iter()
+                .map(|ty| (*ty).type_to_string())
+                .collect::<Vec<_>>()
+                .join("_and_"),
+            webidl::ast::TypeKind::UnrestrictedDouble => "unrestricted_f64".to_owned(),
+            webidl::ast::TypeKind::UnrestrictedFloat => "unrestricted_f32".to_owned(),
+            webidl::ast::TypeKind::UnsignedLong => "u32".to_owned(),
+            webidl::ast::TypeKind::UnsignedLongLong => "u64".to_owned(),
+            webidl::ast::TypeKind::UnsignedShort => "u16".to_owned(),
+        }
+    }
+}
+
 impl<'a> FirstPassRecord<'a> {
     /// Use information from the first pass to work out the correct Rust type to use for
     /// a given WebIDL type.
@@ -172,7 +258,7 @@ impl<'a> FirstPassRecord<'a> {
             // bindings.
             webidl::ast::TypeKind::Identifier(ref id) => {
                 let ty = ident_ty(rust_ident(camel_case_ident(&id).as_str()));
-                if self.interfaces.contains(id) {
+                if self.interfaces.contains_key(id) {
                     if pos == TypePosition::Argument {
                         shared_ref(ty)
                     } else {
@@ -320,6 +406,8 @@ impl<'a> FirstPassRecord<'a> {
     pub fn create_function<'b, I>(
         &self,
         name: &str,
+        overloaded: bool,
+        same_argument_names: bool,
         arguments: I,
         mut ret: Option<syn::Type>,
         kind: backend::ast::ImportFunctionKind,
@@ -330,10 +418,36 @@ impl<'a> FirstPassRecord<'a> {
     where
         I: Iterator<Item = (&'b str, &'b webidl::ast::Type, bool)>,
     {
-        let rust_name = rust_ident(&name.to_snake_case());
+        let arguments: Vec<_> = arguments.collect();
+        let rust_name = rust_ident(
+            &if overloaded && !arguments.is_empty() {
+                let argument_type_names = arguments
+                    .iter()
+                    .map(|&(name, ty, variadic)| {
+                        if same_argument_names {
+                            if variadic {
+                                "variadic_".to_owned() + &ty.type_to_string()
+                            } else {
+                                ty.type_to_string()
+                            }
+                        } else {
+                            name.to_snake_case()
+                        }
+                    })
+                    .collect::<Vec<_>>()
+                    .join("_and_");
+                if name == "new" {
+                    "with_".to_owned() + &argument_type_names
+                } else {
+                    name.to_snake_case() + "_with_" + &argument_type_names
+                }
+            } else {
+                name.to_snake_case()
+            }
+        );
         let name = raw_ident(name);
 
-        let arguments = self.webidl_arguments_to_syn_arg_captured(arguments, &kind)?;
+        let arguments = self.webidl_arguments_to_syn_arg_captured(arguments.into_iter(), &kind)?;
 
         let js_ret = ret.clone();
 
@@ -378,6 +492,12 @@ impl<'a> FirstPassRecord<'a> {
         is_static: bool,
         catch: bool,
     ) -> Option<backend::ast::ImportFunction> {
+        let (overloaded, same_argument_names) = self.get_operation_overloading(
+            arguments,
+            ::first_pass::OperationId::Operation(name.cloned()),
+            self_name,
+        );
+
         let name = match name {
             None => {
                 warn!("Operations without a name are unsupported");
@@ -411,6 +531,8 @@ impl<'a> FirstPassRecord<'a> {
 
         self.create_function(
             &name,
+            overloaded,
+            same_argument_names,
             arguments
                 .iter()
                 .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
@@ -420,6 +542,40 @@ impl<'a> FirstPassRecord<'a> {
             catch,
             doc_comment,
         )
+    }
+
+    /// Whether operation is overloaded and
+    /// whether there overloads with same argument names for given argument types
+    pub fn get_operation_overloading(
+        &self,
+        arguments: &[webidl::ast::Argument],
+        id: ::first_pass::OperationId,
+        self_name: &str,
+    ) -> (bool, bool) {
+        self
+            .interfaces
+            .get(self_name)
+            .map(|interface_data| {
+                interface_data
+                    .operations
+                    .get(&id)
+                    .map(|operation_data|
+                        (
+                            operation_data.overloaded,
+                            *operation_data
+                                .argument_names_same
+                                .get(
+                                    &arguments
+                                        .iter()
+                                        .map(|argument| argument.name.clone())
+                                        .collect::<Vec<_>>()
+                                )
+                                .unwrap_or(&false)
+                        )
+                    )
+                    .unwrap_or((false, false))
+            })
+            .unwrap_or((false, false))
     }
 
     /// Create a wasm-bindgen getter method, if possible.
@@ -450,7 +606,7 @@ impl<'a> FirstPassRecord<'a> {
         };
         let doc_comment = Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))));
 
-        self.create_function(name, iter::empty(), ret, kind, is_structural, catch, doc_comment)
+        self.create_function(name, false, false, iter::empty(), ret, kind, is_structural, catch, doc_comment)
     }
 
     /// Create a wasm-bindgen setter method, if possible.
@@ -475,6 +631,8 @@ impl<'a> FirstPassRecord<'a> {
 
         self.create_function(
             &format!("set_{}", name),
+            false,
+            false,
             iter::once((name, ty, false)),
             None,
             kind,

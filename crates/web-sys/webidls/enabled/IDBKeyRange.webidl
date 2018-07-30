@@ -20,7 +20,7 @@ interface IDBKeyRange {
   [Constant]
   readonly attribute boolean upperOpen;
   [Throws]
-  boolean includes(any key);
+  boolean _includes(any key);
 
 
   [NewObject, Throws]
