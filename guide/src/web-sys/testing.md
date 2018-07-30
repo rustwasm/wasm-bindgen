@@ -5,10 +5,10 @@ You can test the `web-sys` crate by running `cargo test` within the
 
 ```sh
 cd wasm-bindgen/crates/web-sys
-cargo test
+cargo test --target wasm32-unknown-unknown
 ```
 
-These tests all use a headless Firefox browser. See the [*Headless Browser
+These tests all use a headless browser. See the [*Headless Browser
 Tests* section for details on setup and
 configuration.](contributing.html#headless-browser-tests)
 

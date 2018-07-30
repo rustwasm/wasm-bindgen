@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+  </head>
+  <body>
+    <pre id='output'>Loading scripts...</pre>
+    <script>
+      const orig_console_log = console.log;
+      const orig_console_error = console.error;
+      console.log = function() {
+        if (window.global_cx)
+          window.global_cx.console_log(orig_console_log, arguments);
+        else
+          orig_console_log.apply(this, arguments);
+      };
+      console.error = function() {
+        if (window.global_cx)
+          window.global_cx.console_error(orig_console_error, arguments);
+        else
+          orig_console_error.apply(this, arguments);
+      };
+    </script>
+    <script src='run.js' type=module></script>
+  </body>
+</html>
