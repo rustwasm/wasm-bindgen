@@ -1580,6 +1580,7 @@ impl<'a> Context<'a> {
 
     fn gc(&mut self) -> Result<(), Error> {
         let module = mem::replace(self.module, Module::default());
+        let module = module.parse_names().unwrap_or_else(|p| p.1);
         let result = wasm_gc::Config::new()
             .demangle(self.config.demangle)
             .keep_debug(self.config.keep_debug || self.config.debug)

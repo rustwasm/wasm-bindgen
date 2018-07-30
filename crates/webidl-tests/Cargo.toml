@@ -1,0 +1,21 @@
+[package]
+name = "webidl-tests"
+version = "0.1.0"
+authors = ["The wasm-bindgen authors"]
+
+[lib]
+test = false
+doctest = false
+path = 'lib.rs'
+
+[build-dependencies]
+wasm-bindgen-webidl = { path = '../webidl' }
+
+[dev-dependencies]
+wasm-bindgen-test = { path = '../test' }
+wasm-bindgen = { path = '../..' }
+
+[[test]]
+name = 'wasm'
+path = 'main.rs'
+
