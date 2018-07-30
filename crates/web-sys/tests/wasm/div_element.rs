@@ -4,13 +4,12 @@ use web_sys::HtmlDivElement;
 
 #[wasm_bindgen(module = "./tests/wasm/element.js")]
 extern {
-    #[wasm_bindgen(js_name = new_div)]
-    fn make_div() -> HtmlDivElement;
+    fn new_div() -> HtmlDivElement;
 }
 
 #[wasm_bindgen_test]
 fn test_div_element() {
-    let element = make_div();
+    let element = new_div();
     assert_eq!(element.align(), "", "Shouldn't have a align");
     element.set_align("right");
     assert_eq!(element.align(), "right", "Should have a align");
