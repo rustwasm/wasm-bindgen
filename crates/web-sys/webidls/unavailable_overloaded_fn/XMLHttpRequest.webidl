@@ -10,9 +10,10 @@
  * liability, trademark and document use rules apply.
  */
 
-interface InputStream;
-interface MozChannel;
-interface IID;
+// invalid widl
+// interface InputStream;
+// interface MozChannel;
+// interface IID;
 
 enum XMLHttpRequestResponseType {
   "",

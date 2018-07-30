@@ -7,7 +7,8 @@
  * dom/html/public/nsIImageDocument.idl
  */
 
-interface imgIRequest;
+// invalid widl
+// interface imgIRequest;
 
 [ChromeOnly, OverrideBuiltins]
 interface ImageDocument : HTMLDocument {

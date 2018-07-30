@@ -10,7 +10,8 @@
  * liability, trademark and document use rules apply.
  */
 
-interface Principal;
+// invalid widl
+// interface Principal;
 
 dictionary IDBOpenDBOptions
 {

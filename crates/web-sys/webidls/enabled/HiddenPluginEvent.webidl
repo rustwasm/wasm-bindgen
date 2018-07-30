@@ -1,4 +1,5 @@
-interface PluginTag;
+// invalid widl
+// interface PluginTag;
 
 [Constructor(DOMString type, optional HiddenPluginEventInit eventInit), ChromeOnly]
 interface HiddenPluginEvent : Event

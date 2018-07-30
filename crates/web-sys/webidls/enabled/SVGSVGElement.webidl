@@ -10,7 +10,8 @@
  * liability, trademark and document use rules apply.
  */
 
-interface SVGViewSpec;
+// invalid widl
+// interface SVGViewSpec;
 
 interface SVGSVGElement : SVGGraphicsElement {
 

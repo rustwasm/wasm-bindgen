@@ -77,7 +77,8 @@ partial interface Selection {
 };
 
 // Additional chrome-only methods.
-interface nsISelectionListener;
+// invalid widl
+//interface nsISelectionListener;
 partial interface Selection {
   /**
    * A true value means "selection after newline"; false means "selection before

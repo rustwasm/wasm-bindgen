@@ -7,7 +7,8 @@
  *
  * Portions Copyright 2013 Microsoft Open Technologies, Inc. */
 
-interface WindowProxy;
+// invalid widl
+// interface WindowProxy;
 
 [Pref="dom.w3c_pointer_events.enabled",
  Constructor(DOMString type, optional PointerEventInit eventInitDict)]

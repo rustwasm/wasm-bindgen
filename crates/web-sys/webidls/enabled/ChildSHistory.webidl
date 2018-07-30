@@ -4,7 +4,8 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-interface nsISHistory;
+// invalid widl
+///interface nsISHistory;
 
 /**
  * The ChildSHistory interface represents the child side of a browsing
