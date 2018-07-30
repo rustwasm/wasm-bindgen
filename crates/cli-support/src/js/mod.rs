@@ -26,7 +26,20 @@ pub struct Context<'a> {
     pub required_internal_exports: HashSet<&'static str>,
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
-    pub imported_names: HashSet<String>,
+
+    /// A map which maintains a list of what identifiers we've imported and what
+    /// they're named locally.
+    ///
+    /// The `Option<String>` key is the module that identifiers were imported
+    /// from, `None` being the global module. The second key is a map of
+    /// identifiers we've already imported from the module to what they're
+    /// called locally.
+    pub imported_names: HashMap<Option<String>, HashMap<String, String>>,
+
+    /// A set of all imported identifiers to the number of times they've been
+    /// imported, used to generate new identifiers.
+    pub imported_identifiers: HashMap<String, usize>,
+
     pub exported_classes: HashMap<String, ExportedClass>,
     pub function_table_needed: bool,
     pub run_descriptor: &'a Fn(&str) -> Option<Vec<u32>>,
@@ -1980,39 +1993,82 @@ impl<'a, 'b> SubContext<'a, 'b> {
     }
 
     fn import_name(&mut self, import: &shared::Import, item: &str) -> Result<String, Error> {
-        if let Some(ref module) = import.module {
-            if self.cx.config.no_modules {
+        // First up, imports don't work at all in `--no-modules` mode as we're
+        // not sure how to import them.
+        if self.cx.config.no_modules {
+            if let Some(module) = &import.module {
                 bail!(
                     "import from `{}` module not allowed with `--no-modules`; \
                      use `--nodejs` or `--browser` instead",
                     module
                 );
             }
-
-            let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
-
-            if self.cx.imported_names.insert(name.to_string()) {
-                if self.cx.use_node_require() {
-                    self.cx.imports.push_str(&format!(
-                        "\
-                         const {} = require('{}').{};\n\
-                         ",
-                        name, module, name
-                    ));
-                } else {
-                    self.cx.imports.push_str(&format!(
-                        "\
-                         import {{ {} }} from '{}';\n\
-                         ",
-                        name, module
-                    ));
-                }
-            }
         }
-        Ok(match import.js_namespace {
-            Some(ref s) => format!("{}.{}", s, item),
-            None => item.to_string(),
-        })
+
+        // Figure out what identifier we're importing from the module. If we've
+        // got a namespace we use that, otherwise it's the name specified above.
+        let name_to_import = import.js_namespace
+            .as_ref()
+            .map(|s| &**s)
+            .unwrap_or(item);
+
+        // Here's where it's a bit tricky. We need to make sure that importing
+        // the same identifier from two different modules works, and they're
+        // named uniquely below. Additionally if we've already imported the same
+        // identifier from the module in question then we'd like to reuse the
+        // one that was previously imported.
+        //
+        // Our `imported_names` map keeps track of all imported identifiers from
+        // modules, mapping the imported names onto names actually available for
+        // use in our own module. If our identifier isn't present then we
+        // generate a new identifier and are sure to generate the appropriate JS
+        // import for our new identifier.
+        let use_node_require = self.cx.use_node_require();
+        let imported_identifiers = &mut self.cx.imported_identifiers;
+        let imports = &mut self.cx.imports;
+        let identifier = self.cx.imported_names.entry(import.module.clone())
+            .or_insert_with(Default::default)
+            .entry(name_to_import.to_string())
+            .or_insert_with(|| {
+                let name = generate_identifier(name_to_import, imported_identifiers);
+                if let Some(module) = &import.module {
+                    if use_node_require {
+                        imports.push_str(&format!(
+                            "const {} = require('{}').{};\n",
+                            name, module, name_to_import
+                        ));
+                    } else if name_to_import == name {
+                        imports.push_str(&format!(
+                            "import {{ {} }} from '{}';\n",
+                            name, module
+                        ));
+                    } else {
+                        imports.push_str(&format!(
+                            "import {{ {} as {} }} from '{}';\n",
+                            name_to_import, name, module
+                        ));
+                    }
+                }
+                name
+            });
+
+        // If there's a namespace we didn't actually import `item` but rather
+        // the namespace, so access through that.
+        if import.js_namespace.is_some() {
+            Ok(format!("{}.{}", identifier, item))
+        } else {
+            Ok(identifier.to_string())
+        }
+    }
+}
+
+fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> String {
+    let cnt = used_names.entry(name.to_string()).or_insert(0);
+    *cnt += 1;
+    if *cnt == 1 {
+        name.to_string()
+    } else {
+        format!("{}{}", name, cnt)
     }
 }
 

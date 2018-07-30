@@ -353,10 +353,10 @@ impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
     }
 }
 
-impl ConvertToAst<BindgenAttrs> for syn::ForeignItemFn {
+impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn {
     type Target = ast::ImportKind;
 
-    fn convert(self, opts: BindgenAttrs) -> Self::Target {
+    fn convert(self, (opts, module): (BindgenAttrs, &'a Option<String>)) -> Self::Target {
         let js_name = opts.js_name().unwrap_or(&self.ident).clone();
         let wasm = function_from_decl(&js_name, self.decl, self.attrs, self.vis, false).0;
         let catch = opts.catch();
@@ -458,7 +458,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemFn {
                 ast::ImportFunctionKind::Normal => (0, "n"),
                 ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };
-            let data = (ns, &self.ident);
+            let data = (ns, &self.ident, module);
             format!("__wbg_{}_{}", js_name, ShortHash(data))
         };
         ast::ImportKind::Function(ast::ImportFunction {
@@ -803,7 +803,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 .map(|s| s.to_string());
             let js_namespace = item_opts.js_namespace().or(opts.js_namespace()).cloned();
             let mut kind = match item {
-                syn::ForeignItem::Fn(f) => f.convert(item_opts),
+                syn::ForeignItem::Fn(f) => f.convert((item_opts, &module)),
                 syn::ForeignItem::Type(t) => t.convert(()),
                 syn::ForeignItem::Static(s) => s.convert(item_opts),
                 _ => panic!("only foreign functions/types allowed for now"),
