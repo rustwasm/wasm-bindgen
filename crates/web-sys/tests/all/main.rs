@@ -80,6 +80,7 @@ mod history;
     web_sys::HtmlMenuElement,
     web_sys::HtmlSlotElement,
 */
+mod xpath_result;
 
 fn websys_project() -> Project {
     project()
