@@ -2,11 +2,17 @@ language: rust
 sudo: false
 
 INSTALL_NODE_VIA_NVM: &INSTALL_NODE_VIA_NVM
-  - rustup target add wasm32-unknown-unknown
-  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
-  - source ~/.nvm/nvm.sh
-  - nvm install v10.5
+  |
+    rustup target add wasm32-unknown-unknown
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+    source ~/.nvm/nvm.sh
+    nvm install v10.5
 
+INSTALL_GECKODRIVER: &INSTALL_GECKODRIVER
+  |
+    curl --retry 5 -LO https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
+    tar xf geckodriver-v0.21.0-linux64.tar.gz
+    export GECKODRIVER=`pwd`/geckodriver
 
 DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
   before_deploy:
@@ -35,8 +41,8 @@ matrix:
     # Tests pass on nightly
     - rust: nightly
       env: JOB=test-bindgen
-      before_install: *INSTALL_NODE_VIA_NVM
       install:
+        - *INSTALL_NODE_VIA_NVM
         - npm ci --verbose
       script:
         - cargo test --release
@@ -51,8 +57,9 @@ matrix:
     # All examples work
     - rust: nightly
       env: JOB=examples-build
-      before_install: *INSTALL_NODE_VIA_NVM
-      install: npm ci --verbose
+      install:
+        - *INSTALL_NODE_VIA_NVM
+        - npm ci --verbose
       script:
         - |
           for dir in `ls examples | grep -v README | grep -v asm.js | grep -v no_modules`; do
@@ -67,8 +74,9 @@ matrix:
     # The `web-sys` crate's tests pass on nightly.
     - rust: nightly
       env: JOB=test-web-sys
-      before_install: *INSTALL_NODE_VIA_NVM
       install:
+        - *INSTALL_NODE_VIA_NVM
+        - *INSTALL_GECKODRIVER
         - npm ci --verbose
       script:
         - cargo test --manifest-path crates/web-sys/Cargo.toml
@@ -80,11 +88,9 @@ matrix:
     # The `js-sys` crate's tests pass on nightly.
     - rust: nightly
       env: JOB=test-js-sys
-      before_install: *INSTALL_NODE_VIA_NVM
       install:
-        - curl --retry 5 -LO https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
-        - tar xf geckodriver-v0.21.0-linux64.tar.gz
-        - export GECKODRIVER=`pwd`/geckodriver
+        - *INSTALL_NODE_VIA_NVM
+        - *INSTALL_GECKODRIVER
       script:
         - cargo test -p js-sys
         - cargo test -p js-sys --target wasm32-unknown-unknown
@@ -95,8 +101,8 @@ matrix:
     # Tests pass on nightly using yarn
     - rust: nightly
       env: JOB=test-yarn-smoke
-      before_install: *INSTALL_NODE_VIA_NVM
       install:
+        - *INSTALL_NODE_VIA_NVM
         - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
         - export PATH=$HOME/.yarn/bin:$PATH
         - yarn install --freeze-lockfile
@@ -106,7 +112,7 @@ matrix:
     # WebIDL tests pass on nightly
     - rust: nightly
       env: JOB=test-webidl
-      before_install: *INSTALL_NODE_VIA_NVM
+      install: *INSTALL_NODE_VIA_NVM
       script:
         - cargo test -p wasm-bindgen-webidl
         - cargo test -p webidl-tests --target wasm32-unknown-unknown
