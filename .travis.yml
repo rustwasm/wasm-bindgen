@@ -103,8 +103,9 @@ matrix:
     - rust: nightly
       env: JOB=test-webidl
       before_install: *INSTALL_NODE_VIA_NVM
-      install: npm ci --verbose
-      script: cargo test --manifest-path crates/webidl/Cargo.toml
+      script:
+        - cargo test -p wasm-bindgen-webidl
+        - cargo test -p webidl-tests --target wasm32-unknown-unknown
       if: branch = master
 
     # Dist linux binary

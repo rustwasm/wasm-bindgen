@@ -42,6 +42,7 @@ members = [
   "crates/typescript",
   "crates/web-sys",
   "crates/webidl",
+  "crates/webidl-tests",
   "examples/add",
   "examples/asm.js",
   "examples/char",
