@@ -26,6 +26,10 @@ export function new_head() {
   return document.createElement("head");
 }
 
+export function new_hr() {
+    return document.createElement("hr");
+}
+
 export function new_html() {
   return document.createElement("html");
 }

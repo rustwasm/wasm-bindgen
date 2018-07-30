@@ -17,6 +17,7 @@ pub mod element;
 pub mod head_element;
 pub mod headers;
 pub mod history;
+pub mod hr_element;
 pub mod html_element;
 pub mod html_html_element;
 pub mod response;
