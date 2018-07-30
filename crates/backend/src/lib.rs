@@ -3,6 +3,8 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-backend/0.2")]
 
 #[macro_use]
+extern crate lazy_static;
+#[macro_use]
 extern crate log;
 extern crate proc_macro2;
 #[macro_use]

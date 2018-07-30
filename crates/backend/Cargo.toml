@@ -15,6 +15,7 @@ spans = ["proc-macro2/nightly"]
 extra-traits = ["syn/extra-traits"]
 
 [dependencies]
+lazy_static = "1.0.0"
 log = "0.4"
 proc-macro2 = "0.4.8"
 quote = '0.6'
