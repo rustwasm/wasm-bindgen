@@ -11,7 +11,7 @@
     "@types/node": "^10.5.4",
     "babel-eslint": "^8.2.6",
     "eslint": "^5.2.0",
-    "geckodriver": "^1.11.0",
+    "geckodriver": "^1.12.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "ts-loader": "^4.4.2",
     "typescript": "^3.0.1",
