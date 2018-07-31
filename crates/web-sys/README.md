@@ -205,7 +205,7 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLFrameSetElement.webidl
  - [ ] HTMLHeadElement.webidl
  - [ ] HTMLHeadingElement.webidl
- - [ ] HTMLHRElement.webidl
+ - [x] HTMLHRElement.webidl
  - [ ] HTMLHtmlElement.webidl
  - [ ] HTMLHyperlinkElementUtils.webidl
  - [ ] HTMLIFrameElement.webidl
@@ -647,7 +647,7 @@ bindings are fully working and have full test coverage.
  - [ ] XPathEvaluator.webidl
  - [ ] XPathExpression.webidl
  - [ ] XPathNSResolver.webidl
- - [ ] XPathResult.webidl
+ - [x] XPathResult.webidl
  - [ ] XSLTProcessor.webidl
  - [ ] README.md
  - [ ] WaveShaperNode.webidl
