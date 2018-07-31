@@ -46,6 +46,7 @@ partial interface HTMLVideoElement {
   // True if the video has an audio track available.
   readonly attribute boolean mozHasAudio;
 
+/*Non standard
   // Attributes for builtin video controls to lock screen orientation.
   // True if video controls should lock orientation when fullscreen.
   [Pref="media.videocontrols.lock-video-orientation", Func="IsChromeOrXBL"]
@@ -53,6 +54,7 @@ partial interface HTMLVideoElement {
   // True if screen orientation is locked by video controls.
   [Pref="media.videocontrols.lock-video-orientation", Func="IsChromeOrXBL"]
     attribute boolean mozIsOrientationLocked;
+*/
 };
 
 // https://dvcs.w3.org/hg/html-media/raw-file/default/media-source/media-source.html#idl-def-HTMLVideoElement

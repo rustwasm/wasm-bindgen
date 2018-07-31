@@ -50,8 +50,8 @@ interface HTMLElement : Element {
            attribute DOMString contentEditable;
   [Pure]
   readonly attribute boolean isContentEditable;
-  [Pure]
-  readonly attribute HTMLMenuElement? contextMenu;
+  //[Pure]
+  //readonly attribute HTMLMenuElement? contextMenu;
   //[SetterThrows]
   //         attribute HTMLMenuElement? contextMenu;
   [CEReactions, SetterThrows, Pure]

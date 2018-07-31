@@ -198,15 +198,18 @@ interface MozEditableElement {
   [Pure, ChromeOnly]
   readonly attribute nsIEditor? editor;
 
+/*Non standard
   // This is similar to set .value on nsIDOMInput/TextAreaElements, but handling
   // of the value change is closer to the normal user input, so 'change' event
   // for example will be dispatched when focusing out the element.
   [Func="IsChromeOrXBL", NeedsSubjectPrincipal]
   void setUserInput(DOMString input);
+*/
 };
 
 HTMLInputElement implements MozEditableElement;
 
+/*Non standard
 partial interface HTMLInputElement {
   [Pref="dom.input.dirpicker", SetterThrows]
   attribute boolean allowdirs;
@@ -223,6 +226,7 @@ partial interface HTMLInputElement {
   [Throws, Pref="dom.input.dirpicker"]
   void chooseDirectory();
 };
+*/
 
 HTMLInputElement implements MozImageLoadingContent;
 
@@ -261,6 +265,7 @@ partial interface HTMLInputElement {
    BinaryName="getMaximumAsDouble"]
   double getMaximum();
 
+/*Non standard
   [Pref="dom.forms.datetime", Func="IsChromeOrXBL"]
   void openDateTimePicker(optional DateTimeValue initialValue);
 
@@ -283,6 +288,7 @@ partial interface HTMLInputElement {
   [Pref="dom.forms.datetime", Func="IsChromeOrXBL",
    BinaryName="getStepBaseAsDouble"]
   double getStepBase();
+*/
 };
 
 partial interface HTMLInputElement {
