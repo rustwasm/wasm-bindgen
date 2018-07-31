@@ -11,18 +11,6 @@ extern {
 
 #[wasm_bindgen_test]
 fn history() {
-    HISTORY.push_state(
-        Object::new().into(),
-        "I am a title",
-        Some("part/of/some/url"),
-    ).unwrap();
-    assert_eq!(HISTORY.length().unwrap(), 2);
-
-    assert!(HISTORY.go(1).is_ok());
-    assert!(HISTORY.back().is_ok());
-    assert!(HISTORY.forward().is_ok());
-    assert!(HISTORY.go(-1).is_ok());
-
     HISTORY.set_scroll_restoration(ScrollRestoration::Manual).expect("failure to set scroll restoration");
     assert_eq!(HISTORY.scroll_restoration().unwrap(), ScrollRestoration::Manual);
 
