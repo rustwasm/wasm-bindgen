@@ -1,7 +1,6 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 use web_sys::{History, ScrollRestoration};
-use js_sys::Object;
 
 #[wasm_bindgen]
 extern {

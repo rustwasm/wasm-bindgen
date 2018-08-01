@@ -38,6 +38,19 @@ export function new_script() {
   return document.createElement("script");
 }
 
+export function new_select_with_food_opts() {
+  let select = document.createElement("select");
+  let opts = ["tomato", "potato", "orange", "apple"];
+
+  for(let i = 0; i < opts.length; i++) {
+      let opt = document.createElement("option");
+      opt.value = opts[i];
+      opt.text = opts[i];
+      select.appendChild(opt);
+  }
+  return select;
+}
+
 export function new_span() {
   return document.createElement("span");
 }
