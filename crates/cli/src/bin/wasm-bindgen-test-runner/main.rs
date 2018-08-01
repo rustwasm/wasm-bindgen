@@ -80,9 +80,7 @@ fn rmain() -> Result<(), Error> {
     fs::create_dir(&tmpdir)
         .context("creating temporary directory")?;
 
-    let module = wasm_file_to_test.file_stem()
-        .and_then(|s| s.to_str())
-        .ok_or_else(|| format_err!("invalid filename passed in"))?;
+    let module = "wasm-bindgen-test";
 
     // Collect all tests that the test harness is supposed to run. We assume
     // that any exported function with the prefix `__wbg_test` is a test we need
