@@ -33,7 +33,7 @@ use std::cell::{RefCell, RefMut, Cell};
 use futures::executor::{self, Spawn, Notify};
 use futures::prelude::*;
 use futures::task::{self, Task};
-use js_sys::{Array, Function, Promise};
+use js_sys::{Function, Promise};
 use wasm_bindgen::prelude::*;
 
 /// A Rust `Future` backed by a JS `Promise`.
@@ -293,9 +293,7 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
                     Ok(Async::NotReady) => continue,
                 };
 
-                let array = Array::new();
-                array.push(&val);
-                drop(f.apply(&JsValue::undefined(), &array));
+                drop(f.call1(&JsValue::undefined(), &val));
                 break
             }
         }

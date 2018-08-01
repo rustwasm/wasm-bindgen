@@ -740,6 +740,34 @@ extern "C" {
     #[wasm_bindgen(method, catch)]
     pub fn apply(this: &Function, context: &JsValue, args: &Array) -> Result<JsValue, JsValue>;
 
+    /// The `call()` method calls a function with a given this value and
+    /// arguments provided individually.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call
+    #[wasm_bindgen(method, catch, js_name = call)]
+    pub fn call0(this: &Function, context: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The `call()` method calls a function with a given this value and
+    /// arguments provided individually.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call
+    #[wasm_bindgen(method, catch, js_name = call)]
+    pub fn call1(this: &Function, context: &JsValue, arg1: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The `call()` method calls a function with a given this value and
+    /// arguments provided individually.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call
+    #[wasm_bindgen(method, catch, js_name = call)]
+    pub fn call2(this: &Function, context: &JsValue, arg1: &JsValue, arg2: &JsValue) -> Result<JsValue, JsValue>;
+
+    /// The `call()` method calls a function with a given this value and
+    /// arguments provided individually.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call
+    #[wasm_bindgen(method, catch, js_name = call)]
+    pub fn call3(this: &Function, context: &JsValue, arg1: &JsValue, arg2: &JsValue, arg3: &JsValue) -> Result<JsValue, JsValue>;
+
     /// The bind() method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.
     ///

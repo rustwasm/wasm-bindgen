@@ -1,7 +1,7 @@
 //! Runtime detection of whether we're in node.js or a browser.
 
 use wasm_bindgen::prelude::*;
-use js_sys::{Array, Function};
+use js_sys::Function;
 
 #[wasm_bindgen]
 extern {
@@ -54,7 +54,7 @@ pub fn is_browser() -> bool {
     //
     // Whew!
     let this = Function::new_no_args("return this")
-        .apply(&JsValue::undefined(), &Array::new())
+        .call0(&JsValue::undefined())
         .unwrap();
     assert!(this != JsValue::undefined());
     This::from(this).self_() != JsValue::undefined()

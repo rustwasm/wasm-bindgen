@@ -266,10 +266,9 @@ impl Context {
         // to pass native function pointers around here). Each test will
         // execute one of the `execute_*` tests below which will push a
         // future onto our `remaining` list, which we'll process later.
-        let args = Array::new();
-        args.push(&(self as *const Context as u32).into());
+        let cx_arg = (self as *const Context as u32).into();
         for test in tests {
-            match Function::from(test).apply(&JsValue::null(), &args) {
+            match Function::from(test).call1(&JsValue::null(), &cx_arg) {
                 Ok(_) => {}
                 Err(e) => {
                     panic!("exception thrown while creating a test: {}",

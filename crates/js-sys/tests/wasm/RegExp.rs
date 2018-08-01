@@ -1,4 +1,3 @@
-use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
 use js_sys::*;
 
