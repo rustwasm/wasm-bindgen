@@ -76,6 +76,7 @@ pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
     let path = env::var("NODE_PATH").unwrap_or_default();
     let mut path = env::split_paths(&path).collect::<Vec<_>>();
     path.push(env::current_dir().unwrap());
+    path.push(tmpdir.to_path_buf());
     exec(
         Command::new("node")
             .env("NODE_PATH", env::join_paths(&path).unwrap())

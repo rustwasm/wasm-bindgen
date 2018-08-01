@@ -46,6 +46,7 @@ matrix:
         - npm ci --verbose
       script:
         - cargo test --release
+        - cargo test --target wasm32-unknown-unknown
         # Check JS output from all tests against eslint
         - npm run run-lint-generated-tests
         # Check Examples against eslint
