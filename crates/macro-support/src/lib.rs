@@ -7,6 +7,7 @@ extern crate proc_macro2;
 extern crate quote;
 #[macro_use]
 extern crate syn;
+#[macro_use]
 extern crate wasm_bindgen_backend as backend;
 extern crate wasm_bindgen_shared as shared;
 

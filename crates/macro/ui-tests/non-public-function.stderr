@@ -1,10 +1,8 @@
-error: custom attribute panicked
- --> $DIR/non-public-function.rs:7:1
+error: can only #[wasm_bindgen] public functions
+ --> $DIR/non-public-function.rs:8:1
   |
-7 | #[wasm_bindgen]
-  | ^^^^^^^^^^^^^^^
-  |
-  = help: message: can only bindgen public functions
+8 | fn foo() {}
+  | ^^^^^^^^^^^
 
 error: aborting due to previous error
 
