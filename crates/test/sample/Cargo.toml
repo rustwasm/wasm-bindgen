@@ -3,6 +3,9 @@ name = "sample"
 version = "0.1.0"
 authors = ["The wasm-bindgen Authors"]
 
+[lib]
+test = false
+
 [dependencies]
 futures = "0.1"
 js-sys = { path = '../../js-sys' }

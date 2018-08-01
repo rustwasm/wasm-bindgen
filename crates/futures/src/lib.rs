@@ -27,12 +27,11 @@ extern crate wasm_bindgen;
 extern crate js_sys;
 
 use std::sync::Arc;
-use std::rc::{Rc, Weak};
-use std::cell::{RefCell, RefMut, Cell};
+use std::cell::{RefCell, Cell};
 
 use futures::executor::{self, Spawn, Notify};
 use futures::prelude::*;
-use futures::task::{self, Task};
+use futures::sync::oneshot;
 use js_sys::{Function, Promise};
 use wasm_bindgen::prelude::*;
 
@@ -45,38 +44,37 @@ use wasm_bindgen::prelude::*;
 ///
 /// Currently this type is constructed with `JsFuture::from`.
 pub struct JsFuture {
-    promise: Promise,
-    state: Rc<RefCell<State>>,
-    registered: bool,
-}
-
-#[derive(Default)]
-struct State {
-    // TODO: investigate oneshot channels in the futures crate, may be slightly
-    // more lightweight here.
-    result: Option<Result<JsValue, JsValue>>,
-    task: Option<Task>,
+    resolved: oneshot::Receiver<JsValue>,
+    rejected: oneshot::Receiver<JsValue>,
     callbacks: Option<(Closure<FnMut(JsValue)>, Closure<FnMut(JsValue)>)>,
 }
 
-impl JsFuture {
-    fn register<'a>(&'a mut self) -> RefMut<'a, State> {
-        if self.registered {
-            return self.state.borrow_mut();
+impl From<Promise> for JsFuture {
+    fn from(js: Promise) -> JsFuture {
+        // Use the `then` method to schedule two callbacks, one for the
+        // resolved value and one for the rejected value. These two callbacks
+        // will be connected to oneshot channels which feed back into our
+        // future.
+        //
+        // This may not be the speediest option today but it should work!
+        let (tx1, rx1) = oneshot::channel();
+        let (tx2, rx2) = oneshot::channel();
+        let mut tx1 = Some(tx1);
+        let resolve = Closure::wrap(Box::new(move |val| {
+            drop(tx1.take().unwrap().send(val));
+        }) as Box<FnMut(_)>);
+        let mut tx2 = Some(tx2);
+        let reject = Closure::wrap(Box::new(move |val| {
+            drop(tx2.take().unwrap().send(val));
+        }) as Box<FnMut(_)>);
+
+        js.then2(&resolve, &reject);
+
+        JsFuture {
+            resolved: rx1,
+            rejected: rx2,
+            callbacks: Some((resolve, reject)),
         }
-        self.registered = true;
-        let s = Rc::downgrade(&self.state);
-        let cb1 = Closure::wrap(Box::new(move |val| finish(&s, Ok(val))) as Box<_>);
-        let s = Rc::downgrade(&self.state);
-        let cb2 = Closure::wrap(Box::new(move |val| finish(&s, Err(val))) as Box<_>);
-        self.promise.then2(&cb1, &cb2);
-        self.registered = true;
-        // The callbacks are "neutered" or become inert as soon as we drop them,
-        // so we store them locally until they're invoked, then we drop them to
-        // deallocate their resources.
-        let mut state = self.state.borrow_mut();
-        state.callbacks = Some((cb1, cb2));
-        return state
     }
 }
 
@@ -85,64 +83,19 @@ impl Future for JsFuture {
     type Error = JsValue;
 
     fn poll(&mut self) -> Poll<JsValue, JsValue> {
-        // The implementation here of `Future` is pretty simple. The basic idea
-        // is that we'll the `Promise.then` method to schedule some callbacks to
-        // get notified when the value is ready to go. Once fired we'll fill in
-        // a shared memory slot with the resulting value, and notify a future's
-        // task, if any, that it's ready to go.
-        //
-        // As a result, the first step here is to make sure we've called
-        // `Promise.then` (which only happens once).
-        //
-        // After that we take a look at our result to see if it's filled in yet.
-        // If it is, great! If it's not, we stash away our task to get notified
-        // and we're done!
-        let mut state = self.register();
-        match state.result.take() {
-            Some(Ok(val)) => Ok(val.into()),
-            Some(Err(val)) => Err(val),
-            None => {
-                state.task = Some(task::current());
-                Ok(Async::NotReady)
-            }
+        // Test if either our resolved or rejected side is finished yet. Note
+        // that they will return errors if they're disconnected which can't
+        // happen until we drop the `callbacks` field, which doesn't happen
+        // till we're done, so we dont need to handle that.
+        if let Ok(Async::Ready(val)) = self.resolved.poll() {
+            drop(self.callbacks.take());
+            return Ok(val.into())
         }
-    }
-}
-
-fn finish(state: &Weak<RefCell<State>>, result: Result<JsValue, JsValue>) {
-    let task = {
-        let state = match state.upgrade() {
-            Some(s) => s,
-            None => return,
-        };
-        let mut s = state.borrow_mut();
-        // Fill in the result, this'll get picked up in the `Future`
-        // implementation above.
-        assert!(s.result.is_none());
-        s.result = Some(result);
-
-        // Drop our callbacks to ensure that their memory is deallocate. We're
-        // currently invoking one and the other won't get invoked, so no need to
-        // keep them around.
-        assert!(s.callbacks.take().is_some());
-        s.task.take()
-    };
-
-    // If a task was waiting on the data coming in, let it know!
-    if let Some(task) = task {
-        task.notify();
-    }
-}
-
-impl From<Promise> for JsFuture {
-    fn from(js: Promise) -> JsFuture {
-        // Defer execution of the promise's `then` callbacks to a when the
-        // future is itself polled.
-        JsFuture {
-            promise: js,
-            registered: false,
-            state: Default::default(),
+        if let Ok(Async::Ready(val)) = self.rejected.poll() {
+            drop(self.callbacks.take());
+            return Err(val)
         }
+        Ok(Async::NotReady)
     }
 }
 
