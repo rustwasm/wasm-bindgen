@@ -1,0 +1,10 @@
+error: custom attribute panicked
+ --> $DIR/non-public-function.rs:7:1
+  |
+7 | #[wasm_bindgen]
+  | ^^^^^^^^^^^^^^^
+  |
+  = help: message: can only bindgen public functions
+
+error: aborting due to previous error
+

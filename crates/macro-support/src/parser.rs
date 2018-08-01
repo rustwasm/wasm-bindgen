@@ -1,4 +1,5 @@
 use backend::ast;
+use backend::Diagnostic;
 use backend::util::{ident_ty, ShortHash};
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
@@ -590,7 +591,8 @@ pub(crate) trait MacroParse<Ctx> {
     ///
     /// The context is used to have access to the attributes on `#[wasm_bindgen]`, and to allow
     /// writing to the output `TokenStream`.
-    fn macro_parse(self, program: &mut ast::Program, context: Ctx);
+    fn macro_parse(self, program: &mut ast::Program, context: Ctx)
+        -> Result<(), Diagnostic>;
 }
 
 impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
@@ -598,7 +600,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
         self,
         program: &mut ast::Program,
         (opts, tokens): (Option<BindgenAttrs>, &'a mut TokenStream),
-    ) {
+    ) -> Result<(), Diagnostic> {
         match self {
             syn::Item::Fn(mut f) => {
                 let no_mangle = f
@@ -629,27 +631,31 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 s.to_tokens(tokens);
             }
             syn::Item::Impl(mut i) => {
-                (&mut i).macro_parse(program, ());
+                (&mut i).macro_parse(program, ())?;
                 i.to_tokens(tokens);
             }
             syn::Item::ForeignMod(mut f) => {
                 let opts = opts.unwrap_or_else(|| BindgenAttrs::find(&mut f.attrs));
-                f.macro_parse(program, opts);
+                f.macro_parse(program, opts)?;
             }
             syn::Item::Enum(e) => {
                 e.to_tokens(tokens);
-                e.macro_parse(program, ());
+                e.macro_parse(program, ())?;
             }
             _ => panic!(
                 "#[wasm_bindgen] can only be applied to a function, \
                  struct, enum, impl, or extern block"
             ),
         }
+
+        Ok(())
     }
 }
 
 impl<'a> MacroParse<()> for &'a mut syn::ItemImpl {
-    fn macro_parse(self, program: &mut ast::Program, (): ()) {
+    fn macro_parse(self, program: &mut ast::Program, (): ())
+        -> Result<(), Diagnostic>
+    {
         if self.defaultness.is_some() {
             panic!("default impls are not supported");
         }
@@ -672,14 +678,20 @@ impl<'a> MacroParse<()> for &'a mut syn::ItemImpl {
             },
             _ => panic!("unsupported self type in impl"),
         };
+        let mut errors = Vec::new();
         for item in self.items.iter_mut() {
-            (&name, item).macro_parse(program, ())
+            if let Err(e) = (&name, item).macro_parse(program, ()) {
+                errors.push(e);
+            }
         }
+        Diagnostic::from_vec(errors)
     }
 }
 
 impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
-    fn macro_parse(self, program: &mut ast::Program, (): ()) {
+    fn macro_parse(self, program: &mut ast::Program, (): ())
+        -> Result<(), Diagnostic>
+    {
         let (class, item) = self;
         replace_self(class, item);
         let method = match item {
@@ -691,7 +703,7 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
         };
         match method.vis {
             syn::Visibility::Public(_) => {}
-            _ => return,
+            _ => return Ok(()),
         }
         if method.defaultness.is_some() {
             panic!("default methods are not supported");
@@ -728,11 +740,14 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
             comments,
             rust_name: method.sig.ident.clone(),
         });
+        Ok(())
     }
 }
 
 impl MacroParse<()> for syn::ItemEnum {
-    fn macro_parse(self, program: &mut ast::Program, (): ()) {
+    fn macro_parse(self, program: &mut ast::Program, (): ())
+        -> Result<(), Diagnostic>
+    {
         match self.vis {
             syn::Visibility::Public(_) => {}
             _ => panic!("only public enums are allowed"),
@@ -776,11 +791,14 @@ impl MacroParse<()> for syn::ItemEnum {
             variants,
             comments,
         });
+        Ok(())
     }
 }
 
 impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
-    fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) {
+    fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs)
+        -> Result<(), Diagnostic>
+    {
         match self.abi.name {
             Some(ref l) if l.value() == "C" => {}
             None => {}
@@ -816,6 +834,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 kind,
             });
         }
+        Ok(())
     }
 }
 

@@ -2,19 +2,31 @@ use std::collections::HashSet;
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
 
-use ast;
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::ToTokens;
 use serde_json;
 use shared;
 use syn;
+
+use ast;
+use Diagnostic;
 use util::ShortHash;
 
-impl ToTokens for ast::Program {
+pub trait TryToTokens {
+    fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic>;
+
+    fn try_to_token_stream(&self) -> Result<TokenStream, Diagnostic> {
+        let mut tokens = TokenStream::new();
+        self.try_to_tokens(&mut tokens)?;
+        Ok(tokens)
+    }
+}
+
+impl TryToTokens for ast::Program {
     // Generate wrappers for all the items that we've found
-    fn to_tokens(&self, tokens: &mut TokenStream) {
+    fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
         for export in self.exports.iter() {
-            export.to_tokens(tokens);
+            export.try_to_tokens(tokens)?;
         }
         for s in self.structs.iter() {
             s.to_tokens(tokens);
@@ -30,13 +42,13 @@ impl ToTokens for ast::Program {
 
             if let Some(ns) = &i.js_namespace {
                 if types.contains(ns) && i.kind.fits_on_impl() {
-                    let kind = &i.kind;
+                    let kind = i.kind.try_to_token_stream()?;
                     (quote! { impl #ns { #kind } }).to_tokens(tokens);
                     continue;
                 }
             }
 
-            i.kind.to_tokens(tokens);
+            i.kind.try_to_tokens(tokens)?;
         }
         for e in self.enums.iter() {
             e.to_tokens(tokens);
@@ -60,7 +72,7 @@ impl ToTokens for ast::Program {
         );
         let generated_static_name = Ident::new(&generated_static_name, Span::call_site());
 
-        let description = serde_json::to_string(&self.shared()).unwrap();
+        let description = serde_json::to_string(&self.shared()?).unwrap();
 
         // Each JSON blob is prepended with the length of the JSON blob so when
         // all these sections are concatenated in the final wasm file we know
@@ -83,6 +95,8 @@ impl ToTokens for ast::Program {
             pub static #generated_static_name: [u8; #generated_static_length] =
                 *#generated_static_value;
         }).to_tokens(tokens);
+
+        Ok(())
     }
 }
 
@@ -276,8 +290,10 @@ impl ToTokens for ast::StructField {
     }
 }
 
-impl ToTokens for ast::Export {
-    fn to_tokens(self: &ast::Export, into: &mut TokenStream) {
+impl TryToTokens for ast::Export {
+    fn try_to_tokens(self: &ast::Export, into: &mut TokenStream)
+        -> Result<(), Diagnostic>
+    {
         let generated_name = self.rust_symbol();
         let export_name = self.export_name();
         let mut args = vec![];
@@ -461,17 +477,21 @@ impl ToTokens for ast::Export {
             #(<#argtys as WasmDescribe>::describe();)*
             #describe_ret
         }).to_tokens(into);
+
+        Ok(())
     }
 }
 
-impl ToTokens for ast::ImportKind {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
+impl TryToTokens for ast::ImportKind {
+    fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
         match *self {
-            ast::ImportKind::Function(ref f) => f.to_tokens(tokens),
+            ast::ImportKind::Function(ref f) => f.try_to_tokens(tokens)?,
             ast::ImportKind::Static(ref s) => s.to_tokens(tokens),
             ast::ImportKind::Type(ref t) => t.to_tokens(tokens),
             ast::ImportKind::Enum(ref e) => e.to_tokens(tokens),
         }
+
+        Ok(())
     }
 }
 
@@ -663,8 +683,8 @@ impl ToTokens for ast::ImportEnum {
     }
 }
 
-impl ToTokens for ast::ImportFunction {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
+impl TryToTokens for ast::ImportFunction {
+    fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
         let mut class_ty = None;
         let mut is_method = false;
         match self.kind {
@@ -827,6 +847,8 @@ impl ToTokens for ast::ImportFunction {
         } else {
             invocation.to_tokens(tokens);
         }
+
+        Ok(())
     }
 }
 

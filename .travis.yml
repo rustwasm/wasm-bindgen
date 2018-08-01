@@ -117,6 +117,12 @@ matrix:
         - cargo test -p webidl-tests --target wasm32-unknown-unknown
       if: branch = master
 
+    # UI tests for the macro work just fine
+    - rust: nightly
+      env: JOB=macro-ui
+      script: cargo test -p ui-tests
+      if: branch = master
+
     # Dist linux binary
     - rust: nightly
       env: JOB=dist-linux TARGET=x86_64-unknown-linux-musl

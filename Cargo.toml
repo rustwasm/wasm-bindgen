@@ -44,6 +44,7 @@ members = [
   "crates/test",
   "crates/test/sample",
   "crates/typescript",
+  "crates/macro/ui-tests",
   "crates/web-sys",
   "crates/webidl",
   "crates/webidl-tests",
