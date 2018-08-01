@@ -4,11 +4,6 @@
 
 **Facilitating high-level interactions between wasm modules and JavaScript.**
 
-[Introduction blog post: "JavaScript to Rust and Back Again: A `wasm-bindgen` Tale"][post]
-
-[host]: https://github.com/WebAssembly/host-bindings
-[post]: https://hacks.mozilla.org/2018/04/javascript-to-rust-and-back-again-a-wasm-bindgen-tale/
-
 [![Build Status](https://travis-ci.org/rustwasm/wasm-bindgen.svg?branch=master)](https://travis-ci.org/rustwasm/wasm-bindgen)
 [![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/alexcrichton/wasm-bindgen)
 [![](http://meritbadge.herokuapp.com/wasm-bindgen)](https://crates.io/crates/wasm-bindgen)
