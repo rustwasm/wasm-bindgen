@@ -15,7 +15,7 @@ use std::process;
 fn main() {
     if let Err(e) = try_main() {
         eprintln!("Error: {}", e);
-        for c in e.causes().skip(1) {
+        for c in e.iter_causes() {
             eprintln!("  caused by {}", c);
         }
         process::exit(1);

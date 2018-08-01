@@ -596,7 +596,7 @@ impl Project {
             .generate(&root);
 
         if let Err(e) = res {
-            for e in e.causes() {
+            for e in e.iter_chain() {
                 println!("- {}", e);
             }
             panic!("failed");

@@ -66,7 +66,7 @@ fn main() {
         Err(e) => e,
     };
     eprintln!("error: {}", err);
-    for cause in err.causes().skip(1) {
+    for cause in err.iter_causes() {
         eprintln!("\tcaused by: {}", cause);
     }
     process::exit(1);
