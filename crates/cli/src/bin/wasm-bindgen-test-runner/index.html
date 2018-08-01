@@ -8,17 +8,19 @@
       const orig_console_log = console.log;
       const orig_console_error = console.error;
       console.log = function() {
-        if (window.global_cx)
-          window.global_cx.console_log(orig_console_log, arguments);
+        if (window.console_log_redirect)
+          window.console_log_redirect(orig_console_log, arguments);
         else
           orig_console_log.apply(this, arguments);
       };
       console.error = function() {
-        if (window.global_cx)
-          window.global_cx.console_error(orig_console_error, arguments);
+        if (window.console_error_redirect)
+          window.console_error_redirect(orig_console_error, arguments);
         else
           orig_console_error.apply(this, arguments);
       };
+
+      window.__wbg_test_invoke = f => f();
     </script>
     <script src='run.js' type=module></script>
   </body>

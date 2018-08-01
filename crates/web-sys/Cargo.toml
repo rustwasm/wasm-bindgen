@@ -15,11 +15,10 @@ wasm-bindgen-webidl = { path = "../webidl", version = "=0.2.15" }
 sourcefile = "0.1"
 
 [dependencies]
-wasm-bindgen = { path = "../..", version = "=0.2.15" }
-
-[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-wasm-bindgen-test-project-builder = { path = '../test-project-builder', version = '=0.2.15' }
+wasm-bindgen = { path = "../..", version = "0.2.15" }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-wasm-bindgen-test = { path = '../test', version = '=0.2.15' }
+futures = "0.1"
 js-sys = { path = '../js-sys', version = '0.2.0' }
+wasm-bindgen-test = { path = '../test', version = '0.2.15' }
+wasm-bindgen-futures = { path = '../futures', version = '0.2.15' }

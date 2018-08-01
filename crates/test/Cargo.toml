@@ -7,10 +7,13 @@ license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 
 [dependencies]
-wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.2.15' }
-wasm-bindgen = { path = '../..', version = '0.2.15' }
-js-sys = { path = '../js-sys', version = '0.2.0' }
 console_error_panic_hook = '0.1'
+futures = "0.1"
+js-sys = { path = '../js-sys', version = '0.2.0' }
+scoped-tls = "0.1"
+wasm-bindgen = { path = '../..', version = '0.2.15' }
+wasm-bindgen-futures = { path = '../futures', version = '0.2.15' }
+wasm-bindgen-test-macro = { path = '../test-macro', version = '=0.2.15' }
 
 [lib]
 test = false

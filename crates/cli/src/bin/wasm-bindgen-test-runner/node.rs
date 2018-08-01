@@ -12,33 +12,38 @@ pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
     let mut js_to_execute = format!(r#"
         const {{ exit }} = require('process');
 
-        let cx = null;
+        let console_log_redirect = null;
+        let console_error_redirect = null;
 
         // override `console.log` and `console.error` before we import tests to
         // ensure they're bound correctly in wasm. This'll allow us to intercept
         // all these calls and capture the output of tests
         const prev_log = console.log;
         console.log = function() {{
-            if (cx === null)  {{
+            if (console_log_redirect === null)  {{
                 prev_log.apply(null, arguments);
             }} else {{
-                cx.console_log(prev_log, arguments);
+                console_log_redirect(prev_log, arguments);
             }}
         }};
         const prev_error = console.error;
         console.error = function() {{
-            if (cx === null) {{
+            if (console_error_redirect === null) {{
                 prev_error.apply(null, arguments);
             }} else {{
-                cx.console_error(prev_error, arguments);
+                console_error_redirect(prev_error, arguments);
             }}
         }};
 
-        function main(tests) {{
+        global.__wbg_test_invoke = f => f();
+
+        async function main(tests) {{
             const support = require("./{0}");
             const wasm = require("./{0}_bg");
 
             cx = new support.Context();
+            console_log_redirect = support.__wbgtest_console_log;
+            console_error_redirect = support.__wbgtest_console_error;
 
             // Forward runtime arguments. These arguments are also arguments to the
             // `wasm-bindgen-test-runner` which forwards them to node which we
@@ -46,7 +51,8 @@ pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
             // filters for now.
             cx.args(process.argv.slice(2));
 
-            if (!cx.run(tests.map(n => wasm[n])))
+            const ok = await cx.run(tests.map(n => wasm[n]));
+            if (!ok)
                 exit(1);
         }}
 
@@ -64,6 +70,10 @@ pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
     // And as a final addendum, exit with a nonzero code if any tests fail.
     js_to_execute.push_str("
         main(tests)
+            .catch(e => {
+                console.error(e);
+                exit(1);
+            });
     ");
 
     let js_path = tmpdir.join("run.js");

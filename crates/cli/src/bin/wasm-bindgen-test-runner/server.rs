@@ -16,7 +16,7 @@ pub fn spawn(
     tests: &[String],
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
     let mut js_to_execute = format!(r#"
-        import {{ Context }} from './{0}';
+        import {{ Context, __wbgtest_console_log, __wbgtest_console_error }} from './{0}';
         import * as wasm from './{0}_bg';
 
         // Now that we've gotten to the point where JS is executing, update our
@@ -30,7 +30,8 @@ pub fn spawn(
             await wasm.booted;
 
             const cx = Context.new();
-            window.global_cx = cx;
+            window.console_log_redirect = __wbgtest_console_log;
+            window.console_error_redirect = __wbgtest_console_error;
 
             // Forward runtime arguments. These arguments are also arguments to the
             // `wasm-bindgen-test-runner` which forwards them to node which we
@@ -38,7 +39,7 @@ pub fn spawn(
             // filters for now.
             cx.args({1:?});
 
-            cx.run(test.map(s => wasm[s]));
+            await cx.run(test.map(s => wasm[s]));
         }}
 
         const tests = [];

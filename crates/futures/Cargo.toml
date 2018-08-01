@@ -1,0 +1,9 @@
+[package]
+name = "wasm-bindgen-futures"
+version = "0.2.15"
+authors = ["The wasm-bindgen Developers"]
+
+[dependencies]
+futures = "0.1.20"
+js-sys = { path = "../js-sys", version = '0.2.0' }
+wasm-bindgen = { path = "../..", version = '0.2.15' }

@@ -100,6 +100,24 @@ ton of documentation just yet, but a taste of how it works is:
 And that's it! You've now got a test harness executing native wasm code inside
 of Node.js and you can use `cargo test` as you normally would for workflows.
 
+## Asynchronous Tests
+
+Not all tests can execute immediately and some may need to do "blocking" work
+like fetching resources and/or other bits and pieces. To accommodate this
+asynchronous tests are also supported through the `futures` crate:
+
+```rust
+#[wasm_bindgen_test(async)]
+fn my_test() -> impl Future<Item = (), Error = JsValue> {
+    // ...
+}
+```
+
+The test will pass if the future resolves without panicking or returning an
+error, and otherwise the test will fail.
+
+This support is currently powered by the `wasm-bindgen-futures` crate.
+
 ## Components
 
 The test harness is made of three separate components, but you typically don't
@@ -165,8 +183,5 @@ Things that'd be awesome to support in the future:
 
 * Arguments to `wasm-bindgen-test-runner` which are the same as `wasm-bindgen`,
   for example `--debug` to affect the generated output.
-* Built-in webserver to `wasm-bindgen-test-runner`. This would be handy for
-  running tests in a browser while developing.
-* Headless browser testing to allow for testing in a browser on CI.
 * Running each test in its own wasm instance to avoid poisoning the environment
   on panic
