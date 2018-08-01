@@ -17,8 +17,6 @@
 
 Import JavaScript things into Rust and export Rust things to JavaScript.
 
-`src/lib.rs`:
-
 ```rust
 #![feature(use_extern_macros)]
 
@@ -39,17 +37,12 @@ pub fn greet(name: &str) {
 }
 ```
 
-Use exported Rust things from JavaScript!
-
-`index.js`:
+Use exported Rust things from JavaScript with ECMAScript modules!
 
 ```js
-// Asynchronously load, compile, and import the Rust's WebAssembly
-// and JavaScript interface.
-import("./hello_world").then(module => {
-  // Alert "Hello, World!"
-  module.greet("World!");
-});
+import { greet } from "./hello_world";
+
+greet("World!");
 ```
 
 ## Guide
