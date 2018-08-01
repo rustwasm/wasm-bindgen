@@ -2,6 +2,8 @@ use proc_macro2::{Ident, Span};
 use shared;
 use syn;
 
+use Diagnostic;
+
 /// An abstract syntax tree representing a rust program. Contains
 /// extra information for joining up this rust code with javascript.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
@@ -223,15 +225,17 @@ pub enum ConstValue {
 }
 
 impl Program {
-    pub(crate) fn shared(&self) -> shared::Program {
-        shared::Program {
+    pub(crate) fn shared(&self) -> Result<shared::Program, Diagnostic> {
+        Ok(shared::Program {
             exports: self.exports.iter().map(|a| a.shared()).collect(),
             structs: self.structs.iter().map(|a| a.shared()).collect(),
             enums: self.enums.iter().map(|a| a.shared()).collect(),
-            imports: self.imports.iter().map(|a| a.shared()).collect(),
+            imports: self.imports.iter()
+                .map(|a| a.shared())
+                .collect::<Result<_, Diagnostic>>()?,
             version: shared::version(),
             schema_version: shared::SCHEMA_VERSION.to_string(),
-        }
+        })
     }
 }
 
@@ -305,7 +309,7 @@ impl Variant {
 }
 
 impl Import {
-    fn shared(&self) -> shared::Import {
+    fn shared(&self) -> Result<shared::Import, Diagnostic> {
         match (&self.module, &self.version) {
             (&Some(ref m), None) if m.starts_with("./") => {}
             (&Some(ref m), &Some(_)) if m.starts_with("./") => {
@@ -330,12 +334,12 @@ impl Import {
             }
             (&None, &None) => {}
         }
-        shared::Import {
+        Ok(shared::Import {
             module: self.module.clone(),
             version: self.version.clone(),
             js_namespace: self.js_namespace.as_ref().map(|s| s.to_string()),
             kind: self.kind.shared(),
-        }
+        })
     }
 }
 

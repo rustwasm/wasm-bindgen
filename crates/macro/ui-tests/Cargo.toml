@@ -1,0 +1,15 @@
+[package]
+name = "ui-tests"
+version = "0.1.0"
+authors = ["The wasm-bindgen Authors"]
+
+[lib]
+path = "test.rs"
+doctest = false
+harness = false
+
+[dependencies]
+wasm-bindgen = { path = "../../.." }
+
+[dev-dependencies]
+compiletest_rs = "0.3"

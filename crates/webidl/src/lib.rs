@@ -33,11 +33,11 @@ use std::io::{self, Read};
 use std::iter::FromIterator;
 use std::path::Path;
 
+use backend::TryToTokens;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::{ResultExt, Fail};
 use heck::{ShoutySnakeCase};
-use quote::ToTokens;
 
 use first_pass::{FirstPass, FirstPassRecord};
 use util::{public, webidl_const_ty_to_syn_ty, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, mdn_doc};
@@ -111,7 +111,9 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
     ast.remove_undefined_imports(&|id| defined.contains(id));
 
     let mut tokens = proc_macro2::TokenStream::new();
-    ast.to_tokens(&mut tokens);
+    if let Err(e) = ast.try_to_tokens(&mut tokens) {
+        e.panic();
+    }
     tokens.to_string()
 }
 

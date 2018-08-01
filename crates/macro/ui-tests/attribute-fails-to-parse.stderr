@@ -1,0 +1,8 @@
+error: error parsing #[wasm_bindgen] attribute options: failed to parse anything
+ --> $DIR/attribute-fails-to-parse.rs:7:16
+  |
+7 | #[wasm_bindgen(nonsense)]
+  |                ^^^^^^^^
+
+error: aborting due to previous error
+

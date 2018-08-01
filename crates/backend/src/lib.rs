@@ -14,7 +14,11 @@ extern crate syn;
 
 extern crate wasm_bindgen_shared as shared;
 
+pub use codegen::TryToTokens;
+pub use error::Diagnostic;
+
 pub mod ast;
 mod codegen;
 pub mod defined;
+mod error;
 pub mod util;
