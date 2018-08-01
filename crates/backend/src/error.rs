@@ -2,9 +2,16 @@ use proc_macro2::*;
 use quote::ToTokens;
 
 #[macro_export]
-macro_rules! bail_span {
+macro_rules! err_span {
     ($span:expr, $($msg:tt)*) => (
-        return Err(::backend::Diagnostic::span_error(&$span, format!($($msg)*)).into())
+        ::backend::Diagnostic::span_error(&$span, format!($($msg)*))
+    )
+}
+
+#[macro_export]
+macro_rules! bail_span {
+    ($($t:tt)*) => (
+        return Err(err_span!($($t)*).into())
     )
 }
 
