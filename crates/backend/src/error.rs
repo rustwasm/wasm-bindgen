@@ -1,6 +1,20 @@
 use proc_macro2::*;
 use quote::ToTokens;
 
+#[macro_export]
+macro_rules! err_span {
+    ($span:expr, $($msg:tt)*) => (
+        ::backend::Diagnostic::span_error(&$span, format!($($msg)*))
+    )
+}
+
+#[macro_export]
+macro_rules! bail_span {
+    ($($t:tt)*) => (
+        return Err(err_span!($($t)*).into())
+    )
+}
+
 pub struct Diagnostic {
     inner: Repr,
 }
