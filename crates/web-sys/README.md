@@ -226,17 +226,17 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLOListElement.webidl
  - [ ] HTMLOptGroupElement.webidl
  - [ ] HTMLOptionElement.webidl
- - [ ] HTMLOptionsCollection.webidl
- - [ ] HTMLOutputElement.webidl
- - [ ] HTMLParagraphElement.webidl
- - [ ] HTMLParamElement.webidl
+ - [x] HTMLOptionsCollection.webidl
+ - [x] HTMLOutputElement.webidl
+ - [x] HTMLParagraphElement.webidl
+ - [x] HTMLParamElement.webidl
  - [ ] HTMLPictureElement.webidl
- - [ ] HTMLPreElement.webidl
- - [ ] HTMLProgressElement.webidl
- - [ ] HTMLQuoteElement.webidl
+ - [x] HTMLPreElement.webidl
+ - [x] HTMLProgressElement.webidl
+ - [x] HTMLQuoteElement.webidl
  - [x] HTMLScriptElement.webidl
  - [x] HTMLSelectElement.webidl
- - [ ] HTMLSlotElement.webidl
+ - [x] HTMLSlotElement.webidl
  - [ ] HTMLSourceElement.webidl
  - [ ] HTMLSpanElement.webidl
  - [x] HTMLStyleElement.webidl
