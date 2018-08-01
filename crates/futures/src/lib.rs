@@ -11,9 +11,9 @@
 //! * `JsFuture` - a type that is constructed with a `Promise` and can then be
 //!   used as a `Future<Item = JsValue, Error = JsValue>`. This Rust future will
 //!   resolve or reject with the value coming out of the `Promise`.
-//! * `rust2js` - converts a Rust `Future<Item = JsValue, Error = JsValue>` into
-//!   a JS `Promise`. The future's result will translate to either a rejected or
-//!   resolved `Promise` in JS.
+//! * `future_to_promise` - converts a Rust `Future<Item = JsValue, Error =
+//!   JsValue>` into a JS `Promise`. The future's result will translate to
+//!   either a rejected or resolved `Promise` in JS.
 //!
 //! These two types should provide enough of a bridge to interoperate the two
 //! systems and make sure that Rust/JS can work together with asynchronous and
@@ -166,10 +166,10 @@ impl From<Promise> for JsFuture {
 /// If the `future` provided panics then the returned `Promise` **will not
 /// resolve**. Instead it will be a leaked promise. This is an unfortunate
 /// limitation of wasm currently that's hoped to be fixed one day!
-pub fn rust2js<F>(future: F) -> Promise
+pub fn future_to_promise<F>(future: F) -> Promise
     where F: Future<Item = JsValue, Error = JsValue> + 'static,
 {
-    _rust2js(Box::new(future))
+    _future_to_promise(Box::new(future))
 }
 
 // Implementation of actually transforming a future into a JS `Promise`.
@@ -189,7 +189,7 @@ pub fn rust2js<F>(future: F) -> Promise
 //
 // This isn't necessarily the greatest future executor in the world, but it
 // should get the job done for now hopefully.
-fn _rust2js(future: Box<Future<Item = JsValue, Error = JsValue>>) -> Promise {
+fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> Promise {
     let mut future = Some(executor::spawn(future));
     return Promise::new(&mut |resolve, reject| {
         Package::poll(&Arc::new(Package {

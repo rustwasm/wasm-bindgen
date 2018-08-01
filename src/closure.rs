@@ -69,7 +69,7 @@ use throw;
 /// }
 /// ```
 pub struct Closure<T: ?Sized> {
-    // Actuall a `Rc` pointer, but in raw form so we can easily make copies.
+    // Actually a `Rc` pointer, but in raw form so we can easily make copies.
     // See below documentation for why this is in an `Rc`.
     inner: *const UnsafeCell<Box<T>>,
     js: UnsafeCell<ManuallyDrop<JsValue>>,

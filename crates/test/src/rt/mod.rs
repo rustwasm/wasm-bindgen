@@ -97,10 +97,15 @@ use futures::future;
 use futures::prelude::*;
 use js_sys::{Array, Function, Promise};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen_futures::rust2js;
+use wasm_bindgen_futures::future_to_promise;
 
-// Maximum number of tests to execute concurrently.
-const CONCURRENCY: usize = 8;
+// Maximum number of tests to execute concurrently. Eventually this should be a
+// configuration option specified at runtime or at compile time rather than
+// baked in here.
+//
+// Currently the default is 1 because the DOM has a lot of shared state, and
+// conccurrently doing things by default would likely end up in a bad situation.
+const CONCURRENCY: usize = 1;
 
 pub mod node;
 pub mod browser;
@@ -278,7 +283,7 @@ impl Context {
         // `Promise`.
         let future = ExecuteTests(self.state.clone()).map(JsValue::from)
             .map_err(|e| match e {});
-        rust2js(future)
+        future_to_promise(future)
     }
 }
 
