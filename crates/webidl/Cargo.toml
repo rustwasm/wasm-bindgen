@@ -12,8 +12,8 @@ Support for parsing WebIDL specific to wasm-bindgen
 """
 
 [dependencies]
-failure = "0.1"
-failure_derive = "0.1"
+failure = "0.1.2"
+failure_derive = "0.1.2"
 heck = "0.3"
 log = "0.4.1"
 proc-macro2 = "0.4.8"

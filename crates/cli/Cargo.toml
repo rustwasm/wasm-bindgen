@@ -16,7 +16,7 @@ information see https://github.com/alexcrichton/wasm-bindgen.
 curl = "0.4.13"
 docopt = "1.0"
 env_logger = "0.5"
-failure = "0.1"
+failure = "0.1.2"
 log = "0.4"
 parity-wasm = "0.31"
 rouille = { version = "2.1.0", default-features = false }
