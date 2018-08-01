@@ -304,13 +304,13 @@ trait ConvertToAst<Ctx> {
     /// Convert into our target.
     ///
     /// Since this is used in a procedural macro, use panic to fail.
-    fn convert(self, context: Ctx) -> Self::Target;
+    fn convert(self, context: Ctx) -> Result<Self::Target, Diagnostic>;
 }
 
 impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
     type Target = ast::Struct;
 
-    fn convert(self, (): ()) -> Self::Target {
+    fn convert(self, (): ()) -> Result<Self::Target, Diagnostic> {
         if self.generics.params.len() > 0 {
             panic!(
                 "structs with #[wasm_bindgen] cannot have lifetime or \
@@ -346,18 +346,20 @@ impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
             }
         }
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
-        ast::Struct {
+        Ok(ast::Struct {
             name: self.ident.clone(),
             fields,
             comments,
-        }
+        })
     }
 }
 
 impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn {
     type Target = ast::ImportKind;
 
-    fn convert(self, (opts, module): (BindgenAttrs, &'a Option<String>)) -> Self::Target {
+    fn convert(self, (opts, module): (BindgenAttrs, &'a Option<String>))
+        -> Result<Self::Target, Diagnostic>
+    {
         let js_name = opts.js_name().unwrap_or(&self.ident).clone();
         let wasm = function_from_decl(&js_name, self.decl, self.attrs, self.vis, false).0;
         let catch = opts.catch();
@@ -462,7 +464,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
             let data = (ns, &self.ident, module);
             format!("__wbg_{}_{}", js_name, ShortHash(data))
         };
-        ast::ImportKind::Function(ast::ImportFunction {
+        Ok(ast::ImportKind::Function(ast::ImportFunction {
             function: wasm,
             kind,
             js_ret,
@@ -471,46 +473,46 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
             rust_name: self.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment: None,
-        })
+        }))
     }
 }
 
 impl ConvertToAst<()> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
-    fn convert(self, (): ()) -> Self::Target {
-        ast::ImportKind::Type(ast::ImportType {
+    fn convert(self, (): ()) -> Result<Self::Target, Diagnostic> {
+        Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
             name: self.ident,
             attrs: self.attrs,
             doc_comment: None,
-        })
+        }))
     }
 }
 
 impl ConvertToAst<BindgenAttrs> for syn::ForeignItemStatic {
     type Target = ast::ImportKind;
 
-    fn convert(self, opts: BindgenAttrs) -> Self::Target {
+    fn convert(self, opts: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         if self.mutability.is_some() {
             panic!("cannot import mutable globals yet")
         }
         let js_name = opts.js_name().unwrap_or(&self.ident);
         let shim = format!("__wbg_static_accessor_{}_{}", js_name, self.ident);
-        ast::ImportKind::Static(ast::ImportStatic {
+        Ok(ast::ImportKind::Static(ast::ImportStatic {
             ty: *self.ty,
             vis: self.vis,
             rust_name: self.ident.clone(),
             js_name: js_name.clone(),
             shim: Ident::new(&shim, Span::call_site()),
-        })
+        }))
     }
 }
 
 impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
     type Target = ast::Function;
 
-    fn convert(self, attrs: BindgenAttrs) -> Self::Target {
+    fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
             _ => panic!("can only bindgen public functions"),
@@ -523,7 +525,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
         }
 
         let name = attrs.js_name().unwrap_or(&self.ident);
-        function_from_decl(name, self.decl, self.attrs, self.vis, false).0
+        Ok(function_from_decl(name, self.decl, self.attrs, self.vis, false).0)
     }
 }
 
@@ -623,11 +625,11 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     constructor: None,
                     comments,
                     rust_name: f.ident.clone(),
-                    function: f.convert(opts.unwrap_or_default()),
+                    function: f.convert(opts.unwrap_or_default())?,
                 });
             }
             syn::Item::Struct(mut s) => {
-                program.structs.push((&mut s).convert(()));
+                program.structs.push((&mut s).convert(())?);
                 s.to_tokens(tokens);
             }
             syn::Item::Impl(mut i) => {
@@ -821,9 +823,9 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 .map(|s| s.to_string());
             let js_namespace = item_opts.js_namespace().or(opts.js_namespace()).cloned();
             let mut kind = match item {
-                syn::ForeignItem::Fn(f) => f.convert((item_opts, &module)),
-                syn::ForeignItem::Type(t) => t.convert(()),
-                syn::ForeignItem::Static(s) => s.convert(item_opts),
+                syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
+                syn::ForeignItem::Type(t) => t.convert(())?,
+                syn::ForeignItem::Static(s) => s.convert(item_opts)?,
                 _ => panic!("only foreign functions/types allowed for now"),
             };
 
