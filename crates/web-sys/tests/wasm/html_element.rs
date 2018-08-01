@@ -66,7 +66,8 @@ fn test_html_element() {
     };
 */
 
-    assert!(!element.spellcheck(), "Shouldn't be spellchecked");
+    // TODO: This test is also broken in Chrome (but not Firefox).
+    // assert!(!element.spellcheck(), "Shouldn't be spellchecked");
     element.set_spellcheck(true);
     assert!(element.spellcheck(), "Should be dragspellcheckedgable");
 

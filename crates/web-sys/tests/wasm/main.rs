@@ -23,6 +23,7 @@ pub mod html_element;
 pub mod html_html_element;
 pub mod input_element;
 pub mod response;
+pub mod select_element;
 pub mod script_element;
 pub mod span_element;
 pub mod style_element;

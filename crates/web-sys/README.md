@@ -235,7 +235,7 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLProgressElement.webidl
  - [ ] HTMLQuoteElement.webidl
  - [x] HTMLScriptElement.webidl
- - [ ] HTMLSelectElement.webidl
+ - [x] HTMLSelectElement.webidl
  - [ ] HTMLSlotElement.webidl
  - [ ] HTMLSourceElement.webidl
  - [ ] HTMLSpanElement.webidl
