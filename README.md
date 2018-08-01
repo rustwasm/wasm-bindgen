@@ -4,11 +4,6 @@
 
 **Facilitating high-level interactions between wasm modules and JavaScript.**
 
-[Introduction blog post: "JavaScript to Rust and Back Again: A `wasm-bindgen` Tale"][post]
-
-[host]: https://github.com/WebAssembly/host-bindings
-[post]: https://hacks.mozilla.org/2018/04/javascript-to-rust-and-back-again-a-wasm-bindgen-tale/
-
 [![Build Status](https://travis-ci.org/rustwasm/wasm-bindgen.svg?branch=master)](https://travis-ci.org/rustwasm/wasm-bindgen)
 [![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/alexcrichton/wasm-bindgen)
 [![](http://meritbadge.herokuapp.com/wasm-bindgen)](https://crates.io/crates/wasm-bindgen)
@@ -16,8 +11,6 @@
 [![API Documentation on docs.rs](https://docs.rs/wasm-bindgen/badge.svg)](https://docs.rs/wasm-bindgen)
 
 Import JavaScript things into Rust and export Rust things to JavaScript.
-
-`src/lib.rs`:
 
 ```rust
 #![feature(use_extern_macros)]
@@ -39,17 +32,12 @@ pub fn greet(name: &str) {
 }
 ```
 
-Use exported Rust things from JavaScript!
-
-`index.js`:
+Use exported Rust things from JavaScript with ECMAScript modules!
 
 ```js
-// Asynchronously load, compile, and import the Rust's WebAssembly
-// and JavaScript interface.
-import("./hello_world").then(module => {
-  // Alert "Hello, World!"
-  module.greet("World!");
-});
+import { greet } from "./hello_world";
+
+greet("World!");
 ```
 
 ## Guide
