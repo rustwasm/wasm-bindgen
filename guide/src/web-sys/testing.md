@@ -10,7 +10,7 @@ cargo test --target wasm32-unknown-unknown
 
 These tests all use a headless browser. See the [*Headless Browser
 Tests* section for details on setup and
-configuration.](contributing.html#headless-browser-tests)
+configuration.](../contributing.html#headless-browser-tests)
 
 ## Grouping Tests
 
