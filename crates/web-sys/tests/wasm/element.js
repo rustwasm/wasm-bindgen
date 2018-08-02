@@ -14,12 +14,20 @@ export function new_button() {
   return document.createElement("button");
 }
 
+export function new_del() {
+    return document.createElement("del");
+}
+
 export function new_div() {
     return document.createElement("div");
 }
 
 export function new_form() {
   return document.createElement("form");
+}
+
+export function new_food_options_collection() {
+    return new_select_with_food_opts().options;
 }
 
 export function new_head() {
@@ -42,8 +50,16 @@ export function new_input() {
     return document.createElement("input");
 }
 
-export function new_food_options_collection() {
-    return new_select_with_food_opts().options;
+export function new_ins() {
+    return document.createElement("ins");
+}
+
+export function new_olist() {
+    return document.createElement("ol");
+}
+
+export function new_optgroup() {
+    return document.createElement("optgroup");
 }
 
 export function new_output() {

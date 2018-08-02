@@ -221,11 +221,11 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLMenuItemElement.webidl
  - [ ] HTMLMetaElement.webidl
  - [ ] HTMLMeterElement.webidl
- - [ ] HTMLModElement.webidl
+ - [x] HTMLModElement.webidl
  - [ ] HTMLObjectElement.webidl
- - [ ] HTMLOListElement.webidl
- - [ ] HTMLOptGroupElement.webidl
- - [ ] HTMLOptionElement.webidl
+ - [x] HTMLOListElement.webidl
+ - [x] HTMLOptGroupElement.webidl
+ - [x] HTMLOptionElement.webidl
  - [x] HTMLOptionsCollection.webidl
  - [x] HTMLOutputElement.webidl
  - [x] HTMLParagraphElement.webidl
