@@ -210,6 +210,11 @@ although more driver support may be added! You can download these at:
     * chromedriver - http://chromedriver.chromium.org/downloads
     * safaridriver - should be preinstalled on OSX
 
+If you would prefer to not use headless testing and would instead like to do
+interactive testing in a web browser then you can specify `NO_HEADLESS=1` as
+an environment variable. When rerun the tests will start a server that you can
+visit in a web browser, and headless testing should not be used.
+
 If you're still having difficulty resolving this error, please feel free to open
 an issue against rustwasm/wasm-bindgen!
     ")

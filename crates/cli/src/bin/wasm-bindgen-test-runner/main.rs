@@ -122,7 +122,7 @@ fn rmain() -> Result<(), Error> {
         }
         node = !custom.payload().contains(&0x01);
     }
-    let headless = env::var("CI").is_ok();
+    let headless = env::var("NO_HEADLESS").is_err();
 
     // Make the generated bindings available for the tests to execute against.
     shell.status("Executing bindgen...");
@@ -159,7 +159,12 @@ fn rmain() -> Result<(), Error> {
     // TODO: eventually we should provide the ability to exit at some point
     // (gracefully) here, but for now this just runs forever.
     if !headless {
-        println!("Running server on http://{}", addr);
+        println!("Interactive browsers tests are now available at http://{}", addr);
+        println!("");
+        println!("Note that interactive mode is enabled because `NO_HEADLESS`");
+        println!("is specified in the environment of this process. Once you're");
+        println!("done with testing you'll need to kill this server with");
+        println!("Ctrl-C.");
         return Ok(srv.run())
     }
 
