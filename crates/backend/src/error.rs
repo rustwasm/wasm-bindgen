@@ -4,7 +4,7 @@ use quote::ToTokens;
 #[macro_export]
 macro_rules! err_span {
     ($span:expr, $($msg:tt)*) => (
-        ::backend::Diagnostic::span_error(&$span, format!($($msg)*))
+        $crate::Diagnostic::span_error(&$span, format!($($msg)*))
     )
 }
 
