@@ -25,8 +25,11 @@ pub trait TryToTokens {
 impl TryToTokens for ast::Program {
     // Generate wrappers for all the items that we've found
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
+        let mut errors = Vec::new();
         for export in self.exports.iter() {
-            export.try_to_tokens(tokens)?;
+            if let Err(e) = export.try_to_tokens(tokens) {
+                errors.push(e);
+            }
         }
         for s in self.structs.iter() {
             s.to_tokens(tokens);
@@ -42,13 +45,21 @@ impl TryToTokens for ast::Program {
 
             if let Some(ns) = &i.js_namespace {
                 if types.contains(ns) && i.kind.fits_on_impl() {
-                    let kind = i.kind.try_to_token_stream()?;
+                    let kind = match i.kind.try_to_token_stream() {
+                        Ok(kind) => kind,
+                        Err(e) => {
+                            errors.push(e);
+                            continue
+                        }
+                    };
                     (quote! { impl #ns { #kind } }).to_tokens(tokens);
                     continue;
                 }
             }
 
-            i.kind.try_to_tokens(tokens)?;
+            if let Err(e) = i.kind.try_to_tokens(tokens) {
+                errors.push(e);
+            }
         }
         for e in self.enums.iter() {
             e.to_tokens(tokens);
@@ -59,6 +70,8 @@ impl TryToTokens for ast::Program {
         for c in self.consts.iter() {
             c.to_tokens(tokens);
         }
+
+        Diagnostic::from_vec(errors)?;
 
         // Generate a static which will eventually be what lives in a custom section
         // of the wasm executable. For now it's just a plain old static, but we'll
@@ -405,7 +418,12 @@ impl TryToTokens for ast::Export {
         let ret_ty;
         let convert_ret;
         match &self.function.ret {
-            Some(syn::Type::Reference(_)) => panic!("can't return a borrowed ref"),
+            Some(syn::Type::Reference(_)) => {
+                bail_span!(
+                    self.function.ret,
+                    "cannot return a borrowed ref with #[wasm_bindgen]",
+                )
+            }
             Some(ty) => {
                 ret_ty = quote! {
                     -> <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
@@ -722,7 +740,12 @@ impl TryToTokens for ast::ImportFunction {
                     ..
                 }) => ident.clone(),
                 syn::Pat::Wild(_) => syn::Ident::new(&format!("__genarg_{}", i), Span::call_site()),
-                _ => panic!("unsupported pattern in foreign function"),
+                _ => {
+                    bail_span!(
+                        pat,
+                        "unsupported pattern in #[wasm_bindgen] imported function",
+                    )
+                }
             };
 
             abi_argument_names.push(name.clone());
@@ -744,7 +767,7 @@ impl TryToTokens for ast::ImportFunction {
         let mut convert_ret;
         match &self.js_ret {
             Some(syn::Type::Reference(_)) => {
-                panic!("cannot return references in imports yet");
+                bail_span!(self.js_ret, "cannot return references in #[wasm_bindgen] imports yet");
             }
             Some(ref ty) => {
                 abi_ret = quote! {
