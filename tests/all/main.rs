@@ -18,7 +18,6 @@ mod math;
 mod node;
 mod non_debug;
 mod non_wasm;
-mod optional_numbers;
 mod simple;
 mod slice;
 mod structural;
