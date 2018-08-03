@@ -6,4 +6,4 @@ extern crate wasm_bindgen;
 
 pub mod api;
 pub mod option;
-pub mod optional_numbers;
+pub mod optional_primitives;
