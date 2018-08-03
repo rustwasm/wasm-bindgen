@@ -13,7 +13,7 @@
   - [No ES Modules](./reference/no-esm.md)
   - [Passing Arbitrary data](./reference/passing-data.md)
   - [Feature Reference](./reference/feature-reference.md)
-  - [CLI Reference](./reference/cli-reference.md)
+  - [Command Line Interface](./reference/cli.md)
   - [Type Reference](./reference/reference.md)
 
 --------------------------------------------------------------------------------
