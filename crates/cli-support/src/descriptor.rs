@@ -154,7 +154,27 @@ impl Descriptor {
         }
     }
 
-    pub fn get_64bit(&self) -> Option<bool> {
+    pub fn is_primitive(&self) -> bool {
+        match *self {
+            Descriptor::I32
+            | Descriptor::U32
+            | Descriptor::F32
+            | Descriptor::F64 => true,
+            _ => return false,
+        }
+    }
+
+    pub fn is_as_u32(&self) -> bool {
+        match *self {
+            Descriptor::I8
+            | Descriptor::U8
+            | Descriptor::I16
+            | Descriptor::U16 => true,
+            _ => return false,
+        }
+    }
+
+    pub fn get_64(&self) -> Option<bool> {
         match *self {
             Descriptor::I64 => Some(true),
             Descriptor::U64 => Some(false),

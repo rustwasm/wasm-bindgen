@@ -1,59 +1,118 @@
 use core::char;
 use core::mem::{self, ManuallyDrop};
 
-use convert::slices::WasmSlice;
 use convert::{Stack, FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
 use convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
+use convert::traits::WasmAbi;
 use JsValue;
 
-macro_rules! simple {
-    ($($t:tt)*) => ($(
+#[repr(C)]
+pub struct WasmOptionalI32 {
+    pub present: u32,
+    pub value: i32,
+}
+
+unsafe impl WasmAbi for WasmOptionalI32 {}
+
+#[repr(C)]
+pub struct WasmOptionalU32 {
+    pub present: u32,
+    pub value: u32,
+}
+
+unsafe impl WasmAbi for WasmOptionalU32 {}
+
+#[repr(C)]
+pub struct WasmOptionalF32 {
+    pub present: u32,
+    pub value: f32,
+}
+
+unsafe impl WasmAbi for WasmOptionalF32 {}
+
+#[repr(C)]
+pub struct WasmOptionalF64 {
+    pub present: u32,
+    pub value: f64,
+}
+
+unsafe impl WasmAbi for WasmOptionalF64 {}
+
+#[repr(C)]
+pub struct Wasm64 {
+    pub low: u32,
+    pub high: u32,
+}
+
+unsafe impl WasmAbi for Wasm64 {}
+
+#[repr(C)]
+pub struct WasmOptional64 {
+    pub present: u32,
+    pub padding: u32,
+    pub low: u32,
+    pub high: u32,
+}
+
+unsafe impl WasmAbi for WasmOptional64 {}
+
+macro_rules! type_primitive {
+    ($($t:tt as $c:tt => $r:tt)*) => ($(
         impl IntoWasmAbi for $t {
-            type Abi = $t;
+            type Abi = $c;
 
             #[inline]
-            fn into_abi(self, _extra: &mut Stack) -> $t { self }
+            fn into_abi(self, _extra: &mut Stack) -> $c { self as $c }
         }
 
         impl FromWasmAbi for $t {
-            type Abi = $t;
+            type Abi = $c;
 
             #[inline]
-            unsafe fn from_abi(js: $t, _extra: &mut Stack) -> $t { js }
+            unsafe fn from_abi(js: $c, _extra: &mut Stack) -> Self { js as $t }
         }
-    )*)
-}
 
-simple!(u32 i32 f32 f64);
+        impl IntoWasmAbi for Option<$t> {
+            type Abi = $r;
 
-macro_rules! sixtyfour {
-    ($($t:tt)*) => ($(
-        impl IntoWasmAbi for $t {
-            type Abi = WasmSlice;
-
-            #[inline]
-            fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
-                WasmSlice {
-                    ptr: self as u32,
-                    len: (self >> 32) as u32,
+            fn into_abi(self, _extra: &mut Stack) -> $r {
+                match self {
+                    None => $r {
+                        present: 0,
+                        value: 0 as $c,
+                    },
+                    Some(me) => $r {
+                        present: 1,
+                        value: me as $c,
+                    },
                 }
             }
         }
 
-        impl FromWasmAbi for $t {
-            type Abi = WasmSlice;
+        impl FromWasmAbi for Option<$t> {
+            type Abi = $r;
 
-            #[inline]
-            unsafe fn from_abi(js: WasmSlice, _extra: &mut Stack) -> $t {
-                (js.ptr as $t) | ((js.len as $t) << 32)
+            unsafe fn from_abi(js: $r, _extra: &mut Stack) -> Self {
+                if js.present == 0 {
+                    None
+                } else {
+                    Some(js.value as $t)
+                }
             }
         }
     )*)
 }
 
-sixtyfour!(i64 u64);
+type_primitive!(
+    i32 as i32 => WasmOptionalI32
+    isize as i32 => WasmOptionalI32
+    u32 as u32 => WasmOptionalU32
+    usize as u32 => WasmOptionalU32
+    f32 as f32 => WasmOptionalF32
+    f64 as f64 => WasmOptionalF64
+);
 
-macro_rules! as_u32 {
+macro_rules! type_as_u32 {
     ($($t:tt)*) => ($(
         impl IntoWasmAbi for $t {
             type Abi = u32;
@@ -66,12 +125,82 @@ macro_rules! as_u32 {
             type Abi = u32;
 
             #[inline]
-            unsafe fn from_abi(js: u32, _extra: &mut Stack) -> $t { js as $t }
+            unsafe fn from_abi(js: u32, _extra: &mut Stack) -> Self { js as $t }
+        }
+
+        impl OptionIntoWasmAbi for $t {
+            #[inline]
+            fn none() -> u32 { 0xFFFFFFu32 }
+        }
+
+        impl OptionFromWasmAbi for $t {
+            #[inline]
+            fn is_none(js: &u32) -> bool { *js == 0xFFFFFFu32 }
         }
     )*)
 }
 
-as_u32!(i8 u8 i16 u16 isize usize);
+type_as_u32!(i8 u8 i16 u16);
+
+macro_rules! type_64 {
+    ($($t:tt)*) => ($(
+        impl IntoWasmAbi for $t {
+            type Abi = Wasm64;
+
+            #[inline]
+            fn into_abi(self, _extra: &mut Stack) -> Wasm64 {
+                Wasm64 {
+                    low: self as u32,
+                    high: (self >> 32) as u32,
+                }
+            }
+        }
+
+        impl FromWasmAbi for $t {
+            type Abi = Wasm64;
+
+            #[inline]
+            unsafe fn from_abi(js: Wasm64, _extra: &mut Stack) -> $t {
+                (js.low as $t) | ((js.high as $t) << 32)
+            }
+        }
+
+        impl IntoWasmAbi for Option<$t> {
+            type Abi = WasmOptional64;
+
+            fn into_abi(self, _extra: &mut Stack) -> WasmOptional64 {
+                match self {
+                    None => WasmOptional64 {
+                        present: 0,
+                        padding: 0,
+                        low: 0 as u32,
+                        high: 0 as u32,
+                    },
+                    Some(me) => WasmOptional64 {
+                        present: 1,
+                        padding: 0,
+                        low: me as u32,
+                        high: (me >> 32) as u32,
+                    },
+                }
+            }
+        }
+
+        impl FromWasmAbi for Option<$t> {
+            type Abi = WasmOptional64;
+
+            unsafe fn from_abi(js: WasmOptional64, _extra: &mut Stack) -> Self {
+                if js.present == 0 {
+                    None
+                } else {
+                    Some((js.low as $t) | ((js.high as $t) << 32))
+                }
+            }
+        }
+    )*)
+}
+
+type_64!(i64 u64);
 
 impl IntoWasmAbi for bool {
     type Abi = u32;
@@ -185,8 +314,8 @@ impl<T: OptionIntoWasmAbi> IntoWasmAbi for Option<T> {
 
     fn into_abi(self, extra: &mut Stack) -> T::Abi {
         match self {
-            Some(me) => me.into_abi(extra),
             None => T::none(),
+            Some(me) => me.into_abi(extra),
         }
     }
 }

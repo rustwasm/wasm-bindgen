@@ -132,25 +132,66 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
 
         if optional {
-            bail!("unsupported optional argument {:?}", arg);
+            if arg.is_primitive() {
+                let value = self.shim_argument();
+                self.js_arguments.push(format!(
+                    "{present} === 0 ? undefined : {value}",
+                    value = value,
+                    present = abi,
+                ));
+                return Ok(())
+            }
+
+            if arg.is_as_u32() {
+                self.js_arguments.push(format!("{0} === 0xFFFFFF ? undefined : {0}", abi));
+                return Ok(())
+            }
+
+            if let Some(signed) = arg.get_64() {
+                let f = if signed {
+                    self.cx.expose_int64_cvt_shim()
+                } else {
+                    self.cx.expose_uint64_cvt_shim()
+                };
+                self.shim_argument();
+                let low = self.shim_argument();
+                let high = self.shim_argument();
+                let name = format!("n{}", abi);
+                self.prelude(&format!(
+                    "\
+                        u32CvtShim[0] = {present} === 0 ? 0 : {low};\n\
+                        u32CvtShim[1] = {present} === 0 ? 0 : {high};\n\
+                        const {name} = {present} === 0 ? undefined : {f}[0];\n\
+                    ",
+                    present = abi,
+                    low = low,
+                    high = high,
+                    f = f,
+                    name = name,
+                ));
+                self.js_arguments.push(name);
+                return Ok(());
+            }
+
+            bail!("unsupported optional argument type for calling JS function from Rust: {:?}", arg);
         }
 
-        if let Some(signed) = arg.get_64bit() {
+        if let Some(signed) = arg.get_64() {
             let f = if signed {
                 self.cx.expose_int64_cvt_shim()
             } else {
                 self.cx.expose_uint64_cvt_shim()
             };
-            let hi = self.shim_argument();
+            let high = self.shim_argument();
             let name = format!("n{}", abi);
             self.prelude(&format!(
                 "\
-                 u32CvtShim[0] = {lo};\n\
-                 u32CvtShim[1] = {hi};\n\
+                 u32CvtShim[0] = {low};\n\
+                 u32CvtShim[1] = {high};\n\
                  const {name} = {f}[0];\n\
                  ",
-                lo = abi,
-                hi = hi,
+                low = abi,
+                high = high,
                 f = f,
                 name = name,
             ));
@@ -257,10 +298,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ref d if d.is_number() => abi,
             Descriptor::Boolean => format!("{} !== 0", abi),
             Descriptor::Char => format!("String.fromCodePoint({})", abi),
-            _ => bail!(
-                "unimplemented argument type in imported function: {:?}",
-                arg
-            ),
+            _ => bail!("unsupported argument type for calling JS function from Rust: {:?}", arg),
         };
         self.js_arguments.push(invoc_arg);
         Ok(())
@@ -320,13 +358,79 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             return Ok(())
         }
         if optional {
-            bail!("unsupported optional return type {:?}", ty);
+            if ty.is_primitive() {
+                self.cx.expose_is_like_none();
+                self.cx.expose_uint32_memory();
+                match ty {
+                    Descriptor::I32 => self.cx.expose_int32_memory(),
+                    Descriptor::U32 => (),
+                    Descriptor::F32 => self.cx.expose_f32_memory(),
+                    Descriptor::F64 => self.cx.expose_f64_memory(),
+                    _ => (),
+                };
+                self.shim_arguments.insert(0, "ret".to_string());
+                self.ret_expr = format!(
+                    "\
+                        const val = JS;\n\
+                        getUint32Memory()[ret / 4] = !isLikeNone(val);\n\
+                        {mem}[ret / {size} + 1] = isLikeNone(val) ? 0 : val;\n\
+                    ",
+                    size = match ty {
+                        Descriptor::I32 => 4,
+                        Descriptor::U32 => 4,
+                        Descriptor::F32 => 4,
+                        Descriptor::F64 => 8,
+                        _ => unreachable!(),
+                    },
+                    mem = match ty {
+                        Descriptor::I32 => "getInt32Memory()",
+                        Descriptor::U32 => "getUint32Memory()",
+                        Descriptor::F32 => "getFloat32Memory()",
+                        Descriptor::F64 => "getFloat64Memory()",
+                        _ => unreachable!(),
+                    }
+                );
+                return Ok(());
+            }
+
+            if ty.is_as_u32() {
+                self.cx.expose_is_like_none();
+                self.ret_expr = "
+                    const val = JS;
+                    return isLikeNone(val) ? 0xFFFFFF : val;
+                ".to_string();
+                return Ok(());
+            }
+
+            if let Some(signed) = ty.get_64() {
+                self.cx.expose_is_like_none();
+                self.cx.expose_uint32_memory();
+                let f = if signed {
+                    self.cx.expose_int64_memory();
+                    "getInt64Memory"
+                } else {
+                    self.cx.expose_uint64_memory();
+                    "getUint64Memory"
+                };
+                self.shim_arguments.insert(0, "ret".to_string());
+                self.ret_expr = format!(
+                    "\
+                        const val = JS;\n\
+                        getUint32Memory()[ret / 4] = !isLikeNone(val);\n\
+                        {}()[ret / 8 + 1] = isLikeNone(val) ? BigInt(0) : val;\n\
+                    ",
+                    f
+                );
+                return Ok(());
+            }
+
+            bail!("unsupported optional return type for calling JS function from Rust: {:?}", ty);
         }
         if ty.is_number() {
             self.ret_expr = "return JS;".to_string();
             return Ok(());
         }
-        if let Some(signed) = ty.get_64bit() {
+        if let Some(signed) = ty.get_64() {
             let f = if signed {
                 self.cx.expose_int64_memory();
                 "getInt64Memory"
@@ -370,7 +474,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         self.ret_expr = match *ty {
             Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
             Descriptor::Char => "return JS.codePointAt(0);".to_string(),
-            _ => bail!("unimplemented return from JS to Rust: {:?}", ty),
+            _ => bail!("unsupported return type for calling JS function from Rust: {:?}", ty),
         };
         Ok(())
     }
