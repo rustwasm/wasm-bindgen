@@ -4,15 +4,17 @@
 
 --------------------------------------------------------------------------------
 
-- [Basic Usage](./basic-usage.md)
-- [What Just Happened?](./what-just-happened.md)
-- [What Else Can We Do?](./what-else-can-we-do.md)
-- [Closures](./closures.md)
-- [No ES Modules](./no-esm.md)
-- [Passing Arbitrary data](./passing-data.md)
-- [Feature Reference](./feature-reference.md)
-- [CLI Reference](./cli-reference.md)
-- [Type Reference](./reference.md)
+- [Whirlwind Tour](./whirlwind-tour/introduction.md)
+  - [Basic Usage](./whirlwind-tour/basic-usage.md)
+  - [What Just Happened?](./whirlwind-tour/what-just-happened.md)
+  - [What Else Can We Do?](./whirlwind-tour/what-else-can-we-do.md)
+- [Reference](./reference/index.md)
+  - [Closures](./reference/closures.md)
+  - [No ES Modules](./reference/no-esm.md)
+  - [Passing Arbitrary data](./reference/passing-data.md)
+  - [Feature Reference](./reference/feature-reference.md)
+  - [CLI Reference](./reference/cli-reference.md)
+  - [Type Reference](./reference/reference.md)
 
 --------------------------------------------------------------------------------
 
