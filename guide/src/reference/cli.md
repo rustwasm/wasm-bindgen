@@ -1,4 +1,4 @@
-# CLI Reference
+# The `wasm-bindgen` Command Line Interface
 
 The `wasm-bindgen` tool has a number of options available to it to tweak the JS
 that is generated. By default the generated JS uses ES modules and is compatible
