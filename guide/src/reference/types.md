@@ -1,4 +1,4 @@
-# Reference
+# Supported Types
 
 The table below provides an overview of all the types that wasm-bindgen can send/receive across the wasm ABI boundary.
 
