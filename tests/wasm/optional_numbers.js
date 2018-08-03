@@ -65,28 +65,28 @@ exports.test_works = function() {
   assert.strictEqual(wasm.u16_identity(wasm.u16_min()), 0);
 
   assert.strictEqual(wasm.i64_identity(wasm.i64_none()), undefined);
-  assert.strictEqual(wasm.i64_identity(wasm.i64_zero()), BigInt("0"));
-  assert.strictEqual(wasm.i64_identity(wasm.i64_one()), BigInt("1"));
-  assert.strictEqual(wasm.i64_identity(wasm.i64_neg_one()), BigInt("-1"));
-  assert.strictEqual(wasm.i64_identity(wasm.i64_max()), BigInt("9223372036854775807"));
-  assert.strictEqual(wasm.i64_identity(wasm.i64_min()), BigInt("-9223372036854775808"));
+  assert.strictEqual(wasm.i64_identity(wasm.i64_zero()), BigInt('0'));
+  assert.strictEqual(wasm.i64_identity(wasm.i64_one()), BigInt('1'));
+  assert.strictEqual(wasm.i64_identity(wasm.i64_neg_one()), BigInt('-1'));
+  assert.strictEqual(wasm.i64_identity(wasm.i64_max()), BigInt('9223372036854775807'));
+  assert.strictEqual(wasm.i64_identity(wasm.i64_min()), BigInt('-9223372036854775808'));
 
   assert.strictEqual(wasm.u64_identity(wasm.u64_none()), undefined);
-  assert.strictEqual(wasm.u64_identity(wasm.u64_zero()), BigInt("0"));
-  assert.strictEqual(wasm.u64_identity(wasm.u64_one()), BigInt("1"));
-  assert.strictEqual(wasm.u64_identity(wasm.u64_max()), BigInt("18446744073709551615"));
-  assert.strictEqual(wasm.u64_identity(wasm.u64_min()), BigInt("0"));
+  assert.strictEqual(wasm.u64_identity(wasm.u64_zero()), BigInt('0'));
+  assert.strictEqual(wasm.u64_identity(wasm.u64_one()), BigInt('1'));
+  assert.strictEqual(wasm.u64_identity(wasm.u64_max()), BigInt('18446744073709551615'));
+  assert.strictEqual(wasm.u64_identity(wasm.u64_min()), BigInt('0'));
 };
 
-exports.i32_js_identity = function(a) { return a; }
-exports.u32_js_identity = function(a) { return a; }
-exports.isize_js_identity = function(a) { return a; }
-exports.usize_js_identity = function(a) { return a; }
-exports.f32_js_identity = function(a) { return a; }
-exports.f64_js_identity = function(a) { return a; }
-exports.i8_js_identity = function(a) { return a; }
-exports.u8_js_identity = function(a) { return a; }
-exports.i16_js_identity = function(a) { return a; }
-exports.u16_js_identity = function(a) { return a; }
-exports.i64_js_identity = function(a) { return a; }
-exports.u64_js_identity = function(a) { return a; }
+exports.i32_js_identity = function(a) { return a; };
+exports.u32_js_identity = function(a) { return a; };
+exports.isize_js_identity = function(a) { return a; };
+exports.usize_js_identity = function(a) { return a; };
+exports.f32_js_identity = function(a) { return a; };
+exports.f64_js_identity = function(a) { return a; };
+exports.i8_js_identity = function(a) { return a; };
+exports.u8_js_identity = function(a) { return a; };
+exports.i16_js_identity = function(a) { return a; };
+exports.u16_js_identity = function(a) { return a; };
+exports.i64_js_identity = function(a) { return a; };
+exports.u64_js_identity = function(a) { return a; };
