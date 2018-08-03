@@ -259,7 +259,26 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 return Ok(self);
             }
 
-            bail!("unsupported optional argument type for calling Rust function from JS: {:?}", arg);
+            match *arg {
+                Descriptor::Boolean => {
+                    self.cx.expose_is_like_none();
+                    self.js_arguments.push((name.clone(), "boolean".to_string()));
+                    if self.cx.config.debug {
+                        self.cx.expose_assert_bool();
+                        self.prelude(&format!(
+                            "
+                                if (!isLikeNone({0})) {{
+                                    _assertBoolean({0});
+                                }}
+                            ",
+                            name,
+                        ));
+                    }
+                    self.rust_arguments.push(format!("isLikeNone({0}) ? 0xFFFFFF : {0} ? 1 : 0", name));
+                    return Ok(self);
+                },
+                _ => bail!("unsupported optional argument type for calling Rust function from JS: {:?}", arg),
+            };
         }
 
         if let Some(s) = arg.rust_struct() {
@@ -486,7 +505,17 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 return Ok(self);
             }
 
-            bail!("unsupported optional return type for calling Rust function from JS: {:?}", ty);
+            match *ty {
+                Descriptor::Boolean => {
+                    self.ret_ty = "boolean".to_string();
+                    self.ret_expr = "
+                        const ret = RET;
+                        return ret === 0xFFFFFF ? undefined : ret !== 0;
+                    ".to_string();
+                    return Ok(self);
+                },
+                _ => bail!("unsupported optional return type for calling Rust function from JS: {:?}", ty),
+            };
         }
 
         if ty.is_ref_anyref() {
