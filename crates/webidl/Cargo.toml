@@ -20,4 +20,4 @@ proc-macro2 = "0.4.8"
 quote = '0.6'
 syn = { version = '0.14', features = ['full'] }
 wasm-bindgen-backend = { version = "=0.2.15", path = "../backend" }
-webidl = "0.7.0"
+weedle = "0.6"

@@ -1,4 +1,5 @@
 extern crate env_logger;
+#[macro_use]
 extern crate failure;
 extern crate wasm_bindgen_webidl;
 extern crate sourcefile;
@@ -8,9 +9,8 @@ use sourcefile::SourceFile;
 use std::env;
 use std::ffi::OsStr;
 use std::fs;
-use std::io::Write;
 use std::path;
-use std::process;
+use std::process::{self, Command};
 
 fn main() {
     if let Err(e) = try_main() {
@@ -32,12 +32,14 @@ fn try_main() -> Result<(), failure::Error> {
     let mut source = SourceFile::default();
     for entry in entries {
         let entry = entry.context("getting webidls/enabled/*.webidl entry")?;
-        if entry.path().extension() == Some(OsStr::new("webidl")) {
-            println!("cargo:rerun-if-changed={}", entry.path().display());
-            source = source.add_file(entry.path())
-                .with_context(|_| format!("reading contents of file \"{}\"",
-                                          entry.path().display()))?;
+        let path = entry.path();
+        if path.extension() != Some(OsStr::new("webidl")) {
+            continue
         }
+        println!("cargo:rerun-if-changed={}", path.display());
+        source = source.add_file(&path)
+            .with_context(|_| format!("reading contents of file \"{}\"",
+                                      path.display()))?;
     }
 
     let bindings = match wasm_bindgen_webidl::compile(&source.contents) {
@@ -60,17 +62,19 @@ fn try_main() -> Result<(), failure::Error> {
 
     let out_dir = env::var("OUT_DIR").context("reading OUT_DIR environment variable")?;
     let out_file_path = path::Path::new(&out_dir).join("bindings.rs");
-    let mut out_file = fs::File::create(&out_file_path)
-        .context("creating output bindings file")?;
-    out_file
-        .write_all(bindings.as_bytes())
+    fs::write(&out_file_path, bindings)
         .context("writing bindings to output file")?;
 
     // run rustfmt on the generated file - really handy for debugging
-    //if ! process::Command::new("rustfmt").arg(&out_file_path).status()
-    //    .context("running rustfmt")?.success() {
-    //    return Err(format_err!("rustfmt failed to format {}", out_file_path.display()));
-    //}
+    if env::var("WEBIDL_RUSTFMT_BINDINGS").is_ok() {
+        let status = Command::new("rustfmt")
+            .arg(&out_file_path)
+            .status()
+           .context("running rustfmt")?;
+        if !status.success() {
+           bail!("rustfmt failed: {}", status)
+        }
+    }
 
     Ok(())
 }
