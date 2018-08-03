@@ -300,6 +300,16 @@ impl Client {
                 }
                 let request = json!({
                     "desiredCapabilities": {
+                        "goog:chromeOptions": {
+                            "args": [
+                                "headless",
+                                // See https://stackoverflow.com/questions/50642308/
+                                // for what this funky `disable-dev-shm-usage`
+                                // option is
+                                "disable-dev-shm-usage",
+                                "no-sandbox",
+                            ],
+                        },
                     }
                 });
                 let x: Response = self.post("/session", &request)?;

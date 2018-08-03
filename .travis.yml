@@ -12,7 +12,12 @@ INSTALL_GECKODRIVER: &INSTALL_GECKODRIVER
   |
     curl --retry 5 -LO https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
     tar xf geckodriver-v0.21.0-linux64.tar.gz
-    export GECKODRIVER=`pwd`/geckodriver
+
+INSTALL_CHROMEDRIVER: &INSTALL_CHROMEDRIVER
+  |
+    curl --retry 5 -LO https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
+    unzip chromedriver_linux64.zip
+    export CHROMEDRIVER_ARGS=--verbose
 
 DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
   before_deploy:
@@ -78,10 +83,14 @@ matrix:
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_GECKODRIVER
+        - *INSTALL_CHROMEDRIVER
       script:
-        - cargo test -p web-sys --target wasm32-unknown-unknown
+        - export RUST_LOG=wasm_bindgen_test_runner
+        - CHROMEDRIVER=`pwd`/chromedriver cargo test -p web-sys --target wasm32-unknown-unknown
+        - GECKODRIVER=`pwd`/geckodriver cargo test -p web-sys --target wasm32-unknown-unknown
       addons:
         firefox: latest
+        chrome: stable
       if: branch = master
 
     # The `js-sys` crate's tests pass on nightly.
@@ -90,10 +99,14 @@ matrix:
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_GECKODRIVER
+        - *INSTALL_CHROMEDRIVER
       script:
-        - cargo test -p js-sys --target wasm32-unknown-unknown
+        - export RUST_LOG=wasm_bindgen_test_runner
+        - CHROMEDRIVER=`pwd`/chromedriver cargo test -p js-sys --target wasm32-unknown-unknown
+        - GECKODRIVER=`pwd`/geckodriver cargo test -p js-sys --target wasm32-unknown-unknown
       addons:
         firefox: latest
+        chrome: stable
       if: branch = master
 
     # Tests pass on nightly using yarn
