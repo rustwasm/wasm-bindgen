@@ -4,6 +4,8 @@ The table below provides an overview of all the types that wasm-bindgen can send
 
 | Type | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value |
 |:---:|:---:|:---:|:---:|:---:|:---:|
+| Imported `extern Whatever;` JavaScript Types | Yes | Yes | Yes | Yes | Yes | Yes |
+| Exported `struct Whatever` Rust Types | Yes | Yes | Yes | Yes | Yes | Yes |
 | `str` | No | Yes | No | Yes | Yes | No |
 | `char` | Yes | No | No | Yes | No | No |
 | `bool` | Yes | No | No | Yes | No | No |
