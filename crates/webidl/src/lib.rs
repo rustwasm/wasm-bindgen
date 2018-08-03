@@ -720,7 +720,13 @@ impl<'a> WebidlParse<()> for webidl::ast::Enum {
                 variants: self
                     .variants
                     .iter()
-                    .map(|v| rust_ident(camel_case_ident(&v).as_str()))
+                    .map(|v|
+                        if !v.is_empty() {
+                            rust_ident(camel_case_ident(&v).as_str())
+                        } else {
+                            rust_ident("None")
+                        }
+                    )
                     .collect(),
                 variant_values: self.variants.clone(),
                 rust_attrs: vec![parse_quote!(#[derive(Copy, Clone, PartialEq, Debug)])],
