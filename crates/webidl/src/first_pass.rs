@@ -7,66 +7,58 @@
 //! Only `interface`s, `dictionary`s, `enum`s and `mixin`s can
 //! be partial.
 
-use std::{
-    collections::{BTreeMap, BTreeSet}, mem,
-};
+use std::collections::{BTreeMap, BTreeSet};
 
-use webidl;
+use weedle::argument::Argument;
+use weedle::attribute::ExtendedAttribute;
+use weedle::interface::StringifierOrStatic;
+use weedle::mixin::MixinMembers;
+use weedle;
 
 use super::Result;
+use util;
 
 /// Collection of constructs that may use partial.
 #[derive(Default)]
-pub(crate) struct FirstPassRecord<'a> {
-    pub(crate) interfaces: BTreeMap<String, InterfaceData>,
-    pub(crate) dictionaries: BTreeSet<String>,
-    pub(crate) enums: BTreeSet<String>,
+pub(crate) struct FirstPassRecord<'src> {
+    pub(crate) interfaces: BTreeMap<&'src str, InterfaceData<'src>>,
+    pub(crate) dictionaries: BTreeSet<&'src str>,
+    pub(crate) enums: BTreeSet<&'src str>,
     /// The mixins, mapping their name to the webidl ast node for the mixin.
-    pub(crate) mixins: BTreeMap<String, MixinData<'a>>,
-    pub(crate) typedefs: BTreeMap<String, webidl::ast::Type>,
+    pub(crate) mixins: BTreeMap<&'src str, Vec<&'src MixinMembers<'src>>>,
+    pub(crate) typedefs: BTreeMap<&'src str, &'src weedle::types::Type<'src>>,
 }
 
 /// We need to collect interface data during the first pass, to be used later.
 #[derive(Default)]
-pub(crate) struct InterfaceData {
+pub(crate) struct InterfaceData<'src> {
     /// Whether only partial interfaces were encountered
     pub(crate) partial: bool,
-    pub(crate) operations: BTreeMap<OperationId, OperationData>,
     pub(crate) global: bool,
+    pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) enum OperationId {
+pub(crate) enum OperationId<'src> {
     Constructor,
-    Operation(Option<String>)
+    Operation(Option<&'src str>)
 }
 
 #[derive(Default)]
-pub(crate) struct OperationData {
+pub(crate) struct OperationData<'src> {
     pub(crate) overloaded: bool,
     /// Map from argument names to whether they are the same for multiple overloads
-    pub(crate) argument_names_same: BTreeMap<Vec<String>, bool>,
-}
-
-/// We need to collect mixin data during the first pass, to be used later.
-#[derive(Default)]
-pub(crate) struct MixinData<'a> {
-    /// The non partial mixin, if present. If there is more than one, we are
-    /// parsing is a malformed WebIDL file, but the parser will recover by
-    /// using the last parsed mixin.
-    pub(crate) non_partial: Option<&'a webidl::ast::NonPartialMixin>,
-    /// 0 or more partial mixins.
-    pub(crate) partials: Vec<&'a webidl::ast::PartialMixin>,
+    pub(crate) argument_names_same: BTreeMap<Vec<&'src str>, bool>,
 }
 
 /// Implemented on an AST node to populate the `FirstPassRecord` struct.
-pub(crate) trait FirstPass<Ctx> {
+pub(crate) trait FirstPass<'src, Ctx> {
     /// Populate `record` with any constructs in `self`.
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, ctx: Ctx) -> Result<()>;
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, ctx: Ctx) -> Result<()>;
 }
 
-impl FirstPass<()> for [webidl::ast::Definition] {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ()> for [weedle::Definition<'src>] {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
         for def in self {
             def.first_pass(record, ())?;
         }
@@ -75,15 +67,17 @@ impl FirstPass<()> for [webidl::ast::Definition] {
     }
 }
 
-impl FirstPass<()> for webidl::ast::Definition {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        use webidl::ast::Definition::*;
+impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        use weedle::Definition::*;
 
         match self {
             Dictionary(dictionary) => dictionary.first_pass(record, ()),
             Enum(enum_) => enum_.first_pass(record, ()),
             Interface(interface) => interface.first_pass(record, ()),
-            Mixin(mixin) => mixin.first_pass(record, ()),
+            PartialInterface(interface) => interface.first_pass(record, ()),
+            InterfaceMixin(mixin) => mixin.first_pass(record, ()),
+            PartialInterfaceMixin(mixin) => mixin.first_pass(record, ()),
             Typedef(typedef) => typedef.first_pass(record, ()),
             _ => {
                 // Other definitions aren't currently used in the first pass
@@ -93,46 +87,38 @@ impl FirstPass<()> for webidl::ast::Definition {
     }
 }
 
-impl FirstPass<()> for webidl::ast::Dictionary {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        use webidl::ast::Dictionary::*;
-
-        match self {
-            NonPartial(dictionary) => dictionary.first_pass(record, ()),
-            _ => {
-                // Other dictionaries aren't currently used in the first pass
-                Ok(())
-            }
+impl<'src> FirstPass<'src, ()> for weedle::DictionaryDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if !record.dictionaries.insert(self.identifier.0) {
+            warn!("encountered multiple dictionary declarations of {}", self.identifier.0);
         }
+        Ok(())
     }
 }
 
-impl FirstPass<()> for webidl::ast::NonPartialDictionary {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        if record.dictionaries.insert(self.name.clone()) {
-            warn!("Encountered multiple declarations of {}", self.name);
+impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if !record.enums.insert(self.identifier.0) {
+            warn!("Encountered multiple enum declarations of {}", self.identifier.0);
         }
 
         Ok(())
     }
 }
 
-impl FirstPass<()> for webidl::ast::Enum {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        if record.enums.insert(self.name.clone()) {
-            warn!("Encountered multiple declarations of {}", self.name);
-        }
-
-        Ok(())
-    }
-}
-
-fn first_pass_operation<'a>(
-    record: &mut FirstPassRecord<'a>,
-    self_name: &str,
-    id: OperationId,
-    arguments: &[webidl::ast::Argument],
+fn first_pass_operation<'src>(
+    record: &mut FirstPassRecord<'src>,
+    self_name: &'src str,
+    id: OperationId<'src>,
+    arguments: &[Argument<'src>],
 )  -> Result<()> {
+    let mut names = Vec::with_capacity(arguments.len());
+    for argument in arguments {
+        match argument {
+            Argument::Single(arg) => names.push(arg.identifier.0),
+            Argument::Variadic(_) => return Ok(()),
+        }
+    }
     record
         .interfaces
         .get_mut(self_name)
@@ -140,77 +126,48 @@ fn first_pass_operation<'a>(
         .operations
         .entry(id)
         .and_modify(|operation_data| operation_data.overloaded = true)
-        .or_insert_with(||
-            OperationData {
-                overloaded: false,
-                argument_names_same: Default::default(),
-            }
-        )
+        .or_insert_with(Default::default)
         .argument_names_same
-        .entry(arguments.iter().map(|argument| argument.name.clone()).collect())
+        .entry(names)
         .and_modify(|same_argument_names| *same_argument_names = true)
         .or_insert(false);
 
     Ok(())
 }
 
-impl FirstPass<()> for webidl::ast::Interface {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        use webidl::ast::Interface::*;
-
-        match self {
-            Partial(interface) => interface.first_pass(record, ()),
-            NonPartial(interface) => interface.first_pass(record, ()),
-            // TODO
-            Callback(..) => {
-                warn!("Unsupported WebIDL interface: {:?}", self);
-                Ok(())
-            }
+impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        {
+            let interface = record
+                .interfaces
+                .entry(self.identifier.0)
+                .or_insert_with(Default::default);
+            interface.partial = false;
         }
-    }
-}
 
-impl FirstPass<()> for webidl::ast::NonPartialInterface {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        record
-            .interfaces
-            .entry(self.name.clone())
-            .and_modify(|interface_data| {
-                if interface_data.partial {
-                    interface_data.partial = false;
-                } else {
-                    warn!("Encountered multiple declarations of {}", self.name);
-                }
-            })
-            .or_insert_with(||
-                InterfaceData {
-                    partial: false,
-                    operations: Default::default(),
-                    global: false,
-                },
-            );
-
-        if ::util::is_chrome_only(&self.extended_attributes) {
+        if util::is_chrome_only(&self.attributes) {
             return Ok(())
         }
 
-        for extended_attribute in &self.extended_attributes {
-            extended_attribute.first_pass(record, &self.name)?;
+        if let Some(attrs) = &self.attributes {
+            for attr in &attrs.body.list {
+                attr.first_pass(record, self.identifier.0)?;
+            }
         }
 
-        for member in &self.members {
-            member.first_pass(record, &self.name)?;
+        for member in &self.members.body {
+            member.first_pass(record, self.identifier.0)?;
         }
 
         Ok(())
     }
 }
 
-impl FirstPass<()> for webidl::ast::PartialInterface {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
+impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
         record
             .interfaces
-            .entry(self.name.clone())
+            .entry(self.identifier.0)
             .or_insert_with(||
                 InterfaceData {
                     partial: true,
@@ -219,168 +176,120 @@ impl FirstPass<()> for webidl::ast::PartialInterface {
                 },
             );
 
-        if ::util::is_chrome_only(&self.extended_attributes) {
+        if util::is_chrome_only(&self.attributes) {
             return Ok(())
         }
 
-        for member in &self.members {
-            member.first_pass(record, &self.name)?;
+        for member in &self.members.body {
+            member.first_pass(record, self.identifier.0)?;
         }
 
         Ok(())
     }
 }
 
-impl<'b> FirstPass<&'b str> for webidl::ast::ExtendedAttribute {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, self_name: &'b str) -> Result<()> {
+impl<'src> FirstPass<'src, &'src str> for ExtendedAttribute<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
         match self {
-            webidl::ast::ExtendedAttribute::ArgumentList(
-                webidl::ast::ArgumentListExtendedAttribute { arguments, name },
-            )
-            if name == "Constructor" =>
-                {
-                    first_pass_operation(
-                        record,
-                        self_name,
-                        OperationId::Constructor,
-                        &arguments,
-                    )
-                }
-            webidl::ast::ExtendedAttribute::NoArguments(webidl::ast::Other::Identifier(name))
-            if name == "Constructor" =>
-                {
-                    first_pass_operation(
-                        record,
-                        self_name,
-                        OperationId::Constructor,
-                        &[],
-                    )
-                }
-            webidl::ast::ExtendedAttribute::NamedArgumentList(
-                webidl::ast::NamedArgumentListExtendedAttribute {
-                    lhs_name,
-                    rhs_arguments,
-                    ..
-                },
-            )
-            if lhs_name == "NamedConstructor" =>
-                {
-                    first_pass_operation(
-                        record,
-                        self_name,
-                        OperationId::Constructor,
-                        &rhs_arguments,
-                    )
-                },
-            webidl::ast::ExtendedAttribute::Identifier(
-                webidl::ast::IdentifierExtendedAttribute { lhs, .. }
-            )
-            | webidl::ast::ExtendedAttribute::IdentifierList(
-                webidl::ast::IdentifierListExtendedAttribute { lhs, .. }
-            )
-            if lhs == "Global" =>
-                {
-                    record.interfaces.get_mut(self_name).unwrap().global = true;
-                    Ok(())
-                }
+            ExtendedAttribute::ArgList(list) if list.identifier.0 == "Constructor" => {
+                first_pass_operation(
+                    record,
+                    self_name,
+                    OperationId::Constructor,
+                    &list.args.body.list,
+                )
+            }
+            ExtendedAttribute::NoArgs(name) if (name.0).0 == "Constructor" => {
+                first_pass_operation(
+                    record,
+                    self_name,
+                    OperationId::Constructor,
+                    &[],
+                )
+            }
+            ExtendedAttribute::NamedArgList(list)
+                if list.lhs_identifier.0 == "NamedConstructor" =>
+            {
+                first_pass_operation(
+                    record,
+                    self_name,
+                    OperationId::Constructor,
+                    &list.args.body.list,
+                )
+            }
+            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Global" => {
+                record.interfaces.get_mut(self_name).unwrap().global = true;
+                Ok(())
+            }
+            ExtendedAttribute::IdentList(id) if id.identifier.0 == "Global" => {
+                record.interfaces.get_mut(self_name).unwrap().global = true;
+                Ok(())
+            }
             _ => Ok(())
         }
     }
 }
 
-impl<'b> FirstPass<&'b str> for webidl::ast::InterfaceMember {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, self_name: &'b str) -> Result<()> {
+impl<'src> FirstPass<'src, &'src str> for weedle::interface::InterfaceMember<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
         match self {
-            webidl::ast::InterfaceMember::Operation(op) => op.first_pass(record, self_name),
+            weedle::interface::InterfaceMember::Operation(op) => {
+                op.first_pass(record, self_name)
+            }
             _ => Ok(()),
         }
     }
 }
 
-impl<'b> FirstPass<&'b str> for webidl::ast::Operation {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, self_name: &'b str) -> Result<()> {
-        match self {
-            webidl::ast::Operation::Regular(op) => op.first_pass(record, self_name),
-            webidl::ast::Operation::Static(op) => op.first_pass(record, self_name),
-            // TODO
-            webidl::ast::Operation::Special(_) | webidl::ast::Operation::Stringifier(_) => {
-                warn!("Unsupported WebIDL operation: {:?}", self);
-                Ok(())
-            }
+impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceMember<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
+        if self.specials.len() > 0 {
+            warn!("Unsupported webidl operation {:?}", self);
+            return Ok(())
         }
-    }
-}
-
-impl<'b> FirstPass<&'b str> for webidl::ast::RegularOperation {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, self_name: &'b str) -> Result<()> {
+        if let Some(StringifierOrStatic::Stringifier(_)) = self.modifier {
+            warn!("Unsupported webidl operation {:?}", self);
+            return Ok(())
+        }
         first_pass_operation(
             record,
             self_name,
-            OperationId::Operation(self.name.clone()),
-            &self.arguments,
+            OperationId::Operation(self.identifier.map(|s| s.0)),
+            &self.args.body.list,
         )
     }
 }
 
-impl<'b> FirstPass<&'b str> for webidl::ast::StaticOperation {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, self_name: &'b str) -> Result<()> {
-        first_pass_operation(
-            record,
-            self_name,
-            OperationId::Operation(self.name.clone()),
-            &self.arguments,
-        )
-    }
-}
-
-impl FirstPass<()> for webidl::ast::Mixin {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        use webidl::ast::Mixin::*;
-
-        match self {
-            NonPartial(mixin) => mixin.first_pass(record, ()),
-            Partial(mixin) => mixin.first_pass(record, ()),
-        }
-    }
-}
-
-impl FirstPass<()> for webidl::ast::NonPartialMixin {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        let entry = record
+impl<'src> FirstPass<'src, ()> for weedle::InterfaceMixinDefinition<'src>{
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        record
             .mixins
-            .entry(self.name.clone())
-            .or_insert_with(Default::default);
-        if mem::replace(&mut entry.non_partial, Some(self)).is_some() {
-            warn!(
-                "Encounterd multiple declarations of {}, using last encountered",
-                self.name
-            );
-        }
-
+            .entry(self.identifier.0)
+            .or_insert_with(Default::default)
+            .push(&self.members.body);
         Ok(())
     }
 }
 
-impl FirstPass<()> for webidl::ast::PartialMixin {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        let entry = record
+impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceMixinDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        record
             .mixins
-            .entry(self.name.clone())
-            .or_insert_with(Default::default);
-        entry.partials.push(self);
-
+            .entry(self.identifier.0)
+            .or_insert_with(Default::default)
+            .push(&self.members.body);
         Ok(())
     }
 }
 
-impl FirstPass<()> for webidl::ast::Typedef {
-    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
-        if ::util::is_chrome_only(&self.extended_attributes) {
+impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
 
-        if record.typedefs.insert(self.name.clone(), *self.type_.clone()).is_some() {
-            warn!("Encountered multiple declarations of {}", self.name);
+        if record.typedefs.insert(self.identifier.0, &self.type_.type_).is_some() {
+            warn!("Encountered multiple declarations of {}", self.identifier.0);
         }
 
         Ok(())
