@@ -406,13 +406,19 @@ impl<'a> Context<'a> {
                         const __exports = {{}};
                         {globals}
                         function init(wasm_path) {{
-                            return fetch(wasm_path)
-                                .then(response => response.arrayBuffer())
-                                .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}))
-                                .then(({{instance}}) => {{
-                                    wasm = init.wasm = instance.exports;
-                                    return;
-                                }});
+                            const fetchPromise = fetch(wasm_path);
+                            let resultPromise;
+                            if (typeof WebAssembly.instantiateStreaming === 'function') {{
+                                resultPromise = WebAssembly.instantiateStreaming(fetchPromise, {{ './{module}': __exports }});
+                            }} else {{
+                                resultPromise = fetchPromise
+                                    .then(response => response.arrayBuffer())
+                                    .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}));
+                            }}
+                            return resultPromise.then(({{instance}}) => {{
+                                wasm = init.wasm = instance.exports;
+                                return;
+                            }});
                         }};
                         self.{global_name} = Object.assign(init, __exports);
                     }})();
