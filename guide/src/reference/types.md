@@ -7,6 +7,7 @@ The table below provides an overview of all the types that wasm-bindgen can send
 | Imported `extern Whatever;` JavaScript Types | Yes | Yes | Yes | Yes | Yes | Yes |
 | Exported `struct Whatever` Rust Types | Yes | Yes | Yes | Yes | Yes | Yes |
 | `str` | No | Yes | No | Yes | Yes | No |
+| `String` | Yes | No | No | Yes | Yes | Yes |
 | `char` | Yes | No | No | Yes | No | No |
 | `bool` | Yes | No | No | Yes | No | No |
 | `JsValue` | Yes | Yes | Yes | Yes | No | No |
