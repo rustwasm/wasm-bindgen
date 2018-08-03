@@ -15,7 +15,7 @@
     "selenium-webdriver": "^4.0.0-alpha.1",
     "ts-loader": "^4.4.2",
     "typescript": "^3.0.1",
-    "webpack": "^4.16.3",
+    "webpack": "^4.16.4",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.5"
   }
