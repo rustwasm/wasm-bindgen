@@ -243,7 +243,7 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLTableCaptionElement.webidl
  - [ ] HTMLTableCellElement.webidl
  - [ ] HTMLTableColElement.webidl
- - [ ] HTMLTableElement.webidl
+ - [x] HTMLTableElement.webidl
  - [ ] HTMLTableRowElement.webidl
  - [ ] HTMLTableSectionElement.webidl
  - [ ] HTMLTemplateElement.webidl
