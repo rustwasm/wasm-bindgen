@@ -80,6 +80,10 @@ exports.test_works = function() {
   assert.strictEqual(wasm.bool_identity(wasm.bool_none()), undefined);
   assert.strictEqual(wasm.bool_identity(wasm.bool_false()), false);
   assert.strictEqual(wasm.bool_identity(wasm.bool_true()), true);
+
+  assert.strictEqual(wasm.char_identity(wasm.char_none()), undefined);
+  assert.strictEqual(wasm.char_identity(wasm.char_letter()), 'a');
+  assert.strictEqual(wasm.char_identity(wasm.char_face()), '😀');
 };
 
 exports.i32_js_identity = function(a) { return a; };
@@ -95,3 +99,4 @@ exports.u16_js_identity = function(a) { return a; };
 exports.i64_js_identity = function(a) { return a; };
 exports.u64_js_identity = function(a) { return a; };
 exports.bool_js_identity = function(a) { return a; };
+exports.char_js_identity = function(a) { return a; };

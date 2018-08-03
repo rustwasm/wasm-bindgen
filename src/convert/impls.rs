@@ -248,6 +248,35 @@ impl FromWasmAbi for char {
     }
 }
 
+impl IntoWasmAbi for Option<char> {
+    type Abi = WasmOptionalU32;
+
+    fn into_abi(self, _extra: &mut Stack) -> WasmOptionalU32 {
+        match self {
+            None => WasmOptionalU32 {
+                present: 0,
+                value: 0,
+            },
+            Some(me) => WasmOptionalU32 {
+                present: 1,
+                value: me as u32,
+            },
+        }
+    }
+}
+
+impl FromWasmAbi for Option<char> {
+    type Abi = WasmOptionalU32;
+
+    unsafe fn from_abi(js: WasmOptionalU32, _extra: &mut Stack) -> Self {
+        if js.present == 0 {
+            None
+        } else {
+            Some(char::from_u32_unchecked(js.value))
+        }
+    }
+}
+
 impl<T> IntoWasmAbi for *const T {
     type Abi = u32;
 
