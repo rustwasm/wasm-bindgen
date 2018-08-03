@@ -4,6 +4,11 @@ The `wasm-bindgen` command line tool has a number of options available to it to
 tweak the JavaScript that is generated. The most up-to-date set of flags can
 always be listed via `wasm-bindgen --help`.
 
+> Note: usually, one should use a [`wasm-pack`-based workflow][wasm-pack] rather
+> than running the `wasm-bindgen` command line tool by hand.
+
+[wasm-pack]: https://github.com/rustwasm/wasm-pack
+
 ## Usage
 
 ```
