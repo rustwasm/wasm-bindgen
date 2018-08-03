@@ -1,6 +1,7 @@
 # Supported Types
 
-The table below provides an overview of all the types that wasm-bindgen can send/receive across the wasm ABI boundary.
+The table below provides an overview of all the types that `wasm-bindgen` can
+send and receive across the WebAssembly ABI boundary.
 
 | Type | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value |
 |:---:|:---:|:---:|:---:|:---:|:---:|
