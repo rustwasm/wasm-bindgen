@@ -14,6 +14,10 @@ export function new_button() {
   return document.createElement("button");
 }
 
+export function new_caption() {
+    return document.createElement("caption");
+}
+
 export function new_del() {
     return document.createElement("del");
 }
@@ -113,6 +117,18 @@ export function new_span() {
 
 export function new_style() {
   return document.createElement("style");
+}
+
+export function new_table() {
+    return document.createElement("table");
+}
+
+export function new_tfoot() {
+    return document.createElement("tfoot");
+}
+
+export function new_thead() {
+    return document.createElement("thead");
 }
 
 export function new_title() {
