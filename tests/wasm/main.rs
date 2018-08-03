@@ -5,3 +5,4 @@ extern crate wasm_bindgen_test;
 extern crate wasm_bindgen;
 
 pub mod api;
+pub mod option;
