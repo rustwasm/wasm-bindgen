@@ -30,6 +30,8 @@ pub fn rust_ident(name: &str) -> Ident {
         panic!("tried to create empty Ident (from \"\")");
     } else if is_rust_keyword(name) {
         Ident::new(&format!("{}_", name), proc_macro2::Span::call_site())
+    } else if name.chars().next().unwrap().is_ascii_digit() {
+        Ident::new(&format!("N{}", name), proc_macro2::Span::call_site())
     } else {
         raw_ident(name)
     }
