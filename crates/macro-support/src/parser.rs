@@ -372,6 +372,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
             self.attrs.clone(),
             self.vis.clone(),
             false,
+            None,
         )?.0;
         let catch = opts.catch();
         let js_ret = if catch {
@@ -537,17 +538,18 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
         }
 
         let name = attrs.js_name().unwrap_or(&self.ident);
-        Ok(function_from_decl(name, self.decl, self.attrs, self.vis, false)?.0)
+        Ok(function_from_decl(name, self.decl, self.attrs, self.vis, false, None)?.0)
     }
 }
 
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 fn function_from_decl(
     name: &Ident,
-    mut decl: Box<syn::FnDecl>,
+    decl: Box<syn::FnDecl>,
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
     allow_self: bool,
+    self_ty: Option<&Ident>,
 ) -> Result<(ast::Function, Option<ast::MethodSelf>), Diagnostic> {
     if decl.variadic.is_some() {
         bail_span!(decl.variadic, "can't #[wasm_bindgen] variadic functions");
@@ -559,15 +561,39 @@ fn function_from_decl(
         );
     }
 
-    assert_no_lifetimes(&mut decl)?;
+    assert_no_lifetimes(&decl)?;
 
     let syn::FnDecl { inputs, output, .. } = { *decl };
+
+    let replace_self = |t: syn::Type| {
+        let self_ty = match self_ty {
+            Some(i) => i,
+            None => return t,
+        };
+        let path = match t {
+            syn::Type::Path(syn::TypePath { qself: None, path }) => path,
+            other => return other,
+        };
+        let new_path = if path.segments.len() == 1 &&
+            path.segments[0].ident == "Self" {
+            self_ty.clone().into()
+        } else {
+            path
+        };
+        syn::Type::Path(syn::TypePath {
+            qself: None,
+            path: new_path,
+        })
+    };
 
     let mut method_self = None;
     let arguments = inputs
         .into_iter()
         .filter_map(|arg| match arg {
-            syn::FnArg::Captured(c) => Some(c),
+            syn::FnArg::Captured(mut c) => {
+                c.ty = replace_self(c.ty);
+                Some(c)
+            }
             syn::FnArg::SelfValue(_) => {
                 assert!(method_self.is_none());
                 method_self = Some(ast::MethodSelf::ByValue);
@@ -588,7 +614,7 @@ fn function_from_decl(
 
     let ret = match output {
         syn::ReturnType::Default => None,
-        syn::ReturnType::Type(_, ty) => Some(*ty),
+        syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
     };
 
     Ok((
@@ -713,7 +739,6 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
         -> Result<(), Diagnostic>
     {
         let (class, item) = self;
-        replace_self(class, item);
         let method = match item {
             syn::ImplItem::Method(ref mut m) => m,
             syn::ImplItem::Const(_) => {
@@ -762,6 +787,7 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
             method.attrs.clone(),
             method.vis.clone(),
             true,
+            Some(class),
         )?;
 
         program.exports.push(ast::Export {
@@ -929,21 +955,6 @@ fn extract_first_ty_param(ty: Option<&syn::Type>) -> Result<Option<syn::Type>, D
     Ok(Some(ty.clone()))
 }
 
-/// Replace `Self` with the given name in `item`.
-fn replace_self(name: &Ident, item: &mut syn::ImplItem) {
-    struct Walk<'a>(&'a Ident);
-
-    impl<'a> syn::visit_mut::VisitMut for Walk<'a> {
-        fn visit_ident_mut(&mut self, i: &mut Ident) {
-            if i == "Self" {
-                *i = self.0.clone();
-            }
-        }
-    }
-
-    syn::visit_mut::VisitMut::visit_impl_item_mut(&mut Walk(name), item);
-}
-
 /// Extract the documentation comments from a Vec of attributes
 fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
     attrs
@@ -972,13 +983,13 @@ fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
 }
 
 /// Check there are no lifetimes on the function.
-fn assert_no_lifetimes(decl: &mut syn::FnDecl) -> Result<(), Diagnostic> {
+fn assert_no_lifetimes(decl: &syn::FnDecl) -> Result<(), Diagnostic> {
     struct Walk {
         diagnostics: Vec<Diagnostic>,
     }
 
-    impl<'ast> syn::visit_mut::VisitMut for Walk {
-        fn visit_lifetime_mut(&mut self, i: &mut syn::Lifetime) {
+    impl<'ast> syn::visit::Visit<'ast> for Walk {
+        fn visit_lifetime(&mut self, i: &'ast syn::Lifetime) {
             self.diagnostics.push(err_span!(
                 &*i,
                 "it is currently not sound to use lifetimes in function \
@@ -987,7 +998,7 @@ fn assert_no_lifetimes(decl: &mut syn::FnDecl) -> Result<(), Diagnostic> {
         }
     }
     let mut walk = Walk { diagnostics: Vec::new() };
-    syn::visit_mut::VisitMut::visit_fn_decl_mut(&mut walk, decl);
+    syn::visit::Visit::visit_fn_decl(&mut walk, decl);
     Diagnostic::from_vec(walk.diagnostics)
 }
 
