@@ -56,7 +56,7 @@ pub struct WasmOptional64 {
 
 unsafe impl WasmAbi for WasmOptional64 {}
 
-macro_rules! type_primitive {
+macro_rules! type_wasm_native {
     ($($t:tt as $c:tt => $r:tt)*) => ($(
         impl IntoWasmAbi for $t {
             type Abi = $c;
@@ -103,7 +103,7 @@ macro_rules! type_primitive {
     )*)
 }
 
-type_primitive!(
+type_wasm_native!(
     i32 as i32 => WasmOptionalI32
     isize as i32 => WasmOptionalI32
     u32 as u32 => WasmOptionalU32
@@ -112,7 +112,7 @@ type_primitive!(
     f64 as f64 => WasmOptionalF64
 );
 
-macro_rules! type_as_u32 {
+macro_rules! type_abi_as_u32 {
     ($($t:tt)*) => ($(
         impl IntoWasmAbi for $t {
             type Abi = u32;
@@ -140,7 +140,7 @@ macro_rules! type_as_u32 {
     )*)
 }
 
-type_as_u32!(i8 u8 i16 u16);
+type_abi_as_u32!(i8 u8 i16 u16);
 
 macro_rules! type_64 {
     ($($t:tt)*) => ($(

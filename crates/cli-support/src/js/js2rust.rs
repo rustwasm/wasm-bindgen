@@ -192,17 +192,17 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if optional {
-            if arg.is_primitive() {
+            if arg.is_wasm_native() {
                 self.cx.expose_is_like_none();
                 self.js_arguments.push((name.clone(), "number".to_string()));
 
                 if self.cx.config.debug {
                     self.cx.expose_assert_num();
                     self.prelude(&format!(
-                        "\n\
-                            if (!isLikeNone({0})) {{\n\
-                                _assertNum({0});\n\
-                            }}\n\
+                        "
+                            if (!isLikeNone({0})) {{
+                                _assertNum({0});
+                            }}
                         ",
                         name
                     ));
@@ -213,17 +213,17 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 return Ok(self);
             }
 
-            if arg.is_as_u32() {
+            if arg.is_abi_as_u32() {
                 self.cx.expose_is_like_none();
                 self.js_arguments.push((name.clone(), "number".to_string()));
 
                 if self.cx.config.debug {
                     self.cx.expose_assert_num();
                     self.prelude(&format!(
-                        "\n\
-                            if (!isLikeNone({0})) {{\n\
-                                _assertNum({0});\n\
-                            }}\n\
+                        "
+                            if (!isLikeNone({0})) {{
+                                _assertNum({0});
+                            }}
                         ",
                         name
                     ));
@@ -243,10 +243,10 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.cx.expose_global_argument_ptr()?;
                 self.js_arguments.push((name.clone(), "BigInt".to_string()));
                 self.prelude(&format!(
-                    "\
-                        {f}[0] = isLikeNone({name}) ? BigInt(0) : {name};\n\
-                        const low{i} = isLikeNone({name}) ? 0 : u32CvtShim[0];\n\
-                        const high{i} = isLikeNone({name}) ? 0 : u32CvtShim[1];\n\
+                    "
+                        {f}[0] = isLikeNone({name}) ? BigInt(0) : {name};
+                        const low{i} = isLikeNone({name}) ? 0 : u32CvtShim[0];
+                        const high{i} = isLikeNone({name}) ? 0 : u32CvtShim[1];
                     ",
                     i = i,
                     f = f,
@@ -317,10 +317,10 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.cx.expose_global_argument_ptr()?;
             self.js_arguments.push((name.clone(), "BigInt".to_string()));
             self.prelude(&format!(
-                "\
-                 {f}[0] = {name};\n\
-                 const low{i} = u32CvtShim[0];\n\
-                 const high{i} = u32CvtShim[1];\n\
+                "
+                 {f}[0] = {name};
+                 const low{i} = u32CvtShim[0];
+                 const high{i} = u32CvtShim[1];
                  ",
                 i = i,
                 f = f,
@@ -415,7 +415,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if optional {
-            if ty.is_primitive() {
+            if ty.is_wasm_native() {
                 self.ret_ty = "number".to_string();
                 self.cx.expose_global_argument_ptr()?;
                 self.cx.expose_uint32_memory();
@@ -429,11 +429,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.prelude("const retptr = globalArgumentPtr();");
                 self.rust_arguments.insert(0, "retptr".to_string());
                 self.ret_expr = format!(
-                    "\
-                        RET;\n\
-                        const present = getUint32Memory()[retptr / 4];\n\
-                        const value = {mem}[retptr / {size} + 1];\n\
-                        return present === 0 ? undefined : value;\n\
+                    "
+                        RET;
+                        const present = getUint32Memory()[retptr / 4];
+                        const value = {mem}[retptr / {size} + 1];
+                        return present === 0 ? undefined : value;
                     ",
                     size = match ty {
                         Descriptor::I32 => 4,
@@ -453,7 +453,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 return Ok(self);
             }
 
-            if ty.is_as_u32() {
+            if ty.is_abi_as_u32() {
                 self.ret_ty = "number".to_string();
                 self.ret_expr = "
                     const ret = RET;
@@ -475,11 +475,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.prelude("const retptr = globalArgumentPtr();");
                 self.rust_arguments.insert(0, "retptr".to_string());
                 self.ret_expr = format!(
-                    "\
-                        RET;\n\
-                        const present = getUint32Memory()[retptr / 4];\n\
-                        const value = {}()[retptr / 8 + 1];\n\
-                        return present === 0 ? undefined : value;\n\
+                    "
+                        RET;
+                        const present = getUint32Memory()[retptr / 4];
+                        const value = {}()[retptr / 8 + 1];
+                        return present === 0 ? undefined : value;
                     ",
                     f
                 );

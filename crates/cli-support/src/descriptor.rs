@@ -154,7 +154,7 @@ impl Descriptor {
         }
     }
 
-    pub fn is_primitive(&self) -> bool {
+    pub fn is_wasm_native(&self) -> bool {
         match *self {
             Descriptor::I32
             | Descriptor::U32
@@ -164,7 +164,7 @@ impl Descriptor {
         }
     }
 
-    pub fn is_as_u32(&self) -> bool {
+    pub fn is_abi_as_u32(&self) -> bool {
         match *self {
             Descriptor::I8
             | Descriptor::U8

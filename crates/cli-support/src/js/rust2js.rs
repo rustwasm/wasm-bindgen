@@ -132,7 +132,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
 
         if optional {
-            if arg.is_primitive() {
+            if arg.is_wasm_native() {
                 let value = self.shim_argument();
                 self.js_arguments.push(format!(
                     "{present} === 0 ? undefined : {value}",
@@ -142,7 +142,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 return Ok(())
             }
 
-            if arg.is_as_u32() {
+            if arg.is_abi_as_u32() {
                 self.js_arguments.push(format!("{0} === 0xFFFFFF ? undefined : {0}", abi));
                 return Ok(())
             }
@@ -158,10 +158,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 let high = self.shim_argument();
                 let name = format!("n{}", abi);
                 self.prelude(&format!(
-                    "\
-                        u32CvtShim[0] = {present} === 0 ? 0 : {low};\n\
-                        u32CvtShim[1] = {present} === 0 ? 0 : {high};\n\
-                        const {name} = {present} === 0 ? undefined : {f}[0];\n\
+                    "
+                        u32CvtShim[0] = {present} === 0 ? 0 : {low};
+                        u32CvtShim[1] = {present} === 0 ? 0 : {high};
+                        const {name} = {present} === 0 ? undefined : {f}[0];
                     ",
                     present = abi,
                     low = low,
@@ -186,9 +186,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             let name = format!("n{}", abi);
             self.prelude(&format!(
                 "\
-                 u32CvtShim[0] = {low};\n\
-                 u32CvtShim[1] = {high};\n\
-                 const {name} = {f}[0];\n\
+                 u32CvtShim[0] = {low};
+                 u32CvtShim[1] = {high};
+                 const {name} = {f}[0];
                  ",
                 low = abi,
                 high = high,
@@ -358,7 +358,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             return Ok(())
         }
         if optional {
-            if ty.is_primitive() {
+            if ty.is_wasm_native() {
                 self.cx.expose_is_like_none();
                 self.cx.expose_uint32_memory();
                 match ty {
@@ -370,10 +370,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 };
                 self.shim_arguments.insert(0, "ret".to_string());
                 self.ret_expr = format!(
-                    "\
-                        const val = JS;\n\
-                        getUint32Memory()[ret / 4] = !isLikeNone(val);\n\
-                        {mem}[ret / {size} + 1] = isLikeNone(val) ? 0 : val;\n\
+                    "
+                        const val = JS;
+                        getUint32Memory()[ret / 4] = !isLikeNone(val);
+                        {mem}[ret / {size} + 1] = isLikeNone(val) ? 0 : val;
                     ",
                     size = match ty {
                         Descriptor::I32 => 4,
@@ -393,7 +393,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 return Ok(());
             }
 
-            if ty.is_as_u32() {
+            if ty.is_abi_as_u32() {
                 self.cx.expose_is_like_none();
                 self.ret_expr = "
                     const val = JS;
@@ -414,10 +414,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 };
                 self.shim_arguments.insert(0, "ret".to_string());
                 self.ret_expr = format!(
-                    "\
-                        const val = JS;\n\
-                        getUint32Memory()[ret / 4] = !isLikeNone(val);\n\
-                        {}()[ret / 8 + 1] = isLikeNone(val) ? BigInt(0) : val;\n\
+                    "
+                        const val = JS;
+                        getUint32Memory()[ret / 4] = !isLikeNone(val);
+                        {}()[ret / 8 + 1] = isLikeNone(val) ? BigInt(0) : val;
                     ",
                     f
                 );
