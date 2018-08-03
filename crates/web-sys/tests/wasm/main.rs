@@ -25,6 +25,11 @@ pub mod hr_element;
 pub mod html_element;
 pub mod html_html_element;
 pub mod input_element;
+//TODO: Both menu-related tests completely break in Chrome, but run fine in Firefox.
+//pub mod menu_element;
+//pub mod menu_item_element;
+pub mod meta_element;
+pub mod meter_element;
 pub mod mod_elements;
 pub mod olist_element;
 pub mod optgroup_element;

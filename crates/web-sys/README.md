@@ -217,10 +217,10 @@ bindings are fully working and have full test coverage.
  - [ ] HTMLLinkElement.webidl
  - [ ] HTMLMapElement.webidl
  - [ ] HTMLMediaElement.webidl
- - [ ] HTMLMenuElement.webidl
- - [ ] HTMLMenuItemElement.webidl
- - [ ] HTMLMetaElement.webidl
- - [ ] HTMLMeterElement.webidl
+ - [x] HTMLMenuElement.webidl
+ - [x] HTMLMenuItemElement.webidl
+ - [x] HTMLMetaElement.webidl
+ - [x] HTMLMeterElement.webidl
  - [x] HTMLModElement.webidl
  - [ ] HTMLObjectElement.webidl
  - [x] HTMLOListElement.webidl

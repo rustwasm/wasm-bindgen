@@ -58,6 +58,22 @@ export function new_ins() {
     return document.createElement("ins");
 }
 
+export function new_menu() {
+    return document.createElement("menu");
+}
+
+export function new_menuitem() {
+    return document.createElement("menuitem");
+}
+
+export function new_meta() {
+    return document.createElement("meta");
+}
+
+export function new_meter() {
+    return document.createElement("meter");
+}
+
 export function new_olist() {
     return document.createElement("ol");
 }
