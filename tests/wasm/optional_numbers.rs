@@ -16,6 +16,7 @@ extern {
     fn i64_js_identity(a: Option<i64>) -> Option<i64>;
     fn u64_js_identity(a: Option<u64>) -> Option<u64>;
     fn bool_js_identity(a: Option<bool>) -> Option<bool>;
+    fn char_js_identity(a: Option<char>) -> Option<char>;
 
     fn test_works();
 }
@@ -190,6 +191,15 @@ pub fn bool_false() -> Option<bool> { Some(false) }
 pub fn bool_true() -> Option<bool> { Some(true) }
 #[wasm_bindgen]
 pub fn bool_identity(a: Option<bool>) -> Option<bool> { bool_js_identity(a) }
+
+#[wasm_bindgen]
+pub fn char_none() -> Option<char> { None }
+#[wasm_bindgen]
+pub fn char_letter() -> Option<char> { Some('a') }
+#[wasm_bindgen]
+pub fn char_face() -> Option<char> { Some('😀') }
+#[wasm_bindgen]
+pub fn char_identity(a: Option<char>) -> Option<char> { char_js_identity(a) }
 
 #[wasm_bindgen_test]
 fn works() {

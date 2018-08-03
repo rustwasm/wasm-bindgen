@@ -277,6 +277,13 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     self.rust_arguments.push(format!("isLikeNone({0}) ? 0xFFFFFF : {0} ? 1 : 0", name));
                     return Ok(self);
                 },
+                Descriptor::Char => {
+                    self.cx.expose_is_like_none();
+                    self.js_arguments.push((name.clone(), "string".to_string()));
+                    self.rust_arguments.push(format!("!isLikeNone({0})", name));
+                    self.rust_arguments.push(format!("isLikeNone({0}) ? 0 : {0}.codePointAt(0)", name));
+                    return Ok(self);
+                },
                 _ => bail!("unsupported optional argument type for calling Rust function from JS: {:?}", arg),
             };
         }
@@ -511,6 +518,20 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     self.ret_expr = "
                         const ret = RET;
                         return ret === 0xFFFFFF ? undefined : ret !== 0;
+                    ".to_string();
+                    return Ok(self);
+                },
+                Descriptor::Char => {
+                    self.ret_ty = "string".to_string();
+                    self.cx.expose_global_argument_ptr()?;
+                    self.cx.expose_uint32_memory();
+                    self.prelude("const retptr = globalArgumentPtr();");
+                    self.rust_arguments.insert(0, "retptr".to_string());
+                    self.ret_expr = "
+                        RET;
+                        const present = getUint32Memory()[retptr / 4];
+                        const value = getUint32Memory()[retptr / 4 + 1];
+                        return present === 0 ? undefined : String.fromCodePoint(value);
                     ".to_string();
                     return Ok(self);
                 },
