@@ -15,6 +15,7 @@ extern {
     fn u16_js_identity(a: Option<u16>) -> Option<u16>;
     fn i64_js_identity(a: Option<i64>) -> Option<i64>;
     fn u64_js_identity(a: Option<u64>) -> Option<u64>;
+    fn bool_js_identity(a: Option<bool>) -> Option<bool>;
 
     fn test_works();
 }
@@ -180,6 +181,15 @@ pub fn u64_max() -> Option<u64> { Some(u64::max_value()) }
 pub fn u64_min() -> Option<u64> { Some(u64::min_value()) }
 #[wasm_bindgen]
 pub fn u64_identity(a: Option<u64>) -> Option<u64> { u64_js_identity(a) }
+
+#[wasm_bindgen]
+pub fn bool_none() -> Option<bool> { None }
+#[wasm_bindgen]
+pub fn bool_false() -> Option<bool> { Some(false) }
+#[wasm_bindgen]
+pub fn bool_true() -> Option<bool> { Some(true) }
+#[wasm_bindgen]
+pub fn bool_identity(a: Option<bool>) -> Option<bool> { bool_js_identity(a) }
 
 #[wasm_bindgen_test]
 fn works() {

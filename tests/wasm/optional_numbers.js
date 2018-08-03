@@ -76,6 +76,10 @@ exports.test_works = function() {
   assert.strictEqual(wasm.u64_identity(wasm.u64_one()), BigInt('1'));
   assert.strictEqual(wasm.u64_identity(wasm.u64_max()), BigInt('18446744073709551615'));
   assert.strictEqual(wasm.u64_identity(wasm.u64_min()), BigInt('0'));
+
+  assert.strictEqual(wasm.bool_identity(wasm.bool_none()), undefined);
+  assert.strictEqual(wasm.bool_identity(wasm.bool_false()), false);
+  assert.strictEqual(wasm.bool_identity(wasm.bool_true()), true);
 };
 
 exports.i32_js_identity = function(a) { return a; };
@@ -90,3 +94,4 @@ exports.i16_js_identity = function(a) { return a; };
 exports.u16_js_identity = function(a) { return a; };
 exports.i64_js_identity = function(a) { return a; };
 exports.u64_js_identity = function(a) { return a; };
+exports.bool_js_identity = function(a) { return a; };

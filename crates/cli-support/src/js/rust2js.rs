@@ -173,7 +173,13 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 return Ok(());
             }
 
-            bail!("unsupported optional argument type for calling JS function from Rust: {:?}", arg);
+            match *arg {
+                Descriptor::Boolean => {
+                    self.js_arguments.push(format!("{0} === 0xFFFFFF ? undefined : {0} !== 0", abi));
+                    return Ok(())
+                },
+                _ => bail!("unsupported optional argument type for calling JS function from Rust: {:?}", arg),
+            };
         }
 
         if let Some(signed) = arg.get_64() {
@@ -424,7 +430,17 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 return Ok(());
             }
 
-            bail!("unsupported optional return type for calling JS function from Rust: {:?}", ty);
+            match *ty {
+                Descriptor::Boolean => {
+                    self.cx.expose_is_like_none();
+                    self.ret_expr = "
+                        const val = JS;
+                        return isLikeNone(val) ? 0xFFFFFF : val ? 1 : 0;
+                    ".to_string();
+                    return Ok(());
+                },
+                _ => bail!("unsupported optional return type for calling JS function from Rust: {:?}", ty),
+            };
         }
         if ty.is_number() {
             self.ret_expr = "return JS;".to_string();

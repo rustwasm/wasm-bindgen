@@ -220,6 +220,16 @@ impl FromWasmAbi for bool {
     }
 }
 
+impl OptionIntoWasmAbi for bool {
+    #[inline]
+    fn none() -> u32 { 0xFFFFFFu32 }
+}
+
+impl OptionFromWasmAbi for bool {
+    #[inline]
+    fn is_none(js: &u32) -> bool { *js == 0xFFFFFFu32 }
+}
+
 impl IntoWasmAbi for char {
     type Abi = u32;
 
