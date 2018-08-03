@@ -125,6 +125,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             self.cx.expose_take_object();
             self.js_arguments.push(format!("takeObject({})", abi));
             return Ok(())
+        } else if arg.is_ref_anyref() {
+            self.cx.expose_get_object();
+            self.js_arguments.push(format!("getObject({})", abi));
+            return Ok(())
         }
 
         if optional {
@@ -253,10 +257,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ref d if d.is_number() => abi,
             Descriptor::Boolean => format!("{} !== 0", abi),
             Descriptor::Char => format!("String.fromCodePoint({})", abi),
-            ref d if d.is_ref_anyref() => {
-                self.cx.expose_get_object();
-                format!("getObject({})", abi)
-            }
             _ => bail!(
                 "unimplemented argument type in imported function: {:?}",
                 arg

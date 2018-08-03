@@ -13,6 +13,11 @@ extern {
     fn return_null_byval() -> Option<MyType>;
     fn return_some_byval() -> Option<MyType>;
     fn test_option_values();
+
+    #[wasm_bindgen(js_name = take_none_byval)]
+    fn take_none_byref(t: Option<&MyType>);
+    #[wasm_bindgen(js_name = take_some_byval)]
+    fn take_some_byref(t: Option<&MyType>);
 }
 
 #[wasm_bindgen_test]
@@ -23,7 +28,6 @@ fn import_by_value() {
     assert!(return_undef_byval().is_none());
     assert!(return_some_byval().is_some());
 }
-
 
 #[wasm_bindgen_test]
 fn export_by_value() {
@@ -48,4 +52,10 @@ pub fn rust_return_none_byval() -> Option<MyType> {
 #[wasm_bindgen]
 pub fn rust_return_some_byval() -> Option<MyType> {
     Some(MyType::new())
+}
+
+#[wasm_bindgen_test]
+fn import_by_ref() {
+    take_none_byref(None);
+    take_some_byref(Some(&MyType::new()));
 }
