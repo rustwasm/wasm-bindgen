@@ -56,6 +56,13 @@ fn one_method_using_an_undefined_import_doesnt_break_all_other_methods() {
 }
 
 #[wasm_bindgen_test]
+fn optional_method() {
+    let f = OptionalMethod::new().unwrap();
+    assert!(f.opt(Some(15)) == Some(16));
+    assert!(f.opt(None) == None);
+}
+
+#[wasm_bindgen_test]
 fn unforgeable_is_structural() {
     let f = Unforgeable::new().unwrap();
     assert_eq!(f.uno(), 1);

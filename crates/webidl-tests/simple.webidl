@@ -31,6 +31,11 @@ interface UndefinedMethod {
 };
 
 [Constructor()]
+interface OptionalMethod {
+  octet? opt(short? a);
+};
+
+[Constructor()]
 interface Unforgeable {
   [Unforgeable] readonly attribute short uno;
   readonly attribute short dos;

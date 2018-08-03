@@ -67,6 +67,17 @@ global.UndefinedMethod = class UndefinedMethod {
   }
 };
 
+global.OptionalMethod = class OptionalMethod {
+  constructor() {}
+  opt(a) {
+    if (a == undefined) {
+      return undefined;
+    } else {
+      return a + 1;
+    }
+  }
+};
+
 global.Unforgeable = class Unforgeable {
   constructor() {
     this.uno = 1;

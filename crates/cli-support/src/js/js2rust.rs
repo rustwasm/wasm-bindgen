@@ -192,7 +192,74 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if optional {
-            bail!("unsupported optional argument to rust function {:?}", arg);
+            if arg.is_primitive() {
+                self.cx.expose_is_like_none();
+                self.js_arguments.push((name.clone(), "number".to_string()));
+
+                if self.cx.config.debug {
+                    self.cx.expose_assert_num();
+                    self.prelude(&format!(
+                        "\n\
+                            if (!isLikeNone({0})) {{\n\
+                                _assertNum({0});\n\
+                            }}\n\
+                        ",
+                        name
+                    ));
+                }
+
+                self.rust_arguments.push(format!("!isLikeNone({0})", name));
+                self.rust_arguments.push(format!("isLikeNone({0}) ? 0 : {0}", name));
+                return Ok(self);
+            }
+
+            if arg.is_as_u32() {
+                self.cx.expose_is_like_none();
+                self.js_arguments.push((name.clone(), "number".to_string()));
+
+                if self.cx.config.debug {
+                    self.cx.expose_assert_num();
+                    self.prelude(&format!(
+                        "\n\
+                            if (!isLikeNone({0})) {{\n\
+                                _assertNum({0});\n\
+                            }}\n\
+                        ",
+                        name
+                    ));
+                }
+
+                self.rust_arguments.push(format!("isLikeNone({0}) ? 0xFFFFFF : {0}", name));
+                return Ok(self);
+            }
+
+            if let Some(signed) = arg.get_64() {
+                let f = if signed {
+                    self.cx.expose_int64_cvt_shim()
+                } else {
+                    self.cx.expose_uint64_cvt_shim()
+                };
+                self.cx.expose_uint32_memory();
+                self.cx.expose_global_argument_ptr()?;
+                self.js_arguments.push((name.clone(), "BigInt".to_string()));
+                self.prelude(&format!(
+                    "\
+                        {f}[0] = isLikeNone({name}) ? BigInt(0) : {name};\n\
+                        const low{i} = isLikeNone({name}) ? 0 : u32CvtShim[0];\n\
+                        const high{i} = isLikeNone({name}) ? 0 : u32CvtShim[1];\n\
+                    ",
+                    i = i,
+                    f = f,
+                    name = name,
+                ));
+                self.rust_arguments.push(format!("!isLikeNone({})", name));
+                self.rust_arguments.push(format!("0"));
+                self.rust_arguments.push(format!("low{}", i));
+                self.rust_arguments.push(format!("high{}", i));
+                return Ok(self);
+            }
+
+            bail!("unsupported optional argument type for calling Rust function from JS: {:?}", arg);
         }
 
         if let Some(s) = arg.rust_struct() {
@@ -240,7 +307,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             return Ok(self);
         }
 
-        if let Some(signed) = arg.get_64bit() {
+        if let Some(signed) = arg.get_64() {
             let f = if signed {
                 self.cx.expose_int64_cvt_shim()
             } else {
@@ -252,15 +319,15 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.prelude(&format!(
                 "\
                  {f}[0] = {name};\n\
-                 const lo{i} = u32CvtShim[0];\n\
-                 const hi{i} = u32CvtShim[1];\n\
+                 const low{i} = u32CvtShim[0];\n\
+                 const high{i} = u32CvtShim[1];\n\
                  ",
                 i = i,
                 f = f,
                 name = name,
             ));
-            self.rust_arguments.push(format!("lo{}", i));
-            self.rust_arguments.push(format!("hi{}", i));
+            self.rust_arguments.push(format!("low{}", i));
+            self.rust_arguments.push(format!("high{}", i));
             return Ok(self);
         }
 
@@ -292,7 +359,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.js_arguments.push((name.clone(), "string".to_string()));
                 self.rust_arguments.push(format!("{}.codePointAt(0)", name))
             }
-            _ => bail!("unsupported argument to rust function {:?}", arg),
+            _ => bail!("unsupported argument type for calling Rust function from JS: {:?}", arg),
         }
         Ok(self)
     }
@@ -348,7 +415,78 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if optional {
-            bail!("unsupported optional argument to rust function {:?}", ty);
+            if ty.is_primitive() {
+                self.ret_ty = "number".to_string();
+                self.cx.expose_global_argument_ptr()?;
+                self.cx.expose_uint32_memory();
+                match ty {
+                    Descriptor::I32 => self.cx.expose_int32_memory(),
+                    Descriptor::U32 => (),
+                    Descriptor::F32 => self.cx.expose_f32_memory(),
+                    Descriptor::F64 => self.cx.expose_f64_memory(),
+                    _ => (),
+                };
+                self.prelude("const retptr = globalArgumentPtr();");
+                self.rust_arguments.insert(0, "retptr".to_string());
+                self.ret_expr = format!(
+                    "\
+                        RET;\n\
+                        const present = getUint32Memory()[retptr / 4];\n\
+                        const value = {mem}[retptr / {size} + 1];\n\
+                        return present === 0 ? undefined : value;\n\
+                    ",
+                    size = match ty {
+                        Descriptor::I32 => 4,
+                        Descriptor::U32 => 4,
+                        Descriptor::F32 => 4,
+                        Descriptor::F64 => 8,
+                        _ => unreachable!(),
+                    },
+                    mem = match ty {
+                        Descriptor::I32 => "getInt32Memory()",
+                        Descriptor::U32 => "getUint32Memory()",
+                        Descriptor::F32 => "getFloat32Memory()",
+                        Descriptor::F64 => "getFloat64Memory()",
+                        _ => unreachable!(),
+                    }
+                );
+                return Ok(self);
+            }
+
+            if ty.is_as_u32() {
+                self.ret_ty = "number".to_string();
+                self.ret_expr = "
+                    const ret = RET;
+                    return ret === 0xFFFFFF ? undefined : ret;
+                ".to_string();
+                return Ok(self);
+            }
+
+            if let Some(signed) = ty.get_64() {
+                self.ret_ty = "BigInt".to_string();
+                self.cx.expose_global_argument_ptr()?;
+                let f = if signed {
+                    self.cx.expose_int64_memory();
+                    "getInt64Memory"
+                } else {
+                    self.cx.expose_uint64_memory();
+                    "getUint64Memory"
+                };
+                self.prelude("const retptr = globalArgumentPtr();");
+                self.rust_arguments.insert(0, "retptr".to_string());
+                self.ret_expr = format!(
+                    "\
+                        RET;\n\
+                        const present = getUint32Memory()[retptr / 4];\n\
+                        const value = {}()[retptr / 8 + 1];\n\
+                        return present === 0 ? undefined : value;\n\
+                    ",
+                    f
+                );
+                return Ok(self);
+            }
+
+            bail!("unsupported optional return type for calling Rust function from JS: {:?}", ty);
         }
 
         if ty.is_ref_anyref() {
@@ -374,7 +512,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             return Ok(self);
         }
 
-        if let Some(signed) = ty.get_64bit() {
+        if let Some(signed) = ty.get_64() {
             self.ret_ty = "BigInt".to_string();
             self.cx.expose_global_argument_ptr()?;
             let f = if signed {
@@ -405,7 +543,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.ret_ty = "string".to_string();
                 self.ret_expr = format!("return String.fromCodePoint(RET);")
             }
-            _ => bail!("unsupported return from Rust to JS {:?}", ty),
+            _ => bail!("unsupported return type for calling Rust function from JS: {:?}", ty),
         }
         Ok(self)
     }
