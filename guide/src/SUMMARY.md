@@ -14,7 +14,7 @@
   - [Passing Arbitrary data](./reference/passing-data.md)
   - [Feature Reference](./reference/feature-reference.md)
   - [Command Line Interface](./reference/cli.md)
-  - [Type Reference](./reference/reference.md)
+  - [Supported Types](./reference/types.md)
 
 --------------------------------------------------------------------------------
 
