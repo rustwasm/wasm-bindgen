@@ -16,6 +16,7 @@ sourcefile = "0.1"
 
 [dependencies]
 wasm-bindgen = { path = "../..", version = "0.2.15" }
+js-sys = { path = '../js-sys', version = '0.2.0' }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 futures = "0.1"

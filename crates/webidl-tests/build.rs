@@ -1,8 +1,9 @@
 extern crate wasm_bindgen_webidl;
 
-use std::fs;
 use std::env;
+use std::fs;
 use std::path::PathBuf;
+use std::process::Command;
 
 fn main() {
     let idls = fs::read_dir(".")
@@ -41,6 +42,10 @@ fn main() {
             }}
         "#, js_file.display(), i));
 
-        fs::write(out_file, generated_rust).unwrap();
+        fs::write(&out_file, generated_rust).unwrap();
+
+        // Attempt to run rustfmt, but don't worry if it fails or if it isn't
+        // installed, this is just to help with debugging
+        drop(Command::new("rustfmt").arg(&out_file).status());
     }
 }

@@ -12,8 +12,9 @@ path = 'lib.rs'
 wasm-bindgen-webidl = { path = '../webidl' }
 
 [dev-dependencies]
-wasm-bindgen-test = { path = '../test' }
+js-sys = { path = '../js-sys' }
 wasm-bindgen = { path = '../..' }
+wasm-bindgen-test = { path = '../test' }
 
 [[test]]
 name = 'wasm'
