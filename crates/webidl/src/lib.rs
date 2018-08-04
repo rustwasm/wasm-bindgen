@@ -358,6 +358,50 @@ impl<'src> WebidlParse<'src, &'src weedle::InterfaceDefinition<'src>> for Extend
             {
                 add_constructor(&list.args.body.list, list.rhs_identifier.0)
             }
+
+            // these appear to be mapping to gecko preferences, seems like we
+            // can safely ignore
+            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Pref" => {}
+
+            // looks to be a gecko-specific attribute to tie WebIDL back to C++
+            // functions perhaps
+            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Func" => {}
+            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "JSImplementation" => {}
+            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "HeaderFile" => {}
+
+            // Not actually mentioned in the spec and presumably a hint to
+            // Gecko's JS engine? Unsure, but seems like it doesn't matter to us
+            ExtendedAttribute::NoArgs(id)
+                if (id.0).0 == "ProbablyShortLivingWrapper" => {}
+
+            // Indicates something about enumerable properties, we're not too
+            // interested in it
+            // https://heycam.github.io/webidl/#LegacyUnenumerableNamedProperties
+            ExtendedAttribute::NoArgs(id)
+                if (id.0).0 == "LegacyUnenumerableNamedProperties" => {}
+
+            // Indicates where objects are defined (web workers and such), we
+            // may later want to use this for cfgs but for now we ignore it.
+            // https://heycam.github.io/webidl/#Exposed
+            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Exposed" => {}
+            ExtendedAttribute::IdentList(id) if id.identifier.0 == "Exposed" => {}
+
+            // We handle this with the "structural" attribute elsewhere
+            ExtendedAttribute::IdentList(id) if id.identifier.0 == "Global" => {}
+
+            // Seems like it's safe to ignore for now, just telling us where a
+            // binding appears
+            // https://heycam.github.io/webidl/#SecureContext
+            ExtendedAttribute::NoArgs(id) if (id.0).0 == "SecureContext" => {}
+
+            // We handle this elsewhere
+            ExtendedAttribute::NoArgs(id) if (id.0).0 == "Unforgeable" => {}
+
+            // Looks like this attribute just says that we can't call the
+            // constructor
+            // https://html.spec.whatwg.org/multipage/dom.html#htmlconstructor
+            ExtendedAttribute::NoArgs(id) if (id.0).0 == "HTMLConstructor" => {}
+
             ExtendedAttribute::ArgList(_)
             | ExtendedAttribute::Ident(_)
             | ExtendedAttribute::IdentList(_)
