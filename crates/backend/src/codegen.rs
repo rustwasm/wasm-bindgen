@@ -521,10 +521,12 @@ impl ToTokens for ast::ImportType {
         };
         let const_name = format!("__wbg_generated_const_{}", name);
         let const_name = Ident::new(&const_name, Span::call_site());
+        let instanceof_shim = Ident::new(&self.instanceof_shim, Span::call_site());
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
             #[doc = #doc_comment]
+            #[repr(transparent)]
             #vis struct #name {
                 obj: ::wasm_bindgen::JsValue,
             }
@@ -533,7 +535,7 @@ impl ToTokens for ast::ImportType {
             const #const_name: () = {
                 use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi, Stack};
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
-                use wasm_bindgen::convert::RefFromWasmAbi;
+                use wasm_bindgen::convert::{RefFromWasmAbi, GlobalStack};
                 use wasm_bindgen::describe::WasmDescribe;
                 use wasm_bindgen::{JsValue, JsCast};
                 use wasm_bindgen::__rt::core::mem::ManuallyDrop;
@@ -594,15 +596,60 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                // TODO: remove this on the next major version
                 impl From<JsValue> for #name {
                     fn from(obj: JsValue) -> #name {
                         #name { obj }
                     }
                 }
 
+                impl AsRef<JsValue> for #name {
+                    fn as_ref(&self) -> &JsValue { &self.obj }
+                }
+
+                impl AsMut<JsValue> for #name {
+                    fn as_mut(&mut self) -> &mut JsValue { &mut self.obj }
+                }
+
                 impl From<#name> for JsValue {
                     fn from(obj: #name) -> JsValue {
                         obj.obj
+                    }
+                }
+
+                impl JsCast for #name {
+                    #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+                    fn instanceof(val: &JsValue) -> bool {
+                        #[link(wasm_import_module = "__wbindgen_placeholder__")]
+                        extern {
+                            fn #instanceof_shim(val: u32) -> u32;
+                        }
+                        unsafe {
+                            let idx = val.into_abi(&mut GlobalStack::new());
+                            #instanceof_shim(idx) != 0
+                        }
+                    }
+
+                    #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+                    fn instanceof(val: &JsValue) -> bool {
+                        drop(val);
+                        panic!("cannot check instanceof on non-wasm targets");
+                    }
+
+                    fn unchecked_from_js(val: JsValue) -> Self {
+                        #name { obj: val }
+                    }
+
+                    fn unchecked_from_js_ref(val: &JsValue) -> &Self {
+                        // Should be safe because `#name` is a transparent
+                        // wrapper around `val`
+                        unsafe { &*(val as *const JsValue as *const #name) }
+                    }
+
+                    fn unchecked_from_js_mut(val: &mut JsValue) -> &mut Self {
+                        // Should be safe because `#name` is a transparent
+                        // wrapper around `val`
+                        unsafe { &mut *(val as *mut JsValue as *mut #name) }
                     }
                 }
 

@@ -21,6 +21,7 @@ pub mod enums;
 pub mod import_class;
 pub mod imports;
 pub mod js_objects;
+pub mod jscast;
 pub mod math;
 pub mod node;
 pub mod option;

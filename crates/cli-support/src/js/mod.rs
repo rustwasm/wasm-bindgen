@@ -1755,7 +1755,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     format!("failed to generate bindings for JS import `{}`", s.name)
                 })?;
             }
-            shared::ImportKind::Type(_) => {}
+            shared::ImportKind::Type(ref ty) => {
+                self.generate_import_type(import, ty).with_context(|_| {
+                    format!(
+                        "failed to generate bindings for JS import `{}`",
+                        ty.name,
+                    )
+                })?;
+            }
             shared::ImportKind::Enum(_) => {}
         }
         Ok(())
@@ -1933,6 +1940,27 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .process(descriptor.unwrap_function())?
             .finish(&target);
         self.cx.export(&import.shim, &js, None);
+        Ok(())
+    }
+
+    fn generate_import_type(
+        &mut self,
+        info: &shared::Import,
+        import: &shared::ImportType,
+    ) -> Result<(), Error> {
+        if !self.cx.wasm_import_needed(&import.instanceof_shim) {
+            return Ok(());
+        }
+        let name = self.import_name(info, &import.name)?;
+        self.cx.expose_get_object();
+        let body = format!("
+                function(idx) {{
+                    return getObject(idx) instanceof {} ? 1 : 0;
+                }}
+            ",
+            name,
+        );
+        self.cx.export(&import.instanceof_shim, &body, None);
         Ok(())
     }
 

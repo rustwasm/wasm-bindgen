@@ -246,6 +246,7 @@ impl<'src> WebidlParse<'src, ()> for weedle::InterfaceDefinition<'src> {
                 name: rust_ident(camel_case_ident(self.identifier.0).as_str()),
                 attrs: Vec::new(),
                 doc_comment,
+                instanceof_shim: format!("__widl_instanceof_{}", self.name),
             }),
         });
 

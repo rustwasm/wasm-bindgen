@@ -524,11 +524,13 @@ impl ConvertToAst<()> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
     fn convert(self, (): ()) -> Result<Self::Target, Diagnostic> {
+        let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
-            name: self.ident,
             attrs: self.attrs,
             doc_comment: None,
+            instanceof_shim: shim,
+            name: self.ident,
         }))
     }
 }
