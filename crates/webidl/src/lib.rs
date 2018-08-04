@@ -181,12 +181,14 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
             weedle::Definition::PartialInterfaceMixin(_) => {
                 // handled in the first pass
             }
+            weedle::Definition::Implements(..) => {
+                // nothing to do for this, ignore it
+            }
             // TODO
             weedle::Definition::Callback(..)
             | weedle::Definition::CallbackInterface(..)
             | weedle::Definition::Dictionary(..)
             | weedle::Definition::PartialDictionary(..)
-            | weedle::Definition::Implements(..)
             | weedle::Definition::Namespace(..)
             | weedle::Definition::PartialNamespace(..) => {
                 warn!("Unsupported WebIDL definition: {:?}", self)
