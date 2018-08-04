@@ -64,9 +64,6 @@ impl TryToTokens for ast::Program {
         for e in self.enums.iter() {
             e.to_tokens(tokens);
         }
-        for a in self.type_aliases.iter() {
-            a.to_tokens(tokens);
-        }
         for c in self.consts.iter() {
             c.to_tokens(tokens);
         }
@@ -979,18 +976,6 @@ impl ToTokens for ast::ImportStatic {
                     __init: init,
                 }
             };
-        }).to_tokens(into);
-    }
-}
-
-impl ToTokens for ast::TypeAlias {
-    fn to_tokens(&self, into: &mut TokenStream) {
-        let vis = &self.vis;
-        let dest = &self.dest;
-        let src = &self.src;
-        (quote! {
-            #[allow(non_camel_case_types)]
-            #vis type #dest = #src;
         }).to_tokens(into);
     }
 }

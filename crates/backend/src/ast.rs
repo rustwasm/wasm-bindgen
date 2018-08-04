@@ -17,8 +17,6 @@ pub struct Program {
     pub enums: Vec<Enum>,
     /// rust structs
     pub structs: Vec<Struct>,
-    /// rust type aliases
-    pub type_aliases: Vec<TypeAlias>,
     /// rust consts
     pub consts: Vec<Const>,
 }
@@ -196,13 +194,6 @@ pub enum TypeLocation {
     ImportRet,
     ExportArgument,
     ExportRet,
-}
-
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-pub struct TypeAlias {
-    pub vis: syn::Visibility,
-    pub dest: Ident,
-    pub src: syn::Type,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]

@@ -83,7 +83,6 @@ impl ImportedTypes for ast::Program {
         F: FnMut(&Ident, ImportedTypeKind),
     {
         self.imports.imported_types(f);
-        self.type_aliases.imported_types(f);
         self.consts.imported_types(f);
     }
 }
@@ -290,15 +289,6 @@ impl ImportedTypes for ast::ImportEnum {
     }
 }
 
-impl ImportedTypes for ast::TypeAlias {
-    fn imported_types<F>(&self, f: &mut F)
-    where
-        F: FnMut(&Ident, ImportedTypeKind),
-    {
-        f(&self.dest, ImportedTypeKind::Reference);
-    }
-}
-
 impl ImportedTypes for ast::Const {
     fn imported_types<F>(&self, f: &mut F)
     where
@@ -322,7 +312,6 @@ impl RemoveUndefinedImports for ast::Program {
         F: Fn(&Ident) -> bool,
     {
         self.imports.remove_undefined_imports(is_defined);
-        self.type_aliases.remove_undefined_imports(is_defined);
         self.consts.remove_undefined_imports(is_defined);
     }
 }
