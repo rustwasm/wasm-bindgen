@@ -6,5 +6,6 @@ extern crate wasm_bindgen;
 
 pub mod api;
 pub mod char;
+pub mod classes;
 pub mod option;
 pub mod optional_primitives;
