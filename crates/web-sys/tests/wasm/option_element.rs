@@ -1,5 +1,4 @@
 use wasm_bindgen_test::*;
-use wasm_bindgen::prelude::*;
 use web_sys::HtmlOptionElement;
 
 #[wasm_bindgen_test]
