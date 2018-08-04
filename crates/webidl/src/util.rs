@@ -430,12 +430,18 @@ impl<'a> FirstPassRecord<'a> {
                 leading_colon_path_ty(vec![rust_ident("js_sys"), rust_ident("ArrayBuffer")])
             }
 
+            // The WebIDL `object` maps to the ECMAScript `Object`
+            //
+            // https://heycam.github.io/webidl/#es-object
+            webidl::ast::TypeKind::Object => {
+                leading_colon_path_ty(vec![rust_ident("js_sys"), rust_ident("Object")])
+            }
+
             // Support for these types is not yet implemented, so skip
             // generating any bindings for this function.
             | webidl::ast::TypeKind::DataView
             | webidl::ast::TypeKind::Error
             | webidl::ast::TypeKind::FrozenArray(_)
-            | webidl::ast::TypeKind::Object
             | webidl::ast::TypeKind::Promise(_)
             | webidl::ast::TypeKind::Record(..)
             | webidl::ast::TypeKind::Sequence(_)
