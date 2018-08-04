@@ -422,9 +422,16 @@ impl<'a> FirstPassRecord<'a> {
                 }
             }
 
+            // This seems like a "naively correct" mapping, but the online docs
+            // are a bit scary in this regard...
+            //
+            // https://heycam.github.io/webidl/#es-buffer-source-types
+            webidl::ast::TypeKind::ArrayBuffer => {
+                simple_path_ty(vec![rust_ident("js_sys"), rust_ident("ArrayBuffer")])
+            }
+
             // Support for these types is not yet implemented, so skip
             // generating any bindings for this function.
-            webidl::ast::TypeKind::ArrayBuffer
             | webidl::ast::TypeKind::DataView
             | webidl::ast::TypeKind::Error
             | webidl::ast::TypeKind::FrozenArray(_)
