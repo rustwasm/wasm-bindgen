@@ -1,7 +1,7 @@
 use std::iter::{self, FromIterator};
 
 use backend;
-use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident, simple_path_ty};
+use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
 use heck::{CamelCase, SnakeCase};
 use proc_macro2::Ident;
 use syn;
@@ -356,7 +356,7 @@ impl<'a> FirstPassRecord<'a> {
         let base_ty = match ty.kind {
             // `any` becomes `::wasm_bindgen::JsValue`.
             webidl::ast::TypeKind::Any => {
-                simple_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")])
+                leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")])
             }
 
             // A reference to a type by name becomes the same thing in the
@@ -427,7 +427,7 @@ impl<'a> FirstPassRecord<'a> {
             //
             // https://heycam.github.io/webidl/#es-buffer-source-types
             webidl::ast::TypeKind::ArrayBuffer => {
-                simple_path_ty(vec![rust_ident("js_sys"), rust_ident("ArrayBuffer")])
+                leading_colon_path_ty(vec![rust_ident("js_sys"), rust_ident("ArrayBuffer")])
             }
 
             // Support for these types is not yet implemented, so skip
