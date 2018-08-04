@@ -519,6 +519,8 @@ impl ToTokens for ast::ImportType {
             None => "",
             Some(comment) => comment,
         };
+        let const_name = format!("__wbg_generated_const_{}", name);
+        let const_name = Ident::new(&const_name, Span::call_site());
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
@@ -527,84 +529,85 @@ impl ToTokens for ast::ImportType {
                 obj: ::wasm_bindgen::JsValue,
             }
 
-            impl ::wasm_bindgen::describe::WasmDescribe for #name {
-                fn describe() {
-                    ::wasm_bindgen::JsValue::describe();
-                }
-            }
+            #[allow(bad_style)]
+            const #const_name: () = {
+                use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi, Stack};
+                use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
+                use wasm_bindgen::convert::RefFromWasmAbi;
+                use wasm_bindgen::describe::WasmDescribe;
+                use wasm_bindgen::{JsValue, JsCast};
+                use wasm_bindgen::__rt::core::mem::ManuallyDrop;
 
-            impl ::wasm_bindgen::convert::IntoWasmAbi for #name {
-                type Abi = <::wasm_bindgen::JsValue as
-                    ::wasm_bindgen::convert::IntoWasmAbi>::Abi;
-
-                fn into_abi(self, extra: &mut ::wasm_bindgen::convert::Stack) -> Self::Abi {
-                    self.obj.into_abi(extra)
-                }
-            }
-
-            impl ::wasm_bindgen::convert::OptionIntoWasmAbi for #name {
-                fn none() -> Self::Abi { 0 }
-            }
-
-            impl<'a> ::wasm_bindgen::convert::OptionIntoWasmAbi for &'a #name {
-                fn none() -> Self::Abi { 0 }
-            }
-
-            impl ::wasm_bindgen::convert::FromWasmAbi for #name {
-                type Abi = <::wasm_bindgen::JsValue as
-                    ::wasm_bindgen::convert::FromWasmAbi>::Abi;
-
-                unsafe fn from_abi(
-                    js: Self::Abi,
-                    extra: &mut ::wasm_bindgen::convert::Stack,
-                ) -> Self {
-                    #name {
-                        obj: ::wasm_bindgen::JsValue::from_abi(js, extra),
+                impl WasmDescribe for #name {
+                    fn describe() {
+                        JsValue::describe();
                     }
                 }
-            }
 
-            impl ::wasm_bindgen::convert::OptionFromWasmAbi for #name {
-                fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
-            }
+                impl IntoWasmAbi for #name {
+                    type Abi = <JsValue as IntoWasmAbi>::Abi;
 
-            impl<'a> ::wasm_bindgen::convert::IntoWasmAbi for &'a #name {
-                type Abi = <&'a ::wasm_bindgen::JsValue as
-                    ::wasm_bindgen::convert::IntoWasmAbi>::Abi;
-
-                fn into_abi(self, extra: &mut ::wasm_bindgen::convert::Stack) -> Self::Abi {
-                    (&self.obj).into_abi(extra)
+                    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+                        self.obj.into_abi(extra)
+                    }
                 }
-            }
 
-            impl ::wasm_bindgen::convert::RefFromWasmAbi for #name {
-                type Abi = <::wasm_bindgen::JsValue as
-                    ::wasm_bindgen::convert::RefFromWasmAbi>::Abi;
-                type Anchor = ::wasm_bindgen::__rt::core::mem::ManuallyDrop<#name>;
-
-                unsafe fn ref_from_abi(
-                    js: Self::Abi,
-                    extra: &mut ::wasm_bindgen::convert::Stack,
-                ) -> Self::Anchor {
-                    let tmp = <::wasm_bindgen::JsValue as ::wasm_bindgen::convert::RefFromWasmAbi>
-                        ::ref_from_abi(js, extra);
-                    ::wasm_bindgen::__rt::core::mem::ManuallyDrop::new(#name {
-                        obj: ::wasm_bindgen::__rt::core::mem::ManuallyDrop::into_inner(tmp),
-                    })
+                impl OptionIntoWasmAbi for #name {
+                    fn none() -> Self::Abi { 0 }
                 }
-            }
 
-            impl From<::wasm_bindgen::JsValue> for #name {
-                fn from(obj: ::wasm_bindgen::JsValue) -> #name {
-                    #name { obj }
+                impl<'a> OptionIntoWasmAbi for &'a #name {
+                    fn none() -> Self::Abi { 0 }
                 }
-            }
 
-            impl From<#name> for ::wasm_bindgen::JsValue {
-                fn from(obj: #name) -> ::wasm_bindgen::JsValue {
-                    obj.obj
+                impl FromWasmAbi for #name {
+                    type Abi = <JsValue as FromWasmAbi>::Abi;
+
+                    unsafe fn from_abi(js: Self::Abi, extra: &mut Stack) -> Self {
+                        #name {
+                            obj: JsValue::from_abi(js, extra),
+                        }
+                    }
                 }
-            }
+
+                impl OptionFromWasmAbi for #name {
+                    fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
+                }
+
+                impl<'a> IntoWasmAbi for &'a #name {
+                    type Abi = <&'a JsValue as IntoWasmAbi>::Abi;
+
+                    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+                        (&self.obj).into_abi(extra)
+                    }
+                }
+
+                impl RefFromWasmAbi for #name {
+                    type Abi = <JsValue as RefFromWasmAbi>::Abi;
+                    type Anchor = ManuallyDrop<#name>;
+
+                    unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor {
+                        let tmp = <JsValue as RefFromWasmAbi>::ref_from_abi(js, extra);
+                        ManuallyDrop::new(#name {
+                            obj: ManuallyDrop::into_inner(tmp),
+                        })
+                    }
+                }
+
+                impl From<JsValue> for #name {
+                    fn from(obj: JsValue) -> #name {
+                        #name { obj }
+                    }
+                }
+
+                impl From<#name> for JsValue {
+                    fn from(obj: #name) -> JsValue {
+                        obj.obj
+                    }
+                }
+
+                ()
+            };
         }).to_tokens(tokens);
     }
 }
