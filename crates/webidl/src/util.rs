@@ -563,7 +563,7 @@ impl<'a> FirstPassRecord<'a> {
                 name.to_snake_case()
             }
         );
-        let name = raw_ident(name);
+        let name = name.to_string();
 
         let arguments = self.webidl_arguments_to_syn_arg_captured(arguments.into_iter(), &kind)?;
 

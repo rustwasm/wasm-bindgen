@@ -116,7 +116,7 @@ pub struct ImportStatic {
     pub ty: syn::Type,
     pub shim: Ident,
     pub rust_name: Ident,
-    pub js_name: Ident,
+    pub js_name: String,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -143,7 +143,7 @@ pub struct ImportEnum {
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub struct Function {
-    pub name: Ident,
+    pub name: String,
     pub arguments: Vec<syn::ArgCaptured>,
     pub ret: Option<syn::Type>,
     pub rust_attrs: Vec<syn::Attribute>,
