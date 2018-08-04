@@ -128,6 +128,7 @@ pub struct ImportType {
     pub attrs: Vec<syn::Attribute>,
     pub doc_comment: Option<String>,
     pub instanceof_shim: String,
+    pub extends: Vec<Ident>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]

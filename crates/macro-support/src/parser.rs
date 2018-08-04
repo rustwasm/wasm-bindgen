@@ -182,6 +182,16 @@ impl BindgenAttrs {
             })
             .next()
     }
+
+    /// Return the list of classes that a type extends
+    fn extends(&self) -> impl Iterator<Item = &Ident> {
+        self.attrs
+            .iter()
+            .filter_map(|a| match a {
+                BindgenAttr::Extends(s) => Some(s),
+                _ => None,
+            })
+    }
 }
 
 impl syn::synom::Synom for BindgenAttrs {
@@ -217,6 +227,7 @@ pub enum BindgenAttr {
     Readonly,
     JsName(String),
     JsClass(String),
+    Extends(Ident),
 }
 
 impl syn::synom::Synom for BindgenAttr {
@@ -295,6 +306,13 @@ impl syn::synom::Synom for BindgenAttr {
             s: syn!(syn::LitStr) >>
             (s.value())
         )=> { BindgenAttr::JsClass }
+        |
+        do_parse!(
+            call!(term, "extends") >>
+            punct!(=) >>
+            ns: call!(term2ident) >>
+            (ns)
+        )=> { BindgenAttr::Extends }
     ));
 }
 
@@ -520,10 +538,10 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
     }
 }
 
-impl ConvertToAst<()> for syn::ForeignItemType {
+impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
-    fn convert(self, (): ()) -> Result<Self::Target, Diagnostic> {
+    fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
@@ -531,6 +549,7 @@ impl ConvertToAst<()> for syn::ForeignItemType {
             doc_comment: None,
             instanceof_shim: shim,
             name: self.ident,
+            extends: attrs.extends().cloned().collect(),
         }))
     }
 }
@@ -937,7 +956,7 @@ impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
         let js_namespace = item_opts.js_namespace().or(opts.js_namespace()).cloned();
         let kind = match self {
             syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
-            syn::ForeignItem::Type(t) => t.convert(())?,
+            syn::ForeignItem::Type(t) => t.convert(item_opts)?,
             syn::ForeignItem::Static(s) => s.convert(item_opts)?,
             _ => panic!("only foreign functions/types allowed for now"),
         };

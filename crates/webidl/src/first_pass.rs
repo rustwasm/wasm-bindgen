@@ -17,6 +17,7 @@ use weedle;
 
 use super::Result;
 use util;
+use util::camel_case_ident;
 
 /// Collection of constructs that may use partial.
 #[derive(Default)]
@@ -36,6 +37,7 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) partial: bool,
     pub(crate) global: bool,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
+    pub(crate) superclass: Option<&'src str>,
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
@@ -146,6 +148,7 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
                 .entry(self.identifier.0)
                 .or_insert_with(Default::default);
             interface.partial = false;
+            interface.superclass = self.inheritance.map(|s| s.identifier.0);
         }
 
         if util::is_chrome_only(&self.attributes) {
@@ -176,6 +179,7 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
                     partial: true,
                     operations: Default::default(),
                     global: false,
+                    superclass: None,
                 },
             );
 
@@ -305,5 +309,29 @@ impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
         }
 
         Ok(())
+    }
+}
+
+impl<'a> FirstPassRecord<'a> {
+    pub fn all_superclasses<'me>(&'me self, interface: &str)
+        -> impl Iterator<Item = String> + 'me
+    {
+        let mut set = BTreeSet::new();
+        self.fill_superclasses(interface, &mut set);
+        set.into_iter()
+    }
+
+    fn fill_superclasses(&self, interface: &str, set: &mut BTreeSet<String>) {
+        let data = match self.interfaces.get(interface) {
+            Some(data) => data,
+            None => return,
+        };
+        let superclass = match &data.superclass {
+            Some(class) => class,
+            None => return,
+        };
+        if set.insert(camel_case_ident(superclass)) {
+            self.fill_superclasses(superclass, set);
+        }
     }
 }

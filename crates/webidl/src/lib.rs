@@ -39,6 +39,7 @@ use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::ResultExt;
 use heck::{ShoutySnakeCase};
+use proc_macro2::{Ident, Span};
 use weedle::argument::Argument;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
 
@@ -246,7 +247,10 @@ impl<'src> WebidlParse<'src, ()> for weedle::InterfaceDefinition<'src> {
                 name: rust_ident(camel_case_ident(self.identifier.0).as_str()),
                 attrs: Vec::new(),
                 doc_comment,
-                instanceof_shim: format!("__widl_instanceof_{}", self.name),
+                instanceof_shim: format!("__widl_instanceof_{}", self.identifier.0),
+                extends: first_pass.all_superclasses(self.identifier.0)
+                    .map(|name| Ident::new(&name, Span::call_site()))
+                    .collect(),
             }),
         });
 

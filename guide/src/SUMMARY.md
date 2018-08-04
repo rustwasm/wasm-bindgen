@@ -20,6 +20,7 @@
     - [On JavaScript Imports](./reference/attributes/on-js-imports/index.md)
       - [`catch`](./reference/attributes/on-js-imports/catch.md)
       - [`constructor`](./reference/attributes/on-js-imports/constructor.md)
+      - [`extends`](./reference/attributes/on-js-imports/extends.md)
       - [`getter` and `setter`](./reference/attributes/on-js-imports/getter-and-setter.md)
       - [`js_class = "Blah"`](./reference/attributes/on-js-imports/js_class.md)
       - [`js_name`](./reference/attributes/on-js-imports/js_name.md)

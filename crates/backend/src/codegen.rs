@@ -656,6 +656,31 @@ impl ToTokens for ast::ImportType {
                 ()
             };
         }).to_tokens(tokens);
+
+        for superclass in self.extends.iter() {
+            (quote! {
+                impl From<#name> for #superclass {
+                    fn from(obj: #name) -> #superclass {
+                        use wasm_bindgen::JsCast;
+                        #superclass::unchecked_from_js(obj.into())
+                    }
+                }
+
+                impl AsRef<#superclass> for #name {
+                    fn as_ref(&self) -> &#superclass {
+                        use wasm_bindgen::JsCast;
+                        #superclass::unchecked_from_js_ref(self.as_ref())
+                    }
+                }
+
+                impl AsMut<#superclass> for #name {
+                    fn as_mut(&mut self) -> &mut #superclass {
+                        use wasm_bindgen::JsCast;
+                        #superclass::unchecked_from_js_mut(self.as_mut())
+                    }
+                }
+            }).to_tokens(tokens);
+        }
     }
 }
 
