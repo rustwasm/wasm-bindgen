@@ -46,6 +46,9 @@ pub mod prelude {
 pub mod convert;
 pub mod describe;
 
+mod cast;
+pub use cast::JsCast;
+
 if_std! {
     extern crate std;
     use std::prelude::v1::*;
@@ -345,6 +348,22 @@ impl From<bool> for JsValue {
     fn from(s: bool) -> JsValue {
         JsValue::from_bool(s)
     }
+}
+
+impl JsCast for JsValue {
+    // everything is a `JsValue`!
+    fn instanceof(_val: &JsValue) -> bool { true }
+    fn unchecked_from_js(val: JsValue) -> Self { val }
+    fn unchecked_from_js_ref(val: &JsValue) -> &Self { val }
+    fn unchecked_from_js_mut(val: &mut JsValue) -> &mut Self { val }
+}
+
+impl AsMut<JsValue> for JsValue {
+    fn as_mut(&mut self) -> &mut JsValue { self }
+}
+
+impl AsRef<JsValue> for JsValue {
+    fn as_ref(&self) -> &JsValue { self }
 }
 
 macro_rules! numbers {
