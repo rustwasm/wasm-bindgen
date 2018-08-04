@@ -142,6 +142,111 @@ pub enum TypePosition {
     Return,
 }
 
+fn type_kind_to_const_type(type_kind: &webidl::ast::TypeKind) -> webidl::ast::ConstType {
+    match type_kind {
+        webidl::ast::TypeKind::Boolean => webidl::ast::ConstType::Boolean,
+        webidl::ast::TypeKind::Byte => webidl::ast::ConstType::Byte,
+        webidl::ast::TypeKind::Identifier(identifier) => webidl::ast::ConstType::Identifier(identifier.clone()),
+        webidl::ast::TypeKind::Octet => webidl::ast::ConstType::Octet,
+        webidl::ast::TypeKind::RestrictedDouble => webidl::ast::ConstType::RestrictedDouble,
+        webidl::ast::TypeKind::RestrictedFloat => webidl::ast::ConstType::RestrictedFloat,
+        webidl::ast::TypeKind::SignedLong => webidl::ast::ConstType::SignedLong,
+        webidl::ast::TypeKind::SignedLongLong => webidl::ast::ConstType::SignedLongLong,
+        webidl::ast::TypeKind::SignedShort => webidl::ast::ConstType::SignedShort,
+        webidl::ast::TypeKind::UnrestrictedDouble => webidl::ast::ConstType::UnrestrictedDouble,
+        webidl::ast::TypeKind::UnrestrictedFloat => webidl::ast::ConstType::UnrestrictedFloat,
+        webidl::ast::TypeKind::UnsignedLong => webidl::ast::ConstType::UnsignedLong,
+        webidl::ast::TypeKind::UnsignedLongLong => webidl::ast::ConstType::UnsignedLongLong,
+        webidl::ast::TypeKind::UnsignedShort => webidl::ast::ConstType::UnsignedShort,
+        _ => panic!("can not convert TypeKind to ConstType: {:#?}", type_kind),
+    }
+}
+
+/// Implemented on an AST type node to apply typedefs.
+pub(crate) trait ApplyTypedefs {
+    fn apply_typedefs<'a>(&self, record: &FirstPassRecord<'a>) -> Self;
+}
+
+impl ApplyTypedefs for webidl::ast::Type {
+    fn apply_typedefs<'a>(&self, record: &FirstPassRecord<'a>) -> Self {
+        webidl::ast::Type {
+            extended_attributes: self.extended_attributes.clone(),
+            kind: self.kind.apply_typedefs(record),
+            nullable: self.nullable,
+        }
+    }
+}
+
+impl ApplyTypedefs for webidl::ast::ReturnType {
+    fn apply_typedefs<'a>(&self, record: &FirstPassRecord<'a>) -> Self {
+        match self {
+            webidl::ast::ReturnType::NonVoid(ty) =>
+                webidl::ast::ReturnType::NonVoid(Box::new(ty.apply_typedefs(record))),
+            _ => self.clone(),
+        }
+    }
+}
+
+impl ApplyTypedefs for webidl::ast::StringType {
+    fn apply_typedefs<'a>(&self, _: &FirstPassRecord<'a>) -> Self {
+        *self
+    }
+}
+
+impl ApplyTypedefs for webidl::ast::ConstType {
+    fn apply_typedefs<'a>(&self, record: &FirstPassRecord<'a>) -> Self {
+        match self {
+            webidl::ast::ConstType::Identifier(identifier) =>
+                record
+                    .typedefs
+                    .get(identifier)
+                    .map(|ty| type_kind_to_const_type(&ty.kind))
+                    .unwrap_or(self.clone()),
+            _ => self.clone(),
+        }
+    }
+}
+
+impl ApplyTypedefs for webidl::ast::TypeKind {
+    fn apply_typedefs<'a>(&self, record: &FirstPassRecord<'a>) -> Self {
+        match self {
+            webidl::ast::TypeKind::FrozenArray(ty) =>
+                webidl::ast::TypeKind::FrozenArray(Box::new(ty.apply_typedefs(record))),
+            webidl::ast::TypeKind::Identifier(identifier) => record
+                .typedefs
+                .get(identifier)
+                .map(|ty| ty.kind.clone())
+                .unwrap_or(self.clone()),
+            webidl::ast::TypeKind::Promise(ty) =>
+                webidl::ast::TypeKind::Promise(ty.apply_typedefs(record)),
+            webidl::ast::TypeKind::Record(string_type, ty) => webidl::ast::TypeKind::Record(
+                string_type.apply_typedefs(record),
+                Box::new(ty.apply_typedefs(record)),
+            ),
+            webidl::ast::TypeKind::Union(types) => webidl::ast::TypeKind::Union(
+                types
+                    .iter()
+                    .map(|ty| Box::new(ty.apply_typedefs(record)))
+                    .collect(),
+            ),
+            _ => self.clone(),
+        }
+    }
+}
+
+impl ApplyTypedefs for webidl::ast::Argument {
+    fn apply_typedefs<'a>(&self, record: &FirstPassRecord<'a>) -> Self {
+        webidl::ast::Argument {
+            extended_attributes: self.extended_attributes.clone(),
+            default: self.default.clone(),
+            name: self.name.clone(),
+            optional: self.optional,
+            type_: Box::new(self.type_.apply_typedefs(record)),
+            variadic: self.variadic,
+        }
+    }
+}
+
 /// Implemented on an AST type node to generate a snake case name.
 trait TypeToString {
     fn type_to_string(&self) -> String;

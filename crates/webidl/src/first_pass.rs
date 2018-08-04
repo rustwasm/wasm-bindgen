@@ -23,6 +23,7 @@ pub(crate) struct FirstPassRecord<'a> {
     pub(crate) enums: BTreeSet<String>,
     /// The mixins, mapping their name to the webidl ast node for the mixin.
     pub(crate) mixins: BTreeMap<String, MixinData<'a>>,
+    pub(crate) typedefs: BTreeMap<String, webidl::ast::Type>,
 }
 
 /// We need to collect interface data during the first pass, to be used later.
@@ -82,6 +83,7 @@ impl FirstPass<()> for webidl::ast::Definition {
             Enum(enum_) => enum_.first_pass(record, ()),
             Interface(interface) => interface.first_pass(record, ()),
             Mixin(mixin) => mixin.first_pass(record, ()),
+            Typedef(typedef) => typedef.first_pass(record, ()),
             _ => {
                 // Other definitions aren't currently used in the first pass
                 Ok(())
@@ -352,6 +354,20 @@ impl FirstPass<()> for webidl::ast::PartialMixin {
             .entry(self.name.clone())
             .or_insert_with(Default::default);
         entry.partials.push(self);
+
+        Ok(())
+    }
+}
+
+impl FirstPass<()> for webidl::ast::Typedef {
+    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, (): ()) -> Result<()> {
+        if ::util::is_chrome_only(&self.extended_attributes) {
+            return Ok(());
+        }
+
+        if record.typedefs.insert(self.name.clone(), *self.type_.clone()).is_some() {
+            warn!("Encountered multiple declarations of {}", self.name);
+        }
 
         Ok(())
     }

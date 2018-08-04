@@ -40,7 +40,7 @@ use failure::{ResultExt, Fail};
 use heck::{ShoutySnakeCase};
 
 use first_pass::{FirstPass, FirstPassRecord};
-use util::{public, webidl_const_ty_to_syn_ty, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, mdn_doc};
+use util::{ApplyTypedefs, public, webidl_const_ty_to_syn_ty, webidl_const_v_to_backend_const_v, camel_case_ident, mdn_doc};
 
 pub use error::{Error, ErrorKind, Result};
 
@@ -159,9 +159,6 @@ impl WebidlParse<()> for webidl::ast::Definition {
             webidl::ast::Definition::Interface(interface) => {
                 interface.webidl_parse(program, first_pass, ())?
             }
-            webidl::ast::Definition::Typedef(typedef) => {
-                typedef.webidl_parse(program, first_pass, ())?
-            }
             // TODO
             webidl::ast::Definition::Callback(..)
             | webidl::ast::Definition::Dictionary(..)
@@ -169,7 +166,8 @@ impl WebidlParse<()> for webidl::ast::Definition {
             | webidl::ast::Definition::Namespace(..) => {
                 warn!("Unsupported WebIDL definition: {:?}", self)
             }
-            webidl::ast::Definition::Mixin(_) => {
+            webidl::ast::Definition::Mixin(_)
+            | webidl::ast::Definition::Typedef(_) => {
                 // handled in the first pass
             }
         }
@@ -223,39 +221,6 @@ impl WebidlParse<()> for webidl::ast::Interface {
                 Ok(())
             }
         }
-    }
-}
-
-impl WebidlParse<()> for webidl::ast::Typedef {
-    fn webidl_parse(
-        &self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'_>,
-        (): (),
-    ) -> Result<()> {
-        if util::is_chrome_only(&self.extended_attributes) {
-            return Ok(());
-        }
-
-        let dest = rust_ident(camel_case_ident(&self.name).as_str());
-        let src = match first_pass.webidl_ty_to_syn_ty(&self.type_, TypePosition::Return) {
-            Some(src) => src,
-            None => {
-                warn!(
-                    "typedef's source type is not yet supported: {:?}. Skipping typedef {:?}",
-                    *self.type_, self
-                );
-                return Ok(());
-            }
-        };
-
-        program.type_aliases.push(backend::ast::TypeAlias {
-            vis: public(),
-            dest,
-            src,
-        });
-
-        Ok(())
     }
 }
 
@@ -334,6 +299,11 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
         interface: &'a webidl::ast::NonPartialInterface,
     ) -> Result<()> {
         let mut add_constructor = |arguments: &[webidl::ast::Argument], class: &str| {
+            let arguments = &arguments
+                .iter()
+                .map(|argument| argument.apply_typedefs(first_pass))
+                .collect::<Vec<_>>();
+
             let (overloaded, same_argument_names) = first_pass.get_operation_overloading(
                 arguments,
                 ::first_pass::OperationId::Constructor,
@@ -530,7 +500,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
         first_pass
             .create_getter(
                 &self.name,
-                &self.type_,
+                &self.type_.apply_typedefs(first_pass),
                 self_name,
                 false,
                 is_structural,
@@ -543,7 +513,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularAttribute {
             first_pass
                 .create_setter(
                     &self.name,
-                    &self.type_,
+                    &self.type_.apply_typedefs(first_pass),
                     self_name,
                     false,
                     is_structural,
@@ -618,7 +588,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
         first_pass
             .create_getter(
                 &self.name,
-                &self.type_,
+                &self.type_.apply_typedefs(first_pass),
                 self_name,
                 true,
                 is_structural,
@@ -631,7 +601,7 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticAttribute {
             first_pass
                 .create_setter(
                     &self.name,
-                    &self.type_,
+                    &self.type_.apply_typedefs(first_pass),
                     self_name,
                     true,
                     is_structural,
@@ -660,9 +630,13 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
 
         first_pass
             .create_basic_method(
-                &self.arguments,
+                &self
+                    .arguments
+                    .iter()
+                    .map(|argument| argument.apply_typedefs(first_pass))
+                    .collect::<Vec<_>>(),
                 self.name.as_ref(),
-                &self.return_type,
+                &self.return_type.apply_typedefs(first_pass),
                 self_name,
                 false,
                 throws,
@@ -689,9 +663,13 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
 
         first_pass
             .create_basic_method(
-                &self.arguments,
+                &self
+                    .arguments
+                    .iter()
+                    .map(|argument| argument.apply_typedefs(first_pass))
+                    .collect::<Vec<_>>(),
                 self.name.as_ref(),
-                &self.return_type,
+                &self.return_type.apply_typedefs(first_pass),
                 self_name,
                 true,
                 throws,
@@ -741,10 +719,10 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Const {
     fn webidl_parse(
         &self,
         program: &mut backend::ast::Program,
-        _: &FirstPassRecord<'_>,
+        first_pass: &FirstPassRecord<'_>,
         self_name: &'a str,
     ) -> Result<()> {
-        let ty = webidl_const_ty_to_syn_ty(&self.type_);
+        let ty = webidl_const_ty_to_syn_ty(&self.type_.apply_typedefs(first_pass));
 
         program.consts.push(backend::ast::Const {
             vis: public(),
