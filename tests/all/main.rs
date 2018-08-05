@@ -6,8 +6,8 @@ use project_builder::{project, run};
 
 mod comments;
 mod dependencies;
-mod imports;
 mod js_objects;
+mod imports;
 mod node;
 mod non_debug;
 mod non_wasm;
