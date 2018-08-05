@@ -87,6 +87,12 @@ global.Unforgeable = class Unforgeable {
   }
 };
 
+global.GlobalMethod = class GlobalMethod {
+  constructor() {
+    this.m = () => 123;
+  }
+};
+
 global.PartialInterface = class PartialInterface {
   get un() {
     return 1;

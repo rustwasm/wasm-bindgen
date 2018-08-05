@@ -35,6 +35,11 @@ interface OptionalMethod {
   octet? opt(short? a);
 };
 
+[Global=GlobalMethod, Constructor()]
+interface GlobalMethod {
+  octet m();
+};
+
 [Constructor()]
 interface Unforgeable {
   [Unforgeable] readonly attribute short uno;
