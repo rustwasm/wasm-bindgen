@@ -25,7 +25,9 @@
 // interface XULControllers;
 
 // http://www.whatwg.org/specs/web-apps/current-work/
-[PrimaryGlobal, LegacyUnenumerableNamedProperties, NeedResolve]
+[Global=Window,
+ Exposed=Window,
+ LegacyUnenumerableNamedProperties]
 /*sealed*/ interface Window : EventTarget {
   // the current browsing context
   [Unforgeable, Constant, StoreInSlot,

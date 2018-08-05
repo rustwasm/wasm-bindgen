@@ -32,6 +32,7 @@ pub(crate) struct InterfaceData {
     /// Whether only partial interfaces were encountered
     pub(crate) partial: bool,
     pub(crate) operations: BTreeMap<OperationId, OperationData>,
+    pub(crate) global: bool,
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
@@ -185,6 +186,7 @@ impl FirstPass<()> for webidl::ast::NonPartialInterface {
                 InterfaceData {
                     partial: false,
                     operations: Default::default(),
+                    global: false,
                 },
             );
 
@@ -213,6 +215,7 @@ impl FirstPass<()> for webidl::ast::PartialInterface {
                 InterfaceData {
                     partial: true,
                     operations: Default::default(),
+                    global: false,
                 },
             );
 
@@ -269,6 +272,17 @@ impl<'b> FirstPass<&'b str> for webidl::ast::ExtendedAttribute {
                         &rhs_arguments,
                     )
                 },
+            webidl::ast::ExtendedAttribute::Identifier(
+                webidl::ast::IdentifierExtendedAttribute { lhs, .. }
+            )
+            | webidl::ast::ExtendedAttribute::IdentifierList(
+                webidl::ast::IdentifierListExtendedAttribute { lhs, .. }
+            )
+            if lhs == "Global" =>
+                {
+                    record.interfaces.get_mut(self_name).unwrap().global = true;
+                    Ok(())
+                }
             _ => Ok(())
         }
     }
