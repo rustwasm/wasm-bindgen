@@ -63,6 +63,12 @@ fn optional_method() {
 }
 
 #[wasm_bindgen_test]
+fn global_method() {
+    let f = GlobalMethod::new().unwrap();
+    assert!(f.m() == 123);
+}
+
+#[wasm_bindgen_test]
 fn unforgeable_is_structural() {
     let f = Unforgeable::new().unwrap();
     assert_eq!(f.uno(), 1);
