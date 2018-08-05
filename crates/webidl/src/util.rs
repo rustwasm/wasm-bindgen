@@ -656,7 +656,11 @@ impl<'a> FirstPassRecord<'a> {
                 .map(|arg| (&*arg.name, &*arg.type_, arg.variadic)),
             ret,
             kind,
-            false,
+            self
+                .interfaces
+                .get(self_name)
+                .map(|interface_data| interface_data.global)
+                .unwrap_or(false),
             catch,
             doc_comment,
         )
