@@ -6,7 +6,6 @@ use project_builder::{project, run};
 
 mod comments;
 mod dependencies;
-mod import_class;
 mod imports;
 mod js_objects;
 mod node;
