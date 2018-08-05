@@ -132,6 +132,30 @@ impl BindgenAttrs {
             .next()
     }
 
+    /// Whether the special getter attributes is present
+    fn special_getter(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::SpecialGetter => true,
+            _ => false,
+        })
+    }
+
+    /// Whether the special setter attributes is present
+    fn special_setter(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::SpecialSetter => true,
+            _ => false,
+        })
+    }
+
+    /// Whether the special deleter attributes is present
+    fn special_deleter(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::SpecialDeleter => true,
+            _ => false,
+        })
+    }
+
     /// Whether the structural attributes is present
     fn structural(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
@@ -198,6 +222,9 @@ pub enum BindgenAttr {
     Version(String),
     Getter(Option<Ident>),
     Setter(Option<Ident>),
+    SpecialGetter,
+    SpecialSetter,
+    SpecialDeleter,
     Structural,
     Readonly,
     JsName(Ident),
@@ -238,6 +265,12 @@ impl syn::synom::Synom for BindgenAttr {
             )) >>
             (val)
         )=> { BindgenAttr::Setter }
+        |
+        call!(term, "special_getter") => { |_| BindgenAttr::SpecialGetter }
+        |
+        call!(term, "special_setter") => { |_| BindgenAttr::SpecialSetter }
+        |
+        call!(term, "special_deleter") => { |_| BindgenAttr::SpecialDeleter }
         |
         call!(term, "structural") => { |_| BindgenAttr::Structural }
         |
@@ -394,6 +427,15 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
         }
         if let Some(s) = opts.setter() {
             operation_kind = ast::OperationKind::Setter(s);
+        }
+        if opts.special_getter() {
+            operation_kind = ast::OperationKind::SpecialGetter;
+        }
+        if opts.special_setter() {
+            operation_kind = ast::OperationKind::SpecialSetter;
+        }
+        if opts.special_deleter() {
+            operation_kind = ast::OperationKind::SpecialDeleter;
         }
 
         let kind = if opts.method() {

@@ -38,7 +38,10 @@ pub(crate) struct InterfaceData {
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum OperationId {
     Constructor,
-    Operation(Option<String>)
+    Operation(Option<String>),
+    SpecialGetter,
+    SpecialSetter,
+    SpecialDeleter,
 }
 
 #[derive(Default)]
@@ -302,8 +305,9 @@ impl<'b> FirstPass<&'b str> for webidl::ast::Operation {
         match self {
             webidl::ast::Operation::Regular(op) => op.first_pass(record, self_name),
             webidl::ast::Operation::Static(op) => op.first_pass(record, self_name),
+            webidl::ast::Operation::Special(op) => op.first_pass(record, self_name),
             // TODO
-            webidl::ast::Operation::Special(_) | webidl::ast::Operation::Stringifier(_) => {
+            webidl::ast::Operation::Stringifier(_) => {
                 warn!("Unsupported WebIDL operation: {:?}", self);
                 Ok(())
             }
@@ -328,6 +332,28 @@ impl<'b> FirstPass<&'b str> for webidl::ast::StaticOperation {
             record,
             self_name,
             OperationId::Operation(self.name.clone()),
+            &self.arguments,
+        )
+    }
+}
+
+impl<'b> FirstPass<&'b str> for webidl::ast::SpecialOperation {
+    fn first_pass<'a>(&'a self, record: &mut FirstPassRecord<'a>, self_name: &'b str) -> Result<()> {
+        first_pass_operation(
+            record,
+            self_name,
+            match self.name {
+                None => match self.special_keywords.iter().next() {
+                    Some(webidl::ast::Special::Getter) => OperationId::SpecialGetter,
+                    Some(webidl::ast::Special::Setter) => OperationId::SpecialSetter,
+                    Some(webidl::ast::Special::Deleter) => OperationId::SpecialDeleter,
+                    Some(webidl::ast::Special::LegacyCaller) => return Ok(()),
+                    None => {
+                        panic!("unsupported special operation: {:?} of {}", self, self_name);
+                    }
+                },
+                Some(ref name) => OperationId::Operation(Some(name.clone())),
+            },
             &self.arguments,
         )
     }

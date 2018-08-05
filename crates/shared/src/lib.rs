@@ -70,6 +70,9 @@ pub enum OperationKind {
     Regular,
     Getter(String),
     Setter(String),
+    SpecialGetter,
+    SpecialSetter,
+    SpecialDeleter,
 }
 
 #[derive(Deserialize, Serialize)]

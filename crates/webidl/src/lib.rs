@@ -307,7 +307,7 @@ impl<'a> WebidlParse<&'a webidl::ast::NonPartialInterface> for webidl::ast::Exte
 
             let (overloaded, same_argument_names) = first_pass.get_operation_overloading(
                 arguments,
-                ::first_pass::OperationId::Constructor,
+                &::first_pass::OperationId::Constructor,
                 &interface.name,
             );
 
@@ -475,8 +475,9 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::Operation {
         match self {
             webidl::ast::Operation::Regular(op) => op.webidl_parse(program, first_pass, self_name),
             webidl::ast::Operation::Static(op) => op.webidl_parse(program, first_pass, self_name),
+            webidl::ast::Operation::Special(op) => op.webidl_parse(program, first_pass, self_name),
             // TODO
-            webidl::ast::Operation::Special(_) | webidl::ast::Operation::Stringifier(_) => {
+            webidl::ast::Operation::Stringifier(_) => {
                 warn!("Unsupported WebIDL operation: {:?}", self);
                 Ok(())
             }
@@ -627,8 +628,6 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
             return Ok(());
         }
 
-        let throws = util::throws(&self.extended_attributes);
-
         first_pass
             .create_basic_method(
                 &self
@@ -636,11 +635,16 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::RegularOperation {
                     .iter()
                     .map(|argument| argument.apply_typedefs(first_pass))
                     .collect::<Vec<_>>(),
-                self.name.as_ref(),
+                ::first_pass::OperationId::Operation(self.name.clone()),
                 &self.return_type.apply_typedefs(first_pass),
                 self_name,
                 false,
-                throws,
+                first_pass
+                    .interfaces
+                    .get(self_name)
+                    .map(|interface_data| interface_data.global)
+                    .unwrap_or(false),
+                util::throws(&self.extended_attributes),
             )
             .map(wrap_import_function)
             .map(|import| program.imports.push(import));
@@ -660,7 +664,41 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
             return Ok(());
         }
 
-        let throws = util::throws(&self.extended_attributes);
+        first_pass
+            .create_basic_method(
+                &self
+                    .arguments
+                    .iter()
+                    .map(|argument| argument.apply_typedefs(first_pass))
+                    .collect::<Vec<_>>(),
+                ::first_pass::OperationId::Operation(self.name.clone()),
+                &self.return_type.apply_typedefs(first_pass),
+                self_name,
+                true,
+                first_pass
+                    .interfaces
+                    .get(self_name)
+                    .map(|interface_data| interface_data.global)
+                    .unwrap_or(false),
+                util::throws(&self.extended_attributes),
+            )
+            .map(wrap_import_function)
+            .map(|import| program.imports.push(import));
+
+        Ok(())
+    }
+}
+
+impl<'a> WebidlParse<&'a str> for webidl::ast::SpecialOperation {
+    fn webidl_parse(
+        &self,
+        program: &mut backend::ast::Program,
+        first_pass: &FirstPassRecord<'_>,
+        self_name: &'a str,
+    ) -> Result<()> {
+        if util::is_chrome_only(&self.extended_attributes) {
+            return Ok(());
+        }
 
         first_pass
             .create_basic_method(
@@ -669,11 +707,23 @@ impl<'a> WebidlParse<&'a str> for webidl::ast::StaticOperation {
                     .iter()
                     .map(|argument| argument.apply_typedefs(first_pass))
                     .collect::<Vec<_>>(),
-                self.name.as_ref(),
+                match self.name {
+                    None => match self.special_keywords.iter().next() {
+                        Some(webidl::ast::Special::Getter) => ::first_pass::OperationId::SpecialGetter,
+                        Some(webidl::ast::Special::Setter) => ::first_pass::OperationId::SpecialSetter,
+                        Some(webidl::ast::Special::Deleter) => ::first_pass::OperationId::SpecialDeleter,
+                        Some(webidl::ast::Special::LegacyCaller) => return Ok(()),
+                        None => {
+                            panic!("unsupported special operation: {:?} of {}", self, self_name);
+                        }
+                    },
+                    Some(ref name) => ::first_pass::OperationId::Operation(Some(name.clone())),
+                },
                 &self.return_type.apply_typedefs(first_pass),
                 self_name,
+                false,
                 true,
-                throws,
+                util::throws(&self.extended_attributes),
             )
             .map(wrap_import_function)
             .map(|import| program.imports.push(import));
