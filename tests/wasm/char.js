@@ -1,23 +1,17 @@
 const wasm = require('wasm-bindgen-test.js');
+const assert = require('assert');
 
-function assertEq(a, b) {
-  console.log(a, '?=', b);
-  if (a === b)
-    return;
-  throw new Error('not equal');
-}
+exports.js_identity = a => a;
 
-exports.char_works = function() {
-  assertEq(wasm.char_single_char(), 'a');
-  assertEq(wasm.char_wide_char(), '💩');
-  assertEq(wasm.char_parrot('Ղ'), 'Ղ');
-  assertEq(wasm.char_parrot('ҝ'), 'ҝ');
-  assertEq(wasm.char_parrot('Δ'), 'Δ');
-  assertEq(wasm.char_parrot('䉨'), '䉨');
-  assertEq(wasm.char_round('a'), 'a');
-  assertEq(wasm.char_round('㊻'), '㊻');
-  wasm.char_short_test('a');
-  wasm.char_wide_test('💩');
+exports.js_works = () => {
+    assert.strictEqual(wasm.letter(), 'a');
+    assert.strictEqual(wasm.face(), '😀');
+    assert.strictEqual(wasm.rust_identity('Ղ'), 'Ղ');
+    assert.strictEqual(wasm.rust_identity('ҝ'), 'ҝ');
+    assert.strictEqual(wasm.rust_identity('Δ'), 'Δ');
+    assert.strictEqual(wasm.rust_identity('䉨'), '䉨');
+    assert.strictEqual(wasm.rust_js_identity('a'), 'a');
+    assert.strictEqual(wasm.rust_js_identity('㊻'), '㊻');
+    wasm.rust_letter('a');
+    wasm.rust_face('😀');
 };
-
-exports.js_parrot = function(a) { return a; };

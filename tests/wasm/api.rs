@@ -3,14 +3,14 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(module = "tests/wasm/api.js", version = "*")]
 extern {
-    fn test_works();
-    fn test_eq_works();
+    fn js_works();
+    fn js_eq_works();
     fn assert_null(v: JsValue);
 }
 
 #[wasm_bindgen_test]
 fn works() {
-    test_works();
+    js_works();
 }
 
 #[wasm_bindgen]
@@ -87,14 +87,14 @@ pub fn api_mk_symbol() -> JsValue {
     let a = JsValue::symbol(None);
     assert!(a.is_symbol());
     assert_eq!(format!("{:?}", a), "Symbol(..)");
-    return a
+    return a;
 }
 
 #[wasm_bindgen]
 pub fn api_mk_symbol2(s: &str) -> JsValue {
     let a = JsValue::symbol(Some(s));
     assert!(a.is_symbol());
-    return a
+    return a;
 }
 
 #[wasm_bindgen]
@@ -117,7 +117,7 @@ pub fn api_acquire_string2(a: &JsValue) -> String {
 
 #[wasm_bindgen_test]
 fn eq_works() {
-    test_eq_works();
+    js_eq_works();
 }
 
 #[wasm_bindgen]

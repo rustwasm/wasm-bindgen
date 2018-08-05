@@ -3,25 +3,25 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(module = "tests/wasm/classes.js", version = "*")]
 extern {
-    fn test_simple();
-    fn test_strings();
-    fn test_exceptions();
-    fn test_pass_one_to_another();
+    fn js_simple();
+    fn js_strings();
+    fn js_exceptions();
+    fn js_pass_one_to_another();
     fn take_class(foo: ClassesIntoJs);
     #[wasm_bindgen(js_name = take_class)]
     fn take_class_as_jsvalue(foo: JsValue);
-    fn test_constructors();
-    fn test_empty_structs();
-    fn test_public_fields();
-    fn test_using_self();
-    fn test_readonly_fields();
-    fn test_double_consume();
-    fn test_js_rename();
+    fn js_constructors();
+    fn js_empty_structs();
+    fn js_public_fields();
+    fn js_using_self();
+    fn js_readonly_fields();
+    fn js_double_consume();
+    fn js_js_rename();
 }
 
 #[wasm_bindgen_test]
 fn simple() {
-    test_simple();
+    js_simple();
 }
 
 #[wasm_bindgen]
@@ -52,7 +52,7 @@ impl ClassesSimple {
 
 #[wasm_bindgen_test]
 fn strings() {
-    test_strings()
+    js_strings()
 }
 
 #[wasm_bindgen]
@@ -89,11 +89,11 @@ impl ClassesStrings2 {
 
 #[wasm_bindgen_test]
 fn exceptions() {
-    test_exceptions();
+    js_exceptions();
 }
+
 #[wasm_bindgen]
-pub struct ClassesExceptions1 {
-}
+pub struct ClassesExceptions1 {}
 
 #[wasm_bindgen]
 impl ClassesExceptions1 {
@@ -101,16 +101,13 @@ impl ClassesExceptions1 {
         ClassesExceptions1 {}
     }
 
-    pub fn foo(&self, _: &ClassesExceptions1) {
-    }
+    pub fn foo(&self, _: &ClassesExceptions1) {}
 
-    pub fn bar(&mut self, _: &mut ClassesExceptions1) {
-    }
+    pub fn bar(&mut self, _: &mut ClassesExceptions1) {}
 }
 
 #[wasm_bindgen]
-pub struct ClassesExceptions2 {
-}
+pub struct ClassesExceptions2 {}
 
 #[wasm_bindgen]
 impl ClassesExceptions2 {
@@ -121,7 +118,7 @@ impl ClassesExceptions2 {
 
 #[wasm_bindgen_test]
 fn pass_one_to_another() {
-    test_pass_one_to_another();
+    js_pass_one_to_another();
 }
 
 #[wasm_bindgen]
@@ -133,11 +130,9 @@ impl ClassesPassA {
         ClassesPassA {}
     }
 
-    pub fn foo(&self, _other: &ClassesPassB) {
-    }
+    pub fn foo(&self, _other: &ClassesPassB) {}
 
-    pub fn bar(&self, _other: ClassesPassB) {
-    }
+    pub fn bar(&self, _other: ClassesPassB) {}
 }
 
 #[wasm_bindgen]
@@ -191,7 +186,7 @@ fn pass_into_js_as_js_class() {
 
 #[wasm_bindgen_test]
 fn constructors() {
-    test_constructors();
+    js_constructors();
 }
 
 #[wasm_bindgen]
@@ -236,7 +231,7 @@ impl ConstructorsBar {
 
 #[wasm_bindgen_test]
 fn empty_structs() {
-    test_empty_structs();
+    js_empty_structs();
 }
 
 #[wasm_bindgen]
@@ -252,7 +247,7 @@ impl OtherEmpty {
 
 #[wasm_bindgen_test]
 fn public_fields() {
-    test_public_fields();
+    js_public_fields();
 }
 
 #[wasm_bindgen]
@@ -273,12 +268,11 @@ impl PublicFields {
 
 #[wasm_bindgen_test]
 fn using_self() {
-    test_using_self();
+    js_using_self();
 }
 
 #[wasm_bindgen]
-pub struct UseSelf {
-}
+pub struct UseSelf {}
 
 #[wasm_bindgen]
 impl UseSelf {
@@ -289,7 +283,7 @@ impl UseSelf {
 
 #[wasm_bindgen_test]
 fn readonly_fields() {
-    test_readonly_fields();
+    js_readonly_fields();
 }
 
 #[wasm_bindgen]
@@ -308,11 +302,11 @@ impl Readonly {
 
 #[wasm_bindgen_test]
 fn double_consume() {
-    test_double_consume();
+    js_double_consume();
 }
 
 #[wasm_bindgen]
-pub struct DoubleConsume { }
+pub struct DoubleConsume {}
 
 #[wasm_bindgen]
 impl DoubleConsume {
@@ -328,12 +322,12 @@ impl DoubleConsume {
 
 #[wasm_bindgen_test]
 fn rename_function_for_js() {
-    test_js_rename();
+    js_js_rename();
     foo();
 }
 
 #[wasm_bindgen]
-pub struct JsRename { }
+pub struct JsRename {}
 
 #[wasm_bindgen]
 impl JsRename {
@@ -341,13 +335,11 @@ impl JsRename {
     pub fn new() -> JsRename {
         let f = JsRename {};
         f.foo();
-        return f
+        f
     }
 
     #[wasm_bindgen(js_name = bar)]
-    pub fn foo(&self) {
-    }
-
+    pub fn foo(&self) {}
 }
 
 #[wasm_bindgen(js_name = classes_foo)]
