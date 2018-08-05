@@ -10,6 +10,7 @@ pub mod classes;
 pub mod closures;
 pub mod duplicates;
 pub mod enums;
+pub mod imports;
 pub mod import_class;
 pub mod js_objects;
 pub mod math;
