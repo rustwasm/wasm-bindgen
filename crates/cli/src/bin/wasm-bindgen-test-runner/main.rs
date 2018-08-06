@@ -123,11 +123,12 @@ fn rmain() -> Result<(), Error> {
         node = !custom.payload().contains(&0x01);
     }
     let headless = env::var("NO_HEADLESS").is_err();
+    let debug = env::var("WASM_BINDGEN_NO_DEBUG").is_err();
 
     // Make the generated bindings available for the tests to execute against.
     shell.status("Executing bindgen...");
     let mut b = Bindgen::new();
-    b.debug(true)
+    b.debug(debug)
         .nodejs(node)
         .input_module(module, wasm, |w| parity_wasm::serialize(w).unwrap())
         .keep_debug(false)

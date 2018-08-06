@@ -22,6 +22,10 @@ exports.test_return_a_string = function() {
 };
 
 exports.test_wrong_types = function() {
+  // this test only works when `--debug` is passed to `wasm-bindgen` (or the
+  // equivalent thereof)
+  if (require('process').env.WASM_BINDGEN_NO_DEBUG)
+    return;
   assert.throws(() => wasm.simple_int('a'), /expected a number argument/);
   assert.throws(() => wasm.simple_str(3), /expected a string argument/);
 };
