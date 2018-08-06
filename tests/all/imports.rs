@@ -1,42 +1,6 @@
 use super::project;
 
 #[test]
-fn unused_imports_not_generated() {
-    let mut project = project();
-
-    project
-        .debug(false)
-        .file("src/lib.rs", r#"
-            #![feature(use_extern_macros)]
-
-            extern crate wasm_bindgen;
-
-            use wasm_bindgen::prelude::*;
-
-            #[wasm_bindgen]
-            extern {
-                pub fn foo();
-            }
-
-            #[wasm_bindgen]
-            pub fn run() {
-            }
-        "#)
-        .file("test.js", r#"
-            import { run } from "./out";
-
-            export function test() {
-                run();
-            }
-        "#)
-        .test();
-
-    let contents = project.read_js();
-    assert!(contents.contains("run"), "didn't find `run` in {}", contents);
-    assert!(!contents.contains("foo"), "found `foo` in {}", contents);
-}
-
-#[test]
 fn versions() {
     project()
         .debug(false)

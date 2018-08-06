@@ -47,6 +47,9 @@ extern {
     fn renamed_with_dollar_sign();
     #[wasm_bindgen(js_name = "$foo")]
     static RENAMED: JsValue;
+
+    fn unused_import();
+    fn assert_dead_import_not_generated();
 }
 
 #[wasm_bindgen]
@@ -167,4 +170,9 @@ fn rename_with_string() {
 #[wasm_bindgen_test]
 fn rename_static_with_string() {
     assert_eq!(RENAMED.as_f64(), Some(1.0));
+}
+
+#[wasm_bindgen_test]
+fn dead_imports_not_generated() {
+    assert_dead_import_not_generated();
 }
