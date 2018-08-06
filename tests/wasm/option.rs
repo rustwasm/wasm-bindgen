@@ -1,7 +1,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/option.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/option.js")]
 extern {
     pub type MyType;
     #[wasm_bindgen(constructor)]

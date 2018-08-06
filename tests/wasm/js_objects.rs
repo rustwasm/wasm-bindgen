@@ -1,7 +1,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/js_objects.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/js_objects.js")]
 extern {
     fn simple_foo(s: &JsValue);
     fn js_simple();

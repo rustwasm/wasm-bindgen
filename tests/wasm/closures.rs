@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 use std::cell::Cell;
 use std::rc::Rc;
 
-#[wasm_bindgen(module = "tests/wasm/closures.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/closures.js")]
 extern {
     fn works_call(a: &Fn());
     fn works_thread(a: &Fn(u32) -> u32) -> u32;

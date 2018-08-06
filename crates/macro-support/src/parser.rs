@@ -53,17 +53,6 @@ impl BindgenAttrs {
             .next()
     }
 
-    /// Get the first version attribute
-    fn version(&self) -> Option<&str> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::Version(s) => Some(&s[..]),
-                _ => None,
-            })
-            .next()
-    }
-
     /// Whether the catch attribute is present
     fn catch(&self) -> bool {
         self.attrs.iter().any(|a| match a {
@@ -195,7 +184,6 @@ pub enum BindgenAttr {
     StaticMethodOf(Ident),
     JsNamespace(Ident),
     Module(String),
-    Version(String),
     Getter(Option<Ident>),
     Setter(Option<Ident>),
     Structural,
@@ -256,13 +244,6 @@ impl syn::synom::Synom for BindgenAttr {
             s: syn!(syn::LitStr) >>
             (s.value())
         )=> { BindgenAttr::Module }
-        |
-        do_parse!(
-            call!(term, "version") >>
-            punct!(=) >>
-            s: syn!(syn::LitStr) >>
-            (s.value())
-        )=> { BindgenAttr::Version }
         |
         do_parse!(
             call!(term, "js_name") >>
@@ -909,10 +890,6 @@ impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
             BindgenAttrs::find(attrs)?
         };
         let module = item_opts.module().or(opts.module()).map(|s| s.to_string());
-        let version = item_opts
-            .version()
-            .or(opts.version())
-            .map(|s| s.to_string());
         let js_namespace = item_opts.js_namespace().or(opts.js_namespace()).cloned();
         let kind = match self {
             syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
@@ -923,7 +900,6 @@ impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
 
         program.imports.push(ast::Import {
             module,
-            version,
             js_namespace,
             kind,
         });

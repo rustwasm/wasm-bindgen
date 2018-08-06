@@ -3,7 +3,7 @@ use wasm_bindgen_test::*;
 use wasm_bindgen_test_crate_a as a;
 use wasm_bindgen_test_crate_b as b;
 
-#[wasm_bindgen(module = "tests/wasm/duplicate_deps.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/duplicate_deps.js")]
 extern {
     fn assert_next_undefined();
     fn assert_next_ten();

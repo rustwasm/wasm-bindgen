@@ -28,7 +28,7 @@ fn main() {
                 use wasm_bindgen::prelude::*;
                 use wasm_bindgen_test::*;
 
-                #[wasm_bindgen(module = "{}", version = "*")]
+                #[wasm_bindgen(module = "{}")]
                 extern {{
                     fn not_actually_a_function{1}();
                 }}
