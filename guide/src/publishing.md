@@ -45,7 +45,6 @@
   cd crates/backend && cargo publish && cd -
   cd crates/macro && cargo publish && cd -
   cd crates/cli-support && cargo publish && cd -
-  cd crates/test-project-builder && cargo publish && cd -
   cd crates/test-macro && cargo publish && cd -
   cd crates/test && cargo publish --no-verify && cd -
   cd crates/cli && cargo publish && cd -

@@ -22,6 +22,3 @@ wasm-bindgen = { path = "../..", version = "0.2.15" }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = { path = '../test', version = '=0.2.15' }
-
-[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
-wasm-bindgen-test-project-builder = { path = "../test-project-builder", version = '=0.2.15' }
