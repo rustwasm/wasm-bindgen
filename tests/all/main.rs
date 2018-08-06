@@ -2,7 +2,7 @@
 
 extern crate wasm_bindgen_test_project_builder as project_builder;
 
-use project_builder::{project, run};
+use project_builder::project;
 
 mod comments;
 mod dependencies;
