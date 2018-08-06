@@ -18,7 +18,7 @@ where
 {
     /// Test whether this JS value is an instance of the type `T`.
     ///
-    /// This commit performs a dynamic check (at runtime) using the JS
+    /// This method performs a dynamic check (at runtime) using the JS
     /// `instanceof` operator. This method returns `self instanceof T`.
     fn is_instance_of<T>(&self) -> bool
     where
@@ -32,7 +32,7 @@ where
     ///
     /// This method will return `Err(self)` is `self.is_instance_of::<T>()`
     /// returns `false`, and otherwise it will return `Ok(T)` manufactured with
-    /// an unchecked cast (verified safe via the `instanceof` operation).
+    /// an unchecked cast (verified correct via the `instanceof` operation).
     fn dyn_into<T>(self) -> Result<T, Self>
     where
         T: JsCast,
@@ -49,7 +49,7 @@ where
     ///
     /// This method will return `None` is `self.is_instance_of::<T>()`
     /// returns `false`, and otherwise it will return `Some(&T)` manufactured
-    /// with an unchecked cast (verified safe via the `instanceof` operation).
+    /// with an unchecked cast (verified correct via the `instanceof` operation).
     fn dyn_ref<T>(&self) -> Option<&T>
     where
         T: JsCast,
@@ -66,8 +66,8 @@ where
     ///
     /// This method will return `None` is `self.is_instance_of::<T>()`
     /// returns `false`, and otherwise it will return `Some(&mut T)`
-    /// manufactured with an unchecked cast (verified safe via the `instanceof`
-    /// operation).
+    /// manufactured with an unchecked cast (verified correct via the
+    /// `instanceof` operation).
     fn dyn_mut<T>(&mut self) -> Option<&mut T>
     where
         T: JsCast,
@@ -85,7 +85,7 @@ where
     /// `self` and `T` are simple wrappers around `JsValue`. This method **does
     /// not check whether `self` is an instance of `T`**. If used incorrectly
     /// then this method may cause runtime exceptions in both Rust and JS, this
-    /// shoudl be used with caution.
+    /// should be used with caution.
     fn unchecked_into<T>(self) -> T
     where
         T: JsCast,
@@ -100,7 +100,7 @@ where
     /// `self` and `T` are simple wrappers around `JsValue`. This method **does
     /// not check whether `self` is an instance of `T`**. If used incorrectly
     /// then this method may cause runtime exceptions in both Rust and JS, this
-    /// shoudl be used with caution.
+    /// should be used with caution.
     ///
     /// This method, unlike `unchecked_into`, does not consume ownership of
     /// `self` and instead works over a shared reference.
@@ -118,7 +118,7 @@ where
     /// `self` and `T` are simple wrappers around `JsValue`. This method **does
     /// not check whether `self` is an instance of `T`**. If used incorrectly
     /// then this method may cause runtime exceptions in both Rust and JS, this
-    /// shoudl be used with caution.
+    /// should be used with caution.
     ///
     /// This method, unlike `unchecked_into`, does not consume ownership of
     /// `self` and instead works over a utable reference.
