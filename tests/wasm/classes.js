@@ -31,6 +31,10 @@ exports.js_strings = () => {
 };
 
 exports.js_exceptions = () => {
+    // this test only works when `--debug` is passed to `wasm-bindgen` (or the
+    // equivalent thereof)
+    if (require('process').env.WASM_BINDGEN_NO_DEBUG)
+        return;
     assert.throws(() => new wasm.ClassesExceptions1(), /cannot invoke `new` directly/);
     let a = wasm.ClassesExceptions1.new();
     a.free();

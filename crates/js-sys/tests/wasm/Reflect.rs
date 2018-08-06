@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 use js_sys::*;
 
-#[wasm_bindgen(module = "tests/wasm/Reflect.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/Reflect.js")]
 extern {
     fn get_char_at() -> Function;
 

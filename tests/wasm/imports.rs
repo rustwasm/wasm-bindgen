@@ -1,7 +1,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/imports.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/imports.js")]
 extern {
     fn test_simple();
 
@@ -42,6 +42,14 @@ extern {
     fn custom_type_return_2() -> CustomType;
     #[wasm_bindgen(js_name = interpret_2_as_custom_type)]
     fn js_interpret_2_as_custom_type();
+
+    #[wasm_bindgen(js_name = "baz$")]
+    fn renamed_with_dollar_sign();
+    #[wasm_bindgen(js_name = "$foo")]
+    static RENAMED: JsValue;
+
+    fn unused_import();
+    fn assert_dead_import_not_generated();
 }
 
 #[wasm_bindgen]
@@ -153,3 +161,18 @@ impl CustomType {
     }
 }
 
+
+#[wasm_bindgen_test]
+fn rename_with_string() {
+    renamed_with_dollar_sign();
+}
+
+#[wasm_bindgen_test]
+fn rename_static_with_string() {
+    assert_eq!(RENAMED.as_f64(), Some(1.0));
+}
+
+#[wasm_bindgen_test]
+fn dead_imports_not_generated() {
+    assert_dead_import_not_generated();
+}

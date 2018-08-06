@@ -5,7 +5,6 @@ use std::mem;
 use failure::{Error, ResultExt};
 use parity_wasm;
 use parity_wasm::elements::*;
-use serde_json;
 use shared;
 use wasm_gc;
 
@@ -43,7 +42,6 @@ pub struct Context<'a> {
     pub exported_classes: HashMap<String, ExportedClass>,
     pub function_table_needed: bool,
     pub run_descriptor: &'a Fn(&str) -> Option<Vec<u32>>,
-    pub module_versions: Vec<(String, String)>,
 }
 
 #[derive(Default)]
@@ -458,7 +456,6 @@ impl<'a> Context<'a> {
 
         self.export_table();
         self.gc()?;
-        self.add_wasm_pack_section();
 
         while js.contains("\n\n\n") {
             js = js.replace("\n\n\n", "\n\n");
@@ -1629,28 +1626,6 @@ impl<'a> Context<'a> {
         self.globals.push_str("\n");
     }
 
-    fn add_wasm_pack_section(&mut self) {
-        if self.module_versions.len() == 0 {
-            return;
-        }
-
-        #[derive(Serialize)]
-        struct WasmPackSchema<'a> {
-            version: &'a str,
-            modules: &'a [(String, String)],
-        }
-
-        let contents = serde_json::to_string(&WasmPackSchema {
-            version: "0.0.1",
-            modules: &self.module_versions,
-        }).unwrap();
-
-        let mut section = CustomSection::default();
-        *section.name_mut() = "__wasm_pack_unstable".to_string();
-        *section.payload_mut() = contents.into_bytes();
-        self.module.sections_mut().push(Section::Custom(section));
-    }
-
     fn use_node_require(&self) -> bool {
         self.config.nodejs && !self.config.nodejs_experimental_modules
     }
@@ -1766,7 +1741,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
     }
 
     fn generate_import(&mut self, import: &shared::Import) -> Result<(), Error> {
-        self.validate_import_module(import)?;
         match import.kind {
             shared::ImportKind::Function(ref f) => {
                 self.generate_import_function(import, f).with_context(|_| {
@@ -1784,41 +1758,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
             shared::ImportKind::Type(_) => {}
             shared::ImportKind::Enum(_) => {}
         }
-        Ok(())
-    }
-
-    fn validate_import_module(&mut self, import: &shared::Import) -> Result<(), Error> {
-        let version = match import.version {
-            Some(ref s) => s,
-            None => return Ok(()),
-        };
-        let module = match import.module {
-            Some(ref s) => s,
-            None => return Ok(()),
-        };
-        if module.starts_with("./") {
-            return Ok(());
-        }
-        let pkg = if module.starts_with("@") {
-            // Translate `@foo/bar/baz` to `@foo/bar` and `@foo/bar` to itself
-            let first_slash = match module.find('/') {
-                Some(i) => i,
-                None => bail!(
-                    "packages starting with `@` must be of the form \
-                     `@foo/bar`, but found: `{}`",
-                    module
-                ),
-            };
-            match module[first_slash + 1..].find('/') {
-                Some(i) => &module[..i],
-                None => module,
-            }
-        } else {
-            module.split('/').next().unwrap()
-        };
-        self.cx
-            .module_versions
-            .push((pkg.to_string(), version.clone()));
         Ok(())
     }
 

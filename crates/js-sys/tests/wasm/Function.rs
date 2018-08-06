@@ -29,7 +29,7 @@ fn apply() {
     assert_eq!(Array::from(&arr).length(), 1);
 }
 
-#[wasm_bindgen(module = "tests/wasm/Function.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/Function.js")]
 extern {
     fn get_function_to_bind() -> Function;
     fn get_value_to_bind_to() -> JsValue;

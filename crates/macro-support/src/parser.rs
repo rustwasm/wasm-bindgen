@@ -53,17 +53,6 @@ impl BindgenAttrs {
             .next()
     }
 
-    /// Get the first version attribute
-    fn version(&self) -> Option<&str> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::Version(s) => Some(&s[..]),
-                _ => None,
-            })
-            .next()
-    }
-
     /// Whether the catch attribute is present
     fn catch(&self) -> bool {
         self.attrs.iter().any(|a| match a {
@@ -173,11 +162,11 @@ impl BindgenAttrs {
     }
 
     /// Get the first js_name attribute
-    fn js_name(&self) -> Option<&Ident> {
+    fn js_name(&self) -> Option<&str> {
         self.attrs
             .iter()
             .filter_map(|a| match a {
-                BindgenAttr::JsName(s) => Some(s),
+                BindgenAttr::JsName(s) => Some(&s[..]),
                 _ => None,
             })
             .next()
@@ -219,7 +208,6 @@ pub enum BindgenAttr {
     StaticMethodOf(Ident),
     JsNamespace(Ident),
     Module(String),
-    Version(String),
     Getter(Option<Ident>),
     Setter(Option<Ident>),
     SpecialGetter,
@@ -227,7 +215,7 @@ pub enum BindgenAttr {
     SpecialDeleter,
     Structural,
     Readonly,
-    JsName(Ident),
+    JsName(String),
     JsClass(String),
 }
 
@@ -291,17 +279,14 @@ impl syn::synom::Synom for BindgenAttr {
         )=> { BindgenAttr::Module }
         |
         do_parse!(
-            call!(term, "version") >>
-            punct!(=) >>
-            s: syn!(syn::LitStr) >>
-            (s.value())
-        )=> { BindgenAttr::Version }
-        |
-        do_parse!(
             call!(term, "js_name") >>
             punct!(=) >>
-            ns: call!(term2ident) >>
-            (ns)
+            name: alt!(
+                syn!(syn::LitStr) => { |s| s.value() }
+                |
+                call!(term2ident) => { |s| s.to_string() }
+            ) >>
+            (name)
         )=> { BindgenAttr::JsName }
         |
         do_parse!(
@@ -398,9 +383,10 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
     fn convert(self, (opts, module): (BindgenAttrs, &'a Option<String>))
         -> Result<Self::Target, Diagnostic>
     {
-        let js_name = opts.js_name().unwrap_or(&self.ident).clone();
+        let default_name = self.ident.to_string();
+        let js_name = opts.js_name().unwrap_or(&default_name);
         let wasm = function_from_decl(
-            &js_name,
+            js_name,
             self.decl.clone(),
             self.attrs.clone(),
             self.vis.clone(),
@@ -517,7 +503,9 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
                 ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };
             let data = (ns, &self.ident, module);
-            format!("__wbg_{}_{}", js_name, ShortHash(data))
+            format!("__wbg_{}_{}",
+                    js_name.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>(),
+                    ShortHash(data))
         };
         Ok(ast::ImportKind::Function(ast::ImportFunction {
             function: wasm,
@@ -552,13 +540,16 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemStatic {
         if self.mutability.is_some() {
             bail_span!(self.mutability, "cannot import mutable globals yet")
         }
-        let js_name = opts.js_name().unwrap_or(&self.ident);
-        let shim = format!("__wbg_static_accessor_{}_{}", js_name, self.ident);
+        let default_name = self.ident.to_string();
+        let js_name = opts.js_name().unwrap_or(&default_name);
+        let shim = format!("__wbg_static_accessor_{}_{}",
+                           js_name.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>(),
+                           self.ident);
         Ok(ast::ImportKind::Static(ast::ImportStatic {
             ty: *self.ty,
             vis: self.vis,
             rust_name: self.ident.clone(),
-            js_name: js_name.clone(),
+            js_name: js_name.to_string(),
             shim: Ident::new(&shim, Span::call_site()),
         }))
     }
@@ -579,14 +570,15 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             bail_span!(self.unsafety, "can only #[wasm_bindgen] safe functions");
         }
 
-        let name = attrs.js_name().unwrap_or(&self.ident);
+        let default_name = self.ident.to_string();
+        let name = attrs.js_name().unwrap_or(&default_name);
         Ok(function_from_decl(name, self.decl, self.attrs, self.vis, false, None)?.0)
     }
 }
 
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 fn function_from_decl(
-    name: &Ident,
+    name: &str,
     decl: Box<syn::FnDecl>,
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
@@ -661,7 +653,7 @@ fn function_from_decl(
 
     Ok((
         ast::Function {
-            name: name.clone(),
+            name: name.to_string(),
             arguments,
             ret,
             rust_vis: vis,
@@ -824,7 +816,7 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
         };
 
         let (function, method_self) = function_from_decl(
-            opts.js_name().unwrap_or(&method.sig.ident),
+            opts.js_name().unwrap_or(&method.sig.ident.to_string()),
             Box::new(method.sig.decl.clone()),
             method.attrs.clone(),
             method.vis.clone(),
@@ -940,10 +932,6 @@ impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
             BindgenAttrs::find(attrs)?
         };
         let module = item_opts.module().or(opts.module()).map(|s| s.to_string());
-        let version = item_opts
-            .version()
-            .or(opts.version())
-            .map(|s| s.to_string());
         let js_namespace = item_opts.js_namespace().or(opts.js_namespace()).cloned();
         let kind = match self {
             syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
@@ -954,7 +942,6 @@ impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
 
         program.imports.push(ast::Import {
             module,
-            version,
             js_namespace,
             kind,
         });

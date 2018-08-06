@@ -2,14 +2,7 @@
 
 extern crate wasm_bindgen_test_project_builder as project_builder;
 
-use project_builder::{project, run};
+use project_builder::project;
 
 mod comments;
-mod dependencies;
-mod js_objects;
-mod imports;
-mod node;
-mod non_debug;
-mod non_wasm;
-mod simple;
 mod typescript;

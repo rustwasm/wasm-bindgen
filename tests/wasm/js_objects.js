@@ -82,3 +82,19 @@ exports.js_returning_vector = () => {
 exports.js_another_vector_return = () => {
     assert.deepStrictEqual(wasm.another_vector_return_get_array(), [1, 2, 3, 4, 5, 6]);
 };
+
+exports.verify_serde = function(a) {
+  assert.deepStrictEqual(a, {
+    a: 0,
+    b: 'foo',
+    c: null,
+    d: { a: 1 }
+  });
+
+  return {
+    a: 2,
+    b: 'bar',
+    c: { a: 3 },
+    d: { a: 4 },
+  }
+};

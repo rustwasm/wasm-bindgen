@@ -32,9 +32,16 @@ pub fn wasm_bindgen_test(
 
     let mut body = TokenStream::from(body).into_iter();
 
-    // Assume the input item is of the form `fn #ident ...`, and extract
-    // `#ident`
-    let fn_tok = body.next();
+    // Skip over other attributes to `fn #ident ...`, and extract `#ident`
+    let mut leading_tokens = Vec::new();
+    while let Some(token) = body.next() {
+        leading_tokens.push(token.clone());
+        if let TokenTree::Ident(token) = token {
+            if token == "fn" {
+                break
+            }
+        }
+    }
     let ident = match body.next() {
         Some(TokenTree::Ident(token)) => token,
         _ => panic!("expected a function name"),
@@ -64,7 +71,7 @@ pub fn wasm_bindgen_test(
         }
     }).into_iter());
 
-    tokens.extend(fn_tok);
+    tokens.extend(leading_tokens);
     tokens.push(ident.into());
     tokens.extend(body);
 

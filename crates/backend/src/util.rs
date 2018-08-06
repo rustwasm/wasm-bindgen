@@ -94,7 +94,6 @@ pub fn ident_ty(ident: Ident) -> syn::Type {
 pub fn wrap_import_function(function: ast::ImportFunction) -> ast::Import {
     ast::Import {
         module: None,
-        version: None,
         js_namespace: None,
         kind: ast::ImportKind::Function(function),
     }

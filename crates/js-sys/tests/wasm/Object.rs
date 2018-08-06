@@ -10,7 +10,7 @@ extern {
     fn set_foo(this: &Foo42, val: JsValue);
 }
 
-#[wasm_bindgen(module = "tests/wasm/Object.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/Object.js")]
 extern {
     fn map_with_symbol_key() -> Object;
     fn symbol_key() -> JsValue;

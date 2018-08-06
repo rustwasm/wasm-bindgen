@@ -1,5 +1,6 @@
 const assert = require('assert');
 const wasm = require('wasm-bindgen-test');
+const fs = require('fs');
 
 let ARG = null;
 let ANOTHER_ARG = null;
@@ -89,4 +90,13 @@ exports.touch_custom_type = function() {
 
 exports.interpret_2_as_custom_type = function() {
   assert.throws(wasm.interpret_2_as_custom_type, /expected value of type CustomType/);
+};
+
+exports.baz$ = function() {};
+exports.$foo = 1.0;
+
+exports.assert_dead_import_not_generated = function() {
+  const filename = require.resolve("wasm-bindgen-test");
+  const bindings = fs.readFileSync(filename);
+  assert.ok(!bindings.includes("unused_import"));
 };

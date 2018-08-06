@@ -52,6 +52,9 @@ matrix:
       script:
         - cargo test --release
         - cargo test --target wasm32-unknown-unknown
+        - WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown
+        - cargo test --target wasm32-unknown-unknown --features serde-serialize
+        - cargo test --target wasm32-unknown-unknown -p no-std
         # Check JS output from all tests against eslint
         - npm run run-lint-generated-tests
         # Check Examples against eslint
