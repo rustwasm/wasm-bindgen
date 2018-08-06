@@ -90,3 +90,6 @@ exports.touch_custom_type = function() {
 exports.interpret_2_as_custom_type = function() {
   assert.throws(wasm.interpret_2_as_custom_type, /expected value of type CustomType/);
 };
+
+exports.baz$ = function() {};
+exports.$foo = 1.0;
