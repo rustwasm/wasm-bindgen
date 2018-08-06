@@ -361,6 +361,16 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(length: u32) -> ArrayBuffer;
 
+    /// The byteLength property of an object which is an instance of type ArrayBuffer
+    /// it's an accessor property whose set accessor function is undefined,
+    /// meaning that you can only read this property.
+    /// The value is established when the array is constructed and cannot be changed.
+    /// This property returns 0 if this ArrayBuffer has been detached.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/byteLength
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &ArrayBuffer) -> u32;
+
     /// The `isView()` method returns true if arg is one of the `ArrayBuffer`
     /// views, such as typed array objects or a DataView; false otherwise.
     ///

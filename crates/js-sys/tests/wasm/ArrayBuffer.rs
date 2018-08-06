@@ -10,6 +10,12 @@ fn new() {
 }
 
 #[wasm_bindgen_test]
+fn byte_length() {
+    let buf = ArrayBuffer::new(42);
+    assert_eq!(buf.byte_length(), 42);
+}
+
+#[wasm_bindgen_test]
 fn is_view() {
     let x = Uint8Array::new(&JsValue::from(42));
     assert!(ArrayBuffer::is_view(&JsValue::from(x)));
