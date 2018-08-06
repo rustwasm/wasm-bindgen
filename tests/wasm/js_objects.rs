@@ -26,6 +26,7 @@ extern {
     fn js_returning_vector();
 
     fn js_another_vector_return();
+    fn verify_serde(val: JsValue) -> JsValue;
 }
 
 #[wasm_bindgen]
@@ -104,4 +105,41 @@ pub fn another_vector_return_get_array() -> Vec<JsValue> {
 #[wasm_bindgen_test]
 fn another_vector_return() {
     js_another_vector_return();
+}
+
+#[cfg(feature = "serde-serialize")]
+#[wasm_bindgen_test]
+fn serde() {
+    #[derive(Deserialize, Serialize)]
+    pub struct Foo {
+        a: u32,
+        b: String,
+        c: Option<Bar>,
+        d: Bar,
+    }
+
+    #[derive(Deserialize, Serialize)]
+    pub struct Bar {
+        a: u32,
+    }
+
+
+    let js = JsValue::from_serde("foo").unwrap();
+    assert_eq!(js.as_string(), Some("foo".to_string()));
+
+    let ret = verify_serde(JsValue::from_serde(&Foo {
+        a: 0,
+        b: "foo".to_string(),
+        c: None,
+        d: Bar { a: 1 },
+    }).unwrap());
+
+    let foo = ret.into_serde::<Foo>().unwrap();
+    assert_eq!(foo.a, 2);
+    assert_eq!(foo.b, "bar");
+    assert!(foo.c.is_some());
+    assert_eq!(foo.c.as_ref().unwrap().a, 3);
+    assert_eq!(foo.d.a, 4);
+
+    assert_eq!(JsValue::from("bar").into_serde::<String>().unwrap(), "bar");
 }

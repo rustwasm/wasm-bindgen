@@ -4,6 +4,10 @@
 extern crate wasm_bindgen_test;
 extern crate wasm_bindgen;
 
+#[cfg(feature = "serde-serialize")]
+#[macro_use]
+extern crate serde_derive;
+
 pub mod api;
 pub mod char;
 pub mod classes;
