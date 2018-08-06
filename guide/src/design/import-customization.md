@@ -126,7 +126,29 @@ possibilities!
   Properties in JS are accessed through `Object.getOwnPropertyDescriptor`. Note
   that this typically only works for class-like-defined properties which aren't
   just attached properties on any old object. For accessing any old property on
-  an object we can use...
+  an object we can use the `structural` flag.
+
+* `indexing_getter`, `indexing_setter` and `indexing_deleter` - these three
+  attributes can be combined with `method` to indicate that this is a getter,
+  setter or deleter method. They are different from `getter` and `setter` in a
+  way that `getter` and `setter` can only access properties that have a name
+  corresponding to the function name or their argument, but `indexing_getter`,
+  `indexing_setter` and `indexing_deleter` work in a dynamic manner, similarly
+  to the indexing syntax in JS (`object[propertyName]`), hence the name. Should
+  always be used together with the `structural` flag. For example:
+
+  ```rust
+  #[wasm_bindgen]
+  extern {
+      type Foo;
+      #[wasm_bindgen(method, structural, indexing_getter)]
+      fn get(this: &Foo, prop: &str) -> u32;
+      #[wasm_bindgen(method, structural, indexing_setter)]
+      fn set(this: &Foo, prop: &str, val: u32);
+      #[wasm_bindgen(method, structural, indexing_deleter)]
+      fn delete(this: &Foo, prop: &str);
+  }
+  ```
 
 * `structural` - this is a flag to `method` annotations which indicates that the
   method being accessed (or property with getters/setters) should be accessed in
