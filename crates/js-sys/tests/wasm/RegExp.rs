@@ -3,7 +3,6 @@ use js_sys::*;
 
 #[wasm_bindgen_test]
 fn exec() {
-
     let re = RegExp::new("quick\\s(brown).+?(jumps)", "ig");
     let result = re.exec("The Quick Brown Fox Jumps Over The Lazy Dog");
 
@@ -74,6 +73,21 @@ fn left_context() {
 fn multiline() {
     let re = RegExp::new("foo", "m");
     assert!(re.multiline());
+}
+
+#[wasm_bindgen_test]
+fn n1_to_n9() {
+    let re = RegExp::new(r"(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)", "");
+    re.test("The Quick Brown Fox Jumps Over The Lazy Dog");
+    assert_eq!(RegExp::n1(), "The");
+    assert_eq!(RegExp::n2(), "Quick");
+    assert_eq!(RegExp::n3(), "Brown");
+    assert_eq!(RegExp::n4(), "Fox");
+    assert_eq!(RegExp::n5(), "Jumps");
+    assert_eq!(RegExp::n6(), "Over");
+    assert_eq!(RegExp::n7(), "The");
+    assert_eq!(RegExp::n8(), "Lazy");
+    assert_eq!(RegExp::n9(), "Dog");
 }
 
 #[wasm_bindgen_test]

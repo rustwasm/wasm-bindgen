@@ -2168,6 +2168,30 @@ extern {
     #[wasm_bindgen(method, getter)]
     pub fn multiline(this: &RegExp) -> bool;
 
+    /// The non-standard $1, $2, $3, $4, $5, $6, $7, $8, $9 properties
+    /// are static and read-only properties of regular expressions
+    /// that contain parenthesized substring matches.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/n
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$1")]
+    pub fn n1() -> JsString;
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$2")]
+    pub fn n2() -> JsString;
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$3")]
+    pub fn n3() -> JsString;
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$4")]
+    pub fn n4() -> JsString;
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$5")]
+    pub fn n5() -> JsString;
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$6")]
+    pub fn n6() -> JsString;
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$7")]
+    pub fn n7() -> JsString;
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$8")]
+    pub fn n8() -> JsString;
+    #[wasm_bindgen(static_method_of = RegExp, getter, js_name = "$9")]
+    pub fn n9() -> JsString;
+
     /// The RegExp constructor creates a regular expression object for matching text with a pattern.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
