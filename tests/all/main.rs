@@ -7,5 +7,4 @@ use project_builder::project;
 mod comments;
 mod js_objects;
 mod imports;
-mod simple;
 mod typescript;

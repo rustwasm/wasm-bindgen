@@ -66,6 +66,7 @@ members = [
   "examples/performance",
   "examples/smorgasboard",
   "examples/wasm-in-wasm",
+  "tests/no-std",
 ]
 
 [patch.crates-io]
