@@ -973,9 +973,9 @@ impl<'src> FirstPassRecord<'src> {
                     mdn_doc(self_name, Some(&name))
                 )
             ),
-            ::first_pass::OperationId::IndexingGetter => Some("The getter\n\n".to_string()),
-            ::first_pass::OperationId::IndexingSetter => Some("The setter\n\n".to_string()),
-            ::first_pass::OperationId::IndexingDeleter => Some("The deleter\n\n".to_string()),
+            ::first_pass::OperationId::IndexingGetter => Some("The indexing getter\n\n".to_string()),
+            ::first_pass::OperationId::IndexingSetter => Some("The indexing setter\n\n".to_string()),
+            ::first_pass::OperationId::IndexingDeleter => Some("The indexing deleter\n\n".to_string()),
         };
 
         self.create_function(

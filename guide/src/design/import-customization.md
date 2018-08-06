@@ -129,13 +129,14 @@ possibilities!
   an object we can use the `structural` flag.
 
 * `indexing_getter`, `indexing_setter` and `indexing_deleter` - these three
-  attributes can be combined with `method` to indicate that this is a getter,
-  setter or deleter method. They are different from `getter` and `setter` in a
-  way that `getter` and `setter` can only access properties that have a name
-  corresponding to the function name or their argument, but `indexing_getter`,
-  `indexing_setter` and `indexing_deleter` work in a dynamic manner, similarly
-  to the indexing syntax in JS (`object[propertyName]`), hence the name. Should
-  always be used together with the `structural` flag. For example:
+  attributes can be combined with `method` to indicate that this is a indexing
+  getter, indexing setter or indexing deleter method. They are different from
+  `getter` and `setter` in a way that `getter` and `setter` can only access
+  properties that have a name corresponding to the function name or their
+  argument, but `indexing_getter`, `indexing_setter` and `indexing_deleter`
+  work in a dynamic manner, similarly to the indexing syntax in JS
+  (`object[propertyName]`), hence the name. Should always be used together with
+  the `structural` flag. For example:
 
   ```rust
   #[wasm_bindgen]

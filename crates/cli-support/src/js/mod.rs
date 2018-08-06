@@ -1881,9 +1881,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                         class, location, s,
                                     )
                                 }
-                                shared::OperationKind::IndexingGetter => panic!("getter should be structural"),
-                                shared::OperationKind::IndexingSetter => panic!("setter should be structural"),
-                                shared::OperationKind::IndexingDeleter => panic!("deleter should be structural"),
+                                shared::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
+                                shared::OperationKind::IndexingSetter => panic!("indexing setter should be structural"),
+                                shared::OperationKind::IndexingDeleter => panic!("indexing deleter should be structural"),
                             }
                         };
 
