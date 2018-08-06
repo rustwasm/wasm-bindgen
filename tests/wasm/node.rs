@@ -1,7 +1,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/node.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/node.js")]
 extern {
     fn test_works();
     static FOO: JsValue;

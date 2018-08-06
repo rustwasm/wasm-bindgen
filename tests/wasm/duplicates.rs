@@ -3,7 +3,7 @@ use wasm_bindgen_test::*;
 pub mod same_function_different_locations_a {
     use wasm_bindgen::prelude::*;
 
-    #[wasm_bindgen(module = "tests/wasm/duplicates_a.js", version = "*")]
+    #[wasm_bindgen(module = "tests/wasm/duplicates_a.js")]
     extern {
         pub fn foo();
     }
@@ -12,7 +12,7 @@ pub mod same_function_different_locations_a {
 pub mod same_function_different_locations_b {
     use wasm_bindgen::prelude::*;
 
-    #[wasm_bindgen(module = "tests/wasm/duplicates_a.js", version = "*")]
+    #[wasm_bindgen(module = "tests/wasm/duplicates_a.js")]
     extern {
         pub fn foo();
     }
@@ -27,7 +27,7 @@ fn same_function_different_locations() {
 pub mod same_function_different_modules_a {
     use wasm_bindgen::prelude::*;
 
-    #[wasm_bindgen(module = "tests/wasm/duplicates_b.js", version = "*")]
+    #[wasm_bindgen(module = "tests/wasm/duplicates_b.js")]
     extern {
         pub fn foo() -> bool;
     }
@@ -36,7 +36,7 @@ pub mod same_function_different_modules_a {
 pub mod same_function_different_modules_b {
     use wasm_bindgen::prelude::*;
 
-    #[wasm_bindgen(module = "tests/wasm/duplicates_c.js", version = "*")]
+    #[wasm_bindgen(module = "tests/wasm/duplicates_c.js")]
     extern {
         pub fn foo() -> bool;
     }

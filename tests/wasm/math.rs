@@ -1,7 +1,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/math.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/math.js")]
 extern {
     fn js_auto_bind_math();
 }

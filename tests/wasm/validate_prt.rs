@@ -1,7 +1,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/validate_prt.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/validate_prt.js")]
 extern {
     fn js_works();
 }

@@ -1,7 +1,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/char.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/char.js")]
 extern {
     fn js_identity(c: char) -> char;
     fn js_works();

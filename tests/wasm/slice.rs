@@ -1,7 +1,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/slice.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/slice.js")]
 extern {
     fn js_export();
 
@@ -44,7 +44,7 @@ fn export() {
 
 macro_rules! import_macro {
     ($(($rust:ident, $js:ident, $i:ident))*) => ($(
-        #[wasm_bindgen(module = "tests/wasm/slice.js", version = "*")]
+        #[wasm_bindgen(module = "tests/wasm/slice.js")]
         extern {
             fn $js(a: &[$i]) -> Vec<$i>;
         }
@@ -105,7 +105,7 @@ fn pass_array() {
 macro_rules! import_mut_macro {
     ($(($rust:ident, $js:ident, $i:ident))*) => (
         $(
-            #[wasm_bindgen(module = "tests/wasm/slice.js", version = "*")]
+            #[wasm_bindgen(module = "tests/wasm/slice.js")]
             extern {
                 fn $js(a: &mut [$i]);
             }

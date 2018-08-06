@@ -5,37 +5,6 @@ controlling precisely how imports are imported and what they map to in JS. This
 section is intended to hopefully be an exhaustive reference of the
 possibilities!
 
-* `module` and `version` - we've seen `module` so far indicating where we can
-  import items from but `version` is also allowed:
-
-  ```rust
-  #[wasm_bindgen(module = "moment", version = "^2.0.0")]
-  extern {
-      type Moment;
-      fn moment() -> Moment;
-      #[wasm_bindgen(method)]
-      fn format(this: &Moment) -> String;
-  }
-  ```
-
-  The `module` key is used to configure the module that each item is imported
-  from. The `version` key does not affect the generated wasm itself but rather
-  it's an informative directive for tools like [wasm-pack]. Tools like wasm-pack
-  will generate a `package.json` for you and the `version` listed here, when
-  `module` is also an NPM package, will correspond to what to write down in
-  `package.json`.
-
-  In other words the usage of `module` as the name of an NPM package and
-  `version` as the version requirement allows you to, inline in Rust, depend on
-  the NPM ecosystem and import functionality from those packages. When bundled
-  with a tool like [wasm-pack] everything will automatically get wired up with
-  bundlers and you should be good to go!
-
-  Note that the `version` is *required* if `module` doesn't start with `./`. If
-  `module` starts with `./` then it is an error to provide a version.
-
-[wasm-pack]: https://github.com/rustwasm/wasm-pack
-
 * `catch` - this attribute allows catching a JS exception. This can be attached
   to any imported function and the function must return a `Result` where the
   `Err` payload is a `JsValue`, like so:

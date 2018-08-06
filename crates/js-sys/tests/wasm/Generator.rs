@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 use js_sys::*;
 
-#[wasm_bindgen(module = "tests/wasm/Generator.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/Generator.js")]
 extern {
     fn one_two_generator() -> Generator;
     fn dummy_generator() -> Generator;

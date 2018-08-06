@@ -1,7 +1,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/simple.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/simple.js")]
 extern {
     fn test_add();
     fn test_string_arguments();

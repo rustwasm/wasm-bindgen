@@ -2,7 +2,7 @@ use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 use self::inner::ColorWithCustomValues;
 
-#[wasm_bindgen(module = "tests/wasm/enums.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/enums.js")]
 extern {
     fn js_c_style_enum();
     fn js_c_style_enum_with_custom_values();

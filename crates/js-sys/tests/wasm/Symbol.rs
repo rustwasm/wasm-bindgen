@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 use js_sys::*;
 
-#[wasm_bindgen(module = "tests/wasm/Symbol.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/Symbol.js")]
 extern {
     fn test_has_instance(sym: &Symbol);
     fn test_is_concat_spreadable(sym: &Symbol);

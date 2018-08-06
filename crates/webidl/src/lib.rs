@@ -240,7 +240,6 @@ impl<'src> WebidlParse<'src, ()> for weedle::InterfaceDefinition<'src> {
 
         program.imports.push(backend::ast::Import {
             module: None,
-            version: None,
             js_namespace: None,
             kind: backend::ast::ImportKind::Type(backend::ast::ImportType {
                 vis: public(),
@@ -718,7 +717,6 @@ impl<'src> WebidlParse<'src, ()> for weedle::EnumDefinition<'src> {
         let variants = &self.values.body.list;
         program.imports.push(backend::ast::Import {
             module: None,
-            version: None,
             js_namespace: None,
             kind: backend::ast::ImportKind::Enum(backend::ast::ImportEnum {
                 vis: public(),

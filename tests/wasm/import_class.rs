@@ -5,7 +5,7 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "tests/wasm/import_class.js", version = "*")]
+#[wasm_bindgen(module = "tests/wasm/import_class.js")]
 extern {
     fn math_log(f: f64) -> f64;
 

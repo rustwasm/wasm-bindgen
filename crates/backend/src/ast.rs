@@ -56,7 +56,6 @@ pub enum MethodSelf {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub struct Import {
     pub module: Option<String>,
-    pub version: Option<String>,
     pub js_namespace: Option<Ident>,
     pub kind: ImportKind,
 }
@@ -301,33 +300,8 @@ impl Variant {
 
 impl Import {
     fn shared(&self) -> Result<shared::Import, Diagnostic> {
-        match (&self.module, &self.version) {
-            (&Some(ref m), None) if m.starts_with("./") => {}
-            (&Some(ref m), &Some(_)) if m.starts_with("./") => {
-                panic!(
-                    "when a module path starts with `./` that indicates \
-                     that a local file is being imported so the `version` \
-                     key cannot also be specified"
-                );
-            }
-            (&Some(_), &Some(_)) => {}
-            (&Some(_), &None) => panic!(
-                "when the `module` directive doesn't start with `./` \
-                 then it's interpreted as an NPM package which requires \
-                 a `version` to be specified as well, try using \
-                 #[wasm_bindgen(module = \"...\", version = \"...\")]"
-            ),
-            (&None, &Some(_)) => {
-                panic!(
-                    "the #[wasm_bindgen(version = \"...\")] attribute can only \
-                     be used when `module = \"...\"` is also specified"
-                );
-            }
-            (&None, &None) => {}
-        }
         Ok(shared::Import {
             module: self.module.clone(),
-            version: self.version.clone(),
             js_namespace: self.js_namespace.as_ref().map(|s| s.to_string()),
             kind: self.kind.shared(),
         })
