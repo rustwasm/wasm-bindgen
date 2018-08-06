@@ -121,7 +121,7 @@ impl BindgenAttrs {
             .next()
     }
 
-    /// Whether the special getter attributes is present
+    /// Whether the indexing getter attributes is present
     fn indexing_getter(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
             BindgenAttr::IndexingGetter => true,
@@ -129,7 +129,7 @@ impl BindgenAttrs {
         })
     }
 
-    /// Whether the special setter attributes is present
+    /// Whether the indexing setter attributes is present
     fn indexing_setter(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
             BindgenAttr::IndexingSetter => true,
@@ -137,7 +137,7 @@ impl BindgenAttrs {
         })
     }
 
-    /// Whether the special deleter attributes is present
+    /// Whether the indexing deleter attributes is present
     fn indexing_deleter(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
             BindgenAttr::IndexingDeleter => true,
