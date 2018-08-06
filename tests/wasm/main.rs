@@ -3,6 +3,8 @@
 
 extern crate wasm_bindgen_test;
 extern crate wasm_bindgen;
+extern crate wasm_bindgen_test_crate_a;
+extern crate wasm_bindgen_test_crate_b;
 
 #[cfg(feature = "serde-serialize")]
 #[macro_use]
@@ -12,10 +14,11 @@ pub mod api;
 pub mod char;
 pub mod classes;
 pub mod closures;
+pub mod duplicate_deps;
 pub mod duplicates;
 pub mod enums;
-pub mod imports;
 pub mod import_class;
+pub mod imports;
 pub mod js_objects;
 pub mod math;
 pub mod node;
