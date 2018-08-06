@@ -18,6 +18,7 @@ pub mod imports;
 pub mod import_class;
 pub mod js_objects;
 pub mod math;
+pub mod node;
 pub mod option;
 pub mod optional_primitives;
 pub mod simple;

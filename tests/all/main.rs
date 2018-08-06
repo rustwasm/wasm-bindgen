@@ -9,5 +9,4 @@ mod dependencies;
 mod js_objects;
 mod imports;
 mod simple;
-mod node;
 mod typescript;
