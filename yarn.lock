@@ -78,9 +78,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@types/node@^10.5.5":
-  version "10.5.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.5.5.tgz#8e84d24e896cd77b0d4f73df274027e3149ec2ba"
+"@types/node@^10.5.6":
+  version "10.5.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.5.6.tgz#1640f021dd0eaf12e731e54198c12ad2e020dc8e"
 
 "@webassemblyjs/ast@1.5.13":
   version "1.5.13"
@@ -245,9 +245,9 @@ acorn@^5.0.0, acorn@^5.0.3, acorn@^5.6.0, acorn@^5.6.2:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.1.tgz#f095829297706a7c9776958c0afc8930a9b9d9d8"
 
-adm-zip@0.4.7:
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.4.7.tgz#8606c2cbf1c426ce8c8ec00174447fd49b6eafc1"
+adm-zip@0.4.11:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.4.11.tgz#2aa54c84c4b01a9d0fb89bb11982a51f13e3d62a"
 
 ajv-keywords@^3.0.0, ajv-keywords@^3.1.0:
   version "3.2.0"
@@ -1651,11 +1651,11 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
-geckodriver@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/geckodriver/-/geckodriver-1.12.0.tgz#997a1efeca90543192fbcf1eae70d7cb2196330e"
+geckodriver@^1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/geckodriver/-/geckodriver-1.12.1.tgz#f3b2ecd5224f383462f07841f4fdcf5007d1b42d"
   dependencies:
-    adm-zip "0.4.7"
+    adm-zip "0.4.11"
     bluebird "3.4.6"
     got "5.6.0"
     tar "4.0.2"
