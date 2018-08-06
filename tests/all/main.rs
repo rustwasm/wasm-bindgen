@@ -11,5 +11,4 @@ mod imports;
 mod simple;
 mod node;
 mod non_debug;
-mod non_wasm;
 mod typescript;
