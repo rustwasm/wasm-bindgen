@@ -69,9 +69,9 @@ pub enum OperationKind {
     Regular,
     Getter(String),
     Setter(String),
-    SpecialGetter,
-    SpecialSetter,
-    SpecialDeleter,
+    IndexingGetter,
+    IndexingSetter,
+    IndexingDeleter,
 }
 
 #[derive(Deserialize, Serialize)]

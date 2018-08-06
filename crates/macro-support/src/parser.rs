@@ -122,25 +122,25 @@ impl BindgenAttrs {
     }
 
     /// Whether the special getter attributes is present
-    fn special_getter(&self) -> bool {
+    fn indexing_getter(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
-            BindgenAttr::SpecialGetter => true,
+            BindgenAttr::IndexingGetter => true,
             _ => false,
         })
     }
 
     /// Whether the special setter attributes is present
-    fn special_setter(&self) -> bool {
+    fn indexing_setter(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
-            BindgenAttr::SpecialSetter => true,
+            BindgenAttr::IndexingSetter => true,
             _ => false,
         })
     }
 
     /// Whether the special deleter attributes is present
-    fn special_deleter(&self) -> bool {
+    fn indexing_deleter(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
-            BindgenAttr::SpecialDeleter => true,
+            BindgenAttr::IndexingDeleter => true,
             _ => false,
         })
     }
@@ -210,9 +210,9 @@ pub enum BindgenAttr {
     Module(String),
     Getter(Option<Ident>),
     Setter(Option<Ident>),
-    SpecialGetter,
-    SpecialSetter,
-    SpecialDeleter,
+    IndexingGetter,
+    IndexingSetter,
+    IndexingDeleter,
     Structural,
     Readonly,
     JsName(String),
@@ -254,11 +254,11 @@ impl syn::synom::Synom for BindgenAttr {
             (val)
         )=> { BindgenAttr::Setter }
         |
-        call!(term, "special_getter") => { |_| BindgenAttr::SpecialGetter }
+        call!(term, "indexing_getter") => { |_| BindgenAttr::IndexingGetter }
         |
-        call!(term, "special_setter") => { |_| BindgenAttr::SpecialSetter }
+        call!(term, "indexing_setter") => { |_| BindgenAttr::IndexingSetter }
         |
-        call!(term, "special_deleter") => { |_| BindgenAttr::SpecialDeleter }
+        call!(term, "indexing_deleter") => { |_| BindgenAttr::IndexingDeleter }
         |
         call!(term, "structural") => { |_| BindgenAttr::Structural }
         |
@@ -414,14 +414,14 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
         if let Some(s) = opts.setter() {
             operation_kind = ast::OperationKind::Setter(s);
         }
-        if opts.special_getter() {
-            operation_kind = ast::OperationKind::SpecialGetter;
+        if opts.indexing_getter() {
+            operation_kind = ast::OperationKind::IndexingGetter;
         }
-        if opts.special_setter() {
-            operation_kind = ast::OperationKind::SpecialSetter;
+        if opts.indexing_setter() {
+            operation_kind = ast::OperationKind::IndexingSetter;
         }
-        if opts.special_deleter() {
-            operation_kind = ast::OperationKind::SpecialDeleter;
+        if opts.indexing_deleter() {
+            operation_kind = ast::OperationKind::IndexingDeleter;
         }
 
         let kind = if opts.method() {

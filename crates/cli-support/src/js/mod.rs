@@ -1841,19 +1841,19 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                     }}",
                                     location, s
                                 ),
-                                shared::OperationKind::SpecialGetter => format!(
+                                shared::OperationKind::IndexingGetter => format!(
                                     "function(y) {{
                                         return {}[y];
                                     }}",
                                     location
                                 ),
-                                shared::OperationKind::SpecialSetter => format!(
+                                shared::OperationKind::IndexingSetter => format!(
                                     "function(y, z) {{
                                         {}[y] = z;
                                     }}",
                                     location
                                 ),
-                                shared::OperationKind::SpecialDeleter => format!(
+                                shared::OperationKind::IndexingDeleter => format!(
                                     "function(y) {{
                                         delete {}[y];
                                     }}",
@@ -1881,9 +1881,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                         class, location, s,
                                     )
                                 }
-                                shared::OperationKind::SpecialGetter => panic!("getter should be structural"),
-                                shared::OperationKind::SpecialSetter => panic!("setter should be structural"),
-                                shared::OperationKind::SpecialDeleter => panic!("deleter should be structural"),
+                                shared::OperationKind::IndexingGetter => panic!("getter should be structural"),
+                                shared::OperationKind::IndexingSetter => panic!("setter should be structural"),
+                                shared::OperationKind::IndexingDeleter => panic!("deleter should be structural"),
                             }
                         };
 

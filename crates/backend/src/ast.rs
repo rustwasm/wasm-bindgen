@@ -107,9 +107,9 @@ pub enum OperationKind {
     Regular,
     Getter(Option<Ident>),
     Setter(Option<Ident>),
-    SpecialGetter,
-    SpecialSetter,
-    SpecialDeleter,
+    IndexingGetter,
+    IndexingSetter,
+    IndexingDeleter,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -372,9 +372,9 @@ impl ImportFunction {
                                     s.unwrap_or_else(|| self.infer_setter_property()),
                                 )
                             }
-                            OperationKind::SpecialGetter => shared::OperationKind::SpecialGetter,
-                            OperationKind::SpecialSetter => shared::OperationKind::SpecialSetter,
-                            OperationKind::SpecialDeleter => shared::OperationKind::SpecialDeleter,
+                            OperationKind::IndexingGetter => shared::OperationKind::IndexingGetter,
+                            OperationKind::IndexingSetter => shared::OperationKind::IndexingSetter,
+                            OperationKind::IndexingDeleter => shared::OperationKind::IndexingDeleter,
                         };
                         shared::MethodKind::Operation(shared::Operation { is_static, kind })
                     }

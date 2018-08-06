@@ -42,9 +42,9 @@ pub(crate) struct InterfaceData<'src> {
 pub(crate) enum OperationId<'src> {
     Constructor,
     Operation(Option<&'src str>),
-    SpecialGetter,
-    SpecialSetter,
-    SpecialDeleter,
+    IndexingGetter,
+    IndexingSetter,
+    IndexingDeleter,
 }
 
 #[derive(Default)]
@@ -260,9 +260,9 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             match self.identifier.map(|s| s.0) {
                 None => match self.specials.get(0) {
                     None => OperationId::Operation(None),
-                    Some(weedle::interface::Special::Getter(weedle::term::Getter)) => OperationId::SpecialGetter,
-                    Some(weedle::interface::Special::Setter(weedle::term::Setter)) => OperationId::SpecialSetter,
-                    Some(weedle::interface::Special::Deleter(weedle::term::Deleter)) => OperationId::SpecialDeleter,
+                    Some(weedle::interface::Special::Getter(weedle::term::Getter)) => OperationId::IndexingGetter,
+                    Some(weedle::interface::Special::Setter(weedle::term::Setter)) => OperationId::IndexingSetter,
+                    Some(weedle::interface::Special::Deleter(weedle::term::Deleter)) => OperationId::IndexingDeleter,
                     Some(weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller)) => return Ok(()),
                 },
                 Some(ref name) => OperationId::Operation(Some(name.clone())),

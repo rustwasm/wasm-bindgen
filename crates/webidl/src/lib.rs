@@ -651,9 +651,9 @@ fn member_operation<'src>(
             match identifier.map(|s| s.0) {
                 None if specials.is_empty() => ::first_pass::OperationId::Operation(None),
                 None if specials.len() == 1 => match specials[0] {
-                    weedle::interface::Special::Getter(weedle::term::Getter) => ::first_pass::OperationId::SpecialGetter,
-                    weedle::interface::Special::Setter(weedle::term::Setter) => ::first_pass::OperationId::SpecialSetter,
-                    weedle::interface::Special::Deleter(weedle::term::Deleter) => ::first_pass::OperationId::SpecialDeleter,
+                    weedle::interface::Special::Getter(weedle::term::Getter) => ::first_pass::OperationId::IndexingGetter,
+                    weedle::interface::Special::Setter(weedle::term::Setter) => ::first_pass::OperationId::IndexingSetter,
+                    weedle::interface::Special::Deleter(weedle::term::Deleter) => ::first_pass::OperationId::IndexingDeleter,
                     weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller) => return Ok(()),
                 },
                 Some(ref name) if specials.is_empty() => ::first_pass::OperationId::Operation(Some(name.clone())),

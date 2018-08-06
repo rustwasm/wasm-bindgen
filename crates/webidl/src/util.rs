@@ -932,9 +932,9 @@ impl<'src> FirstPassRecord<'src> {
                 }
                 Some(name) => name.to_string(),
             },
-            ::first_pass::OperationId::SpecialGetter => "get".to_string(),
-            ::first_pass::OperationId::SpecialSetter => "set".to_string(),
-            ::first_pass::OperationId::SpecialDeleter => "delete".to_string(),
+            ::first_pass::OperationId::IndexingGetter => "get".to_string(),
+            ::first_pass::OperationId::IndexingSetter => "set".to_string(),
+            ::first_pass::OperationId::IndexingDeleter => "delete".to_string(),
         };
 
         let kind = backend::ast::ImportFunctionKind::Method {
@@ -945,9 +945,9 @@ impl<'src> FirstPassRecord<'src> {
                 kind: match &operation_id {
                     ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
                     ::first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
-                    ::first_pass::OperationId::SpecialGetter => backend::ast::OperationKind::SpecialGetter,
-                    ::first_pass::OperationId::SpecialSetter => backend::ast::OperationKind::SpecialSetter,
-                    ::first_pass::OperationId::SpecialDeleter => backend::ast::OperationKind::SpecialDeleter,
+                    ::first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
+                    ::first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
+                    ::first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
                 },
             }),
         };
@@ -973,9 +973,9 @@ impl<'src> FirstPassRecord<'src> {
                     mdn_doc(self_name, Some(&name))
                 )
             ),
-            ::first_pass::OperationId::SpecialGetter => Some("The getter\n\n".to_string()),
-            ::first_pass::OperationId::SpecialSetter => Some("The setter\n\n".to_string()),
-            ::first_pass::OperationId::SpecialDeleter => Some("The deleter\n\n".to_string()),
+            ::first_pass::OperationId::IndexingGetter => Some("The getter\n\n".to_string()),
+            ::first_pass::OperationId::IndexingSetter => Some("The setter\n\n".to_string()),
+            ::first_pass::OperationId::IndexingDeleter => Some("The deleter\n\n".to_string()),
         };
 
         self.create_function(
