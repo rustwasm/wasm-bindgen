@@ -548,7 +548,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             attrs: self.attrs,
             doc_comment: None,
             instanceof_shim: shim,
-            name: self.ident,
+            rust_name: self.ident,
             extends: attrs.extends().cloned().collect(),
         }))
     }

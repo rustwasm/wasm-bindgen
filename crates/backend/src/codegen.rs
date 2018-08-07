@@ -37,7 +37,7 @@ impl TryToTokens for ast::Program {
         let mut types = HashSet::new();
         for i in self.imports.iter() {
             if let ast::ImportKind::Type(t) = &i.kind {
-                types.insert(t.name.clone());
+                types.insert(t.rust_name.clone());
             }
         }
         for i in self.imports.iter() {
@@ -513,13 +513,13 @@ impl TryToTokens for ast::ImportKind {
 impl ToTokens for ast::ImportType {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let vis = &self.vis;
-        let name = &self.name;
+        let rust_name = &self.rust_name;
         let attrs = &self.attrs;
         let doc_comment = match &self.doc_comment {
             None => "",
             Some(comment) => comment,
         };
-        let const_name = format!("__wbg_generated_const_{}", name);
+        let const_name = format!("__wbg_generated_const_{}", rust_name);
         let const_name = Ident::new(&const_name, Span::call_site());
         let instanceof_shim = Ident::new(&self.instanceof_shim, Span::call_site());
         (quote! {
@@ -527,7 +527,7 @@ impl ToTokens for ast::ImportType {
             #(#attrs)*
             #[doc = #doc_comment]
             #[repr(transparent)]
-            #vis struct #name {
+            #vis struct #rust_name {
                 obj: ::wasm_bindgen::JsValue,
             }
 
@@ -540,13 +540,13 @@ impl ToTokens for ast::ImportType {
                 use wasm_bindgen::{JsValue, JsCast};
                 use wasm_bindgen::__rt::core::mem::ManuallyDrop;
 
-                impl WasmDescribe for #name {
+                impl WasmDescribe for #rust_name {
                     fn describe() {
                         JsValue::describe();
                     }
                 }
 
-                impl IntoWasmAbi for #name {
+                impl IntoWasmAbi for #rust_name {
                     type Abi = <JsValue as IntoWasmAbi>::Abi;
 
                     fn into_abi(self, extra: &mut Stack) -> Self::Abi {
@@ -554,29 +554,29 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
-                impl OptionIntoWasmAbi for #name {
+                impl OptionIntoWasmAbi for #rust_name {
                     fn none() -> Self::Abi { 0 }
                 }
 
-                impl<'a> OptionIntoWasmAbi for &'a #name {
+                impl<'a> OptionIntoWasmAbi for &'a #rust_name {
                     fn none() -> Self::Abi { 0 }
                 }
 
-                impl FromWasmAbi for #name {
+                impl FromWasmAbi for #rust_name {
                     type Abi = <JsValue as FromWasmAbi>::Abi;
 
                     unsafe fn from_abi(js: Self::Abi, extra: &mut Stack) -> Self {
-                        #name {
+                        #rust_name {
                             obj: JsValue::from_abi(js, extra),
                         }
                     }
                 }
 
-                impl OptionFromWasmAbi for #name {
+                impl OptionFromWasmAbi for #rust_name {
                     fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
                 }
 
-                impl<'a> IntoWasmAbi for &'a #name {
+                impl<'a> IntoWasmAbi for &'a #rust_name {
                     type Abi = <&'a JsValue as IntoWasmAbi>::Abi;
 
                     fn into_abi(self, extra: &mut Stack) -> Self::Abi {
@@ -584,40 +584,40 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
-                impl RefFromWasmAbi for #name {
+                impl RefFromWasmAbi for #rust_name {
                     type Abi = <JsValue as RefFromWasmAbi>::Abi;
-                    type Anchor = ManuallyDrop<#name>;
+                    type Anchor = ManuallyDrop<#rust_name>;
 
                     unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor {
                         let tmp = <JsValue as RefFromWasmAbi>::ref_from_abi(js, extra);
-                        ManuallyDrop::new(#name {
+                        ManuallyDrop::new(#rust_name {
                             obj: ManuallyDrop::into_inner(tmp),
                         })
                     }
                 }
 
                 // TODO: remove this on the next major version
-                impl From<JsValue> for #name {
-                    fn from(obj: JsValue) -> #name {
-                        #name { obj }
+                impl From<JsValue> for #rust_name {
+                    fn from(obj: JsValue) -> #rust_name {
+                        #rust_name { obj }
                     }
                 }
 
-                impl AsRef<JsValue> for #name {
+                impl AsRef<JsValue> for #rust_name {
                     fn as_ref(&self) -> &JsValue { &self.obj }
                 }
 
-                impl AsMut<JsValue> for #name {
+                impl AsMut<JsValue> for #rust_name {
                     fn as_mut(&mut self) -> &mut JsValue { &mut self.obj }
                 }
 
-                impl From<#name> for JsValue {
-                    fn from(obj: #name) -> JsValue {
+                impl From<#rust_name> for JsValue {
+                    fn from(obj: #rust_name) -> JsValue {
                         obj.obj
                     }
                 }
 
-                impl JsCast for #name {
+                impl JsCast for #rust_name {
                     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                     fn instanceof(val: &JsValue) -> bool {
                         #[link(wasm_import_module = "__wbindgen_placeholder__")]
@@ -637,19 +637,19 @@ impl ToTokens for ast::ImportType {
                     }
 
                     fn unchecked_from_js(val: JsValue) -> Self {
-                        #name { obj: val }
+                        #rust_name { obj: val }
                     }
 
                     fn unchecked_from_js_ref(val: &JsValue) -> &Self {
-                        // Should be safe because `#name` is a transparent
+                        // Should be safe because `#rust_name` is a transparent
                         // wrapper around `val`
-                        unsafe { &*(val as *const JsValue as *const #name) }
+                        unsafe { &*(val as *const JsValue as *const #rust_name) }
                     }
 
                     fn unchecked_from_js_mut(val: &mut JsValue) -> &mut Self {
-                        // Should be safe because `#name` is a transparent
+                        // Should be safe because `#rust_name` is a transparent
                         // wrapper around `val`
-                        unsafe { &mut *(val as *mut JsValue as *mut #name) }
+                        unsafe { &mut *(val as *mut JsValue as *mut #rust_name) }
                     }
                 }
 
@@ -659,21 +659,21 @@ impl ToTokens for ast::ImportType {
 
         for superclass in self.extends.iter() {
             (quote! {
-                impl From<#name> for #superclass {
-                    fn from(obj: #name) -> #superclass {
+                impl From<#rust_name> for #superclass {
+                    fn from(obj: #rust_name) -> #superclass {
                         use wasm_bindgen::JsCast;
                         #superclass::unchecked_from_js(obj.into())
                     }
                 }
 
-                impl AsRef<#superclass> for #name {
+                impl AsRef<#superclass> for #rust_name {
                     fn as_ref(&self) -> &#superclass {
                         use wasm_bindgen::JsCast;
                         #superclass::unchecked_from_js_ref(self.as_ref())
                     }
                 }
 
-                impl AsMut<#superclass> for #name {
+                impl AsMut<#superclass> for #rust_name {
                     fn as_mut(&mut self) -> &mut #superclass {
                         use wasm_bindgen::JsCast;
                         #superclass::unchecked_from_js_mut(self.as_mut())
