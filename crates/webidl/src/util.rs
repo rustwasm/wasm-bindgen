@@ -370,7 +370,7 @@ impl<'src> FirstPassRecord<'src> {
     /// Create a wasm-bindgen method, if possible.
     pub fn create_basic_method(
         &self,
-        arguments: &[weedle::argument::Argument],
+        arguments: &[Argument],
         operation_id: first_pass::OperationId,
         return_type: &weedle::types::ReturnType,
         self_name: &str,
@@ -392,11 +392,11 @@ impl<'src> FirstPassRecord<'src> {
                     warn!("Operations without a name are unsupported");
                     return Vec::new();
                 }
-                Some(name) => name.to_string(),
+                Some(name) => name,
             },
-            first_pass::OperationId::IndexingGetter => "get".to_string(),
-            first_pass::OperationId::IndexingSetter => "set".to_string(),
-            first_pass::OperationId::IndexingDeleter => "delete".to_string(),
+            first_pass::OperationId::IndexingGetter => "get",
+            first_pass::OperationId::IndexingSetter => "set",
+            first_pass::OperationId::IndexingDeleter => "delete",
         };
 
         let kind = backend::ast::ImportFunctionKind::Method {
@@ -455,7 +455,7 @@ impl<'src> FirstPassRecord<'src> {
     /// whether there overloads with same argument names for given argument types
     pub fn get_operation_overloading(
         &self,
-        arguments: &[weedle::argument::Argument],
+        arguments: &[Argument],
         operation_id: &first_pass::OperationId,
         self_name: &str,
         namespace: bool,

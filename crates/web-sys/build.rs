@@ -65,6 +65,7 @@ fn try_main() -> Result<(), failure::Error> {
         .context("writing bindings to output file")?;
 
     // run rustfmt on the generated file - really handy for debugging
+    println!("cargo:rerun-if-env-changed=WEBIDL_RUSTFMT_BINDINGS");
     if env::var("WEBIDL_RUSTFMT_BINDINGS").is_ok() {
         let status = Command::new("rustfmt")
             .arg(&out_file_path)

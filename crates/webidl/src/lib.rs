@@ -44,7 +44,7 @@ use proc_macro2::{Ident, Span};
 use weedle::argument::Argument;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
 
-use first_pass::{FirstPass, FirstPassRecord};
+use first_pass::{FirstPass, FirstPassRecord, OperationId};
 use util::{public, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, mdn_doc};
 use idl_type::{IdlType, ToIdlType};
 
@@ -646,6 +646,7 @@ fn member_operation<'src>(
     identifier: &Option<weedle::common::Identifier<'src>>,
 ) -> Result<()> {
     use weedle::interface::StringifierOrStatic::*;
+    use weedle::interface::Special;
 
     if util::is_chrome_only(attrs) {
         return Ok(());
@@ -660,33 +661,52 @@ fn member_operation<'src>(
         None => false,
     };
 
-    for import_function in first_pass.create_basic_method(
-        args,
-        match identifier.map(|s| s.0) {
-            None if specials.is_empty() => ::first_pass::OperationId::Operation(None),
-            None if specials.len() == 1 => match specials[0] {
-                weedle::interface::Special::Getter(_) => ::first_pass::OperationId::IndexingGetter,
-                weedle::interface::Special::Setter(_) => ::first_pass::OperationId::IndexingSetter,
-                weedle::interface::Special::Deleter(_) => ::first_pass::OperationId::IndexingDeleter,
-                weedle::interface::Special::LegacyCaller(_) => return Ok(()),
-            },
-            Some(ref name) if specials.is_empty() => ::first_pass::OperationId::Operation(Some(name.clone())),
-            _ => {
-                warn!("Unsupported specials on type {:?}", (self_name, identifier));
-                return Ok(())
-            }
-        },
-        return_type,
-        self_name,
-        is_static,
-        specials.len() == 1 || first_pass
-            .interfaces
-            .get(self_name)
-            .map(|interface_data| interface_data.global)
-            .unwrap_or(false),
-        util::throws(attrs),
-    ) {
-        program.imports.push(wrap_import_function(import_function));
+    let mut operation_ids = vec![
+        OperationId::Operation(identifier.map(|s| s.0)),
+    ];
+    if specials.len() > 1 {
+        warn!(
+            "Unsupported specials ({:?}) on type {:?}",
+            specials,
+            (self_name, identifier),
+        );
+        return Ok(())
+    } else if specials.len() == 1 {
+        let id = match specials[0] {
+            Special::Getter(weedle::term::Getter) => OperationId::IndexingGetter,
+            Special::Setter(weedle::term::Setter) => OperationId::IndexingSetter,
+            Special::Deleter(weedle::term::Deleter) => OperationId::IndexingDeleter,
+            Special::LegacyCaller(weedle::term::LegacyCaller) => return Ok(()),
+        };
+        operation_ids.push(id);
+    }
+
+    for id in operation_ids {
+        let methods = first_pass
+            .create_basic_method(
+                args,
+                id,
+                return_type,
+                self_name,
+                is_static,
+                match id {
+                    OperationId::IndexingGetter |
+                    OperationId::IndexingSetter |
+                    OperationId::IndexingDeleter => true,
+                    _ => {
+                        first_pass
+                            .interfaces
+                            .get(self_name)
+                            .map(|interface_data| interface_data.global)
+                            .unwrap_or(false)
+                    }
+                },
+                util::throws(attrs),
+            );
+
+        for method in methods {
+            program.imports.push(wrap_import_function(method));
+        }
     }
     Ok(())
 }
