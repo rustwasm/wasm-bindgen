@@ -127,6 +127,8 @@ pub struct ImportType {
     pub name: Ident,
     pub attrs: Vec<syn::Attribute>,
     pub doc_comment: Option<String>,
+    pub instanceof_shim: String,
+    pub extends: Vec<Ident>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -408,7 +410,10 @@ impl ImportStatic {
 
 impl ImportType {
     fn shared(&self) -> shared::ImportType {
-        shared::ImportType {}
+        shared::ImportType {
+            name: self.name.to_string(),
+            instanceof_shim: self.instanceof_shim.clone(),
+        }
     }
 }
 
