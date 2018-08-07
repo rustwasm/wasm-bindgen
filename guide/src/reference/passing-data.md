@@ -1,7 +1,7 @@
 # Passing arbitrary data to JS
 
-It's possible to pass data from Rust to JS not explicitly supported
-in the [Feature Reference](./feature-reference.md) by serializing via [Serde](https://github.com/serde-rs/serde).
+It's possible to pass arbirtrary data from Rust to JavaScript by serializing it
+with [Serde](https://github.com/serde-rs/serde).
 
 `wasm-bindgen` includes the `JsValue` type, which streamlines serializing and deserializing.
 
@@ -20,7 +20,7 @@ features = ["serde-serialize"]
 ```
 
 In our top-level Rust file (eg `lib.rs` or `main.rs`), we enable the `Serialize`
-macro: 
+macro:
 ```rust
 #[macro_use]
 extern crate serde_derive;
@@ -58,7 +58,7 @@ pub fn pass_example() -> JsValue {
 ```
 
 When calling this function from JS, its output will automatically be deserialized.
-In this example, `fied1` will be a JS `object` (Not a JS `Map`), `field2` will be a 
+In this example, `fied1` will be a JS `object` (Not a JS `Map`), `field2` will be a
 2d JS `array`, and `field3` will be a 1d JS `array`. Example calling code:
 
 ```typescript

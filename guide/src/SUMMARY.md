@@ -13,7 +13,6 @@
   - [Receiving JS Closures in Rust](./reference/receiving-js-closures-in-rust.md)
   - [No ES Modules](./reference/no-esm.md)
   - [Passing Arbitrary data](./reference/passing-data.md)
-  - [Feature Reference](./reference/feature-reference.md)
   - [Command Line Interface](./reference/cli.md)
   - [Supported Types](./reference/types.md)
   - [`#[wasm_bindgen]` Attributes](./reference/attributes/index.md)
