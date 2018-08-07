@@ -21,6 +21,7 @@
       - [`catch`](./reference/attributes/on-js-imports/catch.md)
       - [`constructor`](./reference/attributes/on-js-imports/constructor.md)
       - [`getter` and `setter`](./reference/attributes/on-js-imports/getter-and-setter.md)
+      - [`indexing_getter`, `indexing_setter`, and `indexing_deleter`](./reference/attributes/on-js-imports/indexing-getter-setter-deleter.md)
       - [`js_class = "Blah"`](./reference/attributes/on-js-imports/js_class.md)
       - [`js_name`](./reference/attributes/on-js-imports/js_name.md)
       - [`js_namespace`](./reference/attributes/on-js-imports/js_namespace.md)
