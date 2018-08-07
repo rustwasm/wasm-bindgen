@@ -417,16 +417,16 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 "\
                  RET;\n\
                  const mem = getUint32Memory();\n\
-                 const ptr = mem[retptr / 4];\n\
-                 const len = mem[retptr / 4 + 1];\n\
+                 const rustptr = mem[retptr / 4];\n\
+                 const rustlen = mem[retptr / 4 + 1];\n\
                  {guard}
-                 const realRet = {}(ptr, len).slice();\n\
-                 wasm.__wbindgen_free(ptr, len * {});\n\
+                 const realRet = {}(rustptr, rustlen).slice();\n\
+                 wasm.__wbindgen_free(rustptr, rustlen * {});\n\
                  return realRet;\n\
                  ",
                 f,
                 ty.size(),
-                guard = if optional { "if (ptr === 0) return;" } else { "" },
+                guard = if optional { "if (rustptr === 0) return;" } else { "" },
             );
             return Ok(self);
         }
