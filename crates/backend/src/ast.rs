@@ -125,6 +125,7 @@ pub struct ImportStatic {
 pub struct ImportType {
     pub vis: syn::Visibility,
     pub rust_name: Ident,
+    pub js_name: String,
     pub attrs: Vec<syn::Attribute>,
     pub doc_comment: Option<String>,
     pub instanceof_shim: String,
@@ -411,7 +412,7 @@ impl ImportStatic {
 impl ImportType {
     fn shared(&self) -> shared::ImportType {
         shared::ImportType {
-            name: self.rust_name.to_string(),
+            name: self.js_name.clone(),
             instanceof_shim: self.instanceof_shim.clone(),
         }
     }

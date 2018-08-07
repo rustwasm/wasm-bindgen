@@ -1,5 +1,6 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 use web_sys::HtmlElement;
 
 #[wasm_bindgen(module = "./tests/wasm/element.js")]
@@ -10,6 +11,8 @@ extern {
 #[wasm_bindgen_test]
 fn test_html_element() {
     let element = new_html();
+    assert!(element.is_instance_of::<HtmlElement>());
+
     assert_eq!(element.title(), "", "Shouldn't have a title");
     element.set_title("boop");
     assert_eq!(element.title(), "boop", "Should have a title");

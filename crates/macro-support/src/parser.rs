@@ -542,6 +542,9 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+        let js_name = attrs
+            .js_name()
+            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
@@ -549,6 +552,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             doc_comment: None,
             instanceof_shim: shim,
             rust_name: self.ident,
+            js_name,
             extends: attrs.extends().cloned().collect(),
         }))
     }

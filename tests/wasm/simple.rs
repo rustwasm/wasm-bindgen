@@ -1,5 +1,6 @@
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 
 #[wasm_bindgen(module = "tests/wasm/simple.js")]
 extern {
@@ -20,6 +21,10 @@ extern {
     fn return_string_none() -> Option<String>;
     fn return_string_some() -> Option<String>;
     fn test_rust_optional();
+
+    #[wasm_bindgen(js_name = RenamedInRust)]
+    type Renamed;
+    fn new_renamed() -> Renamed;
 }
 
 #[wasm_bindgen_test]
@@ -177,4 +182,16 @@ pub fn return_optional_str_none() -> Option<String> {
 #[wasm_bindgen]
 pub fn return_optional_str_some() -> Option<String> {
     Some("world".to_string())
+}
+
+#[wasm_bindgen_test]
+fn renaming_imports_and_instanceof() {
+    let null = JsValue::NULL;
+    assert!(!null.is_instance_of::<Renamed>());
+
+    let arr: JsValue = Array::new().into();
+    assert!(!arr.is_instance_of::<Renamed>());
+
+    let renamed: JsValue = new_renamed().into();
+    assert!(renamed.is_instance_of::<Renamed>());
 }
