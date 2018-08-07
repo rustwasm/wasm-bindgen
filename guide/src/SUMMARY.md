@@ -12,7 +12,7 @@
   - [Passing Rust Closures to JS](./reference/passing-rust-closures-to-js.md)
   - [Receiving JS Closures in Rust](./reference/receiving-js-closures-in-rust.md)
   - [No ES Modules](./reference/no-esm.md)
-  - [Passing Arbitrary data](./reference/passing-data.md)
+  - [Arbitrary Data with Serde](./reference/arbitrary-data-with-serde.md)
   - [Command Line Interface](./reference/cli.md)
   - [Supported Types](./reference/types.md)
   - [`#[wasm_bindgen]` Attributes](./reference/attributes/index.md)
