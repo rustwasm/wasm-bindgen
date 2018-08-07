@@ -48,11 +48,19 @@ matrix:
       env: JOB=test-bindgen
       install:
         - *INSTALL_NODE_VIA_NVM
+        - *INSTALL_GECKODRIVER
+        - export GECKODRIVER=`pwd`/geckodriver
       script:
+        # Run a test or two that makes sure `#[wasm_bindgen]` works "reasonably"
+        # on non-wasm platforms
         - cargo test
+        # Run the main body of the test suite
         - cargo test --target wasm32-unknown-unknown
+        # Rerun the test suite but disable `--debug` in generated JS
         - WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown
+        # Make sure our serde tests work
         - cargo test --target wasm32-unknown-unknown --features serde-serialize
+        # Make sure the `std` feature works if disabled
         - cargo test --target wasm32-unknown-unknown -p no-std
       addons:
         firefox: latest
