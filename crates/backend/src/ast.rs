@@ -105,8 +105,11 @@ pub struct Operation {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub enum OperationKind {
     Regular,
-    Setter(Option<Ident>),
     Getter(Option<Ident>),
+    Setter(Option<Ident>),
+    IndexingGetter,
+    IndexingSetter,
+    IndexingDeleter,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -369,6 +372,9 @@ impl ImportFunction {
                                     s.unwrap_or_else(|| self.infer_setter_property()),
                                 )
                             }
+                            OperationKind::IndexingGetter => shared::OperationKind::IndexingGetter,
+                            OperationKind::IndexingSetter => shared::OperationKind::IndexingSetter,
+                            OperationKind::IndexingDeleter => shared::OperationKind::IndexingDeleter,
                         };
                         shared::MethodKind::Operation(shared::Operation { is_static, kind })
                     }

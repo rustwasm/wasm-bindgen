@@ -299,7 +299,7 @@ impl<'src> WebidlParse<'src, &'src weedle::InterfaceDefinition<'src>> for Extend
         let mut add_constructor = |arguments: &[Argument], class: &str| {
             let (overloaded, same_argument_names) = first_pass.get_operation_overloading(
                 arguments,
-                ::first_pass::OperationId::Constructor,
+                &::first_pass::OperationId::Constructor,
                 interface.identifier.0,
             );
 
@@ -644,18 +644,32 @@ fn member_operation<'src>(
         Some(Static(_)) => true,
         None => false,
     };
-    if specials.len() > 0 {
-        warn!("Unsupported specials on type {:?}", (self_name, identifier));
-        return Ok(())
-    }
 
     first_pass
         .create_basic_method(
             args,
-            identifier.map(|s| s.0),
+            match identifier.map(|s| s.0) {
+                None if specials.is_empty() => ::first_pass::OperationId::Operation(None),
+                None if specials.len() == 1 => match specials[0] {
+                    weedle::interface::Special::Getter(weedle::term::Getter) => ::first_pass::OperationId::IndexingGetter,
+                    weedle::interface::Special::Setter(weedle::term::Setter) => ::first_pass::OperationId::IndexingSetter,
+                    weedle::interface::Special::Deleter(weedle::term::Deleter) => ::first_pass::OperationId::IndexingDeleter,
+                    weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller) => return Ok(()),
+                },
+                Some(ref name) if specials.is_empty() => ::first_pass::OperationId::Operation(Some(name.clone())),
+                _ => {
+                    warn!("Unsupported specials on type {:?}", (self_name, identifier));
+                    return Ok(())
+                }
+            },
             return_type,
             self_name,
             statik,
+            specials.len() == 1 || first_pass
+                .interfaces
+                .get(self_name)
+                .map(|interface_data| interface_data.global)
+                .unwrap_or(false),
             util::throws(attrs),
         )
         .map(wrap_import_function)

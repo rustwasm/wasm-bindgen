@@ -910,24 +910,31 @@ impl<'src> FirstPassRecord<'src> {
     pub fn create_basic_method(
         &self,
         arguments: &[weedle::argument::Argument],
-        name: Option<&str>,
+        operation_id: ::first_pass::OperationId,
         return_type: &weedle::types::ReturnType,
         self_name: &str,
         is_static: bool,
+        structural: bool,
         catch: bool,
     ) -> Option<backend::ast::ImportFunction> {
         let (overloaded, same_argument_names) = self.get_operation_overloading(
             arguments,
-            ::first_pass::OperationId::Operation(name),
+            &operation_id,
             self_name,
         );
 
-        let name = match name {
-            None => {
-                warn!("Operations without a name are unsupported");
-                return None;
-            }
-            Some(ref name) => name,
+        let name = match &operation_id {
+            ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+            ::first_pass::OperationId::Operation(name) => match name {
+                None => {
+                    warn!("Operations without a name are unsupported");
+                    return None;
+                }
+                Some(name) => name.to_string(),
+            },
+            ::first_pass::OperationId::IndexingGetter => "get".to_string(),
+            ::first_pass::OperationId::IndexingSetter => "set".to_string(),
+            ::first_pass::OperationId::IndexingDeleter => "delete".to_string(),
         };
 
         let kind = backend::ast::ImportFunctionKind::Method {
@@ -935,7 +942,13 @@ impl<'src> FirstPassRecord<'src> {
             ty: ident_ty(rust_ident(camel_case_ident(&self_name).as_str())),
             kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
                 is_static,
-                kind: backend::ast::OperationKind::Regular,
+                kind: match &operation_id {
+                    ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+                    ::first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
+                    ::first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
+                    ::first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
+                    ::first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
+                },
             }),
         };
 
@@ -951,7 +964,19 @@ impl<'src> FirstPassRecord<'src> {
                 }
             }
         };
-        let doc_comment = Some(format!("The `{}()` method\n\n{}", name, mdn_doc(self_name, Some(name))));
+        let doc_comment = match &operation_id {
+            ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+            ::first_pass::OperationId::Operation(_) => Some(
+                format!(
+                    "The `{}()` method\n\n{}",
+                    name,
+                    mdn_doc(self_name, Some(&name))
+                )
+            ),
+            ::first_pass::OperationId::IndexingGetter => Some("The indexing getter\n\n".to_string()),
+            ::first_pass::OperationId::IndexingSetter => Some("The indexing setter\n\n".to_string()),
+            ::first_pass::OperationId::IndexingDeleter => Some("The indexing deleter\n\n".to_string()),
+        };
 
         self.create_function(
             &name,
@@ -960,11 +985,7 @@ impl<'src> FirstPassRecord<'src> {
             arguments,
             ret,
             kind,
-            self
-                .interfaces
-                .get(self_name)
-                .map(|interface_data| interface_data.global)
-                .unwrap_or(false),
+            structural,
             catch,
             doc_comment,
         )
@@ -975,14 +996,14 @@ impl<'src> FirstPassRecord<'src> {
     pub fn get_operation_overloading(
         &self,
         arguments: &[weedle::argument::Argument],
-        id: ::first_pass::OperationId,
+        id: &::first_pass::OperationId,
         self_name: &str,
     ) -> (bool, bool) {
         let data = match self.interfaces.get(self_name) {
             Some(data) => data,
             None => return (false, false),
         };
-        let data = match data.operations.get(&id) {
+        let data = match data.operations.get(id) {
             Some(data) => data,
             None => return (false, false),
         };

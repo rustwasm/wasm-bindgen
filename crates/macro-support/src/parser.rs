@@ -121,6 +121,30 @@ impl BindgenAttrs {
             .next()
     }
 
+    /// Whether the indexing getter attributes is present
+    fn indexing_getter(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::IndexingGetter => true,
+            _ => false,
+        })
+    }
+
+    /// Whether the indexing setter attributes is present
+    fn indexing_setter(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::IndexingSetter => true,
+            _ => false,
+        })
+    }
+
+    /// Whether the indexing deleter attributes is present
+    fn indexing_deleter(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::IndexingDeleter => true,
+            _ => false,
+        })
+    }
+
     /// Whether the structural attributes is present
     fn structural(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
@@ -186,6 +210,9 @@ pub enum BindgenAttr {
     Module(String),
     Getter(Option<Ident>),
     Setter(Option<Ident>),
+    IndexingGetter,
+    IndexingSetter,
+    IndexingDeleter,
     Structural,
     Readonly,
     JsName(String),
@@ -226,6 +253,12 @@ impl syn::synom::Synom for BindgenAttr {
             )) >>
             (val)
         )=> { BindgenAttr::Setter }
+        |
+        call!(term, "indexing_getter") => { |_| BindgenAttr::IndexingGetter }
+        |
+        call!(term, "indexing_setter") => { |_| BindgenAttr::IndexingSetter }
+        |
+        call!(term, "indexing_deleter") => { |_| BindgenAttr::IndexingDeleter }
         |
         call!(term, "structural") => { |_| BindgenAttr::Structural }
         |
@@ -380,6 +413,15 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
         }
         if let Some(s) = opts.setter() {
             operation_kind = ast::OperationKind::Setter(s);
+        }
+        if opts.indexing_getter() {
+            operation_kind = ast::OperationKind::IndexingGetter;
+        }
+        if opts.indexing_setter() {
+            operation_kind = ast::OperationKind::IndexingSetter;
+        }
+        if opts.indexing_deleter() {
+            operation_kind = ast::OperationKind::IndexingDeleter;
         }
 
         let kind = if opts.method() {

@@ -93,6 +93,20 @@ global.GlobalMethod = class GlobalMethod {
   }
 };
 
+global.Indexing = function () {
+  return new Proxy({}, {
+    get(obj, prop) {
+      return obj.hasOwnProperty(prop) ? obj[prop] : -1;
+    },
+    set(obj, prop, value) {
+      obj[prop] = value;
+    },
+    deleteProperty(obj, prop) {
+      delete obj[prop];
+    },
+  });
+};
+
 global.PartialInterface = class PartialInterface {
   get un() {
     return 1;

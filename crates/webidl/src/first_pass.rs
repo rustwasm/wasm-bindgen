@@ -41,7 +41,10 @@ pub(crate) struct InterfaceData<'src> {
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
 pub(crate) enum OperationId<'src> {
     Constructor,
-    Operation(Option<&'src str>)
+    Operation(Option<&'src str>),
+    IndexingGetter,
+    IndexingSetter,
+    IndexingDeleter,
 }
 
 #[derive(Default)]
@@ -243,7 +246,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::InterfaceMember<'sr
 
 impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceMember<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
-        if self.specials.len() > 0 {
+        if !self.specials.is_empty() && self.specials.len() != 1 {
             warn!("Unsupported webidl operation {:?}", self);
             return Ok(())
         }
@@ -254,7 +257,16 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
         first_pass_operation(
             record,
             self_name,
-            OperationId::Operation(self.identifier.map(|s| s.0)),
+            match self.identifier.map(|s| s.0) {
+                None => match self.specials.get(0) {
+                    None => OperationId::Operation(None),
+                    Some(weedle::interface::Special::Getter(weedle::term::Getter)) => OperationId::IndexingGetter,
+                    Some(weedle::interface::Special::Setter(weedle::term::Setter)) => OperationId::IndexingSetter,
+                    Some(weedle::interface::Special::Deleter(weedle::term::Deleter)) => OperationId::IndexingDeleter,
+                    Some(weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller)) => return Ok(()),
+                },
+                Some(ref name) => OperationId::Operation(Some(name.clone())),
+            },
             &self.args.body.list,
         )
     }

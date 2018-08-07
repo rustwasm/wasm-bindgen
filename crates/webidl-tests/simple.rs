@@ -65,7 +65,17 @@ fn optional_method() {
 #[wasm_bindgen_test]
 fn global_method() {
     let f = GlobalMethod::new().unwrap();
-    assert!(f.m() == 123);
+    assert_eq!(f.m(), 123);
+}
+
+#[wasm_bindgen_test]
+fn indexing() {
+    let f = Indexing::new().unwrap();
+    assert_eq!(f.get(123), -1);
+    f.set(123, 456);
+    assert_eq!(f.get(123), 456);
+    f.delete(123);
+    assert_eq!(f.get(123), -1);
 }
 
 #[wasm_bindgen_test]

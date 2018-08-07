@@ -1808,18 +1808,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             let location = if *is_static { &class } else { "this" };
 
                             match kind {
-                                shared::OperationKind::Getter(g) => format!(
-                                    "function() {{
-                                        return {}.{};
-                                    }}",
-                                    location, g
-                                ),
-                                shared::OperationKind::Setter(s) => format!(
-                                    "function(y) {{
-                                            {}.{} = y;
-                                    }}",
-                                    location, s
-                                ),
                                 shared::OperationKind::Regular => {
                                     let nargs = descriptor.unwrap_function().arguments.len();
                                     let mut s = format!("function(");
@@ -1841,11 +1829,44 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                     s.push_str(");\n}");
                                     s
                                 }
+                                shared::OperationKind::Getter(g) => format!(
+                                    "function() {{
+                                        return {}.{};
+                                    }}",
+                                    location, g
+                                ),
+                                shared::OperationKind::Setter(s) => format!(
+                                    "function(y) {{
+                                        {}.{} = y;
+                                    }}",
+                                    location, s
+                                ),
+                                shared::OperationKind::IndexingGetter => format!(
+                                    "function(y) {{
+                                        return {}[y];
+                                    }}",
+                                    location
+                                ),
+                                shared::OperationKind::IndexingSetter => format!(
+                                    "function(y, z) {{
+                                        {}[y] = z;
+                                    }}",
+                                    location
+                                ),
+                                shared::OperationKind::IndexingDeleter => format!(
+                                    "function(y) {{
+                                        delete {}[y];
+                                    }}",
+                                    location
+                                ),
                             }
                         } else {
                             let location = if *is_static { "" } else { ".prototype" };
 
                             match kind {
+                                shared::OperationKind::Regular => {
+                                    format!("{}{}.{}", class, location, import.function.name)
+                                }
                                 shared::OperationKind::Getter(g) => {
                                     self.cx.expose_get_inherited_descriptor();
                                     format!(
@@ -1860,9 +1881,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                         class, location, s,
                                     )
                                 }
-                                shared::OperationKind::Regular => {
-                                    format!("{}{}.{}", class, location, import.function.name)
-                                }
+                                shared::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
+                                shared::OperationKind::IndexingSetter => panic!("indexing setter should be structural"),
+                                shared::OperationKind::IndexingDeleter => panic!("indexing deleter should be structural"),
                             }
                         };
 

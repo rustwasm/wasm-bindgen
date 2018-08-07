@@ -41,6 +41,13 @@ interface GlobalMethod {
 };
 
 [Constructor()]
+interface Indexing {
+  getter short (unsigned long index);
+  setter void (unsigned long index, short value);
+  deleter void (unsigned long index);
+};
+
+[Constructor()]
 interface Unforgeable {
   [Unforgeable] readonly attribute short uno;
   readonly attribute short dos;
