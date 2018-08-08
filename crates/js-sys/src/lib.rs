@@ -2102,6 +2102,7 @@ extern "C" {
 // RegExp
 #[wasm_bindgen]
 extern {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type RegExp;
 
