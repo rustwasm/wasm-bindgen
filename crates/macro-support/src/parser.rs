@@ -1,7 +1,7 @@
 use backend::ast;
-use backend::Diagnostic;
 use backend::util::{ident_ty, ShortHash};
-use proc_macro2::{Ident, Span, TokenStream, TokenTree, Delimiter};
+use backend::Diagnostic;
+use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
 use syn;
@@ -49,8 +49,7 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::Module(s) => Some(&s[..]),
                 _ => None,
-            })
-            .next()
+            }).next()
     }
 
     /// Whether the catch attribute is present
@@ -76,8 +75,7 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::StaticMethodOf(c) => Some(c),
                 _ => None,
-            })
-            .next()
+            }).next()
     }
 
     /// Whether the method attributes is present
@@ -95,8 +93,7 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::JsNamespace(s) => Some(s),
                 _ => None,
-            })
-            .next()
+            }).next()
     }
 
     /// Get the first getter attribute
@@ -106,8 +103,7 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::Getter(g) => Some(g.clone()),
                 _ => None,
-            })
-            .next()
+            }).next()
     }
 
     /// Get the first setter attribute
@@ -117,8 +113,7 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::Setter(s) => Some(s.clone()),
                 _ => None,
-            })
-            .next()
+            }).next()
     }
 
     /// Whether the indexing getter attributes is present
@@ -168,8 +163,7 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::JsName(s) => Some(&s[..]),
                 _ => None,
-            })
-            .next()
+            }).next()
     }
 
     /// Get the first js_name attribute
@@ -179,18 +173,15 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::JsClass(s) => Some(&s[..]),
                 _ => None,
-            })
-            .next()
+            }).next()
     }
 
     /// Return the list of classes that a type extends
     fn extends(&self) -> impl Iterator<Item = &Ident> {
-        self.attrs
-            .iter()
-            .filter_map(|a| match a {
-                BindgenAttr::Extends(s) => Some(s),
-                _ => None,
-            })
+        self.attrs.iter().filter_map(|a| match a {
+            BindgenAttr::Extends(s) => Some(s),
+            _ => None,
+        })
     }
 }
 
@@ -398,9 +389,10 @@ impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
 impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn {
     type Target = ast::ImportKind;
 
-    fn convert(self, (opts, module): (BindgenAttrs, &'a Option<String>))
-        -> Result<Self::Target, Diagnostic>
-    {
+    fn convert(
+        self,
+        (opts, module): (BindgenAttrs, &'a Option<String>),
+    ) -> Result<Self::Target, Diagnostic> {
         let default_name = self.ident.to_string();
         let js_name = opts.js_name().unwrap_or(&default_name);
         let wasm = function_from_decl(
@@ -443,21 +435,19 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
         }
 
         let kind = if opts.method() {
-            let class = wasm
-                .arguments
-                .get(0)
-                .ok_or_else(|| {
-                    err_span!(self, "imported methods must have at least one argument")
-                })?;
+            let class = wasm.arguments.get(0).ok_or_else(|| {
+                err_span!(self, "imported methods must have at least one argument")
+            })?;
             let class = match class.ty {
                 syn::Type::Reference(syn::TypeReference {
                     mutability: None,
                     ref elem,
                     ..
                 }) => &**elem,
-                _ => {
-                    bail_span!(class.ty, "first argument of method must be a shared reference")
-                }
+                _ => bail_span!(
+                    class.ty,
+                    "first argument of method must be a shared reference"
+                ),
             };
             let class_name = match *class {
                 syn::Type::Path(syn::TypePath {
@@ -521,9 +511,14 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
                 ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };
             let data = (ns, &self.ident, module);
-            format!("__wbg_{}_{}",
-                    js_name.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>(),
-                    ShortHash(data))
+            format!(
+                "__wbg_{}_{}",
+                js_name
+                    .chars()
+                    .filter(|c| c.is_ascii_alphanumeric())
+                    .collect::<String>(),
+                ShortHash(data)
+            )
         };
         Ok(ast::ImportKind::Function(ast::ImportFunction {
             function: wasm,
@@ -542,13 +537,17 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+        let js_name = attrs
+            .js_name()
+            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         Ok(ast::ImportKind::Type(ast::ImportType {
             vis: self.vis,
             attrs: self.attrs,
             doc_comment: None,
             instanceof_shim: shim,
-            name: self.ident,
+            rust_name: self.ident,
+            js_name,
             extends: attrs.extends().cloned().collect(),
         }))
     }
@@ -563,9 +562,14 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemStatic {
         }
         let default_name = self.ident.to_string();
         let js_name = opts.js_name().unwrap_or(&default_name);
-        let shim = format!("__wbg_static_accessor_{}_{}",
-                           js_name.chars().filter(|c| c.is_ascii_alphanumeric()).collect::<String>(),
-                           self.ident);
+        let shim = format!(
+            "__wbg_static_accessor_{}_{}",
+            js_name
+                .chars()
+                .filter(|c| c.is_ascii_alphanumeric())
+                .collect::<String>(),
+            self.ident
+        );
         Ok(ast::ImportKind::Static(ast::ImportStatic {
             ty: *self.ty,
             vis: self.vis,
@@ -585,7 +589,10 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             _ => bail_span!(self, "can only #[wasm_bindgen] public functions"),
         }
         if self.constness.is_some() {
-            bail_span!(self.constness, "can only #[wasm_bindgen] non-const functions");
+            bail_span!(
+                self.constness,
+                "can only #[wasm_bindgen] non-const functions"
+            );
         }
         if self.unsafety.is_some() {
             bail_span!(self.unsafety, "can only #[wasm_bindgen] safe functions");
@@ -629,8 +636,7 @@ fn function_from_decl(
             syn::Type::Path(syn::TypePath { qself: None, path }) => path,
             other => return other,
         };
-        let new_path = if path.segments.len() == 1 &&
-            path.segments[0].ident == "Self" {
+        let new_path = if path.segments.len() == 1 && path.segments[0].ident == "Self" {
             self_ty.clone().into()
         } else {
             path
@@ -664,8 +670,7 @@ fn function_from_decl(
                 None
             }
             _ => panic!("arguments cannot be `self` or ignored"),
-        })
-        .collect::<Vec<_>>();
+        }).collect::<Vec<_>>();
 
     let ret = match output {
         syn::ReturnType::Default => None,
@@ -689,8 +694,7 @@ pub(crate) trait MacroParse<Ctx> {
     ///
     /// The context is used to have access to the attributes on `#[wasm_bindgen]`, and to allow
     /// writing to the output `TokenStream`.
-    fn macro_parse(self, program: &mut ast::Program, context: Ctx)
-        -> Result<(), Diagnostic>;
+    fn macro_parse(self, program: &mut ast::Program, context: Ctx) -> Result<(), Diagnostic>;
 }
 
 impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
@@ -743,13 +747,11 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 e.to_tokens(tokens);
                 e.macro_parse(program, ())?;
             }
-            _ => {
-                bail_span!(
-                    self,
-                    "#[wasm_bindgen] can only be applied to a function, \
-                     struct, enum, impl, or extern block"
-                )
-            }
+            _ => bail_span!(
+                self,
+                "#[wasm_bindgen] can only be applied to a function, \
+                 struct, enum, impl, or extern block"
+            ),
         }
 
         Ok(())
@@ -757,27 +759,37 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
 }
 
 impl<'a> MacroParse<()> for &'a mut syn::ItemImpl {
-    fn macro_parse(self, program: &mut ast::Program, (): ())
-        -> Result<(), Diagnostic>
-    {
+    fn macro_parse(self, program: &mut ast::Program, (): ()) -> Result<(), Diagnostic> {
         if self.defaultness.is_some() {
-            bail_span!(self.defaultness, "#[wasm_bindgen] default impls are not supported");
+            bail_span!(
+                self.defaultness,
+                "#[wasm_bindgen] default impls are not supported"
+            );
         }
         if self.unsafety.is_some() {
-            bail_span!(self.unsafety, "#[wasm_bindgen] unsafe impls are not supported");
+            bail_span!(
+                self.unsafety,
+                "#[wasm_bindgen] unsafe impls are not supported"
+            );
         }
         if let Some((_, path, _)) = &self.trait_ {
             bail_span!(path, "#[wasm_bindgen] trait impls are not supported");
         }
         if self.generics.params.len() > 0 {
-            bail_span!(self.generics, "#[wasm_bindgen] generic impls aren't supported");
+            bail_span!(
+                self.generics,
+                "#[wasm_bindgen] generic impls aren't supported"
+            );
         }
         let name = match *self.self_ty {
             syn::Type::Path(syn::TypePath {
                 qself: None,
                 ref path,
             }) => extract_path_ident(path)?,
-            _ => bail_span!(self.self_ty, "unsupported self type in #[wasm_bindgen] impl"),
+            _ => bail_span!(
+                self.self_ty,
+                "unsupported self type in #[wasm_bindgen] impl"
+            ),
         };
         let mut errors = Vec::new();
         for item in self.items.iter_mut() {
@@ -790,18 +802,20 @@ impl<'a> MacroParse<()> for &'a mut syn::ItemImpl {
 }
 
 impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
-    fn macro_parse(self, program: &mut ast::Program, (): ())
-        -> Result<(), Diagnostic>
-    {
+    fn macro_parse(self, program: &mut ast::Program, (): ()) -> Result<(), Diagnostic> {
         let (class, item) = self;
         let method = match item {
             syn::ImplItem::Method(ref mut m) => m,
             syn::ImplItem::Const(_) => {
-                bail_span!(&*item, "const definitions aren't supported with #[wasm_bindgen]");
+                bail_span!(
+                    &*item,
+                    "const definitions aren't supported with #[wasm_bindgen]"
+                );
             }
-            syn::ImplItem::Type(_) => {
-                bail_span!(&*item, "type definitions in impls aren't supported with #[wasm_bindgen]")
-            }
+            syn::ImplItem::Type(_) => bail_span!(
+                &*item,
+                "type definitions in impls aren't supported with #[wasm_bindgen]"
+            ),
             syn::ImplItem::Macro(_) => {
                 bail_span!(&*item, "macros in impls aren't supported");
             }
@@ -821,10 +835,7 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
             );
         }
         if method.sig.unsafety.is_some() {
-            bail_span!(
-                method.sig.unsafety,
-                "can only bindgen safe functions",
-            );
+            bail_span!(method.sig.unsafety, "can only bindgen safe functions",);
         }
 
         let opts = BindgenAttrs::find(&mut method.attrs)?;
@@ -858,9 +869,7 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
 }
 
 impl MacroParse<()> for syn::ItemEnum {
-    fn macro_parse(self, program: &mut ast::Program, (): ())
-        -> Result<(), Diagnostic>
-    {
+    fn macro_parse(self, program: &mut ast::Program, (): ()) -> Result<(), Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
             _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
@@ -893,21 +902,18 @@ impl MacroParse<()> for syn::ItemEnum {
                         int_lit.value() as u32
                     }
                     None => i as u32,
-                    Some((_, ref expr)) => {
-                        bail_span!(
-                            expr,
-                            "enums with #[wasm_bidngen] may only have \
-                             number literal values",
-                        )
-                    }
+                    Some((_, ref expr)) => bail_span!(
+                        expr,
+                        "enums with #[wasm_bidngen] may only have \
+                         number literal values",
+                    ),
                 };
 
                 Ok(ast::Variant {
                     name: v.ident.clone(),
                     value,
                 })
-            })
-            .collect::<Result<_, Diagnostic>>()?;
+            }).collect::<Result<_, Diagnostic>>()?;
         let comments = extract_doc_comments(&self.attrs);
         program.enums.push(ast::Enum {
             name: self.ident,
@@ -919,15 +925,16 @@ impl MacroParse<()> for syn::ItemEnum {
 }
 
 impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
-    fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs)
-        -> Result<(), Diagnostic>
-    {
+    fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
         let mut errors = Vec::new();
         match self.abi.name {
             Some(ref l) if l.value() == "C" => {}
             None => {}
             Some(ref other) => {
-                errors.push(err_span!(other, "only foreign mods with the `C` ABI are allowed"));
+                errors.push(err_span!(
+                    other,
+                    "only foreign mods with the `C` ABI are allowed"
+                ));
             }
         }
         for mut item in self.items.into_iter() {
@@ -940,9 +947,11 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
 }
 
 impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
-    fn macro_parse(mut self, program: &mut ast::Program, opts: &'a BindgenAttrs)
-        -> Result<(), Diagnostic>
-    {
+    fn macro_parse(
+        mut self,
+        program: &mut ast::Program,
+        opts: &'a BindgenAttrs,
+    ) -> Result<(), Diagnostic> {
         let item_opts = {
             let attrs = match self {
                 syn::ForeignItem::Fn(ref mut f) => &mut f.attrs,
@@ -984,14 +993,18 @@ fn extract_first_ty_param(ty: Option<&syn::Type>) -> Result<Option<syn::Type>, D
         }) => path,
         _ => bail_span!(t, "must be Result<...>"),
     };
-    let seg = path.segments.last()
+    let seg = path
+        .segments
+        .last()
         .ok_or_else(|| err_span!(t, "must have at least one segment"))?
         .into_value();
     let generics = match seg.arguments {
         syn::PathArguments::AngleBracketed(ref t) => t,
         _ => bail_span!(t, "must be Result<...>"),
     };
-    let generic = generics.args.first()
+    let generic = generics
+        .args
+        .first()
         .ok_or_else(|| err_span!(t, "must have at least one generic parameter"))?
         .into_value();
     let ty = match generic {
@@ -1047,7 +1060,9 @@ fn assert_no_lifetimes(decl: &syn::FnDecl) -> Result<(), Diagnostic> {
             ));
         }
     }
-    let mut walk = Walk { diagnostics: Vec::new() };
+    let mut walk = Walk {
+        diagnostics: Vec::new(),
+    };
     syn::visit::Visit::visit_fn_decl(&mut walk, decl);
     Diagnostic::from_vec(walk.diagnostics)
 }

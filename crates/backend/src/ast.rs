@@ -124,7 +124,8 @@ pub struct ImportStatic {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 pub struct ImportType {
     pub vis: syn::Visibility,
-    pub name: Ident,
+    pub rust_name: Ident,
+    pub js_name: String,
     pub attrs: Vec<syn::Attribute>,
     pub doc_comment: Option<String>,
     pub instanceof_shim: String,
@@ -411,7 +412,7 @@ impl ImportStatic {
 impl ImportType {
     fn shared(&self) -> shared::ImportType {
         shared::ImportType {
-            name: self.name.to_string(),
+            name: self.js_name.clone(),
             instanceof_shim: self.instanceof_shim.clone(),
         }
     }

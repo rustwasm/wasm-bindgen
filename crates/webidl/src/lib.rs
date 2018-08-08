@@ -244,7 +244,8 @@ impl<'src> WebidlParse<'src, ()> for weedle::InterfaceDefinition<'src> {
             js_namespace: None,
             kind: backend::ast::ImportKind::Type(backend::ast::ImportType {
                 vis: public(),
-                name: rust_ident(camel_case_ident(self.identifier.0).as_str()),
+                rust_name: rust_ident(camel_case_ident(self.identifier.0).as_str()),
+                js_name: self.identifier.0.to_string(),
                 attrs: Vec::new(),
                 doc_comment,
                 instanceof_shim: format!("__widl_instanceof_{}", self.identifier.0),

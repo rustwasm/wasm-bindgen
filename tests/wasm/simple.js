@@ -87,3 +87,6 @@ exports.test_rust_optional = function() {
   assert.strictEqual(wasm.return_optional_str_none(), undefined);
   assert.strictEqual(wasm.return_optional_str_some(), 'world');
 };
+
+exports.RenamedInRust = class {};
+exports.new_renamed = () => new exports.RenamedInRust;

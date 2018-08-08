@@ -205,7 +205,7 @@ impl ImportedTypes for syn::PathArguments {
                 for input in data.inputs.iter() {
                     input.imported_types(f);
                 }
-                // TODO do we need to handle output here? 
+                // TODO do we need to handle output here?
                 // https://docs.rs/syn/0.14.0/syn/struct.ParenthesizedGenericArguments.html
             }
             syn::PathArguments::None => {}
@@ -276,7 +276,7 @@ impl ImportedTypes for ast::ImportType {
     where
         F: FnMut(&Ident, ImportedTypeKind),
     {
-        f(&self.name, ImportedTypeKind::Definition);
+        f(&self.rust_name, ImportedTypeKind::Definition);
     }
 }
 
