@@ -37,6 +37,7 @@
 --------------------------------------------------------------------------------
 
 - [Contributing](./contributing.md)
+  - [Testing](./testing.md)
   - [Internal Design](./design.md)
     - [JS Objects in Rust](./design/js-objects-in-rust.md)
     - [Exporting a function to JS](./design/exporting-rust.md)
