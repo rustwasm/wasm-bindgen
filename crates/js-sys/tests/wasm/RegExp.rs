@@ -1,5 +1,13 @@
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
+
+#[wasm_bindgen_test]
+fn regexp_inheritance() {
+    let re = RegExp::new(".", "");
+    assert!(re.is_instance_of::<RegExp>());
+    assert!(re.is_instance_of::<Object>());
+}
 
 #[wasm_bindgen_test]
 fn exec() {
