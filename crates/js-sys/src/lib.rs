@@ -1385,6 +1385,7 @@ extern "C" {
 // Number.
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Number;
 
