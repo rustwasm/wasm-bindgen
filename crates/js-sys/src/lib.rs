@@ -627,6 +627,23 @@ extern "C" {
     pub fn to_string(this: &Error) -> JsString;
 }
 
+// EvalError
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(extends = Object, extends = Error)]
+    #[derive(Clone, Debug)]
+    pub type EvalError;
+
+    /// The EvalError object indicates an error regarding the global eval() function. This
+    /// exception is not thrown by JavaScript anymore, however the EvalError object remains for
+    /// compatibility.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &str) -> EvalError;
+}
+
+
 // Float32Array
 #[wasm_bindgen]
 extern "C" {
