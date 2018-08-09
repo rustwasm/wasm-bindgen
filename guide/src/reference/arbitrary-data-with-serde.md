@@ -89,7 +89,7 @@ pub fn receive_example_from_js(val: &JsValue) {
 
 ## JavaScript Usage
 
-In the `JsValue` that JavaScript gets, `fied1` will be an `Object` (not a
+In the `JsValue` that JavaScript gets, `field1` will be an `Object` (not a
 JavaScript `Map`), `field2` will be a JavaScript `Array` whose members are
 `Array`s of numbers, and `field3` will be an `Array` of numbers.
 
