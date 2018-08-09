@@ -290,7 +290,7 @@ fn for_each() {
 
 #[wasm_bindgen_test]
 fn array_inheritance() {
-    let array = js_array![0];
+    let array = Array::new();
     assert!(array.is_instance_of::<Array>());
     assert!(array.is_instance_of::<Object>());
 }

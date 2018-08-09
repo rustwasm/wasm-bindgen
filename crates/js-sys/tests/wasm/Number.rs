@@ -1,9 +1,17 @@
 use std::f64::{INFINITY, NAN};
 
+use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
 use wasm_bindgen::JsCast;
 use js_sys::*;
+
+#[wasm_bindgen_test]
+fn number_inheritance() {
+    let number = Number::new(&JsValue::from(10));
+    assert!(number.is_instance_of::<Number>());
+    assert!(number.is_instance_of::<Object>());
+}
 
 #[wasm_bindgen_test]
 fn is_finite() {
