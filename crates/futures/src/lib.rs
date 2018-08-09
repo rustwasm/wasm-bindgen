@@ -1,23 +1,107 @@
-//! A JS `Promise` to Rust `Future` bridge
+//! Converting between JavaScript `Promise`s to Rust `Future`s.
 //!
-//! This crate provides a bridge for working with JS `Promise` types as a Rust
-//! `Future`, and similarly contains utilities to turn a rust `Future` into a JS
-//! `Promise`. This can be useful when working with asynchronous or otherwise
-//! blocking work in Rust (wasm), and provides the ability to interoperate with
-//! JS events and JS I/O primitives.
+//! This crate provides a bridge for working with JavaScript `Promise` types as
+//! a Rust `Future`, and similarly contains utilities to turn a rust `Future`
+//! into a JavaScript `Promise`. This can be useful when working with
+//! asynchronous or otherwise blocking work in Rust (wasm), and provides the
+//! ability to interoperate with JavaScript events and JavaScript I/O
+//! primitives.
 //!
 //! There are two main interfaces in this crate currently:
 //!
-//! * `JsFuture` - a type that is constructed with a `Promise` and can then be
-//!   used as a `Future<Item = JsValue, Error = JsValue>`. This Rust future will
-//!   resolve or reject with the value coming out of the `Promise`.
-//! * `future_to_promise` - converts a Rust `Future<Item = JsValue, Error =
-//!   JsValue>` into a JS `Promise`. The future's result will translate to
-//!   either a rejected or resolved `Promise` in JS.
+//! 1. [**`JsFuture`**](./struct.JsFuture.html)
 //!
-//! These two types should provide enough of a bridge to interoperate the two
-//! systems and make sure that Rust/JS can work together with asynchronous and
-//! I/O work.
+//!    A type that is constructed with a `Promise` and can then be used as a
+//!    `Future<Item = JsValue, Error = JsValue>`. This Rust future will resolve
+//!    or reject with the value coming out of the `Promise`.
+//!
+//! 2. [**`future_to_promise`**](./fn.future_to_promise.html)
+//!
+//!    Converts a Rust `Future<Item = JsValue, Error = JsValue>` into a
+//!    JavaScript `Promise`. The future's result will translate to either a
+//!    rejected or resolved `Promise` in JavaScript.
+//!
+//! These two items should provide enough of a bridge to interoperate the two
+//! systems and make sure that Rust/JavaScript can work together with
+//! asynchronous and I/O work.
+//!
+//! # Example Usage
+//!
+//! This example wraps JavaScript's `Promise.resolve()` into a Rust `Future` for
+//! running tasks on the next tick of the micro task queue. The futures built on
+//! top of it can be scheduled for execution by conversion into a JavaScript
+//! `Promise`.
+//!
+//! ```rust,no_run
+//! #![feature(use_extern_macros)]
+//!
+//! extern crate futures;
+//! extern crate js_sys;
+//! extern crate wasm_bindgen;
+//! extern crate wasm_bindgen_futures;
+//!
+//! use futures::{Async, Future, Poll};
+//! use wasm_bindgen::prelude::*;
+//! use wasm_bindgen_futures::{JsFuture, future_to_promise};
+//!
+//! /// A future that becomes ready after a tick of the micro task queue.
+//! pub struct NextTick {
+//!     inner: JsFuture,
+//! }
+//!
+//! impl NextTick {
+//!     /// Construct a new `NextTick` future.
+//!     pub fn new() -> NextTick {
+//!         // Create a resolved promise that will run its callbacks on the next
+//!         // tick of the micro task queue.
+//!         let promise = js_sys::Promise::resolve(JsValue::NULL);
+//!         // Convert the promise into a `JsFuture`.
+//!         let inner = JsFuture::from(promise);
+//!         NextTick { inner }
+//!     }
+//! }
+//!
+//! impl Future for NextTick {
+//!     type Item = ();
+//!     type Error = ();
+//!
+//!     fn poll(&mut self) -> Poll<(), ()> {
+//!         // Polling a `NextTick` just forwards to polling if the inner promise is
+//!         // ready.
+//!         match self.inner.poll() {
+//!             Ok(Async::Ready(_)) => Ok(Async::Ready(())),
+//!             Ok(Async::NotReady) => Ok(Async::NotReady),
+//!             Err(_) => unreachable!(
+//!                 "We only create NextTick with a resolved inner promise, never \
+//!                  a rejected one, so we can't get an error here"
+//!             ),
+//!         }
+//!     }
+//! }
+//!
+//! /// Export a function to JavaScript that does some work in the next tick of the
+//! /// micro task queue!
+//! #[wasm_bindgen]
+//! pub fn schedule_some_work_for_next_tick() -> js_sys::Promise {
+//!     let future = NextTick::new()
+//!         // Do some work...
+//!         .and_then(|_| {
+//!             Ok(42)
+//!         })
+//!         // And then convert the `Item` and `Error` into `JsValue`.
+//!         .map(|result| {
+//!             JsValue::from(result)
+//!         })
+//!         .map_err(|error| {
+//!             let js_error = js_sys::Error::new(&format!("uh oh! {:?}", error));
+//!             JsValue::from(js_error)
+//!         });
+//!
+//!     // Convert the `Future<Item = JsValue, Error = JsValue>` into a JavaScript
+//!     // `Promise`!
+//!     future_to_promise(future)
+//! }
+//! ```
 
 #![deny(missing_docs)]
 #![feature(use_extern_macros)]
@@ -35,12 +119,12 @@ use futures::sync::oneshot;
 use js_sys::{Function, Promise};
 use wasm_bindgen::prelude::*;
 
-/// A Rust `Future` backed by a JS `Promise`.
+/// A Rust `Future` backed by a JavaScript `Promise`.
 ///
-/// This type is constructed with a JS `Promise` object and translates it to a
-/// Rust `Future`. This type implements the `Future` trait from the `futures`
-/// crate and will either succeed or fail depending on what happens with the JS
-/// `Promise`.
+/// This type is constructed with a JavaScript `Promise` object and translates
+/// it to a Rust `Future`. This type implements the `Future` trait from the
+/// `futures` crate and will either succeed or fail depending on what happens
+/// with the JavaScript `Promise`.
 ///
 /// Currently this type is constructed with `JsFuture::from`.
 pub struct JsFuture {
@@ -99,11 +183,11 @@ impl Future for JsFuture {
     }
 }
 
-/// Converts a Rust `Future` into a JS `Promise`.
+/// Converts a Rust `Future` into a JavaScript `Promise`.
 ///
 /// This function will take any future in Rust and schedule it to be executed,
-/// returning a JS `Promise` which can then be passed back to JS to get plumbed
-/// into the rest of a system.
+/// returning a JavaScript `Promise` which can then be passed back to JavaScript
+/// to get plumbed into the rest of a system.
 ///
 /// The `future` provided must adhere to `'static` because it'll be scheduled
 /// to run in the background and cannot contain any stack references. The
@@ -113,8 +197,8 @@ impl Future for JsFuture {
 /// # Panics
 ///
 /// Note that in wasm panics are currently translated to aborts, but "abort" in
-/// this case means that a JS exception is thrown. The wasm module is still
-/// usable (likely erroneously) after Rust panics.
+/// this case means that a JavaScript exception is thrown. The wasm module is
+/// still usable (likely erroneously) after Rust panics.
 ///
 /// If the `future` provided panics then the returned `Promise` **will not
 /// resolve**. Instead it will be a leaked promise. This is an unfortunate
@@ -125,14 +209,14 @@ pub fn future_to_promise<F>(future: F) -> Promise
     _future_to_promise(Box::new(future))
 }
 
-// Implementation of actually transforming a future into a JS `Promise`.
+// Implementation of actually transforming a future into a JavaScript `Promise`.
 //
 // The only primitive we have to work with here is `Promise::new`, which gives
 // us two callbacks that we can use to either reject or resolve the promise.
 // It's our job to ensure that one of those callbacks is called at the
 // appropriate time.
 //
-// Now we know that JS (in general) can't block and is largely
+// Now we know that JavaScript (in general) can't block and is largely
 // notification/callback driven. That means that our future must either have
 // synchronous computational work to do, or it's "scheduled a notification" to
 // happen. These notifications are likely callbacks to get executed when things
@@ -164,8 +248,8 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
         // notification to come in (and no one is polling).
         notified: Cell<State>,
 
-        // Our two callbacks connected to the `Promise` that we returned to JS.
-        // We'll be invoking one of these at the end.
+        // Our two callbacks connected to the `Promise` that we returned to
+        // JavaScript.  We'll be invoking one of these at the end.
         resolve: Function,
         reject: Function,
     }
