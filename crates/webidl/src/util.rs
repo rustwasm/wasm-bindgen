@@ -532,7 +532,13 @@ pub enum TypePosition {
     Return,
 }
 
+/// Implemented on an AST type node to get equivalent list of syn types and type names that do not have unions.
+/// For example, it turns `Promise<(sequence<object> or short)>` into
+/// corresponding syn types and type names of `[Promise<sequence<object>>, short]`.
 trait GetArgumentPossibilities<'src> {
+    /// Returns option that contains a value if the conversion succeeds.
+    /// The value is a vector of argument possibilities.
+    /// Each possibility is a tuple of converted argument (syn) types and type names
     fn get_argument_possibilities(&self, record: &FirstPassRecord<'src>) -> Option<Vec<(syn::Type, String)>>;
 }
 
@@ -945,7 +951,7 @@ impl<'src> FirstPassRecord<'src> {
     /// `kind` is whether the function is a method, in which case we would need a `self`
     /// parameter.
     ///
-    /// Return option that contains a value if the conversion succeeds.
+    /// Returns option that contains a value if the conversion succeeds.
     /// The value is a vector of argument variants.
     /// Each variant is a vector of original arguments, converted argument types and type names.
     fn get_variants(
