@@ -1,4 +1,4 @@
-# wasm-bindgen-test
+# `wasm-bindgen-test`
 
 This crate is an experimental test harness for `wasm32-unknown-unknown`, with
 the goal of allowing you to write tests as you normally do in Rust and then
@@ -33,15 +33,15 @@ ton of documentation just yet, but a taste of how it works is:
   # or [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
   wasm-bindgen-test = { git = 'https://github.com/rustwasm/wasm-bindgen' }
   ```
-  
+
   **WARNING**: the `console_error_panic_hook` has a dependency on `wasm-bindgen`
-  from `crates.io` which conflicts with the one from git used by `wasm-bindgen-test`: 
-  it produces linker errors due to duplicated symbols. 
-  
+  from `crates.io` which conflicts with the one from git used by `wasm-bindgen-test`:
+  it produces linker errors due to duplicated symbols.
+
   Until `wasm-bindgen-test` is released on `crates.io`, the temporary workaround
-  is to patch the `crates.io`'s `wasm-bindgen` dependency to be the same that 
+  is to patch the `crates.io`'s `wasm-bindgen` dependency to be the same that
   `wasm-bindgen-test` uses by adding the following to your project's `Cargo.toml`:
-  
+
   ```toml
   [patch.crates-io]
   wasm-bindgen = { git = 'https://github.com/rustwasm/wasm-bindgen' }
@@ -130,6 +130,53 @@ The test will pass if the future resolves without panicking or returning an
 error, and otherwise the test will fail.
 
 This support is currently powered by the `wasm-bindgen-futures` crate.
+
+## Running Tests in Headless Browsers
+
+Add this to the root of your test crate:
+
+```rust
+wasm_bindgen_test_configure!(run_in_browser);
+```
+
+### Configuring Which Browser is Used
+
+If one of the following environment variables is set, then the corresponding
+WebDriver and browser will be used. If none of these environment variables are
+set, then the `$PATH` is searched for a suitable WebDriver implementation.
+
+#### `GECKODRIVER=path/to/geckodriver`
+
+Use Firefox for headless browser testing, and `geckodriver` as its
+WebDriver.
+
+The `firefox` binary must be on your `$PATH`.
+
+[Get `geckodriver` here](https://github.com/mozilla/geckodriver/releases)
+
+#### `CHROMEDRIVER=path/to/chromedriver`
+
+Use Chrome for headless browser testing, and `chromedriver` as its
+WebDriver.
+
+The `chrome` binary must be on your `$PATH`.
+
+[Get `chromedriver` here](http://chromedriver.chromium.org/downloads)
+
+#### `SAFARIDRIVER=path/to/safaridriver`
+
+Use Safari for headless browser testing, and `safaridriver` as its
+WebDriver.
+
+This is installed by default on Mac OS. It should be able to find your Safari
+installation by default.
+
+### Debugging Headless Browser Tests
+
+Set the `NO_HEADLESS=1` environment variable and the browser tests will not run
+headless. Instead, the tests will start a local server that you can visit in
+your Web browser of choices, and headless testing should not be used. You can
+then use your browser's devtools to debug.
 
 ## Components
 
