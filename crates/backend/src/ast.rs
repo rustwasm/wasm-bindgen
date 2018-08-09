@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use proc_macro2::{Ident, Span};
 use shared;
 use syn;
@@ -20,18 +21,7 @@ pub struct Program {
     /// rust consts
     pub consts: Vec<Const>,
     /// rust submodules
-    pub modules: Vec<Module>,
-}
-
-/// A rust module
-///
-/// This exists to give the ability to namespace js imports.
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-pub struct Module {
-    /// module name
-    pub name: String,
-    /// js -> rust interfaces
-    pub imports: Vec<Import>,
+    pub modules: HashMap<Ident, Module>,
 }
 
 /// A rust to js interface. Allows interaction with rust objects/functions
@@ -233,6 +223,15 @@ pub enum ConstValue {
     Null,
 }
 
+/// A rust module
+///
+/// This exists to give the ability to namespace js imports.
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub struct Module {
+    /// js -> rust interfaces
+    pub imports: Vec<Import>,
+}
+
 impl Program {
     pub(crate) fn shared(&self) -> Result<shared::Program, Diagnostic> {
         Ok(shared::Program {
@@ -241,7 +240,7 @@ impl Program {
             enums: self.enums.iter().map(|a| a.shared()).collect(),
             imports: self.imports.iter()
                 // add in imports from inside modules
-                .chain(self.modules.iter().flat_map(|m| m.imports.iter()))
+                .chain(self.modules.values().flat_map(|m| m.imports.iter()))
                 .map(|a| a.shared())
                 .collect::<Result<_, Diagnostic>>()?,
             version: shared::version(),

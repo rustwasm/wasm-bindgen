@@ -185,13 +185,18 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
             weedle::Definition::Implements(..) => {
                 // nothing to do for this, ignore it
             }
+            weedle::Definition::Namespace(namespace) => {
+                namespace.webidl_parse(program, first_pass, ())?
+            }
+            weedle::Definition::PartialNamespace(namespace) => {
+                // TODO
+                warn!("Unsupported WebIDL definition: {:?}", self)
+            }
             // TODO
             weedle::Definition::Callback(..)
             | weedle::Definition::CallbackInterface(..)
             | weedle::Definition::Dictionary(..)
-            | weedle::Definition::PartialDictionary(..)
-            | weedle::Definition::Namespace(..)
-            | weedle::Definition::PartialNamespace(..) => {
+            | weedle::Definition::PartialDictionary(..) => {
                 warn!("Unsupported WebIDL definition: {:?}", self)
             }
         }
@@ -657,12 +662,17 @@ fn member_operation<'src>(
             match identifier.map(|s| s.0) {
                 None if specials.is_empty() => ::first_pass::OperationId::Operation(None),
                 None if specials.len() == 1 => match specials[0] {
-                    weedle::interface::Special::Getter(weedle::term::Getter) => ::first_pass::OperationId::IndexingGetter,
-                    weedle::interface::Special::Setter(weedle::term::Setter) => ::first_pass::OperationId::IndexingSetter,
-                    weedle::interface::Special::Deleter(weedle::term::Deleter) => ::first_pass::OperationId::IndexingDeleter,
-                    weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller) => return Ok(()),
+                    weedle::interface::Special::Getter(weedle::term::Getter) =>
+                        ::first_pass::OperationId::IndexingGetter,
+                    weedle::interface::Special::Setter(weedle::term::Setter) =>
+                        ::first_pass::OperationId::IndexingSetter,
+                    weedle::interface::Special::Deleter(weedle::term::Deleter) =>
+                        ::first_pass::OperationId::IndexingDeleter,
+                    weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller) =>
+                        return Ok(()),
                 },
-                Some(ref name) if specials.is_empty() => ::first_pass::OperationId::Operation(Some(name.clone())),
+                Some(ref name) if specials.is_empty() =>
+                    ::first_pass::OperationId::Operation(Some(name.clone())),
                 _ => {
                     warn!("Unsupported specials on type {:?}", (self_name, identifier));
                     return Ok(())
@@ -744,8 +754,8 @@ impl<'src> WebidlParse<'src, ()> for weedle::EnumDefinition<'src> {
                 variants: variants
                     .iter()
                     .map(|v| {
-                         if !v.0.is_empty() {
-                             rust_ident(camel_case_ident(&v.0).as_str())
+                        if !v.0.is_empty() {
+                            rust_ident(camel_case_ident(&v.0).as_str())
                         } else {
                             rust_ident("None")
                         }
@@ -781,5 +791,20 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::interface::ConstMember<'src>
         });
 
         Ok(())
+    }
+}
+
+impl<'src> WebidlParse<'src, ()> for weedle::interface::NamespaceDefinition<'src> {
+    fn webidl_parse(
+        &'src self,
+        program: &mut backend::ast::Program,
+        record: &FirstPassRecord<'src>,
+        (): (),
+    ) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
+
     }
 }

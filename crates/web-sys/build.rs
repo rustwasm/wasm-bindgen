@@ -13,6 +13,8 @@ use std::path;
 use std::process::{self, Command};
 
 fn main() {
+    env_logger::init();
+
     if let Err(e) = try_main() {
         eprintln!("Error: {}", e);
         for c in e.iter_causes() {
@@ -24,11 +26,9 @@ fn main() {
 
 fn try_main() -> Result<(), failure::Error> {
     println!("cargo:rerun-if-changed=build.rs");
-    env_logger::init();
-
     println!("cargo:rerun-if-changed=webidls/enabled");
-    let entries = fs::read_dir("webidls/enabled").context("reading webidls/enabled directory")?;
 
+    let entries = fs::read_dir("webidls/enabled").context("reading webidls/enabled directory")?;
     let mut source = SourceFile::default();
     for entry in entries {
         let entry = entry.context("getting webidls/enabled/*.webidl entry")?;
@@ -38,8 +38,7 @@ fn try_main() -> Result<(), failure::Error> {
         }
         println!("cargo:rerun-if-changed={}", path.display());
         source = source.add_file(&path)
-            .with_context(|_| format!("reading contents of file \"{}\"",
-                                      path.display()))?;
+            .with_context(|_| format!("reading contents of file \"{}\"", path.display()))?;
     }
 
     let bindings = match wasm_bindgen_webidl::compile(&source.contents) {
@@ -70,9 +69,9 @@ fn try_main() -> Result<(), failure::Error> {
         let status = Command::new("rustfmt")
             .arg(&out_file_path)
             .status()
-           .context("running rustfmt")?;
+            .context("running rustfmt")?;
         if !status.success() {
-           bail!("rustfmt failed: {}", status)
+            bail!("rustfmt failed: {}", status)
         }
     }
 
