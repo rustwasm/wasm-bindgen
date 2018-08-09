@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 #[wasm_bindgen]
@@ -39,4 +40,11 @@ fn delete() {
     assert!(set.delete(&value));
     assert!(!set.has(&value));
     assert!(!set.delete(&value));
+}
+
+#[wasm_bindgen_test]
+fn weakset_inheritance() {
+    let set = WeakSet::new();
+    assert!(set.is_instance_of::<WeakSet>());
+    assert!(set.is_instance_of::<Object>());
 }

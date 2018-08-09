@@ -1,4 +1,5 @@
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 #[wasm_bindgen_test]
@@ -85,4 +86,11 @@ fn size() {
     map.set(&"foo".into(), &"bar".into());
     map.set(&"bar".into(), &"baz".into());
     assert_eq!(map.size(), 2);
+}
+
+#[wasm_bindgen_test]
+fn map_inheritance() {
+    let map = Map::new();
+    assert!(map.is_instance_of::<Map>());
+    assert!(map.is_instance_of::<Object>());
 }

@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 #[wasm_bindgen]
@@ -49,4 +50,11 @@ fn delete() {
     assert!(map.has(&key));
     map.delete(&key);
     assert!(!map.has(&key));
+}
+
+#[wasm_bindgen_test]
+fn weakmap_inheritance() {
+    let map = WeakMap::new();
+    assert!(map.is_instance_of::<WeakMap>());
+    assert!(map.is_instance_of::<Object>());
 }

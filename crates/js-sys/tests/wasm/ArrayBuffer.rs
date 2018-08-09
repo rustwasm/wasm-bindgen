@@ -1,5 +1,6 @@
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 #[wasm_bindgen_test]
@@ -33,4 +34,11 @@ fn slice_with_end() {
     let buf = ArrayBuffer::new(4);
     let slice = buf.slice_with_end(1, 2);
     assert!(JsValue::from(slice).is_object());
+}
+
+#[wasm_bindgen_test]
+fn arraybuffer_inheritance() {
+    let buf = ArrayBuffer::new(4);
+    assert!(buf.is_instance_of::<ArrayBuffer>());
+    assert!(buf.is_instance_of::<Object>());
 }
