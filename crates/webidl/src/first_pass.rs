@@ -151,13 +151,13 @@ fn first_pass_operation<'src>(
         &mut record
             .mixins
             .get_mut(self_name)
-            .unwrap()
+            .expect(&format!("not found {} mixin", self_name))
             .operations
     } else {
         &mut record
             .interfaces
             .get_mut(self_name)
-            .unwrap()
+            .expect(&format!("not found {} interface", self_name))
             .operations
     }
         .entry(id)
