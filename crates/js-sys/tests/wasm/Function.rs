@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 #[wasm_bindgen]
@@ -59,4 +60,10 @@ fn name() {
 #[wasm_bindgen_test]
 fn to_string() {
     assert!(MAX.to_string().length() > 0);
+}
+
+#[wasm_bindgen_test]
+fn function_inheritance() {
+    assert!(MAX.is_instance_of::<Function>());
+    assert!(MAX.is_instance_of::<Object>());
 }

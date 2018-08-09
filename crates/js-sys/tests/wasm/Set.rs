@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 fn set2vec(s: &Set) -> Vec<JsValue> {
@@ -79,4 +80,11 @@ fn size() {
     assert_eq!(set.size(), 2);
     set.add(&3.into());
     assert_eq!(set.size(), 3);
+}
+
+#[wasm_bindgen_test]
+fn set_inheritance() {
+    let set = Set::new(&JsValue::undefined());
+    assert!(set.is_instance_of::<Set>());
+    assert!(set.is_instance_of::<Object>());
 }

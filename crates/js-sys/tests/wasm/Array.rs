@@ -287,6 +287,7 @@ fn for_each() {
     assert_eq!(sum_indices_of_evens(&js_array![1, 3, 5, 7]), 0);
     assert_eq!(sum_indices_of_evens(&js_array![3, 5, 7, 10]), 3);
 }
+
 #[wasm_bindgen_test]
 fn array_inheritance() {
     let array = Array::new();

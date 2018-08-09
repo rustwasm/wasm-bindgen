@@ -125,6 +125,7 @@ extern "C" {
 // Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Array;
 
@@ -347,6 +348,7 @@ extern "C" {
 // ArrayBuffer
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type ArrayBuffer;
 
@@ -421,6 +423,7 @@ extern "C" {
 // Boolean
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Boolean;
 
@@ -440,6 +443,7 @@ extern "C" {
 // DataView
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type DataView;
 
@@ -587,6 +591,7 @@ extern "C" {
 // Error
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Error;
 
@@ -625,6 +630,8 @@ extern "C" {
 // Float32Array
 #[wasm_bindgen]
 extern "C" {
+    // TODO Uncomment this once TypedArray is added:
+    // #[wasm_bindgen(extends = Object, extends = TypedArray)]
     #[derive(Clone, Debug)]
     pub type Float32Array;
 
@@ -677,6 +684,8 @@ extern "C" {
 // Float64Array
 #[wasm_bindgen]
 extern "C" {
+    // TODO Uncomment this once TypedArray is added:
+    // #[wasm_bindgen(extends = Object, extends = TypedArray)]
     #[derive(Clone, Debug)]
     pub type Float64Array;
 
@@ -729,6 +738,7 @@ extern "C" {
 // Function
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Function;
 
@@ -1007,6 +1017,7 @@ extern "C" {
 // Map
 #[wasm_bindgen]
 extern {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Map;
 
@@ -1483,6 +1494,7 @@ extern "C" {
 // Date.
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Date;
 
@@ -2266,6 +2278,7 @@ extern {
 // Set
 #[wasm_bindgen]
 extern {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Set;
 
@@ -2560,6 +2573,7 @@ extern "C" {
 // WeakMap
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type WeakMap;
 
@@ -2603,6 +2617,7 @@ extern "C" {
 // WeakSet
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type WeakSet;
 

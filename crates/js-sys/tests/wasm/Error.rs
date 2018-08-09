@@ -1,5 +1,6 @@
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 #[wasm_bindgen_test]
@@ -34,4 +35,11 @@ fn to_string() {
     assert_eq!(JsValue::from(error.to_string()), "Error: error message 1");
     error.set_name("error_name_1");
     assert_eq!(JsValue::from(error.to_string()), "error_name_1: error message 1");
+}
+
+#[wasm_bindgen_test]
+fn error_inheritance() {
+    let error = Error::new("test");
+    assert!(error.is_instance_of::<Error>());
+    assert!(error.is_instance_of::<Object>());
 }

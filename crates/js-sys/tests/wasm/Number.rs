@@ -1,16 +1,9 @@
 use std::f64::{INFINITY, NAN};
 
-use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
-
-#[wasm_bindgen_test]
-fn number_inheritance() {
-    let number = Number::new(&JsValue::from(10));
-    assert!(number.is_instance_of::<Number>());
-    assert!(number.is_instance_of::<Object>());
-}
 
 #[wasm_bindgen_test]
 fn is_finite() {
@@ -111,4 +104,11 @@ fn to_fixed() {
 fn to_exponential() {
     assert_eq!(Number::new(&123456.into()).to_exponential(2).unwrap(), "1.23e+5");
     assert!(Number::new(&10.into()).to_exponential(101).is_err());
+}
+
+#[wasm_bindgen_test]
+fn number_inheritance() {
+    let n = Number::new(&JsValue::from(42));
+    assert!(n.is_instance_of::<Number>());
+    assert!(n.is_instance_of::<Object>());
 }
