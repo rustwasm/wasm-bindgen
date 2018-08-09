@@ -168,9 +168,6 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
             weedle::Definition::Enum(enumeration) => {
                 enumeration.webidl_parse(program, first_pass, ())?
             }
-            weedle::Definition::IncludesStatement(includes) => {
-                includes.webidl_parse(program, first_pass, ())?
-            }
             weedle::Definition::Interface(interface) => {
                 interface.webidl_parse(program, first_pass, ())?
             }
@@ -180,6 +177,9 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
             weedle::Definition::Typedef(_) |
             weedle::Definition::InterfaceMixin(_) |
             weedle::Definition::PartialInterfaceMixin(_) => {
+                // handled in the first pass
+            }
+            weedle::Definition::IncludesStatement(..) => {
                 // handled in the first pass
             }
             weedle::Definition::Implements(..) => {
@@ -194,25 +194,6 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
             | weedle::Definition::PartialNamespace(..) => {
                 warn!("Unsupported WebIDL definition: {:?}", self)
             }
-        }
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, ()> for weedle::IncludesStatementDefinition<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        (): (),
-    ) -> Result<()> {
-        match first_pass.mixins.get(self.rhs_identifier.0) {
-            Some(member_lists) => {
-                for member in member_lists.iter().flat_map(|list| list.iter()) {
-                    member.webidl_parse(program, first_pass, self.lhs_identifier.0)?;
-                }
-            }
-            None => warn!("Tried to include missing mixin {}", self.rhs_identifier.0),
         }
         Ok(())
     }
@@ -261,9 +242,32 @@ impl<'src> WebidlParse<'src, ()> for weedle::InterfaceDefinition<'src> {
             }
         }
 
+        fn parse<'src>(
+            program: &mut backend::ast::Program,
+            first_pass: &FirstPassRecord<'src>,
+            self_name: &str,
+            mixin_name: &str,
+        ) -> Result<()> {
+            if let Some(mixin_data) = first_pass.mixins.get(mixin_name) {
+                for members in &mixin_data.members {
+                    for member in *members {
+                        member.webidl_parse(program, first_pass, self_name)?;
+                    }
+                }
+            }
+            if let Some(mixin_names) = first_pass.includes.get(mixin_name) {
+                for mixin_name in mixin_names {
+                    parse(program, first_pass, self_name, mixin_name)?;
+                }
+            }
+            Ok(())
+        }
+
         for member in &self.members.body {
             member.webidl_parse(program, first_pass, self.identifier.0)?;
         }
+
+        parse(program, first_pass, self.identifier.0, self.identifier.0)?;
 
         Ok(())
     }
@@ -280,7 +284,11 @@ impl<'src> WebidlParse<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
             return Ok(());
         }
 
-        if !first_pass.interfaces.contains_key(self.identifier.0) {
+        if first_pass
+            .interfaces
+            .get(self.identifier.0)
+            .map(|interface_data| !interface_data.partial)
+            .unwrap_or(true) {
             warn!(
                 "Partial interface {} missing non-partial interface",
                 self.identifier.0
@@ -345,8 +353,11 @@ impl<'src> WebidlParse<'src, &'src weedle::InterfaceDefinition<'src>> for Extend
                     throws,
                     None,
                 )
-                .map(wrap_import_function)
-                .map(|import| program.imports.push(import));
+                .map(|import_functions|
+                    for import_function in import_functions {
+                        program.imports.push(wrap_import_function(import_function));
+                    }
+                );
         };
 
         match self {
@@ -436,8 +447,8 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::interface::InterfaceMember<'
             Operation(op) => {
                 op.webidl_parse(program, first_pass, self_name)
             }
-            Const(cnst) => {
-                cnst.webidl_parse(program, first_pass, self_name)
+            Const(const_) => {
+                const_.webidl_parse(program, first_pass, self_name)
             }
             Iterable(iterable) => {
                 iterable.webidl_parse(program, first_pass, self_name)
@@ -537,7 +548,7 @@ fn member_attribute<'src>(
         return Ok(());
     }
 
-    let statik = match modifier {
+    let is_static = match modifier {
         Some(Stringifier(_)) => {
             warn!("Unsupported stringifier on type {:?}", (self_name, identifier));
             return Ok(())
@@ -560,12 +571,15 @@ fn member_attribute<'src>(
             identifier,
             &type_.type_,
             self_name,
-            statik,
+            is_static,
             is_structural,
             throws,
         )
-        .map(wrap_import_function)
-        .map(|import| program.imports.push(import));
+        .map(|import_functions|
+            for import_function in import_functions {
+                program.imports.push(wrap_import_function(import_function));
+            }
+        );
 
     if !readonly {
         first_pass
@@ -573,12 +587,15 @@ fn member_attribute<'src>(
                 identifier,
                 type_.type_.clone(),
                 self_name,
-                statik,
+                is_static,
                 is_structural,
                 throws,
             )
-            .map(wrap_import_function)
-            .map(|import| program.imports.push(import));
+            .map(|import_functions|
+                for import_function in import_functions {
+                    program.imports.push(wrap_import_function(import_function));
+                }
+            );
     }
 
     Ok(())
@@ -642,7 +659,7 @@ fn member_operation<'src>(
     if util::is_chrome_only(attrs) {
         return Ok(());
     }
-    let statik = match modifier {
+    let is_static = match modifier {
         Some(Stringifier(_)) => {
             warn!("Unsupported stringifier on type {:?}", (self_name, identifier));
             return Ok(())
@@ -670,7 +687,7 @@ fn member_operation<'src>(
             },
             return_type,
             self_name,
-            statik,
+            is_static,
             specials.len() == 1 || first_pass
                 .interfaces
                 .get(self_name)
@@ -678,8 +695,11 @@ fn member_operation<'src>(
                 .unwrap_or(false),
             util::throws(attrs),
         )
-        .map(wrap_import_function)
-        .map(|import| program.imports.push(import));
+        .map(|import_functions|
+            for import_function in import_functions {
+                program.imports.push(wrap_import_function(import_function));
+            }
+        );
     Ok(())
 }
 

@@ -1,4 +1,5 @@
 use std::iter::FromIterator;
+use std::iter;
 
 use backend;
 use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
@@ -315,60 +316,71 @@ impl<'src> ToSynType<'src> for weedle::term::Object {
     }
 }
 
-impl<'src> ToSynType<'src> for weedle::types::Type<'src> {
+impl<'src> ToSynType<'src> for NonAnyType<'src> {
     fn to_syn_type(&self, record: &FirstPassRecord<'src>, pos: TypePosition)
         -> Option<syn::Type>
     {
-        use weedle::types::NonAnyType::*;
-        let single = match self {
-            Type::Single(s) => s,
-            Type::Union(_) => return None,
-        };
+        match self {
+            NonAnyType::Boolean(s) => s.to_syn_type(record, pos),
+            NonAnyType::Octet(s) => s.to_syn_type(record, pos),
+            NonAnyType::Byte(s) => s.to_syn_type(record, pos),
+            NonAnyType::Identifier(s) => s.to_syn_type(record, pos),
+            NonAnyType::Integer(s) => s.to_syn_type(record, pos),
+            NonAnyType::FloatingPoint(s) => s.to_syn_type(record, pos),
 
-        let ty = match single {
-            // `any` becomes `::wasm_bindgen::JsValue`.
-            SingleType::Any(_) => {
-                let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
-                return Some(leading_colon_path_ty(path))
-            }
-            SingleType::NonAny(other) => other,
-        };
+            NonAnyType::Float32Array(s) => s.to_syn_type(record, pos),
+            NonAnyType::Float64Array(s) => s.to_syn_type(record, pos),
+            NonAnyType::Int8Array(s) => s.to_syn_type(record, pos),
+            NonAnyType::Int16Array(s) => s.to_syn_type(record, pos),
+            NonAnyType::Int32Array(s) => s.to_syn_type(record, pos),
+            NonAnyType::Uint8Array(s) => s.to_syn_type(record, pos),
+            NonAnyType::Uint8ClampedArray(s) => s.to_syn_type(record, pos),
+            NonAnyType::Uint16Array(s) => s.to_syn_type(record, pos),
+            NonAnyType::Uint32Array(s) => s.to_syn_type(record, pos),
 
-        match ty {
-            Boolean(s) => s.to_syn_type(record, pos),
-            Octet(s) => s.to_syn_type(record, pos),
-            Byte(s) => s.to_syn_type(record, pos),
-            Identifier(s) => s.to_syn_type(record, pos),
-            Integer(s) => s.to_syn_type(record, pos),
-            FloatingPoint(s) => s.to_syn_type(record, pos),
-
-            Float32Array(s) => s.to_syn_type(record, pos),
-            Float64Array(s) => s.to_syn_type(record, pos),
-            Int8Array(s) => s.to_syn_type(record, pos),
-            Int16Array(s) => s.to_syn_type(record, pos),
-            Int32Array(s) => s.to_syn_type(record, pos),
-            Uint8Array(s) => s.to_syn_type(record, pos),
-            Uint8ClampedArray(s) => s.to_syn_type(record, pos),
-            Uint16Array(s) => s.to_syn_type(record, pos),
-            Uint32Array(s) => s.to_syn_type(record, pos),
-
-            DOMString(s) => s.to_syn_type(record, pos),
-            ByteString(s) => s.to_syn_type(record, pos),
-            USVString(s) => s.to_syn_type(record, pos),
-            ArrayBuffer(b) => b.to_syn_type(record, pos),
-            Object(o) => o.to_syn_type(record, pos),
+            NonAnyType::DOMString(s) => s.to_syn_type(record, pos),
+            NonAnyType::ByteString(s) => s.to_syn_type(record, pos),
+            NonAnyType::USVString(s) => s.to_syn_type(record, pos),
+            NonAnyType::ArrayBuffer(b) => b.to_syn_type(record, pos),
+            NonAnyType::Object(o) => o.to_syn_type(record, pos),
 
             // Support for these types is not yet implemented, so skip
             // generating any bindings for this function.
-            | DataView(_)
-            | Error(_)
-            | FrozenArrayType(_)
-            | Promise(_)
-            | RecordType(..)
-            | Sequence(_)
-            | Symbol(_) => {
+            | NonAnyType::DataView(_)
+            | NonAnyType::Error(_)
+            | NonAnyType::FrozenArrayType(_)
+            | NonAnyType::Promise(_)
+            | NonAnyType::RecordType(..)
+            | NonAnyType::Sequence(_)
+            | NonAnyType::Symbol(_) => {
                 None
             }
+        }
+    }
+}
+
+impl<'src> ToSynType<'src> for SingleType<'src> {
+    fn to_syn_type(&self, record: &FirstPassRecord<'src>, pos: TypePosition)
+        -> Option<syn::Type>
+    {
+        match self {
+            // `any` becomes `::wasm_bindgen::JsValue`.
+            SingleType::Any(_) => {
+                let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
+                Some(leading_colon_path_ty(path))
+            }
+            SingleType::NonAny(non_any) => non_any.to_syn_type(record, pos),
+        }
+    }
+}
+
+impl<'src> ToSynType<'src> for Type<'src> {
+    fn to_syn_type(&self, record: &FirstPassRecord<'src>, pos: TypePosition)
+        -> Option<syn::Type>
+    {
+        match self {
+            Type::Single(single) => single.to_syn_type(record, pos),
+            Type::Union(_) => None,
         }
     }
 }
@@ -519,31 +531,153 @@ pub enum TypePosition {
     Return,
 }
 
-/// Implemented on an AST type node to generate a snake case name.
-trait TypeToString {
-    fn type_to_string(&self, record: &FirstPassRecord, dst: &mut String);
+trait GetArgumentPossibilities<'src> {
+    fn get_argument_possibilities(&self, record: &FirstPassRecord<'src>) -> Option<Vec<(syn::Type, String)>>;
 }
 
-impl<T: TypeToString> TypeToString for MayBeNull<T> {
-    fn type_to_string(&self, record: &FirstPassRecord, dst: &mut String) {
-        if self.q_mark.is_some() {
-            dst.push_str("opt_");
-        }
-        self.type_.type_to_string(record, dst);
+impl<'src, T: GetArgumentPossibilities<'src>> GetArgumentPossibilities<'src> for MayBeNull<T> {
+    fn get_argument_possibilities(&self, record: &FirstPassRecord<'src>) -> Option<Vec<(syn::Type, String)>> {
+        Some(
+            self
+                .type_
+                .get_argument_possibilities(record)?
+                .into_iter()
+                .map(|(ty, type_name)|
+                    if self.q_mark.is_some() {
+                        (option_ty(ty), "opt_".to_string() + &type_name)
+                    } else {
+                        (ty, type_name)
+                    }
+                )
+                .collect()
+        )
     }
 }
 
-impl<'src> TypeToString for weedle::types::ReturnType<'src> {
-    fn type_to_string(&self, record: &FirstPassRecord, dst: &mut String) {
+impl<'src> GetArgumentPossibilities<'src> for weedle::common::Identifier<'src> {
+    fn get_argument_possibilities(&self, record: &FirstPassRecord<'src>) -> Option<Vec<(syn::Type, String)>> {
+        if let Some(other) = record.typedefs.get(&self.0) {
+            other.get_argument_possibilities(record)
+        } else {
+            Some(
+                vec![
+                    (
+                        self.to_syn_type(record, TypePosition::Argument)?,
+                        self.get_type_name(record),
+                    )
+                ]
+            )
+        }
+    }
+}
+
+impl<'src> GetArgumentPossibilities<'src> for NonAnyType<'src> {
+    fn get_argument_possibilities(&self, record: &FirstPassRecord<'src>) -> Option<Vec<(syn::Type, String)>> {
+        if let NonAnyType::Identifier(identifier) = self {
+            identifier.get_argument_possibilities(record)
+        } else {
+            Some(
+                vec![
+                    (
+                        self.to_syn_type(record, TypePosition::Argument)?,
+                        self.get_type_name(record),
+                    )
+                ]
+            )
+        }
+    }
+}
+
+impl<'src> GetArgumentPossibilities<'src> for SingleType<'src> {
+    fn get_argument_possibilities(&self, record: &FirstPassRecord<'src>) -> Option<Vec<(syn::Type, String)>> {
+        if let SingleType::NonAny(non_any) = self {
+            non_any.get_argument_possibilities(record)
+        } else {
+            Some(
+                vec![
+                    (
+                        self.to_syn_type(record, TypePosition::Argument)?,
+                        self.get_type_name(record),
+                    )
+                ]
+            )
+        }
+    }
+}
+
+impl<'src> GetArgumentPossibilities<'src> for UnionMemberType<'src> {
+    fn get_argument_possibilities(&self, record: &FirstPassRecord<'src>) -> Option<Vec<(syn::Type, String)>> {
         match self {
-            weedle::types::ReturnType::Type(ty) => (*ty).type_to_string(record, dst),
+            UnionMemberType::Single(single) => single.get_argument_possibilities(record),
+            UnionMemberType::Union(union) => union.get_argument_possibilities(record),
+        }
+    }
+}
+
+impl<'src> GetArgumentPossibilities<'src> for UnionType<'src> {
+    fn get_argument_possibilities(&self, record: &FirstPassRecord<'src>) -> Option<Vec<(syn::Type, String)>> {
+        let mut result = Vec::new();
+        for ty in &self.body.list {
+            result.extend(ty.get_argument_possibilities(record)?.into_iter());
+        }
+        Some(result)
+    }
+}
+
+impl<'src> GetArgumentPossibilities<'src> for Type<'src> {
+    fn get_argument_possibilities(&self, record: &FirstPassRecord<'src>) -> Option<Vec<(syn::Type, String)>> {
+        match self {
+            Type::Single(single) => single.get_argument_possibilities(record),
+            Type::Union(union) => union.get_argument_possibilities(record),
+        }
+    }
+}
+
+/// Implemented on an AST type node to generate a snake case name.
+trait GetTypeName {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String);
+
+    fn get_type_name(&self, record: &FirstPassRecord) -> String {
+        let mut string = String::new();
+        self.push_type_name(record, &mut string);
+        return string;
+    }
+}
+
+impl<T: GetTypeName> GetTypeName for [T] {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        let mut first = true;
+        for union_member_type in self {
+            if first {
+                first = false;
+            } else {
+                dst.push_str("_and_");
+            }
+            union_member_type.push_type_name(record, dst);
+        }
+    }
+}
+
+impl<T: GetTypeName> GetTypeName for MayBeNull<T> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        if self.q_mark.is_some() {
+            dst.push_str("opt_");
+        }
+        self.type_.push_type_name(record, dst);
+    }
+}
+
+impl<'src> GetTypeName for weedle::types::ReturnType<'src> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        match self {
+            weedle::types::ReturnType::Type(ty) => (*ty).push_type_name(record, dst),
             weedle::types::ReturnType::Void(_) => dst.push_str("void"),
         }
     }
 }
 
-impl TypeToString for weedle::types::StringType {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::types::StringType {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         match self {
             weedle::types::StringType::Byte(_) => dst.push_str("byte_str"),
             weedle::types::StringType::DOM(_) => dst.push_str("dom_str"),
@@ -552,107 +686,107 @@ impl TypeToString for weedle::types::StringType {
     }
 }
 
-impl TypeToString for weedle::term::Byte {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Byte {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("i8");
     }
 }
 
-impl TypeToString for weedle::term::Octet {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Octet {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("u8");
     }
 }
 
-impl TypeToString for weedle::term::Boolean {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Boolean {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("bool");
     }
 }
 
-impl TypeToString for weedle::term::USVString {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::USVString {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("usv_str");
     }
 }
 
-impl TypeToString for weedle::term::ByteString {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::ByteString {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("byte_str");
     }
 }
 
-impl TypeToString for weedle::term::DOMString {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::DOMString {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("dom_str");
     }
 }
 
-impl TypeToString for weedle::term::Float32Array {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Float32Array {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("f32_array");
     }
 }
 
-impl TypeToString for weedle::term::Float64Array {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Float64Array {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("f64_array");
     }
 }
 
-impl TypeToString for weedle::term::Int8Array {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Int8Array {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("i8_array");
     }
 }
 
-impl TypeToString for weedle::term::Int16Array {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Int16Array {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("i16_array");
     }
 }
 
-impl TypeToString for weedle::term::Int32Array {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Int32Array {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("i32_array");
     }
 }
 
-impl TypeToString for weedle::term::Uint8Array {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Uint8Array {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("u8_array");
     }
 }
 
-impl TypeToString for weedle::term::Uint8ClampedArray {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Uint8ClampedArray {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("u8_clamped_array");
     }
 }
 
-impl TypeToString for weedle::term::Uint16Array {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Uint16Array {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("u16_array");
     }
 }
 
-impl TypeToString for weedle::term::Uint32Array {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Uint32Array {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("u32_array");
     }
 }
 
-impl<'src> TypeToString for weedle::common::Identifier<'src> {
-    fn type_to_string(&self, record: &FirstPassRecord, dst: &mut String) {
+impl<'src> GetTypeName for weedle::common::Identifier<'src> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
         match record.typedefs.get(self.0) {
-            Some(other) => other.type_to_string(record, dst),
+            Some(other) => other.push_type_name(record, dst),
             None => dst.push_str(&self.0.to_snake_case()),
         }
     }
 }
 
-impl TypeToString for IntegerType {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for IntegerType {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         match self {
             IntegerType::LongLong(l) if l.unsigned.is_some() => dst.push_str("u64"),
             IntegerType::LongLong(_) => dst.push_str("i64"),
@@ -664,8 +798,8 @@ impl TypeToString for IntegerType {
     }
 }
 
-impl TypeToString for FloatingPointType {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for FloatingPointType {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         match self {
             FloatingPointType::Float(_) => dst.push_str("f32"),
             FloatingPointType::Double(_) => dst.push_str("f64"),
@@ -673,111 +807,133 @@ impl TypeToString for FloatingPointType {
     }
 }
 
-impl TypeToString for weedle::term::ArrayBuffer {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::ArrayBuffer {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("array_buffer");
     }
 }
 
-impl TypeToString for weedle::term::Symbol {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Symbol {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("symbol");
     }
 }
 
-impl TypeToString for weedle::term::Object {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Object {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("object");
     }
 }
 
-impl TypeToString for weedle::term::DataView {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::DataView {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("data_view");
     }
 }
 
-impl TypeToString for weedle::term::Error {
-    fn type_to_string(&self, _record: &FirstPassRecord, dst: &mut String) {
+impl GetTypeName for weedle::term::Error {
+    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("error");
     }
 }
 
-impl<'src> TypeToString for weedle::types::SequenceType<'src> {
-    fn type_to_string(&self, record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("seq_");
-        self.generics.body.type_to_string(record, dst);
+impl<'src> GetTypeName for SequenceType<'src> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        self.generics.body.push_type_name(record, dst);
+        dst.push_str("_seq");
     }
 }
 
-impl<'src> TypeToString for weedle::types::PromiseType<'src> {
-    fn type_to_string(&self, record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("promise_");
-        self.generics.body.type_to_string(record, dst);
+impl<'src> GetTypeName for PromiseType<'src> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        self.generics.body.push_type_name(record, dst);
+        dst.push_str("_promise");
     }
 }
 
-impl<'src> TypeToString for weedle::types::FrozenArrayType<'src> {
-    fn type_to_string(&self, record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("frozen_array_");
-        self.generics.body.type_to_string(record, dst);
+impl<'src> GetTypeName for FrozenArrayType<'src> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        self.generics.body.push_type_name(record, dst);
+        dst.push_str("_frozen_array");
     }
 }
 
-impl<'src> TypeToString for weedle::types::RecordType<'src> {
-    fn type_to_string(&self, record: &FirstPassRecord, dst: &mut String) {
+impl<'src> GetTypeName for RecordType<'src> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
         dst.push_str("record_from_");
-        self.generics.body.0.type_to_string(record, dst);
+        self.generics.body.0.push_type_name(record, dst);
         dst.push_str("_to_");
-        self.generics.body.2.type_to_string(record, dst);
+        self.generics.body.2.push_type_name(record, dst);
     }
 }
 
-impl<'a> TypeToString for weedle::types::Type<'a> {
-    fn type_to_string(&self, record: &FirstPassRecord, dst: &mut String) {
-        use weedle::types::NonAnyType::*;
+impl<'a> GetTypeName for NonAnyType<'a> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        match self {
+            NonAnyType::Boolean(s) => s.push_type_name(record, dst),
+            NonAnyType::Octet(s) => s.push_type_name(record, dst),
+            NonAnyType::Byte(s) => s.push_type_name(record, dst),
+            NonAnyType::Identifier(s) => s.push_type_name(record, dst),
+            NonAnyType::Integer(s) => s.push_type_name(record, dst),
+            NonAnyType::FloatingPoint(s) => s.push_type_name(record, dst),
 
-        let single = match self {
-            Type::Single(s) => s,
-            Type::Union(_) => panic!("unions not supported"),
-        };
+            NonAnyType::Float32Array(s) => s.push_type_name(record, dst),
+            NonAnyType::Float64Array(s) => s.push_type_name(record, dst),
+            NonAnyType::Int8Array(s) => s.push_type_name(record, dst),
+            NonAnyType::Int16Array(s) => s.push_type_name(record, dst),
+            NonAnyType::Int32Array(s) => s.push_type_name(record, dst),
+            NonAnyType::Uint8Array(s) => s.push_type_name(record, dst),
+            NonAnyType::Uint8ClampedArray(s) => s.push_type_name(record, dst),
+            NonAnyType::Uint16Array(s) => s.push_type_name(record, dst),
+            NonAnyType::Uint32Array(s) => s.push_type_name(record, dst),
 
-        let ty = match single {
-            SingleType::Any(_) => return dst.push_str("any"),
-            SingleType::NonAny(other) => other,
-        };
+            NonAnyType::DOMString(s) => s.push_type_name(record, dst),
+            NonAnyType::ByteString(s) => s.push_type_name(record, dst),
+            NonAnyType::USVString(s) => s.push_type_name(record, dst),
+            NonAnyType::ArrayBuffer(s) => s.push_type_name(record, dst),
 
-        match ty {
-            Boolean(s) => s.type_to_string(record, dst),
-            Octet(s) => s.type_to_string(record, dst),
-            Byte(s) => s.type_to_string(record, dst),
-            Identifier(s) => s.type_to_string(record, dst),
-            Integer(s) => s.type_to_string(record, dst),
-            FloatingPoint(s) => s.type_to_string(record, dst),
+            NonAnyType::DataView(s) => s.push_type_name(record, dst),
+            NonAnyType::Error(s) => s.push_type_name(record, dst),
+            NonAnyType::FrozenArrayType(s) => s.push_type_name(record, dst),
+            NonAnyType::Object(s) => s.push_type_name(record, dst),
+            NonAnyType::Promise(s) => s.push_type_name(record, dst),
+            NonAnyType::RecordType(s) => s.push_type_name(record, dst),
+            NonAnyType::Sequence(s) => s.push_type_name(record, dst),
+            NonAnyType::Symbol(s) => s.push_type_name(record, dst),
+        }
+    }
+}
 
-            Float32Array(s) => s.type_to_string(record, dst),
-            Float64Array(s) => s.type_to_string(record, dst),
-            Int8Array(s) => s.type_to_string(record, dst),
-            Int16Array(s) => s.type_to_string(record, dst),
-            Int32Array(s) => s.type_to_string(record, dst),
-            Uint8Array(s) => s.type_to_string(record, dst),
-            Uint8ClampedArray(s) => s.type_to_string(record, dst),
-            Uint16Array(s) => s.type_to_string(record, dst),
-            Uint32Array(s) => s.type_to_string(record, dst),
+impl<'a> GetTypeName for SingleType<'a> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        match self {
+            SingleType::Any(_) => dst.push_str("any"),
+            SingleType::NonAny(non_any) => non_any.push_type_name(record, dst),
+        }
+    }
+}
 
-            DOMString(s) => s.type_to_string(record, dst),
-            ByteString(s) => s.type_to_string(record, dst),
-            USVString(s) => s.type_to_string(record, dst),
-            ArrayBuffer(s) => s.type_to_string(record, dst),
+impl<'a> GetTypeName for UnionMemberType<'a> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        match self {
+            UnionMemberType::Single(single) => single.push_type_name(record, dst),
+            UnionMemberType::Union(union) => union.push_type_name(record, dst),
+        }
+    }
+}
 
-            DataView(s) => s.type_to_string(record, dst),
-            Error(s) => s.type_to_string(record, dst),
-            FrozenArrayType(s) => s.type_to_string(record, dst),
-            Object(s) => s.type_to_string(record, dst),
-            Promise(s) => s.type_to_string(record, dst),
-            RecordType(s) => s.type_to_string(record, dst),
-            Sequence(s) => s.type_to_string(record, dst),
-            Symbol(s) => s.type_to_string(record, dst),
+impl<'a> GetTypeName for UnionType<'a> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        dst.push_str("union_of_");
+        self.body.list.push_type_name(record, dst);
+    }
+}
+
+impl<'a> GetTypeName for Type<'a> {
+    fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
+        match self {
+            Type::Single(single) => single.push_type_name(record, dst),
+            Type::Union(union) => union.push_type_name(record, dst),
         }
     }
 }
@@ -787,46 +943,110 @@ impl<'src> FirstPassRecord<'src> {
     ///
     /// `kind` is whether the function is a method, in which case we would need a `self`
     /// parameter.
-    fn webidl_arguments_to_syn_arg_captured(
+    ///
+    /// Return option that contains a value if the conversion succeeds.
+    /// The value is a vector of argument variants.
+    /// Each variant is a vector of converted argument types and type names.
+    fn get_variants(
         &self,
         arguments: &[Argument],
         kind: &backend::ast::ImportFunctionKind,
-    ) -> Option<Vec<syn::ArgCaptured>>
+    ) -> Option<Vec<Vec<(syn::ArgCaptured, Option<String>)>>>
     {
-        let mut res = if let backend::ast::ImportFunctionKind::Method {
-            ty,
-            kind:
-                backend::ast::MethodKind::Operation(backend::ast::Operation {
-                    is_static: false, ..
-                }),
-            ..
-        } = kind
-        {
-            let mut res = Vec::with_capacity(arguments.len() + 1);
-            res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())));
-            res
-        } else {
-            Vec::with_capacity(arguments.len())
-        };
-
-        for argument in arguments {
-            let argument = match argument {
-                Argument::Single(arg) => arg,
-                Argument::Variadic(_) => return None,
-            };
-            match argument.type_.type_.to_syn_type(self, TypePosition::Argument) {
-                None => {
-                    warn!("Argument's type is not yet supported: {:?}", argument);
-                    return None;
-                }
-                Some(ty) => {
-                    let name = argument.identifier.0.to_snake_case();
-                    res.push(simple_fn_arg(rust_ident(&name), ty))
+        let arguments_possibilities = {
+            fn get_argument_possibilities(record: &FirstPassRecord, argument: &Argument) -> Option<Vec<(syn::Type, String)>> {
+                let single = match argument {
+                    Argument::Single(single) => single,
+                    Argument::Variadic(_) => return None,
+                };
+                match single.type_.type_.get_argument_possibilities(record) {
+                    None => {
+                        warn!("Argument's type is not yet supported: {:?}", argument);
+                        None
+                    },
+                    Some(value) => Some(value),
                 }
             }
+            if !arguments.is_empty() {
+                let mut optional_arguments_possibilities = Vec::new();
+                if let Argument::Single(ref single) = arguments[0] {
+                    if single.optional.is_some() {
+                        optional_arguments_possibilities.push(Vec::new());
+                    }
+                }
+                let mut arguments_possibilities: Vec<_> = get_argument_possibilities(
+                    self,
+                    &arguments[0]
+                )?
+                    .into_iter()
+                    .map(|argument_possibility| vec![argument_possibility])
+                    .collect();
+                for argument in arguments[1..].iter() {
+                    let mut new_arguments_possibilities = Vec::new();
+                    for arguments_possibility in arguments_possibilities {
+                        if let Argument::Single(single) = argument {
+                            if single.optional.is_some() {
+                                optional_arguments_possibilities.push(arguments_possibility.clone());
+                            }
+                        }
+                        let mut element_argument_possibilities = get_argument_possibilities(
+                            self,
+                            &argument
+                        )?;
+                        for element_argument_possibility in element_argument_possibilities {
+                            new_arguments_possibilities.push(
+                                arguments_possibility
+                                    .iter()
+                                    .cloned()
+                                    .chain(iter::once(element_argument_possibility))
+                                    .collect()
+                            )
+                        }
+                    }
+                    arguments_possibilities = new_arguments_possibilities
+                }
+                optional_arguments_possibilities.extend(arguments_possibilities.into_iter());
+                optional_arguments_possibilities
+            } else {
+                vec![Vec::new()]
+            }
+        };
+        let mut result = Vec::new();
+        for arguments_possibility in arguments_possibilities {
+            let mut res = if let backend::ast::ImportFunctionKind::Method {
+                ty,
+                kind: backend::ast::MethodKind::Operation(
+                    backend::ast::Operation {
+                        is_static: false, ..
+                    }
+                ),
+                ..
+            } = kind {
+                let mut res = Vec::with_capacity(arguments.len() + 1);
+                res.push((simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())), None));
+                res
+            } else {
+                Vec::with_capacity(arguments.len())
+            };
+            for (argument, argument_possibility) in arguments.iter().zip(arguments_possibility) {
+                let single = match argument {
+                    Argument::Single(single) => single,
+                    Argument::Variadic(_) => return None,
+                };
+                res.push(
+                    (
+                        simple_fn_arg(
+                            rust_ident(&single.identifier.0.to_snake_case()),
+                            argument_possibility.0.clone()
+                        ),
+                        Some(argument_possibility.1.clone()),
+                    )
+                );
+            }
+            result.push(res);
         }
 
-        Some(res)
+        Some(result)
     }
 
     /// Create a wasm-bindgen function, if possible.
@@ -841,37 +1061,32 @@ impl<'src> FirstPassRecord<'src> {
         structural: bool,
         catch: bool,
         doc_comment: Option<String>,
-    ) -> Option<backend::ast::ImportFunction>
+    ) -> Option<Vec<backend::ast::ImportFunction>>
     {
-        let ast_arguments = self.webidl_arguments_to_syn_arg_captured(arguments, &kind)?;
-
-        let rust_name = rust_ident(
-            &if overloaded && !arguments.is_empty() {
-                let mut argument_type_names = String::new();
-                for arg in arguments {
-                    let arg = match arg {
-                        Argument::Single(single) => single,
-                        Argument::Variadic(_) => return None,
-                    };
-                    if argument_type_names.len() > 0 {
-                        argument_type_names.push_str("_and_");
-                    }
-                    if same_argument_names {
-                        arg.type_.type_.type_to_string(self, &mut argument_type_names);
-                    } else {
-                        argument_type_names.push_str(&arg.identifier.0.to_snake_case());
-                    }
+        let rust_name = if overloaded && !arguments.is_empty() {
+            let mut argument_type_names = String::new();
+            for arg in arguments {
+                let arg = match arg {
+                    Argument::Single(single) => single,
+                    Argument::Variadic(_) => return None,
+                };
+                if argument_type_names.len() > 0 {
+                    argument_type_names.push_str("_and_");
                 }
-                if name == "new" {
-                    "with_".to_owned() + &argument_type_names
+                if same_argument_names {
+                    arg.type_.type_.push_type_name(self, &mut argument_type_names);
                 } else {
-                    name.to_snake_case() + "_with_" + &argument_type_names
+                    argument_type_names.push_str(&arg.identifier.0.to_snake_case());
                 }
-            } else {
-                name.to_snake_case()
             }
-        );
-        let name = name.to_string();
+            if name == "new" {
+                "with_".to_owned() + &argument_type_names
+            } else {
+                name.to_snake_case() + "_with_" + &argument_type_names
+            }
+        } else {
+            name.to_snake_case()
+        };
 
         let js_ret = ret.clone();
 
@@ -879,31 +1094,57 @@ impl<'src> FirstPassRecord<'src> {
             ret = Some(ret.map_or_else(|| result_ty(unit_ty()), result_ty))
         }
 
-        let shim = {
-            let ns = match kind {
-                backend::ast::ImportFunctionKind::Normal => "",
-                backend::ast::ImportFunctionKind::Method { ref class, .. } => class,
+        let variants = self.get_variants(arguments, &kind)?;
+        let multiple_variants = variants.len() > 1;
+        let mut result = Vec::new();
+        for variant in variants {
+            let (variant_types, variant_names): (Vec<_>, Vec<_>) = variant.into_iter().unzip();
+            let rust_name = if multiple_variants {
+                let mut rust_name = rust_name.clone();
+                let mut first = true;
+                for variant_name in variant_names {
+                    if let Some(type_name) = variant_name {
+                        if first {
+                            rust_name.push_str("_using_");
+                            first = false;
+                        } else {
+                            rust_name.push_str("_and_");
+                        }
+                        rust_name.push_str(&type_name);
+                    }
+                }
+                rust_name
+            } else {
+                rust_name.clone()
+            };
+            let rust_name = rust_ident(&rust_name);
+            let shim = {
+                let ns = match kind {
+                    backend::ast::ImportFunctionKind::Normal => "",
+                    backend::ast::ImportFunctionKind::Method { ref class, .. } => class,
+                };
+
+                raw_ident(&format!("__widl_f_{}_{}", rust_name, ns))
             };
 
-            raw_ident(&format!("__widl_f_{}_{}", rust_name, ns))
-        };
-
-        Some(backend::ast::ImportFunction {
-            function: backend::ast::Function {
-                name,
-                arguments: ast_arguments,
-                ret,
-                rust_attrs: vec![],
-                rust_vis: public(),
-            },
-            rust_name,
-            js_ret,
-            catch,
-            structural,
-            kind,
-            shim,
-            doc_comment,
-        })
+            result.push(backend::ast::ImportFunction {
+                function: backend::ast::Function {
+                    name: name.to_string(),
+                    arguments: variant_types,
+                    ret: ret.clone(),
+                    rust_attrs: vec![],
+                    rust_vis: public(),
+                },
+                rust_name,
+                js_ret: js_ret.clone(),
+                catch,
+                structural,
+                kind: kind.clone(),
+                shim,
+                doc_comment: doc_comment.clone(),
+            })
+        }
+        Some(result)
     }
 
     /// Create a wasm-bindgen method, if possible.
@@ -916,7 +1157,7 @@ impl<'src> FirstPassRecord<'src> {
         is_static: bool,
         structural: bool,
         catch: bool,
-    ) -> Option<backend::ast::ImportFunction> {
+    ) -> Option<Vec<backend::ast::ImportFunction>> {
         let (overloaded, same_argument_names) = self.get_operation_overloading(
             arguments,
             &operation_id,
@@ -999,14 +1240,36 @@ impl<'src> FirstPassRecord<'src> {
         id: &::first_pass::OperationId,
         self_name: &str,
     ) -> (bool, bool) {
-        let data = match self.interfaces.get(self_name) {
-            Some(data) => data,
-            None => return (false, false),
-        };
-        let data = match data.operations.get(id) {
-            Some(data) => data,
-            None => return (false, false),
-        };
+        fn get_operation_data<'src>(
+            record: &'src FirstPassRecord,
+            id: &'src ::first_pass::OperationId,
+            self_name: &str,
+            mixin_name: &str,
+        ) -> Option<&'src ::first_pass::OperationData<'src>> {
+            if let Some(mixin_data) = record.mixins.get(mixin_name) {
+                if let Some(operation_data) = mixin_data.operations.get(id) {
+                    return Some(operation_data);
+                }
+            }
+            if let Some(mixin_names) = record.includes.get(mixin_name) {
+                for mixin_name in mixin_names {
+                    if let Some(operation_data) = get_operation_data(record, id, self_name, mixin_name) {
+                        return Some(operation_data);
+                    }
+                }
+            }
+            None
+        }
+
+        let operation_data = self
+            .interfaces
+            .get(self_name)
+            .and_then(|interface_data| interface_data.operations.get(id))
+            .unwrap_or_else(||
+                get_operation_data(self, id, self_name, self_name)
+                    .expect(&format!("not found operation {:?} in interface {}", id, self_name))
+            );
+
         let mut names = Vec::with_capacity(arguments.len());
         for arg in arguments {
             match arg {
@@ -1015,8 +1278,8 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
         (
-            data.overloaded,
-            *data
+            operation_data.overloaded,
+            *operation_data
                 .argument_names_same
                 .get(&names)
                 .unwrap_or(&false)
@@ -1032,7 +1295,7 @@ impl<'src> FirstPassRecord<'src> {
         is_static: bool,
         is_structural: bool,
         catch: bool,
-    ) -> Option<backend::ast::ImportFunction> {
+    ) -> Option<Vec<backend::ast::ImportFunction>> {
         let ret = match ty.to_syn_type(self, TypePosition::Return) {
             None => {
                 warn!("Attribute's type does not yet support reading: {:?}", ty);
@@ -1063,7 +1326,7 @@ impl<'src> FirstPassRecord<'src> {
         is_static: bool,
         is_structural: bool,
         catch: bool,
-    ) -> Option<backend::ast::ImportFunction> {
+    ) -> Option<Vec<backend::ast::ImportFunction>> {
         let kind = backend::ast::ImportFunctionKind::Method {
             class: self_name.to_string(),
             ty: ident_ty(rust_ident(camel_case_ident(&self_name).as_str())),

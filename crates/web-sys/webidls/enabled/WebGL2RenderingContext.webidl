@@ -31,8 +31,7 @@ interface WebGL2RenderingContext
 {
 };
 
-[NoInterfaceObject]
-interface WebGL2RenderingContextBase
+interface mixin WebGL2RenderingContextBase
 {
     const GLenum READ_BUFFER                                   = 0x0C02;
     const GLenum UNPACK_ROW_LENGTH                             = 0x0CF2;
@@ -694,8 +693,8 @@ interface WebGL2RenderingContextBase
     void bindVertexArray(WebGLVertexArrayObject? array);
 };
 
-WebGL2RenderingContextBase implements WebGLRenderingContextBase;
-WebGL2RenderingContext implements WebGL2RenderingContextBase;
+WebGL2RenderingContextBase includes WebGLRenderingContextBase;
+WebGL2RenderingContext includes WebGL2RenderingContextBase;
 
 [NoInterfaceObject]
 interface EXT_color_buffer_float {
