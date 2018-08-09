@@ -1,5 +1,6 @@
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 macro_rules! js_array {
@@ -285,4 +286,10 @@ fn for_each() {
     assert_eq!(sum_indices_of_evens(&js_array![2, 4, 6, 8]), 0 + 1 + 2 + 3);
     assert_eq!(sum_indices_of_evens(&js_array![1, 3, 5, 7]), 0);
     assert_eq!(sum_indices_of_evens(&js_array![3, 5, 7, 10]), 3);
+}
+#[wasm_bindgen_test]
+fn array_inheritance() {
+    let array = Array::new();
+    assert!(array.is_instance_of::<Array>());
+    assert!(array.is_instance_of::<Object>());
 }
