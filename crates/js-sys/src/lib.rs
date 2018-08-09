@@ -3109,7 +3109,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
     #[wasm_bindgen(static_method_of = Promise)]
-    pub fn all(obj: JsValue) -> Promise;
+    pub fn all(obj: &JsValue) -> Promise;
 
     /// The `Promise.race(iterable)` method returns a promise that resolves or
     /// rejects as soon as one of the promises in the iterable resolves or
@@ -3117,14 +3117,14 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
     #[wasm_bindgen(static_method_of = Promise)]
-    pub fn race(obj: JsValue) -> Promise;
+    pub fn race(obj: &JsValue) -> Promise;
 
     /// The `Promise.reject(reason)` method returns a `Promise` object that is
     /// rejected with the given reason.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject
     #[wasm_bindgen(static_method_of = Promise)]
-    pub fn reject(obj: JsValue) -> Promise;
+    pub fn reject(obj: &JsValue) -> Promise;
 
     /// The `Promise.resolve(value)` method returns a `Promise` object that is
     /// resolved with the given value. If the value is a promise, that promise
@@ -3134,7 +3134,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
     #[wasm_bindgen(static_method_of = Promise)]
-    pub fn resolve(obj: JsValue) -> Promise;
+    pub fn resolve(obj: &JsValue) -> Promise;
 
     /// The `catch()` method returns a `Promise` and deals with rejected cases
     /// only.  It behaves the same as calling `Promise.prototype.then(undefined,
