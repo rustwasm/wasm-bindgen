@@ -26,7 +26,8 @@ typedef (Uint32Array or sequence<GLuint>) Uint32List;
 
 // WebGL2 spec has this as an empty interface that pulls in everything
 // via WebGL2RenderingContextBase.
-[Pref="webgl.enable-webgl2"]
+[Exposed=(Window,Worker),
+ Pref="webgl.enable-webgl2"]
 interface WebGL2RenderingContext
 {
 };
