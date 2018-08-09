@@ -31,17 +31,20 @@ use wasm_bindgen::prelude::*;
 // * Keep imports in alphabetical order.
 //
 // * Rename imports with `js_name = ...` according to the note about `camelCase`
-// and `snake_case` in the module's documentation above.
+//   and `snake_case` in the module's documentation above.
 //
 // * Include the one sentence summary of the import from the MDN link in the
-// module's documentation above, and the MDN link itself.
+//   module's documentation above, and the MDN link itself.
 //
 // * If a function or method can throw an exception, make it catchable by adding
-// `#[wasm_bindgen(catch)]`.
+//   `#[wasm_bindgen(catch)]`.
 //
 // * Add a new `#[test]` into the appropriate file in the
 //   `crates/js-sys/tests/wasm/` directory. If the imported function or method
 //   can throw an exception, make sure to also add test coverage for that case.
+//
+// * Arguments that are `JsValue`s or imported JavaScript types should be taken
+//   by reference.
 
 #[wasm_bindgen]
 extern "C" {
