@@ -62,6 +62,9 @@ matrix:
         - cargo test --target wasm32-unknown-unknown --features serde-serialize
         # Make sure the `std` feature works if disabled
         - cargo test --target wasm32-unknown-unknown -p no-std
+        # Make sure the `wasm-bindgen-futures` tests pass. Right now, this just
+        # verifies that the example program in the crate level docs compiles.
+        - cargo test -p wasm-bindgen-futures
       addons:
         firefox: latest
       if: branch = master
