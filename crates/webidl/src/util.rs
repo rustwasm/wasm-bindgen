@@ -1,5 +1,6 @@
 use std::iter::FromIterator;
 use std::iter;
+use std::collections::BTreeMap;
 
 use backend;
 use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
@@ -946,12 +947,12 @@ impl<'src> FirstPassRecord<'src> {
     ///
     /// Return option that contains a value if the conversion succeeds.
     /// The value is a vector of argument variants.
-    /// Each variant is a vector of converted argument types and type names.
+    /// Each variant is a vector of original arguments, converted argument types and type names.
     fn get_variants(
         &self,
-        arguments: &[Argument],
+        arguments: &'src [Argument],
         kind: &backend::ast::ImportFunctionKind,
-    ) -> Option<Vec<Vec<(syn::ArgCaptured, Option<String>)>>>
+    ) -> Option<Vec<Vec<(Option<&'src Argument>, (syn::ArgCaptured, Option<String>))>>>
     {
         let arguments_possibilities = {
             fn get_argument_possibilities(record: &FirstPassRecord, argument: &Argument) -> Option<Vec<(syn::Type, String)>> {
@@ -1023,7 +1024,15 @@ impl<'src> FirstPassRecord<'src> {
                 ..
             } = kind {
                 let mut res = Vec::with_capacity(arguments.len() + 1);
-                res.push((simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())), None));
+                res.push(
+                    (
+                        None,
+                        (
+                            simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())),
+                            None,
+                        ),
+                    )
+                );
                 res
             } else {
                 Vec::with_capacity(arguments.len())
@@ -1035,11 +1044,14 @@ impl<'src> FirstPassRecord<'src> {
                 };
                 res.push(
                     (
-                        simple_fn_arg(
-                            rust_ident(&single.identifier.0.to_snake_case()),
-                            argument_possibility.0.clone()
+                        Some(argument),
+                        (
+                            simple_fn_arg(
+                                rust_ident(&single.identifier.0.to_snake_case()),
+                                argument_possibility.0.clone()
+                            ),
+                            Some(argument_possibility.1.clone()),
                         ),
-                        Some(argument_possibility.1.clone()),
                     )
                 );
             }
@@ -1065,8 +1077,8 @@ impl<'src> FirstPassRecord<'src> {
     {
         let rust_name = if overloaded && !arguments.is_empty() {
             let mut argument_type_names = String::new();
-            for arg in arguments {
-                let arg = match arg {
+            for argument in arguments {
+                let argument = match argument {
                     Argument::Single(single) => single,
                     Argument::Variadic(_) => return None,
                 };
@@ -1074,9 +1086,9 @@ impl<'src> FirstPassRecord<'src> {
                     argument_type_names.push_str("_and_");
                 }
                 if same_argument_names {
-                    arg.type_.type_.push_type_name(self, &mut argument_type_names);
+                    argument.type_.type_.push_type_name(self, &mut argument_type_names);
                 } else {
-                    argument_type_names.push_str(&arg.identifier.0.to_snake_case());
+                    argument_type_names.push_str(&argument.identifier.0.to_snake_case());
                 }
             }
             if name == "new" {
@@ -1096,13 +1108,22 @@ impl<'src> FirstPassRecord<'src> {
 
         let variants = self.get_variants(arguments, &kind)?;
         let multiple_variants = variants.len() > 1;
+        let mut arguments_count_variants_count = BTreeMap::new();
+        for variant in &variants {
+            arguments_count_variants_count
+                .entry(variant.len())
+                .and_modify(|variants_count| { *variants_count += 1usize; })
+                .or_insert(1usize);
+        }
         let mut result = Vec::new();
         for variant in variants {
-            let (variant_types, variant_names): (Vec<_>, Vec<_>) = variant.into_iter().unzip();
+            let (arguments, variant_types_variant_names): (Vec<_>, Vec<(_, _)>) = variant.into_iter().unzip();
+            let (variant_types, variant_names): (Vec<_>, Vec<_>) = variant_types_variant_names.into_iter().unzip();
+            let variant_names_len = variant_names.len();
             let rust_name = if multiple_variants {
                 let mut rust_name = rust_name.clone();
                 let mut first = true;
-                for variant_name in variant_names {
+                for (argument, variant_name) in arguments.iter().zip(variant_names) {
                     if let Some(type_name) = variant_name {
                         if first {
                             rust_name.push_str("_using_");
@@ -1110,7 +1131,19 @@ impl<'src> FirstPassRecord<'src> {
                         } else {
                             rust_name.push_str("_and_");
                         }
-                        rust_name.push_str(&type_name);
+                        if arguments_count_variants_count[&variant_names_len] == 1 {
+                            if let Some(argument) = argument {
+                                let argument = match argument {
+                                    Argument::Single(single) => single,
+                                    Argument::Variadic(_) => return None,
+                                };
+                                rust_name.push_str(&argument.identifier.0.to_snake_case());
+                            } else {
+                                rust_name.push_str(&type_name);
+                            }
+                        } else {
+                            rust_name.push_str(&type_name);
+                        }
                     }
                 }
                 rust_name
