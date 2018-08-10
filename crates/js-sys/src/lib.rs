@@ -680,7 +680,6 @@ extern "C" {
     pub fn new(message: &str) -> EvalError;
 }
 
-
 // Float32Array
 #[wasm_bindgen]
 extern "C" {
