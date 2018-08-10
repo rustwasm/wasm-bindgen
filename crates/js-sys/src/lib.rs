@@ -2706,6 +2706,25 @@ extern "C" {
     pub fn byte_offset(this: &Uint32Array) -> u32;
 }
 
+// URIError
+#[wasm_bindgen]
+extern {
+    /// The URIError object represents an error when a global URI handling
+    /// function was used in a wrong way.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError
+    #[wasm_bindgen(extends = Error, js_name = URIError)]
+    #[derive(Clone, Debug)]
+    pub type UriError;
+
+    /// The URIError object represents an error when a global URI handling
+    /// function was used in a wrong way.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError
+    #[wasm_bindgen(constructor, js_class = "URIError")]
+    pub fn new(message: &str) -> UriError;
+}
+
 // WeakMap
 #[wasm_bindgen]
 extern "C" {
