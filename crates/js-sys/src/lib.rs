@@ -3142,6 +3142,50 @@ pub mod Intl {
         #[wasm_bindgen(js_name = getCanonicalLocales, js_namespace = Intl)]
         pub fn get_canonical_locales(s: &JsValue) -> Array;
     }
+
+    // Intl.Collator
+    #[wasm_bindgen]
+    extern "C" {
+        /// The Intl.Collator object is a constructor for collators, objects
+        /// that enable language sensitive string comparison.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator
+        #[wasm_bindgen(js_namespace = Intl)]
+        #[derive(Clone, Debug)]
+        pub type Collator;
+
+        /// The Intl.Collator object is a constructor for collators, objects
+        /// that enable language sensitive string comparison.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator
+        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        pub fn new(locales: &Array, options: &Object) -> Collator;
+
+        /// The Intl.Collator.prototype.compare property returns a function that
+        /// compares two strings according to the sort order of this Collator
+        /// object.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator/compare
+        #[wasm_bindgen(method, getter, js_class = "Intl.Collator")]
+        pub fn compare(this: &Collator) -> Function;
+
+        /// The Intl.Collator.prototype.resolvedOptions() method returns a new
+        /// object with properties reflecting the locale and collation options
+        /// computed during initialization of this Collator object.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator/resolvedOptions
+        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        pub fn resolved_options(this: &Collator) -> Object;
+
+        /// The Intl.Collator.supportedLocalesOf() method returns an array
+        /// containing those of the provided locales that are supported in
+        /// collation without having to fall back to the runtime's default
+        /// locale.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator/supportedLocalesOf
+        #[wasm_bindgen(static_method_of = Collator, js_namespace = Intl, js_name = supportedLocalesOf)]
+        pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
 }
 
 // Promise
