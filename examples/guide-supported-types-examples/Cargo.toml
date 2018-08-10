@@ -1,0 +1,10 @@
+[package]
+name = "guide-supported-types-examples"
+version = "0.1.0"
+authors = ["Nick Fitzgerald <fitzgen@gmail.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { path = "../.." }
