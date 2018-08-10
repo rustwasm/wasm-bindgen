@@ -2103,6 +2103,25 @@ extern {
     pub fn new(message: &str) -> RangeError;
 }
 
+// ReferenceError
+#[wasm_bindgen]
+extern {
+    /// The ReferenceError object represents an error when a non-existent
+    /// variable is referenced.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError
+    #[wasm_bindgen(extends = Error)]
+    #[derive(Clone, Debug)]
+    pub type ReferenceError;
+
+    /// The ReferenceError object represents an error when a non-existent
+    /// variable is referenced.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &str) -> ReferenceError;
+}
+
 // Reflect
 #[wasm_bindgen]
 extern "C" {
