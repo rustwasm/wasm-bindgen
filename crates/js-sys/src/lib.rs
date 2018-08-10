@@ -31,17 +31,20 @@ use wasm_bindgen::prelude::*;
 // * Keep imports in alphabetical order.
 //
 // * Rename imports with `js_name = ...` according to the note about `camelCase`
-// and `snake_case` in the module's documentation above.
+//   and `snake_case` in the module's documentation above.
 //
 // * Include the one sentence summary of the import from the MDN link in the
-// module's documentation above, and the MDN link itself.
+//   module's documentation above, and the MDN link itself.
 //
 // * If a function or method can throw an exception, make it catchable by adding
-// `#[wasm_bindgen(catch)]`.
+//   `#[wasm_bindgen(catch)]`.
 //
 // * Add a new `#[test]` into the appropriate file in the
 //   `crates/js-sys/tests/wasm/` directory. If the imported function or method
 //   can throw an exception, make sure to also add test coverage for that case.
+//
+// * Arguments that are `JsValue`s or imported JavaScript types should be taken
+//   by reference.
 
 #[wasm_bindgen]
 extern "C" {
@@ -3141,7 +3144,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
     #[wasm_bindgen(static_method_of = Promise)]
-    pub fn all(obj: JsValue) -> Promise;
+    pub fn all(obj: &JsValue) -> Promise;
 
     /// The `Promise.race(iterable)` method returns a promise that resolves or
     /// rejects as soon as one of the promises in the iterable resolves or
@@ -3149,14 +3152,14 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
     #[wasm_bindgen(static_method_of = Promise)]
-    pub fn race(obj: JsValue) -> Promise;
+    pub fn race(obj: &JsValue) -> Promise;
 
     /// The `Promise.reject(reason)` method returns a `Promise` object that is
     /// rejected with the given reason.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject
     #[wasm_bindgen(static_method_of = Promise)]
-    pub fn reject(obj: JsValue) -> Promise;
+    pub fn reject(obj: &JsValue) -> Promise;
 
     /// The `Promise.resolve(value)` method returns a `Promise` object that is
     /// resolved with the given value. If the value is a promise, that promise
@@ -3166,7 +3169,7 @@ extern {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
     #[wasm_bindgen(static_method_of = Promise)]
-    pub fn resolve(obj: JsValue) -> Promise;
+    pub fn resolve(obj: &JsValue) -> Promise;
 
     /// The `catch()` method returns a `Promise` and deals with rejected cases
     /// only.  It behaves the same as calling `Promise.prototype.then(undefined,
