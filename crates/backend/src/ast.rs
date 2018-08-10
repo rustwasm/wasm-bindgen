@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use proc_macro2::{Ident, Span};
 use shared;
 use syn;
@@ -21,7 +21,7 @@ pub struct Program {
     /// rust consts
     pub consts: Vec<Const>,
     /// rust submodules
-    pub modules: HashMap<Ident, Module>,
+    pub modules: BTreeMap<Ident, Module>,
 }
 
 /// A rust to js interface. Allows interaction with rust objects/functions
@@ -227,8 +227,8 @@ pub enum ConstValue {
 ///
 /// This exists to give the ability to namespace js imports.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-#[derive(Default)]
 pub struct Module {
+    pub vis: syn::Visibility,
     /// js -> rust interfaces
     pub imports: Vec<Import>,
 }

@@ -774,10 +774,10 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::interface::ConstMember<'src>
     fn webidl_parse(
         &'src self,
         program: &mut backend::ast::Program,
-        record: &FirstPassRecord<'src>,
+        first_pass: &FirstPassRecord<'src>,
         self_name: &'src str,
     ) -> Result<()> {
-        let ty = match self.const_type.to_syn_type(record, TypePosition::Return) {
+        let ty = match self.const_type.to_syn_type(first_pass, TypePosition::Return) {
             Some(s) => s,
             None => return Ok(()),
         };
@@ -798,7 +798,7 @@ impl<'src> WebidlParse<'src, ()> for weedle::NamespaceDefinition<'src> {
     fn webidl_parse(
         &'src self,
         program: &mut backend::ast::Program,
-        record: &FirstPassRecord<'src>,
+        first_pass: &FirstPassRecord<'src>,
         (): (),
     ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
@@ -806,29 +806,59 @@ impl<'src> WebidlParse<'src, ()> for weedle::NamespaceDefinition<'src> {
         }
 
         let rust_name = rust_ident(self.identifier.0.to_snake_case().as_str());
-        let js_name = &self.identifier.0;
 
         program.modules.entry(rust_name.clone())
             .and_modify(|_| warn!("Namespace with rust name {:?} added more than once", rust_name))
-            .or_default();
+            .or_insert_with(|| backend::ast::Module {
+                vis: public(),
+                imports: Default::default()
+            });
 
-        for member in self.members.body.iter() {
-            member.webidl_parse(program, record, js_name)?
+        if let Some(attrs) = &self.attributes {
+            for attr in &attrs.body.list {
+                attr.webidl_parse(program, first_pass, self)?;
+            }
         }
+
+        let namespace_names = NamespaceNames {
+            rust_name: &rust_name,
+            js_name: &self.identifier.0,
+        };
+        for member in &self.members.body {
+            member.webidl_parse(program, first_pass, namespace_names)?;
+        }
+
         Ok(())
     }
 }
 
-impl<'src> WebidlParse<'src, &'src str> for weedle::namespace::NamespaceMember<'src> {
+impl<'src> WebidlParse<'src, &'src weedle::NamespaceDefinition<'src>> for ExtendedAttribute<'src> {
+    fn webidl_parse(
+        &'src self,
+        _program: &mut backend::ast::Program,
+        _first_pass: &FirstPassRecord<'src>,
+        _namespace: &'src weedle::NamespaceDefinition<'src>,
+    ) -> Result<()> {
+        warn!("Unsupported WebIDL extended attribute: {:?}", self);
+        Ok(())
+    }
+}
+#[derive(Copy, Clone)]
+struct NamespaceNames<'a> {
+    rust_name: &'a Ident,
+    js_name: &'a str,
+}
+
+impl<'src> WebidlParse<'src, NamespaceNames<'src>> for weedle::namespace::NamespaceMember<'src> {
     fn webidl_parse(
         &'src self,
         program: &mut backend::ast::Program,
-        record: &FirstPassRecord<'src>,
-        module_name: &'src str
+        first_pass: &FirstPassRecord<'src>,
+        ns_names: NamespaceNames<'src>
     ) -> Result<()> {
         match self {
             weedle::namespace::NamespaceMember::Operation(op) => {
-                op.webidl_parse(program, record, module_name)?;
+                op.webidl_parse(program, first_pass, ns_names)?;
             }
             weedle::namespace::NamespaceMember::Attribute(_) => {
                 warn!("Attribute namespace members are not supported")
@@ -838,117 +868,42 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::namespace::NamespaceMember<'
     }
 }
 
-impl<'src> WebidlParse<'src, &'src str> for weedle::namespace::OperationNamespaceMember<'src> {
+impl<'src> WebidlParse<'src, NamespaceNames<'src>> for weedle::namespace::OperationNamespaceMember<'src> {
     fn webidl_parse(
         &'src self,
         program: &mut backend::ast::Program,
-        record: &FirstPassRecord<'src>,
-        module_name: &'src str
+        first_pass: &FirstPassRecord<'src>,
+        ns_names: NamespaceNames<'src>
     ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
             return Ok(());
         }
 
-        let structural = util::is_structural(&self.attributes);
+        let imported_fn = match first_pass.create_namespace_operation(
+            &self.args.body.list,
+            self.identifier.as_ref().map(|id| id.0),
+            &self.return_type,
+            ns_names.js_name,
+            util::throws(&self.attributes)
+        ) {
+            Some(f) => f,
+            None => { return Ok(()) }
+        };
 
-        let name = match &self.identifier {
-            Some(ident) => ident.0,
-            None => {
-                warn!("Operations without identifiers are not supported");
-                return Ok(());
-            }
+        let import = backend::ast::Import {
+            module: None,
+            js_namespace: Some(ns_names.js_name.clone()),
+            kind: backend::ast::ImportKind::Function(imported_fn),
+        };
 
-        let import_fn = first_pass
-            .create_function(
-                name,
-                false,
-                same_argument_names: bool,
-                arguments: &[Argument],
-                mut ret: Option<syn::Type>,
-                kind: backend::ast::ImportFunctionKind,
-                structural: bool,
-                catch: bool,
-                doc_comment: Option<String>,
-            ) -> Option<backend::ast::ImportFunction>
-            .create_basic_method(
-                args,
-                match identifier.map(|s| s.0) {
-                    Some(ref name) if specials.is_empty() =>
-                        ::first_pass::OperationId::Operation(Some(name.clone())),
-                },
-                &self.return_type,
-                self_name,
-                specials.len() == 1 || first_pass
-                .interfaces
-                .get(self_name)
-                .map(|interface_data| interface_data.global)
-                .unwrap_or(false),
-                util::throws(&self.attributes),
-                )
-            .map(wrap_import_function)
-            .map(|import| program.imports.push(import));
+        program
+            .modules
+            .get_mut(ns_names.rust_name)
+            .unwrap()
+            .imports
+            .push(import);
+
         Ok(())
     }
 }
 
-fn member_operation<'src>(
-    program: &mut backend::ast::Program,
-    first_pass: &FirstPassRecord<'src>,
-    self_name: &'src str,
-    attrs: &'src Option<ExtendedAttributeList>,
-    modifier: Option<weedle::interface::StringifierOrStatic>,
-    specials: &[weedle::interface::Special],
-    return_type: &'src weedle::types::ReturnType<'src>,
-    args: &'src [Argument],
-    identifier: &Option<weedle::common::Identifier<'src>>,
-) -> Result<()> {
-    use weedle::interface::StringifierOrStatic::*;
-
-    if util::is_chrome_only(attrs) {
-        return Ok(());
-    }
-    let statik = match modifier {
-        Some(Stringifier(_)) => {
-            warn!("Unsupported stringifier on type {:?}", (self_name, identifier));
-            return Ok(())
-        }
-        Some(Static(_)) => true,
-        None => false,
-    };
-
-    first_pass
-        .create_basic_method(
-            args,
-            match identifier.map(|s| s.0) {
-                None if specials.is_empty() => ::first_pass::OperationId::Operation(None),
-                None if specials.len() == 1 => match specials[0] {
-                    weedle::interface::Special::Getter(weedle::term::Getter) =>
-                        ::first_pass::OperationId::IndexingGetter,
-                    weedle::interface::Special::Setter(weedle::term::Setter) =>
-                        ::first_pass::OperationId::IndexingSetter,
-                    weedle::interface::Special::Deleter(weedle::term::Deleter) =>
-                        ::first_pass::OperationId::IndexingDeleter,
-                    weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller) =>
-                        return Ok(()),
-                },
-                Some(ref name) if specials.is_empty() =>
-                    ::first_pass::OperationId::Operation(Some(name.clone())),
-                _ => {
-                    warn!("Unsupported specials on type {:?}", (self_name, identifier));
-                    return Ok(())
-                }
-            },
-            return_type,
-            self_name,
-            statik,
-            specials.len() == 1 || first_pass
-                .interfaces
-                .get(self_name)
-                .map(|interface_data| interface_data.global)
-                .unwrap_or(false),
-            util::throws(attrs),
-        )
-        .map(wrap_import_function)
-        .map(|import| program.imports.push(import));
-    Ok(())
-}

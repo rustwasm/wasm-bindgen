@@ -1029,32 +1029,24 @@ impl<'src> FirstPassRecord<'src> {
     pub fn create_namespace_operation(
         &self,
         arguments: &[weedle::argument::Argument],
-        operation_name: &str,
+        operation_name: Option<&str>,
         return_type: &weedle::types::ReturnType,
-        structural: bool,
+        namespace_name: &str,
         catch: bool,
     ) -> Option<backend::ast::ImportFunction> {
         let (overloaded, same_argument_names) = self.get_namespaced_operation_overloading(
             arguments,
-            &first_pass::OperationId::Operation(Some(operation_name))
-            self_name,
+            operation_name,
+            namespace_name,
         );
 
-        let name = match &operation_id {
-            first_pass::OperationId::Operation(name) => match name {
-                None => {
-                    warn!("Operations without a name are unsupported");
-                    return None;
-                }
-                Some(name) => name.to_string(),
-            },
-            _ => {
-                warn!("operations in namespaces must be normal functions");
+        let name = match operation_name {
+            Some(name) => name.to_string(),
+            None => {
+                warn!("Operations without a name are unsupported");
                 return None;
             }
         };
-
-        let kind = backend::ast::ImportFunctionKind::Normal;
 
         let ret = match return_type {
             weedle::types::ReturnType::Void(_) => None,
@@ -1069,8 +1061,9 @@ impl<'src> FirstPassRecord<'src> {
             }
         };
         let doc_comment = format!("The `{}.{}()` function\n\n{}",
+                                  namespace_name,
                                   name,
-                                  mdn_doc(self_name, Some(&name)));
+                                  mdn_doc(namespace_name, Some(&name))); // TODO check link
 
         self.create_function(
             &name,
@@ -1078,10 +1071,10 @@ impl<'src> FirstPassRecord<'src> {
             same_argument_names,
             arguments,
             ret,
-            kind,
-            structural,
+            backend::ast::ImportFunctionKind::Normal,
+            false,
             catch,
-            doc_comment,
+            Some(doc_comment),
         )
     }
 
@@ -1090,14 +1083,14 @@ impl<'src> FirstPassRecord<'src> {
     pub fn get_namespaced_operation_overloading(
         &self,
         arguments: &[weedle::argument::Argument],
-        id: &first_pass::OperationId,
+        operation_name: Option<&str>,
         namespace_name: &str,
     ) -> (bool, bool) {
         let data = match self.namespaces.get(namespace_name) {
             Some(data) => data,
             None => return (false, false),
         };
-        let data = match data.operations.get(id) {
+        let data = match data.operations.get(&operation_name) {
             Some(data) => data,
             None => return (false, false),
         };

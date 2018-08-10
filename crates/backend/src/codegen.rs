@@ -1131,6 +1131,7 @@ impl<'a> TryToTokens for ModuleInIter<'a> {
         for i in imports.iter() {
             DescribeImport(&i.kind).to_tokens(tokens);
         }
+        let vis = &self.module.vis;
         let mut body = TokenStream::new();
         for i in imports.iter() {
             if let Err(e) = i.kind.try_to_tokens(&mut body) {
@@ -1139,7 +1140,7 @@ impl<'a> TryToTokens for ModuleInIter<'a> {
         }
         Diagnostic::from_vec(errors)?;
         (quote!{
-            pub mod #name {
+            #vis mod #name {
                 #body
             }
         }).to_tokens(tokens);

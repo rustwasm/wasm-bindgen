@@ -41,17 +41,6 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) superclass: Option<&'src str>,
 }
 
-impl<'src> Default for InterfaceData<'src> {
-    fn default() -> Self {
-        InterfaceData {
-            partial: true,
-            global: false,
-            operations: Default::default(),
-            superclass: Default::default(),
-        }
-    }
-}
-
 /// We need to collect namespace data during the first pass, to be used later.
 #[derive(Default)]
 pub(crate) struct NamespaceData<'src> {
@@ -60,9 +49,10 @@ pub(crate) struct NamespaceData<'src> {
     pub(crate) operations: BTreeMap<Option<&'src str>, OperationData<'src>>,
 }
 
-impl<'src> Default for NamespaceData<'src> {
-    fn default() -> Self {
-        NamespaceData {
+impl<'src> NamespaceData<'src> {
+    /// Same as `Default::default` but sets `partial` to true.
+    pub(crate) fn default_for_partial() -> Self {
+        Self {
             partial: true,
             operations: Default::default(),
         }
@@ -178,7 +168,7 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
             let interface = record
                 .interfaces
                 .entry(self.identifier.0)
-                .or_insert_with(Default::default);
+                .or_default();
             interface.partial = false;
             interface.superclass = self.inheritance.map(|s| s.identifier.0);
         }
@@ -344,6 +334,93 @@ impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
             warn!("Encountered multiple declarations of {}", self.identifier.0);
         }
 
+        Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, ()> for weedle::NamespaceDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        {
+            let namespace = record
+                .namespaces
+                .entry(self.identifier.0)
+                .or_default();
+            namespace.partial = false;
+        }
+
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(())
+        }
+
+        // We ignore all attributes.
+
+        for member in &self.members.body {
+            member.first_pass(record, self.identifier.0)?;
+        }
+
+        Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, ()> for weedle::PartialNamespaceDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        record
+            .namespaces
+            .entry(self.identifier.0)
+            .or_insert_with(NamespaceData::default_for_partial);
+
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(())
+        }
+
+        for member in &self.members.body {
+            member.first_pass(record, self.identifier.0)?;
+        }
+
+        Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, &'src str> for weedle::namespace::NamespaceMember<'src> {
+    fn first_pass(&'src self,
+                  record: &mut FirstPassRecord<'src>,
+                  namespace_name: &'src str) -> Result<()>
+    {
+        match self {
+            weedle::namespace::NamespaceMember::Operation(op) => {
+                op.first_pass(record, namespace_name)
+            }
+            _ => Ok(()),
+        }
+    }
+}
+
+impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceMember<'src> {
+    fn first_pass(&'src self,
+                  record: &mut FirstPassRecord<'src>,
+                  namespace_name: &'src str) -> Result<()>
+    {
+        let identifier = self.identifier.map(|s| s.0);
+        let arguments = &self.args.body.list;
+        let mut names = Vec::with_capacity(arguments.len());
+        for argument in arguments {
+            match argument {
+                Argument::Single(arg) => names.push(arg.identifier.0),
+                Argument::Variadic(_) => return Ok(()),
+            }
+        }
+        record
+            .namespaces
+            .get_mut(namespace_name)
+            .unwrap() // call this after creating the namespace
+            .operations
+            .entry(identifier)
+            .and_modify(|operation_data| operation_data.overloaded = true)
+            .or_insert_with(Default::default)
+            .argument_names_same
+            .entry(names)
+            .and_modify(|same_argument_names| *same_argument_names = true)
+            .or_insert(false);
         Ok(())
     }
 }
