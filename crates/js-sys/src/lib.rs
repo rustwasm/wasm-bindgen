@@ -2683,6 +2683,31 @@ extern "C" {
     pub fn validate(bufferSource: &JsValue) -> Result<bool, JsValue>;
 }
 
+// JSON
+#[wasm_bindgen]
+extern "C" {
+
+    #[derive(Clone, Debug)]
+    pub type JSON;
+
+    /// The `JSON.parse()` method parses a JSON string, constructing the
+    /// JavaScript value or object described by the string.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+    #[wasm_bindgen(catch, static_method_of = JSON)]
+    pub fn parse(text: &str) -> Result<JsValue, JsValue>;
+
+    /// The JSON.stringify() method converts a JavaScript value to a JSON string,
+    /// optionally replacing values if a replacer function is specified or
+    /// optionally including only the specified properties if a replacer array is
+    /// specified.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+    #[wasm_bindgen(catch, static_method_of = JSON)]
+    pub fn stringify(obj: &JsValue) -> Result<JsString, JsValue>;
+
+}
+
 // JsString
 #[wasm_bindgen]
 extern "C" {
