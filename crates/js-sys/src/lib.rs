@@ -250,6 +250,40 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn map(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> JsValue) -> Array;
 
+    /// The `Array.of()` method creates a new Array instance with a variable
+    /// number of arguments, regardless of number or type of the arguments.
+    ///
+    /// The difference between `Array.of()` and the `Array` constructor is in the
+    /// handling of integer arguments: `Array.of(7)` creates an array with a single
+    /// element, `7`, whereas `Array(7)` creates an empty array with a `length`
+    /// property of `7` (Note: this implies an array of 7 empty slots, not slots
+    /// with actual undefined values).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    ///
+    /// # Notes
+    ///
+    /// There are a few bindings to `of` in `js-sys`: `of1`, `of2`, etc...
+    /// with different arities.
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of1(a: &JsValue) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of2(a: &JsValue, b: &JsValue) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of3(a: &JsValue, b: &JsValue, c: &JsValue) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of4(a: &JsValue, b: &JsValue, c: &JsValue, d: &JsValue) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of5(a: &JsValue, b: &JsValue, c: &JsValue, d: &JsValue, e: &JsValue) -> Array;
+
     /// The pop() method removes the last element from an array and returns that
     /// element. This method changes the length of the array.
     ///
