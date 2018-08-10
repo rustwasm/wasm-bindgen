@@ -1890,6 +1890,30 @@ extern "C" {
     #[derive(Clone, Debug)]
     pub type Object;
 
+    /// The Object.assign() method is used to copy the values of all enumerable
+    /// own properties from one or more source objects to a target object. It
+    /// will return the target object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn assign(target: &Object, source: &Object) -> Object;
+
+    /// The Object.assign() method is used to copy the values of all enumerable
+    /// own properties from one or more source objects to a target object. It
+    /// will return the target object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+    #[wasm_bindgen(static_method_of = Object, js_name = assign)]
+    pub fn assign2(target: &Object, source1: &Object, source2: &Object) -> Object;
+
+    /// The Object.assign() method is used to copy the values of all enumerable
+    /// own properties from one or more source objects to a target object. It
+    /// will return the target object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+    #[wasm_bindgen(static_method_of = Object, js_name = assign)]
+    pub fn assign3(target: &Object, source1: &Object, source2: &Object, source3: &Object) -> Object;
+
     /// The `Object.freeze()` method freezes an object: that is, prevents new
     /// properties from being added to it; prevents existing properties from
     /// being removed; and prevents existing properties, or their enumerability,
