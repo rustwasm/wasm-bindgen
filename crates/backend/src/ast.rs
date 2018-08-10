@@ -346,7 +346,9 @@ impl ImportFunction {
     /// for a setter in javascript (in this case `xxx`, so you can write `obj.xxx = val`)
     fn infer_setter_property(&self) -> String {
         let name = self.function.name.to_string();
-        assert!(name.starts_with("set_"), "setters must start with `set_`");
+        if !name.starts_with("set_") {
+            panic!("error: setters must start with `set_`, found: {}", name);
+        }
         name[4..].to_string()
     }
 
