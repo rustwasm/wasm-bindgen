@@ -2280,6 +2280,20 @@ extern {
     #[wasm_bindgen(static_method_of = RegExp, getter)]
     pub fn input() -> JsString;
 
+    /// The lastIndex is a read/write integer property of regular expression
+    /// instances that specifies the index at which to start the next match.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex
+    #[wasm_bindgen(structural, getter = lastIndex, method)]
+    pub fn last_index(this: &RegExp) -> u32;
+
+    /// The lastIndex is a read/write integer property of regular expression
+    /// instances that specifies the index at which to start the next match.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex
+    #[wasm_bindgen(structural, setter = lastIndex, method)]
+    pub fn set_last_index(this: &RegExp, index: u32);
+
     /// The non-standard lastMatch property is a static and read-only
     /// property of regular expressions that contains the last matched
     /// characters. RegExp.$& is an alias for this property.
