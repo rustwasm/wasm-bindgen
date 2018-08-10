@@ -534,7 +534,7 @@ pub enum TypePosition {
 
 /// Implemented on an AST type node to get equivalent list of syn types and type names that do not have unions.
 /// For example, it turns `Promise<(sequence<object> or short)>` into
-/// corresponding syn types and type names of `[Promise<sequence<object>>, short]`.
+/// corresponding syn types and type names of `[Promise<sequence<object>>, Promise<short>]`.
 trait GetArgumentPossibilities<'src> {
     /// Returns option that contains a value if the conversion succeeds.
     /// The value is a vector of argument possibilities.
