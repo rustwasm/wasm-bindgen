@@ -1,14 +1,7 @@
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
-use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use js_sys::*;
-
-
-#[wasm_bindgen(module = "tests/wasm/JSON.js")]
-extern {
-    fn set_in_object(obj: &Object, name: &str, value: &JsValue);
-}
 
 #[wasm_bindgen_test]
 fn parse_array() {
@@ -79,7 +72,7 @@ fn stringify() {
 fn stringify_error() {
     let func = Function::new_no_args("throw new Error(\"rust really rocks\")");
     let obj = Object::new();
-    set_in_object(&obj, "toJSON", &JsValue::from(func));
+    Reflect::set(obj.as_ref(), &JsValue::from("toJSON"), func.as_ref());
 
     let result = JSON::stringify(&JsValue::from(obj));
     assert!(result.is_err());
