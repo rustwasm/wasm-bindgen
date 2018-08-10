@@ -25,6 +25,7 @@ pub mod Math;
 pub mod Number;
 pub mod Object;
 pub mod Proxy;
+pub mod RangeError;
 pub mod Reflect;
 pub mod RegExp;
 pub mod Set;

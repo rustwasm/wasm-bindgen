@@ -2084,6 +2084,25 @@ extern {
     pub fn revocable(target: &JsValue, handler: &Object) -> Object;
 }
 
+// RangeError
+#[wasm_bindgen]
+extern {
+    /// The RangeError object indicates an error when a value is not in the set
+    /// or range of allowed values.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError
+    #[wasm_bindgen(extends = Error)]
+    #[derive(Clone, Debug)]
+    pub type RangeError;
+
+    /// The RangeError object indicates an error when a value is not in the set
+    /// or range of allowed values.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &str) -> RangeError;
+}
+
 // Reflect
 #[wasm_bindgen]
 extern "C" {
