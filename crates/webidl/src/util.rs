@@ -844,78 +844,84 @@ impl<'a> GetTypeName for Type<'a> {
 }
 
 impl<'src> FirstPassRecord<'src> {
-    /// Use the first pass to convert webidl function arguments to rust arguments.
+    /// Uses the first pass to convert webidl function arguments to all possible argument combinations.
+    /// Returns option that contains a value if the conversion succeeds.
+    /// The value is a vector of argument possibilities.
+    /// Each possibility is a vector of tuples of converted argument (syn) types and type names
+    fn get_arguments_possibilities(&self, arguments: &'src [Argument]) -> Option<Vec<Vec<(syn::Type, String)>>> {
+        fn get_argument_possibilities(record: &FirstPassRecord, argument: &Argument) -> Option<Vec<(syn::Type, String)>> {
+            let type_ = match argument {
+                Argument::Single(single) => &single.type_.type_,
+                Argument::Variadic(variadic) => &variadic.type_,
+            };
+            match type_.get_argument_possibilities(record) {
+                None => {
+                    warn!("Argument's type is not yet supported: {:?}", argument);
+                    None
+                },
+                Some(value) => Some(value),
+            }
+        }
+        if !arguments.is_empty() {
+            let mut optional_arguments_possibilities = Vec::new();
+            if let Argument::Single(ref single) = arguments[0] {
+                if single.optional.is_some() {
+                    optional_arguments_possibilities.push(Vec::new());
+                }
+            }
+            let mut arguments_possibilities: Vec<_> = get_argument_possibilities(
+                self,
+                &arguments[0]
+            )?
+                .into_iter()
+                .map(|argument_possibility| vec![argument_possibility])
+                .collect();
+            for argument in arguments[1..].iter() {
+                let mut new_arguments_possibilities = Vec::new();
+                for arguments_possibility in arguments_possibilities {
+                    if let Argument::Single(single) = argument {
+                        if single.optional.is_some() {
+                            optional_arguments_possibilities.push(arguments_possibility.clone());
+                        }
+                    }
+                    let mut element_argument_possibilities = get_argument_possibilities(
+                        self,
+                        &argument
+                    )?;
+                    for element_argument_possibility in element_argument_possibilities {
+                        new_arguments_possibilities.push(
+                            arguments_possibility
+                                .iter()
+                                .cloned()
+                                .chain(iter::once(element_argument_possibility))
+                                .collect()
+                        )
+                    }
+                }
+                arguments_possibilities = new_arguments_possibilities
+            }
+            optional_arguments_possibilities.extend(arguments_possibilities.into_iter());
+            Some(optional_arguments_possibilities)
+        } else {
+            Some(vec![Vec::new()])
+        }
+    }
+
+    /// Uses the first pass to convert webidl function arguments to rust arguments.
     ///
     /// `kind` is whether the function is a method, in which case we would need a `self`
     /// parameter.
     ///
     /// Returns option that contains a value if the conversion succeeds.
     /// The value is a vector of argument variants.
-    /// Each variant is a vector of original arguments, converted argument types and type names.
+    /// Each variant is a vector of tuples of original arguments, converted argument types and type names.
     fn get_variants(
         &self,
         arguments: &'src [Argument],
         kind: &backend::ast::ImportFunctionKind,
-    ) -> Option<Vec<Vec<(Option<&'src Argument>, (syn::ArgCaptured, Option<String>))>>>
+    ) -> Option<Vec<Vec<(Option<&'src Argument>, syn::ArgCaptured, Option<String>)>>>
     {
-        let arguments_possibilities = {
-            fn get_argument_possibilities(record: &FirstPassRecord, argument: &Argument) -> Option<Vec<(syn::Type, String)>> {
-                let single = match argument {
-                    Argument::Single(single) => single,
-                    Argument::Variadic(_) => return None,
-                };
-                match single.type_.type_.get_argument_possibilities(record) {
-                    None => {
-                        warn!("Argument's type is not yet supported: {:?}", argument);
-                        None
-                    },
-                    Some(value) => Some(value),
-                }
-            }
-            if !arguments.is_empty() {
-                let mut optional_arguments_possibilities = Vec::new();
-                if let Argument::Single(ref single) = arguments[0] {
-                    if single.optional.is_some() {
-                        optional_arguments_possibilities.push(Vec::new());
-                    }
-                }
-                let mut arguments_possibilities: Vec<_> = get_argument_possibilities(
-                    self,
-                    &arguments[0]
-                )?
-                    .into_iter()
-                    .map(|argument_possibility| vec![argument_possibility])
-                    .collect();
-                for argument in arguments[1..].iter() {
-                    let mut new_arguments_possibilities = Vec::new();
-                    for arguments_possibility in arguments_possibilities {
-                        if let Argument::Single(single) = argument {
-                            if single.optional.is_some() {
-                                optional_arguments_possibilities.push(arguments_possibility.clone());
-                            }
-                        }
-                        let mut element_argument_possibilities = get_argument_possibilities(
-                            self,
-                            &argument
-                        )?;
-                        for element_argument_possibility in element_argument_possibilities {
-                            new_arguments_possibilities.push(
-                                arguments_possibility
-                                    .iter()
-                                    .cloned()
-                                    .chain(iter::once(element_argument_possibility))
-                                    .collect()
-                            )
-                        }
-                    }
-                    arguments_possibilities = new_arguments_possibilities
-                }
-                optional_arguments_possibilities.extend(arguments_possibilities.into_iter());
-                optional_arguments_possibilities
-            } else {
-                vec![Vec::new()]
-            }
-        };
+        let arguments_possibilities = self.get_arguments_possibilities(arguments)?;
         let mut result = Vec::new();
         for arguments_possibility in arguments_possibilities {
             let mut res = if let backend::ast::ImportFunctionKind::Method {
@@ -931,11 +937,9 @@ impl<'src> FirstPassRecord<'src> {
                 res.push(
                     (
                         None,
-                        (
-                            simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())),
-                            None,
-                        ),
-                    )
+                        simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())),
+                        None,
+                    ),
                 );
                 res
             } else {
@@ -949,14 +953,12 @@ impl<'src> FirstPassRecord<'src> {
                 res.push(
                     (
                         Some(argument),
-                        (
-                            simple_fn_arg(
-                                rust_ident(&single.identifier.0.to_snake_case()),
-                                argument_possibility.0.clone()
-                            ),
-                            Some(argument_possibility.1.clone()),
+                        simple_fn_arg(
+                            rust_ident(&single.identifier.0.to_snake_case()),
+                            argument_possibility.0.clone()
                         ),
-                    )
+                        Some(argument_possibility.1.clone()),
+                    ),
                 );
             }
             result.push(res);
@@ -1011,7 +1013,6 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         let variants = self.get_variants(arguments, &kind)?;
-        let multiple_variants = variants.len() > 1;
         let mut arguments_count_variants_count = BTreeMap::new();
         for variant in &variants {
             arguments_count_variants_count
@@ -1020,14 +1021,11 @@ impl<'src> FirstPassRecord<'src> {
                 .or_insert(1usize);
         }
         let mut result = Vec::new();
-        for variant in variants {
-            let (arguments, variant_types_variant_names): (Vec<_>, Vec<(_, _)>) = variant.into_iter().unzip();
-            let (variant_types, variant_names): (Vec<_>, Vec<_>) = variant_types_variant_names.into_iter().unzip();
-            let variant_names_len = variant_names.len();
-            let rust_name = if multiple_variants {
+        for variant in &variants {
+            let rust_name = if variants.len() > 1 {
                 let mut rust_name = rust_name.clone();
                 let mut first = true;
-                for (argument, variant_name) in arguments.iter().zip(variant_names) {
+                for (argument, _, variant_name) in variant {
                     if let Some(type_name) = variant_name {
                         if first {
                             rust_name.push_str("_using_");
@@ -1035,7 +1033,7 @@ impl<'src> FirstPassRecord<'src> {
                         } else {
                             rust_name.push_str("_and_");
                         }
-                        if arguments_count_variants_count[&variant_names_len] == 1 {
+                        if arguments_count_variants_count[&variant.len()] == 1 {
                             if let Some(argument) = argument {
                                 let argument = match argument {
                                     Argument::Single(single) => single,
@@ -1067,7 +1065,7 @@ impl<'src> FirstPassRecord<'src> {
             result.push(backend::ast::ImportFunction {
                 function: backend::ast::Function {
                     name: name.to_string(),
-                    arguments: variant_types,
+                    arguments: variant.iter().map(|variant| variant.1.clone()).collect(),
                     ret: ret.clone(),
                     rust_attrs: vec![],
                     rust_vis: public(),
