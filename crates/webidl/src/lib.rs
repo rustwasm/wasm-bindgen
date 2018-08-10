@@ -659,6 +659,7 @@ fn member_operation<'src>(
     if util::is_chrome_only(attrs) {
         return Ok(());
     }
+
     let is_static = match modifier {
         Some(Stringifier(_)) => {
             warn!("Unsupported stringifier on type {:?}", (self_name, identifier));
@@ -754,6 +755,10 @@ impl<'src> WebidlParse<'src, ()> for weedle::EnumDefinition<'src> {
         _: &FirstPassRecord<'src>,
         (): (),
     ) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         let variants = &self.values.body.list;
         program.imports.push(backend::ast::Import {
             module: None,
@@ -787,6 +792,10 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::interface::ConstMember<'src>
         record: &FirstPassRecord<'src>,
         self_name: &'src str,
     ) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         let ty = match self.const_type.to_syn_type(record, TypePosition::Return) {
             Some(s) => s,
             None => return Ok(()),

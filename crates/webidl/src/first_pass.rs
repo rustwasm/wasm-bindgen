@@ -105,15 +105,24 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
 
 impl<'src> FirstPass<'src, ()> for weedle::DictionaryDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         if !record.dictionaries.insert(self.identifier.0) {
             warn!("encountered multiple dictionary declarations of {}", self.identifier.0);
         }
+
         Ok(())
     }
 }
 
 impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         if !record.enums.insert(self.identifier.0) {
             warn!("Encountered multiple enum declarations of {}", self.identifier.0);
         }
@@ -124,11 +133,16 @@ impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
 
 impl<'src> FirstPass<'src, ()> for weedle::IncludesStatementDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         record
             .includes
             .entry(self.lhs_identifier.0)
             .or_insert_with(Default::default)
             .insert(self.rhs_identifier.0);
+
         Ok(())
     }
 }
@@ -173,6 +187,10 @@ fn first_pass_operation<'src>(
 
 impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         {
             let interface_data = record
                 .interfaces
@@ -180,10 +198,6 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
                 .or_insert_with(Default::default);
             interface_data.partial = false;
             interface_data.superclass = self.inheritance.map(|s| s.identifier.0);
-        }
-
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(())
         }
 
         if let Some(attrs) = &self.attributes {
@@ -202,6 +216,10 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
 
 impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         record
             .interfaces
             .entry(self.identifier.0)
@@ -213,10 +231,6 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
                     superclass: None,
                 },
             );
-
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(())
-        }
 
         for member in &self.members.body {
             member.first_pass(record, self.identifier.0)?;
@@ -284,6 +298,10 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::InterfaceMember<'sr
 
 impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceMember<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         if !self.specials.is_empty() && self.specials.len() != 1 {
             warn!("Unsupported webidl operation {:?}", self);
             return Ok(())
@@ -313,6 +331,10 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
 
 impl<'src> FirstPass<'src, ()> for weedle::InterfaceMixinDefinition<'src>{
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         {
             let mixin_data = record
                 .mixins
@@ -320,10 +342,6 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceMixinDefinition<'src>{
                 .or_insert_with(Default::default);
             mixin_data.partial = false;
             mixin_data.members.push(&self.members.body);
-        }
-
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(())
         }
 
         for member in &self.members.body {
@@ -336,6 +354,10 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceMixinDefinition<'src>{
 
 impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceMixinDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         record
             .mixins
             .entry(self.identifier.0)
@@ -348,10 +370,6 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceMixinDefinition<'src>
             )
             .members
             .push(&self.members.body);
-
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(())
-        }
 
         for member in &self.members.body {
             member.first_pass(record, self.identifier.0)?;
@@ -374,6 +392,10 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::MixinMember<'src> {
 
 impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         if self.stringifier.is_some() {
             warn!("Unsupported webidl operation {:?}", self);
             return Ok(())
