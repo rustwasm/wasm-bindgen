@@ -227,6 +227,7 @@ pub enum ConstValue {
 ///
 /// This exists to give the ability to namespace js imports.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Default)]
 pub struct Module {
     /// js -> rust interfaces
     pub imports: Vec<Import>,

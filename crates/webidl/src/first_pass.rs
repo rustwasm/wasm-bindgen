@@ -28,6 +28,7 @@ pub(crate) struct FirstPassRecord<'src> {
     /// The mixins, mapping their name to the webidl ast node for the mixin.
     pub(crate) mixins: BTreeMap<&'src str, Vec<&'src MixinMembers<'src>>>,
     pub(crate) typedefs: BTreeMap<&'src str, &'src weedle::types::Type<'src>>,
+    pub(crate) namespaces: BTreeMap<&'src str, NamespaceData<'src>>,
 }
 
 /// We need to collect interface data during the first pass, to be used later.
@@ -38,6 +39,34 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) global: bool,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
     pub(crate) superclass: Option<&'src str>,
+}
+
+impl<'src> Default for InterfaceData<'src> {
+    fn default() -> Self {
+        InterfaceData {
+            partial: true,
+            global: false,
+            operations: Default::default(),
+            superclass: Default::default(),
+        }
+    }
+}
+
+/// We need to collect namespace data during the first pass, to be used later.
+#[derive(Default)]
+pub(crate) struct NamespaceData<'src> {
+    /// Whether only partial namespaces were encountered
+    pub(crate) partial: bool,
+    pub(crate) operations: BTreeMap<Option<&'src str>, OperationData<'src>>,
+}
+
+impl<'src> Default for NamespaceData<'src> {
+    fn default() -> Self {
+        NamespaceData {
+            partial: true,
+            operations: Default::default(),
+        }
+    }
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord)]
@@ -83,6 +112,8 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
             PartialInterface(interface) => interface.first_pass(record, ()),
             InterfaceMixin(mixin) => mixin.first_pass(record, ()),
             PartialInterfaceMixin(mixin) => mixin.first_pass(record, ()),
+            Namespace(namespace) => namespace.first_pass(record, ()),
+            PartialNamespace(namespace) => namespace.first_pass(record, ()),
             Typedef(typedef) => typedef.first_pass(record, ()),
             _ => {
                 // Other definitions aren't currently used in the first pass
@@ -111,7 +142,8 @@ impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
     }
 }
 
-fn first_pass_operation<'src>(
+/// Helper function to add an operation to an interface.
+fn first_pass_interface_operation<'src>(
     record: &mut FirstPassRecord<'src>,
     self_name: &'src str,
     id: OperationId<'src>,
@@ -199,7 +231,7 @@ impl<'src> FirstPass<'src, &'src str> for ExtendedAttribute<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
         match self {
             ExtendedAttribute::ArgList(list) if list.identifier.0 == "Constructor" => {
-                first_pass_operation(
+                first_pass_interface_operation(
                     record,
                     self_name,
                     OperationId::Constructor,
@@ -207,7 +239,7 @@ impl<'src> FirstPass<'src, &'src str> for ExtendedAttribute<'src> {
                 )
             }
             ExtendedAttribute::NoArgs(name) if (name.0).0 == "Constructor" => {
-                first_pass_operation(
+                first_pass_interface_operation(
                     record,
                     self_name,
                     OperationId::Constructor,
@@ -217,7 +249,7 @@ impl<'src> FirstPass<'src, &'src str> for ExtendedAttribute<'src> {
             ExtendedAttribute::NamedArgList(list)
                 if list.lhs_identifier.0 == "NamedConstructor" =>
             {
-                first_pass_operation(
+                first_pass_interface_operation(
                     record,
                     self_name,
                     OperationId::Constructor,
@@ -258,16 +290,20 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             warn!("Unsupported webidl operation {:?}", self);
             return Ok(())
         }
-        first_pass_operation(
+        first_pass_interface_operation(
             record,
             self_name,
             match self.identifier.map(|s| s.0) {
                 None => match self.specials.get(0) {
                     None => OperationId::Operation(None),
-                    Some(weedle::interface::Special::Getter(weedle::term::Getter)) => OperationId::IndexingGetter,
-                    Some(weedle::interface::Special::Setter(weedle::term::Setter)) => OperationId::IndexingSetter,
-                    Some(weedle::interface::Special::Deleter(weedle::term::Deleter)) => OperationId::IndexingDeleter,
-                    Some(weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller)) => return Ok(()),
+                    Some(weedle::interface::Special::Getter(weedle::term::Getter))
+                        => OperationId::IndexingGetter,
+                    Some(weedle::interface::Special::Setter(weedle::term::Setter))
+                        => OperationId::IndexingSetter,
+                    Some(weedle::interface::Special::Deleter(weedle::term::Deleter))
+                        => OperationId::IndexingDeleter,
+                    Some(weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller))
+                        => return Ok(()),
                 },
                 Some(ref name) => OperationId::Operation(Some(name.clone())),
             },

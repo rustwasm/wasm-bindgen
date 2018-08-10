@@ -12,7 +12,7 @@ use weedle::common::Identifier;
 use weedle::types::*;
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
-use first_pass::FirstPassRecord;
+use first_pass::{self, FirstPassRecord};
 
 /// Take a type and create an immutable shared reference to that type.
 fn shared_ref(ty: syn::Type) -> syn::Type {
@@ -830,6 +830,8 @@ impl<'src> FirstPassRecord<'src> {
     }
 
     /// Create a wasm-bindgen function, if possible.
+    ///
+    /// Currently fails on any variadic args.
     pub fn create_function(
         &self,
         name: &str,
@@ -910,31 +912,31 @@ impl<'src> FirstPassRecord<'src> {
     pub fn create_basic_method(
         &self,
         arguments: &[weedle::argument::Argument],
-        operation_id: ::first_pass::OperationId,
+        operation_id: first_pass::OperationId,
         return_type: &weedle::types::ReturnType,
         self_name: &str,
         is_static: bool,
         structural: bool,
         catch: bool,
     ) -> Option<backend::ast::ImportFunction> {
-        let (overloaded, same_argument_names) = self.get_operation_overloading(
+        let (overloaded, same_argument_names) = self.get_method_overloading(
             arguments,
             &operation_id,
             self_name,
         );
 
         let name = match &operation_id {
-            ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            ::first_pass::OperationId::Operation(name) => match name {
+            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+            first_pass::OperationId::Operation(name) => match name {
                 None => {
                     warn!("Operations without a name are unsupported");
                     return None;
                 }
                 Some(name) => name.to_string(),
             },
-            ::first_pass::OperationId::IndexingGetter => "get".to_string(),
-            ::first_pass::OperationId::IndexingSetter => "set".to_string(),
-            ::first_pass::OperationId::IndexingDeleter => "delete".to_string(),
+            first_pass::OperationId::IndexingGetter => "get".to_string(),
+            first_pass::OperationId::IndexingSetter => "set".to_string(),
+            first_pass::OperationId::IndexingDeleter => "delete".to_string(),
         };
 
         let kind = backend::ast::ImportFunctionKind::Method {
@@ -943,11 +945,11 @@ impl<'src> FirstPassRecord<'src> {
             kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
                 is_static,
                 kind: match &operation_id {
-                    ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-                    ::first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
-                    ::first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
-                    ::first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
-                    ::first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
+                    first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+                    first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
+                    first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
+                    first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
+                    first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
                 },
             }),
         };
@@ -965,17 +967,17 @@ impl<'src> FirstPassRecord<'src> {
             }
         };
         let doc_comment = match &operation_id {
-            ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            ::first_pass::OperationId::Operation(_) => Some(
+            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+            first_pass::OperationId::Operation(_) => Some(
                 format!(
                     "The `{}()` method\n\n{}",
                     name,
                     mdn_doc(self_name, Some(&name))
                 )
             ),
-            ::first_pass::OperationId::IndexingGetter => Some("The indexing getter\n\n".to_string()),
-            ::first_pass::OperationId::IndexingSetter => Some("The indexing setter\n\n".to_string()),
-            ::first_pass::OperationId::IndexingDeleter => Some("The indexing deleter\n\n".to_string()),
+            first_pass::OperationId::IndexingGetter => Some("The indexing getter\n\n".to_string()),
+            first_pass::OperationId::IndexingSetter => Some("The indexing setter\n\n".to_string()),
+            first_pass::OperationId::IndexingDeleter => Some("The indexing deleter\n\n".to_string()),
         };
 
         self.create_function(
@@ -993,13 +995,105 @@ impl<'src> FirstPassRecord<'src> {
 
     /// Whether operation is overloaded and
     /// whether there overloads with same argument names for given argument types
-    pub fn get_operation_overloading(
+    pub fn get_method_overloading(
         &self,
         arguments: &[weedle::argument::Argument],
-        id: &::first_pass::OperationId,
+        id: &first_pass::OperationId,
         self_name: &str,
     ) -> (bool, bool) {
         let data = match self.interfaces.get(self_name) {
+            Some(data) => data,
+            None => return (false, false),
+        };
+        let data = match data.operations.get(id) {
+            Some(data) => data,
+            None => return (false, false),
+        };
+        let mut names = Vec::with_capacity(arguments.len());
+        for arg in arguments {
+            match arg {
+                Argument::Single(arg) => names.push(arg.identifier.0),
+                Argument::Variadic(_) => return (false, false),
+            }
+        }
+        (
+            data.overloaded,
+            *data
+                .argument_names_same
+                .get(&names)
+                .unwrap_or(&false)
+        )
+    }
+
+    /// Create a wasm-bindgen operation (free function with no `self` type), if possible.
+    pub fn create_namespace_operation(
+        &self,
+        arguments: &[weedle::argument::Argument],
+        operation_name: &str,
+        return_type: &weedle::types::ReturnType,
+        structural: bool,
+        catch: bool,
+    ) -> Option<backend::ast::ImportFunction> {
+        let (overloaded, same_argument_names) = self.get_namespaced_operation_overloading(
+            arguments,
+            &first_pass::OperationId::Operation(Some(operation_name))
+            self_name,
+        );
+
+        let name = match &operation_id {
+            first_pass::OperationId::Operation(name) => match name {
+                None => {
+                    warn!("Operations without a name are unsupported");
+                    return None;
+                }
+                Some(name) => name.to_string(),
+            },
+            _ => {
+                warn!("operations in namespaces must be normal functions");
+                return None;
+            }
+        };
+
+        let kind = backend::ast::ImportFunctionKind::Normal;
+
+        let ret = match return_type {
+            weedle::types::ReturnType::Void(_) => None,
+            weedle::types::ReturnType::Type(ty) => {
+                match ty.to_syn_type(self, TypePosition::Return) {
+                    None => {
+                        warn!("Operation's return type is not yet supported: {:?}", ty);
+                        return None;
+                    }
+                    Some(ty) => Some(ty),
+                }
+            }
+        };
+        let doc_comment = format!("The `{}.{}()` function\n\n{}",
+                                  name,
+                                  mdn_doc(self_name, Some(&name)));
+
+        self.create_function(
+            &name,
+            overloaded,
+            same_argument_names,
+            arguments,
+            ret,
+            kind,
+            structural,
+            catch,
+            doc_comment,
+        )
+    }
+
+    /// Whether operation is overloaded and
+    /// whether there overloads with same argument names for given argument types
+    pub fn get_namespaced_operation_overloading(
+        &self,
+        arguments: &[weedle::argument::Argument],
+        id: &first_pass::OperationId,
+        namespace_name: &str,
+    ) -> (bool, bool) {
+        let data = match self.namespaces.get(namespace_name) {
             Some(data) => data,
             None => return (false, false),
         };

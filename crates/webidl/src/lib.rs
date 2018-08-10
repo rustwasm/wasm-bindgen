@@ -38,7 +38,7 @@ use backend::TryToTokens;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, wrap_import_function};
 use failure::ResultExt;
-use heck::{ShoutySnakeCase};
+use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
 use weedle::argument::Argument;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
@@ -308,7 +308,7 @@ impl<'src> WebidlParse<'src, &'src weedle::InterfaceDefinition<'src>> for Extend
         interface: &'src weedle::InterfaceDefinition<'src>,
     ) -> Result<()> {
         let mut add_constructor = |arguments: &[Argument], class: &str| {
-            let (overloaded, same_argument_names) = first_pass.get_operation_overloading(
+            let (overloaded, same_argument_names) = first_pass.get_method_overloading(
                 arguments,
                 &::first_pass::OperationId::Constructor,
                 interface.identifier.0,
@@ -794,7 +794,7 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::interface::ConstMember<'src>
     }
 }
 
-impl<'src> WebidlParse<'src, ()> for weedle::interface::NamespaceDefinition<'src> {
+impl<'src> WebidlParse<'src, ()> for weedle::NamespaceDefinition<'src> {
     fn webidl_parse(
         &'src self,
         program: &mut backend::ast::Program,
@@ -805,6 +805,150 @@ impl<'src> WebidlParse<'src, ()> for weedle::interface::NamespaceDefinition<'src
             return Ok(());
         }
 
+        let rust_name = rust_ident(self.identifier.0.to_snake_case().as_str());
+        let js_name = &self.identifier.0;
 
+        program.modules.entry(rust_name.clone())
+            .and_modify(|_| warn!("Namespace with rust name {:?} added more than once", rust_name))
+            .or_default();
+
+        for member in self.members.body.iter() {
+            member.webidl_parse(program, record, js_name)?
+        }
+        Ok(())
     }
+}
+
+impl<'src> WebidlParse<'src, &'src str> for weedle::namespace::NamespaceMember<'src> {
+    fn webidl_parse(
+        &'src self,
+        program: &mut backend::ast::Program,
+        record: &FirstPassRecord<'src>,
+        module_name: &'src str
+    ) -> Result<()> {
+        match self {
+            weedle::namespace::NamespaceMember::Operation(op) => {
+                op.webidl_parse(program, record, module_name)?;
+            }
+            weedle::namespace::NamespaceMember::Attribute(_) => {
+                warn!("Attribute namespace members are not supported")
+            }
+        }
+        Ok(())
+    }
+}
+
+impl<'src> WebidlParse<'src, &'src str> for weedle::namespace::OperationNamespaceMember<'src> {
+    fn webidl_parse(
+        &'src self,
+        program: &mut backend::ast::Program,
+        record: &FirstPassRecord<'src>,
+        module_name: &'src str
+    ) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
+        let structural = util::is_structural(&self.attributes);
+
+        let name = match &self.identifier {
+            Some(ident) => ident.0,
+            None => {
+                warn!("Operations without identifiers are not supported");
+                return Ok(());
+            }
+
+        let import_fn = first_pass
+            .create_function(
+                name,
+                false,
+                same_argument_names: bool,
+                arguments: &[Argument],
+                mut ret: Option<syn::Type>,
+                kind: backend::ast::ImportFunctionKind,
+                structural: bool,
+                catch: bool,
+                doc_comment: Option<String>,
+            ) -> Option<backend::ast::ImportFunction>
+            .create_basic_method(
+                args,
+                match identifier.map(|s| s.0) {
+                    Some(ref name) if specials.is_empty() =>
+                        ::first_pass::OperationId::Operation(Some(name.clone())),
+                },
+                &self.return_type,
+                self_name,
+                specials.len() == 1 || first_pass
+                .interfaces
+                .get(self_name)
+                .map(|interface_data| interface_data.global)
+                .unwrap_or(false),
+                util::throws(&self.attributes),
+                )
+            .map(wrap_import_function)
+            .map(|import| program.imports.push(import));
+        Ok(())
+    }
+}
+
+fn member_operation<'src>(
+    program: &mut backend::ast::Program,
+    first_pass: &FirstPassRecord<'src>,
+    self_name: &'src str,
+    attrs: &'src Option<ExtendedAttributeList>,
+    modifier: Option<weedle::interface::StringifierOrStatic>,
+    specials: &[weedle::interface::Special],
+    return_type: &'src weedle::types::ReturnType<'src>,
+    args: &'src [Argument],
+    identifier: &Option<weedle::common::Identifier<'src>>,
+) -> Result<()> {
+    use weedle::interface::StringifierOrStatic::*;
+
+    if util::is_chrome_only(attrs) {
+        return Ok(());
+    }
+    let statik = match modifier {
+        Some(Stringifier(_)) => {
+            warn!("Unsupported stringifier on type {:?}", (self_name, identifier));
+            return Ok(())
+        }
+        Some(Static(_)) => true,
+        None => false,
+    };
+
+    first_pass
+        .create_basic_method(
+            args,
+            match identifier.map(|s| s.0) {
+                None if specials.is_empty() => ::first_pass::OperationId::Operation(None),
+                None if specials.len() == 1 => match specials[0] {
+                    weedle::interface::Special::Getter(weedle::term::Getter) =>
+                        ::first_pass::OperationId::IndexingGetter,
+                    weedle::interface::Special::Setter(weedle::term::Setter) =>
+                        ::first_pass::OperationId::IndexingSetter,
+                    weedle::interface::Special::Deleter(weedle::term::Deleter) =>
+                        ::first_pass::OperationId::IndexingDeleter,
+                    weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller) =>
+                        return Ok(()),
+                },
+                Some(ref name) if specials.is_empty() =>
+                    ::first_pass::OperationId::Operation(Some(name.clone())),
+                _ => {
+                    warn!("Unsupported specials on type {:?}", (self_name, identifier));
+                    return Ok(())
+                }
+            },
+            return_type,
+            self_name,
+            statik,
+            specials.len() == 1 || first_pass
+                .interfaces
+                .get(self_name)
+                .map(|interface_data| interface_data.global)
+                .unwrap_or(false),
+            util::throws(attrs),
+        )
+        .map(wrap_import_function)
+        .map(|import| program.imports.push(import));
+    Ok(())
 }
