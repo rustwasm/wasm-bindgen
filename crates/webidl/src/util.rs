@@ -659,6 +659,39 @@ impl<T: GetTypeName> GetTypeName for MayBeNull<T> {
     }
 }
 
+macro_rules! term_type_names {
+    ($($t:tt => $r:tt)*) => ($(
+        impl GetTypeName for weedle::term::$t {
+            fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
+                dst.push_str($r);
+            }
+        }
+    )*)
+}
+
+term_type_names!(
+    Boolean => "bool"
+    Byte => "i8"
+    Octet => "u8"
+    Int8Array => "i8_array"
+    Uint8Array => "u8_array"
+    Uint8ClampedArray => "u8_clamped_array"
+    Int16Array => "i16_array"
+    Uint16Array => "u16_array"
+    Int32Array => "i32_array"
+    Uint32Array => "u32_array"
+    Float32Array => "f32_array"
+    Float64Array => "f64_array"
+    USVString => "usv_str"
+    ByteString => "byte_str"
+    DOMString => "dom_str"
+    ArrayBuffer => "array_buffer"
+    Symbol => "symbol"
+    Object => "object"
+    DataView => "data_view"
+    Error => "error"
+);
+
 impl<'src> GetTypeName for weedle::types::ReturnType<'src> {
     fn push_type_name(&self, record: &FirstPassRecord, dst: &mut String) {
         match self {
@@ -675,96 +708,6 @@ impl GetTypeName for weedle::types::StringType {
             weedle::types::StringType::DOM(_) => dst.push_str("dom_str"),
             weedle::types::StringType::USV(_) => dst.push_str("usv_str"),
         }
-    }
-}
-
-impl GetTypeName for weedle::term::Byte {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("i8");
-    }
-}
-
-impl GetTypeName for weedle::term::Octet {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("u8");
-    }
-}
-
-impl GetTypeName for weedle::term::Boolean {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("bool");
-    }
-}
-
-impl GetTypeName for weedle::term::USVString {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("usv_str");
-    }
-}
-
-impl GetTypeName for weedle::term::ByteString {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("byte_str");
-    }
-}
-
-impl GetTypeName for weedle::term::DOMString {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("dom_str");
-    }
-}
-
-impl GetTypeName for weedle::term::Float32Array {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("f32_array");
-    }
-}
-
-impl GetTypeName for weedle::term::Float64Array {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("f64_array");
-    }
-}
-
-impl GetTypeName for weedle::term::Int8Array {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("i8_array");
-    }
-}
-
-impl GetTypeName for weedle::term::Int16Array {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("i16_array");
-    }
-}
-
-impl GetTypeName for weedle::term::Int32Array {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("i32_array");
-    }
-}
-
-impl GetTypeName for weedle::term::Uint8Array {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("u8_array");
-    }
-}
-
-impl GetTypeName for weedle::term::Uint8ClampedArray {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("u8_clamped_array");
-    }
-}
-
-impl GetTypeName for weedle::term::Uint16Array {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("u16_array");
-    }
-}
-
-impl GetTypeName for weedle::term::Uint32Array {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("u32_array");
     }
 }
 
@@ -796,36 +739,6 @@ impl GetTypeName for FloatingPointType {
             FloatingPointType::Float(_) => dst.push_str("f32"),
             FloatingPointType::Double(_) => dst.push_str("f64"),
         }
-    }
-}
-
-impl GetTypeName for weedle::term::ArrayBuffer {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("array_buffer");
-    }
-}
-
-impl GetTypeName for weedle::term::Symbol {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("symbol");
-    }
-}
-
-impl GetTypeName for weedle::term::Object {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("object");
-    }
-}
-
-impl GetTypeName for weedle::term::DataView {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("data_view");
-    }
-}
-
-impl GetTypeName for weedle::term::Error {
-    fn push_type_name(&self, _record: &FirstPassRecord, dst: &mut String) {
-        dst.push_str("error");
     }
 }
 
