@@ -566,14 +566,9 @@ impl<'src> GetArgumentPossibilities<'src> for weedle::common::Identifier<'src> {
         if let Some(other) = record.typedefs.get(&self.0) {
             other.get_argument_possibilities(record)
         } else {
-            Some(
-                vec![
-                    (
-                        self.to_syn_type(record, TypePosition::Argument)?,
-                        self.get_type_name(record),
-                    )
-                ]
-            )
+            let syn_type = self.to_syn_type(record, TypePosition::Argument)?;
+            let type_name = self.get_type_name(record);
+            Some(vec![(syn_type, type_name)])
         }
     }
 }
@@ -583,14 +578,9 @@ impl<'src> GetArgumentPossibilities<'src> for NonAnyType<'src> {
         if let NonAnyType::Identifier(identifier) = self {
             identifier.get_argument_possibilities(record)
         } else {
-            Some(
-                vec![
-                    (
-                        self.to_syn_type(record, TypePosition::Argument)?,
-                        self.get_type_name(record),
-                    )
-                ]
-            )
+            let syn_type = self.to_syn_type(record, TypePosition::Argument)?;
+            let type_name = self.get_type_name(record);
+            Some(vec![(syn_type, type_name)])
         }
     }
 }
@@ -600,14 +590,9 @@ impl<'src> GetArgumentPossibilities<'src> for SingleType<'src> {
         if let SingleType::NonAny(non_any) = self {
             non_any.get_argument_possibilities(record)
         } else {
-            Some(
-                vec![
-                    (
-                        self.to_syn_type(record, TypePosition::Argument)?,
-                        self.get_type_name(record),
-                    )
-                ]
-            )
+            let syn_type = self.to_syn_type(record, TypePosition::Argument)?;
+            let type_name = self.get_type_name(record);
+            Some(vec![(syn_type, type_name)])
         }
     }
 }
