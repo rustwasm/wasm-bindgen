@@ -1914,6 +1914,13 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Object, js_name = assign)]
     pub fn assign3(target: &Object, source1: &Object, source2: &Object, source3: &Object) -> Object;
 
+    /// The Object.create() method creates a new object, using an existing
+    /// object to provide the newly created object's prototype.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn create(prototype: &Object) -> Object;
+
     /// The `Object.freeze()` method freezes an object: that is, prevents new
     /// properties from being added to it; prevents existing properties from
     /// being removed; and prevents existing properties, or their enumerability,
