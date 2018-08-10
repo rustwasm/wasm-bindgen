@@ -1,0 +1,1 @@
+exports.new_string_object = () => new String("hi");

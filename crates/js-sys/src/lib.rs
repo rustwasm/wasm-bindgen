@@ -2666,7 +2666,7 @@ extern "C" {
 // JsString
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = String)]
+    #[wasm_bindgen(js_name = String, extends = Object)]
     #[derive(Clone)]
     pub type JsString;
 
