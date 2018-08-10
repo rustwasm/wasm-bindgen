@@ -3203,6 +3203,14 @@ extern "C" {
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(this: &Symbol) -> JsString;
 
+    /// The Symbol.unscopables well-known symbol is used to specify an object
+    /// value of whose own and inherited property names are excluded from the
+    /// with environment bindings of the associated object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/unscopables
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    pub fn unscopables() -> Symbol;
+
     /// The valueOf() method returns the primitive value of a Symbol object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/valueOf

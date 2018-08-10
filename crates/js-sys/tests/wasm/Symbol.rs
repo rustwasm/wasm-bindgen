@@ -100,6 +100,11 @@ fn to_string() {
 }
 
 #[wasm_bindgen_test]
+fn unscopables() {
+    assert_eq!(Symbol::unscopables().to_string(), "Symbol(Symbol.unscopables)");
+}
+
+#[wasm_bindgen_test]
 fn value_of() {
     let a = Symbol::for_("foo");
     assert_eq!(JsValue::from(a.value_of()), JsValue::from(a));
