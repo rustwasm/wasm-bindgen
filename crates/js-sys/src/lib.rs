@@ -2496,6 +2496,27 @@ extern {
     pub fn values(set: &Set) -> Iterator;
 }
 
+// SyntaxError
+#[wasm_bindgen]
+extern {
+    /// A SyntaxError is thrown when the JavaScript engine encounters tokens or
+    /// token order that does not conform to the syntax of the language when
+    /// parsing code.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError
+    #[wasm_bindgen(extends = Error)]
+    #[derive(Clone, Debug)]
+    pub type SyntaxError;
+
+    /// A SyntaxError is thrown when the JavaScript engine encounters tokens or
+    /// token order that does not conform to the syntax of the language when
+    /// parsing code.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &str) -> SyntaxError;
+}
+
 // Uint8Array
 #[wasm_bindgen]
 extern "C" {
