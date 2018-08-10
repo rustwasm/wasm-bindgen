@@ -2683,8 +2683,8 @@ extern "C" {
     /// specified.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-    #[wasm_bindgen(static_method_of = JSON)]
-    pub fn stringify(obj: &JsValue) -> JsString;
+    #[wasm_bindgen(catch, static_method_of = JSON)]
+    pub fn stringify(obj: &JsValue) -> Result<JsString, JsValue>;
 
 }
 
