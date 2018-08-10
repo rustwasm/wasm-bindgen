@@ -3127,19 +3127,21 @@ extern "C" {
     pub fn value_of(this: &Symbol) -> Symbol;
 }
 
-// Intl
-#[wasm_bindgen]
-extern "C" {
-    #[derive(Clone, Debug)]
-    pub type Intl;
+#[allow(non_snake_case)]
+pub mod Intl {
+    use super::*;
 
-    /// The `Intl.getCanonicalLocales()` method returns an array containing
-    /// the canonical locale names. Duplicates will be omitted and elements
-    /// will be validated as structurally valid language tags.
-    ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales
-    #[wasm_bindgen(static_method_of = Intl, js_name = getCanonicalLocales)]
-    pub fn get_canonical_locales(s: &JsValue) -> Array;
+    // Intl
+    #[wasm_bindgen]
+    extern "C" {
+        /// The `Intl.getCanonicalLocales()` method returns an array containing
+        /// the canonical locale names. Duplicates will be omitted and elements
+        /// will be validated as structurally valid language tags.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales
+        #[wasm_bindgen(js_name = getCanonicalLocales, js_namespace = Intl)]
+        pub fn get_canonical_locales(s: &JsValue) -> Array;
+    }
 }
 
 // Promise
