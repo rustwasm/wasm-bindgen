@@ -2517,6 +2517,25 @@ extern {
     pub fn new(message: &str) -> SyntaxError;
 }
 
+// TypeError
+#[wasm_bindgen]
+extern {
+    /// The TypeError object represents an error when a value is not of the
+    /// expected type.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
+    #[wasm_bindgen(extends = Error)]
+    #[derive(Clone, Debug)]
+    pub type TypeError;
+
+    /// The TypeError object represents an error when a value is not of the
+    /// expected type.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &str) -> TypeError;
+}
+
 // Uint8Array
 #[wasm_bindgen]
 extern "C" {

@@ -33,6 +33,7 @@ pub mod Set;
 pub mod SetIterator;
 pub mod Symbol;
 pub mod SyntaxError;
+pub mod TypeError;
 pub mod TypedArray;
 pub mod UriError;
 pub mod WeakMap;
