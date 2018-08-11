@@ -543,7 +543,7 @@ impl ToTokens for ast::ImportType {
             const #const_name: () = {
                 use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi, Stack};
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
-                use wasm_bindgen::convert::{RefFromWasmAbi, GlobalStack};
+                use wasm_bindgen::convert::RefFromWasmAbi;
                 use wasm_bindgen::describe::WasmDescribe;
                 use wasm_bindgen::{JsValue, JsCast};
                 use wasm_bindgen::__rt::core::mem::ManuallyDrop;
@@ -633,7 +633,7 @@ impl ToTokens for ast::ImportType {
                             fn #instanceof_shim(val: u32) -> u32;
                         }
                         unsafe {
-                            let idx = val.into_abi(&mut GlobalStack::new());
+                            let idx = val.into_abi(&mut ::wasm_bindgen::convert::GlobalStack::new());
                             #instanceof_shim(idx) != 0
                         }
                     }
