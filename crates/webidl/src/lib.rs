@@ -189,8 +189,7 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
                 namespace.webidl_parse(program, first_pass, ())?
             }
             weedle::Definition::PartialNamespace(namespace) => {
-                // TODO
-                warn!("Unsupported WebIDL definition: {:?}", self)
+                namespace.webidl_parse(program, first_pass, ())?
             }
             // TODO
             weedle::Definition::Callback(..)
@@ -818,6 +817,38 @@ impl<'src> WebidlParse<'src, ()> for weedle::NamespaceDefinition<'src> {
             for attr in &attrs.body.list {
                 attr.webidl_parse(program, first_pass, self)?;
             }
+        }
+
+        let namespace_names = NamespaceNames {
+            rust_name: &rust_name,
+            js_name: &self.identifier.0,
+        };
+        for member in &self.members.body {
+            member.webidl_parse(program, first_pass, namespace_names)?;
+        }
+
+        Ok(())
+    }
+}
+
+impl<'src> WebidlParse<'src, ()> for weedle::PartialNamespaceDefinition<'src> {
+    fn webidl_parse(
+        &'src self,
+        program: &mut backend::ast::Program,
+        first_pass: &FirstPassRecord<'src>,
+        (): (),
+    ) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
+        let rust_name = rust_ident(self.identifier.0.to_snake_case().as_str());
+
+        if !first_pass.namespaces.contains_key(self.identifier.0) {
+            warn!(
+                "Partial namespace {} missing non-partial namespace",
+                self.identifier.0
+            );
         }
 
         let namespace_names = NamespaceNames {
