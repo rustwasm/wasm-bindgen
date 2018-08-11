@@ -1,6 +1,5 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
 use js_sys::*;
 
 #[wasm_bindgen(module = "tests/wasm/Symbol.js")]
@@ -98,6 +97,11 @@ fn to_string() {
     assert_eq!(Symbol::iterator().to_string(), "Symbol(Symbol.iterator)");
     assert_eq!(Symbol::for_("foo").to_string(), "Symbol(foo)");
     assert_eq!(gensym("desc".into()).to_string(), "Symbol(desc)");
+}
+
+#[wasm_bindgen_test]
+fn unscopables() {
+    assert_eq!(Symbol::unscopables().to_string(), "Symbol(Symbol.unscopables)");
 }
 
 #[wasm_bindgen_test]

@@ -166,7 +166,7 @@ impl BindgenAttrs {
             }).next()
     }
 
-    /// Get the first js_name attribute
+    /// Get the first js_class attribute
     fn js_class(&self) -> Option<&str> {
         self.attrs
             .iter()
@@ -495,6 +495,10 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
                 _ => bail_span!(self, "return value of constructor must be a bare path"),
             };
             let class_name = extract_path_ident(class_name)?;
+            let class_name = opts
+                .js_class()
+                .map(Into::into)
+                .unwrap_or_else(|| class_name.to_string());
 
             ast::ImportFunctionKind::Method {
                 class: class_name.to_string(),

@@ -57,6 +57,15 @@ fn input() {
 }
 
 #[wasm_bindgen_test]
+fn last_index() {
+    let re = RegExp::new("hi", "g");
+    assert_eq!(re.last_index(), 0);
+
+    re.set_last_index(42);
+    assert_eq!(re.last_index(), 42);
+}
+
+#[wasm_bindgen_test]
 fn last_match() {
     let re = RegExp::new("hi", "g");
     re.test("hi there!");

@@ -1,17 +1,18 @@
-use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::*;
-use std::f64::NAN;
 use js_sys::*;
+use std::f64::NAN;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     type Foo42;
     #[wasm_bindgen(method, setter, structural)]
     fn set_foo(this: &Foo42, val: JsValue);
 }
 
 #[wasm_bindgen(module = "tests/wasm/Object.js")]
-extern {
+extern "C" {
     fn map_with_symbol_key() -> Object;
     fn symbol_key() -> JsValue;
 
@@ -34,6 +35,42 @@ fn foo_42() -> Object {
 #[wasm_bindgen_test]
 fn new() {
     assert!(JsValue::from(Object::new()).is_object());
+}
+
+#[wasm_bindgen_test]
+fn assign() {
+    let a = JsValue::from("a");
+    let b = JsValue::from("b");
+    let c = JsValue::from("c");
+
+    let target = Object::new();
+    Reflect::set(target.as_ref(), a.as_ref(), a.as_ref());
+
+    let src1 = Object::new();
+    Reflect::set(src1.as_ref(), &a, &c);
+
+    let src2 = Object::new();
+    Reflect::set(src2.as_ref(), &b, &b);
+
+    let src3 = Object::new();
+    Reflect::set(src3.as_ref(), &c, &c);
+
+    let res = Object::assign3(&target, &src1, &src2, &src3);
+
+    assert!(Object::is(target.as_ref(), res.as_ref()));
+    assert_eq!(Reflect::get(target.as_ref(), &a), c);
+    assert_eq!(Reflect::get(target.as_ref(), &b), b);
+    assert_eq!(Reflect::get(target.as_ref(), &c), c);
+}
+
+#[wasm_bindgen_test]
+fn create() {
+    let array_proto = eval("Array.prototype")
+        .unwrap()
+        .dyn_into::<Object>()
+        .unwrap();
+    let my_array = Object::create(&array_proto);
+    assert!(my_array.is_instance_of::<Array>());
 }
 
 #[wasm_bindgen_test]

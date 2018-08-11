@@ -127,6 +127,19 @@ fn copy_within() {
 }
 
 #[wasm_bindgen_test]
+fn of() {
+    let a = JsValue::from("a");
+    let b = JsValue::from("b");
+    let c = JsValue::from("c");
+    let arr = Array::of3(&a, &b, &c);
+    let vec = to_rust(&arr);
+    assert_eq!(vec.len(), 3);
+    assert_eq!(vec[0], a);
+    assert_eq!(vec[1], b);
+    assert_eq!(vec[2], c);
+}
+
+#[wasm_bindgen_test]
 fn pop() {
     let characters = js_array![8, 5, 4, 3, 1, 2];
     let item = characters.pop();

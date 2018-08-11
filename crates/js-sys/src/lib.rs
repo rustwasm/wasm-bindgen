@@ -250,6 +250,40 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn map(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> JsValue) -> Array;
 
+    /// The `Array.of()` method creates a new Array instance with a variable
+    /// number of arguments, regardless of number or type of the arguments.
+    ///
+    /// The difference between `Array.of()` and the `Array` constructor is in the
+    /// handling of integer arguments: `Array.of(7)` creates an array with a single
+    /// element, `7`, whereas `Array(7)` creates an empty array with a `length`
+    /// property of `7` (Note: this implies an array of 7 empty slots, not slots
+    /// with actual undefined values).
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    ///
+    /// # Notes
+    ///
+    /// There are a few bindings to `of` in `js-sys`: `of1`, `of2`, etc...
+    /// with different arities.
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of1(a: &JsValue) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of2(a: &JsValue, b: &JsValue) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of3(a: &JsValue, b: &JsValue, c: &JsValue) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of4(a: &JsValue, b: &JsValue, c: &JsValue, d: &JsValue) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+    #[wasm_bindgen(static_method_of = Array, js_name = of)]
+    pub fn of5(a: &JsValue, b: &JsValue, c: &JsValue, d: &JsValue, e: &JsValue) -> Array;
+
     /// The pop() method removes the last element from an array and returns that
     /// element. This method changes the length of the array.
     ///
@@ -645,7 +679,6 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(message: &str) -> EvalError;
 }
-
 
 // Float32Array
 #[wasm_bindgen]
@@ -1857,6 +1890,37 @@ extern "C" {
     #[derive(Clone, Debug)]
     pub type Object;
 
+    /// The Object.assign() method is used to copy the values of all enumerable
+    /// own properties from one or more source objects to a target object. It
+    /// will return the target object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn assign(target: &Object, source: &Object) -> Object;
+
+    /// The Object.assign() method is used to copy the values of all enumerable
+    /// own properties from one or more source objects to a target object. It
+    /// will return the target object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+    #[wasm_bindgen(static_method_of = Object, js_name = assign)]
+    pub fn assign2(target: &Object, source1: &Object, source2: &Object) -> Object;
+
+    /// The Object.assign() method is used to copy the values of all enumerable
+    /// own properties from one or more source objects to a target object. It
+    /// will return the target object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+    #[wasm_bindgen(static_method_of = Object, js_name = assign)]
+    pub fn assign3(target: &Object, source1: &Object, source2: &Object, source3: &Object) -> Object;
+
+    /// The Object.create() method creates a new object, using an existing
+    /// object to provide the newly created object's prototype.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn create(prototype: &Object) -> Object;
+
     /// The `Object.freeze()` method freezes an object: that is, prevents new
     /// properties from being added to it; prevents existing properties from
     /// being removed; and prevents existing properties, or their enumerability,
@@ -2020,6 +2084,44 @@ extern {
     pub fn revocable(target: &JsValue, handler: &Object) -> Object;
 }
 
+// RangeError
+#[wasm_bindgen]
+extern {
+    /// The RangeError object indicates an error when a value is not in the set
+    /// or range of allowed values.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError
+    #[wasm_bindgen(extends = Error)]
+    #[derive(Clone, Debug)]
+    pub type RangeError;
+
+    /// The RangeError object indicates an error when a value is not in the set
+    /// or range of allowed values.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &str) -> RangeError;
+}
+
+// ReferenceError
+#[wasm_bindgen]
+extern {
+    /// The ReferenceError object represents an error when a non-existent
+    /// variable is referenced.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError
+    #[wasm_bindgen(extends = Error)]
+    #[derive(Clone, Debug)]
+    pub type ReferenceError;
+
+    /// The ReferenceError object represents an error when a non-existent
+    /// variable is referenced.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &str) -> ReferenceError;
+}
+
 // Reflect
 #[wasm_bindgen]
 extern "C" {
@@ -2177,6 +2279,20 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/input
     #[wasm_bindgen(static_method_of = RegExp, getter)]
     pub fn input() -> JsString;
+
+    /// The lastIndex is a read/write integer property of regular expression
+    /// instances that specifies the index at which to start the next match.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex
+    #[wasm_bindgen(structural, getter = lastIndex, method)]
+    pub fn last_index(this: &RegExp) -> u32;
+
+    /// The lastIndex is a read/write integer property of regular expression
+    /// instances that specifies the index at which to start the next match.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/lastIndex
+    #[wasm_bindgen(structural, setter = lastIndex, method)]
+    pub fn set_last_index(this: &RegExp, index: u32);
 
     /// The non-standard lastMatch property is a static and read-only
     /// property of regular expressions that contains the last matched
@@ -2378,6 +2494,46 @@ extern {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values
     #[wasm_bindgen(method)]
     pub fn values(set: &Set) -> Iterator;
+}
+
+// SyntaxError
+#[wasm_bindgen]
+extern {
+    /// A SyntaxError is thrown when the JavaScript engine encounters tokens or
+    /// token order that does not conform to the syntax of the language when
+    /// parsing code.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError
+    #[wasm_bindgen(extends = Error)]
+    #[derive(Clone, Debug)]
+    pub type SyntaxError;
+
+    /// A SyntaxError is thrown when the JavaScript engine encounters tokens or
+    /// token order that does not conform to the syntax of the language when
+    /// parsing code.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &str) -> SyntaxError;
+}
+
+// TypeError
+#[wasm_bindgen]
+extern {
+    /// The TypeError object represents an error when a value is not of the
+    /// expected type.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
+    #[wasm_bindgen(extends = Error)]
+    #[derive(Clone, Debug)]
+    pub type TypeError;
+
+    /// The TypeError object represents an error when a value is not of the
+    /// expected type.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
+    #[wasm_bindgen(constructor)]
+    pub fn new(message: &str) -> TypeError;
 }
 
 // Uint8Array
@@ -2588,6 +2744,25 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Uint32Array) -> u32;
+}
+
+// URIError
+#[wasm_bindgen]
+extern {
+    /// The URIError object represents an error when a global URI handling
+    /// function was used in a wrong way.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError
+    #[wasm_bindgen(extends = Error, js_name = URIError)]
+    #[derive(Clone, Debug)]
+    pub type UriError;
+
+    /// The URIError object represents an error when a global URI handling
+    /// function was used in a wrong way.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError
+    #[wasm_bindgen(constructor, js_class = "URIError")]
+    pub fn new(message: &str) -> UriError;
 }
 
 // WeakMap
@@ -3112,6 +3287,14 @@ extern "C" {
     #[wasm_bindgen(method, js_name = toString)]
     pub fn to_string(this: &Symbol) -> JsString;
 
+    /// The Symbol.unscopables well-known symbol is used to specify an object
+    /// value of whose own and inherited property names are excluded from the
+    /// with environment bindings of the associated object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/unscopables
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural)]
+    pub fn unscopables() -> Symbol;
+
     /// The valueOf() method returns the primitive value of a Symbol object.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/valueOf
@@ -3119,19 +3302,65 @@ extern "C" {
     pub fn value_of(this: &Symbol) -> Symbol;
 }
 
-// Intl
-#[wasm_bindgen]
-extern "C" {
-    #[derive(Clone, Debug)]
-    pub type Intl;
+#[allow(non_snake_case)]
+pub mod Intl {
+    use super::*;
 
-    /// The `Intl.getCanonicalLocales()` method returns an array containing
-    /// the canonical locale names. Duplicates will be omitted and elements
-    /// will be validated as structurally valid language tags.
-    ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales
-    #[wasm_bindgen(static_method_of = Intl, js_name = getCanonicalLocales)]
-    pub fn get_canonical_locales(s: &JsValue) -> Array;
+    // Intl
+    #[wasm_bindgen]
+    extern "C" {
+        /// The `Intl.getCanonicalLocales()` method returns an array containing
+        /// the canonical locale names. Duplicates will be omitted and elements
+        /// will be validated as structurally valid language tags.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/getCanonicalLocales
+        #[wasm_bindgen(js_name = getCanonicalLocales, js_namespace = Intl)]
+        pub fn get_canonical_locales(s: &JsValue) -> Array;
+    }
+
+    // Intl.Collator
+    #[wasm_bindgen]
+    extern "C" {
+        /// The Intl.Collator object is a constructor for collators, objects
+        /// that enable language sensitive string comparison.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator
+        #[wasm_bindgen(js_namespace = Intl)]
+        #[derive(Clone, Debug)]
+        pub type Collator;
+
+        /// The Intl.Collator object is a constructor for collators, objects
+        /// that enable language sensitive string comparison.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator
+        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        pub fn new(locales: &Array, options: &Object) -> Collator;
+
+        /// The Intl.Collator.prototype.compare property returns a function that
+        /// compares two strings according to the sort order of this Collator
+        /// object.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator/compare
+        #[wasm_bindgen(method, getter, js_class = "Intl.Collator")]
+        pub fn compare(this: &Collator) -> Function;
+
+        /// The Intl.Collator.prototype.resolvedOptions() method returns a new
+        /// object with properties reflecting the locale and collation options
+        /// computed during initialization of this Collator object.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator/resolvedOptions
+        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        pub fn resolved_options(this: &Collator) -> Object;
+
+        /// The Intl.Collator.supportedLocalesOf() method returns an array
+        /// containing those of the provided locales that are supported in
+        /// collation without having to fall back to the runtime's default
+        /// locale.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator/supportedLocalesOf
+        #[wasm_bindgen(static_method_of = Collator, js_namespace = Intl, js_name = supportedLocalesOf)]
+        pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
 }
 
 // Promise
