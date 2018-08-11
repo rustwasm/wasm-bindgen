@@ -1063,7 +1063,7 @@ impl<'src> FirstPassRecord<'src> {
         let doc_comment = format!("The `{}.{}()` function\n\n{}",
                                   namespace_name,
                                   name,
-                                  mdn_doc(namespace_name, Some(&name))); // TODO check link
+                                  mdn_doc(namespace_name, Some(&name))); // checked link
 
         self.create_function(
             &name,
