@@ -36,7 +36,7 @@ use std::path::Path;
 
 use backend::TryToTokens;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
-use backend::util::{ident_ty, rust_ident, wrap_import_function};
+use backend::util::{ident_ty, rust_ident, raw_ident, wrap_import_function};
 use failure::ResultExt;
 use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
@@ -892,7 +892,7 @@ impl<'src> WebidlParse<'src, NamespaceNames<'src>> for weedle::namespace::Operat
 
         let import = backend::ast::Import {
             module: None,
-            js_namespace: Some(ns_names.js_name.clone()),
+            js_namespace: Some(raw_ident(ns_names.js_name)),
             kind: backend::ast::ImportKind::Function(imported_fn),
         };
 

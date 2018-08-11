@@ -14,6 +14,7 @@ pub mod anchor_element;
 pub mod body_element;
 pub mod br_element;
 pub mod button_element;
+pub mod console;
 pub mod div_element;
 pub mod element;
 pub mod event;
