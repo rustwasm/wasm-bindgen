@@ -25,6 +25,7 @@ extern crate wasm_bindgen_backend as backend;
 extern crate weedle;
 
 mod first_pass;
+mod idl_type;
 mod util;
 mod error;
 
@@ -45,7 +46,7 @@ use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
 
 use first_pass::{FirstPass, FirstPassRecord};
 use util::{public, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, mdn_doc};
-use util::ToSynType;
+use idl_type::{IdlType, ToIdlType};
 
 pub use error::{Error, ErrorKind, Result};
 
@@ -341,23 +342,22 @@ impl<'src> WebidlParse<'src, &'src weedle::InterfaceDefinition<'src>> for Extend
             // > exception**.
             let throws = true;
 
-            first_pass
-                .create_function(
-                    "new",
-                    overloaded,
-                    same_argument_names,
-                    arguments,
-                    Some(self_ty),
-                    kind,
-                    structural,
-                    throws,
-                    None,
-                )
-                .map(|import_functions|
-                    for import_function in import_functions {
-                        program.imports.push(wrap_import_function(import_function));
-                    }
-                );
+            for import_function in first_pass.create_function(
+                "new",
+                overloaded,
+                same_argument_names,
+                &match first_pass.convert_arguments(arguments) {
+                    None => return,
+                    Some(arguments) => arguments
+                },
+                IdlType::Interface(interface.identifier.0),
+                kind,
+                structural,
+                throws,
+                None,
+            ) {
+                program.imports.push(wrap_import_function(import_function));
+            }
         };
 
         match self {
@@ -566,36 +566,28 @@ fn member_attribute<'src>(
     let is_structural = util::is_structural(attrs);
     let throws = util::throws(attrs);
 
-    first_pass
-        .create_getter(
+        for import_function in first_pass.create_getter(
             identifier,
             &type_.type_,
             self_name,
             is_static,
             is_structural,
             throws,
-        )
-        .map(|import_functions|
-            for import_function in import_functions {
-                program.imports.push(wrap_import_function(import_function));
-            }
-        );
+        ) {
+            program.imports.push(wrap_import_function(import_function));
+        }
 
     if !readonly {
-        first_pass
-            .create_setter(
-                identifier,
-                type_.type_.clone(),
-                self_name,
-                is_static,
-                is_structural,
-                throws,
-            )
-            .map(|import_functions|
-                for import_function in import_functions {
-                    program.imports.push(wrap_import_function(import_function));
-                }
-            );
+        for import_function in first_pass.create_setter(
+            identifier,
+            type_.type_.clone(),
+            self_name,
+            is_static,
+            is_structural,
+            throws,
+        ) {
+            program.imports.push(wrap_import_function(import_function));
+        }
     }
 
     Ok(())
@@ -669,38 +661,34 @@ fn member_operation<'src>(
         None => false,
     };
 
-    first_pass
-        .create_basic_method(
-            args,
-            match identifier.map(|s| s.0) {
-                None if specials.is_empty() => ::first_pass::OperationId::Operation(None),
-                None if specials.len() == 1 => match specials[0] {
-                    weedle::interface::Special::Getter(weedle::term::Getter) => ::first_pass::OperationId::IndexingGetter,
-                    weedle::interface::Special::Setter(weedle::term::Setter) => ::first_pass::OperationId::IndexingSetter,
-                    weedle::interface::Special::Deleter(weedle::term::Deleter) => ::first_pass::OperationId::IndexingDeleter,
-                    weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller) => return Ok(()),
-                },
-                Some(ref name) if specials.is_empty() => ::first_pass::OperationId::Operation(Some(name.clone())),
-                _ => {
-                    warn!("Unsupported specials on type {:?}", (self_name, identifier));
-                    return Ok(())
-                }
+    for import_function in first_pass.create_basic_method(
+        args,
+        match identifier.map(|s| s.0) {
+            None if specials.is_empty() => ::first_pass::OperationId::Operation(None),
+            None if specials.len() == 1 => match specials[0] {
+                weedle::interface::Special::Getter(weedle::term::Getter) => ::first_pass::OperationId::IndexingGetter,
+                weedle::interface::Special::Setter(weedle::term::Setter) => ::first_pass::OperationId::IndexingSetter,
+                weedle::interface::Special::Deleter(weedle::term::Deleter) => ::first_pass::OperationId::IndexingDeleter,
+                weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller) => return Ok(()),
             },
-            return_type,
-            self_name,
-            is_static,
-            specials.len() == 1 || first_pass
-                .interfaces
-                .get(self_name)
-                .map(|interface_data| interface_data.global)
-                .unwrap_or(false),
-            util::throws(attrs),
-        )
-        .map(|import_functions|
-            for import_function in import_functions {
-                program.imports.push(wrap_import_function(import_function));
+            Some(ref name) if specials.is_empty() => ::first_pass::OperationId::Operation(Some(name.clone())),
+            _ => {
+                warn!("Unsupported specials on type {:?}", (self_name, identifier));
+                return Ok(())
             }
-        );
+        },
+        return_type,
+        self_name,
+        is_static,
+        specials.len() == 1 || first_pass
+            .interfaces
+            .get(self_name)
+            .map(|interface_data| interface_data.global)
+            .unwrap_or(false),
+        util::throws(attrs),
+    ) {
+        program.imports.push(wrap_import_function(import_function));
+    }
     Ok(())
 }
 
@@ -796,9 +784,14 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::interface::ConstMember<'src>
             return Ok(());
         }
 
-        let ty = match self.const_type.to_syn_type(record, TypePosition::Return) {
-            Some(s) => s,
+        let idl_type = match self.const_type.to_idl_type(record) {
             None => return Ok(()),
+            Some(idl_type) => idl_type,
+        };
+
+        let ty = match idl_type.to_syn_type(TypePosition::Return) {
+            None => return Ok(()),
+            Some(ty) => ty,
         };
 
         program.consts.push(backend::ast::Const {
