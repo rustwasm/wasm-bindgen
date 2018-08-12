@@ -350,7 +350,7 @@ impl<'src> FirstPass<'src, ()> for weedle::NamespaceDefinition<'src> {
             .namespaces
             .entry(self.identifier.0)
             .and_modify(|entry| entry.partial = false)
-            .or_insert_with(Namespace::empty_non_partial);
+            .or_insert_with(NamespaceData::empty_non_partial);
 
         if util::is_chrome_only(&self.attributes) {
             return Ok(())
