@@ -26,7 +26,7 @@ cargo test
 ## The Web IDL Frontend's Tests
 
 ```
-cargo test -p wasm-bindgen-webidl
+cargo test -p webidl-tests --target wasm32-unknown-unknown
 ```
 
 ## The Macro UI Tests
