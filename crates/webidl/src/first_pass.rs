@@ -42,7 +42,6 @@ pub(crate) struct InterfaceData<'src> {
 }
 
 /// We need to collect namespace data during the first pass, to be used later.
-#[derive(Default)]
 pub(crate) struct NamespaceData<'src> {
     /// Whether only partial namespaces were encountered
     pub(crate) partial: bool,
@@ -50,8 +49,15 @@ pub(crate) struct NamespaceData<'src> {
 }
 
 impl<'src> NamespaceData<'src> {
-    /// Same as `Default::default` but sets `partial` to true.
-    pub(crate) fn default_for_partial() -> Self {
+    /// Creates an empty node for a non-partial namespace.
+    pub(crate) fn empty_non_partial() -> Self {
+        Self {
+            partial: false,
+            operations: Default::default(),
+        }
+    }
+    /// Creates an empty node for a partial namespace.
+    pub(crate) fn empty_partial() -> Self {
         Self {
             partial: true,
             operations: Default::default(),
@@ -153,7 +159,7 @@ fn first_pass_interface_operation<'src>(
         .operations
         .entry(id)
         .and_modify(|operation_data| operation_data.overloaded = true)
-        .or_insert_with(Default::default)
+        .or_default()
         .argument_names_same
         .entry(names)
         .and_modify(|same_argument_names| *same_argument_names = true)
@@ -340,13 +346,11 @@ impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
 
 impl<'src> FirstPass<'src, ()> for weedle::NamespaceDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
-        {
-            let namespace = record
-                .namespaces
-                .entry(self.identifier.0)
-                .or_default();
-            namespace.partial = false;
-        }
+        record
+            .namespaces
+            .entry(self.identifier.0)
+            .and_modify(|entry| entry.partial = false)
+            .or_insert_with(Namespace::empty_non_partial);
 
         if util::is_chrome_only(&self.attributes) {
             return Ok(())
@@ -367,7 +371,7 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialNamespaceDefinition<'src> {
         record
             .namespaces
             .entry(self.identifier.0)
-            .or_insert_with(NamespaceData::default_for_partial);
+            .or_insert_with(NamespaceData::empty_partial);
 
         if util::is_chrome_only(&self.attributes) {
             return Ok(())
