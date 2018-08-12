@@ -36,3 +36,18 @@ fn collator() {
     let a = Intl::Collator::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
 }
+
+#[wasm_bindgen_test]
+fn date_time_format() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+    let epoch = Date::new(&JsValue::from(0));
+
+    let c = Intl::DateTimeFormat::new(&locales, &opts);
+    assert!(c.format().is_instance_of::<Function>());
+    assert!(c.format_to_parts(&epoch).is_instance_of::<Array>());
+    assert!(c.resolved_options().is_instance_of::<Object>());
+
+    let a = Intl::DateTimeFormat::supported_locales_of(&locales, &opts);
+    assert!(a.is_instance_of::<Array>());
+}
