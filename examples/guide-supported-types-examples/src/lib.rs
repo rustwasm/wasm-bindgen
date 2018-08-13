@@ -8,3 +8,4 @@ pub mod exported_types;
 pub mod str;
 pub mod string;
 pub mod char;
+pub mod bool;

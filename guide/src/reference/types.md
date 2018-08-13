@@ -109,6 +109,18 @@ garbage-collected heap and the Wasm linear memory with `TextDecoder` and
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Yes | No | No | Yes | No | No | A JavaScript boolean value |
 
+### Example Rust Usage
+
+```rust
+{{#include ../../../examples/guide-supported-types-examples/src/bool.rs}}
+```
+
+### Example JavaScript Usage
+
+```js
+{{#include ../../../examples/guide-supported-types-examples/bool.js}}
+```
+
 ## `wasm_bindgen::JsValue`
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
