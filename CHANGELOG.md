@@ -2,6 +2,83 @@
 
 --------------------------------------------------------------------------------
 
+## Unreleased
+
+Released YYYY-MM-DD.
+
+### Added
+
+* TODO (or remove section if none)
+
+### Changed
+
+* TODO (or remove section if none)
+
+### Deprecated
+
+* TODO (or remove section if none)
+
+### Removed
+
+* TODO (or remove section if none)
+
+### Fixed
+
+* TODO (or remove section if none)
+
+### Security
+
+* TODO (or remove section if none)
+
+--------------------------------------------------------------------------------
+
+## 0.2.16
+
+Released 2018-08-13.
+
+### Added
+
+* Added the `wasm_bindgen::JsCast` trait, as described in [RFC #2][rfc-2].
+* Added [the `#[wasm_bindgen(extends = ...)]` attribute][extends-attr] to
+  describe inheritance relationships, as described in [RFC #2][rfc-2].
+* Added support for receiving `Option<&T>` parameters from JavaScript in
+  exported Rust functions and methods.
+* Added support for receiving `Option<u32>` and other option-wrapped scalars.
+* Added reference documentation to the guide for every `#[wasm_bindgen]`
+  attribute and how it affects the generated bindings.
+* Published the `wasm-bindgen-futures` crate for converting between JS
+  `Promise`s and Rust `Future`s.
+
+### Changed
+
+* Overhauled the guide's documentation on passing JS closures to Rust, and Rust
+  closures to JS.
+* Overhauled the guide's documentation on using serde to serialize complex data
+  to `JsValue` and deserialize `JsValue`s back into complex data.
+* Static methods are now always bound to their JS class, as is required for
+  `Promise`'s static methods.
+
+### Removed
+
+* Removed internal usage of `syn`'s `visit-mut` cargo feature, which should
+  result in faster build times.
+
+### Fixed
+
+* Various usage errors for the `#[wasm_bindgen]` proc-macro are now properly
+  reported with source span information, rather than `panic!()`s inside the
+  proc-macro.
+* Fixed a bug where taking a struct by reference and returning a slice resulted
+  in lexical variable redeclaration errors in the generated JS glue. [#662][]
+* The `#[wasm_bindgen(js_class = "....")]` attribute for binding methods to
+  renamed imported JS classes now properly works with constructors.
+
+[rfc-2]: https://rustwasm.github.io/rfcs/002-wasm-bindgen-inheritance-casting.html
+[extends-attr]: https://rustwasm.github.io/wasm-bindgen/reference/attributes/on-js-imports/extends.html
+[#662]: https://github.com/rustwasm/wasm-bindgen/pull/662
+
+--------------------------------------------------------------------------------
+
 ## 0.2.15
 
 Released 2018-07-26.
