@@ -1,7 +1,13 @@
 [package]
-name = "wasm-bindgen-futures"
-version = "0.2.16"
 authors = ["The wasm-bindgen Developers"]
+description = "Bridging the gap between Rust Futures and JavaScript Promises"
+documentation = "https://docs.rs/wasm-bindgen-futures"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
+license = "MIT/Apache-2.0"
+name = "wasm-bindgen-futures"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/futures"
+readme = "./README.md"
+version = "0.2.16"
 
 [dependencies]
 futures = "0.1.20"
