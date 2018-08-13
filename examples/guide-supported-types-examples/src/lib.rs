@@ -6,3 +6,4 @@ extern crate wasm_bindgen;
 pub mod imported_types;
 pub mod exported_types;
 pub mod str;
+pub mod string;
