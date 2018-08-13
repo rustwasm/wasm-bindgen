@@ -99,7 +99,7 @@ fn test_table_element() {
   );
 
   table
-    .insert_row(0)
+    .insert_row_using_index(0)
     .expect("Failed to insert row at index 0");
   assert!(
     table.rows().length() == 1,

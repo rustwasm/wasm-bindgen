@@ -1,11 +1,9 @@
-const strictEqual = require('assert').strictEqual;
+global.math_test = {
+    pow(base, exp) {
+        return Math.pow(base, exp);
+    },
 
-global.mathtest = {};
-
-global.mathtest.powf = function powf(base, exp) {
-    return Math.pow(base, exp);
-}
-
-global.mathtest.add_one = function add_one(val) {
-    return val + 1;
-}
+    add_one(val) {
+        return val + 1;
+    },
+};

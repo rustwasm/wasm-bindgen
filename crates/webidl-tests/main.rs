@@ -8,6 +8,6 @@ pub mod array;
 pub mod array_buffer;
 pub mod consts;
 pub mod enums;
+pub mod namespace;
 pub mod simple;
 pub mod throws;
-pub mod namespace;

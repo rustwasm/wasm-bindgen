@@ -1,4 +1,3 @@
-use std::collections::BTreeMap;
 use proc_macro2::{Ident, Span};
 use shared;
 use syn;
@@ -8,7 +7,7 @@ use Diagnostic;
 /// An abstract syntax tree representing a rust program. Contains
 /// extra information for joining up this rust code with javascript.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Program {
     /// rust -> js interfaces
     pub exports: Vec<Export>,
@@ -21,12 +20,13 @@ pub struct Program {
     /// rust consts
     pub consts: Vec<Const>,
     /// rust submodules
-    pub modules: BTreeMap<Ident, Module>,
+    pub modules: Vec<Module>,
 }
 
 /// A rust to js interface. Allows interaction with rust objects/functions
 /// from javascript.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct Export {
     /// The javascript class name.
     pub class: Option<Ident>,
@@ -47,6 +47,7 @@ pub struct Export {
 
 /// The 3 types variations of `self`.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub enum MethodSelf {
     /// `self`
     ByValue,
@@ -57,6 +58,7 @@ pub enum MethodSelf {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct Import {
     pub module: Option<String>,
     pub js_namespace: Option<Ident>,
@@ -64,6 +66,7 @@ pub struct Import {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub enum ImportKind {
     Function(ImportFunction),
     Static(ImportStatic),
@@ -72,6 +75,7 @@ pub enum ImportKind {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct ImportFunction {
     pub function: Function,
     pub rust_name: Ident,
@@ -84,6 +88,7 @@ pub struct ImportFunction {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub enum ImportFunctionKind {
     Method {
         class: String,
@@ -94,18 +99,21 @@ pub enum ImportFunctionKind {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub enum MethodKind {
     Constructor,
     Operation(Operation),
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct Operation {
     pub is_static: bool,
     pub kind: OperationKind,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub enum OperationKind {
     Regular,
     Getter(Option<Ident>),
@@ -116,6 +124,7 @@ pub enum OperationKind {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct ImportStatic {
     pub vis: syn::Visibility,
     pub ty: syn::Type,
@@ -125,6 +134,7 @@ pub struct ImportStatic {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct ImportType {
     pub vis: syn::Visibility,
     pub rust_name: Ident,
@@ -136,6 +146,7 @@ pub struct ImportType {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct ImportEnum {
     /// The Rust enum's visibility
     pub vis: syn::Visibility,
@@ -150,6 +161,7 @@ pub struct ImportEnum {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct Function {
     pub name: String,
     pub arguments: Vec<syn::ArgCaptured>,
@@ -159,6 +171,7 @@ pub struct Function {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct Struct {
     pub name: Ident,
     pub fields: Vec<StructField>,
@@ -166,6 +179,7 @@ pub struct Struct {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct StructField {
     pub name: Ident,
     pub struct_name: Ident,
@@ -177,6 +191,7 @@ pub struct StructField {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct Enum {
     pub name: Ident,
     pub variants: Vec<Variant>,
@@ -184,6 +199,7 @@ pub struct Enum {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct Variant {
     pub name: Ident,
     pub value: u32,
@@ -205,6 +221,7 @@ pub enum TypeLocation {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
+#[derive(Clone)]
 pub struct Const {
     pub vis: syn::Visibility,
     pub name: Ident,
@@ -214,6 +231,7 @@ pub struct Const {
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
+#[derive(Clone)]
 /// same as webidl::ast::ConstValue
 pub enum ConstValue {
     BooleanLiteral(bool),
@@ -227,8 +245,10 @@ pub enum ConstValue {
 ///
 /// This exists to give the ability to namespace js imports.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
 pub struct Module {
     pub vis: syn::Visibility,
+    pub name: Ident,
     /// js -> rust interfaces
     pub imports: Vec<Import>,
 }
@@ -241,7 +261,7 @@ impl Program {
             enums: self.enums.iter().map(|a| a.shared()).collect(),
             imports: self.imports.iter()
                 // add in imports from inside modules
-                .chain(self.modules.values().flat_map(|m| m.imports.iter()))
+                .chain(self.modules.iter().flat_map(|m| m.imports.iter()))
                 .map(|a| a.shared())
                 .collect::<Result<_, Diagnostic>>()?,
             version: shared::version(),

@@ -67,7 +67,7 @@ global.UndefinedMethod = class UndefinedMethod {
   }
 };
 
-global.OptionalMethod = class OptionalMethod {
+global.NullableMethod = class NullableMethod {
   constructor() {}
   opt(a) {
     if (a == undefined) {
@@ -105,6 +105,13 @@ global.Indexing = function () {
       delete obj[prop];
     },
   });
+};
+
+global.OptionalAndUnionArguments = class OptionalAndUnionArguments {
+  constructor() {}
+  m(a, b = true, c = 123, d = 456) {
+    return [typeof a, a, typeof b, b, typeof c, c, typeof d, d].join(', ');
+  }
 };
 
 global.PartialInterface = class PartialInterface {

@@ -12,7 +12,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use weedle::argument::Argument;
 use weedle::attribute::ExtendedAttribute;
 use weedle::interface::StringifierOrStatic;
-use weedle::mixin::MixinMembers;
+use weedle::mixin::MixinMember;
+use weedle::namespace::NamespaceMember;
 use weedle;
 
 use super::Result;
@@ -26,9 +27,10 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) dictionaries: BTreeSet<&'src str>,
     pub(crate) enums: BTreeSet<&'src str>,
     /// The mixins, mapping their name to the webidl ast node for the mixin.
-    pub(crate) mixins: BTreeMap<&'src str, Vec<&'src MixinMembers<'src>>>,
+    pub(crate) mixins: BTreeMap<&'src str, MixinData<'src>>,
     pub(crate) typedefs: BTreeMap<&'src str, &'src weedle::types::Type<'src>>,
     pub(crate) namespaces: BTreeMap<&'src str, NamespaceData<'src>>,
+    pub(crate) includes: BTreeMap<&'src str, BTreeSet<&'src str>>,
 }
 
 /// We need to collect interface data during the first pass, to be used later.
@@ -41,31 +43,25 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) superclass: Option<&'src str>,
 }
 
+/// We need to collect mixin data during the first pass, to be used later.
+#[derive(Default)]
+pub(crate) struct MixinData<'src> {
+    /// Whether only partial mixins were encountered
+    pub(crate) partial: bool,
+    pub(crate) members: Vec<&'src MixinMember<'src>>,
+    pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
+}
+
 /// We need to collect namespace data during the first pass, to be used later.
+#[derive(Default)]
 pub(crate) struct NamespaceData<'src> {
     /// Whether only partial namespaces were encountered
     pub(crate) partial: bool,
-    pub(crate) operations: BTreeMap<Option<&'src str>, OperationData<'src>>,
+    pub(crate) members: Vec<&'src NamespaceMember<'src>>,
+    pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
 }
 
-impl<'src> NamespaceData<'src> {
-    /// Creates an empty node for a non-partial namespace.
-    pub(crate) fn empty_non_partial() -> Self {
-        Self {
-            partial: false,
-            operations: Default::default(),
-        }
-    }
-    /// Creates an empty node for a partial namespace.
-    pub(crate) fn empty_partial() -> Self {
-        Self {
-            partial: true,
-            operations: Default::default(),
-        }
-    }
-}
-
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub(crate) enum OperationId<'src> {
     Constructor,
     Operation(Option<&'src str>),
@@ -104,6 +100,7 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
         match self {
             Dictionary(dictionary) => dictionary.first_pass(record, ()),
             Enum(enum_) => enum_.first_pass(record, ()),
+            IncludesStatement(includes) => includes.first_pass(record, ()),
             Interface(interface) => interface.first_pass(record, ()),
             PartialInterface(interface) => interface.first_pass(record, ()),
             InterfaceMixin(mixin) => mixin.first_pass(record, ()),
@@ -121,15 +118,24 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
 
 impl<'src> FirstPass<'src, ()> for weedle::DictionaryDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         if !record.dictionaries.insert(self.identifier.0) {
             warn!("encountered multiple dictionary declarations of {}", self.identifier.0);
         }
+
         Ok(())
     }
 }
 
 impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         if !record.enums.insert(self.identifier.0) {
             warn!("Encountered multiple enum declarations of {}", self.identifier.0);
         }
@@ -138,25 +144,66 @@ impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
     }
 }
 
-/// Helper function to add an operation to an interface.
-fn first_pass_interface_operation<'src>(
+impl<'src> FirstPass<'src, ()> for weedle::IncludesStatementDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
+        record
+            .includes
+            .entry(self.lhs_identifier.0)
+            .or_insert_with(Default::default)
+            .insert(self.rhs_identifier.0);
+
+        Ok(())
+    }
+}
+
+#[derive(Clone, Copy)]
+enum FirstPassOperationType {
+    Interface,
+    Mixin,
+    Namespace,
+}
+
+fn first_pass_operation<'src>(
     record: &mut FirstPassRecord<'src>,
+    first_pass_operation_type: FirstPassOperationType,
     self_name: &'src str,
     id: OperationId<'src>,
     arguments: &[Argument<'src>],
-)  -> Result<()> {
+) -> Result<()> {
     let mut names = Vec::with_capacity(arguments.len());
     for argument in arguments {
         match argument {
-            Argument::Single(arg) => names.push(arg.identifier.0),
-            Argument::Variadic(_) => return Ok(()),
+            Argument::Single(single) => names.push(single.identifier.0),
+            Argument::Variadic(variadic) => names.push(variadic.identifier.0),
         }
     }
-    record
-        .interfaces
-        .get_mut(self_name)
-        .unwrap()
-        .operations
+    match first_pass_operation_type{
+        FirstPassOperationType::Interface => {
+            &mut record
+                .interfaces
+                .get_mut(self_name)
+                .expect(&format!("not found {} interface", self_name))
+                .operations
+        },
+        FirstPassOperationType::Mixin => {
+            &mut record
+                .mixins
+                .get_mut(self_name)
+                .expect(&format!("not found {} mixin", self_name))
+                .operations
+        },
+        FirstPassOperationType::Namespace => {
+            &mut record
+                .namespaces
+                .get_mut(self_name)
+                .expect(&format!("not found {} namesace", self_name))
+                .operations
+        },
+    }
         .entry(id)
         .and_modify(|operation_data| operation_data.overloaded = true)
         .or_default()
@@ -170,17 +217,17 @@ fn first_pass_interface_operation<'src>(
 
 impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         {
-            let interface = record
+            let interface_data = record
                 .interfaces
                 .entry(self.identifier.0)
                 .or_default();
-            interface.partial = false;
-            interface.superclass = self.inheritance.map(|s| s.identifier.0);
-        }
-
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(())
+            interface_data.partial = false;
+            interface_data.superclass = self.inheritance.map(|s| s.identifier.0);
         }
 
         if let Some(attrs) = &self.attributes {
@@ -199,21 +246,21 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
 
 impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         record
             .interfaces
             .entry(self.identifier.0)
             .or_insert_with(||
                 InterfaceData {
                     partial: true,
-                    operations: Default::default(),
                     global: false,
+                    operations: Default::default(),
                     superclass: None,
                 },
             );
-
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(())
-        }
 
         for member in &self.members.body {
             member.first_pass(record, self.identifier.0)?;
@@ -227,16 +274,18 @@ impl<'src> FirstPass<'src, &'src str> for ExtendedAttribute<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
         match self {
             ExtendedAttribute::ArgList(list) if list.identifier.0 == "Constructor" => {
-                first_pass_interface_operation(
+                first_pass_operation(
                     record,
+                    FirstPassOperationType::Interface,
                     self_name,
                     OperationId::Constructor,
                     &list.args.body.list,
                 )
             }
             ExtendedAttribute::NoArgs(name) if (name.0).0 == "Constructor" => {
-                first_pass_interface_operation(
+                first_pass_operation(
                     record,
+                    FirstPassOperationType::Interface,
                     self_name,
                     OperationId::Constructor,
                     &[],
@@ -245,8 +294,9 @@ impl<'src> FirstPass<'src, &'src str> for ExtendedAttribute<'src> {
             ExtendedAttribute::NamedArgList(list)
                 if list.lhs_identifier.0 == "NamedConstructor" =>
             {
-                first_pass_interface_operation(
+                first_pass_operation(
                     record,
+                    FirstPassOperationType::Interface,
                     self_name,
                     OperationId::Constructor,
                     &list.args.body.list,
@@ -278,6 +328,10 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::InterfaceMember<'sr
 
 impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceMember<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         if !self.specials.is_empty() && self.specials.len() != 1 {
             warn!("Unsupported webidl operation {:?}", self);
             return Ok(())
@@ -286,20 +340,17 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             warn!("Unsupported webidl operation {:?}", self);
             return Ok(())
         }
-        first_pass_interface_operation(
+        first_pass_operation(
             record,
+            FirstPassOperationType::Interface,
             self_name,
             match self.identifier.map(|s| s.0) {
                 None => match self.specials.get(0) {
                     None => OperationId::Operation(None),
-                    Some(weedle::interface::Special::Getter(weedle::term::Getter))
-                        => OperationId::IndexingGetter,
-                    Some(weedle::interface::Special::Setter(weedle::term::Setter))
-                        => OperationId::IndexingSetter,
-                    Some(weedle::interface::Special::Deleter(weedle::term::Deleter))
-                        => OperationId::IndexingDeleter,
-                    Some(weedle::interface::Special::LegacyCaller(weedle::term::LegacyCaller))
-                        => return Ok(()),
+                    Some(weedle::interface::Special::Getter(_)) => OperationId::IndexingGetter,
+                    Some(weedle::interface::Special::Setter(_)) => OperationId::IndexingSetter,
+                    Some(weedle::interface::Special::Deleter(_)) => OperationId::IndexingDeleter,
+                    Some(weedle::interface::Special::LegacyCaller(_)) => return Ok(()),
                 },
                 Some(ref name) => OperationId::Operation(Some(name.clone())),
             },
@@ -310,23 +361,82 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
 
 impl<'src> FirstPass<'src, ()> for weedle::InterfaceMixinDefinition<'src>{
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
-        record
-            .mixins
-            .entry(self.identifier.0)
-            .or_insert_with(Default::default)
-            .push(&self.members.body);
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
+        {
+            let mixin_data = record
+                .mixins
+                .entry(self.identifier.0)
+                .or_insert_with(Default::default);
+            mixin_data.partial = false;
+            mixin_data.members.extend(&self.members.body);
+        }
+
+        for member in &self.members.body {
+            member.first_pass(record, self.identifier.0)?;
+        }
+
         Ok(())
     }
 }
 
 impl<'src> FirstPass<'src, ()> for weedle::PartialInterfaceMixinDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
         record
             .mixins
             .entry(self.identifier.0)
-            .or_insert_with(Default::default)
-            .push(&self.members.body);
+            .or_insert_with(||
+                MixinData {
+                    partial: true,
+                    members: Default::default(),
+                    operations: Default::default(),
+                },
+            )
+            .members
+            .extend(&self.members.body);
+
+        for member in &self.members.body {
+            member.first_pass(record, self.identifier.0)?;
+        }
+
         Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, &'src str> for weedle::mixin::MixinMember<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
+        match self {
+            weedle::mixin::MixinMember::Operation(op) => {
+                op.first_pass(record, self_name)
+            }
+            _ => Ok(()),
+        }
+    }
+}
+
+impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
+        if self.stringifier.is_some() {
+            warn!("Unsupported webidl operation {:?}", self);
+            return Ok(())
+        }
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Mixin,
+            self_name,
+            OperationId::Operation(self.identifier.map(|s| s.0.clone())),
+            &self.args.body.list,
+        )
     }
 }
 
@@ -346,17 +456,23 @@ impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
 
 impl<'src> FirstPass<'src, ()> for weedle::NamespaceDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
-        record
-            .namespaces
-            .entry(self.identifier.0)
-            .and_modify(|entry| entry.partial = false)
-            .or_insert_with(NamespaceData::empty_non_partial);
-
         if util::is_chrome_only(&self.attributes) {
             return Ok(())
         }
 
-        // We ignore all attributes.
+        record
+            .namespaces
+            .entry(self.identifier.0)
+            .and_modify(|namespace_data| namespace_data.partial = false)
+            .or_insert_with(||
+                NamespaceData {
+                    partial: true,
+                    members: Default::default(),
+                    operations: Default::default(),
+                },
+            )
+            .members
+            .extend(&self.members.body);
 
         for member in &self.members.body {
             member.first_pass(record, self.identifier.0)?;
@@ -368,14 +484,16 @@ impl<'src> FirstPass<'src, ()> for weedle::NamespaceDefinition<'src> {
 
 impl<'src> FirstPass<'src, ()> for weedle::PartialNamespaceDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
-        record
-            .namespaces
-            .entry(self.identifier.0)
-            .or_insert_with(NamespaceData::empty_partial);
-
         if util::is_chrome_only(&self.attributes) {
             return Ok(())
         }
+
+        record
+            .namespaces
+            .entry(self.identifier.0)
+            .or_default()
+            .members
+            .extend(&self.members.body);
 
         for member in &self.members.body {
             member.first_pass(record, self.identifier.0)?;
@@ -386,13 +504,10 @@ impl<'src> FirstPass<'src, ()> for weedle::PartialNamespaceDefinition<'src> {
 }
 
 impl<'src> FirstPass<'src, &'src str> for weedle::namespace::NamespaceMember<'src> {
-    fn first_pass(&'src self,
-                  record: &mut FirstPassRecord<'src>,
-                  namespace_name: &'src str) -> Result<()>
-    {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
         match self {
             weedle::namespace::NamespaceMember::Operation(op) => {
-                op.first_pass(record, namespace_name)
+                op.first_pass(record, self_name)
             }
             _ => Ok(()),
         }
@@ -400,32 +515,18 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::NamespaceMember<'sr
 }
 
 impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceMember<'src> {
-    fn first_pass(&'src self,
-                  record: &mut FirstPassRecord<'src>,
-                  namespace_name: &'src str) -> Result<()>
-    {
-        let identifier = self.identifier.map(|s| s.0);
-        let arguments = &self.args.body.list;
-        let mut names = Vec::with_capacity(arguments.len());
-        for argument in arguments {
-            match argument {
-                Argument::Single(arg) => names.push(arg.identifier.0),
-                Argument::Variadic(_) => return Ok(()),
-            }
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(())
         }
-        record
-            .namespaces
-            .get_mut(namespace_name)
-            .unwrap() // call this after creating the namespace
-            .operations
-            .entry(identifier)
-            .and_modify(|operation_data| operation_data.overloaded = true)
-            .or_insert_with(Default::default)
-            .argument_names_same
-            .entry(names)
-            .and_modify(|same_argument_names| *same_argument_names = true)
-            .or_insert(false);
-        Ok(())
+
+        first_pass_operation(
+            record,
+            FirstPassOperationType::Namespace,
+            self_name,
+            OperationId::Operation(self.identifier.map(|s| s.0.clone())),
+            &self.args.body.list,
+        )
     }
 }
 

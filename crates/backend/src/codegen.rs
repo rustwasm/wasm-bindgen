@@ -63,16 +63,16 @@ impl TryToTokens for ast::Program {
                 errors.push(e);
             }
         }
-        for m in self.modules.iter() {
-            if let Err(e) = ModuleInIter::from(m).try_to_tokens(tokens) {
-                errors.push(e);
-            }
-        }
         for e in self.enums.iter() {
             e.to_tokens(tokens);
         }
         for c in self.consts.iter() {
             c.to_tokens(tokens);
+        }
+        for m in self.modules.iter() {
+            if let Err(e) = m.try_to_tokens(tokens) {
+                errors.push(e);
+            }
         }
 
         Diagnostic::from_vec(errors)?;
@@ -1111,30 +1111,17 @@ impl ToTokens for ast::Const {
     }
 }
 
-/// Struct to help implementing TryToTokens over the key/value pairs from the hashmap.
-struct ModuleInIter<'a> {
-    name: &'a Ident,
-    module: &'a ast::Module
-}
-
-impl<'a> From<(&'a Ident, &'a ast::Module)> for ModuleInIter<'a> {
-    fn from((name, module): (&'a Ident, &'a ast::Module)) -> ModuleInIter<'a> {
-        ModuleInIter { name, module }
-    }
-}
-
-impl<'a> TryToTokens for ModuleInIter<'a> {
+impl<'a> TryToTokens for ast::Module {
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
-        let name = &self.name;
-        let imports = &self.module.imports;
-        let mut errors = Vec::new();
-        for i in imports.iter() {
-            DescribeImport(&i.kind).to_tokens(tokens);
+        for import in &self.imports {
+            DescribeImport(&import.kind).to_tokens(tokens);
         }
-        let vis = &self.module.vis;
+        let vis = &self.vis;
+        let name = &self.name;
+        let mut errors = Vec::new();
         let mut body = TokenStream::new();
-        for i in imports.iter() {
-            if let Err(e) = i.kind.try_to_tokens(&mut body) {
+        for import in &self.imports {
+            if let Err(e) = import.kind.try_to_tokens(&mut body) {
                 errors.push(e);
             }
         }

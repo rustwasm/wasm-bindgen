@@ -4,7 +4,7 @@ use web_sys::{DomPoint, DomPointReadOnly};
 
 #[wasm_bindgen_test]
 fn dom_point() {
-    let x = DomPoint::new(1.0, 2.0, 3.0, 4.0).unwrap();
+    let x = DomPoint::new_using_x_and_y_and_z_and_w(1.0, 2.0, 3.0, 4.0).unwrap();
     assert_eq!(x.x(), 1.0);
     x.set_x(1.5);
     assert_eq!(x.x(), 1.5);
@@ -24,7 +24,7 @@ fn dom_point() {
 
 #[wasm_bindgen_test]
 fn dom_point_readonly() {
-    let x = DomPoint::new(1.0, 2.0, 3.0, 4.0).unwrap();
+    let x = DomPoint::new_using_x_and_y_and_z_and_w(1.0, 2.0, 3.0, 4.0).unwrap();
     let x = DomPointReadOnly::from(JsValue::from(x));
     assert_eq!(x.x(), 1.0);
     assert_eq!(x.y(), 2.0);

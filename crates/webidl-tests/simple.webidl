@@ -31,7 +31,7 @@ interface UndefinedMethod {
 };
 
 [Constructor()]
-interface OptionalMethod {
+interface NullableMethod {
   octet? opt(short? a);
 };
 
@@ -45,6 +45,16 @@ interface Indexing {
   getter short (unsigned long index);
   setter void (unsigned long index, short value);
   deleter void (unsigned long index);
+};
+
+[Constructor()]
+interface OptionalAndUnionArguments {
+  DOMString m(
+    DOMString a,
+    optional boolean b = true,
+    optional (short or DOMString) c = 123,
+    optional (long long or boolean)? d = 456
+  );
 };
 
 [Constructor()]
