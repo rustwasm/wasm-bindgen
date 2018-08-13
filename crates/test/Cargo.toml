@@ -9,7 +9,7 @@ repository = "https://github.com/rustwasm/wasm-bindgen"
 [dependencies]
 console_error_panic_hook = '0.1'
 futures = "0.1"
-js-sys = { path = '../js-sys', version = '0.2.0' }
+js-sys = { path = '../js-sys', version = '0.2.1' }
 scoped-tls = "0.1"
 wasm-bindgen = { path = '../..', version = '0.2.16' }
 wasm-bindgen-futures = { path = '../futures', version = '0.2.16' }

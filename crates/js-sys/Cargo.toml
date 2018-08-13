@@ -1,6 +1,6 @@
 [package]
 name = "js-sys"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["The wasm-bindgen Developers"]
 readme = "./README.md"
 categories = ["wasm"]
