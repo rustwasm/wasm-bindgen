@@ -11,6 +11,7 @@
 - [Reference](./reference/index.md)
   - [Passing Rust Closures to JS](./reference/passing-rust-closures-to-js.md)
   - [Receiving JS Closures in Rust](./reference/receiving-js-closures-in-rust.md)
+  - [`Promise`s and `Future`s](./reference/js-promises-and-rust-futures.md)
   - [No ES Modules](./reference/no-esm.md)
   - [Arbitrary Data with Serde](./reference/arbitrary-data-with-serde.md)
   - [Command Line Interface](./reference/cli.md)
