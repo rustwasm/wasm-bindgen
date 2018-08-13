@@ -1,5 +1,6 @@
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 #[wasm_bindgen_test]
@@ -405,4 +406,11 @@ fn utc() {
 fn value_of() {
     let date = Date::new(&Date::utc(2018f64, 6f64).into());
     assert_eq!(date.value_of(), 1530403200000.0);
+}
+
+#[wasm_bindgen_test]
+fn date_inheritance() {
+    let date = Date::new(&"August 19, 1975 23:15:30".into());
+    assert!(date.is_instance_of::<Date>());
+    assert!(date.is_instance_of::<Object>());
 }

@@ -54,7 +54,7 @@
 //!     pub fn new() -> NextTick {
 //!         // Create a resolved promise that will run its callbacks on the next
 //!         // tick of the micro task queue.
-//!         let promise = js_sys::Promise::resolve(JsValue::NULL);
+//!         let promise = js_sys::Promise::resolve(&JsValue::NULL);
 //!         // Convert the promise into a `JsFuture`.
 //!         let inner = JsFuture::from(promise);
 //!         NextTick { inner }

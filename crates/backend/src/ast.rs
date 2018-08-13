@@ -19,6 +19,8 @@ pub struct Program {
     pub structs: Vec<Struct>,
     /// rust consts
     pub consts: Vec<Const>,
+    /// rust submodules
+    pub modules: Vec<Module>,
 }
 
 /// A rust to js interface. Allows interaction with rust objects/functions
@@ -239,6 +241,18 @@ pub enum ConstValue {
     Null,
 }
 
+/// A rust module
+///
+/// This exists to give the ability to namespace js imports.
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
+pub struct Module {
+    pub vis: syn::Visibility,
+    pub name: Ident,
+    /// js -> rust interfaces
+    pub imports: Vec<Import>,
+}
+
 impl Program {
     pub(crate) fn shared(&self) -> Result<shared::Program, Diagnostic> {
         Ok(shared::Program {
@@ -246,6 +260,8 @@ impl Program {
             structs: self.structs.iter().map(|a| a.shared()).collect(),
             enums: self.enums.iter().map(|a| a.shared()).collect(),
             imports: self.imports.iter()
+                // add in imports from inside modules
+                .chain(self.modules.iter().flat_map(|m| m.imports.iter()))
                 .map(|a| a.shared())
                 .collect::<Result<_, Diagnostic>>()?,
             version: shared::version(),
@@ -365,7 +381,9 @@ impl ImportFunction {
     /// for a setter in javascript (in this case `xxx`, so you can write `obj.xxx = val`)
     fn infer_setter_property(&self) -> String {
         let name = self.function.name.to_string();
-        assert!(name.starts_with("set_"), "setters must start with `set_`");
+        if !name.starts_with("set_") {
+            panic!("error: setters must start with `set_`, found: {}", name);
+        }
         name[4..].to_string()
     }
 

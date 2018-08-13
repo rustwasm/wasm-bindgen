@@ -43,6 +43,8 @@ impl TryToTokens for ast::Program {
         for i in self.imports.iter() {
             DescribeImport(&i.kind).to_tokens(tokens);
 
+            // If there is a js namespace, check that name isn't a type. If it is,
+            // this import might be a method on that type.
             if let Some(ns) = &i.js_namespace {
                 if types.contains(ns) && i.kind.fits_on_impl() {
                     let kind = match i.kind.try_to_token_stream() {
@@ -67,6 +69,11 @@ impl TryToTokens for ast::Program {
         for c in self.consts.iter() {
             c.to_tokens(tokens);
         }
+        for m in self.modules.iter() {
+            if let Err(e) = m.try_to_tokens(tokens) {
+                errors.push(e);
+            }
+        }
 
         Diagnostic::from_vec(errors)?;
 
@@ -87,6 +94,7 @@ impl TryToTokens for ast::Program {
         // Each JSON blob is prepended with the length of the JSON blob so when
         // all these sections are concatenated in the final wasm file we know
         // how to extract all the JSON pieces, so insert the byte length here.
+        // The value is little-endian.
         let generated_static_length = description.len() + 4;
         let mut bytes = vec![
             (description.len() >> 0) as u8,
@@ -1100,6 +1108,30 @@ impl ToTokens for ast::Const {
         } else {
             declaration.to_tokens(tokens);
         }
+    }
+}
+
+impl<'a> TryToTokens for ast::Module {
+    fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
+        for import in &self.imports {
+            DescribeImport(&import.kind).to_tokens(tokens);
+        }
+        let vis = &self.vis;
+        let name = &self.name;
+        let mut errors = Vec::new();
+        let mut body = TokenStream::new();
+        for import in &self.imports {
+            if let Err(e) = import.kind.try_to_tokens(&mut body) {
+                errors.push(e);
+            }
+        }
+        Diagnostic::from_vec(errors)?;
+        (quote!{
+            #vis mod #name {
+                #body
+            }
+        }).to_tokens(tokens);
+        Ok(())
     }
 }
 

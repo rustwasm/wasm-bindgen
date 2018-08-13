@@ -11,7 +11,7 @@ use weedle::attribute::{ExtendedAttributeList, ExtendedAttribute};
 use weedle::argument::Argument;
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
-use first_pass::FirstPassRecord;
+use first_pass::{self, FirstPassRecord};
 use idl_type::{IdlType, ToIdlType, flatten};
 
 /// Take a type and create an immutable shared reference to that type.
@@ -367,7 +367,7 @@ impl<'src> FirstPassRecord<'src> {
     pub fn create_basic_method(
         &self,
         arguments: &[weedle::argument::Argument],
-        operation_id: ::first_pass::OperationId,
+        operation_id: first_pass::OperationId,
         return_type: &weedle::types::ReturnType,
         self_name: &str,
         is_static: bool,
@@ -378,20 +378,21 @@ impl<'src> FirstPassRecord<'src> {
             arguments,
             &operation_id,
             self_name,
+            false,
         );
 
         let name = match &operation_id {
-            ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            ::first_pass::OperationId::Operation(name) => match name {
+            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+            first_pass::OperationId::Operation(name) => match name {
                 None => {
                     warn!("Operations without a name are unsupported");
                     return Vec::new();
                 }
                 Some(name) => name.to_string(),
             },
-            ::first_pass::OperationId::IndexingGetter => "get".to_string(),
-            ::first_pass::OperationId::IndexingSetter => "set".to_string(),
-            ::first_pass::OperationId::IndexingDeleter => "delete".to_string(),
+            first_pass::OperationId::IndexingGetter => "get".to_string(),
+            first_pass::OperationId::IndexingSetter => "set".to_string(),
+            first_pass::OperationId::IndexingDeleter => "delete".to_string(),
         };
 
         let kind = backend::ast::ImportFunctionKind::Method {
@@ -400,11 +401,11 @@ impl<'src> FirstPassRecord<'src> {
             kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
                 is_static,
                 kind: match &operation_id {
-                    ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-                    ::first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
-                    ::first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
-                    ::first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
-                    ::first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
+                    first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+                    first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
+                    first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
+                    first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
+                    first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
                 },
             }),
         };
@@ -415,17 +416,17 @@ impl<'src> FirstPassRecord<'src> {
         };
 
         let doc_comment = match &operation_id {
-            ::first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            ::first_pass::OperationId::Operation(_) => Some(
+            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+            first_pass::OperationId::Operation(_) => Some(
                 format!(
                     "The `{}()` method\n\n{}",
                     name,
                     mdn_doc(self_name, Some(&name))
                 )
             ),
-            ::first_pass::OperationId::IndexingGetter => Some("The indexing getter\n\n".to_string()),
-            ::first_pass::OperationId::IndexingSetter => Some("The indexing setter\n\n".to_string()),
-            ::first_pass::OperationId::IndexingDeleter => Some("The indexing deleter\n\n".to_string()),
+            first_pass::OperationId::IndexingGetter => Some("The indexing getter\n\n".to_string()),
+            first_pass::OperationId::IndexingSetter => Some("The indexing setter\n\n".to_string()),
+            first_pass::OperationId::IndexingDeleter => Some("The indexing deleter\n\n".to_string()),
         };
 
         let arguments = match self.convert_arguments(arguments) {
@@ -451,23 +452,24 @@ impl<'src> FirstPassRecord<'src> {
     pub fn get_operation_overloading(
         &self,
         arguments: &[weedle::argument::Argument],
-        id: &::first_pass::OperationId,
+        operation_id: &first_pass::OperationId,
         self_name: &str,
+        namespace: bool,
     ) -> (bool, bool) {
         fn get_operation_data<'src>(
             record: &'src FirstPassRecord,
-            id: &'src ::first_pass::OperationId,
+            operation_id: &'src ::first_pass::OperationId,
             self_name: &str,
             mixin_name: &str,
         ) -> Option<&'src ::first_pass::OperationData<'src>> {
             if let Some(mixin_data) = record.mixins.get(mixin_name) {
-                if let Some(operation_data) = mixin_data.operations.get(id) {
+                if let Some(operation_data) = mixin_data.operations.get(operation_id) {
                     return Some(operation_data);
                 }
             }
             if let Some(mixin_names) = record.includes.get(mixin_name) {
                 for mixin_name in mixin_names {
-                    if let Some(operation_data) = get_operation_data(record, id, self_name, mixin_name) {
+                    if let Some(operation_data) = get_operation_data(record, operation_id, self_name, mixin_name) {
                         return Some(operation_data);
                     }
                 }
@@ -475,20 +477,28 @@ impl<'src> FirstPassRecord<'src> {
             None
         }
 
-        let operation_data = self
-            .interfaces
-            .get(self_name)
-            .and_then(|interface_data| interface_data.operations.get(id))
-            .unwrap_or_else(||
-                get_operation_data(self, id, self_name, self_name)
-                    .expect(&format!("not found operation {:?} in interface {}", id, self_name))
-            );
+        let operation_data = if !namespace {
+            self
+                .interfaces
+                .get(self_name)
+                .and_then(|interface_data| interface_data.operations.get(operation_id))
+                .unwrap_or_else(||
+                    get_operation_data(self, operation_id, self_name, self_name)
+                        .expect(&format!("not found operation {:?} in interface {}", operation_id, self_name))
+                )
+        } else {
+            self
+                .namespaces
+                .get(self_name)
+                .and_then(|interface_data| interface_data.operations.get(operation_id))
+                .expect(&format!("not found operation {:?} in namespace {}", operation_id, self_name))
+        };
 
         let mut names = Vec::with_capacity(arguments.len());
-        for arg in arguments {
-            match arg {
-                Argument::Single(arg) => names.push(arg.identifier.0),
-                Argument::Variadic(_) => return (false, false),
+        for argument in arguments {
+            match argument {
+                Argument::Single(single) => names.push(single.identifier.0),
+                Argument::Variadic(variadic) => names.push(variadic.identifier.0),
             }
         }
         (
@@ -497,6 +507,62 @@ impl<'src> FirstPassRecord<'src> {
                 .argument_names_same
                 .get(&names)
                 .unwrap_or(&false)
+        )
+    }
+
+    /// Create a wasm-bindgen operation (free function with no `self` type), if possible.
+    pub fn create_namespace_operation(
+        &self,
+        arguments: &[weedle::argument::Argument],
+        operation_name: Option<&str>,
+        return_type: &weedle::types::ReturnType,
+        self_name: &str,
+        catch: bool,
+    ) -> Vec<backend::ast::ImportFunction> {
+        let (overloaded, same_argument_names) = self.get_operation_overloading(
+            arguments,
+            &first_pass::OperationId::Operation(operation_name),
+            self_name,
+            true,
+        );
+
+        let name = match operation_name {
+            Some(name) => name.to_string(),
+            None => {
+                warn!("Operations without a name are unsupported");
+                return Vec::new();
+            }
+        };
+
+        let ret = match return_type.to_idl_type(self) {
+            None => return Vec::new(),
+            Some(idl_type) => idl_type,
+        };
+
+        let doc_comment = Some(
+            format!(
+                "The `{}.{}()` function\n\n{}",
+                self_name,
+                name,
+                mdn_doc(self_name, Some(&name))
+            )
+        );
+
+        let arguments = match self.convert_arguments(arguments) {
+            None => return Vec::new(),
+            Some(arguments) => arguments
+        };
+
+        self.create_function(
+            &name,
+            overloaded,
+            same_argument_names,
+            &arguments,
+            ret,
+            backend::ast::ImportFunctionKind::Normal,
+            false,
+            catch,
+            doc_comment,
         )
     }
 

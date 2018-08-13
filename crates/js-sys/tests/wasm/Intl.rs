@@ -1,4 +1,4 @@
-use wasm_bindgen::JsValue;
+use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_test::*;
 use js_sys::*;
 
@@ -22,4 +22,17 @@ fn get_canonical_locales() {
     canonical_locales.for_each(&mut |l, _, _| {
         assert_eq!(l, "en-US");
     });
+}
+
+#[wasm_bindgen_test]
+fn collator() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+
+    let c = Intl::Collator::new(&locales, &opts);
+    assert!(c.compare().is_instance_of::<Function>());
+    assert!(c.resolved_options().is_instance_of::<Object>());
+
+    let a = Intl::Collator::supported_locales_of(&locales, &opts);
+    assert!(a.is_instance_of::<Array>());
 }

@@ -1868,24 +1868,28 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                 ),
                             }
                         } else {
-                            let location = if *is_static { "" } else { ".prototype" };
+                            let (location, binding) = if *is_static {
+                                ("", format!(".bind({})", class))
+                            } else {
+                                (".prototype", "".into())
+                            };
 
                             match kind {
                                 shared::OperationKind::Regular => {
-                                    format!("{}{}.{}", class, location, import.function.name)
+                                    format!("{}{}.{}{}", class, location, import.function.name, binding)
                                 }
                                 shared::OperationKind::Getter(g) => {
                                     self.cx.expose_get_inherited_descriptor();
                                     format!(
-                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').get",
-                                        class, location, g,
+                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').get{}",
+                                        class, location, g, binding,
                                     )
                                 }
                                 shared::OperationKind::Setter(s) => {
                                     self.cx.expose_get_inherited_descriptor();
                                     format!(
-                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').set",
-                                        class, location, s,
+                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').set{}",
+                                        class, location, s, binding,
                                     )
                                 }
                                 shared::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
