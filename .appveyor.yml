@@ -22,6 +22,11 @@ test_script:
   - npm ci
   - cargo test
   - cargo build --release -p wasm-bindgen-cli
+  - where chromedriver
+  - set CHROMEDRIVER=C:\Tools\WebDriver\chromedriver.exe
+  - cargo test -p js-sys --target wasm32-unknown-unknown
+  - cargo test -p web-sys --target wasm32-unknown-unknown
+  - cargo test -p webidl-tests --target wasm32-unknown-unknown
 
 branches:
   only:
