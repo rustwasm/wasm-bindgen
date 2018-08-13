@@ -7,3 +7,4 @@ pub mod imported_types;
 pub mod exported_types;
 pub mod str;
 pub mod string;
+pub mod char;
