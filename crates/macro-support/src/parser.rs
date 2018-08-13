@@ -473,7 +473,10 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
                 kind,
             }
         } else if let Some(cls) = opts.static_method_of() {
-            let class = cls.to_string();
+            let class = opts
+                .js_class()
+                .map(Into::into)
+                .unwrap_or_else(|| cls.to_string());
             let ty = ident_ty(cls.clone());
 
             let kind = ast::MethodKind::Operation(ast::Operation {

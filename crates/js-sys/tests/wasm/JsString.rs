@@ -59,6 +59,19 @@ fn ends_with() {
 }
 
 #[wasm_bindgen_test]
+fn from_char_code() {
+    let s = "½+¾=";
+    let codes : Vec<u32> = s.chars()
+        .map(|char| char as u32)
+        .collect();
+
+    assert_eq!(JsString::from_char_code1(codes[0]), "½");
+    assert_eq!(JsString::from_char_code2(codes[0], codes[1]), "½+");
+    assert_eq!(JsString::from_char_code3(codes[0], codes[1], codes[2]), "½+¾");
+    assert_eq!(JsString::from_char_code4(codes[0], codes[1], codes[2], codes[3]), "½+¾=");
+}
+
+#[wasm_bindgen_test]
 fn includes() {
     let str = JsString::from("Blue Whale");
 
