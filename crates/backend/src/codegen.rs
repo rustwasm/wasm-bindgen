@@ -43,6 +43,8 @@ impl TryToTokens for ast::Program {
         for i in self.imports.iter() {
             DescribeImport(&i.kind).to_tokens(tokens);
 
+            // If there is a js namespace, check that name isn't a type. If it is,
+            // this import might be a method on that type.
             if let Some(ns) = &i.js_namespace {
                 if types.contains(ns) && i.kind.fits_on_impl() {
                     let kind = match i.kind.try_to_token_stream() {
@@ -58,6 +60,11 @@ impl TryToTokens for ast::Program {
             }
 
             if let Err(e) = i.kind.try_to_tokens(tokens) {
+                errors.push(e);
+            }
+        }
+        for m in self.modules.iter() {
+            if let Err(e) = ModuleInIter::from(m).try_to_tokens(tokens) {
                 errors.push(e);
             }
         }
@@ -87,6 +94,7 @@ impl TryToTokens for ast::Program {
         // Each JSON blob is prepended with the length of the JSON blob so when
         // all these sections are concatenated in the final wasm file we know
         // how to extract all the JSON pieces, so insert the byte length here.
+        // The value is little-endian.
         let generated_static_length = description.len() + 4;
         let mut bytes = vec![
             (description.len() >> 0) as u8,
@@ -1100,6 +1108,43 @@ impl ToTokens for ast::Const {
         } else {
             declaration.to_tokens(tokens);
         }
+    }
+}
+
+/// Struct to help implementing TryToTokens over the key/value pairs from the hashmap.
+struct ModuleInIter<'a> {
+    name: &'a Ident,
+    module: &'a ast::Module
+}
+
+impl<'a> From<(&'a Ident, &'a ast::Module)> for ModuleInIter<'a> {
+    fn from((name, module): (&'a Ident, &'a ast::Module)) -> ModuleInIter<'a> {
+        ModuleInIter { name, module }
+    }
+}
+
+impl<'a> TryToTokens for ModuleInIter<'a> {
+    fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
+        let name = &self.name;
+        let imports = &self.module.imports;
+        let mut errors = Vec::new();
+        for i in imports.iter() {
+            DescribeImport(&i.kind).to_tokens(tokens);
+        }
+        let vis = &self.module.vis;
+        let mut body = TokenStream::new();
+        for i in imports.iter() {
+            if let Err(e) = i.kind.try_to_tokens(&mut body) {
+                errors.push(e);
+            }
+        }
+        Diagnostic::from_vec(errors)?;
+        (quote!{
+            #vis mod #name {
+                #body
+            }
+        }).to_tokens(tokens);
+        Ok(())
     }
 }
 

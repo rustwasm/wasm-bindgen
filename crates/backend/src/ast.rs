@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use proc_macro2::{Ident, Span};
 use shared;
 use syn;
@@ -19,6 +20,8 @@ pub struct Program {
     pub structs: Vec<Struct>,
     /// rust consts
     pub consts: Vec<Const>,
+    /// rust submodules
+    pub modules: BTreeMap<Ident, Module>,
 }
 
 /// A rust to js interface. Allows interaction with rust objects/functions
@@ -220,6 +223,16 @@ pub enum ConstValue {
     Null,
 }
 
+/// A rust module
+///
+/// This exists to give the ability to namespace js imports.
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+pub struct Module {
+    pub vis: syn::Visibility,
+    /// js -> rust interfaces
+    pub imports: Vec<Import>,
+}
+
 impl Program {
     pub(crate) fn shared(&self) -> Result<shared::Program, Diagnostic> {
         Ok(shared::Program {
@@ -227,6 +240,8 @@ impl Program {
             structs: self.structs.iter().map(|a| a.shared()).collect(),
             enums: self.enums.iter().map(|a| a.shared()).collect(),
             imports: self.imports.iter()
+                // add in imports from inside modules
+                .chain(self.modules.values().flat_map(|m| m.imports.iter()))
                 .map(|a| a.shared())
                 .collect::<Result<_, Diagnostic>>()?,
             version: shared::version(),

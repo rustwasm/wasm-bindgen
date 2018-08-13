@@ -10,3 +10,4 @@ pub mod consts;
 pub mod enums;
 pub mod simple;
 pub mod throws;
+pub mod namespace;
