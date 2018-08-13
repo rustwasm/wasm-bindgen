@@ -61,8 +61,8 @@ fn ends_with() {
 #[wasm_bindgen_test]
 fn from_char_code() {
     let s = "½+¾=";
-    let codes : Vec<f64> = s.chars()
-        .map(|char| char as u32 as f64)
+    let codes : Vec<u32> = s.chars()
+        .map(|char| char as u32)
         .collect();
 
     assert_eq!(JsString::from_char_code1(codes[0]), "½");

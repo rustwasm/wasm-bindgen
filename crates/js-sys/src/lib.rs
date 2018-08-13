@@ -2950,23 +2950,23 @@ extern "C" {
     /// There are a few bindings to `from_char_code` in `js-sys`: `from_char_code1`, `from_char_code2`, etc...
     /// with different arities.
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
-    pub fn from_char_code1(a: f64) -> JsString;
+    pub fn from_char_code1(a: u32) -> JsString;
 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
-    pub fn from_char_code2(a: f64, b: f64) -> JsString;
+    pub fn from_char_code2(a: u32, b: u32) -> JsString;
 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
-    pub fn from_char_code3(a: f64, b: f64, c: f64) -> JsString;
+    pub fn from_char_code3(a: u32, b: u32, c: u32) -> JsString;
 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
-    pub fn from_char_code4(a: f64, b: f64, c: f64, d: f64) -> JsString;
+    pub fn from_char_code4(a: u32, b: u32, c: u32, d: u32) -> JsString;
 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
-    pub fn from_char_code5(a: f64, b: f64, c: f64, d: f64, e: f64) -> JsString;
+    pub fn from_char_code5(a: u32, b: u32, c: u32, d: u32, e: u32) -> JsString;
 
     /// The `includes()` method determines whether one string may be found
     /// within another string, returning true or false as appropriate.
