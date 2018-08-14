@@ -11,7 +11,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use weedle::argument::Argument;
 use weedle::attribute::ExtendedAttribute;
-use weedle::interface::StringifierOrStatic;
+use weedle::interface::{StringifierOrStatic, Special};
 use weedle::mixin::MixinMember;
 use weedle::namespace::NamespaceMember;
 use weedle;
@@ -61,7 +61,7 @@ pub(crate) struct NamespaceData<'src> {
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
 pub(crate) enum OperationId<'src> {
     Constructor,
     Operation(Option<&'src str>),
@@ -171,7 +171,7 @@ fn first_pass_operation<'src>(
     record: &mut FirstPassRecord<'src>,
     first_pass_operation_type: FirstPassOperationType,
     self_name: &'src str,
-    id: OperationId<'src>,
+    ids: &[OperationId<'src>],
     arguments: &[Argument<'src>],
 ) -> Result<()> {
     let mut names = Vec::with_capacity(arguments.len());
@@ -181,7 +181,7 @@ fn first_pass_operation<'src>(
             Argument::Variadic(variadic) => names.push(variadic.identifier.0),
         }
     }
-    match first_pass_operation_type{
+    let operations = match first_pass_operation_type{
         FirstPassOperationType::Interface => {
             &mut record
                 .interfaces
@@ -203,14 +203,17 @@ fn first_pass_operation<'src>(
                 .expect(&format!("not found {} namesace", self_name))
                 .operations
         },
+    };
+    for id in ids {
+        operations
+            .entry(*id)
+            .and_modify(|operation_data| operation_data.overloaded = true)
+            .or_default()
+            .argument_names_same
+            .entry(names.clone())
+            .and_modify(|same_argument_names| *same_argument_names = true)
+            .or_insert(false);
     }
-        .entry(id)
-        .and_modify(|operation_data| operation_data.overloaded = true)
-        .or_default()
-        .argument_names_same
-        .entry(names)
-        .and_modify(|same_argument_names| *same_argument_names = true)
-        .or_insert(false);
 
     Ok(())
 }
@@ -278,7 +281,7 @@ impl<'src> FirstPass<'src, &'src str> for ExtendedAttribute<'src> {
                     record,
                     FirstPassOperationType::Interface,
                     self_name,
-                    OperationId::Constructor,
+                    &[OperationId::Constructor],
                     &list.args.body.list,
                 )
             }
@@ -287,7 +290,7 @@ impl<'src> FirstPass<'src, &'src str> for ExtendedAttribute<'src> {
                     record,
                     FirstPassOperationType::Interface,
                     self_name,
-                    OperationId::Constructor,
+                    &[OperationId::Constructor],
                     &[],
                 )
             }
@@ -298,7 +301,7 @@ impl<'src> FirstPass<'src, &'src str> for ExtendedAttribute<'src> {
                     record,
                     FirstPassOperationType::Interface,
                     self_name,
-                    OperationId::Constructor,
+                    &[OperationId::Constructor],
                     &list.args.body.list,
                 )
             }
@@ -332,7 +335,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             return Ok(());
         }
 
-        if !self.specials.is_empty() && self.specials.len() != 1 {
+        if self.specials.len() > 1 {
             warn!("Unsupported webidl operation {:?}", self);
             return Ok(())
         }
@@ -340,20 +343,20 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             warn!("Unsupported webidl operation {:?}", self);
             return Ok(())
         }
+        let mut ids = vec![OperationId::Operation(self.identifier.map(|s| s.0))];
+        for special in self.specials.iter() {
+            ids.push(match special {
+                Special::Getter(_) => OperationId::IndexingGetter,
+                Special::Setter(_) => OperationId::IndexingSetter,
+                Special::Deleter(_) => OperationId::IndexingDeleter,
+                Special::LegacyCaller(_) => continue,
+            });
+        }
         first_pass_operation(
             record,
             FirstPassOperationType::Interface,
             self_name,
-            match self.identifier.map(|s| s.0) {
-                None => match self.specials.get(0) {
-                    None => OperationId::Operation(None),
-                    Some(weedle::interface::Special::Getter(_)) => OperationId::IndexingGetter,
-                    Some(weedle::interface::Special::Setter(_)) => OperationId::IndexingSetter,
-                    Some(weedle::interface::Special::Deleter(_)) => OperationId::IndexingDeleter,
-                    Some(weedle::interface::Special::LegacyCaller(_)) => return Ok(()),
-                },
-                Some(ref name) => OperationId::Operation(Some(name.clone())),
-            },
+            &ids,
             &self.args.body.list,
         )
     }
@@ -434,7 +437,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'s
             record,
             FirstPassOperationType::Mixin,
             self_name,
-            OperationId::Operation(self.identifier.map(|s| s.0.clone())),
+            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
             &self.args.body.list,
         )
     }
@@ -524,7 +527,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceM
             record,
             FirstPassOperationType::Namespace,
             self_name,
-            OperationId::Operation(self.identifier.map(|s| s.0.clone())),
+            &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
             &self.args.body.list,
         )
     }
