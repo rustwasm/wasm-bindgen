@@ -51,3 +51,30 @@ fn date_time_format() {
     let a = Intl::DateTimeFormat::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
 }
+
+#[wasm_bindgen_test]
+fn number_format() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+
+    let n = Intl::NumberFormat::new(&locales, &opts);
+    assert!(n.format().is_instance_of::<Function>());
+    assert!(n.format_to_parts(42.5).is_instance_of::<Array>());
+    assert!(n.resolved_options().is_instance_of::<Object>());
+
+    let a = Intl::NumberFormat::supported_locales_of(&locales, &opts);
+    assert!(a.is_instance_of::<Array>());
+}
+
+#[wasm_bindgen_test]
+fn plural_rules() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+
+    let r = Intl::PluralRules::new(&locales, &opts);
+    assert!(r.resolved_options().is_instance_of::<Object>());
+    assert_eq!(r.select(1_f64), "one");
+
+    let r = Intl::PluralRules::supported_locales_of(&locales, &opts);
+    assert!(r.is_instance_of::<Array>());
+}

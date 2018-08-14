@@ -3440,6 +3440,98 @@ pub mod Intl {
         #[wasm_bindgen(static_method_of = DateTimeFormat, js_namespace = Intl, js_name = supportedLocalesOf)]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
+
+    // Intl.NumberFormat
+    #[wasm_bindgen]
+    extern "C" {
+        /// The Intl.NumberFormat object is a constructor for objects
+        /// that enable language sensitive number formatting.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
+        #[wasm_bindgen(js_namespace = Intl)]
+        #[derive(Clone, Debug)]
+        pub type NumberFormat;
+
+        /// The Intl.NumberFormat object is a constructor for objects
+        /// that enable language sensitive number formatting.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
+        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        pub fn new(locales: &Array, options: &Object) -> NumberFormat;
+
+        /// The Intl.NumberFormat.prototype.format property returns a getter function that
+        /// formats a number according to the locale and formatting options of this
+        /// NumberFormat object.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/format
+        #[wasm_bindgen(method, getter, js_class = "Intl.NumberFormat")]
+        pub fn format(this: &NumberFormat) -> Function;
+
+        /// The Intl.Numberformat.prototype.formatToParts() method allows locale-aware
+        /// formatting of strings produced by NumberTimeFormat formatters.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/formatToParts
+        #[wasm_bindgen(method, js_class = "Intl.NumberFormat", js_name = formatToParts)]
+        pub fn format_to_parts(this: &NumberFormat, number: f64) -> Array;
+
+        /// The Intl.NumberFormat.prototype.resolvedOptions() method returns a new
+        /// object with properties reflecting the locale and number formatting
+        /// options computed during initialization of this NumberFormat object.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/resolvedOptions
+        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        pub fn resolved_options(this: &NumberFormat) -> Object;
+
+        /// The Intl.NumberFormat.supportedLocalesOf() method returns an array
+        /// containing those of the provided locales that are supported in number
+        /// formatting without having to fall back to the runtime's default locale.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat/supportedLocalesOf
+        #[wasm_bindgen(static_method_of = NumberFormat, js_namespace = Intl, js_name = supportedLocalesOf)]
+        pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
+
+    // Intl.PluralRules
+    #[wasm_bindgen]
+    extern "C" {
+        /// The Intl.PluralRules object is a constructor for objects
+        /// that enable plural sensitive formatting and plural language rules.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules
+        #[wasm_bindgen(js_namespace = Intl)]
+        #[derive(Clone, Debug)]
+        pub type PluralRules;
+
+        /// The Intl.PluralRules object is a constructor for objects
+        /// that enable plural sensitive formatting and plural language rules.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules
+        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        pub fn new(locales: &Array, options: &Object) -> PluralRules;
+
+        /// The Intl.PluralRules.prototype.resolvedOptions() method returns a new
+        /// object with properties reflecting the locale and plural formatting
+        /// options computed during initialization of this PluralRules object.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules/resolvedOptions
+        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        pub fn resolved_options(this: &PluralRules) -> Object;
+
+        /// The Intl.PluralRules.prototype.select method returns a String indicating
+        /// which plural rule to use for locale-aware formatting.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules/select
+        #[wasm_bindgen(method, js_namespace = Intl)]
+        pub fn select(this: &PluralRules, number: f64) -> JsString;
+
+        /// The Intl.PluralRules.supportedLocalesOf() method returns an array
+        /// containing those of the provided locales that are supported in plural
+        /// formatting without having to fall back to the runtime's default locale.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules/supportedLocalesOf
+        #[wasm_bindgen(static_method_of = PluralRules, js_namespace = Intl, js_name = supportedLocalesOf)]
+        pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
 }
 
 // Promise
