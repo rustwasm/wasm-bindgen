@@ -10,3 +10,4 @@ pub mod string;
 pub mod char;
 pub mod bool;
 pub mod js_value;
+pub mod boxed_js_value_slice;
