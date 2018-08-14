@@ -12,6 +12,7 @@ macro_rules! each {
         $m!(Int8Array);
         $m!(Int16Array);
         $m!(Int32Array);
+        $m!(Float32Array);
     )
 }
 

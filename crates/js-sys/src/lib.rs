@@ -684,7 +684,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     // TODO Uncomment this once TypedArray is added:
-    // #[wasm_bindgen(extends = Object, extends = TypedArray)]
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Float32Array;
 
