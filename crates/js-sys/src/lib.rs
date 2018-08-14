@@ -3433,7 +3433,7 @@ pub mod Intl {
 
         /// The Intl.DateTimeFormat.supportedLocalesOf() method returns an array
         /// containing those of the provided locales that are supported in date
-        /// and time formatting without having to fall back to the runtime's defaul
+        /// and time formatting without having to fall back to the runtime's default
         /// locale.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/supportedLocalesOf
