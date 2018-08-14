@@ -481,7 +481,15 @@ impl<'a> IdlType<'a> {
             IdlType::Nullable(idl_type) => Some(option_ty(idl_type.to_syn_type(pos)?)),
             IdlType::FrozenArray(_idl_type) => None,
             IdlType::Sequence(_idl_type) => None,
-            IdlType::Promise(_idl_type) => None,
+            IdlType::Promise(_idl_type) => {
+                let path = vec![rust_ident("js_sys"), rust_ident("Promise")];
+                let ty = leading_colon_path_ty(path);
+                if pos == TypePosition::Argument {
+                    Some(shared_ref(ty))
+                } else {
+                    Some(ty)
+                }
+            }
             IdlType::Record(_idl_type_from, _idl_type_to) => None,
             IdlType::Union(_idl_types) => None,
 
