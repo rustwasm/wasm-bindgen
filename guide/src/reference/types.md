@@ -175,17 +175,23 @@ garbage-collected heap and the Wasm linear memory with `TextDecoder` and
 {{#include ../../../examples/guide-supported-types-examples/pointers.js}}
 ```
 
-## `u8` `i8` `u16` `i16` `u64` `i64` `isize` `size`
+## `u8` `i8` `u16` `i16` `u32` `i32` `u64` `i64` `isize` `usize` `f32` `f64`
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Yes | No | No | Yes | No | No | A JavaScript number value |
+| Yes | No | No | Yes | Yes | Yes | A JavaScript number value |
 
-## `u32` `i32` `f32` `f64`
+### Example Rust Usage
 
-| `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Yes | Yes | Yes | Yes | No | No | A JavaScript number value |
+```rust
+{{#include ../../../examples/guide-supported-types-examples/src/numbers.rs}}
+```
+
+### Example JavaScript Usage
+
+```js
+{{#include ../../../examples/guide-supported-types-examples/numbers.js}}
+```
 
 ## `Box<[u8]>`  `Box<[i8]>` `Box<[u16]>` `Box<[i16]>` `Box<[u32]>` `Box<[i32]>` `Box<[u64]>` `Box<[i64]>` `Box<[f32]>` `Box<[f64]>`
 
