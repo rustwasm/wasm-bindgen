@@ -21,6 +21,10 @@ pub struct Program {
     pub consts: Vec<Const>,
     /// rust submodules
     pub modules: Vec<Module>,
+    /// "dictionaries", generated for WebIDL, which are basically just "typed
+    /// objects" in the sense that they represent a JS object with a particular
+    /// shape in JIT parlance.
+    pub dictionaries: Vec<Dictionary>,
 }
 
 /// A rust to js interface. Allows interaction with rust objects/functions
@@ -251,6 +255,21 @@ pub struct Module {
     pub name: Ident,
     /// js -> rust interfaces
     pub imports: Vec<Import>,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
+pub struct Dictionary {
+    pub name: Ident,
+    pub fields: Vec<DictionaryField>,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
+pub struct DictionaryField {
+    pub name: Ident,
+    pub required: bool,
+    pub ty: syn::Type,
 }
 
 impl Program {

@@ -74,6 +74,9 @@ impl TryToTokens for ast::Program {
                 errors.push(e);
             }
         }
+        for d in self.dictionaries.iter() {
+            d.to_tokens(tokens);
+        }
 
         Diagnostic::from_vec(errors)?;
 
@@ -1132,6 +1135,153 @@ impl<'a> TryToTokens for ast::Module {
             }
         }).to_tokens(tokens);
         Ok(())
+    }
+}
+
+impl ToTokens for ast::Dictionary {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let name = &self.name;
+        let mut methods = TokenStream::new();
+        for field in self.fields.iter() {
+            field.to_tokens(&mut methods);
+        }
+        let required_names = &self.fields.iter()
+            .filter(|f| f.required)
+            .map(|f| &f.name)
+            .collect::<Vec<_>>();
+        let required_types = &self.fields.iter()
+            .filter(|f| f.required)
+            .map(|f| &f.ty)
+            .collect::<Vec<_>>();
+        let required_names2 = required_names;
+        let required_names3 = required_names;
+
+        let const_name = Ident::new(&format!("_CONST_{}", name), Span::call_site());
+        (quote! {
+            #[derive(Clone, Debug)]
+            #[repr(transparent)]
+            pub struct #name {
+                obj: ::js_sys::Object,
+            }
+
+            impl #name {
+                pub fn new(#(#required_names: #required_types),*) -> #name {
+                    let mut _ret = #name { obj: ::js_sys::Object::new() };
+                    #(_ret.#required_names2(#required_names3);)*
+                    return _ret
+                }
+
+                #methods
+            }
+
+            #[allow(bad_style)]
+            const #const_name: () = {
+                use js_sys::Object;
+                use wasm_bindgen::describe::WasmDescribe;
+                use wasm_bindgen::convert::*;
+                use wasm_bindgen::{JsValue, JsCast};
+                use wasm_bindgen::__rt::core::mem::ManuallyDrop;
+
+                // interop w/ JsValue
+                impl From<#name> for JsValue {
+                    fn from(val: #name) -> JsValue {
+                        val.obj.into()
+                    }
+                }
+                impl AsRef<JsValue> for #name {
+                    fn as_ref(&self) -> &JsValue { self.obj.as_ref() }
+                }
+                impl AsMut<JsValue> for #name {
+                    fn as_mut(&mut self) -> &mut JsValue { self.obj.as_mut() }
+                }
+
+                // Boundary conversion impls
+                impl WasmDescribe for #name {
+                    fn describe() {
+                        Object::describe();
+                    }
+                }
+
+                impl IntoWasmAbi for #name {
+                    type Abi = <Object as IntoWasmAbi>::Abi;
+                    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+                        self.obj.into_abi(extra)
+                    }
+                }
+
+                impl<'a> IntoWasmAbi for &'a #name {
+                    type Abi = <&'a Object as IntoWasmAbi>::Abi;
+                    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+                        (&self.obj).into_abi(extra)
+                    }
+                }
+
+                impl FromWasmAbi for #name {
+                    type Abi = <Object as FromWasmAbi>::Abi;
+                    unsafe fn from_abi(abi: Self::Abi, extra: &mut Stack) -> Self {
+                        #name { obj: Object::from_abi(abi, extra) }
+                    }
+                }
+
+                impl OptionIntoWasmAbi for #name {
+                    fn none() -> Self::Abi { Object::none() }
+                }
+                impl<'a> OptionIntoWasmAbi for &'a #name {
+                    fn none() -> Self::Abi { <&'a Object>::none() }
+                }
+                impl OptionFromWasmAbi for #name {
+                    fn is_none(abi: &Self::Abi) -> bool { Object::is_none(abi) }
+                }
+
+                impl RefFromWasmAbi for #name {
+                    type Abi = <Object as RefFromWasmAbi>::Abi;
+                    type Anchor = ManuallyDrop<#name>;
+
+                    unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor {
+                        let tmp = <Object as RefFromWasmAbi>::ref_from_abi(js, extra);
+                        ManuallyDrop::new(#name {
+                            obj: ManuallyDrop::into_inner(tmp),
+                        })
+                    }
+                }
+
+                impl JsCast for #name {
+                    fn instanceof(val: &JsValue) -> bool {
+                        Object::instanceof(val)
+                    }
+
+                    fn unchecked_from_js(val: JsValue) -> Self {
+                        #name { obj: Object::unchecked_from_js(val) }
+                    }
+
+                    fn unchecked_from_js_ref(val: &JsValue) -> &Self {
+                        unsafe { &*(val as *const JsValue as *const #name) }
+                    }
+
+                    fn unchecked_from_js_mut(val: &mut JsValue) -> &mut Self {
+                        unsafe { &mut *(val as *mut JsValue as *mut #name) }
+                    }
+                }
+            };
+        }).to_tokens(tokens);
+    }
+}
+
+impl ToTokens for ast::DictionaryField {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let name = &self.name;
+        let ty = &self.ty;
+        (quote! {
+            pub fn #name(&mut self, val: #ty) -> &mut Self {
+                use wasm_bindgen::JsValue;
+                ::js_sys::Reflect::set(
+                    self.obj.as_ref(),
+                    &JsValue::from(stringify!(#name)),
+                    &JsValue::from(val),
+                );
+                self
+            }
+        }).to_tokens(tokens);
     }
 }
 

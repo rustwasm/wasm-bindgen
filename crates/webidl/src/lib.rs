@@ -35,14 +35,17 @@ use std::io::{self, Read};
 use std::iter::FromIterator;
 use std::path::Path;
 
+use backend::ast;
 use backend::TryToTokens;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
+use backend::defined::ImportedTypeReferences;
 use backend::util::{ident_ty, rust_ident, raw_ident, wrap_import_function};
 use failure::ResultExt;
 use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
 use weedle::argument::Argument;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
+use weedle::dictionary::DictionaryMember;
 
 use first_pass::{FirstPass, FirstPassRecord, OperationId};
 use util::{public, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, mdn_doc};
@@ -113,7 +116,11 @@ pub fn compile(webidl_source: &str) -> Result<String> {
 
 /// Run codegen on the AST to generate rust code.
 fn compile_ast(mut ast: backend::ast::Program) -> String {
-    let mut defined = BTreeSet::from_iter(
+    // Iteratively prune all entries from the AST which reference undefined
+    // fields. Each pass may remove definitions of types and so we need to
+    // reexecute this pass to see if we need to keep removing types until we
+    // reach a steady state.
+    let builtin = BTreeSet::from_iter(
         vec![
             "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
             "usize", "isize", "f32", "f64", "Result", "String", "Vec", "Option",
@@ -121,10 +128,15 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
         ].into_iter()
             .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
     );
-    ast.imported_type_definitions(&mut |id| {
-        defined.insert(id.clone());
-    });
-    ast.remove_undefined_imports(&|id| defined.contains(id));
+    loop {
+        let mut defined = builtin.clone();
+        ast.imported_type_definitions(&mut |id| {
+            defined.insert(id.clone());
+        });
+        if !ast.remove_undefined_imports(&|id| defined.contains(id)) {
+            break
+        }
+    }
 
     let mut tokens = proc_macro2::TokenStream::new();
     if let Err(e) = ast.try_to_tokens(&mut tokens) {
@@ -179,6 +191,7 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
             | weedle::Definition::InterfaceMixin(_)
             | weedle::Definition::PartialInterfaceMixin(_)
             | weedle::Definition::IncludesStatement(..)
+            | weedle::Definition::PartialDictionary(..)
             | weedle::Definition::PartialNamespace(..)=> {
                 // handled in the first pass
             }
@@ -188,6 +201,9 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
             weedle::Definition::Namespace(namespace) => {
                 namespace.webidl_parse(program, first_pass, ())?
             }
+            weedle::Definition::Dictionary(dict) => {
+                dict.webidl_parse(program, first_pass, ())?
+            }
 
             // TODO
             weedle::Definition::Callback(..) => {
@@ -195,12 +211,6 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
             }
             weedle::Definition::CallbackInterface(..) => {
                 warn!("Unsupported WebIDL CallbackInterface definition: {:?}", self)
-            }
-            weedle::Definition::Dictionary(..) => {
-                warn!("Unsupported WebIDL Dictionary definition: {:?}", self)
-            }
-            weedle::Definition::PartialDictionary(..) => {
-                warn!("Unsupported WebIDL PartialDictionary definition: {:?}", self)
             }
         }
         Ok(())
@@ -353,8 +363,8 @@ impl<'src> WebidlParse<'src, &'src weedle::InterfaceDefinition<'src>> for Extend
                 overloaded,
                 same_argument_names,
                 &match first_pass.convert_arguments(arguments) {
+                    Some(arguments) => arguments,
                     None => return,
-                    Some(arguments) => arguments
                 },
                 IdlType::Interface(interface.identifier.0),
                 kind,
@@ -942,5 +952,116 @@ impl<'src> WebidlParse<'src, (&'src str, &'src mut backend::ast::Module)> for we
         };
 
         Ok(())
+    }
+}
+
+// tons more data for what's going on here at
+// https://www.w3.org/TR/WebIDL-1/#idl-dictionaries
+impl<'src> WebidlParse<'src, ()> for weedle::DictionaryDefinition<'src> {
+    fn webidl_parse(
+        &'src self,
+        program: &mut backend::ast::Program,
+        first_pass: &FirstPassRecord<'src>,
+        (): (),
+    ) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(());
+        }
+
+        let mut fields = Vec::new();
+        if !push_members(first_pass, self.identifier.0, &mut fields) {
+            return Ok(())
+        }
+
+        program.dictionaries.push(ast::Dictionary {
+            name: rust_ident(&camel_case_ident(self.identifier.0)),
+            fields,
+        });
+
+        return Ok(());
+
+        fn push_members<'src>(
+            data: &FirstPassRecord<'src>,
+            dict: &'src str,
+            dst: &mut Vec<ast::DictionaryField>,
+        ) -> bool {
+            let dict_data = &data.dictionaries[&dict];
+            let definition = dict_data.definition.unwrap();
+
+            // > The order of the dictionary members on a given dictionary is
+            // > such that inherited dictionary members are ordered before
+            // > non-inherited members ...
+            if let Some(parent) = &definition.inheritance {
+                if !push_members(data, parent.identifier.0, dst) {
+                    return false
+                }
+            }
+
+            // > ... and the dictionary members on the one dictionary
+            // > definition (including any partial dictionary definitions) are
+            // > ordered lexicographically by the Unicode codepoints that
+            // > comprise their identifiers.
+            let start = dst.len();
+            let members = definition.members.body.iter();
+            let partials = dict_data.partials.iter().flat_map(|d| &d.members.body);
+            for member in members.chain(partials) {
+                match mkfield(data, member) {
+                    Some(f) => dst.push(f),
+                    None => {
+                        warn!(
+                            "unsupported dictionary field {:?}",
+                            (dict, member.identifier.0),
+                        );
+                        // If this is required then we can't support the
+                        // dictionary at all, but if it's not required we can
+                        // avoid generating bindings for the field and keep
+                        // going otherwise.
+                        if member.required.is_some() {
+                            return false
+                        }
+                    }
+                }
+            }
+            // Note that this sort isn't *quite* right in that it is sorting
+            // based on snake case instead of the original casing which could
+            // produce inconsistent results, but should work well enough for
+            // now!
+            dst[start..].sort_by_key(|f| f.name.clone());
+
+            return true
+        }
+
+        fn mkfield<'src>(
+            data: &FirstPassRecord<'src>,
+            field: &'src DictionaryMember<'src>,
+        ) -> Option<ast::DictionaryField> {
+            // use argument position now as we're just binding setters
+            let ty = field.type_.to_idl_type(data)?.to_syn_type(TypePosition::Argument)?;
+
+            // Slice types aren't supported because they don't implement
+            // `Into<JsValue>`
+            if let syn::Type::Reference(ty) = &ty {
+                match &*ty.elem {
+                    syn::Type::Slice(_) => return None,
+                    _ => {}
+                }
+            }
+
+            // Similarly i64/u64 aren't supported because they don't
+            // implement `Into<JsValue>`
+            let mut any_64bit = false;
+            ty.imported_type_references(&mut |i| {
+                any_64bit = any_64bit || i == "u64" || i == "i64";
+            });
+            if any_64bit {
+                return None
+            }
+
+            Some(ast::DictionaryField {
+                required: field.required.is_some(),
+                name: rust_ident(&field.identifier.0.to_snake_case()),
+                ty,
+            })
+        }
     }
 }

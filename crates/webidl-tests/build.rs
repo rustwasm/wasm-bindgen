@@ -1,4 +1,5 @@
 extern crate wasm_bindgen_webidl;
+extern crate env_logger;
 
 use std::env;
 use std::fs;
@@ -6,6 +7,7 @@ use std::path::PathBuf;
 use std::process::Command;
 
 fn main() {
+    env_logger::init();
     let idls = fs::read_dir(".")
         .unwrap()
         .map(|f| f.unwrap().path())
