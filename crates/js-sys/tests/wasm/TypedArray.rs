@@ -7,6 +7,7 @@ macro_rules! each {
     ($m:ident) => (
         $m!(Uint8Array);
         $m!(Uint8ClampedArray);
+        $m!(Uint16Array);
     )
 }
 
