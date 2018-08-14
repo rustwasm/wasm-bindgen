@@ -477,9 +477,11 @@ impl<'a, 'src> WebidlParse<'src, &'a str> for weedle::mixin::MixinMember<'src> {
             weedle::mixin::MixinMember::Operation(op) => {
                 op.webidl_parse(program, first_pass, self_name)
             }
+            weedle::mixin::MixinMember::Const(const_) => {
+                const_.webidl_parse(program, first_pass, self_name)
+            }
             // TODO
-            weedle::mixin::MixinMember::Stringifier(_) |
-            weedle::mixin::MixinMember::Const(_) => {
+            weedle::mixin::MixinMember::Stringifier(_) => {
                 warn!("Unsupported WebIDL mixin member: {:?}", self);
                 Ok(())
             }

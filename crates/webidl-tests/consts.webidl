@@ -44,3 +44,9 @@ interface ConstDoubles {
   const unrestricted double inf = Infinity;
   const unrestricted double nan = NaN;
 };
+
+interface mixin ConstDoublesMixin {
+  const double one = 1.0;
+};
+
+ConstDoubles includes ConstDoublesMixin;
