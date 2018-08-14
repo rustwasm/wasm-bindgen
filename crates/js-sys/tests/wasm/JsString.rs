@@ -1,6 +1,20 @@
 use wasm_bindgen::JsValue;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 use wasm_bindgen_test::*;
 use js_sys::*;
+
+#[wasm_bindgen(module = "tests/wasm/JsString.js")]
+extern {
+    fn new_string_object() -> JsValue;
+}
+
+#[wasm_bindgen_test]
+fn js_string_inheritance() {
+    let string = new_string_object();
+    assert!(string.is_instance_of::<JsString>());
+    assert!(string.is_instance_of::<Object>());
+}
 
 #[wasm_bindgen_test]
 fn length() {
