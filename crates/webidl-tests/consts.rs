@@ -48,4 +48,5 @@ fn floats() {
     assert!(ConstDoubles::INF.is_infinite());
     assert!(ConstDoubles::INF.is_sign_positive());
     assert!(ConstDoubles::NAN.is_nan());
+    assert_eq!(ConstDoubles::ONE, 1.0);
 }
