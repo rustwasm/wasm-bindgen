@@ -6,13 +6,14 @@ use js_sys::*;
 macro_rules! each {
     ($m:ident) => (
         $m!(Uint8Array);
+        $m!(Uint8ClampedArray);
     )
 }
 
 macro_rules! test_inheritence {
     ($arr:ident) => ({
         let arr = $arr::new(&JsValue::undefined());
-        assert!(arr.is_instance_of::<Uint8Array>());
+        assert!(arr.is_instance_of::<$arr>());
         assert!(arr.is_instance_of::<Object>());        
     })
 }
