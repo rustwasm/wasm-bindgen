@@ -914,6 +914,7 @@ extern {
 // Int8Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Int8Array;
 
