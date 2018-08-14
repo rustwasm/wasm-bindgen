@@ -69,3 +69,4 @@ members = [
 
 [patch.crates-io]
 wasm-bindgen = { path = '.' }
+console_error_panic_hook = { git = 'https://github.com/alexcrichton/console_error_panic_hook' }
