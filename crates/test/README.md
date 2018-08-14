@@ -34,19 +34,6 @@ ton of documentation just yet, but a taste of how it works is:
   wasm-bindgen-test = { git = 'https://github.com/rustwasm/wasm-bindgen' }
   ```
 
-  **WARNING**: the `console_error_panic_hook` has a dependency on `wasm-bindgen`
-  from `crates.io` which conflicts with the one from git used by `wasm-bindgen-test`:
-  it produces linker errors due to duplicated symbols.
-
-  Until `wasm-bindgen-test` is released on `crates.io`, the temporary workaround
-  is to patch the `crates.io`'s `wasm-bindgen` dependency to be the same that
-  `wasm-bindgen-test` uses by adding the following to your project's `Cargo.toml`:
-
-  ```toml
-  [patch.crates-io]
-  wasm-bindgen = { git = 'https://github.com/rustwasm/wasm-bindgen' }
-  ```
-
 * Next, write some tests!
 
   ```rust
