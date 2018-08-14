@@ -26,7 +26,7 @@ JavaScript.
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Yes | Yes | Yes | Yes | Yes | Yes | Instances of a `wasm-bindgen`-generated JavaScript `class Whatever { ... }` |
+| Yes | Yes | Yes | Yes | No | No | Instances of a `wasm-bindgen`-generated JavaScript `class Whatever { ... }` |
 
 ### Example Rust Usage
 
@@ -44,12 +44,24 @@ JavaScript.
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| No | Yes | No | Yes | Yes | No | JavaScript string value |
+| No | Yes | No | No | No | No | JavaScript string value |
 
 Copies the string's contents back and forth between the JavaScript
 garbage-collected heap and the Wasm linear memory with `TextDecoder` and
 `TextEncoder`. If you don't want to perform this copy, and would rather work
 with handles to JavaScript string values, use the `js_sys::JsString` type.
+
+### Example Rust Usage
+
+```rust
+{{#include ../../../examples/guide-supported-types-examples/src/str.rs}}
+```
+
+### Example JavaScript Usage
+
+```js
+{{#include ../../../examples/guide-supported-types-examples/str.js}}
+```
 
 ## `String`
 
@@ -61,11 +73,35 @@ Copies the string's contents back and forth between the JavaScript
 garbage-collected heap and the Wasm linear memory with `TextDecoder` and
 `TextEncoder`
 
+### Example Rust Usage
+
+```rust
+{{#include ../../../examples/guide-supported-types-examples/src/string.rs}}
+```
+
+### Example JavaScript Usage
+
+```js
+{{#include ../../../examples/guide-supported-types-examples/string.js}}
+```
+
 ## `char`
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Yes | No | No | Yes | No | No | A JavaScript string value |
+
+### Example Rust Usage
+
+```rust
+{{#include ../../../examples/guide-supported-types-examples/src/char.rs}}
+```
+
+### Example JavaScript Usage
+
+```js
+{{#include ../../../examples/guide-supported-types-examples/char.js}}
+```
 
 ## `bool`
 
@@ -73,17 +109,53 @@ garbage-collected heap and the Wasm linear memory with `TextDecoder` and
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Yes | No | No | Yes | No | No | A JavaScript boolean value |
 
+### Example Rust Usage
+
+```rust
+{{#include ../../../examples/guide-supported-types-examples/src/bool.rs}}
+```
+
+### Example JavaScript Usage
+
+```js
+{{#include ../../../examples/guide-supported-types-examples/bool.js}}
+```
+
 ## `wasm_bindgen::JsValue`
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Yes | Yes | Yes | Yes | No | No | Any JavaScript value |
+| Yes | Yes | No | Yes | No | No | Any JavaScript value |
+
+### Example Rust Usage
+
+```rust
+{{#include ../../../examples/guide-supported-types-examples/src/js_value.rs}}
+```
+
+### Example JavaScript Usage
+
+```js
+{{#include ../../../examples/guide-supported-types-examples/js_value.js}}
+```
 
 ## `Box<[JsValue]>`
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Yes | No | No | Yes | Yes | Yes | A JavaScript `Array` object |
+
+### Example Rust Usage
+
+```rust
+{{#include ../../../examples/guide-supported-types-examples/src/boxed_js_value_slice.rs}}
+```
+
+### Example JavaScript Usage
+
+```js
+{{#include ../../../examples/guide-supported-types-examples/boxed_js_value_slice.js}}
+```
 
 ## `*const T` `*mut T`
 

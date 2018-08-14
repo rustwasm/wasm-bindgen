@@ -10,8 +10,7 @@ imported_type_by_value(new SomeJsType());
 imported_type_by_shared_ref(new SomeJsType());
 
 let x = return_imported_type();
-console.log(x instanceof SomeJsType);
-// true
+console.log(x instanceof SomeJsType); // true
 
 take_option_imported_type(null);
 take_option_imported_type(undefined);
@@ -21,6 +20,5 @@ let y = return_option_imported_type();
 if (y == null) {
   // ...
 } else {
-  console.log(y instanceof SomeJsType);
-  // true
+  console.log(y instanceof SomeJsType); // true
 }
