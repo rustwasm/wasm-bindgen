@@ -3389,6 +3389,57 @@ pub mod Intl {
         #[wasm_bindgen(static_method_of = Collator, js_namespace = Intl, js_name = supportedLocalesOf)]
         pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
     }
+
+    // Intl.DateTimeFormat
+    #[wasm_bindgen]
+    extern "C" {
+        /// The Intl.DateTimeFormat object is a constructor for objects
+        /// that enable language-sensitive date and time formatting.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
+        #[wasm_bindgen(js_namespace = Intl)]
+        #[derive(Clone, Debug)]
+        pub type DateTimeFormat;
+
+        /// The Intl.DateTimeFormat object is a constructor for objects
+        /// that enable language-sensitive date and time formatting.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
+        #[wasm_bindgen(constructor, js_namespace = Intl)]
+        pub fn new(locales: &Array, options: &Object) -> DateTimeFormat;
+
+        /// The Intl.DateTimeFormat.prototype.format property returns a getter function that
+        /// formats a date according to the locale and formatting options of this
+        /// Intl.DateTimeFormat object.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/format
+        #[wasm_bindgen(method, getter, js_class = "Intl.DateTimeFormat")]
+        pub fn format(this: &DateTimeFormat) -> Function;
+
+        /// The Intl.DateTimeFormat.prototype.formatToParts() method allows locale-aware
+        /// formatting of strings produced by DateTimeFormat formatters.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/formatToParts
+        #[wasm_bindgen(method, js_class = "Intl.DateTimeFormat", js_name = formatToParts)]
+        pub fn format_to_parts(this: &DateTimeFormat, date: &Date) -> Array;
+
+        /// The Intl.DateTimeFormat.prototype.resolvedOptions() method returns a new
+        /// object with properties reflecting the locale and date and time formatting
+        /// options computed during initialization of this DateTimeFormat object.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/resolvedOptions
+        #[wasm_bindgen(method, js_namespace = Intl, js_name = resolvedOptions)]
+        pub fn resolved_options(this: &DateTimeFormat) -> Object;
+
+        /// The Intl.DateTimeFormat.supportedLocalesOf() method returns an array
+        /// containing those of the provided locales that are supported in date
+        /// and time formatting without having to fall back to the runtime's defaul
+        /// locale.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat/supportedLocalesOf
+        #[wasm_bindgen(static_method_of = DateTimeFormat, js_namespace = Intl, js_name = supportedLocalesOf)]
+        pub fn supported_locales_of(locales: &Array, options: &Object) -> Array;
+    }
 }
 
 // Promise
