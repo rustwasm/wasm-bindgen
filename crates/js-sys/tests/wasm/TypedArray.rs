@@ -13,6 +13,7 @@ macro_rules! each {
         $m!(Int16Array);
         $m!(Int32Array);
         $m!(Float32Array);
+        $m!(Float64Array);
     )
 }
 
@@ -20,26 +21,13 @@ macro_rules! test_inheritence {
     ($arr:ident) => ({
         let arr = $arr::new(&JsValue::undefined());
         assert!(arr.is_instance_of::<$arr>());
+        let _: &Object = arr.as_ref();
         assert!(arr.is_instance_of::<Object>());        
     })
 }
 #[wasm_bindgen_test]
 fn inheritence() {
     each!(test_inheritence);
-}
-
-macro_rules! each {
-    ($m:ident) => (
-        $m!(Uint8Array);
-        $m!(Uint8ClampedArray);
-        $m!(Uint16Array);
-        $m!(Uint32Array);
-        $m!(Int8Array);
-        $m!(Int16Array);
-        $m!(Int32Array);
-        $m!(Float32Array);
-        $m!(Float64Array);
-    )
 }
 
 macro_rules! test_undefined {
