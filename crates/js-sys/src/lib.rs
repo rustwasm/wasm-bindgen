@@ -967,6 +967,7 @@ extern "C" {
 // Int16Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Int16Array;
 

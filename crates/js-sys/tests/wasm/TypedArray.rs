@@ -10,6 +10,7 @@ macro_rules! each {
         $m!(Uint16Array);
         $m!(Uint32Array);
         $m!(Int8Array);
+        $m!(Int16Array);
     )
 }
 
