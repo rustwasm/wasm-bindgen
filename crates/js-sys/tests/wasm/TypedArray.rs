@@ -8,6 +8,7 @@ macro_rules! each {
         $m!(Uint8Array);
         $m!(Uint8ClampedArray);
         $m!(Uint16Array);
+        $m!(Uint32Array);
     )
 }
 

@@ -2700,6 +2700,7 @@ extern "C" {
 // Uint32Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Uint32Array;
 
