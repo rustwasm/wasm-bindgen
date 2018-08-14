@@ -1,6 +1,25 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
+
+macro_rules! each {
+    ($m:ident) => (
+        $m!(Uint8Array);
+    )
+}
+
+macro_rules! test_inheritence {
+    ($arr:ident) => ({
+        let arr = $arr::new(&JsValue::undefined());
+        assert!(arr.is_instance_of::<Uint8Array>());
+        assert!(arr.is_instance_of::<Object>());        
+    })
+}
+#[wasm_bindgen_test]
+fn inheritence() {
+    each!(test_inheritence);
+}
 
 macro_rules! each {
     ($m:ident) => (

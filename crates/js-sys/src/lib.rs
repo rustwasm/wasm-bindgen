@@ -2539,6 +2539,7 @@ extern {
 // Uint8Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Uint8Array;
 
