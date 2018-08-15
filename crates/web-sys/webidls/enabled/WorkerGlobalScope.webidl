@@ -34,16 +34,3 @@ WorkerGlobalScope implements WindowOrWorkerGlobalScope;
 
 // Not implemented yet: bug 1072107.
 // WorkerGlobalScope implements FontFaceSource;
-
-// Mozilla extensions
-partial interface WorkerGlobalScope {
-
-  void dump(optional DOMString str);
-
-  // XXXbz no spec for this yet, because the webperf WG is a bit dysfunctional
-  [Constant, Cached]
-  readonly attribute Performance performance;
-
-  [Func="WorkerGlobalScope::IsInAutomation", Throws]
-  object getJSTestingFunctions();
-};

@@ -68,16 +68,6 @@ partial interface HTMLImageElement {
   readonly attribute DOMString currentSrc;
 };
 
-// Mozilla extensions.
-partial interface HTMLImageElement {
-           [CEReactions, SetterThrows]
-           attribute DOMString lowsrc;
-
-  // These attributes are offsets from the closest view (to mimic
-  // NS4's "offset-from-layer" behavior).
-  readonly attribute long x;
-  readonly attribute long y;
-};
 
 [NoInterfaceObject]
 interface MozImageLoadingContent {

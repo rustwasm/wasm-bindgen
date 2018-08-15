@@ -143,8 +143,6 @@ interface Element : Node {
   [ChromeOnly]
   void setCaptureAlways(optional boolean retargetToElement = false);
 
-  // Mozilla extensions
-
   // Obsolete methods.
   Attr? getAttributeNode(DOMString name);
   [CEReactions, Throws]

@@ -10,8 +10,3 @@
 [Exposed=Worklet]
 interface WorkletGlobalScope {
 };
-
-// Mozilla extensions
-partial interface WorkletGlobalScope {
-  void dump(optional DOMString str);
-};

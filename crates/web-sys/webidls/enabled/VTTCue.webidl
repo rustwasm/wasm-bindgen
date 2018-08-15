@@ -55,19 +55,3 @@ interface VTTCue : TextTrackCue {
   attribute DOMString text;
   DocumentFragment getCueAsHTML();
 };
-
-// Mozilla extensions.
-partial interface VTTCue {
-  [ChromeOnly]
-  attribute HTMLDivElement? displayState;
-  [ChromeOnly]
-  readonly attribute boolean hasBeenReset;
-  [ChromeOnly]
-  readonly attribute double computedLine;
-  [ChromeOnly]
-  readonly attribute double computedPosition;
-  [ChromeOnly]
-  readonly attribute PositionAlignSetting computedPositionAlign;
-  [ChromeOnly]
-  readonly attribute boolean getActive;
-};

@@ -43,6 +43,3 @@ interface AnalyserNode : AudioNode {
     attribute double smoothingTimeConstant;
 
 };
-
-// Mozilla extension
-AnalyserNode implements AudioNodePassThrough;

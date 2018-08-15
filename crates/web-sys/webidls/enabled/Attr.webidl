@@ -24,10 +24,3 @@ interface Attr : Node {
 
   readonly attribute boolean specified;
 };
-
-// Mozilla extensions
-
-partial interface Attr {
-           [GetterThrows]
-  readonly attribute Element? ownerElement;
-};

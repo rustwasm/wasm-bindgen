@@ -66,6 +66,3 @@ dictionary KeyboardEventInit : EventModifierInit
   unsigned long  keyCode       = 0;
   unsigned long  which         = 0;
 };
-
-// Mozilla extensions
-KeyboardEvent implements KeyEvent;

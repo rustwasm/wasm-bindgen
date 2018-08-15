@@ -81,16 +81,4 @@ interface HTMLTextAreaElement : HTMLElement {
   void setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction);
 };
 
-partial interface HTMLTextAreaElement {
-  // Chrome-only Mozilla extensions
-
-  [Throws, ChromeOnly]
-  readonly attribute XULControllers controllers;
-};
-
 HTMLTextAreaElement implements MozEditableElement;
-
-partial interface HTMLTextAreaElement {
-  [ChromeOnly]
-  attribute DOMString previewValue;
-};

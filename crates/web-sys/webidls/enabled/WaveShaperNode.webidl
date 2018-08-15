@@ -30,7 +30,3 @@ interface WaveShaperNode : AudioNode {
       attribute OverSampleType oversample;
 
 };
-
-// Mozilla extension
-WaveShaperNode implements AudioNodePassThrough;
-

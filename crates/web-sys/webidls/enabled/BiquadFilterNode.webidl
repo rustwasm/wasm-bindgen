@@ -44,7 +44,3 @@ interface BiquadFilterNode : AudioNode {
                               Float32Array phaseResponse);
 
 };
-
-// Mozilla extension
-BiquadFilterNode implements AudioNodePassThrough;
-
