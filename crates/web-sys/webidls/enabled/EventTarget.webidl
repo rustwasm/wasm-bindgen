@@ -13,11 +13,6 @@
 
 dictionary EventListenerOptions {
   boolean capture = false;
-  /* Setting to true make the listener be added to the system group. */
-/*Non standard
-  [Func="ThreadSafeIsChromeOrXBL"]
-  boolean mozSystemGroup = false;
-*/
 };
 
 dictionary AddEventListenerOptions : EventListenerOptions {

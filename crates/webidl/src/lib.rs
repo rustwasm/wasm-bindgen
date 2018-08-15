@@ -188,12 +188,19 @@ impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
             weedle::Definition::Namespace(namespace) => {
                 namespace.webidl_parse(program, first_pass, ())?
             }
+
             // TODO
-            | weedle::Definition::Callback(..)
-            | weedle::Definition::CallbackInterface(..)
-            | weedle::Definition::Dictionary(..)
-            | weedle::Definition::PartialDictionary(..) => {
-                warn!("Unsupported WebIDL definition: {:?}", self)
+            weedle::Definition::Callback(..) => {
+                warn!("Unsupported WebIDL Callback definition: {:?}", self)
+            }
+            weedle::Definition::CallbackInterface(..) => {
+                warn!("Unsupported WebIDL CallbackInterface definition: {:?}", self)
+            }
+            weedle::Definition::Dictionary(..) => {
+                warn!("Unsupported WebIDL Dictionary definition: {:?}", self)
+            }
+            weedle::Definition::PartialDictionary(..) => {
+                warn!("Unsupported WebIDL PartialDictionary definition: {:?}", self)
             }
         }
         Ok(())
@@ -288,7 +295,7 @@ impl<'src> WebidlParse<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
             .get(self.identifier.0)
             .map(|interface_data| !interface_data.partial)
             .unwrap_or(true) {
-            warn!(
+            info!(
                 "Partial interface {} missing non-partial interface",
                 self.identifier.0
             );
@@ -453,10 +460,16 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::interface::InterfaceMember<'
                 iterable.webidl_parse(program, first_pass, self_name)
             }
             // TODO
-            | Maplike(_)
-            | Stringifier(_)
-            | Setlike(_) => {
-                warn!("Unsupported WebIDL interface member: {:?}", self);
+            Maplike(_) => {
+                warn!("Unsupported WebIDL Maplike interface member: {:?}", self);
+                Ok(())
+            }
+            Stringifier(_) => {
+                warn!("Unsupported WebIDL Stringifier interface member: {:?}", self);
+                Ok(())
+            }
+            Setlike(_) => {
+                warn!("Unsupported WebIDL Setlike interface member: {:?}", self);
                 Ok(())
             }
         }
@@ -482,7 +495,7 @@ impl<'a, 'src> WebidlParse<'src, &'a str> for weedle::mixin::MixinMember<'src> {
             }
             // TODO
             weedle::mixin::MixinMember::Stringifier(_) => {
-                warn!("Unsupported WebIDL mixin member: {:?}", self);
+                warn!("Unsupported WebIDL stringifier mixin member: {:?}", self);
                 Ok(())
             }
         }
@@ -551,7 +564,7 @@ fn member_attribute<'src>(
 
     let is_static = match modifier {
         Some(Stringifier(_)) => {
-            warn!("Unsupported stringifier on type {:?}", (self_name, identifier));
+            warn!("Unsupported stringifier on type: {:?}", (self_name, identifier));
             return Ok(())
         }
         Some(Inherit(_)) => false,
@@ -560,7 +573,7 @@ fn member_attribute<'src>(
     };
 
     if type_.attributes.is_some() {
-        warn!("Unsupported attributes on type {:?}", (self_name, identifier));
+        warn!("Unsupported attributes on type: {:?}", (self_name, identifier));
         return Ok(())
     }
 
@@ -656,7 +669,7 @@ fn member_operation<'src>(
 
     let is_static = match modifier {
         Some(Stringifier(_)) => {
-            warn!("Unsupported stringifier on type {:?}", (self_name, identifier));
+            warn!("Unsupported stringifier on type: {:?}", (self_name, identifier));
             return Ok(())
         }
         Some(Static(_)) => true,
@@ -668,7 +681,7 @@ fn member_operation<'src>(
     ];
     if specials.len() > 1 {
         warn!(
-            "Unsupported specials ({:?}) on type {:?}",
+            "Unsupported specials: ({:?}) on type {:?}",
             specials,
             (self_name, identifier),
         );
@@ -812,7 +825,12 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::interface::ConstMember<'src>
 
         let ty = match idl_type.to_syn_type(TypePosition::Return) {
             None => {
-                warn!("Can not convert const type to syn type: {:?}", idl_type);
+                warn!(
+                    "Cannot convert const type to syn type: {:?} in {:?} on {:?}",
+                    idl_type,
+                    self,
+                    self_name
+                );
                 return Ok(());
             },
             Some(ty) => ty,
@@ -888,8 +906,8 @@ impl<'src> WebidlParse<'src, (&'src str, &'src mut backend::ast::Module)> for we
             weedle::namespace::NamespaceMember::Operation(op) => {
                 op.webidl_parse(program, first_pass, (self_name, module))?;
             }
-            weedle::namespace::NamespaceMember::Attribute(_) => {
-                warn!("Attribute namespace members are not supported")
+            weedle::namespace::NamespaceMember::Attribute(attr) => {
+                warn!("Unsupported attribute namespace member: {:?}", attr)
             }
         }
         Ok(())

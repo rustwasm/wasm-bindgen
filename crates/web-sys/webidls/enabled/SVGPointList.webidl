@@ -26,7 +26,4 @@ interface SVGPointList {
   SVGPoint removeItem(unsigned long index);
   [Throws]
   SVGPoint appendItem(SVGPoint newItem);
-
-  // Mozilla-specific stuff
-  readonly attribute unsigned long length; // synonym for numberOfItems
 };

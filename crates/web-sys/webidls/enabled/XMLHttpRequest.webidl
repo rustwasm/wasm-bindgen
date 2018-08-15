@@ -22,9 +22,6 @@ enum XMLHttpRequestResponseType {
   "document",
   "json",
   "text",
-
-  // Mozilla-specific stuff
-  "moz-chunked-arraybuffer",
 };
 
 /**
@@ -118,29 +115,4 @@ interface XMLHttpRequest : XMLHttpRequestEventTarget {
 
   [Throws, Exposed=Window]
   readonly attribute Document? responseXML;
-
-  // Mozilla-specific stuff
-
-  [ChromeOnly, SetterThrows]
-  attribute boolean mozBackgroundRequest;
-
-  [ChromeOnly, Exposed=Window]
-  readonly attribute MozChannel? channel;
-
-  [Throws, ChromeOnly, Exposed=Window]
-  any getInterface(IID iid);
-
-  [ChromeOnly, Exposed=Window]
-  void setOriginAttributes(optional OriginAttributesDictionary originAttributes);
-
-  [ChromeOnly, Throws]
-  void sendInputStream(InputStream body);
-
-  // Only works on MainThread.
-  // Its permanence is to be evaluated in bug 1368540 for Firefox 60.
-  [ChromeOnly]
-  readonly attribute unsigned short errorCode;
-
-  readonly attribute boolean mozAnon;
-  readonly attribute boolean mozSystem;
 };

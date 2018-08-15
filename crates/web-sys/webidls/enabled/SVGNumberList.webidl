@@ -26,7 +26,4 @@ interface SVGNumberList {
   SVGNumber removeItem(unsigned long index);
   [Throws]
   SVGNumber appendItem(SVGNumber newItem);
-
-  // Mozilla-specific stuff
-  readonly attribute unsigned long length; // synonym for numberOfItems
 };

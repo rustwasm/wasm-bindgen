@@ -116,11 +116,6 @@ interface GlobalEventHandlers {
            [Pref="dom.w3c_pointer_events.enabled"]
            attribute EventHandler onlostpointercapture;
 
-           // Mozilla-specific handlers. Unprefixed handlers live in
-           // Document rather than here.
-           attribute EventHandler onmozfullscreenchange;
-           attribute EventHandler onmozfullscreenerror;
-
            // CSS-Animation and CSS-Transition handlers.
            attribute EventHandler onanimationcancel;
            attribute EventHandler onanimationend;

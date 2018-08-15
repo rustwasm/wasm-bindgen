@@ -158,58 +158,6 @@ partial interface Navigator {
   readonly attribute MediaCapabilities mediaCapabilities;
 };
 
-// Mozilla-specific extensions
-
-// Chrome-only interface for Vibration API permission handling.
-partial interface Navigator {
-    /* Set permission state to device vibration.
-     * @param permitted permission state (true for allowing vibration)
-     * @param persistent make the permission session-persistent
-     */
-    [ChromeOnly]
-    void setVibrationPermission(boolean permitted,
-                                optional boolean persistent = true);
-};
-
-callback interface MozIdleObserver {
-  // Time is in seconds and is read only when idle observers are added
-  // and removed.
-  readonly attribute unsigned long time;
-  void onidle();
-  void onactive();
-};
-
-partial interface Navigator {
-  [Throws, Constant, Cached, NeedsCallerType]
-  readonly attribute DOMString oscpu;
-  // WebKit/Blink support this; Trident/Presto do not.
-  readonly attribute DOMString vendor;
-  // WebKit/Blink supports this (hardcoded ""); Trident/Presto do not.
-  readonly attribute DOMString vendorSub;
-  // WebKit/Blink supports this (hardcoded "20030107"); Trident/Presto don't
-  readonly attribute DOMString productSub;
-  // WebKit/Blink/Trident/Presto support this.
-  readonly attribute boolean cookieEnabled;
-  [Throws, Constant, Cached, NeedsCallerType]
-  readonly attribute DOMString buildID;
-
-  // WebKit/Blink/Trident/Presto support this.
-  [Affects=Nothing, DependsOn=Nothing]
-  boolean javaEnabled();
-
-  /**
-   * Navigator requests to add an idle observer to the existing window.
-   */
-  [Throws, ChromeOnly]
-  void addIdleObserver(MozIdleObserver aIdleObserver);
-
-  /**
-   * Navigator requests to remove an idle observer from the existing window.
-   */
-  [Throws, ChromeOnly]
-  void removeIdleObserver(MozIdleObserver aIdleObserver);
-};
-
 // NetworkInformation
 partial interface Navigator {
   [Throws, Pref="dom.netinfo.enabled"]

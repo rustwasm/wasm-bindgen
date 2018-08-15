@@ -290,7 +290,7 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
         } else if record.enums.contains(self.0) {
             Some(IdlType::Enum(self.0))
         } else {
-            warn!("unrecognized type {}", self.0);
+            warn!("Unrecognized type: {}", self.0);
             None
         }
     }

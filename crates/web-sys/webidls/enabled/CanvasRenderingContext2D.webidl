@@ -40,21 +40,6 @@ interface CanvasRenderingContext2D {
   // associated with a canvas.
   readonly attribute HTMLCanvasElement? canvas;
 
-  // Mozilla-specific stuff
-  // FIXME Bug 768048 mozCurrentTransform/mozCurrentTransformInverse should return a WebIDL array.
-  [Throws]
-  attribute object mozCurrentTransform; // [ m11, m12, m21, m22, dx, dy ], i.e. row major
-  [Throws]
-  attribute object mozCurrentTransformInverse;
-
-  [SetterThrows]
-  attribute DOMString mozTextStyle;
-
-  // image smoothing mode -- if disabled, images won't be smoothed
-  // if scaled.
-  [Deprecated="PrefixedImageSmoothingEnabled"]
-  attribute boolean mozImageSmoothingEnabled;
-
   // Show the caret if appropriate when drawing
   [Func="CanvasUtils::HasDrawWindowPrivilege"]
   const unsigned long DRAWWINDOW_DRAW_CARET   = 0x01;
@@ -139,7 +124,6 @@ CanvasRenderingContext2D implements CanvasPathDrawingStyles;
 CanvasRenderingContext2D implements CanvasTextDrawingStyles;
 CanvasRenderingContext2D implements CanvasPathMethods;
 CanvasRenderingContext2D implements CanvasHitRegions;
-
 
 [NoInterfaceObject]
 interface CanvasState {

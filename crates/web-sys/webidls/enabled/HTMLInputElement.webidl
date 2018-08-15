@@ -193,20 +193,6 @@ partial interface HTMLInputElement {
   AutocompleteInfo? getAutocompleteInfo();
 };
 
-[NoInterfaceObject]
-interface MozEditableElement {
-  [Pure, ChromeOnly]
-  readonly attribute nsIEditor? editor;
-
-/*Non standard
-  // This is similar to set .value on nsIDOMInput/TextAreaElements, but handling
-  // of the value change is closer to the normal user input, so 'change' event
-  // for example will be dispatched when focusing out the element.
-  [Func="IsChromeOrXBL", NeedsSubjectPrincipal]
-  void setUserInput(DOMString input);
-*/
-};
-
 HTMLInputElement implements MozEditableElement;
 
 /*Non standard
@@ -264,31 +250,6 @@ partial interface HTMLInputElement {
   [Pref="dom.forms.datetime", ChromeOnly,
    BinaryName="getMaximumAsDouble"]
   double getMaximum();
-
-/*Non standard
-  [Pref="dom.forms.datetime", Func="IsChromeOrXBL"]
-  void openDateTimePicker(optional DateTimeValue initialValue);
-
-  [Pref="dom.forms.datetime", Func="IsChromeOrXBL"]
-  void updateDateTimePicker(optional DateTimeValue value);
-
-  [Pref="dom.forms.datetime", Func="IsChromeOrXBL"]
-  void closeDateTimePicker();
-
-  [Pref="dom.forms.datetime", Func="IsChromeOrXBL"]
-  void setFocusState(boolean aIsFocused);
-
-  [Pref="dom.forms.datetime", Func="IsChromeOrXBL"]
-  void updateValidityState();
-
-  [Pref="dom.forms.datetime", Func="IsChromeOrXBL",
-   BinaryName="getStepAsDouble"]
-  double getStep();
-
-  [Pref="dom.forms.datetime", Func="IsChromeOrXBL",
-   BinaryName="getStepBaseAsDouble"]
-  double getStepBase();
-*/
 };
 
 partial interface HTMLInputElement {
