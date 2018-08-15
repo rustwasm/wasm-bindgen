@@ -9,3 +9,4 @@ import * as boxed_js_value_slice from './boxed_js_value_slice.js';
 import * as pointers from './pointers.js';
 import * as numbers from './numbers.js';
 import * as boxed_number_slices from './boxed_number_slices.js';
+import * as number_slices from './number_slices.js';
