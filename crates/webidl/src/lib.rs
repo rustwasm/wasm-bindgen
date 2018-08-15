@@ -293,7 +293,7 @@ impl<'src> WebidlParse<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
         if first_pass
             .interfaces
             .get(self.identifier.0)
-            .map(|interface_data| !interface_data.partial)
+            .map(|interface_data| interface_data.partial)
             .unwrap_or(true) {
             info!(
                 "Partial interface {} missing non-partial interface",
