@@ -29,7 +29,4 @@ interface SVGTransformList {
   SVGTransform createSVGTransformFromMatrix(SVGMatrix matrix);
   [Throws]
   SVGTransform? consolidate();
-
-  // Mozilla-specific stuff
-  readonly attribute unsigned long length; // synonym for numberOfItems
 };

@@ -19,23 +19,13 @@ enum SupportedType {
   "image/svg+xml"
 };
 
-// the latter is Mozilla-specific
 [Constructor]
 interface DOMParser {
   [NewObject, Throws]
   Document parseFromString(DOMString str, SupportedType type);
 
-  // Mozilla-specific stuff
-  [NewObject, Throws, ChromeOnly]
-  Document parseFromBuffer(sequence<octet> buf, SupportedType type);
-  [NewObject, Throws, ChromeOnly]
-  Document parseFromBuffer(Uint8Array buf, SupportedType type);
-  [NewObject, Throws, ChromeOnly]
-  Document parseFromStream(InputStream stream, DOMString? charset,
-                           long contentLength, SupportedType type);
   // Can be used to allow a DOMParser to parse XUL/XBL no matter what
   // principal it's using for the document.
   [ChromeOnly]
   void forceEnableXULXBL();
 };
-

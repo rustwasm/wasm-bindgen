@@ -225,15 +225,6 @@ partial interface Element {
   readonly attribute long clientLeft;
   readonly attribute long clientWidth;
   readonly attribute long clientHeight;
-
-  // Mozilla specific stuff
-  /* The minimum/maximum offset that the element can be scrolled to
-     (i.e., the value that scrollLeft/scrollTop would be clamped to if they were
-     set to arbitrarily large values. */
-  [ChromeOnly] readonly attribute long scrollTopMin;
-               readonly attribute long scrollTopMax;
-  [ChromeOnly] readonly attribute long scrollLeftMin;
-               readonly attribute long scrollLeftMax;
 };
 
 // http://domparsing.spec.whatwg.org/#extensions-to-the-element-interface

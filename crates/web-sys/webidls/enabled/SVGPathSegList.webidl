@@ -14,7 +14,4 @@ interface SVGPathSegList {
   readonly attribute unsigned long numberOfItems;
   [Throws]
   getter SVGPathSeg getItem(unsigned long index);
-
-  // Mozilla-specific stuff
-  readonly attribute unsigned long length; // synonym for numberOfItems
 };

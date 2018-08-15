@@ -98,55 +98,6 @@ interface HTMLMediaElement : HTMLElement {
                          optional DOMString language = "");
 };
 
-// Mozilla extensions:
-partial interface HTMLMediaElement {
-  [Func="HasDebuggerOrTabsPrivilege"]
-  readonly attribute MediaSource? mozMediaSourceObject;
-  [Func="HasDebuggerOrTabsPrivilege"]
-  readonly attribute DOMString mozDebugReaderData;
-  [Func="HasDebuggerOrTabsPrivilege", NewObject]
-  Promise<DOMString> mozRequestDebugInfo();
-
-  [Func="HasDebuggerOrTabsPrivilege", NewObject]
-  static void mozEnableDebugLog();
-  [Func="HasDebuggerOrTabsPrivilege", NewObject]
-  Promise<DOMString> mozRequestDebugLog();
-
-  [Pref="media.test.dumpDebugInfo"]
-  Promise<void> mozDumpDebugInfo();
-
-  attribute MediaStream? srcObject;
-
-  attribute boolean mozPreservesPitch;
-
-/*Non standard
-  // NB: for internal use with the video controls:
-  [Func="IsChromeOrXBL"] attribute boolean mozAllowCasting;
-  [Func="IsChromeOrXBL"] attribute boolean mozIsCasting;
-*/
-
-  // Mozilla extension: stream capture
-  [Throws]
-  MediaStream mozCaptureStream();
-  [Throws]
-  MediaStream mozCaptureStreamUntilEnded();
-  readonly attribute boolean mozAudioCaptured;
-
-  // Mozilla extension: return embedded metadata from the stream as a
-  // JSObject with key:value pairs for each tag. This can be used by
-  // player interfaces to display the song title, artist, etc.
-  [Throws]
-  object? mozGetMetadata();
-
-  // Mozilla extension: provides access to the fragment end time if
-  // the media element has a fragment URI for the currentSrc, otherwise
-  // it is equal to the media duration.
-  readonly attribute double mozFragmentEnd;
-
-  [ChromeOnly]
-  void reportCanPlayTelemetry();
-};
-
 // Encrypted Media Extensions
 partial interface HTMLMediaElement {
   readonly attribute MediaKeys? mediaKeys;
@@ -158,16 +109,6 @@ partial interface HTMLMediaElement {
   attribute EventHandler onencrypted;
 
   attribute EventHandler onwaitingforkey;
-};
-
-// This is just for testing
-partial interface HTMLMediaElement {
-  [Pref="media.useAudioChannelService.testing"]
-  readonly attribute double computedVolume;
-  [Pref="media.useAudioChannelService.testing"]
-  readonly attribute boolean computedMuted;
-  [Pref="media.useAudioChannelService.testing"]
-  readonly attribute unsigned long computedSuspended;
 };
 
 /*

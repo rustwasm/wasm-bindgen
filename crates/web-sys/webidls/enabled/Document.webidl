@@ -186,13 +186,6 @@ partial interface Document {
                 attribute EventHandler onselectionchange;
 
   /**
-   * True if this document is synthetic : stand alone image, video, audio file,
-   * etc.
-   */
-/*Non standard
-  [Func="IsChromeOrXBL"] readonly attribute boolean mozSyntheticDocument;
-*/
-  /**
    * Returns the script element whose script is currently being processed.
    *
    * @see <https://developer.mozilla.org/en/DOM/document.currentScript>
@@ -361,85 +354,6 @@ partial interface Document {
   readonly attribute SVGSVGElement? rootElement;
 };
 
-//  Mozilla extensions of various sorts
-partial interface Document {
-  // XBL support.  Wish we could make these [ChromeOnly], but
-  // that would likely break bindings running with the page principal.
-/*Non standard
-  [Func="IsChromeOrXBL"]
-  NodeList? getAnonymousNodes(Element elt);
-  [Func="IsChromeOrXBL"]
-  Element? getAnonymousElementByAttribute(Element elt, DOMString attrName,
-                                          DOMString attrValue);
-  [Func="IsChromeOrXBL"]
-  Element? getBindingParent(Node node);
-  [Throws, Func="IsChromeOrXBL", NeedsSubjectPrincipal]
-  void loadBindingDocument(DOMString documentURL);
-*/
-
-  // Touch bits
-  // XXXbz I can't find the sane spec for this stuff, so just cribbing
-  // from our xpidl for now.
-  [NewObject, Func="nsGenericHTMLElement::TouchEventsEnabled"]
-  Touch createTouch(optional Window? view = null,
-                    optional EventTarget? target = null,
-                    optional long identifier = 0,
-                    optional long pageX = 0,
-                    optional long pageY = 0,
-                    optional long screenX = 0,
-                    optional long screenY = 0,
-                    optional long clientX = 0,
-                    optional long clientY = 0,
-                    optional long radiusX = 0,
-                    optional long radiusY = 0,
-                    optional float rotationAngle = 0,
-                    optional float force = 0);
-  // XXXbz a hack to get around the fact that we don't support variadics as
-  // distinguishing arguments yet.  Once this hack is removed. we can also
-  // remove the corresponding overload on nsIDocument, since Touch... and
-  // sequence<Touch> look the same in the C++.
-  [NewObject, Func="nsGenericHTMLElement::TouchEventsEnabled"]
-  TouchList createTouchList(Touch touch, Touch... touches);
-  // XXXbz and another hack for the fact that we can't usefully have optional
-  // distinguishing arguments but need a working zero-arg form of
-  // createTouchList().
-/*TODO
-  [NewObject, Func="nsGenericHTMLElement::TouchEventsEnabled"]
-  TouchList createTouchList();
-  [NewObject, Func="nsGenericHTMLElement::TouchEventsEnabled"]
-  TouchList createTouchList(sequence<Touch> touches);
-*/
-
-  [ChromeOnly]
-  attribute boolean styleSheetChangeEventsEnabled;
-
-  [ChromeOnly, Throws]
-  void obsoleteSheet(URI sheetURI);
-  [ChromeOnly, Throws]
-  void obsoleteSheet(DOMString sheetURI);
-
-  [ChromeOnly] readonly attribute nsIDocShell? docShell;
-
-  [ChromeOnly] readonly attribute DOMString contentLanguage;
-
-  [ChromeOnly] readonly attribute nsILoadGroup? documentLoadGroup;
-
-  // Blocks the initial document parser until the given promise is settled.
-  [ChromeOnly, Throws]
-  Promise<any> blockParsing(Promise<any> promise,
-                            optional BlockParsingOptions options);
-
-  // like documentURI, except that for error pages, it returns the URI we were
-  // trying to load when we hit an error, rather than the error page's own URI.
-  [ChromeOnly] readonly attribute URI? mozDocumentURIIfNotForErrorPages;
-
-  // A promise that is resolved, with this document itself, when we have both
-  // fired DOMContentLoaded and are ready to start layout.  This is used for the
-  // "document_idle" webextension script injection point.
-  [ChromeOnly, Throws]
-  readonly attribute Promise<Document> documentReadyForIdle;
-};
-
 dictionary BlockParsingOptions {
   /**
    * If true, blocks script-created parsers (created via document.open()) in
@@ -506,16 +420,6 @@ partial interface Document {
   [ChromeOnly]
   void notifyUserGestureActivation();
 };
-
-// Extension to give chrome and XBL JS the ability to determine whether
-// the document is sandboxed without permission to run scripts
-// and whether inline scripts are blocked by the document's CSP.
-/*Non standard
-partial interface Document {
-  [Func="IsChromeOrXBL"] readonly attribute boolean hasScriptsBlockedBySandbox;
-  [Func="IsChromeOrXBL"] readonly attribute boolean inlineScriptAllowedByCSP;
-};
-*/
 
 // For more information on Flash classification, see
 // toolkit/components/url-classifier/flash-block-lists.rst

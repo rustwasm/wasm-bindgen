@@ -58,31 +58,6 @@ interface Event {
   attribute boolean cancelBubble;
 };
 
-// Mozilla specific legacy stuff.
-partial interface Event {
-  const long ALT_MASK     = 0x00000001;
-  const long CONTROL_MASK = 0x00000002;
-  const long SHIFT_MASK   = 0x00000004;
-  const long META_MASK    = 0x00000008;
-
-  /** The original target of the event, before any retargetings. */
-  readonly attribute EventTarget? originalTarget;
-  /**
-   * The explicit original target of the event.  If the event was retargeted
-   * for some reason other than an anonymous boundary crossing, this will be set
-   * to the target before the retargeting occurs.  For example, mouse events
-   * are retargeted to their parent node when they happen over text nodes (bug
-   * 185889), and in that case .target will show the parent and
-   * .explicitOriginalTarget will show the text node.
-   * .explicitOriginalTarget differs from .originalTarget in that it will never
-   * contain anonymous content.
-   */
-  readonly attribute EventTarget? explicitOriginalTarget;
-  [ChromeOnly] readonly attribute EventTarget? composedTarget;
-  [ChromeOnly] readonly attribute boolean multipleActionsPrevented;
-  [ChromeOnly] readonly attribute boolean isSynthesized;
-};
-
 dictionary EventInit {
   boolean bubbles = false;
   boolean cancelable = false;
