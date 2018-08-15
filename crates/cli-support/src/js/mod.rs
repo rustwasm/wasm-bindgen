@@ -2033,7 +2033,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 if let Some(module) = &import.module {
                     if use_node_require {
                         imports.push_str(&format!(
-                            "const {} = require('{}').{};\n",
+                            "const {} = require(String.raw`{}`).{};\n",
                             name, module, name_to_import
                         ));
                     } else if name_to_import == name {
