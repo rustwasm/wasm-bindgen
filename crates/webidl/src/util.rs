@@ -235,7 +235,11 @@ impl<'src> FirstPassRecord<'src> {
             ret @ _ => {
                 match ret.to_syn_type(TypePosition::Return) {
                     None => {
-                        warn!("Can not convert return type to syn type: {:?}", ret);
+                        warn!(
+                            "Cannot convert return type to syn type: {:?} on {:?}",
+                            ret,
+                            rust_name
+                        );
                         return Vec::new();
                     },
                     Some(ret) => Some(ret),
@@ -315,7 +319,11 @@ impl<'src> FirstPassRecord<'src> {
                 let syn_type = if let Some(syn_type) = idl_type.to_syn_type(TypePosition::Argument) {
                     syn_type
                 } else {
-                    warn!("Can not convert argument type to syn type: {:?}", idl_type);
+                    warn!(
+                        "Cannot convert argument type to syn type: {:?} on {:?}",
+                        idl_type,
+                        rust_name
+                    );
                     continue 'outer;
                 };
                 let argument_name = rust_ident(&argument_name.to_snake_case());

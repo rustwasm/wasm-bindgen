@@ -812,7 +812,12 @@ impl<'src> WebidlParse<'src, &'src str> for weedle::interface::ConstMember<'src>
 
         let ty = match idl_type.to_syn_type(TypePosition::Return) {
             None => {
-                warn!("Can not convert const type to syn type: {:?}", idl_type);
+                warn!(
+                    "Cannot convert const type to syn type: {:?} in {:?} on {:?}",
+                    idl_type,
+                    self,
+                    self_name
+                );
                 return Ok(());
             },
             Some(ty) => ty,
