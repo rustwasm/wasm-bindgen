@@ -28,7 +28,7 @@ interface SVGElement : Element {
   [Throws] void blur();
 };
 
-SVGElement implements GlobalEventHandlers;
-SVGElement implements DocumentAndElementEventHandlers;
-SVGElement implements TouchEventHandlers;
-SVGElement implements OnErrorEventHandlerForNodes;
+SVGElement includes GlobalEventHandlers;
+SVGElement includes DocumentAndElementEventHandlers;
+SVGElement includes TouchEventHandlers;
+SVGElement includes OnErrorEventHandlerForNodes;

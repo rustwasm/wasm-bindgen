@@ -10,11 +10,9 @@
  * liability, trademark and document use rules apply.
  */
 
-[NoInterfaceObject]
-interface SVGAnimatedPoints {
+interface mixin SVGAnimatedPoints {
   [Constant]
   readonly attribute SVGPointList points;
   [Constant]
   readonly attribute SVGPointList animatedPoints;
 };
-

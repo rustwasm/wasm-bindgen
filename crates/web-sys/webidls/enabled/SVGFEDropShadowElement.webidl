@@ -25,4 +25,4 @@ interface SVGFEDropShadowElement : SVGElement {
   void setStdDeviation(float stdDeviationX, float stdDeviationY);
 };
 
-SVGFEDropShadowElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEDropShadowElement includes SVGFilterPrimitiveStandardAttributes;

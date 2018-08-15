@@ -31,4 +31,4 @@ interface SVGFEDisplacementMapElement : SVGElement {
   readonly attribute SVGAnimatedEnumeration yChannelSelector;
 };
 
-SVGFEDisplacementMapElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEDisplacementMapElement includes SVGFilterPrimitiveStandardAttributes;

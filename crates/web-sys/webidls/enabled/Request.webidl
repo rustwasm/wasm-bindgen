@@ -41,7 +41,7 @@ interface Request {
   [ChromeOnly]
   void overrideContentPolicyType(nsContentPolicyType context);
 };
-Request implements Body;
+Request includes Body;
 
 dictionary RequestInit {
   ByteString method;

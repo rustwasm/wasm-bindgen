@@ -10,9 +10,7 @@
  * liability, trademark and document use rules apply.
  */
 
-[NoInterfaceObject]
-interface SVGURIReference {
+interface mixin SVGURIReference {
   [Constant]
   readonly attribute SVGAnimatedString href;
 };
-

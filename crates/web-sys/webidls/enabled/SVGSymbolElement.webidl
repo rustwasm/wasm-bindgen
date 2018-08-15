@@ -13,5 +13,5 @@
 interface SVGSymbolElement : SVGElement {
 };
 
-SVGSymbolElement implements SVGFitToViewBox;
-SVGSymbolElement implements SVGTests;
+SVGSymbolElement includes SVGFitToViewBox;
+SVGSymbolElement includes SVGTests;

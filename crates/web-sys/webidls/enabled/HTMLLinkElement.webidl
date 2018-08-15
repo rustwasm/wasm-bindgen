@@ -34,7 +34,7 @@ interface HTMLLinkElement : HTMLElement {
            attribute DOMString referrerPolicy;
   [PutForwards=value] readonly attribute DOMTokenList sizes;
 };
-HTMLLinkElement implements LinkStyle;
+HTMLLinkElement includes LinkStyle;
 
 // http://www.whatwg.org/specs/web-apps/current-work/#other-elements,-attributes-and-apis
 partial interface HTMLLinkElement {

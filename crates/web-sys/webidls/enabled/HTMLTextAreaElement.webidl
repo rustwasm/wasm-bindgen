@@ -81,4 +81,4 @@ interface HTMLTextAreaElement : HTMLElement {
   void setSelectionRange(unsigned long start, unsigned long end, optional DOMString direction);
 };
 
-HTMLTextAreaElement implements MozEditableElement;
+HTMLTextAreaElement includes MozEditableElement;

@@ -42,5 +42,4 @@ interface SVGMarkerElement : SVGElement {
   void setOrientToAngle(SVGAngle angle);
 };
 
-SVGMarkerElement implements SVGFitToViewBox;
-
+SVGMarkerElement includes SVGFitToViewBox;

@@ -147,7 +147,7 @@ partial interface HTMLInputElement {
            attribute DOMString useMap;
 };
 
-HTMLInputElement implements MozEditableElement;
+HTMLInputElement includes MozEditableElement;
 
 /*Non standard
 partial interface HTMLInputElement {
@@ -168,7 +168,7 @@ partial interface HTMLInputElement {
 };
 */
 
-HTMLInputElement implements MozImageLoadingContent;
+HTMLInputElement includes MozImageLoadingContent;
 
 // Webkit/Blink
 partial interface HTMLInputElement {

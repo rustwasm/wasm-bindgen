@@ -16,9 +16,8 @@
 // invalid widl
 //interface StackFrame;
 
-[NoInterfaceObject,
- Exposed=(Window,Worker,System)]
-interface ExceptionMembers
+[Exposed=(Window,Worker,System)]
+interface mixin ExceptionMembers
 {
   // The nsresult associated with this exception.
   readonly attribute unsigned long           result;
@@ -34,7 +33,7 @@ interface ExceptionMembers
   readonly attribute DOMString               filename;
   // Valid line numbers begin at '1'. '0' indicates unknown.
   readonly attribute unsigned long           lineNumber;
-  // Valid column numbers begin at 0. 
+  // Valid column numbers begin at 0.
   // We don't have an unambiguous indicator for unknown.
   readonly attribute unsigned long           columnNumber;
 
@@ -62,7 +61,7 @@ interface Exception {
   stringifier;
 };
 
-Exception implements ExceptionMembers;
+Exception includes ExceptionMembers;
 
 // XXXkhuey this is an 'exception', not an interface, but we don't have any
 // parser or codegen mechanisms for dealing with exceptions.
@@ -105,4 +104,4 @@ interface DOMException {
 
 // XXXkhuey copy all of Gecko's non-standard stuff onto DOMException, but leave
 // the prototype chain sane.
-DOMException implements ExceptionMembers;
+DOMException includes ExceptionMembers;

@@ -7,8 +7,7 @@
  * http://dom.spec.whatwg.org/#interface-childnode
  */
 
-[NoInterfaceObject]
-interface ChildNode {
+interface mixin ChildNode {
   [CEReactions, Throws, Unscopable]
   void before((Node or DOMString)... nodes);
   [CEReactions, Throws, Unscopable]
@@ -19,8 +18,7 @@ interface ChildNode {
   void remove();
 };
 
-[NoInterfaceObject]
-interface NonDocumentTypeChildNode {
+interface mixin NonDocumentTypeChildNode {
   [Pure]
   readonly attribute Element? previousElementSibling;
   [Pure]

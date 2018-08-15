@@ -11,8 +11,8 @@
  */
 
 // https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope-mixin
-[NoInterfaceObject, Exposed=(Window,Worker)]
-interface WindowOrWorkerGlobalScope {
+[Exposed=(Window,Worker)]
+interface mixin WindowOrWorkerGlobalScope {
   [Replaceable] readonly attribute USVString origin;
 
   // base64 utility methods

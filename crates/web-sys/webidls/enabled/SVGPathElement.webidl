@@ -14,5 +14,4 @@ interface SVGPathElement : SVGGeometryElement {
   unsigned long getPathSegAtLength(float distance);
 };
 
-SVGPathElement implements SVGAnimatedPathData;
-
+SVGPathElement includes SVGAnimatedPathData;

@@ -19,4 +19,4 @@ interface SVGFEOffsetElement : SVGElement {
   readonly attribute SVGAnimatedNumber dy;
 };
 
-SVGFEOffsetElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEOffsetElement includes SVGFilterPrimitiveStandardAttributes;

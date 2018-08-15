@@ -29,8 +29,8 @@ interface WorkerGlobalScope : EventTarget {
   // also has additional members in a partial interface
 };
 
-WorkerGlobalScope implements GlobalCrypto;
-WorkerGlobalScope implements WindowOrWorkerGlobalScope;
+WorkerGlobalScope includes GlobalCrypto;
+WorkerGlobalScope includes WindowOrWorkerGlobalScope;
 
 // Not implemented yet: bug 1072107.
-// WorkerGlobalScope implements FontFaceSource;
+// WorkerGlobalScope includes FontFaceSource;

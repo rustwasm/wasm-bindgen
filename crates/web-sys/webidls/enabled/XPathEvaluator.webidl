@@ -5,7 +5,7 @@
  */
 
 [Constructor]
-interface XPathEvaluator {
+interface mixin XPathEvaluator {
   [NewObject, Throws]
   XPathExpression createExpression(DOMString expression,
                                    optional XPathNSResolver? resolver = null);

@@ -23,4 +23,4 @@ partial interface Text {
   readonly attribute HTMLSlotElement? assignedSlot;
 };
 
-Text implements GeometryUtils;
+Text includes GeometryUtils;

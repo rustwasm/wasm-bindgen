@@ -23,4 +23,4 @@ interface SVGUseElement : SVGGraphicsElement {
   //readonly attribute SVGElementInstance animatedInstanceRoot;
 };
 
-SVGUseElement implements SVGURIReference;
+SVGUseElement includes SVGURIReference;

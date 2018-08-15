@@ -44,4 +44,4 @@ interface SVGFEConvolveMatrixElement : SVGElement {
   readonly attribute SVGAnimatedBoolean preserveAlpha;
 };
 
-SVGFEConvolveMatrixElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEConvolveMatrixElement includes SVGFilterPrimitiveStandardAttributes;

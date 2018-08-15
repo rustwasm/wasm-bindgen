@@ -38,4 +38,4 @@ interface SVGFEBlendElement : SVGElement {
   readonly attribute SVGAnimatedEnumeration mode;
 };
 
-SVGFEBlendElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEBlendElement includes SVGFilterPrimitiveStandardAttributes;

@@ -7,8 +7,6 @@
  * http://dev.w3.org/csswg/cssom/#the-linkstyle-interface
  */
 
-[NoInterfaceObject]
-interface LinkStyle {
+interface mixin LinkStyle {
       readonly attribute StyleSheet? sheet;
 };
-
