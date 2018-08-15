@@ -215,10 +215,12 @@ impl<'src> WebidlParse<'src, ()> for weedle::InterfaceDefinition<'src> {
         (): (),
     ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
+            info!("Skipping because of `ChromeOnly` attribute: {:?}", self);
             return Ok(());
         }
 
         if util::is_no_interface_object(&self.attributes) {
+            info!("Skipping because of `NoInterfaceObject` attribute: {:?}", self);
             return Ok(());
         }
 
@@ -664,6 +666,7 @@ fn member_operation<'src>(
     use weedle::interface::Special;
 
     if util::is_chrome_only(attrs) {
+        info!("Skipping `ChromeOnly` operation: {:?}", (self_name, identifier));
         return Ok(());
     }
 
@@ -691,7 +694,10 @@ fn member_operation<'src>(
             Special::Getter(weedle::term::Getter) => OperationId::IndexingGetter,
             Special::Setter(weedle::term::Setter) => OperationId::IndexingSetter,
             Special::Deleter(weedle::term::Deleter) => OperationId::IndexingDeleter,
-            Special::LegacyCaller(weedle::term::LegacyCaller) => return Ok(()),
+            Special::LegacyCaller(weedle::term::LegacyCaller) => {
+                warn!("Unsupported legacy caller: {:?}", (self_name, identifier));
+                return Ok(());
+            },
         };
         operation_ids.push(id);
     }
