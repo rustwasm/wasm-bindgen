@@ -13,3 +13,4 @@ pub mod js_value;
 pub mod boxed_js_value_slice;
 pub mod pointers;
 pub mod numbers;
+pub mod boxed_number_slices;

@@ -197,10 +197,23 @@ garbage-collected heap and the Wasm linear memory with `TextDecoder` and
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Yes | No | No | Yes | Yes | Yes | A JavaScript `TypedArray` view of the Wasm memory for the boxed slice of the appropriate type (`Int32Array`, `Uint8Array`, etc) |
+| Yes | No | No | Yes | Yes | Yes | A JavaScript `TypedArray` of the appropriate type (`Int32Array`, `Uint8Array`, etc...) |
 
-Note that this does ***not*** copy the whole slice of memory back and forth into
-the JavaScript heap from the Wasm linear memory.
+Note that the contents of the slice are copied into the JavaScript `TypedArray`
+from the Wasm linear memory when returning a boxed slice to JavaScript, and vice
+versa when receiving a JavaScript `TypedArray` as a boxed slice in Rust.
+
+### Example Rust Usage
+
+```rust
+{{#include ../../../examples/guide-supported-types-examples/src/boxed_number_slices.rs}}
+```
+
+### Example JavaScript Usage
+
+```js
+{{#include ../../../examples/guide-supported-types-examples/boxed_number_slices.js}}
+```
 
 ## `[u8]` `[i8]` `[u16]` `[i16]` `[u32]` `[i32]` `[u64]` `[i64]` `[f32]` `[f64]`
 
