@@ -1,0 +1,12 @@
+[package]
+name = "wasm-bindgen-canvas-demo"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = { path = "../.." }
+web-sys = { path = "../../crates/web-sys" }

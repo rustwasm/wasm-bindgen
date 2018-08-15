@@ -50,6 +50,7 @@ members = [
   "crates/webidl-tests",
   "examples/add",
   "examples/asm.js",
+  "examples/canvas",
   "examples/char",
   "examples/closures",
   "examples/comments",
