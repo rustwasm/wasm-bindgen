@@ -236,7 +236,7 @@ impl<'src> FirstPassRecord<'src> {
                 match ret.to_syn_type(TypePosition::Return) {
                     None => {
                         warn!(
-                            "Cannot convert return type to syn type: {:?} on {:?}",
+                            "Unsupported return type: {:?} on {:?}",
                             ret,
                             rust_name
                         );
@@ -320,7 +320,7 @@ impl<'src> FirstPassRecord<'src> {
                     syn_type
                 } else {
                     warn!(
-                        "Cannot convert argument type to syn type: {:?} on {:?}",
+                        "Unsupported argument type: {:?} on {:?}",
                         idl_type,
                         rust_name
                     );
@@ -397,7 +397,7 @@ impl<'src> FirstPassRecord<'src> {
             first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
             first_pass::OperationId::Operation(name) => match name {
                 None => {
-                    warn!("Operations without a name are unsupported");
+                    warn!("Unsupported unnamed operation: {:?}", operation_id);
                     return Vec::new();
                 }
                 Some(name) => name,
@@ -541,7 +541,7 @@ impl<'src> FirstPassRecord<'src> {
         let name = match operation_name {
             Some(name) => name.to_string(),
             None => {
-                warn!("Operations without a name are unsupported");
+                warn!("Unsupported unnamed operation: on {:?}", self_name);
                 return Vec::new();
             }
         };

@@ -123,7 +123,7 @@ impl<'src> FirstPass<'src, ()> for weedle::DictionaryDefinition<'src> {
         }
 
         if !record.dictionaries.insert(self.identifier.0) {
-            warn!("encountered multiple dictionary declarations of {}", self.identifier.0);
+            info!("Encountered multiple dictionary declarations: {}", self.identifier.0);
         }
 
         Ok(())
@@ -137,7 +137,7 @@ impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
         }
 
         if !record.enums.insert(self.identifier.0) {
-            warn!("Encountered multiple enum declarations of {}", self.identifier.0);
+            info!("Encountered multiple enum declarations: {}", self.identifier.0);
         }
 
         Ok(())
@@ -336,11 +336,11 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
         }
 
         if self.specials.len() > 1 {
-            warn!("Unsupported webidl operation {:?}", self);
+            warn!("Unsupported webidl operation: {:?}", self);
             return Ok(())
         }
         if let Some(StringifierOrStatic::Stringifier(_)) = self.modifier {
-            warn!("Unsupported webidl operation {:?}", self);
+            warn!("Unsupported webidl stringifier: {:?}", self);
             return Ok(())
         }
         let mut ids = vec![OperationId::Operation(self.identifier.map(|s| s.0))];
@@ -430,9 +430,10 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'s
         }
 
         if self.stringifier.is_some() {
-            warn!("Unsupported webidl operation {:?}", self);
+            warn!("Unsupported webidl stringifier: {:?}", self);
             return Ok(())
         }
+
         first_pass_operation(
             record,
             FirstPassOperationType::Mixin,
@@ -450,7 +451,7 @@ impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
         }
 
         if record.typedefs.insert(self.identifier.0, &self.type_.type_).is_some() {
-            warn!("Encountered multiple declarations of {}", self.identifier.0);
+            info!("Encountered multiple typedef declarations: {}", self.identifier.0);
         }
 
         Ok(())
