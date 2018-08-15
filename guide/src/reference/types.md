@@ -107,7 +107,7 @@ garbage-collected heap and the Wasm linear memory with `TextDecoder` and
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Yes | No | No | Yes | No | No | A JavaScript boolean value |
+| Yes | No | No | Yes | Yes | Yes | A JavaScript boolean value |
 
 ### Example Rust Usage
 
