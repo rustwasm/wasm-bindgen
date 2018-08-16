@@ -285,7 +285,7 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
             idl_type.to_idl_type(record)
         } else if record.interfaces.contains_key(self.0) {
             Some(IdlType::Interface(self.0))
-        } else if record.dictionaries.contains(self.0) {
+        } else if record.dictionaries.contains_key(self.0) {
             Some(IdlType::Dictionary(self.0))
         } else if record.enums.contains(self.0) {
             Some(IdlType::Enum(self.0))
@@ -467,7 +467,8 @@ impl<'a> IdlType<'a> {
             IdlType::Float32Array => Some(array("f32", pos)),
             IdlType::Float64Array => Some(array("f64", pos)),
 
-            IdlType::Interface(name) => {
+            IdlType::Interface(name) |
+            IdlType::Dictionary(name) => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
                 if pos == TypePosition::Argument {
                     Some(shared_ref(ty))
@@ -475,7 +476,6 @@ impl<'a> IdlType<'a> {
                     Some(ty)
                 }
             },
-            IdlType::Dictionary(name) => Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))),
             IdlType::Enum(name) => Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))),
 
             IdlType::Nullable(idl_type) => Some(option_ty(idl_type.to_syn_type(pos)?)),

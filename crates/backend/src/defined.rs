@@ -84,6 +84,7 @@ impl ImportedTypes for ast::Program {
     {
         self.imports.imported_types(f);
         self.consts.imported_types(f);
+        self.dictionaries.imported_types(f);
     }
 }
 
@@ -298,21 +299,44 @@ impl ImportedTypes for ast::Const {
     }
 }
 
+impl ImportedTypes for ast::Dictionary {
+    fn imported_types<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        f(&self.name, ImportedTypeKind::Definition);
+        for field in self.fields.iter() {
+            field.imported_types(f);
+        }
+    }
+}
+
+impl ImportedTypes for ast::DictionaryField {
+    fn imported_types<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        self.ty.imported_types(f);
+    }
+}
+
 /// Remove any methods, statics, &c, that reference types that are *not*
 /// defined.
 pub trait RemoveUndefinedImports {
-    fn remove_undefined_imports<F>(&mut self, is_defined: &F)
+    fn remove_undefined_imports<F>(&mut self, is_defined: &F) -> bool
     where
         F: Fn(&Ident) -> bool;
 }
 
 impl RemoveUndefinedImports for ast::Program {
-    fn remove_undefined_imports<F>(&mut self, is_defined: &F)
+    fn remove_undefined_imports<F>(&mut self, is_defined: &F) -> bool
     where
         F: Fn(&Ident) -> bool,
     {
-        self.imports.remove_undefined_imports(is_defined);
-        self.consts.remove_undefined_imports(is_defined);
+        let a = self.imports.remove_undefined_imports(is_defined);
+        let b = self.consts.remove_undefined_imports(is_defined);
+        let c = self.dictionaries.remove_undefined_imports(is_defined);
+        a || b || c
     }
 }
 
@@ -320,10 +344,11 @@ impl<T> RemoveUndefinedImports for Vec<T>
 where
     T: ImportedTypeReferences,
 {
-    fn remove_undefined_imports<F>(&mut self, is_defined: &F)
+    fn remove_undefined_imports<F>(&mut self, is_defined: &F) -> bool
     where
         F: Fn(&Ident) -> bool,
     {
+        let before = self.len();
         self.retain(|x| {
             let mut all_defined = true;
             x.imported_type_references(&mut |id| {
@@ -336,5 +361,6 @@ where
             });
             all_defined
         });
+        before != self.len()
     }
 }

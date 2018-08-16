@@ -350,6 +350,21 @@ impl From<bool> for JsValue {
     }
 }
 
+impl<'a, T> From<&'a T> for JsValue where T: JsCast {
+    fn from(s: &'a T) -> JsValue {
+        s.as_ref().clone()
+    }
+}
+
+impl<T> From<Option<T>> for JsValue where JsValue: From<T> {
+    fn from(s: Option<T>) -> JsValue {
+        match s {
+            Some(s) => s.into(),
+            None => JsValue::undefined(),
+        }
+    }
+}
+
 impl JsCast for JsValue {
     // everything is a `JsValue`!
     fn instanceof(_val: &JsValue) -> bool { true }
