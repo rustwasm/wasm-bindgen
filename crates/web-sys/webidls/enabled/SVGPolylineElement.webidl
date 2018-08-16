@@ -13,5 +13,4 @@
 interface SVGPolylineElement : SVGGeometryElement {
 };
 
-SVGPolylineElement implements SVGAnimatedPoints;
-
+SVGPolylineElement includes SVGAnimatedPoints;

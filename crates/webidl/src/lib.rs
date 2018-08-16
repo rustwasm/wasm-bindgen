@@ -215,10 +215,12 @@ impl<'src> WebidlParse<'src, ()> for weedle::InterfaceDefinition<'src> {
         (): (),
     ) -> Result<()> {
         if util::is_chrome_only(&self.attributes) {
+            info!("Skipping because of `ChromeOnly` attribute: {:?}", self);
             return Ok(());
         }
 
         if util::is_no_interface_object(&self.attributes) {
+            info!("Skipping because of `NoInterfaceObject` attribute: {:?}", self);
             return Ok(());
         }
 
@@ -293,7 +295,7 @@ impl<'src> WebidlParse<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
         if first_pass
             .interfaces
             .get(self.identifier.0)
-            .map(|interface_data| !interface_data.partial)
+            .map(|interface_data| interface_data.partial)
             .unwrap_or(true) {
             info!(
                 "Partial interface {} missing non-partial interface",
@@ -664,6 +666,7 @@ fn member_operation<'src>(
     use weedle::interface::Special;
 
     if util::is_chrome_only(attrs) {
+        info!("Skipping `ChromeOnly` operation: {:?}", (self_name, identifier));
         return Ok(());
     }
 
@@ -691,7 +694,10 @@ fn member_operation<'src>(
             Special::Getter(weedle::term::Getter) => OperationId::IndexingGetter,
             Special::Setter(weedle::term::Setter) => OperationId::IndexingSetter,
             Special::Deleter(weedle::term::Deleter) => OperationId::IndexingDeleter,
-            Special::LegacyCaller(weedle::term::LegacyCaller) => return Ok(()),
+            Special::LegacyCaller(weedle::term::LegacyCaller) => {
+                warn!("Unsupported legacy caller: {:?}", (self_name, identifier));
+                return Ok(());
+            },
         };
         operation_ids.push(id);
     }

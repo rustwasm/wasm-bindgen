@@ -19,6 +19,3 @@ Constructor(BaseAudioContext context, IIRFilterOptions options)]
 interface IIRFilterNode : AudioNode {
     void getFrequencyResponse(Float32Array frequencyHz, Float32Array magResponse, Float32Array phaseResponse);
 };
-
-// Mozilla extension
-IIRFilterNode implements AudioNodePassThrough;

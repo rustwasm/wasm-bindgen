@@ -19,4 +19,4 @@ interface HTMLFrameSetElement : HTMLElement {
   attribute DOMString rows;
 };
 
-HTMLFrameSetElement implements WindowEventHandlers;
+HTMLFrameSetElement includes WindowEventHandlers;

@@ -27,5 +27,5 @@ interface SVGPatternElement : SVGElement {
   readonly attribute SVGAnimatedLength height;
 };
 
-SVGPatternElement implements SVGFitToViewBox;
-SVGPatternElement implements SVGURIReference;
+SVGPatternElement includes SVGFitToViewBox;
+SVGPatternElement includes SVGURIReference;

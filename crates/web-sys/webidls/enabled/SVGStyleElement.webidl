@@ -20,5 +20,4 @@ interface SVGStyleElement : SVGElement {
   [SetterThrows]
   attribute DOMString title;
 };
-SVGStyleElement implements LinkStyle;
-
+SVGStyleElement includes LinkStyle;

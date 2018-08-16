@@ -30,4 +30,4 @@ partial interface HTMLBodyElement {
   attribute DOMString background;
 };
 
-HTMLBodyElement implements WindowEventHandlers;
+HTMLBodyElement includes WindowEventHandlers;

@@ -22,7 +22,3 @@ interface DelayNode : AudioNode {
     readonly attribute AudioParam delayTime;
 
 };
-
-// Mozilla extension
-DelayNode implements AudioNodePassThrough;
-

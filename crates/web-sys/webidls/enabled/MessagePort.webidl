@@ -19,4 +19,4 @@ interface MessagePort : EventTarget {
   attribute EventHandler onmessage;
   attribute EventHandler onmessageerror;
 };
-// MessagePort implements Transferable;
+// MessagePort includes Transferable;

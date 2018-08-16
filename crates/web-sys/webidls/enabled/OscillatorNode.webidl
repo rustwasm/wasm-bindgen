@@ -37,6 +37,3 @@ interface OscillatorNode : AudioScheduledSourceNode {
 
     void setPeriodicWave(PeriodicWave periodicWave);
 };
-
-// Mozilla extensions
-OscillatorNode implements AudioNodePassThrough;

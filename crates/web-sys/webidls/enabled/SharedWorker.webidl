@@ -9,4 +9,4 @@ interface SharedWorker : EventTarget {
     readonly attribute MessagePort port;
 };
 
-SharedWorker implements AbstractWorker;
+SharedWorker includes AbstractWorker;

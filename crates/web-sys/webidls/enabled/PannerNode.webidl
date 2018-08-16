@@ -73,7 +73,3 @@ interface PannerNode : AudioNode {
     attribute double coneOuterGain;
 
 };
-
-// Mozilla extension
-PannerNode implements AudioNodePassThrough;
-

@@ -36,4 +36,4 @@ interface SVGFETurbulenceElement : SVGElement {
   readonly attribute SVGAnimatedEnumeration type;
 };
 
-SVGFETurbulenceElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFETurbulenceElement includes SVGFilterPrimitiveStandardAttributes;

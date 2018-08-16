@@ -13,4 +13,4 @@
 interface SVGFEFloodElement : SVGElement {
 };
 
-SVGFEFloodElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEFloodElement includes SVGFilterPrimitiveStandardAttributes;

@@ -209,12 +209,11 @@ interface FrameLoader {
  *        The nsIWebBrowserPersistDocumentReceiver is a callback that
  *        will be fired once the document is ready for persisting.
  */
-[NoInterfaceObject]
-interface WebBrowserPersistable
+interface mixin WebBrowserPersistable
 {
   [Throws]
   void startPersistence(unsigned long long aOuterWindowID,
                         nsIWebBrowserPersistDocumentReceiver aRecv);
 };
 
-FrameLoader implements WebBrowserPersistable;
+FrameLoader includes WebBrowserPersistable;

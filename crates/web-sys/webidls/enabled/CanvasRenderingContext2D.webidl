@@ -107,33 +107,31 @@ interface CanvasRenderingContext2D {
   void demote();
 };
 
-CanvasRenderingContext2D implements CanvasState;
-CanvasRenderingContext2D implements CanvasTransform;
-CanvasRenderingContext2D implements CanvasCompositing;
-CanvasRenderingContext2D implements CanvasImageSmoothing;
-CanvasRenderingContext2D implements CanvasFillStrokeStyles;
-CanvasRenderingContext2D implements CanvasShadowStyles;
-CanvasRenderingContext2D implements CanvasFilters;
-CanvasRenderingContext2D implements CanvasRect;
-CanvasRenderingContext2D implements CanvasDrawPath;
-CanvasRenderingContext2D implements CanvasUserInterface;
-CanvasRenderingContext2D implements CanvasText;
-CanvasRenderingContext2D implements CanvasDrawImage;
-CanvasRenderingContext2D implements CanvasImageData;
-CanvasRenderingContext2D implements CanvasPathDrawingStyles;
-CanvasRenderingContext2D implements CanvasTextDrawingStyles;
-CanvasRenderingContext2D implements CanvasPathMethods;
-CanvasRenderingContext2D implements CanvasHitRegions;
+CanvasRenderingContext2D includes CanvasState;
+CanvasRenderingContext2D includes CanvasTransform;
+CanvasRenderingContext2D includes CanvasCompositing;
+CanvasRenderingContext2D includes CanvasImageSmoothing;
+CanvasRenderingContext2D includes CanvasFillStrokeStyles;
+CanvasRenderingContext2D includes CanvasShadowStyles;
+CanvasRenderingContext2D includes CanvasFilters;
+CanvasRenderingContext2D includes CanvasRect;
+CanvasRenderingContext2D includes CanvasDrawPath;
+CanvasRenderingContext2D includes CanvasUserInterface;
+CanvasRenderingContext2D includes CanvasText;
+CanvasRenderingContext2D includes CanvasDrawImage;
+CanvasRenderingContext2D includes CanvasImageData;
+CanvasRenderingContext2D includes CanvasPathDrawingStyles;
+CanvasRenderingContext2D includes CanvasTextDrawingStyles;
+CanvasRenderingContext2D includes CanvasPathMethods;
+CanvasRenderingContext2D includes CanvasHitRegions;
 
-[NoInterfaceObject]
-interface CanvasState {
+interface mixin CanvasState {
   // state
   void save(); // push state on state stack
   void restore(); // pop state stack and restore state
 };
 
-[NoInterfaceObject]
-interface CanvasTransform {
+interface mixin CanvasTransform {
   // transformations (default transform is the identity matrix)
 // NOT IMPLEMENTED           attribute SVGMatrix currentTransform;
   [Throws, LenientFloat]
@@ -151,20 +149,18 @@ interface CanvasTransform {
 };
 
 [NoInterfaceObject]
-interface CanvasCompositing {
+interface mixin CanvasCompositing {
   attribute unrestricted double globalAlpha; // (default 1.0)
   [Throws]
   attribute DOMString globalCompositeOperation; // (default source-over)
 };
 
-[NoInterfaceObject]
-interface CanvasImageSmoothing {
+interface mixin CanvasImageSmoothing {
   // drawing images
   attribute boolean imageSmoothingEnabled;
 };
 
-[NoInterfaceObject]
-interface CanvasFillStrokeStyles {
+interface mixin CanvasFillStrokeStyles {
   // colors and styles (see also the CanvasPathDrawingStyles interface)
   attribute (DOMString or CanvasGradient or CanvasPattern) strokeStyle; // (default black)
   attribute (DOMString or CanvasGradient or CanvasPattern) fillStyle; // (default black)
@@ -176,8 +172,7 @@ interface CanvasFillStrokeStyles {
   CanvasPattern? createPattern(CanvasImageSource image, [TreatNullAs=EmptyString] DOMString repetition);
 };
 
-[NoInterfaceObject]
-interface CanvasShadowStyles {
+interface mixin CanvasShadowStyles {
   [LenientFloat]
   attribute double shadowOffsetX; // (default 0)
   [LenientFloat]
@@ -187,14 +182,12 @@ interface CanvasShadowStyles {
   attribute DOMString shadowColor; // (default transparent black)
 };
 
-[NoInterfaceObject]
-interface CanvasFilters {
+interface mixin CanvasFilters {
   [Pref="canvas.filters.enabled", SetterThrows]
   attribute DOMString filter; // (default empty string = no filter)
 };
 
-[NoInterfaceObject]
-interface CanvasRect {
+interface mixin CanvasRect {
   [LenientFloat]
   void clearRect(double x, double y, double w, double h);
   [LenientFloat]
@@ -203,8 +196,7 @@ interface CanvasRect {
   void strokeRect(double x, double y, double w, double h);
 };
 
-[NoInterfaceObject]
-interface CanvasDrawPath {
+interface mixin CanvasDrawPath {
   // path API (see also CanvasPathMethods)
   void beginPath();
   void fill(optional CanvasWindingRule winding = "nonzero");
@@ -224,8 +216,7 @@ interface CanvasDrawPath {
   boolean isPointInStroke(Path2D path, unrestricted double x, unrestricted double y);
 };
 
-[NoInterfaceObject]
-interface CanvasUserInterface {
+interface mixin CanvasUserInterface {
   [Pref="canvas.focusring.enabled", Throws] void drawFocusIfNeeded(Element element);
 // NOT IMPLEMENTED  void drawSystemFocusRing(Path path, HTMLElement element);
   [Pref="canvas.customfocusring.enabled"] boolean drawCustomFocusRing(Element element);
@@ -234,8 +225,7 @@ interface CanvasUserInterface {
 // NOT IMPLEMENTED  void scrollPathIntoView(Path path);
 };
 
-[NoInterfaceObject]
-interface CanvasText {
+interface mixin CanvasText {
   // text (see also the CanvasPathDrawingStyles interface)
   [Throws, LenientFloat]
   void fillText(DOMString text, double x, double y, optional double maxWidth);
@@ -245,8 +235,7 @@ interface CanvasText {
   TextMetrics measureText(DOMString text);
 };
 
-[NoInterfaceObject]
-interface CanvasDrawImage {
+interface mixin CanvasDrawImage {
   [Throws, LenientFloat]
   void drawImage(CanvasImageSource image, double dx, double dy);
   [Throws, LenientFloat]
@@ -255,8 +244,7 @@ interface CanvasDrawImage {
   void drawImage(CanvasImageSource image, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh);
 };
 
-[NoInterfaceObject]
-interface CanvasImageData {
+interface mixin CanvasImageData {
   // pixel manipulation
   [NewObject, Throws]
   ImageData createImageData(double sw, double sh);
@@ -270,8 +258,7 @@ interface CanvasImageData {
   void putImageData(ImageData imagedata, double dx, double dy, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight);
 };
 
-[NoInterfaceObject]
-interface CanvasPathDrawingStyles {
+interface mixin CanvasPathDrawingStyles {
   // line caps/joins
   [LenientFloat]
   attribute double lineWidth; // (default 1)
@@ -287,8 +274,7 @@ interface CanvasPathDrawingStyles {
   [LenientFloat] attribute double lineDashOffset;
 };
 
-[NoInterfaceObject]
-interface CanvasTextDrawingStyles {
+interface mixin CanvasTextDrawingStyles {
   // text
   [SetterThrows]
   attribute DOMString font; // (default 10px sans-serif)
@@ -296,8 +282,7 @@ interface CanvasTextDrawingStyles {
   attribute DOMString textBaseline; // "top", "hanging", "middle", "alphabetic", "ideographic", "bottom" (default: "alphabetic")
 };
 
-[NoInterfaceObject]
-interface CanvasPathMethods {
+interface mixin CanvasPathMethods {
   // shared path API methods
   void closePath();
   [LenientFloat]
@@ -324,8 +309,7 @@ interface CanvasPathMethods {
   void ellipse(double x, double y, double radiusX, double radiusY, double rotation, double startAngle, double endAngle, optional boolean anticlockwise = false);
 };
 
-[NoInterfaceObject]
-interface CanvasHitRegions {
+interface mixin CanvasHitRegions {
   // hit regions
   [Pref="canvas.hitregions.enabled", Throws] void addHitRegion(optional HitRegionOptions options);
   [Pref="canvas.hitregions.enabled"] void removeHitRegion(DOMString id);
@@ -381,4 +365,4 @@ interface Path2D
 {
   void addPath(Path2D path, optional SVGMatrix transformation);
 };
-Path2D implements CanvasPathMethods;
+Path2D includes CanvasPathMethods;

@@ -10,8 +10,8 @@
 typedef object JSON;
 typedef (Blob or BufferSource or FormData or URLSearchParams or USVString) BodyInit;
 
-[NoInterfaceObject, Exposed=(Window,Worker)]
-interface Body {
+[Exposed=(Window,Worker)]
+interface mixin Body {
   readonly attribute boolean bodyUsed;
   [Throws]
   Promise<ArrayBuffer> arrayBuffer();

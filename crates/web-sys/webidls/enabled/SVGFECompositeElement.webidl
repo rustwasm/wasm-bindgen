@@ -37,4 +37,4 @@ interface SVGFECompositeElement : SVGElement {
   readonly attribute SVGAnimatedNumber k4;
 };
 
-SVGFECompositeElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFECompositeElement includes SVGFilterPrimitiveStandardAttributes;

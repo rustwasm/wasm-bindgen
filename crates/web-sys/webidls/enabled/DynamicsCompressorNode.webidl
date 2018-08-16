@@ -30,7 +30,3 @@ interface DynamicsCompressorNode : AudioNode {
     readonly attribute AudioParam release; // in Seconds
 
 };
-
-// Mozilla extension
-DynamicsCompressorNode implements AudioNodePassThrough;
-

@@ -4,7 +4,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-[NoInterfaceObject, Exposed=(Window,Worker,System)]
-interface AbstractWorker {
+[Exposed=(Window,Worker,System)]
+interface mixin AbstractWorker {
     attribute EventHandler onerror;
 };

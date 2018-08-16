@@ -80,8 +80,7 @@ partial interface HTMLElement {
   readonly attribute long offsetHeight;
 };
 
-[NoInterfaceObject]
-interface TouchEventHandlers {
+interface mixin TouchEventHandlers {
   [Func="nsGenericHTMLElement::TouchEventsEnabled"]
            attribute EventHandler ontouchstart;
   [Func="nsGenericHTMLElement::TouchEventsEnabled"]
@@ -92,9 +91,9 @@ interface TouchEventHandlers {
            attribute EventHandler ontouchcancel;
 };
 
-HTMLElement implements GlobalEventHandlers;
-HTMLElement implements DocumentAndElementEventHandlers;
-HTMLElement implements TouchEventHandlers;
-HTMLElement implements OnErrorEventHandlerForNodes;
+HTMLElement includes GlobalEventHandlers;
+HTMLElement includes DocumentAndElementEventHandlers;
+HTMLElement includes TouchEventHandlers;
+HTMLElement includes OnErrorEventHandlerForNodes;
 
 interface HTMLUnknownElement : HTMLElement {};

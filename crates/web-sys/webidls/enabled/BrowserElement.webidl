@@ -19,15 +19,13 @@ dictionary BrowserElementExecuteScriptOptions {
   DOMString? origin;
 };
 
-[NoInterfaceObject]
-interface BrowserElement {
+interface mixin BrowserElement {
 };
 
-BrowserElement implements BrowserElementCommon;
-BrowserElement implements BrowserElementPrivileged;
+BrowserElement includes BrowserElementCommon;
+BrowserElement includes BrowserElementPrivileged;
 
-[NoInterfaceObject]
-interface BrowserElementCommon {
+interface mixin BrowserElementCommon {
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]
@@ -39,8 +37,7 @@ interface BrowserElementCommon {
   void removeNextPaintListener(BrowserElementNextPaintEventCallback listener);
 };
 
-[NoInterfaceObject]
-interface BrowserElementPrivileged {
+interface mixin BrowserElementPrivileged {
   [Throws,
    Pref="dom.mozBrowserFramesEnabled",
    ChromeOnly]

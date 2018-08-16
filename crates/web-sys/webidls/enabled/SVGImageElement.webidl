@@ -23,6 +23,5 @@ interface SVGImageElement : SVGGraphicsElement {
   readonly attribute SVGAnimatedPreserveAspectRatio preserveAspectRatio;
 };
 
-SVGImageElement implements MozImageLoadingContent;
-SVGImageElement implements SVGURIReference;
-
+SVGImageElement includes MozImageLoadingContent;
+SVGImageElement includes SVGURIReference;

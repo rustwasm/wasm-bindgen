@@ -16,9 +16,3 @@ interface TextTrackList : EventTarget {
            attribute EventHandler onaddtrack;
            attribute EventHandler onremovetrack;
 };
-
-// Mozilla extensions
-partial interface TextTrackList {
-  [ChromeOnly]
-  readonly attribute HTMLMediaElement? mediaElement;
-};

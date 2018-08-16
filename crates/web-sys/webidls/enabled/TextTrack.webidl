@@ -40,9 +40,3 @@ interface TextTrack : EventTarget {
 
            attribute EventHandler oncuechange;
 };
-
-// Mozilla Extensions
-partial interface TextTrack {
-  [ChromeOnly]
-  readonly attribute TextTrackList? textTrackList;
-};

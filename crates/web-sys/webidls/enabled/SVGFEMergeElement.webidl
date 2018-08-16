@@ -13,4 +13,4 @@
 interface SVGFEMergeElement : SVGElement {
 };
 
-SVGFEMergeElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEMergeElement includes SVGFilterPrimitiveStandardAttributes;

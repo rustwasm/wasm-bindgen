@@ -27,4 +27,4 @@ interface SVGFEMorphologyElement : SVGElement {
   readonly attribute SVGAnimatedNumber radiusY;
 };
 
-SVGFEMorphologyElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEMorphologyElement includes SVGFilterPrimitiveStandardAttributes;

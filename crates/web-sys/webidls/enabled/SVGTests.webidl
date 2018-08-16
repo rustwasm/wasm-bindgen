@@ -10,8 +10,7 @@
  * liability, trademark and document use rules apply.
  */
 
-[NoInterfaceObject]
-interface SVGTests {
+interface mixin SVGTests {
 
   readonly attribute SVGStringList requiredFeatures;
   readonly attribute SVGStringList requiredExtensions;
@@ -19,4 +18,3 @@ interface SVGTests {
 
   boolean hasExtension(DOMString extension);
 };
-

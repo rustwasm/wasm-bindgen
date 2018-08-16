@@ -36,6 +36,3 @@ interface AudioBufferSourceNode : AudioScheduledSourceNode {
     void start(optional double when = 0, optional double grainOffset = 0,
                optional double grainDuration);
 };
-
-// Mozilla extensions
-AudioBufferSourceNode implements AudioNodePassThrough;

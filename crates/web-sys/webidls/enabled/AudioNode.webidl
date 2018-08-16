@@ -62,15 +62,3 @@ interface AudioNode : EventTarget {
     attribute ChannelInterpretation channelInterpretation;
 
 };
-
-// Mozilla extension
-partial interface AudioNode {
-  [ChromeOnly]
-  readonly attribute unsigned long id;
-};
-[NoInterfaceObject]
-interface AudioNodePassThrough {
-  [ChromeOnly]
-  attribute boolean passThrough;
-};
-

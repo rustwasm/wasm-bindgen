@@ -35,4 +35,4 @@ interface HTMLFrameElement : HTMLElement {
   attribute DOMString marginWidth;
 };
 
-HTMLFrameElement implements MozFrameLoaderOwner;
+HTMLFrameElement includes MozFrameLoaderOwner;

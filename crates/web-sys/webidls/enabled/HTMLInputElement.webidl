@@ -147,53 +147,7 @@ partial interface HTMLInputElement {
            attribute DOMString useMap;
 };
 
-// Mozilla extensions
-
-partial interface HTMLInputElement {
-  [GetterThrows, ChromeOnly]
-  readonly attribute XULControllers        controllers;
-  // Binaryname because we have a FragmentOrElement function named "TextLength()".
-  [NeedsCallerType, BinaryName="inputTextLength"]
-  readonly attribute long                  textLength;
-
-  [Throws, ChromeOnly]
-  sequence<DOMString> mozGetFileNameArray();
-
-  [ChromeOnly, Throws]
-  void mozSetFileNameArray(sequence<DOMString> fileNames);
-
-  [ChromeOnly]
-  void mozSetFileArray(sequence<File> files);
-
-  // This method is meant to use for testing only.
-  [ChromeOnly, Throws]
-  void mozSetDirectory(DOMString directoryPath);
-
-  // This method is meant to use for testing only.
-  [ChromeOnly]
-  void mozSetDndFilesAndDirectories(sequence<(File or Directory)> list);
-
-  // Number controls (<input type=number>) have an anonymous text control
-  // (<input type=text>) in the anonymous shadow tree that they contain. On
-  // such an anonymous text control this property provides access to the
-  // number control that owns the text control. This is useful, for example,
-  // in code that looks at the currently focused element to make decisions
-  // about which IME to bring up. Such code needs to be able to check for any
-  // owning number control since it probably wants to bring up a number pad
-  // instead of the standard keyboard, even when the anonymous text control has
-  // focus.
-  [ChromeOnly]
-  readonly attribute HTMLInputElement? ownerNumberControl;
-
-  boolean mozIsTextField(boolean aExcludePassword);
-
-  [ChromeOnly]
-  // This function will return null if @autocomplete is not defined for the
-  // current @type
-  AutocompleteInfo? getAutocompleteInfo();
-};
-
-HTMLInputElement implements MozEditableElement;
+HTMLInputElement includes MozEditableElement;
 
 /*Non standard
 partial interface HTMLInputElement {
@@ -214,7 +168,7 @@ partial interface HTMLInputElement {
 };
 */
 
-HTMLInputElement implements MozImageLoadingContent;
+HTMLInputElement includes MozImageLoadingContent;
 
 // Webkit/Blink
 partial interface HTMLInputElement {

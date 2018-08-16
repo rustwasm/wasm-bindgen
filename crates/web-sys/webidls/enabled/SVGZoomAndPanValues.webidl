@@ -10,8 +10,7 @@
  * liability, trademark and document use rules apply.
  */
 
-[NoInterfaceObject]
-interface SVGZoomAndPanValues {
+interface mixin SVGZoomAndPanValues {
 
   // Zoom and Pan Types
   const unsigned short SVG_ZOOMANDPAN_UNKNOWN = 0;
@@ -21,4 +20,3 @@ interface SVGZoomAndPanValues {
   [SetterThrows]
   attribute unsigned short zoomAndPan;
 };
-

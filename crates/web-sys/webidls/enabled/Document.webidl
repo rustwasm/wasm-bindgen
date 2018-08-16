@@ -435,12 +435,12 @@ partial interface Document {
   readonly attribute FlashClassification documentFlashClassification;
 };
 
-Document implements XPathEvaluator;
-Document implements GlobalEventHandlers;
-Document implements DocumentAndElementEventHandlers;
-Document implements TouchEventHandlers;
-Document implements ParentNode;
-Document implements OnErrorEventHandlerForNodes;
-Document implements GeometryUtils;
-Document implements FontFaceSource;
-Document implements DocumentOrShadowRoot;
+Document includes XPathEvaluator;
+Document includes GlobalEventHandlers;
+Document includes DocumentAndElementEventHandlers;
+Document includes TouchEventHandlers;
+Document includes ParentNode;
+Document includes OnErrorEventHandlerForNodes;
+Document includes GeometryUtils;
+Document includes FontFaceSource;
+Document includes DocumentOrShadowRoot;

@@ -8,8 +8,7 @@
  * http://w3c.github.io/webcomponents/spec/shadow/#extensions-to-the-documentorshadowroot-mixin
  */
 
-[NoInterfaceObject]
-interface DocumentOrShadowRoot {
+interface mixin DocumentOrShadowRoot {
   // Not implemented yet: bug 1430308.
   // Selection? getSelection();
   Element? elementFromPoint (float x, float y);

@@ -19,7 +19,3 @@ dictionary MediaElementAudioSourceOptions {
 interface MediaElementAudioSourceNode : AudioNode {
 
 };
-
-// Mozilla extensions
-MediaElementAudioSourceNode implements AudioNodePassThrough;
-

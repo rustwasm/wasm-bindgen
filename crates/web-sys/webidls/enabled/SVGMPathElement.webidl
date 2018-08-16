@@ -13,5 +13,4 @@
 interface SVGMPathElement : SVGElement {
 };
 
-SVGMPathElement implements SVGURIReference;
-
+SVGMPathElement includes SVGURIReference;
