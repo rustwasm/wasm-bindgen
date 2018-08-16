@@ -2990,7 +2990,7 @@ pub mod WebAssembly {
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table
         #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
-        pub fn new(table_descriptor: &JsValue) -> Table;
+        pub fn new(table_descriptor: &Object) -> Table;
 
         /// The `length` prototype property of the `WebAssembly.Table` object
         /// returns the length of the table, i.e. the number of elements in the
