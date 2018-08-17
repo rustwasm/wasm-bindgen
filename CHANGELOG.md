@@ -32,6 +32,23 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.17
+
+Released 2018-08-16.
+
+### Added
+
+* Greatly expanded documentation in the wasm-bindgen guide.
+* Added bindings to `js-sys` for `Intl.DateTimeFormat`
+* Added a number of `extends` attributes for types in `js-sys`
+
+### Fixed
+
+* Fixed compile on latest nightly with latest `proc-macro2`
+* Fixed compilation in some scenarios on Windows with paths in `module` paths
+
+--------------------------------------------------------------------------------
+
 ## 0.2.16
 
 Released 2018-08-13.
