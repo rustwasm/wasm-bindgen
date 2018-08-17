@@ -2092,7 +2092,7 @@ extern {
     /// or range of allowed values.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError
-    #[wasm_bindgen(extends = Error)]
+    #[wasm_bindgen(extends = Error, extends = Object)]
     #[derive(Clone, Debug)]
     pub type RangeError;
 
@@ -2111,7 +2111,7 @@ extern {
     /// variable is referenced.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError
-    #[wasm_bindgen(extends = Error)]
+    #[wasm_bindgen(extends = Error, extends = Object)]
     #[derive(Clone, Debug)]
     pub type ReferenceError;
 
@@ -2505,7 +2505,7 @@ extern {
     /// parsing code.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError
-    #[wasm_bindgen(extends = Error)]
+    #[wasm_bindgen(extends = Error, extends = Object)]
     #[derive(Clone, Debug)]
     pub type SyntaxError;
 
@@ -2525,7 +2525,7 @@ extern {
     /// expected type.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
-    #[wasm_bindgen(extends = Error)]
+    #[wasm_bindgen(extends = Error, extends = Object)]
     #[derive(Clone, Debug)]
     pub type TypeError;
 
@@ -2758,7 +2758,7 @@ extern {
     /// function was used in a wrong way.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError
-    #[wasm_bindgen(extends = Error, js_name = URIError)]
+    #[wasm_bindgen(extends = Error, extends = Object, js_name = URIError)]
     #[derive(Clone, Debug)]
     pub type UriError;
 
