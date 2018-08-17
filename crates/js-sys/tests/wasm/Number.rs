@@ -111,4 +111,5 @@ fn number_inheritance() {
     let n = Number::new(&JsValue::from(42));
     assert!(n.is_instance_of::<Number>());
     assert!(n.is_instance_of::<Object>());
+    let _: &Object = n.as_ref();
 }

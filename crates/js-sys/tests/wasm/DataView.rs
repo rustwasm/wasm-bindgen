@@ -50,4 +50,6 @@ fn dataview_inheritance() {
 
     assert!(v.is_instance_of::<DataView>());
     assert!(v.is_instance_of::<Object>());
+
+    let _: &Object = v.as_ref();
 }

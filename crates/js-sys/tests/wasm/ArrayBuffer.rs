@@ -41,4 +41,5 @@ fn arraybuffer_inheritance() {
     let buf = ArrayBuffer::new(4);
     assert!(buf.is_instance_of::<ArrayBuffer>());
     assert!(buf.is_instance_of::<Object>());
+    let _: &Object = buf.as_ref();
 }

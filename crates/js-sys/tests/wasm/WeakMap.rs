@@ -57,4 +57,5 @@ fn weakmap_inheritance() {
     let map = WeakMap::new();
     assert!(map.is_instance_of::<WeakMap>());
     assert!(map.is_instance_of::<Object>());
+    let _: &Object = map.as_ref();
 }

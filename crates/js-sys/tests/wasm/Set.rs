@@ -87,4 +87,5 @@ fn set_inheritance() {
     let set = Set::new(&JsValue::undefined());
     assert!(set.is_instance_of::<Set>());
     assert!(set.is_instance_of::<Object>());
+    let _: &Object = set.as_ref();
 }
