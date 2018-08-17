@@ -8,6 +8,7 @@ fn type_error() {
     let error = TypeError::new("msg");
     assert!(error.is_instance_of::<TypeError>());
     assert!(error.is_instance_of::<Error>());
+    assert!(error.is_instance_of::<Object>());
 
     let base: &Error = error.as_ref();
     assert_eq!(JsValue::from(base.message()), "msg");

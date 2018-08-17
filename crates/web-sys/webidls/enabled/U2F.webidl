@@ -9,8 +9,7 @@
  * https://www.fidoalliance.org/specs/fido-u2f-v1.1-id-20160915/fido-u2f-javascript-api-v1.1-id-20160915.html
  */
 
-[NoInterfaceObject]
-interface GlobalU2F {
+interface mixin GlobalU2F {
   [SecureContext, Throws, Pref="security.webauth.u2f"]
   readonly attribute U2F u2f;
 };

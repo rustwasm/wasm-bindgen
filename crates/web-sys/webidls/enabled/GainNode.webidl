@@ -21,7 +21,3 @@ interface GainNode : AudioNode {
     readonly attribute AudioParam gain;
 
 };
-
-// Mozilla extension
-GainNode implements AudioNodePassThrough;
-

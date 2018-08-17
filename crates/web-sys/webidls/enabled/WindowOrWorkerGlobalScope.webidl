@@ -11,8 +11,8 @@
  */
 
 // https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope-mixin
-[NoInterfaceObject, Exposed=(Window,Worker)]
-interface WindowOrWorkerGlobalScope {
+[Exposed=(Window,Worker)]
+interface mixin WindowOrWorkerGlobalScope {
   [Replaceable] readonly attribute USVString origin;
 
   // base64 utility methods
@@ -64,19 +64,4 @@ partial interface WindowOrWorkerGlobalScope {
 partial interface WindowOrWorkerGlobalScope {
   [Throws, Func="mozilla::dom::DOMPrefs::DOMCachesEnabled", SameObject]
   readonly attribute CacheStorage caches;
-};
-
-// Mozilla extensions
-partial interface WindowOrWorkerGlobalScope {
-  // Extensions to ImageBitmap bits.
-  // Bug 1141979 - [FoxEye] Extend ImageBitmap with interfaces to access its
-  // underlying image data
-  //
-  // Note:
-  // Overloaded functions cannot have different "extended attributes",
-  // so I cannot add preference on the extended version of createImageBitmap().
-  // To work around, I will then check the preference at run time and throw if
-  // the preference is set to be false.
-  [Throws]
-  Promise<ImageBitmap> createImageBitmap(ImageBitmapSource aImage, long aOffset, long aLength, ImageBitmapFormat aFormat, ImagePixelLayout aLayout);
 };

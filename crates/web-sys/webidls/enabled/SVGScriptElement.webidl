@@ -19,5 +19,4 @@ interface SVGScriptElement : SVGElement {
   attribute DOMString? crossOrigin;
 };
 
-SVGScriptElement implements SVGURIReference;
-
+SVGScriptElement includes SVGURIReference;

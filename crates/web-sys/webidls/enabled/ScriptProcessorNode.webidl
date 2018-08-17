@@ -18,7 +18,3 @@ interface ScriptProcessorNode : AudioNode {
     readonly attribute long bufferSize;
 
 };
-
-// Mozilla extension
-ScriptProcessorNode implements AudioNodePassThrough;
-

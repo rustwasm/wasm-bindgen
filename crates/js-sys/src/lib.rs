@@ -683,8 +683,7 @@ extern "C" {
 // Float32Array
 #[wasm_bindgen]
 extern "C" {
-    // TODO Uncomment this once TypedArray is added:
-    // #[wasm_bindgen(extends = Object, extends = TypedArray)]
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Float32Array;
 
@@ -737,8 +736,7 @@ extern "C" {
 // Float64Array
 #[wasm_bindgen]
 extern "C" {
-    // TODO Uncomment this once TypedArray is added:
-    // #[wasm_bindgen(extends = Object, extends = TypedArray)]
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Float64Array;
 
@@ -914,6 +912,7 @@ extern {
 // Int8Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Int8Array;
 
@@ -966,6 +965,7 @@ extern "C" {
 // Int16Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Int16Array;
 
@@ -1018,6 +1018,7 @@ extern "C" {
 // Int32Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Int32Array;
 
@@ -2539,6 +2540,7 @@ extern {
 // Uint8Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Uint8Array;
 
@@ -2591,6 +2593,7 @@ extern "C" {
 // Uint8ClampedArray
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Uint8ClampedArray;
 
@@ -2645,6 +2648,7 @@ extern "C" {
 // Uint16Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Uint16Array;
 
@@ -2697,6 +2701,7 @@ extern "C" {
 // Uint32Array
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Uint32Array;
 

@@ -15,5 +15,5 @@ interface SVGFEImageElement : SVGElement {
   readonly attribute SVGAnimatedPreserveAspectRatio preserveAspectRatio;
 };
 
-SVGFEImageElement implements SVGFilterPrimitiveStandardAttributes;
-SVGFEImageElement implements SVGURIReference;
+SVGFEImageElement includes SVGFilterPrimitiveStandardAttributes;
+SVGFEImageElement includes SVGURIReference;

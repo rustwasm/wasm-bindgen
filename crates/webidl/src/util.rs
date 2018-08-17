@@ -235,7 +235,11 @@ impl<'src> FirstPassRecord<'src> {
             ret @ _ => {
                 match ret.to_syn_type(TypePosition::Return) {
                     None => {
-                        warn!("Can not convert return type to syn type: {:?}", ret);
+                        warn!(
+                            "Unsupported return type: {:?} on {:?}",
+                            ret,
+                            rust_name
+                        );
                         return Vec::new();
                     },
                     Some(ret) => Some(ret),
@@ -315,7 +319,11 @@ impl<'src> FirstPassRecord<'src> {
                 let syn_type = if let Some(syn_type) = idl_type.to_syn_type(TypePosition::Argument) {
                     syn_type
                 } else {
-                    warn!("Can not convert argument type to syn type: {:?}", idl_type);
+                    warn!(
+                        "Unsupported argument type: {:?} on {:?}",
+                        idl_type,
+                        rust_name
+                    );
                     continue 'outer;
                 };
                 let argument_name = rust_ident(&argument_name.to_snake_case());
@@ -389,7 +397,7 @@ impl<'src> FirstPassRecord<'src> {
             first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
             first_pass::OperationId::Operation(name) => match name {
                 None => {
-                    warn!("Operations without a name are unsupported");
+                    warn!("Unsupported unnamed operation: {:?}", operation_id);
                     return Vec::new();
                 }
                 Some(name) => name,
@@ -533,7 +541,7 @@ impl<'src> FirstPassRecord<'src> {
         let name = match operation_name {
             Some(name) => name.to_string(),
             None => {
-                warn!("Operations without a name are unsupported");
+                warn!("Unsupported unnamed operation: on {:?}", self_name);
                 return Vec::new();
             }
         };

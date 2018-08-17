@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 macro_rules! each {
@@ -14,6 +15,19 @@ macro_rules! each {
         $m!(Float32Array);
         $m!(Float64Array);
     )
+}
+
+macro_rules! test_inheritence {
+    ($arr:ident) => ({
+        let arr = $arr::new(&JsValue::undefined());
+        assert!(arr.is_instance_of::<$arr>());
+        let _: &Object = arr.as_ref();
+        assert!(arr.is_instance_of::<Object>());        
+    })
+}
+#[wasm_bindgen_test]
+fn inheritence() {
+    each!(test_inheritence);
 }
 
 macro_rules! test_undefined {

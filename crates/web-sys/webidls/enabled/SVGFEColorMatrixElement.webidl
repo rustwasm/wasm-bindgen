@@ -27,4 +27,4 @@ interface SVGFEColorMatrixElement : SVGElement {
   readonly attribute SVGAnimatedNumberList values;
 };
 
-SVGFEColorMatrixElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEColorMatrixElement includes SVGFilterPrimitiveStandardAttributes;

@@ -10,9 +10,7 @@
  * liability, trademark and document use rules apply.
  */
 
-[NoInterfaceObject]
-interface FontFaceSource {
-
+interface mixin FontFaceSource {
   [Pref="layout.css.font-loading-api.enabled"]
   readonly attribute FontFaceSet fonts;
 };

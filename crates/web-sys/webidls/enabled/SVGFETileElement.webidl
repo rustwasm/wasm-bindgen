@@ -15,4 +15,4 @@ interface SVGFETileElement : SVGElement {
   readonly attribute SVGAnimatedString in1;
 };
 
-SVGFETileElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFETileElement includes SVGFilterPrimitiveStandardAttributes;

@@ -23,4 +23,4 @@ interface SVGFEDiffuseLightingElement : SVGElement {
   readonly attribute SVGAnimatedNumber kernelUnitLengthY;
 };
 
-SVGFEDiffuseLightingElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEDiffuseLightingElement includes SVGFilterPrimitiveStandardAttributes;

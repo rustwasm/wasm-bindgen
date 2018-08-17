@@ -29,21 +29,8 @@ interface WorkerGlobalScope : EventTarget {
   // also has additional members in a partial interface
 };
 
-WorkerGlobalScope implements GlobalCrypto;
-WorkerGlobalScope implements WindowOrWorkerGlobalScope;
+WorkerGlobalScope includes GlobalCrypto;
+WorkerGlobalScope includes WindowOrWorkerGlobalScope;
 
 // Not implemented yet: bug 1072107.
-// WorkerGlobalScope implements FontFaceSource;
-
-// Mozilla extensions
-partial interface WorkerGlobalScope {
-
-  void dump(optional DOMString str);
-
-  // XXXbz no spec for this yet, because the webperf WG is a bit dysfunctional
-  [Constant, Cached]
-  readonly attribute Performance performance;
-
-  [Func="WorkerGlobalScope::IsInAutomation", Throws]
-  object getJSTestingFunctions();
-};
+// WorkerGlobalScope includes FontFaceSource;

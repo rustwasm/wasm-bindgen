@@ -7,8 +7,7 @@
  * http://dom.spec.whatwg.org/#interface-parentnode
  */
 
-[NoInterfaceObject]
-interface ParentNode {
+interface mixin ParentNode {
   [Constant]
   readonly attribute HTMLCollection children;
   [Pure]

@@ -143,8 +143,6 @@ interface Element : Node {
   [ChromeOnly]
   void setCaptureAlways(optional boolean retargetToElement = false);
 
-  // Mozilla extensions
-
   // Obsolete methods.
   Attr? getAttributeNode(DOMString name);
   [CEReactions, Throws]
@@ -225,15 +223,6 @@ partial interface Element {
   readonly attribute long clientLeft;
   readonly attribute long clientWidth;
   readonly attribute long clientHeight;
-
-  // Mozilla specific stuff
-  /* The minimum/maximum offset that the element can be scrolled to
-     (i.e., the value that scrollLeft/scrollTop would be clamped to if they were
-     set to arbitrarily large values. */
-  [ChromeOnly] readonly attribute long scrollTopMin;
-               readonly attribute long scrollTopMax;
-  [ChromeOnly] readonly attribute long scrollLeftMin;
-               readonly attribute long scrollLeftMax;
 };
 
 // http://domparsing.spec.whatwg.org/#extensions-to-the-element-interface
@@ -276,11 +265,11 @@ partial interface Element {
            attribute DOMString slot;
 };
 
-Element implements ChildNode;
-Element implements NonDocumentTypeChildNode;
-Element implements ParentNode;
-Element implements Animatable;
-Element implements GeometryUtils;
+Element includes ChildNode;
+Element includes NonDocumentTypeChildNode;
+Element includes ParentNode;
+Element includes Animatable;
+Element includes GeometryUtils;
 
 // https://fullscreen.spec.whatwg.org/#api
 partial interface Element {

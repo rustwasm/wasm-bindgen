@@ -68,6 +68,5 @@ interface SVGSVGElement : SVGGraphicsElement {
   Element? getElementById(DOMString elementId);
 };
 
-SVGSVGElement implements SVGFitToViewBox;
-SVGSVGElement implements SVGZoomAndPanValues;
-
+SVGSVGElement includes SVGFitToViewBox;
+SVGSVGElement includes SVGZoomAndPanValues;

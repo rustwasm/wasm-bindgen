@@ -21,4 +21,4 @@ interface SVGFEGaussianBlurElement : SVGElement {
   void setStdDeviation(float stdDeviationX, float stdDeviationY);
 };
 
-SVGFEGaussianBlurElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFEGaussianBlurElement includes SVGFilterPrimitiveStandardAttributes;

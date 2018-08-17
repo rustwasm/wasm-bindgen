@@ -39,11 +39,3 @@ interface RTCDataChannel : EventTarget
   [Throws]
   void send(ArrayBufferView data);
 };
-
-// Mozilla extensions.
-partial interface RTCDataChannel
-{
-  readonly attribute DOMString protocol;
-  readonly attribute boolean ordered;
-  readonly attribute unsigned short id;
-};

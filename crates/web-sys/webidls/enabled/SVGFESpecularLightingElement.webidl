@@ -25,4 +25,4 @@ interface SVGFESpecularLightingElement : SVGElement {
   readonly attribute SVGAnimatedNumber kernelUnitLengthY;
 };
 
-SVGFESpecularLightingElement implements SVGFilterPrimitiveStandardAttributes;
+SVGFESpecularLightingElement includes SVGFilterPrimitiveStandardAttributes;

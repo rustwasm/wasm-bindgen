@@ -33,4 +33,4 @@ interface SVGGraphicsElement : SVGElement {
   SVGMatrix getTransformToElement(SVGGraphicsElement element);
 };
 
-SVGGraphicsElement implements SVGTests;
+SVGGraphicsElement includes SVGTests;

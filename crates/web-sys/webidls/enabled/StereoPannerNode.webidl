@@ -19,7 +19,3 @@ dictionary StereoPannerOptions : AudioNodeOptions {
 interface StereoPannerNode : AudioNode {
   readonly attribute AudioParam pan;
 };
-
-// Mozilla extension
-StereoPannerNode implements AudioNodePassThrough;
-

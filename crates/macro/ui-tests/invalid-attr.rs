@@ -12,12 +12,6 @@ extern "C" {
     #[wasm_bindgen(y)]
     fn bar();
 
-    #[wasm_bindgen z]
-    fn bar();
-
-    #[wasm_bindgen(z2) x]
-    fn bar();
-
     #[wasm_bindgen {  }]
     fn bar();
 }

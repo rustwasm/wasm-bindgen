@@ -44,14 +44,3 @@ dictionary DeviceMotionEventInit : EventInit {
   DeviceRotationRateInit rotationRate;
   double? interval = null;
 };
-
-// Mozilla extensions.
-partial interface DeviceMotionEvent {
-  void initDeviceMotionEvent(DOMString type,
-                             optional boolean canBubble = false,
-                             optional boolean cancelable = false,
-                             optional DeviceAccelerationInit acceleration,
-                             optional DeviceAccelerationInit accelerationIncludingGravity,
-                             optional DeviceRotationRateInit rotationRate,
-                             optional double? interval = null);
-};

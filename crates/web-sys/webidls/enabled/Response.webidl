@@ -30,7 +30,7 @@ interface Response {
 
   [ChromeOnly, NewObject, Throws] Response cloneUnfiltered();
 };
-Response implements Body;
+Response includes Body;
 
 // This should be part of Body but we don't want to expose body to request yet.
 // See bug 1387483.

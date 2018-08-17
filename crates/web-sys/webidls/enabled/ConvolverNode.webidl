@@ -24,7 +24,3 @@ interface ConvolverNode : AudioNode {
       attribute boolean normalize;
 
 };
-
-// Mozilla extension
-ConvolverNode implements AudioNodePassThrough;
-

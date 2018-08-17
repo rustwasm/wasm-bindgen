@@ -9,6 +9,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use weedle::{DictionaryDefinition, PartialDictionaryDefinition};
 use weedle::argument::Argument;
 use weedle::attribute::ExtendedAttribute;
 use weedle::interface::{StringifierOrStatic, Special};
@@ -24,13 +25,13 @@ use util::camel_case_ident;
 #[derive(Default)]
 pub(crate) struct FirstPassRecord<'src> {
     pub(crate) interfaces: BTreeMap<&'src str, InterfaceData<'src>>,
-    pub(crate) dictionaries: BTreeSet<&'src str>,
     pub(crate) enums: BTreeSet<&'src str>,
     /// The mixins, mapping their name to the webidl ast node for the mixin.
     pub(crate) mixins: BTreeMap<&'src str, MixinData<'src>>,
     pub(crate) typedefs: BTreeMap<&'src str, &'src weedle::types::Type<'src>>,
     pub(crate) namespaces: BTreeMap<&'src str, NamespaceData<'src>>,
     pub(crate) includes: BTreeMap<&'src str, BTreeSet<&'src str>>,
+    pub(crate) dictionaries: BTreeMap<&'src str, DictionaryData<'src>>,
 }
 
 /// We need to collect interface data during the first pass, to be used later.
@@ -59,6 +60,13 @@ pub(crate) struct NamespaceData<'src> {
     pub(crate) partial: bool,
     pub(crate) members: Vec<&'src NamespaceMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
+}
+
+#[derive(Default)]
+pub(crate) struct DictionaryData<'src> {
+    /// Whether only partial namespaces were encountered
+    pub(crate) partials: Vec<&'src PartialDictionaryDefinition<'src>>,
+    pub(crate) definition: Option<&'src DictionaryDefinition<'src>>,
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
@@ -99,6 +107,7 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
 
         match self {
             Dictionary(dictionary) => dictionary.first_pass(record, ()),
+            PartialDictionary(dictionary) => dictionary.first_pass(record, ()),
             Enum(enum_) => enum_.first_pass(record, ()),
             IncludesStatement(includes) => includes.first_pass(record, ()),
             Interface(interface) => interface.first_pass(record, ()),
@@ -118,14 +127,19 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
 
 impl<'src> FirstPass<'src, ()> for weedle::DictionaryDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(());
-        }
+        record.dictionaries.entry(self.identifier.0)
+            .or_default()
+            .definition = Some(self);
+        Ok(())
+    }
+}
 
-        if !record.dictionaries.insert(self.identifier.0) {
-            warn!("encountered multiple dictionary declarations of {}", self.identifier.0);
-        }
-
+impl<'src> FirstPass<'src, ()> for weedle::PartialDictionaryDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, (): ()) -> Result<()> {
+        record.dictionaries.entry(self.identifier.0)
+            .or_default()
+            .partials
+            .push(self);
         Ok(())
     }
 }
@@ -137,7 +151,7 @@ impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
         }
 
         if !record.enums.insert(self.identifier.0) {
-            warn!("Encountered multiple enum declarations of {}", self.identifier.0);
+            info!("Encountered multiple enum declarations: {}", self.identifier.0);
         }
 
         Ok(())
@@ -153,7 +167,7 @@ impl<'src> FirstPass<'src, ()> for weedle::IncludesStatementDefinition<'src> {
         record
             .includes
             .entry(self.lhs_identifier.0)
-            .or_insert_with(Default::default)
+            .or_default()
             .insert(self.rhs_identifier.0);
 
         Ok(())
@@ -336,11 +350,11 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
         }
 
         if self.specials.len() > 1 {
-            warn!("Unsupported webidl operation {:?}", self);
+            warn!("Unsupported webidl operation: {:?}", self);
             return Ok(())
         }
         if let Some(StringifierOrStatic::Stringifier(_)) = self.modifier {
-            warn!("Unsupported webidl operation {:?}", self);
+            warn!("Unsupported webidl stringifier: {:?}", self);
             return Ok(())
         }
         let mut ids = vec![OperationId::Operation(self.identifier.map(|s| s.0))];
@@ -372,7 +386,7 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceMixinDefinition<'src>{
             let mixin_data = record
                 .mixins
                 .entry(self.identifier.0)
-                .or_insert_with(Default::default);
+                .or_default();
             mixin_data.partial = false;
             mixin_data.members.extend(&self.members.body);
         }
@@ -430,9 +444,10 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'s
         }
 
         if self.stringifier.is_some() {
-            warn!("Unsupported webidl operation {:?}", self);
+            warn!("Unsupported webidl stringifier: {:?}", self);
             return Ok(())
         }
+
         first_pass_operation(
             record,
             FirstPassOperationType::Mixin,
@@ -450,7 +465,7 @@ impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
         }
 
         if record.typedefs.insert(self.identifier.0, &self.type_.type_).is_some() {
-            warn!("Encountered multiple declarations of {}", self.identifier.0);
+            info!("Encountered multiple typedef declarations: {}", self.identifier.0);
         }
 
         Ok(())

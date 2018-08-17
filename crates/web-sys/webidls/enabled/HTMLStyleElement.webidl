@@ -17,5 +17,4 @@ interface HTMLStyleElement : HTMLElement {
            [CEReactions, SetterThrows, Pure]
            attribute DOMString type;
 };
-HTMLStyleElement implements LinkStyle;
-
+HTMLStyleElement includes LinkStyle;

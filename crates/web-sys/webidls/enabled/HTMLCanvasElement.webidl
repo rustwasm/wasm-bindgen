@@ -33,23 +33,6 @@ interface HTMLCanvasElement : HTMLElement {
               optional any encoderOptions);
 };
 
-// Mozilla specific bits
-partial interface HTMLCanvasElement {
-  [Pure, SetterThrows]
-           attribute boolean mozOpaque;
-  [Throws, NeedsSubjectPrincipal]
-  File mozGetAsFile(DOMString name, optional DOMString? type = null);
-  // A Mozilla-only extension to get a canvas context backed by double-buffered
-  // shared memory. Only privileged callers can call this.
-  [ChromeOnly, Throws]
-  nsISupports? MozGetIPCContext(DOMString contextId);
-
-           attribute PrintCallback? mozPrintCallback;
-
-  [Throws, Pref="canvas.capturestream.enabled", NeedsSubjectPrincipal]
-  CanvasCaptureMediaStream captureStream(optional double frameRate);
-};
-
 // For OffscreenCanvas
 // Reference: https://wiki.whatwg.org/wiki/OffscreenCanvas
 partial interface HTMLCanvasElement {

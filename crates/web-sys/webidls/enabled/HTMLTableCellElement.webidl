@@ -21,12 +21,6 @@ interface HTMLTableCellElement : HTMLElement {
            [CEReactions, SetterThrows]
            attribute DOMString headers;
   readonly attribute long cellIndex;
-
-  // Mozilla-specific extensions
-           [CEReactions, SetterThrows]
-           attribute DOMString abbr;
-           [CEReactions, SetterThrows]
-           attribute DOMString scope;
 };
 
 partial interface HTMLTableCellElement {
