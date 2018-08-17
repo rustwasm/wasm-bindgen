@@ -1,7 +1,7 @@
+use js_sys::*;
+use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
-use js_sys::*;
 
 #[wasm_bindgen_test]
 fn test() {
@@ -36,7 +36,9 @@ fn test() {
     v.set_int8(0, 42);
 
     // TODO: figure out how to do `bytes[2]`
-    bytes.subarray(2, 3).for_each(&mut |x, _, _| assert_eq!(x, 42));
+    bytes
+        .subarray(2, 3)
+        .for_each(&mut |x, _, _| assert_eq!(x, 42));
 }
 
 #[wasm_bindgen_test]
@@ -50,6 +52,5 @@ fn dataview_inheritance() {
 
     assert!(v.is_instance_of::<DataView>());
     assert!(v.is_instance_of::<Object>());
-
     let _: &Object = v.as_ref();
 }
