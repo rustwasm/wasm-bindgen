@@ -273,9 +273,13 @@ impl<'src> FirstPassRecord<'src> {
             let rust_name = if possibilities.len() > 1 {
                 let mut rust_name = rust_name.clone();
                 let mut first = true;
-                for ((argument_name, _, _), idl_type) in arguments.iter().zip(idl_types) {
+                let iter = arguments.iter().zip(idl_types).enumerate();
+                for (i, ((argument_name, _, _), idl_type)) in iter {
+                    if possibilities.iter().all(|p| p.get(i) == Some(idl_type)) {
+                        continue
+                    }
                     if first {
-                        rust_name.push_str("_using_");
+                        rust_name.push_str("_with_");
                         first = false;
                     } else {
                         rust_name.push_str("_and_");
