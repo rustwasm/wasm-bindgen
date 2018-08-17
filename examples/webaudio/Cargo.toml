@@ -1,0 +1,11 @@
+[package]
+name = "webaudio"
+version = "0.1.0"
+authors = ["Andrew Chin <achin@eminence32.net>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { path = "../.." }
+web-sys = { path = "../../crates/web-sys" }
