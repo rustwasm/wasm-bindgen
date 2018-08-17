@@ -1,5 +1,5 @@
 use proc_macro2::*;
-use quote::ToTokens;
+use quote::{ToTokens, TokenStreamExt};
 
 #[macro_export]
 macro_rules! err_span {
@@ -79,13 +79,13 @@ impl ToTokens for Diagnostic {
             Repr::Single { text, span } => {
                 let cs2 = (Span::call_site(), Span::call_site());
                 let (start, end) = span.unwrap_or(cs2);
-                dst.extend(Some(Ident::new("compile_error", start).into()));
-                dst.extend(Some(Punct::new('!', Spacing::Alone).into()));
+                dst.append(Ident::new("compile_error", start));
+                dst.append(Punct::new('!', Spacing::Alone));
                 let mut message = TokenStream::new();
-                message.extend(Some(Literal::string(text).into()));
+                message.append(Literal::string(text));
                 let mut group = Group::new(Delimiter::Brace, message);
                 group.set_span(end);
-                dst.extend(Some(group.into()));
+                dst.append(group);
             }
             Repr::Multi { diagnostics } => {
                 for diagnostic in diagnostics {
