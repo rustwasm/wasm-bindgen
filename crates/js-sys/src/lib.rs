@@ -2973,6 +2973,40 @@ extern "C" {
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
     pub fn from_char_code5(a: u32, b: u32, c: u32, d: u32, e: u32) -> JsString;
 
+
+    /// The static String.fromCodePoint() method returns a string created by
+    /// using the specified sequence of code points.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    ///
+    /// # Exceptions
+    ///
+    /// A RangeError is thrown if an invalid Unicode code point is given
+    ///
+    /// # Notes
+    ///
+    /// There are a few bindings to `from_code_point` in `js-sys`: `from_code_point1`, `from_code_point2`, etc...
+    /// with different arities.
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point1(a: u32) -> Result<JsString, JsValue>;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point2(a: u32, b: u32) -> Result<JsString, JsValue>;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point3(a: u32, b: u32, c: u32) -> Result<JsString, JsValue>;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point4(a: u32, b: u32, c: u32, d: u32) -> Result<JsString, JsValue>;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point5(a: u32, b: u32, c: u32, d: u32, e: u32) -> Result<JsString, JsValue>;
+
+
     /// The `includes()` method determines whether one string may be found
     /// within another string, returning true or false as appropriate.
     ///
