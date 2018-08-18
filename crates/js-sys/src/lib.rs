@@ -885,6 +885,7 @@ impl Function {
 // Generator
 #[wasm_bindgen]
 extern {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Generator;
 
