@@ -2,8 +2,10 @@
 
 [View this example online](https://webassembly.studio/?f=ppd7u8k9i9)
 
-This directory is an example of using the `#[wasm_bindgen]` macro to import the
-`console.log` function and call it
+
+This directory is an example of two ways to get access to the `console.log` function.
+The first way uses the `#[wasm_bindgen]` macro to import the function and call it.
+The second way uses the binding from the `web-sys` crate.
 
 You can build the example with:
 
