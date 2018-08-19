@@ -54,6 +54,10 @@ fn date_time_format() {
 
     let a = Intl::DateTimeFormat::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
+
+    assert!(c.is_instance_of::<Intl::DateTimeFormat>());
+    assert!(c.is_instance_of::<Object>());
+    let _: &Object = c.as_ref();
 }
 
 #[wasm_bindgen_test]
