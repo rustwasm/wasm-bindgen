@@ -38,6 +38,17 @@ fn collator() {
 }
 
 #[wasm_bindgen_test]
+fn collator_inheritance() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+    let c = Intl::Collator::new(&locales, &opts);
+
+    assert!(c.is_instance_of::<Intl::Collator>());
+    assert!(c.is_instance_of::<Object>());
+    let _: &Object = c.as_ref();
+}
+
+#[wasm_bindgen_test]
 fn date_time_format() {
     let locales = Array::of1(&JsValue::from("en-US"));
     let opts = Object::new();
@@ -50,6 +61,17 @@ fn date_time_format() {
 
     let a = Intl::DateTimeFormat::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
+}
+
+#[wasm_bindgen_test]
+fn date_time_format_inheritance() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+    let c = Intl::DateTimeFormat::new(&locales, &opts);
+
+    assert!(c.is_instance_of::<Intl::DateTimeFormat>());
+    assert!(c.is_instance_of::<Object>());
+    let _: &Object = c.as_ref();
 }
 
 #[wasm_bindgen_test]
@@ -67,6 +89,17 @@ fn number_format() {
 }
 
 #[wasm_bindgen_test]
+fn number_format_inheritance() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+    let n = Intl::NumberFormat::new(&locales, &opts);
+
+    assert!(n.is_instance_of::<Intl::NumberFormat>());
+    assert!(n.is_instance_of::<Object>());
+    let _: &Object = n.as_ref();
+}
+
+#[wasm_bindgen_test]
 fn plural_rules() {
     let locales = Array::of1(&JsValue::from("en-US"));
     let opts = Object::new();
@@ -75,6 +108,17 @@ fn plural_rules() {
     assert!(r.resolved_options().is_instance_of::<Object>());
     assert_eq!(r.select(1_f64), "one");
 
-    let r = Intl::PluralRules::supported_locales_of(&locales, &opts);
-    assert!(r.is_instance_of::<Array>());
+    let a = Intl::PluralRules::supported_locales_of(&locales, &opts);
+    assert!(a.is_instance_of::<Array>());
+}
+
+#[wasm_bindgen_test]
+fn plural_rules_inheritance() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+    let r = Intl::PluralRules::new(&locales, &opts);
+
+    assert!(r.is_instance_of::<Intl::PluralRules>());
+    assert!(r.is_instance_of::<Object>());
+    let _: &Object = r.as_ref();
 }
