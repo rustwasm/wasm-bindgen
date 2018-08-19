@@ -547,7 +547,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             if self.js_arguments.is_empty() {
                 unreachable!("the last argument of a variadic must be a slice");
             }
-            let last_arg = self.js_arguments.len() - 1; // check implies > 0
+            let last_arg = self.js_arguments.len() - 1; // check implies >= 0
             // The variadic part of the arguments could be passed as as a typed array in
             // javascript, so we cannot just do `.concat(..)`, as this seems to convert the
             // contents to strings (javascript is very strange).
