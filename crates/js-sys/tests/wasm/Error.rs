@@ -42,4 +42,5 @@ fn error_inheritance() {
     let error = Error::new("test");
     assert!(error.is_instance_of::<Error>());
     assert!(error.is_instance_of::<Object>());
+    let _: &Object = error.as_ref();
 }
