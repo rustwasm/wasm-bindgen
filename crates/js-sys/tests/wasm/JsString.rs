@@ -7,6 +7,7 @@ use js_sys::*;
 #[wasm_bindgen(module = "tests/wasm/JsString.js")]
 extern {
     fn new_string_object() -> JsValue;
+    fn get_replacer_function() -> Function;
 }
 
 #[wasm_bindgen_test]
@@ -217,6 +218,31 @@ fn locale_compare() {
 }
 
 #[wasm_bindgen_test]
+fn match_() {
+    let s = "The quick brown fox jumped over the lazy dog. It barked.";
+    let re = RegExp::new("[A-Z]", "g");
+    let result = JsString::from(s).match_(&re);
+    let obj = result.unwrap();
+
+    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()), "T");
+    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()), "I");
+
+    let result = JsString::from("foo").match_(&re);
+    assert!(result.is_none());
+
+    let s = "For more information, see Chapter 3.4.5.1";
+    let re = RegExp::new("see (chapter \\d+(\\.\\d)*)", "i");
+    let result = JsString::from(s).match_(&re);
+    let obj = result.unwrap();
+
+    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()), "see Chapter 3.4.5.1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()), "Chapter 3.4.5.1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"2".into()), ".1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"index".into()), 22);
+    assert_eq!(Reflect::get(obj.as_ref(), &"input".into()), s);
+}
+
+#[wasm_bindgen_test]
 fn normalize() {
     let js = JsString::from("\u{1E9B}\u{0323}");
 
@@ -260,9 +286,72 @@ fn repeat() {
 }
 
 #[wasm_bindgen_test]
+fn replace() {
+    let js = JsString::from("The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?");
+    let re = RegExp::new("dog", "g");
+    let result = js.replace(&re, "ferret");
+
+    assert_eq!(result, "The quick brown fox jumped over the lazy ferret. If the ferret reacted, was it really lazy?");
+
+    let js = JsString::from("borderTop");
+    let re = RegExp::new("[A-Z]", "g");
+    let result = js.replace_function(&re, &get_replacer_function());
+
+    assert_eq!(result, "border-top");
+}
+
+#[wasm_bindgen_test]
+fn search() {
+    let js = JsString::from("The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?");
+    let re = RegExp::new("[^\\w\\s]", "g");
+
+    assert_eq!(js.search(&re), 44);
+
+    let js = JsString::from("hey JudE");
+    let re1 = RegExp::new("[A-Z]", "g");
+    let re2 = RegExp::new("[.]", "g");
+
+    assert_eq!(js.search(&re1), 4);
+    assert_eq!(js.search(&re2), -1);
+}
+
+#[wasm_bindgen_test]
 fn slice() {
     let characters = JsString::from("acxn18");
     assert_eq!(characters.slice(1, 3), "cx");
+}
+
+#[wasm_bindgen_test]
+fn split() {
+    let js = JsString::from("Oh brave new world");
+    let result = js.split(" ");
+
+    let mut v = Vec::with_capacity(result.length() as usize);
+    result.for_each(&mut |x, _, _| v.push(x));
+
+    assert_eq!(v[0], "Oh");
+    assert_eq!(v[1], "brave");
+    assert_eq!(v[2], "new");
+    assert_eq!(v[3], "world");
+
+    let js = JsString::from("Oct,Nov,Dec");
+    let result = js.split(",");
+
+    let mut v = Vec::with_capacity(result.length() as usize);
+    result.for_each(&mut |x, _, _| v.push(x));
+
+    assert_eq!(v[0], "Oct");
+    assert_eq!(v[1], "Nov");
+    assert_eq!(v[2], "Dec");
+
+    let result = js.split_limit(",", 2);
+
+    let mut v = Vec::with_capacity(result.length() as usize);
+    result.for_each(&mut |x, _, _| v.push(x));
+
+    assert_eq!(result.length(), 2);
+    assert_eq!(v[0], "Oct");
+    assert_eq!(v[1], "Nov");
 }
 
 #[wasm_bindgen_test]

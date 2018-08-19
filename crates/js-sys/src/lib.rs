@@ -2974,7 +2974,6 @@ extern "C" {
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
     pub fn from_char_code5(a: u32, b: u32, c: u32, d: u32, e: u32) -> JsString;
 
-
     /// The static String.fromCodePoint() method returns a string created by
     /// using the specified sequence of code points.
     ///
@@ -3007,7 +3006,6 @@ extern "C" {
     #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
     pub fn from_code_point5(a: u32, b: u32, c: u32, d: u32, e: u32) -> Result<JsString, JsValue>;
 
-
     /// The `includes()` method determines whether one string may be found
     /// within another string, returning true or false as appropriate.
     ///
@@ -3038,6 +3036,12 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
     #[wasm_bindgen(method, js_class = "String", js_name = localeCompare)]
     pub fn locale_compare(this: &JsString, compare_string: &str, locales: &Array, options: &Object) -> i32;
+
+    /// The match() method retrieves the matches when matching a string against a regular expression.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
+    #[wasm_bindgen(method, js_class = "String", js_name = match)]
+    pub fn match_(this: &JsString, pattern: &RegExp) -> Option<Object>;
 
     /// The normalize() method returns the Unicode Normalization Form
     /// of a given string (if the value isn't a string, it will be converted to one first).
@@ -3071,12 +3075,44 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn repeat(this: &JsString, count: i32) -> JsString;
 
+    /// The replace() method returns a new string with some or all matches of a pattern
+    /// replaced by a replacement. The pattern can be a string or a RegExp, and
+    /// the replacement can be a string or a function to be called for each match.
+    ///
+    /// Note: The original string will remain unchanged.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn replace(this: &JsString, pattern: &RegExp, replacement: &str) -> JsString;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    pub fn replace_function(this: &JsString, pattern: &RegExp, replacement: &Function) -> JsString;
+
+    /// The search() method executes a search for a match between
+    /// a regular expression and this String object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/search
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn search(this: &JsString, pattern: &RegExp) -> i32;
+
     /// The `slice()` method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
     #[wasm_bindgen(method, js_class = "String")]
     pub fn slice(this: &JsString, start: u32, end: u32) -> JsString;
+
+    /// The split() method splits a String object into an array of strings by separating the string
+    /// into substrings, using a specified separator string to determine where to make each split.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn split(this: &JsString, separator: &str) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    pub fn split_limit(this: &JsString, separator: &str, limit: u32) -> Array;
 
     /// The `startsWith()` method determines whether a string begins with the
     /// characters of a specified string, returning true or false as
