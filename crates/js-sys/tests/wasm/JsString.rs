@@ -86,6 +86,23 @@ fn from_char_code() {
 }
 
 #[wasm_bindgen_test]
+fn from_code_point() {
+    let s = "☃★♲你";
+    let codes : Vec<u32> = s.chars()
+        .map(|char| char as u32)
+        .collect();
+
+    assert_eq!(JsString::from_code_point1(codes[0]).unwrap(), "☃");
+    assert_eq!(JsString::from_code_point2(codes[0], codes[1]).unwrap(), "☃★");
+    assert_eq!(JsString::from_code_point3(codes[0], codes[1], codes[2]).unwrap(), "☃★♲");
+    assert_eq!(JsString::from_code_point4(codes[0], codes[1], codes[2], codes[3]).unwrap(), "☃★♲你");
+
+    assert!(!JsString::from_code_point1(0x10FFFF).is_err());
+    assert!(JsString::from_code_point1(0x110000).is_err());
+    assert!(JsString::from_code_point1(u32::max_value()).is_err());
+}
+
+#[wasm_bindgen_test]
 fn includes() {
     let str = JsString::from("Blue Whale");
 
