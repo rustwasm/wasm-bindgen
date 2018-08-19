@@ -3103,6 +3103,17 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn slice(this: &JsString, start: u32, end: u32) -> JsString;
 
+    /// The split() method splits a String object into an array of strings by separating the string
+    /// into substrings, using a specified separator string to determine where to make each split.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn split(this: &JsString, separator: &str) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    pub fn split_limit(this: &JsString, separator: &str, limit: u32) -> Array;
+
     /// The `startsWith()` method determines whether a string begins with the
     /// characters of a specified string, returning true or false as
     /// appropriate.

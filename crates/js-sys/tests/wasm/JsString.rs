@@ -322,6 +322,39 @@ fn slice() {
 }
 
 #[wasm_bindgen_test]
+fn split() {
+    let js = JsString::from("Oh brave new world");
+    let result = js.split(" ");
+
+    let mut v = Vec::with_capacity(result.length() as usize);
+    result.for_each(&mut |x, _, _| v.push(x));
+
+    assert_eq!(v[0], "Oh");
+    assert_eq!(v[1], "brave");
+    assert_eq!(v[2], "new");
+    assert_eq!(v[3], "world");
+
+    let js = JsString::from("Oct,Nov,Dec");
+    let result = js.split(",");
+
+    let mut v = Vec::with_capacity(result.length() as usize);
+    result.for_each(&mut |x, _, _| v.push(x));
+
+    assert_eq!(v[0], "Oct");
+    assert_eq!(v[1], "Nov");
+    assert_eq!(v[2], "Dec");
+
+    let result = js.split_limit(",", 2);
+
+    let mut v = Vec::with_capacity(result.length() as usize);
+    result.for_each(&mut |x, _, _| v.push(x));
+
+    assert_eq!(result.length(), 2);
+    assert_eq!(v[0], "Oct");
+    assert_eq!(v[1], "Nov");
+}
+
+#[wasm_bindgen_test]
 fn starts_with() {
     let js = JsString::from("To be, or not to be, that is the question.");
 
