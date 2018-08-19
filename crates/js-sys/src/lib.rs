@@ -2961,22 +2961,22 @@ pub mod WebAssembly {
         /// string name.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module/customSections
-        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly, js_name = customSections, catch)]
-        pub fn custom_sections(module: &Module, sectionName: &str) -> Result<Array, JsValue>;
+        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly, js_name = customSections)]
+        pub fn custom_sections(module: &Module, sectionName: &str) -> Array;
 
         /// The `WebAssembly.exports()` function returns an array containing
         /// descriptions of all the declared exports of the given `Module`.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module/exports
-        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly, catch)]
-        pub fn exports(module: &Module) -> Result<Array, JsValue>;
+        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly)]
+        pub fn exports(module: &Module) -> Array;
 
         /// The `WebAssembly.imports()` function returns an array containing
         /// descriptions of all the declared imports of the given `Module`.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module/imports
-        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly, catch)]
-        pub fn imports(module: &Module) -> Result<Array, JsValue>;
+        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly)]
+        pub fn imports(module: &Module) -> Array;
     }
 
     // WebAssembly.Table

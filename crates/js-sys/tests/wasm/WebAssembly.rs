@@ -76,21 +76,21 @@ fn module_inheritance() {
 #[wasm_bindgen_test]
 fn module_custom_sections() {
     let module = WebAssembly::Module::new(&get_valid_wasm());
-    let cust_sec = WebAssembly::Module::custom_sections(&module, "abcd").unwrap();
+    let cust_sec = WebAssembly::Module::custom_sections(&module, "abcd");
     assert_eq!(cust_sec.length(), 0);
 }
 
 #[wasm_bindgen_test]
 fn module_exports() {
     let module = WebAssembly::Module::new(&get_valid_wasm());
-    let exports = WebAssembly::Module::exports(&module).unwrap();
+    let exports = WebAssembly::Module::exports(&module);
     assert_eq!(exports.length(), 1);
 }
 
 #[wasm_bindgen_test]
 fn module_imports() {
     let module = WebAssembly::Module::new(&get_valid_wasm());
-    let imports = WebAssembly::Module::imports(&module).unwrap();
+    let imports = WebAssembly::Module::imports(&module);
     assert_eq!(imports.length(), 1);
 }
 
