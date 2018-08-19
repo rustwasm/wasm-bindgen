@@ -35,6 +35,10 @@ fn collator() {
 
     let a = Intl::Collator::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
+
+    assert!(c.is_instance_of::<Intl::Collator>());
+    assert!(c.is_instance_of::<Object>());
+    let _: &Object = c.as_ref();
 }
 
 #[wasm_bindgen_test]
