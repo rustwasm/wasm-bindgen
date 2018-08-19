@@ -1,6 +1,13 @@
 const wasm = require('wasm-bindgen-test.js');
 const assert = require('assert');
 
-exports.variadic_sum = () =>
-    Array.from(arguments).reduce((acc, val) => acc + val, 0);
+function variadic_sum() {
+    let answer = 0;
+    for(var i=0; i<arguments.length; i++) {
+        answer += arguments[i];
+    }
+    return answer;
+}
+
+exports.variadic_sum = variadic_sum;
 
