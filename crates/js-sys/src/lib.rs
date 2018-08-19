@@ -3075,6 +3075,20 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn repeat(this: &JsString, count: i32) -> JsString;
 
+    /// The replace() method returns a new string with some or all matches of a pattern
+    /// replaced by a replacement. The pattern can be a string or a RegExp, and
+    /// the replacement can be a string or a function to be called for each match.
+    ///
+    /// Note: The original string will remain unchanged.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn replace(this: &JsString, pattern: &RegExp, replacement: &str) -> JsString;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    pub fn replace_function(this: &JsString, pattern: &RegExp, replacement: &Function) -> JsString;
+
     /// The `slice()` method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///
