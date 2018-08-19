@@ -341,6 +341,7 @@ impl<'src> FirstPassRecord<'src> {
                 rust_name,
                 js_ret: js_ret.clone(),
                 catch,
+                variadic: false,
                 structural,
                 kind: kind.clone(),
                 shim,
