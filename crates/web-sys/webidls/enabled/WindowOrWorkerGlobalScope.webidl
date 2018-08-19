@@ -43,25 +43,25 @@ interface mixin WindowOrWorkerGlobalScope {
 };
 
 // https://fetch.spec.whatwg.org/#fetch-method
-partial interface WindowOrWorkerGlobalScope {
+partial interface mixin WindowOrWorkerGlobalScope {
   [NewObject, NeedsCallerType]
   Promise<Response> fetch(RequestInfo input, optional RequestInit init);
 };
 
 // https://w3c.github.io/webappsec-secure-contexts/#monkey-patching-global-object
-partial interface WindowOrWorkerGlobalScope {
+partial interface mixin WindowOrWorkerGlobalScope {
   readonly attribute boolean isSecureContext;
 };
 
 // http://w3c.github.io/IndexedDB/#factory-interface
-partial interface WindowOrWorkerGlobalScope {
+partial interface mixin WindowOrWorkerGlobalScope {
    // readonly attribute IDBFactory indexedDB;
    [Throws]
    readonly attribute IDBFactory? indexedDB;
 };
 
 // https://w3c.github.io/ServiceWorker/#self-caches
-partial interface WindowOrWorkerGlobalScope {
+partial interface mixin WindowOrWorkerGlobalScope {
   [Throws, Func="mozilla::dom::DOMPrefs::DOMCachesEnabled", SameObject]
   readonly attribute CacheStorage caches;
 };
