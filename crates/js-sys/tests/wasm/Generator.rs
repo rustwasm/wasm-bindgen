@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use wasm_bindgen::JsCast;
 use js_sys::*;
 
 #[wasm_bindgen(module = "tests/wasm/Generator.js")]
@@ -55,4 +56,11 @@ fn throw() {
     let next = GeneratorResult::from(gen.next(&JsValue::undefined()).unwrap());
     assert!(next.value().is_undefined());
     assert!(next.done());
+}
+
+#[wasm_bindgen_test]
+fn generator_inheritance() {
+    let gen = dummy_generator();
+    
+    assert!(gen.is_instance_of::<Object>());
 }
