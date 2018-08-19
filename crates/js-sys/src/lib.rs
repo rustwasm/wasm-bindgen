@@ -3546,7 +3546,7 @@ pub mod Intl {
         /// that enable plural sensitive formatting and plural language rules.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules
-        #[wasm_bindgen(js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
         #[derive(Clone, Debug)]
         pub type PluralRules;
 

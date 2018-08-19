@@ -87,6 +87,10 @@ fn plural_rules() {
     assert!(r.resolved_options().is_instance_of::<Object>());
     assert_eq!(r.select(1_f64), "one");
 
-    let r = Intl::PluralRules::supported_locales_of(&locales, &opts);
-    assert!(r.is_instance_of::<Array>());
+    let a = Intl::PluralRules::supported_locales_of(&locales, &opts);
+    assert!(a.is_instance_of::<Array>());
+
+    assert!(r.is_instance_of::<Intl::PluralRules>());
+    assert!(r.is_instance_of::<Object>());
+    let _: &Object = r.as_ref();
 }
