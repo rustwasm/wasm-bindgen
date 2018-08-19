@@ -2974,7 +2974,6 @@ extern "C" {
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
     pub fn from_char_code5(a: u32, b: u32, c: u32, d: u32, e: u32) -> JsString;
 
-
     /// The static String.fromCodePoint() method returns a string created by
     /// using the specified sequence of code points.
     ///
@@ -3007,7 +3006,6 @@ extern "C" {
     #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
     pub fn from_code_point5(a: u32, b: u32, c: u32, d: u32, e: u32) -> Result<JsString, JsValue>;
 
-
     /// The `includes()` method determines whether one string may be found
     /// within another string, returning true or false as appropriate.
     ///
@@ -3038,6 +3036,12 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
     #[wasm_bindgen(method, js_class = "String", js_name = localeCompare)]
     pub fn locale_compare(this: &JsString, compare_string: &str, locales: &Array, options: &Object) -> i32;
+
+    /// The match() method retrieves the matches when matching a string against a regular expression.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
+    #[wasm_bindgen(method, js_class = "String", js_name = match)]
+    pub fn match_(this: &JsString, pattern: &RegExp) -> Option<Object>;
 
     /// The normalize() method returns the Unicode Normalization Form
     /// of a given string (if the value isn't a string, it will be converted to one first).

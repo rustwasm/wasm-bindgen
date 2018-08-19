@@ -217,6 +217,31 @@ fn locale_compare() {
 }
 
 #[wasm_bindgen_test]
+fn match_() {
+    let s = "The quick brown fox jumped over the lazy dog. It barked.";
+    let re = RegExp::new("[A-Z]", "g");
+    let result = JsString::from(s).match_(&re);
+    let obj = result.unwrap();
+
+    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()), "T");
+    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()), "I");
+
+    let result = JsString::from("foo").match_(&re);
+    assert!(result.is_none());
+
+    let s = "For more information, see Chapter 3.4.5.1";
+    let re = RegExp::new("see (chapter \\d+(\\.\\d)*)", "i");
+    let result = JsString::from(s).match_(&re);
+    let obj = result.unwrap();
+
+    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()), "see Chapter 3.4.5.1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()), "Chapter 3.4.5.1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"2".into()), ".1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"index".into()), 22);
+    assert_eq!(Reflect::get(obj.as_ref(), &"input".into()), s);
+}
+
+#[wasm_bindgen_test]
 fn normalize() {
     let js = JsString::from("\u{1E9B}\u{0323}");
 
