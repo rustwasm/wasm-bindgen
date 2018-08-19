@@ -2,7 +2,6 @@
 //!
 //! More documentation can be found in the README for this crate!
 
-#![feature(use_extern_macros)]
 #![deny(missing_docs)]
 
 extern crate console_error_panic_hook;

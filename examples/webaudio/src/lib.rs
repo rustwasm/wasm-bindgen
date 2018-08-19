@@ -1,4 +1,4 @@
-#![feature(use_extern_macros, nll)]
+#![feature(nll)]
 
 extern crate wasm_bindgen;
 extern crate web_sys;

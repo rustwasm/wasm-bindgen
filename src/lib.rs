@@ -5,7 +5,7 @@
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
 
-#![feature(use_extern_macros, unsize)]
+#![feature(unsize)]
 #![no_std]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 

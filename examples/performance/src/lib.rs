@@ -1,5 +1,3 @@
-#![feature(use_extern_macros)]
-
 extern crate humantime;
 extern crate wasm_bindgen;
 
