@@ -2996,6 +2996,14 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = lastIndexOf)]
     pub fn last_index_of(this: &JsString, search_value: &str, from_index: i32) -> i32;
 
+    /// The localeCompare() method returns a number indicating whether
+    /// a reference string comes before or after or is the same as
+    /// the given string in sort order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
+    #[wasm_bindgen(method, js_class = "String", js_name = localeCompare)]
+    pub fn locale_compare(this: &JsString, compare_string: &str, locales: &Array, options: &Object) -> i32;
+
     /// The normalize() method returns the Unicode Normalization Form
     /// of a given string (if the value isn't a string, it will be converted to one first).
     ///
@@ -3062,14 +3070,14 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleLowerCase
     #[wasm_bindgen(method, js_class = "String", js_name = toLocaleLowerCase)]
-    pub fn to_locale_lower_case(this: &JsString, local: Option<&str>) -> JsString;
+    pub fn to_locale_lower_case(this: &JsString, locale: Option<&str>) -> JsString;
 
     /// The toLocaleUpperCase() method returns the calling string value converted to upper case,
     /// according to any locale-specific case mappings.
     ///
     /// https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleUpperCase
     #[wasm_bindgen(method, js_class = "String", js_name = toLocaleUpperCase)]
-    pub fn to_locale_upper_case(this: &JsString, local: Option<&str>) -> JsString;
+    pub fn to_locale_upper_case(this: &JsString, locale: Option<&str>) -> JsString;
 
     /// The `toLowerCase()` method returns the calling string value
     /// converted to lower case.
