@@ -3089,6 +3089,13 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = replace)]
     pub fn replace_function(this: &JsString, pattern: &RegExp, replacement: &Function) -> JsString;
 
+    /// The search() method executes a search for a match between
+    /// a regular expression and this String object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/search
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn search(this: &JsString, pattern: &RegExp) -> i32;
+
     /// The `slice()` method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///

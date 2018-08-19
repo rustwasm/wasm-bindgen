@@ -301,6 +301,21 @@ fn replace() {
 }
 
 #[wasm_bindgen_test]
+fn search() {
+    let js = JsString::from("The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?");
+    let re = RegExp::new("[^\\w\\s]", "g");
+
+    assert_eq!(js.search(&re), 44);
+
+    let js = JsString::from("hey JudE");
+    let re1 = RegExp::new("[A-Z]", "g");
+    let re2 = RegExp::new("[.]", "g");
+
+    assert_eq!(js.search(&re1), 4);
+    assert_eq!(js.search(&re2), -1);
+}
+
+#[wasm_bindgen_test]
 fn slice() {
     let characters = JsString::from("acxn18");
     assert_eq!(characters.slice(1, 3), "cx");
