@@ -348,13 +348,13 @@ impl<'a> IdlType<'a> {
             IdlType::UnsignedLong => dst.push_str("u32"),
             IdlType::LongLong => dst.push_str("i64"),
             IdlType::UnsignedLongLong => dst.push_str("u64"),
-            IdlType::Float => dst.push_str("f32"),
-            IdlType::UnrestrictedFloat => dst.push_str("unrestricted_f32"),
-            IdlType::Double => dst.push_str("f64"),
-            IdlType::UnrestrictedDouble => dst.push_str("unrestricted_f64"),
-            IdlType::DomString => dst.push_str("dom_str"),
-            IdlType::ByteString => dst.push_str("byte_str"),
-            IdlType::UsvString => dst.push_str("usv_str"),
+            IdlType::Float |
+            IdlType::UnrestrictedFloat => dst.push_str("f32"),
+            IdlType::Double |
+            IdlType::UnrestrictedDouble => dst.push_str("f64"),
+            IdlType::DomString |
+            IdlType::ByteString |
+            IdlType::UsvString => dst.push_str("str"),
             IdlType::Object => dst.push_str("object"),
             IdlType::Symbol => dst.push_str("symbol"),
             IdlType::Error => dst.push_str("error"),
