@@ -3496,7 +3496,7 @@ pub mod Intl {
         /// that enable language sensitive number formatting.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
-        #[wasm_bindgen(js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
         #[derive(Clone, Debug)]
         pub type NumberFormat;
 

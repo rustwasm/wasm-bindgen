@@ -72,6 +72,10 @@ fn number_format() {
 
     let a = Intl::NumberFormat::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
+
+    assert!(n.is_instance_of::<Intl::NumberFormat>());
+    assert!(n.is_instance_of::<Object>());
+    let _: &Object = n.as_ref();
 }
 
 #[wasm_bindgen_test]
