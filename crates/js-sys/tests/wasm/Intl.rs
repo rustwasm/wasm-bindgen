@@ -35,6 +35,13 @@ fn collator() {
 
     let a = Intl::Collator::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
+}
+
+#[wasm_bindgen_test]
+fn collator_inheritance() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+    let c = Intl::Collator::new(&locales, &opts);
 
     assert!(c.is_instance_of::<Intl::Collator>());
     assert!(c.is_instance_of::<Object>());
@@ -54,6 +61,13 @@ fn date_time_format() {
 
     let a = Intl::DateTimeFormat::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
+}
+
+#[wasm_bindgen_test]
+fn date_time_format_inheritance() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+    let c = Intl::DateTimeFormat::new(&locales, &opts);
 
     assert!(c.is_instance_of::<Intl::DateTimeFormat>());
     assert!(c.is_instance_of::<Object>());
@@ -72,6 +86,13 @@ fn number_format() {
 
     let a = Intl::NumberFormat::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
+}
+
+#[wasm_bindgen_test]
+fn number_format_inheritance() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+    let n = Intl::NumberFormat::new(&locales, &opts);
 
     assert!(n.is_instance_of::<Intl::NumberFormat>());
     assert!(n.is_instance_of::<Object>());
@@ -89,6 +110,13 @@ fn plural_rules() {
 
     let a = Intl::PluralRules::supported_locales_of(&locales, &opts);
     assert!(a.is_instance_of::<Array>());
+}
+
+#[wasm_bindgen_test]
+fn plural_rules_inheritance() {
+    let locales = Array::of1(&JsValue::from("en-US"));
+    let opts = Object::new();
+    let r = Intl::PluralRules::new(&locales, &opts);
 
     assert!(r.is_instance_of::<Intl::PluralRules>());
     assert!(r.is_instance_of::<Object>());
