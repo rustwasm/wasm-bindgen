@@ -5,9 +5,9 @@
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
 
-#![feature(unsize)]
 #![no_std]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
+#![cfg_attr(feature = "nightly", feature(unsize))]
 
 #[cfg(feature = "serde-serialize")]
 extern crate serde;
