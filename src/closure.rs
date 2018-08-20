@@ -7,6 +7,7 @@
 #![allow(const_err)] // FIXME(rust-lang/rust#52603)
 
 use std::cell::UnsafeCell;
+#[cfg(feature = "nightly")]
 use std::marker::Unsize;
 use std::mem::{self, ManuallyDrop};
 use std::prelude::v1::*;
@@ -90,6 +91,7 @@ impl<T> Closure<T>
     ///
     /// This is unfortunately pretty restrictive for now but hopefully some of
     /// these restrictions can be lifted in the future!
+    #[cfg(feature = "nightly")]
     pub fn new<F>(t: F) -> Closure<T>
         where F: Unsize<T> + 'static
     {

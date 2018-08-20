@@ -17,7 +17,6 @@
 //! bindings.
 
 #![doc(html_root_url = "https://docs.rs/js-sys/0.2")]
-#![feature(use_extern_macros)]
 
 extern crate wasm_bindgen;
 
