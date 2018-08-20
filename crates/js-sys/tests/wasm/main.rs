@@ -1,8 +1,10 @@
 #![cfg(target_arch = "wasm32")]
 #![allow(non_snake_case)]
 
+extern crate futures;
 extern crate js_sys;
 extern crate wasm_bindgen;
+extern crate wasm_bindgen_futures;
 extern crate wasm_bindgen_test;
 
 pub mod global_fns;

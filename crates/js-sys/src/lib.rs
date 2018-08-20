@@ -2848,19 +2848,163 @@ extern "C" {
     pub fn delete(this: &WeakSet, value: &Object) -> bool;
 }
 
-// WebAssembly
-#[wasm_bindgen]
-extern "C" {
-    #[derive(Clone, Debug)]
-    pub type WebAssembly;
+#[allow(non_snake_case)]
+pub mod WebAssembly {
+    use super::*;
 
-    /// The `WebAssembly.validate()` function validates a given typed
-    /// array of WebAssembly binary code, returning whether the bytes
-    /// form a valid wasm module (`true`) or not (`false`).
-    ///
-    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/validate
-    #[wasm_bindgen(static_method_of = WebAssembly, catch)]
-    pub fn validate(bufferSource: &JsValue) -> Result<bool, JsValue>;
+    // WebAssembly
+    #[wasm_bindgen]
+    extern "C" {
+        /// `The WebAssembly.compile()` function compiles a `WebAssembly.Module`
+        /// from WebAssembly binary code.  This function is useful if it is
+        /// necessary to a compile a module before it can be instantiated
+        /// (otherwise, the `WebAssembly.instantiate()` function should be used).
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/compile
+        #[wasm_bindgen(js_namespace = WebAssembly)]
+        pub fn compile(buffer_source: &JsValue) -> Promise;
+
+        /// The `WebAssembly.validate()` function validates a given typed
+        /// array of WebAssembly binary code, returning whether the bytes
+        /// form a valid wasm module (`true`) or not (`false`).
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/validate
+        #[wasm_bindgen(js_namespace = WebAssembly, catch)]
+        pub fn validate(buffer_source: &JsValue) -> Result<bool, JsValue>;
+    }
+
+    // WebAssembly.CompileError
+    #[wasm_bindgen]
+    extern "C" {
+        /// The `WebAssembly.CompileError()` constructor creates a new
+        /// WebAssembly `CompileError` object, which indicates an error during
+        /// WebAssembly decoding or validation.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/CompileError
+        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly)]
+        #[derive(Clone, Debug)]
+        pub type CompileError;
+
+        /// The `WebAssembly.CompileError()` constructor creates a new
+        /// WebAssembly `CompileError` object, which indicates an error during
+        /// WebAssembly decoding or validation.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/CompileError
+        #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
+        pub fn new(message: &str) -> CompileError;
+    }
+
+    // WebAssembly.LinkError
+    #[wasm_bindgen]
+    extern "C" {
+        /// The `WebAssembly.LinkError()` constructor creates a new WebAssembly
+        /// LinkError object, which indicates an error during module
+        /// instantiation (besides traps from the start function).
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/LinkError
+        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly)]
+        #[derive(Clone, Debug)]
+        pub type LinkError;
+
+        /// The `WebAssembly.LinkError()` constructor creates a new WebAssembly
+        /// LinkError object, which indicates an error during module
+        /// instantiation (besides traps from the start function).
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/LinkError
+        #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
+        pub fn new(message: &str) -> LinkError;
+    }
+
+    // WebAssembly.RuntimeError
+    #[wasm_bindgen]
+    extern "C" {
+        /// The `WebAssembly.RuntimeError()` constructor creates a new WebAssembly
+        /// `RuntimeError` object — the type that is thrown whenever WebAssembly
+        /// specifies a trap.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/RuntimeError
+        #[wasm_bindgen(extends = Error, js_namespace = WebAssembly)]
+        #[derive(Clone, Debug)]
+        pub type RuntimeError;
+
+        /// The `WebAssembly.RuntimeError()` constructor creates a new WebAssembly
+        /// `RuntimeError` object — the type that is thrown whenever WebAssembly
+        /// specifies a trap.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/RuntimeError
+        #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
+        pub fn new(message: &str) -> RuntimeError;
+    }
+
+    // WebAssembly.Module
+    #[wasm_bindgen]
+    extern "C" {
+        /// A `WebAssembly.Module` object contains stateless WebAssembly code
+        /// that has already been compiled by the browser and can be
+        /// efficiently shared with Workers, and instantiated multiple times.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module
+        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object)]
+        #[derive(Clone, Debug)]
+        pub type Module;
+
+        /// A `WebAssembly.Module` object contains stateless WebAssembly code
+        /// that has already been compiled by the browser and can be
+        /// efficiently shared with Workers, and instantiated multiple times.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module
+        #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
+        pub fn new(buffer_source: &JsValue) -> Result<Module, JsValue>;
+
+        /// The `WebAssembly.customSections()` function returns a copy of the
+        /// contents of all custom sections in the given module with the given
+        /// string name.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module/customSections
+        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly, js_name = customSections)]
+        pub fn custom_sections(module: &Module, sectionName: &str) -> Array;
+
+        /// The `WebAssembly.exports()` function returns an array containing
+        /// descriptions of all the declared exports of the given `Module`.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module/exports
+        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly)]
+        pub fn exports(module: &Module) -> Array;
+
+        /// The `WebAssembly.imports()` function returns an array containing
+        /// descriptions of all the declared imports of the given `Module`.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module/imports
+        #[wasm_bindgen(static_method_of = Module, js_namespace = WebAssembly)]
+        pub fn imports(module: &Module) -> Array;
+    }
+
+    // WebAssembly.Table
+    #[wasm_bindgen]
+    extern "C" {
+        /// The `WebAssembly.Table()` constructor creates a new `Table` object
+        /// of the given size and element type.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table
+        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object)]
+        #[derive(Clone, Debug)]
+        pub type Table;
+
+        /// The `WebAssembly.Table()` constructor creates a new `Table` object
+        /// of the given size and element type.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table
+        #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
+        pub fn new(table_descriptor: &Object) -> Result<Table, JsValue>;
+
+        /// The `length` prototype property of the `WebAssembly.Table` object
+        /// returns the length of the table, i.e. the number of elements in the
+        /// table.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/length
+        #[wasm_bindgen(method, getter, js_namespace = WebAssembly)]
+        pub fn length(this: &Table) -> u32;
+    }
 }
 
 // JSON
