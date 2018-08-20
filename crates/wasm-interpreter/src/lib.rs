@@ -92,14 +92,19 @@ impl Interpreter {
         // function.
         if let Some(i) = module.import_section() {
             ret.imports = i.functions();
-            for (i, entry) in i.entries().iter().enumerate() {
+            let mut idx = 0;
+            for entry in i.entries() {
+                match entry.external() {
+                    External::Function(_) => idx += 1,
+                    _ => continue,
+                }
                 if entry.module() != "__wbindgen_placeholder__" {
                     continue
                 }
                 if entry.field() != "__wbindgen_describe" {
                     continue
                 }
-                ret.describe_idx = Some(i as u32);
+                ret.describe_idx = Some(idx - 1 as u32);
             }
         }
 
@@ -184,6 +189,13 @@ impl Interpreter {
                 SetLocal(i) => locals[*i as usize] = self.stack.pop().unwrap(),
                 GetLocal(i) => self.stack.push(locals[*i as usize]),
                 Call(idx) => {
+                    // If this function is calling the `__wbindgen_describe`
+                    // function, which we've precomputed the index for, then
+                    // it's telling us about the next `u32` element in the
+                    // descriptor to return. We "call" the imported function
+                    // here by directly inlining it.
+                    //
+                    // Otherwise this is a normal call so we recurse.
                     if Some(*idx) == self.describe_idx {
                         self.descriptor.push(self.stack.pop().unwrap() as u32);
                     } else {
