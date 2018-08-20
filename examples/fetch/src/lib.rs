@@ -51,12 +51,12 @@ pub fn run() -> Promise {
     request_options.method("GET");
     request_options.mode(RequestMode::Cors);
 
-    let req = Request::new_using_usv_str_and_request_init("https://api.github.com/repos/rustwasm/wasm-bindgen/branches/master", &request_options).unwrap();
+    let req = Request::new_with_str_and_request_init("https://api.github.com/repos/rustwasm/wasm-bindgen/branches/master", &request_options).unwrap();
 
     // the RequestInit struct will eventually support setting headers, but that's missing right now
     req.headers().set("Accept", "application/vnd.github.v3+json").unwrap();
 
-    let req_promise = window.fetch_using_request(&req);
+    let req_promise = window.fetch_with_request(&req);
 
     let to_return = JsFuture::from(req_promise).and_then(|resp_value| {
         // resp_value is a Response object
