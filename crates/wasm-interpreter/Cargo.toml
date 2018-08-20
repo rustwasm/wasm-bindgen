@@ -1,0 +1,17 @@
+[package]
+name = "wasm-bindgen-wasm-interpreter"
+version = "0.2.17"
+authors = ["The wasm-bindgen Developers"]
+license = "MIT/Apache-2.0"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/wasm-interpreter"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
+documentation = "https://docs.rs/wasm-bindgen-wasm-interpreter"
+description = """
+Micro-interpreter optimized for wasm-bindgen's use case
+"""
+
+[dependencies]
+parity-wasm = "0.31"
+
+[dev-dependencies]
+tempfile = "3"

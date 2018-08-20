@@ -10,6 +10,7 @@ use wasm_gc;
 
 use super::Bindgen;
 use descriptor::{Descriptor, VectorKind};
+use wasm_interpreter::Interpreter;
 
 mod js2rust;
 use self::js2rust::Js2Rust;
@@ -41,7 +42,7 @@ pub struct Context<'a> {
 
     pub exported_classes: HashMap<String, ExportedClass>,
     pub function_table_needed: bool,
-    pub run_descriptor: &'a Fn(&str) -> Option<Vec<u32>>,
+    pub interpreter: &'a mut Interpreter,
 }
 
 #[derive(Default)]
@@ -1668,9 +1669,9 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn describe(&self, name: &str) -> Option<Descriptor> {
+    fn describe(&mut self, name: &str) -> Option<Descriptor> {
         let name = format!("__wbindgen_describe_{}", name);
-        (self.run_descriptor)(&name).map(|d| Descriptor::decode(&d))
+        Some(Descriptor::decode(self.interpreter.interpret(&name, self.module)?))
     }
 
     fn global(&mut self, s: &str) {
