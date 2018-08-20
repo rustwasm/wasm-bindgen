@@ -10,6 +10,7 @@ extern crate failure;
 
 use std::any::Any;
 use std::collections::BTreeSet;
+use std::env;
 use std::fmt;
 use std::fs;
 use std::mem;
@@ -33,6 +34,9 @@ pub struct Bindgen {
     typescript: bool,
     demangle: bool,
     keep_debug: bool,
+    // Experimental support for `WeakRefGroup`, an upcoming ECMAScript feature.
+    // Currently only enable-able through an env var.
+    weak_refs: bool,
 }
 
 enum Input {
@@ -55,6 +59,7 @@ impl Bindgen {
             typescript: false,
             demangle: true,
             keep_debug: false,
+            weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
         }
     }
 
