@@ -18,4 +18,5 @@ fn boolean_inheritance() {
     let b = Boolean::new(&JsValue::from(true));
     assert!(b.is_instance_of::<Boolean>());
     assert!(b.is_instance_of::<Object>());
+    let _: &Object = b.as_ref();
 }

@@ -47,4 +47,5 @@ fn weakset_inheritance() {
     let set = WeakSet::new();
     assert!(set.is_instance_of::<WeakSet>());
     assert!(set.is_instance_of::<Object>());
+    let _: &Object = set.as_ref();
 }

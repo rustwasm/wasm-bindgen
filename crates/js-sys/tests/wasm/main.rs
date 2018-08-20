@@ -1,5 +1,4 @@
 #![cfg(target_arch = "wasm32")]
-#![feature(use_extern_macros)]
 #![allow(non_snake_case)]
 
 extern crate futures;

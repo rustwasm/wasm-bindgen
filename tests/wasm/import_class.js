@@ -123,3 +123,11 @@ exports.run_rust_option_tests = function() {
   assert.strictEqual(wasm.rust_return_none(), undefined);
   assert.strictEqual(wasm.rust_return_some() === undefined, false);
 };
+
+exports.CatchConstructors = class {
+  constructor(x) {
+    if (x == 0) {
+      throw new Error('bad!');
+    }
+  }
+};

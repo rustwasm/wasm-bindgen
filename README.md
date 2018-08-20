@@ -13,8 +13,6 @@
 Import JavaScript things into Rust and export Rust things to JavaScript.
 
 ```rust
-#![feature(use_extern_macros)]
-
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 

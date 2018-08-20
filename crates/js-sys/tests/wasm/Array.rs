@@ -306,4 +306,5 @@ fn array_inheritance() {
     let array = Array::new();
     assert!(array.is_instance_of::<Array>());
     assert!(array.is_instance_of::<Object>());
+    let _: &Object = array.as_ref();
 }

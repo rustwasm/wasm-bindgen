@@ -17,7 +17,6 @@
 //! bindings.
 
 #![doc(html_root_url = "https://docs.rs/js-sys/0.2")]
-#![feature(use_extern_macros)]
 
 extern crate wasm_bindgen;
 
@@ -885,6 +884,7 @@ impl Function {
 // Generator
 #[wasm_bindgen]
 extern {
+    #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Generator;
 
@@ -2092,7 +2092,7 @@ extern {
     /// or range of allowed values.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError
-    #[wasm_bindgen(extends = Error)]
+    #[wasm_bindgen(extends = Error, extends = Object)]
     #[derive(Clone, Debug)]
     pub type RangeError;
 
@@ -2111,7 +2111,7 @@ extern {
     /// variable is referenced.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError
-    #[wasm_bindgen(extends = Error)]
+    #[wasm_bindgen(extends = Error, extends = Object)]
     #[derive(Clone, Debug)]
     pub type ReferenceError;
 
@@ -2505,7 +2505,7 @@ extern {
     /// parsing code.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError
-    #[wasm_bindgen(extends = Error)]
+    #[wasm_bindgen(extends = Error, extends = Object)]
     #[derive(Clone, Debug)]
     pub type SyntaxError;
 
@@ -2525,7 +2525,7 @@ extern {
     /// expected type.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
-    #[wasm_bindgen(extends = Error)]
+    #[wasm_bindgen(extends = Error, extends = Object)]
     #[derive(Clone, Debug)]
     pub type TypeError;
 
@@ -2758,7 +2758,7 @@ extern {
     /// function was used in a wrong way.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError
-    #[wasm_bindgen(extends = Error, js_name = URIError)]
+    #[wasm_bindgen(extends = Error, extends = Object, js_name = URIError)]
     #[derive(Clone, Debug)]
     pub type UriError;
 
@@ -3117,6 +3117,38 @@ extern "C" {
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
     pub fn from_char_code5(a: u32, b: u32, c: u32, d: u32, e: u32) -> JsString;
 
+    /// The static String.fromCodePoint() method returns a string created by
+    /// using the specified sequence of code points.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    ///
+    /// # Exceptions
+    ///
+    /// A RangeError is thrown if an invalid Unicode code point is given
+    ///
+    /// # Notes
+    ///
+    /// There are a few bindings to `from_code_point` in `js-sys`: `from_code_point1`, `from_code_point2`, etc...
+    /// with different arities.
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point1(a: u32) -> Result<JsString, JsValue>;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point2(a: u32, b: u32) -> Result<JsString, JsValue>;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point3(a: u32, b: u32, c: u32) -> Result<JsString, JsValue>;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point4(a: u32, b: u32, c: u32, d: u32) -> Result<JsString, JsValue>;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
+    pub fn from_code_point5(a: u32, b: u32, c: u32, d: u32, e: u32) -> Result<JsString, JsValue>;
+
     /// The `includes()` method determines whether one string may be found
     /// within another string, returning true or false as appropriate.
     ///
@@ -3139,6 +3171,20 @@ extern "C" {
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/lastIndexOf
     #[wasm_bindgen(method, js_class = "String", js_name = lastIndexOf)]
     pub fn last_index_of(this: &JsString, search_value: &str, from_index: i32) -> i32;
+
+    /// The localeCompare() method returns a number indicating whether
+    /// a reference string comes before or after or is the same as
+    /// the given string in sort order.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
+    #[wasm_bindgen(method, js_class = "String", js_name = localeCompare)]
+    pub fn locale_compare(this: &JsString, compare_string: &str, locales: &Array, options: &Object) -> i32;
+
+    /// The match() method retrieves the matches when matching a string against a regular expression.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
+    #[wasm_bindgen(method, js_class = "String", js_name = match)]
+    pub fn match_(this: &JsString, pattern: &RegExp) -> Option<Object>;
 
     /// The normalize() method returns the Unicode Normalization Form
     /// of a given string (if the value isn't a string, it will be converted to one first).
@@ -3172,12 +3218,59 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String")]
     pub fn repeat(this: &JsString, count: i32) -> JsString;
 
+    /// The replace() method returns a new string with some or all matches of a pattern
+    /// replaced by a replacement. The pattern can be a string or a RegExp, and
+    /// the replacement can be a string or a function to be called for each match.
+    ///
+    /// Note: The original string will remain unchanged.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn replace(this: &JsString, pattern: &str, replacement: &str) -> JsString;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    pub fn replace_with_function(this: &JsString, pattern: &str, replacement: &Function) -> JsString;
+
+    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    pub fn replace_by_pattern(this: &JsString, pattern: &RegExp, replacement: &str) -> JsString;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    pub fn replace_by_pattern_with_function(this: &JsString, pattern: &RegExp, replacement: &Function) -> JsString;
+
+    /// The search() method executes a search for a match between
+    /// a regular expression and this String object.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/search
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn search(this: &JsString, pattern: &RegExp) -> i32;
+
     /// The `slice()` method extracts a section of a string and returns it as a
     /// new string, without modifying the original string.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
     #[wasm_bindgen(method, js_class = "String")]
     pub fn slice(this: &JsString, start: u32, end: u32) -> JsString;
+
+    /// The split() method splits a String object into an array of strings by separating the string
+    /// into substrings, using a specified separator string to determine where to make each split.
+    ///
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String")]
+    pub fn split(this: &JsString, separator: &str) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    pub fn split_limit(this: &JsString, separator: &str, limit: u32) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    pub fn split_by_pattern(this: &JsString, pattern: &RegExp) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    pub fn split_by_pattern_limit(this: &JsString, pattern: &RegExp, limit: u32) -> Array;
 
     /// The `startsWith()` method determines whether a string begins with the
     /// characters of a specified string, returning true or false as
@@ -3206,14 +3299,14 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleLowerCase
     #[wasm_bindgen(method, js_class = "String", js_name = toLocaleLowerCase)]
-    pub fn to_locale_lower_case(this: &JsString, local: Option<&str>) -> JsString;
+    pub fn to_locale_lower_case(this: &JsString, locale: Option<&str>) -> JsString;
 
     /// The toLocaleUpperCase() method returns the calling string value converted to upper case,
     /// according to any locale-specific case mappings.
     ///
     /// https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleUpperCase
     #[wasm_bindgen(method, js_class = "String", js_name = toLocaleUpperCase)]
-    pub fn to_locale_upper_case(this: &JsString, local: Option<&str>) -> JsString;
+    pub fn to_locale_upper_case(this: &JsString, locale: Option<&str>) -> JsString;
 
     /// The `toLowerCase()` method returns the calling string value
     /// converted to lower case.
@@ -3502,7 +3595,7 @@ pub mod Intl {
         /// that enable language sensitive string comparison.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator
-        #[wasm_bindgen(js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
         #[derive(Clone, Debug)]
         pub type Collator;
 
@@ -3546,7 +3639,7 @@ pub mod Intl {
         /// that enable language-sensitive date and time formatting.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
-        #[wasm_bindgen(js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
         #[derive(Clone, Debug)]
         pub type DateTimeFormat;
 
@@ -3597,7 +3690,7 @@ pub mod Intl {
         /// that enable language sensitive number formatting.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NumberFormat
-        #[wasm_bindgen(js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
         #[derive(Clone, Debug)]
         pub type NumberFormat;
 
@@ -3647,7 +3740,7 @@ pub mod Intl {
         /// that enable plural sensitive formatting and plural language rules.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/PluralRules
-        #[wasm_bindgen(js_namespace = Intl)]
+        #[wasm_bindgen(extends = Object, js_namespace = Intl)]
         #[derive(Clone, Debug)]
         pub type PluralRules;
 

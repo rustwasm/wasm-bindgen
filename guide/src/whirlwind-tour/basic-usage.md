@@ -39,8 +39,6 @@ wasm-bindgen = "0.2"
 Next up our actual code! We'll write this in `src/lib.rs`:
 
 ```rust,ignore
-#![feature(use_extern_macros)]
-
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 

@@ -9,6 +9,8 @@ fn range_error() {
     assert!(error.is_instance_of::<RangeError>());
     assert!(error.is_instance_of::<Error>());
     assert!(error.is_instance_of::<Object>());
+    let _: &Error = error.as_ref();
+    let _: &Object = error.as_ref();
 
     let base: &Error = error.as_ref();
     assert_eq!(JsValue::from(base.message()), "out of range yo");

@@ -50,7 +50,7 @@ fn static_property() {
 }
 
 #[wasm_bindgen_test]
-fn one_method_using_an_undefined_import_doesnt_break_all_other_methods() {
+fn one_method_with_an_undefined_import_doesnt_break_all_other_methods() {
     let f = UndefinedMethod::new().unwrap();
     assert!(f.ok_method());
 }
@@ -81,14 +81,14 @@ fn indexing() {
 #[wasm_bindgen_test]
 fn optional_and_union_arguments() {
     let f = OptionalAndUnionArguments::new().unwrap();
-    assert_eq!(f.m_using_a("abc"), "string, abc, boolean, true, number, 123, number, 456");
-    assert_eq!(f.m_using_a_and_b("abc", false), "string, abc, boolean, false, number, 123, number, 456");
-    assert_eq!(f.m_using_dom_str_and_bool_and_i16("abc", false, 5), "string, abc, boolean, false, number, 5, number, 456");
-    assert_eq!(f.m_using_dom_str_and_bool_and_dom_str("abc", false, "5"), "string, abc, boolean, false, string, 5, number, 456");
-    assert_eq!(f.m_using_dom_str_and_bool_and_i16_and_opt_i64("abc", false, 5, Some(10)), "string, abc, boolean, false, number, 5, bigint, 10");
-    assert_eq!(f.m_using_dom_str_and_bool_and_i16_and_opt_bool("abc", false, 5, Some(true)), "string, abc, boolean, false, number, 5, boolean, true");
-    assert_eq!(f.m_using_dom_str_and_bool_and_dom_str_and_opt_i64("abc", false, "5", Some(10)), "string, abc, boolean, false, string, 5, bigint, 10");
-    assert_eq!(f.m_using_dom_str_and_bool_and_dom_str_and_opt_bool("abc", false, "5", Some(true)), "string, abc, boolean, false, string, 5, boolean, true");
+    assert_eq!(f.m("abc"), "string, abc, boolean, true, number, 123, number, 456");
+    assert_eq!(f.m_with_b("abc", false), "string, abc, boolean, false, number, 123, number, 456");
+    assert_eq!(f.m_with_bool_and_i16("abc", false, 5), "string, abc, boolean, false, number, 5, number, 456");
+    assert_eq!(f.m_with_bool_and_str("abc", false, "5"), "string, abc, boolean, false, string, 5, number, 456");
+    assert_eq!(f.m_with_bool_and_i16_and_opt_i64("abc", false, 5, Some(10)), "string, abc, boolean, false, number, 5, bigint, 10");
+    assert_eq!(f.m_with_bool_and_i16_and_opt_bool("abc", false, 5, Some(true)), "string, abc, boolean, false, number, 5, boolean, true");
+    assert_eq!(f.m_with_bool_and_str_and_opt_i64("abc", false, "5", Some(10)), "string, abc, boolean, false, string, 5, bigint, 10");
+    assert_eq!(f.m_with_bool_and_str_and_opt_bool("abc", false, "5", Some(true)), "string, abc, boolean, false, string, 5, boolean, true");
 }
 
 #[wasm_bindgen_test]

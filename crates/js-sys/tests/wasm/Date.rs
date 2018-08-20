@@ -413,4 +413,5 @@ fn date_inheritance() {
     let date = Date::new(&"August 19, 1975 23:15:30".into());
     assert!(date.is_instance_of::<Date>());
     assert!(date.is_instance_of::<Object>());
+    let _: &Object = date.as_ref();
 }

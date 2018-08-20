@@ -93,4 +93,5 @@ fn map_inheritance() {
     let map = Map::new();
     assert!(map.is_instance_of::<Map>());
     assert!(map.is_instance_of::<Object>());
+    let _: &Object = map.as_ref();
 }

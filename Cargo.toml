@@ -21,6 +21,7 @@ default = ["spans", "std"]
 spans = ["wasm-bindgen-macro/spans"]
 std = []
 serde-serialize = ["serde", "serde_json", "std"]
+nightly = []
 
 # This is only for debugging wasm-bindgen! No stability guarantees, so enable
 # this at your own peril!
@@ -56,6 +57,7 @@ members = [
   "examples/comments",
   "examples/console_log",
   "examples/dom",
+  "examples/fetch",
   "examples/guide-supported-types-examples",
   "examples/hello_world",
   "examples/import_js",

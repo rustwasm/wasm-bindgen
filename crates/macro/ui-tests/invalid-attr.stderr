@@ -1,19 +1,19 @@
 error: error parsing #[wasm_bindgen] attribute options: failed to parse anything
- --> $DIR/invalid-attr.rs:7:16
+ --> $DIR/invalid-attr.rs:5:16
   |
-7 | #[wasm_bindgen(x)]
+5 | #[wasm_bindgen(x)]
   |                ^
 
 error: error parsing #[wasm_bindgen] attribute options: failed to parse anything
-  --> $DIR/invalid-attr.rs:12:20
+  --> $DIR/invalid-attr.rs:10:20
    |
-12 |     #[wasm_bindgen(y)]
+10 |     #[wasm_bindgen(y)]
    |                    ^
 
 error: malformed #[wasm_bindgen] attribute
-  --> $DIR/invalid-attr.rs:15:5
+  --> $DIR/invalid-attr.rs:13:5
    |
-15 |     #[wasm_bindgen {  }]
+13 |     #[wasm_bindgen {  }]
    |     ^^^^^^^^^^^^^^^^^^^^
 
 error: aborting due to 3 previous errors
