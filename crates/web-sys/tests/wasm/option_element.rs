@@ -3,7 +3,7 @@ use web_sys::HtmlOptionElement;
 
 #[wasm_bindgen_test]
 fn test_option_element() {
-    let option = HtmlOptionElement::new_using_text_and_value_and_default_selected_and_selected(
+    let option = HtmlOptionElement::new_with_text_and_value_and_default_selected_and_selected(
       "option_text",
       "option_value",
       false,
