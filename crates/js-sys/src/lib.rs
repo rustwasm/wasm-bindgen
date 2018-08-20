@@ -3082,11 +3082,18 @@ extern "C" {
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
     #[wasm_bindgen(method, js_class = "String")]
-    pub fn replace(this: &JsString, pattern: &RegExp, replacement: &str) -> JsString;
+    pub fn replace(this: &JsString, pattern: &str, replacement: &str) -> JsString;
 
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
     #[wasm_bindgen(method, js_class = "String", js_name = replace)]
-    pub fn replace_function(this: &JsString, pattern: &RegExp, replacement: &Function) -> JsString;
+    pub fn replace_with_function(this: &JsString, pattern: &str, replacement: &Function) -> JsString;
+
+    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    pub fn replace_by_pattern(this: &JsString, pattern: &RegExp, replacement: &str) -> JsString;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    #[wasm_bindgen(method, js_class = "String", js_name = replace)]
+    pub fn replace_by_pattern_with_function(this: &JsString, pattern: &RegExp, replacement: &Function) -> JsString;
 
     /// The search() method executes a search for a match between
     /// a regular expression and this String object.
