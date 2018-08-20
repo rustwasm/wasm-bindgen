@@ -76,6 +76,10 @@ extern {
     fn return_undefined() -> Option<Options>;
     fn return_some() -> Option<Options>;
     fn run_rust_option_tests();
+
+    type CatchConstructors;
+    #[wasm_bindgen(constructor, catch)]
+    fn new(x: u32) -> Result<CatchConstructors, JsValue>;
 }
 
 #[wasm_bindgen]
@@ -198,4 +202,10 @@ pub fn rust_return_none() -> Option<Options> {
 #[wasm_bindgen]
 pub fn rust_return_some() -> Option<Options> {
     Some(Options::new())
+}
+
+#[wasm_bindgen_test]
+fn catch_constructors() {
+    assert!(CatchConstructors::new(0).is_err());
+    assert!(CatchConstructors::new(1).is_ok());
 }
