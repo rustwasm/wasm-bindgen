@@ -3113,6 +3113,14 @@ extern "C" {
     #[wasm_bindgen(method, js_class = "String", js_name = split)]
     pub fn split_limit(this: &JsString, separator: &str, limit: u32) -> Array;
 
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    pub fn split_by_pattern(this: &JsString, pattern: &RegExp) -> Array;
+
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+    #[wasm_bindgen(method, js_class = "String", js_name = split)]
+    pub fn split_by_pattern_limit(this: &JsString, pattern: &RegExp, limit: u32) -> Array;
+
     /// The `startsWith()` method determines whether a string begins with the
     /// characters of a specified string, returning true or false as
     /// appropriate.

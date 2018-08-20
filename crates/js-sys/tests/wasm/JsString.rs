@@ -352,6 +352,27 @@ fn split() {
     assert_eq!(result.length(), 2);
     assert_eq!(v[0], "Oct");
     assert_eq!(v[1], "Nov");
+
+    let js = JsString::from("Oh brave new world");
+    let re = RegExp::new("\\s", "g");
+    let result = js.split_by_pattern(&re);
+
+    let mut v = Vec::with_capacity(result.length() as usize);
+    result.for_each(&mut |x, _, _| v.push(x));
+
+    assert_eq!(v[0], "Oh");
+    assert_eq!(v[1], "brave");
+    assert_eq!(v[2], "new");
+    assert_eq!(v[3], "world");
+
+    let result = js.split_by_pattern_limit(&re, 2);
+
+    let mut v = Vec::with_capacity(result.length() as usize);
+    result.for_each(&mut |x, _, _| v.push(x));
+
+    assert_eq!(result.length(), 2);
+    assert_eq!(v[0], "Oh");
+    assert_eq!(v[1], "brave");
 }
 
 #[wasm_bindgen_test]
