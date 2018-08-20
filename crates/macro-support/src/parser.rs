@@ -486,7 +486,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
 
             ast::ImportFunctionKind::Method { class, ty, kind }
         } else if opts.constructor() {
-            let class = match wasm.ret {
+            let class = match js_ret {
                 Some(ref ty) => ty,
                 _ => bail_span!(self, "constructor returns must be bare types"),
             };
