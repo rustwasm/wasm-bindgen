@@ -1179,13 +1179,30 @@ impl<'a> Context<'a> {
         }
         self.expose_text_decoder();
         self.expose_uint8_memory();
-        self.global(
-            "
-            function getStringFromWasm(ptr, len) {
-                return cachedDecoder.decode(getUint8Memory().subarray(ptr, ptr + len));
-            }
-            ",
-        );
+
+        // Typically we try to give a raw view of memory out to `TextDecoder` to
+        // avoid copying too much data. If, however, a `SharedArrayBuffer` is
+        // being used it looks like that is rejected by `TextDecoder` or
+        // otherwise doesn't work with it. When we detect a shared situation we
+        // use `slice` which creates a new array instead of `subarray` which
+        // creates just a view. That way in shared mode we copy more data but in
+        // non-shared mode there's no need to copy the data except for the
+        // string itself.
+        self.memory(); // set self.memory_init
+        let is_shared = self.module
+            .memory_section()
+            .map(|s| s.entries()[0].limits().shared())
+            .unwrap_or(match &self.memory_init {
+                Some(limits) => limits.shared(),
+                None => false,
+            });
+        let method = if is_shared { "slice" } else { "subarray" };
+
+        self.global(&format!("
+            function getStringFromWasm(ptr, len) {{
+                return cachedDecoder.decode(getUint8Memory().{}(ptr, ptr + len));
+            }}
+        ", method));
     }
 
     fn expose_get_array_js_value_from_wasm(&mut self) {
