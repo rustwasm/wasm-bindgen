@@ -650,11 +650,9 @@ impl<'a> Context<'a> {
         dst.push_str(&format!(
             "
             free() {{
-                if (this.ptr === 0)
-                    return;
                 const ptr = this.ptr;
                 this.ptr = 0;
-                free{}(this.ptr);
+                free{}(ptr);
             }}
             ",
             name,
