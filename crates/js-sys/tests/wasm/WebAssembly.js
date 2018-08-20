@@ -17,7 +17,12 @@ function getTableObject() {
   return { element: "anyfunc", initial: 1 }
 }
 
+function getInvalidTableObject() {
+  return { element: "anyfunc", initial: 1, maximum: 0 }
+}
+
 module.exports = {
-  getWasmArray,
+  getInvalidTableObject,
   getTableObject,
+  getWasmArray,
 };

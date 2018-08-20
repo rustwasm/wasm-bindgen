@@ -11,6 +11,9 @@ extern {
 
     #[wasm_bindgen(js_name = getTableObject)]
     fn get_table_object() -> Object;
+
+    #[wasm_bindgen(js_name = getInvalidTableObject)]
+    fn get_invalid_table_object() -> Object;
 }
 
 fn get_invalid_wasm() -> JsValue {
@@ -66,7 +69,7 @@ fn compile_valid() -> impl Future<Item = (), Error = JsValue> {
 
 #[wasm_bindgen_test]
 fn module_inheritance() {
-    let module = WebAssembly::Module::new(&get_valid_wasm());
+    let module = WebAssembly::Module::new(&get_valid_wasm()).unwrap();
     assert!(module.is_instance_of::<WebAssembly::Module>());
     assert!(module.is_instance_of::<Object>());
 
@@ -74,29 +77,38 @@ fn module_inheritance() {
 }
 
 #[wasm_bindgen_test]
+fn module_error() {
+    let error = WebAssembly::Module::new(&get_invalid_wasm()).err().unwrap();
+    assert!(error.is_instance_of::<WebAssembly::CompileError>());
+
+    let error = WebAssembly::Module::new(&get_bad_type_wasm()).err().unwrap();
+    assert!(error.is_instance_of::<TypeError>());
+}
+
+#[wasm_bindgen_test]
 fn module_custom_sections() {
-    let module = WebAssembly::Module::new(&get_valid_wasm());
+    let module = WebAssembly::Module::new(&get_valid_wasm()).unwrap();
     let cust_sec = WebAssembly::Module::custom_sections(&module, "abcd");
     assert_eq!(cust_sec.length(), 0);
 }
 
 #[wasm_bindgen_test]
 fn module_exports() {
-    let module = WebAssembly::Module::new(&get_valid_wasm());
+    let module = WebAssembly::Module::new(&get_valid_wasm()).unwrap();
     let exports = WebAssembly::Module::exports(&module);
     assert_eq!(exports.length(), 1);
 }
 
 #[wasm_bindgen_test]
 fn module_imports() {
-    let module = WebAssembly::Module::new(&get_valid_wasm());
+    let module = WebAssembly::Module::new(&get_valid_wasm()).unwrap();
     let imports = WebAssembly::Module::imports(&module);
     assert_eq!(imports.length(), 1);
 }
 
 #[wasm_bindgen_test]
 fn table_inheritance() {
-    let table = WebAssembly::Table::new(&get_table_object().into());
+    let table = WebAssembly::Table::new(&get_table_object().into()).unwrap();
     assert!(table.is_instance_of::<WebAssembly::Table>());
     assert!(table.is_instance_of::<Object>());
 
@@ -104,8 +116,14 @@ fn table_inheritance() {
 }
 
 #[wasm_bindgen_test]
+fn table_error() {
+    let error = WebAssembly::Table::new(&get_invalid_table_object()).err().unwrap();
+    assert!(error.is_instance_of::<RangeError>());
+}
+
+#[wasm_bindgen_test]
 fn table() {
-    let table = WebAssembly::Table::new(&get_table_object().into());
+    let table = WebAssembly::Table::new(&get_table_object().into()).unwrap();
     assert_eq!(table.length(), 1);
 }
 

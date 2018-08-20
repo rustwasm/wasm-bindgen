@@ -2953,8 +2953,8 @@ pub mod WebAssembly {
         /// efficiently shared with Workers, and instantiated multiple times.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module
-        #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
-        pub fn new(buffer_source: &JsValue) -> Module;
+        #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
+        pub fn new(buffer_source: &JsValue) -> Result<Module, JsValue>;
 
         /// The `WebAssembly.customSections()` function returns a copy of the
         /// contents of all custom sections in the given module with the given
@@ -2994,8 +2994,8 @@ pub mod WebAssembly {
         /// of the given size and element type.
         ///
         /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table
-        #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
-        pub fn new(table_descriptor: &Object) -> Table;
+        #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
+        pub fn new(table_descriptor: &Object) -> Result<Table, JsValue>;
 
         /// The `length` prototype property of the `WebAssembly.Table` object
         /// returns the length of the table, i.e. the number of elements in the
