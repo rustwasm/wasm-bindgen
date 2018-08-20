@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "serve": "webpack-serve ./webpack.config.js"
+  },
+  "devDependencies": {
+    "webpack": "^4.16.5",
+    "webpack-serve": "^2.0.2"
+  }
+}

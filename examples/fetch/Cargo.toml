@@ -1,0 +1,16 @@
+[package]
+name = "fetch"
+version = "0.1.0"
+authors = ["Andrew Chin <achin@eminence32.net>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+futures = "0.1.20"
+wasm-bindgen = { path = "../..", features = ["serde-serialize"]  }
+js-sys = { path = "../../crates/js-sys" }
+web-sys = { path = "../../crates/web-sys" }
+wasm-bindgen-futures = { path = "../../crates/futures" }
+serde = "^1.0.59"
+serde_derive = "^1.0.59"
