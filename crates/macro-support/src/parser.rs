@@ -376,7 +376,7 @@ impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
                 let getter = shared::struct_field_get(&ident, &name_str);
                 let setter = shared::struct_field_set(&ident, &name_str);
                 let opts = BindgenAttrs::find(&mut field.attrs)?;
-                assert_not_variadic(&opts)?;
+                assert_not_variadic(&opts, &field)?;
                 let comments = extract_doc_comments(&field.attrs);
                 fields.push(ast::StructField {
                     name: name.clone(),
@@ -562,7 +562,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
-        assert_not_variadic(&attrs)?;
+        assert_not_variadic(&attrs, &self)?;
         let js_name = attrs
             .js_name()
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
@@ -586,7 +586,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemStatic {
         if self.mutability.is_some() {
             bail_span!(self.mutability, "cannot import mutable globals yet")
         }
-        assert_not_variadic(&opts)?;
+        assert_not_variadic(&opts, &self)?;
         let default_name = self.ident.to_string();
         let js_name = opts.js_name().unwrap_or(&default_name);
         let shim = format!(
@@ -624,7 +624,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
         if self.unsafety.is_some() {
             bail_span!(self.unsafety, "can only #[wasm_bindgen] safe functions");
         }
-        assert_not_variadic(&attrs)?;
+        assert_not_variadic(&attrs, &self)?;
 
         let default_name = self.ident.to_string();
         let name = attrs.js_name().unwrap_or(&default_name);
@@ -1096,12 +1096,12 @@ fn assert_no_lifetimes(decl: &syn::FnDecl) -> Result<(), Diagnostic> {
 }
 
 /// This method always fails if the BindgenAttrs contain variadic
-fn assert_not_variadic(attrs: &BindgenAttrs) -> Result<(), Diagnostic> {
-    match attrs.variadic() {
-        true => Err(Diagnostic::error("the `variadic` attribute can only be applied to imported \
-            (`extern`) functions")),
-        false => Ok(())
+fn assert_not_variadic(attrs: &BindgenAttrs, span: &dyn ToTokens) -> Result<(), Diagnostic> {
+    if attrs.variadic() {
+        bail_span!(span, "the `variadic` attribute can only be applied to imported \
+            (`extern`) functions")
     }
+    Ok(())
 }
 
 /// Checks the function signature to ensure it finishes with a slice
