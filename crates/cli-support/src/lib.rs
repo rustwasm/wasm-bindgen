@@ -200,6 +200,7 @@ impl Bindgen {
                 module: &mut module,
                 function_table_needed: false,
                 interpreter: &mut instance,
+                memory_init: None,
             };
             for program in programs.iter() {
                 js::SubContext {
