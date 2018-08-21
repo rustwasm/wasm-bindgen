@@ -1,5 +1,6 @@
 #![cfg(target_arch = "wasm32")]
 
+extern crate js_sys;
 extern crate wasm_bindgen_test;
 extern crate wasm_bindgen;
 extern crate wasm_bindgen_test_crate_a;
