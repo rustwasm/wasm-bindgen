@@ -3005,6 +3005,44 @@ pub mod WebAssembly {
         #[wasm_bindgen(method, getter, js_namespace = WebAssembly)]
         pub fn length(this: &Table) -> u32;
     }
+
+    // WebAssembly.Memory
+    #[wasm_bindgen]
+    extern "C" {
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory
+        #[wasm_bindgen(js_namespace = WebAssembly, extends = Object)]
+        #[derive(Clone, Debug)]
+        pub type Memory;
+
+        /// The `WebAssembly.Memory()` constructor creates a new `Memory` object
+        /// which is a resizable `ArrayBuffer` that holds the raw bytes of
+        /// memory accessed by a WebAssembly `Instance`.
+        ///
+        /// A memory created by JavaScript or in WebAssembly code will be
+        /// accessible and mutable from both JavaScript and WebAssembly.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory
+        #[wasm_bindgen(constructor, js_namespace = WebAssembly, catch)]
+        pub fn new(descriptor: &Object) -> Result<Memory, JsValue>;
+
+        /// An accessor property that returns the buffer contained in the
+        /// memory.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory/buffer
+        #[wasm_bindgen(method, getter, js_namespace = WebAssembly)]
+        pub fn buffer(this: &Memory) -> JsValue;
+
+        /// The `grow()` protoype method of the `Memory` object increases the
+        /// size of the memory instance by a specified number of WebAssembly
+        /// pages.
+        ///
+        /// Takes the number of pages to grow (64KiB in size) and returns the
+        /// previous size of memory, in pages.
+        ///
+        /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory/grow
+        #[wasm_bindgen(method, js_namespace = WebAssembly)]
+        pub fn grow(this: &Memory, pages: u32) -> u32;
+    }
 }
 
 // JSON
