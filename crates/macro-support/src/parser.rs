@@ -1114,7 +1114,7 @@ fn assert_last_param_is_slice(decl: &syn::FnDecl) -> Result<(), Diagnostic> {
             slice, to hold the arguments of unknown length")
     }
 
-    let arg = decl.inputs.last().ok_or_else(|| not_slice_error(&decl.inputs))?;
+    let arg = decl.inputs.last().ok_or_else(|| not_slice_error(&decl))?;
     if let syn::FnArg::Captured(ref arg_cap) = arg.value() {
         if let syn::Type::Reference(ref ref_ty) = arg_cap.ty {
             if let syn::Type::Slice(_) = *ref_ty.elem {
