@@ -32,7 +32,7 @@ extern {
     #[wasm_bindgen(variadic)]
     fn variadic_concat_str(first: &str, second: &str, rest: &[&str]) -> String;
     #[wasm_bindgen(variadic)]
-    fn variadic_concat_string(first: String, second: String, rest: Vec<String>) -> String;
+    fn variadic_concat_string(first: String, second: String, rest: ::std::vec::Vec<String>) -> String;
 }
 
 // ints
