@@ -19,6 +19,7 @@ exports.variadic_sum_i32 = variadic_sum;
 exports.variadic_sum_i64 = variadic_sum;
 exports.variadic_sum_f32 = variadic_sum;
 exports.variadic_sum_f64 = variadic_sum;
+exports.variadic_sum_rest_vec = variadic_sum;
 
 function variadic_sum_opt(...args) {
     let answer = 0;
