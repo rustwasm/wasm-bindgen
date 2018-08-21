@@ -32,9 +32,14 @@ extern {
     //#[wasm_bindgen(variadic)]
     //fn variadic_concat_str(first: &str, second: &str, rest: &[&str]) -> String;
     //#[wasm_bindgen(variadic)]
-    //fn variadic_concat_string(first: String, second: String, rest: ::std::vec::Vec<String>) -> String;
+    //fn variadic_concat_string(first: String,
+    //                          second: String,
+    //                          rest: ::std::vec::Vec<String>) -> String;
     #[wasm_bindgen(variadic)]
     fn variadic_sum_rest_vec(first: u8, second: u8, rest: ::std::vec::Vec<u8>) -> u8;
+    //#[wasm_bindgen(variadic)]
+    //fn variadic_compare_pairs(first: JsValue, second: JsValue, rest: &[JsValue]);
+    //TODO imported type
 }
 
 // ints
@@ -51,16 +56,16 @@ macro_rules! variadic_test_int {
 }
 
 // The <int>64 tests throw js `Cannot mix BigInt and other types, use explicit conversions`
-variadic_test_int!(variadic_simple_u8, variadic_sum_u8);
-variadic_test_int!(variadic_simple_u16, variadic_sum_u16);
-variadic_test_int!(variadic_simple_u32, variadic_sum_u32);
-//variadic_test_int!(variadic_simple_u64, variadic_sum_u64);
-//variadic_test_int!(variadic_simple_usize, variadic_sum_usize);
-variadic_test_int!(variadic_simple_i8, variadic_sum_i8);
-variadic_test_int!(variadic_simple_i16, variadic_sum_i16);
-variadic_test_int!(variadic_simple_i32, variadic_sum_i32);
-//variadic_test_int!(variadic_simple_i64, variadic_sum_i64);
-//variadic_test_int!(variadic_simple_isize, variadic_sum_isize);
+variadic_test_int!(u8, variadic_sum_u8);
+variadic_test_int!(u16, variadic_sum_u16);
+variadic_test_int!(u32, variadic_sum_u32);
+//variadic_test_int!(u64, variadic_sum_u64);
+//variadic_test_int!(usize, variadic_sum_usize);
+variadic_test_int!(i8, variadic_sum_i8);
+variadic_test_int!(i16, variadic_sum_i16);
+variadic_test_int!(i32, variadic_sum_i32);
+//variadic_test_int!(i64, variadic_sum_i64);
+//variadic_test_int!(isize, variadic_sum_isize);
 
 // floats
 
@@ -75,22 +80,22 @@ macro_rules! variadic_test_float {
     }
 }
 
-variadic_test_float!(variadic_simple_f32, variadic_sum_f32);
-variadic_test_float!(variadic_simple_f64, variadic_sum_f64);
+variadic_test_float!(f32, variadic_sum_f32);
+variadic_test_float!(f64, variadic_sum_f64);
 
 // strings
 
 // `the trait `wasm_bindgen::convert::IntoWasmAbi` is not implemented for `&[&str]`
 /*
 #[wasm_bindgen_test]
-fn variadic_simple_str() {
+fn str() {
     assert_eq!(variadic_concat_str("a ", "test", &[]), "a test");
     assert_eq!(variadic_concat_str("a", "nother ", &["test"]), "another test");
     assert_eq!(variadic_concat_str("yet ", "a", &["nother ", "test"]), "yet another test");
 }
 
 #[wasm_bindgen_test]
-fn variadic_simple_string() {
+fn string() {
     assert_eq!(variadic_concat_string("a ".into(), "test".into(), vec![]), "a test");
     assert_eq!(variadic_concat_string("a".into(), "nother ".into(), vec!["test".into()]),
                "another test");
@@ -105,7 +110,7 @@ fn variadic_simple_string() {
 
 /*
 #[wasm_bindgen_test]
-fn variadic_simple_opt() {
+fn opt() {
     assert_eq!(variadic_sum_opt(Some(1), None, &[]), 1);
     assert_eq!(variadic_sum_opt(Some(1), None, &[Some(2)]), 3);
     assert_eq!(variadic_sum_opt(Some(1), None, &[None, Some(2)]), 3);
@@ -115,9 +120,16 @@ fn variadic_simple_opt() {
 // vec not slice
 
 #[wasm_bindgen_test]
-fn variadic_simple_rest_vec() {
+fn rest_vec() {
     assert_eq!(variadic_sum_rest_vec(1, 2, vec![]), 3);
     assert_eq!(variadic_sum_rest_vec(1, 2, vec![3]), 6);
     assert_eq!(variadic_sum_rest_vec(1, 2, vec![3, 4]), 10);
 }
+
+// JsValue
+//#[wasm_bindgen_test]
+//fn jsvalue() {
+//    variadic_compare_pairs_jsvalue(true, true, vec![]);
+//    variadic_compare_pairs_jsvalue(false, false, vec![3, 3]);
+//}
 
