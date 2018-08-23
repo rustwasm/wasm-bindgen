@@ -26,6 +26,7 @@ pub mod MapIterator;
 pub mod Math;
 pub mod Number;
 pub mod Object;
+pub mod Promise;
 pub mod Proxy;
 pub mod RangeError;
 pub mod ReferenceError;
