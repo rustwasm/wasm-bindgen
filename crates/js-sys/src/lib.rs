@@ -3783,6 +3783,7 @@ extern {
     /// an asynchronous operation, and its resulting value.
     ///
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+    #[wasm_bindgen(extends = Object)]
     pub type Promise;
 
     /// Creates a new `Promise` with the provided executor `cb`
