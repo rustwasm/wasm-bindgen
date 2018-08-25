@@ -370,11 +370,6 @@ impl JsCast for JsValue {
     fn instanceof(_val: &JsValue) -> bool { true }
     fn unchecked_from_js(val: JsValue) -> Self { val }
     fn unchecked_from_js_ref(val: &JsValue) -> &Self { val }
-    fn unchecked_from_js_mut(val: &mut JsValue) -> &mut Self { val }
-}
-
-impl AsMut<JsValue> for JsValue {
-    fn as_mut(&mut self) -> &mut JsValue { self }
 }
 
 impl AsRef<JsValue> for JsValue {
