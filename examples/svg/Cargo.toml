@@ -1,0 +1,12 @@
+[package]
+name = "svg"
+version = "0.1.0"
+authors = ["William Mbotta <sergembotta@mailoo.org>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = { path = "../.." }
+web-sys = { path = "../../crates/web-sys" }

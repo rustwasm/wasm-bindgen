@@ -151,6 +151,10 @@ export function new_title() {
   return document.createElement("title");
 }
 
+export function new_svg() {
+    return document.createElement('svg');
+}
+
 export function new_xpath_result() {
     let xmlDoc = new DOMParser().parseFromString("<root><value>tomato</value></root>", "application/xml");
     let xpathResult = xmlDoc.evaluate("/root//value", xmlDoc, null, XPathResult.ANY_TYPE, null);

@@ -66,6 +66,7 @@ members = [
   "examples/no_modules",
   "examples/performance",
   "examples/smorgasboard",
+  "examples/svg",
   "examples/wasm-in-wasm",
   "examples/webaudio",
   "tests/no-std",
