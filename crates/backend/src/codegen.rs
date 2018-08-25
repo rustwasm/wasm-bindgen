@@ -618,9 +618,6 @@ impl ToTokens for ast::ImportType {
                     fn as_ref(&self) -> &JsValue { &self.obj }
                 }
 
-                impl AsMut<JsValue> for #rust_name {
-                    fn as_mut(&mut self) -> &mut JsValue { &mut self.obj }
-                }
 
                 impl From<#rust_name> for JsValue {
                     fn from(obj: #rust_name) -> JsValue {
@@ -656,12 +653,6 @@ impl ToTokens for ast::ImportType {
                         // wrapper around `val`
                         unsafe { &*(val as *const JsValue as *const #rust_name) }
                     }
-
-                    fn unchecked_from_js_mut(val: &mut JsValue) -> &mut Self {
-                        // Should be safe because `#rust_name` is a transparent
-                        // wrapper around `val`
-                        unsafe { &mut *(val as *mut JsValue as *mut #rust_name) }
-                    }
                 }
 
                 ()
@@ -681,13 +672,6 @@ impl ToTokens for ast::ImportType {
                     fn as_ref(&self) -> &#superclass {
                         use wasm_bindgen::JsCast;
                         #superclass::unchecked_from_js_ref(self.as_ref())
-                    }
-                }
-
-                impl AsMut<#superclass> for #rust_name {
-                    fn as_mut(&mut self) -> &mut #superclass {
-                        use wasm_bindgen::JsCast;
-                        #superclass::unchecked_from_js_mut(self.as_mut())
                     }
                 }
             }).to_tokens(tokens);
@@ -1191,9 +1175,6 @@ impl ToTokens for ast::Dictionary {
                 impl AsRef<JsValue> for #name {
                     fn as_ref(&self) -> &JsValue { self.obj.as_ref() }
                 }
-                impl AsMut<JsValue> for #name {
-                    fn as_mut(&mut self) -> &mut JsValue { self.obj.as_mut() }
-                }
 
                 // Boundary conversion impls
                 impl WasmDescribe for #name {
@@ -1256,10 +1237,6 @@ impl ToTokens for ast::Dictionary {
 
                     fn unchecked_from_js_ref(val: &JsValue) -> &Self {
                         unsafe { &*(val as *const JsValue as *const #name) }
-                    }
-
-                    fn unchecked_from_js_mut(val: &mut JsValue) -> &mut Self {
-                        unsafe { &mut *(val as *mut JsValue as *mut #name) }
                     }
                 }
             };
