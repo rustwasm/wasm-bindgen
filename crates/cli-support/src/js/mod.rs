@@ -43,6 +43,7 @@ pub struct Context<'a> {
     pub exported_classes: HashMap<String, ExportedClass>,
     pub function_table_needed: bool,
     pub interpreter: &'a mut Interpreter,
+    pub memory_init: Option<ResizableLimits>,
 }
 
 #[derive(Default)]
@@ -377,6 +378,7 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.create_memory_export();
         self.unexport_unused_internal_exports();
         self.gc()?;
 
@@ -685,6 +687,20 @@ impl<'a> Context<'a> {
         }
     }
 
+    fn create_memory_export(&mut self) {
+        let limits = match self.memory_init.clone() {
+            Some(limits) => limits,
+            None => return,
+        };
+        let mut initializer = String::from("new WebAssembly.Memory({");
+        initializer.push_str(&format!("initial:{}", limits.initial()));
+        if let Some(max) = limits.maximum() {
+            initializer.push_str(&format!(",maximum:{}", max));
+        }
+        initializer.push_str("})");
+        self.export("memory", &initializer, None);
+    }
+
     fn rewrite_imports(&mut self, module_name: &str) {
         for (name, contents) in self._rewrite_imports(module_name) {
             self.export(&name, &contents, None);
@@ -713,6 +729,15 @@ impl<'a> Context<'a> {
 
             if import.module() != "env" {
                 continue;
+            }
+
+            // If memory is imported we'll have exported it from the shim module
+            // so let's import it from there.
+            if import.field() == "memory" {
+                import.module_mut().truncate(0);
+                import.module_mut().push_str("./");
+                import.module_mut().push_str(module_name);
+                continue
             }
 
             let renamed_import = format!("__wbindgen_{}", import.field());
@@ -1333,18 +1358,20 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert(name) {
             return;
         }
+        let mem = self.memory();
         self.global(&format!(
             "
             let cache{name} = null;
             function {name}() {{
-                if (cache{name} === null || cache{name}.buffer !== wasm.memory.buffer) {{
-                    cache{name} = new {js}(wasm.memory.buffer);
+                if (cache{name} === null || cache{name}.buffer !== {mem}.buffer) {{
+                    cache{name} = new {js}({mem}.buffer);
                 }}
                 return cache{name};
             }}
             ",
             name = name,
             js = js,
+            mem = mem,
         ));
     }
 
@@ -1689,6 +1716,29 @@ impl<'a> Context<'a> {
 
     fn use_node_require(&self) -> bool {
         self.config.nodejs && !self.config.nodejs_experimental_modules
+    }
+
+    fn memory(&mut self) -> &'static str {
+        if self.module.memory_section().is_some() {
+            return "wasm.memory";
+        }
+
+        let (entry, mem) = self.module.import_section()
+            .expect("must import memory")
+            .entries()
+            .iter()
+            .filter_map(|i| {
+                match i.external() {
+                    External::Memory(m) => Some((i, m)),
+                    _ => None,
+                }
+            })
+            .next()
+            .expect("must import memory");
+        assert_eq!(entry.module(), "env");
+        assert_eq!(entry.field(), "memory");
+        self.memory_init = Some(mem.limits().clone());
+        "memory"
     }
 }
 
