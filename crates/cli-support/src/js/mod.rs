@@ -2,6 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::fmt::Write;
 use std::mem;
 
+use decode;
 use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
 use shared;
@@ -25,8 +26,8 @@ pub struct Context<'a> {
     pub typescript: String,
     pub exposed_globals: HashSet<&'static str>,
     pub required_internal_exports: HashSet<&'static str>,
-    pub imported_functions: HashSet<String>,
-    pub imported_statics: HashSet<String>,
+    pub imported_functions: HashSet<&'a str>,
+    pub imported_statics: HashSet<&'a str>,
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
 
@@ -37,7 +38,7 @@ pub struct Context<'a> {
     /// from, `None` being the global module. The second key is a map of
     /// identifiers we've already imported from the module to what they're
     /// called locally.
-    pub imported_names: HashMap<Option<String>, HashMap<String, String>>,
+    pub imported_names: HashMap<Option<&'a str>, HashMap<String, String>>,
 
     /// A set of all imported identifiers to the number of times they've been
     /// imported, used to generate new identifiers.
@@ -59,9 +60,9 @@ pub struct ExportedClass {
 }
 
 pub struct SubContext<'a, 'b: 'a> {
-    pub program: &'a shared::Program,
+    pub program: &'b decode::Program<'b>,
     pub cx: &'a mut Context<'b>,
-    pub vendor_prefixes: HashMap<String, Vec<String>>,
+    pub vendor_prefixes: HashMap<&'b str, Vec<&'b str>>,
 }
 
 const INITIAL_SLAB_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -1690,7 +1691,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             })?;
         }
         for f in self.program.imports.iter() {
-            if let shared::ImportKind::Type(ty) = &f.kind {
+            if let decode::ImportKind::Type(ty) = &f.kind {
                 self.register_vendor_prefix(ty);
             }
         }
@@ -1707,7 +1708,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         Ok(())
     }
 
-    fn generate_export(&mut self, export: &shared::Export) -> Result<(), Error> {
+    fn generate_export(&mut self, export: &decode::Export<'b>) -> Result<(), Error> {
         if let Some(ref class) = export.class {
             return self.generate_export_for_class(class, export);
         }
@@ -1734,8 +1735,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn generate_export_for_class(
         &mut self,
-        class_name: &str,
-        export: &shared::Export,
+        class_name: &'b str,
+        export: &decode::Export,
     ) -> Result<(), Error> {
         let wasm_name = shared::struct_function_export_name(class_name, &export.function.name);
 
@@ -1785,9 +1786,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
         Ok(())
     }
 
-    fn generate_import(&mut self, import: &shared::Import) -> Result<(), Error> {
+    fn generate_import(&mut self, import: &decode::Import<'b>) -> Result<(), Error> {
         match import.kind {
-            shared::ImportKind::Function(ref f) => {
+            decode::ImportKind::Function(ref f) => {
                 self.generate_import_function(import, f).with_context(|_| {
                     format!(
                         "failed to generate bindings for JS import `{}`",
@@ -1795,29 +1796,29 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     )
                 })?;
             }
-            shared::ImportKind::Static(ref s) => {
+            decode::ImportKind::Static(ref s) => {
                 self.generate_import_static(import, s).with_context(|_| {
                     format!("failed to generate bindings for JS import `{}`", s.name)
                 })?;
             }
-            shared::ImportKind::Type(ref ty) => {
+            decode::ImportKind::Type(ref ty) => {
                 self.generate_import_type(import, ty).with_context(|_| {
                     format!("failed to generate bindings for JS import `{}`", ty.name,)
                 })?;
             }
-            shared::ImportKind::Enum(_) => {}
+            decode::ImportKind::Enum(_) => {}
         }
         Ok(())
     }
 
     fn generate_import_static(
         &mut self,
-        info: &shared::Import,
-        import: &shared::ImportStatic,
+        info: &decode::Import<'b>,
+        import: &decode::ImportStatic<'b>,
     ) -> Result<(), Error> {
         // The same static can be imported in multiple locations, so only
         // generate bindings once for it.
-        if !self.cx.imported_statics.insert(import.shim.clone()) {
+        if !self.cx.imported_statics.insert(import.shim) {
             return Ok(());
         }
 
@@ -1841,8 +1842,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn generate_import_function(
         &mut self,
-        info: &shared::Import,
-        import: &shared::ImportFunction,
+        info: &decode::Import<'b>,
+        import: &decode::ImportFunction<'b>,
     ) -> Result<(), Error> {
         if !self.cx.wasm_import_needed(&import.shim) {
             return Ok(());
@@ -1850,7 +1851,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         // It's possible for the same function to be imported in two locations,
         // but we only want to generate one.
-        if !self.cx.imported_functions.insert(import.shim.clone()) {
+        if !self.cx.imported_functions.insert(import.shim) {
             return Ok(());
         }
 
@@ -1872,8 +1873,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn generated_import_target(
         &mut self,
-        info: &shared::Import,
-        import: &shared::ImportFunction,
+        info: &decode::Import<'b>,
+        import: &decode::ImportFunction,
         descriptor: &Descriptor,
     ) -> Result<String, Error> {
         let method_data = match &import.method {
@@ -1896,14 +1897,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         let class = self.import_name(info, &method_data.class)?;
         let op = match &method_data.kind {
-            shared::MethodKind::Constructor => return Ok(format!("new {}", class)),
-            shared::MethodKind::Operation(op) => op,
+            decode::MethodKind::Constructor => return Ok(format!("new {}", class)),
+            decode::MethodKind::Operation(op) => op,
         };
         let target = if import.structural {
             let location = if op.is_static { &class } else { "this" };
 
             match &op.kind {
-                shared::OperationKind::Regular => {
+                decode::OperationKind::Regular => {
                     let nargs = descriptor.unwrap_function().arguments.len();
                     let mut s = format!("function(");
                     for i in 0..nargs - 1 {
@@ -1924,31 +1925,31 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     s.push_str(");\n}");
                     s
                 }
-                shared::OperationKind::Getter(g) => format!(
+                decode::OperationKind::Getter(g) => format!(
                     "function() {{
                         return {}.{};
                     }}",
                     location, g
                 ),
-                shared::OperationKind::Setter(s) => format!(
+                decode::OperationKind::Setter(s) => format!(
                     "function(y) {{
                         {}.{} = y;
                     }}",
                     location, s
                 ),
-                shared::OperationKind::IndexingGetter => format!(
+                decode::OperationKind::IndexingGetter => format!(
                     "function(y) {{
                         return {}[y];
                     }}",
                     location
                 ),
-                shared::OperationKind::IndexingSetter => format!(
+                decode::OperationKind::IndexingSetter => format!(
                     "function(y, z) {{
                         {}[y] = z;
                     }}",
                     location
                 ),
-                shared::OperationKind::IndexingDeleter => format!(
+                decode::OperationKind::IndexingDeleter => format!(
                     "function(y) {{
                         delete {}[y];
                     }}",
@@ -1960,30 +1961,30 @@ impl<'a, 'b> SubContext<'a, 'b> {
                                  class,
                                  if op.is_static { "" } else { ".prototype" });
             let (mut target, name) = match &op.kind {
-                shared::OperationKind::Regular => {
+                decode::OperationKind::Regular => {
                     (format!("{}.{}", target, import.function.name), &import.function.name)
                 }
-                shared::OperationKind::Getter(g) => {
+                decode::OperationKind::Getter(g) => {
                     self.cx.expose_get_inherited_descriptor();
                     (format!(
                         "GetOwnOrInheritedPropertyDescriptor({}, '{}').get",
                         target, g,
                     ), g)
                 }
-                shared::OperationKind::Setter(s) => {
+                decode::OperationKind::Setter(s) => {
                     self.cx.expose_get_inherited_descriptor();
                     (format!(
                         "GetOwnOrInheritedPropertyDescriptor({}, '{}').set",
                         target, s,
                     ), s)
                 }
-                shared::OperationKind::IndexingGetter => {
+                decode::OperationKind::IndexingGetter => {
                     panic!("indexing getter should be structural")
                 }
-                shared::OperationKind::IndexingSetter => {
+                decode::OperationKind::IndexingSetter => {
                     panic!("indexing setter should be structural")
                 }
-                shared::OperationKind::IndexingDeleter => {
+                decode::OperationKind::IndexingDeleter => {
                     panic!("indexing deleter should be structural")
                 }
             };
@@ -2009,8 +2010,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn generate_import_type(
         &mut self,
-        info: &shared::Import,
-        import: &shared::ImportType,
+        info: &decode::Import<'b>,
+        import: &decode::ImportType,
     ) -> Result<(), Error> {
         if !self.cx.wasm_import_needed(&import.instanceof_shim) {
             return Ok(());
@@ -2029,7 +2030,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         Ok(())
     }
 
-    fn generate_enum(&mut self, enum_: &shared::Enum) {
+    fn generate_enum(&mut self, enum_: &decode::Enum) {
         let mut variants = String::new();
 
         for variant in enum_.variants.iter() {
@@ -2052,7 +2053,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.typescript.push_str("}\n");
     }
 
-    fn generate_struct(&mut self, struct_: &shared::Struct) -> Result<(), Error> {
+    fn generate_struct(&mut self, struct_: &decode::Struct) -> Result<(), Error> {
         let mut dst = String::new();
         let mut ts_dst = String::new();
         for field in struct_.fields.iter() {
@@ -2098,7 +2099,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let class = self
             .cx
             .exported_classes
-            .entry(struct_.name.clone())
+            .entry(struct_.name.to_string())
             .or_insert_with(Default::default);
         class.comments = format_doc_comments(&struct_.comments, None);
         class.contents.push_str(&dst);
@@ -2110,18 +2111,18 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn register_vendor_prefix(
         &mut self,
-        info: &shared::ImportType,
+        info: &decode::ImportType<'b>,
     ) {
         if info.vendor_prefixes.len() == 0 {
             return
         }
         self.vendor_prefixes
-            .entry(info.name.to_string())
+            .entry(info.name)
             .or_insert(Vec::new())
             .extend(info.vendor_prefixes.iter().cloned());
     }
 
-    fn import_name(&mut self, import: &shared::Import, item: &str) -> Result<String, Error> {
+    fn import_name(&mut self, import: &decode::Import<'b>, item: &str) -> Result<String, Error> {
         // First up, imports don't work at all in `--no-modules` mode as we're
         // not sure how to import them.
         if self.cx.config.no_modules {
@@ -2180,7 +2181,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let identifier = self
             .cx
             .imported_names
-            .entry(import.module.clone())
+            .entry(import.module)
             .or_insert_with(Default::default)
             .entry(name_to_import.to_string())
             .or_insert_with(|| {
@@ -2207,7 +2208,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     switch(imports_post, &name, "", vendor_prefixes);
                     imports_post.push_str(";\n");
 
-                    fn switch(dst: &mut String, name: &str, prefix: &str, left: &[String]) {
+                    fn switch(dst: &mut String, name: &str, prefix: &str, left: &[&str]) {
                         if left.len() == 0 {
                             dst.push_str(prefix);
                             return dst.push_str(name);
@@ -2254,7 +2255,7 @@ fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> S
     }
 }
 
-fn format_doc_comments(comments: &Vec<String>, js_doc_comments: Option<String>) -> String {
+fn format_doc_comments(comments: &[&str], js_doc_comments: Option<String>) -> String {
     let body: String = comments
         .iter()
         .map(|c| format!("*{}\n", c.trim_matches('"')))

@@ -1,7 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
 extern crate parity_wasm;
-extern crate serde_json;
+#[macro_use]
 extern crate wasm_bindgen_shared as shared;
 extern crate wasm_bindgen_gc;
 #[macro_use]
@@ -13,10 +13,12 @@ use std::env;
 use std::fs;
 use std::mem;
 use std::path::{Path, PathBuf};
+use std::str;
 
 use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
 
+mod decode;
 mod descriptor;
 mod js;
 pub mod wasm2es6js;
@@ -137,7 +139,8 @@ impl Bindgen {
                 (module, stem)
             }
         };
-        let programs = extract_programs(&mut module)
+        let mut program_storage = Vec::new();
+        let programs = extract_programs(&mut module, &mut program_storage)
             .with_context(|_| "failed to extract wasm-bindgen custom sections")?;
 
         // Here we're actually instantiating the module we've parsed above for
@@ -289,35 +292,50 @@ impl Bindgen {
     }
 }
 
-fn extract_programs(module: &mut Module) -> Result<Vec<shared::Program>, Error> {
-    let version = shared::version();
-    let mut ret = Vec::new();
+fn extract_programs<'a>(
+    module: &mut Module,
+    program_storage: &'a mut Vec<Vec<u8>>,
+) -> Result<Vec<decode::Program<'a>>, Error> {
+    let my_version = shared::version();
     let mut to_remove = Vec::new();
+    assert!(program_storage.is_empty());
 
-    for (i, s) in module.sections().iter().enumerate() {
-        let custom = match *s {
-            Section::Custom(ref s) => s,
+    for (i, s) in module.sections_mut().iter_mut().enumerate() {
+        let custom = match s {
+            Section::Custom(s) => s,
             _ => continue,
         };
         if custom.name() != "__wasm_bindgen_unstable" {
             continue;
         }
         to_remove.push(i);
+        program_storage.push(mem::replace(custom.payload_mut(), Vec::new()));
+    }
 
-        let mut payload = custom.payload();
-        while payload.len() > 0 {
-            let len = ((payload[0] as usize) << 0)
-                | ((payload[1] as usize) << 8)
-                | ((payload[2] as usize) << 16)
-                | ((payload[3] as usize) << 24);
-            let (a, b) = payload[4..].split_at(len as usize);
-            payload = b;
+    for i in to_remove.into_iter().rev() {
+        module.sections_mut().remove(i);
+    }
 
-            let p: shared::ProgramOnlySchema = match serde_json::from_slice(&a) {
-                Ok(f) => f,
-                Err(e) => bail!("failed to decode what looked like wasm-bindgen data: {}", e),
-            };
-            if p.schema_version != shared::SCHEMA_VERSION {
+    let mut ret = Vec::new();
+    for program in program_storage.iter() {
+        let mut payload = &program[..];
+        while let Some(data) = get_remaining(&mut payload) {
+            // Historical versions of wasm-bindgen have used JSON as the custom
+            // data section format. Newer versions, however, are using a custom
+            // serialization protocol that looks much more like the wasm spec.
+            //
+            // We, however, want a sanity check to ensure that if we're running
+            // against the wrong wasm-bindgen we get a nicer error than an
+            // internal decode error. To that end we continue to verify a tiny
+            // bit of json at the beginning of each blob before moving to the
+            // next blob. This should keep us compatible with older wasm-bindgen
+            // instances as well as forward-compatible for now.
+            //
+            // Note, though, that as `wasm-pack` picks up steam it's hoped we
+            // can just delete this entirely. The `wasm-pack` project already
+            // manages versions for us, so we in theory should need this check
+            // less and less over time.
+            if let Some(their_version) = verify_schema_matches(data)? {
                 bail!(
                     "
 
@@ -341,22 +359,65 @@ or you can update the binary with
 if this warning fails to go away though and you're not sure what to do feel free
 to open an issue at https://github.com/rustwasm/wasm-bindgen/issues!
 ",
-                    p.version,
-                    version
+                    their_version,
+                    my_version,
                 );
             }
-            let p: shared::Program = match serde_json::from_slice(&a) {
-                Ok(f) => f,
-                Err(e) => bail!("failed to decode what looked like wasm-bindgen data: {}", e),
-            };
-            ret.push(p);
+            let next = get_remaining(&mut payload).unwrap();
+            ret.push(<decode::Program as decode::Decode>::decode_all(next));
         }
     }
-
-    for i in to_remove.into_iter().rev() {
-        module.sections_mut().remove(i);
-    }
     Ok(ret)
+}
+
+fn get_remaining<'a>(data: &mut &'a [u8]) -> Option<&'a [u8]> {
+    if data.len() == 0 {
+        return None
+    }
+    let len = ((data[0] as usize) << 0)
+        | ((data[1] as usize) << 8)
+        | ((data[2] as usize) << 16)
+        | ((data[3] as usize) << 24);
+    let (a, b) = data[4..].split_at(len);
+    *data = b;
+    Some(a)
+}
+
+fn verify_schema_matches<'a>(data: &'a [u8])
+    -> Result<Option<&'a str>, Error>
+{
+    macro_rules! bad {
+        () => (bail!("failed to decode what looked like wasm-bindgen data"))
+    }
+    let data = match str::from_utf8(data) {
+        Ok(s) => s,
+        Err(_) => bad!(),
+    };
+    if !data.starts_with("{") || !data.ends_with("}") {
+        bad!()
+    }
+    let needle = "\"schema_version\":\"";
+    let rest = match data.find(needle) {
+        Some(i) => &data[i + needle.len()..],
+        None => bad!(),
+    };
+    let their_schema_version = match rest.find("\"") {
+        Some(i) => &rest[..i],
+        None => bad!(),
+    };
+    if their_schema_version == shared::SCHEMA_VERSION {
+        return Ok(None)
+    }
+    let needle = "\"version\":\"";
+    let rest = match data.find(needle) {
+        Some(i) => &data[i + needle.len()..],
+        None => bad!(),
+    };
+    let their_version = match rest.find("\"") {
+        Some(i) => &rest[..i],
+        None => bad!(),
+    };
+    Ok(Some(their_version))
 }
 
 fn reset_indentation(s: &str) -> String {

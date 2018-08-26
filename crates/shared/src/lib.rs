@@ -1,139 +1,118 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-shared/0.2")]
 
-#[macro_use]
-extern crate serde_derive;
-
 // The schema is so unstable right now we just force it to change whenever this
 // package's version changes, which happens on all publishes.
 pub const SCHEMA_VERSION: &str = env!("CARGO_PKG_VERSION");
 
-#[derive(Deserialize)]
-pub struct ProgramOnlySchema {
-    pub schema_version: String,
-    pub version: String,
+#[macro_export]
+macro_rules! shared_api {
+    ($mac:ident) => ($mac! {
+struct Program<'a> {
+    exports: Vec<Export<'a>>,
+    enums: Vec<Enum<'a>>,
+    imports: Vec<Import<'a>>,
+    structs: Vec<Struct<'a>>,
+    // version: &'a str,
+    // schema_version: &'a str,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct Program {
-    pub exports: Vec<Export>,
-    pub enums: Vec<Enum>,
-    pub imports: Vec<Import>,
-    pub structs: Vec<Struct>,
-    pub version: String,
-    pub schema_version: String,
+struct Import<'a> {
+    module: Option<&'a str>,
+    js_namespace: Option<&'a str>,
+    kind: ImportKind<'a>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct Import {
-    pub module: Option<String>,
-    pub js_namespace: Option<String>,
-    pub kind: ImportKind,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(tag = "kind", rename_all = "lowercase")]
-pub enum ImportKind {
-    Function(ImportFunction),
-    Static(ImportStatic),
-    Type(ImportType),
+enum ImportKind<'a> {
+    Function(ImportFunction<'a>),
+    Static(ImportStatic<'a>),
+    Type(ImportType<'a>),
     Enum(ImportEnum),
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct ImportFunction {
-    pub shim: String,
-    pub catch: bool,
-    pub variadic: bool,
-    pub method: Option<MethodData>,
-    pub structural: bool,
-    pub function: Function,
+struct ImportFunction<'a> {
+    shim: &'a str,
+    catch: bool,
+    variadic: bool,
+    method: Option<MethodData<'a>>,
+    structural: bool,
+    function: Function<'a>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct MethodData {
-    pub class: String,
-    pub kind: MethodKind,
+struct MethodData<'a> {
+    class: &'a str,
+    kind: MethodKind<'a>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub enum MethodKind {
+enum MethodKind<'a> {
     Constructor,
-    Operation(Operation),
+    Operation(Operation<'a>),
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct Operation {
-    pub is_static: bool,
-    pub kind: OperationKind,
+struct Operation<'a> {
+    is_static: bool,
+    kind: OperationKind<'a>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub enum OperationKind {
+enum OperationKind<'a> {
     Regular,
-    Getter(String),
-    Setter(String),
+    Getter(&'a str),
+    Setter(&'a str),
     IndexingGetter,
     IndexingSetter,
     IndexingDeleter,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct ImportStatic {
-    pub name: String,
-    pub shim: String,
+struct ImportStatic<'a> {
+    name: &'a str,
+    shim: &'a str,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct ImportType {
-    pub name: String,
-    pub instanceof_shim: String,
-    pub vendor_prefixes: Vec<String>,
+struct ImportType<'a> {
+    name: &'a str,
+    instanceof_shim: &'a str,
+    vendor_prefixes: Vec<&'a str>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct ImportEnum {}
+struct ImportEnum {}
 
-#[derive(Deserialize, Serialize)]
-pub struct Export {
-    pub class: Option<String>,
-    pub method: bool,
-    pub consumed: bool,
-    pub is_constructor: bool,
-    pub function: Function,
-    pub comments: Vec<String>,
+struct Export<'a> {
+    class: Option<&'a str>,
+    method: bool,
+    consumed: bool,
+    is_constructor: bool,
+    function: Function<'a>,
+    comments: Vec<&'a str>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct Enum {
-    pub name: String,
-    pub variants: Vec<EnumVariant>,
-    pub comments: Vec<String>,
+struct Enum<'a> {
+    name: &'a str,
+    variants: Vec<EnumVariant<'a>>,
+    comments: Vec<&'a str>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct EnumVariant {
-    pub name: String,
-    pub value: u32,
+struct EnumVariant<'a> {
+    name: &'a str,
+    value: u32,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct Function {
-    pub name: String,
+struct Function<'a> {
+    name: &'a str,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct Struct {
-    pub name: String,
-    pub fields: Vec<StructField>,
-    pub comments: Vec<String>,
+struct Struct<'a> {
+    name: &'a str,
+    fields: Vec<StructField<'a>>,
+    comments: Vec<&'a str>,
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct StructField {
-    pub name: String,
-    pub readonly: bool,
-    pub comments: Vec<String>,
+struct StructField<'a> {
+    name: &'a str,
+    readonly: bool,
+    comments: Vec<&'a str>,
 }
+}) // end of mac case
+
+} // end of mac definition
 
 pub fn new_function(struct_name: &str) -> String {
     let mut name = format!("__wbg_");

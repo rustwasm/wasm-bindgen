@@ -19,6 +19,5 @@ lazy_static = "1.0.0"
 log = "0.4"
 proc-macro2 = "0.4.8"
 quote = '0.6'
-serde_json = "1.0"
-syn = { version = '0.15', features = ['full', 'visit'] }
+syn = { version = '0.15', features = ['full'] }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.25" }

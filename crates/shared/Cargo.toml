@@ -10,7 +10,3 @@ description = """
 Shared support between wasm-bindgen and wasm-bindgen cli, an internal
 dependency.
 """
-
-[dependencies]
-serde_derive = "1"
-serde = "1"
