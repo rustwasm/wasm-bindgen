@@ -437,6 +437,8 @@ externs! {
     fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_json_serialize(idx: u32, ptr: *mut *mut u8) -> usize;
     fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
+
+    fn __wbindgen_memory() -> u32;
 }
 
 impl Clone for JsValue {
@@ -559,6 +561,13 @@ impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
 pub fn throw(s: &str) -> ! {
     unsafe {
         __wbindgen_throw(s.as_ptr(), s.len());
+    }
+}
+
+/// Returns a handle to this wasm instance's `WebAssembly.Memory`
+pub fn memory() -> JsValue {
+    unsafe {
+        JsValue { idx: __wbindgen_memory() }
     }
 }
 
