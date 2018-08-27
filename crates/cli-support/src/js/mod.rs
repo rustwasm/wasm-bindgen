@@ -380,6 +380,18 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_memory", &|me| {
+            me.expose_add_heap_object();
+            let mem = me.memory();
+            Ok(format!(
+                "
+                function() {{
+                    return addHeapObject({});
+                }}
+                ", mem
+            ))
+        })?;
+
         self.create_memory_export();
         self.unexport_unused_internal_exports();
         self.gc()?;
