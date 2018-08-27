@@ -40,6 +40,8 @@ pub(crate) enum IdlType<'a> {
     Uint32Array,
     Float32Array,
     Float64Array,
+    ArrayBufferView,
+    BufferSource,
 
     Interface(&'a str),
     Dictionary(&'a str),
@@ -116,6 +118,8 @@ impl<'a> ToIdlType<'a> for NonAnyType<'a> {
             NonAnyType::Float32Array(t) => t.to_idl_type(record),
             NonAnyType::Float64Array(t) => t.to_idl_type(record),
             NonAnyType::FrozenArrayType(t) => t.to_idl_type(record),
+            NonAnyType::ArrayBufferView(t) => t.to_idl_type(record),
+            NonAnyType::BufferSource(t) => t.to_idl_type(record),
             NonAnyType::RecordType(t) => t.to_idl_type(record),
             NonAnyType::Identifier(t) => t.to_idl_type(record),
         }
@@ -331,6 +335,8 @@ terms_to_idl_type! {
     Uint8ClampedArray => Uint8ClampedArray
     Float32Array => Float32Array
     Float64Array => Float64Array
+    ArrayBufferView => ArrayBufferView
+    BufferSource => BufferSource
     Error => Error
 }
 
@@ -369,6 +375,8 @@ impl<'a> IdlType<'a> {
             IdlType::Uint32Array => dst.push_str("u32_array"),
             IdlType::Float32Array => dst.push_str("f32_array"),
             IdlType::Float64Array => dst.push_str("f64_array"),
+            IdlType::ArrayBufferView => dst.push_str("array_buffer_view"),
+            IdlType::BufferSource => dst.push_str("buffer_source"),
 
             IdlType::Interface(name) => dst.push_str(&snake_case_ident(name)),
             IdlType::Dictionary(name) => dst.push_str(&snake_case_ident(name)),
@@ -458,7 +466,10 @@ impl<'a> IdlType<'a> {
             IdlType::Float32Array => Some(array("f32", pos)),
             IdlType::Float64Array => Some(array("f64", pos)),
 
-            | IdlType::Interface(name)
+            // we alias ArrayBufferView & BufferSource to &u8 in Rust
+            IdlType::ArrayBufferView
+            | IdlType::BufferSource => Some(array("u8", pos)),
+            IdlType::Interface(name)
             | IdlType::Dictionary(name) => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
                 if pos == TypePosition::Argument {
