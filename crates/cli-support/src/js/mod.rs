@@ -24,6 +24,8 @@ pub struct Context<'a> {
     pub typescript: String,
     pub exposed_globals: HashSet<&'static str>,
     pub required_internal_exports: HashSet<&'static str>,
+    pub imported_functions: HashSet<String>,
+    pub imported_statics: HashSet<String>,
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
 
@@ -1884,6 +1886,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
         info: &shared::Import,
         import: &shared::ImportStatic,
     ) -> Result<(), Error> {
+        // The same static can be imported in multiple locations, so only
+        // generate bindings once for it.
+        if !self.cx.imported_statics.insert(import.shim.clone()) {
+            return Ok(())
+        }
+
         // TODO: should support more types to import here
         let obj = self.import_name(info, &import.name)?;
         self.cx.expose_add_heap_object();
@@ -1908,6 +1916,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
         import: &shared::ImportFunction,
     ) -> Result<(), Error> {
         if !self.cx.wasm_import_needed(&import.shim) {
+            return Ok(());
+        }
+
+        // It's possible for the same function to be imported in two locations,
+        // but we only want to generate one.
+        if !self.cx.imported_functions.insert(import.shim.clone()) {
             return Ok(());
         }
 

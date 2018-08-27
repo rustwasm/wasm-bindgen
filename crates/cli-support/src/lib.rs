@@ -201,6 +201,8 @@ impl Bindgen {
                 function_table_needed: false,
                 interpreter: &mut instance,
                 memory_init: None,
+                imported_functions: Default::default(),
+                imported_statics: Default::default(),
             };
             for program in programs.iter() {
                 js::SubContext {
