@@ -287,7 +287,7 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
             Some(IdlType::Interface(self.0))
         } else if record.dictionaries.contains_key(self.0) {
             Some(IdlType::Dictionary(self.0))
-        } else if record.enums.contains(self.0) {
+        } else if record.enums.contains_key(self.0) {
             Some(IdlType::Enum(self.0))
         } else {
             warn!("Unrecognized type: {}", self.0);

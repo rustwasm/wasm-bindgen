@@ -114,3 +114,11 @@ fn mixin() {
     f.add_to_bar(MixinFoo::default_bar());
     assert_eq!(f.bar(), 8);
 }
+
+#[wasm_bindgen_test]
+fn overload_naming() {
+    let o = Overloads::new().unwrap();
+    o.foo();
+    o.foo_with_arg("x");
+    o.foo_with_arg_and_a("x", 3);
+}

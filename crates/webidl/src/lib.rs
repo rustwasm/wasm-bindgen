@@ -44,7 +44,7 @@ use failure::ResultExt;
 use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
 use weedle::argument::Argument;
-use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
+use weedle::attribute::{ExtendedAttributeList};
 use weedle::dictionary::DictionaryMember;
 
 use first_pass::{FirstPass, FirstPassRecord, OperationId};
@@ -81,13 +81,6 @@ fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
                     format_err!("failed to parse WebIDL")
                         .context(ErrorKind::ParsingWebIDLSourcePos(pos)).into()
                 }
-                // webidl::ParseError::UnrecognizedToken { token: Some((start, ..)), .. } => {
-                //     ErrorKind::ParsingWebIDLSourcePos(*start)
-                // }
-                // webidl::ParseError::ExtraToken { token: (start, ..) } => {
-                //     ErrorKind::ParsingWebIDLSourcePos(*start)
-                // },
-                // _ => ErrorKind::ParsingWebIDLSource
             });
         }
     };
@@ -95,7 +88,19 @@ fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
     let mut first_pass_record = Default::default();
     definitions.first_pass(&mut first_pass_record, ())?;
     let mut program = Default::default();
-    definitions.webidl_parse(&mut program, &first_pass_record, ())?;
+
+    for e in first_pass_record.enums.values() {
+        first_pass_record.append_enum(&mut program, e);
+    }
+    for d in first_pass_record.dictionaries.values() {
+        first_pass_record.append_dictionary(&mut program, d);
+    }
+    for (name, n) in first_pass_record.namespaces.iter() {
+        first_pass_record.append_ns(&mut program, name, n);
+    }
+    for (name, d) in first_pass_record.interfaces.iter() {
+        first_pass_record.append_interface(&mut program, name, d);
+    }
 
     Ok(program)
 }
@@ -145,673 +150,19 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
     tokens.to_string()
 }
 
-/// The main trait for parsing WebIDL AST into wasm-bindgen AST.
-trait WebidlParse<'src, Ctx> {
-    /// Parse `self` into wasm-bindgen AST, and insert it into `program`.
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        context: Ctx,
-    ) -> Result<()>;
-}
-
-impl<'src> WebidlParse<'src, ()> for [weedle::Definition<'src>] {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        (): (),
-    ) -> Result<()> {
-        for def in self {
-            def.webidl_parse(program, first_pass, ())?;
-        }
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, ()> for weedle::Definition<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        (): (),
-    ) -> Result<()> {
-        match self {
-            weedle::Definition::Enum(enumeration) => {
-                enumeration.webidl_parse(program, first_pass, ())?
-            }
-            weedle::Definition::Interface(interface) => {
-                interface.webidl_parse(program, first_pass, ())?
-            }
-            weedle::Definition::PartialInterface(interface) => {
-                interface.webidl_parse(program, first_pass, ())?
-            }
-            | weedle::Definition::Typedef(_)
-            | weedle::Definition::InterfaceMixin(_)
-            | weedle::Definition::PartialInterfaceMixin(_)
-            | weedle::Definition::IncludesStatement(..)
-            | weedle::Definition::PartialDictionary(..)
-            | weedle::Definition::PartialNamespace(..)=> {
-                // handled in the first pass
-            }
-            weedle::Definition::Implements(..) => {
-                // nothing to do for this, ignore it
-            }
-            weedle::Definition::Namespace(namespace) => {
-                namespace.webidl_parse(program, first_pass, ())?
-            }
-            weedle::Definition::Dictionary(dict) => {
-                dict.webidl_parse(program, first_pass, ())?
-            }
-
-            // TODO
-            weedle::Definition::Callback(..) => {
-                warn!("Unsupported WebIDL Callback definition: {:?}", self)
-            }
-            weedle::Definition::CallbackInterface(..) => {
-                warn!("Unsupported WebIDL CallbackInterface definition: {:?}", self)
-            }
-        }
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, ()> for weedle::InterfaceDefinition<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        (): (),
-    ) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            info!("Skipping because of `ChromeOnly` attribute: {:?}", self);
-            return Ok(());
-        }
-
-        if util::is_no_interface_object(&self.attributes) {
-            info!("Skipping because of `NoInterfaceObject` attribute: {:?}", self);
-            return Ok(());
-        }
-
-        let doc_comment = Some(format!(
-            "The `{}` object\n\n{}",
-            self.identifier.0,
-            mdn_doc(self.identifier.0, None),
-        ));
-
-        program.imports.push(backend::ast::Import {
-            module: None,
-            js_namespace: None,
-            kind: backend::ast::ImportKind::Type(backend::ast::ImportType {
-                vis: public(),
-                rust_name: rust_ident(camel_case_ident(self.identifier.0).as_str()),
-                js_name: self.identifier.0.to_string(),
-                attrs: Vec::new(),
-                doc_comment,
-                instanceof_shim: format!("__widl_instanceof_{}", self.identifier.0),
-                extends: first_pass.all_superclasses(self.identifier.0)
-                    .map(|name| Ident::new(&name, Span::call_site()))
-                    .collect(),
-            }),
-        });
-
-        if let Some(attrs) = &self.attributes {
-            for attr in &attrs.body.list {
-                attr.webidl_parse(program, first_pass, self)?;
-            }
-        }
-
-        fn parse<'src>(
-            program: &mut backend::ast::Program,
-            first_pass: &FirstPassRecord<'src>,
-            self_name: &str,
-            mixin_name: &str,
-        ) -> Result<()> {
-            if let Some(mixin_data) = first_pass.mixins.get(mixin_name) {
-                for member in &mixin_data.members {
-                    member.webidl_parse(program, first_pass, self_name)?;
-                }
-            }
-            if let Some(mixin_names) = first_pass.includes.get(mixin_name) {
-                for mixin_name in mixin_names {
-                    parse(program, first_pass, self_name, mixin_name)?;
-                }
-            }
-            Ok(())
-        }
-
-        for member in &self.members.body {
-            member.webidl_parse(program, first_pass, self.identifier.0)?;
-        }
-
-        parse(program, first_pass, self.identifier.0, self.identifier.0)?;
-
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, ()> for weedle::PartialInterfaceDefinition<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        (): (),
-    ) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(());
-        }
-
-        if first_pass
-            .interfaces
-            .get(self.identifier.0)
-            .map(|interface_data| interface_data.partial)
-            .unwrap_or(true) {
-            info!(
-                "Partial interface {} missing non-partial interface",
-                self.identifier.0
-            );
-        }
-
-        for member in &self.members.body {
-            member.webidl_parse(program, first_pass, self.identifier.0)?;
-        }
-
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, &'src weedle::InterfaceDefinition<'src>> for ExtendedAttribute<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        interface: &'src weedle::InterfaceDefinition<'src>,
-    ) -> Result<()> {
-        let mut add_constructor = |arguments: &[Argument], class: &str| {
-            let (overloaded, same_argument_names) = first_pass.get_operation_overloading(
-                arguments,
-                &::first_pass::OperationId::Constructor,
-                interface.identifier.0,
-                false,
-            );
-
-            let self_ty = ident_ty(rust_ident(camel_case_ident(interface.identifier.0).as_str()));
-
-            let kind = backend::ast::ImportFunctionKind::Method {
-                class: class.to_string(),
-                ty: self_ty.clone(),
-                kind: backend::ast::MethodKind::Constructor,
-            };
-
-            let structural = false;
-
-            // Constructors aren't annotated with `[Throws]` extended attributes
-            // (how could they be, since they themselves are extended
-            // attributes?) so we must conservatively assume that they can
-            // always throw.
-            //
-            // From https://heycam.github.io/webidl/#Constructor (emphasis
-            // mine):
-            //
-            // > The prose definition of a constructor must either return an IDL
-            // > value of a type corresponding to the interface the
-            // > `[Constructor]` extended attribute appears on, **or throw an
-            // > exception**.
-            let throws = true;
-
-            for import_function in first_pass.create_function(
-                "new",
-                overloaded,
-                same_argument_names,
-                &match first_pass.convert_arguments(arguments) {
-                    Some(arguments) => arguments,
-                    None => return,
-                },
-                IdlType::Interface(interface.identifier.0),
-                kind,
-                structural,
-                throws,
-                None,
-            ) {
-                program.imports.push(wrap_import_function(import_function));
-            }
-        };
-
-        match self {
-            ExtendedAttribute::ArgList(list)
-                if list.identifier.0 == "Constructor" =>
-            {
-                add_constructor(&list.args.body.list, interface.identifier.0)
-            }
-            ExtendedAttribute::NoArgs(other) if (other.0).0 == "Constructor" => {
-                add_constructor(&[], interface.identifier.0)
-            }
-            ExtendedAttribute::NamedArgList(list)
-                if list.lhs_identifier.0 == "NamedConstructor" =>
-            {
-                add_constructor(&list.args.body.list, list.rhs_identifier.0)
-            }
-
-            // these appear to be mapping to gecko preferences, seems like we
-            // can safely ignore
-            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Pref" => {}
-
-            // looks to be a gecko-specific attribute to tie WebIDL back to C++
-            // functions perhaps
-            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Func" => {}
-            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "JSImplementation" => {}
-            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "HeaderFile" => {}
-
-            // Not actually mentioned in the spec and presumably a hint to
-            // Gecko's JS engine? Unsure, but seems like it doesn't matter to us
-            ExtendedAttribute::NoArgs(id)
-                if (id.0).0 == "ProbablyShortLivingWrapper" => {}
-
-            // Indicates something about enumerable properties, we're not too
-            // interested in it
-            // https://heycam.github.io/webidl/#LegacyUnenumerableNamedProperties
-            ExtendedAttribute::NoArgs(id)
-                if (id.0).0 == "LegacyUnenumerableNamedProperties" => {}
-
-            // Indicates where objects are defined (web workers and such), we
-            // may later want to use this for cfgs but for now we ignore it.
-            // https://heycam.github.io/webidl/#Exposed
-            ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Exposed" => {}
-            ExtendedAttribute::IdentList(id) if id.identifier.0 == "Exposed" => {}
-
-            // We handle this with the "structural" attribute elsewhere
-            ExtendedAttribute::IdentList(id) if id.identifier.0 == "Global" => {}
-
-            // Seems like it's safe to ignore for now, just telling us where a
-            // binding appears
-            // https://heycam.github.io/webidl/#SecureContext
-            ExtendedAttribute::NoArgs(id) if (id.0).0 == "SecureContext" => {}
-
-            // We handle this elsewhere
-            ExtendedAttribute::NoArgs(id) if (id.0).0 == "Unforgeable" => {}
-
-            // Looks like this attribute just says that we can't call the
-            // constructor
-            // https://html.spec.whatwg.org/multipage/dom.html#htmlconstructor
-            ExtendedAttribute::NoArgs(id) if (id.0).0 == "HTMLConstructor" => {}
-
-            ExtendedAttribute::ArgList(_)
-            | ExtendedAttribute::Ident(_)
-            | ExtendedAttribute::IdentList(_)
-            | ExtendedAttribute::NamedArgList(_)
-            | ExtendedAttribute::NoArgs(_) => {
-                warn!("Unsupported WebIDL extended attribute: {:?}", self);
-            }
-        }
-
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, &'src str> for weedle::interface::InterfaceMember<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        self_name: &'src str,
-    ) -> Result<()> {
-        use weedle::interface::InterfaceMember::*;
-
-        match self {
-            Attribute(attr) => {
-                attr.webidl_parse(program, first_pass, self_name)
-            }
-            Operation(op) => {
-                op.webidl_parse(program, first_pass, self_name)
-            }
-            Const(const_) => {
-                const_.webidl_parse(program, first_pass, self_name)
-            }
-            Iterable(iterable) => {
-                iterable.webidl_parse(program, first_pass, self_name)
-            }
-            // TODO
-            Maplike(_) => {
-                warn!("Unsupported WebIDL Maplike interface member: {:?}", self);
-                Ok(())
-            }
-            Stringifier(_) => {
-                warn!("Unsupported WebIDL Stringifier interface member: {:?}", self);
-                Ok(())
-            }
-            Setlike(_) => {
-                warn!("Unsupported WebIDL Setlike interface member: {:?}", self);
-                Ok(())
-            }
-        }
-    }
-}
-
-impl<'a, 'src> WebidlParse<'src, &'a str> for weedle::mixin::MixinMember<'src> {
-    fn webidl_parse(
+impl<'src> FirstPassRecord<'src> {
+    fn append_enum(
         &self,
         program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        self_name: &'a str,
-    ) -> Result<()> {
-        match self {
-            weedle::mixin::MixinMember::Attribute(attr) => {
-                attr.webidl_parse(program, first_pass, self_name)
-            }
-            weedle::mixin::MixinMember::Operation(op) => {
-                op.webidl_parse(program, first_pass, self_name)
-            }
-            weedle::mixin::MixinMember::Const(const_) => {
-                const_.webidl_parse(program, first_pass, self_name)
-            }
-            // TODO
-            weedle::mixin::MixinMember::Stringifier(_) => {
-                warn!("Unsupported WebIDL stringifier mixin member: {:?}", self);
-                Ok(())
-            }
-        }
-    }
-}
-
-impl<'src> WebidlParse<'src, &'src str> for weedle::interface::AttributeInterfaceMember<'src> {
-    fn webidl_parse(
-        &self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        self_name: &'src str,
-    ) -> Result<()> {
-        member_attribute(
-            program,
-            first_pass,
-            self_name,
-            &self.attributes,
-            self.modifier,
-            self.readonly.is_some(),
-            &self.type_,
-            self.identifier.0,
-        )
-    }
-}
-
-impl<'src> WebidlParse<'src, &'src str> for weedle::mixin::AttributeMixinMember<'src> {
-    fn webidl_parse(
-        &self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        self_name: &'src str,
-    ) -> Result<()> {
-        member_attribute(
-            program,
-            first_pass,
-            self_name,
-            &self.attributes,
-            if let Some(s) = self.stringifier {
-                Some(weedle::interface::StringifierOrInheritOrStatic::Stringifier(s))
-            } else {
-                None
-            },
-            self.readonly.is_some(),
-            &self.type_,
-            self.identifier.0,
-        )
-    }
-}
-
-fn member_attribute<'src>(
-    program: &mut backend::ast::Program,
-    first_pass: &FirstPassRecord<'src>,
-    self_name: &'src str,
-    attrs: &'src Option<ExtendedAttributeList>,
-    modifier: Option<weedle::interface::StringifierOrInheritOrStatic>,
-    readonly: bool,
-    type_: &'src weedle::types::AttributedType<'src>,
-    identifier: &'src str,
-) -> Result<()> {
-    use weedle::interface::StringifierOrInheritOrStatic::*;
-
-    if util::is_chrome_only(attrs) {
-        return Ok(());
-    }
-
-    let is_static = match modifier {
-        Some(Stringifier(_)) => {
-            warn!("Unsupported stringifier on type: {:?}", (self_name, identifier));
-            return Ok(())
-        }
-        Some(Inherit(_)) => false,
-        Some(Static(_)) => true,
-        None => false,
-    };
-
-    if type_.attributes.is_some() {
-        warn!("Unsupported attributes on type: {:?}", (self_name, identifier));
-        return Ok(())
-    }
-
-    let is_structural = util::is_structural(attrs);
-    let throws = util::throws(attrs);
-    let global = first_pass
-        .interfaces
-        .get(self_name)
-        .map(|interface_data| interface_data.global)
-        .unwrap_or(false);
-
-    for import_function in first_pass.create_getter(
-        identifier,
-        &type_.type_,
-        self_name,
-        is_static,
-        is_structural,
-        throws,
-        global,
+        enum_: &'src weedle::EnumDefinition<'src>
     ) {
-        program.imports.push(wrap_import_function(import_function));
-    }
-
-    if !readonly {
-        for import_function in first_pass.create_setter(
-            identifier,
-            type_.type_.clone(),
-            self_name,
-            is_static,
-            is_structural,
-            throws,
-            global,
-        ) {
-            program.imports.push(wrap_import_function(import_function));
-        }
-    }
-
-    Ok(())
-}
-
-impl<'src> WebidlParse<'src, &'src str> for weedle::interface::OperationInterfaceMember<'src> {
-    fn webidl_parse(
-        &self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        self_name: &'src str,
-    ) -> Result<()> {
-        member_operation(
-            program,
-            first_pass,
-            self_name,
-            &self.attributes,
-            self.modifier,
-            &self.specials,
-            &self.return_type,
-            &self.args.body.list,
-            &self.identifier,
-        )
-    }
-}
-
-impl<'src> WebidlParse<'src, &'src str> for weedle::mixin::OperationMixinMember<'src> {
-    fn webidl_parse(
-        &self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        self_name: &'src str,
-    ) -> Result<()> {
-        member_operation(
-            program,
-            first_pass,
-            self_name,
-            &self.attributes,
-            None,
-            &[],
-            &self.return_type,
-            &self.args.body.list,
-            &self.identifier,
-        )
-    }
-}
-
-fn member_operation<'src>(
-    program: &mut backend::ast::Program,
-    first_pass: &FirstPassRecord<'src>,
-    self_name: &'src str,
-    attrs: &'src Option<ExtendedAttributeList>,
-    modifier: Option<weedle::interface::StringifierOrStatic>,
-    specials: &[weedle::interface::Special],
-    return_type: &'src weedle::types::ReturnType<'src>,
-    args: &'src [Argument],
-    identifier: &Option<weedle::common::Identifier<'src>>,
-) -> Result<()> {
-    use weedle::interface::StringifierOrStatic::*;
-    use weedle::interface::Special;
-
-    if util::is_chrome_only(attrs) {
-        info!("Skipping `ChromeOnly` operation: {:?}", (self_name, identifier));
-        return Ok(());
-    }
-
-    let is_static = match modifier {
-        Some(Stringifier(_)) => {
-            warn!("Unsupported stringifier on type: {:?}", (self_name, identifier));
-            return Ok(())
-        }
-        Some(Static(_)) => true,
-        None => false,
-    };
-
-    let mut operation_ids = vec![
-        OperationId::Operation(identifier.map(|s| s.0)),
-    ];
-    if specials.len() > 1 {
-        warn!(
-            "Unsupported specials: ({:?}) on type {:?}",
-            specials,
-            (self_name, identifier),
-        );
-        return Ok(())
-    } else if specials.len() == 1 {
-        let id = match specials[0] {
-            Special::Getter(weedle::term::Getter) => OperationId::IndexingGetter,
-            Special::Setter(weedle::term::Setter) => OperationId::IndexingSetter,
-            Special::Deleter(weedle::term::Deleter) => OperationId::IndexingDeleter,
-            Special::LegacyCaller(weedle::term::LegacyCaller) => {
-                warn!("Unsupported legacy caller: {:?}", (self_name, identifier));
-                return Ok(());
-            },
-        };
-        operation_ids.push(id);
-    }
-
-    let global = first_pass
-        .interfaces
-        .get(self_name)
-        .map(|interface_data| interface_data.global)
-        .unwrap_or(false);
-
-    for id in operation_ids {
-        let methods = first_pass
-            .create_basic_method(
-                args,
-                id,
-                return_type,
-                self_name,
-                is_static,
-                match id {
-                    OperationId::IndexingGetter |
-                    OperationId::IndexingSetter |
-                    OperationId::IndexingDeleter => true,
-                    _ => false,
-                },
-                util::throws(attrs),
-                global,
-            );
-
-        for method in methods {
-            program.imports.push(wrap_import_function(method));
-        }
-    }
-    Ok(())
-}
-
-impl<'src> WebidlParse<'src, &'src str> for weedle::interface::IterableInterfaceMember<'src> {
-    fn webidl_parse(
-        &self,
-        _program: &mut backend::ast::Program,
-        _first_pass: &FirstPassRecord<'src>,
-        _self_name: &'src str,
-    ) -> Result<()> {
-        // if util::is_chrome_only(&self.attributes) {
-        //     return Ok(());
-        // }
-
-/* TODO
-        let throws = util::throws(&self.extended_attributes);
-        let return_value = weedle::ReturnType::NonVoid(self.value_type.clone());
-        let args = [];
-        first_pass
-            .create_basic_method(
-                &args,
-                Some(&"values".to_string()),
-                &return_value,
-                self_name,
-                false,
-                false, // Should be false
-            )
-            .map(wrap_import_function)
-            .map(|import| program.imports.push(import));
-
-        first_pass
-            .create_basic_method(
-                &args,
-                Some(&"keys".to_string()),
-                &return_value, // Should be a number
-                self_name,
-                false,
-                false, // Should be false
-            )
-            .map(wrap_import_function)
-            .map(|import| program.imports.push(import));
-*/
-
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, ()> for weedle::EnumDefinition<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        _: &FirstPassRecord<'src>,
-        (): (),
-    ) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(());
-        }
-
-        let variants = &self.values.body.list;
+        let variants = &enum_.values.body.list;
         program.imports.push(backend::ast::Import {
             module: None,
             js_namespace: None,
             kind: backend::ast::ImportKind::Enum(backend::ast::ImportEnum {
                 vis: public(),
-                name: rust_ident(camel_case_ident(self.identifier.0).as_str()),
+                name: rust_ident(camel_case_ident(enum_.identifier.0).as_str()),
                 variants: variants
                     .iter()
                     .map(|v| {
@@ -826,173 +177,28 @@ impl<'src> WebidlParse<'src, ()> for weedle::EnumDefinition<'src> {
                 rust_attrs: vec![parse_quote!(#[derive(Copy, Clone, PartialEq, Debug)])],
             }),
         });
-
-        Ok(())
     }
-}
 
-impl<'src> WebidlParse<'src, &'src str> for weedle::interface::ConstMember<'src> {
-    fn webidl_parse(
-        &'src self,
+    // tons more data for what's going on here at
+    // https://www.w3.org/TR/WebIDL-1/#idl-dictionaries
+    fn append_dictionary(
+        &self,
         program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        self_name: &'src str,
-    ) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(());
-        }
-
-        let idl_type = match self.const_type.to_idl_type(first_pass) {
-            None => return Ok(()),
-            Some(idl_type) => idl_type,
+        data: &first_pass::DictionaryData,
+    ) {
+        let def = match data.definition {
+            Some(def) => def,
+            None => return,
         };
-
-        let ty = match idl_type.to_syn_type(TypePosition::Return) {
-            None => {
-                warn!(
-                    "Cannot convert const type to syn type: {:?} in {:?} on {:?}",
-                    idl_type,
-                    self,
-                    self_name
-                );
-                return Ok(());
-            },
-            Some(ty) => ty,
-        };
-
-        program.consts.push(backend::ast::Const {
-            vis: public(),
-            name: rust_ident(self.identifier.0.to_shouty_snake_case().as_str()),
-            class: Some(rust_ident(camel_case_ident(&self_name).as_str())),
-            ty,
-            value: webidl_const_v_to_backend_const_v(&self.const_value),
-        });
-
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, ()> for weedle::NamespaceDefinition<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        (): (),
-    ) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(());
-        }
-
-        if let Some(attrs) = &self.attributes {
-            for attr in &attrs.body.list {
-                attr.webidl_parse(program, first_pass, self)?;
-            }
-        }
-
-        let mut module = backend::ast::Module {
-            vis: public(),
-            name: rust_ident(self.identifier.0.to_snake_case().as_str()),
-            imports: Default::default(),
-        };
-
-        if let Some(namespace_data) = first_pass.namespaces.get(&self.identifier.0) {
-            for member in &namespace_data.members {
-                member.webidl_parse(program, first_pass, (&self.identifier.0, &mut module))?;
-            }
-        }
-
-        program.modules.push(module);
-
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, &'src weedle::NamespaceDefinition<'src>> for ExtendedAttribute<'src> {
-    fn webidl_parse(
-        &'src self,
-        _program: &mut backend::ast::Program,
-        _first_pass: &FirstPassRecord<'src>,
-        _namespace: &'src weedle::NamespaceDefinition<'src>,
-    ) -> Result<()> {
-        warn!("Unsupported WebIDL extended attribute: {:?}", self);
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, (&'src str, &'src mut backend::ast::Module)> for weedle::namespace::NamespaceMember<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        (self_name, module): (&'src str, &mut backend::ast::Module),
-    ) -> Result<()> {
-        match self {
-            weedle::namespace::NamespaceMember::Operation(op) => {
-                op.webidl_parse(program, first_pass, (self_name, module))?;
-            }
-            weedle::namespace::NamespaceMember::Attribute(attr) => {
-                warn!("Unsupported attribute namespace member: {:?}", attr)
-            }
-        }
-        Ok(())
-    }
-}
-
-impl<'src> WebidlParse<'src, (&'src str, &'src mut backend::ast::Module)> for weedle::namespace::OperationNamespaceMember<'src> {
-    fn webidl_parse(
-        &'src self,
-        _program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        (self_name, module): (&'src str, &mut backend::ast::Module),
-    ) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(());
-        }
-
-        for import_function in first_pass.create_namespace_operation(
-            &self.args.body.list,
-            self.identifier.as_ref().map(|id| id.0),
-            &self.return_type,
-            self_name,
-            util::throws(&self.attributes)
-        ) {
-            module.imports.push(
-                backend::ast::Import {
-                    module: None,
-                    js_namespace: Some(raw_ident(self_name)),
-                    kind: backend::ast::ImportKind::Function(import_function),
-                }
-            );
-        };
-
-        Ok(())
-    }
-}
-
-// tons more data for what's going on here at
-// https://www.w3.org/TR/WebIDL-1/#idl-dictionaries
-impl<'src> WebidlParse<'src, ()> for weedle::DictionaryDefinition<'src> {
-    fn webidl_parse(
-        &'src self,
-        program: &mut backend::ast::Program,
-        first_pass: &FirstPassRecord<'src>,
-        (): (),
-    ) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(());
-        }
-
         let mut fields = Vec::new();
-        if !push_members(first_pass, self.identifier.0, &mut fields) {
-            return Ok(())
+        if !push_members(self, def.identifier.0, &mut fields) {
+            return
         }
 
         program.dictionaries.push(ast::Dictionary {
-            name: rust_ident(&camel_case_ident(self.identifier.0)),
+            name: rust_ident(&camel_case_ident(def.identifier.0)),
             fields,
         });
-
-        return Ok(());
 
         fn push_members<'src>(
             data: &FirstPassRecord<'src>,
@@ -1076,6 +282,363 @@ impl<'src> WebidlParse<'src, ()> for weedle::DictionaryDefinition<'src> {
                 name: rust_ident(&field.identifier.0.to_snake_case()),
                 ty,
             })
+        }
+    }
+
+    fn append_ns(
+        &'src self,
+        program: &mut backend::ast::Program,
+        name: &'src str,
+        ns: &'src first_pass::NamespaceData<'src>,
+    ) {
+        let mut module = backend::ast::Module {
+            vis: public(),
+            name: rust_ident(name.to_snake_case().as_str()),
+            imports: Default::default(),
+        };
+
+        for member in ns.members.iter() {
+            self.append_ns_member(&mut module, name, member);
+        }
+
+        program.modules.push(module);
+    }
+
+    fn append_ns_member(
+        &self,
+        module: &mut backend::ast::Module,
+        self_name: &'src str,
+        member: &'src weedle::namespace::OperationNamespaceMember<'src>,
+    ) {
+        for import_function in self.create_namespace_operation(
+            &member.args.body.list,
+            member.identifier.as_ref().map(|id| id.0),
+            &member.return_type,
+            self_name,
+            util::throws(&member.attributes)
+        ) {
+            module.imports.push(
+                backend::ast::Import {
+                    module: None,
+                    js_namespace: Some(raw_ident(self_name)),
+                    kind: backend::ast::ImportKind::Function(import_function),
+                }
+            );
+        }
+    }
+
+    fn append_const(
+        &self,
+        program: &mut backend::ast::Program,
+        self_name: &'src str,
+        member: &'src weedle::interface::ConstMember<'src>,
+    ) {
+        let idl_type = match member.const_type.to_idl_type(self) {
+            Some(idl_type) => idl_type,
+            None => return,
+        };
+
+        let ty = match idl_type.to_syn_type(TypePosition::Return) {
+            Some(ty) => ty,
+            None => {
+                warn!(
+                    "Cannot convert const type to syn type: {:?} in {:?} on {:?}",
+                    idl_type,
+                    member,
+                    self_name
+                );
+                return
+            },
+        };
+
+        program.consts.push(backend::ast::Const {
+            vis: public(),
+            name: rust_ident(member.identifier.0.to_shouty_snake_case().as_str()),
+            class: Some(rust_ident(camel_case_ident(&self_name).as_str())),
+            ty,
+            value: webidl_const_v_to_backend_const_v(&member.const_value),
+        });
+    }
+
+    fn append_interface(
+        &self,
+        program: &mut backend::ast::Program,
+        name: &'src str,
+        data: &first_pass::InterfaceData,
+    ) {
+        let doc_comment = Some(format!(
+            "The `{}` object\n\n{}",
+            name,
+            mdn_doc(name, None),
+        ));
+
+        program.imports.push(backend::ast::Import {
+            module: None,
+            js_namespace: None,
+            kind: backend::ast::ImportKind::Type(backend::ast::ImportType {
+                vis: public(),
+                rust_name: rust_ident(camel_case_ident(name).as_str()),
+                js_name: name.to_string(),
+                attrs: Vec::new(),
+                doc_comment,
+                instanceof_shim: format!("__widl_instanceof_{}", name),
+                extends: self.all_superclasses(name)
+                    .map(|name| Ident::new(&name, Span::call_site()))
+                    .collect(),
+            }),
+        });
+
+        for (ctor_name, args) in data.constructors.iter() {
+            self.append_constructor(program, name, ctor_name, args);
+        }
+        for member in data.methods.iter() {
+            self.member_operation(
+                program,
+                name,
+                &member.attributes,
+                member.modifier,
+                &member.specials,
+                &member.return_type,
+                &member.args.body.list,
+                &member.identifier,
+            )
+        }
+        for member in data.consts.iter() {
+            self.append_const(program, name, member);
+        }
+        for member in data.attributes.iter() {
+            self.member_attribute(
+                program,
+                name,
+                &member.attributes,
+                member.modifier,
+                member.readonly.is_some(),
+                &member.type_,
+                member.identifier.0,
+            );
+        }
+
+        self.append_interface_mixins(program, name, name);
+    }
+
+    fn append_interface_mixins(
+        &self,
+        program: &mut backend::ast::Program,
+        self_name: &str,
+        mixin_name: &str,
+    ) {
+        if let Some(mixin_data) = self.mixins.get(mixin_name) {
+            for member in &mixin_data.methods {
+                self.member_operation(
+                    program,
+                    self_name,
+                    &member.attributes,
+                    None,
+                    &[],
+                    &member.return_type,
+                    &member.args.body.list,
+                    &member.identifier,
+                );
+            }
+            for member in &mixin_data.consts {
+                self.append_const(program, self_name, member);
+            }
+            for member in &mixin_data.attributes {
+                self.member_attribute(
+                    program,
+                    self_name,
+                    &member.attributes,
+                    if let Some(s) = member.stringifier {
+                        Some(weedle::interface::StringifierOrInheritOrStatic::Stringifier(s))
+                    } else {
+                        None
+                    },
+                    member.readonly.is_some(),
+                    &member.type_,
+                    member.identifier.0,
+                );
+            }
+        }
+        if let Some(mixin_names) = self.includes.get(mixin_name) {
+            for mixin_name in mixin_names {
+                self.append_interface_mixins(program, self_name, mixin_name);
+            }
+        }
+    }
+
+    fn append_constructor(
+        &self,
+        program: &mut backend::ast::Program,
+        iface_name: &'src str,
+        ctor_name: &'src str,
+        args: &[Argument<'src>],
+    ) {
+        let (overloaded, same_argument_names) = self.get_operation_overloading(
+            args,
+            &::first_pass::OperationId::Constructor,
+            iface_name,
+            false,
+        );
+
+        let self_ty = ident_ty(rust_ident(camel_case_ident(iface_name).as_str()));
+
+        let kind = backend::ast::ImportFunctionKind::Method {
+            class: ctor_name.to_string(),
+            ty: self_ty.clone(),
+            kind: backend::ast::MethodKind::Constructor,
+        };
+
+        let structural = false;
+
+        // Constructors aren't annotated with `[Throws]` extended attributes
+        // (how could they be, since they themselves are extended
+        // attributes?) so we must conservatively assume that they can
+        // always throw.
+        //
+        // From https://heycam.github.io/webidl/#Constructor (emphasis
+        // mine):
+        //
+        // > The prose definition of a constructor must either return an IDL
+        // > value of a type corresponding to the interface the
+        // > `[Constructor]` extended attribute appears on, **or throw an
+        // > exception**.
+        let throws = true;
+
+        for import_function in self.create_function(
+            "new",
+            overloaded,
+            same_argument_names,
+            &match self.convert_arguments(args) {
+                Some(arguments) => arguments,
+                None => return,
+            },
+            IdlType::Interface(iface_name),
+            kind,
+            structural,
+            throws,
+            None,
+        ) {
+            program.imports.push(wrap_import_function(import_function));
+        }
+    }
+
+    fn member_attribute(
+        &self,
+        program: &mut backend::ast::Program,
+        self_name: &'src str,
+        attrs: &'src Option<ExtendedAttributeList>,
+        modifier: Option<weedle::interface::StringifierOrInheritOrStatic>,
+        readonly: bool,
+        type_: &'src weedle::types::AttributedType<'src>,
+        identifier: &'src str,
+    ) {
+        use weedle::interface::StringifierOrInheritOrStatic::*;
+
+        let is_static = match modifier {
+            Some(Stringifier(_)) => unimplemented!(), // filtered out earlier
+            Some(Inherit(_)) => false,
+            Some(Static(_)) => true,
+            None => false,
+        };
+
+        let is_structural = util::is_structural(attrs);
+        let throws = util::throws(attrs);
+        let global = self
+            .interfaces
+            .get(self_name)
+            .map(|interface_data| interface_data.global)
+            .unwrap_or(false);
+
+        for import_function in self.create_getter(
+            identifier,
+            &type_.type_,
+            self_name,
+            is_static,
+            is_structural,
+            throws,
+            global,
+        ) {
+            program.imports.push(wrap_import_function(import_function));
+        }
+
+        if !readonly {
+            for import_function in self.create_setter(
+                identifier,
+                type_.type_.clone(),
+                self_name,
+                is_static,
+                is_structural,
+                throws,
+                global,
+            ) {
+                program.imports.push(wrap_import_function(import_function));
+            }
+        }
+    }
+
+    fn member_operation(
+        &self,
+        program: &mut backend::ast::Program,
+        self_name: &'src str,
+        attrs: &'src Option<ExtendedAttributeList>,
+        modifier: Option<weedle::interface::StringifierOrStatic>,
+        specials: &[weedle::interface::Special],
+        return_type: &'src weedle::types::ReturnType<'src>,
+        args: &'src [Argument],
+        identifier: &Option<weedle::common::Identifier<'src>>,
+    ) {
+        use weedle::interface::StringifierOrStatic::*;
+        use weedle::interface::Special;
+
+        let is_static = match modifier {
+            Some(Stringifier(_)) => uniimplemented!(), // filtered out earlier
+            Some(Static(_)) => true,
+            None => false,
+        };
+
+        let mut operation_ids = vec![
+            OperationId::Operation(identifier.map(|s| s.0)),
+        ];
+        if specials.len() == 1 {
+            let id = match specials[0] {
+                Special::Getter(weedle::term::Getter) => OperationId::IndexingGetter,
+                Special::Setter(weedle::term::Setter) => OperationId::IndexingSetter,
+                Special::Deleter(weedle::term::Deleter) => OperationId::IndexingDeleter,
+                Special::LegacyCaller(weedle::term::LegacyCaller) => {
+                    warn!("Unsupported legacy caller: {:?}", (self_name, identifier));
+                    return
+                },
+            };
+            operation_ids.push(id);
+        }
+
+        let global = self
+            .interfaces
+            .get(self_name)
+            .map(|interface_data| interface_data.global)
+            .unwrap_or(false);
+
+        for id in operation_ids {
+            let methods = self
+                .create_basic_method(
+                    args,
+                    id,
+                    return_type,
+                    self_name,
+                    is_static,
+                    match id {
+                        OperationId::IndexingGetter |
+                        OperationId::IndexingSetter |
+                        OperationId::IndexingDeleter => true,
+                        _ => false,
+                    },
+                    util::throws(attrs),
+                    global,
+                );
+
+            for method in methods {
+                program.imports.push(wrap_import_function(method));
+            }
         }
     }
 }

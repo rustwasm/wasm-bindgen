@@ -142,3 +142,7 @@ global.MixinFoo = class MixinFoo {
     this._bar += other;
   }
 };
+
+global.Overloads = class {
+  foo() {}
+};
