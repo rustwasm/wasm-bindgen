@@ -87,11 +87,7 @@ global.Unforgeable = class Unforgeable {
   }
 };
 
-global.GlobalMethod = class GlobalMethod {
-  constructor() {
-    this.m = () => 123;
-  }
-};
+global.m = () => 123;
 
 global.Indexing = function () {
   return new Proxy({}, {

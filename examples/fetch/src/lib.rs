@@ -41,11 +41,6 @@ pub struct Signature {
 }
 
 #[wasm_bindgen]
-extern "C" {
-    static window: Window;
-}
-
-#[wasm_bindgen]
 pub fn run() -> Promise {
     let mut request_options = RequestInit::new();
     request_options.method("GET");
@@ -56,7 +51,7 @@ pub fn run() -> Promise {
     // the RequestInit struct will eventually support setting headers, but that's missing right now
     req.headers().set("Accept", "application/vnd.github.v3+json").unwrap();
 
-    let req_promise = window.fetch_with_request(&req);
+    let req_promise = Window::fetch_with_request(&req);
 
     let to_return = JsFuture::from(req_promise).and_then(|resp_value| {
         // resp_value is a Response object

@@ -1959,127 +1959,27 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(d) => d,
         };
 
-        let target = match &import.method {
-            Some(shared::MethodData { class, kind }) => {
-                let class = self.import_name(info, class)?;
-                match kind {
-                    shared::MethodKind::Constructor => format!("new {}", class),
-                    shared::MethodKind::Operation(shared::Operation { is_static, kind }) => {
-                        let target = if import.structural {
-                            let location = if *is_static { &class } else { "this" };
+        let target = self.generated_import_target(info, import, &descriptor)?;
 
-                            match kind {
-                                shared::OperationKind::Regular => {
-                                    let nargs = descriptor.unwrap_function().arguments.len();
-                                    let mut s = format!("function(");
-                                    for i in 0..nargs - 1 {
-                                        if i > 0 {
-                                            drop(write!(s, ", "));
-                                        }
-                                        drop(write!(s, "x{}", i));
-                                    }
-                                    s.push_str(") { \nreturn this.");
-                                    s.push_str(&import.function.name);
-                                    s.push_str("(");
-                                    for i in 0..nargs - 1 {
-                                        if i > 0 {
-                                            drop(write!(s, ", "));
-                                        }
-                                        drop(write!(s, "x{}", i));
-                                    }
-                                    s.push_str(");\n}");
-                                    s
-                                }
-                                shared::OperationKind::Getter(g) => format!(
-                                    "function() {{
-                                        return {}.{};
-                                    }}",
-                                    location, g
-                                ),
-                                shared::OperationKind::Setter(s) => format!(
-                                    "function(y) {{
-                                        {}.{} = y;
-                                    }}",
-                                    location, s
-                                ),
-                                shared::OperationKind::IndexingGetter => format!(
-                                    "function(y) {{
-                                        return {}[y];
-                                    }}",
-                                    location
-                                ),
-                                shared::OperationKind::IndexingSetter => format!(
-                                    "function(y, z) {{
-                                        {}[y] = z;
-                                    }}",
-                                    location
-                                ),
-                                shared::OperationKind::IndexingDeleter => format!(
-                                    "function(y) {{
-                                        delete {}[y];
-                                    }}",
-                                    location
-                                ),
-                            }
-                        } else {
-                            let (location, binding) = if *is_static {
-                                ("", format!(".bind({})", class))
-                            } else {
-                                (".prototype", "".into())
-                            };
+        let js = Rust2Js::new(self.cx)
+            .catch(import.catch)
+            .process(descriptor.unwrap_function())?
+            .finish(&target);
+        self.cx.export(&import.shim, &js, None);
+        Ok(())
+    }
 
-                            match kind {
-                                shared::OperationKind::Regular => {
-                                    format!("{}{}.{}{}", class, location, import.function.name, binding)
-                                }
-                                shared::OperationKind::Getter(g) => {
-                                    self.cx.expose_get_inherited_descriptor();
-                                    format!(
-                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').get{}",
-                                        class, location, g, binding,
-                                    )
-                                }
-                                shared::OperationKind::Setter(s) => {
-                                    self.cx.expose_get_inherited_descriptor();
-                                    format!(
-                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').set{}",
-                                        class, location, s, binding,
-                                    )
-                                }
-                                shared::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
-                                shared::OperationKind::IndexingSetter => panic!("indexing setter should be structural"),
-                                shared::OperationKind::IndexingDeleter => panic!("indexing deleter should be structural"),
-                            }
-                        };
-
-                        let fallback = if import.structural {
-                            "".to_string()
-                        } else {
-                            format!(
-                                " || function() {{
-                                    throw new Error(`wasm-bindgen: {} does not exist`);
-                                }}",
-                                target
-                            )
-                        };
-
-                        self.cx.global(&format!(
-                            "
-                            const {}_target = {} {} ;
-                            ",
-                            import.shim, target, fallback
-                        ));
-                        format!(
-                            "{}_target{}",
-                            import.shim,
-                            if *is_static { "" } else { ".call" }
-                        )
-                    }
-                }
-            }
+    fn generated_import_target(
+        &mut self,
+        info: &shared::Import,
+        import: &shared::ImportFunction,
+        descriptor: &Descriptor,
+    ) -> Result<String, Error> {
+        let method_data = match &import.method {
+            Some(data) => data,
             None => {
                 let name = self.import_name(info, &import.function.name)?;
-                if name.contains(".") {
+                return Ok(if name.contains(".") {
                     self.cx.global(&format!(
                         "
                         const {}_target = {};
@@ -2089,16 +1989,145 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     format!("{}_target", import.shim)
                 } else {
                     name
-                }
+                })
             }
         };
 
-        let js = Rust2Js::new(self.cx)
-            .catch(import.catch)
-            .process(descriptor.unwrap_function())?
-            .finish(&target);
-        self.cx.export(&import.shim, &js, None);
-        Ok(())
+        let class = match &method_data.class {
+            Some(class) => self.import_name(info, class)?,
+            None => {
+                let op = match &method_data.kind {
+                    shared::MethodKind::Operation(op) => op,
+                    shared::MethodKind::Constructor => {
+                        bail!("\"no class\" methods cannot be constructors")
+                    }
+                };
+                match &op.kind {
+                    shared::OperationKind::Regular => {
+                        return Ok(import.function.name.to_string())
+                    }
+                    shared::OperationKind::Getter(g) => {
+                        return Ok(format!("(() => {})", g));
+                    }
+                    shared::OperationKind::Setter(g) => {
+                        return Ok(format!("(v => {} = v)", g));
+                    }
+                    _ => bail!("\"no class\" methods must be regular/getter/setter"),
+                }
+
+            }
+        };
+        let op = match &method_data.kind {
+            shared::MethodKind::Constructor => return Ok(format!("new {}", class)),
+            shared::MethodKind::Operation(op) => op,
+        };
+        let target = if import.structural {
+            let location = if op.is_static { &class } else { "this" };
+
+            match &op.kind {
+                shared::OperationKind::Regular => {
+                    let nargs = descriptor.unwrap_function().arguments.len();
+                    let mut s = format!("function(");
+                    for i in 0..nargs - 1 {
+                        if i > 0 {
+                            drop(write!(s, ", "));
+                        }
+                        drop(write!(s, "x{}", i));
+                    }
+                    s.push_str(") { \nreturn this.");
+                    s.push_str(&import.function.name);
+                    s.push_str("(");
+                    for i in 0..nargs - 1 {
+                        if i > 0 {
+                            drop(write!(s, ", "));
+                        }
+                        drop(write!(s, "x{}", i));
+                    }
+                    s.push_str(");\n}");
+                    s
+                }
+                shared::OperationKind::Getter(g) => format!(
+                    "function() {{
+                        return {}.{};
+                    }}",
+                    location, g
+                ),
+                shared::OperationKind::Setter(s) => format!(
+                    "function(y) {{
+                        {}.{} = y;
+                    }}",
+                    location, s
+                ),
+                shared::OperationKind::IndexingGetter => format!(
+                    "function(y) {{
+                        return {}[y];
+                    }}",
+                    location
+                ),
+                shared::OperationKind::IndexingSetter => format!(
+                    "function(y, z) {{
+                        {}[y] = z;
+                    }}",
+                    location
+                ),
+                shared::OperationKind::IndexingDeleter => format!(
+                    "function(y) {{
+                        delete {}[y];
+                    }}",
+                    location
+                ),
+            }
+        } else {
+            let (location, binding) = if op.is_static {
+                ("", format!(".bind({})", class))
+            } else {
+                (".prototype", "".into())
+            };
+
+            match &op.kind {
+                shared::OperationKind::Regular => {
+                    format!("{}{}.{}{}", class, location, import.function.name, binding)
+                }
+                shared::OperationKind::Getter(g) => {
+                    self.cx.expose_get_inherited_descriptor();
+                    format!(
+                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').get{}",
+                        class, location, g, binding,
+                    )
+                }
+                shared::OperationKind::Setter(s) => {
+                    self.cx.expose_get_inherited_descriptor();
+                    format!(
+                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').set{}",
+                        class, location, s, binding,
+                    )
+                }
+                shared::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
+                shared::OperationKind::IndexingSetter => panic!("indexing setter should be structural"),
+                shared::OperationKind::IndexingDeleter => panic!("indexing deleter should be structural"),
+            }
+        };
+
+        let fallback = if import.structural {
+            "".to_string()
+        } else {
+            format!(
+                " || function() {{
+                    throw new Error(`wasm-bindgen: {} does not exist`);
+                }}",
+                target
+            )
+        };
+
+        self.cx.global(&format!(
+            "const {}_target = {}{};",
+            import.shim, target, fallback
+        ));
+        Ok(format!(
+            "{}_target{}",
+            import.shim,
+            if op.is_static { "" } else { ".call" }
+        ))
     }
 
     fn generate_import_type(
