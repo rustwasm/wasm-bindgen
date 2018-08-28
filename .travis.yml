@@ -119,18 +119,6 @@ matrix:
         chrome: stable
       if: branch = master
 
-    # Tests pass on nightly using yarn
-    - rust: nightly
-      env: JOB=test-yarn-smoke
-      install:
-        - *INSTALL_NODE_VIA_NVM
-        - travis_retry curl -OLSf https://yarnpkg.com/install.sh
-        - travis_retry bash install.sh -- --version 1.7.0 < /dev/null
-        - export PATH=$HOME/.yarn/bin:$PATH
-        - yarn install --freeze-lockfile
-      script: cargo test api::works
-      if: branch = master
-
     # WebIDL tests pass on nightly
     - rust: nightly
       env: JOB=test-webidl
