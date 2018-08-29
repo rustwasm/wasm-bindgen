@@ -38,6 +38,27 @@ import { greet } from "./hello_world";
 greet("World!");
 ```
 
+## Features
+
+* **Lightweight.** Only pay for what you use. `wasm-bindgen` only generates
+  bindings and glue for the JavaScript imports you actually use and Rust
+  functionality that you export. For example, importing and using the
+  `document.querySelector` method doesn't cause `Node.prototype.appendChild` or
+  `window.alert` to be included in the bindings as well.
+
+* **ECMAScript modules.** Just import WebAssembly modules the same way you would
+  import JavaScript modules. Future compatible with [WebAssembly modules and
+  ECMAScript modules integration][wasm-es-modules].
+
+* **Designed with the ["host bindings" proposal][host-bindings] in mind.**
+  Eventually, there won't be any JavaScript shims between Rust-generated wasm
+  functions and native DOM methods. Because the wasm functions are statically
+  type checked, some of those native methods' dynamic type checks should become
+  unnecessary, promising to unlock even-faster-than-JavaScript DOM access.
+
+[wasm-es-modules]: https://github.com/WebAssembly/esm-integration
+[host-bindings]: https://github.com/WebAssembly/host-bindings/blob/master/proposals/host-bindings/Overview.md
+
 ## Guide
 
 [📚 Read the `wasm-bindgen` guide here! 📚](https://rustwasm.github.io/wasm-bindgen)
