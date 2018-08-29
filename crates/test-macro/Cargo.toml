@@ -7,7 +7,7 @@ license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen"
 
 [dependencies]
-proc-macro2 = { version = "0.4", features = ['nightly'] }
+proc-macro2 = "0.4"
 quote = "0.6"
 
 [lib]
