@@ -11,7 +11,7 @@ The part of the implementation of the `#[wasm_bindgen]` attribute that is not in
 """
 
 [features]
-spans = ["proc-macro2/nightly", "wasm-bindgen-backend/spans"]
+spans = ["wasm-bindgen-backend/spans"]
 extra-traits = ["syn/extra-traits"]
 
 [dependencies]
