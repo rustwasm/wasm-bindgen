@@ -297,6 +297,7 @@ impl<'src> FirstPassRecord<'src> {
             let rust_name = rust_ident(&rust_name);
             let shim = {
                 let ns = match kind {
+                    backend::ast::ImportFunctionKind::ScopedMethod { .. } |
                     backend::ast::ImportFunctionKind::Normal => "",
                     backend::ast::ImportFunctionKind::Method { ref class, .. } => class,
                 };
@@ -389,6 +390,7 @@ impl<'src> FirstPassRecord<'src> {
         is_static: bool,
         structural: bool,
         catch: bool,
+        global: bool,
     ) -> Vec<backend::ast::ImportFunction> {
         let (overloaded, same_argument_names) = self.get_operation_overloading(
             arguments,
@@ -410,20 +412,26 @@ impl<'src> FirstPassRecord<'src> {
             first_pass::OperationId::IndexingSetter => "set",
             first_pass::OperationId::IndexingDeleter => "delete",
         };
-
-        let kind = backend::ast::ImportFunctionKind::Method {
-            class: self_name.to_string(),
-            ty: ident_ty(rust_ident(camel_case_ident(&self_name).as_str())),
-            kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
-                is_static,
-                kind: match &operation_id {
-                    first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-                    first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
-                    first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
-                    first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
-                    first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
-                },
-            }),
+        let operation_kind = match &operation_id {
+            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
+            first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
+            first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
+            first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
+            first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
+        };
+        let operation = backend::ast::Operation { is_static, kind: operation_kind };
+        let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
+        let kind = if global {
+            backend::ast::ImportFunctionKind::ScopedMethod {
+                ty,
+                operation,
+            }
+        } else {
+            backend::ast::ImportFunctionKind::Method {
+                class: self_name.to_string(),
+                ty,
+                kind: backend::ast::MethodKind::Operation(operation),
+            }
         };
 
         let ret = match return_type.to_idl_type(self) {
@@ -591,19 +599,29 @@ impl<'src> FirstPassRecord<'src> {
         is_static: bool,
         is_structural: bool,
         catch: bool,
+        global: bool,
     ) -> Vec<backend::ast::ImportFunction> {
         let ret = match ty.to_idl_type(self) {
             None => return Vec::new(),
             Some(idl_type) => idl_type,
         };
+        let operation = backend::ast::Operation {
+            is_static,
+            kind: backend::ast::OperationKind::Getter(Some(raw_ident(name))),
+        };
+        let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
 
-        let kind = backend::ast::ImportFunctionKind::Method {
-            class: self_name.to_string(),
-            ty: ident_ty(rust_ident(camel_case_ident(&self_name).as_str())),
-            kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
-                is_static,
-                kind: backend::ast::OperationKind::Getter(Some(raw_ident(name))),
-            }),
+        let kind = if global {
+            backend::ast::ImportFunctionKind::ScopedMethod {
+                ty,
+                operation,
+            }
+        } else {
+            backend::ast::ImportFunctionKind::Method {
+                class: self_name.to_string(),
+                ty,
+                kind: backend::ast::MethodKind::Operation(operation),
+            }
         };
         let doc_comment = Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))));
 
@@ -614,19 +632,30 @@ impl<'src> FirstPassRecord<'src> {
     pub fn create_setter(
         &self,
         name: &str,
-        ty: weedle::types::Type,
+        field_ty: weedle::types::Type,
         self_name: &str,
         is_static: bool,
         is_structural: bool,
         catch: bool,
+        global: bool,
     ) -> Vec<backend::ast::ImportFunction> {
-        let kind = backend::ast::ImportFunctionKind::Method {
-            class: self_name.to_string(),
-            ty: ident_ty(rust_ident(camel_case_ident(&self_name).as_str())),
-            kind: backend::ast::MethodKind::Operation(backend::ast::Operation {
-                is_static,
-                kind: backend::ast::OperationKind::Setter(Some(raw_ident(name))),
-            }),
+        let operation = backend::ast::Operation {
+            is_static,
+            kind: backend::ast::OperationKind::Setter(Some(raw_ident(name))),
+        };
+        let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
+
+        let kind = if global {
+            backend::ast::ImportFunctionKind::ScopedMethod {
+                ty,
+                operation,
+            }
+        } else {
+            backend::ast::ImportFunctionKind::Method {
+                class: self_name.to_string(),
+                ty,
+                kind: backend::ast::MethodKind::Operation(operation),
+            }
         };
         let doc_comment = Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name))));
 
@@ -636,7 +665,7 @@ impl<'src> FirstPassRecord<'src> {
             false,
             &[(
                 name,
-                match ty.to_idl_type(self) {
+                match field_ty.to_idl_type(self) {
                     None => return Vec::new(),
                     Some(idl_type) => idl_type,
                 },

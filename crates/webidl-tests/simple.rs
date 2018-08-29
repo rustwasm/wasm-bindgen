@@ -64,8 +64,7 @@ fn nullable_method() {
 
 #[wasm_bindgen_test]
 fn global_method() {
-    let f = GlobalMethod::new().unwrap();
-    assert_eq!(f.m(), 123);
+    assert_eq!(GlobalMethod::m(), 123);
 }
 
 #[wasm_bindgen_test]

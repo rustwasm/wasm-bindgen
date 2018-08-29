@@ -10,3 +10,4 @@ pub mod namespace;
 pub mod simple;
 pub mod throws;
 pub mod dictionary;
+pub mod global;
