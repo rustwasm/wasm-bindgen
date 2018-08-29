@@ -230,31 +230,6 @@ impl<'src> FirstPassRecord<'src> {
             name.to_snake_case()
         };
 
-        let ret = match ret {
-            IdlType::Void => None,
-            ret @ _ => {
-                match ret.to_syn_type(TypePosition::Return) {
-                    None => {
-                        warn!(
-                            "Unsupported return type: {:?} on {:?}",
-                            ret,
-                            rust_name
-                        );
-                        return Vec::new();
-                    },
-                    Some(ret) => Some(ret),
-                }
-            },
-        };
-
-        let js_ret = ret.clone();
-
-        let ret = if catch {
-            Some(ret.map_or_else(|| result_ty(unit_ty()), result_ty))
-        } else {
-            ret
-        };
-
         let converted_arguments = arguments
             .iter()
             .cloned()
@@ -294,65 +269,116 @@ impl<'src> FirstPassRecord<'src> {
             } else {
                 rust_name.clone()
             };
-            let rust_name = rust_ident(&rust_name);
-            let shim = {
-                let ns = match kind {
-                    backend::ast::ImportFunctionKind::ScopedMethod { .. } |
-                    backend::ast::ImportFunctionKind::Normal => "",
-                    backend::ast::ImportFunctionKind::Method { ref class, .. } => class,
-                };
+            let f = self.create_one_function(
+                name,
+                &rust_name,
+                arguments.iter().map(|s| s.0).zip(idl_types),
+                &ret,
+                kind.clone(),
+                structural,
+                catch,
+                doc_comment.clone(),
+            );
+            import_functions.extend(f);
+        }
+        import_functions
+    }
 
-                raw_ident(&format!("__widl_f_{}_{}", rust_name, ns))
-            };
-
-            let mut args_captured = if let &backend::ast::ImportFunctionKind::Method {
-                ref ty,
-                kind: backend::ast::MethodKind::Operation(
-                    backend::ast::Operation {
-                        is_static: false, ..
-                    }
-                ),
-                ..
-            } = &kind {
-                let mut res = Vec::with_capacity(idl_types.len() + 1);
-                res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())));
-                res
-            } else {
-                Vec::with_capacity(idl_types.len())
-            };
-            for ((argument_name, _, _), idl_type) in arguments.iter().zip(idl_types) {
-                let syn_type = if let Some(syn_type) = idl_type.to_syn_type(TypePosition::Argument) {
-                    syn_type
-                } else {
+    pub fn create_one_function<'a>(
+        &self,
+        js_name: &str,
+        rust_name: &str,
+        idl_arguments: impl Iterator<Item = (&'a str, &'a IdlType<'src>)>,
+        ret: &IdlType<'src>,
+        kind: backend::ast::ImportFunctionKind,
+        structural: bool,
+        catch: bool,
+        doc_comment: Option<String>,
+    ) -> Option<backend::ast::ImportFunction> where 'src: 'a {
+        // Convert all of the arguments from their IDL type to a `syn` type,
+        // ready to pass to the backend.
+        //
+        // Note that for non-static methods we add a `&self` type placeholder,
+        // but this type isn't actually used so it's just here for show mostly.
+        let mut arguments = if let &backend::ast::ImportFunctionKind::Method {
+            ref ty,
+            kind: backend::ast::MethodKind::Operation(
+                backend::ast::Operation {
+                    is_static: false, ..
+                }
+            ),
+            ..
+        } = &kind {
+            let mut res = Vec::with_capacity(idl_arguments.size_hint().0 + 1);
+            res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())));
+            res
+        } else {
+            Vec::with_capacity(idl_arguments.size_hint().0)
+        };
+        for (argument_name, idl_type) in idl_arguments {
+            let syn_type = match idl_type.to_syn_type(TypePosition::Argument) {
+                Some(t) => t,
+                None => {
                     warn!(
                         "Unsupported argument type: {:?} on {:?}",
                         idl_type,
                         rust_name
                     );
-                    continue 'outer;
-                };
-                let argument_name = rust_ident(&argument_name.to_snake_case());
-                args_captured.push(simple_fn_arg(argument_name, syn_type));
-            }
-
-            import_functions.push(backend::ast::ImportFunction {
-                function: backend::ast::Function {
-                    name: name.to_string(),
-                    arguments: args_captured,
-                    ret: ret.clone(),
-                    rust_attrs: vec![],
-                    rust_vis: public(),
-                },
-                rust_name,
-                js_ret: js_ret.clone(),
-                catch,
-                structural,
-                kind: kind.clone(),
-                shim,
-                doc_comment: doc_comment.clone(),
-            })
+                    return None
+                }
+            };
+            let argument_name = rust_ident(&argument_name.to_snake_case());
+            arguments.push(simple_fn_arg(argument_name, syn_type));
         }
-        import_functions
+
+        // Convert the return type to a `syn` type, handling the `catch`
+        // attribute here to use a `Result` in Rust.
+        let ret = match ret {
+            IdlType::Void => None,
+            ret @ _ => {
+                match ret.to_syn_type(TypePosition::Return) {
+                    Some(ret) => Some(ret),
+                    None => {
+                        warn!(
+                            "Unsupported return type: {:?} on {:?}",
+                            ret,
+                            rust_name
+                        );
+                        return None
+                    }
+                }
+            },
+        };
+        let js_ret = ret.clone();
+        let ret = if catch {
+            Some(ret.map_or_else(|| result_ty(unit_ty()), result_ty))
+        } else {
+            ret
+        };
+
+        Some(backend::ast::ImportFunction {
+            function: backend::ast::Function {
+                name: js_name.to_string(),
+                arguments,
+                ret: ret.clone(),
+                rust_attrs: vec![],
+                rust_vis: public(),
+            },
+            rust_name: rust_ident(rust_name),
+            js_ret: js_ret.clone(),
+            catch,
+            structural,
+            shim:{
+                let ns = match kind {
+                    backend::ast::ImportFunctionKind::ScopedMethod { .. } |
+                    backend::ast::ImportFunctionKind::Normal => "",
+                    backend::ast::ImportFunctionKind::Method { ref class, .. } => class,
+                };
+                raw_ident(&format!("__widl_f_{}_{}", rust_name, ns))
+            },
+            kind,
+            doc_comment,
+        })
     }
 
     /// Convert arguments to ones suitable crating function
@@ -600,32 +626,20 @@ impl<'src> FirstPassRecord<'src> {
         is_structural: bool,
         catch: bool,
         global: bool,
-    ) -> Vec<backend::ast::ImportFunction> {
-        let ret = match ty.to_idl_type(self) {
-            None => return Vec::new(),
-            Some(idl_type) => idl_type,
-        };
-        let operation = backend::ast::Operation {
-            is_static,
-            kind: backend::ast::OperationKind::Getter(Some(raw_ident(name))),
-        };
-        let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
-
-        let kind = if global {
-            backend::ast::ImportFunctionKind::ScopedMethod {
-                ty,
-                operation,
-            }
-        } else {
-            backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty,
-                kind: backend::ast::MethodKind::Operation(operation),
-            }
-        };
-        let doc_comment = Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))));
-
-        self.create_function(name, false, false, &[], ret, kind, is_structural, catch, doc_comment)
+    ) -> Option<backend::ast::ImportFunction> {
+        let kind = backend::ast::OperationKind::Getter(Some(raw_ident(name)));
+        let kind = self.import_function_kind(self_name, global, is_static, kind);
+        let ret = ty.to_idl_type(self)?;
+        self.create_one_function(
+            &name,
+            &name.to_snake_case(),
+            None.into_iter(),
+            &ret,
+            kind,
+            is_structural,
+            catch,
+            Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))))
+        )
     }
 
     /// Create a wasm-bindgen setter method, if possible.
@@ -638,14 +652,35 @@ impl<'src> FirstPassRecord<'src> {
         is_structural: bool,
         catch: bool,
         global: bool,
-    ) -> Vec<backend::ast::ImportFunction> {
+    ) -> Option<backend::ast::ImportFunction> {
+        let kind = backend::ast::OperationKind::Setter(Some(raw_ident(name)));
+        let kind = self.import_function_kind(self_name, global, is_static, kind);
+        let field_ty = field_ty.to_idl_type(self)?;
+        self.create_one_function(
+            &name,
+            &format!("set_{}", name).to_snake_case(),
+            Some((name, &field_ty)).into_iter(),
+            &IdlType::Void,
+            kind,
+            is_structural,
+            catch,
+            Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name))))
+        )
+    }
+
+    fn import_function_kind(
+        &self,
+        self_name: &str,
+        global: bool,
+        is_static: bool,
+        operation_kind: backend::ast::OperationKind,
+    ) -> backend::ast::ImportFunctionKind {
         let operation = backend::ast::Operation {
             is_static,
-            kind: backend::ast::OperationKind::Setter(Some(raw_ident(name))),
+            kind: operation_kind,
         };
         let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
-
-        let kind = if global {
+        if global {
             backend::ast::ImportFunctionKind::ScopedMethod {
                 ty,
                 operation,
@@ -656,27 +691,7 @@ impl<'src> FirstPassRecord<'src> {
                 ty,
                 kind: backend::ast::MethodKind::Operation(operation),
             }
-        };
-        let doc_comment = Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name))));
-
-        self.create_function(
-            &format!("set_{}", name),
-            false,
-            false,
-            &[(
-                name,
-                match field_ty.to_idl_type(self) {
-                    None => return Vec::new(),
-                    Some(idl_type) => idl_type,
-                },
-                false,
-            )],
-            IdlType::Void,
-            kind,
-            is_structural,
-            catch,
-            doc_comment,
-        )
+        }
     }
 }
 

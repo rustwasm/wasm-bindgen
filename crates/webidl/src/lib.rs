@@ -577,7 +577,7 @@ impl<'src> FirstPassRecord<'src> {
         use weedle::interface::Special;
 
         let is_static = match modifier {
-            Some(Stringifier(_)) => uniimplemented!(), // filtered out earlier
+            Some(Stringifier(_)) => unimplemented!(), // filtered out earlier
             Some(Static(_)) => true,
             None => false,
         };
