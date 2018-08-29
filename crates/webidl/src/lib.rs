@@ -184,7 +184,7 @@ impl<'src> FirstPassRecord<'src> {
     fn append_dictionary(
         &self,
         program: &mut backend::ast::Program,
-        data: &first_pass::DictionaryData,
+        data: &first_pass::DictionaryData<'src>,
     ) {
         let def = match data.definition {
             Some(def) => def,
@@ -297,8 +297,8 @@ impl<'src> FirstPassRecord<'src> {
             imports: Default::default(),
         };
 
-        for member in ns.members.iter() {
-            self.append_ns_member(&mut module, name, member);
+        for (id, data) in ns.operations2.iter() {
+            self.append_ns_member(&mut module, name, id, data);
         }
 
         program.modules.push(module);
@@ -308,15 +308,30 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         module: &mut backend::ast::Module,
         self_name: &'src str,
-        member: &'src weedle::namespace::OperationNamespaceMember<'src>,
+        id: &OperationId<'src>,
+        data: &first_pass::OperationData2<'src>,
     ) {
-        for import_function in self.create_namespace_operation(
-            &member.args.body.list,
-            member.identifier.as_ref().map(|id| id.0),
-            &member.return_type,
+        let name = match id {
+            OperationId::Operation(Some(name)) => name,
+            OperationId::Constructor |
+            OperationId::Operation(None) |
+            OperationId::IndexingGetter |
+            OperationId::IndexingSetter |
+            OperationId::IndexingDeleter => {
+                warn!("Unsupported unnamed operation: on {:?}", self_name);
+                return
+            }
+        };
+        let doc_comment = format!(
+            "The `{}.{}()` function\n\n{}",
             self_name,
-            util::throws(&member.attributes)
-        ) {
+            name,
+            mdn_doc(self_name, Some(&name))
+        );
+
+        let kind = backend::ast::ImportFunctionKind::Normal;
+        for mut import_function in self.create_imports(kind, id, data) {
+            import_function.doc_comment = Some(doc_comment.clone());
             module.imports.push(
                 backend::ast::Import {
                     module: None,
@@ -364,7 +379,7 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         program: &mut backend::ast::Program,
         name: &'src str,
-        data: &first_pass::InterfaceData,
+        data: &first_pass::InterfaceData<'src>,
     ) {
         let doc_comment = Some(format!(
             "The `{}` object\n\n{}",

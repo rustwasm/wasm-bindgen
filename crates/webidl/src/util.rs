@@ -1,5 +1,6 @@
-use std::iter::FromIterator;
 use std::collections::BTreeMap;
+use std::iter::FromIterator;
+use std::ptr;
 
 use backend;
 use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
@@ -11,7 +12,7 @@ use weedle::attribute::{ExtendedAttributeList, ExtendedAttribute};
 use weedle::argument::Argument;
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
-use first_pass::{self, FirstPassRecord};
+use first_pass::{self, FirstPassRecord, OperationId, OperationData2, Signature};
 use idl_type::{IdlType, ToIdlType, flatten};
 
 /// Take a type and create an immutable shared reference to that type.
@@ -409,9 +410,9 @@ impl<'src> FirstPassRecord<'src> {
     /// Create a wasm-bindgen method, if possible.
     pub fn create_basic_method(
         &self,
-        arguments: &[Argument],
+        arguments: &[Argument<'src>],
         operation_id: first_pass::OperationId,
-        return_type: &weedle::types::ReturnType,
+        return_type: &weedle::types::ReturnType<'src>,
         self_name: &str,
         is_static: bool,
         structural: bool,
@@ -560,67 +561,11 @@ impl<'src> FirstPassRecord<'src> {
         )
     }
 
-    /// Create a wasm-bindgen operation (free function with no `self` type), if possible.
-    pub fn create_namespace_operation(
-        &self,
-        arguments: &[weedle::argument::Argument],
-        operation_name: Option<&str>,
-        return_type: &weedle::types::ReturnType,
-        self_name: &str,
-        catch: bool,
-    ) -> Vec<backend::ast::ImportFunction> {
-        let (overloaded, same_argument_names) = self.get_operation_overloading(
-            arguments,
-            &first_pass::OperationId::Operation(operation_name),
-            self_name,
-            true,
-        );
-
-        let name = match operation_name {
-            Some(name) => name.to_string(),
-            None => {
-                warn!("Unsupported unnamed operation: on {:?}", self_name);
-                return Vec::new();
-            }
-        };
-
-        let ret = match return_type.to_idl_type(self) {
-            None => return Vec::new(),
-            Some(idl_type) => idl_type,
-        };
-
-        let doc_comment = Some(
-            format!(
-                "The `{}.{}()` function\n\n{}",
-                self_name,
-                name,
-                mdn_doc(self_name, Some(&name))
-            )
-        );
-
-        let arguments = match self.convert_arguments(arguments) {
-            None => return Vec::new(),
-            Some(arguments) => arguments
-        };
-
-        self.create_function(
-            &name,
-            overloaded,
-            same_argument_names,
-            &arguments,
-            ret,
-            backend::ast::ImportFunctionKind::Normal,
-            false,
-            catch,
-            doc_comment,
-        )
-    }
-
     /// Create a wasm-bindgen getter method, if possible.
     pub fn create_getter(
         &self,
         name: &str,
-        ty: &weedle::types::Type,
+        ty: &weedle::types::Type<'src>,
         self_name: &str,
         is_static: bool,
         is_structural: bool,
@@ -646,7 +591,7 @@ impl<'src> FirstPassRecord<'src> {
     pub fn create_setter(
         &self,
         name: &str,
-        field_ty: weedle::types::Type,
+        field_ty: weedle::types::Type<'src>,
         self_name: &str,
         is_static: bool,
         is_structural: bool,
@@ -692,6 +637,149 @@ impl<'src> FirstPassRecord<'src> {
                 kind: backend::ast::MethodKind::Operation(operation),
             }
         }
+    }
+
+    pub fn create_imports(
+        &self,
+        kind: backend::ast::ImportFunctionKind,
+        id: &OperationId<'src>,
+        data: &OperationData2<'src>,
+    )
+        -> Vec<backend::ast::ImportFunction>
+    {
+        // First up expand all the signatures in `data` into all signatures that
+        // we're going to generate. These signatures will be used to determine
+        // the names for all the various functions.
+        #[derive(Clone)]
+        struct ExpandedSig<'a> {
+            orig: &'a Signature<'a>,
+            args: Vec<IdlType<'a>>,
+        }
+
+        let mut actual_signatures = Vec::new();
+        'outer:
+        for signature in data.signatures.iter() {
+            let start = actual_signatures.len();
+
+            // Start off with an empty signature, this'll handle zero-argument
+            // cases and otherwise the loop below will continue to add on to this.
+            actual_signatures.push(ExpandedSig {
+                orig: signature,
+                args: Vec::with_capacity(signature.args.len()),
+            });
+
+            for (i, arg) in signature.args.iter().enumerate() {
+                let cur = actual_signatures.len();
+                // If any argument in this signature can't be converted we have
+                // to throw out the entire signature, so revert back to the
+                // beginning and then keep going.
+                let idl_type = match arg.ty.to_idl_type(self) {
+                    Some(t) => t,
+                    None => {
+                        actual_signatures.truncate(start);
+                        continue 'outer
+                    }
+                };
+
+                // The first arugment gets pushed directly in-place, but all
+                // future expanded arguments will cause new signatures to be
+                // created. If we have an optional argument then we consider the
+                // already existing signature as the "none" case and the flatten
+                // below will produce the "some" case, so we've already
+                // processed the first argument effectively.
+                let mut first = !arg.optional;
+                for idl_type in idl_type.flatten() {
+                    for j in start..cur {
+                        if first {
+                            actual_signatures[j].args.push(idl_type.clone());
+                            first = false;
+                        } else {
+                            let mut sig = actual_signatures[j].clone();
+                            sig.args.truncate(i);
+                            sig.args.push(idl_type.clone());
+                            actual_signatures.push(sig);
+                        }
+                    }
+                }
+            }
+        }
+
+        let name = match id {
+            OperationId::Constructor => "new",
+            OperationId::Operation(Some(s)) => s,
+            OperationId::Operation(None) => {
+                warn!("unsupported unnamed operation");
+                return Vec::new()
+            }
+            OperationId::IndexingGetter => "get",
+            OperationId::IndexingSetter => "set",
+            OperationId::IndexingDeleter => "delete",
+        };
+
+        let mut ret = Vec::new();
+        for signature in actual_signatures.iter() {
+            // Ignore signatures with invalid return types
+            let ret_ty = match signature.orig.ret.to_idl_type(self) {
+                Some(ty) => ty,
+                None => continue,
+            };
+
+            let mut rust_name = name.to_snake_case();
+            let mut first = true;
+            for (i, arg) in signature.args.iter().enumerate() {
+                // Find out if any other known signature either has the same
+                // name for this argument or a different type for this argument.
+                let mut any_same_name = false;
+                let mut any_different_type = false;
+                let arg_name = signature.orig.args[i].name;
+                for other in actual_signatures.iter() {
+                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name) {
+                        if !ptr::eq(signature, other) {
+                            any_same_name = true;
+                        }
+                    }
+                    if other.args.get(i) != Some(arg) {
+                        any_different_type = true;
+                    }
+                }
+
+                // If all signatures have the exact same type for this argument,
+                // then there's nothing to disambiguate so we don't modify the
+                // name.
+                if !any_different_type {
+                    continue
+                }
+                if first {
+                    rust_name.push_str("_with_");
+                    first = false;
+                } else {
+                    rust_name.push_str("_and_");
+                }
+
+                // If this name of the argument for this signature is unique
+                // then that's a bit more human readable so we include it in the
+                // method name. Otherwise the type name should disambiguate
+                // correctly.
+                if !any_same_name {
+                    rust_name.push_str(&arg_name.to_snake_case());
+                } else {
+                    arg.push_type_name(&mut rust_name);
+                }
+            }
+            ret.extend(self.create_one_function(
+                name,
+                &rust_name,
+                signature.args.iter()
+                    .zip(&signature.orig.args)
+                    .map(|(ty, orig_arg)| (orig_arg.name, ty)),
+                &ret_ty,
+                kind.clone(),
+                is_structural(&signature.orig.attrs),
+                throws(&signature.orig.attrs),
+                None,
+            ));
+        }
+        return ret;
     }
 }
 

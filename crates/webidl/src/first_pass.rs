@@ -18,8 +18,8 @@ use weedle::namespace::OperationNamespaceMember;
 use weedle;
 
 use super::Result;
-use util;
 use util::camel_case_ident;
+use util;
 
 /// Collection of constructs that may use partial.
 #[derive(Default)]
@@ -44,6 +44,7 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
     pub(crate) methods: Vec<&'src OperationInterfaceMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
+    pub(crate) operations2: BTreeMap<OperationId<'src>, OperationData2<'src>>,
     pub(crate) superclass: Option<&'src str>,
     pub(crate) definition_attributes: Option<&'src [ExtendedAttribute<'src>]>,
     pub(crate) constructors: Vec<(&'src str, &'src [Argument<'src>])>,
@@ -58,6 +59,7 @@ pub(crate) struct MixinData<'src> {
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
     pub(crate) methods: Vec<&'src OperationMixinMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
+    pub(crate) operations2: BTreeMap<OperationId<'src>, OperationData2<'src>>,
 }
 
 /// We need to collect namespace data during the first pass, to be used later.
@@ -66,6 +68,7 @@ pub(crate) struct NamespaceData<'src> {
     /// Whether only partial namespaces were encountered
     pub(crate) members: Vec<&'src OperationNamespaceMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
+    pub(crate) operations2: BTreeMap<OperationId<'src>, OperationData2<'src>>,
 }
 
 #[derive(Default)]
@@ -89,6 +92,25 @@ pub(crate) struct OperationData<'src> {
     pub(crate) overloaded: bool,
     /// Map from argument names to whether they are the same for multiple overloads
     pub(crate) argument_names_same: BTreeMap<Vec<&'src str>, bool>,
+}
+
+#[derive(Default)]
+pub(crate) struct OperationData2<'src> {
+    pub(crate) signatures: Vec<Signature<'src>>,
+}
+
+#[derive(Clone)]
+pub(crate) struct Signature<'src> {
+    pub(crate) args: Vec<Arg<'src>>,
+    pub(crate) ret: weedle::types::ReturnType<'src>,
+    pub(crate) attrs: &'src Option<ExtendedAttributeList<'src>>,
+}
+
+#[derive(Clone)]
+pub(crate) struct Arg<'src> {
+    pub(crate) name: &'src str,
+    pub(crate) ty: &'src weedle::types::Type<'src>,
+    pub(crate) optional: bool,
 }
 
 /// Implemented on an AST node to populate the `FirstPassRecord` struct.
@@ -207,7 +229,13 @@ fn first_pass_operation<'src>(
     self_name: &'src str,
     ids: &[OperationId<'src>],
     arguments: &'src [Argument<'src>],
-) {
+    ret: &weedle::types::ReturnType<'src>,
+    attrs: &'src Option<ExtendedAttributeList<'src>>,
+) -> bool {
+    if util::is_chrome_only(attrs) {
+        return false
+    }
+
     let mut names = Vec::with_capacity(arguments.len());
     for argument in arguments {
         match argument {
@@ -215,29 +243,46 @@ fn first_pass_operation<'src>(
             Argument::Variadic(variadic) => names.push(variadic.identifier.0),
         }
     }
-    let operations = match first_pass_operation_type{
+    let (operations, operations2) = match first_pass_operation_type{
         FirstPassOperationType::Interface => {
-            &mut record
+            let x = record
                 .interfaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} interface", self_name))
-                .operations
+                .expect(&format!("not found {} interface", self_name));
+            (&mut x.operations, &mut x.operations2)
         },
         FirstPassOperationType::Mixin => {
-            &mut record
+            let x = record
                 .mixins
                 .get_mut(self_name)
-                .expect(&format!("not found {} mixin", self_name))
-                .operations
+                .expect(&format!("not found {} mixin", self_name));
+            (&mut x.operations, &mut x.operations2)
         },
         FirstPassOperationType::Namespace => {
-            &mut record
+            let x = record
                 .namespaces
                 .get_mut(self_name)
-                .expect(&format!("not found {} namesace", self_name))
-                .operations
+                .expect(&format!("not found {} namespace", self_name));
+            (&mut x.operations, &mut x.operations2)
         },
     };
+    let mut args = Vec::with_capacity(arguments.len());
+    for argument in arguments {
+        let arg = match argument {
+            Argument::Single(single) => single,
+            Argument::Variadic(v) => {
+                warn!("Unsupported variadic argument {} in {}",
+                      v.identifier.0,
+                      self_name);
+                return false
+            }
+        };
+        args.push(Arg {
+            name: arg.identifier.0,
+            ty: &arg.type_.type_,
+            optional: arg.optional.is_some(),
+        });
+    }
     for id in ids {
         operations
             .entry(*id)
@@ -247,7 +292,16 @@ fn first_pass_operation<'src>(
             .entry(names.clone())
             .and_modify(|same_argument_names| *same_argument_names = true)
             .or_insert(false);
+        operations2.entry(*id)
+            .or_default()
+            .signatures
+            .push(Signature {
+                args: args.clone(),
+                ret: ret.clone(),
+                attrs,
+            });
     }
+    true
 }
 
 impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
@@ -294,49 +348,67 @@ fn process_interface_attribute<'src>(
     self_name: &'src str,
     attr: &'src ExtendedAttribute<'src>
 ) {
+    let ident = weedle::common::Identifier(self_name);
+    let non_null = weedle::types::MayBeNull { type_: ident, q_mark: None };
+    let non_any = weedle::types::NonAnyType::Identifier(non_null);
+    let single = weedle::types::SingleType::NonAny(non_any);
+    let ty = weedle::types::Type::Single(single);
+    let return_ty = weedle::types::ReturnType::Type(ty);
     match attr {
         ExtendedAttribute::ArgList(list)
             if list.identifier.0 == "Constructor" =>
         {
-            record.interfaces
-                .get_mut(self_name)
-                .unwrap()
-                .constructors.push((self_name, &list.args.body.list));
-            first_pass_operation(
+            if first_pass_operation(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
                 &[OperationId::Constructor],
                 &list.args.body.list,
-            )
+                &return_ty,
+                &None,
+            ) {
+                record.interfaces
+                    .get_mut(self_name)
+                    .unwrap()
+                    .constructors
+                    .push((self_name, &list.args.body.list));
+            }
         }
         ExtendedAttribute::NoArgs(other) if (other.0).0 == "Constructor" => {
-            record.interfaces
-                .get_mut(self_name)
-                .unwrap()
-                .constructors.push((self_name, &[]));
-            first_pass_operation(
+            if first_pass_operation(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
                 &[OperationId::Constructor],
                 &[],
-            )
+                &return_ty,
+                &None,
+            ) {
+                record.interfaces
+                    .get_mut(self_name)
+                    .unwrap()
+                    .constructors
+                    .push((self_name, &[]));
+            }
         }
         ExtendedAttribute::NamedArgList(list)
             if list.lhs_identifier.0 == "NamedConstructor" =>
         {
-            record.interfaces
-                .get_mut(self_name)
-                .unwrap()
-                .constructors.push((list.rhs_identifier.0, &list.args.body.list));
-            first_pass_operation(
+            if first_pass_operation(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
                 &[OperationId::Constructor],
                 &list.args.body.list,
-            )
+                &return_ty,
+                &None,
+            ) {
+                record.interfaces
+                    .get_mut(self_name)
+                    .unwrap()
+                    .constructors
+                    .push((list.rhs_identifier.0, &list.args.body.list));
+            }
         }
         ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Global" => {
             record.interfaces.get_mut(self_name).unwrap().global = true;
@@ -412,10 +484,6 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::InterfaceMember<'sr
 
 impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceMember<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(());
-        }
-
         if self.specials.len() > 1 {
             warn!("Unsupported webidl operation: {:?}", self);
             return Ok(())
@@ -424,12 +492,6 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             warn!("Unsupported webidl stringifier: {:?}", self);
             return Ok(())
         }
-
-        record.interfaces
-            .get_mut(self_name)
-            .unwrap()
-            .methods
-            .push(self);
 
         let mut ids = vec![OperationId::Operation(self.identifier.map(|s| s.0))];
         for special in self.specials.iter() {
@@ -440,13 +502,21 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
                 Special::LegacyCaller(_) => continue,
             });
         }
-        first_pass_operation(
+        if first_pass_operation(
             record,
             FirstPassOperationType::Interface,
             self_name,
             &ids,
             &self.args.body.list,
-        );
+            &self.return_type,
+            &self.attributes,
+        ) {
+            record.interfaces
+                .get_mut(self_name)
+                .unwrap()
+                .methods
+                .push(self);
+        }
         Ok(())
     }
 }
@@ -538,28 +608,26 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::MixinMember<'src> {
 
 impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(());
-        }
-
         if self.stringifier.is_some() {
             warn!("Unsupported webidl stringifier: {:?}", self);
             return Ok(())
         }
 
-        record.mixins
-            .get_mut(self_name)
-            .unwrap()
-            .methods
-            .push(self);
-
-        first_pass_operation(
+        if first_pass_operation(
             record,
             FirstPassOperationType::Mixin,
             self_name,
             &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
             &self.args.body.list,
-        );
+            &self.return_type,
+            &self.attributes,
+        ) {
+            record.mixins
+                .get_mut(self_name)
+                .unwrap()
+                .methods
+                .push(self);
+        }
         Ok(())
     }
 }
@@ -643,19 +711,17 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::NamespaceMember<'sr
 
 impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceMember<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
-        if util::is_chrome_only(&self.attributes) {
-            return Ok(())
-        }
-
-        record.namespaces.get_mut(self_name).unwrap().members.push(self);
-
-        first_pass_operation(
+        if first_pass_operation(
             record,
             FirstPassOperationType::Namespace,
             self_name,
             &[OperationId::Operation(self.identifier.map(|s| s.0.clone()))],
             &self.args.body.list,
-        );
+            &self.return_type,
+            &self.attributes,
+        ) {
+            record.namespaces.get_mut(self_name).unwrap().members.push(self);
+        }
         Ok(())
     }
 }
