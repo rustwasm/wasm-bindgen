@@ -191,7 +191,7 @@ impl<'src> FirstPassRecord<'src> {
             None => return,
         };
         let mut fields = Vec::new();
-        if !push_members(self, def.identifier.0, &mut fields) {
+        if !self.append_dictionary_members(def.identifier.0, &mut fields) {
             return
         }
 
@@ -199,90 +199,90 @@ impl<'src> FirstPassRecord<'src> {
             name: rust_ident(&camel_case_ident(def.identifier.0)),
             fields,
         });
+    }
 
-        fn push_members<'src>(
-            data: &FirstPassRecord<'src>,
-            dict: &'src str,
-            dst: &mut Vec<ast::DictionaryField>,
-        ) -> bool {
-            let dict_data = &data.dictionaries[&dict];
-            let definition = dict_data.definition.unwrap();
+    fn append_dictionary_members(
+        &self,
+        dict: &'src str,
+        dst: &mut Vec<ast::DictionaryField>,
+    ) -> bool {
+        let dict_data = &self.dictionaries[&dict];
+        let definition = dict_data.definition.unwrap();
 
-            // > The order of the dictionary members on a given dictionary is
-            // > such that inherited dictionary members are ordered before
-            // > non-inherited members ...
-            if let Some(parent) = &definition.inheritance {
-                if !push_members(data, parent.identifier.0, dst) {
-                    return false
-                }
+        // > The order of the dictionary members on a given dictionary is
+        // > such that inherited dictionary members are ordered before
+        // > non-inherited members ...
+        if let Some(parent) = &definition.inheritance {
+            if !self.append_dictionary_members(parent.identifier.0, dst) {
+                return false
             }
+        }
 
-            // > ... and the dictionary members on the one dictionary
-            // > definition (including any partial dictionary definitions) are
-            // > ordered lexicographically by the Unicode codepoints that
-            // > comprise their identifiers.
-            let start = dst.len();
-            let members = definition.members.body.iter();
-            let partials = dict_data.partials.iter().flat_map(|d| &d.members.body);
-            for member in members.chain(partials) {
-                match mkfield(data, member) {
-                    Some(f) => dst.push(f),
-                    None => {
-                        warn!(
-                            "unsupported dictionary field {:?}",
-                            (dict, member.identifier.0),
-                        );
-                        // If this is required then we can't support the
-                        // dictionary at all, but if it's not required we can
-                        // avoid generating bindings for the field and keep
-                        // going otherwise.
-                        if member.required.is_some() {
-                            return false
-                        }
+        // > ... and the dictionary members on the one dictionary
+        // > definition (including any partial dictionary definitions) are
+        // > ordered lexicographically by the Unicode codepoints that
+        // > comprise their identifiers.
+        let start = dst.len();
+        let members = definition.members.body.iter();
+        let partials = dict_data.partials.iter().flat_map(|d| &d.members.body);
+        for member in members.chain(partials) {
+            match self.dictionary_field(member) {
+                Some(f) => dst.push(f),
+                None => {
+                    warn!(
+                        "unsupported dictionary field {:?}",
+                        (dict, member.identifier.0),
+                    );
+                    // If this is required then we can't support the
+                    // dictionary at all, but if it's not required we can
+                    // avoid generating bindings for the field and keep
+                    // going otherwise.
+                    if member.required.is_some() {
+                        return false
                     }
                 }
             }
-            // Note that this sort isn't *quite* right in that it is sorting
-            // based on snake case instead of the original casing which could
-            // produce inconsistent results, but should work well enough for
-            // now!
-            dst[start..].sort_by_key(|f| f.name.clone());
+        }
+        // Note that this sort isn't *quite* right in that it is sorting
+        // based on snake case instead of the original casing which could
+        // produce inconsistent results, but should work well enough for
+        // now!
+        dst[start..].sort_by_key(|f| f.name.clone());
 
-            return true
+        return true
+    }
+
+    fn dictionary_field(
+        &self,
+        field: &'src DictionaryMember<'src>,
+    ) -> Option<ast::DictionaryField> {
+        // use argument position now as we're just binding setters
+        let ty = field.type_.to_idl_type(self)?.to_syn_type(TypePosition::Argument)?;
+
+        // Slice types aren't supported because they don't implement
+        // `Into<JsValue>`
+        if let syn::Type::Reference(ty) = &ty {
+            match &*ty.elem {
+                syn::Type::Slice(_) => return None,
+                _ => {}
+            }
         }
 
-        fn mkfield<'src>(
-            data: &FirstPassRecord<'src>,
-            field: &'src DictionaryMember<'src>,
-        ) -> Option<ast::DictionaryField> {
-            // use argument position now as we're just binding setters
-            let ty = field.type_.to_idl_type(data)?.to_syn_type(TypePosition::Argument)?;
-
-            // Slice types aren't supported because they don't implement
-            // `Into<JsValue>`
-            if let syn::Type::Reference(ty) = &ty {
-                match &*ty.elem {
-                    syn::Type::Slice(_) => return None,
-                    _ => {}
-                }
-            }
-
-            // Similarly i64/u64 aren't supported because they don't
-            // implement `Into<JsValue>`
-            let mut any_64bit = false;
-            ty.imported_type_references(&mut |i| {
-                any_64bit = any_64bit || i == "u64" || i == "i64";
-            });
-            if any_64bit {
-                return None
-            }
-
-            Some(ast::DictionaryField {
-                required: field.required.is_some(),
-                name: rust_ident(&field.identifier.0.to_snake_case()),
-                ty,
-            })
+        // Similarly i64/u64 aren't supported because they don't
+        // implement `Into<JsValue>`
+        let mut any_64bit = false;
+        ty.imported_type_references(&mut |i| {
+            any_64bit = any_64bit || i == "u64" || i == "i64";
+        });
+        if any_64bit {
+            return None
         }
+
+        Some(ast::DictionaryField {
+            required: field.required.is_some(),
+            name: rust_ident(&field.identifier.0.to_snake_case()),
+            ty,
+        })
     }
 
     fn append_ns(
