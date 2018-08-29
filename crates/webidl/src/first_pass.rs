@@ -687,4 +687,28 @@ impl<'a> FirstPassRecord<'a> {
             self.fill_superclasses(superclass, set);
         }
     }
+
+    pub fn all_mixins<'me>(&'me self, interface: &str)
+        -> impl Iterator<Item = &'me MixinData<'a>> + 'me
+    {
+        let mut set = Vec::new();
+        self.fill_mixins(interface, interface, &mut set);
+        set.into_iter()
+    }
+
+    fn fill_mixins<'me>(
+        &'me self,
+        self_name: &str,
+        mixin_name: &str,
+        list: &mut Vec<&'me MixinData<'a>>,
+    ) {
+        if let Some(mixin_data) = self.mixins.get(mixin_name) {
+            list.push(mixin_data);
+        }
+        if let Some(mixin_names) = self.includes.get(mixin_name) {
+            for mixin_name in mixin_names {
+                self.fill_mixins(self_name, mixin_name, list);
+            }
+        }
+    }
 }

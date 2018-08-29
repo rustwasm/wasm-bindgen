@@ -418,20 +418,11 @@ impl<'src> FirstPassRecord<'src> {
             );
         }
 
-        self.append_interface_mixins(program, name, name);
-    }
-
-    fn append_interface_mixins(
-        &self,
-        program: &mut backend::ast::Program,
-        self_name: &str,
-        mixin_name: &str,
-    ) {
-        if let Some(mixin_data) = self.mixins.get(mixin_name) {
-            for member in &mixin_data.methods {
+        for data in self.all_mixins(name) {
+            for member in &data.methods {
                 self.member_operation(
                     program,
-                    self_name,
+                    name,
                     &member.attributes,
                     None,
                     &[],
@@ -440,13 +431,13 @@ impl<'src> FirstPassRecord<'src> {
                     &member.identifier,
                 );
             }
-            for member in &mixin_data.consts {
-                self.append_const(program, self_name, member);
+            for member in &data.consts {
+                self.append_const(program, name, member);
             }
-            for member in &mixin_data.attributes {
+            for member in &data.attributes {
                 self.member_attribute(
                     program,
-                    self_name,
+                    name,
                     &member.attributes,
                     if let Some(s) = member.stringifier {
                         Some(weedle::interface::StringifierOrInheritOrStatic::Stringifier(s))
@@ -457,11 +448,6 @@ impl<'src> FirstPassRecord<'src> {
                     &member.type_,
                     member.identifier.0,
                 );
-            }
-        }
-        if let Some(mixin_names) = self.includes.get(mixin_name) {
-            for mixin_name in mixin_names {
-                self.append_interface_mixins(program, self_name, mixin_name);
             }
         }
     }
