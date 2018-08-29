@@ -206,7 +206,7 @@ fn first_pass_operation<'src>(
     first_pass_operation_type: FirstPassOperationType,
     self_name: &'src str,
     ids: &[OperationId<'src>],
-    arguments: &[Argument<'src>],
+    arguments: &'src [Argument<'src>],
 ) {
     let mut names = Vec::with_capacity(arguments.len());
     for argument in arguments {
@@ -601,12 +601,7 @@ impl<'src> FirstPass<'src, ()> for weedle::NamespaceDefinition<'src> {
         record
             .namespaces
             .entry(self.identifier.0)
-            .or_insert_with(||
-                NamespaceData {
-                    members: Default::default(),
-                    operations: Default::default(),
-                },
-            );
+            .or_default();
 
         for member in &self.members.body {
             member.first_pass(record, self.identifier.0)?;
