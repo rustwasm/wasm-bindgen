@@ -14,7 +14,6 @@ fn take_and_return_a_bunch_of_slices() {
     assert_eq!(f.i16(&[1, 2]), [3, 4, 5]);
     assert_eq!(f.i32(&[1, 2]), [3, 4, 5]);
     assert_eq!(f.u8(&[1, 2]), [3, 4, 5]);
-    assert_eq!(f.u8_clamped(&[1, 2]), [3, 4, 5]);
     assert_eq!(f.u16(&[1, 2]), [3, 4, 5]);
     assert_eq!(f.u32(&[1, 2]), [3, 4, 5]);
 }

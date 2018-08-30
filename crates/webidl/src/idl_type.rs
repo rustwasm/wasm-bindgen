@@ -459,7 +459,7 @@ impl<'a> IdlType<'a> {
             IdlType::DataView => None,
             IdlType::Int8Array => Some(array("i8", pos)),
             IdlType::Uint8Array => Some(array("u8", pos)),
-            IdlType::Uint8ClampedArray => Some(array("u8", pos)),
+            IdlType::Uint8ClampedArray => None, // FIXME(#421)
             IdlType::Int16Array => Some(array("i16", pos)),
             IdlType::Uint16Array => Some(array("u16", pos)),
             IdlType::Int32Array => Some(array("i32", pos)),
