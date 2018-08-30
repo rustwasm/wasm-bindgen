@@ -291,12 +291,28 @@ impl<'src> FirstPassRecord<'src> {
 
         // Slice types aren't supported because they don't implement
         // `Into<JsValue>`
-        if let syn::Type::Reference(ty) = &ty {
-            match &*ty.elem {
-                syn::Type::Slice(_) => return None,
-                _ => {}
-            }
-        }
+        match ty {
+            syn::Type::Reference(ref i) =>
+                match &*i.elem {
+                    syn::Type::Slice(_) => return None,
+                    _ => ()
+                }
+            syn::Type::Path(ref path, ..) =>
+                // check that our inner don't contains slices either
+                for seg in path.path.segments.iter() {
+                    if let syn::PathArguments::AngleBracketed(ref arg) = seg.arguments {
+                        for elem in &arg.args {
+                            if let syn::GenericArgument::Type(syn::Type::Reference(ref i)) = elem {
+                                match &*i.elem {
+                                    syn::Type::Slice(_) => return None,
+                                    _ => ()
+                                }
+                            }
+                        }
+                    }
+                }
+            _ => ()
+        };
 
         // Similarly i64/u64 aren't supported because they don't
         // implement `Into<JsValue>`

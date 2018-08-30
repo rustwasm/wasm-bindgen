@@ -466,9 +466,10 @@ impl<'a> IdlType<'a> {
             IdlType::Float32Array => Some(array("f32", pos)),
             IdlType::Float64Array => Some(array("f64", pos)),
 
-            // we alias ArrayBufferView & BufferSource to &u8 in Rust
-            IdlType::ArrayBufferView
-            | IdlType::BufferSource => Some(array("u8", pos)),
+            IdlType::ArrayBufferView | IdlType::BufferSource => {
+                let path = vec![rust_ident("js_sys"), rust_ident("Object")];
+                Some(leading_colon_path_ty(path))
+            },
             IdlType::Interface(name)
             | IdlType::Dictionary(name) => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
@@ -573,6 +574,8 @@ impl<'a> IdlType<'a> {
                 .iter()
                 .flat_map(|idl_type| idl_type.flatten())
                 .collect(),
+            IdlType::ArrayBufferView | IdlType::BufferSource =>
+                vec![IdlType::Object, IdlType::Uint8Array],
 
             idl_type @ _ => vec![idl_type.clone()],
         }
