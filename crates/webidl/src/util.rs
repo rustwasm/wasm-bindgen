@@ -522,7 +522,7 @@ impl<'src> FirstPassRecord<'src> {
         )
     }
 
-    fn import_function_kind(
+    pub fn import_function_kind(
         &self,
         self_name: &str,
         global: bool,
@@ -630,16 +630,28 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
 
-        let (name, force_structural) = match id {
-            OperationId::Constructor => ("new", false),
-            OperationId::Operation(Some(s)) => (*s, false),
+        let (name, force_structural, force_throws) = match id {
+            // Constructors aren't annotated with `[Throws]` extended attributes
+            // (how could they be, since they themselves are extended
+            // attributes?) so we must conservatively assume that they can
+            // always throw.
+            //
+            // From https://heycam.github.io/webidl/#Constructor (emphasis
+            // mine):
+            //
+            // > The prose definition of a constructor must either return an IDL
+            // > value of a type corresponding to the interface the
+            // > `[Constructor]` extended attribute appears on, **or throw an
+            // > exception**.
+            OperationId::Constructor(_) => ("new", false, true),
+            OperationId::Operation(Some(s)) => (*s, false, false),
             OperationId::Operation(None) => {
                 warn!("unsupported unnamed operation");
                 return Vec::new()
             }
-            OperationId::IndexingGetter => ("get", true),
-            OperationId::IndexingSetter => ("set", true),
-            OperationId::IndexingDeleter => ("delete", true),
+            OperationId::IndexingGetter => ("get", true, false),
+            OperationId::IndexingSetter => ("set", true, false),
+            OperationId::IndexingDeleter => ("delete", true, false),
         };
 
         let mut ret = Vec::new();
@@ -707,7 +719,7 @@ impl<'src> FirstPassRecord<'src> {
                 &ret_ty,
                 kind.clone(),
                 force_structural || is_structural(&signature.orig.attrs),
-                throws(&signature.orig.attrs),
+                force_throws || throws(&signature.orig.attrs),
                 None,
             ));
         }

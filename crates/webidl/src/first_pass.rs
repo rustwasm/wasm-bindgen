@@ -7,6 +7,7 @@
 //! Only `interface`s, `dictionary`s, `enum`s and `mixin`s can
 //! be partial.
 
+use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 
 use weedle::{DictionaryDefinition, PartialDictionaryDefinition};
@@ -80,7 +81,7 @@ pub(crate) struct DictionaryData<'src> {
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
 pub(crate) enum OperationId<'src> {
-    Constructor,
+    Constructor(IgnoreTraits<&'src str>),
     Operation(Option<&'src str>),
     IndexingGetter,
     IndexingSetter,
@@ -363,7 +364,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor],
+                &[OperationId::Constructor(IgnoreTraits(self_name))],
                 &list.args.body.list,
                 &return_ty,
                 &None,
@@ -381,7 +382,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor],
+                &[OperationId::Constructor(IgnoreTraits(self_name))],
                 &[],
                 &return_ty,
                 &None,
@@ -401,7 +402,7 @@ fn process_interface_attribute<'src>(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
-                &[OperationId::Constructor],
+                &[OperationId::Constructor(IgnoreTraits(list.rhs_identifier.0))],
                 &list.args.body.list,
                 &return_ty,
                 &None,
@@ -782,5 +783,26 @@ impl<'a> FirstPassRecord<'a> {
                 self.fill_mixins(self_name, mixin_name, list);
             }
         }
+    }
+}
+
+#[derive(Copy, Clone, Debug)]
+pub struct IgnoreTraits<T>(pub T);
+
+impl<T> PartialEq for IgnoreTraits<T> {
+    fn eq(&self, _other: &IgnoreTraits<T>) -> bool { true }
+}
+
+impl<T> Eq for IgnoreTraits<T> {}
+
+impl<T> PartialOrd for IgnoreTraits<T> {
+    fn partial_cmp(&self, _other: &IgnoreTraits<T>) -> Option<Ordering> {
+        Some(Ordering::Equal)
+    }
+}
+
+impl<T> Ord for IgnoreTraits<T> {
+    fn cmp(&self, _other: &IgnoreTraits<T>) -> Ordering {
+        Ordering::Equal
     }
 }

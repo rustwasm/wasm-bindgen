@@ -314,7 +314,7 @@ impl<'src> FirstPassRecord<'src> {
     ) {
         let name = match id {
             OperationId::Operation(Some(name)) => name,
-            OperationId::Constructor |
+            OperationId::Constructor(_) |
             OperationId::Operation(None) |
             OperationId::IndexingGetter |
             OperationId::IndexingSetter |
@@ -404,13 +404,13 @@ impl<'src> FirstPassRecord<'src> {
             }),
         });
 
-        for (ctor_name, args) in data.constructors.iter() {
-            self.append_constructor(program, name, ctor_name, args);
-        }
+        // for (ctor_name, args) in data.constructors.iter() {
+        //     self.append_constructor(program, name, ctor_name, args);
+        // }
         for (id, op_data) in data.operations2.iter() {
-            if let OperationId::Constructor = id {
-                continue // TODO
-            }
+            // if let OperationId::Constructor = id {
+            //     continue // TODO
+            // }
             self.member_operation2(program, name, data, id, op_data);
         }
         for member in data.consts.iter() {
@@ -453,61 +453,61 @@ impl<'src> FirstPassRecord<'src> {
         }
     }
 
-    fn append_constructor(
-        &self,
-        program: &mut backend::ast::Program,
-        iface_name: &'src str,
-        ctor_name: &'src str,
-        args: &[Argument<'src>],
-    ) {
-        let (overloaded, same_argument_names) = self.get_operation_overloading(
-            args,
-            &::first_pass::OperationId::Constructor,
-            iface_name,
-            false,
-        );
-
-        let self_ty = ident_ty(rust_ident(camel_case_ident(iface_name).as_str()));
-
-        let kind = backend::ast::ImportFunctionKind::Method {
-            class: ctor_name.to_string(),
-            ty: self_ty.clone(),
-            kind: backend::ast::MethodKind::Constructor,
-        };
-
-        let structural = false;
-
-        // Constructors aren't annotated with `[Throws]` extended attributes
-        // (how could they be, since they themselves are extended
-        // attributes?) so we must conservatively assume that they can
-        // always throw.
-        //
-        // From https://heycam.github.io/webidl/#Constructor (emphasis
-        // mine):
-        //
-        // > The prose definition of a constructor must either return an IDL
-        // > value of a type corresponding to the interface the
-        // > `[Constructor]` extended attribute appears on, **or throw an
-        // > exception**.
-        let throws = true;
-
-        for import_function in self.create_function(
-            "new",
-            overloaded,
-            same_argument_names,
-            &match self.convert_arguments(args) {
-                Some(arguments) => arguments,
-                None => return,
-            },
-            IdlType::Interface(iface_name),
-            kind,
-            structural,
-            throws,
-            None,
-        ) {
-            program.imports.push(wrap_import_function(import_function));
-        }
-    }
+    // fn append_constructor(
+    //     &self,
+    //     program: &mut backend::ast::Program,
+    //     iface_name: &'src str,
+    //     ctor_name: &'src str,
+    //     args: &[Argument<'src>],
+    // ) {
+    //     let (overloaded, same_argument_names) = self.get_operation_overloading(
+    //         args,
+    //         &::first_pass::OperationId::Constructor,
+    //         iface_name,
+    //         false,
+    //     );
+    //
+    //     let self_ty = ident_ty(rust_ident(camel_case_ident(iface_name).as_str()));
+    //
+    //     let kind = backend::ast::ImportFunctionKind::Method {
+    //         class: ctor_name.to_string(),
+    //         ty: self_ty.clone(),
+    //         kind: backend::ast::MethodKind::Constructor,
+    //     };
+    //
+    //     let structural = false;
+    //
+    //     // Constructors aren't annotated with `[Throws]` extended attributes
+    //     // (how could they be, since they themselves are extended
+    //     // attributes?) so we must conservatively assume that they can
+    //     // always throw.
+    //     //
+    //     // From https://heycam.github.io/webidl/#Constructor (emphasis
+    //     // mine):
+    //     //
+    //     // > The prose definition of a constructor must either return an IDL
+    //     // > value of a type corresponding to the interface the
+    //     // > `[Constructor]` extended attribute appears on, **or throw an
+    //     // > exception**.
+    //     let throws = true;
+    //
+    //     for import_function in self.create_function(
+    //         "new",
+    //         overloaded,
+    //         same_argument_names,
+    //         &match self.convert_arguments(args) {
+    //             Some(arguments) => arguments,
+    //             None => return,
+    //         },
+    //         IdlType::Interface(iface_name),
+    //         kind,
+    //         structural,
+    //         throws,
+    //         None,
+    //     ) {
+    //         program.imports.push(wrap_import_function(import_function));
+    //     }
+    // }
 
     fn member_attribute(
         &self,
@@ -571,28 +571,29 @@ impl<'src> FirstPassRecord<'src> {
         id: &OperationId<'src>,
         op_data: &OperationData2<'src>,
     ) {
-        let operation_kind = match id {
-            OperationId::Constructor => panic!("constructors are unsupported"),
-            OperationId::Operation(_) => backend::ast::OperationKind::Regular,
-            OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
-            OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
-            OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
+        let import_function_kind = |opkind| {
+            self.import_function_kind(self_name, data.global, op_data.is_static, opkind)
         };
-        let operation = backend::ast::Operation {
-            is_static: op_data.is_static,
-            kind: operation_kind,
-        };
-        let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
-        let kind = if data.global {
-            backend::ast::ImportFunctionKind::ScopedMethod {
-                ty,
-                operation,
+        let kind = match id {
+            OperationId::Constructor(ctor_name) => {
+                let self_ty = ident_ty(rust_ident(&camel_case_ident(self_name)));
+                backend::ast::ImportFunctionKind::Method {
+                    class: ctor_name.0.to_string(),
+                    ty: self_ty.clone(),
+                    kind: backend::ast::MethodKind::Constructor,
+                }
             }
-        } else {
-            backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty,
-                kind: backend::ast::MethodKind::Operation(operation),
+            OperationId::Operation(_) => {
+                import_function_kind(backend::ast::OperationKind::Regular)
+            }
+            OperationId::IndexingGetter => {
+                import_function_kind(backend::ast::OperationKind::IndexingGetter)
+            }
+            OperationId::IndexingSetter => {
+                import_function_kind(backend::ast::OperationKind::IndexingSetter)
+            }
+            OperationId::IndexingDeleter => {
+                import_function_kind(backend::ast::OperationKind::IndexingDeleter)
             }
         };
         for method in self.create_imports(kind, id, op_data) {
