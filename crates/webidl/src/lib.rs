@@ -459,7 +459,7 @@ impl<'src> FirstPassRecord<'src> {
         use weedle::interface::StringifierOrInheritOrStatic::*;
 
         let is_static = match modifier {
-            Some(Stringifier(_)) => unimplemented!(), // filtered out earlier
+            Some(Stringifier(_)) => unreachable!(), // filtered out earlier
             Some(Inherit(_)) => false,
             Some(Static(_)) => true,
             None => false,

@@ -231,7 +231,7 @@ fn first_pass_operation<'src>(
             Argument::Variadic(variadic) => names.push(variadic.identifier.0),
         }
     }
-    let operations = match first_pass_operation_type{
+    let operations = match first_pass_operation_type {
         FirstPassOperationType::Interface => {
             let x = record
                 .interfaces

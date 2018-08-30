@@ -378,7 +378,22 @@ impl<'src> FirstPassRecord<'src> {
     )
         -> Vec<backend::ast::ImportFunction>
     {
-        // First up expand all the signatures in `data` into all signatures that
+        // First up, prune all signatures that reference unsupported arguments.
+        // We won't consider these until said arguments are implemented.
+        let mut signatures = Vec::new();
+        'outer:
+        for signature in data.signatures.iter() {
+            let mut idl_args = Vec::with_capacity(signature.args.len());
+            for arg in signature.args.iter() {
+                match arg.ty.to_idl_type(self) {
+                    Some(t) => idl_args.push((t, arg)),
+                    None => continue 'outer,
+                }
+            }
+            signatures.push((signature, idl_args));
+        }
+
+        // Next expand all the signatures in `data` into all signatures that
         // we're going to generate. These signatures will be used to determine
         // the names for all the various functions.
         #[derive(Clone)]
@@ -388,10 +403,8 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         let mut actual_signatures = Vec::new();
-        'outer:
-        for signature in data.signatures.iter() {
-            let real_start = actual_signatures.len();
-            let mut start = real_start;
+        for (signature, idl_args) in signatures.iter() {
+            let mut start = actual_signatures.len();
 
             // Start off with an empty signature, this'll handle zero-argument
             // cases and otherwise the loop below will continue to add on to this.
@@ -400,18 +413,13 @@ impl<'src> FirstPassRecord<'src> {
                 args: Vec::with_capacity(signature.args.len()),
             });
 
-            for (i, arg) in signature.args.iter().enumerate() {
-                // If any argument in this signature can't be converted we have
-                // to throw out the entire signature, so revert back to the
-                // beginning and then keep going.
-                let idl_type = match arg.ty.to_idl_type(self) {
-                    Some(t) => t,
-                    None => {
-                        actual_signatures.truncate(real_start);
-                        continue 'outer
-                    }
-                };
-
+            for (i, (idl_type, arg)) in idl_args.iter().enumerate() {
+                // If this is an optional argument, then all remaining arguments
+                // should also be optional (if any). This means that all the
+                // signatures we've built up so far are valid signatures because
+                // we're just going to omit all the future arguments. As a
+                // result we duplicate all the previous signatures we've made in
+                // the list. The duplicates will be modified in-place below.
                 if arg.optional {
                     assert!(signature.args[i..].iter().all(|a| a.optional));
                     let end = actual_signatures.len();
@@ -422,22 +430,19 @@ impl<'src> FirstPassRecord<'src> {
                     start = end;
                 }
 
+                // small sanity check
                 assert!(start < actual_signatures.len());
                 for sig in actual_signatures[start..].iter() {
                     assert_eq!(sig.args.len(), i);
                 }
 
-                // The first arugment gets pushed directly in-place, but all
-                // future expanded arguments will cause new signatures to be
-                // created. If we have an optional argument then we consider the
-                // already existing signature as the "none" case and the flatten
-                // below will produce the "some" case, so we've already
-                // processed the first argument effectively.
-                let mut first = true;
+                // The first element of the flattened type gets pushed directly
+                // in-place, but all other flattened types will cause new
+                // signatures to be created.
                 let cur = actual_signatures.len();
-                for idl_type in idl_type.flatten() {
+                for (i, idl_type) in idl_type.flatten().enumerate() {
                     for j in start..cur {
-                        if first {
+                        if i == 0 {
                             actual_signatures[j].args.push(idl_type.clone());
                         } else {
                             let mut sig = actual_signatures[j].clone();
@@ -447,7 +452,6 @@ impl<'src> FirstPassRecord<'src> {
                             actual_signatures.push(sig);
                         }
                     }
-                    first = false;
                 }
             }
         }
@@ -479,6 +483,10 @@ impl<'src> FirstPassRecord<'src> {
         let mut ret = Vec::new();
         for signature in actual_signatures.iter() {
             // Ignore signatures with invalid return types
+            //
+            // TODO: overloads probably never change return types, so we should
+            //       do this much earlier to avoid all the above work if
+            //       possible.
             let ret_ty = match signature.orig.ret.to_idl_type(self) {
                 Some(ty) => ty,
                 None => continue,
@@ -526,10 +534,14 @@ impl<'src> FirstPassRecord<'src> {
                 // then that's a bit more human readable so we include it in the
                 // method name. Otherwise the type name should disambiguate
                 // correctly.
-                if !any_same_name || !any_different_type {
-                    rust_name.push_str(&arg_name.to_snake_case());
-                } else {
+                //
+                // If any signature's argument has the same name as our argument
+                // then we can't use that if the types are also the same because
+                // otherwise it could be ambiguous.
+                if any_same_name && any_different_type {
                     arg.push_type_name(&mut rust_name);
+                } else {
+                    rust_name.push_str(&arg_name.to_snake_case());
                 }
             }
             ret.extend(self.create_one_function(
