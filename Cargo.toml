@@ -3,6 +3,10 @@ name = "wasm-bindgen"
 version = "0.2.19"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
+# Because only a single `wasm_bindgen` version can be used in a dependency
+# graph, pretend we link a native library so that `cargo` will provide better
+# error messages than the esoteric linker errors we would otherwise trigger.
+links = "wasm_bindgen"
 readme = "README.md"
 categories = ["wasm"]
 repository = "https://github.com/rustwasm/wasm-bindgen"
