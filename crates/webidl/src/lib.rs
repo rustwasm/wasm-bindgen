@@ -43,14 +43,13 @@ use backend::util::{ident_ty, rust_ident, raw_ident, wrap_import_function};
 use failure::ResultExt;
 use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
-use weedle::argument::Argument;
 use weedle::attribute::{ExtendedAttributeList};
 use weedle::dictionary::DictionaryMember;
 
 use first_pass::{FirstPass, FirstPassRecord, OperationId, InterfaceData};
-use first_pass::OperationData2;
+use first_pass::OperationData;
 use util::{public, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, mdn_doc};
-use idl_type::{IdlType, ToIdlType};
+use idl_type::ToIdlType;
 
 pub use error::{Error, ErrorKind, Result};
 
@@ -298,7 +297,7 @@ impl<'src> FirstPassRecord<'src> {
             imports: Default::default(),
         };
 
-        for (id, data) in ns.operations2.iter() {
+        for (id, data) in ns.operations.iter() {
             self.append_ns_member(&mut module, name, id, data);
         }
 
@@ -310,7 +309,7 @@ impl<'src> FirstPassRecord<'src> {
         module: &mut backend::ast::Module,
         self_name: &'src str,
         id: &OperationId<'src>,
-        data: &OperationData2<'src>,
+        data: &OperationData<'src>,
     ) {
         let name = match id {
             OperationId::Operation(Some(name)) => name,
@@ -404,14 +403,8 @@ impl<'src> FirstPassRecord<'src> {
             }),
         });
 
-        // for (ctor_name, args) in data.constructors.iter() {
-        //     self.append_constructor(program, name, ctor_name, args);
-        // }
-        for (id, op_data) in data.operations2.iter() {
-            // if let OperationId::Constructor = id {
-            //     continue // TODO
-            // }
-            self.member_operation2(program, name, data, id, op_data);
+        for (id, op_data) in data.operations.iter() {
+            self.member_operation(program, name, data, id, op_data);
         }
         for member in data.consts.iter() {
             self.append_const(program, name, member);
@@ -429,8 +422,8 @@ impl<'src> FirstPassRecord<'src> {
         }
 
         for mixin_data in self.all_mixins(name) {
-            for (id, op_data) in mixin_data.operations2.iter() {
-                self.member_operation2(program, name, data, id, op_data);
+            for (id, op_data) in mixin_data.operations.iter() {
+                self.member_operation(program, name, data, id, op_data);
             }
             for member in &mixin_data.consts {
                 self.append_const(program, name, member);
@@ -452,62 +445,6 @@ impl<'src> FirstPassRecord<'src> {
             }
         }
     }
-
-    // fn append_constructor(
-    //     &self,
-    //     program: &mut backend::ast::Program,
-    //     iface_name: &'src str,
-    //     ctor_name: &'src str,
-    //     args: &[Argument<'src>],
-    // ) {
-    //     let (overloaded, same_argument_names) = self.get_operation_overloading(
-    //         args,
-    //         &::first_pass::OperationId::Constructor,
-    //         iface_name,
-    //         false,
-    //     );
-    //
-    //     let self_ty = ident_ty(rust_ident(camel_case_ident(iface_name).as_str()));
-    //
-    //     let kind = backend::ast::ImportFunctionKind::Method {
-    //         class: ctor_name.to_string(),
-    //         ty: self_ty.clone(),
-    //         kind: backend::ast::MethodKind::Constructor,
-    //     };
-    //
-    //     let structural = false;
-    //
-    //     // Constructors aren't annotated with `[Throws]` extended attributes
-    //     // (how could they be, since they themselves are extended
-    //     // attributes?) so we must conservatively assume that they can
-    //     // always throw.
-    //     //
-    //     // From https://heycam.github.io/webidl/#Constructor (emphasis
-    //     // mine):
-    //     //
-    //     // > The prose definition of a constructor must either return an IDL
-    //     // > value of a type corresponding to the interface the
-    //     // > `[Constructor]` extended attribute appears on, **or throw an
-    //     // > exception**.
-    //     let throws = true;
-    //
-    //     for import_function in self.create_function(
-    //         "new",
-    //         overloaded,
-    //         same_argument_names,
-    //         &match self.convert_arguments(args) {
-    //             Some(arguments) => arguments,
-    //             None => return,
-    //         },
-    //         IdlType::Interface(iface_name),
-    //         kind,
-    //         structural,
-    //         throws,
-    //         None,
-    //     ) {
-    //         program.imports.push(wrap_import_function(import_function));
-    //     }
-    // }
 
     fn member_attribute(
         &self,
@@ -563,13 +500,13 @@ impl<'src> FirstPassRecord<'src> {
         }
     }
 
-    fn member_operation2(
+    fn member_operation(
         &self,
         program: &mut backend::ast::Program,
         self_name: &str,
         data: &InterfaceData<'src>,
         id: &OperationId<'src>,
-        op_data: &OperationData2<'src>,
+        op_data: &OperationData<'src>,
     ) {
         let import_function_kind = |opkind| {
             self.import_function_kind(self_name, data.global, op_data.is_static, opkind)

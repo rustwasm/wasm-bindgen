@@ -1,4 +1,3 @@
-use std::collections::BTreeMap;
 use std::iter::FromIterator;
 use std::ptr;
 
@@ -9,11 +8,10 @@ use proc_macro2::Ident;
 use syn;
 use weedle;
 use weedle::attribute::{ExtendedAttributeList, ExtendedAttribute};
-use weedle::argument::Argument;
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
-use first_pass::{self, FirstPassRecord, OperationId, OperationData2, Signature};
-use idl_type::{IdlType, ToIdlType, flatten};
+use first_pass::{FirstPassRecord, OperationId, OperationData, Signature};
+use idl_type::{IdlType, ToIdlType};
 
 /// Take a type and create an immutable shared reference to that type.
 pub(crate) fn shared_ref(ty: syn::Type) -> syn::Type {
@@ -197,94 +195,6 @@ pub enum TypePosition {
 }
 
 impl<'src> FirstPassRecord<'src> {
-    /// Create a wasm-bindgen function, if possible.
-    pub fn create_function(
-        &self,
-        name: &str,
-        overloaded: bool,
-        same_argument_names: bool,
-        arguments: &[(&str, IdlType<'src>, bool)],
-        ret: IdlType<'src>,
-        kind: backend::ast::ImportFunctionKind,
-        structural: bool,
-        catch: bool,
-        doc_comment: Option<String>,
-    ) -> Vec<backend::ast::ImportFunction> {
-        let rust_name = if overloaded && !arguments.is_empty() {
-            let mut argument_type_names = String::new();
-            for argument in arguments {
-                if argument_type_names.len() > 0 {
-                    argument_type_names.push_str("_and_");
-                }
-                if same_argument_names {
-                    argument.1.push_type_name(&mut argument_type_names);
-                } else {
-                    argument_type_names.push_str(&argument.0.to_snake_case());
-                }
-            }
-            if name == "new" {
-                "with_".to_owned() + &argument_type_names
-            } else {
-                name.to_snake_case() + "_with_" + &argument_type_names
-            }
-        } else {
-            name.to_snake_case()
-        };
-
-        let converted_arguments = arguments
-            .iter()
-            .cloned()
-            .map(|(_name, idl_type, optional)| (idl_type, optional))
-            .collect::<Vec<_>>();
-        let possibilities = flatten(&converted_arguments);
-        let mut arguments_count_multiple = BTreeMap::new();
-        for idl_types in &possibilities {
-            arguments_count_multiple
-                .entry(idl_types.len())
-                .and_modify(|variants_count| { *variants_count = true; })
-                .or_insert(false);
-        }
-        let mut import_functions = Vec::new();
-        'outer: for idl_types in &possibilities {
-            let rust_name = if possibilities.len() > 1 {
-                let mut rust_name = rust_name.clone();
-                let mut first = true;
-                let iter = arguments.iter().zip(idl_types).enumerate();
-                for (i, ((argument_name, _, _), idl_type)) in iter {
-                    if possibilities.iter().all(|p| p.get(i) == Some(idl_type)) {
-                        continue
-                    }
-                    if first {
-                        rust_name.push_str("_with_");
-                        first = false;
-                    } else {
-                        rust_name.push_str("_and_");
-                    }
-                    if arguments_count_multiple[&idl_types.len()] {
-                        idl_type.push_type_name(&mut rust_name);
-                    } else {
-                        rust_name.push_str(&argument_name.to_snake_case());
-                    }
-                }
-                rust_name
-            } else {
-                rust_name.clone()
-            };
-            let f = self.create_one_function(
-                name,
-                &rust_name,
-                arguments.iter().map(|s| s.0).zip(idl_types),
-                &ret,
-                kind.clone(),
-                structural,
-                catch,
-                doc_comment.clone(),
-            );
-            import_functions.extend(f);
-        }
-        import_functions
-    }
-
     pub fn create_one_function<'a>(
         &self,
         js_name: &str,
@@ -382,94 +292,6 @@ impl<'src> FirstPassRecord<'src> {
         })
     }
 
-    /// Convert arguments to ones suitable crating function
-    pub(crate) fn convert_arguments(
-        &self,
-        arguments: &[weedle::argument::Argument<'src>],
-    ) -> Option<Vec<(&str, IdlType<'src>, bool)>> {
-        let mut converted_arguments = Vec::with_capacity(arguments.len());
-        for argument in arguments {
-            let name = match argument {
-                Argument::Single(single) => single.identifier.0,
-                Argument::Variadic(variadic) => variadic.identifier.0,
-            };
-            let ty = match argument {
-                Argument::Single(single) => &single.type_.type_,
-                Argument::Variadic(variadic) => &variadic.type_,
-            };
-            let idl_type = ty.to_idl_type(self)?;
-            let optional = match argument {
-                Argument::Single(single) => single.optional.is_some(),
-                Argument::Variadic(_variadic) => false,
-            };
-            converted_arguments.push((name, idl_type, optional));
-        }
-        Some(converted_arguments)
-    }
-
-    /// Whether operation is overloaded and
-    /// whether there overloads with same argument names for given argument types
-    pub fn get_operation_overloading(
-        &self,
-        arguments: &[Argument],
-        operation_id: &first_pass::OperationId,
-        self_name: &str,
-        namespace: bool,
-    ) -> (bool, bool) {
-        fn get_operation_data<'src>(
-            record: &'src FirstPassRecord,
-            operation_id: &'src ::first_pass::OperationId,
-            self_name: &str,
-            mixin_name: &str,
-        ) -> Option<&'src ::first_pass::OperationData<'src>> {
-            if let Some(mixin_data) = record.mixins.get(mixin_name) {
-                if let Some(operation_data) = mixin_data.operations.get(operation_id) {
-                    return Some(operation_data);
-                }
-            }
-            if let Some(mixin_names) = record.includes.get(mixin_name) {
-                for mixin_name in mixin_names {
-                    if let Some(operation_data) = get_operation_data(record, operation_id, self_name, mixin_name) {
-                        return Some(operation_data);
-                    }
-                }
-            }
-            None
-        }
-
-        let operation_data = if !namespace {
-            self
-                .interfaces
-                .get(self_name)
-                .and_then(|interface_data| interface_data.operations.get(operation_id))
-                .unwrap_or_else(||
-                    get_operation_data(self, operation_id, self_name, self_name)
-                        .expect(&format!("not found operation {:?} in interface {}", operation_id, self_name))
-                )
-        } else {
-            self
-                .namespaces
-                .get(self_name)
-                .and_then(|interface_data| interface_data.operations.get(operation_id))
-                .expect(&format!("not found operation {:?} in namespace {}", operation_id, self_name))
-        };
-
-        let mut names = Vec::with_capacity(arguments.len());
-        for argument in arguments {
-            match argument {
-                Argument::Single(single) => names.push(single.identifier.0),
-                Argument::Variadic(variadic) => names.push(variadic.identifier.0),
-            }
-        }
-        (
-            operation_data.overloaded,
-            *operation_data
-                .argument_names_same
-                .get(&names)
-                .unwrap_or(&false)
-        )
-    }
-
     /// Create a wasm-bindgen getter method, if possible.
     pub fn create_getter(
         &self,
@@ -552,7 +374,7 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         kind: backend::ast::ImportFunctionKind,
         id: &OperationId<'src>,
-        data: &OperationData2<'src>,
+        data: &OperationData<'src>,
     )
         -> Vec<backend::ast::ImportFunction>
     {

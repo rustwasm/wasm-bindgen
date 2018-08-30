@@ -15,7 +15,6 @@ use weedle::argument::Argument;
 use weedle::attribute::*;
 use weedle::interface::*;
 use weedle::mixin::*;
-use weedle::namespace::OperationNamespaceMember;
 use weedle;
 
 use super::Result;
@@ -43,12 +42,9 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) global: bool,
     pub(crate) attributes: Vec<&'src AttributeInterfaceMember<'src>>,
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
-    pub(crate) methods: Vec<&'src OperationInterfaceMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
-    pub(crate) operations2: BTreeMap<OperationId<'src>, OperationData2<'src>>,
     pub(crate) superclass: Option<&'src str>,
     pub(crate) definition_attributes: Option<&'src [ExtendedAttribute<'src>]>,
-    pub(crate) constructors: Vec<(&'src str, &'src [Argument<'src>])>,
 }
 
 /// We need to collect mixin data during the first pass, to be used later.
@@ -58,18 +54,14 @@ pub(crate) struct MixinData<'src> {
     pub(crate) partial: bool,
     pub(crate) attributes: Vec<&'src AttributeMixinMember<'src>>,
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
-    pub(crate) methods: Vec<&'src OperationMixinMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
-    pub(crate) operations2: BTreeMap<OperationId<'src>, OperationData2<'src>>,
 }
 
 /// We need to collect namespace data during the first pass, to be used later.
 #[derive(Default)]
 pub(crate) struct NamespaceData<'src> {
     /// Whether only partial namespaces were encountered
-    pub(crate) members: Vec<&'src OperationNamespaceMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
-    pub(crate) operations2: BTreeMap<OperationId<'src>, OperationData2<'src>>,
 }
 
 #[derive(Default)]
@@ -90,13 +82,6 @@ pub(crate) enum OperationId<'src> {
 
 #[derive(Default)]
 pub(crate) struct OperationData<'src> {
-    pub(crate) overloaded: bool,
-    /// Map from argument names to whether they are the same for multiple overloads
-    pub(crate) argument_names_same: BTreeMap<Vec<&'src str>, bool>,
-}
-
-#[derive(Default)]
-pub(crate) struct OperationData2<'src> {
     pub(crate) signatures: Vec<Signature<'src>>,
     pub(crate) is_static: bool,
 }
@@ -234,9 +219,9 @@ fn first_pass_operation<'src>(
     ret: &weedle::types::ReturnType<'src>,
     attrs: &'src Option<ExtendedAttributeList<'src>>,
     is_static: bool,
-) -> bool {
+) {
     if util::is_chrome_only(attrs) {
-        return false
+        return
     }
 
     let mut names = Vec::with_capacity(arguments.len());
@@ -246,27 +231,27 @@ fn first_pass_operation<'src>(
             Argument::Variadic(variadic) => names.push(variadic.identifier.0),
         }
     }
-    let (operations, operations2) = match first_pass_operation_type{
+    let operations = match first_pass_operation_type{
         FirstPassOperationType::Interface => {
             let x = record
                 .interfaces
                 .get_mut(self_name)
                 .expect(&format!("not found {} interface", self_name));
-            (&mut x.operations, &mut x.operations2)
+            &mut x.operations
         },
         FirstPassOperationType::Mixin => {
             let x = record
                 .mixins
                 .get_mut(self_name)
                 .expect(&format!("not found {} mixin", self_name));
-            (&mut x.operations, &mut x.operations2)
+            &mut x.operations
         },
         FirstPassOperationType::Namespace => {
             let x = record
                 .namespaces
                 .get_mut(self_name)
                 .expect(&format!("not found {} namespace", self_name));
-            (&mut x.operations, &mut x.operations2)
+            &mut x.operations
         },
     };
     let mut args = Vec::with_capacity(arguments.len());
@@ -277,7 +262,7 @@ fn first_pass_operation<'src>(
                 warn!("Unsupported variadic argument {} in {}",
                       v.identifier.0,
                       self_name);
-                return false
+                return
             }
         };
         args.push(Arg {
@@ -287,23 +272,14 @@ fn first_pass_operation<'src>(
         });
     }
     for id in ids {
-        operations
-            .entry(*id)
-            .and_modify(|operation_data| operation_data.overloaded = true)
-            .or_default()
-            .argument_names_same
-            .entry(names.clone())
-            .and_modify(|same_argument_names| *same_argument_names = true)
-            .or_insert(false);
-        let op2 = operations2.entry(*id).or_default();
-        op2.is_static = is_static;
-        op2.signatures.push(Signature {
+        let op = operations.entry(*id).or_default();
+        op.is_static = is_static;
+        op.signatures.push(Signature {
             args: args.clone(),
             ret: ret.clone(),
             attrs,
         });
     }
-    true
 }
 
 impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
@@ -360,7 +336,7 @@ fn process_interface_attribute<'src>(
         ExtendedAttribute::ArgList(list)
             if list.identifier.0 == "Constructor" =>
         {
-            if first_pass_operation(
+            first_pass_operation(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
@@ -369,16 +345,10 @@ fn process_interface_attribute<'src>(
                 &return_ty,
                 &None,
                 false,
-            ) {
-                record.interfaces
-                    .get_mut(self_name)
-                    .unwrap()
-                    .constructors
-                    .push((self_name, &list.args.body.list));
-            }
+            );
         }
         ExtendedAttribute::NoArgs(other) if (other.0).0 == "Constructor" => {
-            if first_pass_operation(
+            first_pass_operation(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
@@ -387,18 +357,12 @@ fn process_interface_attribute<'src>(
                 &return_ty,
                 &None,
                 false,
-            ) {
-                record.interfaces
-                    .get_mut(self_name)
-                    .unwrap()
-                    .constructors
-                    .push((self_name, &[]));
-            }
+            );
         }
         ExtendedAttribute::NamedArgList(list)
             if list.lhs_identifier.0 == "NamedConstructor" =>
         {
-            if first_pass_operation(
+            first_pass_operation(
                 record,
                 FirstPassOperationType::Interface,
                 self_name,
@@ -407,13 +371,7 @@ fn process_interface_attribute<'src>(
                 &return_ty,
                 &None,
                 false,
-            ) {
-                record.interfaces
-                    .get_mut(self_name)
-                    .unwrap()
-                    .constructors
-                    .push((list.rhs_identifier.0, &list.args.body.list));
-            }
+            );
         }
         ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Global" => {
             record.interfaces.get_mut(self_name).unwrap().global = true;
@@ -511,7 +469,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
                 Special::LegacyCaller(_) => continue,
             });
         }
-        if first_pass_operation(
+        first_pass_operation(
             record,
             FirstPassOperationType::Interface,
             self_name,
@@ -520,13 +478,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             &self.return_type,
             &self.attributes,
             is_static,
-        ) {
-            record.interfaces
-                .get_mut(self_name)
-                .unwrap()
-                .methods
-                .push(self);
-        }
+        );
         Ok(())
     }
 }
@@ -623,7 +575,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'s
             return Ok(())
         }
 
-        if first_pass_operation(
+        first_pass_operation(
             record,
             FirstPassOperationType::Mixin,
             self_name,
@@ -632,13 +584,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'s
             &self.return_type,
             &self.attributes,
             false,
-        ) {
-            record.mixins
-                .get_mut(self_name)
-                .unwrap()
-                .methods
-                .push(self);
-        }
+        );
         Ok(())
     }
 }
@@ -722,7 +668,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::NamespaceMember<'sr
 
 impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceMember<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
-        if first_pass_operation(
+        first_pass_operation(
             record,
             FirstPassOperationType::Namespace,
             self_name,
@@ -731,9 +677,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceM
             &self.return_type,
             &self.attributes,
             true,
-        ) {
-            record.namespaces.get_mut(self_name).unwrap().members.push(self);
-        }
+        );
         Ok(())
     }
 }
