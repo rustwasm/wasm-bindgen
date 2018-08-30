@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "serve": "webpack-serve ./webpack.config.js"
+    "serve": "webpack-dev-server"
   },
   "devDependencies": {
     "webpack": "^4.16.5",
