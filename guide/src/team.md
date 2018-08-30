@@ -23,8 +23,8 @@ img {
 | [![](https://github.com/alexcrichton.png?size=117)][alexcrichton] | [![](https://github.com/fitzgen.png?size=117)][fitzgen] | [![](https://github.com/spastorino.png?size=117)][spastorino] | [![](https://github.com/ohanar.png?size=117)][ohanar] | [![](https://github.com/jonathan-s.png?size=117)][jonathan-s] |
 |:---:|:---:|:---:|:---:|
 | [`alexcrichton`][alexcrichton] | [`fitzgen`][fitzgen] | [`spastorino`][spastorino] | [`ohanar`][ohanar] | [`jonathan-s`][jonathan-s] |
-| [![](https://github.com/sendilkumarn.png?size=117)][sendilkumarn] | [![](https://github.com/belfz.png?size=117)][belfz] | | | |
-| [`sendilkumarn`][sendilkumarn] | [`belfz`][belfz] | | | |
+| [![](https://github.com/sendilkumarn.png?size=117)][sendilkumarn] | [![](https://github.com/belfz.png?size=117)][belfz] | [![](https://github.com/afdw.png?size=117)][afdw] | | |
+| [`sendilkumarn`][sendilkumarn] | [`belfz`][belfz] | [`afdw`][afdw] | | |
 
 [alexcrichton]: https://github.com/alexcrichton
 [fitzgen]: https://github.com/fitzgen
@@ -33,3 +33,4 @@ img {
 [jonathan-s]: https://github.com/jonathan-s
 [sendilkumarn]: https://github.com/sendilkumarn
 [belfz]: https://github.com/belfz
+[afdw]: https://github.com/afdw
