@@ -47,7 +47,8 @@ use weedle::argument::Argument;
 use weedle::attribute::{ExtendedAttributeList};
 use weedle::dictionary::DictionaryMember;
 
-use first_pass::{FirstPass, FirstPassRecord, OperationId};
+use first_pass::{FirstPass, FirstPassRecord, OperationId, InterfaceData};
+use first_pass::OperationData2;
 use util::{public, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, mdn_doc};
 use idl_type::{IdlType, ToIdlType};
 
@@ -309,7 +310,7 @@ impl<'src> FirstPassRecord<'src> {
         module: &mut backend::ast::Module,
         self_name: &'src str,
         id: &OperationId<'src>,
-        data: &first_pass::OperationData2<'src>,
+        data: &OperationData2<'src>,
     ) {
         let name = match id {
             OperationId::Operation(Some(name)) => name,
@@ -379,7 +380,7 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         program: &mut backend::ast::Program,
         name: &'src str,
-        data: &first_pass::InterfaceData<'src>,
+        data: &InterfaceData<'src>,
     ) {
         let doc_comment = Some(format!(
             "The `{}` object\n\n{}",
@@ -406,17 +407,11 @@ impl<'src> FirstPassRecord<'src> {
         for (ctor_name, args) in data.constructors.iter() {
             self.append_constructor(program, name, ctor_name, args);
         }
-        for member in data.methods.iter() {
-            self.member_operation(
-                program,
-                name,
-                &member.attributes,
-                member.modifier,
-                &member.specials,
-                &member.return_type,
-                &member.args.body.list,
-                &member.identifier,
-            )
+        for (id, op_data) in data.operations2.iter() {
+            if let OperationId::Constructor = id {
+                continue // TODO
+            }
+            self.member_operation2(program, name, data, id, op_data);
         }
         for member in data.consts.iter() {
             self.append_const(program, name, member);
@@ -433,23 +428,14 @@ impl<'src> FirstPassRecord<'src> {
             );
         }
 
-        for data in self.all_mixins(name) {
-            for member in &data.methods {
-                self.member_operation(
-                    program,
-                    name,
-                    &member.attributes,
-                    None,
-                    &[],
-                    &member.return_type,
-                    &member.args.body.list,
-                    &member.identifier,
-                );
+        for mixin_data in self.all_mixins(name) {
+            for (id, op_data) in mixin_data.operations2.iter() {
+                self.member_operation2(program, name, data, id, op_data);
             }
-            for member in &data.consts {
+            for member in &mixin_data.consts {
                 self.append_const(program, name, member);
             }
-            for member in &data.attributes {
+            for member in &mixin_data.attributes {
                 self.member_attribute(
                     program,
                     name,
@@ -577,69 +563,40 @@ impl<'src> FirstPassRecord<'src> {
         }
     }
 
-    fn member_operation(
+    fn member_operation2(
         &self,
         program: &mut backend::ast::Program,
-        self_name: &'src str,
-        attrs: &'src Option<ExtendedAttributeList>,
-        modifier: Option<weedle::interface::StringifierOrStatic>,
-        specials: &[weedle::interface::Special],
-        return_type: &'src weedle::types::ReturnType<'src>,
-        args: &'src [Argument],
-        identifier: &Option<weedle::common::Identifier<'src>>,
+        self_name: &str,
+        data: &InterfaceData<'src>,
+        id: &OperationId<'src>,
+        op_data: &OperationData2<'src>,
     ) {
-        use weedle::interface::StringifierOrStatic::*;
-        use weedle::interface::Special;
-
-        let is_static = match modifier {
-            Some(Stringifier(_)) => unimplemented!(), // filtered out earlier
-            Some(Static(_)) => true,
-            None => false,
+        let operation_kind = match id {
+            OperationId::Constructor => panic!("constructors are unsupported"),
+            OperationId::Operation(_) => backend::ast::OperationKind::Regular,
+            OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
+            OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
+            OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
         };
-
-        let mut operation_ids = vec![
-            OperationId::Operation(identifier.map(|s| s.0)),
-        ];
-        if specials.len() == 1 {
-            let id = match specials[0] {
-                Special::Getter(weedle::term::Getter) => OperationId::IndexingGetter,
-                Special::Setter(weedle::term::Setter) => OperationId::IndexingSetter,
-                Special::Deleter(weedle::term::Deleter) => OperationId::IndexingDeleter,
-                Special::LegacyCaller(weedle::term::LegacyCaller) => {
-                    warn!("Unsupported legacy caller: {:?}", (self_name, identifier));
-                    return
-                },
-            };
-            operation_ids.push(id);
-        }
-
-        let global = self
-            .interfaces
-            .get(self_name)
-            .map(|interface_data| interface_data.global)
-            .unwrap_or(false);
-
-        for id in operation_ids {
-            let methods = self
-                .create_basic_method(
-                    args,
-                    id,
-                    return_type,
-                    self_name,
-                    is_static,
-                    match id {
-                        OperationId::IndexingGetter |
-                        OperationId::IndexingSetter |
-                        OperationId::IndexingDeleter => true,
-                        _ => false,
-                    },
-                    util::throws(attrs),
-                    global,
-                );
-
-            for method in methods {
-                program.imports.push(wrap_import_function(method));
+        let operation = backend::ast::Operation {
+            is_static: op_data.is_static,
+            kind: operation_kind,
+        };
+        let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
+        let kind = if data.global {
+            backend::ast::ImportFunctionKind::ScopedMethod {
+                ty,
+                operation,
             }
+        } else {
+            backend::ast::ImportFunctionKind::Method {
+                class: self_name.to_string(),
+                ty,
+                kind: backend::ast::MethodKind::Operation(operation),
+            }
+        };
+        for method in self.create_imports(kind, id, op_data) {
+            program.imports.push(wrap_import_function(method));
         }
     }
 }

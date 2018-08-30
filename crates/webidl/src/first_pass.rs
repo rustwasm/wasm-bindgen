@@ -97,6 +97,7 @@ pub(crate) struct OperationData<'src> {
 #[derive(Default)]
 pub(crate) struct OperationData2<'src> {
     pub(crate) signatures: Vec<Signature<'src>>,
+    pub(crate) is_static: bool,
 }
 
 #[derive(Clone)]
@@ -231,6 +232,7 @@ fn first_pass_operation<'src>(
     arguments: &'src [Argument<'src>],
     ret: &weedle::types::ReturnType<'src>,
     attrs: &'src Option<ExtendedAttributeList<'src>>,
+    is_static: bool,
 ) -> bool {
     if util::is_chrome_only(attrs) {
         return false
@@ -292,14 +294,13 @@ fn first_pass_operation<'src>(
             .entry(names.clone())
             .and_modify(|same_argument_names| *same_argument_names = true)
             .or_insert(false);
-        operations2.entry(*id)
-            .or_default()
-            .signatures
-            .push(Signature {
-                args: args.clone(),
-                ret: ret.clone(),
-                attrs,
-            });
+        let op2 = operations2.entry(*id).or_default();
+        op2.is_static = is_static;
+        op2.signatures.push(Signature {
+            args: args.clone(),
+            ret: ret.clone(),
+            attrs,
+        });
     }
     true
 }
@@ -366,6 +367,7 @@ fn process_interface_attribute<'src>(
                 &list.args.body.list,
                 &return_ty,
                 &None,
+                false,
             ) {
                 record.interfaces
                     .get_mut(self_name)
@@ -383,6 +385,7 @@ fn process_interface_attribute<'src>(
                 &[],
                 &return_ty,
                 &None,
+                false,
             ) {
                 record.interfaces
                     .get_mut(self_name)
@@ -402,6 +405,7 @@ fn process_interface_attribute<'src>(
                 &list.args.body.list,
                 &return_ty,
                 &None,
+                false,
             ) {
                 record.interfaces
                     .get_mut(self_name)
@@ -488,10 +492,14 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             warn!("Unsupported webidl operation: {:?}", self);
             return Ok(())
         }
-        if let Some(StringifierOrStatic::Stringifier(_)) = self.modifier {
-            warn!("Unsupported webidl stringifier: {:?}", self);
-            return Ok(())
-        }
+        let is_static = match self.modifier {
+            Some(StringifierOrStatic::Stringifier(_)) => {
+                warn!("Unsupported webidl stringifier: {:?}", self);
+                return Ok(())
+            }
+            Some(StringifierOrStatic::Static(_)) => true,
+            None => false,
+        };
 
         let mut ids = vec![OperationId::Operation(self.identifier.map(|s| s.0))];
         for special in self.specials.iter() {
@@ -510,6 +518,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
+            is_static,
         ) {
             record.interfaces
                 .get_mut(self_name)
@@ -621,6 +630,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'s
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
+            false,
         ) {
             record.mixins
                 .get_mut(self_name)
@@ -719,6 +729,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceM
             &self.args.body.list,
             &self.return_type,
             &self.attributes,
+            true,
         ) {
             record.namespaces.get_mut(self_name).unwrap().members.push(self);
         }

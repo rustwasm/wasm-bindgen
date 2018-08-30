@@ -407,97 +407,6 @@ impl<'src> FirstPassRecord<'src> {
         Some(converted_arguments)
     }
 
-    /// Create a wasm-bindgen method, if possible.
-    pub fn create_basic_method(
-        &self,
-        arguments: &[Argument<'src>],
-        operation_id: first_pass::OperationId,
-        return_type: &weedle::types::ReturnType<'src>,
-        self_name: &str,
-        is_static: bool,
-        structural: bool,
-        catch: bool,
-        global: bool,
-    ) -> Vec<backend::ast::ImportFunction> {
-        let (overloaded, same_argument_names) = self.get_operation_overloading(
-            arguments,
-            &operation_id,
-            self_name,
-            false,
-        );
-
-        let name = match &operation_id {
-            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            first_pass::OperationId::Operation(name) => match name {
-                None => {
-                    warn!("Unsupported unnamed operation: {:?}", operation_id);
-                    return Vec::new();
-                }
-                Some(name) => name,
-            },
-            first_pass::OperationId::IndexingGetter => "get",
-            first_pass::OperationId::IndexingSetter => "set",
-            first_pass::OperationId::IndexingDeleter => "delete",
-        };
-        let operation_kind = match &operation_id {
-            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
-            first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
-            first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
-            first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
-        };
-        let operation = backend::ast::Operation { is_static, kind: operation_kind };
-        let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
-        let kind = if global {
-            backend::ast::ImportFunctionKind::ScopedMethod {
-                ty,
-                operation,
-            }
-        } else {
-            backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty,
-                kind: backend::ast::MethodKind::Operation(operation),
-            }
-        };
-
-        let ret = match return_type.to_idl_type(self) {
-            None => return Vec::new(),
-            Some(idl_type) => idl_type,
-        };
-
-        let doc_comment = match &operation_id {
-            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            first_pass::OperationId::Operation(_) => Some(
-                format!(
-                    "The `{}()` method\n\n{}",
-                    name,
-                    mdn_doc(self_name, Some(&name))
-                )
-            ),
-            first_pass::OperationId::IndexingGetter => Some("The indexing getter\n\n".to_string()),
-            first_pass::OperationId::IndexingSetter => Some("The indexing setter\n\n".to_string()),
-            first_pass::OperationId::IndexingDeleter => Some("The indexing deleter\n\n".to_string()),
-        };
-
-        let arguments = match self.convert_arguments(arguments) {
-            None => return Vec::new(),
-            Some(arguments) => arguments
-        };
-
-        self.create_function(
-            &name,
-            overloaded,
-            same_argument_names,
-            &arguments,
-            ret,
-            kind,
-            structural,
-            catch,
-            doc_comment,
-        )
-    }
-
     /// Whether operation is overloaded and
     /// whether there overloads with same argument names for given argument types
     pub fn get_operation_overloading(
@@ -659,7 +568,8 @@ impl<'src> FirstPassRecord<'src> {
         let mut actual_signatures = Vec::new();
         'outer:
         for signature in data.signatures.iter() {
-            let start = actual_signatures.len();
+            let real_start = actual_signatures.len();
+            let mut start = real_start;
 
             // Start off with an empty signature, this'll handle zero-argument
             // cases and otherwise the loop below will continue to add on to this.
@@ -669,17 +579,31 @@ impl<'src> FirstPassRecord<'src> {
             });
 
             for (i, arg) in signature.args.iter().enumerate() {
-                let cur = actual_signatures.len();
                 // If any argument in this signature can't be converted we have
                 // to throw out the entire signature, so revert back to the
                 // beginning and then keep going.
                 let idl_type = match arg.ty.to_idl_type(self) {
                     Some(t) => t,
                     None => {
-                        actual_signatures.truncate(start);
+                        actual_signatures.truncate(real_start);
                         continue 'outer
                     }
                 };
+
+                if arg.optional {
+                    assert!(signature.args[i..].iter().all(|a| a.optional));
+                    let end = actual_signatures.len();
+                    for j in start..end {
+                        let sig = actual_signatures[j].clone();
+                        actual_signatures.push(sig);
+                    }
+                    start = end;
+                }
+
+                assert!(start < actual_signatures.len());
+                for sig in actual_signatures[start..].iter() {
+                    assert_eq!(sig.args.len(), i);
+                }
 
                 // The first arugment gets pushed directly in-place, but all
                 // future expanded arguments will cause new signatures to be
@@ -687,33 +611,35 @@ impl<'src> FirstPassRecord<'src> {
                 // already existing signature as the "none" case and the flatten
                 // below will produce the "some" case, so we've already
                 // processed the first argument effectively.
-                let mut first = !arg.optional;
+                let mut first = true;
+                let cur = actual_signatures.len();
                 for idl_type in idl_type.flatten() {
                     for j in start..cur {
                         if first {
                             actual_signatures[j].args.push(idl_type.clone());
-                            first = false;
                         } else {
                             let mut sig = actual_signatures[j].clone();
+                            assert_eq!(sig.args.len(), i + 1);
                             sig.args.truncate(i);
                             sig.args.push(idl_type.clone());
                             actual_signatures.push(sig);
                         }
                     }
+                    first = false;
                 }
             }
         }
 
-        let name = match id {
-            OperationId::Constructor => "new",
-            OperationId::Operation(Some(s)) => s,
+        let (name, force_structural) = match id {
+            OperationId::Constructor => ("new", false),
+            OperationId::Operation(Some(s)) => (*s, false),
             OperationId::Operation(None) => {
                 warn!("unsupported unnamed operation");
                 return Vec::new()
             }
-            OperationId::IndexingGetter => "get",
-            OperationId::IndexingSetter => "set",
-            OperationId::IndexingDeleter => "delete",
+            OperationId::IndexingGetter => ("get", true),
+            OperationId::IndexingSetter => ("set", true),
+            OperationId::IndexingDeleter => ("delete", true),
         };
 
         let mut ret = Vec::new();
@@ -731,6 +657,7 @@ impl<'src> FirstPassRecord<'src> {
                 // name for this argument or a different type for this argument.
                 let mut any_same_name = false;
                 let mut any_different_type = false;
+                let mut any_different = false;
                 let arg_name = signature.orig.args[i].name;
                 for other in actual_signatures.iter() {
                     if other.orig.args.get(i).map(|s| s.name) == Some(arg_name) {
@@ -738,15 +665,20 @@ impl<'src> FirstPassRecord<'src> {
                             any_same_name = true;
                         }
                     }
-                    if other.args.get(i) != Some(arg) {
-                        any_different_type = true;
+                    if let Some(other) = other.args.get(i) {
+                        if other != arg {
+                            any_different_type = true;
+                            any_different = true;
+                        }
+                    } else {
+                        any_different = true;
                     }
                 }
 
                 // If all signatures have the exact same type for this argument,
                 // then there's nothing to disambiguate so we don't modify the
                 // name.
-                if !any_different_type {
+                if !any_different {
                     continue
                 }
                 if first {
@@ -760,7 +692,7 @@ impl<'src> FirstPassRecord<'src> {
                 // then that's a bit more human readable so we include it in the
                 // method name. Otherwise the type name should disambiguate
                 // correctly.
-                if !any_same_name {
+                if !any_same_name || !any_different_type {
                     rust_name.push_str(&arg_name.to_snake_case());
                 } else {
                     arg.push_type_name(&mut rust_name);
@@ -774,7 +706,7 @@ impl<'src> FirstPassRecord<'src> {
                     .map(|(ty, orig_arg)| (orig_arg.name, ty)),
                 &ret_ty,
                 kind.clone(),
-                is_structural(&signature.orig.attrs),
+                force_structural || is_structural(&signature.orig.attrs),
                 throws(&signature.orig.attrs),
                 None,
             ));
