@@ -440,12 +440,12 @@ impl<'src> FirstPassRecord<'src> {
                 // in-place, but all other flattened types will cause new
                 // signatures to be created.
                 let cur = actual_signatures.len();
-                for (i, idl_type) in idl_type.flatten().enumerate() {
-                    for j in start..cur {
-                        if i == 0 {
-                            actual_signatures[j].args.push(idl_type.clone());
+                for (j, idl_type) in idl_type.flatten().into_iter().enumerate() {
+                    for k in start..cur {
+                        if j == 0 {
+                            actual_signatures[k].args.push(idl_type.clone());
                         } else {
-                            let mut sig = actual_signatures[j].clone();
+                            let mut sig = actual_signatures[k].clone();
                             assert_eq!(sig.args.len(), i + 1);
                             sig.args.truncate(i);
                             sig.args.push(idl_type.clone());
