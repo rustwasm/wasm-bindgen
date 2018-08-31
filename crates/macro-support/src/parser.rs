@@ -418,9 +418,6 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
         )?.0;
         let catch = opts.catch();
         let variadic = opts.variadic();
-        if variadic {
-            assert_last_param_is_slice(&self.decl)?;
-        }
         let js_ret = if catch {
             // TODO: this assumes a whole bunch:
             //
