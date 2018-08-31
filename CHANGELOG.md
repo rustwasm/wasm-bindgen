@@ -32,6 +32,36 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.19 (and 0.2.18)
+
+Released 2018-08-27.
+
+### Added
+
+* Added bindings to `js-sys` for some `WebAssembly` types.
+* Added bindings to `js-sys` for some `Intl` types.
+* Added bindings to `js-sys` for some `String` methods.
+* Added an example of using the WebAudio APIs.
+* Added an example of using the `fetch` API.
+* Added more `extends` annotations for types in `js-sys`.
+* Experimental support for `WeakRef` was added to automatically deallocate Rust
+  objects when gc'd.
+* Added support for executing `wasm-bindgen` over modules that import their
+  memory.
+* Added a global `memory()` function in the `wasm-bindgen` crate for accessing
+  the JS object that represent wasm's own memory.
+
+### Removed
+
+* Removed `AsMut` implementations for imported objects.
+
+### Fixed
+
+* Fixed the `constructor` and `catch` attributes combined on imported types.
+* Fixed importing the same-named static in two modules.
+
+--------------------------------------------------------------------------------
+
 ## 0.2.17
 
 Released 2018-08-16.

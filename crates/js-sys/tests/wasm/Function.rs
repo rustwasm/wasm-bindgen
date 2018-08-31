@@ -66,4 +66,5 @@ fn to_string() {
 fn function_inheritance() {
     assert!(MAX.is_instance_of::<Function>());
     assert!(MAX.is_instance_of::<Object>());
+    let _: &Object = MAX.as_ref();
 }

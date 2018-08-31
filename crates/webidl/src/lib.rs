@@ -591,6 +591,11 @@ fn member_attribute<'src>(
 
     let is_structural = util::is_structural(attrs);
     let throws = util::throws(attrs);
+    let global = first_pass
+        .interfaces
+        .get(self_name)
+        .map(|interface_data| interface_data.global)
+        .unwrap_or(false);
 
     for import_function in first_pass.create_getter(
         identifier,
@@ -599,6 +604,7 @@ fn member_attribute<'src>(
         is_static,
         is_structural,
         throws,
+        global,
     ) {
         program.imports.push(wrap_import_function(import_function));
     }
@@ -611,6 +617,7 @@ fn member_attribute<'src>(
             is_static,
             is_structural,
             throws,
+            global,
         ) {
             program.imports.push(wrap_import_function(import_function));
         }
@@ -712,6 +719,12 @@ fn member_operation<'src>(
         operation_ids.push(id);
     }
 
+    let global = first_pass
+        .interfaces
+        .get(self_name)
+        .map(|interface_data| interface_data.global)
+        .unwrap_or(false);
+
     for id in operation_ids {
         let methods = first_pass
             .create_basic_method(
@@ -724,15 +737,10 @@ fn member_operation<'src>(
                     OperationId::IndexingGetter |
                     OperationId::IndexingSetter |
                     OperationId::IndexingDeleter => true,
-                    _ => {
-                        first_pass
-                            .interfaces
-                            .get(self_name)
-                            .map(|interface_data| interface_data.global)
-                            .unwrap_or(false)
-                    }
+                    _ => false,
                 },
                 util::throws(attrs),
+                global,
             );
 
         for method in methods {

@@ -1,7 +1,7 @@
 error: can only #[wasm_bindgen] public functions
- --> $DIR/non-public-function.rs:8:1
+ --> $DIR/non-public-function.rs:6:1
   |
-8 | fn foo() {}
+6 | fn foo() {}
   | ^^^^^^^^^^^
 
 error: aborting due to previous error

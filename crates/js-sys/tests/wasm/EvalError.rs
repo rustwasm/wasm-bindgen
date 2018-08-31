@@ -52,4 +52,6 @@ fn evalerror_inheritance() {
     assert!(error.is_instance_of::<EvalError>());
     assert!(error.is_instance_of::<Error>());
     assert!(error.is_instance_of::<Object>());
+    let _: &Error = error.as_ref();
+    let _: &Object = error.as_ref();
 }

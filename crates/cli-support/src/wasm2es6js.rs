@@ -150,19 +150,6 @@ impl Output {
         if let Some(i) = self.module.import_section() {
             let mut set = HashSet::new();
             for entry in i.entries() {
-                match *entry.external() {
-                    External::Function(_) => {}
-                    External::Table(_) => {
-                        bail!("wasm imports a table which isn't supported yet");
-                    }
-                    External::Memory(_) => {
-                        bail!("wasm imports memory which isn't supported yet");
-                    }
-                    External::Global(_) => {
-                        bail!("wasm imports globals which aren't supported yet");
-                    }
-                }
-
                 if !set.insert(entry.module()) {
                     continue;
                 }

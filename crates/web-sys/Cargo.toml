@@ -15,11 +15,10 @@ wasm-bindgen-webidl = { path = "../webidl", version = "=0.2.17" }
 sourcefile = "0.1"
 
 [dependencies]
-wasm-bindgen = { path = "../..", version = "0.2.17" }
-js-sys = { path = '../js-sys', version = '0.2.1' }
+wasm-bindgen = { path = "../..", version = "0.2.19" }
+js-sys = { path = '../js-sys', version = '0.2.4' }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 futures = "0.1"
-js-sys = { path = '../js-sys', version = '0.2.1' }
-wasm-bindgen-test = { path = '../test', version = '0.2.17' }
-wasm-bindgen-futures = { path = '../futures', version = '0.2.17' }
+wasm-bindgen-test = { path = '../test', version = '0.2.19' }
+wasm-bindgen-futures = { path = '../futures', version = '0.2.19' }

@@ -100,6 +100,10 @@ pub enum ImportFunctionKind {
         ty: syn::Type,
         kind: MethodKind,
     },
+    ScopedMethod {
+        ty: syn::Type,
+        operation: Operation,
+    },
     Normal,
 }
 
@@ -408,6 +412,29 @@ impl ImportFunction {
     }
 
     fn shared(&self) -> shared::ImportFunction {
+        let shared_operation = |operation: &Operation| {
+            let is_static = operation.is_static;
+            let kind = match &operation.kind {
+                OperationKind::Regular => shared::OperationKind::Regular,
+                OperationKind::Getter(g) => {
+                    let g = g.as_ref().map(|g| g.to_string());
+                    shared::OperationKind::Getter(
+                        g.unwrap_or_else(|| self.infer_getter_property()),
+                        )
+                }
+                OperationKind::Setter(s) => {
+                    let s = s.as_ref().map(|s| s.to_string());
+                    shared::OperationKind::Setter(
+                        s.unwrap_or_else(|| self.infer_setter_property()),
+                        )
+                }
+                OperationKind::IndexingGetter => shared::OperationKind::IndexingGetter,
+                OperationKind::IndexingSetter => shared::OperationKind::IndexingSetter,
+                OperationKind::IndexingDeleter => shared::OperationKind::IndexingDeleter,
+            };
+            shared::Operation { is_static, kind }
+        };
+
         let method = match self.kind {
             ImportFunctionKind::Method {
                 ref class,
@@ -416,32 +443,19 @@ impl ImportFunction {
             } => {
                 let kind = match kind {
                     MethodKind::Constructor => shared::MethodKind::Constructor,
-                    MethodKind::Operation(Operation { is_static, kind }) => {
-                        let is_static = *is_static;
-                        let kind = match kind {
-                            OperationKind::Regular => shared::OperationKind::Regular,
-                            OperationKind::Getter(g) => {
-                                let g = g.as_ref().map(|g| g.to_string());
-                                shared::OperationKind::Getter(
-                                    g.unwrap_or_else(|| self.infer_getter_property()),
-                                )
-                            }
-                            OperationKind::Setter(s) => {
-                                let s = s.as_ref().map(|s| s.to_string());
-                                shared::OperationKind::Setter(
-                                    s.unwrap_or_else(|| self.infer_setter_property()),
-                                )
-                            }
-                            OperationKind::IndexingGetter => shared::OperationKind::IndexingGetter,
-                            OperationKind::IndexingSetter => shared::OperationKind::IndexingSetter,
-                            OperationKind::IndexingDeleter => shared::OperationKind::IndexingDeleter,
-                        };
-                        shared::MethodKind::Operation(shared::Operation { is_static, kind })
+                    MethodKind::Operation(op) => {
+                        shared::MethodKind::Operation(shared_operation(op))
                     }
                 };
                 Some(shared::MethodData {
-                    class: class.clone(),
+                    class: Some(class.clone()),
                     kind,
+                })
+            }
+            ImportFunctionKind::ScopedMethod { ref operation, .. } => {
+                Some(shared::MethodData {
+                    class: None,
+                    kind: shared::MethodKind::Operation(shared_operation(operation)),
                 })
             }
             ImportFunctionKind::Normal => None,

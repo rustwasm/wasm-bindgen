@@ -1,3 +1,5 @@
+#![cfg(feature = "nightly")]
+
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 use std::cell::Cell;

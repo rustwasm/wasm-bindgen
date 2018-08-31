@@ -1,5 +1,7 @@
+use wasm_bindgen::{self, JsCast};
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use js_sys::{WebAssembly, Uint8Array};
 
 #[wasm_bindgen(module = "tests/wasm/api.js")]
 extern {
@@ -134,4 +136,18 @@ pub fn eq_test1(a: &JsValue) -> bool {
 fn null_keeps_working() {
     assert_null(JsValue::null());
     assert_null(JsValue::null());
+}
+
+#[wasm_bindgen_test]
+fn memory_accessor_appears_to_work() {
+    let data = 3u32;
+    let ptr = &data as *const u32 as u32;
+
+    let my_mem = wasm_bindgen::memory();
+    let mem = my_mem.dyn_into::<WebAssembly::Memory>().unwrap();
+    let buf = mem.buffer();
+    let slice = Uint8Array::new(&buf);
+    let mut v = Vec::new();
+    slice.subarray(ptr, ptr + 4).for_each(&mut |val, _, _| v.push(val));
+    assert_eq!(v, [3, 0, 0, 0]);
 }

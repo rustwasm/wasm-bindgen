@@ -4,7 +4,6 @@
 //! This doesn't actually run any tests, it's mostly a compile-time verification
 //! that things work.
 
-#![feature(use_extern_macros)]
 #![no_std]
 #![allow(dead_code)]
 

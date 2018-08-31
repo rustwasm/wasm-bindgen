@@ -3,7 +3,9 @@
 #[macro_use]
 extern crate serde_derive;
 
-pub const SCHEMA_VERSION: &str = "8";
+// The schema is so unstable right now we just force it to change whenever this
+// package's version changes, which happens on all publishes.
+pub const SCHEMA_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[derive(Deserialize)]
 pub struct ProgramOnlySchema {
@@ -49,7 +51,7 @@ pub struct ImportFunction {
 
 #[derive(Deserialize, Serialize)]
 pub struct MethodData {
-    pub class: String,
+    pub class: Option<String>,
     pub kind: MethodKind,
 }
 

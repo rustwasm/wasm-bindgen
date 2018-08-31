@@ -500,7 +500,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
 
             ast::ImportFunctionKind::Method { class, ty, kind }
         } else if opts.constructor() {
-            let class = match wasm.ret {
+            let class = match js_ret {
                 Some(ref ty) => ty,
                 _ => bail_span!(self, "constructor returns must be bare types"),
             };
@@ -528,6 +528,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
 
         let shim = {
             let ns = match kind {
+                ast::ImportFunctionKind::ScopedMethod { .. } |
                 ast::ImportFunctionKind::Normal => (0, "n"),
                 ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };
@@ -576,10 +577,12 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
     }
 }
 
-impl ConvertToAst<BindgenAttrs> for syn::ForeignItemStatic {
+impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemStatic {
     type Target = ast::ImportKind;
 
-    fn convert(self, opts: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+    fn convert(self, (opts, module): (BindgenAttrs, &'a Option<String>))
+        -> Result<Self::Target, Diagnostic>
+    {
         if self.mutability.is_some() {
             bail_span!(self.mutability, "cannot import mutable globals yet")
         }
@@ -588,11 +591,8 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemStatic {
         let js_name = opts.js_name().unwrap_or(&default_name);
         let shim = format!(
             "__wbg_static_accessor_{}_{}",
-            js_name
-                .chars()
-                .filter(|c| c.is_ascii_alphanumeric())
-                .collect::<String>(),
-            self.ident
+            self.ident,
+            ShortHash((&js_name, module, &self.ident)),
         );
         Ok(ast::ImportKind::Static(ast::ImportStatic {
             ty: *self.ty,
@@ -991,7 +991,7 @@ impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
         let kind = match self {
             syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
             syn::ForeignItem::Type(t) => t.convert(item_opts)?,
-            syn::ForeignItem::Static(s) => s.convert(item_opts)?,
+            syn::ForeignItem::Static(s) => s.convert((item_opts, &module))?,
             _ => panic!("only foreign functions/types allowed for now"),
         };
 

@@ -5,9 +5,9 @@
 //! this crate and this crate also provides JS bindings through the `JsValue`
 //! interface.
 
-#![feature(use_extern_macros, unsize)]
 #![no_std]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
+#![cfg_attr(feature = "nightly", feature(unsize))]
 
 #[cfg(feature = "serde-serialize")]
 extern crate serde;
@@ -370,11 +370,6 @@ impl JsCast for JsValue {
     fn instanceof(_val: &JsValue) -> bool { true }
     fn unchecked_from_js(val: JsValue) -> Self { val }
     fn unchecked_from_js_ref(val: &JsValue) -> &Self { val }
-    fn unchecked_from_js_mut(val: &mut JsValue) -> &mut Self { val }
-}
-
-impl AsMut<JsValue> for JsValue {
-    fn as_mut(&mut self) -> &mut JsValue { self }
 }
 
 impl AsRef<JsValue> for JsValue {
@@ -442,6 +437,8 @@ externs! {
     fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_json_serialize(idx: u32, ptr: *mut *mut u8) -> usize;
     fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
+
+    fn __wbindgen_memory() -> u32;
 }
 
 impl Clone for JsValue {
@@ -564,6 +561,13 @@ impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
 pub fn throw(s: &str) -> ! {
     unsafe {
         __wbindgen_throw(s.as_ptr(), s.len());
+    }
+}
+
+/// Returns a handle to this wasm instance's `WebAssembly.Memory`
+pub fn memory() -> JsValue {
+    unsafe {
+        JsValue { idx: __wbindgen_memory() }
     }
 }
 

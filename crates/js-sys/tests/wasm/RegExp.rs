@@ -7,6 +7,7 @@ fn regexp_inheritance() {
     let re = RegExp::new(".", "");
     assert!(re.is_instance_of::<RegExp>());
     assert!(re.is_instance_of::<Object>());
+    let _: &Object = re.as_ref();
 }
 
 #[wasm_bindgen_test]

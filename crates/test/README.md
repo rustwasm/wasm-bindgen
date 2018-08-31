@@ -38,8 +38,6 @@ ton of documentation just yet, but a taste of how it works is:
 
   ```rust
   // in tests/wasm.rs
-  #![feature(use_extern_macros)]
-
   extern crate wasm_bindgen_test;
 
   use wasm_bindgen_test::*;

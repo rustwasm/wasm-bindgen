@@ -1,9 +1,10 @@
 #![cfg(target_arch = "wasm32")]
-#![feature(use_extern_macros)]
 #![allow(non_snake_case)]
 
+extern crate futures;
 extern crate js_sys;
 extern crate wasm_bindgen;
+extern crate wasm_bindgen_futures;
 extern crate wasm_bindgen_test;
 
 pub mod global_fns;
@@ -25,6 +26,7 @@ pub mod MapIterator;
 pub mod Math;
 pub mod Number;
 pub mod Object;
+pub mod Promise;
 pub mod Proxy;
 pub mod RangeError;
 pub mod ReferenceError;

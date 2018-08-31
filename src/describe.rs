@@ -41,6 +41,7 @@ tys! {
     OPTIONAL
 }
 
+#[inline(always)] // see `interpret.rs` in the the cli-support crate
 pub fn inform(a: u32) {
     unsafe { super::__wbindgen_describe(a) }
 }
@@ -130,8 +131,15 @@ if_std! {
     }
 }
 
-fn _cnt<T: WasmDescribe>() -> u32 {
-    1
+macro_rules! cnt {
+    () => (0);
+    (A) => (1);
+    (A B) => (2);
+    (A B C) => (3);
+    (A B C D) => (4);
+    (A B C D E) => (5);
+    (A B C D E F) => (6);
+    (A B C D E F G) => (7);
 }
 
 macro_rules! doit {
@@ -142,7 +150,7 @@ macro_rules! doit {
         {
             fn describe() {
                 inform(FUNCTION);
-                inform(0 $(+ _cnt::<$var>())*);
+                inform(cnt!($($var)*));
                 $(<$var as WasmDescribe>::describe();)*
                 inform(1);
                 <R as WasmDescribe>::describe();
@@ -154,7 +162,7 @@ macro_rules! doit {
         {
             fn describe() {
                 inform(FUNCTION);
-                inform(0 $(+ _cnt::<$var>())*);
+                inform(cnt!($($var)*));
                 $(<$var as WasmDescribe>::describe();)*
                 inform(0);
             }
@@ -166,7 +174,7 @@ macro_rules! doit {
         {
             fn describe() {
                 inform(FUNCTION);
-                inform(0 $(+ _cnt::<$var>())*);
+                inform(cnt!($($var)*));
                 $(<$var as WasmDescribe>::describe();)*
                 inform(1);
                 <R as WasmDescribe>::describe();
@@ -178,7 +186,7 @@ macro_rules! doit {
         {
             fn describe() {
                 inform(FUNCTION);
-                inform(0 $(+ _cnt::<$var>())*);
+                inform(cnt!($($var)*));
                 $(<$var as WasmDescribe>::describe();)*
                 inform(0);
             }

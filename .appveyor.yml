@@ -19,7 +19,7 @@ build: false
 
 test_script:
   - rustup target add wasm32-unknown-unknown
-  - npm ci
+  - npm install
   - cargo test
   - cargo build --release -p wasm-bindgen-cli
   - where chromedriver
@@ -31,6 +31,7 @@ test_script:
 branches:
   only:
     - master
+    - /^\d/
 
 before_deploy:
   - ps: |

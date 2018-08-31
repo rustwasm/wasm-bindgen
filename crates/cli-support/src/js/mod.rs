@@ -10,6 +10,7 @@ use wasm_gc;
 
 use super::Bindgen;
 use descriptor::{Descriptor, VectorKind};
+use wasm_interpreter::Interpreter;
 
 mod js2rust;
 use self::js2rust::Js2Rust;
@@ -23,6 +24,8 @@ pub struct Context<'a> {
     pub typescript: String,
     pub exposed_globals: HashSet<&'static str>,
     pub required_internal_exports: HashSet<&'static str>,
+    pub imported_functions: HashSet<String>,
+    pub imported_statics: HashSet<String>,
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
 
@@ -41,7 +44,8 @@ pub struct Context<'a> {
 
     pub exported_classes: HashMap<String, ExportedClass>,
     pub function_table_needed: bool,
-    pub run_descriptor: &'a Fn(&str) -> Option<Vec<u32>>,
+    pub interpreter: &'a mut Interpreter,
+    pub memory_init: Option<ResizableLimits>,
 }
 
 #[derive(Default)]
@@ -376,6 +380,19 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_memory", &|me| {
+            me.expose_add_heap_object();
+            let mem = me.memory();
+            Ok(format!(
+                "
+                function() {{
+                    return addHeapObject({});
+                }}
+                ", mem
+            ))
+        })?;
+
+        self.create_memory_export();
         self.unexport_unused_internal_exports();
         self.gc()?;
 
@@ -490,6 +507,39 @@ impl<'a> Context<'a> {
         let mut dst = format!("class {} {{\n", name);
         let mut ts_dst = format!("export {}", dst);
 
+        let (mkweakref, freeref) = if self.config.weak_refs {
+            // When weak refs are enabled we use them to automatically free the
+            // contents of an exported rust class when it's gc'd. Note that a
+            // manual `free` function still exists for deterministic
+            // destruction.
+            //
+            // This is implemented by using a `WeakRefGroup` to run finalizers
+            // for all `WeakRef` objects that it creates. Upon construction of
+            // a new wasm object we use `makeRef` with "holdings" of a thunk to
+            // free the wasm instance.  Once the `this` (the instance we're
+            // creating) is gc'd then the finalizer will run with the
+            // `WeakRef`, and we'll pull out the `holdings`, our pointer.
+            //
+            // Note, though, that if manual finalization happens we want to
+            // cancel the `WeakRef`-generated finalization, so we retain the
+            // `WeakRef` in a global map. This global map is then used to
+            // `drop()` the `WeakRef` (cancel finalization) whenever it is
+            // finalized.
+            self.expose_cleanup_groups();
+            let mk = format!("
+                const cleanup_ptr = this.ptr;
+                const ref = CLEANUPS.makeRef(this, () => free{}(cleanup_ptr));
+                CLEANUPS_MAP.set(this.ptr, ref);
+            ", name);
+            let free = "
+                CLEANUPS_MAP.get(ptr).drop();
+                CLEANUPS_MAP.delete(ptr);
+            ";
+            (mk, free)
+        } else {
+            (String::new(), "")
+        };
+
         if self.config.debug || class.constructor.is_some() {
             self.expose_constructor_token();
 
@@ -516,9 +566,11 @@ impl<'a> Context<'a> {
                     // This invocation of new will call this constructor with a ConstructorToken
                     let instance = {class}.{constructor}(...args);
                     this.ptr = instance.ptr;
+                    {mkweakref}
                     ",
                     class = name,
-                    constructor = constructor
+                    constructor = constructor,
+                    mkweakref = mkweakref,
                 ));
             } else {
                 dst.push_str(
@@ -537,9 +589,11 @@ impl<'a> Context<'a> {
 
                 constructor(ptr) {{
                     this.ptr = ptr;
+                    {}
                 }}
                 ",
-                name
+                name,
+                mkweakref,
             ));
         }
 
@@ -599,15 +653,26 @@ impl<'a> Context<'a> {
             }
         }
 
+        self.global(&format!(
+            "
+            function free{}(ptr) {{
+                {}
+                wasm.{}(ptr);
+            }}
+            ",
+            name,
+            freeref,
+            shared::free_function(&name)
+        ));
         dst.push_str(&format!(
             "
             free() {{
                 const ptr = this.ptr;
                 this.ptr = 0;
-                wasm.{}(ptr);
+                free{}(ptr);
             }}
             ",
-            shared::free_function(&name)
+            name,
         ));
         ts_dst.push_str("free(): void;\n");
         dst.push_str(&class.contents);
@@ -634,6 +699,20 @@ impl<'a> Context<'a> {
             exports.entries_mut().push(entry);
             break;
         }
+    }
+
+    fn create_memory_export(&mut self) {
+        let limits = match self.memory_init.clone() {
+            Some(limits) => limits,
+            None => return,
+        };
+        let mut initializer = String::from("new WebAssembly.Memory({");
+        initializer.push_str(&format!("initial:{}", limits.initial()));
+        if let Some(max) = limits.maximum() {
+            initializer.push_str(&format!(",maximum:{}", max));
+        }
+        initializer.push_str("})");
+        self.export("memory", &initializer, None);
     }
 
     fn rewrite_imports(&mut self, module_name: &str) {
@@ -664,6 +743,15 @@ impl<'a> Context<'a> {
 
             if import.module() != "env" {
                 continue;
+            }
+
+            // If memory is imported we'll have exported it from the shim module
+            // so let's import it from there.
+            if import.field() == "memory" {
+                import.module_mut().truncate(0);
+                import.module_mut().push_str("./");
+                import.module_mut().push_str(module_name);
+                continue
             }
 
             let renamed_import = format!("__wbindgen_{}", import.field());
@@ -1091,13 +1179,30 @@ impl<'a> Context<'a> {
         }
         self.expose_text_decoder();
         self.expose_uint8_memory();
-        self.global(
-            "
-            function getStringFromWasm(ptr, len) {
-                return cachedDecoder.decode(getUint8Memory().subarray(ptr, ptr + len));
-            }
-            ",
-        );
+
+        // Typically we try to give a raw view of memory out to `TextDecoder` to
+        // avoid copying too much data. If, however, a `SharedArrayBuffer` is
+        // being used it looks like that is rejected by `TextDecoder` or
+        // otherwise doesn't work with it. When we detect a shared situation we
+        // use `slice` which creates a new array instead of `subarray` which
+        // creates just a view. That way in shared mode we copy more data but in
+        // non-shared mode there's no need to copy the data except for the
+        // string itself.
+        self.memory(); // set self.memory_init
+        let is_shared = self.module
+            .memory_section()
+            .map(|s| s.entries()[0].limits().shared())
+            .unwrap_or(match &self.memory_init {
+                Some(limits) => limits.shared(),
+                None => false,
+            });
+        let method = if is_shared { "slice" } else { "subarray" };
+
+        self.global(&format!("
+            function getStringFromWasm(ptr, len) {{
+                return cachedDecoder.decode(getUint8Memory().{}(ptr, ptr + len));
+            }}
+        ", method));
     }
 
     fn expose_get_array_js_value_from_wasm(&mut self) {
@@ -1284,18 +1389,20 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert(name) {
             return;
         }
+        let mem = self.memory();
         self.global(&format!(
             "
             let cache{name} = null;
             function {name}() {{
-                if (cache{name} === null || cache{name}.buffer !== wasm.memory.buffer) {{
-                    cache{name} = new {js}(wasm.memory.buffer);
+                if (cache{name} === null || cache{name}.buffer !== {mem}.buffer) {{
+                    cache{name} = new {js}({mem}.buffer);
                 }}
                 return cache{name};
             }}
             ",
             name = name,
             js = js,
+            mem = mem,
         ));
     }
 
@@ -1594,6 +1701,18 @@ impl<'a> Context<'a> {
         ");
     }
 
+    fn expose_cleanup_groups(&mut self) {
+        if !self.exposed_globals.insert("cleanup_groups") {
+            return
+        }
+        self.global(
+            "
+                const CLEANUPS = new WeakRefGroup(x => x.holdings());
+                const CLEANUPS_MAP = new Map();
+            "
+        );
+    }
+
     fn gc(&mut self) -> Result<(), Error> {
         let module = mem::replace(self.module, Module::default());
         let module = module.parse_names().unwrap_or_else(|p| p.1);
@@ -1608,9 +1727,9 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn describe(&self, name: &str) -> Option<Descriptor> {
+    fn describe(&mut self, name: &str) -> Option<Descriptor> {
         let name = format!("__wbindgen_describe_{}", name);
-        (self.run_descriptor)(&name).map(|d| Descriptor::decode(&d))
+        Some(Descriptor::decode(self.interpreter.interpret(&name, self.module)?))
     }
 
     fn global(&mut self, s: &str) {
@@ -1627,6 +1746,29 @@ impl<'a> Context<'a> {
 
     fn use_node_require(&self) -> bool {
         self.config.nodejs && !self.config.nodejs_experimental_modules
+    }
+
+    fn memory(&mut self) -> &'static str {
+        if self.module.memory_section().is_some() {
+            return "wasm.memory";
+        }
+
+        let (entry, mem) = self.module.import_section()
+            .expect("must import memory")
+            .entries()
+            .iter()
+            .filter_map(|i| {
+                match i.external() {
+                    External::Memory(m) => Some((i, m)),
+                    _ => None,
+                }
+            })
+            .next()
+            .expect("must import memory");
+        assert_eq!(entry.module(), "env");
+        assert_eq!(entry.field(), "memory");
+        self.memory_init = Some(mem.limits().clone());
+        "memory"
     }
 }
 
@@ -1772,6 +1914,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
         info: &shared::Import,
         import: &shared::ImportStatic,
     ) -> Result<(), Error> {
+        // The same static can be imported in multiple locations, so only
+        // generate bindings once for it.
+        if !self.cx.imported_statics.insert(import.shim.clone()) {
+            return Ok(())
+        }
+
         // TODO: should support more types to import here
         let obj = self.import_name(info, &import.name)?;
         self.cx.expose_add_heap_object();
@@ -1799,132 +1947,39 @@ impl<'a, 'b> SubContext<'a, 'b> {
             return Ok(());
         }
 
+        // It's possible for the same function to be imported in two locations,
+        // but we only want to generate one.
+        if !self.cx.imported_functions.insert(import.shim.clone()) {
+            return Ok(());
+        }
+
         let descriptor = match self.cx.describe(&import.shim) {
             None => return Ok(()),
             Some(d) => d,
         };
 
-        let target = match &import.method {
-            Some(shared::MethodData { class, kind }) => {
-                let class = self.import_name(info, class)?;
-                match kind {
-                    shared::MethodKind::Constructor => format!("new {}", class),
-                    shared::MethodKind::Operation(shared::Operation { is_static, kind }) => {
-                        let target = if import.structural {
-                            let location = if *is_static { &class } else { "this" };
+        let target = self.generated_import_target(info, import, &descriptor)?;
 
-                            match kind {
-                                shared::OperationKind::Regular => {
-                                    let nargs = descriptor.unwrap_function().arguments.len();
-                                    let mut s = format!("function(");
-                                    for i in 0..nargs - 1 {
-                                        if i > 0 {
-                                            drop(write!(s, ", "));
-                                        }
-                                        drop(write!(s, "x{}", i));
-                                    }
-                                    s.push_str(") { \nreturn this.");
-                                    s.push_str(&import.function.name);
-                                    s.push_str("(");
-                                    for i in 0..nargs - 1 {
-                                        if i > 0 {
-                                            drop(write!(s, ", "));
-                                        }
-                                        drop(write!(s, "x{}", i));
-                                    }
-                                    s.push_str(");\n}");
-                                    s
-                                }
-                                shared::OperationKind::Getter(g) => format!(
-                                    "function() {{
-                                        return {}.{};
-                                    }}",
-                                    location, g
-                                ),
-                                shared::OperationKind::Setter(s) => format!(
-                                    "function(y) {{
-                                        {}.{} = y;
-                                    }}",
-                                    location, s
-                                ),
-                                shared::OperationKind::IndexingGetter => format!(
-                                    "function(y) {{
-                                        return {}[y];
-                                    }}",
-                                    location
-                                ),
-                                shared::OperationKind::IndexingSetter => format!(
-                                    "function(y, z) {{
-                                        {}[y] = z;
-                                    }}",
-                                    location
-                                ),
-                                shared::OperationKind::IndexingDeleter => format!(
-                                    "function(y) {{
-                                        delete {}[y];
-                                    }}",
-                                    location
-                                ),
-                            }
-                        } else {
-                            let (location, binding) = if *is_static {
-                                ("", format!(".bind({})", class))
-                            } else {
-                                (".prototype", "".into())
-                            };
+        let js = Rust2Js::new(self.cx)
+            .catch(import.catch)
+            .variadic(import.variadic)
+            .process(descriptor.unwrap_function())?
+            .finish(&target);
+        self.cx.export(&import.shim, &js, None);
+        Ok(())
+    }
 
-                            match kind {
-                                shared::OperationKind::Regular => {
-                                    format!("{}{}.{}{}", class, location, import.function.name, binding)
-                                }
-                                shared::OperationKind::Getter(g) => {
-                                    self.cx.expose_get_inherited_descriptor();
-                                    format!(
-                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').get{}",
-                                        class, location, g, binding,
-                                    )
-                                }
-                                shared::OperationKind::Setter(s) => {
-                                    self.cx.expose_get_inherited_descriptor();
-                                    format!(
-                                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').set{}",
-                                        class, location, s, binding,
-                                    )
-                                }
-                                shared::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
-                                shared::OperationKind::IndexingSetter => panic!("indexing setter should be structural"),
-                                shared::OperationKind::IndexingDeleter => panic!("indexing deleter should be structural"),
-                            }
-                        };
-
-                        let fallback = if import.structural {
-                            "".to_string()
-                        } else {
-                            format!(
-                                " || function() {{
-                                    throw new Error(`wasm-bindgen: {} does not exist`);
-                                }}",
-                                target
-                            )
-                        };
-
-                        self.cx.global(&format!(
-                            "
-                            const {}_target = {} {} ;
-                            ",
-                            import.shim, target, fallback
-                        ));
-                        format!(
-                            "{}_target{}",
-                            import.shim,
-                            if *is_static { "" } else { ".call" }
-                        )
-                    }
-                }
-            }
+    fn generated_import_target(
+        &mut self,
+        info: &shared::Import,
+        import: &shared::ImportFunction,
+        descriptor: &Descriptor,
+    ) -> Result<String, Error> {
+        let method_data = match &import.method {
+            Some(data) => data,
             None => {
                 let name = self.import_name(info, &import.function.name)?;
-                if name.contains(".") {
+                return Ok(if name.contains(".") {
                     self.cx.global(&format!(
                         "
                         const {}_target = {};
@@ -1934,17 +1989,146 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     format!("{}_target", import.shim)
                 } else {
                     name
-                }
+                })
             }
         };
 
-        let js = Rust2Js::new(self.cx)
-            .catch(import.catch)
-            .variadic(import.variadic)
-            .process(descriptor.unwrap_function())?
-            .finish(&target);
-        self.cx.export(&import.shim, &js, None);
-        Ok(())
+        let class = match &method_data.class {
+            Some(class) => self.import_name(info, class)?,
+            None => {
+                let op = match &method_data.kind {
+                    shared::MethodKind::Operation(op) => op,
+                    shared::MethodKind::Constructor => {
+                        bail!("\"no class\" methods cannot be constructors")
+                    }
+                };
+                match &op.kind {
+                    shared::OperationKind::Regular => {
+                        return Ok(import.function.name.to_string())
+                    }
+                    shared::OperationKind::Getter(g) => {
+                        return Ok(format!("(() => {})", g));
+                    }
+                    shared::OperationKind::Setter(g) => {
+                        return Ok(format!("(v => {} = v)", g));
+                    }
+                    _ => bail!("\"no class\" methods must be regular/getter/setter"),
+                }
+
+            }
+        };
+        let op = match &method_data.kind {
+            shared::MethodKind::Constructor => return Ok(format!("new {}", class)),
+            shared::MethodKind::Operation(op) => op,
+        };
+        let target = if import.structural {
+            let location = if op.is_static { &class } else { "this" };
+
+            match &op.kind {
+                shared::OperationKind::Regular => {
+                    let nargs = descriptor.unwrap_function().arguments.len();
+                    let mut s = format!("function(");
+                    for i in 0..nargs - 1 {
+                        if i > 0 {
+                            drop(write!(s, ", "));
+                        }
+                        drop(write!(s, "x{}", i));
+                    }
+                    s.push_str(") { \nreturn this.");
+                    s.push_str(&import.function.name);
+                    s.push_str("(");
+                    for i in 0..nargs - 1 {
+                        if i > 0 {
+                            drop(write!(s, ", "));
+                        }
+                        drop(write!(s, "x{}", i));
+                    }
+                    s.push_str(");\n}");
+                    s
+                }
+                shared::OperationKind::Getter(g) => format!(
+                    "function() {{
+                        return {}.{};
+                    }}",
+                    location, g
+                ),
+                shared::OperationKind::Setter(s) => format!(
+                    "function(y) {{
+                        {}.{} = y;
+                    }}",
+                    location, s
+                ),
+                shared::OperationKind::IndexingGetter => format!(
+                    "function(y) {{
+                        return {}[y];
+                    }}",
+                    location
+                ),
+                shared::OperationKind::IndexingSetter => format!(
+                    "function(y, z) {{
+                        {}[y] = z;
+                    }}",
+                    location
+                ),
+                shared::OperationKind::IndexingDeleter => format!(
+                    "function(y) {{
+                        delete {}[y];
+                    }}",
+                    location
+                ),
+            }
+        } else {
+            let (location, binding) = if op.is_static {
+                ("", format!(".bind({})", class))
+            } else {
+                (".prototype", "".into())
+            };
+
+            match &op.kind {
+                shared::OperationKind::Regular => {
+                    format!("{}{}.{}{}", class, location, import.function.name, binding)
+                }
+                shared::OperationKind::Getter(g) => {
+                    self.cx.expose_get_inherited_descriptor();
+                    format!(
+                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').get{}",
+                        class, location, g, binding,
+                    )
+                }
+                shared::OperationKind::Setter(s) => {
+                    self.cx.expose_get_inherited_descriptor();
+                    format!(
+                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').set{}",
+                        class, location, s, binding,
+                    )
+                }
+                shared::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
+                shared::OperationKind::IndexingSetter => panic!("indexing setter should be structural"),
+                shared::OperationKind::IndexingDeleter => panic!("indexing deleter should be structural"),
+            }
+        };
+
+        let fallback = if import.structural {
+            "".to_string()
+        } else {
+            format!(
+                " || function() {{
+                    throw new Error(`wasm-bindgen: {} does not exist`);
+                }}",
+                target
+            )
+        };
+
+        self.cx.global(&format!(
+            "const {}_target = {}{};",
+            import.shim, target, fallback
+        ));
+        Ok(format!(
+            "{}_target{}",
+            import.shim,
+            if op.is_static { "" } else { ".call" }
+        ))
+>>>>>>> master
     }
 
     fn generate_import_type(

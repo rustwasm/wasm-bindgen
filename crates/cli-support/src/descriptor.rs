@@ -94,7 +94,7 @@ pub enum VectorKind {
 impl Descriptor {
     pub fn decode(mut data: &[u32]) -> Descriptor {
         let descriptor = Descriptor::_decode(&mut data);
-        assert!(data.is_empty());
+        assert!(data.is_empty(), "remaining data {:?}", data);
         descriptor
     }
 

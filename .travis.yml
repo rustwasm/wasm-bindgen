@@ -4,6 +4,7 @@ sudo: false
 INSTALL_NODE_VIA_NVM: &INSTALL_NODE_VIA_NVM
   |
     rustup target add wasm32-unknown-unknown
+    rustup component add llvm-tools-preview
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
     source ~/.nvm/nvm.sh
     nvm install v10.5
@@ -56,6 +57,7 @@ matrix:
         - cargo test
         # Run the main body of the test suite
         - cargo test --target wasm32-unknown-unknown
+        - cargo test --target wasm32-unknown-unknown --features nightly
         # Rerun the test suite but disable `--debug` in generated JS
         - WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown
         # Make sure our serde tests work
@@ -74,7 +76,7 @@ matrix:
       env: JOB=examples-build
       install:
         - *INSTALL_NODE_VIA_NVM
-        - npm ci --verbose
+        - npm install
       script:
         - |
           for dir in `ls examples | grep -v README | grep -v asm.js | grep -v no_modules`; do
@@ -116,18 +118,6 @@ matrix:
       addons:
         firefox: latest
         chrome: stable
-      if: branch = master
-
-    # Tests pass on nightly using yarn
-    - rust: nightly
-      env: JOB=test-yarn-smoke
-      install:
-        - *INSTALL_NODE_VIA_NVM
-        - travis_retry curl -OLSf https://yarnpkg.com/install.sh
-        - travis_retry bash install.sh -- --version 1.7.0
-        - export PATH=$HOME/.yarn/bin:$PATH
-        - yarn install --freeze-lockfile
-      script: cargo test api::works
       if: branch = master
 
     # WebIDL tests pass on nightly

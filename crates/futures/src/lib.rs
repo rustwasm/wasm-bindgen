@@ -33,8 +33,6 @@
 //! `Promise`.
 //!
 //! ```rust,no_run
-//! #![feature(use_extern_macros)]
-//!
 //! extern crate futures;
 //! extern crate js_sys;
 //! extern crate wasm_bindgen;
@@ -104,7 +102,6 @@
 //! ```
 
 #![deny(missing_docs)]
-#![feature(use_extern_macros)]
 
 extern crate futures;
 extern crate wasm_bindgen;
