@@ -1,5 +1,5 @@
 use std::iter::FromIterator;
-use std::collections::BTreeMap;
+use std::ptr;
 
 use backend;
 use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
@@ -8,11 +8,10 @@ use proc_macro2::Ident;
 use syn;
 use weedle;
 use weedle::attribute::{ExtendedAttributeList, ExtendedAttribute};
-use weedle::argument::Argument;
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
-use first_pass::{self, FirstPassRecord};
-use idl_type::{IdlType, ToIdlType, flatten};
+use first_pass::{FirstPassRecord, OperationId, OperationData, Signature};
+use idl_type::{IdlType, ToIdlType};
 
 /// Take a type and create an immutable shared reference to that type.
 pub(crate) fn shared_ref(ty: syn::Type) -> syn::Type {
@@ -196,456 +195,168 @@ pub enum TypePosition {
 }
 
 impl<'src> FirstPassRecord<'src> {
-    /// Create a wasm-bindgen function, if possible.
-    pub fn create_function(
+    pub fn create_one_function<'a>(
         &self,
-        name: &str,
-        overloaded: bool,
-        same_argument_names: bool,
-        arguments: &[(&str, IdlType<'src>, bool)],
-        ret: IdlType<'src>,
+        js_name: &str,
+        rust_name: &str,
+        idl_arguments: impl Iterator<Item = (&'a str, &'a IdlType<'src>)>,
+        ret: &IdlType<'src>,
         kind: backend::ast::ImportFunctionKind,
         structural: bool,
         catch: bool,
         doc_comment: Option<String>,
-    ) -> Vec<backend::ast::ImportFunction> {
-        let rust_name = if overloaded && !arguments.is_empty() {
-            let mut argument_type_names = String::new();
-            for argument in arguments {
-                if argument_type_names.len() > 0 {
-                    argument_type_names.push_str("_and_");
+    ) -> Option<backend::ast::ImportFunction> where 'src: 'a {
+        // Convert all of the arguments from their IDL type to a `syn` type,
+        // ready to pass to the backend.
+        //
+        // Note that for non-static methods we add a `&self` type placeholder,
+        // but this type isn't actually used so it's just here for show mostly.
+        let mut arguments = if let &backend::ast::ImportFunctionKind::Method {
+            ref ty,
+            kind: backend::ast::MethodKind::Operation(
+                backend::ast::Operation {
+                    is_static: false, ..
                 }
-                if same_argument_names {
-                    argument.1.push_type_name(&mut argument_type_names);
-                } else {
-                    argument_type_names.push_str(&argument.0.to_snake_case());
-                }
-            }
-            if name == "new" {
-                "with_".to_owned() + &argument_type_names
-            } else {
-                name.to_snake_case() + "_with_" + &argument_type_names
-            }
+            ),
+            ..
+        } = &kind {
+            let mut res = Vec::with_capacity(idl_arguments.size_hint().0 + 1);
+            res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())));
+            res
         } else {
-            name.to_snake_case()
+            Vec::with_capacity(idl_arguments.size_hint().0)
         };
+        for (argument_name, idl_type) in idl_arguments {
+            let syn_type = match idl_type.to_syn_type(TypePosition::Argument) {
+                Some(t) => t,
+                None => {
+                    warn!(
+                        "Unsupported argument type: {:?} on {:?}",
+                        idl_type,
+                        rust_name
+                    );
+                    return None
+                }
+            };
+            let argument_name = rust_ident(&argument_name.to_snake_case());
+            arguments.push(simple_fn_arg(argument_name, syn_type));
+        }
 
+        // Convert the return type to a `syn` type, handling the `catch`
+        // attribute here to use a `Result` in Rust.
         let ret = match ret {
             IdlType::Void => None,
             ret @ _ => {
                 match ret.to_syn_type(TypePosition::Return) {
+                    Some(ret) => Some(ret),
                     None => {
                         warn!(
                             "Unsupported return type: {:?} on {:?}",
                             ret,
                             rust_name
                         );
-                        return Vec::new();
-                    },
-                    Some(ret) => Some(ret),
+                        return None
+                    }
                 }
             },
         };
-
         let js_ret = ret.clone();
-
         let ret = if catch {
             Some(ret.map_or_else(|| result_ty(unit_ty()), result_ty))
         } else {
             ret
         };
 
-        let converted_arguments = arguments
-            .iter()
-            .cloned()
-            .map(|(_name, idl_type, optional)| (idl_type, optional))
-            .collect::<Vec<_>>();
-        let possibilities = flatten(&converted_arguments);
-        let mut arguments_count_multiple = BTreeMap::new();
-        for idl_types in &possibilities {
-            arguments_count_multiple
-                .entry(idl_types.len())
-                .and_modify(|variants_count| { *variants_count = true; })
-                .or_insert(false);
-        }
-        let mut import_functions = Vec::new();
-        'outer: for idl_types in &possibilities {
-            let rust_name = if possibilities.len() > 1 {
-                let mut rust_name = rust_name.clone();
-                let mut first = true;
-                let iter = arguments.iter().zip(idl_types).enumerate();
-                for (i, ((argument_name, _, _), idl_type)) in iter {
-                    if possibilities.iter().all(|p| p.get(i) == Some(idl_type)) {
-                        continue
-                    }
-                    if first {
-                        rust_name.push_str("_with_");
-                        first = false;
-                    } else {
-                        rust_name.push_str("_and_");
-                    }
-                    if arguments_count_multiple[&idl_types.len()] {
-                        idl_type.push_type_name(&mut rust_name);
-                    } else {
-                        rust_name.push_str(&argument_name.to_snake_case());
-                    }
-                }
-                rust_name
-            } else {
-                rust_name.clone()
-            };
-            let rust_name = rust_ident(&rust_name);
-            let shim = {
+        Some(backend::ast::ImportFunction {
+            function: backend::ast::Function {
+                name: js_name.to_string(),
+                arguments,
+                ret: ret.clone(),
+                rust_attrs: vec![],
+                rust_vis: public(),
+            },
+            rust_name: rust_ident(rust_name),
+            js_ret: js_ret.clone(),
+            catch,
+            structural,
+            shim:{
                 let ns = match kind {
                     backend::ast::ImportFunctionKind::ScopedMethod { .. } |
                     backend::ast::ImportFunctionKind::Normal => "",
                     backend::ast::ImportFunctionKind::Method { ref class, .. } => class,
                 };
-
                 raw_ident(&format!("__widl_f_{}_{}", rust_name, ns))
-            };
-
-            let mut args_captured = if let &backend::ast::ImportFunctionKind::Method {
-                ref ty,
-                kind: backend::ast::MethodKind::Operation(
-                    backend::ast::Operation {
-                        is_static: false, ..
-                    }
-                ),
-                ..
-            } = &kind {
-                let mut res = Vec::with_capacity(idl_types.len() + 1);
-                res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())));
-                res
-            } else {
-                Vec::with_capacity(idl_types.len())
-            };
-            for ((argument_name, _, _), idl_type) in arguments.iter().zip(idl_types) {
-                let syn_type = if let Some(syn_type) = idl_type.to_syn_type(TypePosition::Argument) {
-                    syn_type
-                } else {
-                    warn!(
-                        "Unsupported argument type: {:?} on {:?}",
-                        idl_type,
-                        rust_name
-                    );
-                    continue 'outer;
-                };
-                let argument_name = rust_ident(&argument_name.to_snake_case());
-                args_captured.push(simple_fn_arg(argument_name, syn_type));
-            }
-
-            import_functions.push(backend::ast::ImportFunction {
-                function: backend::ast::Function {
-                    name: name.to_string(),
-                    arguments: args_captured,
-                    ret: ret.clone(),
-                    rust_attrs: vec![],
-                    rust_vis: public(),
-                },
-                rust_name,
-                js_ret: js_ret.clone(),
-                catch,
-                structural,
-                kind: kind.clone(),
-                shim,
-                doc_comment: doc_comment.clone(),
-            })
-        }
-        import_functions
-    }
-
-    /// Convert arguments to ones suitable crating function
-    pub(crate) fn convert_arguments(
-        &self,
-        arguments: &[weedle::argument::Argument<'src>],
-    ) -> Option<Vec<(&str, IdlType<'src>, bool)>> {
-        let mut converted_arguments = Vec::with_capacity(arguments.len());
-        for argument in arguments {
-            let name = match argument {
-                Argument::Single(single) => single.identifier.0,
-                Argument::Variadic(variadic) => variadic.identifier.0,
-            };
-            let ty = match argument {
-                Argument::Single(single) => &single.type_.type_,
-                Argument::Variadic(variadic) => &variadic.type_,
-            };
-            let idl_type = ty.to_idl_type(self)?;
-            let optional = match argument {
-                Argument::Single(single) => single.optional.is_some(),
-                Argument::Variadic(_variadic) => false,
-            };
-            converted_arguments.push((name, idl_type, optional));
-        }
-        Some(converted_arguments)
-    }
-
-    /// Create a wasm-bindgen method, if possible.
-    pub fn create_basic_method(
-        &self,
-        arguments: &[Argument],
-        operation_id: first_pass::OperationId,
-        return_type: &weedle::types::ReturnType,
-        self_name: &str,
-        is_static: bool,
-        structural: bool,
-        catch: bool,
-        global: bool,
-    ) -> Vec<backend::ast::ImportFunction> {
-        let (overloaded, same_argument_names) = self.get_operation_overloading(
-            arguments,
-            &operation_id,
-            self_name,
-            false,
-        );
-
-        let name = match &operation_id {
-            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            first_pass::OperationId::Operation(name) => match name {
-                None => {
-                    warn!("Unsupported unnamed operation: {:?}", operation_id);
-                    return Vec::new();
-                }
-                Some(name) => name,
             },
-            first_pass::OperationId::IndexingGetter => "get",
-            first_pass::OperationId::IndexingSetter => "set",
-            first_pass::OperationId::IndexingDeleter => "delete",
-        };
-        let operation_kind = match &operation_id {
-            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            first_pass::OperationId::Operation(_) => backend::ast::OperationKind::Regular,
-            first_pass::OperationId::IndexingGetter => backend::ast::OperationKind::IndexingGetter,
-            first_pass::OperationId::IndexingSetter => backend::ast::OperationKind::IndexingSetter,
-            first_pass::OperationId::IndexingDeleter => backend::ast::OperationKind::IndexingDeleter,
-        };
-        let operation = backend::ast::Operation { is_static, kind: operation_kind };
-        let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
-        let kind = if global {
-            backend::ast::ImportFunctionKind::ScopedMethod {
-                ty,
-                operation,
-            }
-        } else {
-            backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty,
-                kind: backend::ast::MethodKind::Operation(operation),
-            }
-        };
-
-        let ret = match return_type.to_idl_type(self) {
-            None => return Vec::new(),
-            Some(idl_type) => idl_type,
-        };
-
-        let doc_comment = match &operation_id {
-            first_pass::OperationId::Constructor => panic!("constructors are unsupported"),
-            first_pass::OperationId::Operation(_) => Some(
-                format!(
-                    "The `{}()` method\n\n{}",
-                    name,
-                    mdn_doc(self_name, Some(&name))
-                )
-            ),
-            first_pass::OperationId::IndexingGetter => Some("The indexing getter\n\n".to_string()),
-            first_pass::OperationId::IndexingSetter => Some("The indexing setter\n\n".to_string()),
-            first_pass::OperationId::IndexingDeleter => Some("The indexing deleter\n\n".to_string()),
-        };
-
-        let arguments = match self.convert_arguments(arguments) {
-            None => return Vec::new(),
-            Some(arguments) => arguments
-        };
-
-        self.create_function(
-            &name,
-            overloaded,
-            same_argument_names,
-            &arguments,
-            ret,
             kind,
-            structural,
-            catch,
             doc_comment,
-        )
-    }
-
-    /// Whether operation is overloaded and
-    /// whether there overloads with same argument names for given argument types
-    pub fn get_operation_overloading(
-        &self,
-        arguments: &[Argument],
-        operation_id: &first_pass::OperationId,
-        self_name: &str,
-        namespace: bool,
-    ) -> (bool, bool) {
-        fn get_operation_data<'src>(
-            record: &'src FirstPassRecord,
-            operation_id: &'src ::first_pass::OperationId,
-            self_name: &str,
-            mixin_name: &str,
-        ) -> Option<&'src ::first_pass::OperationData<'src>> {
-            if let Some(mixin_data) = record.mixins.get(mixin_name) {
-                if let Some(operation_data) = mixin_data.operations.get(operation_id) {
-                    return Some(operation_data);
-                }
-            }
-            if let Some(mixin_names) = record.includes.get(mixin_name) {
-                for mixin_name in mixin_names {
-                    if let Some(operation_data) = get_operation_data(record, operation_id, self_name, mixin_name) {
-                        return Some(operation_data);
-                    }
-                }
-            }
-            None
-        }
-
-        let operation_data = if !namespace {
-            self
-                .interfaces
-                .get(self_name)
-                .and_then(|interface_data| interface_data.operations.get(operation_id))
-                .unwrap_or_else(||
-                    get_operation_data(self, operation_id, self_name, self_name)
-                        .expect(&format!("not found operation {:?} in interface {}", operation_id, self_name))
-                )
-        } else {
-            self
-                .namespaces
-                .get(self_name)
-                .and_then(|interface_data| interface_data.operations.get(operation_id))
-                .expect(&format!("not found operation {:?} in namespace {}", operation_id, self_name))
-        };
-
-        let mut names = Vec::with_capacity(arguments.len());
-        for argument in arguments {
-            match argument {
-                Argument::Single(single) => names.push(single.identifier.0),
-                Argument::Variadic(variadic) => names.push(variadic.identifier.0),
-            }
-        }
-        (
-            operation_data.overloaded,
-            *operation_data
-                .argument_names_same
-                .get(&names)
-                .unwrap_or(&false)
-        )
-    }
-
-    /// Create a wasm-bindgen operation (free function with no `self` type), if possible.
-    pub fn create_namespace_operation(
-        &self,
-        arguments: &[weedle::argument::Argument],
-        operation_name: Option<&str>,
-        return_type: &weedle::types::ReturnType,
-        self_name: &str,
-        catch: bool,
-    ) -> Vec<backend::ast::ImportFunction> {
-        let (overloaded, same_argument_names) = self.get_operation_overloading(
-            arguments,
-            &first_pass::OperationId::Operation(operation_name),
-            self_name,
-            true,
-        );
-
-        let name = match operation_name {
-            Some(name) => name.to_string(),
-            None => {
-                warn!("Unsupported unnamed operation: on {:?}", self_name);
-                return Vec::new();
-            }
-        };
-
-        let ret = match return_type.to_idl_type(self) {
-            None => return Vec::new(),
-            Some(idl_type) => idl_type,
-        };
-
-        let doc_comment = Some(
-            format!(
-                "The `{}.{}()` function\n\n{}",
-                self_name,
-                name,
-                mdn_doc(self_name, Some(&name))
-            )
-        );
-
-        let arguments = match self.convert_arguments(arguments) {
-            None => return Vec::new(),
-            Some(arguments) => arguments
-        };
-
-        self.create_function(
-            &name,
-            overloaded,
-            same_argument_names,
-            &arguments,
-            ret,
-            backend::ast::ImportFunctionKind::Normal,
-            false,
-            catch,
-            doc_comment,
-        )
+        })
     }
 
     /// Create a wasm-bindgen getter method, if possible.
     pub fn create_getter(
         &self,
         name: &str,
-        ty: &weedle::types::Type,
+        ty: &weedle::types::Type<'src>,
         self_name: &str,
         is_static: bool,
         is_structural: bool,
         catch: bool,
         global: bool,
-    ) -> Vec<backend::ast::ImportFunction> {
-        let ret = match ty.to_idl_type(self) {
-            None => return Vec::new(),
-            Some(idl_type) => idl_type,
-        };
-        let operation = backend::ast::Operation {
-            is_static,
-            kind: backend::ast::OperationKind::Getter(Some(raw_ident(name))),
-        };
-        let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
-
-        let kind = if global {
-            backend::ast::ImportFunctionKind::ScopedMethod {
-                ty,
-                operation,
-            }
-        } else {
-            backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty,
-                kind: backend::ast::MethodKind::Operation(operation),
-            }
-        };
-        let doc_comment = Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))));
-
-        self.create_function(name, false, false, &[], ret, kind, is_structural, catch, doc_comment)
+    ) -> Option<backend::ast::ImportFunction> {
+        let kind = backend::ast::OperationKind::Getter(Some(raw_ident(name)));
+        let kind = self.import_function_kind(self_name, global, is_static, kind);
+        let ret = ty.to_idl_type(self)?;
+        self.create_one_function(
+            &name,
+            &name.to_snake_case(),
+            None.into_iter(),
+            &ret,
+            kind,
+            is_structural,
+            catch,
+            Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))))
+        )
     }
 
     /// Create a wasm-bindgen setter method, if possible.
     pub fn create_setter(
         &self,
         name: &str,
-        field_ty: weedle::types::Type,
+        field_ty: weedle::types::Type<'src>,
         self_name: &str,
         is_static: bool,
         is_structural: bool,
         catch: bool,
         global: bool,
-    ) -> Vec<backend::ast::ImportFunction> {
+    ) -> Option<backend::ast::ImportFunction> {
+        let kind = backend::ast::OperationKind::Setter(Some(raw_ident(name)));
+        let kind = self.import_function_kind(self_name, global, is_static, kind);
+        let field_ty = field_ty.to_idl_type(self)?;
+        self.create_one_function(
+            &name,
+            &format!("set_{}", name).to_snake_case(),
+            Some((name, &field_ty)).into_iter(),
+            &IdlType::Void,
+            kind,
+            is_structural,
+            catch,
+            Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name))))
+        )
+    }
+
+    pub fn import_function_kind(
+        &self,
+        self_name: &str,
+        global: bool,
+        is_static: bool,
+        operation_kind: backend::ast::OperationKind,
+    ) -> backend::ast::ImportFunctionKind {
         let operation = backend::ast::Operation {
             is_static,
-            kind: backend::ast::OperationKind::Setter(Some(raw_ident(name))),
+            kind: operation_kind,
         };
         let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
-
-        let kind = if global {
+        if global {
             backend::ast::ImportFunctionKind::ScopedMethod {
                 ty,
                 operation,
@@ -656,27 +367,197 @@ impl<'src> FirstPassRecord<'src> {
                 ty,
                 kind: backend::ast::MethodKind::Operation(operation),
             }
-        };
-        let doc_comment = Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name))));
+        }
+    }
 
-        self.create_function(
-            &format!("set_{}", name),
-            false,
-            false,
-            &[(
+    pub fn create_imports(
+        &self,
+        kind: backend::ast::ImportFunctionKind,
+        id: &OperationId<'src>,
+        data: &OperationData<'src>,
+    )
+        -> Vec<backend::ast::ImportFunction>
+    {
+        // First up, prune all signatures that reference unsupported arguments.
+        // We won't consider these until said arguments are implemented.
+        let mut signatures = Vec::new();
+        'outer:
+        for signature in data.signatures.iter() {
+            let mut idl_args = Vec::with_capacity(signature.args.len());
+            for arg in signature.args.iter() {
+                match arg.ty.to_idl_type(self) {
+                    Some(t) => idl_args.push((t, arg)),
+                    None => continue 'outer,
+                }
+            }
+            signatures.push((signature, idl_args));
+        }
+
+        // Next expand all the signatures in `data` into all signatures that
+        // we're going to generate. These signatures will be used to determine
+        // the names for all the various functions.
+        #[derive(Clone)]
+        struct ExpandedSig<'a> {
+            orig: &'a Signature<'a>,
+            args: Vec<IdlType<'a>>,
+        }
+
+        let mut actual_signatures = Vec::new();
+        for (signature, idl_args) in signatures.iter() {
+            let mut start = actual_signatures.len();
+
+            // Start off with an empty signature, this'll handle zero-argument
+            // cases and otherwise the loop below will continue to add on to this.
+            actual_signatures.push(ExpandedSig {
+                orig: signature,
+                args: Vec::with_capacity(signature.args.len()),
+            });
+
+            for (i, (idl_type, arg)) in idl_args.iter().enumerate() {
+                // If this is an optional argument, then all remaining arguments
+                // should also be optional (if any). This means that all the
+                // signatures we've built up so far are valid signatures because
+                // we're just going to omit all the future arguments. As a
+                // result we duplicate all the previous signatures we've made in
+                // the list. The duplicates will be modified in-place below.
+                if arg.optional {
+                    assert!(signature.args[i..].iter().all(|a| a.optional));
+                    let end = actual_signatures.len();
+                    for j in start..end {
+                        let sig = actual_signatures[j].clone();
+                        actual_signatures.push(sig);
+                    }
+                    start = end;
+                }
+
+                // small sanity check
+                assert!(start < actual_signatures.len());
+                for sig in actual_signatures[start..].iter() {
+                    assert_eq!(sig.args.len(), i);
+                }
+
+                // The first element of the flattened type gets pushed directly
+                // in-place, but all other flattened types will cause new
+                // signatures to be created.
+                let cur = actual_signatures.len();
+                for (j, idl_type) in idl_type.flatten().into_iter().enumerate() {
+                    for k in start..cur {
+                        if j == 0 {
+                            actual_signatures[k].args.push(idl_type.clone());
+                        } else {
+                            let mut sig = actual_signatures[k].clone();
+                            assert_eq!(sig.args.len(), i + 1);
+                            sig.args.truncate(i);
+                            sig.args.push(idl_type.clone());
+                            actual_signatures.push(sig);
+                        }
+                    }
+                }
+            }
+        }
+
+        let (name, force_structural, force_throws) = match id {
+            // Constructors aren't annotated with `[Throws]` extended attributes
+            // (how could they be, since they themselves are extended
+            // attributes?) so we must conservatively assume that they can
+            // always throw.
+            //
+            // From https://heycam.github.io/webidl/#Constructor (emphasis
+            // mine):
+            //
+            // > The prose definition of a constructor must either return an IDL
+            // > value of a type corresponding to the interface the
+            // > `[Constructor]` extended attribute appears on, **or throw an
+            // > exception**.
+            OperationId::Constructor(_) => ("new", false, true),
+            OperationId::Operation(Some(s)) => (*s, false, false),
+            OperationId::Operation(None) => {
+                warn!("unsupported unnamed operation");
+                return Vec::new()
+            }
+            OperationId::IndexingGetter => ("get", true, false),
+            OperationId::IndexingSetter => ("set", true, false),
+            OperationId::IndexingDeleter => ("delete", true, false),
+        };
+
+        let mut ret = Vec::new();
+        for signature in actual_signatures.iter() {
+            // Ignore signatures with invalid return types
+            //
+            // TODO: overloads probably never change return types, so we should
+            //       do this much earlier to avoid all the above work if
+            //       possible.
+            let ret_ty = match signature.orig.ret.to_idl_type(self) {
+                Some(ty) => ty,
+                None => continue,
+            };
+
+            let mut rust_name = name.to_snake_case();
+            let mut first = true;
+            for (i, arg) in signature.args.iter().enumerate() {
+                // Find out if any other known signature either has the same
+                // name for this argument or a different type for this argument.
+                let mut any_same_name = false;
+                let mut any_different_type = false;
+                let mut any_different = false;
+                let arg_name = signature.orig.args[i].name;
+                for other in actual_signatures.iter() {
+                    if other.orig.args.get(i).map(|s| s.name) == Some(arg_name) {
+                        if !ptr::eq(signature, other) {
+                            any_same_name = true;
+                        }
+                    }
+                    if let Some(other) = other.args.get(i) {
+                        if other != arg {
+                            any_different_type = true;
+                            any_different = true;
+                        }
+                    } else {
+                        any_different = true;
+                    }
+                }
+
+                // If all signatures have the exact same type for this argument,
+                // then there's nothing to disambiguate so we don't modify the
+                // name.
+                if !any_different {
+                    continue
+                }
+                if first {
+                    rust_name.push_str("_with_");
+                    first = false;
+                } else {
+                    rust_name.push_str("_and_");
+                }
+
+                // If this name of the argument for this signature is unique
+                // then that's a bit more human readable so we include it in the
+                // method name. Otherwise the type name should disambiguate
+                // correctly.
+                //
+                // If any signature's argument has the same name as our argument
+                // then we can't use that if the types are also the same because
+                // otherwise it could be ambiguous.
+                if any_same_name && any_different_type {
+                    arg.push_type_name(&mut rust_name);
+                } else {
+                    rust_name.push_str(&arg_name.to_snake_case());
+                }
+            }
+            ret.extend(self.create_one_function(
                 name,
-                match field_ty.to_idl_type(self) {
-                    None => return Vec::new(),
-                    Some(idl_type) => idl_type,
-                },
-                false,
-            )],
-            IdlType::Void,
-            kind,
-            is_structural,
-            catch,
-            doc_comment,
-        )
+                &rust_name,
+                signature.args.iter()
+                    .zip(&signature.orig.args)
+                    .map(|(ty, orig_arg)| (orig_arg.name, ty)),
+                &ret_ty,
+                kind.clone(),
+                force_structural || is_structural(&signature.orig.attrs),
+                force_throws || throws(&signature.orig.attrs),
+                None,
+            ));
+        }
+        return ret;
     }
 }
 
