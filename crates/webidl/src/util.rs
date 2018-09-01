@@ -299,9 +299,9 @@ impl<'src> FirstPassRecord<'src> {
         ty: &weedle::types::Type<'src>,
         self_name: &str,
         is_static: bool,
-        is_structural: bool,
-        catch: bool,
         global: bool,
+        attrs: &Option<ExtendedAttributeList>,
+        container_attrs: Option<&ExtendedAttributeList>,
     ) -> Option<backend::ast::ImportFunction> {
         let kind = backend::ast::OperationKind::Getter(Some(raw_ident(name)));
         let kind = self.import_function_kind(self_name, global, is_static, kind);
@@ -312,8 +312,8 @@ impl<'src> FirstPassRecord<'src> {
             None.into_iter(),
             &ret,
             kind,
-            is_structural,
-            catch,
+            is_structural(attrs.as_ref(), container_attrs),
+            throws(attrs),
             Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))))
         )
     }
@@ -322,12 +322,12 @@ impl<'src> FirstPassRecord<'src> {
     pub fn create_setter(
         &self,
         name: &str,
-        field_ty: weedle::types::Type<'src>,
+        field_ty: &weedle::types::Type<'src>,
         self_name: &str,
         is_static: bool,
-        is_structural: bool,
-        catch: bool,
         global: bool,
+        attrs: &Option<ExtendedAttributeList>,
+        container_attrs: Option<&ExtendedAttributeList>,
     ) -> Option<backend::ast::ImportFunction> {
         let kind = backend::ast::OperationKind::Setter(Some(raw_ident(name)));
         let kind = self.import_function_kind(self_name, global, is_static, kind);
@@ -338,8 +338,8 @@ impl<'src> FirstPassRecord<'src> {
             Some((name, &field_ty)).into_iter(),
             &IdlType::Void,
             kind,
-            is_structural,
-            catch,
+            is_structural(attrs.as_ref(), container_attrs),
+            throws(attrs),
             Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name))))
         )
     }
@@ -372,6 +372,7 @@ impl<'src> FirstPassRecord<'src> {
 
     pub fn create_imports(
         &self,
+        container_attrs: Option<&ExtendedAttributeList<'src>>,
         kind: backend::ast::ImportFunctionKind,
         id: &OperationId<'src>,
         data: &OperationData<'src>,
@@ -552,7 +553,7 @@ impl<'src> FirstPassRecord<'src> {
                     .map(|(ty, orig_arg)| (orig_arg.name, ty)),
                 &ret_ty,
                 kind.clone(),
-                force_structural || is_structural(&signature.orig.attrs),
+                force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs),
                 force_throws || throws(&signature.orig.attrs),
                 None,
             ));
@@ -562,7 +563,7 @@ impl<'src> FirstPassRecord<'src> {
 }
 
 /// Search for an attribute by name in some webidl object's attributes.
-fn has_named_attribute(list: &Option<ExtendedAttributeList>, attribute: &str) -> bool {
+fn has_named_attribute(list: Option<&ExtendedAttributeList>, attribute: &str) -> bool {
     let list = match list {
         Some(list) => list,
         None => return false,
@@ -575,22 +576,26 @@ fn has_named_attribute(list: &Option<ExtendedAttributeList>, attribute: &str) ->
 
 /// ChromeOnly is for things that are only exposed to privileged code in Firefox.
 pub fn is_chrome_only(ext_attrs: &Option<ExtendedAttributeList>) -> bool {
-    has_named_attribute(ext_attrs, "ChromeOnly")
+    has_named_attribute(ext_attrs.as_ref(), "ChromeOnly")
 }
 
 /// Whether a webidl object is marked as a no interface object.
 pub fn is_no_interface_object(ext_attrs: &Option<ExtendedAttributeList>) -> bool {
-    has_named_attribute(ext_attrs, "NoInterfaceObject")
+    has_named_attribute(ext_attrs.as_ref(), "NoInterfaceObject")
 }
 
 /// Whether a webidl object is marked as structural.
-pub fn is_structural(attrs: &Option<ExtendedAttributeList>) -> bool {
-    has_named_attribute(attrs, "Unforgeable")
+pub fn is_structural(
+    item_attrs: Option<&ExtendedAttributeList>,
+    container_attrs: Option<&ExtendedAttributeList>,
+) -> bool {
+    has_named_attribute(item_attrs, "Unforgeable") ||
+        has_named_attribute(container_attrs, "Unforgeable")
 }
 
 /// Whether a webidl object is marked as throwing.
 pub fn throws(attrs: &Option<ExtendedAttributeList>) -> bool {
-    has_named_attribute(attrs, "Throws")
+    has_named_attribute(attrs.as_ref(), "Throws")
 }
 
 /// Create a syn `pub` token

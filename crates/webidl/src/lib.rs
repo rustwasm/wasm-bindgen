@@ -330,7 +330,7 @@ impl<'src> FirstPassRecord<'src> {
         );
 
         let kind = backend::ast::ImportFunctionKind::Normal;
-        for mut import_function in self.create_imports(kind, id, data) {
+        for mut import_function in self.create_imports(None, kind, id, data) {
             import_function.doc_comment = Some(doc_comment.clone());
             module.imports.push(
                 backend::ast::Import {
@@ -413,11 +413,12 @@ impl<'src> FirstPassRecord<'src> {
             self.member_attribute(
                 program,
                 name,
-                &member.attributes,
                 member.modifier,
                 member.readonly.is_some(),
                 &member.type_,
                 member.identifier.0,
+                &member.attributes,
+                data.definition_attributes,
             );
         }
 
@@ -432,7 +433,6 @@ impl<'src> FirstPassRecord<'src> {
                 self.member_attribute(
                     program,
                     name,
-                    &member.attributes,
                     if let Some(s) = member.stringifier {
                         Some(weedle::interface::StringifierOrInheritOrStatic::Stringifier(s))
                     } else {
@@ -441,6 +441,8 @@ impl<'src> FirstPassRecord<'src> {
                     member.readonly.is_some(),
                     &member.type_,
                     member.identifier.0,
+                    &member.attributes,
+                    mixin_data.definition_attributes,
                 );
             }
         }
@@ -450,11 +452,12 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         program: &mut backend::ast::Program,
         self_name: &'src str,
-        attrs: &'src Option<ExtendedAttributeList>,
         modifier: Option<weedle::interface::StringifierOrInheritOrStatic>,
         readonly: bool,
         type_: &'src weedle::types::AttributedType<'src>,
         identifier: &'src str,
+        attrs: &'src Option<ExtendedAttributeList<'src>>,
+        container_attrs: Option<&'src ExtendedAttributeList<'src>>,
     ) {
         use weedle::interface::StringifierOrInheritOrStatic::*;
 
@@ -465,8 +468,6 @@ impl<'src> FirstPassRecord<'src> {
             None => false,
         };
 
-        let is_structural = util::is_structural(attrs);
-        let throws = util::throws(attrs);
         let global = self
             .interfaces
             .get(self_name)
@@ -478,9 +479,9 @@ impl<'src> FirstPassRecord<'src> {
             &type_.type_,
             self_name,
             is_static,
-            is_structural,
-            throws,
             global,
+            attrs,
+            container_attrs,
         ) {
             program.imports.push(wrap_import_function(import_function));
         }
@@ -488,12 +489,12 @@ impl<'src> FirstPassRecord<'src> {
         if !readonly {
             for import_function in self.create_setter(
                 identifier,
-                type_.type_.clone(),
+                &type_.type_,
                 self_name,
                 is_static,
-                is_structural,
-                throws,
                 global,
+                attrs,
+                container_attrs,
             ) {
                 program.imports.push(wrap_import_function(import_function));
             }
@@ -533,7 +534,8 @@ impl<'src> FirstPassRecord<'src> {
                 import_function_kind(backend::ast::OperationKind::IndexingDeleter)
             }
         };
-        for method in self.create_imports(kind, id, op_data) {
+        let attrs = data.definition_attributes;
+        for method in self.create_imports(attrs, kind, id, op_data) {
             program.imports.push(wrap_import_function(method));
         }
     }
