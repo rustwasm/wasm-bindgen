@@ -1,10 +1,6 @@
 extern crate wasm_bindgen;
-extern crate web_sys;
 
 use wasm_bindgen::prelude::*;
-
-// You can use the console bindings from web-sys...
-use web_sys::console;
 
 // ... or you can manually write the bindings yourself
 #[wasm_bindgen]
@@ -22,7 +18,4 @@ pub fn run() {
     log("Hello from Rust!");
     log_u32(42);
     log_many("Logging", "many values!");
-
-    console::log(JsValue::from("Another message from rust!"));
-    console::log(JsValue::from(56u32));
 }

@@ -88,3 +88,10 @@ partial interface mixin MixinBar {
 };
 
 MixinFoo includes MixinBar;
+
+[Constructor()]
+interface Overloads {
+  void foo();
+  void foo(DOMString arg, optional long a);
+  void foo(DOMString arg, (float or short) b);
+};

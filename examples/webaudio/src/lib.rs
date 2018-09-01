@@ -81,16 +81,16 @@ impl FmOsc {
             // connect them up:
 
             // The primary oscillator is routed through the gain node, so that it can control the overall output volume
-            primary_node.connect_with_destination_and_output_and_input(gain.as_ref()).unwrap();
+            primary_node.connect_with_audio_node(gain.as_ref()).unwrap();
             // Then connect the gain node to the AudioContext destination (aka your speakers)
-            gain_node.connect_with_destination_and_output_and_input(destination_node).unwrap();
+            gain_node.connect_with_audio_node(destination_node).unwrap();
 
             // the FM oscillator is connected to its own gain node, so it can control the amount of modulation
-            fm_osc_node.connect_with_destination_and_output_and_input(fm_gain.as_ref()).unwrap();
+            fm_osc_node.connect_with_audio_node(fm_gain.as_ref()).unwrap();
 
             // Connect the FM oscillator to the frequency parameter of the main oscillator, so that the
             // FM node can modulate its frequency
-            fm_gain_node.connect_with_destination_and_output(&primary.frequency()).unwrap();
+            fm_gain_node.connect_with_audio_param(&primary.frequency()).unwrap();
         }
 
 

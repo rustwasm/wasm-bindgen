@@ -287,7 +287,7 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
             Some(IdlType::Interface(self.0))
         } else if record.dictionaries.contains_key(self.0) {
             Some(IdlType::Dictionary(self.0))
-        } else if record.enums.contains(self.0) {
+        } else if record.enums.contains_key(self.0) {
             Some(IdlType::Enum(self.0))
         } else {
             warn!("Unrecognized type: {}", self.0);
@@ -593,91 +593,6 @@ fn idl_type_flatten_test() {
             Nullable(Box::new(DomString)),
             Sequence(Box::new(Sequence(Box::new(Double)))),
             Sequence(Box::new(Interface("NodeList"))),
-        ],
-    );
-}
-
-/// Converts arguments into possibilities.
-///
-/// Each argument represented with a tuple of its idl type and whether it is optional.
-/// Each possibility is a vector of idl types.
-///
-/// The goal is to find equivalent possibilities of argument types each of which is not optional and
-/// does not contains union types.
-pub(crate) fn flatten<'a>(arguments: &'a [(IdlType, bool)]) -> Vec<Vec<IdlType<'a>>> {
-    if arguments.is_empty() {
-        return vec![Vec::new()];
-    }
-    let mut optional_possibilities = if arguments[0].1 { vec![Vec::new()] } else { Vec::new() };
-    let mut possibilities = Vec::new();
-    for idl_type in arguments[0].0.flatten() {
-        possibilities.push(vec![idl_type])
-    }
-    for argument in arguments[1..].iter() {
-        let mut new_possibilities = Vec::new();
-        for old_idl_types in possibilities {
-            if argument.1 {
-                optional_possibilities.push(old_idl_types.clone());
-            }
-            for idl_type in argument.0.flatten() {
-                let mut new_idl_types = old_idl_types.clone();
-                new_idl_types.push(idl_type);
-                new_possibilities.push(new_idl_types)
-            }
-        }
-        possibilities = new_possibilities;
-    }
-    optional_possibilities.extend(possibilities.into_iter());
-    optional_possibilities
-}
-
-#[test]
-fn arguments_flatten_test() {
-    use self::IdlType::*;
-
-    assert_eq!(
-        flatten(
-            &vec![
-                (
-                    Union(vec![
-                        Short,
-                        Long,
-                    ]),
-                    false,
-                ),
-                (
-                    Union(vec![
-                        Sequence(Box::new(
-                            Union(vec![
-                                Byte,
-                                Octet,
-                            ]),
-                        )),
-                        LongLong,
-                    ]),
-                    true,
-                ),
-                (
-                    DomString,
-                    true,
-                )
-            ]
-        ),
-        vec![
-            vec![Short],
-            vec![Long],
-            vec![Short, Sequence(Box::new(Byte))],
-            vec![Short, Sequence(Box::new(Octet))],
-            vec![Short, LongLong],
-            vec![Long, Sequence(Box::new(Byte))],
-            vec![Long, Sequence(Box::new(Octet))],
-            vec![Long, LongLong],
-            vec![Short, Sequence(Box::new(Byte)), DomString],
-            vec![Short, Sequence(Box::new(Octet)), DomString],
-            vec![Short, LongLong, DomString],
-            vec![Long, Sequence(Box::new(Byte)), DomString],
-            vec![Long, Sequence(Box::new(Octet)), DomString],
-            vec![Long, LongLong, DomString]
         ],
     );
 }
