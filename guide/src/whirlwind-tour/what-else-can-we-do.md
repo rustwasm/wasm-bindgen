@@ -64,6 +64,10 @@ extern {
     fn new() -> Awesome;
     #[wasm_bindgen(method)]
     fn get_internal(this: &Awesome) -> u32;
+    // We can call javascript functions that have a dynamic number of arguments,
+    // e.g. rust `sum(&[1, 2, 3])` will be called like `sum(1, 2, 3)`
+    #[wasm_bindgen(variadic)]
+    fn sum(vals: &[u32]) -> u32;
 }
 
 #[wasm_bindgen]
@@ -141,6 +145,14 @@ export class Awesome {
   get_internal() {
     return this.internal;
   }
+}
+
+export function sum(...args) {
+    let answer = 0;
+    for(var i=0; i<args.length; i++) {
+        answer += args[i];
+    }
+    return answer;
 }
 
 booted.then(main);

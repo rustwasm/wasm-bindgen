@@ -34,9 +34,9 @@ extern {
     //#[wasm_bindgen(variadic)]
     //fn variadic_concat_string(first: String,
     //                          second: String,
-    //                          rest: ::std::vec::Vec<String>) -> String;
+    //                          rest: Vec<String>) -> String;
     #[wasm_bindgen(variadic)]
-    fn variadic_sum_rest_vec(first: u8, second: u8, rest: ::std::vec::Vec<u8>) -> u8;
+    fn variadic_sum_rest_vec(first: u8, second: u8, rest: Vec<u8>) -> u8;
     //#[wasm_bindgen(variadic)]
     //fn variadic_compare_pairs(first: JsValue, second: JsValue, rest: &[JsValue]);
     //TODO imported type

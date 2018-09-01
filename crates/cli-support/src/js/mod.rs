@@ -2128,7 +2128,6 @@ impl<'a, 'b> SubContext<'a, 'b> {
             import.shim,
             if op.is_static { "" } else { ".call" }
         ))
->>>>>>> master
     }
 
     fn generate_import_type(

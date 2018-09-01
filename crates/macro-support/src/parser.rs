@@ -1101,60 +1101,6 @@ fn assert_not_variadic(attrs: &BindgenAttrs, span: &dyn ToTokens) -> Result<(), 
     Ok(())
 }
 
-/// Checks the function signature to ensure it finishes with a slice
-///
-/// Example of a valid signature: `fn my_func(arg1: u64, res: &[u64])`.
-fn assert_last_param_is_slice(decl: &syn::FnDecl) -> Result<(), Diagnostic> {
-    #[inline]
-    fn not_slice_error(tok: &dyn ToTokens) -> Diagnostic {
-        Diagnostic::span_error(tok, "for variadic extern functions, the last argument must be a \
-            slice or `::std::vec::Vec`, to hold the arguments of unknown length")
-    }
-
-    /// Is this path `::std::vec::Vec`.
-    ///
-    /// I could add `Vec`, but this would break in wierd ways if the user does
-    /// `use SomethingElse as Vec;`.
-    #[inline]
-    fn path_is_vec(path: &syn::Path) -> bool {
-        #[inline]
-        fn is_path_segment(path: Option<&syn::PathSegment>,
-                           name: Option<&str>,
-                           plain: bool) -> bool {
-            match (path, name) {
-                (Some(ref path), Some(ref name)) =>
-                    (path.arguments.is_empty() || ! plain) && path.ident == name,
-                (None, None) => true,
-                _ => false
-            }
-        }
-
-        let mut iter = (&path.segments).into_iter();
-        path.leading_colon.is_some()
-            && is_path_segment(iter.next(), Some("std"), true)
-            && is_path_segment(iter.next(), Some("vec"), true)
-            && is_path_segment(iter.next(), Some("Vec"), false)
-            && is_path_segment(iter.next(), None, true)
-    }
-
-    let arg = decl.inputs.last().ok_or_else(|| not_slice_error(&decl.inputs))?;
-    if let syn::FnArg::Captured(ref arg_cap) = arg.value() {
-        // check for slice reference
-        if let syn::Type::Reference(ref ref_ty) = arg_cap.ty {
-            if let syn::Type::Slice(_) = *ref_ty.elem {
-                return Ok(());
-            }
-        }
-        // check for `Vec`
-        if let syn::Type::Path(ref path) = arg_cap.ty {
-            if path_is_vec(&path.path) {
-                return Ok(());
-            }
-        }
-    }
-    Err(not_slice_error(&arg))
-}
-
 /// If the path is a single ident, return it.
 fn extract_path_ident(path: &syn::Path) -> Result<Ident, Diagnostic> {
     if path.leading_colon.is_some() {
