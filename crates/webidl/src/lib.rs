@@ -41,14 +41,13 @@ use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::defined::ImportedTypeReferences;
 use backend::util::{ident_ty, rust_ident, raw_ident, wrap_import_function};
 use failure::ResultExt;
-use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
 use weedle::attribute::{ExtendedAttributeList};
 use weedle::dictionary::DictionaryMember;
 
 use first_pass::{FirstPass, FirstPassRecord, OperationId, InterfaceData};
 use first_pass::OperationData;
-use util::{public, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, mdn_doc};
+use util::{public, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, shouty_snake_case_ident, snake_case_ident, mdn_doc};
 use idl_type::ToIdlType;
 
 pub use error::{Error, ErrorKind, Result};
@@ -280,7 +279,7 @@ impl<'src> FirstPassRecord<'src> {
 
         Some(ast::DictionaryField {
             required: field.required.is_some(),
-            name: rust_ident(&field.identifier.0.to_snake_case()),
+            name: rust_ident(&snake_case_ident(field.identifier.0)),
             ty,
         })
     }
@@ -293,7 +292,7 @@ impl<'src> FirstPassRecord<'src> {
     ) {
         let mut module = backend::ast::Module {
             vis: public(),
-            name: rust_ident(name.to_snake_case().as_str()),
+            name: rust_ident(snake_case_ident(name).as_str()),
             imports: Default::default(),
         };
 
@@ -368,7 +367,7 @@ impl<'src> FirstPassRecord<'src> {
 
         program.consts.push(backend::ast::Const {
             vis: public(),
-            name: rust_ident(member.identifier.0.to_shouty_snake_case().as_str()),
+            name: rust_ident(shouty_snake_case_ident(member.identifier.0).as_str()),
             class: Some(rust_ident(camel_case_ident(&self_name).as_str())),
             ty,
             value: webidl_const_v_to_backend_const_v(&member.const_value),

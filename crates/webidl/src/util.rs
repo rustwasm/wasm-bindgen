@@ -3,7 +3,7 @@ use std::ptr;
 
 use backend;
 use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
-use heck::{CamelCase, SnakeCase};
+use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use proc_macro2::Ident;
 use syn;
 use weedle;
@@ -23,9 +23,28 @@ pub(crate) fn shared_ref(ty: syn::Type) -> syn::Type {
     }.into()
 }
 
-/// Fix camelcase of identifiers like HTMLBRElement
+/// Fix case of identifiers like `HTMLBRElement` or `texImage2D`
+fn fix_ident(identifier: &str) -> String {
+    identifier
+        .replace("HTML", "HTML_")
+        .replace("1D", "_1d")
+        .replace("2D", "_2d")
+        .replace("3D", "_3d")
+}
+
+/// Convert an identifier to camel case
 pub fn camel_case_ident(identifier: &str) -> String {
-  identifier.replace("HTML", "HTML_").to_camel_case()
+    fix_ident(identifier).to_camel_case()
+}
+
+/// Convert an identifier to shouty snake case
+pub fn shouty_snake_case_ident(identifier: &str) -> String {
+    fix_ident(identifier).to_shouty_snake_case()
+}
+
+/// Convert an identifier to snake case
+pub fn snake_case_ident(identifier: &str) -> String {
+    fix_ident(identifier).to_snake_case()
 }
 
 // Returns a link to MDN
@@ -308,7 +327,7 @@ impl<'src> FirstPassRecord<'src> {
         let ret = ty.to_idl_type(self)?;
         self.create_one_function(
             &name,
-            &name.to_snake_case(),
+            &snake_case_ident(name),
             None.into_iter(),
             &ret,
             kind,
@@ -492,7 +511,7 @@ impl<'src> FirstPassRecord<'src> {
                 None => continue,
             };
 
-            let mut rust_name = name.to_snake_case();
+            let mut rust_name = snake_case_ident(name);
             let mut first = true;
             for (i, arg) in signature.args.iter().enumerate() {
                 // Find out if any other known signature either has the same
@@ -539,9 +558,9 @@ impl<'src> FirstPassRecord<'src> {
                 // then we can't use that if the types are also the same because
                 // otherwise it could be ambiguous.
                 if any_same_name && any_different_type {
-                    arg.push_type_name(&mut rust_name);
+                    arg.push_snake_case_name(&mut rust_name);
                 } else {
-                    rust_name.push_str(&arg_name.to_snake_case());
+                    rust_name.push_str(&snake_case_ident(arg_name));
                 }
             }
             ret.extend(self.create_one_function(
