@@ -19,7 +19,7 @@ pub fn draw() {
         .get_context("2d")
         .unwrap()
         .unwrap()
-        .dyn_into::<web_sys::CanvasRenderingContext2D>()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
         .unwrap();
 
     context.begin_path();
