@@ -11,14 +11,14 @@ use parity_wasm::elements::*;
 
 pub struct Config {
     base64: bool,
-    wasm2asm: bool,
+    wasm2js: bool,
     fetch_path: Option<String>,
 }
 
 pub struct Output {
     module: Module,
     base64: bool,
-    wasm2asm: bool,
+    wasm2js: bool,
     fetch_path: Option<String>,
 }
 
@@ -26,7 +26,7 @@ impl Config {
     pub fn new() -> Config {
         Config {
             base64: false,
-            wasm2asm: false,
+            wasm2js: false,
             fetch_path: None,
         }
     }
@@ -36,8 +36,8 @@ impl Config {
         self
     }
 
-    pub fn wasm2asm(&mut self, wasm2asm: bool) -> &mut Self {
-        self.wasm2asm = wasm2asm;
+    pub fn wasm2js(&mut self, wasm2js: bool) -> &mut Self {
+        self.wasm2js = wasm2js;
         self
     }
 
@@ -47,14 +47,14 @@ impl Config {
     }
 
     pub fn generate(&mut self, wasm: &[u8]) -> Result<Output, Error> {
-        if !self.base64 && !self.fetch_path.is_some() && !self.wasm2asm {
-            bail!("one of --base64, --fetch, or --wasm2asm is required");
+        if !self.base64 && !self.fetch_path.is_some() && !self.wasm2js {
+            bail!("one of --base64, --fetch, or --wasm2js is required");
         }
         let module = deserialize_buffer(wasm)?;
         Ok(Output {
             module,
             base64: self.base64,
-            wasm2asm: self.wasm2asm,
+            wasm2js: self.wasm2js,
             fetch_path: self.fetch_path.clone(),
         })
     }
@@ -139,8 +139,8 @@ impl Output {
     }
 
     pub fn js(self) -> Result<String, Error> {
-        if self.wasm2asm {
-            return self.js_wasm2asm();
+        if self.wasm2js {
+            return self.js_wasm2js();
         }
         let mut js_imports = String::new();
         let mut exports = String::new();
@@ -233,7 +233,7 @@ impl Output {
         ))
     }
 
-    fn js_wasm2asm(self) -> Result<String, Error> {
+    fn js_wasm2js(self) -> Result<String, Error> {
         let mut js_imports = String::new();
         let mut imported_items = Vec::new();
         if let Some(i) = self.module.import_section() {
@@ -256,7 +256,7 @@ impl Output {
                 if *m != entry.module() {
                     bail!(
                         "the name `{}` is imported from two differnet \
-                         modules which currently isn't supported in `wasm2asm` \
+                         modules which currently isn't supported in `wasm2js` \
                          mode"
                     );
                 }
@@ -287,7 +287,7 @@ impl Output {
             }
             if !export_mem {
                 bail!(
-                    "the `wasm2asm` mode is currently only compatible with \
+                    "the `wasm2js` mode is currently only compatible with \
                      modules that export memory"
                 )
             }
@@ -333,11 +333,11 @@ impl Output {
         )?;
         let js_file = td.as_ref().join("foo.js");
         run(
-            Command::new("wasm2asm")
+            Command::new("wasm2js")
                 .arg(&wast_file)
                 .arg("-o")
                 .arg(&js_file),
-            "wasm2asm",
+            "wasm2js",
         )?;
 
         let asm_func = fs::read_to_string(&js_file)
