@@ -1,4 +1,4 @@
-use failure::Error;
+use failure::{self, Error};
 
 use super::{Context, Js2Rust};
 use descriptor::{Descriptor, Function};
@@ -529,8 +529,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         Ok(())
     }
 
-    pub fn finish(&self, invoc: &str) -> String {
-        use std::fmt::Write;
+    pub fn finish(&self, invoc: &str) -> Result<String, Error> {
         let mut ret = String::new();
         ret.push_str("function(");
         ret.push_str(&self.shim_arguments.join(", "));
@@ -545,7 +544,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
         let mut invoc = if self.variadic {
             if self.js_arguments.is_empty() {
-                unreachable!("the last argument of a variadic must be a slice");
+                return Err(failure::err_msg("a function with no arguments cannot be variadic"));
             }
             let last_arg = self.js_arguments.len() - 1; // check implies >= 0
             self.ret_expr.replace(
@@ -595,7 +594,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         ret.push_str(&invoc);
 
         ret.push_str("\n}\n");
-        return ret;
+        Ok(ret)
     }
 
     fn global_idx(&mut self) -> usize {

@@ -1964,7 +1964,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .catch(import.catch)
             .variadic(import.variadic)
             .process(descriptor.unwrap_function())?
-            .finish(&target);
+            .finish(&target)?;
         self.cx.export(&import.shim, &js, None);
         Ok(())
     }
