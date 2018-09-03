@@ -12,7 +12,7 @@ The examples here are:
 
 * `add` - an example of generating a tiny wasm binary, one that only adds two
   numbers.
-* `asm.js` - an example of using the `wasm2asm` tool from [binaryen] to convert
+* `asm.js` - an example of using the `wasm2js` tool from [binaryen] to convert
   the generated WebAssembly to normal JS
 * `char` - an example of passing the rust `char` type to and from the js `string` type
 * `closures` - an example of how to invoke functions like `setInterval` or use

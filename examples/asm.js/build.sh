@@ -6,17 +6,14 @@ set -ex
 cargo +nightly build --target wasm32-unknown-unknown --release
 
 # Run wasm-bindgen, and note that the `--no-demangle` argument is here is
-# important for compatibility with wasm2asm!
+# important for compatibility with wasm2js!
 cargo +nightly run --manifest-path ../../crates/cli/Cargo.toml \
   --bin wasm-bindgen -- \
   --no-demangle \
   ../../target/wasm32-unknown-unknown/release/asmjs.wasm --out-dir .
 
-# Run the `wasm2es6js` primarily with the `--wasm2asm` flag, which will
-# internally execute `wasm2asm` as necessary
-cargo +nightly run --manifest-path ../../crates/cli/Cargo.toml \
-  --bin wasm2es6js -- \
-  asmjs_bg.wasm --wasm2asm -o asmjs_bg.js
+# Run the `wasm2js` tool from `binaryen`
+wasm2js asmjs_bg.wasm -o asmjs_bg.js
 
 # Move our original wasm out of the way to avoid cofusing Webpack.
 mv asmjs_bg.wasm asmjs_bg.bak.wasm
