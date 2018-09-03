@@ -44,7 +44,7 @@ pub(crate) struct InterfaceData<'src> {
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
     pub(crate) superclass: Option<&'src str>,
-    pub(crate) definition_attributes: Option<&'src [ExtendedAttribute<'src>]>,
+    pub(crate) definition_attributes: Option<&'src ExtendedAttributeList<'src>>,
 }
 
 /// We need to collect mixin data during the first pass, to be used later.
@@ -55,6 +55,7 @@ pub(crate) struct MixinData<'src> {
     pub(crate) attributes: Vec<&'src AttributeMixinMember<'src>>,
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
+    pub(crate) definition_attributes: Option<&'src ExtendedAttributeList<'src>>,
 }
 
 /// We need to collect namespace data during the first pass, to be used later.
@@ -300,8 +301,7 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
                 .or_default();
             interface_data.partial = false;
             interface_data.superclass = self.inheritance.map(|s| s.identifier.0);
-            interface_data.definition_attributes = self.attributes.as_ref()
-                .map(|l| &l.body.list[..]);
+            interface_data.definition_attributes = self.attributes.as_ref();
         }
         if let Some(attrs) = &self.attributes {
             for attr in attrs.body.list.iter() {
@@ -510,6 +510,7 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceMixinDefinition<'src>{
                 .entry(self.identifier.0)
                 .or_default();
             mixin_data.partial = false;
+            mixin_data.definition_attributes = self.attributes.as_ref();
         }
 
         for member in &self.members.body {

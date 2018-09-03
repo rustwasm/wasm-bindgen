@@ -52,3 +52,4 @@ pub mod title_element;
 pub mod xpath_result;
 pub mod dom_point;
 pub mod performance;
+pub mod location;
