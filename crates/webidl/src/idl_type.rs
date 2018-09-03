@@ -551,7 +551,19 @@ impl<'a> IdlType<'a> {
 
             IdlType::Nullable(idl_type) => {
                 match **idl_type {
-                    IdlType::Union(..) => idl_type.to_syn_type(pos),
+                    IdlType::Union(ref idl_types) =>
+                        if idl_types
+                            .iter()
+                            .all(|idl_type|
+                                match idl_type {
+                                    IdlType::Interface(..) => true,
+                                    _ => false,
+                                }
+                            ) {
+                            IdlType::Nullable(Box::new(IdlType::Object)).to_syn_type(pos)
+                        } else {
+                            IdlType::Any.to_syn_type(pos)
+                        },
                     _ => Some(option_ty(idl_type.to_syn_type(pos)?))
                 }
             },
@@ -567,11 +579,22 @@ impl<'a> IdlType<'a> {
                 }
             }
             IdlType::Record(_idl_type_from, _idl_type_to) => None,
-            IdlType::Union(_idl_types) => {
+            IdlType::Union(idl_types) => {
                 // Handles union types in all places except operation argument types.
-                // Currently treats them as any type.
+                // Currently treats them as object or any types.
                 // TODO: add better support for union types here?
-                IdlType::Any.to_syn_type(pos)
+                if idl_types
+                    .iter()
+                    .all(|idl_type|
+                        match idl_type {
+                            IdlType::Interface(..) => true,
+                            _ => false,
+                        }
+                    ) {
+                    IdlType::Object.to_syn_type(pos)
+                } else {
+                    IdlType::Any.to_syn_type(pos)
+                }
             },
 
             IdlType::Any => {
