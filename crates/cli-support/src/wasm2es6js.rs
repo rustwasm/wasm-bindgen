@@ -11,14 +11,12 @@ use parity_wasm::elements::*;
 
 pub struct Config {
     base64: bool,
-    wasm2js: bool,
     fetch_path: Option<String>,
 }
 
 pub struct Output {
     module: Module,
     base64: bool,
-    wasm2js: bool,
     fetch_path: Option<String>,
 }
 
@@ -26,7 +24,6 @@ impl Config {
     pub fn new() -> Config {
         Config {
             base64: false,
-            wasm2js: false,
             fetch_path: None,
         }
     }
@@ -36,25 +33,19 @@ impl Config {
         self
     }
 
-    pub fn wasm2js(&mut self, wasm2js: bool) -> &mut Self {
-        self.wasm2js = wasm2js;
-        self
-    }
-
     pub fn fetch(&mut self, path: Option<String>) -> &mut Self {
         self.fetch_path = path;
         self
     }
 
     pub fn generate(&mut self, wasm: &[u8]) -> Result<Output, Error> {
-        if !self.base64 && !self.fetch_path.is_some() && !self.wasm2js {
-            bail!("one of --base64, --fetch, or --wasm2js is required");
+        if !self.base64 && !self.fetch_path.is_some() {
+            bail!("one of --base64 or --fetch is required");
         }
         let module = deserialize_buffer(wasm)?;
         Ok(Output {
             module,
             base64: self.base64,
-            wasm2js: self.wasm2js,
             fetch_path: self.fetch_path.clone(),
         })
     }
@@ -139,9 +130,6 @@ impl Output {
     }
 
     pub fn js(self) -> Result<String, Error> {
-        if self.wasm2js {
-            return self.js_wasm2js();
-        }
         let mut js_imports = String::new();
         let mut exports = String::new();
         let mut set_exports = String::new();
@@ -230,170 +218,6 @@ impl Output {
             booted = booted,
             js_imports = js_imports,
             exports = exports,
-        ))
-    }
-
-    fn js_wasm2js(self) -> Result<String, Error> {
-        let mut js_imports = String::new();
-        let mut imported_items = Vec::new();
-        if let Some(i) = self.module.import_section() {
-            let mut name_map = HashMap::new();
-            for (i, entry) in i.entries().iter().enumerate() {
-                match *entry.external() {
-                    External::Function(_) => {}
-                    External::Table(_) => {
-                        bail!("wasm imports a table which isn't supported yet");
-                    }
-                    External::Memory(_) => {
-                        bail!("wasm imports memory which isn't supported yet");
-                    }
-                    External::Global(_) => {
-                        bail!("wasm imports globals which aren't supported yet");
-                    }
-                }
-
-                let m = name_map.entry(entry.field()).or_insert(entry.module());
-                if *m != entry.module() {
-                    bail!(
-                        "the name `{}` is imported from two differnet \
-                         modules which currently isn't supported in `wasm2js` \
-                         mode"
-                    );
-                }
-
-                let name = format!("import{}", i);
-                js_imports.push_str(&format!(
-                    "import {{ {} as {} }} from '{}';\n",
-                    entry.field(),
-                    name,
-                    entry.module()
-                ));
-                imported_items.push((entry.field().to_string(), name));
-            }
-        }
-
-        let mut js_exports = String::new();
-        if let Some(i) = self.module.export_section() {
-            let mut export_mem = false;
-            for entry in i.entries() {
-                match *entry.internal() {
-                    Internal::Function(_) => {}
-                    Internal::Memory(_) => export_mem = true,
-                    Internal::Table(_) => continue,
-                    Internal::Global(_) => continue,
-                };
-
-                js_exports.push_str(&format!("export const {0} = ret.{0};\n", entry.field()));
-            }
-            if !export_mem {
-                bail!(
-                    "the `wasm2js` mode is currently only compatible with \
-                     modules that export memory"
-                )
-            }
-        }
-
-        let memory_size = self.module.memory_section().unwrap().entries()[0]
-            .limits()
-            .initial();
-
-        let mut js_init_mem = String::new();
-        if let Some(s) = self.module.data_section() {
-            for entry in s.entries() {
-                let offset = entry.offset().code();
-                if offset.len() != 2 {
-                    bail!("don't recognize data offset {:?}", offset)
-                }
-                if offset[1] != Instruction::End {
-                    bail!("don't recognize data offset {:?}", offset)
-                }
-                let offset = match offset[0] {
-                    Instruction::I32Const(x) => x,
-                    _ => bail!("don't recognize data offset {:?}", offset),
-                };
-
-                let base64 = base64::encode(entry.value());
-                js_init_mem.push_str(&format!("_assign({}, \"{}\");\n", offset, base64));
-            }
-        }
-
-        let td = tempfile::tempdir()?;
-        let wasm = serialize(self.module)?;
-        let wasm_file = td.as_ref().join("foo.wasm");
-        fs::write(&wasm_file, wasm)
-            .with_context(|_| format!("failed to write wasm to `{}`", wasm_file.display()))?;
-
-        let wast_file = td.as_ref().join("foo.wast");
-        run(
-            Command::new("wasm-dis")
-                .arg(&wasm_file)
-                .arg("-o")
-                .arg(&wast_file),
-            "wasm-dis",
-        )?;
-        let js_file = td.as_ref().join("foo.js");
-        run(
-            Command::new("wasm2js")
-                .arg(&wast_file)
-                .arg("-o")
-                .arg(&js_file),
-            "wasm2js",
-        )?;
-
-        let asm_func = fs::read_to_string(&js_file)
-            .with_context(|_| format!("failed to read `{}`", js_file.display()))?;
-
-        let mut make_imports = String::from(
-            "
-            var imports = {};
-        ",
-        );
-        for (name, import) in imported_items {
-            make_imports.push_str(&format!("imports['{}'] = {};\n", name, import));
-        }
-
-        Ok(format!(
-            "\
-            {js_imports}
-
-            {asm_func}
-
-            const mem = new ArrayBuffer({mem_size});
-            const _mem = new Uint8Array(mem);
-            function _assign(offset, s) {{
-                if (typeof Buffer === 'undefined') {{
-                    const bytes = atob(s);
-                    for (let i = 0; i < bytes.length; i++)
-                        _mem[offset + i] = bytes.charCodeAt(i);
-                }} else {{
-                    const bytes = Buffer.from(s, 'base64');
-                    for (let i = 0; i < bytes.length; i++)
-                        _mem[offset + i] = bytes[i];
-                }}
-            }}
-            {js_init_mem}
-            {make_imports}
-            const ret = asmFunc({{
-                Math,
-                Int8Array,
-                Uint8Array,
-                Int16Array,
-                Uint16Array,
-                Int32Array,
-                Uint32Array,
-                Float32Array,
-                Float64Array,
-                NaN,
-                Infinity,
-            }}, imports, mem);
-            {js_exports}
-            ",
-            js_imports = js_imports,
-            js_init_mem = js_init_mem,
-            asm_func = asm_func,
-            js_exports = js_exports,
-            make_imports = make_imports,
-            mem_size = memory_size * (1 << 16),
         ))
     }
 }
