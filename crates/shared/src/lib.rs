@@ -43,6 +43,7 @@ pub enum ImportKind {
 pub struct ImportFunction {
     pub shim: String,
     pub catch: bool,
+    pub variadic: bool,
     pub method: Option<MethodData>,
     pub structural: bool,
     pub function: Function,

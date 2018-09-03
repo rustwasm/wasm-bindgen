@@ -183,6 +183,14 @@ impl BindgenAttrs {
             _ => None,
         })
     }
+
+    /// Whether the variadic attributes is present
+    fn variadic(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::Variadic => true,
+            _ => false,
+        })
+    }
 }
 
 impl syn::synom::Synom for BindgenAttrs {
@@ -219,6 +227,7 @@ pub enum BindgenAttr {
     JsName(String),
     JsClass(String),
     Extends(Ident),
+    Variadic,
 }
 
 impl syn::synom::Synom for BindgenAttr {
@@ -304,6 +313,8 @@ impl syn::synom::Synom for BindgenAttr {
             ns: call!(term2ident) >>
             (ns)
         )=> { BindgenAttr::Extends }
+        |
+        call!(term, "variadic") => { |_| BindgenAttr::Variadic }
     ));
 }
 
@@ -365,6 +376,7 @@ impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
                 let getter = shared::struct_field_get(&ident, &name_str);
                 let setter = shared::struct_field_set(&ident, &name_str);
                 let opts = BindgenAttrs::find(&mut field.attrs)?;
+                assert_not_variadic(&opts, &field)?;
                 let comments = extract_doc_comments(&field.attrs);
                 fields.push(ast::StructField {
                     name: name.clone(),
@@ -395,6 +407,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
     ) -> Result<Self::Target, Diagnostic> {
         let default_name = self.ident.to_string();
         let js_name = opts.js_name().unwrap_or(&default_name);
+
         let wasm = function_from_decl(
             js_name,
             self.decl.clone(),
@@ -404,6 +417,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
             None,
         )?.0;
         let catch = opts.catch();
+        let variadic = opts.variadic();
         let js_ret = if catch {
             // TODO: this assumes a whole bunch:
             //
@@ -533,6 +547,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
             kind,
             js_ret,
             catch,
+            variadic,
             structural: opts.structural(),
             rust_name: self.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
@@ -545,6 +560,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
     type Target = ast::ImportKind;
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+        assert_not_variadic(&attrs, &self)?;
         let js_name = attrs
             .js_name()
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
@@ -570,6 +586,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemSt
         if self.mutability.is_some() {
             bail_span!(self.mutability, "cannot import mutable globals yet")
         }
+        assert_not_variadic(&opts, &self)?;
         let default_name = self.ident.to_string();
         let js_name = opts.js_name().unwrap_or(&default_name);
         let shim = format!(
@@ -604,6 +621,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
         if self.unsafety.is_some() {
             bail_span!(self.unsafety, "can only #[wasm_bindgen] safe functions");
         }
+        assert_not_variadic(&attrs, &self)?;
 
         let default_name = self.ident.to_string();
         let name = attrs.js_name().unwrap_or(&default_name);
@@ -1072,6 +1090,15 @@ fn assert_no_lifetimes(decl: &syn::FnDecl) -> Result<(), Diagnostic> {
     };
     syn::visit::Visit::visit_fn_decl(&mut walk, decl);
     Diagnostic::from_vec(walk.diagnostics)
+}
+
+/// This method always fails if the BindgenAttrs contain variadic
+fn assert_not_variadic(attrs: &BindgenAttrs, span: &dyn ToTokens) -> Result<(), Diagnostic> {
+    if attrs.variadic() {
+        bail_span!(span, "the `variadic` attribute can only be applied to imported \
+            (`extern`) functions")
+    }
+    Ok(())
 }
 
 /// If the path is a single ident, return it.

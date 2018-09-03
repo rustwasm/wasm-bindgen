@@ -277,6 +277,7 @@ impl<'src> FirstPassRecord<'src> {
             },
             rust_name: rust_ident(rust_name),
             js_ret: js_ret.clone(),
+            variadic: false,
             catch,
             structural,
             shim:{

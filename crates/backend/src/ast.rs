@@ -85,6 +85,7 @@ pub struct ImportFunction {
     pub rust_name: Ident,
     pub js_ret: Option<syn::Type>,
     pub catch: bool,
+    pub variadic: bool,
     pub structural: bool,
     pub kind: ImportFunctionKind,
     pub shim: Ident,
@@ -463,6 +464,7 @@ impl ImportFunction {
         shared::ImportFunction {
             shim: self.shim.to_string(),
             catch: self.catch,
+            variadic: self.variadic,
             method,
             structural: self.structural,
             function: self.function.shared(),

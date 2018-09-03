@@ -1733,7 +1733,6 @@ impl<'a> Context<'a> {
     }
 
     fn global(&mut self, s: &str) {
-        let s = s;
         let s = s.trim();
 
         // Ensure a blank line between adjacent items, and ensure everything is
@@ -1963,8 +1962,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         let js = Rust2Js::new(self.cx)
             .catch(import.catch)
+            .variadic(import.variadic)
             .process(descriptor.unwrap_function())?
-            .finish(&target);
+            .finish(&target)?;
         self.cx.export(&import.shim, &js, None);
         Ok(())
     }

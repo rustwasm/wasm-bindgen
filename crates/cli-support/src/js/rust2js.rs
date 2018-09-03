@@ -1,4 +1,4 @@
-use failure::Error;
+use failure::{self, Error};
 
 use super::{Context, Js2Rust};
 use descriptor::{Descriptor, Function};
@@ -36,6 +36,9 @@ pub struct Rust2Js<'a, 'b: 'a> {
 
     /// Whether or not we're catching JS exceptions
     catch: bool,
+
+    /// Whether or not the last argument is a slice representing variadic arguments.
+    variadic: bool,
 }
 
 impl<'a, 'b> Rust2Js<'a, 'b> {
@@ -50,6 +53,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             arg_idx: 0,
             ret_expr: String::new(),
             catch: false,
+            variadic: false,
         }
     }
 
@@ -59,6 +63,15 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             self.cx.expose_add_heap_object();
         }
         self.catch = catch;
+        self
+    }
+
+    pub fn variadic(&mut self, variadic: bool) -> &mut Self {
+        if variadic {
+            self.cx.expose_uint32_memory();
+            self.cx.expose_add_heap_object();
+        }
+        self.variadic = variadic;
         self
     }
 
@@ -72,6 +85,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         Ok(self)
     }
 
+    /// Get a generated name for an argument.
     fn shim_argument(&mut self) -> String {
         let s = format!("arg{}", self.arg_idx);
         self.arg_idx += 1;
@@ -515,7 +529,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         Ok(())
     }
 
-    pub fn finish(&self, invoc: &str) -> String {
+    pub fn finish(&self, invoc: &str) -> Result<String, Error> {
         let mut ret = String::new();
         ret.push_str("function(");
         ret.push_str(&self.shim_arguments.join(", "));
@@ -528,10 +542,24 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         ret.push_str(") {\n");
         ret.push_str(&self.prelude);
 
-        let mut invoc = self.ret_expr.replace(
-            "JS",
-            &format!("{}({})", invoc, self.js_arguments.join(", ")),
-        );
+        let mut invoc = if self.variadic {
+            if self.js_arguments.is_empty() {
+                return Err(failure::err_msg("a function with no arguments cannot be variadic"));
+            }
+            let last_arg = self.js_arguments.len() - 1; // check implies >= 0
+            self.ret_expr.replace(
+                "JS",
+                &format!("{}({}, ...{})",
+                         invoc,
+                         self.js_arguments[..last_arg].join(", "),
+                         self.js_arguments[last_arg])
+            )
+        } else {
+            self.ret_expr.replace(
+                "JS",
+                &format!("{}({})", invoc, self.js_arguments.join(", ")),
+            )
+        };
         if self.catch {
             let catch = "\
                          const view = getUint32Memory();\n\
@@ -566,7 +594,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         ret.push_str(&invoc);
 
         ret.push_str("\n}\n");
-        return ret;
+        Ok(ret)
     }
 
     fn global_idx(&mut self) -> usize {

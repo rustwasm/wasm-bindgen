@@ -31,3 +31,4 @@ pub mod slice;
 pub mod structural;
 pub mod u64;
 pub mod validate_prt;
+pub mod variadic;
