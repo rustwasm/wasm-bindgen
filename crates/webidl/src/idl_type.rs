@@ -441,7 +441,7 @@ impl<'a> IdlType<'a> {
             | IdlType::DomString
             | IdlType::ByteString
             | IdlType::UsvString => match pos {
-                TypePosition::Argument => Some(shared_ref(ident_ty(raw_ident("str")))),
+                TypePosition::Argument => Some(shared_ref(ident_ty(raw_ident("str")), true)),
                 TypePosition::Return => Some(ident_ty(raw_ident("String"))),
             },
             IdlType::Object => {
@@ -456,15 +456,15 @@ impl<'a> IdlType<'a> {
                 Some(leading_colon_path_ty(path))
             },
             IdlType::DataView => None,
-            IdlType::Int8Array => Some(array("i8", pos)),
-            IdlType::Uint8Array => Some(array("u8", pos)),
+            IdlType::Int8Array => Some(array("i8", pos, true)),
+            IdlType::Uint8Array => Some(array("u8", pos, true)),
             IdlType::Uint8ClampedArray => None, // FIXME(#421)
-            IdlType::Int16Array => Some(array("i16", pos)),
-            IdlType::Uint16Array => Some(array("u16", pos)),
-            IdlType::Int32Array => Some(array("i32", pos)),
-            IdlType::Uint32Array => Some(array("u32", pos)),
-            IdlType::Float32Array => Some(array("f32", pos)),
-            IdlType::Float64Array => Some(array("f64", pos)),
+            IdlType::Int16Array => Some(array("i16", pos, true)),
+            IdlType::Uint16Array => Some(array("u16", pos, true)),
+            IdlType::Int32Array => Some(array("i32", pos, true)),
+            IdlType::Uint32Array => Some(array("u32", pos, true)),
+            IdlType::Float32Array => Some(array("f32", pos, true)),
+            IdlType::Float64Array => Some(array("f64", pos, true)),
 
             IdlType::ArrayBufferView | IdlType::BufferSource => {
                 let path = vec![rust_ident("js_sys"), rust_ident("Object")];
@@ -474,7 +474,7 @@ impl<'a> IdlType<'a> {
             | IdlType::Dictionary(name) => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
                 if pos == TypePosition::Argument {
-                    Some(shared_ref(ty))
+                    Some(shared_ref(ty, true))
                 } else {
                     Some(ty)
                 }
@@ -488,7 +488,7 @@ impl<'a> IdlType<'a> {
                 let path = vec![rust_ident("js_sys"), rust_ident("Promise")];
                 let ty = leading_colon_path_ty(path);
                 if pos == TypePosition::Argument {
-                    Some(shared_ref(ty))
+                    Some(shared_ref(ty, true))
                 } else {
                     Some(ty)
                 }
