@@ -24,7 +24,7 @@ Options:
     --typescript            Output a `*.d.ts` file next to the JS output
     --base64                Inline the wasm module using base64 encoding
     --fetch PATH            Load module by passing the PATH argument to `fetch()`
-    --wasm2asm              Convert wasm to asm.js and don't use `WebAssembly`
+    --wasm2js               Convert wasm to javascript and don't use `WebAssembly`
 
 Note that this is not intended to produce a production-ready output module
 but rather is intended purely as a temporary \"hack\" until it's standard in
@@ -36,7 +36,7 @@ struct Args {
     flag_output: Option<PathBuf>,
     flag_typescript: bool,
     flag_base64: bool,
-    flag_wasm2asm: bool,
+    flag_wasm2js: bool,
     flag_fetch: Option<String>,
     arg_input: PathBuf,
 }
@@ -62,7 +62,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
 
     let object = wasm_bindgen_cli_support::wasm2es6js::Config::new()
         .base64(args.flag_base64)
-        .wasm2asm(args.flag_wasm2asm)
+        .wasm2js(args.flag_wasm2js)
         .fetch(args.flag_fetch.clone())
         .generate(&wasm)?;
 
