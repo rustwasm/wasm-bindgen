@@ -534,8 +534,29 @@ impl<'src> FirstPassRecord<'src> {
                 import_function_kind(backend::ast::OperationKind::IndexingDeleter)
             }
         };
+        let doc = match id {
+            OperationId::Constructor(_) |
+            OperationId::Operation(None) => None,
+            OperationId::Operation(Some(name)) => {
+                Some(format!(
+                    "The `{}()` method\n\n{}",
+                    name,
+                    mdn_doc(self_name, Some(name))
+                ))
+            }
+            OperationId::IndexingGetter => {
+                Some(format!("The indexing getter\n\n"))
+            }
+            OperationId::IndexingSetter => {
+                Some(format!("The indexing setter\n\n"))
+            }
+            OperationId::IndexingDeleter => {
+                Some(format!("The indexing deleter\n\n"))
+            }
+        };
         let attrs = data.definition_attributes;
-        for method in self.create_imports(attrs, kind, id, op_data) {
+        for mut method in self.create_imports(attrs, kind, id, op_data) {
+            method.doc_comment = doc.clone();
             program.imports.push(wrap_import_function(method));
         }
     }
