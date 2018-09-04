@@ -1,5 +1,6 @@
 use proc_macro2::*;
 use quote::{ToTokens, TokenStreamExt};
+use syn::parse::Error;
 
 #[macro_export]
 macro_rules! err_span {
@@ -26,6 +27,7 @@ enum Repr {
         text: String,
         span: Option<(Span, Span)>,
     },
+    SynError(Error),
     Multi {
         diagnostics: Vec<Diagnostic>,
     }
@@ -62,7 +64,16 @@ impl Diagnostic {
     pub fn panic(&self) -> ! {
         match &self.inner {
             Repr::Single { text, .. } => panic!("{}", text),
+            Repr::SynError(error) => panic!("{}", error),
             Repr::Multi { diagnostics } => diagnostics[0].panic(),
+        }
+    }
+}
+
+impl From<Error> for Diagnostic {
+    fn from(err: Error) -> Diagnostic {
+       Diagnostic {
+            inner: Repr::SynError(err),
         }
     }
 }
@@ -94,6 +105,9 @@ impl ToTokens for Diagnostic {
                 for diagnostic in diagnostics {
                     diagnostic.to_tokens(dst);
                 }
+            }
+            Repr::SynError(err) => {
+                err.to_compile_error().to_tokens(dst);
             }
         }
     }

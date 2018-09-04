@@ -5,6 +5,7 @@ use proc_macro2::{Delimiter, Ident, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use shared;
 use syn;
+use syn::parse::{Parse, ParseStream, Result as SynResult};
 
 /// Parsed attributes from a `#[wasm_bindgen(..)]`.
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -39,7 +40,7 @@ impl BindgenAttrs {
         if group.delimiter() != Delimiter::Parenthesis {
             bail_span!(attr, "malformed #[wasm_bindgen] attribute");
         }
-        super::syn_parse(group.stream(), "#[wasm_bindgen] attribute options")
+        Ok(syn::parse2(group.stream())?)
     }
 
     /// Get the first module attribute
@@ -193,19 +194,15 @@ impl BindgenAttrs {
     }
 }
 
-impl syn::synom::Synom for BindgenAttrs {
-    named!(parse -> Self, alt!(
-        do_parse!(
-            opts: call!(
-                syn::punctuated::Punctuated::<_, syn::token::Comma>::parse_terminated
-            ) >>
-            (BindgenAttrs {
-                attrs: opts.into_iter().collect(),
-            })
-        ) => { |s| s }
-        |
-        epsilon!() => { |_| BindgenAttrs { attrs: Vec::new() } }
-    ));
+impl Parse for BindgenAttrs {
+    fn parse(input: ParseStream) -> SynResult<Self> {
+        if input.is_empty() {
+            return Ok(BindgenAttrs { attrs: Vec::new() })
+        }
+
+        let opts = syn::punctuated::Punctuated::<_, syn::token::Comma>::parse_terminated(input)?;
+        Ok(BindgenAttrs { attrs: opts.into_iter().collect() })
+    }
 }
 
 /// The possible attributes in the `#[wasm_bindgen]`.
@@ -230,109 +227,94 @@ pub enum BindgenAttr {
     Variadic,
 }
 
-impl syn::synom::Synom for BindgenAttr {
-    named!(parse -> Self, alt!(
-        call!(term, "catch") => { |_| BindgenAttr::Catch }
-        |
-        call!(term, "constructor") => { |_| BindgenAttr::Constructor }
-        |
-        call!(term, "method") => { |_| BindgenAttr::Method }
-        |
-        do_parse!(
-            call!(term, "static_method_of") >>
-            punct!(=) >>
-            cls: call!(term2ident) >>
-            (cls)
-        )=> { BindgenAttr::StaticMethodOf }
-        |
-        do_parse!(
-            call!(term, "getter") >>
-            val: option!(do_parse!(
-                punct!(=) >>
-                s: call!(term2ident) >>
-                (s)
-            )) >>
-            (val)
-        )=> { BindgenAttr::Getter }
-        |
-        do_parse!(
-            call!(term, "setter") >>
-            val: option!(do_parse!(
-                punct!(=) >>
-                s: call!(term2ident) >>
-                (s)
-            )) >>
-            (val)
-        )=> { BindgenAttr::Setter }
-        |
-        call!(term, "indexing_getter") => { |_| BindgenAttr::IndexingGetter }
-        |
-        call!(term, "indexing_setter") => { |_| BindgenAttr::IndexingSetter }
-        |
-        call!(term, "indexing_deleter") => { |_| BindgenAttr::IndexingDeleter }
-        |
-        call!(term, "structural") => { |_| BindgenAttr::Structural }
-        |
-        call!(term, "readonly") => { |_| BindgenAttr::Readonly }
-        |
-        do_parse!(
-            call!(term, "js_namespace") >>
-            punct!(=) >>
-            ns: call!(term2ident) >>
-            (ns)
-        )=> { BindgenAttr::JsNamespace }
-        |
-        do_parse!(
-            call!(term, "module") >>
-            punct!(=) >>
-            s: syn!(syn::LitStr) >>
-            (s.value())
-        )=> { BindgenAttr::Module }
-        |
-        do_parse!(
-            call!(term, "js_name") >>
-            punct!(=) >>
-            name: alt!(
-                syn!(syn::LitStr) => { |s| s.value() }
-                |
-                call!(term2ident) => { |s| s.to_string() }
-            ) >>
-            (name)
-        )=> { BindgenAttr::JsName }
-        |
-        do_parse!(
-            call!(term, "js_class") >>
-            punct!(=) >>
-            s: syn!(syn::LitStr) >>
-            (s.value())
-        )=> { BindgenAttr::JsClass }
-        |
-        do_parse!(
-            call!(term, "extends") >>
-            punct!(=) >>
-            ns: call!(term2ident) >>
-            (ns)
-        )=> { BindgenAttr::Extends }
-        |
-        call!(term, "variadic") => { |_| BindgenAttr::Variadic }
-    ));
-}
-
-/// Consumes a `Ident` with the given name
-fn term<'a>(cursor: syn::buffer::Cursor<'a>, name: &str) -> syn::synom::PResult<'a, ()> {
-    if let Some((ident, next)) = cursor.ident() {
-        if ident == name {
-            return Ok(((), next));
+impl Parse for BindgenAttr {
+    fn parse(input: ParseStream) -> SynResult<Self> {
+        let original = input.fork();
+        let attr: Ident = input.parse()?;
+        if attr == "catch" {
+            return Ok(BindgenAttr::Catch)
         }
+        if attr == "constructor" {
+            return Ok(BindgenAttr::Constructor)
+        }
+        if attr == "method" {
+            return Ok(BindgenAttr::Method)
+        }
+        if attr == "indexing_getter" {
+            return Ok(BindgenAttr::IndexingGetter)
+        }
+        if attr == "indexing_setter" {
+            return Ok(BindgenAttr::IndexingSetter)
+        }
+        if attr == "indexing_deleter" {
+            return Ok(BindgenAttr::IndexingDeleter)
+        }
+        if attr == "structural" {
+            return Ok(BindgenAttr::Structural)
+        }
+        if attr == "readonly" {
+            return Ok(BindgenAttr::Readonly)
+        }
+        if attr == "variadic" {
+            return Ok(BindgenAttr::Variadic)
+        }
+        if attr == "static_method_of" {
+            input.parse::<Token![=]>()?;
+            return Ok(BindgenAttr::StaticMethodOf(input.parse::<AnyIdent>()?.0))
+        }
+        if attr == "getter" {
+            if input.parse::<Token![=]>().is_ok() {
+                return Ok(BindgenAttr::Getter(Some(input.parse::<AnyIdent>()?.0)))
+            } else {
+                return Ok(BindgenAttr::Getter(None))
+            }
+        }
+        if attr == "setter" {
+            if input.parse::<Token![=]>().is_ok() {
+                return Ok(BindgenAttr::Setter(Some(input.parse::<AnyIdent>()?.0)))
+            } else {
+                return Ok(BindgenAttr::Setter(None))
+            }
+        }
+        if attr == "js_namespace" {
+            input.parse::<Token![=]>()?;
+            return Ok(BindgenAttr::JsNamespace(input.parse::<AnyIdent>()?.0))
+        }
+        if attr == "extends" {
+            input.parse::<Token![=]>()?;
+            return Ok(BindgenAttr::Extends(input.parse::<AnyIdent>()?.0))
+        }
+        if attr == "module" {
+            input.parse::<Token![=]>()?;
+            return Ok(BindgenAttr::Module(input.parse::<syn::LitStr>()?.value()))
+        }
+        if attr == "js_class" {
+            input.parse::<Token![=]>()?;
+            return Ok(BindgenAttr::JsClass(input.parse::<syn::LitStr>()?.value()))
+        }
+        if attr == "js_name" {
+            input.parse::<Token![=]>()?;
+            let val = match input.parse::<syn::LitStr>() {
+                Ok(str) => str.value(),
+                Err(_) => input.parse::<AnyIdent>()?.0.to_string(),
+            };
+            return Ok(BindgenAttr::JsName(val))
+        }
+
+        Err(original.error("unknown attribute"))
     }
-    syn::parse_error()
 }
 
-/// Consumes a `Ident` and returns it.
-fn term2ident<'a>(cursor: syn::buffer::Cursor<'a>) -> syn::synom::PResult<'a, Ident> {
-    match cursor.ident() {
-        Some(pair) => Ok(pair),
-        None => syn::parse_error(),
+struct AnyIdent(Ident);
+
+impl Parse for AnyIdent {
+    fn parse(input: ParseStream) -> SynResult<Self> {
+        input.step(|cursor| {
+            match cursor.ident() {
+                Some((ident, remaining)) => Ok((AnyIdent(ident), remaining)),
+                None => Err(cursor.error("expected an identifier")),
+            }
+        })
     }
 }
 
@@ -840,6 +822,10 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
             syn::ImplItem::Type(_) => bail_span!(
                 &*item,
                 "type definitions in impls aren't supported with #[wasm_bindgen]"
+            ),
+            syn::ImplItem::Existential(_) => bail_span!(
+                &*item,
+                "existentials in impls aren't supported with #[wasm_bindgen]"
             ),
             syn::ImplItem::Macro(_) => {
                 bail_span!(&*item, "macros in impls aren't supported");
