@@ -86,7 +86,7 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
     if let Some(allowed_types) = allowed_types {
         let allowed = allowed_types.iter().cloned().collect::<HashSet<_>>();
         let filter = |name: &&str| {
-            set.contains(&camel_case_ident(name)[..])
+            allowed.contains(&camel_case_ident(name)[..])
         };
         retain(&mut first_pass_record.enums, &filter);
         retain(&mut first_pass_record.dictionaries, &filter);
