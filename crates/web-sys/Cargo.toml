@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["The wasm-bindgen Developers"]
 readme = "./README.md"
 
+[package.metadata.docs.rs]
+all-features = true
+
 [lib]
 doctest = false
 test = false

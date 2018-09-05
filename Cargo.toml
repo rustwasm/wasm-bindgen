@@ -16,6 +16,9 @@ description = """
 Easy support for interacting between JS and Rust.
 """
 
+[package.metadata.docs.rs]
+features = ['serde-serialize']
+
 [lib]
 test = false
 doctest = false
