@@ -15,9 +15,12 @@ macro_rules! bail_span {
     )
 }
 
+#[derive(Debug)]
 pub struct Diagnostic {
     inner: Repr,
 }
+
+#[derive(Debug)]
 enum Repr {
     Single {
         text: String,

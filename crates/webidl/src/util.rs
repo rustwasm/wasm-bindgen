@@ -53,7 +53,7 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
     if let Some(method) = method {
         link.push_str(&format!("/{}", method));
     }
-    format!("[Documentation]({})", link).into()
+    format!("[MDN Documentation]({})", link).into()
 }
 
 // Array type is borrowed for arguments (`&[T]`) and owned for return value (`Vec<T>`).
@@ -401,13 +401,23 @@ impl<'src> FirstPassRecord<'src> {
     {
         // First up, prune all signatures that reference unsupported arguments.
         // We won't consider these until said arguments are implemented.
+        //
+        // Note that we handle optional arguments as well. Optional arguments
+        // should only appear at the end of argument lists and when we see one
+        // we can simply push our signature so far onto the list for the
+        // signature where that and all remaining optional arguments are
+        // undefined.
         let mut signatures = Vec::new();
         'outer:
         for signature in data.signatures.iter() {
             let mut idl_args = Vec::with_capacity(signature.args.len());
-            for arg in signature.args.iter() {
+            for (i, arg) in signature.args.iter().enumerate() {
+                if arg.optional {
+                    assert!(signature.args[i..].iter().all(|a| a.optional));
+                    signatures.push((signature, idl_args.clone()));
+                }
                 match arg.ty.to_idl_type(self) {
-                    Some(t) => idl_args.push((t, arg)),
+                    Some(t) => idl_args.push(t),
                     None => continue 'outer,
                 }
             }
@@ -434,23 +444,7 @@ impl<'src> FirstPassRecord<'src> {
                 args: Vec::with_capacity(signature.args.len()),
             });
 
-            for (i, (idl_type, arg)) in idl_args.iter().enumerate() {
-                // If this is an optional argument, then all remaining arguments
-                // should also be optional (if any). This means that all the
-                // signatures we've built up so far are valid signatures because
-                // we're just going to omit all the future arguments. As a
-                // result we duplicate all the previous signatures we've made in
-                // the list. The duplicates will be modified in-place below.
-                if arg.optional {
-                    assert!(signature.args[i..].iter().all(|a| a.optional));
-                    let end = actual_signatures.len();
-                    for j in start..end {
-                        let sig = actual_signatures[j].clone();
-                        actual_signatures.push(sig);
-                    }
-                    start = end;
-                }
-
+            for (i, idl_type) in idl_args.iter().enumerate() {
                 // small sanity check
                 assert!(start < actual_signatures.len());
                 for sig in actual_signatures[start..].iter() {

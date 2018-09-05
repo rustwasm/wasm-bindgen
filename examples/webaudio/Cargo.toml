@@ -8,4 +8,17 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = { path = "../.." }
-web-sys = { path = "../../crates/web-sys" }
+
+[dependencies.web-sys]
+path = "../../crates/web-sys"
+features = [
+  'AudioContext',
+  'AudioDestinationNode',
+  'AudioNode',
+  'AudioParam',
+  'AudioScheduledSourceNode',
+  'BaseAudioContext',
+  'GainNode',
+  'OscillatorNode',
+  'OscillatorType',
+]

@@ -10,6 +10,7 @@
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 
+use proc_macro2::Ident;
 use weedle::{DictionaryDefinition, PartialDictionaryDefinition};
 use weedle::argument::Argument;
 use weedle::attribute::*;
@@ -24,6 +25,7 @@ use util;
 /// Collection of constructs that may use partial.
 #[derive(Default)]
 pub(crate) struct FirstPassRecord<'src> {
+    pub(crate) builtin_idents: BTreeSet<Ident>,
     pub(crate) interfaces: BTreeMap<&'src str, InterfaceData<'src>>,
     pub(crate) enums: BTreeMap<&'src str, &'src weedle::EnumDefinition<'src>>,
     /// The mixins, mapping their name to the webidl ast node for the mixin.
@@ -701,8 +703,10 @@ impl<'a> FirstPassRecord<'a> {
             Some(class) => class,
             None => return,
         };
-        if set.insert(camel_case_ident(superclass)) {
-            self.fill_superclasses(superclass, set);
+        if self.interfaces.contains_key(superclass) {
+            if set.insert(camel_case_ident(superclass)) {
+                self.fill_superclasses(superclass, set);
+            }
         }
     }
 

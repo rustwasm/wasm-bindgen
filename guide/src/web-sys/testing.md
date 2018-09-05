@@ -5,8 +5,7 @@ You can test the `web-sys` crate by running `cargo test` within the
 
 ```sh
 cd wasm-bindgen/crates/web-sys
-cargo test
-cargo test --target wasm32-unknown-unknown
+cargo test --target wasm32-unknown-unknown --all-features
 ```
 
 The Wasm tests all run within a headless browser. See [the `wasm-bindgen-test`
