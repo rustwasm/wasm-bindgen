@@ -61,7 +61,7 @@ greet("World!");
 
 ## Guide
 
-[📚 Read the `wasm-bindgen` guide here! 📚](https://rustwasm.github.io/wasm-bindgen)
+[**📚 Read the `wasm-bindgen` guide here! 📚**](https://rustwasm.github.io/wasm-bindgen)
 
 ## License
 
