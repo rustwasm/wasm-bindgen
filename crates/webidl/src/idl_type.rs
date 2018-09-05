@@ -1,12 +1,11 @@
 use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
-use heck::SnakeCase;
 use syn;
 use weedle::common::Identifier;
 use weedle::term;
 use weedle::types::*;
 
 use first_pass::FirstPassRecord;
-use util::{TypePosition, camel_case_ident, shared_ref, option_ty, array};
+use util::{TypePosition, camel_case_ident, snake_case_ident, shared_ref, option_ty, array};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]
 pub(crate) enum IdlType<'a> {
@@ -337,7 +336,7 @@ terms_to_idl_type! {
 
 impl<'a> IdlType<'a> {
     /// Generates a snake case type name.
-    pub(crate) fn push_type_name(&self, dst: &mut String) {
+    pub(crate) fn push_snake_case_name(&self, dst: &mut String) {
         match self {
             IdlType::Boolean => dst.push_str("bool"),
             IdlType::Byte => dst.push_str("i8"),
@@ -348,13 +347,13 @@ impl<'a> IdlType<'a> {
             IdlType::UnsignedLong => dst.push_str("u32"),
             IdlType::LongLong => dst.push_str("i64"),
             IdlType::UnsignedLongLong => dst.push_str("u64"),
-            IdlType::Float |
-            IdlType::UnrestrictedFloat => dst.push_str("f32"),
-            IdlType::Double |
-            IdlType::UnrestrictedDouble => dst.push_str("f64"),
-            IdlType::DomString |
-            IdlType::ByteString |
-            IdlType::UsvString => dst.push_str("str"),
+            | IdlType::Float
+            | IdlType::UnrestrictedFloat => dst.push_str("f32"),
+            | IdlType::Double
+            | IdlType::UnrestrictedDouble => dst.push_str("f64"),
+            | IdlType::DomString
+            | IdlType::ByteString
+            | IdlType::UsvString => dst.push_str("str"),
             IdlType::Object => dst.push_str("object"),
             IdlType::Symbol => dst.push_str("symbol"),
             IdlType::Error => dst.push_str("error"),
@@ -371,31 +370,31 @@ impl<'a> IdlType<'a> {
             IdlType::Float32Array => dst.push_str("f32_array"),
             IdlType::Float64Array => dst.push_str("f64_array"),
 
-            IdlType::Interface(name) => dst.push_str(&name.to_snake_case()),
-            IdlType::Dictionary(name) => dst.push_str(&name.to_snake_case()),
-            IdlType::Enum(name) => dst.push_str(&name.to_snake_case()),
+            IdlType::Interface(name) => dst.push_str(&snake_case_ident(name)),
+            IdlType::Dictionary(name) => dst.push_str(&snake_case_ident(name)),
+            IdlType::Enum(name) => dst.push_str(&snake_case_ident(name)),
 
             IdlType::Nullable(idl_type) => {
                 dst.push_str("opt_");
-                idl_type.push_type_name(dst);
+                idl_type.push_snake_case_name(dst);
             },
             IdlType::FrozenArray(idl_type) => {
-                idl_type.push_type_name(dst);
+                idl_type.push_snake_case_name(dst);
                 dst.push_str("_frozen_array");
             },
             IdlType::Sequence(idl_type) => {
-                idl_type.push_type_name(dst);
+                idl_type.push_snake_case_name(dst);
                 dst.push_str("_sequence");
             },
             IdlType::Promise(idl_type) => {
-                idl_type.push_type_name(dst);
+                idl_type.push_snake_case_name(dst);
                 dst.push_str("_promise");
             },
             IdlType::Record(idl_type_from, idl_type_to) => {
                 dst.push_str("record_from_");
-                idl_type_from.push_type_name(dst);
+                idl_type_from.push_snake_case_name(dst);
                 dst.push_str("_to_");
-                idl_type_to.push_type_name(dst);
+                idl_type_to.push_snake_case_name(dst);
             },
             IdlType::Union(idl_types) => {
                 dst.push_str("union_of_");
@@ -406,21 +405,13 @@ impl<'a> IdlType<'a> {
                     } else {
                         dst.push_str("_and_");
                     }
-                    idl_type.push_type_name(dst);
+                    idl_type.push_snake_case_name(dst);
                 }
             },
 
             IdlType::Any => dst.push_str("any"),
             IdlType::Void => dst.push_str("void"),
         }
-    }
-
-    /// Generates a snake case type name.
-    #[allow(dead_code)]
-    pub(crate) fn get_type_name(&self) -> String {
-        let mut string = String::new();
-        self.push_type_name(&mut string);
-        return string;
     }
 
     /// Converts to syn type if possible.
@@ -467,8 +458,8 @@ impl<'a> IdlType<'a> {
             IdlType::Float32Array => Some(array("f32", pos)),
             IdlType::Float64Array => Some(array("f64", pos)),
 
-            IdlType::Interface(name) |
-            IdlType::Dictionary(name) => {
+            | IdlType::Interface(name)
+            | IdlType::Dictionary(name) => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
                 if pos == TypePosition::Argument {
                     Some(shared_ref(ty))
@@ -491,7 +482,27 @@ impl<'a> IdlType<'a> {
                 }
             }
             IdlType::Record(_idl_type_from, _idl_type_to) => None,
-            IdlType::Union(_idl_types) => None,
+            IdlType::Union(idl_types) => {
+                // Handles union types in all places except operation argument types.
+                // Currently treats them as object type, if possible.
+                // TODO: add better support for union types here?
+                // Approaches for it:
+                // 1. Use strategy of finding the nearest common subclass (finding the best type
+                //    that is suitable for all values of this union)
+                // 2. Generate enum with payload in Rust for each union type
+                if idl_types
+                    .iter()
+                    .all(|idl_type|
+                        match idl_type {
+                            IdlType::Interface(..) => true,
+                            _ => false,
+                        }
+                    ) {
+                    IdlType::Object.to_syn_type(pos)
+                } else {
+                    None
+                }
+            },
 
             IdlType::Any => {
                 let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
@@ -552,7 +563,7 @@ impl<'a> IdlType<'a> {
                 .flat_map(|idl_type| idl_type.flatten())
                 .collect(),
 
-            idl_type @ _ => vec![idl_type.clone()]
+            idl_type @ _ => vec![idl_type.clone()],
         }
     }
 }
