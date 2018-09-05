@@ -469,24 +469,7 @@ impl<'a> IdlType<'a> {
             },
             IdlType::Enum(name) => Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))),
 
-            IdlType::Nullable(idl_type) => {
-                match **idl_type {
-                    IdlType::Union(ref idl_types) =>
-                        if idl_types
-                            .iter()
-                            .all(|idl_type|
-                                match idl_type {
-                                    IdlType::Interface(..) => true,
-                                    _ => false,
-                                }
-                            ) {
-                            IdlType::Nullable(Box::new(IdlType::Object)).to_syn_type(pos)
-                        } else {
-                            IdlType::Any.to_syn_type(pos)
-                        },
-                    _ => Some(option_ty(idl_type.to_syn_type(pos)?))
-                }
-            },
+            IdlType::Nullable(idl_type) => Some(option_ty(idl_type.to_syn_type(pos)?)),
             IdlType::FrozenArray(_idl_type) => None,
             IdlType::Sequence(_idl_type) => None,
             IdlType::Promise(_idl_type) => {
@@ -501,8 +484,12 @@ impl<'a> IdlType<'a> {
             IdlType::Record(_idl_type_from, _idl_type_to) => None,
             IdlType::Union(idl_types) => {
                 // Handles union types in all places except operation argument types.
-                // Currently treats them as object or any types.
+                // Currently treats them as object type, if possible.
                 // TODO: add better support for union types here?
+                // Approaches for it:
+                // 1. Use strategy of finding the nearest common subclass (finding the best type
+                //    that is suitable for all values of this union)
+                // 2. Generate enum with payload in Rust for each union type
                 if idl_types
                     .iter()
                     .all(|idl_type|
@@ -513,7 +500,7 @@ impl<'a> IdlType<'a> {
                     ) {
                     IdlType::Object.to_syn_type(pos)
                 } else {
-                    IdlType::Any.to_syn_type(pos)
+                    None
                 }
             },
 
