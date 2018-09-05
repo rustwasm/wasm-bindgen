@@ -39,7 +39,6 @@ use backend::TryToTokens;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::defined::ImportedTypeReferences;
 use backend::util::{ident_ty, rust_ident, raw_ident, wrap_import_function};
-use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
 use weedle::attribute::{ExtendedAttributeList};
 use weedle::dictionary::DictionaryMember;
