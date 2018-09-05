@@ -97,8 +97,15 @@ matrix:
         - *INSTALL_CHROMEDRIVER
       script:
         - export RUST_LOG=wasm_bindgen_test_runner
-        - CHROMEDRIVER=`pwd`/chromedriver cargo test -p web-sys --target wasm32-unknown-unknown
-        - GECKODRIVER=`pwd`/geckodriver cargo test -p web-sys --target wasm32-unknown-unknown
+        # Test out builds with just a few features
+        - cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown
+        - cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Node
+        - cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Element
+        - cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Window
+
+        # Now run all the tests with all the features
+        - CHROMEDRIVER=`pwd`/chromedriver cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
+        - GECKODRIVER=`pwd`/geckodriver cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
       addons:
         firefox: latest
         chrome: stable
@@ -176,7 +183,10 @@ matrix:
         - cargo install-update -a
       script:
         - (cd guide && mdbook build)
-        - cargo doc --no-deps -p wasm-bindgen -p web-sys -p js-sys -p wasm-bindgen-futures
+        - cargo doc --no-deps
+        - cargo doc --no-deps --manifest-path crates/js-sys/Cargo.toml
+        - cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
+        - cargo doc --no-deps --manifest-path crates/web-sys/Cargo.toml --all-features
         - mv target/doc guide/book/api
       deploy:
         provider: pages

@@ -9,4 +9,13 @@ crate-type = ["cdylib"]
 [dependencies]
 js-sys = { path = "../../crates/js-sys" }
 wasm-bindgen = { path = "../.." }
-web-sys = { path = "../../crates/web-sys" }
+
+[dependencies.web-sys]
+path = "../../crates/web-sys"
+features = [
+  'CanvasRenderingContext2d',
+  'Document',
+  'Element',
+  'HtmlCanvasElement',
+  'Window',
+]

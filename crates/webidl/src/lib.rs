@@ -29,18 +29,16 @@ mod idl_type;
 mod util;
 mod error;
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, HashSet, BTreeMap};
+use std::env;
 use std::fs;
-use std::io::{self, Read};
 use std::iter::FromIterator;
-use std::path::Path;
 
 use backend::ast;
 use backend::TryToTokens;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::defined::ImportedTypeReferences;
 use backend::util::{ident_ty, rust_ident, raw_ident, wrap_import_function};
-use failure::ResultExt;
 use proc_macro2::{Ident, Span};
 use weedle::attribute::{ExtendedAttributeList};
 use weedle::dictionary::DictionaryMember;
@@ -52,17 +50,10 @@ use idl_type::ToIdlType;
 
 pub use error::{Error, ErrorKind, Result};
 
-/// Parse the WebIDL at the given path into a wasm-bindgen AST.
-fn parse_file(webidl_path: &Path) -> Result<backend::ast::Program> {
-    let file = fs::File::open(webidl_path).context(ErrorKind::OpeningWebIDLFile)?;
-    let mut file = io::BufReader::new(file);
-    let mut source = String::new();
-    file.read_to_string(&mut source).context(ErrorKind::ReadingWebIDLFile)?;
-    parse(&source)
-}
-
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
-fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
+fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
+    -> Result<backend::ast::Program>
+{
     let definitions = match weedle::parse(webidl_source) {
         Ok(def) => def,
         Err(e) => {
@@ -84,9 +75,22 @@ fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
         }
     };
 
-    let mut first_pass_record = Default::default();
+    let mut first_pass_record: FirstPassRecord = Default::default();
+    first_pass_record.builtin_idents = builtin_idents();
     definitions.first_pass(&mut first_pass_record, ())?;
     let mut program = Default::default();
+
+    // Prune out everything in the `first_pass_record` which isn't allowed, or
+    // is otherwise gated from not actually being generated.
+    if let Some(allowed_types) = allowed_types {
+        let allowed = allowed_types.iter().cloned().collect::<HashSet<_>>();
+        let filter = |name: &&str| {
+            allowed.contains(&camel_case_ident(name)[..])
+        };
+        retain(&mut first_pass_record.enums, &filter);
+        retain(&mut first_pass_record.dictionaries, &filter);
+        retain(&mut first_pass_record.interfaces, &filter);
+    }
 
     for e in first_pass_record.enums.values() {
         first_pass_record.append_enum(&mut program, e);
@@ -104,18 +108,40 @@ fn parse(webidl_source: &str) -> Result<backend::ast::Program> {
     Ok(program)
 }
 
-/// Compile the given WebIDL file into Rust source text containing
-/// `wasm-bindgen` bindings to the things described in the WebIDL.
-pub fn compile_file(webidl_path: &Path) -> Result<String> {
-    let ast = parse_file(webidl_path)?;
-    Ok(compile_ast(ast))
+fn retain<K: Copy + Ord, V>(
+    map: &mut BTreeMap<K, V>,
+    mut filter: impl FnMut(&K) -> bool,
+) {
+    let mut to_remove = Vec::new();
+    for k in map.keys() {
+        if !filter(k) {
+            to_remove.push(*k);
+        }
+    }
+    for k in to_remove {
+        map.remove(&k);
+    }
 }
 
 /// Compile the given WebIDL source text into Rust source text containing
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
-pub fn compile(webidl_source: &str) -> Result<String> {
-    let ast = parse(webidl_source)?;
+pub fn compile(
+    webidl_source: &str,
+    allowed_types: Option<&[&str]>,
+) -> Result<String> {
+    let ast = parse(webidl_source, allowed_types)?;
     Ok(compile_ast(ast))
+}
+
+fn builtin_idents() -> BTreeSet<Ident> {
+    BTreeSet::from_iter(
+        vec![
+            "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
+            "usize", "isize", "f32", "f64", "Result", "String", "Vec", "Option",
+            "ArrayBuffer", "Object", "Promise",
+        ].into_iter()
+            .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
+    )
 }
 
 /// Run codegen on the AST to generate rust code.
@@ -124,22 +150,27 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
     // fields. Each pass may remove definitions of types and so we need to
     // reexecute this pass to see if we need to keep removing types until we
     // reach a steady state.
-    let builtin = BTreeSet::from_iter(
-        vec![
-            "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
-            "usize", "isize", "f32", "f64", "Result", "String", "Vec", "Option",
-            "ArrayBuffer", "Object", "Promise",
-        ].into_iter()
-            .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
-    );
+    let builtin = builtin_idents();
+    let mut all_definitions = BTreeSet::new();
+    let track = env::var_os("__WASM_BINDGEN_DUMP_FEATURES");
     loop {
         let mut defined = builtin.clone();
         ast.imported_type_definitions(&mut |id| {
             defined.insert(id.clone());
+            if track.is_some() {
+                all_definitions.insert(id.clone());
+            }
         });
         if !ast.remove_undefined_imports(&|id| defined.contains(id)) {
             break
         }
+    }
+    if let Some(path) = track {
+        let contents = all_definitions.into_iter()
+            .map(|s| format!("{} = []", s))
+            .collect::<Vec<_>>()
+            .join("\n");
+        fs::write(path, contents).unwrap();
     }
 
     let mut tokens = proc_macro2::TokenStream::new();
@@ -380,26 +411,29 @@ impl<'src> FirstPassRecord<'src> {
         name: &'src str,
         data: &InterfaceData<'src>,
     ) {
-        let doc_comment = Some(format!(
+        let mut doc_comment = Some(format!(
             "The `{}` object\n\n{}",
             name,
             mdn_doc(name, None),
         ));
+        let mut import_type = backend::ast::ImportType {
+            vis: public(),
+            rust_name: rust_ident(camel_case_ident(name).as_str()),
+            js_name: name.to_string(),
+            attrs: Vec::new(),
+            doc_comment: None,
+            instanceof_shim: format!("__widl_instanceof_{}", name),
+            extends: self.all_superclasses(name)
+                .map(|name| Ident::new(&name, Span::call_site()))
+                .collect(),
+        };
+        self.append_required_features_doc(&import_type, &mut doc_comment);
+        import_type.doc_comment = doc_comment;
 
         program.imports.push(backend::ast::Import {
             module: None,
             js_namespace: None,
-            kind: backend::ast::ImportKind::Type(backend::ast::ImportType {
-                vis: public(),
-                rust_name: rust_ident(camel_case_ident(name).as_str()),
-                js_name: name.to_string(),
-                attrs: Vec::new(),
-                doc_comment,
-                instanceof_shim: format!("__widl_instanceof_{}", name),
-                extends: self.all_superclasses(name)
-                    .map(|name| Ident::new(&name, Span::call_site()))
-                    .collect(),
-            }),
+            kind: backend::ast::ImportKind::Type(import_type),
         });
 
         for (id, op_data) in data.operations.iter() {
@@ -473,7 +507,7 @@ impl<'src> FirstPassRecord<'src> {
             .map(|interface_data| interface_data.global)
             .unwrap_or(false);
 
-        for import_function in self.create_getter(
+        for mut import_function in self.create_getter(
             identifier,
             &type_.type_,
             self_name,
@@ -482,11 +516,14 @@ impl<'src> FirstPassRecord<'src> {
             attrs,
             container_attrs,
         ) {
+            let mut doc = import_function.doc_comment.take();
+            self.append_required_features_doc(&import_function, &mut doc);
+            import_function.doc_comment = doc;
             program.imports.push(wrap_import_function(import_function));
         }
 
         if !readonly {
-            for import_function in self.create_setter(
+            for mut import_function in self.create_setter(
                 identifier,
                 &type_.type_,
                 self_name,
@@ -495,6 +532,9 @@ impl<'src> FirstPassRecord<'src> {
                 attrs,
                 container_attrs,
             ) {
+                let mut doc = import_function.doc_comment.take();
+                self.append_required_features_doc(&import_function, &mut doc);
+                import_function.doc_comment = doc;
                 program.imports.push(wrap_import_function(import_function));
             }
         }
@@ -535,7 +575,7 @@ impl<'src> FirstPassRecord<'src> {
         };
         let doc = match id {
             OperationId::Constructor(_) |
-            OperationId::Operation(None) => None,
+            OperationId::Operation(None) => Some(String::new()),
             OperationId::Operation(Some(name)) => {
                 Some(format!(
                     "The `{}()` method\n\n{}",
@@ -555,8 +595,39 @@ impl<'src> FirstPassRecord<'src> {
         };
         let attrs = data.definition_attributes;
         for mut method in self.create_imports(attrs, kind, id, op_data) {
-            method.doc_comment = doc.clone();
+            let mut doc = doc.clone();
+            self.append_required_features_doc(&method, &mut doc);
+            method.doc_comment = doc;
             program.imports.push(wrap_import_function(method));
         }
+    }
+
+    fn append_required_features_doc(
+        &self,
+        item: impl ImportedTypeReferences,
+        doc: &mut Option<String>,
+    ) {
+        let doc = match doc {
+            Some(doc) => doc,
+            None => return,
+        };
+        let mut required = BTreeSet::new();
+        item.imported_type_references(&mut |f| {
+            if !self.builtin_idents.contains(f) {
+                required.insert(f.clone());
+            }
+        });
+        if required.len() == 0 {
+            return
+        }
+        let list = required.iter()
+            .map(|ident| format!("`{}`", ident))
+            .collect::<Vec<_>>()
+            .join(", ");
+        doc.push_str(&format!(
+            "\n\n*This function requires the following crate features \
+             to be activated: {}*",
+            list,
+        ));
     }
 }

@@ -103,6 +103,7 @@ pub fn wrap_import_function(function: ast::ImportFunction) -> ast::Import {
 ///
 /// Hashes the public field here along with a few cargo-set env vars to
 /// distinguish between runs of the procedural macro.
+#[derive(Debug)]
 pub struct ShortHash<T>(pub T);
 
 impl<T: Hash> fmt::Display for ShortHash<T> {

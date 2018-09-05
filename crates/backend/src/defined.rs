@@ -77,6 +77,15 @@ where
     }
 }
 
+impl<'a, T: ImportedTypes> ImportedTypes for &'a T {
+    fn imported_types<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        (*self).imported_types(f)
+    }
+}
+
 impl ImportedTypes for ast::Program {
     fn imported_types<F>(&self, f: &mut F)
     where

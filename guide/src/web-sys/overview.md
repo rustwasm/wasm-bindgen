@@ -10,16 +10,9 @@ The `web-sys` crate has this file and directory layout:
 ├── src
 │   └── lib.rs
 └── webidls
-    ├── available
-    │   └── ...
     └── enabled
         └── ...
 ```
-
-### `webidls/available/*.webidl`
-
-These are all the different WebIDL definitions we intend to support, but don't
-yet. At the time of writing, these are the majority of `.webidl`s.
 
 ### `webidls/enabled/*.webidl`
 
@@ -40,3 +33,12 @@ time in `build.rs`. Here is the whole `src/lib.rs` file:
 ```rust
 {{#include ../../../crates/web-sys/src/lib.rs}}
 ```
+
+### Cargo features
+
+When compiled the crate is almost empty by default, which probably isn't what
+you want! Due to the very large number of APIs, this crate uses features to
+enable portions of its API to reduce compile times. The list of features in
+`Cargo.toml` all correspond to types in the generated functions. Enabling a
+feature enables that type. All methods should indicate what features need to be
+activated to use the method.
