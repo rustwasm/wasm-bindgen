@@ -29,7 +29,7 @@ test_script:
   # Try just a few features for `web-sys`, unfortunately the whole crate blows
   # system command line limits meaning we can't even spawn rustc to enable all
   # the features.
-  - cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features 'Node Window Document'
+  - cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features "Node Window Document"
 
 branches:
   only:
