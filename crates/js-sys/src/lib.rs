@@ -2128,6 +2128,7 @@ extern {
 #[wasm_bindgen]
 extern "C" {
     #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object)]
     pub type Reflect;
 
     /// The static `Reflect.apply()` method calls a target function with

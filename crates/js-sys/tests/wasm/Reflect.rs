@@ -1,4 +1,4 @@
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{JsCast, prelude::*};
 use wasm_bindgen_test::*;
 use js_sys::*;
 
@@ -179,4 +179,16 @@ fn set_prototype_of() {
     assert!(Reflect::set_prototype_of(&obj, &JsValue::null()));
     let obj = JsValue::from(obj);
     assert_eq!(JsValue::from(Reflect::get_prototype_of(&obj)), JsValue::null());
+}
+
+#[wasm_bindgen_test]
+fn reflect_extends() {
+    #[wasm_bindgen]
+    extern {
+        #[wasm_bindgen(js_name = Reflect)]
+        static reflect: Reflect;
+    }
+
+    assert!(reflect.is_instance_of::<Object>());
+    let _: &Object = reflect.as_ref();
 }
