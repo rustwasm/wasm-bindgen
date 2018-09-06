@@ -1203,6 +1203,7 @@ extern {
 #[wasm_bindgen]
 extern "C" {
     #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object)]
     pub type Math;
 
     /// The Math.abs() function returns the absolute value of a number, that is
