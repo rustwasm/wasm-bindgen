@@ -2866,6 +2866,20 @@ pub mod WebAssembly {
         #[wasm_bindgen(js_namespace = WebAssembly)]
         pub fn compile(buffer_source: &JsValue) -> Promise;
 
+        /// The `WebAssembly.instantiate()` function allows you to compile and
+        /// instantiate WebAssembly code.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate)
+        #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiate)]
+        pub fn instantiate_buffer(buffer: &[u8], imports: &Object) -> Promise;
+
+        /// The `WebAssembly.instantiate()` function allows you to compile and
+        /// instantiate WebAssembly code.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate)
+        #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiate)]
+        pub fn instantiate_module(module: &Module, imports: &Object) -> Promise;
+
         /// The `WebAssembly.validate()` function validates a given typed
         /// array of WebAssembly binary code, returning whether the bytes
         /// form a valid wasm module (`true`) or not (`false`).

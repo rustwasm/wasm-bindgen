@@ -172,6 +172,17 @@ fn webassembly_instance() {
     assert!(Reflect::has(exports.as_ref(), &"exported_func".into()));
 }
 
+#[wasm_bindgen_test(async)]
+fn instantiate_module() -> impl Future<Item = (), Error = JsValue> {
+    let module = WebAssembly::Module::new(&get_valid_wasm()).unwrap();
+    let imports = get_imports();
+    let p = WebAssembly::instantiate_module(&module, &imports);
+    JsFuture::from(p)
+        .map(|inst| {
+            assert!(inst.is_instance_of::<WebAssembly::Instance>());
+        })
+}
+
 #[wasm_bindgen_test]
 fn memory_works() {
     let obj = Object::new();
