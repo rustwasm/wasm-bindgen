@@ -172,6 +172,24 @@ pub(crate) fn slice_ty(t: syn::Type) -> syn::Type {
     }.into()
 }
 
+/// From `T` create `Box<T>`.
+pub(crate) fn box_ty(t: syn::Type) -> syn::Type {
+    let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
+        colon2_token: None,
+        lt_token: Default::default(),
+        args: FromIterator::from_iter(vec![
+            syn::GenericArgument::Type(t),
+        ]),
+        gt_token: Default::default(),
+    });
+
+    let ident = raw_ident("Box");
+    let seg = syn::PathSegment { ident, arguments };
+    let path: syn::Path = seg.into();
+    let ty = syn::TypePath { qself: None, path };
+    ty.into()
+}
+
 /// From `T` create `Vec<T>`.
 pub(crate) fn vec_ty(t: syn::Type) -> syn::Type {
     let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
@@ -223,6 +241,7 @@ impl<'src> FirstPassRecord<'src> {
         kind: backend::ast::ImportFunctionKind,
         structural: bool,
         catch: bool,
+        variadic: bool,
         doc_comment: Option<String>,
     ) -> Option<backend::ast::ImportFunction> where 'src: 'a {
         // Convert all of the arguments from their IDL type to a `syn` type,
@@ -245,7 +264,9 @@ impl<'src> FirstPassRecord<'src> {
         } else {
             Vec::with_capacity(idl_arguments.size_hint().0)
         };
-        for (argument_name, idl_type) in idl_arguments {
+        let idl_arguments: Vec<_> = idl_arguments.collect();
+        let arguments_count = idl_arguments.len();
+        for (i, (argument_name, idl_type)) in idl_arguments.into_iter().enumerate() {
             let syn_type = match idl_type.to_syn_type(TypePosition::Argument) {
                 Some(t) => t,
                 None => {
@@ -256,6 +277,20 @@ impl<'src> FirstPassRecord<'src> {
                     );
                     return None
                 }
+            };
+            let syn_type = if variadic && i == arguments_count - 1 {
+                // Blacklist unsupported slice types
+                match idl_type {
+                    | IdlType::DomString
+                    | IdlType::ByteString
+                    | IdlType::UsvString => return None,
+
+                    IdlType::Interface(..) => return None,
+
+                    _ => box_ty(slice_ty(syn_type))
+                }
+            } else {
+                syn_type
             };
             let argument_name = rust_ident(&argument_name.to_snake_case());
             arguments.push(simple_fn_arg(argument_name, syn_type));
@@ -296,10 +331,10 @@ impl<'src> FirstPassRecord<'src> {
             },
             rust_name: rust_ident(rust_name),
             js_ret: js_ret.clone(),
-            variadic: false,
+            variadic,
             catch,
             structural,
-            shim:{
+            shim: {
                 let ns = match kind {
                     backend::ast::ImportFunctionKind::ScopedMethod { .. } |
                     backend::ast::ImportFunctionKind::Normal => "",
@@ -334,7 +369,8 @@ impl<'src> FirstPassRecord<'src> {
             kind,
             is_structural(attrs.as_ref(), container_attrs),
             throws(attrs),
-            Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name))))
+            false,
+            Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name)))),
         )
     }
 
@@ -360,7 +396,8 @@ impl<'src> FirstPassRecord<'src> {
             kind,
             is_structural(attrs.as_ref(), container_attrs),
             throws(attrs),
-            Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name))))
+            false,
+            Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name)))),
         )
     }
 
@@ -413,7 +450,14 @@ impl<'src> FirstPassRecord<'src> {
             let mut idl_args = Vec::with_capacity(signature.args.len());
             for (i, arg) in signature.args.iter().enumerate() {
                 if arg.optional {
-                    assert!(signature.args[i..].iter().all(|a| a.optional));
+                    assert!(
+                        signature
+                            .args[i..]
+                            .iter()
+                            .all(|arg| arg.optional || arg.variadic),
+                        "Not optional or variadic argument after optional argument: {:?}",
+                        signature.args,
+                    );
                     signatures.push((signature, idl_args.clone()));
                 }
                 match arg.ty.to_idl_type(self) {
@@ -569,6 +613,8 @@ impl<'src> FirstPassRecord<'src> {
                 kind.clone(),
                 force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs),
                 force_throws || throws(&signature.orig.attrs),
+                signature.args.len() == signature.orig.args.len()
+                    && signature.orig.args.last().map(|arg| arg.variadic).unwrap_or(false),
                 None,
             ));
         }

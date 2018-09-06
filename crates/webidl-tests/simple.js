@@ -110,6 +110,13 @@ global.OptionalAndUnionArguments = class OptionalAndUnionArguments {
   }
 };
 
+global.Variadic = class Variadic {
+  constructor() {}
+  sum(...values) {
+    return values.reduce((a, b) => a + b, 0);
+  }
+};
+
 global.PartialInterface = class PartialInterface {
   get un() {
     return 1;

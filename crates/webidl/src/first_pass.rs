@@ -89,18 +89,19 @@ pub(crate) struct OperationData<'src> {
     pub(crate) is_static: bool,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub(crate) struct Signature<'src> {
     pub(crate) args: Vec<Arg<'src>>,
     pub(crate) ret: weedle::types::ReturnType<'src>,
     pub(crate) attrs: &'src Option<ExtendedAttributeList<'src>>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub(crate) struct Arg<'src> {
     pub(crate) name: &'src str,
     pub(crate) ty: &'src weedle::types::Type<'src>,
     pub(crate) optional: bool,
+    pub(crate) variadic: bool,
 }
 
 /// Implemented on an AST node to populate the `FirstPassRecord` struct.
@@ -259,19 +260,17 @@ fn first_pass_operation<'src>(
     };
     let mut args = Vec::with_capacity(arguments.len());
     for argument in arguments {
-        let arg = match argument {
-            Argument::Single(single) => single,
-            Argument::Variadic(v) => {
-                warn!("Unsupported variadic argument {} in {}",
-                      v.identifier.0,
-                      self_name);
-                return
-            }
+        let (name, ty, optional, variadic) = match argument {
+            Argument::Single(single) =>
+                (single.identifier.0, &single.type_.type_, single.optional.is_some(), false),
+            Argument::Variadic(variadic) =>
+                (variadic.identifier.0, &variadic.type_, false, true),
         };
         args.push(Arg {
-            name: arg.identifier.0,
-            ty: &arg.type_.type_,
-            optional: arg.optional.is_some(),
+            name,
+            ty,
+            optional,
+            variadic,
         });
     }
     for id in ids {

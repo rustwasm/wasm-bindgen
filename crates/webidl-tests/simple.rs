@@ -91,6 +91,12 @@ fn optional_and_union_arguments() {
 }
 
 #[wasm_bindgen_test]
+fn variadic() {
+    let f = Variadic::new().unwrap();
+    assert_eq!(f.sum(Box::new([1, 2, 3, 4, 5])), 15);
+}
+
+#[wasm_bindgen_test]
 fn unforgeable_is_structural() {
     let f = Unforgeable::new().unwrap();
     assert_eq!(f.uno(), 1);
