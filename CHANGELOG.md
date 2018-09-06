@@ -32,6 +32,37 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.20
+
+Released 2018-09-06
+
+### Added
+
+* All of `wasm-bindgen` is configured to compile on stable Rust as of the
+  upcoming 1.30.0 release, scheduled for October 25, 2018.
+* The underlying `JsValue` of a `Closure<T>` type can now be extracted at any
+  time.
+* Initial and experimental support was added for modules that have shared memory
+  (use atomic instructions).
+
+### Removed
+
+* The `--wasm2asm` flag of `wasm2es6js` was removed because the `wasm2asm` tool
+  has been removed from upstream Binaryen. This is replaced with the new
+  `wasm2js` tool from Binaryen.
+
+### Fixed
+
+* The "schema" version for wasm-bindgen now changes on all publishes, meaning we
+  can't forget to update it. This means that the crate version and CLI version
+  must exactly match.
+* The `wasm-bindgen` crate now has a `links` key which forbids multiple versions
+  of `wasm-bindgen` from being linked into a dependency graph, fixing obscure
+  linking errors with a more first-class error message.
+* Binary releases for Windows has been fixed.
+
+--------------------------------------------------------------------------------
+
 ## 0.2.19 (and 0.2.18)
 
 Released 2018-08-27.

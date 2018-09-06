@@ -19,5 +19,5 @@ log = "0.4.1"
 proc-macro2 = "0.4.8"
 quote = '0.6'
 syn = { version = '0.14', features = ['full'] }
-wasm-bindgen-backend = { version = "=0.2.19", path = "../backend" }
+wasm-bindgen-backend = { version = "=0.2.20", path = "../backend" }
 weedle = "0.7"
