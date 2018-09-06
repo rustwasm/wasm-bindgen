@@ -240,7 +240,7 @@ impl<'src> FirstPassRecord<'src> {
             ..
         } = &kind {
             let mut res = Vec::with_capacity(idl_arguments.size_hint().0 + 1);
-            res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone(), true)));
+            res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone(), false)));
             res
         } else {
             Vec::with_capacity(idl_arguments.size_hint().0)

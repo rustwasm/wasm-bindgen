@@ -33,6 +33,7 @@ pub(crate) enum IdlType<'a> {
     DataView,
     Int8Array,
     Uint8Array,
+    Uint8ArrayMut,
     Uint8ClampedArray,
     Int16Array,
     Uint16Array,
@@ -368,6 +369,7 @@ impl<'a> IdlType<'a> {
             IdlType::DataView => dst.push_str("data_view"),
             IdlType::Int8Array => dst.push_str("i8_array"),
             IdlType::Uint8Array => dst.push_str("u8_array"),
+            IdlType::Uint8ArrayMut => dst.push_str("u8_array"),
             IdlType::Uint8ClampedArray => dst.push_str("u8_clamped_array"),
             IdlType::Int16Array => dst.push_str("i16_array"),
             IdlType::Uint16Array => dst.push_str("u16_array"),
@@ -441,7 +443,7 @@ impl<'a> IdlType<'a> {
             | IdlType::DomString
             | IdlType::ByteString
             | IdlType::UsvString => match pos {
-                TypePosition::Argument => Some(shared_ref(ident_ty(raw_ident("str")), true)),
+                TypePosition::Argument => Some(shared_ref(ident_ty(raw_ident("str")), false)),
                 TypePosition::Return => Some(ident_ty(raw_ident("String"))),
             },
             IdlType::Object => {
@@ -456,15 +458,16 @@ impl<'a> IdlType<'a> {
                 Some(leading_colon_path_ty(path))
             },
             IdlType::DataView => None,
-            IdlType::Int8Array => Some(array("i8", pos, true)),
-            IdlType::Uint8Array => Some(array("u8", pos, true)),
+            IdlType::Int8Array => Some(array("i8", pos, false)),
+            IdlType::Uint8Array => Some(array("u8", pos, false)),
+            IdlType::Uint8ArrayMut => Some(array("u8", pos, true)),
             IdlType::Uint8ClampedArray => None, // FIXME(#421)
-            IdlType::Int16Array => Some(array("i16", pos, true)),
-            IdlType::Uint16Array => Some(array("u16", pos, true)),
-            IdlType::Int32Array => Some(array("i32", pos, true)),
-            IdlType::Uint32Array => Some(array("u32", pos, true)),
-            IdlType::Float32Array => Some(array("f32", pos, true)),
-            IdlType::Float64Array => Some(array("f64", pos, true)),
+            IdlType::Int16Array => Some(array("i16", pos, false)),
+            IdlType::Uint16Array => Some(array("u16", pos, false)),
+            IdlType::Int32Array => Some(array("i32", pos, false)),
+            IdlType::Uint32Array => Some(array("u32", pos, false)),
+            IdlType::Float32Array => Some(array("f32", pos, false)),
+            IdlType::Float64Array => Some(array("f64", pos, false)),
 
             IdlType::ArrayBufferView | IdlType::BufferSource => {
                 let path = vec![rust_ident("js_sys"), rust_ident("Object")];
@@ -474,7 +477,7 @@ impl<'a> IdlType<'a> {
             | IdlType::Dictionary(name) => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
                 if pos == TypePosition::Argument {
-                    Some(shared_ref(ty, true))
+                    Some(shared_ref(ty, false))
                 } else {
                     Some(ty)
                 }
@@ -488,7 +491,7 @@ impl<'a> IdlType<'a> {
                 let path = vec![rust_ident("js_sys"), rust_ident("Promise")];
                 let ty = leading_colon_path_ty(path);
                 if pos == TypePosition::Argument {
-                    Some(shared_ref(ty, true))
+                    Some(shared_ref(ty, false))
                 } else {
                     Some(ty)
                 }
@@ -575,7 +578,7 @@ impl<'a> IdlType<'a> {
                 .flat_map(|idl_type| idl_type.flatten())
                 .collect(),
             IdlType::ArrayBufferView | IdlType::BufferSource =>
-                vec![IdlType::Object, IdlType::Uint8Array],
+                vec![IdlType::Object, IdlType::Uint8ArrayMut],
 
             idl_type @ _ => vec![idl_type.clone()],
         }
