@@ -14,11 +14,11 @@ use first_pass::{FirstPassRecord, OperationId, OperationData, Signature};
 use idl_type::{IdlType, ToIdlType};
 
 /// Take a type and create an immutable shared reference to that type.
-pub(crate) fn shared_ref(ty: syn::Type) -> syn::Type {
+pub(crate) fn shared_ref(ty: syn::Type, mutable: bool) -> syn::Type {
     syn::TypeReference {
         and_token: Default::default(),
         lifetime: None,
-        mutability: None,
+        mutability: if mutable { Some(syn::token::Mut::default()) } else { None },
         elem: Box::new(ty),
     }.into()
 }
@@ -57,10 +57,10 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
 }
 
 // Array type is borrowed for arguments (`&[T]`) and owned for return value (`Vec<T>`).
-pub(crate) fn array(base_ty: &str, pos: TypePosition) -> syn::Type {
+pub(crate) fn array(base_ty: &str, pos: TypePosition, mutable: bool) -> syn::Type {
     match pos {
         TypePosition::Argument => {
-            shared_ref(slice_ty(ident_ty(raw_ident(base_ty))))
+            shared_ref(slice_ty(ident_ty(raw_ident(base_ty))), mutable)
         }
         TypePosition::Return => {
             vec_ty(ident_ty(raw_ident(base_ty)))
@@ -240,7 +240,7 @@ impl<'src> FirstPassRecord<'src> {
             ..
         } = &kind {
             let mut res = Vec::with_capacity(idl_arguments.size_hint().0 + 1);
-            res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone())));
+            res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone(), false)));
             res
         } else {
             Vec::with_capacity(idl_arguments.size_hint().0)
