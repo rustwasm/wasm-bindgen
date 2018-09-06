@@ -3065,9 +3065,17 @@ pub mod WebAssembly {
         /// The `get()` prototype method of the `WebAssembly.Table()` object
         /// retrieves a function reference stored at a given index.
         ///
-        /// [MDN documentation](
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/get)
         #[wasm_bindgen(method, catch, js_namespace = WebAssembly)]
         pub fn get(this: &Table, index: u32) -> Result<Function, JsValue>;
+
+        /// The `grow()` prototype method of the `WebAssembly.Table` object
+        /// increases the size of the `Table` instance by a specified number of
+        /// elements.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/grow)
+        #[wasm_bindgen(method, catch, js_namespace = WebAssembly)]
+        pub fn grow(this: &Table, additional_capacity: u32) -> Result<u32, JsValue>;
     }
 
     // WebAssembly.Memory

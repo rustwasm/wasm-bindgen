@@ -130,6 +130,9 @@ fn table() {
 
     assert!(table.get(0).is_ok());
     assert!(table.get(999).is_err());
+
+    table.grow(1).unwrap();
+    assert_eq!(table.length(), 2);
 }
 
 #[wasm_bindgen_test]
