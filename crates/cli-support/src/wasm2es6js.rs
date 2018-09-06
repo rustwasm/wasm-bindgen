@@ -1,12 +1,9 @@
 extern crate base64;
 extern crate tempfile;
 
-use std::collections::{HashMap, HashSet};
-use std::fs;
-use std::io;
-use std::process::Command;
+use std::collections::HashSet;
 
-use failure::{Error, ResultExt};
+use failure::Error;
 use parity_wasm::elements::*;
 
 pub struct Config {
@@ -220,36 +217,4 @@ impl Output {
             exports = exports,
         ))
     }
-}
-
-fn run(cmd: &mut Command, program: &str) -> Result<(), Error> {
-    let output = cmd.output().with_context(|e| {
-        if e.kind() == io::ErrorKind::NotFound {
-            format!(
-                "failed to execute `{}`, is the tool installed \
-                 from the binaryen project?\ncommand line: {:?}",
-                program, cmd
-            )
-        } else {
-            format!("failed to execute: {:?}", cmd)
-        }
-    })?;
-    if output.status.success() {
-        return Ok(());
-    }
-
-    let mut s = format!("failed to execute: {:?}\nstatus: {}\n", cmd, output.status);
-    if !output.stdout.is_empty() {
-        s.push_str(&format!(
-            "----- stdout ------\n{}\n",
-            String::from_utf8_lossy(&output.stdout)
-        ));
-    }
-    if !output.stderr.is_empty() {
-        s.push_str(&format!(
-            "----- stderr ------\n{}\n",
-            String::from_utf8_lossy(&output.stderr)
-        ));
-    }
-    bail!("{}", s)
 }
