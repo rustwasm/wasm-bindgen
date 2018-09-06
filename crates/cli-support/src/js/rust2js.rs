@@ -275,54 +275,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             return Ok(());
         }
 
-        if let Some(closure) = arg.ref_closure() {
-            let (js, _ts, _js_doc) = {
-                let mut builder = Js2Rust::new("", self.cx);
-                if closure.mutable {
-                    builder
-                        .prelude("let a = this.a;\n")
-                        .prelude("this.a = 0;\n")
-                        .rust_argument("a")
-                        .finally("this.a = a;\n");
-                } else {
-                    builder.rust_argument("this.a");
-                }
-                builder
-                    .process(&closure.function)?
-                    .finish("function", "this.f")
-            };
-            self.cx.expose_get_global_argument()?;
-            self.cx.expose_uint32_memory();
-            self.cx.expose_add_heap_object();
-            self.cx.function_table_needed = true;
-            let reset_idx = format!(
-                "\
-                 let cb{0} = {js};\n\
-                 cb{0}.f = wasm.__wbg_function_table.get(getGlobalArgument({f}));\n\
-                 cb{0}.a = getGlobalArgument({a});\n\
-                 let real = cb{0}.bind(cb{0});\n\
-                 real.original = cb{0};\n\
-                 idx{0} = getUint32Memory()[{0} / 4] = addHeapObject(real);\n\
-                 ",
-                abi,
-                js = js,
-                f = self.global_idx(),
-                a = self.global_idx(),
-            );
-            self.prelude(&format!(
-                "\
-                 let idx{0} = getUint32Memory()[{0} / 4];\n\
-                 if (idx{0} === 0xffffffff) {{\n\
-                 {1}\
-                 }}\n\
-                 ",
-                abi, &reset_idx
-            ));
-            self.cx.expose_get_object();
-            self.js_arguments.push(format!("getObject(idx{})", abi));
-            return Ok(());
-        }
-
         let invoc_arg = match *arg {
             ref d if d.is_number() => abi,
             Descriptor::Boolean => format!("{} !== 0", abi),

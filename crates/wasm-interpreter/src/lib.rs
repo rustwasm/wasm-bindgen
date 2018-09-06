@@ -35,17 +35,22 @@ pub struct Interpreter {
     // calculations)
     imports: usize,
 
-    // Function index of the `__wbindgen_describe` imported function. We special
-    // case this to know when the environment's imported function is called.
+    // Function index of the `__wbindgen_describe` and
+    // `__wbindgen_describe_closure` imported functions. We special case this
+    // to know when the environment's imported function is called.
     describe_idx: Option<u32>,
+    describe_closure_idx: Option<u32>,
 
     // A mapping of string names to the function index, filled with all exported
     // functions.
     name_map: HashMap<String, u32>,
 
-    // The numerical index of the code section in the wasm module, indexed into
+    // The numerical index of the sections in the wasm module, indexed into
     // the module's list of sections.
     code_idx: Option<usize>,
+    types_idx: Option<usize>,
+    functions_idx: Option<usize>,
+    elements_idx: Option<usize>,
 
     // The current stack pointer (global 0) and wasm memory (the stack). Only
     // used in a limited capacity.
@@ -60,6 +65,18 @@ pub struct Interpreter {
     // very specific to wasm-bindgen and is the purpose for the existence of
     // this module.
     descriptor: Vec<u32>,
+
+    // When invoking the `__wbindgen_describe_closure` imported function, this
+    // stores the last table index argument, used for finding a different
+    // descriptor.
+    descriptor_table_idx: Option<u32>,
+}
+
+struct Sections<'a> {
+    code: &'a CodeSection,
+    types: &'a TypeSection,
+    functions: &'a FunctionSection,
+    elements: &'a ElementSection,
 }
 
 impl Interpreter {
@@ -82,6 +99,9 @@ impl Interpreter {
         for (i, s) in module.sections().iter().enumerate() {
             match s {
                 Section::Code(_) => ret.code_idx = Some(i),
+                Section::Element(_) => ret.elements_idx = Some(i),
+                Section::Type(_) => ret.types_idx = Some(i),
+                Section::Function(_) => ret.functions_idx = Some(i),
                 _ => {}
             }
         }
@@ -101,10 +121,11 @@ impl Interpreter {
                 if entry.module() != "__wbindgen_placeholder__" {
                     continue
                 }
-                if entry.field() != "__wbindgen_describe" {
-                    continue
+                if entry.field() == "__wbindgen_describe" {
+                    ret.describe_idx = Some(idx - 1 as u32);
+                } else if entry.field() == "__wbindgen_describe_closure" {
+                    ret.describe_closure_idx = Some(idx - 1 as u32);
                 }
-                ret.describe_idx = Some(idx - 1 as u32);
             }
         }
 
@@ -142,47 +163,171 @@ impl Interpreter {
     ///
     /// Returns `Some` if `func` was found in the `module` and `None` if it was
     /// not found in the `module`.
-    pub fn interpret(&mut self, func: &str, module: &Module) -> Option<&[u32]> {
-        self.descriptor.truncate(0);
+    pub fn interpret_descriptor(
+        &mut self,
+        func: &str,
+        module: &Module,
+    ) -> Option<&[u32]> {
         let idx = *self.name_map.get(func)?;
-        let code = match &module.sections()[self.code_idx.unwrap()] {
-            Section::Code(s) => s,
-            _ => panic!(),
-        };
+        self.with_sections(module, |me, sections| {
+            me.interpret_descriptor_idx(idx, sections)
+        })
+    }
+
+    fn interpret_descriptor_idx(
+        &mut self,
+        idx: u32,
+        sections: &Sections,
+    ) -> Option<&[u32]> {
+        self.descriptor.truncate(0);
 
         // We should have a blank wasm and LLVM stack at both the start and end
         // of the call.
         assert_eq!(self.sp, self.mem.len() as i32);
         assert_eq!(self.stack.len(), 0);
-        self.call(idx, code);
+        self.call(idx, sections);
         assert_eq!(self.stack.len(), 0);
         assert_eq!(self.sp, self.mem.len() as i32);
         Some(&self.descriptor)
     }
 
-    fn call(&mut self, idx: u32, code: &CodeSection) {
+    /// Interprets a "closure descriptor", figuring out the signature of the
+    /// closure that was intended.
+    ///
+    /// This function will take a `code_idx` which is known to internally
+    /// execute `__wbindgen_describe_closure` and interpret it. The
+    /// `wasm-bindgen` crate controls all callers of this internal import. It
+    /// will then take the index passed to `__wbindgen_describe_closure` and
+    /// interpret it as a function pointer. This means it'll look up within the
+    /// element section (function table) which index it points to. Upon finding
+    /// the relevant entry it'll assume that function is a descriptor function,
+    /// and then it will execute the descriptor function.
+    ///
+    /// The returned value is the return value of the descriptor function found.
+    /// The `entry_removal_list` list is also then populated with an index of
+    /// the entry in the elements section (and then the index within that
+    /// section) of the function that needs to be snip'd out.
+    pub fn interpret_closure_descriptor(
+        &mut self,
+        code_idx: usize,
+        module: &Module,
+        entry_removal_list: &mut Vec<(usize, usize)>,
+    ) -> Option<&[u32]> {
+        self.with_sections(module, |me, sections| {
+            me._interpret_closure_descriptor(code_idx, sections, entry_removal_list)
+        })
+    }
+
+    fn _interpret_closure_descriptor(
+        &mut self,
+        code_idx: usize,
+        sections: &Sections,
+        entry_removal_list: &mut Vec<(usize, usize)>,
+    ) -> Option<&[u32]> {
+        // Call the `code_idx` function. This is an internal `#[inline(never)]`
+        // whose code is completely controlled by the `wasm-bindgen` crate, so
+        // it should take two arguments and return one (all of which we don't
+        // care about here). What we're interested in is that while executing
+        // this function it'll call `__wbindgen_describe_closure` with an
+        // argument that we look for.
+        assert!(self.descriptor_table_idx.is_none());
+        let closure_descriptor_idx = (code_idx + self.imports) as u32;
+        self.stack.push(0);
+        self.stack.push(0);
+        self.call(closure_descriptor_idx, sections);
+        assert_eq!(self.stack.len(), 1);
+        self.stack.pop();
+        let descriptor_table_idx = self.descriptor_table_idx.take().unwrap();
+
+        // After we've got the table index of the descriptor function we're
+        // interested go take a look in the function table to find what the
+        // actual index of the function is.
+        let (entry_idx, offset, entry) = sections.elements.entries()
+            .iter()
+            .enumerate()
+            .filter_map(|(i, entry)| {
+                let code = entry.offset().code();
+                if code.len() != 2 {
+                    return None
+                }
+                if code[1] != Instruction::End {
+                    return None
+                }
+                match code[0] {
+                    Instruction::I32Const(x) => Some((i, x as u32, entry)),
+                    _ => None,
+                }
+            })
+            .find(|(_i, offset, entry)| {
+                *offset <= descriptor_table_idx &&
+                    descriptor_table_idx < (*offset + entry.members().len() as u32)
+            })
+            .expect("failed to find index in table elements");
+        let idx = (descriptor_table_idx - offset) as usize;
+        let descriptor_idx = entry.members()[idx];
+
+        // This is used later to actually remove the entry from the table, but
+        // we don't do the removal just yet
+        entry_removal_list.push((entry_idx, idx));
+
+        // And now execute the descriptor!
+        self.interpret_descriptor_idx(descriptor_idx, sections)
+    }
+
+    /// Returns the function space index of the `__wbindgen_describe_closure`
+    /// imported function.
+    pub fn describe_closure_idx(&self) -> Option<u32> {
+        self.describe_closure_idx
+    }
+
+    fn call(&mut self, idx: u32, sections: &Sections) {
         use parity_wasm::elements::Instruction::*;
 
         let idx = idx as usize;
         assert!(idx >= self.imports); // can't call imported functions
-        let body = &code.bodies()[idx - self.imports];
+        let code_idx = idx - self.imports;
+        let body = &sections.code.bodies()[code_idx];
 
         // Allocate space for our call frame's local variables. All local
         // variables should be of the `i32` type.
         assert!(body.locals().len() <= 1, "too many local types");
-        let locals = body.locals()
+        let nlocals = body.locals()
             .get(0)
             .map(|i| {
                 assert_eq!(i.value_type(), ValueType::I32);
                 i.count()
             })
             .unwrap_or(0);
-        let mut locals = vec![0; locals as usize];
+
+        let code_sig = sections.functions.entries()[code_idx].type_ref();
+        let function_ty = match &sections.types.types()[code_sig as usize] {
+            Type::Function(t) => t,
+        };
+        let mut locals = Vec::with_capacity(function_ty.params().len() + nlocals as usize);
+        // Any function parameters we have get popped off the stack and put into
+        // the first few locals ...
+        for param in function_ty.params() {
+            assert_eq!(*param, ValueType::I32);
+            locals.push(self.stack.pop().unwrap());
+        }
+        // ... and the remaining locals all start as zero ...
+        for _ in 0..nlocals {
+            locals.push(0);
+        }
+        // ... and we expect one stack slot at the end if there's a returned
+        // value
+        let before = self.stack.len();
+        let stack_after = match function_ty.return_type() {
+            Some(t) => {
+                assert_eq!(t, ValueType::I32);
+                before + 1
+            }
+            None => before,
+        };
 
         // Actual interpretation loop! We keep track of our stack's length to
         // recover it as part of the `Return` instruction, and otherwise this is
         // a pretty straightforward interpretation loop.
-        let before = self.stack.len();
         for instr in body.code().elements() {
             match instr {
                 I32Const(x) => self.stack.push(*x),
@@ -198,8 +343,14 @@ impl Interpreter {
                     // Otherwise this is a normal call so we recurse.
                     if Some(*idx) == self.describe_idx {
                         self.descriptor.push(self.stack.pop().unwrap() as u32);
+                    } else if Some(*idx) == self.describe_closure_idx {
+                        self.descriptor_table_idx =
+                            Some(self.stack.pop().unwrap() as u32);
+                        assert_eq!(self.stack.pop(), Some(0));
+                        assert_eq!(self.stack.pop(), Some(0));
+                        self.stack.push(0);
                     } else {
-                        self.call(*idx, code);
+                        self.call(*idx, sections);
                     }
                 }
                 GetGlobal(0) => self.stack.push(self.sp),
@@ -223,7 +374,7 @@ impl Interpreter {
                     let addr = self.stack.pop().unwrap() as u32;
                     self.stack.push(self.mem[((addr + *offset) as usize) / 4]);
                 }
-                Return => self.stack.truncate(before),
+                Return => self.stack.truncate(stack_after),
                 End => break,
 
                 // All other instructions shouldn't be used by our various
@@ -238,6 +389,37 @@ impl Interpreter {
                 s => panic!("unknown instruction {:?}", s),
             }
         }
-        assert_eq!(self.stack.len(), before);
+        assert_eq!(self.stack.len(), stack_after);
+    }
+
+    fn with_sections<'a, T>(
+        &'a mut self,
+        module: &Module,
+        f: impl FnOnce(&'a mut Self, &Sections) -> T,
+    ) -> T {
+        macro_rules! access_with_defaults {
+            ($(
+                    let $var: ident = module.sections[self.$field:ident]
+                    ($name:ident);
+            )*) => {$(
+                let default = Default::default();
+                let $var = match self.$field {
+                    Some(i) => {
+                        match &module.sections()[i] {
+                            Section::$name(s) => s,
+                            _ => panic!(),
+                        }
+                    }
+                    None => &default,
+                };
+            )*}
+        }
+        access_with_defaults! {
+            let code = module.sections[self.code_idx] (Code);
+            let types = module.sections[self.types_idx] (Type);
+            let functions = module.sections[self.functions_idx] (Function);
+            let elements = module.sections[self.elements_idx] (Element);
+        }
+        f(self, &Sections { code, types, functions, elements })
     }
 }
