@@ -2917,6 +2917,15 @@ pub mod WebAssembly {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)
         #[wasm_bindgen(catch, constructor, js_namespace = WebAssembly)]
         pub fn new(module: &Module, imports: &Object) -> Result<Instance, JsValue>;
+
+        /// The `exports` readonly property of the `WebAssembly.Instance` object
+        /// prototype returns an object containing as its members all the
+        /// functions exported from the WebAssembly module instance, to allow
+        /// them to be accessed and used by JavaScript.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance/exports)
+        #[wasm_bindgen(getter, method, js_namespace = WebAssembly)]
+        pub fn exports(this: &Instance) -> Object;
     }
 
     // WebAssembly.LinkError

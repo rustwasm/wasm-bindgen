@@ -157,13 +157,19 @@ fn runtime_error_inheritance() {
 }
 
 #[wasm_bindgen_test]
-fn instance_constructor_and_inheritance() {
+fn webassembly_instance() {
     let module = WebAssembly::Module::new(&get_valid_wasm()).unwrap();
     let imports = get_imports();
     let instance = WebAssembly::Instance::new(&module, &imports).unwrap();
+
+    // Inheritance chain is correct.
     assert!(instance.is_instance_of::<WebAssembly::Instance>());
     assert!(instance.is_instance_of::<Object>());
     let _: &Object = instance.as_ref();
+
+    // Has expected exports.
+    let exports = instance.exports();
+    assert!(Reflect::has(exports.as_ref(), &"exported_func".into()));
 }
 
 #[wasm_bindgen_test]
