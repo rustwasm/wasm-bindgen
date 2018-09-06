@@ -21,8 +21,19 @@ function getInvalidTableObject() {
   return { element: "anyfunc", initial: 1, maximum: 0 }
 }
 
+function getImports() {
+  return {
+    imports: {
+      imported_func: function () {
+        return 1;
+      }
+    }
+  };
+}
+
 module.exports = {
   getInvalidTableObject,
   getTableObject,
   getWasmArray,
+  getImports,
 };

@@ -2896,6 +2896,29 @@ pub mod WebAssembly {
         pub fn new(message: &str) -> CompileError;
     }
 
+    // WebAssembly.Instance
+    #[wasm_bindgen]
+    extern "C" {
+        /// A `WebAssembly.Instance` object is a stateful, executable instance
+        /// of a `WebAssembly.Module`. Instance objects contain all the exported
+        /// WebAssembly functions that allow calling into WebAssembly code from
+        /// JavaScript.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)
+        #[wasm_bindgen(extends = Object, js_namespace = WebAssembly)]
+        #[derive(Clone, Debug)]
+        pub type Instance;
+
+        /// The `WebAssembly.Instance()` constructor function can be called to
+        /// synchronously instantiate a given `WebAssembly.Module`
+        /// object. However, the primary way to get an `Instance` is through the
+        /// asynchronous `WebAssembly.instantiateStreaming()` function.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)
+        #[wasm_bindgen(catch, constructor, js_namespace = WebAssembly)]
+        pub fn new(module: &Module, imports: &Object) -> Result<Instance, JsValue>;
+    }
+
     // WebAssembly.LinkError
     #[wasm_bindgen]
     extern "C" {
