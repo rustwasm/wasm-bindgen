@@ -448,7 +448,11 @@ impl<'a> IdlType<'a> {
             },
             IdlType::Object => {
                 let path = vec![rust_ident("js_sys"), rust_ident("Object")];
-                Some(leading_colon_path_ty(path))
+                let ty = leading_colon_path_ty(path);
+                Some(match pos {
+                    TypePosition::Argument => shared_ref(ty, false),
+                    TypePosition::Return => ty,
+                })
             },
             IdlType::Symbol => None,
             IdlType::Error => None,
@@ -471,7 +475,11 @@ impl<'a> IdlType<'a> {
 
             IdlType::ArrayBufferView | IdlType::BufferSource => {
                 let path = vec![rust_ident("js_sys"), rust_ident("Object")];
-                Some(leading_colon_path_ty(path))
+                let ty = leading_colon_path_ty(path);
+                Some(match pos {
+                    TypePosition::Argument => shared_ref(ty, false),
+                    TypePosition::Return => ty,
+                })
             },
             IdlType::Interface(name)
             | IdlType::Dictionary(name) => {
@@ -577,9 +585,12 @@ impl<'a> IdlType<'a> {
                 .iter()
                 .flat_map(|idl_type| idl_type.flatten())
                 .collect(),
-            IdlType::ArrayBufferView | IdlType::BufferSource =>
-                vec![IdlType::Object, IdlType::Uint8ArrayMut],
-
+            IdlType::ArrayBufferView => {
+                vec![IdlType::ArrayBufferView, IdlType::Uint8ArrayMut]
+            }
+            IdlType::BufferSource => {
+                vec![IdlType::BufferSource, IdlType::Uint8ArrayMut]
+            }
             idl_type @ _ => vec![idl_type.clone()],
         }
     }
