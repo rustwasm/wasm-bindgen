@@ -133,6 +133,9 @@ fn table() {
 
     table.grow(1).unwrap();
     assert_eq!(table.length(), 2);
+
+    let f = table.get(0).unwrap();
+    table.set(1, &f).unwrap();
 }
 
 #[wasm_bindgen_test]
