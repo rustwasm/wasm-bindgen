@@ -3048,8 +3048,12 @@ pub mod WebAssembly {
 // JSON
 #[wasm_bindgen]
 extern "C" {
-
+    /// The `JSON` object contains methods for parsing [JavaScript Object
+    /// Notation (JSON)](https://json.org/) and converting values to JSON. It
+    /// can't be called or constructed, and aside from its two method
+    /// properties, it has no interesting functionality of its own.
     #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object)]
     pub type JSON;
 
     /// The `JSON.parse()` method parses a JSON string, constructing the

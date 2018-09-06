@@ -1,4 +1,4 @@
-use wasm_bindgen::JsValue;
+use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 use wasm_bindgen::JsCast;
 use js_sys::*;
@@ -81,4 +81,16 @@ fn stringify_error() {
     let err: &Error = err_obj.dyn_ref().unwrap();
     let err_msg: String = From::from(err.message());
     assert!(err_msg.contains("rust really rocks"));
+}
+
+#[wasm_bindgen_test]
+fn json_extends() {
+    #[wasm_bindgen]
+    extern {
+        #[wasm_bindgen(js_name = JSON)]
+        static json: JSON;
+    }
+
+    assert!(json.is_instance_of::<Object>());
+    let _: &Object = json.as_ref();
 }
