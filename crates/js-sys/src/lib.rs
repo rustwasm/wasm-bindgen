@@ -3061,6 +3061,13 @@ pub mod WebAssembly {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/length)
         #[wasm_bindgen(method, getter, js_namespace = WebAssembly)]
         pub fn length(this: &Table) -> u32;
+
+        /// The `get()` prototype method of the `WebAssembly.Table()` object
+        /// retrieves a function reference stored at a given index.
+        ///
+        /// [MDN documentation](
+        #[wasm_bindgen(method, catch, js_namespace = WebAssembly)]
+        pub fn get(this: &Table, index: u32) -> Result<Function, JsValue>;
     }
 
     // WebAssembly.Memory

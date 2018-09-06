@@ -127,6 +127,9 @@ fn table_error() {
 fn table() {
     let table = WebAssembly::Table::new(&get_table_object().into()).unwrap();
     assert_eq!(table.length(), 1);
+
+    assert!(table.get(0).is_ok());
+    assert!(table.get(999).is_err());
 }
 
 #[wasm_bindgen_test]
