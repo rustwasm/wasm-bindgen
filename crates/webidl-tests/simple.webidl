@@ -95,3 +95,15 @@ interface Overloads {
   void foo(DOMString arg, optional long a);
   void foo(DOMString arg, (float or short) b);
 };
+
+callback MyCallback = any();
+callback AddCallback = long(long a, long b);
+callback RepeatCallback = DOMString(DOMString a, long cnt);
+callback GetAnswer = long();
+
+[Constructor()]
+interface InvokeCallback {
+  void invoke(MyCallback callback);
+  long callAdd(AddCallback callback);
+  DOMString callRepeat(RepeatCallback callback);
+};

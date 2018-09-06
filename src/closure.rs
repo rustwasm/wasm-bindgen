@@ -191,7 +191,7 @@ impl<T> Closure<T>
     }
 }
 
-impl<T> AsRef<JsValue> for Closure<T> {
+impl<T: ?Sized> AsRef<JsValue> for Closure<T> {
     fn as_ref(&self) -> &JsValue {
         &self.js
     }

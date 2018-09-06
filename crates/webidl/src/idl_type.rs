@@ -28,6 +28,7 @@ pub(crate) enum IdlType<'a> {
     Object,
     Symbol,
     Error,
+    Callback,
 
     ArrayBuffer,
     DataView,
@@ -293,6 +294,8 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
             Some(IdlType::Dictionary(self.0))
         } else if record.enums.contains_key(self.0) {
             Some(IdlType::Enum(self.0))
+        } else if record.callbacks.contains(self.0) {
+            Some(IdlType::Callback)
         } else {
             warn!("Unrecognized type: {}", self.0);
             None
@@ -364,6 +367,7 @@ impl<'a> IdlType<'a> {
             IdlType::Object => dst.push_str("object"),
             IdlType::Symbol => dst.push_str("symbol"),
             IdlType::Error => dst.push_str("error"),
+            IdlType::Callback => dst.push_str("callback"),
 
             IdlType::ArrayBuffer => dst.push_str("array_buffer"),
             IdlType::DataView => dst.push_str("data_view"),
@@ -426,6 +430,17 @@ impl<'a> IdlType<'a> {
 
     /// Converts to syn type if possible.
     pub(crate) fn to_syn_type(&self, pos: TypePosition) -> Option<syn::Type> {
+        let anyref = |ty| {
+            Some(match pos {
+                TypePosition::Argument => shared_ref(ty, false),
+                TypePosition::Return => ty,
+            })
+        };
+        let js_sys = |name: &str| {
+            let path = vec![rust_ident("js_sys"), rust_ident(name)];
+            let ty = leading_colon_path_ty(path);
+            anyref(ty)
+        };
         match self {
             IdlType::Boolean => Some(ident_ty(raw_ident("bool"))),
             IdlType::Byte => Some(ident_ty(raw_ident("i8"))),
@@ -446,21 +461,11 @@ impl<'a> IdlType<'a> {
                 TypePosition::Argument => Some(shared_ref(ident_ty(raw_ident("str")), false)),
                 TypePosition::Return => Some(ident_ty(raw_ident("String"))),
             },
-            IdlType::Object => {
-                let path = vec![rust_ident("js_sys"), rust_ident("Object")];
-                let ty = leading_colon_path_ty(path);
-                Some(match pos {
-                    TypePosition::Argument => shared_ref(ty, false),
-                    TypePosition::Return => ty,
-                })
-            },
+            IdlType::Object => js_sys("Object"),
             IdlType::Symbol => None,
             IdlType::Error => None,
 
-            IdlType::ArrayBuffer => {
-                let path = vec![rust_ident("js_sys"), rust_ident("ArrayBuffer")];
-                Some(leading_colon_path_ty(path))
-            },
+            IdlType::ArrayBuffer => js_sys("ArrayBuffer"),
             IdlType::DataView => None,
             IdlType::Int8Array => Some(array("i8", pos, false)),
             IdlType::Uint8Array => Some(array("u8", pos, false)),
@@ -473,14 +478,7 @@ impl<'a> IdlType<'a> {
             IdlType::Float32Array => Some(array("f32", pos, false)),
             IdlType::Float64Array => Some(array("f64", pos, false)),
 
-            IdlType::ArrayBufferView | IdlType::BufferSource => {
-                let path = vec![rust_ident("js_sys"), rust_ident("Object")];
-                let ty = leading_colon_path_ty(path);
-                Some(match pos {
-                    TypePosition::Argument => shared_ref(ty, false),
-                    TypePosition::Return => ty,
-                })
-            },
+            IdlType::ArrayBufferView | IdlType::BufferSource => js_sys("Object"),
             IdlType::Interface(name)
             | IdlType::Dictionary(name) => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
@@ -495,15 +493,7 @@ impl<'a> IdlType<'a> {
             IdlType::Nullable(idl_type) => Some(option_ty(idl_type.to_syn_type(pos)?)),
             IdlType::FrozenArray(_idl_type) => None,
             IdlType::Sequence(_idl_type) => None,
-            IdlType::Promise(_idl_type) => {
-                let path = vec![rust_ident("js_sys"), rust_ident("Promise")];
-                let ty = leading_colon_path_ty(path);
-                if pos == TypePosition::Argument {
-                    Some(shared_ref(ty, false))
-                } else {
-                    Some(ty)
-                }
-            }
+            IdlType::Promise(_idl_type) => js_sys("Promise"),
             IdlType::Record(_idl_type_from, _idl_type_to) => None,
             IdlType::Union(idl_types) => {
                 // Handles union types in all places except operation argument types.
@@ -529,9 +519,10 @@ impl<'a> IdlType<'a> {
 
             IdlType::Any => {
                 let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
-                Some(leading_colon_path_ty(path))
+                anyref(leading_colon_path_ty(path))
             },
             IdlType::Void => None,
+            IdlType::Callback => js_sys("Function"),
         }
     }
 
