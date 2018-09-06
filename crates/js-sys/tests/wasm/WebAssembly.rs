@@ -1,11 +1,11 @@
 use futures::Future;
 use js_sys::*;
-use wasm_bindgen::{JsCast, prelude::*};
+use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/WebAssembly.js")]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = getWasmArray)]
     fn get_wasm_array() -> Uint8Array;
 
@@ -14,6 +14,9 @@ extern {
 
     #[wasm_bindgen(js_name = getInvalidTableObject)]
     fn get_invalid_table_object() -> Object;
+
+    #[wasm_bindgen(js_name = getImports)]
+    fn get_imports() -> Object;
 }
 
 fn get_invalid_wasm() -> JsValue {
@@ -38,23 +41,19 @@ fn validate() {
 #[wasm_bindgen_test(async)]
 fn compile_compile_error() -> impl Future<Item = (), Error = JsValue> {
     let p = WebAssembly::compile(&get_invalid_wasm());
-    JsFuture::from(p)
-        .map(|_| unreachable!())
-        .or_else(|e| {
-            assert!(e.is_instance_of::<WebAssembly::CompileError>());
-            Ok(())
-        })
+    JsFuture::from(p).map(|_| unreachable!()).or_else(|e| {
+        assert!(e.is_instance_of::<WebAssembly::CompileError>());
+        Ok(())
+    })
 }
 
 #[wasm_bindgen_test(async)]
 fn compile_type_error() -> impl Future<Item = (), Error = JsValue> {
     let p = WebAssembly::compile(&get_bad_type_wasm());
-    JsFuture::from(p)
-        .map(|_| unreachable!())
-        .or_else(|e| {
-            assert!(e.is_instance_of::<TypeError>());
-            Ok(())
-        })
+    JsFuture::from(p).map(|_| unreachable!()).or_else(|e| {
+        assert!(e.is_instance_of::<TypeError>());
+        Ok(())
+    })
 }
 
 #[wasm_bindgen_test(async)]
@@ -63,8 +62,7 @@ fn compile_valid() -> impl Future<Item = (), Error = JsValue> {
     JsFuture::from(p)
         .map(|module| {
             assert!(module.is_instance_of::<WebAssembly::Module>());
-        })
-        .map_err(|_| unreachable!())
+        }).map_err(|_| unreachable!())
 }
 
 #[wasm_bindgen_test]
@@ -81,7 +79,9 @@ fn module_error() {
     let error = WebAssembly::Module::new(&get_invalid_wasm()).err().unwrap();
     assert!(error.is_instance_of::<WebAssembly::CompileError>());
 
-    let error = WebAssembly::Module::new(&get_bad_type_wasm()).err().unwrap();
+    let error = WebAssembly::Module::new(&get_bad_type_wasm())
+        .err()
+        .unwrap();
     assert!(error.is_instance_of::<TypeError>());
 }
 
@@ -117,7 +117,9 @@ fn table_inheritance() {
 
 #[wasm_bindgen_test]
 fn table_error() {
-    let error = WebAssembly::Table::new(&get_invalid_table_object()).err().unwrap();
+    let error = WebAssembly::Table::new(&get_invalid_table_object())
+        .err()
+        .unwrap();
     assert!(error.is_instance_of::<RangeError>());
 }
 
@@ -125,6 +127,15 @@ fn table_error() {
 fn table() {
     let table = WebAssembly::Table::new(&get_table_object().into()).unwrap();
     assert_eq!(table.length(), 1);
+
+    assert!(table.get(0).is_ok());
+    assert!(table.get(999).is_err());
+
+    table.grow(1).unwrap();
+    assert_eq!(table.length(), 2);
+
+    let f = table.get(0).unwrap();
+    table.set(1, &f).unwrap();
 }
 
 #[wasm_bindgen_test]
@@ -155,6 +166,47 @@ fn runtime_error_inheritance() {
 }
 
 #[wasm_bindgen_test]
+fn webassembly_instance() {
+    let module = WebAssembly::Module::new(&get_valid_wasm()).unwrap();
+    let imports = get_imports();
+    let instance = WebAssembly::Instance::new(&module, &imports).unwrap();
+
+    // Inheritance chain is correct.
+    assert!(instance.is_instance_of::<WebAssembly::Instance>());
+    assert!(instance.is_instance_of::<Object>());
+    let _: &Object = instance.as_ref();
+
+    // Has expected exports.
+    let exports = instance.exports();
+    assert!(Reflect::has(exports.as_ref(), &"exported_func".into()));
+}
+
+#[wasm_bindgen_test(async)]
+fn instantiate_module() -> impl Future<Item = (), Error = JsValue> {
+    let module = WebAssembly::Module::new(&get_valid_wasm()).unwrap();
+    let imports = get_imports();
+    let p = WebAssembly::instantiate_module(&module, &imports);
+    JsFuture::from(p)
+        .map(|inst| {
+            assert!(inst.is_instance_of::<WebAssembly::Instance>());
+        })
+}
+
+#[wasm_bindgen_test(async)]
+fn instantiate_streaming() -> impl Future<Item = (), Error = JsValue> {
+    let response = Promise::resolve(&get_valid_wasm());
+    let imports = get_imports();
+    let p = WebAssembly::instantiate_streaming(&response, &imports);
+    JsFuture::from(p)
+        .map(|obj| {
+            assert!(
+                Reflect::get(obj.as_ref(), &"instance".into())
+                    .is_instance_of::<WebAssembly::Instance>()
+            );
+        })
+}
+
+#[wasm_bindgen_test]
 fn memory_works() {
     let obj = Object::new();
     Reflect::set(obj.as_ref(), &"initial".into(), &1.into());
@@ -166,7 +218,10 @@ fn memory_works() {
     assert_eq!(mem.grow(2), 2);
     assert_eq!(mem.grow(3), 4);
     assert_eq!(
-        mem.buffer().dyn_into::<ArrayBuffer>().unwrap().byte_length(),
+        mem.buffer()
+            .dyn_into::<ArrayBuffer>()
+            .unwrap()
+            .byte_length(),
         7 * 64 * 1024,
     );
 }
