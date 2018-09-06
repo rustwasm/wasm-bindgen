@@ -2880,6 +2880,15 @@ pub mod WebAssembly {
         #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiate)]
         pub fn instantiate_module(module: &Module, imports: &Object) -> Promise;
 
+        /// The `WebAssembly.instantiateStreaming()` function compiles and
+        /// instantiates a WebAssembly module directly from a streamed
+        /// underlying source. This is the most efficient, optimized way to load
+        /// wasm code.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiateStreaming)
+        #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiateStreaming)]
+        pub fn instantiate_streaming(response: &Promise, imports: &Object) -> Promise;
+
         /// The `WebAssembly.validate()` function validates a given typed
         /// array of WebAssembly binary code, returning whether the bytes
         /// form a valid wasm module (`true`) or not (`false`).

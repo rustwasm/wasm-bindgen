@@ -31,6 +31,12 @@ function getImports() {
   };
 }
 
+// Polyfill `WebAssembly.instantiateStreaming` for node.
+if (!global.WebAssembly.instantiateStreaming) {
+  global.WebAssembly.instantiateStreaming =
+    (response, imports) => response.then(buf => WebAssembly.instantiate(buf, imports));
+}
+
 module.exports = {
   getInvalidTableObject,
   getTableObject,

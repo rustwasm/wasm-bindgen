@@ -183,6 +183,20 @@ fn instantiate_module() -> impl Future<Item = (), Error = JsValue> {
         })
 }
 
+#[wasm_bindgen_test(async)]
+fn instantiate_streaming() -> impl Future<Item = (), Error = JsValue> {
+    let response = Promise::resolve(&get_valid_wasm());
+    let imports = get_imports();
+    let p = WebAssembly::instantiate_streaming(&response, &imports);
+    JsFuture::from(p)
+        .map(|obj| {
+            assert!(
+                Reflect::get(obj.as_ref(), &"instance".into())
+                    .is_instance_of::<WebAssembly::Instance>()
+            );
+        })
+}
+
 #[wasm_bindgen_test]
 fn memory_works() {
     let obj = Object::new();
