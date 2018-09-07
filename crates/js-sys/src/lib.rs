@@ -1174,6 +1174,79 @@ extern {
     pub fn next(this: &Iterator) -> Result<IteratorNext, JsValue>;
 }
 
+pub struct Iter<'a> {
+    js: &'a Iterator,
+    state: IterState,
+}
+
+pub struct IntoIter {
+    js: Iterator,
+    state: IterState,
+}
+
+struct IterState {
+    done: bool,
+}
+
+impl<'a> IntoIterator for &'a Iterator {
+    type Item = Result<JsValue, JsValue>;
+    type IntoIter = Iter<'a>;
+
+    fn into_iter(self) -> Iter<'a> {
+        Iter { js: self, state: IterState::new() }
+    }
+}
+
+impl<'a> std::iter::Iterator for Iter<'a> {
+    type Item = Result<JsValue, JsValue>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.state.next(self.js)
+    }
+}
+
+impl IntoIterator for Iterator {
+    type Item = Result<JsValue, JsValue>;
+    type IntoIter = IntoIter;
+
+    fn into_iter(self) -> IntoIter {
+        IntoIter { js: self, state: IterState::new() }
+    }
+}
+
+impl std::iter::Iterator for IntoIter {
+    type Item = Result<JsValue, JsValue>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.state.next(&self.js)
+    }
+}
+
+impl IterState {
+    fn new() -> IterState {
+        IterState { done: false }
+    }
+
+    fn next(&mut self, js: &Iterator) -> Option<Result<JsValue, JsValue>> {
+        if self.done {
+            return None
+        }
+        let next = match js.next() {
+            Ok(val) => val,
+            Err(e) => {
+                self.done = true;
+                return Some(Err(e))
+            }
+        };
+        if next.done() {
+            self.done = true;
+            None
+        } else {
+            Some(Ok(next.value()))
+        }
+    }
+}
+
 // IteratorNext
 #[wasm_bindgen]
 extern {
