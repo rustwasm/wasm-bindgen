@@ -1716,8 +1716,8 @@ impl<'a> Context<'a> {
     }
 
     fn gc(&mut self) -> Result<(), Error> {
-        let module = mem::replace(self.module, Module::default());
         self.parse_wasm_names();
+        let module = mem::replace(self.module, Module::default());
         let result = wasm_gc::Config::new()
             .demangle(self.config.demangle)
             .keep_debug(self.config.keep_debug || self.config.debug)
