@@ -146,3 +146,13 @@ global.MixinFoo = class MixinFoo {
 global.Overloads = class {
   foo() {}
 };
+
+global.InvokeCallback = class {
+  invoke(f) { f(); }
+  callAdd(f) {
+    return f(1, 2);
+  }
+  callRepeat(f) {
+    return f('ab', 4);
+  }
+};

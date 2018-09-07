@@ -34,6 +34,7 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) namespaces: BTreeMap<&'src str, NamespaceData<'src>>,
     pub(crate) includes: BTreeMap<&'src str, BTreeSet<&'src str>>,
     pub(crate) dictionaries: BTreeMap<&'src str, DictionaryData<'src>>,
+    pub(crate) callbacks: BTreeSet<&'src str>,
 }
 
 /// We need to collect interface data during the first pass, to be used later.
@@ -135,12 +136,9 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
             Namespace(namespace) => namespace.first_pass(record, ()),
             PartialNamespace(namespace) => namespace.first_pass(record, ()),
             Typedef(typedef) => typedef.first_pass(record, ()),
+            Callback(callback) => callback.first_pass(record, ()),
 
             Implements(_) => Ok(()),
-            Callback(..) => {
-                warn!("Unsupported WebIDL Callback definition: {:?}", self);
-                Ok(())
-            }
             CallbackInterface(..) => {
                 warn!("Unsupported WebIDL CallbackInterface definition: {:?}", self);
                 Ok(())
@@ -681,6 +679,13 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceM
             &self.attributes,
             true,
         );
+        Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, ()> for weedle::CallbackDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, _: ()) -> Result<()> {
+        record.callbacks.insert(self.identifier.0);
         Ok(())
     }
 }
