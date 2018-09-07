@@ -32,6 +32,21 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.21
+
+Released 2018-09-07
+
+### Added
+
+* Added many more bindings for `WebAssembly` in the `js-sys` crate.
+
+### Fixed
+
+* The "names" section of the wasm binary is now correctly preserved by
+  wasm-bindgen.
+
+--------------------------------------------------------------------------------
+
 ## 0.2.20
 
 Released 2018-09-06
