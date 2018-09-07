@@ -233,6 +233,7 @@ impl ImportedTypes for syn::GenericArgument {
             syn::GenericArgument::Type(ty) => ty.imported_types(f),
             syn::GenericArgument::Binding(_) => {}, // TODO
             syn::GenericArgument::Const(_) => {}, // TODO
+            syn::GenericArgument::Constraint(_) => {}, // TODO
         }
     }
 }

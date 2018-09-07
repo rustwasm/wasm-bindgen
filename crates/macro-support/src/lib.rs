@@ -20,19 +20,12 @@ mod parser;
 
 /// Takes the parsed input from a `#[wasm_bindgen]` macro and returns the generated bindings
 pub fn expand(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diagnostic> {
-    let item = syn_parse::<syn::Item>(input, "rust item")?;
-    let opts = syn_parse(attr, "#[wasm_bindgen] attribute options")?;
+    let item = syn::parse2::<syn::Item>(input)?;
+    let opts = syn::parse2(attr)?;
 
     let mut tokens = proc_macro2::TokenStream::new();
     let mut program = backend::ast::Program::default();
     item.macro_parse(&mut program, (Some(opts), &mut tokens))?;
     program.try_to_tokens(&mut tokens)?;
     Ok(tokens)
-}
-
-fn syn_parse<T: syn::synom::Synom>(tokens: TokenStream, name: &str) -> Result<T, Diagnostic> {
-    syn::parse2(tokens.clone())
-        .map_err(|err| {
-            Diagnostic::span_error(&tokens, format!("error parsing {}: {}", name, err))
-        })
 }

@@ -138,7 +138,7 @@ fn builtin_idents() -> BTreeSet<Ident> {
         vec![
             "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
             "usize", "isize", "f32", "f64", "Result", "String", "Box", "Vec", "Option",
-            "ArrayBuffer", "Object", "Promise",
+            "ArrayBuffer", "Object", "Promise", "Function",
         ].into_iter()
             .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
     )

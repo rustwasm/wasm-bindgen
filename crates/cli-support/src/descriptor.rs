@@ -189,13 +189,6 @@ impl Descriptor {
         }
     }
 
-    pub fn ref_closure(&self) -> Option<&Closure> {
-        match *self {
-            Descriptor::Ref(ref s) => s.closure(),
-            _ => None,
-        }
-    }
-
     pub fn closure(&self) -> Option<&Closure> {
         match *self {
             Descriptor::Closure(ref s) => Some(s),

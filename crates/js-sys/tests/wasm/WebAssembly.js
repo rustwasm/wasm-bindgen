@@ -21,8 +21,25 @@ function getInvalidTableObject() {
   return { element: "anyfunc", initial: 1, maximum: 0 }
 }
 
+function getImports() {
+  return {
+    imports: {
+      imported_func: function () {
+        return 1;
+      }
+    }
+  };
+}
+
+// Polyfill `WebAssembly.instantiateStreaming` for node.
+if (!global.WebAssembly.instantiateStreaming) {
+  global.WebAssembly.instantiateStreaming =
+    (response, imports) => response.then(buf => WebAssembly.instantiate(buf, imports));
+}
+
 module.exports = {
   getInvalidTableObject,
   getTableObject,
   getWasmArray,
+  getImports,
 };

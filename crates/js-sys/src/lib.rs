@@ -1203,6 +1203,7 @@ extern {
 #[wasm_bindgen]
 extern "C" {
     #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object)]
     pub type Math;
 
     /// The Math.abs() function returns the absolute value of a number, that is
@@ -2127,6 +2128,7 @@ extern {
 #[wasm_bindgen]
 extern "C" {
     #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object)]
     pub type Reflect;
 
     /// The static `Reflect.apply()` method calls a target function with
@@ -2864,6 +2866,29 @@ pub mod WebAssembly {
         #[wasm_bindgen(js_namespace = WebAssembly)]
         pub fn compile(buffer_source: &JsValue) -> Promise;
 
+        /// The `WebAssembly.instantiate()` function allows you to compile and
+        /// instantiate WebAssembly code.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate)
+        #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiate)]
+        pub fn instantiate_buffer(buffer: &[u8], imports: &Object) -> Promise;
+
+        /// The `WebAssembly.instantiate()` function allows you to compile and
+        /// instantiate WebAssembly code.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate)
+        #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiate)]
+        pub fn instantiate_module(module: &Module, imports: &Object) -> Promise;
+
+        /// The `WebAssembly.instantiateStreaming()` function compiles and
+        /// instantiates a WebAssembly module directly from a streamed
+        /// underlying source. This is the most efficient, optimized way to load
+        /// wasm code.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiateStreaming)
+        #[wasm_bindgen(js_namespace = WebAssembly, js_name = instantiateStreaming)]
+        pub fn instantiate_streaming(response: &Promise, imports: &Object) -> Promise;
+
         /// The `WebAssembly.validate()` function validates a given typed
         /// array of WebAssembly binary code, returning whether the bytes
         /// form a valid wasm module (`true`) or not (`false`).
@@ -2892,6 +2917,38 @@ pub mod WebAssembly {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/CompileError)
         #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
         pub fn new(message: &str) -> CompileError;
+    }
+
+    // WebAssembly.Instance
+    #[wasm_bindgen]
+    extern "C" {
+        /// A `WebAssembly.Instance` object is a stateful, executable instance
+        /// of a `WebAssembly.Module`. Instance objects contain all the exported
+        /// WebAssembly functions that allow calling into WebAssembly code from
+        /// JavaScript.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)
+        #[wasm_bindgen(extends = Object, js_namespace = WebAssembly)]
+        #[derive(Clone, Debug)]
+        pub type Instance;
+
+        /// The `WebAssembly.Instance()` constructor function can be called to
+        /// synchronously instantiate a given `WebAssembly.Module`
+        /// object. However, the primary way to get an `Instance` is through the
+        /// asynchronous `WebAssembly.instantiateStreaming()` function.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)
+        #[wasm_bindgen(catch, constructor, js_namespace = WebAssembly)]
+        pub fn new(module: &Module, imports: &Object) -> Result<Instance, JsValue>;
+
+        /// The `exports` readonly property of the `WebAssembly.Instance` object
+        /// prototype returns an object containing as its members all the
+        /// functions exported from the WebAssembly module instance, to allow
+        /// them to be accessed and used by JavaScript.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance/exports)
+        #[wasm_bindgen(getter, method, js_namespace = WebAssembly)]
+        pub fn exports(this: &Instance) -> Object;
     }
 
     // WebAssembly.LinkError
@@ -3004,6 +3061,28 @@ pub mod WebAssembly {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/length)
         #[wasm_bindgen(method, getter, js_namespace = WebAssembly)]
         pub fn length(this: &Table) -> u32;
+
+        /// The `get()` prototype method of the `WebAssembly.Table()` object
+        /// retrieves a function reference stored at a given index.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/get)
+        #[wasm_bindgen(method, catch, js_namespace = WebAssembly)]
+        pub fn get(this: &Table, index: u32) -> Result<Function, JsValue>;
+
+        /// The `grow()` prototype method of the `WebAssembly.Table` object
+        /// increases the size of the `Table` instance by a specified number of
+        /// elements.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/grow)
+        #[wasm_bindgen(method, catch, js_namespace = WebAssembly)]
+        pub fn grow(this: &Table, additional_capacity: u32) -> Result<u32, JsValue>;
+
+        /// The `set()` prototype method of the `WebAssembly.Table` object mutates a
+        /// reference stored at a given index to a different value.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table/set)
+        #[wasm_bindgen(method, catch, js_namespace = WebAssembly)]
+        pub fn set(this: &Table, index: u32, function: &Function) -> Result<(), JsValue>;
     }
 
     // WebAssembly.Memory
@@ -3048,8 +3127,12 @@ pub mod WebAssembly {
 // JSON
 #[wasm_bindgen]
 extern "C" {
-
+    /// The `JSON` object contains methods for parsing [JavaScript Object
+    /// Notation (JSON)](https://json.org/) and converting values to JSON. It
+    /// can't be called or constructed, and aside from its two method
+    /// properties, it has no interesting functionality of its own.
     #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object)]
     pub type JSON;
 
     /// The `JSON.parse()` method parses a JSON string, constructing the

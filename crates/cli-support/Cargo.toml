@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-cli-support"
-version = "0.2.19"
+version = "0.2.21"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/cli-support"
@@ -17,6 +17,6 @@ parity-wasm = "0.32"
 serde = "1.0"
 serde_json = "1.0"
 tempfile = "3.0"
-wasm-bindgen-shared = { path = "../shared", version = '=0.2.19' }
-wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.19' }
+wasm-bindgen-shared = { path = "../shared", version = '=0.2.21' }
+wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.21' }
 wasm-gc-api = "0.1.9"

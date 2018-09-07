@@ -16,6 +16,7 @@ mod js2rust;
 use self::js2rust::Js2Rust;
 mod rust2js;
 use self::rust2js::Rust2Js;
+mod closures;
 
 pub struct Context<'a> {
     pub globals: String,
@@ -394,6 +395,7 @@ impl<'a> Context<'a> {
 
         self.create_memory_export();
         self.unexport_unused_internal_exports();
+        closures::rewrite(self)?;
         self.gc()?;
 
         // Note that it's important `throw` comes last *after* we gc. The
@@ -1714,8 +1716,8 @@ impl<'a> Context<'a> {
     }
 
     fn gc(&mut self) -> Result<(), Error> {
+        self.parse_wasm_names();
         let module = mem::replace(self.module, Module::default());
-        let module = module.parse_names().unwrap_or_else(|p| p.1);
         let result = wasm_gc::Config::new()
             .demangle(self.config.demangle)
             .keep_debug(self.config.keep_debug || self.config.debug)
@@ -1727,9 +1729,16 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
+    fn parse_wasm_names(&mut self) {
+        let module = mem::replace(self.module, Module::default());
+        let module = module.parse_names().unwrap_or_else(|p| p.1);
+        *self.module = module;
+    }
+
     fn describe(&mut self, name: &str) -> Option<Descriptor> {
         let name = format!("__wbindgen_describe_{}", name);
-        Some(Descriptor::decode(self.interpreter.interpret(&name, self.module)?))
+        let descriptor = self.interpreter.interpret_descriptor(&name, self.module)?;
+        Some(Descriptor::decode(descriptor))
     }
 
     fn global(&mut self, s: &str) {

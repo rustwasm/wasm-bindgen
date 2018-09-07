@@ -1,4 +1,6 @@
 use wasm_bindgen_test::*;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 
 include!(concat!(env!("OUT_DIR"), "/simple.rs"));
 
@@ -129,4 +131,27 @@ fn overload_naming() {
     o.foo_with_arg_and_i32("x", 3);
     o.foo_with_arg_and_f32("x", 2.0);
     o.foo_with_arg_and_i16("x", 5);
+}
+
+#[wasm_bindgen_test]
+fn callback() {
+    let o = InvokeCallback::new().unwrap();
+    {
+        static mut HIT: bool = false;
+        let cb = Closure::wrap(Box::new(move || {
+            unsafe { HIT = true; }
+        }) as Box<FnMut()>);
+        o.invoke(cb.as_ref().unchecked_ref());
+        assert!(unsafe { HIT });
+    }
+
+    let cb = Closure::wrap(Box::new(move |a, b| {
+        a + b
+    }) as Box<FnMut(u32, u32) -> u32>);
+    assert_eq!(o.call_add(cb.as_ref().unchecked_ref()), 3);
+
+    let cb = Closure::wrap(Box::new(move |a: String, b| {
+        a.repeat(b)
+    }) as Box<FnMut(String, usize) -> String>);
+    assert_eq!(o.call_repeat(cb.as_ref().unchecked_ref()), "abababab");
 }

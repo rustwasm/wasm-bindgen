@@ -4,8 +4,6 @@
 //! closures" from Rust to JS. Some more details can be found on the `Closure`
 //! type itself.
 
-#![allow(const_err)] // FIXME(rust-lang/rust#52603)
-
 use std::cell::UnsafeCell;
 #[cfg(feature = "nightly")]
 use std::marker::Unsize;
@@ -70,14 +68,12 @@ use throw;
 /// }
 /// ```
 pub struct Closure<T: ?Sized> {
-    // Actually a `Rc` pointer, but in raw form so we can easily make copies.
-    // See below documentation for why this is in an `Rc`.
-    inner: *const UnsafeCell<Box<T>>,
-    js: UnsafeCell<ManuallyDrop<JsValue>>,
+    js: ManuallyDrop<JsValue>,
+    _keep_this_data_alive: Rc<UnsafeCell<Box<T>>>,
 }
 
 impl<T> Closure<T>
-    where T: ?Sized,
+    where T: ?Sized + WasmClosure,
 {
     /// Creates a new instance of `Closure` from the provided Rust closure.
     ///
@@ -103,9 +99,73 @@ impl<T> Closure<T>
     ///
     /// This is the function where the JS closure is manufactured.
     pub fn wrap(t: Box<T>) -> Closure<T> {
+        let data = Rc::new(UnsafeCell::new(t));
+        let ptr = &*data as *const UnsafeCell<Box<T>>;
+
+        // Here we need to create a `JsValue` with the data and `T::invoke()`
+        // function pointer. To do that we... take a few unconventional turns.
+        // In essence what happens here is this:
+        //
+        // 1. First up, below we call a function, `breaks_if_inlined`. This
+        //    function, as the name implies, does not work if it's inlined.
+        //    More on that in a moment.
+        // 2. This function internally calls a special import recognized by the
+        //    `wasm-bindgen` CLI tool, `__wbindgen_describe_closure`. This
+        //    imported symbol is similar to `__wbindgen_describe` in that it's
+        //    not intended to show up in the final binary but it's an
+        //    intermediate state for a `wasm-bindgen` binary.
+        // 3. The `__wbindgen_describe_closure` import is namely passed a
+        //    descriptor function, monomorphized for each invocation.
+        //
+        // Most of this doesn't actually make sense to happen at runtime! The
+        // real magic happens when `wasm-bindgen` comes along and updates our
+        // generated code. When `wasm-bindgen` runs it performs a few tasks:
+        //
+        // * First, it finds all functions that call
+        //   `__wbindgen_describe_closure`. These are all `breaks_if_inlined`
+        //   defined below as the symbol isn't called anywhere else.
+        // * Next, `wasm-bindgen` executes the `breaks_if_inlined`
+        //   monomorphized functions, passing it dummy arguments. This will
+        //   execute the function just enough to invoke the special import,
+        //   namely telling us about the function pointer that is the describe
+        //   shim.
+        // * This knowledge is then used to actually find the descriptor in the
+        //   function table which is then executed to figure out the signature
+        //   of the closure.
+        // * Finally, and probably most heinously, the call to
+        //   `breaks_if_inlined` is rewritten to call an otherwise globally
+        //   imported function. This globally imported function will generate
+        //   the `JsValue` for this closure specialized for the signature in
+        //   question.
+        //
+        // Later on `wasm-gc` will clean up all the dead code and ensure that
+        // we don't actually call `__wbindgen_describe_closure` at runtime. This
+        // means we will end up not actually calling `breaks_if_inlined` in the
+        // final binary, all calls to that function should be pruned.
+        //
+        // See crates/cli-support/src/js/closures.rs for a more information
+        // about what's going on here.
+
+        extern fn describe<T: WasmClosure + ?Sized>() {
+            inform(CLOSURE);
+            T::describe()
+        }
+
+        #[inline(never)]
+        unsafe fn breaks_if_inlined<T: WasmClosure + ?Sized>(
+            ptr: usize,
+            invoke: u32,
+        ) -> u32 {
+            super::__wbindgen_describe_closure(ptr as u32, invoke, describe::<T> as u32)
+        }
+
+        let idx = unsafe {
+            breaks_if_inlined::<T>(ptr as usize, T::invoke_fn())
+        };
+
         Closure {
-            inner: Rc::into_raw(Rc::new(UnsafeCell::new(t))),
-            js: UnsafeCell::new(ManuallyDrop::new(JsValue { idx: !0 })),
+            js: ManuallyDrop::new(JsValue { idx }),
+            _keep_this_data_alive: data,
         }
     }
 
@@ -122,7 +182,7 @@ impl<T> Closure<T>
     /// cleanup as it can.
     pub fn forget(self) {
         unsafe {
-            let idx = (*self.js.get()).idx;
+            let idx = self.js.idx;
             if idx != !0 {
                 super::__wbindgen_cb_forget(idx);
             }
@@ -131,12 +191,17 @@ impl<T> Closure<T>
     }
 }
 
+impl<T: ?Sized> AsRef<JsValue> for Closure<T> {
+    fn as_ref(&self) -> &JsValue {
+        &self.js
+    }
+}
+
 impl<T> WasmDescribe for Closure<T>
     where T: WasmClosure + ?Sized,
 {
     fn describe() {
-        inform(CLOSURE);
-        T::describe();
+        inform(ANYREF);
     }
 }
 
@@ -147,11 +212,7 @@ impl<'a, T> IntoWasmAbi for &'a Closure<T>
     type Abi = u32;
 
     fn into_abi(self, extra: &mut Stack) -> u32 {
-        unsafe {
-            extra.push(T::invoke_fn());
-            extra.push(self.inner as u32);
-            &mut (*self.js.get()).idx as *const u32 as u32
-        }
+        (&*self.js).into_abi(extra)
     }
 }
 
@@ -170,11 +231,9 @@ impl<T> Drop for Closure<T>
 {
     fn drop(&mut self) {
         unsafe {
-            let idx = (*self.js.get()).idx;
-            if idx != !0 {
-                super::__wbindgen_cb_drop(idx);
-            }
-            drop(Rc::from_raw(self.inner));
+            // this will implicitly drop our strong reference in addition to
+            // invalidating all future invocations of the closure
+            super::__wbindgen_cb_drop(self.js.idx);
         }
     }
 }

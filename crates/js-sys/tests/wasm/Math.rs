@@ -1,8 +1,21 @@
 use std::f64::consts::PI;
 use std::f64::{NEG_INFINITY, NAN};
 
+use wasm_bindgen::{JsCast, prelude::*};
 use wasm_bindgen_test::*;
 use js_sys::*;
+
+#[wasm_bindgen_test]
+fn math_extends() {
+    #[wasm_bindgen]
+    extern {
+        #[wasm_bindgen(js_name = Math)]
+        static math: Math;
+    }
+
+    assert!(math.is_instance_of::<Object>());
+    let _: &Object = math.as_ref();
+}
 
 macro_rules! assert_eq {
     ($a:expr, $b:expr) => ({
