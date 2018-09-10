@@ -12,6 +12,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use proc_macro2::Ident;
 use weedle::{DictionaryDefinition, PartialDictionaryDefinition};
+use weedle::CallbackInterfaceDefinition;
 use weedle::argument::Argument;
 use weedle::attribute::*;
 use weedle::interface::*;
@@ -35,6 +36,7 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) includes: BTreeMap<&'src str, BTreeSet<&'src str>>,
     pub(crate) dictionaries: BTreeMap<&'src str, DictionaryData<'src>>,
     pub(crate) callbacks: BTreeSet<&'src str>,
+    pub(crate) callback_interfaces: BTreeMap<&'src str, CallbackInterfaceData<'src>>,
 }
 
 /// We need to collect interface data during the first pass, to be used later.
@@ -64,15 +66,18 @@ pub(crate) struct MixinData<'src> {
 /// We need to collect namespace data during the first pass, to be used later.
 #[derive(Default)]
 pub(crate) struct NamespaceData<'src> {
-    /// Whether only partial namespaces were encountered
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
 }
 
 #[derive(Default)]
 pub(crate) struct DictionaryData<'src> {
-    /// Whether only partial namespaces were encountered
     pub(crate) partials: Vec<&'src PartialDictionaryDefinition<'src>>,
     pub(crate) definition: Option<&'src DictionaryDefinition<'src>>,
+}
+
+pub(crate) struct CallbackInterfaceData<'src> {
+    pub(crate) definition: &'src CallbackInterfaceDefinition<'src>,
+    pub(crate) single_function: bool,
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
@@ -137,12 +142,8 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
             PartialNamespace(namespace) => namespace.first_pass(record, ()),
             Typedef(typedef) => typedef.first_pass(record, ()),
             Callback(callback) => callback.first_pass(record, ()),
-
+            CallbackInterface(iface) => iface.first_pass(record, ()),
             Implements(_) => Ok(()),
-            CallbackInterface(..) => {
-                warn!("Unsupported WebIDL CallbackInterface definition: {:?}", self);
-                Ok(())
-            }
         }
     }
 }
@@ -686,6 +687,25 @@ impl<'src> FirstPass<'src, &'src str> for weedle::namespace::OperationNamespaceM
 impl<'src> FirstPass<'src, ()> for weedle::CallbackDefinition<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, _: ()) -> Result<()> {
         record.callbacks.insert(self.identifier.0);
+        Ok(())
+    }
+}
+
+impl<'src> FirstPass<'src, ()> for weedle::CallbackInterfaceDefinition<'src> {
+    fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, _: ()) -> Result<()> {
+        if util::is_chrome_only(&self.attributes) {
+            return Ok(())
+        }
+        if self.inheritance.is_some() {
+            warn!("skipping callback interface with inheritance: {}",
+                  self.identifier.0);
+            return Ok(())
+        }
+        let data = CallbackInterfaceData {
+            definition: self,
+            single_function: self.members.body.len() == 1,
+        };
+        record.callback_interfaces.insert(self.identifier.0, data);
         Ok(())
     }
 }

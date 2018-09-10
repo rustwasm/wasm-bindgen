@@ -11,3 +11,4 @@ pub mod simple;
 pub mod throws;
 pub mod dictionary;
 pub mod global;
+pub mod callbacks;
