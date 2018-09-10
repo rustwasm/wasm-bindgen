@@ -42,9 +42,10 @@ use backend::util::{ident_ty, rust_ident, raw_ident, wrap_import_function};
 use proc_macro2::{Ident, Span};
 use weedle::attribute::{ExtendedAttributeList};
 use weedle::dictionary::DictionaryMember;
+use weedle::interface::InterfaceMember;
 
 use first_pass::{FirstPass, FirstPassRecord, OperationId, InterfaceData};
-use first_pass::OperationData;
+use first_pass::{OperationData, CallbackInterfaceData};
 use util::{public, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, shouty_snake_case_ident, snake_case_ident, mdn_doc};
 use idl_type::ToIdlType;
 
@@ -106,6 +107,11 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
     for (name, d) in first_pass_record.interfaces.iter() {
         if filter(name) {
             first_pass_record.append_interface(&mut program, name, d);
+        }
+    }
+    for (name, d) in first_pass_record.callback_interfaces.iter() {
+        if filter(name) {
+            first_pass_record.append_callback_interface(&mut program, d);
         }
     }
 
@@ -643,5 +649,39 @@ impl<'src> FirstPassRecord<'src> {
              to be activated: {}*",
             list,
         ));
+    }
+
+    fn append_callback_interface(
+        &self,
+        program: &mut backend::ast::Program,
+        item: &CallbackInterfaceData<'src>,
+    ) {
+        let mut fields = Vec::new();
+        for member in item.definition.members.body.iter() {
+            match member {
+                InterfaceMember::Operation(op) => {
+                    let identifier = match op.identifier {
+                        Some(i) => i.0,
+                        None => continue,
+                    };
+                    let pos = TypePosition::Argument;
+                    fields.push(ast::DictionaryField {
+                        required: false,
+                        name: rust_ident(&snake_case_ident(identifier)),
+                        ty: idl_type::IdlType::Callback.to_syn_type(pos)
+                            .unwrap(),
+                    });
+                }
+                _ => {
+                    warn!("skipping callback interface member on {}",
+                          item.definition.identifier.0);
+                }
+            }
+        }
+
+        program.dictionaries.push(ast::Dictionary {
+            name: rust_ident(&camel_case_ident(item.definition.identifier.0)),
+            fields,
+        });
     }
 }

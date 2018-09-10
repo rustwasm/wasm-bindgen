@@ -48,6 +48,7 @@ pub(crate) enum IdlType<'a> {
     Interface(&'a str),
     Dictionary(&'a str),
     Enum(&'a str),
+    CallbackInterface { name: &'a str, single_function: bool },
 
     Nullable(Box<IdlType<'a>>),
     FrozenArray(Box<IdlType<'a>>),
@@ -296,6 +297,11 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
             Some(IdlType::Enum(self.0))
         } else if record.callbacks.contains(self.0) {
             Some(IdlType::Callback)
+        } else if let Some(data) = record.callback_interfaces.get(self.0) {
+            Some(IdlType::CallbackInterface {
+                name: self.0,
+                single_function: data.single_function,
+            })
         } else {
             warn!("Unrecognized type: {}", self.0);
             None
@@ -387,6 +393,9 @@ impl<'a> IdlType<'a> {
             IdlType::Interface(name) => dst.push_str(&snake_case_ident(name)),
             IdlType::Dictionary(name) => dst.push_str(&snake_case_ident(name)),
             IdlType::Enum(name) => dst.push_str(&snake_case_ident(name)),
+            IdlType::CallbackInterface { name, .. } => {
+                dst.push_str(&snake_case_ident(name))
+            }
 
             IdlType::Nullable(idl_type) => {
                 dst.push_str("opt_");
@@ -480,7 +489,8 @@ impl<'a> IdlType<'a> {
 
             IdlType::ArrayBufferView | IdlType::BufferSource => js_sys("Object"),
             IdlType::Interface(name)
-            | IdlType::Dictionary(name) => {
+            | IdlType::Dictionary(name)
+            | IdlType::CallbackInterface { name, .. } => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
                 if pos == TypePosition::Argument {
                     Some(shared_ref(ty, false))
@@ -587,6 +597,17 @@ impl<'a> IdlType<'a> {
             }
             IdlType::UnsignedLongLong => {
                 vec![IdlType::UnsignedLong, IdlType::Double]
+            }
+            IdlType::CallbackInterface { name, single_function: true } => {
+                // According to the webidl spec [1] single-function callback
+                // interfaces can also be replaced in arguments with simply a
+                // single callable function, which we map to a `Callback`.
+                //
+                // [1]: https://heycam.github.io/webidl/#es-user-objects
+                vec![
+                    IdlType::Callback,
+                    IdlType::CallbackInterface { name, single_function: false },
+                ]
             }
             idl_type @ _ => vec![idl_type.clone()],
         }
