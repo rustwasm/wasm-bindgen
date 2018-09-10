@@ -95,7 +95,19 @@ fn optional_and_union_arguments() {
 #[wasm_bindgen_test]
 fn variadic() {
     let f = Variadic::new().unwrap();
-    assert_eq!(f.sum(Box::new([1, 2, 3, 4, 5])), 15);
+    assert_eq!(f.sum_5(1, 2, 3, 4, 5), 15);
+    assert_eq!(
+        f.sum(
+            &::js_sys::Array::of5(
+                &JsValue::from_f64(1f64),
+                &JsValue::from_f64(2f64),
+                &JsValue::from_f64(3f64),
+                &JsValue::from_f64(4f64),
+                &JsValue::from_f64(5f64),
+            )
+        ),
+        15
+    );
 }
 
 #[wasm_bindgen_test]

@@ -172,24 +172,6 @@ pub(crate) fn slice_ty(t: syn::Type) -> syn::Type {
     }.into()
 }
 
-/// From `T` create `Box<T>`.
-pub(crate) fn box_ty(t: syn::Type) -> syn::Type {
-    let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
-        colon2_token: None,
-        lt_token: Default::default(),
-        args: FromIterator::from_iter(vec![
-            syn::GenericArgument::Type(t),
-        ]),
-        gt_token: Default::default(),
-    });
-
-    let ident = raw_ident("Box");
-    let seg = syn::PathSegment { ident, arguments };
-    let path: syn::Path = seg.into();
-    let ty = syn::TypePath { qself: None, path };
-    ty.into()
-}
-
 /// From `T` create `Vec<T>`.
 pub(crate) fn vec_ty(t: syn::Type) -> syn::Type {
     let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
@@ -279,16 +261,8 @@ impl<'src> FirstPassRecord<'src> {
                 }
             };
             let syn_type = if variadic && i == arguments_count - 1 {
-                // Blacklist unsupported slice types
-                match idl_type {
-                    | IdlType::DomString
-                    | IdlType::ByteString
-                    | IdlType::UsvString => return None,
-
-                    IdlType::Interface(..) => return None,
-
-                    _ => box_ty(slice_ty(syn_type))
-                }
+                let path = vec![rust_ident("js_sys"), rust_ident("Array")];
+                shared_ref(leading_colon_path_ty(path), false)
             } else {
                 syn_type
             };
@@ -603,18 +577,49 @@ impl<'src> FirstPassRecord<'src> {
                     rust_name.push_str(&snake_case_ident(arg_name));
                 }
             }
+            let structural = force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
+            let catch = force_throws || throws(&signature.orig.attrs);
+            let variadic = signature.args.len() == signature.orig.args.len()
+                && signature.orig.args.last().map(|arg| arg.variadic).unwrap_or(false);
+            if variadic {
+                for i in 0..=7 {
+                    ret.extend(self.create_one_function(
+                        name,
+                        &format!("{}_{}", rust_name, i),
+                        signature.args[..signature.args.len() - 1].iter()
+                            .zip(&signature.orig.args)
+                            .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type))
+                            .chain(
+                                (1..=i)
+                                    .map(|j| {
+                                        let idl_type = &signature.args[signature.args.len() - 1];
+                                        let name = signature.orig.args[signature.args.len() - 1].name;
+                                        (format!("{}_{}", name, j), idl_type)
+                                    })
+                            )
+                            .collect::<Vec<_>>()
+                            .iter()
+                            .map(|(name, idl_type)| (&name[..], idl_type.clone())),
+                        &ret_ty,
+                        kind.clone(),
+                        structural,
+                        catch,
+                        false,
+                        None,
+                    ));
+                }
+            }
             ret.extend(self.create_one_function(
                 name,
                 &rust_name,
                 signature.args.iter()
                     .zip(&signature.orig.args)
-                    .map(|(ty, orig_arg)| (orig_arg.name, ty)),
+                    .map(|(idl_type, orig_arg)| (orig_arg.name, idl_type)),
                 &ret_ty,
                 kind.clone(),
-                force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs),
-                force_throws || throws(&signature.orig.attrs),
-                signature.args.len() == signature.orig.args.len()
-                    && signature.orig.args.last().map(|arg| arg.variadic).unwrap_or(false),
+                structural,
+                catch,
+                variadic,
                 None,
             ));
         }
