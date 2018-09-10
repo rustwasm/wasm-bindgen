@@ -89,3 +89,31 @@ fn set_inheritance() {
     assert!(set.is_instance_of::<Object>());
     let _: &Object = set.as_ref();
 }
+
+#[wasm_bindgen_test]
+fn keys() {
+    let set = Set::new(&JsValue::undefined());
+    set.add(&1.into());
+    set.add(&2.into());
+    set.add(&3.into());
+
+    let list = set.keys().into_iter().map(|e| e.unwrap()).collect::<Vec<_>>();
+    assert_eq!(list.len(), 3);
+    assert!(list.iter().any(|l| *l == 1));
+    assert!(list.iter().any(|l| *l == 2));
+    assert!(list.iter().any(|l| *l == 3));
+}
+
+#[wasm_bindgen_test]
+fn values() {
+    let set = Set::new(&JsValue::undefined());
+    set.add(&1.into());
+    set.add(&2.into());
+    set.add(&3.into());
+
+    let list = set.values().into_iter().map(|e| e.unwrap()).collect::<Vec<_>>();
+    assert_eq!(list.len(), 3);
+    assert!(list.iter().any(|l| *l == 1));
+    assert!(list.iter().any(|l| *l == 2));
+    assert!(list.iter().any(|l| *l == 3));
+}
