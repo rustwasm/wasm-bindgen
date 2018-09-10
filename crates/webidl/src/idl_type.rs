@@ -449,8 +449,8 @@ impl<'a> IdlType<'a> {
             IdlType::UnsignedShort => Some(ident_ty(raw_ident("u16"))),
             IdlType::Long => Some(ident_ty(raw_ident("i32"))),
             IdlType::UnsignedLong => Some(ident_ty(raw_ident("u32"))),
-            IdlType::LongLong => Some(ident_ty(raw_ident("i64"))),
-            IdlType::UnsignedLongLong => Some(ident_ty(raw_ident("u64"))),
+            IdlType::LongLong => None,
+            IdlType::UnsignedLongLong => None,
             IdlType::Float => Some(ident_ty(raw_ident("f32"))),
             IdlType::UnrestrictedFloat => Some(ident_ty(raw_ident("f32"))),
             IdlType::Double => Some(ident_ty(raw_ident("f64"))),
@@ -581,6 +581,12 @@ impl<'a> IdlType<'a> {
             }
             IdlType::BufferSource => {
                 vec![IdlType::BufferSource, IdlType::Uint8ArrayMut]
+            }
+            IdlType::LongLong => {
+                vec![IdlType::Long, IdlType::Double]
+            }
+            IdlType::UnsignedLongLong => {
+                vec![IdlType::UnsignedLong, IdlType::Double]
             }
             idl_type @ _ => vec![idl_type.clone()],
         }

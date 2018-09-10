@@ -86,9 +86,11 @@ fn optional_and_union_arguments() {
     assert_eq!(f.m_with_b("abc", false), "string, abc, boolean, false, number, 123, number, 456");
     assert_eq!(f.m_with_b_and_i16("abc", false, 5), "string, abc, boolean, false, number, 5, number, 456");
     assert_eq!(f.m_with_b_and_str("abc", false, "5"), "string, abc, boolean, false, string, 5, number, 456");
-    assert_eq!(f.m_with_b_and_i16_and_opt_i64("abc", false, 5, Some(10)), "string, abc, boolean, false, number, 5, bigint, 10");
+    assert_eq!(f.m_with_b_and_i16_and_opt_i32("abc", false, 5, Some(10)), "string, abc, boolean, false, number, 5, number, 10");
+    assert_eq!(f.m_with_b_and_i16_and_opt_f64("abc", false, 5, Some(10.0)), "string, abc, boolean, false, number, 5, number, 10");
     assert_eq!(f.m_with_b_and_i16_and_opt_bool("abc", false, 5, Some(true)), "string, abc, boolean, false, number, 5, boolean, true");
-    assert_eq!(f.m_with_b_and_str_and_opt_i64("abc", false, "5", Some(10)), "string, abc, boolean, false, string, 5, bigint, 10");
+    assert_eq!(f.m_with_b_and_str_and_opt_i32("abc", false, "5", Some(10)), "string, abc, boolean, false, string, 5, number, 10");
+    assert_eq!(f.m_with_b_and_str_and_opt_f64("abc", false, "5", Some(12.0)), "string, abc, boolean, false, string, 5, number, 12");
     assert_eq!(f.m_with_b_and_str_and_opt_bool("abc", false, "5", Some(true)), "string, abc, boolean, false, string, 5, boolean, true");
 }
 

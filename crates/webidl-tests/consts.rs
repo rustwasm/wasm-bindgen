@@ -26,11 +26,6 @@ fn ints() {
     assert_eq!(ConstLong::IMAX, i32::max_value());
     assert_eq!(ConstLong::UMIN, u32::min_value());
     assert_eq!(ConstLong::UMAX, u32::max_value());
-
-    assert_eq!(ConstLongLong::IMIN, i64::min_value());
-    assert_eq!(ConstLongLong::IMAX, i64::max_value());
-    assert_eq!(ConstLongLong::UMIN, u64::min_value());
-    assert_eq!(ConstLongLong::UMAX, u64::max_value());
 }
 
 #[wasm_bindgen_test]
