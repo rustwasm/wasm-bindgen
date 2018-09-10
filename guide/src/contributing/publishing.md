@@ -1,40 +1,24 @@
 # Publishing New `wasm-bindgen` Releases
 
-* [ ] Make sure that your git working copy is clean.
+1. <input type="checkbox"/> Compile the `publish.rs` script:
 
-* [ ] Make sure that you are on the latest `master`:
+   ```
+   rustc publish.rs
+   ```
 
-  ```
-  git pull origin master
-  ```
+2. <input type="checkbox"/> Bump every crate's minor version:
 
-* [ ] Run `rustc ./publish.rs`
+   ```
+   # Make sure you are in the root of the wasm-bindgen repo!
+   ./publish bump
+   ```
 
-* [ ] Run `./publish bump` - this will update all version numbers
+3. <input type="checkbox"/> Send a pull request for the version bump.
 
-* [ ] Write a "0.X.Z" entry in the CHANGELOG.md
+4. <input type="checkbox"/> After the pull request's CI is green and it has been
+   merged, publish to cargo:
 
-* [ ] Commit the version bump:
-
-  ```
-  git commit -m "Bump to version 0.X.Z"
-  ```
-
-* [ ] Send a PR to the `wasm-bindgen` repository, get it merged
-
-* [ ] Check out the merge commit of `wasm-bindgen`
-
-* [ ] Comment out the `[patch]` section in the root `Cargo.toml` that only
-      exists to make sure that `console_error_panic_hook` in tests is using
-      *this* `wasm-bindgen` rather than one from crates.io.
-
-* [ ] Run `rustc ./publish.rs`
-
-* [ ] Run `./publish publish`
-
-* [ ] Tag the release and push it:
-
-  ```
-  git tag 0.X.Z
-  git push origin --tags
-  ```
+   ```
+   # Make sure you are in the root of the wasm-bindgen repo!
+   ./publish publish
+   ```
