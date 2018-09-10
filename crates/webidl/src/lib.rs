@@ -29,7 +29,7 @@ mod idl_type;
 mod util;
 mod error;
 
-use std::collections::{BTreeSet, HashSet, BTreeMap};
+use std::collections::{BTreeSet, HashSet};
 use std::env;
 use std::fs;
 use std::iter::FromIterator;
@@ -80,47 +80,45 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
     definitions.first_pass(&mut first_pass_record, ())?;
     let mut program = Default::default();
 
-    // Prune out everything in the `first_pass_record` which isn't allowed, or
-    // is otherwise gated from not actually being generated.
-    if let Some(allowed_types) = allowed_types {
-        let allowed = allowed_types.iter().cloned().collect::<HashSet<_>>();
-        let filter = |name: &&str| {
-            allowed.contains(&camel_case_ident(name)[..])
-        };
-        retain(&mut first_pass_record.enums, &filter);
-        retain(&mut first_pass_record.dictionaries, &filter);
-        retain(&mut first_pass_record.interfaces, &filter);
-    }
+    let allowed_types = allowed_types.map(|list| {
+        list.iter().cloned().collect::<HashSet<_>>()
+    });
+    let filter = |name: &str| {
+        match &allowed_types {
+            Some(set) => set.contains(&camel_case_ident(name)[..]),
+            None => true,
+        }
+    };
 
-    for e in first_pass_record.enums.values() {
-        first_pass_record.append_enum(&mut program, e);
+    for (name, e) in first_pass_record.enums.iter() {
+        if filter(name) {
+            first_pass_record.append_enum(&mut program, e);
+        }
     }
-    for d in first_pass_record.dictionaries.values() {
-        first_pass_record.append_dictionary(&mut program, d);
+    for (name, d) in first_pass_record.dictionaries.iter() {
+        if filter(name) {
+            first_pass_record.append_dictionary(&mut program, d);
+        }
     }
     for (name, n) in first_pass_record.namespaces.iter() {
         first_pass_record.append_ns(&mut program, name, n);
     }
     for (name, d) in first_pass_record.interfaces.iter() {
-        first_pass_record.append_interface(&mut program, name, d);
+        if filter(name) {
+            first_pass_record.append_interface(&mut program, name, d);
+        }
+    }
+
+    // Prune out `extends` annotations that aren't defined as these shouldn't
+    // prevent the type from being usable entirely. They're just there for
+    // `AsRef` and such implementations.
+    for import in program.imports.iter_mut() {
+        if let backend::ast::ImportKind::Type(t) = &mut import.kind {
+            t.extends.retain(|n| filter(&n.to_string()));
+        }
     }
 
     Ok(program)
-}
-
-fn retain<K: Copy + Ord, V>(
-    map: &mut BTreeMap<K, V>,
-    mut filter: impl FnMut(&K) -> bool,
-) {
-    let mut to_remove = Vec::new();
-    for k in map.keys() {
-        if !filter(k) {
-            to_remove.push(*k);
-        }
-    }
-    for k in to_remove {
-        map.remove(&k);
-    }
 }
 
 /// Compile the given WebIDL source text into Rust source text containing

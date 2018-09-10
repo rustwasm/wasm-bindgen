@@ -289,6 +289,9 @@ impl ImportedTypes for ast::ImportType {
         F: FnMut(&Ident, ImportedTypeKind),
     {
         f(&self.rust_name, ImportedTypeKind::Definition);
+        for class in self.extends.iter() {
+            f(class, ImportedTypeKind::Reference);
+        }
     }
 }
 
@@ -344,10 +347,27 @@ impl RemoveUndefinedImports for ast::Program {
     where
         F: Fn(&Ident) -> bool,
     {
-        let a = self.imports.remove_undefined_imports(is_defined);
-        let b = self.consts.remove_undefined_imports(is_defined);
-        let c = self.dictionaries.remove_undefined_imports(is_defined);
-        a || b || c
+        let mut changed = self.imports.remove_undefined_imports(is_defined);
+        changed = self.consts.remove_undefined_imports(is_defined) || changed;
+
+        let mut dictionaries_to_remove = Vec::new();
+        for (i, dictionary) in self.dictionaries.iter_mut().enumerate() {
+            let num_required = |dict: &ast::Dictionary| {
+                dict.fields.iter().filter(|f| f.required).count()
+            };
+            let before = num_required(dictionary);
+            changed = dictionary.fields.remove_undefined_imports(is_defined) || changed;
+            if before != num_required(dictionary) {
+                warn!("removing {} due to a required field being removed",
+                      dictionary.name);
+                dictionaries_to_remove.push(i);
+            }
+        }
+        for i in dictionaries_to_remove.iter().rev() {
+            self.dictionaries.swap_remove(*i);
+        }
+
+        changed || dictionaries_to_remove.len() > 0
     }
 }
 
