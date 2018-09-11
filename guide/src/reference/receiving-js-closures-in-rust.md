@@ -29,3 +29,6 @@ impl VecU32 {
     }
 }
 ```
+
+Since Rust has no function overloading, the `call#` method also requires a
+number representing the amount of arguments passed to the JavaScript closure.
