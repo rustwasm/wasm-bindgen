@@ -58,6 +58,11 @@ interface OptionalAndUnionArguments {
 };
 
 [Constructor()]
+interface Variadic {
+  short sum(short... values);
+};
+
+[Constructor()]
 interface Unforgeable {
   [Unforgeable] readonly attribute short uno;
   readonly attribute short dos;

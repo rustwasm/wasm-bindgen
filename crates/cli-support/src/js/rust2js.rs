@@ -499,13 +499,26 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 return Err(failure::err_msg("a function with no arguments cannot be variadic"));
             }
             let last_arg = self.js_arguments.len() - 1; // check implies >= 0
-            self.ret_expr.replace(
-                "JS",
-                &format!("{}({}, ...{})",
-                         invoc,
-                         self.js_arguments[..last_arg].join(", "),
-                         self.js_arguments[last_arg])
-            )
+            if self.js_arguments.len() != 1 {
+                self.ret_expr.replace(
+                    "JS",
+                    &format!(
+                        "{}({}, ...{})",
+                        invoc,
+                        self.js_arguments[..last_arg].join(", "),
+                        self.js_arguments[last_arg],
+                    )
+                )
+            } else {
+                self.ret_expr.replace(
+                    "JS",
+                    &format!(
+                        "{}(...{})",
+                        invoc,
+                        self.js_arguments[last_arg],
+                    )
+                )
+            }
         } else {
             self.ret_expr.replace(
                 "JS",
