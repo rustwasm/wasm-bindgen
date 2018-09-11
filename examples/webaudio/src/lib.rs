@@ -2,7 +2,9 @@ extern crate wasm_bindgen;
 extern crate web_sys;
 
 use wasm_bindgen::prelude::*;
-use web_sys::{AudioContext, BaseAudioContext, AudioNode, AudioScheduledSourceNode, OscillatorType};
+use web_sys::{
+    AudioContext, AudioNode, AudioScheduledSourceNode, BaseAudioContext, OscillatorType,
+};
 
 /// Converts a midi note to frequency
 ///
@@ -32,16 +34,12 @@ pub struct FmOsc {
     fm_freq_ratio: f32,
 
     fm_gain_ratio: f32,
-
-
 }
 
 #[wasm_bindgen]
 impl FmOsc {
     #[wasm_bindgen(constructor)]
     pub fn new() -> FmOsc {
-        // TODO, how to throw from a constructor?
-
         let ctx = web_sys::AudioContext::new().unwrap();
         let primary;
         let fm_osc;
@@ -51,21 +49,20 @@ impl FmOsc {
         {
             let base: &BaseAudioContext = ctx.as_ref();
 
-            // create our web audio objects
+            // Create our web audio objects.
             primary = base.create_oscillator().unwrap();
             fm_osc = base.create_oscillator().unwrap();
             gain = base.create_gain().unwrap();
             fm_gain = base.create_gain().unwrap();
         }
 
-        // some initial settings:
+        // Some initial settings:
         primary.set_type(OscillatorType::Sine);
         primary.frequency().set_value(440.0); // A4 note
         gain.gain().set_value(0.0); // starts muted
         fm_gain.gain().set_value(0.0); // no initial frequency modulation
         fm_osc.set_type(OscillatorType::Sine);
         fm_osc.frequency().set_value(0.0);
-
 
         // Create base class references:
         {
@@ -77,26 +74,36 @@ impl FmOsc {
             let destination = base.destination();
             let destination_node: &AudioNode = destination.as_ref();
 
+            // Connect the nodes up!
 
-            // connect them up:
-
-            // The primary oscillator is routed through the gain node, so that it can control the overall output volume
+            // The primary oscillator is routed through the gain node, so that
+            // it can control the overall output volume.
             primary_node.connect_with_audio_node(gain.as_ref()).unwrap();
-            // Then connect the gain node to the AudioContext destination (aka your speakers)
+
+            // Then connect the gain node to the AudioContext destination (aka
+            // your speakers).
             gain_node.connect_with_audio_node(destination_node).unwrap();
 
-            // the FM oscillator is connected to its own gain node, so it can control the amount of modulation
-            fm_osc_node.connect_with_audio_node(fm_gain.as_ref()).unwrap();
+            // The FM oscillator is connected to its own gain node, so it can
+            // control the amount of modulation.
+            fm_osc_node
+                .connect_with_audio_node(fm_gain.as_ref())
+                .unwrap();
 
-            // Connect the FM oscillator to the frequency parameter of the main oscillator, so that the
-            // FM node can modulate its frequency
-            fm_gain_node.connect_with_audio_param(&primary.frequency()).unwrap();
+            // Connect the FM oscillator to the frequency parameter of the main
+            // oscillator, so that the FM node can modulate its frequency.
+            fm_gain_node
+                .connect_with_audio_param(&primary.frequency())
+                .unwrap();
         }
 
-
-        // start the oscillators!
-        AsRef::<AudioScheduledSourceNode>::as_ref(&primary).start().unwrap();
-        AsRef::<AudioScheduledSourceNode>::as_ref(&fm_osc).start().unwrap();
+        // Start the oscillators!
+        AsRef::<AudioScheduledSourceNode>::as_ref(&primary)
+            .start()
+            .unwrap();
+        AsRef::<AudioScheduledSourceNode>::as_ref(&fm_osc)
+            .start()
+            .unwrap();
 
         FmOsc {
             ctx,
@@ -107,14 +114,17 @@ impl FmOsc {
             fm_freq_ratio: 0.0,
             fm_gain_ratio: 0.0,
         }
-
     }
 
-    /// Sets the gain for this oscillator, between 0.0 and 1.0
+    /// Sets the gain for this oscillator, between 0.0 and 1.0.
     #[wasm_bindgen]
     pub fn set_gain(&self, mut gain: f32) {
-        if gain > 1.0 { gain = 1.0; }
-        if gain < 0.0 { gain = 0.0; }
+        if gain > 1.0 {
+            gain = 1.0;
+        }
+        if gain < 0.0 {
+            gain = 0.0;
+        }
         self.gain.gain().set_value(gain);
     }
 
@@ -122,11 +132,10 @@ impl FmOsc {
     pub fn set_primary_frequency(&self, freq: f32) {
         self.primary.frequency().set_value(freq);
 
-        // The frequency of the FM oscillator depends on the frequency of the primary oscillator, so
-        // we update the frequency of both in this method
+        // The frequency of the FM oscillator depends on the frequency of the
+        // primary oscillator, so we update the frequency of both in this method.
         self.fm_osc.frequency().set_value(self.fm_freq_ratio * freq);
         self.fm_gain.gain().set_value(self.fm_gain_ratio * freq);
-
     }
 
     #[wasm_bindgen]
@@ -135,21 +144,22 @@ impl FmOsc {
         self.set_primary_frequency(freq);
     }
 
-    /// This should be between 0 and 1, though higher values are accepted
+    /// This should be between 0 and 1, though higher values are accepted.
     #[wasm_bindgen]
     pub fn set_fm_amount(&mut self, amt: f32) {
         self.fm_gain_ratio = amt;
 
-        self.fm_gain.gain().set_value(self.fm_gain_ratio * self.primary.frequency().value());
-
+        self.fm_gain
+            .gain()
+            .set_value(self.fm_gain_ratio * self.primary.frequency().value());
     }
 
-    /// This should be between 0 and 1, though higher values are accepted
+    /// This should be between 0 and 1, though higher values are accepted.
     #[wasm_bindgen]
     pub fn set_fm_frequency(&mut self, amt: f32) {
         self.fm_freq_ratio = amt;
-        self.fm_osc.frequency().set_value(self.fm_freq_ratio * self.primary.frequency().value());
+        self.fm_osc
+            .frequency()
+            .set_value(self.fm_freq_ratio * self.primary.frequency().value());
     }
-
-
 }
