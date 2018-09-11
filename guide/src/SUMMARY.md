@@ -50,6 +50,18 @@
 
 --------------------------------------------------------------------------------
 
+- [`web-sys`](./web-sys/index.md)
+  - [Using `web-sys`](./web-sys/using-web-sys.md)
+  - [Cargo Features](./web-sys/cargo-features.md)
+  - [Function Overloads](./web-sys/function-overloads.md)
+  - [Type Translations](./web-sys/type-translations.md)
+  - [Examples](./web-sys/examples/index.md)
+    - [The `fetch` API](./web-sys/examples/fetch.md)
+    - [2D Canvas](./web-sys/examples/2d-canvas.md)
+    - [WebAudio](./web-sys/examples/web-audio.md)
+
+--------------------------------------------------------------------------------
+
 - [Contributing](./contributing/index.md)
   - [Testing](./contributing/testing.md)
   - [Internal Design](./contributing/design/index.md)
