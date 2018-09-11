@@ -3,6 +3,8 @@ name = "web-sys"
 version = "0.1.0"
 authors = ["The wasm-bindgen Developers"]
 readme = "./README.md"
+homepage = "https://rustwasm.github.io/wasm-bindgen/web-sys/index.html"
+documentation = "https://rustwasm.github.io/wasm-bindgen/api/web_sys/"
 
 [package.metadata.docs.rs]
 all-features = true
