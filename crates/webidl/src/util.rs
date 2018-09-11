@@ -13,6 +13,12 @@ use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 use first_pass::{FirstPassRecord, OperationId, OperationData, Signature};
 use idl_type::{IdlType, ToIdlType};
 
+/// For variadic operations an overload with a `js_sys::Array` argument is generated alongside with
+/// `operation_name_0`, `operation_name_1`, `operation_name_2`, ..., `operation_name_n` overloads
+/// which have the count of arguments for passing values to the variadic argument
+/// in their names, where `n` is this constant.
+const MAX_VARIADIC_ARGUMENTS_COUNT: usize = 7;
+
 /// Take a type and create an immutable shared reference to that type.
 pub(crate) fn shared_ref(ty: syn::Type, mutable: bool) -> syn::Type {
     syn::TypeReference {
@@ -581,34 +587,6 @@ impl<'src> FirstPassRecord<'src> {
             let catch = force_throws || throws(&signature.orig.attrs);
             let variadic = signature.args.len() == signature.orig.args.len()
                 && signature.orig.args.last().map(|arg| arg.variadic).unwrap_or(false);
-            if variadic {
-                for i in 0..=7 {
-                    ret.extend(self.create_one_function(
-                        name,
-                        &format!("{}_{}", rust_name, i),
-                        signature.args[..signature.args.len() - 1].iter()
-                            .zip(&signature.orig.args)
-                            .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type))
-                            .chain(
-                                (1..=i)
-                                    .map(|j| {
-                                        let idl_type = &signature.args[signature.args.len() - 1];
-                                        let name = signature.orig.args[signature.args.len() - 1].name;
-                                        (format!("{}_{}", name, j), idl_type)
-                                    })
-                            )
-                            .collect::<Vec<_>>()
-                            .iter()
-                            .map(|(name, idl_type)| (&name[..], idl_type.clone())),
-                        &ret_ty,
-                        kind.clone(),
-                        structural,
-                        catch,
-                        false,
-                        None,
-                    ));
-                }
-            }
             ret.extend(self.create_one_function(
                 name,
                 &rust_name,
@@ -622,6 +600,30 @@ impl<'src> FirstPassRecord<'src> {
                 variadic,
                 None,
             ));
+            if !variadic {
+                continue;
+            }
+            let last_idl_type = &signature.args[signature.args.len() - 1];
+            let last_name = signature.orig.args[signature.args.len() - 1].name;
+            for i in 0..=MAX_VARIADIC_ARGUMENTS_COUNT {
+                ret.extend(self.create_one_function(
+                    name,
+                    &format!("{}_{}", rust_name, i),
+                    signature.args[..signature.args.len() - 1].iter()
+                        .zip(&signature.orig.args)
+                        .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type))
+                        .chain((1..=i).map(|j| (format!("{}_{}", last_name, j), last_idl_type)))
+                        .collect::<Vec<_>>()
+                        .iter()
+                        .map(|(name, idl_type)| (&name[..], idl_type.clone())),
+                    &ret_ty,
+                    kind.clone(),
+                    structural,
+                    catch,
+                    false,
+                    None,
+                ));
+            }
         }
         return ret;
     }
