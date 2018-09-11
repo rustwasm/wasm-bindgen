@@ -5,6 +5,10 @@ regardless if it is an `instanceof` some JavaScript class or not, use [the
 `js_sys::Reflect` APIs][js-sys-reflect]. These APIs are bindings to the
 [JavaScript builtin `Reflect` object][mdn-reflect] and its methods.
 
+You might also benefit from [using duck-typed
+interfaces](./working-with-duck-typed-interfaces.html) instead of working with
+untyped values.
+
 ## Reading Properties with `js_sys::Reflect::get`
 
 [API documentation for `js_sys::Reflect::get`.](https://rustwasm.github.io/wasm-bindgen/api/js_sys/struct.Reflect.html#method.get)

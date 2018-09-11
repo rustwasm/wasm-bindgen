@@ -1,7 +1,6 @@
-# Canvas 2D Example
+# Duck-Typed Interfaces Example
 
-This directory is an example of using the `web-sys` crate to draw on a 2D
-canvas.
+This directory is an example of using duck-typed JS interfaces with `wasm-bindgen`.
 
 You can build and run the example with:
 
