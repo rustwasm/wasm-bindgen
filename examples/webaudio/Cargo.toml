@@ -1,7 +1,7 @@
 [package]
 name = "webaudio"
 version = "0.1.0"
-authors = ["Andrew Chin <achin@eminence32.net>"]
+authors = ["The wasm-bindgen Developers"]
 
 [lib]
 crate-type = ["cdylib"]
