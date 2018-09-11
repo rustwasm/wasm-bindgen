@@ -14,6 +14,7 @@
   - [`Promise`s and `Future`s](./reference/js-promises-and-rust-futures.md)
   - [No ES Modules](./reference/no-esm.md)
   - [Arbitrary Data with Serde](./reference/arbitrary-data-with-serde.md)
+  - [Accessing Properties of Untyped JS Values](./reference/accessing-properties-of-untyped-js-values.md)
   - [Command Line Interface](./reference/cli.md)
   - [Supported Types](./reference/types.md)
     - [Imported JavaScript Types](./reference/types/imported-js-types.md)
