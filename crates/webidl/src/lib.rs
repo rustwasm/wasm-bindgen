@@ -120,7 +120,10 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
     // `AsRef` and such implementations.
     for import in program.imports.iter_mut() {
         if let backend::ast::ImportKind::Type(t) = &mut import.kind {
-            t.extends.retain(|n| filter(&n.to_string()));
+            t.extends.retain(|n| {
+                first_pass_record.builtin_idents.contains(n) ||
+                    filter(&n.to_string())
+            });
         }
     }
 
@@ -445,6 +448,7 @@ impl<'src> FirstPassRecord<'src> {
             instanceof_shim: format!("__widl_instanceof_{}", name),
             extends: self.all_superclasses(name)
                 .map(|name| Ident::new(&name, Span::call_site()))
+                .chain(Some(Ident::new("Object", Span::call_site())))
                 .collect(),
         };
         self.append_required_features_doc(&import_type, &mut doc_comment);

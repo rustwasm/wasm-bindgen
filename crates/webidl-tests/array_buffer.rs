@@ -1,3 +1,4 @@
+use js_sys::Object;
 use wasm_bindgen_test::*;
 
 include!(concat!(env!("OUT_DIR"), "/array_buffer.rs"));

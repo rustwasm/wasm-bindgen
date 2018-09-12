@@ -1,8 +1,16 @@
+use js_sys::Object;
 use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
 include!(concat!(env!("OUT_DIR"), "/simple.rs"));
+
+#[wasm_bindgen_test]
+fn interfaces_inherit_from_object() {
+    let m = Method::new(42.0).unwrap();
+    assert!(m.is_instance_of::<Object>());
+    let _: &Object = m.as_ref();
+}
 
 #[wasm_bindgen_test]
 fn method() {
