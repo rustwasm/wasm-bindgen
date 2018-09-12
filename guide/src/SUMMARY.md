@@ -15,6 +15,7 @@
   - [No ES Modules](./reference/no-esm.md)
   - [Arbitrary Data with Serde](./reference/arbitrary-data-with-serde.md)
   - [Accessing Properties of Untyped JS Values](./reference/accessing-properties-of-untyped-js-values.md)
+  - [Working with Duck-Typed Interfaces](./reference/working-with-duck-typed-interfaces.md)
   - [Command Line Interface](./reference/cli.md)
   - [Supported Types](./reference/types.md)
     - [Imported JavaScript Types](./reference/types/imported-js-types.md)

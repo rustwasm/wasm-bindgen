@@ -64,6 +64,7 @@ members = [
   "examples/closures",
   "examples/comments",
   "examples/console_log",
+  "examples/duck-typed-interfaces",
   "examples/dom",
   "examples/fetch",
   "examples/guide-supported-types-examples",

@@ -1,0 +1,10 @@
+[package]
+name = "rust-duck-typed-interfaces"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { path = "../.." }
