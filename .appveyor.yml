@@ -1,8 +1,7 @@
 environment:
   global:
-    RUSTFLAGS: -Zunstable-options -Ctarget-feature=+crt-static
+    RUSTFLAGS: -Ctarget-feature=+crt-static
     RUST_BACKTRACE: 1
-    CARGO_INCREMENTAL: 0   # should turn this back on when fixed!
   matrix:
     - TARGET: x86_64-pc-windows-msvc
       DEPLOY: 1
