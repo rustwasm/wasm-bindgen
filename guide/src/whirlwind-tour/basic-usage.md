@@ -98,7 +98,7 @@ be wasm). As of the time of this writing there's unfortunately not a lot of
 tools that natively do this, but Webpack's 4.0 beta release has native wasm
 support! Let's take a look at that and see how it works.
 
-First create an `index.js` file:
+First, create an `index.js` file:
 
 ```js
 const js = import("./js_hello_world");
@@ -114,7 +114,7 @@ yet.
 
 [webpack-issue]: https://github.com/webpack/webpack/issues/6615
 
-Next our JS dependencies by creating a `package.json`:
+Next, define our JS dependencies by creating a `package.json`:
 
 ```json
 {
@@ -122,6 +122,7 @@ Next our JS dependencies by creating a `package.json`:
     "serve": "webpack-dev-server"
   },
   "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.0.1",
     "webpack-cli": "^2.0.10",
     "webpack-dev-server": "^3.1.0"
@@ -129,11 +130,12 @@ Next our JS dependencies by creating a `package.json`:
 }
 ```
 
-and our webpack configuration
+and our `webpack` configuration:
 
 ```js
 // webpack.config.js
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: "./index.js",
@@ -141,21 +143,13 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "index.js",
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: "Getting started with WASM"
+    })
+  ],
   mode: "development"
 };
-```
-
-Our corresponding `index.html`:
-
-```html
-<html>
-  <head>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
-  </head>
-  <body>
-    <script src='./index.js'></script>
-  </body>
-</html>
 ```
 
 And finally:
@@ -167,6 +161,18 @@ $ npm run serve
 
 If you open [http://localhost:8080](http://localhost:8080) in a browser you should see a `Hello, world!`
 dialog pop up!
+
+Notice that `html-webpack-plugin` has generated an HTML page which includes `index.js`.
+
+Finally, you may want to deploy your application to a web server like Apache or NGINX.
+For that, simply run:
+
+```shell
+$ npx webpack
+```
+
+The output will be in the `dist` directory. You can now copy it to the root of your
+web server.
 
 If that was all a bit much, no worries! You can [execute this code
 online][hello-online] thanks to [WebAssembly Studio](https://webassembly.studio)
