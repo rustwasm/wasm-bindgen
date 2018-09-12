@@ -32,6 +32,7 @@ The examples here are:
   the `wasm-bindgen` CLI tool
 * `performance` - how to import APIs like `performance.now()` and time various
   operations in Rust
+* `production` - basic production setup with Webpack, TypeScript and Express
 * `smorgasboard` - a bunch of features all thrown into one, showing off the
   various capabilities of the `#[wasm_bindgen]` macro and what you can do with
   it from JS
