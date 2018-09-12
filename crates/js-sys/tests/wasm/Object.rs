@@ -9,6 +9,10 @@ extern "C" {
     type Foo42;
     #[wasm_bindgen(method, setter, structural)]
     fn set_foo(this: &Foo42, val: JsValue);
+
+    type DefinePropertyAttrs;
+    #[wasm_bindgen(method, setter, structural)]
+    fn set_value(this: &DefinePropertyAttrs, val: &JsValue);
 }
 
 #[wasm_bindgen(module = "tests/wasm/Object.js")]
@@ -71,6 +75,16 @@ fn create() {
         .unwrap();
     let my_array = Object::create(&array_proto);
     assert!(my_array.is_instance_of::<Array>());
+}
+
+#[wasm_bindgen_test]
+fn define_property() {
+    let value = DefinePropertyAttrs::from(JsValue::from(Object::new()));
+    value.set_value(&43.into());
+    let descriptor = Object::from(JsValue::from(value));
+    let foo = foo_42();
+    let foo = Object::define_property(&foo, &"bar".into(), &descriptor);
+    assert!(foo.has_own_property(&"bar".into()));
 }
 
 #[wasm_bindgen_test]
