@@ -64,7 +64,15 @@
 
 --------------------------------------------------------------------------------
 
-- [Contributing](./contributing/index.md)
+- [Testing with `wasm-bindgen-test`](./wasm-bindgen-test/index.md)
+  - [Usage](./wasm-bindgen-test/usage.md)
+  - [Writing Asynchronous Tests](./wasm-bindgen-test/asynchronous-tests.md)
+  - [Testing in Headless Browsers](./wasm-bindgen-test/browsers.md)
+  - [Continuous Integration](./wasm-bindgen-test/continuous-integration.md)
+
+--------------------------------------------------------------------------------
+
+- [Contributing to `wasm-bindgen`](./contributing/index.md)
   - [Testing](./contributing/testing.md)
   - [Internal Design](./contributing/design/index.md)
     - [JS Objects in Rust](./contributing/design/js-objects-in-rust.md)
