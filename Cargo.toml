@@ -73,6 +73,7 @@ members = [
   "examples/julia_set",
   "examples/math",
   "examples/no_modules",
+  "examples/paint",
   "examples/performance",
   "examples/smorgasboard",
   "examples/wasm-in-wasm",
