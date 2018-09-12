@@ -7,7 +7,9 @@ extern crate wasm_bindgen_futures;
 extern crate wasm_bindgen_test;
 extern crate web_sys;
 
-wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+use wasm_bindgen_test::wasm_bindgen_test_configure;
+
+wasm_bindgen_test_configure!(run_in_browser);
 
 pub mod anchor_element;
 pub mod body_element;
