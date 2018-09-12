@@ -1,5 +1,5 @@
 use wasm_bindgen_test::*;
-use js_sys::Function;
+use js_sys::{Function, Object};
 
 include!(concat!(env!("OUT_DIR"), "/callbacks.rs"));
 

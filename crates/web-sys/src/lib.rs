@@ -15,5 +15,6 @@
 
 extern crate wasm_bindgen;
 extern crate js_sys;
+use js_sys::Object;
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
