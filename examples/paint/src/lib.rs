@@ -2,7 +2,7 @@ extern crate js_sys;
 extern crate wasm_bindgen;
 extern crate web_sys;
 
-use std::cell::RefCell;
+use std::cell::Cell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -32,14 +32,14 @@ pub fn main() {
         .dyn_into::<web_sys::CanvasRenderingContext2d>()
         .unwrap();
     let context = Rc::new(context);
-    let pressed = Rc::new(RefCell::new(false));
+    let pressed = Rc::new(Cell::new(false));
     {
         let context = context.clone();
         let pressed = pressed.clone();
         let closure: Closure<FnMut(_)> = Closure::new(move |event: web_sys::MouseEvent| {
             context.begin_path();
             context.move_to(event.offset_x() as f64, event.offset_y() as f64);
-            *pressed.borrow_mut() = true;
+            pressed.set(true);
         });
         (canvas.as_ref() as &web_sys::EventTarget)
             .add_event_listener_with_callback("mousedown", closure.as_ref().unchecked_ref())
@@ -50,7 +50,7 @@ pub fn main() {
         let context = context.clone();
         let pressed = pressed.clone();
         let closure: Closure<FnMut(_)> = Closure::new(move |event: web_sys::MouseEvent| {
-            if *pressed.borrow() {
+            if pressed.get() {
                 context.line_to(event.offset_x() as f64, event.offset_y() as f64);
                 context.stroke();
                 context.begin_path();
@@ -66,7 +66,7 @@ pub fn main() {
         let context = context.clone();
         let pressed = pressed.clone();
         let closure: Closure<FnMut(_)> = Closure::new(move |event: web_sys::MouseEvent| {
-            *pressed.borrow_mut() = false;
+            pressed.set(false);
             context.line_to(event.offset_x() as f64, event.offset_y() as f64);
             context.stroke();
         });
