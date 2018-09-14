@@ -417,7 +417,7 @@ impl<'a> Context<'a> {
 
         let mut js = if self.config.no_modules {
             format!(
-                    "
+                    "\
                     (function() {{
                         var wasm;
                         const __exports = {{}};
@@ -438,8 +438,7 @@ impl<'a> Context<'a> {
                             }});
                         }};
                         self.{global_name} = Object.assign(init, __exports);
-                    }})();
-                    ",
+                    }})();",
                     globals = self.globals,
                     module = module_name,
                     global_name = self.config.no_modules_global
