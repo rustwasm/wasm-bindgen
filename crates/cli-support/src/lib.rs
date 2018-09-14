@@ -388,10 +388,12 @@ fn reset_indentation(s: &str) -> String {
             indent = indent.saturating_sub(1);
         }
         let extra = if line.starts_with(':') || line.starts_with('?') { 1 } else { 0 };
-        for _ in 0..indent + extra {
-            dst.push_str("    ");
+        if !line.is_empty() {
+            for _ in 0..indent + extra {
+                dst.push_str("    ");
+            }
+            dst.push_str(line);
         }
-        dst.push_str(line);
         dst.push_str("\n");
         if line.ends_with('{') {
             indent += 1;
