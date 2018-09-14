@@ -8,11 +8,11 @@ on the git version of it, and of `wasm-bindgen`:*
 ```toml
 [dependencies]
 wasm-bindgen = { git = "https://github.com/rustwasm/wasm-bindgen" }
-web-sys = {
-  git = "https://github.com/rustwasm/wasm-bindgen",
-  features = [
-  ]
-}
+
+[dependencies.web-sys]
+git = "https://github.com/rustwasm/wasm-bindgen"
+features = [
+]
 ```
 
 ## Enable the cargo features for the APIs you're using
@@ -30,12 +30,11 @@ documentation][search-resize-to]. We would find [the
 in `Cargo.toml`:
 
 ```toml
-web-sys = {
-  git = "https://github.com/rustwasm/wasm-bindgen",
-  features = [
-    "Window",
-  ]
-}
+[dependencies.web-sys]
+git = "https://github.com/rustwasm/wasm-bindgen"
+features = [
+  "Window"
+]
 ```
 
 ## Call the method!
