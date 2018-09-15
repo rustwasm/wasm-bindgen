@@ -287,7 +287,10 @@ impl<'a> ToIdlType<'a> for AttributedType<'a> {
 
 impl<'a> ToIdlType<'a> for Identifier<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        if let Some(idl_type) = record.typedefs.get(&self.0) {
+        if self.0 == "DOMTimeStamp" {
+            // https://heycam.github.io/webidl/#DOMTimeStamp
+            Some(IdlType::UnsignedLongLong)
+        } else if let Some(idl_type) = record.typedefs.get(&self.0) {
             idl_type.to_idl_type(record)
         } else if record.interfaces.contains_key(self.0) {
             Some(IdlType::Interface(self.0))
