@@ -1087,7 +1087,7 @@ impl ToTokens for ast::Const {
             Null => unimplemented!(),
         };
 
-        let declaration = quote!(#vis const #name: #ty = #value;);
+        let declaration = quote!(#vis const #name: #ty = #value as #ty;);
 
         if let Some(class) = &self.class {
             (quote! {

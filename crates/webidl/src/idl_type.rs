@@ -461,8 +461,22 @@ impl<'a> IdlType<'a> {
             IdlType::UnsignedShort => Some(ident_ty(raw_ident("u16"))),
             IdlType::Long => Some(ident_ty(raw_ident("i32"))),
             IdlType::UnsignedLong => Some(ident_ty(raw_ident("u32"))),
-            IdlType::LongLong => None,
-            IdlType::UnsignedLongLong => None,
+
+            // Technically these are 64-bit numbers, but we're binding web
+            // APIs that don't actually have return the corresponding 64-bit
+            // type, `BigInt`. Instead the web basically uses floats for these
+            // values. We already expand these types in argument position to
+            // i32/f64 (convenience for i32, losslessness for f64). If we get
+            // here then we're looking at an un-flattened long type such as
+            // dictionary fields or return types. In order to generate bindings
+            // for these functions we just use `f64` here, which should match
+            // exactly what the JS web currently uses anyway.
+            //
+            // Perhaps one day we'll bind to u64/i64 here, but we need `BigInt`
+            // to see more usage!
+            IdlType::LongLong |
+            IdlType::UnsignedLongLong => Some(ident_ty(raw_ident("f64"))),
+
             IdlType::Float => Some(ident_ty(raw_ident("f32"))),
             IdlType::UnrestrictedFloat => Some(ident_ty(raw_ident("f32"))),
             IdlType::Double => Some(ident_ty(raw_ident("f64"))),
