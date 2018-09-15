@@ -2004,6 +2004,14 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Object, js_name = defineProperty)]
     pub fn define_property(obj: &Object, prop: &JsValue, descriptor: &Object) -> Object;
 
+    /// The Object.defineProperties() method defines new or modifies
+    /// existing properties directly on an object, returning the
+    /// object.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties)
+    #[wasm_bindgen(static_method_of = Object, js_name = defineProperties)]
+    pub fn define_properties(obj: &Object, props: &Object) -> Object;
+
     /// The `Object.freeze()` method freezes an object: that is, prevents new
     /// properties from being added to it; prevents existing properties from
     /// being removed; and prevents existing properties, or their enumerability,
