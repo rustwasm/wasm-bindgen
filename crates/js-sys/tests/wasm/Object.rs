@@ -88,6 +88,20 @@ fn define_property() {
 }
 
 #[wasm_bindgen_test]
+fn define_properties() {
+    let props = Object::new();
+    let descriptor = DefinePropertyAttrs::from(JsValue::from(Object::new()));
+    descriptor.set_value(&42.into());
+    let descriptor = JsValue::from(descriptor);
+    Reflect::set(props.as_ref(), &JsValue::from("bar"), &descriptor);
+    Reflect::set(props.as_ref(), &JsValue::from("car"), &descriptor);
+    let foo = foo_42();
+    let foo = Object::define_properties(&foo, &props);
+    assert!(foo.has_own_property(&"bar".into()));
+    assert!(foo.has_own_property(&"car".into()));
+}
+
+#[wasm_bindgen_test]
 fn has_own_property() {
     assert!(foo_42().has_own_property(&"foo".into()));
     assert!(!foo_42().has_own_property(&"bar".into()));
