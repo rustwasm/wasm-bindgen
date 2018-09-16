@@ -61,6 +61,7 @@
     - [The `fetch` API](./web-sys/examples/fetch.md)
     - [2D Canvas](./web-sys/examples/2d-canvas.md)
     - [WebAudio](./web-sys/examples/web-audio.md)
+    - [WebGL](./web-sys/examples/webgl.md)
     - [A Simple Paint Program](./web-sys/examples/paint.md)
 
 --------------------------------------------------------------------------------

@@ -1,0 +1,24 @@
+[package]
+name = "wasm-bindgen-webgl-demo"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = { path = "../.." }
+
+[dependencies.web-sys]
+path = "../../crates/web-sys"
+features = [
+  'Document',
+  'Element',
+  'HtmlCanvasElement',
+  'WebGlBuffer',
+  'WebGlRenderingContext',
+  'WebGlProgram',
+  'WebGlShader',
+  'Window',
+]
