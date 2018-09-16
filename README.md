@@ -66,8 +66,8 @@ greet("World!");
 ## API Docs
 
 - [wasm-bindgen](https://rustwasm.github.io/wasm-bindgen/api/wasm_bindgen/)
-- [js-sys](https://rustwasm.github.io/wasm-bindgen/api/web_sys/)
-- [web-sys](https://rustwasm.github.io/wasm-bindgen/api/js-sys/)
+- [js-sys](https://rustwasm.github.io/wasm-bindgen/api/js_sys/)
+- [web-sys](https://rustwasm.github.io/wasm-bindgen/api/web_sys/)
 
 ## License
 
