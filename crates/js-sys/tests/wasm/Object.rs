@@ -115,6 +115,14 @@ fn get_own_property_descriptor() {
 }
 
 #[wasm_bindgen_test]
+fn get_own_property_descriptors() {
+    let foo = foo_42();
+    let descriptors = Object::get_own_property_descriptors(&foo);
+    let foo_desc = Reflect::get(&descriptors, &"foo".into());
+    assert_eq!(PropertyDescriptor::from(foo_desc).value(), 42);
+}
+
+#[wasm_bindgen_test]
 fn has_own_property() {
     assert!(foo_42().has_own_property(&"foo".into()));
     assert!(!foo_42().has_own_property(&"bar".into()));
