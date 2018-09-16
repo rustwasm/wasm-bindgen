@@ -447,10 +447,6 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::InterfaceMember<'sr
 
 impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceMember<'src> {
     fn first_pass(&'src self, record: &mut FirstPassRecord<'src>, self_name: &'src str) -> Result<()> {
-        if self.specials.len() > 1 {
-            warn!("Unsupported webidl operation: {:?}", self);
-            return Ok(())
-        }
         let is_static = match self.modifier {
             Some(StringifierOrStatic::Stringifier(_)) => {
                 warn!("Unsupported webidl stringifier: {:?}", self);
@@ -461,13 +457,13 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
         };
 
         let mut ids = vec![OperationId::Operation(self.identifier.map(|s| s.0))];
-        for special in self.specials.iter() {
-            ids.push(match special {
-                Special::Getter(_) => OperationId::IndexingGetter,
-                Special::Setter(_) => OperationId::IndexingSetter,
-                Special::Deleter(_) => OperationId::IndexingDeleter,
-                Special::LegacyCaller(_) => continue,
-            });
+        if let Some(special) = self.special {
+            match special {
+                Special::Getter(_) => ids.push(OperationId::IndexingGetter),
+                Special::Setter(_) => ids.push(OperationId::IndexingSetter),
+                Special::Deleter(_) => ids.push(OperationId::IndexingDeleter),
+                Special::LegacyCaller(_) => {},
+            };
         }
         first_pass_operation(
             record,
