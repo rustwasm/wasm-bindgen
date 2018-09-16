@@ -63,6 +63,12 @@ greet("World!");
 
 [**📚 Read the `wasm-bindgen` guide here! 📚**](https://rustwasm.github.io/wasm-bindgen)
 
+## API Docs
+
+- [wasm-bindgen](https://rustwasm.github.io/wasm-bindgen/api/wasm_bindgen/)
+- [js-sys](https://rustwasm.github.io/wasm-bindgen/api/web_sys/)
+- [web-sys](https://rustwasm.github.io/wasm-bindgen/api/js-sys/)
+
 ## License
 
 This project is licensed under either of
