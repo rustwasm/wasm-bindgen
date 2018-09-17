@@ -198,6 +198,7 @@ partial interface Window {
   [Throws, NeedsCallerType] attribute any screenY;
   [Throws, NeedsCallerType] attribute any outerWidth;
   [Throws, NeedsCallerType] attribute any outerHeight;
+  [Replaceable] readonly attribute double devicePixelRatio;
 };
 
 // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/RequestAnimationFrame/Overview.html
