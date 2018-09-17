@@ -630,6 +630,18 @@ fn has_named_attribute(list: Option<&ExtendedAttributeList>, attribute: &str) ->
     })
 }
 
+fn has_ident_attribute(list: Option<&ExtendedAttributeList>, ident: &str) -> bool {
+    let list = match list {
+        Some(list) => list,
+        None => return false,
+    };
+    list.body.list.iter().any(|attr| match attr {
+        ExtendedAttribute::Ident(id) => id.lhs_identifier.0 == ident,
+        ExtendedAttribute::IdentList(id) => id.identifier.0 == ident,
+        _ => false,
+    })
+}
+
 /// ChromeOnly is for things that are only exposed to privileged code in Firefox.
 pub fn is_chrome_only(ext_attrs: &Option<ExtendedAttributeList>) -> bool {
     has_named_attribute(ext_attrs.as_ref(), "ChromeOnly")
@@ -646,7 +658,8 @@ pub fn is_structural(
     container_attrs: Option<&ExtendedAttributeList>,
 ) -> bool {
     has_named_attribute(item_attrs, "Unforgeable") ||
-        has_named_attribute(container_attrs, "Unforgeable")
+        has_named_attribute(container_attrs, "Unforgeable") ||
+        has_ident_attribute(container_attrs, "Global")
 }
 
 /// Whether a webidl object is marked as throwing.
