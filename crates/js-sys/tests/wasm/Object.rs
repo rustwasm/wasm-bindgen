@@ -13,6 +13,10 @@ extern "C" {
     type DefinePropertyAttrs;
     #[wasm_bindgen(method, setter, structural)]
     fn set_value(this: &DefinePropertyAttrs, val: &JsValue);
+
+    type PropertyDescriptor;
+    #[wasm_bindgen(method, getter, structural)]
+    fn value(this: &PropertyDescriptor) -> JsValue;
 }
 
 #[wasm_bindgen(module = "tests/wasm/Object.js")]
@@ -99,6 +103,23 @@ fn define_properties() {
     let foo = Object::define_properties(&foo, &props);
     assert!(foo.has_own_property(&"bar".into()));
     assert!(foo.has_own_property(&"car".into()));
+}
+
+#[wasm_bindgen_test]
+fn get_own_property_descriptor() {
+    let foo = foo_42();
+    let desc = Object::get_own_property_descriptor(&foo, &"foo".into());
+    assert_eq!(PropertyDescriptor::from(desc).value(), 42);
+    let desc = Object::get_own_property_descriptor(&foo, &"bar".into());
+    assert!(PropertyDescriptor::from(desc).value().is_undefined());
+}
+
+#[wasm_bindgen_test]
+fn get_own_property_descriptors() {
+    let foo = foo_42();
+    let descriptors = Object::get_own_property_descriptors(&foo);
+    let foo_desc = Reflect::get(&descriptors, &"foo".into());
+    assert_eq!(PropertyDescriptor::from(foo_desc).value(), 42);
 }
 
 #[wasm_bindgen_test]
