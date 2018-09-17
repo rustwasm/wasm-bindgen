@@ -40,10 +40,8 @@ interface Node : EventTarget {
   readonly attribute boolean isConnected;
   [Pure]
   readonly attribute Document? ownerDocument;
-/*TODO
   [Pure]
   Node getRootNode(optional GetRootNodeOptions options);
-*/
   [Pure]
   readonly attribute Node? parentNode;
   [Pure]
@@ -103,8 +101,6 @@ interface Node : EventTarget {
   boolean isDefaultNamespace(DOMString? namespace);
 };
 
-/*TODO
 dictionary GetRootNodeOptions {
   boolean composed = false;
 };
-*/

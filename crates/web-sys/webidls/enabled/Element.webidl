@@ -29,10 +29,8 @@ interface Element : Node {
            attribute DOMString id;
   [CEReactions, Pure]
            attribute DOMString className;
-/*TODO
   [Constant, PutForwards=value]
   readonly attribute DOMTokenList classList;
-*/
 
   [SameObject]
   readonly attribute NamedNodeMap attributes;
