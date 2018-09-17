@@ -3,8 +3,6 @@
 //! This module defines the `Closure` type which is used to pass "owned
 //! closures" from Rust to JS. Some more details can be found on the `Closure`
 //! type itself.
-//! 
-//! The `nightly` feature is required for the `Closure` type to be used.
 
 use std::cell::UnsafeCell;
 #[cfg(feature = "nightly")]
@@ -89,6 +87,10 @@ impl<T> Closure<T>
     ///
     /// This is unfortunately pretty restrictive for now but hopefully some of
     /// these restrictions can be lifted in the future!
+    ///
+    /// *This method requires the `nightly` feature of the `wasm-bindgen` crate
+    /// to be enabled, meaning this is a nightly-only API. Users on stable
+    /// should use `Closure::wrap`.*
     #[cfg(feature = "nightly")]
     pub fn new<F>(t: F) -> Closure<T>
         where F: Unsize<T> + 'static
