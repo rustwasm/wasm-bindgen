@@ -3,6 +3,11 @@
 //! This module defines the `Closure` type which is used to pass "owned
 //! closures" from Rust to JS. Some more details can be found on the `Closure`
 //! type itself.
+<<<<<<< a37fa45100baddc36695cbf01110bcd9ab638065
+=======
+//!
+//! The `nightly` feature is required for the `Closure` type to be used.
+>>>>>>> Tweak more `Closure` docs
 
 use std::cell::UnsafeCell;
 #[cfg(feature = "nightly")]
@@ -37,6 +42,8 @@ use throw;
 ///
 /// # Example
 ///
+/// Sample usage of `Closure` to invoke the `setTimeout` API.
+///
 /// ```rust,no_run
 /// #[wasm_bindgen]
 /// extern {
@@ -51,11 +58,11 @@ use throw;
 ///
 /// #[wasm_bindgen]
 /// pub fn run() -> ClosureHandle {
-///     // First up we use `Closure::new` to wrap up a Rust closure and create
+///     // First up we use `Closure::wrap` to wrap up a Rust closure and create
 ///     a JS closure.
-///     let cb = Closure::new(|| {
+///     let cb = Closure::wrap(Box::new(move || {
 ///         log("timeout elapsed!");
-///     });
+///     }) as Box<FnMut()>);
 ///
 ///     // Next we pass this via reference to the `setTimeout` function, and
 ///     // `setTimeout` gets a handle to the corresponding JS closure.
@@ -64,6 +71,37 @@ use throw;
 ///     // If we were to drop `cb` here it would cause an exception to be raised
 ///     // when the timeout elapses. Instead we *return* our handle back to JS
 ///     // so JS can tell us later when it would like to deallocate this handle.
+///     ClosureHandle(cb)
+/// }
+/// ```
+///
+/// Sample usage of the same example as above except using `web_sys` instead
+///
+/// ```rust,no_run
+/// extern crate wasm_bindgen;
+/// extern crate web_sys;
+///
+/// use wasm_bindgen::JsCast;
+///
+/// #[wasm_bindgen]
+/// pub struct ClosureHandle(Closure<FnMut()>);
+///
+/// #[wasm_bindgen]
+/// pub fn run() -> ClosureHandle {
+///     let cb = Closure::wrap(Box::new(move || {
+///         web_sys::console::log_1(&"timeout elapsed!".into());
+///     }) as Box<FnMut()>);
+///
+///     let window = web_sys::window().unwrap();
+///     window.set_timeout_with_callback_and_timeout_and_arguments_0(
+///         // Note this method call, which uses `as_ref()` to get a `JsValue`
+///         // from our `Closure` which is then converted to a `&Function`
+///         // using the `JsCast::unchecked_ref` function.
+///         cb.as_ref().unchecked_ref(),
+///         1_000,
+///     );
+///
+///     // same as above
 ///     ClosureHandle(cb)
 /// }
 /// ```
