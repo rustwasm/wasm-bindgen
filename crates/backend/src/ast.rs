@@ -98,10 +98,6 @@ pub enum ImportFunctionKind {
         ty: syn::Type,
         kind: MethodKind,
     },
-    ScopedMethod {
-        ty: syn::Type,
-        operation: Operation,
-    },
     Normal,
 }
 
@@ -432,14 +428,8 @@ impl ImportFunction {
                     }
                 };
                 Some(shared::MethodData {
-                    class: Some(class.clone()),
+                    class: class.clone(),
                     kind,
-                })
-            }
-            ImportFunctionKind::ScopedMethod { ref operation, .. } => {
-                Some(shared::MethodData {
-                    class: None,
-                    kind: shared::MethodKind::Operation(shared_operation(operation)),
                 })
             }
             ImportFunctionKind::Normal => None,

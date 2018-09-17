@@ -44,7 +44,6 @@ pub(crate) struct FirstPassRecord<'src> {
 pub(crate) struct InterfaceData<'src> {
     /// Whether only partial interfaces were encountered
     pub(crate) partial: bool,
-    pub(crate) global: bool,
     pub(crate) attributes: Vec<&'src AttributeInterfaceMember<'src>>,
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
@@ -372,12 +371,6 @@ fn process_interface_attribute<'src>(
                 &None,
                 false,
             );
-        }
-        ExtendedAttribute::Ident(id) if id.lhs_identifier.0 == "Global" => {
-            record.interfaces.get_mut(self_name).unwrap().global = true;
-        }
-        ExtendedAttribute::IdentList(id) if id.identifier.0 == "Global" => {
-            record.interfaces.get_mut(self_name).unwrap().global = true;
         }
         _ => {}
     }

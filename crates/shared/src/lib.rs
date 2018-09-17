@@ -51,7 +51,7 @@ pub struct ImportFunction {
 
 #[derive(Deserialize, Serialize)]
 pub struct MethodData {
-    pub class: Option<String>,
+    pub class: String,
     pub kind: MethodKind,
 }
 

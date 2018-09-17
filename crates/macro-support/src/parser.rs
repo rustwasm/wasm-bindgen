@@ -510,7 +510,6 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
 
         let shim = {
             let ns = match kind {
-                ast::ImportFunctionKind::ScopedMethod { .. } |
                 ast::ImportFunctionKind::Normal => (0, "n"),
                 ast::ImportFunctionKind::Method { ref class, .. } => (1, &class[..]),
             };

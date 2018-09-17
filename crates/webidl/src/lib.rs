@@ -554,18 +554,11 @@ impl<'src> FirstPassRecord<'src> {
             None => false,
         };
 
-        let global = self
-            .interfaces
-            .get(self_name)
-            .map(|interface_data| interface_data.global)
-            .unwrap_or(false);
-
         for mut import_function in self.create_getter(
             identifier,
             &type_.type_,
             self_name,
             is_static,
-            global,
             attrs,
             container_attrs,
         ) {
@@ -581,7 +574,6 @@ impl<'src> FirstPassRecord<'src> {
                 &type_.type_,
                 self_name,
                 is_static,
-                global,
                 attrs,
                 container_attrs,
             ) {
@@ -602,7 +594,7 @@ impl<'src> FirstPassRecord<'src> {
         op_data: &OperationData<'src>,
     ) {
         let import_function_kind = |opkind| {
-            self.import_function_kind(self_name, data.global, op_data.is_static, opkind)
+            self.import_function_kind(self_name, op_data.is_static, opkind)
         };
         let kind = match id {
             OperationId::Constructor(ctor_name) => {

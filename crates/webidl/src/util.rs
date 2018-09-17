@@ -316,7 +316,6 @@ impl<'src> FirstPassRecord<'src> {
             structural,
             shim: {
                 let ns = match kind {
-                    backend::ast::ImportFunctionKind::ScopedMethod { .. } |
                     backend::ast::ImportFunctionKind::Normal => "",
                     backend::ast::ImportFunctionKind::Method { ref class, .. } => class,
                 };
@@ -334,12 +333,11 @@ impl<'src> FirstPassRecord<'src> {
         ty: &weedle::types::Type<'src>,
         self_name: &str,
         is_static: bool,
-        global: bool,
         attrs: &Option<ExtendedAttributeList>,
         container_attrs: Option<&ExtendedAttributeList>,
     ) -> Option<backend::ast::ImportFunction> {
         let kind = backend::ast::OperationKind::Getter(Some(raw_ident(name)));
-        let kind = self.import_function_kind(self_name, global, is_static, kind);
+        let kind = self.import_function_kind(self_name, is_static, kind);
         let ret = ty.to_idl_type(self)?;
         self.create_one_function(
             &name,
@@ -361,12 +359,11 @@ impl<'src> FirstPassRecord<'src> {
         field_ty: &weedle::types::Type<'src>,
         self_name: &str,
         is_static: bool,
-        global: bool,
         attrs: &Option<ExtendedAttributeList>,
         container_attrs: Option<&ExtendedAttributeList>,
     ) -> Option<backend::ast::ImportFunction> {
         let kind = backend::ast::OperationKind::Setter(Some(raw_ident(name)));
-        let kind = self.import_function_kind(self_name, global, is_static, kind);
+        let kind = self.import_function_kind(self_name, is_static, kind);
         let field_ty = field_ty.to_idl_type(self)?;
         self.create_one_function(
             &name,
@@ -384,7 +381,6 @@ impl<'src> FirstPassRecord<'src> {
     pub fn import_function_kind(
         &self,
         self_name: &str,
-        global: bool,
         is_static: bool,
         operation_kind: backend::ast::OperationKind,
     ) -> backend::ast::ImportFunctionKind {
@@ -393,17 +389,10 @@ impl<'src> FirstPassRecord<'src> {
             kind: operation_kind,
         };
         let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
-        if global {
-            backend::ast::ImportFunctionKind::ScopedMethod {
-                ty,
-                operation,
-            }
-        } else {
-            backend::ast::ImportFunctionKind::Method {
-                class: self_name.to_string(),
-                ty,
-                kind: backend::ast::MethodKind::Operation(operation),
-            }
+        backend::ast::ImportFunctionKind::Method {
+            class: self_name.to_string(),
+            ty,
+            kind: backend::ast::MethodKind::Operation(operation),
         }
     }
 
