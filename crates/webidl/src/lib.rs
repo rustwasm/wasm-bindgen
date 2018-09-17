@@ -34,12 +34,13 @@ use std::env;
 use std::fs;
 use std::iter::FromIterator;
 
-use backend::ast;
 use backend::TryToTokens;
-use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
+use backend::ast;
 use backend::defined::ImportedTypeReferences;
+use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
 use backend::util::{ident_ty, rust_ident, raw_ident, wrap_import_function};
 use proc_macro2::{Ident, Span};
+use quote::ToTokens;
 use weedle::attribute::{ExtendedAttributeList};
 use weedle::dictionary::DictionaryMember;
 use weedle::interface::InterfaceMember;
@@ -51,9 +52,14 @@ use idl_type::ToIdlType;
 
 pub use error::{Error, ErrorKind, Result};
 
+struct Program {
+    main: backend::ast::Program,
+    submodules: Vec<(String, backend::ast::Program)>,
+}
+
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
 fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
-    -> Result<backend::ast::Program>
+    -> Result<Program>
 {
     let definitions = match weedle::parse(webidl_source) {
         Ok(def) => def,
@@ -80,6 +86,7 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
     first_pass_record.builtin_idents = builtin_idents();
     definitions.first_pass(&mut first_pass_record, ())?;
     let mut program = Default::default();
+    let mut submodules = Vec::new();
 
     let allowed_types = allowed_types.map(|list| {
         list.iter().cloned().collect::<HashSet<_>>()
@@ -102,7 +109,8 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
         }
     }
     for (name, n) in first_pass_record.namespaces.iter() {
-        first_pass_record.append_ns(&mut program, name, n);
+        let prog = first_pass_record.append_ns(name, n);
+        submodules.push((snake_case_ident(name).to_string(), prog));
     }
     for (name, d) in first_pass_record.interfaces.iter() {
         if filter(name) {
@@ -127,7 +135,10 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
         }
     }
 
-    Ok(program)
+    Ok(Program {
+        main: program,
+        submodules: submodules,
+    })
 }
 
 /// Compile the given WebIDL source text into Rust source text containing
@@ -152,7 +163,7 @@ fn builtin_idents() -> BTreeSet<Ident> {
 }
 
 /// Run codegen on the AST to generate rust code.
-fn compile_ast(mut ast: backend::ast::Program) -> String {
+fn compile_ast(mut ast: Program) -> String {
     // Iteratively prune all entries from the AST which reference undefined
     // fields. Each pass may remove definitions of types and so we need to
     // reexecute this pass to see if we need to keep removing types until we
@@ -162,13 +173,24 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
     let track = env::var_os("__WASM_BINDGEN_DUMP_FEATURES");
     loop {
         let mut defined = builtin.clone();
-        ast.imported_type_definitions(&mut |id| {
-            defined.insert(id.clone());
-            if track.is_some() {
-                all_definitions.insert(id.clone());
+        {
+            let mut cb = |id: &Ident| {
+                defined.insert(id.clone());
+                if track.is_some() {
+                    all_definitions.insert(id.clone());
+                }
+            };
+            ast.main.imported_type_definitions(&mut cb);
+            for (_, m) in ast.submodules.iter() {
+                m.imported_type_references(&mut cb);
             }
-        });
-        if !ast.remove_undefined_imports(&|id| defined.contains(id)) {
+        }
+        let changed =
+            ast.main.remove_undefined_imports(&|id| defined.contains(id)) ||
+            ast.submodules.iter_mut().any(|(_, m)| {
+                m.remove_undefined_imports(&|id| defined.contains(id))
+            });
+        if !changed {
             break
         }
     }
@@ -181,8 +203,20 @@ fn compile_ast(mut ast: backend::ast::Program) -> String {
     }
 
     let mut tokens = proc_macro2::TokenStream::new();
-    if let Err(e) = ast.try_to_tokens(&mut tokens) {
+    if let Err(e) = ast.main.try_to_tokens(&mut tokens) {
         e.panic();
+    }
+    for (name, m) in ast.submodules.iter() {
+        let mut m_tokens = proc_macro2::TokenStream::new();
+        if let Err(e) = m.try_to_tokens(&mut m_tokens) {
+            e.panic();
+        }
+
+        let name = Ident::new(name, Span::call_site());
+
+        (quote! {
+            pub mod #name { #m_tokens }
+        }).to_tokens(&mut tokens);
     }
     tokens.to_string()
 }
@@ -340,26 +374,21 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_ns(
         &'src self,
-        program: &mut backend::ast::Program,
         name: &'src str,
         ns: &'src first_pass::NamespaceData<'src>,
-    ) {
-        let mut module = backend::ast::Module {
-            vis: public(),
-            name: rust_ident(snake_case_ident(name).as_str()),
-            imports: Default::default(),
-        };
+    ) -> backend::ast::Program {
+        let mut ret = Default::default();
 
         for (id, data) in ns.operations.iter() {
-            self.append_ns_member(&mut module, name, id, data);
+            self.append_ns_member(&mut ret, name, id, data);
         }
 
-        program.modules.push(module);
+        return ret
     }
 
     fn append_ns_member(
         &self,
-        module: &mut backend::ast::Module,
+        module: &mut backend::ast::Program,
         self_name: &'src str,
         id: &OperationId<'src>,
         data: &OperationData<'src>,
