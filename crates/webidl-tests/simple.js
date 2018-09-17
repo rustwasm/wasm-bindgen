@@ -87,7 +87,11 @@ global.Unforgeable = class Unforgeable {
   }
 };
 
-global.m = () => 123;
+global.GlobalMethod = class {
+  m() { return 123; }
+};
+
+global.get_global_method = () => new GlobalMethod();
 
 global.Indexing = function () {
   return new Proxy({}, {

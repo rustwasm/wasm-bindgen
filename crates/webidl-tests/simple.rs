@@ -72,9 +72,16 @@ fn nullable_method() {
     assert!(f.opt(None) == None);
 }
 
+#[wasm_bindgen]
+extern {
+    fn get_global_method() -> GlobalMethod;
+}
+
+
 #[wasm_bindgen_test]
 fn global_method() {
-    assert_eq!(GlobalMethod::m(), 123);
+    let x = get_global_method();
+    assert_eq!(x.m(), 123);
 }
 
 #[wasm_bindgen_test]
