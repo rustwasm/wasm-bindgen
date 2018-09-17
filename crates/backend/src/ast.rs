@@ -19,8 +19,6 @@ pub struct Program {
     pub structs: Vec<Struct>,
     /// rust consts
     pub consts: Vec<Const>,
-    /// rust submodules
-    pub modules: Vec<Module>,
     /// "dictionaries", generated for WebIDL, which are basically just "typed
     /// objects" in the sense that they represent a JS object with a particular
     /// shape in JIT parlance.
@@ -250,18 +248,6 @@ pub enum ConstValue {
     Null,
 }
 
-/// A rust module
-///
-/// This exists to give the ability to namespace js imports.
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
-#[derive(Clone)]
-pub struct Module {
-    pub vis: syn::Visibility,
-    pub name: Ident,
-    /// js -> rust interfaces
-    pub imports: Vec<Import>,
-}
-
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct Dictionary {
@@ -284,8 +270,6 @@ impl Program {
             structs: self.structs.iter().map(|a| a.shared()).collect(),
             enums: self.enums.iter().map(|a| a.shared()).collect(),
             imports: self.imports.iter()
-                // add in imports from inside modules
-                .chain(self.modules.iter().flat_map(|m| m.imports.iter()))
                 .map(|a| a.shared())
                 .collect::<Result<_, Diagnostic>>()?,
             version: shared::version(),

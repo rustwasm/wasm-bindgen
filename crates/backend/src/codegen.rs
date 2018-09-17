@@ -69,11 +69,6 @@ impl TryToTokens for ast::Program {
         for c in self.consts.iter() {
             c.to_tokens(tokens);
         }
-        for m in self.modules.iter() {
-            if let Err(e) = m.try_to_tokens(tokens) {
-                errors.push(e);
-            }
-        }
         for d in self.dictionaries.iter() {
             d.to_tokens(tokens);
         }
@@ -1098,30 +1093,6 @@ impl ToTokens for ast::Const {
         } else {
             declaration.to_tokens(tokens);
         }
-    }
-}
-
-impl<'a> TryToTokens for ast::Module {
-    fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic> {
-        for import in &self.imports {
-            DescribeImport(&import.kind).to_tokens(tokens);
-        }
-        let vis = &self.vis;
-        let name = &self.name;
-        let mut errors = Vec::new();
-        let mut body = TokenStream::new();
-        for import in &self.imports {
-            if let Err(e) = import.kind.try_to_tokens(&mut body) {
-                errors.push(e);
-            }
-        }
-        Diagnostic::from_vec(errors)?;
-        (quote!{
-            #vis mod #name {
-                #body
-            }
-        }).to_tokens(tokens);
-        Ok(())
     }
 }
 
