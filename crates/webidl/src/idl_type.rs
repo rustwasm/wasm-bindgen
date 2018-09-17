@@ -305,6 +305,14 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
                 name: self.0,
                 single_function: data.single_function,
             })
+        } else if self.0 == "WindowProxy" {
+            // See this for more info:
+            //
+            // https://html.spec.whatwg.org/multipage/window-object.html#windowproxy
+            //
+            // namely this seems to be "legalese" for "this is a `Window`", so
+            // let's translate it as such.
+            Some(IdlType::Interface("Window"))
         } else {
             warn!("Unrecognized type: {}", self.0);
             None
