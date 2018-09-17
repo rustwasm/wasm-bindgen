@@ -20,9 +20,9 @@ interface nsISupports;
 interface URI;
 interface nsIDocShell;
 interface nsILoadGroup;
+*/
 
 enum VisibilityState { "hidden", "visible" };
-*/
 
 /* https://dom.spec.whatwg.org/#dictdef-elementcreationoptions */
 dictionary ElementCreationOptions {
@@ -35,11 +35,8 @@ dictionary ElementCreationOptions {
 /* https://dom.spec.whatwg.org/#interface-document */
 [Constructor]
 interface Document : Node {
-
-/*TODO
   [Throws]
   readonly attribute DOMImplementation implementation;
-*/
   [Pure, Throws, BinaryName="documentURIFromJS", NeedsCallerType]
   readonly attribute DOMString URL;
   [Pure, Throws, BinaryName="documentURIFromJS", NeedsCallerType]
@@ -79,10 +76,8 @@ interface Document : Node {
   Text createTextNode(DOMString data);
   [NewObject]
   Comment createComment(DOMString data);
-/*TODO
   [NewObject, Throws]
   ProcessingInstruction createProcessingInstruction(DOMString target, DOMString data);
-*/
 
   [CEReactions, Throws]
   Node importNode(Node node, optional boolean deep = false);
@@ -92,10 +87,8 @@ interface Document : Node {
   [NewObject, Throws, NeedsCallerType]
   Event createEvent(DOMString interface);
 
-/*TODO
   [NewObject, Throws]
   Range createRange();
-*/
 
   // NodeFilter.SHOW_ALL = 0xFFFFFFFF
   [NewObject, Throws]
@@ -110,26 +103,22 @@ interface Document : Node {
 
   // These are not in the spec, but leave them for now for backwards compat.
   // So sort of like Gecko extensions
-/*TODO
   [NewObject, Throws]
   CDATASection createCDATASection(DOMString data);
   [NewObject, Throws]
   Attr createAttribute(DOMString name);
   [NewObject, Throws]
   Attr createAttributeNS(DOMString? namespace, DOMString name);
-*/
 };
 
 // https://html.spec.whatwg.org/multipage/dom.html#the-document-object
 partial interface Document {
-/*TODO
   [PutForwards=href, Unforgeable] readonly attribute Location? location;
   //(HTML only)         attribute DOMString domain;
   readonly attribute DOMString referrer;
   //(HTML only)         attribute DOMString cookie;
   readonly attribute DOMString lastModified;
   readonly attribute DOMString readyState;
-*/
 
   // DOM tree accessors
   //(Not proxy yet)getter object (DOMString name);
@@ -305,11 +294,8 @@ partial interface Document {
 // https://w3c.github.io/page-visibility/#extensions-to-the-document-interface
 partial interface Document {
   readonly attribute boolean hidden;
-
-/*TODO
   readonly attribute VisibilityState visibilityState;
            attribute EventHandler onvisibilitychange;
-*/
 };
 
 // https://drafts.csswg.org/cssom/#extensions-to-the-document-interface
@@ -402,10 +388,8 @@ partial interface Document {
 
 // http://w3c.github.io/selection-api/#extensions-to-document-interface
 partial interface Document {
-/*TODO
   [Throws]
   Selection? getSelection();
-*/
 };
 
 // Extension to give chrome JS the ability to determine whether
