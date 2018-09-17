@@ -12,7 +12,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::future_to_promise;
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{Request, RequestInit, RequestMode, Response, Window};
+use web_sys::{Request, RequestInit, RequestMode, Response};
 
 /// A struct to hold some data from the github Branch API.
 ///
@@ -57,7 +57,8 @@ pub fn run() -> Promise {
         .set("Accept", "application/vnd.github.v3+json")
         .unwrap();
 
-    let request_promise = Window::fetch_with_request(&request);
+    let window = web_sys::window().unwrap();
+    let request_promise = window.fetch_with_request(&request);
 
     let future = JsFuture::from(request_promise)
         .and_then(|resp_value| {

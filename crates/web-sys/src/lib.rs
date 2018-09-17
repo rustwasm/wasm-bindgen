@@ -17,4 +17,15 @@ extern crate wasm_bindgen;
 extern crate js_sys;
 use js_sys::Object;
 
+#[cfg(feature = "Window")]
+pub fn window() -> Option<Window> {
+    use wasm_bindgen::{JsValue, JsCast};
+
+    js_sys::Function::new_no_args("return this")
+        .call0(&JsValue::undefined())
+        .ok()?
+        .dyn_into::<Window>()
+        .ok()
+}
+
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
