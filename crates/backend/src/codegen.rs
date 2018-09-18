@@ -1065,15 +1065,15 @@ impl ToTokens for ast::Const {
             // again no suffix
             // panics on +-inf, nan
             FloatLiteral(f) => {
-                let f = Literal::f64_unsuffixed(f);
+                let f = Literal::f64_suffixed(f);
                 quote!(#f)
             },
             SignedIntegerLiteral(i) => {
-                let i = Literal::i64_unsuffixed(i);
+                let i = Literal::i64_suffixed(i);
                 quote!(#i)
             },
             UnsignedIntegerLiteral(i) => {
-                let i = Literal::u64_unsuffixed(i);
+                let i = Literal::u64_suffixed(i);
                 quote!(#i)
             },
             Null => unimplemented!(),
