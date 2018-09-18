@@ -14,7 +14,7 @@ use std::rc::Rc;
 use JsValue;
 use convert::*;
 use describe::*;
-use throw;
+use throw_str;
 
 /// A handle to both a closure in Rust as well as JS closure which will invoke
 /// the Rust closure.
@@ -304,41 +304,9 @@ macro_rules! doit {
     ($(
         ($($var:ident)*)
     )*) => ($(
-        // Fn with no return
-        unsafe impl<$($var),*> WasmClosure for Fn($($var),*)
-            where $($var: FromWasmAbi + 'static,)*
-        {
-            fn describe() {
-                <&Self>::describe();
-            }
-
-            fn invoke_fn() -> u32 {
-                #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var: FromWasmAbi,)*>(
-                    a: *const UnsafeCell<Box<Fn($($var),*)>>,
-                    $($var: <$var as FromWasmAbi>::Abi),*
-                ) {
-                    if a.is_null() {
-                        throw("closure invoked recursively or destroyed already");
-                    }
-                    let a = Rc::from_raw(a);
-                    let my_handle = a.clone();
-                    drop(Rc::into_raw(a));
-                    let f: &Fn($($var),*) = &**my_handle.get();
-                    let mut _stack = GlobalStack::new();
-                    $(
-                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
-                    )*
-                    f($($var),*)
-                }
-                invoke::<$($var,)*> as u32
-            }
-        }
-
-        // Fn with no return
         unsafe impl<$($var,)* R> WasmClosure for Fn($($var),*) -> R
             where $($var: FromWasmAbi + 'static,)*
-                  R: IntoWasmAbi + 'static,
+                  R: ReturnWasmAbi + 'static,
         {
             fn describe() {
                 <&Self>::describe();
@@ -346,61 +314,36 @@ macro_rules! doit {
 
             fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: IntoWasmAbi>(
+                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: *const UnsafeCell<Box<Fn($($var),*) -> R>>,
                     $($var: <$var as FromWasmAbi>::Abi),*
-                ) -> <R as IntoWasmAbi>::Abi {
+                ) -> <R as ReturnWasmAbi>::Abi {
                     if a.is_null() {
-                        throw("closure invoked recursively or destroyed already");
+                        throw_str("closure invoked recursively or destroyed already");
                     }
-                    let a = Rc::from_raw(a);
-                    let my_handle = a.clone();
-                    drop(Rc::into_raw(a));
-                    let f: &Fn($($var),*) -> R = &**my_handle.get();
-                    let mut _stack = GlobalStack::new();
-                    $(
-                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
-                    )*
-                    f($($var),*).into_abi(&mut GlobalStack::new())
+                    // Make sure all stack variables are converted before we
+                    // convert `ret` as it may throw (for `Result`, for
+                    // example)
+                    let ret = {
+                        let a = Rc::from_raw(a);
+                        let my_handle = a.clone();
+                        drop(Rc::into_raw(a));
+                        let f: &Fn($($var),*) -> R = &**my_handle.get();
+                        let mut _stack = GlobalStack::new();
+                        $(
+                            let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                        )*
+                        f($($var),*)
+                    };
+                    ret.return_abi(&mut GlobalStack::new())
                 }
                 invoke::<$($var,)* R> as u32
             }
         }
-        // FnMut with no return
-        unsafe impl<$($var),*> WasmClosure for FnMut($($var),*)
-            where $($var: FromWasmAbi + 'static,)*
-        {
-            fn describe() {
-                <&mut Self>::describe();
-            }
 
-            fn invoke_fn() -> u32 {
-                #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var: FromWasmAbi,)*>(
-                    a: *const UnsafeCell<Box<FnMut($($var),*)>>,
-                    $($var: <$var as FromWasmAbi>::Abi),*
-                ) {
-                    if a.is_null() {
-                        throw("closure invoked recursively or destroyed already");
-                    }
-                    let a = Rc::from_raw(a);
-                    let my_handle = a.clone();
-                    drop(Rc::into_raw(a));
-                    let f: &mut FnMut($($var),*) = &mut **my_handle.get();
-                    let mut _stack = GlobalStack::new();
-                    $(
-                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
-                    )*
-                    f($($var),*)
-                }
-                invoke::<$($var,)*> as u32
-            }
-        }
-
-        // Fn with no return
         unsafe impl<$($var,)* R> WasmClosure for FnMut($($var),*) -> R
             where $($var: FromWasmAbi + 'static,)*
-                  R: IntoWasmAbi + 'static,
+                  R: ReturnWasmAbi + 'static,
         {
             fn describe() {
                 <&mut Self>::describe();
@@ -408,22 +351,28 @@ macro_rules! doit {
 
             fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: IntoWasmAbi>(
+                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: *const UnsafeCell<Box<FnMut($($var),*) -> R>>,
                     $($var: <$var as FromWasmAbi>::Abi),*
-                ) -> <R as IntoWasmAbi>::Abi {
+                ) -> <R as ReturnWasmAbi>::Abi {
                     if a.is_null() {
-                        throw("closure invoked recursively or destroyed already");
+                        throw_str("closure invoked recursively or destroyed already");
                     }
-                    let a = Rc::from_raw(a);
-                    let my_handle = a.clone();
-                    drop(Rc::into_raw(a));
-                    let f: &mut FnMut($($var),*) -> R = &mut **my_handle.get();
-                    let mut _stack = GlobalStack::new();
-                    $(
-                        let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
-                    )*
-                    f($($var),*).into_abi(&mut GlobalStack::new())
+                    // Make sure all stack variables are converted before we
+                    // convert `ret` as it may throw (for `Result`, for
+                    // example)
+                    let ret = {
+                        let a = Rc::from_raw(a);
+                        let my_handle = a.clone();
+                        drop(Rc::into_raw(a));
+                        let f: &mut FnMut($($var),*) -> R = &mut **my_handle.get();
+                        let mut _stack = GlobalStack::new();
+                        $(
+                            let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                        )*
+                        f($($var),*)
+                    };
+                    ret.return_abi(&mut GlobalStack::new())
                 }
                 invoke::<$($var,)* R> as u32
             }

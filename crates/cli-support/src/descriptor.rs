@@ -34,6 +34,7 @@ tys! {
     RUST_STRUCT
     CHAR
     OPTIONAL
+    UNIT
 }
 
 #[derive(Debug)]
@@ -61,12 +62,13 @@ pub enum Descriptor {
     RustStruct(String),
     Char,
     Option(Box<Descriptor>),
+    Unit,
 }
 
 #[derive(Debug)]
 pub struct Function {
     pub arguments: Vec<Descriptor>,
-    pub ret: Option<Descriptor>,
+    pub ret: Descriptor,
 }
 
 #[derive(Debug)]
@@ -128,6 +130,7 @@ impl Descriptor {
                 Descriptor::RustStruct(name)
             }
             CHAR => Descriptor::Char,
+            UNIT => Descriptor::Unit,
             other => panic!("unknown descriptor: {}", other),
         }
     }
@@ -295,12 +298,10 @@ impl Function {
         let arguments = (0..get(data))
             .map(|_| Descriptor::_decode(data))
             .collect::<Vec<_>>();
-        let ret = if get(data) == 0 {
-            None
-        } else {
-            Some(Descriptor::_decode(data))
-        };
-        Function { arguments, ret }
+        Function {
+            arguments,
+            ret: Descriptor::_decode(data),
+        }
     }
 }
 

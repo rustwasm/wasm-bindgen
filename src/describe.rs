@@ -39,6 +39,7 @@ tys! {
     RUST_STRUCT
     CHAR
     OPTIONAL
+    UNIT
 }
 
 #[inline(always)] // see `interpret.rs` in the the cli-support crate
@@ -152,19 +153,7 @@ macro_rules! doit {
                 inform(FUNCTION);
                 inform(cnt!($($var)*));
                 $(<$var as WasmDescribe>::describe();)*
-                inform(1);
                 <R as WasmDescribe>::describe();
-            }
-        }
-
-        impl<'a, $($var,)* > WasmDescribe for Fn($($var),*) + 'a
-            where $($var: WasmDescribe,)*
-        {
-            fn describe() {
-                inform(FUNCTION);
-                inform(cnt!($($var)*));
-                $(<$var as WasmDescribe>::describe();)*
-                inform(0);
             }
         }
 
@@ -176,19 +165,7 @@ macro_rules! doit {
                 inform(FUNCTION);
                 inform(cnt!($($var)*));
                 $(<$var as WasmDescribe>::describe();)*
-                inform(1);
                 <R as WasmDescribe>::describe();
-            }
-        }
-
-        impl<'a, $($var,)* > WasmDescribe for FnMut($($var),*) + 'a
-            where $($var: WasmDescribe,)*
-        {
-            fn describe() {
-                inform(FUNCTION);
-                inform(cnt!($($var)*));
-                $(<$var as WasmDescribe>::describe();)*
-                inform(0);
             }
         }
     )*)
@@ -209,5 +186,19 @@ impl<T: WasmDescribe> WasmDescribe for Option<T> {
     fn describe() {
         inform(OPTIONAL);
         T::describe();
+    }
+}
+
+impl WasmDescribe for () {
+    fn describe() {
+        inform(UNIT)
+    }
+}
+
+// Note that this is only for `ReturnWasmAbi for Result<T, JsValue>`, which
+// throws the result, so we only need to inform about the `T`.
+impl<T: WasmDescribe> WasmDescribe for Result<T, JsValue> {
+    fn describe() {
+        T::describe()
     }
 }

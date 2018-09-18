@@ -26,6 +26,7 @@ pub mod math;
 pub mod node;
 pub mod option;
 pub mod optional_primitives;
+pub mod rethrow;
 pub mod simple;
 pub mod slice;
 pub mod structural;

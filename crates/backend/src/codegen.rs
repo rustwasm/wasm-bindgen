@@ -418,39 +418,28 @@ impl TryToTokens for ast::Export {
             }
             converted_arguments.push(quote! { #ident });
         }
-        let ret_ty;
-        let convert_ret;
-        match &self.function.ret {
-            Some(syn::Type::Reference(_)) => {
-                bail_span!(
-                    self.function.ret,
-                    "cannot return a borrowed ref with #[wasm_bindgen]",
-                )
-            }
-            Some(ty) => {
-                ret_ty = quote! {
-                    -> <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
-                };
-                convert_ret = quote! {
-                    <#ty as ::wasm_bindgen::convert::IntoWasmAbi>
-                        ::into_abi(#ret, &mut unsafe {
-                            ::wasm_bindgen::convert::GlobalStack::new()
-                        })
-                };
-            }
-            None => {
-                ret_ty = quote!();
-                convert_ret = quote!();
-            }
+        let syn_unit = syn::Type::Tuple(syn::TypeTuple {
+            elems: Default::default(),
+            paren_token: Default::default(),
+        });
+        let syn_ret = self.function.ret.as_ref().unwrap_or(&syn_unit);
+        if let syn::Type::Reference(_) = syn_ret {
+            bail_span!(
+                syn_ret,
+                "cannot return a borrowed ref with #[wasm_bindgen]",
+            )
         }
-        let describe_ret = match &self.function.ret {
-            Some(ty) => {
-                quote! {
-                    inform(1);
-                    <#ty as WasmDescribe>::describe();
-                }
-            }
-            None => quote! { inform(0); },
+        let ret_ty = quote! {
+            -> <#syn_ret as ::wasm_bindgen::convert::ReturnWasmAbi>::Abi
+        };
+        let convert_ret = quote! {
+            <#syn_ret as ::wasm_bindgen::convert::ReturnWasmAbi>
+                ::return_abi(#ret, &mut unsafe {
+                    ::wasm_bindgen::convert::GlobalStack::new()
+                })
+        };
+        let describe_ret = quote! {
+            <#syn_ret as WasmDescribe>::describe();
         };
         let nargs = self.function.arguments.len() as u32;
         let argtys = self.function.arguments.iter().map(|arg| &arg.ty);
@@ -464,6 +453,10 @@ impl TryToTokens for ast::Export {
             pub extern fn #generated_name(#(#args),*) #ret_ty {
                 // See definition of `link_mem_intrinsics` for what this is doing
                 ::wasm_bindgen::__rt::link_mem_intrinsics();
+
+                // Scope all local variables to be destroyed after we call the
+                // function to ensure that `#convert_ret`, if it panics, doesn't
+                // leak anything.
                 let #ret = {
                     let mut __stack = unsafe {
                         ::wasm_bindgen::convert::GlobalStack::new()
@@ -954,8 +947,8 @@ impl<'a> ToTokens for DescribeImport<'a> {
         let argtys = f.function.arguments.iter().map(|arg| &arg.ty);
         let nargs = f.function.arguments.len() as u32;
         let inform_ret = match &f.js_ret {
-            Some(ref t) => quote! { inform(1); <#t as WasmDescribe>::describe(); },
-            None => quote! { inform(0); },
+            Some(ref t) => quote! { <#t as WasmDescribe>::describe(); },
+            None => quote! { <() as WasmDescribe>::describe(); },
         };
 
         Descriptor(&f.shim, quote! {

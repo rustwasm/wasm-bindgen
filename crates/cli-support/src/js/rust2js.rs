@@ -285,14 +285,11 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         Ok(())
     }
 
-    fn ret(&mut self, ret: &Option<Descriptor>) -> Result<(), Error> {
-        let ty = match *ret {
-            Some(ref t) => t,
-            None => {
-                self.ret_expr = "JS;".to_string();
-                return Ok(());
-            }
-        };
+    fn ret(&mut self, ty: &Descriptor) -> Result<(), Error> {
+        if let Descriptor::Unit = ty {
+            self.ret_expr = "JS;".to_string();
+            return Ok(());
+        }
         let (ty, optional) = match ty {
             Descriptor::Option(t) => (&**t, true),
             _ => (ty, false),
