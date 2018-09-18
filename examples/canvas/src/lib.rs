@@ -8,7 +8,7 @@ use wasm_bindgen::JsCast;
 
 #[wasm_bindgen]
 pub fn draw() {
-    let document = web_sys::Window::document().unwrap();
+    let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
         .dyn_into::<web_sys::HtmlCanvasElement>()

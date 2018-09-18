@@ -9,7 +9,7 @@ use wasm_bindgen::JsCast;
 
 #[wasm_bindgen]
 pub fn main() {
-    let document = web_sys::Window::document().unwrap();
+    let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document
         .create_element("canvas")
         .unwrap()

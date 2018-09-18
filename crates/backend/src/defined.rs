@@ -256,7 +256,6 @@ impl ImportedTypes for ast::ImportFunctionKind {
     {
         match self {
             ast::ImportFunctionKind::Method { ty, .. } => ty.imported_types(f),
-            ast::ImportFunctionKind::ScopedMethod { ty, .. } => ty.imported_types(f),
             ast::ImportFunctionKind::Normal => {}
         }
     }

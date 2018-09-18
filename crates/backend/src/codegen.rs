@@ -772,9 +772,6 @@ impl TryToTokens for ast::ImportFunction {
                 }
                 class_ty = Some(ty);
             }
-            ast::ImportFunctionKind::ScopedMethod { ref ty, .. } => {
-                class_ty = Some(ty);
-            }
             ast::ImportFunctionKind::Normal => {}
         }
         let vis = &self.function.rust_vis;

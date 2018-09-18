@@ -2008,30 +2008,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
         };
 
-        let class = match &method_data.class {
-            Some(class) => self.import_name(info, class)?,
-            None => {
-                let op = match &method_data.kind {
-                    shared::MethodKind::Operation(op) => op,
-                    shared::MethodKind::Constructor => {
-                        bail!("\"no class\" methods cannot be constructors")
-                    }
-                };
-                match &op.kind {
-                    shared::OperationKind::Regular => {
-                        return Ok(import.function.name.to_string())
-                    }
-                    shared::OperationKind::Getter(g) => {
-                        return Ok(format!("(() => {})", g));
-                    }
-                    shared::OperationKind::Setter(g) => {
-                        return Ok(format!("(v => {} = v)", g));
-                    }
-                    _ => bail!("\"no class\" methods must be regular/getter/setter"),
-                }
-
-            }
-        };
+        let class = self.import_name(info, &method_data.class)?;
         let op = match &method_data.kind {
             shared::MethodKind::Constructor => return Ok(format!("new {}", class)),
             shared::MethodKind::Operation(op) => op,

@@ -1,7 +1,8 @@
 //! Runtime detection of whether we're in node.js or a browser.
 
 use wasm_bindgen::prelude::*;
-use js_sys::Function;
+use wasm_bindgen::JsCast;
+use js_sys;
 
 #[wasm_bindgen]
 extern {
@@ -13,49 +14,8 @@ extern {
 /// Returns whether it's likely we're executing in a browser environment, as
 /// opposed to node.js.
 pub fn is_browser() -> bool {
-    // This is a bit tricky to define. The basic crux of this is that we want to
-    // test if the `self` identifier is defined. That is defined in browsers
-    // (and web workers!) but not in Node. To that end you might expect:
-    //
-    //      #[wasm_bindgen]
-    //      extern {
-    //          #[wasm_bindgen(js_name = self)]
-    //          static SELF: JsValue;
-    //      }
-    //
-    //      *SELF != JsValue::undefined()
-    //
-    // this currently, however, throws a "not defined" error in JS because the
-    // generated function looks like `function() { return self; }` which throws
-    // an error in Node because `self` isn't defined.
-    //
-    // To work around this limitation we instead lookup the value of `self`
-    // through the `this` object, basically generating `this.self`.
-    //
-    // Unfortunately that's also hard to do! In ESM modes the top-level `this`
-    // object is undefined, meaning that we can't just generate a function that
-    // returns `this.self` as it'll throw "can't access field `self` of
-    // `undefined`" whenever ESMs are being used.
-    //
-    // So finally we reach the current implementation. According to
-    // StackOverflow you can access the global object via:
-    //
-    //      const global = Function('return this')();
-    //
-    // I think that's because the manufactured function isn't in "strict" mode.
-    // It also turns out that non-strict functions will ignore `undefined`
-    // values for `this` when using the `apply` function. Add it all up, and you
-    // get the below code:
-    //
-    // * Manufacture a function
-    // * Call `apply` where we specify `this` but the function ignores it
-    // * Once we have `this`, use a structural getter to get the value of `self`
-    // * Last but not least, test whether `self` is defined or not.
-    //
-    // Whew!
-    let this = Function::new_no_args("return this")
-        .call0(&JsValue::undefined())
-        .unwrap();
-    assert!(this != JsValue::undefined());
-    This::from(this).self_() != JsValue::undefined()
+    // Test whether we're in a browser by seeing if the `self` property is
+    // defined on the global object, which should in turn only be true in
+    // browsers.
+    js_sys::global().unchecked_into::<This>().self_() != JsValue::undefined()
 }
