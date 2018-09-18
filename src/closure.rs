@@ -3,11 +3,6 @@
 //! This module defines the `Closure` type which is used to pass "owned
 //! closures" from Rust to JS. Some more details can be found on the `Closure`
 //! type itself.
-<<<<<<< a37fa45100baddc36695cbf01110bcd9ab638065
-=======
-//!
-//! The `nightly` feature is required for the `Closure` type to be used.
->>>>>>> Tweak more `Closure` docs
 
 use std::cell::UnsafeCell;
 #[cfg(feature = "nightly")]
