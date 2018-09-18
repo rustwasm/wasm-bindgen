@@ -726,13 +726,14 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 }
                 let comments = extract_doc_comments(&f.attrs);
                 f.to_tokens(tokens);
+                let opts = opts.unwrap_or_default();
                 program.exports.push(ast::Export {
                     class: None,
                     method_self: None,
                     constructor: None,
                     comments,
                     rust_name: f.ident.clone(),
-                    function: f.convert(opts.unwrap_or_default())?,
+                    function: f.convert(opts)?,
                 });
             }
             syn::Item::Struct(mut s) => {

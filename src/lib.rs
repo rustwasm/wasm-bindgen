@@ -18,6 +18,7 @@ extern crate wasm_bindgen_macro;
 
 use core::cell::UnsafeCell;
 use core::fmt;
+use core::mem;
 use core::ops::Deref;
 use core::ptr;
 
@@ -428,6 +429,7 @@ externs! {
     fn __wbindgen_is_string(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
     fn __wbindgen_throw(a: *const u8, b: usize) -> !;
+    fn __wbindgen_rethrow(a: u32) -> !;
 
     fn __wbindgen_cb_drop(idx: u32) -> ();
     fn __wbindgen_cb_forget(idx: u32) -> ();
@@ -552,16 +554,50 @@ impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
     }
 }
 
+#[cold]
+#[inline(never)]
+#[deprecated(note = "renamed to `throw_str`")]
+#[doc(hidden)]
+pub fn throw(s: &str) -> ! {
+    throw_str(s)
+}
+
+
 /// Throws a JS exception.
 ///
 /// This function will throw a JS exception with the message provided. The
 /// function will not return as the wasm stack will be popped when the exception
 /// is thrown.
+///
+/// Note that it is very easy to leak memory with this function because this
+/// function, unlike `panic!` on other platforms, **will not run destructors**.
+/// It's recommended to return a `Result` where possible to avoid the worry of
+/// leaks.
 #[cold]
 #[inline(never)]
-pub fn throw(s: &str) -> ! {
+pub fn throw_str(s: &str) -> ! {
     unsafe {
         __wbindgen_throw(s.as_ptr(), s.len());
+    }
+}
+
+/// Rethrow a JS exception
+///
+/// This function will throw a JS exception with the JS value provided. This
+/// function will not return and the wasm stack will be popped until the point
+/// of entry of wasm itself.
+///
+/// Note that it is very easy to leak memory with this function because this
+/// function, unlike `panic!` on other platforms, **will not run destructors**.
+/// It's recommended to return a `Result` where possible to avoid the worry of
+/// leaks.
+#[cold]
+#[inline(never)]
+pub fn throw_val(s: JsValue) -> ! {
+    unsafe {
+        let idx = s.idx;
+        mem::forget(s);
+        __wbindgen_rethrow(idx);
     }
 }
 
@@ -604,7 +640,7 @@ pub mod __rt {
     #[cold]
     #[inline(never)]
     fn throw_null() -> ! {
-        super::throw("null pointer passed to rust");
+        super::throw_str("null pointer passed to rust");
     }
 
     /// A vendored version of `RefCell` from the standard library.
@@ -726,7 +762,7 @@ pub mod __rt {
     }
 
     fn borrow_fail() -> ! {
-        super::throw(
+        super::throw_str(
             "recursive use of an object detected which would lead to \
              unsafe aliasing in rust",
         );
@@ -748,7 +784,7 @@ pub mod __rt {
                 }
             }
 
-            super::throw("invalid malloc request");
+            super::throw_str("invalid malloc request");
         }
 
         #[no_mangle]

@@ -390,15 +390,12 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         Ok(self)
     }
 
-    pub fn ret(&mut self, ret: &Option<Descriptor>) -> Result<&mut Self, Error> {
-        let ty = match *ret {
-            Some(ref t) => t,
-            None => {
-                self.ret_ty = "void".to_string();
-                self.ret_expr = format!("return RET;");
-                return Ok(self);
-            }
-        };
+    pub fn ret(&mut self, ty: &Descriptor) -> Result<&mut Self, Error> {
+        if let Descriptor::Unit = ty {
+            self.ret_ty = "void".to_string();
+            self.ret_expr = format!("return RET;");
+            return Ok(self);
+        }
 
         let (ty, optional) = match ty {
             Descriptor::Option(t) => (&**t, true),

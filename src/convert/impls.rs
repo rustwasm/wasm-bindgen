@@ -2,9 +2,11 @@ use core::char;
 use core::mem::{self, ManuallyDrop};
 
 use convert::{Stack, FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
-use convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
+use convert::{OptionIntoWasmAbi, OptionFromWasmAbi, ReturnWasmAbi};
 use convert::traits::WasmAbi;
 use JsValue;
+
+unsafe impl WasmAbi for () {}
 
 #[repr(C)]
 pub struct WasmOptionalI32 {
@@ -367,6 +369,25 @@ impl<T: OptionFromWasmAbi> FromWasmAbi for Option<T> {
             None
         } else {
             Some(T::from_abi(js, extra))
+        }
+    }
+}
+
+impl IntoWasmAbi for () {
+    type Abi = ();
+
+    fn into_abi(self, _extra: &mut Stack) -> () {
+        self
+    }
+}
+
+impl<T: IntoWasmAbi> ReturnWasmAbi for Result<T, JsValue> {
+    type Abi = T::Abi;
+
+    fn return_abi(self, extra: &mut Stack) -> Self::Abi {
+        match self {
+            Ok(v) => v.into_abi(extra),
+            Err(e) => ::throw_val(e),
         }
     }
 }

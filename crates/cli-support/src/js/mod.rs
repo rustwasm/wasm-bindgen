@@ -393,6 +393,11 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_rethrow", &|me| {
+            me.expose_take_object();
+            Ok(String::from("function(idx) { throw takeObject(idx); }"))
+        })?;
+
         self.create_memory_export();
         self.unexport_unused_internal_exports();
         closures::rewrite(self)?;
@@ -626,7 +631,9 @@ impl<'a> Context<'a> {
 
             let set = {
                 let mut cx = Js2Rust::new(&field.name, self);
-                cx.method(true, false).argument(&descriptor)?.ret(&None)?;
+                cx.method(true, false)
+                    .argument(&descriptor)?
+                    .ret(&Descriptor::Unit)?;
                 ts_dst.push_str(&format!(
                     "{}{}: {}\n",
                     if field.readonly { "readonly " } else { "" },
@@ -637,7 +644,7 @@ impl<'a> Context<'a> {
             };
             let (get, _ts, js_doc) = Js2Rust::new(&field.name, self)
                 .method(true, false)
-                .ret(&Some(descriptor))?
+                .ret(&descriptor)?
                 .finish("", &format!("wasm.{}", wasm_getter));
             if !dst.ends_with("\n") {
                 dst.push_str("\n");

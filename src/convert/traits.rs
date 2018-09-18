@@ -106,3 +106,26 @@ unsafe impl WasmAbi for u32 {}
 unsafe impl WasmAbi for i32 {}
 unsafe impl WasmAbi for f32 {}
 unsafe impl WasmAbi for f64 {}
+
+/// A trait representing how to interepret the return value of a function for
+/// the wasm ABI.
+///
+/// This is very similar to the `IntoWasmAbi` trait and in fact has a blanket
+/// implementation for all implementors of the `IntoWasmAbi`. The primary use
+/// case of this trait is to enable functions to return `Result`, interpreting
+/// an error as "rethrow this to JS"
+pub trait ReturnWasmAbi: WasmDescribe {
+    /// Same as `IntoWasmAbi::Abi`
+    type Abi: WasmAbi;
+
+    /// Same as `IntoWasmAbi::into_abi`, except that it may throw and never
+    /// return in the case of `Err`.
+    fn return_abi(self, extra: &mut Stack) -> Self::Abi;
+}
+
+impl<T: IntoWasmAbi> ReturnWasmAbi for T {
+    type Abi = T::Abi;
+    fn return_abi(self, extra: &mut Stack) -> Self::Abi {
+        self.into_abi(extra)
+    }
+}
