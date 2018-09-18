@@ -8,8 +8,8 @@ extern "C" {
     fn log(s: &str);
 }
 
-#[derive(Debug)]
 #[wasm_bindgen]
+#[derive(Debug)]
 pub struct Counter {
     key: char,
     count: i32,
