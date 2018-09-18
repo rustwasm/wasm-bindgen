@@ -195,6 +195,10 @@ matrix:
         keep-history: false
       if: branch = master
 
+before_install:
+  # FIXME (travis-ci/travis-ci#8920) shouldn't be necessary...
+  - python -c "import fcntl; fcntl.fcntl(1, fcntl.F_SETFL, 0)"
+
 notifications:
   email:
     on_success: never
