@@ -489,3 +489,14 @@ fn value_of() {
     let greeting = JsString::from("Hello world!");
     assert_eq!(greeting.value_of(), "Hello world!");
 }
+
+#[wasm_bindgen_test]
+fn raw() {
+    let call_site = Object::new();
+    let raw = Array::of3(&"foo".into(), &"bar".into(), &"123".into());
+    Reflect::set(&call_site.as_ref(), &"raw".into(), &raw.into());
+    assert_eq!(JsString::raw_2(&call_site, "5", "JavaScript").unwrap(), "foo5barJavaScript123");
+    let substitutions = Array::of2(&"5".into(), &"JavaScript".into());
+    assert_eq!(JsString::raw(&call_site, &substitutions).unwrap(), "foo5barJavaScript123");
+    assert!(JsString::raw_0(&JsValue::null().unchecked_into()).is_err());
+}
