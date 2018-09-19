@@ -3632,6 +3632,108 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/valueOf)
     #[wasm_bindgen(method, js_class = "String", js_name = valueOf)]
     pub fn value_of(this: &JsString) -> JsString;
+
+    /// The static `raw()` method is a tag function of template literals,
+    /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
+    #[wasm_bindgen(catch, variadic, static_method_of = JsString, js_class = "String")]
+    pub fn raw(call_site: &Object, substitutions: &Array) -> Result<JsString, JsValue>;
+
+    /// The static `raw()` method is a tag function of template literals,
+    /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    pub fn raw_0(call_site: &Object) -> Result<JsString, JsValue>;
+
+    /// The static `raw()` method is a tag function of template literals,
+    /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    pub fn raw_1(call_site: &Object, substitutions_1: &str) -> Result<JsString, JsValue>;
+
+    /// The static `raw()` method is a tag function of template literals,
+    /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    pub fn raw_2(
+        call_site: &Object,
+        substitutions_1: &str,
+        substitutions_2: &str,
+    ) -> Result<JsString, JsValue>;
+
+    /// The static `raw()` method is a tag function of template literals,
+    /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    pub fn raw_3(
+        call_site: &Object,
+        substitutions_1: &str,
+        substitutions_2: &str,
+        substitutions_3: &str,
+    ) -> Result<JsString, JsValue>;
+
+    /// The static `raw()` method is a tag function of template literals,
+    /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    pub fn raw_4(
+        call_site: &Object,
+        substitutions_1: &str,
+        substitutions_2: &str,
+        substitutions_3: &str,
+        substitutions_4: &str,
+    ) -> Result<JsString, JsValue>;
+
+    /// The static `raw()` method is a tag function of template literals,
+    /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    pub fn raw_5(
+        call_site: &Object,
+        substitutions_1: &str,
+        substitutions_2: &str,
+        substitutions_3: &str,
+        substitutions_4: &str,
+        substitutions_5: &str,
+    ) -> Result<JsString, JsValue>;
+
+    /// The static `raw()` method is a tag function of template literals,
+    /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    pub fn raw_6(
+        call_site: &Object,
+        substitutions_1: &str,
+        substitutions_2: &str,
+        substitutions_3: &str,
+        substitutions_4: &str,
+        substitutions_5: &str,
+        substitutions_6: &str,
+    ) -> Result<JsString, JsValue>;
+
+    /// The static `raw()` method is a tag function of template literals,
+    /// similar to the `r` prefix in Python or the `@` prefix in C# for string literals.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = raw)]
+    pub fn raw_7(
+        call_site: &Object,
+        substitutions_1: &str,
+        substitutions_2: &str,
+        substitutions_3: &str,
+        substitutions_4: &str,
+        substitutions_5: &str,
+        substitutions_6: &str,
+        substitutions_7: &str,
+    ) -> Result<JsString, JsValue>;
 }
 
 impl JsString {
