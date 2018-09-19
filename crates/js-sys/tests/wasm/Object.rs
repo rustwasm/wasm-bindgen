@@ -111,6 +111,19 @@ fn define_properties() {
 }
 
 #[wasm_bindgen_test]
+fn entries() {
+    let entries = Object::entries(&foo_42());
+    assert_eq!(entries.length(), 1);
+    entries.for_each(&mut |x, _, _| {
+        assert!(x.is_object());
+        let array: Array = x.into();
+        assert_eq!(array.shift(), "foo");
+        assert_eq!(array.shift(), 42);
+        assert_eq!(array.length(), 0);
+    });
+}
+
+#[wasm_bindgen_test]
 fn get_own_property_descriptor() {
     let foo = foo_42();
     let desc = Object::get_own_property_descriptor(&foo, &"foo".into());
