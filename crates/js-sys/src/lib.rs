@@ -2055,6 +2055,14 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertySymbols)]
     pub fn get_own_property_symbols(obj: &Object) -> Array;
 
+    /// The Object.getPrototypeOf() method returns the prototype
+    /// (i.e. the value of the internal [[Prototype]] property) of the
+    /// specified object.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf)
+    #[wasm_bindgen(static_method_of = Object, js_name = getPrototypeOf)]
+    pub fn get_prototype_of(obj: &JsValue) -> Object;
+
     /// The `hasOwnProperty()` method returns a boolean indicating whether the
     /// object has the specified property as its own property (as opposed to
     /// inheriting it).

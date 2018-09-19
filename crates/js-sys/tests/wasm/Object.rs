@@ -10,6 +10,11 @@ extern "C" {
     #[wasm_bindgen(method, setter, structural)]
     fn set_foo(this: &Foo42, val: JsValue);
 
+    #[wasm_bindgen(js_name = prototype, js_namespace = Object)]
+    static OBJECT_PROTOTYPE: JsValue;
+    #[wasm_bindgen(js_name = prototype, js_namespace = Array)]
+    static ARRAY_PROTOTYPE: JsValue;
+
     type DefinePropertyAttrs;
     #[wasm_bindgen(method, setter, structural)]
     fn set_value(this: &DefinePropertyAttrs, val: &JsValue);
@@ -135,6 +140,14 @@ fn get_own_property_names() {
 fn get_own_property_symbols() {
     let symbols = Object::get_own_property_symbols(&map_with_symbol_key());
     assert_eq!(symbols.length(), 1);
+}
+
+#[wasm_bindgen_test]
+fn get_prototype_of() {
+    let proto = JsValue::from(Object::get_prototype_of(&Object::new().into()));
+    assert_eq!(proto, *OBJECT_PROTOTYPE);
+    let proto = JsValue::from(Object::get_prototype_of(&Array::new().into()));
+    assert_eq!(proto, *ARRAY_PROTOTYPE);
 }
 
 #[wasm_bindgen_test]
