@@ -8,7 +8,7 @@ use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader};
 
 #[wasm_bindgen]
 pub fn draw() {
-    let document = web_sys::Window::document().unwrap();
+    let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
         .dyn_into::<web_sys::HtmlCanvasElement>()
@@ -57,18 +57,17 @@ pub fn draw() {
         Some(&vert_array.buffer()),
         WebGlRenderingContext::STATIC_DRAW,
     );
-    context.vertex_attrib_pointer_with_i32(0,
-            3,
-            WebGlRenderingContext::FLOAT,
-            false,
-            0,
-            0);
+    context.vertex_attrib_pointer_with_i32(0, 3, WebGlRenderingContext::FLOAT, false, 0, 0);
     context.enable_vertex_attrib_array(0);
 
     context.clear_color(0.0, 0.0, 0.0, 1.0);
     context.clear(WebGlRenderingContext::COLOR_BUFFER_BIT);
 
-    context.draw_arrays(WebGlRenderingContext::TRIANGLES, 0, (vertices.len() / 3) as i32);
+    context.draw_arrays(
+        WebGlRenderingContext::TRIANGLES,
+        0,
+        (vertices.len() / 3) as i32,
+    );
 }
 
 pub fn compile_shader(
