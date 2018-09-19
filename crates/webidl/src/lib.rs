@@ -468,11 +468,18 @@ impl<'src> FirstPassRecord<'src> {
             name,
             mdn_doc(name, None),
         ));
+        let derive = syn::Attribute {
+            pound_token: Default::default(),
+            style: syn::AttrStyle::Outer,
+            bracket_token: Default::default(),
+            path: Ident::new("derive", Span::call_site()).into(),
+            tts: quote!((Debug, Clone)),
+        };
         let mut import_type = backend::ast::ImportType {
             vis: public(),
             rust_name: rust_ident(camel_case_ident(name).as_str()),
             js_name: name.to_string(),
-            attrs: Vec::new(),
+            attrs: vec![derive],
             doc_comment: None,
             instanceof_shim: format!("__widl_instanceof_{}", name),
             extends: self.all_superclasses(name)
