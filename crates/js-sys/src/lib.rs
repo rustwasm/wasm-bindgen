@@ -2014,6 +2014,16 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Object, js_name = defineProperties)]
     pub fn define_properties(obj: &Object, props: &Object) -> Object;
 
+    /// The Object.entries() method returns an array of a given
+    /// object's own enumerable property [key, value] pairs, in the
+    /// same order as that provided by a for...in loop (the difference
+    /// being that a for-in loop enumerates properties in the
+    /// prototype chain as well).
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries)
+    #[wasm_bindgen(static_method_of = Object)]
+    pub fn entries(object: &Object) -> Array;
+
     /// The `Object.freeze()` method freezes an object: that is, prevents new
     /// properties from being added to it; prevents existing properties from
     /// being removed; and prevents existing properties, or their enumerability,
@@ -2039,6 +2049,29 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptors)
     #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertyDescriptors)]
     pub fn get_own_property_descriptors(obj: &Object) -> JsValue;
+
+    /// The Object.getOwnPropertyNames() method returns an array of
+    /// all properties (including non-enumerable properties except for
+    /// those which use Symbol) found directly upon a given object.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames)
+    #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertyNames)]
+    pub fn get_own_property_names(obj: &Object) -> Array;
+
+    /// The Object.getOwnPropertySymbols() method returns an array of
+    /// all symbol properties found directly upon a given object.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertySymbols)
+    #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertySymbols)]
+    pub fn get_own_property_symbols(obj: &Object) -> Array;
+
+    /// The Object.getPrototypeOf() method returns the prototype
+    /// (i.e. the value of the internal [[Prototype]] property) of the
+    /// specified object.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf)
+    #[wasm_bindgen(static_method_of = Object, js_name = getPrototypeOf)]
+    pub fn get_prototype_of(obj: &JsValue) -> Object;
 
     /// The `hasOwnProperty()` method returns a boolean indicating whether the
     /// object has the specified property as its own property (as opposed to

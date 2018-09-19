@@ -10,6 +10,11 @@ extern "C" {
     #[wasm_bindgen(method, setter, structural)]
     fn set_foo(this: &Foo42, val: JsValue);
 
+    #[wasm_bindgen(js_name = prototype, js_namespace = Object)]
+    static OBJECT_PROTOTYPE: JsValue;
+    #[wasm_bindgen(js_name = prototype, js_namespace = Array)]
+    static ARRAY_PROTOTYPE: JsValue;
+
     type DefinePropertyAttrs;
     #[wasm_bindgen(method, setter, structural)]
     fn set_value(this: &DefinePropertyAttrs, val: &JsValue);
@@ -106,6 +111,19 @@ fn define_properties() {
 }
 
 #[wasm_bindgen_test]
+fn entries() {
+    let entries = Object::entries(&foo_42());
+    assert_eq!(entries.length(), 1);
+    entries.for_each(&mut |x, _, _| {
+        assert!(x.is_object());
+        let array: Array = x.into();
+        assert_eq!(array.shift(), "foo");
+        assert_eq!(array.shift(), 42);
+        assert_eq!(array.length(), 0);
+    });
+}
+
+#[wasm_bindgen_test]
 fn get_own_property_descriptor() {
     let foo = foo_42();
     let desc = Object::get_own_property_descriptor(&foo, &"foo".into());
@@ -120,6 +138,29 @@ fn get_own_property_descriptors() {
     let descriptors = Object::get_own_property_descriptors(&foo);
     let foo_desc = Reflect::get(&descriptors, &"foo".into());
     assert_eq!(PropertyDescriptor::from(foo_desc).value(), 42);
+}
+
+#[wasm_bindgen_test]
+fn get_own_property_names() {
+    let names = Object::get_own_property_names(&foo_42());
+    assert_eq!(names.length(), 1);
+    names.for_each(&mut |x, _, _| {
+        assert_eq!(x, "foo");
+    });
+}
+
+#[wasm_bindgen_test]
+fn get_own_property_symbols() {
+    let symbols = Object::get_own_property_symbols(&map_with_symbol_key());
+    assert_eq!(symbols.length(), 1);
+}
+
+#[wasm_bindgen_test]
+fn get_prototype_of() {
+    let proto = JsValue::from(Object::get_prototype_of(&Object::new().into()));
+    assert_eq!(proto, *OBJECT_PROTOTYPE);
+    let proto = JsValue::from(Object::get_prototype_of(&Array::new().into()));
+    assert_eq!(proto, *ARRAY_PROTOTYPE);
 }
 
 #[wasm_bindgen_test]
