@@ -132,6 +132,12 @@ fn get_own_property_names() {
 }
 
 #[wasm_bindgen_test]
+fn get_own_property_symbols() {
+    let symbols = Object::get_own_property_symbols(&map_with_symbol_key());
+    assert_eq!(symbols.length(), 1);
+}
+
+#[wasm_bindgen_test]
 fn has_own_property() {
     assert!(foo_42().has_own_property(&"foo".into()));
     assert!(!foo_42().has_own_property(&"bar".into()));
