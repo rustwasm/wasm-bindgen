@@ -123,6 +123,15 @@ fn get_own_property_descriptors() {
 }
 
 #[wasm_bindgen_test]
+fn get_own_property_names() {
+    let names = Object::get_own_property_names(&foo_42());
+    assert_eq!(names.length(), 1);
+    names.for_each(&mut |x, _, _| {
+        assert_eq!(x, "foo");
+    });
+}
+
+#[wasm_bindgen_test]
 fn has_own_property() {
     assert!(foo_42().has_own_property(&"foo".into()));
     assert!(!foo_42().has_own_property(&"bar".into()));

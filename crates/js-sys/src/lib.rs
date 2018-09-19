@@ -2040,6 +2040,14 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertyDescriptors)]
     pub fn get_own_property_descriptors(obj: &Object) -> JsValue;
 
+    /// The Object.getOwnPropertyNames() method returns an array of
+    /// all properties (including non-enumerable properties except for
+    /// those which use Symbol) found directly upon a given object.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames)
+    #[wasm_bindgen(static_method_of = Object, js_name = getOwnPropertyNames)]
+    pub fn get_own_property_names(obj: &Object) -> Array;
+
     /// The `hasOwnProperty()` method returns a boolean indicating whether the
     /// object has the specified property as its own property (as opposed to
     /// inheriting it).
