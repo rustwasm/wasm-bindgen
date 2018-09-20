@@ -75,6 +75,7 @@ members = [
   "examples/no_modules",
   "examples/paint",
   "examples/performance",
+  "examples/production",
   "examples/smorgasboard",
   "examples/wasm-in-wasm",
   "examples/webaudio",

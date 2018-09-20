@@ -1,0 +1,11 @@
+[package]
+name = "production"
+version = "0.1.0"
+authors = ["Mario Reder <mreder1289@gmail.com>"]
+
+[lib]
+path = "src/rust/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { path = "../.." }
