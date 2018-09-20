@@ -1,14 +1,15 @@
-# Web Audio example
+# WebAudio
 
-This directory is an example of how to use the Web Audio APIs from Rust.  It creates a very simple
-FM (frequency modulation) synth, and let's you control the primary frequency, the modulation amount,
-and the modulation frequency.
+[View documentation for this example online][dox]
 
-To run, first install some utilities via npm:
+[dox]: https://rustwasm.github.io/wasm-bindgen/examples/web-audio.html
 
- > npm install
- 
- Then build the project with either `build.bat` or `build.sh`.
- 
- Finally, run a development web server with `npm run serve` and then open
- [http://localhost:8080/](http://localhost:8080/) in a browser! 
+You can build the example locally with:
+
+```
+$ ./build.sh
+```
+
+(or running the commands on Windows manually)
+
+and then visiting http://localhost:8080 in a browser should run the example!

@@ -19,7 +19,7 @@ extern "C" {
     fn render(this: &MyClass) -> String;
 }
 
-// Import `console.log` so we can log something to the console
+// lifted from the `console_log` example
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = console)]

@@ -1,4 +1,4 @@
 package-lock.json
-wasm_bindgen_webgl_demo.js
-wasm_bindgen_webgl_demo_bg.js
-wasm_bindgen_webgl_demo_bg.wasm
+webgl.js
+webgl_bg.js
+webgl_bg.wasm

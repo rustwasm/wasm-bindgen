@@ -1,4 +1,4 @@
 package-lock.json
-wasm_bindgen_canvas_demo.js
-wasm_bindgen_canvas_demo_bg.js
-wasm_bindgen_canvas_demo_bg.wasm
+canvas.js
+canvas_bg.js
+canvas_bg.wasm

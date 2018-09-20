@@ -9,7 +9,7 @@ cargo +nightly build --target wasm32-unknown-unknown
 
 cargo +nightly run --manifest-path ../../crates/cli/Cargo.toml \
   --bin wasm-bindgen -- \
-  ../../target/wasm32-unknown-unknown/debug/wasm_bindgen_canvas_demo.wasm --out-dir .
+  ../../target/wasm32-unknown-unknown/debug/canvas.wasm --out-dir .
 
 npm install
 npm run serve

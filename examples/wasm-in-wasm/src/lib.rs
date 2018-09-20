@@ -1,52 +1,57 @@
 extern crate wasm_bindgen;
+extern crate js_sys;
 
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use js_sys::{WebAssembly, Object, Reflect, Function, Uint8Array};
 
-// Like with the `dom` example this block will eventually be auto-generated, but
-// for now we can write it by hand to get by!
+// lifted from the `console_log` example
 #[wasm_bindgen]
 extern "C" {
-    type Module;
-    #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
-    fn new(data: &[u8]) -> Module;
-
-    type Instance;
-    #[wasm_bindgen(constructor, js_namespace = WebAssembly)]
-    fn new(module: Module) -> Instance;
-    #[wasm_bindgen(method, getter, js_namespace = WebAssembly)]
-    fn exports(this: &Instance) -> Exports;
-
-    type Exports;
-    #[wasm_bindgen(method, structural)]
-    fn add(this: &Exports, a: u32, b: u32) -> u32;
-    #[wasm_bindgen(method, getter, structural)]
-    fn memory(this: &Exports) -> Memory;
-
-    type Memory;
-    #[wasm_bindgen(method, js_namespace = WebAssembly)]
-    fn grow(this: &Memory, amt: u32) -> u32;
-
     #[wasm_bindgen(js_namespace = console)]
     fn log(a: &str);
 }
 
-macro_rules! println {
+macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
 const WASM: &[u8] = include_bytes!("add.wasm");
 
 #[wasm_bindgen]
-pub fn run() {
-    println!("instantiating a new wasm module directly");
-    let a = Module::new(WASM);
-    let b = Instance::new(a);
+pub fn run() -> Result<(), JsValue> {
+    console_log!("instantiating a new wasm module directly");
+    let my_memory = wasm_bindgen::memory()
+        .dyn_into::<WebAssembly::Memory>()
+        .unwrap();
+
+    // Note that this is somewhat dangerous, once we look at our
+    // `WebAssembly.Memory` buffer then if we allocate more pages for ourself
+    // (aka do a memory allocation in Rust) it'll cause the buffer to change.
+    // That means we can't actually do any memory allocations after we do this
+    // until we pass it back to JS.
+    let my_memory = Uint8Array::new(&my_memory.buffer())
+        .subarray(
+            WASM.as_ptr() as u32,
+            WASM.as_ptr() as u32 + WASM.len() as u32,
+        );
+    let a = WebAssembly::Module::new(my_memory.as_ref())?;
+    let b = WebAssembly::Instance::new(&a, &Object::new())?;
     let c = b.exports();
 
-    println!("1 + 2 = {}", c.add(1, 2));
-    let mem = c.memory();
-    println!("created module has {} pages of memory", mem.grow(0));
-    println!("giving the module 4 more pages of memory");
+    let add = Reflect::get(c.as_ref(), &"add".into())
+        .dyn_into::<Function>()
+        .expect("add export wasn't a function");
+
+    let three = add.call2(&JsValue::undefined(), &1.into(), &2.into())?;
+    console_log!("1 + 2 = {:?}", three);
+    let mem = Reflect::get(c.as_ref(), &"memory".into())
+        .dyn_into::<WebAssembly::Memory>()
+        .expect("memory export wasn't a `WebAssembly.Memory`");
+    console_log!("created module has {} pages of memory", mem.grow(0));
+    console_log!("giving the module 4 more pages of memory");
     mem.grow(4);
-    println!("now the module has {} pages of memory", mem.grow(0));
+    console_log!("now the module has {} pages of memory", mem.grow(0));
+
+    Ok(())
 }

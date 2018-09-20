@@ -1,7 +1,7 @@
 [package]
 name = "performance"
 version = "0.1.0"
-authors = ["Alex Crichton <alex@alexcrichton.com>"]
+authors = ["The wasm-bindgen Developers"]
 
 [lib]
 crate-type = ["cdylib"]
@@ -9,3 +9,7 @@ crate-type = ["cdylib"]
 [dependencies]
 wasm-bindgen = { path = "../.." }
 humantime = "1"
+
+[dependencies.web-sys]
+path = '../../crates/web-sys'
+features = ['Window', 'Performance', 'PerformanceTiming']

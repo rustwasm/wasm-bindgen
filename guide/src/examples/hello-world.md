@@ -1,0 +1,55 @@
+# Hello, World!
+
+[View full source code][code]
+
+[code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world
+
+This is the "Hello, world!" example of `#[wasm_bindgen]` showing how to set up
+a project, export a function to JS, call it from JS, and then call the `alert`
+function in Rust.
+
+## `Cargo.toml`
+
+The `Cargo.toml` enables depends on the `wasm-bindgen` crate. Here we're using
+a `path` dependency because this example lives in the `wasm-bindgen` repository
+itself, but you'd use the commented out version beneath it instead.
+
+Also of note is the `crate-type = ["cdylib"]` which is largely used for wasm
+final artifacts today.
+
+```toml
+{{#include ../../../examples/hello_world/Cargo.toml}}
+```
+
+## `src/lib.rs`
+
+Here we define our Rust entry point along with calling the `alert` function.
+
+```rust
+{{#include ../../../examples/hello_world/src/lib.rs}}
+```
+
+## `index.js`
+
+Our JS entry point is quite small!
+
+```js
+{{#include ../../../examples/hello_world/index.js}}
+```
+
+## Webpack-specific files
+
+And finally here's the Webpack configuration and `package.json` for this
+project:
+
+**webpack.config.js**
+
+```js
+{{#include ../../../examples/hello_world/webpack.config.js}}
+```
+
+**package.json**
+
+```json
+{{#include ../../../examples/hello_world/package.json}}
+```

@@ -31,7 +31,7 @@ The only thing `src/lib.rs` does is include the bindings generated at compile
 time in `build.rs`. Here is the whole `src/lib.rs` file:
 
 ```rust
-{{#include ../../../crates/web-sys/src/lib.rs}}
+{{#include ../../../../crates/web-sys/src/lib.rs}}
 ```
 
 ### Cargo features

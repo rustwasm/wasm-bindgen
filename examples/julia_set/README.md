@@ -1,14 +1,15 @@
 # Julia Set
 
-[View this example online](https://webassembly.studio/?f=qmg1c6dbjos)
+[View documentation for this example online][dox]
 
-This is an example of more complex computations needed to generate a fractal (Julia Set).
-It's also an example of direct interaction with CanvasRenderingContext2D's API via `#[wasm_bindgen]` macro.
+[dox]: https://rustwasm.github.io/wasm-bindgen/examples/julia.html
 
-You can build the example with:
+You can build the example locally with:
 
 ```
 $ ./build.sh
 ```
 
 (or running the commands on Windows manually)
+
+and then visiting http://localhost:8080 in a browser should run the example!

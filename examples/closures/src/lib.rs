@@ -1,73 +1,87 @@
 extern crate wasm_bindgen;
 extern crate js_sys;
+extern crate web_sys;
 
-use js_sys::Date;
+use js_sys::{Date, Array};
+use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
+use web_sys::{Document, Element, HtmlElement, Window};
 
 #[wasm_bindgen]
-extern "C" {
-    // Binding for the `setInverval` method in JS. This function takes a "long
-    // lived" closure as the first argument so we use `Closure` instead of
-    // a bare `&Fn()` which only surives for that one stack frame.
-    //
-    // The second argument is then the interval and the return value is how we
-    // clear this interval. We're not going to clear our interval in this
-    // example though so the return value is ignored.
-    #[wasm_bindgen(js_name = setInterval)]
-    fn set_interval(cb: &Closure<FnMut()>, delay: u32) -> f64;
+pub fn run() -> Result<(), JsValue> {
+    let window = web_sys::window().expect("should have a window in this context");
+    let document = window.document().expect("window should have a document");
 
-    // Bindings for `document` and various methods of updating HTML elements.
-    // Like with the `dom` example these'll ideally be upstream in a generated
-    // crate one day but for now we manually define them.
-    type HTMLDocument;
-    static document: HTMLDocument;
-    #[wasm_bindgen(method, js_name = getElementById)]
-    fn get_element_by_id(this: &HTMLDocument, id: &str) -> Element;
-    #[wasm_bindgen(method, js_name = getElementById)]
-    fn get_html_element_by_id(this: &HTMLDocument, id: &str) -> HTMLElement;
+    // One of the first interesting things we can do with closures is simply
+    // access stack data in Rust!
+    let array = Array::new();
+    array.push(&"Hello".into());
+    array.push(&1.into());
+    let mut first_item = None;
+    array.for_each(&mut |obj, idx, _arr| {
+        match idx {
+            0 => {
+                assert_eq!(obj, "Hello");
+                first_item = obj.as_string();
+            }
+            1 => assert_eq!(obj, 1),
+            _ => panic!("unknown index: {}", idx)
+        }
+    });
+    assert_eq!(first_item, Some("Hello".to_string()));
 
-    type Element;
-    #[wasm_bindgen(method, setter = innerHTML)]
-    fn set_inner_html(this: &Element, html: &str);
+    // Below are some more advanced usages of the `Closure` type for closures
+    // that need to live beyond our function call.
 
-    type HTMLElement;
-    #[wasm_bindgen(method, setter)]
-    fn set_onclick(this: &HTMLElement, cb: &Closure<FnMut()>);
-    #[wasm_bindgen(method, getter)]
-    fn style(this: &HTMLElement) -> CSS2Properties;
+    setup_clock(&window, &document)?;
+    setup_clicker(&document);
 
-    type CSS2Properties;
-    #[wasm_bindgen(method, setter)]
-    fn set_display(this: &CSS2Properties, display: &str);
+    // And now that our demo is ready to go let's switch things up so
+    // everything is displayed and our loading prompt is hidden.
+    document
+        .get_element_by_id("loading")
+        .expect("should have #loading on the page")
+        .dyn_ref::<HtmlElement>()
+        .expect("#loading should be an `HtmlElement`")
+        .style()
+        .set_property("display", "none")?;
+    document
+        .get_element_by_id("script")
+        .expect("should have #script on the page")
+        .dyn_ref::<HtmlElement>()
+        .expect("#script should be an `HtmlElement`")
+        .style()
+        .set_property("display", "block")?;
+
+    Ok(())
 }
 
-#[wasm_bindgen]
-pub fn run() {
-    // Set up a clock on our page and update it each second to ensure it's got
-    // an accurate date.
-    let a = Closure::new(update_time);
-    set_interval(&a, 1000);
-    update_time();
-    fn update_time() {
-        document
-            .get_element_by_id("current-time")
+// Set up a clock on our page and update it each second to ensure it's got
+// an accurate date.
+//
+// Note the usage of `Closure` here because the closure is "long lived",
+// basically meaning it has to persist beyond the call to this one function.
+// Also of note here is the `.as_ref().unchecked_ref()` chain, which is who
+// you can extract `&Function`, what `web-sys` expects, from a `Closure`
+// which only hands you `&JsValue` via `AsRef`.
+fn setup_clock(window: &Window, document: &Document) -> Result<(), JsValue> {
+    let current_time = document
+        .get_element_by_id("current-time")
+        .expect("should have #current-time on the page");
+    update_time(&current_time);
+    let a = Closure::wrap(Box::new(move || {
+        update_time(&current_time)
+    }) as Box<Fn()>);
+    window.set_interval_with_callback_and_timeout_and_arguments_0(
+        a.as_ref().unchecked_ref(),
+        1000,
+    )?;
+    fn update_time(current_time: &Element) {
+        current_time
             .set_inner_html(&String::from(
-                Date::new(&JsValue::undefined())
-                    .to_locale_string("en-GB", &JsValue::undefined()),
+                Date::new_0().to_locale_string("en-GB", &JsValue::undefined()),
             ));
     }
-
-    // We also want to count the number of times that our green square has been
-    // clicked. Our callback will update the `#num-clicks` div
-    let square = document.get_html_element_by_id("green-square");
-    let mut clicks = 0;
-    let b = Closure::new(move || {
-        clicks += 1;
-        document
-            .get_element_by_id("num-clicks")
-            .set_inner_html(&clicks.to_string());
-    });
-    square.set_onclick(&b);
 
     // The instances of `Closure` that we created will invalidate their
     // corresponding JS callback whenever they're dropped, so if we were to
@@ -79,16 +93,29 @@ pub fn run() {
     // `forget` method to drop them without invalidating the closure. Note that
     // this is leaking memory in Rust, so this should be done judiciously!
     a.forget();
-    b.forget();
 
-    // And finally now that our demo is ready to go let's switch things up so
-    // everything is displayed and our loading prompt is hidden.
+    Ok(())
+}
+
+// We also want to count the number of times that our green square has been
+// clicked. Our callback will update the `#num-clicks` div.
+//
+// This is pretty similar above, but showing how closures can also implement
+// `FnMut()`.
+fn setup_clicker(document: &Document) {
+    let num_clicks = document
+        .get_element_by_id("num-clicks")
+        .expect("should have #num-clicks on the page");
+    let mut clicks = 0;
+    let a = Closure::wrap(Box::new(move || {
+        clicks += 1;
+        num_clicks.set_inner_html(&clicks.to_string());
+    }) as Box<FnMut()>);
     document
-        .get_html_element_by_id("loading")
-        .style()
-        .set_display("none");
-    document
-        .get_html_element_by_id("script")
-        .style()
-        .set_display("block");
+        .get_element_by_id("green-square")
+        .expect("should have #green-square on the page")
+        .dyn_ref::<HtmlElement>()
+        .expect("#green-square be an `HtmlElement`")
+        .set_onclick(Some(a.as_ref().unchecked_ref()));
+    a.forget();
 }

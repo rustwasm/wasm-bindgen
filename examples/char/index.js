@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import {chars} from './chars.js';
+import { chars } from './chars-list.js';
 let imp = import('./char.js');
 let mod;
 
