@@ -32,6 +32,27 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.22
+
+Released 2018-09-21
+
+### Added
+
+* The `IntoIterator` trait is now implemented for JS `Iterator` types
+* A number of variadic methods in `js-sys` have had explicit arities added.
+* The guide has been improved quite a bit as well as enhanced with more examples
+* The `js-sys` crate is now complete! Thanks so much to everyone involved to
+  help fill out all the APIs.
+* Exported Rust functions with `#[wasm_bindgen]` can now return a `Result` where
+  the `Err` payload is raised as an exception in JS.
+
+### Fixed
+
+* An issue with running `wasm-bindgen` on crates that have been compiled with
+  LTO has been resolved.
+
+--------------------------------------------------------------------------------
+
 ## 0.2.21
 
 Released 2018-09-07
