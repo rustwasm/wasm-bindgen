@@ -34,11 +34,9 @@ pub struct Export {
     pub class: Option<Ident>,
     /// The type of `self` (either `self`, `&self`, or `&mut self`)
     pub method_self: Option<MethodSelf>,
-    /// The name of the constructor function (e.g. new).
-    ///
-    /// This allows javascript to expose an `Object` interface, where calling
-    /// the constructor maps correctly to rust.
-    pub constructor: Option<String>,
+    /// Whether or not this export is flagged as a constructor, returning an
+    /// instance of the `impl` type
+    pub is_constructor: bool,
     /// The rust function
     pub function: Function,
     /// Comments extracted from the rust source.
@@ -317,7 +315,7 @@ impl Export {
             class: self.class.as_ref().map(|s| s.to_string()),
             method,
             consumed,
-            constructor: self.constructor.clone(),
+            is_constructor: self.is_constructor,
             function: self.function.shared(),
             comments: self.comments.clone(),
         }

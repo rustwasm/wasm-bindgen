@@ -232,7 +232,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             if arg.is_by_ref() {
                 bail!("cannot invoke JS functions with custom ref types yet")
             }
-            let assign = format!("let c{0} = {1}.__construct({0});", abi, class);
+            self.cx.require_class_wrap(class);
+            let assign = format!("let c{0} = {1}.__wrap({0});", abi, class);
             self.prelude(&assign);
             self.js_arguments.push(format!("c{}", abi));
             return Ok(());

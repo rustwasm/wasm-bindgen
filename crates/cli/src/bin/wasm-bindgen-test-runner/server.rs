@@ -29,7 +29,7 @@ pub fn spawn(
             // native ESM support for wasm modules.
             await wasm.booted;
 
-            const cx = Context.new();
+            const cx = new Context();
             window.console_log_redirect = __wbgtest_console_log;
             window.console_error_redirect = __wbgtest_console_error;
 
