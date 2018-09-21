@@ -28,7 +28,7 @@ welcome! If you're curious about the design plus even more information about
 what this crate can do, check out the [design doc].
 
 [host]: https://github.com/WebAssembly/host-bindings
-[design doc]: https://rustwasm.github.io/wasm-bindgen/design.html
+[design doc]: https://rustwasm.github.io/wasm-bindgen/contributing/design/index.html
 [dom-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/dom
 [console-log]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/console_log
 [perf-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/performance
