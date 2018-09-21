@@ -85,7 +85,8 @@ exports.custom_type_return_2 = function() {
 };
 
 exports.touch_custom_type = function() {
-  assert.throws(() => CUSTOM_TYPE.touch(), /Attempt to use a moved value/);
+  assert.throws(() => CUSTOM_TYPE.touch(),
+    /Attempt to use a moved value|null pointer passed to rust/);
 };
 
 exports.interpret_2_as_custom_type = function() {

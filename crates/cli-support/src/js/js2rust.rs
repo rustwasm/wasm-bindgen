@@ -68,11 +68,13 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     /// passed should be `this.ptr`.
     pub fn method(&mut self, method: bool, consumed: bool) -> &mut Self {
         if method {
-            self.prelude(
-                "if (this.ptr === 0) {
-                    throw new Error('Attempt to use a moved value');
-                }",
-            );
+            if self.cx.config.debug {
+                self.prelude(
+                    "if (this.ptr === 0) {
+                        throw new Error('Attempt to use a moved value');
+                    }",
+                );
+            }
             if consumed {
                 self.prelude(
                     "\
