@@ -1,9 +1,10 @@
 # WebGL Example
 
-This directory is an example of using the `web-sys` crate to interact with
-a WebGL context.
+[View documentation for this example online][dox]
 
-You can build and run the example with:
+[dox]: https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
+
+You can build the example locally with:
 
 ```
 $ ./build.sh
@@ -11,5 +12,4 @@ $ ./build.sh
 
 (or running the commands on Windows manually)
 
-and then opening up `http://localhost:8080/` in a web browser should show a
-nice triangle.
+and then visiting http://localhost:8080 in a browser should run the example!

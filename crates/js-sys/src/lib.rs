@@ -1753,6 +1753,13 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(init: &JsValue) -> Date;
 
+    /// Creates a JavaScript Date instance that represents the current moment in
+    /// time.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+    #[wasm_bindgen(constructor)]
+    pub fn new_0() -> Date;
+
     /// The `Date.now()` method returns the number of milliseconds
     /// elapsed since January 1, 1970 00:00:00 UTC.
     ///

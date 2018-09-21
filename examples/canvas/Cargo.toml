@@ -1,5 +1,5 @@
 [package]
-name = "wasm-bindgen-canvas-demo"
+name = "canvas"
 version = "0.1.0"
 authors = ["The wasm-bindgen Developers"]
 

@@ -1,9 +1,10 @@
 # Importing non-browser JS
 
-This directory is an example of using the `#[wasm_bindgen]` macro to import the
-JS defined by you rather than the browser.
+[View documentation for this example online][dox]
 
-You can build the example with:
+[dox]: https://rustwasm.github.io/wasm-bindgen/examples/import-js.html
+
+You can build the example locally with:
 
 ```
 $ ./build.sh
@@ -11,10 +12,4 @@ $ ./build.sh
 
 (or running the commands on Windows manually)
 
-and then opening up `index.html` in a web browser and see some messages in the
-console.
-
-For more information about this example be sure to check out
-[`hello_world`][hello] which also has more comments about caveats and such.
-
-[hello]: https://github.com/alexcrichton/wasm-bindgen/tree/master/examples/hello_world
+and then visiting http://localhost:8080 in a browser should run the example!

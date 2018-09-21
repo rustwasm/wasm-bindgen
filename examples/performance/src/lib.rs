@@ -1,45 +1,35 @@
 extern crate humantime;
 extern crate wasm_bindgen;
+extern crate web_sys;
 
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use wasm_bindgen::prelude::*;
 
-// Like with the `dom` example this block will eventually be auto-generated, but
-// for now we can write it by hand to get by!
+// lifted from the `console_log` example
 #[wasm_bindgen]
 extern "C" {
-    type Performance;
-    static performance: Performance;
-    #[wasm_bindgen(method)]
-    fn now(this: &Performance) -> f64;
-    #[wasm_bindgen(method, getter)]
-    fn timing(this: &Performance) -> PerformanceTiming;
-
-    type PerformanceTiming;
-    #[wasm_bindgen(method, getter)]
-    fn requestStart(this: &PerformanceTiming) -> f64;
-    #[wasm_bindgen(method, getter)]
-    fn responseEnd(this: &PerformanceTiming) -> f64;
-
     #[wasm_bindgen(js_namespace = console)]
     fn log(a: &str);
 }
 
-macro_rules! println {
+macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
 // Called by our JS entry point to run the example
 #[wasm_bindgen]
 pub fn run() {
-    println!("the current time is {}", performance.now());
+    let window = web_sys::window().expect("should have a window in this context");
+    let performance = window.performance().expect("performance should be available");
 
-    let start = perf_to_system(performance.timing().requestStart());
-    let end = perf_to_system(performance.timing().responseEnd());
+    console_log!("the current time (in ms) is {}", performance.now());
 
-    println!("request started at {}", humantime::format_rfc3339(start));
-    println!("request ended at {}", humantime::format_rfc3339(end));
+    let start = perf_to_system(performance.timing().request_start());
+    let end = perf_to_system(performance.timing().response_end());
+
+    console_log!("request started at {}", humantime::format_rfc3339(start));
+    console_log!("request ended at {}", humantime::format_rfc3339(end));
 }
 
 fn perf_to_system(amt: f64) -> SystemTime {

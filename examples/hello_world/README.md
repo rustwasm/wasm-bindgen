@@ -1,9 +1,8 @@
 # Hello, World!
 
-[View this example online](https://webassembly.studio/?f=gzubao6tg3)
+[View documentation for this example online][dox]
 
-This directory is an example of using the `#[wasm_bindgen]` macro to create an
-entry point that's called from the browser and then displays a dialog.
+[dox]: https://rustwasm.github.io/wasm-bindgen/examples/hello-world.html
 
 You can build the example locally with:
 
@@ -11,6 +10,6 @@ You can build the example locally with:
 $ ./build.sh
 ```
 
-(or running the two commands on Windows manually)
+(or running the commands on Windows manually)
 
-and then opening up `index.html` in a web browser should show a dialog!
+and then visiting http://localhost:8080 in a browser should show a dialog!

@@ -19,7 +19,7 @@ Notable features of this project includes:
 
 * Importing JS functionality in to Rust such as [DOM manipulation][dom-ex],
   [console logging][console-log], or [performance monitoring][perf-ex].
-* [Exporting Rust functionality][smorg-ex] to JS such as classes, functions, etc.
+* Exporting Rust functionality to JS such as classes, functions, etc.
 * Working with rich types like strings, numbers, classes, closures, and objects
   rather than simply `u32` and floats.
 
@@ -32,5 +32,4 @@ what this crate can do, check out the [design doc].
 [dom-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/dom
 [console-log]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/console_log
 [perf-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/performance
-[smorg-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/smorgasboard
 [hello-online]: https://webassembly.studio/?f=gzubao6tg3
