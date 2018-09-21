@@ -48,13 +48,6 @@ partial interface Performance {
   attribute EventHandler onresourcetimingbufferfull;
 };
 
-// GC microbenchmarks, pref-guarded, not for general use (bug 1125412)
-[Exposed=Window]
-partial interface Performance {
-  [Pref="dom.enable_memory_stats"]
-  readonly attribute object mozMemory;
-};
-
 // http://www.w3.org/TR/user-timing/
 [Exposed=(Window,Worker)]
 partial interface Performance {

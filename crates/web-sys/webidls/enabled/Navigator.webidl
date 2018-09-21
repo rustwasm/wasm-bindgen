@@ -201,33 +201,6 @@ callback NavigatorUserMediaErrorCallback = void (MediaStreamError error);
 partial interface Navigator {
   [Throws, Func="Navigator::HasUserMediaSupport"]
   readonly attribute MediaDevices mediaDevices;
-
-  // Deprecated. Use mediaDevices.getUserMedia instead.
-  [Deprecated="NavigatorGetUserMedia", Throws,
-   Func="Navigator::HasUserMediaSupport",
-   NeedsCallerType]
-  void mozGetUserMedia(MediaStreamConstraints constraints,
-                       NavigatorUserMediaSuccessCallback successCallback,
-                       NavigatorUserMediaErrorCallback errorCallback);
-};
-
-// nsINavigatorUserMedia
-callback MozGetUserMediaDevicesSuccessCallback = void (nsIVariant? devices);
-partial interface Navigator {
-  [Throws, ChromeOnly]
-  void mozGetUserMediaDevices(MediaStreamConstraints constraints,
-                              MozGetUserMediaDevicesSuccessCallback onsuccess,
-                              NavigatorUserMediaErrorCallback onerror,
-                              // The originating innerWindowID is needed to
-                              // avoid calling the callbacks if the window has
-                              // navigated away. It is optional only as legacy.
-                              optional unsigned long long innerWindowID = 0,
-                              // The callID is needed in case of multiple
-                              // concurrent requests to find the right one.
-                              // It is optional only as legacy.
-                              // TODO: Rewrite to not need this method anymore,
-                              // now that devices are enumerated earlier.
-                              optional DOMString callID = "");
 };
 
 // Service Workers/Navigation Controllers
@@ -245,11 +218,6 @@ partial interface Navigator {
 partial interface Navigator {
   [Throws, Pref="dom.presentation.enabled", SameObject]
   readonly attribute Presentation? presentation;
-};
-
-partial interface Navigator {
-  [NewObject, Func="mozilla::dom::TCPSocket::ShouldTCPSocketExist"]
-  readonly attribute LegacyMozTCPSocket mozTCPSocket;
 };
 
 partial interface Navigator {

@@ -6,7 +6,6 @@
  */
 
 // invalid widl
-//interface MozTreeView;
 //interface nsIScriptableRegion;
 
 dictionary TreeCellInfo {
@@ -22,14 +21,6 @@ interface TreeBoxObject : BoxObject {
    * Obtain the columns.
    */
   readonly attribute TreeColumns? columns;
-
-  /**
-   * The view that backs the tree and that supplies it with its data.
-   * It is dynamically settable, either using a view attribute on the
-   * tree tag or by setting this attribute to a new value.
-   */
-  [SetterThrows, NeedsCallerType]
-  attribute MozTreeView? view;
 
   /**
    * Whether or not we are currently focused.

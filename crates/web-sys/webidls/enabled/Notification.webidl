@@ -67,7 +67,6 @@ dictionary NotificationOptions {
   DOMString icon = "";
   boolean requireInteraction = false;
   any data = null;
-  NotificationBehavior mozbehavior = null;
 };
 
 dictionary GetNotificationOptions {

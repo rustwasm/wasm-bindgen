@@ -38,7 +38,3 @@ partial interface HTMLEmbedElement {
   [NeedsSubjectPrincipal]
   Document? getSVGDocument();
 };
-
-HTMLEmbedElement includes MozImageLoadingContent;
-HTMLEmbedElement includes MozFrameLoaderOwner;
-HTMLEmbedElement includes MozObjectLoadingContent;

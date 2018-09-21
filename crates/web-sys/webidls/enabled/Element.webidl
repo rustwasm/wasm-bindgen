@@ -97,16 +97,6 @@ interface Element : Node {
   readonly attribute float fontSizeInflation;
 
   // Selectors API
-  /**
-   * Returns whether this element would be selected by the given selector
-   * string.
-   *
-   * See <http://dev.w3.org/2006/webapi/selectors-api2/#matchesselector>
-   */
-/* Non standard
-  [Throws, Pure, BinaryName="matches"]
-  boolean mozMatchesSelector(DOMString selector);
-*/
 
   // Pointer events methods.
   [Throws, Pref="dom.w3c_pointer_events.enabled"]
@@ -211,11 +201,6 @@ partial interface Element {
   void scrollTo(optional ScrollToOptions options);
   void scrollBy(unrestricted double x, unrestricted double y);
   void scrollBy(optional ScrollToOptions options);
-  // mozScrollSnap is used by chrome to perform scroll snapping after the
-  // user performs actions that may affect scroll position
-  // mozScrollSnap is deprecated, to be replaced by a web accessible API, such
-  // as an extension to the ScrollOptions dictionary.  See bug 1137937.
-  [ChromeOnly] void mozScrollSnap();
 
   readonly attribute long clientTop;
   readonly attribute long clientLeft;
@@ -273,10 +258,6 @@ Element includes GeometryUtils;
 partial interface Element {
   [Throws, Func="nsDocument::IsUnprefixedFullscreenEnabled", NeedsCallerType]
   void requestFullscreen();
-/*Non standard
-  [Throws, BinaryName="requestFullscreen", NeedsCallerType]
-  void mozRequestFullScreen();
-*/
 };
 
 // https://w3c.github.io/pointerlock/#extensions-to-the-element-interface

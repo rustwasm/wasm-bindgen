@@ -12,7 +12,6 @@
 
 // invalid widl
 // interface InputStream;
-// interface MozChannel;
 // interface IID;
 
 enum XMLHttpRequestResponseType {
@@ -24,27 +23,7 @@ enum XMLHttpRequestResponseType {
   "text",
 };
 
-/**
- * Parameters for instantiating an XMLHttpRequest. They are passed as an
- * optional argument to the constructor:
- *
- *  new XMLHttpRequest({anon: true, system: true});
- */
-dictionary MozXMLHttpRequestParameters
-{
-  /**
-   * If true, the request will be sent without cookie and authentication
-   * headers.
-   */
-  boolean mozAnon = false;
-
-  /**
-   * If true, the same origin policy will not be enforced on the request.
-   */
-  boolean mozSystem = false;
-};
-
-[Constructor(optional MozXMLHttpRequestParameters params),
+[Constructor(),
  // There are apparently callers, specifically CoffeeScript, who do
  // things like this:
  //   c = new(window.ActiveXObject || XMLHttpRequest)("Microsoft.XMLHTTP")

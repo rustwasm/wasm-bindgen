@@ -58,10 +58,6 @@ dictionary MediaTrackConstraintSet {
     ConstrainBoolean noiseSuppression;
     ConstrainBoolean autoGainControl;
     ConstrainLong channelCount;
-
-    // Deprecated with warnings:
-    ConstrainBoolean mozNoiseSuppression;
-    ConstrainBoolean mozAutoGainControl;
 };
 
 dictionary MediaTrackConstraints : MediaTrackConstraintSet {

@@ -27,32 +27,6 @@ interface Screen : EventTarget {
   readonly attribute long availTop;
   [Throws]
   readonly attribute long availLeft;
-
-  /**
-   * DEPRECATED, use ScreenOrientation API instead.
-   * Returns the current screen orientation.
-   * Can be: landscape-primary, landscape-secondary,
-   *         portrait-primary or portrait-secondary.
-   */
-  [NeedsCallerType]
-  readonly attribute DOMString mozOrientation;
-
-  attribute EventHandler onmozorientationchange;
-
-  /**
-   * DEPRECATED, use ScreenOrientation API instead.
-   * Lock screen orientation to the specified type.
-   */
-  [Throws]
-  boolean mozLockOrientation(DOMString orientation);
-  [Throws]
-  boolean mozLockOrientation(sequence<DOMString> orientation);
-
-  /**
-   * DEPRECATED, use ScreenOrientation API instead.
-   * Unlock the screen orientation.
-   */
-  void mozUnlockOrientation();
 };
 
 // https://w3c.github.io/screen-orientation

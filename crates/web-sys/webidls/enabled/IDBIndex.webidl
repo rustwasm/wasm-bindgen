@@ -58,12 +58,6 @@ interface IDBIndex {
 
 partial interface IDBIndex {
     [Throws]
-    IDBRequest mozGetAll (optional any key, [EnforceRange] optional unsigned long limit);
-
-    [Throws]
-    IDBRequest mozGetAllKeys (optional any key, [EnforceRange] optional unsigned long limit);
-
-    [Throws]
     IDBRequest getAll (optional any key, [EnforceRange] optional unsigned long limit);
 
     [Throws]

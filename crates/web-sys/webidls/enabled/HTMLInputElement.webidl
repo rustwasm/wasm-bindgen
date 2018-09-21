@@ -147,8 +147,6 @@ partial interface HTMLInputElement {
            attribute DOMString useMap;
 };
 
-HTMLInputElement includes MozEditableElement;
-
 /*Non standard
 partial interface HTMLInputElement {
   [Pref="dom.input.dirpicker", SetterThrows]
@@ -167,8 +165,6 @@ partial interface HTMLInputElement {
   void chooseDirectory();
 };
 */
-
-HTMLInputElement includes MozImageLoadingContent;
 
 // Webkit/Blink
 partial interface HTMLInputElement {

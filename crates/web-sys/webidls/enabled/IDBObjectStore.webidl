@@ -59,10 +59,6 @@ interface IDBObjectStore {
 };
 
 partial interface IDBObjectStore {
-    // Success fires IDBTransactionEvent, result == array of values for given keys
-    [Throws]
-    IDBRequest mozGetAll (optional any key, [EnforceRange] optional unsigned long limit);
-
     [Throws]
     IDBRequest getAll (optional any key, [EnforceRange] optional unsigned long limit);
 
