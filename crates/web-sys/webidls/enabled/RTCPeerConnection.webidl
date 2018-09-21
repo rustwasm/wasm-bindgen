@@ -36,18 +36,6 @@ enum RTCIceConnectionState {
     "closed"
 };
 
-enum mozPacketDumpType {
-  "rtp", // dump unencrypted rtp as the MediaPipeline sees it
-  "srtp", // dump encrypted rtp as the MediaPipeline sees it
-  "rtcp", // dump unencrypted rtcp as the MediaPipeline sees it
-  "srtcp" // dump encrypted rtcp as the MediaPipeline sees it
-};
-
-callback mozPacketCallback = void (unsigned long level,
-                                   mozPacketDumpType type,
-                                   boolean sending,
-                                   ArrayBuffer packet);
-
 dictionary RTCDataChannelInit {
   boolean        ordered = true;
   unsigned short maxPacketLifeTime;
@@ -131,31 +119,6 @@ interface RTCPeerConnection : EventTarget  {
   sequence<RTCRtpSender> getSenders();
   sequence<RTCRtpReceiver> getReceivers();
   sequence<RTCRtpTransceiver> getTransceivers();
-
-  // test-only: for testing getContributingSources
-  [ChromeOnly]
-  DOMHighResTimeStamp mozGetNowInRtpSourceReferenceTime();
-  // test-only: for testing getContributingSources
-  [ChromeOnly]
-  void mozInsertAudioLevelForContributingSource(RTCRtpReceiver receiver,
-                                                unsigned long source,
-                                                DOMHighResTimeStamp timestamp,
-                                                boolean hasLevel,
-                                                byte level);
-  [ChromeOnly]
-  void mozAddRIDExtension(RTCRtpReceiver receiver, unsigned short extensionId);
-  [ChromeOnly]
-  void mozAddRIDFilter(RTCRtpReceiver receiver, DOMString rid);
-  [ChromeOnly]
-  void mozSetPacketCallback(mozPacketCallback callback);
-  [ChromeOnly]
-  void mozEnablePacketDump(unsigned long level,
-                           mozPacketDumpType type,
-                           boolean sending);
-  [ChromeOnly]
-  void mozDisablePacketDump(unsigned long level,
-                            mozPacketDumpType type,
-                            boolean sending);
 
   void close ();
   attribute EventHandler onnegotiationneeded;

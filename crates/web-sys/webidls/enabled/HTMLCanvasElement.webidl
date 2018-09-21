@@ -40,16 +40,4 @@ partial interface HTMLCanvasElement {
   OffscreenCanvas transferControlToOffscreen();
 };
 
-[ChromeOnly]
-interface MozCanvasPrintState
-{
-  // A canvas rendering context.
-  readonly attribute nsISupports context;
-
-  // To be called when rendering to the context is done.
-  void done();
-};
-
-callback PrintCallback = void(MozCanvasPrintState ctx);
-
 callback BlobCallback = void(Blob? blob);

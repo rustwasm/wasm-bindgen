@@ -34,5 +34,3 @@ interface HTMLFrameElement : HTMLElement {
   [CEReactions, TreatNullAs=EmptyString, SetterThrows]
   attribute DOMString marginWidth;
 };
-
-HTMLFrameElement includes MozFrameLoaderOwner;

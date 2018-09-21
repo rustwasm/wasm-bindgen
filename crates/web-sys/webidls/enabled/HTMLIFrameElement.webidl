@@ -59,11 +59,4 @@ partial interface HTMLIFrameElement {
   Document? getSVGDocument();
 };
 
-partial interface HTMLIFrameElement {
-  // nsIDOMMozBrowserFrame
-  [ChromeOnly,SetterThrows]
-           attribute boolean mozbrowser;
-};
-
-HTMLIFrameElement includes MozFrameLoaderOwner;
 HTMLIFrameElement includes BrowserElement;

@@ -77,16 +77,3 @@ partial interface HTMLObjectElement {
   [NeedsSubjectPrincipal]
   Document? getSVGDocument();
 };
-
-/**
- * Name:Value pair type used for passing parameters to NPAPI or javascript
- * plugins.
- */
-dictionary MozPluginParameter {
-  DOMString name = "";
-  DOMString value = "";
-};
-
-HTMLObjectElement includes MozImageLoadingContent;
-HTMLObjectElement includes MozFrameLoaderOwner;
-HTMLObjectElement includes MozObjectLoadingContent;

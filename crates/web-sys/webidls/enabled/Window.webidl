@@ -174,11 +174,6 @@ partial interface Window {
   void scrollTo(optional ScrollToOptions options);
   void scrollBy(unrestricted double x, unrestricted double y);
   void scrollBy(optional ScrollToOptions options);
-  // mozScrollSnap is used by chrome to perform scroll snapping after the
-  // user performs actions that may affect scroll position
-  // mozScrollSnap is deprecated, to be replaced by a web accessible API, such
-  // as an extension to the ScrollOptions dictionary.  See bug 1137937.
-  [ChromeOnly] void mozScrollSnap();
   // The four properties below are double per spec at the moment, but whether
   // that will continue is unclear.
   [Replaceable, Throws] readonly attribute double scrollX;

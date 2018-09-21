@@ -53,8 +53,6 @@ dictionary RTCInboundRTPStreamStats : RTCRTPStreamStats {
   unsigned long long bytesReceived;
   double jitter;
   unsigned long packetsLost;
-  long mozAvSyncDelay;
-  long mozJitterBufferDelay;
   long roundTripTime;
 
   // Video decoder measurement, not present in RTCP case
@@ -154,7 +152,6 @@ dictionary RTCIceCandidateStats : RTCStats {
   DOMString candidateId;
   DOMString ipAddress;
   DOMString transport;
-  DOMString mozLocalTransport; // needs standardization
   long portNumber;
   RTCStatsIceCandidateType candidateType;
 };
@@ -200,6 +197,4 @@ dictionary RTCStatsReportInternal {
  JSImplementation="@mozilla.org/dom/rtcstatsreport;1"]
 interface RTCStatsReport {
   readonly maplike<DOMString, object>;
-  [ChromeOnly]
-  readonly attribute DOMString mozPcid;
 };

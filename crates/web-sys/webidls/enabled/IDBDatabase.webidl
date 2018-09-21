@@ -41,8 +41,4 @@ partial interface IDBDatabase {
 
     [Exposed=Window, Throws, UseCounter]
     IDBRequest createMutableFile (DOMString name, optional DOMString type);
-
-    // this is deprecated due to renaming in the spec
-    [Exposed=Window, Throws, UseCounter]
-    IDBRequest mozCreateFileHandle (DOMString name, optional DOMString type); // now createMutableFile
 };

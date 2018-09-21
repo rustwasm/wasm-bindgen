@@ -188,37 +188,6 @@ partial interface Document {
    * @see <https://developer.mozilla.org/en/DOM/document.releaseCapture>
    */
   void releaseCapture();
-  /**
-   * Use the given DOM element as the source image of target |-moz-element()|.
-   *
-   * This function introduces a new special ID (called "image element ID"),
-   * which is only used by |-moz-element()|, and associates it with the given
-   * DOM element.  Image elements ID's have the higher precedence than general
-   * HTML id's, so if |document.mozSetImageElement(<id>, <element>)| is called,
-   * |-moz-element(#<id>)| uses |<element>| as the source image even if there
-   * is another element with id attribute = |<id>|.  To unregister an image
-   * element ID |<id>|, call |document.mozSetImageElement(<id>, null)|.
-   *
-   * Example:
-   * <script>
-   *   canvas = document.createElement("canvas");
-   *   canvas.setAttribute("width", 100);
-   *   canvas.setAttribute("height", 100);
-   *   // draw to canvas
-   *   document.mozSetImageElement("canvasbg", canvas);
-   * </script>
-   * <div style="background-image: -moz-element(#canvasbg);"></div>
-   *
-   * @param aImageElementId an image element ID to associate with
-   * |aImageElement|
-   * @param aImageElement a DOM element to be used as the source image of
-   * |-moz-element(#aImageElementId)|. If this is null, the function will
-   * unregister the image element ID |aImageElementId|.
-   *
-   * @see <https://developer.mozilla.org/en/DOM/document.mozSetImageElement>
-   */
-  void mozSetImageElement(DOMString aImageElementId,
-                          Element? aImageElement);
 
   [ChromeOnly]
   readonly attribute URI? documentURIObject;
@@ -256,23 +225,11 @@ partial interface Document {
   // versions have it uppercase.
   [LenientSetter, Unscopable, Func="nsDocument::IsUnprefixedFullscreenEnabled"]
   readonly attribute boolean fullscreen;
-/*Non standard
-  [BinaryName="fullscreen"]
-  readonly attribute boolean mozFullScreen;
-*/
   [LenientSetter, Func="nsDocument::IsUnprefixedFullscreenEnabled", NeedsCallerType]
   readonly attribute boolean fullscreenEnabled;
-/*Non standard
-  [BinaryName="fullscreenEnabled", NeedsCallerType]
-  readonly attribute boolean mozFullScreenEnabled;
-*/
 
   [Func="nsDocument::IsUnprefixedFullscreenEnabled"]
   void exitFullscreen();
-/*Non standard
-  [BinaryName="exitFullscreen"]
-  void mozCancelFullScreen();
-*/
 
   // Events handlers
   [Func="nsDocument::IsUnprefixedFullscreenEnabled"]
