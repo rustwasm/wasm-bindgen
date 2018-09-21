@@ -1,7 +1,8 @@
 # Working with the `char` type
 
-[View full source code][code]
+[View full source code][code] or [view the compiled example online][online]
 
+[online]: https://rustwasm.github.io/wasm-bindgen/exbuild/char/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/char
 
 The `#[wasm_bindgen]` macro will convert the rust `char` type to a single

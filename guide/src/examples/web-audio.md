@@ -1,7 +1,8 @@
 # WebAudio
 
-[View full source code][code]
+[View full source code][code] or [view the compiled example online][online]
 
+[online]: https://rustwasm.github.io/wasm-bindgen/exbuild/webaudio/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/webaudio
 
 This example creates an [FM

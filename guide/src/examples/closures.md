@@ -1,7 +1,8 @@
 # web-sys: Closures
 
-[View full source code][code]
+[View full source code][code] or [view the compiled example online][online]
 
+[online]: https://rustwasm.github.io/wasm-bindgen/exbuild/closures/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/closures
 
 One of the features of `#[wasm_bindgen]` is that you can pass closures defined

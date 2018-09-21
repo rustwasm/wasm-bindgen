@@ -1,7 +1,8 @@
 # Small wasm files
 
-[View full source code][code]
+[View full source code][code] or [view the compiled example online][online]
 
+[online]: https://rustwasm.github.io/wasm-bindgen/exbuild/add/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/add
 
 One of `wasm-bindgen`'s core goals is a pay-only-for-what-you-use philosophy, so

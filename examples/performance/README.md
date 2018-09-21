@@ -1,7 +1,9 @@
 # web-sys: `performance.now`
 
-[View documentation for this example online][dox]
+[View documentation for this example online][dox] or [View compiled example
+online][compiled]
 
+[compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/performance/
 [dox]: https://rustwasm.github.io/wasm-bindgen/examples/performance.html
 
 You can build the example locally with:
