@@ -517,11 +517,7 @@ impl<'a> IdlType<'a> {
             | IdlType::Dictionary(name)
             | IdlType::CallbackInterface { name, .. } => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
-                if pos == TypePosition::Argument {
-                    Some(shared_ref(ty, false))
-                } else {
-                    Some(ty)
-                }
+                anyref(ty)
             },
             IdlType::Enum(name) => Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))),
 
