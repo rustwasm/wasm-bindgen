@@ -226,14 +226,22 @@ impl Interpreter {
     ) -> Option<&[u32]> {
         // Call the `code_idx` function. This is an internal `#[inline(never)]`
         // whose code is completely controlled by the `wasm-bindgen` crate, so
-        // it should take two arguments and return one (all of which we don't
-        // care about here). What we're interested in is that while executing
-        // this function it'll call `__wbindgen_describe_closure` with an
-        // argument that we look for.
+        // it should take some arguments (the number of arguments depends on the
+        // optimization level) and return one (all of which we don't care about
+        // here). What we're interested in is that while executing this function
+        // it'll call `__wbindgen_describe_closure` with an argument that we
+        // look for.
         assert!(self.descriptor_table_idx.is_none());
         let closure_descriptor_idx = (code_idx + self.imports) as u32;
-        self.stack.push(0);
-        self.stack.push(0);
+
+        let code_sig = sections.functions.entries()[code_idx].type_ref();
+        let function_ty = match &sections.types.types()[code_sig as usize] {
+            Type::Function(t) => t,
+        };
+        for _ in 0..function_ty.params().len() {
+            self.stack.push(0);
+        }
+
         self.call(closure_descriptor_idx, sections);
         assert_eq!(self.stack.len(), 1);
         self.stack.pop();
@@ -346,8 +354,8 @@ impl Interpreter {
                     } else if Some(*idx) == self.describe_closure_idx {
                         self.descriptor_table_idx =
                             Some(self.stack.pop().unwrap() as u32);
-                        assert_eq!(self.stack.pop(), Some(0));
-                        assert_eq!(self.stack.pop(), Some(0));
+                        self.stack.pop();
+                        self.stack.pop();
                         self.stack.push(0);
                     } else {
                         self.call(*idx, sections);

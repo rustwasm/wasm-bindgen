@@ -47,6 +47,7 @@ pub fn rewrite(input: &mut Context) -> Result<(), Error> {
 
     info.delete_function_table_entries(input);
     info.inject_imports(input)?;
+    info.rewrite_calls(input);
     Ok(())
 }
 
@@ -63,7 +64,13 @@ struct ClosureDescriptors {
     ///
     /// This map is later used to replace all calls to the keys of this map with
     /// calls to the value of the map.
-    code_idx_to_descriptor: BTreeMap<u32, (u32, Descriptor)>,
+    code_idx_to_descriptor: BTreeMap<u32, DescribeInstruction>,
+}
+
+struct DescribeInstruction {
+    new_idx: u32,
+    instr_idx: usize,
+    descriptor: Descriptor,
 }
 
 impl ClosureDescriptors {
@@ -93,19 +100,19 @@ impl ClosureDescriptors {
             None => return Default::default(),
         };
         for (i, function) in code.bodies().iter().enumerate() {
-            let mut call_found = false;
-            for instruction in function.code().elements() {
-                match instruction {
-                    Instruction::Call(idx) if *idx == wbindgen_describe_closure => {
-                        call_found = true;
-                        break
+            let call_pos = function.code()
+                .elements()
+                .iter()
+                .position(|i| {
+                    match i {
+                        Instruction::Call(i) => *i == wbindgen_describe_closure,
+                        _ => false,
                     }
-                    _ => {}
-                }
-            }
-            if !call_found {
-                continue
-            }
+                });
+            let call_pos = match call_pos {
+                Some(i) => i,
+                None => continue,
+            };
             let descriptor = input.interpreter.interpret_closure_descriptor(
                 i,
                 input.module,
@@ -118,7 +125,11 @@ impl ClosureDescriptors {
             let new_idx = (ret.code_idx_to_descriptor.len() + imports) as u32;
             ret.code_idx_to_descriptor.insert(
                 i as u32,
-                (new_idx, Descriptor::decode(descriptor)),
+                DescribeInstruction {
+                    new_idx,
+                    instr_idx: call_pos,
+                    descriptor: Descriptor::decode(descriptor),
+                },
             );
         }
         return ret
@@ -189,23 +200,26 @@ impl ClosureDescriptors {
     /// described by the fields internally. These new imports will be closure
     /// factories and are freshly generated shim in JS.
     fn inject_imports(&self, input: &mut Context) -> Result<(), Error> {
+        let wbindgen_describe_closure = match input.interpreter.describe_closure_idx() {
+            Some(i) => i,
+            None => return Ok(()),
+        };
+
         // We'll be injecting new imports and we'll need to give them all a
         // type.  The signature is all `(i32, i32) -> i32` currently and we know
         // that this signature already exists in the module as it's the
         // signature of our `#[inline(never)]` functions. Find the type
         // signature index so we can assign it below.
-        let type_idx = input.module.type_section()
-            .unwrap()
-            .types()
-            .iter()
-            .position(|ty| {
-                let fnty = match ty {
-                    Type::Function(f) => f,
-                };
-                fnty.params() == &[ValueType::I32, ValueType::I32] &&
-                    fnty.return_type() == Some(ValueType::I32)
-            })
-            .unwrap();
+        let type_idx = {
+            let kind = input.module.import_section()
+                .unwrap()
+                .entries()[wbindgen_describe_closure as usize]
+                .external();
+            match kind {
+                External::Function(i) => *i,
+                _ => unreachable!(),
+            }
+        };
 
         // The last piece of the magic. For all our descriptors we found we
         // inject a JS shim for the descriptor. This JS shim will manufacture a
@@ -214,10 +228,10 @@ impl ClosureDescriptors {
         // Once all that's said and done we inject a new import into the wasm module
         // of our new wrapper, and the `Remap` step above already wrote calls to
         // this function within the module.
-        for (i, (_new_idx, descriptor)) in self.code_idx_to_descriptor.iter() {
+        for (i, instr) in self.code_idx_to_descriptor.iter() {
             let import_name = format!("__wbindgen_closure_wrapper{}", i);
 
-            let closure = descriptor.closure().unwrap();
+            let closure = instr.descriptor.closure().unwrap();
 
             let (js, _ts, _js_doc) = {
                 let mut builder = Js2Rust::new("", input);
@@ -237,7 +251,7 @@ impl ClosureDescriptors {
             input.expose_add_heap_object();
             input.function_table_needed = true;
             let body = format!(
-                "function(ptr, f) {{
+                "function(ptr, f, _ignored) {{
                     let cb = {};
                     cb.f = wasm.__wbg_function_table.get(f);
                     cb.a = ptr;
@@ -261,10 +275,34 @@ impl ClosureDescriptors {
         }
         Ok(())
     }
+
+    /// The final step, rewriting calls to `__wbindgen_describe_closure` to the
+    /// imported functions
+    fn rewrite_calls(&self, input: &mut Context) {
+        // FIXME: Ok so this is a bit sketchy in that it introduces overhead.
+        // What we're doing is taking a our #[inline(never)] shim and *not*
+        // removing it, only switching the one function that it calls internally.
+        //
+        // This isn't great because now we have this non-inlined function which
+        // would certainly benefit from getting inlined. It's a tiny function
+        // though and surrounded by allocation so it's probably not a huge
+        // problem in the long run. Note that `wasm-opt` also implements
+        // inlining, so we can likely rely on that too.
+        //
+        // Still though, it'd be great to not only delete calls to
+        // `__wbindgen_describe_closure`, it'd be great to remove all of the
+        // `breaks_if_inlined` functions entirely.
+        let code = input.module.code_section_mut().unwrap();
+        for (i, instr) in self.code_idx_to_descriptor.iter() {
+            let func = &mut code.bodies_mut()[*i as usize];
+            let new_instr = Instruction::Call(instr.new_idx);
+            func.code_mut().elements_mut()[instr.instr_idx] = new_instr;
+        }
+    }
 }
 
 struct Remap<'a> {
-    code_idx_to_descriptor: &'a BTreeMap<u32, (u32, Descriptor)>,
+    code_idx_to_descriptor: &'a BTreeMap<u32, DescribeInstruction>,
     old_num_imports: u32,
 }
 
@@ -367,19 +405,8 @@ impl<'a> Remap<'a> {
         if *idx < self.old_num_imports {
             return false
         }
-        let code_idx = *idx - self.old_num_imports;
-
-        // If this `idx` points to a function which was effectively a descriptor
-        // function, then we want to re-point it to our imported function which
-        // is actually the shim factory.
-        if let Some((new_idx, _)) = self.code_idx_to_descriptor.get(&code_idx) {
-            *idx = *new_idx;
-            return true
-        }
-
-        // And finally, otherwise this is just a normal function reference we
-        // don't want to touch, but we're injecting imports which shifts all
-        // function indices.
+        // ... otherwise we're injecting a number of new imports, so offset
+        // everything.
         *idx += self.code_idx_to_descriptor.len() as u32;
         false
     }
