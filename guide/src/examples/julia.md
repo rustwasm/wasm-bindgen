@@ -1,7 +1,8 @@
 # Julia Set
 
-[View full source code][code]
+[View full source code][code] or [view the compiled example online][online]
 
+[online]: https://rustwasm.github.io/wasm-bindgen/exbuild/julia_set/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/julia_set
 
 While not showing off a lot of `web_sys` API surface area, this example shows a

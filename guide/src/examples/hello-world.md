@@ -1,7 +1,8 @@
 # Hello, World!
 
-[View full source code][code]
+[View full source code][code] or [view the compiled example online][online]
 
+[online]: https://rustwasm.github.io/wasm-bindgen/exbuild/hello_world/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/hello_world
 
 This is the "Hello, world!" example of `#[wasm_bindgen]` showing how to set up

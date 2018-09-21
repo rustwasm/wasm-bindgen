@@ -41,6 +41,12 @@ DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
     skip_cleanup: true
   if: branch = master OR branch =~ /^\d/
 
+INSTALL_AWS: &INSTALL_AWS
+  |
+    pip install --user awscli
+    export PATH=$HOME/.local/bin:$PATH
+    mkdir -p ~/$TRAVIS_BUILD_NUMBER
+
 matrix:
   include:
     # Tests pass on nightly
@@ -75,16 +81,18 @@ matrix:
       env: JOB=examples-build
       install:
         - *INSTALL_NODE_VIA_NVM
+        - *INSTALL_AWS
         - npm install
       script:
         - |
           for dir in `ls examples | grep -v README | grep -v asm.js | grep -v no_modules`; do
             (cd examples/$dir &&
-             sed -i 's/: "webpack-dev-server"/: "webpack"/' package.json &&
+             sed -i "s|: \"webpack-dev-server\"|: \"webpack --output-path $HOME/$TRAVIS_BUILD_NUMBER/exbuild/$dir\"|" package.json &&
              sed -i 's/npm install//' build.sh &&
-             ln -s ../../node_modules . &&
+             ln -fs ../../node_modules . &&
              ./build.sh) || exit 1;
           done
+        - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then aws s3 sync --quiet ~/$TRAVIS_BUILD_NUMBER s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER; fi
       if: branch = master
 
     # The `web-sys` crate's tests pass on nightly.
@@ -170,30 +178,49 @@ matrix:
       script: cargo check --manifest-path crates/cli/Cargo.toml
       if: branch = master
 
-    # Build documentation for the gh-pages branch
+    # Build mdbook documentation
     - rust: nightly
-      env: JOB=guide-build-and-deploy
-      cache:
-        directories:
-          - $HOME/.cargo
-      before_script:
-        - (test -x $HOME/.cargo/bin/cargo-install-update || cargo install cargo-update)
-        - (test -x $HOME/.cargo/bin/mdbook || cargo install --vers "^0.1" mdbook)
-        - cargo install-update -a
+      env: JOB=guide-build
+      install:
+        - mkdir -p $HOME/mdbook
+        - curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.2.1/mdbook-v0.2.1-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C $HOME/mdbook
+        - export PATH=$PATH:$HOME/mdbook
+        - *INSTALL_AWS
       script:
         - (cd guide && mdbook build)
+        - rm -rf ~/$TRAVIS_BUILD_NUMBER
+        - mv guide/book ~/$TRAVIS_BUILD_NUMBER
+        - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then aws s3 sync --quiet ~/$TRAVIS_BUILD_NUMBER s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER; fi
+      if: branch = master
+
+    # Build API documentation
+    - rust: nightly
+      env: JOB=api-docs
+      install: *INSTALL_AWS
+      script:
         - cargo doc --no-deps
         - cargo doc --no-deps --manifest-path crates/js-sys/Cargo.toml
         - cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
         - cargo doc --no-deps --manifest-path crates/web-sys/Cargo.toml --all-features
-        - mv target/doc guide/book/api
+        - mv target/doc ~/$TRAVIS_BUILD_NUMBER/api
+        - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then aws s3 sync --quiet ~/$TRAVIS_BUILD_NUMBER s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER; fi
+      if: branch = master
+
+    # Take compiled examples and mdbook/API docs and deploy them to gh-pages
+    - stage: deploy-gh-pages
+      install: *INSTALL_AWS
+      script:
+        - aws s3 sync --quiet s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+        - mv ~/$TRAVIS_BUILD_NUMBER doc
       deploy:
         provider: pages
         skip-cleanup: true
         github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
-        local-dir: guide/book
+        local-dir: doc
         keep-history: false
-      if: branch = master
+      after_deploy:
+        - aws s3 rm --recursive s3://rust-lang-ci-sccache2/$TRAVIS_BUILD_NUMBER
+      if: branch = master AND type != pull_request
 
 notifications:
   email:

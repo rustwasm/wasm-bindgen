@@ -1,7 +1,8 @@
 # Importing non-browser JS
 
-[View full source code][code]
+[View full source code][code] or [view the compiled example online][online]
 
+[online]: https://rustwasm.github.io/wasm-bindgen/exbuild/import_js/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/import_js
 
 The `#[wasm_bindgen]` attribute can be used on `extern { .. }` blocks to import

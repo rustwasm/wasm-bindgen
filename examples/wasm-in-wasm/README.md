@@ -1,7 +1,9 @@
 # js-sys: WebAssembly in WebAssembly
 
-[View documentation for this example online][dox]
+[View documentation for this example online][dox] or [View compiled example
+online][compiled]
 
+[compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/wasm-in-wasm/
 [dox]: https://rustwasm.github.io/wasm-bindgen/examples/wasm-in-wasm.html
 
 You can build the example locally with:
