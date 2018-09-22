@@ -53,8 +53,12 @@ extern {
     fn new() -> RenameProperties;
     #[wasm_bindgen(getter = a, method)]
     fn test(this: &RenameProperties) -> i32;
+    #[wasm_bindgen(getter, method, js_name = a)]
+    fn test2(this: &RenameProperties) -> i32;
     #[wasm_bindgen(setter = a, method)]
     fn another(this: &RenameProperties, a: i32);
+    #[wasm_bindgen(setter, method, js_name = a)]
+    fn another2(this: &RenameProperties, a: i32);
 
     /// dox
     pub type AssertImportDenyDocsWorks;
@@ -154,6 +158,8 @@ fn rename_setter_getter() {
     assert_eq!(a.test(), 1);
     a.another(2);
     assert_eq!(a.test(), 2);
+    a.another2(3);
+    assert_eq!(a.test2(), 3);
 }
 
 /// dox

@@ -4,7 +4,7 @@ use std::ptr;
 use backend;
 use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
-use proc_macro2::Ident;
+use proc_macro2::{Ident, Span};
 use syn;
 use weedle;
 use weedle::attribute::{ExtendedAttributeList, ExtendedAttribute};
@@ -304,6 +304,8 @@ impl<'src> FirstPassRecord<'src> {
         Some(backend::ast::ImportFunction {
             function: backend::ast::Function {
                 name: js_name.to_string(),
+                name_span: Span::call_site(),
+                renamed_via_js_name: false,
                 arguments,
                 ret: ret.clone(),
                 rust_attrs: vec![],
