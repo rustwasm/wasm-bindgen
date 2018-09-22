@@ -158,11 +158,11 @@ impl BindgenAttrs {
     }
 
     /// Get the first js_name attribute
-    fn js_name(&self) -> Option<&str> {
+    fn js_name(&self) -> Option<(&str, Span)> {
         self.attrs
             .iter()
             .filter_map(|a| match a {
-                BindgenAttr::JsName(s) => Some(&s[..]),
+                BindgenAttr::JsName(s, span) => Some((&s[..], *span)),
                 _ => None,
             }).next()
     }
@@ -221,7 +221,7 @@ pub enum BindgenAttr {
     IndexingDeleter,
     Structural,
     Readonly,
-    JsName(String),
+    JsName(String, Span),
     JsClass(String),
     Extends(Ident),
     Variadic,
@@ -294,11 +294,14 @@ impl Parse for BindgenAttr {
         }
         if attr == "js_name" {
             input.parse::<Token![=]>()?;
-            let val = match input.parse::<syn::LitStr>() {
-                Ok(str) => str.value(),
-                Err(_) => input.parse::<AnyIdent>()?.0.to_string(),
+            let (val, span) = match input.parse::<syn::LitStr>() {
+                Ok(str) => (str.value(), str.span()),
+                Err(_) => {
+                    let ident = input.parse::<AnyIdent>()?.0;
+                    (ident.to_string(), ident.span())
+                }
             };
-            return Ok(BindgenAttr::JsName(val))
+            return Ok(BindgenAttr::JsName(val, span))
         }
 
         Err(original.error("unknown attribute"))
@@ -387,11 +390,9 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
         self,
         (opts, module): (BindgenAttrs, &'a Option<String>),
     ) -> Result<Self::Target, Diagnostic> {
-        let default_name = self.ident.to_string();
-        let js_name = opts.js_name().unwrap_or(&default_name);
-
         let wasm = function_from_decl(
-            js_name,
+            &self.ident,
+            &opts,
             self.decl.clone(),
             self.attrs.clone(),
             self.vis.clone(),
@@ -516,7 +517,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
             let data = (ns, &self.ident, module);
             format!(
                 "__wbg_{}_{}",
-                js_name
+                wasm.name
                     .chars()
                     .filter(|c| c.is_ascii_alphanumeric())
                     .collect::<String>(),
@@ -544,6 +545,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
         assert_not_variadic(&attrs, &self)?;
         let js_name = attrs
             .js_name()
+            .map(|s| s.0)
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         Ok(ast::ImportKind::Type(ast::ImportType {
@@ -569,7 +571,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemSt
         }
         assert_not_variadic(&opts, &self)?;
         let default_name = self.ident.to_string();
-        let js_name = opts.js_name().unwrap_or(&default_name);
+        let js_name = opts.js_name().map(|p| p.0).unwrap_or(&default_name);
         let shim = format!(
             "__wbg_static_accessor_{}_{}",
             self.ident,
@@ -604,15 +606,14 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
         }
         assert_not_variadic(&attrs, &self)?;
 
-        let default_name = self.ident.to_string();
-        let name = attrs.js_name().unwrap_or(&default_name);
-        Ok(function_from_decl(name, self.decl, self.attrs, self.vis, false, None)?.0)
+        Ok(function_from_decl(&self.ident, &attrs, self.decl, self.attrs, self.vis, false, None)?.0)
     }
 }
 
 /// Construct a function (and gets the self type if appropriate) for our AST from a syn function.
 fn function_from_decl(
-    name: &str,
+    decl_name: &syn::Ident,
+    opts: &BindgenAttrs,
     decl: Box<syn::FnDecl>,
     attrs: Vec<syn::Attribute>,
     vis: syn::Visibility,
@@ -683,9 +684,11 @@ fn function_from_decl(
         syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
     };
 
+    let js_name = opts.js_name();
     Ok((
         ast::Function {
-            name: name.to_string(),
+            name: js_name.map(|s| s.0.to_string()).unwrap_or(decl_name.to_string()),
+            name_span: js_name.map(|s| s.1).unwrap_or(decl_name.span()),
             arguments,
             ret,
             rust_vis: vis,
@@ -859,7 +862,8 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
         };
 
         let (function, method_self) = function_from_decl(
-            opts.js_name().unwrap_or(&method.sig.ident.to_string()),
+            &method.sig.ident,
+            &opts,
             Box::new(method.sig.decl.clone()),
             method.attrs.clone(),
             method.vis.clone(),

@@ -167,6 +167,7 @@ pub struct ImportEnum {
 #[derive(Clone)]
 pub struct Function {
     pub name: String,
+    pub name_span: Span,
     pub arguments: Vec<syn::ArgCaptured>,
     pub ret: Option<syn::Type>,
     pub rust_attrs: Vec<syn::Attribute>,
@@ -261,13 +262,20 @@ pub struct DictionaryField {
 
 impl Program {
     pub(crate) fn shared(&self) -> Result<shared::Program, Diagnostic> {
+        let mut errors = Vec::new();
+        let mut imports = Vec::new();
+        for import in self.imports.iter() {
+            match import.shared() {
+                Ok(i) => imports.push(i),
+                Err(e) => errors.push(e),
+            }
+        }
+        Diagnostic::from_vec(errors)?;
         Ok(shared::Program {
             exports: self.exports.iter().map(|a| a.shared()).collect(),
             structs: self.structs.iter().map(|a| a.shared()).collect(),
             enums: self.enums.iter().map(|a| a.shared()).collect(),
-            imports: self.imports.iter()
-                .map(|a| a.shared())
-                .collect::<Result<_, Diagnostic>>()?,
+            imports,
             version: shared::version(),
             schema_version: shared::SCHEMA_VERSION.to_string(),
         })
@@ -348,7 +356,7 @@ impl Import {
         Ok(shared::Import {
             module: self.module.clone(),
             js_namespace: self.js_namespace.as_ref().map(|s| s.to_string()),
-            kind: self.kind.shared(),
+            kind: self.kind.shared()?,
         })
     }
 }
@@ -364,13 +372,13 @@ impl ImportKind {
         }
     }
 
-    fn shared(&self) -> shared::ImportKind {
-        match *self {
-            ImportKind::Function(ref f) => shared::ImportKind::Function(f.shared()),
+    fn shared(&self) -> Result<shared::ImportKind, Diagnostic> {
+        Ok(match *self {
+            ImportKind::Function(ref f) => shared::ImportKind::Function(f.shared()?),
             ImportKind::Static(ref f) => shared::ImportKind::Static(f.shared()),
             ImportKind::Type(ref f) => shared::ImportKind::Type(f.shared()),
             ImportKind::Enum(ref f) => shared::ImportKind::Enum(f.shared()),
-        }
+        })
     }
 }
 
@@ -383,16 +391,20 @@ impl ImportFunction {
 
     /// If the rust object has a `fn set_xxx(&mut self, MyType)` style method, get the name
     /// for a setter in javascript (in this case `xxx`, so you can write `obj.xxx = val`)
-    fn infer_setter_property(&self) -> String {
+    fn infer_setter_property(&self) -> Result<String, Diagnostic> {
         let name = self.function.name.to_string();
         if !name.starts_with("set_") {
-            panic!("error: setters must start with `set_`, found: {}", name);
+            bail_span!(
+                syn::token::Pub(self.function.name_span),
+                "setters must start with `set_`, found: {}",
+                name,
+            );
         }
-        name[4..].to_string()
+        Ok(name[4..].to_string())
     }
 
-    fn shared(&self) -> shared::ImportFunction {
-        let shared_operation = |operation: &Operation| {
+    fn shared(&self) -> Result<shared::ImportFunction, Diagnostic> {
+        let shared_operation = |operation: &Operation| -> Result<_, Diagnostic> {
             let is_static = operation.is_static;
             let kind = match &operation.kind {
                 OperationKind::Regular => shared::OperationKind::Regular,
@@ -405,14 +417,17 @@ impl ImportFunction {
                 OperationKind::Setter(s) => {
                     let s = s.as_ref().map(|s| s.to_string());
                     shared::OperationKind::Setter(
-                        s.unwrap_or_else(|| self.infer_setter_property()),
-                        )
+                        match s {
+                            Some(s) => s,
+                            None => self.infer_setter_property()?,
+                        }
+                    )
                 }
                 OperationKind::IndexingGetter => shared::OperationKind::IndexingGetter,
                 OperationKind::IndexingSetter => shared::OperationKind::IndexingSetter,
                 OperationKind::IndexingDeleter => shared::OperationKind::IndexingDeleter,
             };
-            shared::Operation { is_static, kind }
+            Ok(shared::Operation { is_static, kind })
         };
 
         let method = match self.kind {
@@ -424,7 +439,7 @@ impl ImportFunction {
                 let kind = match kind {
                     MethodKind::Constructor => shared::MethodKind::Constructor,
                     MethodKind::Operation(op) => {
-                        shared::MethodKind::Operation(shared_operation(op))
+                        shared::MethodKind::Operation(shared_operation(op)?)
                     }
                 };
                 Some(shared::MethodData {
@@ -435,14 +450,14 @@ impl ImportFunction {
             ImportFunctionKind::Normal => None,
         };
 
-        shared::ImportFunction {
+        Ok(shared::ImportFunction {
             shim: self.shim.to_string(),
             catch: self.catch,
             variadic: self.variadic,
             method,
             structural: self.structural,
             function: self.function.shared(),
-        }
+        })
     }
 }
 
