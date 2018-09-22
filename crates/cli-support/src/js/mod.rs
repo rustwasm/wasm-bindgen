@@ -54,7 +54,8 @@ pub struct ExportedClass {
     comments: String,
     contents: String,
     typescript: String,
-    constructor: Option<String>,
+    has_constructor: bool,
+    wrap_needed: bool,
     fields: Vec<ClassField>,
 }
 
@@ -532,11 +533,7 @@ impl<'a> Context<'a> {
             // `drop()` the `WeakRef` (cancel finalization) whenever it is
             // finalized.
             self.expose_cleanup_groups();
-            let mk = format!("
-                const cleanup_ptr = this.ptr;
-                const ref = CLEANUPS.makeRef(this, () => free{}(cleanup_ptr));
-                CLEANUPS_MAP.set(this.ptr, ref);
-            ", name);
+            let mk = format!("addCleanup(this, this.ptr, free{});", name);
             let free = "
                 CLEANUPS_MAP.get(ptr).drop();
                 CLEANUPS_MAP.delete(ptr);
@@ -546,79 +543,49 @@ impl<'a> Context<'a> {
             (String::new(), "")
         };
 
-        if self.config.debug || class.constructor.is_some() {
-            self.expose_constructor_token();
-
-            dst.push_str(&format!(
+        if self.config.debug && !class.has_constructor {
+            dst.push_str(
                 "
-                static __construct(ptr) {{
-                    return new {}(new ConstructorToken(ptr));
-                }}
-
-                constructor(...args) {{
-                    if (args.length === 1 && args[0] instanceof ConstructorToken) {{
-                        this.ptr = args[0].ptr;
-                        return;
-                    }}
-                ",
-                name
-            ));
-
-            if let Some(ref constructor) = class.constructor {
-                ts_dst.push_str(&format!("constructor(...args: any[]);\n"));
-
-                dst.push_str(&format!(
-                    "
-                    // This invocation of new will call this constructor with a ConstructorToken
-                    let instance = {class}.{constructor}(...args);
-                    this.ptr = instance.ptr;
-                    {mkweakref}
-                    ",
-                    class = name,
-                    constructor = constructor,
-                    mkweakref = mkweakref,
-                ));
-            } else {
-                dst.push_str(
-                    "throw new Error('you cannot invoke `new` directly without having a \
-                     method annotated a constructor');\n",
-                );
-            }
-
-            dst.push_str("}");
-        } else {
-            dst.push_str(&format!(
+                    constructor() {
+                        throw new Error('cannot invoke `new` directly');
+                    }
                 "
-                static __construct(ptr) {{
-                    return new {}(ptr);
-                }}
-
-                constructor(ptr) {{
-                    this.ptr = ptr;
-                    {}
-                }}
-                ",
-                name,
-                mkweakref,
-            ));
+            );
         }
 
+        let mut wrap_needed = class.wrap_needed;
         let new_name = shared::new_function(&name);
         if self.wasm_import_needed(&new_name) {
             self.expose_add_heap_object();
+            wrap_needed = true;
 
             self.export(
                 &new_name,
                 &format!(
                     "
                     function(ptr) {{
-                        return addHeapObject({}.__construct(ptr));
+                        return addHeapObject({}.__wrap(ptr));
                     }}
                     ",
                     name
                 ),
                 None,
             );
+        }
+
+        if wrap_needed {
+            dst.push_str(&format!(
+                "
+                static __wrap(ptr) {{
+                    const obj = Object.create({}.prototype);
+                    obj.ptr = ptr;
+                    {}
+                    return obj;
+                }}
+                ",
+                name,
+                mkweakref.replace("this", "obj"),
+            ));
         }
 
         for field in class.fields.iter() {
@@ -1165,22 +1132,6 @@ impl<'a> Context<'a> {
         );
     }
 
-    fn expose_constructor_token(&mut self) {
-        if !self.exposed_globals.insert("ConstructorToken") {
-            return;
-        }
-
-        self.global(
-            "
-            class ConstructorToken {
-                constructor(ptr) {
-                    this.ptr = ptr;
-                }
-            }
-            ",
-        );
-    }
-
     fn expose_get_string_from_wasm(&mut self) {
         if !self.exposed_globals.insert("get_string_from_wasm") {
             return;
@@ -1717,6 +1668,11 @@ impl<'a> Context<'a> {
             "
                 const CLEANUPS = new WeakRefGroup(x => x.holdings());
                 const CLEANUPS_MAP = new Map();
+
+                function addCleanup(obj, ptr, free) {
+                    const ref = CLEANUPS.makeRef(obj, () => free(ptr));
+                    CLEANUPS_MAP.set(ptr, ref);
+                }
             "
         );
     }
@@ -1784,6 +1740,13 @@ impl<'a> Context<'a> {
         assert_eq!(entry.field(), "memory");
         self.memory_init = Some(mem.limits().clone());
         "memory"
+    }
+
+    fn require_class_wrap(&mut self, class: &str) {
+        self.exported_classes
+            .entry(class.to_string())
+            .or_insert_with(ExportedClass::default)
+            .wrap_needed = true;
     }
 }
 
@@ -1857,8 +1820,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(d) => d,
         };
 
-        let (js, ts, js_doc) = Js2Rust::new(&export.function.name, self.cx)
+        let function_name = if export.is_constructor {
+            "constructor"
+        } else {
+            &export.function.name
+        };
+        let (js, ts, js_doc) = Js2Rust::new(function_name, self.cx)
             .method(export.method, export.consumed)
+            .constructor(if export.is_constructor { Some(class_name) } else { None })
             .process(descriptor.unwrap_function())?
             .finish("", &format!("wasm.{}", wasm_name));
 
@@ -1870,25 +1839,19 @@ impl<'a, 'b> SubContext<'a, 'b> {
         class
             .contents
             .push_str(&format_doc_comments(&export.comments, Some(js_doc)));
-        if !export.method {
+
+        if export.is_constructor {
+            if class.has_constructor {
+                bail!("found duplicate constructor `{}`",
+                      export.function.name);
+            }
+            class.has_constructor = true;
+        } else if !export.method {
             class.contents.push_str("static ");
             class.typescript.push_str("static ");
         }
 
-        let constructors: Vec<String> = self
-            .program
-            .exports
-            .iter()
-            .filter(|x| x.class == Some(class_name.to_string()))
-            .filter_map(|x| x.constructor.clone())
-            .collect();
-
-        class.constructor = match constructors.len() {
-            0 => None,
-            1 => Some(constructors[0].clone()),
-            x @ _ => bail!("there must be only one constructor, not {}", x),
-        };
-        class.contents.push_str(&export.function.name);
+        class.contents.push_str(function_name);
         class.contents.push_str(&js);
         class.contents.push_str("\n");
         class.typescript.push_str(&ts);

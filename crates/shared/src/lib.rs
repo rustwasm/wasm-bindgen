@@ -97,7 +97,7 @@ pub struct Export {
     pub class: Option<String>,
     pub method: bool,
     pub consumed: bool,
-    pub constructor: Option<String>,
+    pub is_constructor: bool,
     pub function: Function,
     pub comments: Vec<String>,
 }

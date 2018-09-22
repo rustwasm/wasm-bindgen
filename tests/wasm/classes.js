@@ -2,7 +2,7 @@ const wasm = require('wasm-bindgen-test.js');
 const assert = require('assert');
 
 exports.js_simple = () => {
-    const r = wasm.ClassesSimple.new();
+    const r = new wasm.ClassesSimple();
     assert.strictEqual(r.add(0), 0);
     assert.strictEqual(r.add(1), 1);
     assert.strictEqual(r.add(1), 2);
@@ -70,7 +70,8 @@ exports.js_constructors = () => {
     assert.strictEqual(foo.get_number(), 1);
     foo.free();
 
-    const foo2 = wasm.ConstructorsFoo.new(2);
+    assert.strictEqual(wasm.ConstructorsBar.new, undefined);
+    const foo2 = new wasm.ConstructorsFoo(2);
     assert.strictEqual(foo2.get_number(), 2);
     foo2.free();
 
@@ -78,7 +79,8 @@ exports.js_constructors = () => {
     assert.strictEqual(bar.get_sum(), 7);
     bar.free();
 
-    const bar2 = wasm.ConstructorsBar.other_name(5, 6);
+    assert.strictEqual(wasm.ConstructorsBar.other_name, undefined);
+    const bar2 = new wasm.ConstructorsBar(5, 6);
     assert.strictEqual(bar2.get_sum(), 11);
     bar2.free();
 
@@ -121,12 +123,12 @@ exports.js_readonly_fields = () => {
 };
 
 exports.js_double_consume = () => {
-    const r = wasm.DoubleConsume.new();
+    const r = new wasm.DoubleConsume();
     assert.throws(() => r.consume(r), /Attempt to use a moved value/);
 };
 
 
 exports.js_js_rename = () => {
-    wasm.JsRename.new().bar();
+    (new wasm.JsRename()).bar();
     wasm.classes_foo();
 };

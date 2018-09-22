@@ -37,6 +37,14 @@ pub struct Js2Rust<'a, 'b: 'a> {
     /// Name of the JS shim/function that we're generating, primarily for
     /// TypeScript right now.
     js_name: String,
+
+    /// whether or not this generated function body will act like a constructor,
+    /// meaning it doesn't actually return something but rather assigns to
+    /// `this`
+    ///
+    /// The string value here is the class that this should be a constructor
+    /// for.
+    constructor: Option<String>,
 }
 
 impl<'a, 'b> Js2Rust<'a, 'b> {
@@ -51,6 +59,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             arg_idx: 0,
             ret_ty: String::new(),
             ret_expr: String::new(),
+            constructor: None,
         }
     }
 
@@ -62,6 +71,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
         self.ret(&function.ret)?;
         Ok(self)
+    }
+
+    pub fn constructor(&mut self, class: Option<&str>) -> &mut Self {
+        self.constructor = class.map(|s| s.to_string());
+        self
     }
 
     /// Flag this shim as a method call into Rust, so the first Rust argument
@@ -393,6 +407,32 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     }
 
     pub fn ret(&mut self, ty: &Descriptor) -> Result<&mut Self, Error> {
+        if let Some(name) = ty.rust_struct() {
+            match &self.constructor {
+                Some(class) if class == name => {
+                    self.ret_expr = format!("this.ptr = RET;");
+                    if self.cx.config.weak_refs {
+                        self.ret_expr.push_str(&format!("\
+                            addCleanup(this, this.ptr, free{});
+                        ", name));
+                    }
+                }
+                Some(class) => {
+                    bail!("constructor for `{}` cannot return `{}`", class, name)
+                }
+                None => {
+                    self.ret_ty = name.to_string();
+                    self.cx.require_class_wrap(name);
+                    self.ret_expr = format!("return {name}.__wrap(RET);", name = name);
+                }
+            }
+            return Ok(self);
+        }
+
+        if self.constructor.is_some() {
+            bail!("constructor functions must return a Rust structure")
+        }
+
         if let Descriptor::Unit = ty {
             self.ret_ty = "void".to_string();
             self.ret_expr = format!("return RET;");
@@ -551,7 +591,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
         if let Some(name) = ty.rust_struct() {
             self.ret_ty = name.to_string();
-            self.ret_expr = format!("return {name}.__construct(RET);", name = name);
+            self.cx.require_class_wrap(name);
+            self.ret_expr = format!("return {name}.__wrap(RET);", name = name);
             return Ok(self);
         }
 

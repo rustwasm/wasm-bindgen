@@ -733,7 +733,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 program.exports.push(ast::Export {
                     class: None,
                     method_self: None,
-                    constructor: None,
+                    is_constructor: false,
                     comments,
                     rust_name: f.ident.clone(),
                     function: f.convert(opts)?,
@@ -856,12 +856,6 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
         let opts = BindgenAttrs::find(&mut method.attrs)?;
         let comments = extract_doc_comments(&method.attrs);
         let is_constructor = opts.constructor();
-        let constructor = if is_constructor {
-            Some(method.sig.ident.to_string())
-        } else {
-            None
-        };
-
         let (function, method_self) = function_from_decl(
             &method.sig.ident,
             &opts,
@@ -875,7 +869,7 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
         program.exports.push(ast::Export {
             class: Some(class.clone()),
             method_self,
-            constructor,
+            is_constructor,
             function,
             comments,
             rust_name: method.sig.ident.clone(),
