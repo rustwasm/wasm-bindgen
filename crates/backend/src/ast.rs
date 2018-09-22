@@ -168,6 +168,7 @@ pub struct ImportEnum {
 pub struct Function {
     pub name: String,
     pub name_span: Span,
+    pub renamed_via_js_name: bool,
     pub arguments: Vec<syn::ArgCaptured>,
     pub ret: Option<syn::Type>,
     pub rust_attrs: Vec<syn::Attribute>,
@@ -393,6 +394,14 @@ impl ImportFunction {
     /// for a setter in javascript (in this case `xxx`, so you can write `obj.xxx = val`)
     fn infer_setter_property(&self) -> Result<String, Diagnostic> {
         let name = self.function.name.to_string();
+
+        // if `#[wasm_bindgen(js_name = "...")]` is used then that explicitly
+        // because it was hand-written anyway.
+        if self.function.renamed_via_js_name {
+            return Ok(name)
+        }
+
+        // Otherwise we infer names based on the Rust function name.
         if !name.starts_with("set_") {
             bail_span!(
                 syn::token::Pub(self.function.name_span),

@@ -689,6 +689,7 @@ fn function_from_decl(
         ast::Function {
             name: js_name.map(|s| s.0.to_string()).unwrap_or(decl_name.to_string()),
             name_span: js_name.map(|s| s.1).unwrap_or(decl_name.span()),
+            renamed_via_js_name: js_name.is_some(),
             arguments,
             ret,
             rust_vis: vis,

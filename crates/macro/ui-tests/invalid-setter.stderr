@@ -4,11 +4,5 @@ error: setters must start with `set_`, found: a
 10 |     fn a(this: &A, b: i32);
    |        ^
 
-error: setters must start with `set_`, found: x
-  --> $DIR/invalid-setter.rs:15:46
-   |
-15 |     #[wasm_bindgen(setter, method, js_name = x)]
-   |                                              ^
-
-error: aborting due to 2 previous errors
+error: aborting due to previous error
 
