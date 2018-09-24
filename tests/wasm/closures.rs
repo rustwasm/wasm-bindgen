@@ -1,6 +1,6 @@
 #![cfg(feature = "nightly")]
 
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
@@ -60,6 +60,9 @@ extern "C" {
     fn string_arguments_call(a: &mut FnMut(String));
 
     fn string_ret_call(a: &mut FnMut(String) -> String);
+
+    fn drop_during_call_save(a: &Closure<Fn()>);
+    fn drop_during_call_call();
 }
 
 #[wasm_bindgen_test]
@@ -205,4 +208,60 @@ fn string_ret() {
         s
     });
     assert!(x);
+}
+
+#[wasm_bindgen_test]
+fn drop_drops() {
+    static mut HIT: bool = false;
+
+    struct A;
+
+    impl Drop for A {
+        fn drop(&mut self) {
+            unsafe { HIT = true; }
+        }
+    }
+    let a = A;
+    let x: Closure<Fn()> = Closure::new(move || drop(&a));
+    drop(x);
+    unsafe { assert!(HIT); }
+}
+
+#[wasm_bindgen_test]
+fn drop_during_call_ok() {
+    static mut HIT: bool = false;
+    struct A;
+    impl Drop for A {
+        fn drop(&mut self) {
+            unsafe { HIT = true; }
+        }
+    }
+
+    let rc = Rc::new(RefCell::new(None));
+    let rc2 = rc.clone();
+    let x = 3;
+    let a = A;
+    let x: Closure<Fn()> = Closure::new(move || {
+        // "drop ourselves"
+        drop(rc2.borrow_mut().take().unwrap());
+
+        // `A` should not have been destroyed as a result
+        unsafe { assert!(!HIT); }
+
+        // allocate some heap memory to try to paper over our `3`
+        drop(String::from("1234567890"));
+
+        // make sure our closure memory is still valid
+        assert_eq!(x, 3);
+
+        // make sure `A` is bound to our closure environment.
+        drop(&a);
+        unsafe { assert!(!HIT); }
+    });
+    drop_during_call_save(&x);
+    *rc.borrow_mut() = Some(x);
+    drop(rc);
+    unsafe { assert!(!HIT); }
+    drop_during_call_call();
+    unsafe { assert!(HIT); }
 }

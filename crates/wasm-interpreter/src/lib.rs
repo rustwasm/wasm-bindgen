@@ -347,6 +347,8 @@ impl Interpreter {
                         self.descriptor_table_idx = Some(self.stack.pop().unwrap() as u32);
                         self.stack.pop();
                         self.stack.pop();
+                        self.stack.pop();
+                        self.stack.pop();
                         self.stack.push(0);
                     } else {
                         self.call(*idx, sections);

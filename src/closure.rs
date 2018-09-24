@@ -4,12 +4,10 @@
 //! closures" from Rust to JS. Some more details can be found on the `Closure`
 //! type itself.
 
-use std::cell::UnsafeCell;
 #[cfg(feature = "nightly")]
 use std::marker::Unsize;
 use std::mem::{self, ManuallyDrop};
 use std::prelude::v1::*;
-use std::rc::Rc;
 
 use JsValue;
 use convert::*;
@@ -102,7 +100,12 @@ use throw_str;
 /// ```
 pub struct Closure<T: ?Sized> {
     js: ManuallyDrop<JsValue>,
-    _keep_this_data_alive: Rc<UnsafeCell<Box<T>>>,
+    data: ManuallyDrop<Box<T>>,
+}
+
+union FatPtr<T: ?Sized> {
+    ptr: *mut T,
+    fields: (usize, usize),
 }
 
 impl<T> Closure<T>
@@ -135,9 +138,11 @@ impl<T> Closure<T>
     /// type.
     ///
     /// This is the function where the JS closure is manufactured.
-    pub fn wrap(t: Box<T>) -> Closure<T> {
-        let data = Rc::new(UnsafeCell::new(t));
-        let ptr = &*data as *const UnsafeCell<Box<T>>;
+    pub fn wrap(mut data: Box<T>) -> Closure<T> {
+        assert_eq!(mem::size_of::<*const T>(), mem::size_of::<FatPtr<T>>());
+        let (a, b) = unsafe {
+            FatPtr { ptr: &mut *data as *mut T }.fields
+        };
 
         // Here we need to create a `JsValue` with the data and `T::invoke()`
         // function pointer. To do that we... take a few unconventional turns.
@@ -190,19 +195,27 @@ impl<T> Closure<T>
 
         #[inline(never)]
         unsafe fn breaks_if_inlined<T: WasmClosure + ?Sized>(
-            ptr: usize,
+            a: usize,
+            b: usize,
             invoke: u32,
+            destroy: u32,
         ) -> u32 {
-            super::__wbindgen_describe_closure(ptr as u32, invoke, describe::<T> as u32)
+            super::__wbindgen_describe_closure(
+                a as u32,
+                b as u32,
+                invoke,
+                destroy,
+                describe::<T> as u32,
+            )
         }
 
         let idx = unsafe {
-            breaks_if_inlined::<T>(ptr as usize, T::invoke_fn())
+            breaks_if_inlined::<T>(a, b, T::invoke_fn(), T::destroy_fn())
         };
 
         Closure {
             js: ManuallyDrop::new(JsValue { idx }),
-            _keep_this_data_alive: data,
+            data: ManuallyDrop::new(data),
         }
     }
 
@@ -223,7 +236,6 @@ impl<T> Closure<T>
             if idx != !0 {
                 super::__wbindgen_cb_forget(idx);
             }
-            mem::forget(self);
         }
     }
 }
@@ -270,7 +282,9 @@ impl<T> Drop for Closure<T>
         unsafe {
             // this will implicitly drop our strong reference in addition to
             // invalidating all future invocations of the closure
-            super::__wbindgen_cb_drop(self.js.idx);
+            if super::__wbindgen_cb_drop(self.js.idx) != 0 {
+                ManuallyDrop::drop(&mut self.data);
+            }
         }
     }
 }
@@ -284,6 +298,7 @@ pub unsafe trait WasmClosure: 'static {
     fn describe();
 
     fn invoke_fn() -> u32;
+    fn destroy_fn() -> u32;
 }
 
 // The memory safety here in these implementations below is a bit tricky. We
@@ -315,29 +330,41 @@ macro_rules! doit {
             fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
                 unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
-                    a: *const UnsafeCell<Box<Fn($($var),*) -> R>>,
+                    a: usize,
+                    b: usize,
                     $($var: <$var as FromWasmAbi>::Abi),*
                 ) -> <R as ReturnWasmAbi>::Abi {
-                    if a.is_null() {
+                    if a == 0 {
                         throw_str("closure invoked recursively or destroyed already");
                     }
                     // Make sure all stack variables are converted before we
                     // convert `ret` as it may throw (for `Result`, for
                     // example)
                     let ret = {
-                        let a = Rc::from_raw(a);
-                        let my_handle = a.clone();
-                        drop(Rc::into_raw(a));
-                        let f: &Fn($($var),*) -> R = &**my_handle.get();
+                        let f: *const Fn($($var),*) -> R =
+                            FatPtr { fields: (a, b) }.ptr;
                         let mut _stack = GlobalStack::new();
                         $(
                             let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
                         )*
-                        f($($var),*)
+                        (*f)($($var),*)
                     };
                     ret.return_abi(&mut GlobalStack::new())
                 }
                 invoke::<$($var,)* R> as u32
+            }
+
+            fn destroy_fn() -> u32 {
+                unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                    a: usize,
+                    b: usize,
+                ) {
+                    debug_assert!(a != 0);
+                    drop(Box::from_raw(FatPtr::<Fn($($var,)*) -> R> {
+                        fields: (a, b)
+                    }.ptr));
+                }
+                destroy::<$($var,)* R> as u32
             }
         }
 
@@ -352,29 +379,42 @@ macro_rules! doit {
             fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
                 unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
-                    a: *const UnsafeCell<Box<FnMut($($var),*) -> R>>,
+                    a: usize,
+                    b: usize,
                     $($var: <$var as FromWasmAbi>::Abi),*
                 ) -> <R as ReturnWasmAbi>::Abi {
-                    if a.is_null() {
+                    if a == 0 {
                         throw_str("closure invoked recursively or destroyed already");
                     }
                     // Make sure all stack variables are converted before we
                     // convert `ret` as it may throw (for `Result`, for
                     // example)
                     let ret = {
-                        let a = Rc::from_raw(a);
-                        let my_handle = a.clone();
-                        drop(Rc::into_raw(a));
-                        let f: &mut FnMut($($var),*) -> R = &mut **my_handle.get();
+                        let f: *const FnMut($($var),*) -> R =
+                            FatPtr { fields: (a, b) }.ptr;
+                        let f = f as *mut FnMut($($var),*) -> R;
                         let mut _stack = GlobalStack::new();
                         $(
                             let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
                         )*
-                        f($($var),*)
+                        (*f)($($var),*)
                     };
                     ret.return_abi(&mut GlobalStack::new())
                 }
                 invoke::<$($var,)* R> as u32
+            }
+
+            fn destroy_fn() -> u32 {
+                unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                    a: usize,
+                    b: usize,
+                ) {
+                    debug_assert!(a != 0);
+                    drop(Box::from_raw(FatPtr::<FnMut($($var,)*) -> R> {
+                        fields: (a, b)
+                    }.ptr));
+                }
+                destroy::<$($var,)* R> as u32
             }
         }
     )*)
