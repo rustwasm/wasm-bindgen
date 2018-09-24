@@ -19,7 +19,7 @@ extern crate wasm_bindgen_macro;
 use core::cell::UnsafeCell;
 use core::fmt;
 use core::mem;
-use core::ops::Deref;
+use core::ops::{Deref, DerefMut};
 use core::ptr;
 
 use convert::FromWasmAbi;
@@ -862,5 +862,34 @@ pub mod __rt {
         use core::sync::atomic::*;
         static FOO: AtomicUsize = ATOMIC_USIZE_INIT;
         FOO.store(0, Ordering::SeqCst);
+    }
+}
+
+/// A wrapper type around slices and vectors for binding the `Uint8ClampedArray`
+/// array in JS.
+///
+/// If you need to invoke a JS API which must take `Uint8ClampedArray` array,
+/// then you can define it as taking one of these types:
+///
+/// * `Clamped<&[u8]>`
+/// * `Clamped<&mut [u8]>`
+/// * `Clamped<Vec<u8>>`
+///
+/// All of these types will show up as `Uint8ClampedArray` in JS and will have
+/// different forms of ownership in Rust.
+#[derive(Copy, Clone, PartialEq, Debug, Eq)]
+pub struct Clamped<T>(pub T);
+
+impl<T> Deref for Clamped<T> {
+    type Target = T;
+
+    fn deref(&self) -> &T {
+        &self.0
+    }
+}
+
+impl<T> DerefMut for Clamped<T> {
+    fn deref_mut(&mut self) -> &mut T {
+        &mut self.0
     }
 }

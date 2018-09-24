@@ -4,7 +4,7 @@ use core::mem::{self, ManuallyDrop};
 use convert::{Stack, FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
 use convert::{OptionIntoWasmAbi, OptionFromWasmAbi, ReturnWasmAbi};
 use convert::traits::WasmAbi;
-use JsValue;
+use {JsValue, Clamped};
 
 unsafe impl WasmAbi for () {}
 
@@ -370,6 +370,22 @@ impl<T: OptionFromWasmAbi> FromWasmAbi for Option<T> {
         } else {
             Some(T::from_abi(js, extra))
         }
+    }
+}
+
+impl<T: IntoWasmAbi> IntoWasmAbi for Clamped<T> {
+    type Abi = T::Abi;
+
+    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+        self.0.into_abi(extra)
+    }
+}
+
+impl<T: FromWasmAbi> FromWasmAbi for Clamped<T> {
+    type Abi = T::Abi;
+
+    unsafe fn from_abi(js: T::Abi, extra: &mut Stack) -> Self {
+        Clamped(T::from_abi(js, extra))
     }
 }
 

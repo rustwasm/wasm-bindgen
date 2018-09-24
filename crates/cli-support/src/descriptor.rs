@@ -35,6 +35,7 @@ tys! {
     CHAR
     OPTIONAL
     UNIT
+    CLAMPED
 }
 
 #[derive(Debug)]
@@ -63,6 +64,7 @@ pub enum Descriptor {
     Char,
     Option(Box<Descriptor>),
     Unit,
+    Clamped(Box<Descriptor>),
 }
 
 #[derive(Debug)]
@@ -81,6 +83,7 @@ pub struct Closure {
 pub enum VectorKind {
     I8,
     U8,
+    ClampedU8,
     I16,
     U16,
     I32,
@@ -131,6 +134,7 @@ impl Descriptor {
             }
             CHAR => Descriptor::Char,
             UNIT => Descriptor::Unit,
+            CLAMPED => Descriptor::Clamped(Box::new(Descriptor::_decode(data))),
             other => panic!("unknown descriptor: {}", other),
         }
     }
@@ -219,6 +223,12 @@ impl Descriptor {
                 Descriptor::Slice(ref d) => &**d,
                 _ => return None,
             },
+            Descriptor::Clamped(ref d) => {
+                match d.vector_kind()? {
+                    VectorKind::U8 => return Some(VectorKind::ClampedU8),
+                    _ => return None,
+                }
+            }
             _ => return None,
         };
         match *inner {
@@ -268,6 +278,13 @@ impl Descriptor {
         }
     }
 
+    pub fn is_clamped_by_ref(&self) -> bool {
+        match self {
+            Descriptor::Clamped(d) => d.is_by_ref(),
+            _ => false,
+        }
+    }
+
     pub fn is_mut_ref(&self) -> bool {
         match *self {
             Descriptor::RefMut(_) => true,
@@ -311,6 +328,7 @@ impl VectorKind {
             VectorKind::String => "string",
             VectorKind::I8 => "Int8Array",
             VectorKind::U8 => "Uint8Array",
+            VectorKind::ClampedU8 => "Uint8ClampedArray",
             VectorKind::I16 => "Int16Array",
             VectorKind::U16 => "Uint16Array",
             VectorKind::I32 => "Int32Array",
@@ -328,6 +346,7 @@ impl VectorKind {
             VectorKind::String => 1,
             VectorKind::I8 => 1,
             VectorKind::U8 => 1,
+            VectorKind::ClampedU8 => 1,
             VectorKind::I16 => 2,
             VectorKind::U16 => 2,
             VectorKind::I32 => 4,

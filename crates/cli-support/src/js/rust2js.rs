@@ -112,7 +112,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 prefix = if optional { format!("{} == 0 ? undefined : ", abi) } else { String::new() },
             ));
 
-            if !arg.is_by_ref() {
+            if !arg.is_by_ref() && !arg.is_clamped_by_ref() {
                 self.prelude(&format!(
                     "\
                      {start}

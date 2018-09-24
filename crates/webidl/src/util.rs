@@ -63,10 +63,10 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
 }
 
 // Array type is borrowed for arguments (`&[T]`) and owned for return value (`Vec<T>`).
-pub(crate) fn array(base_ty: &str, pos: TypePosition, mutable: bool) -> syn::Type {
+pub(crate) fn array(base_ty: &str, pos: TypePosition) -> syn::Type {
     match pos {
         TypePosition::Argument => {
-            shared_ref(slice_ty(ident_ty(raw_ident(base_ty))), mutable)
+            shared_ref(slice_ty(ident_ty(raw_ident(base_ty))), /*mutable =*/ true)
         }
         TypePosition::Return => {
             vec_ty(ident_ty(raw_ident(base_ty)))
