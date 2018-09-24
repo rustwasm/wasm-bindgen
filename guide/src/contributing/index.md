@@ -18,19 +18,3 @@ development.
    as that is when WebAssembly support was introduced. [Install Node].
 
 [Install Node]: https://nodejs.org/en/
-
-3. The tests for this project also use `yarn`, a package manager for Node. To
-   install `yarn`, run:
-
-    ```shell
-    npm install -g yarn
-    ```
-
-   or follow other platform-specific instructions
-   [here](https://yarnpkg.com/en/docs/install).
-
-   Once `yarn` is installed, run it in the top level directory:
-
-   ```shell
-   yarn
-   ```
