@@ -517,27 +517,58 @@ impl<'a> IdlType<'a> {
             | IdlType::Dictionary(name)
             | IdlType::CallbackInterface { name, .. } => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
-                if pos == TypePosition::Argument {
-                    Some(shared_ref(ty, false))
-                } else {
-                    Some(ty)
-                }
+                anyref(ty)
             },
             IdlType::Enum(name) => Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))),
 
-            IdlType::Nullable(idl_type) => Some(option_ty(idl_type.to_syn_type(pos)?)),
+            IdlType::Nullable(idl_type) => {
+                let inner = idl_type.to_syn_type(pos)?;
+
+                // TODO: this is a bit of a hack, but `Option<JsValue>` isn't
+                // supported right now. As a result if we see `JsValue` for our
+                // inner type, leave that as the same when we create a nullable
+                // version of that. That way `any?` just becomes `JsValue` and
+                // it's up to users to dispatch and/or create instances
+                // appropriately.
+                if let syn::Type::Path(path) = &inner {
+                    if path.qself.is_none() &&
+                        path.path.segments.last().map(|p| p.value().ident == "JsValue")
+                            .unwrap_or(false)
+                    {
+                        return Some(inner.clone())
+                    }
+                }
+
+                Some(option_ty(inner))
+            }
             IdlType::FrozenArray(_idl_type) => None,
             IdlType::Sequence(_idl_type) => None,
             IdlType::Promise(_idl_type) => js_sys("Promise"),
             IdlType::Record(_idl_type_from, _idl_type_to) => None,
             IdlType::Union(idl_types) => {
-                // Handles union types in all places except operation argument types.
-                // Currently treats them as object type, if possible.
-                // TODO: add better support for union types here?
-                // Approaches for it:
-                // 1. Use strategy of finding the nearest common subclass (finding the best type
-                //    that is suitable for all values of this union)
-                // 2. Generate enum with payload in Rust for each union type
+                // Note that most union types have already been expanded to
+                // their components via `flatten`. Unions in a return position
+                // or dictionary fields, however, haven't been flattened, which
+                // means we may need to conver them to a `syn` type.
+                //
+                // Currently this does a bit of a "poor man's" tree traversal by
+                // saying that if all union members are interfaces we can assume
+                // they've all got `Object` as a superclass, so we can take an
+                // object here. If any are not an interface though we
+                // pessimisitcally translate the union into a `JsValue`,
+                // absolutely anything. It's up to the application to figure out
+                // what to do with that.
+                //
+                // TODO: we should probably do a better job here translating
+                // unions to a single type. Two possible strategies could be:
+                //
+                // 1. Use strategy of finding the nearest common subclass
+                //    (finding the best type that is suitable for all values of
+                //    this union) instead of always assuming `Object`.
+                // 2. Generate enum with payload in Rust for each union type.
+                //    Such an enum, however, might have a relatively high
+                //    overhead in creating it from a JS value, but would be
+                //    cheap to convert from a variant back to a JS value.
                 if idl_types
                     .iter()
                     .all(|idl_type|
@@ -548,7 +579,7 @@ impl<'a> IdlType<'a> {
                     ) {
                     IdlType::Object.to_syn_type(pos)
                 } else {
-                    None
+                    IdlType::Any.to_syn_type(pos)
                 }
             },
 
