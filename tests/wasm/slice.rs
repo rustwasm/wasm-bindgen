@@ -1,4 +1,5 @@
 use wasm_bindgen_test::*;
+use wasm_bindgen::Clamped;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(module = "tests/wasm/slice.js")]
@@ -12,6 +13,12 @@ extern {
     fn js_export_mut();
 
     fn js_return_vec();
+
+    fn js_clamped(val: Clamped<&[u8]>, offset: u8);
+    #[wasm_bindgen(js_name = js_clamped)]
+    fn js_clamped2(val: Clamped<Vec<u8>>, offset: u8);
+    #[wasm_bindgen(js_name = js_clamped)]
+    fn js_clamped3(val: Clamped<&mut [u8]>, offset: u8);
 }
 
 macro_rules! export_macro {
@@ -207,4 +214,11 @@ impl ReturnVecApplication {
 #[wasm_bindgen_test]
 fn return_vec() {
     js_return_vec();
+}
+
+#[wasm_bindgen_test]
+fn take_clamped() {
+    js_clamped(Clamped(&[1, 2, 3]), 1);
+    js_clamped2(Clamped(vec![4, 5, 6]), 4);
+    js_clamped3(Clamped(&mut [7, 8, 9]), 7);
 }

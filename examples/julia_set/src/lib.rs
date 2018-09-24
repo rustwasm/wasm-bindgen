@@ -1,24 +1,10 @@
-extern crate js_sys;
 extern crate wasm_bindgen;
 extern crate web_sys;
 
 use std::ops::Add;
-use wasm_bindgen::JsCast;
+use wasm_bindgen::Clamped;
 use wasm_bindgen::prelude::*;
-use web_sys::CanvasRenderingContext2d;
-use js_sys::{WebAssembly, Uint8ClampedArray};
-
-// Unfortunately `web-sys` at this time doesn't bind APIs with
-// `Uint8ClampedArray`. For more information see rustwasm/wasm-bindgen#421.
-//
-// For now we just bind it ourselves and do some manual frobbing below.
-#[wasm_bindgen]
-extern "C" {
-    type ImageData;
-
-    #[wasm_bindgen(constructor)]
-    fn new(arr: &Uint8ClampedArray, width: u32, height: u32) -> ImageData;
-}
+use web_sys::{CanvasRenderingContext2d, ImageData};
 
 #[wasm_bindgen]
 pub fn draw(
@@ -30,22 +16,9 @@ pub fn draw(
 ) -> Result<(), JsValue> {
     // The real workhorse of this algorithm, generating pixel data
     let c = Complex { real, imaginary, };
-    let data = get_julia_set(width, height, c);
-
-    // And now that we've got some pixels, let's create an `ImageData` with the
-    // pixels and then ship it off to the canvas.
-    //
-    // See notes in the `wasm-in-wasm` example for why this is a bit dangerous
-    let my_memory = wasm_bindgen::memory()
-        .dyn_into::<WebAssembly::Memory>()
-        .unwrap();
-    let uint8_array = Uint8ClampedArray::new(&my_memory.buffer())
-        .subarray(
-            data.as_ptr() as u32,
-            data.as_ptr() as u32 + data.len() as u32,
-        );
-    let data = ImageData::new(&uint8_array, width, height);
-    ctx.put_image_data(data.unchecked_ref(), 0.0, 0.0)
+    let mut data = get_julia_set(width, height, c);
+    let data = ImageData::new_with_u8_clamped_array_and_sh(Clamped(&mut data), width, height)?;
+    ctx.put_image_data(&data, 0.0, 0.0)
 }
 
 fn get_julia_set(width: u32, height: u32, c: Complex) -> Vec<u8> {

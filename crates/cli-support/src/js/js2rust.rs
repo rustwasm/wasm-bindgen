@@ -159,7 +159,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 i = i,
                 val = val,
             ));
-            if arg.is_by_ref() {
+            if arg.is_by_ref() || arg.is_clamped_by_ref() {
                 if optional {
                     bail!("optional slices aren't currently supported");
                 }

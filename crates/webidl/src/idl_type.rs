@@ -1,4 +1,5 @@
 use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
+use proc_macro2::{Ident, Span};
 use syn;
 use weedle::common::Identifier;
 use weedle::term;
@@ -501,16 +502,16 @@ impl<'a> IdlType<'a> {
 
             IdlType::ArrayBuffer => js_sys("ArrayBuffer"),
             IdlType::DataView => None,
-            IdlType::Int8Array => Some(array("i8", pos, false)),
-            IdlType::Uint8Array => Some(array("u8", pos, false)),
-            IdlType::Uint8ArrayMut => Some(array("u8", pos, true)),
-            IdlType::Uint8ClampedArray => None, // FIXME(#421)
-            IdlType::Int16Array => Some(array("i16", pos, false)),
-            IdlType::Uint16Array => Some(array("u16", pos, false)),
-            IdlType::Int32Array => Some(array("i32", pos, false)),
-            IdlType::Uint32Array => Some(array("u32", pos, false)),
-            IdlType::Float32Array => Some(array("f32", pos, false)),
-            IdlType::Float64Array => Some(array("f64", pos, false)),
+            IdlType::Int8Array => Some(array("i8", pos)),
+            IdlType::Uint8Array => Some(array("u8", pos)),
+            IdlType::Uint8ArrayMut => Some(array("u8", pos)),
+            IdlType::Uint8ClampedArray => Some(clamped(array("u8", pos))),
+            IdlType::Int16Array => Some(array("i16", pos)),
+            IdlType::Uint16Array => Some(array("u16", pos)),
+            IdlType::Int32Array => Some(array("i32", pos)),
+            IdlType::Uint32Array => Some(array("u32", pos)),
+            IdlType::Float32Array => Some(array("f32", pos)),
+            IdlType::Float64Array => Some(array("f64", pos)),
 
             IdlType::ArrayBufferView | IdlType::BufferSource => js_sys("Object"),
             IdlType::Interface(name)
@@ -708,4 +709,27 @@ fn idl_type_flatten_test() {
             Sequence(Box::new(Interface("NodeList"))),
         ],
     );
+}
+
+/// From `T` create `::wasm_bindgen::Clamped<T>`
+fn clamped(t: syn::Type) -> syn::Type {
+    let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
+        colon2_token: None,
+        lt_token: Default::default(),
+        args: vec![syn::GenericArgument::Type(t)].into_iter().collect(),
+        gt_token: Default::default(),
+    });
+
+    let ident = raw_ident("Clamped");
+    let seg = syn::PathSegment { ident, arguments };
+    syn::TypePath {
+        qself: None,
+        path: syn::Path {
+            leading_colon: Some(Default::default()),
+            segments: vec![
+                Ident::new("wasm_bindgen", Span::call_site()).into(),
+                seg,
+            ].into_iter().collect(),
+        },
+    }.into()
 }

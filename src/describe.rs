@@ -3,7 +3,7 @@
 
 #![doc(hidden)]
 
-use JsValue;
+use {JsValue, Clamped};
 
 macro_rules! tys {
     ($($a:ident)*) => (tys! { @ ($($a)*) 0 });
@@ -40,6 +40,7 @@ tys! {
     CHAR
     OPTIONAL
     UNIT
+    CLAMPED
 }
 
 #[inline(always)] // see `interpret.rs` in the the cli-support crate
@@ -200,5 +201,12 @@ impl WasmDescribe for () {
 impl<T: WasmDescribe> WasmDescribe for Result<T, JsValue> {
     fn describe() {
         T::describe()
+    }
+}
+
+impl<T: WasmDescribe> WasmDescribe for Clamped<T> {
+    fn describe() {
+        inform(CLAMPED);
+        T::describe();
     }
 }

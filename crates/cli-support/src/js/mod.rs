@@ -1173,6 +1173,11 @@ impl<'a> Context<'a> {
         self.arrayget("getArrayU8FromWasm", "getUint8Memory", 1);
     }
 
+    fn expose_get_clamped_array_u8_from_wasm(&mut self) {
+        self.expose_clamped_uint8_memory();
+        self.arrayget("getClampedArrayU8FromWasm", "getUint8ClampedMemory", 1);
+    }
+
     fn expose_get_array_i16_from_wasm(&mut self) {
         self.expose_int16_memory();
         self.arrayget("getArrayI16FromWasm", "getInt16Memory", 2);
@@ -1237,6 +1242,10 @@ impl<'a> Context<'a> {
         self.memview("getUint8Memory", "Uint8Array");
     }
 
+    fn expose_clamped_uint8_memory(&mut self) {
+        self.memview("getUint8ClampedMemory", "Uint8ClampedArray");
+    }
+
     fn expose_int16_memory(&mut self) {
         self.memview("getInt16Memory", "Int16Array");
     }
@@ -1282,6 +1291,10 @@ impl<'a> Context<'a> {
             VectorKind::U8 => {
                 self.expose_uint8_memory();
                 "getUint8Memory"
+            }
+            VectorKind::ClampedU8 => {
+                self.expose_clamped_uint8_memory();
+                "getUint8ClampedMemory"
             }
             VectorKind::I16 => {
                 self.expose_int16_memory();
@@ -1444,7 +1457,7 @@ impl<'a> Context<'a> {
                 self.expose_pass_string_to_wasm()?;
                 "passStringToWasm"
             }
-            VectorKind::I8 | VectorKind::U8 => {
+            VectorKind::I8 | VectorKind::U8 | VectorKind::ClampedU8 => {
                 self.expose_pass_array8_to_wasm()?;
                 "passArray8ToWasm"
             }
@@ -1489,6 +1502,10 @@ impl<'a> Context<'a> {
             VectorKind::U8 => {
                 self.expose_get_array_u8_from_wasm();
                 "getArrayU8FromWasm"
+            }
+            VectorKind::ClampedU8 => {
+                self.expose_get_clamped_array_u8_from_wasm();
+                "getClampedArrayU8FromWasm"
             }
             VectorKind::I16 => {
                 self.expose_get_array_i16_from_wasm();

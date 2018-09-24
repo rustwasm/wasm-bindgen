@@ -204,3 +204,11 @@ exports.js_return_vec = () => {
         assert.strictEqual(bad[8], 9);
     }
 };
+
+exports.js_clamped = (a, offset) => {
+  assert.ok(a instanceof Uint8ClampedArray);
+  assert.equal(a.length, 3);
+  assert.equal(a[0], offset + 0);
+  assert.equal(a[1], offset + 1);
+  assert.equal(a[2], offset + 2);
+};
