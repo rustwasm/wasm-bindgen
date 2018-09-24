@@ -15,11 +15,11 @@ Currently this code...
 {{#include ../../../examples/add/src/lib.rs}}
 ```
 
-generates a 723 byte wasm binary:
+generates a 710 byte wasm binary:
 
 ```
 $ ls -l add_bg.wasm
--rw-rw-r-- 1 alex alex 723 Sep 19 17:32 add_bg.wasm
+-rw-rw-r-- 1 alex alex 710 Sep 19 17:32 add_bg.wasm
 ```
 
 If you run [wasm-opt], a C++ tool for optimize WebAssembly, you can make it
@@ -28,7 +28,7 @@ even smaller too!
 ```
 $ wasm-opt -Os add_bg.wasm -o add.wasm
 $ ls -l add.wasm
--rw-rw-r-- 1 alex alex 182 Sep 19 17:33 add.wasm
+-rw-rw-r-- 1 alex alex 172 Sep 19 17:33 add.wasm
 ```
 
 And sure enough, using the [wasm2wat] tool it's quite small!
@@ -38,9 +38,6 @@ $ wasm2wat add.wasm
 (module
   (type (;0;) (func (param i32 i32) (result i32)))
   (func (;0;) (type 0) (param i32 i32) (result i32)
-    i32.const 1048640
-    i32.const 0
-    i32.store
     get_local 1
     get_local 0
     i32.add)
