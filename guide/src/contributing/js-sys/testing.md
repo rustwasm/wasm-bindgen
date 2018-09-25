@@ -10,4 +10,4 @@ cargo test --target wasm32-unknown-unknown
 ```
 
 These tests are largely executed in Node.js right now via the
-`wasm-bindgen-test` framework. More documentation on the framework coming soon!
+[`wasm-bindgen-test` framework](../../wasm-bindgen-test/index.html)
