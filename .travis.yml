@@ -13,12 +13,6 @@ INSTALL_GECKODRIVER: &INSTALL_GECKODRIVER
     curl --retry 5 -LO https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
     tar xf geckodriver-v0.21.0-linux64.tar.gz
 
-INSTALL_CHROMEDRIVER: &INSTALL_CHROMEDRIVER
-  |
-    curl --retry 5 -LO https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
-    unzip chromedriver_linux64.zip
-    export CHROMEDRIVER_ARGS=--verbose
-
 DEPLOY_TO_GITHUB: &DEPLOY_TO_GITHUB
   before_deploy:
     |
@@ -101,7 +95,6 @@ matrix:
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_GECKODRIVER
-        - *INSTALL_CHROMEDRIVER
       script:
         - export RUST_LOG=wasm_bindgen_test_runner
         # Test out builds with just a few features
@@ -111,7 +104,6 @@ matrix:
         - cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features Window
 
         # Now run all the tests with all the features
-        - CHROMEDRIVER=`pwd`/chromedriver cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
         - GECKODRIVER=`pwd`/geckodriver cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features
       addons:
         firefox: latest
@@ -124,10 +116,8 @@ matrix:
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_GECKODRIVER
-        - *INSTALL_CHROMEDRIVER
       script:
         - export RUST_LOG=wasm_bindgen_test_runner
-        - CHROMEDRIVER=`pwd`/chromedriver cargo test -p js-sys --target wasm32-unknown-unknown
         - GECKODRIVER=`pwd`/geckodriver cargo test -p js-sys --target wasm32-unknown-unknown
       addons:
         firefox: latest
