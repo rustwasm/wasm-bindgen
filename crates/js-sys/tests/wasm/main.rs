@@ -19,6 +19,7 @@ pub mod EvalError;
 pub mod Function;
 pub mod Generator;
 pub mod Intl;
+pub mod Iterator;
 pub mod JsString;
 pub mod JSON;
 pub mod Map;

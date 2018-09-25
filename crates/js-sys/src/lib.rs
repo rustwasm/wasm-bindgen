@@ -1255,6 +1255,32 @@ impl IterState {
     }
 }
 
+/// Create an iterator over `val` using the JS iteration protocol and
+/// `Symbol.iterator`.
+pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
+    let iter_sym = Symbol::iterator();
+    let iter_fn = Reflect::get(val, iter_sym.as_ref())?;
+    if !iter_fn.is_function() {
+        return Ok(None);
+    }
+
+    let iter_fn: Function = iter_fn.unchecked_into();
+    let it = iter_fn.call0(val)?;
+    if !it.is_object() {
+        return Ok(None);
+    }
+
+    let next = JsValue::from("next");
+    let next = Reflect::get(&it, &next)?;
+
+    Ok(if next.is_function() {
+        let it: Iterator = it.unchecked_into();
+        Some(it.into_iter())
+    } else {
+        None
+    })
+}
+
 // IteratorNext
 #[wasm_bindgen]
 extern {
