@@ -11,8 +11,8 @@ fn entries() {
     let next = entries.next().unwrap();
     assert_eq!(next.done(), false);
     assert!(next.value().is_object());
-    assert_eq!(Reflect::get(&next.value(), &0.into()), "uno");
-    assert_eq!(Reflect::get(&next.value(), &1.into()), 1);
+    assert_eq!(Reflect::get(&next.value(), &0.into()).unwrap(), "uno");
+    assert_eq!(Reflect::get(&next.value(), &1.into()).unwrap(), 1);
 
     let next = entries.next().unwrap();
     assert!(next.done());

@@ -1210,11 +1210,13 @@ impl ToTokens for ast::DictionaryField {
         (quote! {
             pub fn #name(&mut self, val: #ty) -> &mut Self {
                 use wasm_bindgen::JsValue;
-                ::js_sys::Reflect::set(
+                let r = ::js_sys::Reflect::set(
                     self.obj.as_ref(),
                     &JsValue::from(stringify!(#name)),
                     &JsValue::from(val),
                 );
+                debug_assert!(r.is_ok(), "setting properties should never fail on our dictionary objects");
+                let _ = r;
                 self
             }
         }).to_tokens(tokens);

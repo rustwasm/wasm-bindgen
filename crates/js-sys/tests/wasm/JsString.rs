@@ -168,7 +168,7 @@ fn locale_compare() {
     assert!(js_b.locale_compare(a, &locales, &options) < 0);
 
     locales.push(&"en".into());
-    Reflect::set(options.as_ref(), &"sensitivity".into(), &"base".into());
+    Reflect::set(options.as_ref(), &"sensitivity".into(), &"base".into()).unwrap();
 
     assert_eq!(js_a.locale_compare(a, &locales, &options), 0);
     assert_eq!(js_a.locale_compare(b, &locales, &options), 0);
@@ -211,7 +211,7 @@ fn locale_compare() {
     assert!(js_ten.locale_compare(two, &locales, &options) > 0);
 
     let locales = Array::new();
-    Reflect::set(options.as_ref(), &"numeric".into(), &JsValue::TRUE);
+    Reflect::set(options.as_ref(), &"numeric".into(), &JsValue::TRUE).unwrap();
 
     assert!(js_two.locale_compare(ten, &locales, &options) < 0);
     assert!(js_ten.locale_compare(two, &locales, &options) > 0);
@@ -224,8 +224,8 @@ fn match_() {
     let result = JsString::from(s).match_(&re);
     let obj = result.unwrap();
 
-    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()), "T");
-    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()), "I");
+    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()).unwrap(), "T");
+    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()).unwrap(), "I");
 
     let result = JsString::from("foo").match_(&re);
     assert!(result.is_none());
@@ -235,11 +235,11 @@ fn match_() {
     let result = JsString::from(s).match_(&re);
     let obj = result.unwrap();
 
-    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()), "see Chapter 3.4.5.1");
-    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()), "Chapter 3.4.5.1");
-    assert_eq!(Reflect::get(obj.as_ref(), &"2".into()), ".1");
-    assert_eq!(Reflect::get(obj.as_ref(), &"index".into()), 22);
-    assert_eq!(Reflect::get(obj.as_ref(), &"input".into()), s);
+    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()).unwrap(), "see Chapter 3.4.5.1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()).unwrap(), "Chapter 3.4.5.1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"2".into()).unwrap(), ".1");
+    assert_eq!(Reflect::get(obj.as_ref(), &"index".into()).unwrap(), 22);
+    assert_eq!(Reflect::get(obj.as_ref(), &"input".into()).unwrap(), s);
 }
 
 #[wasm_bindgen_test]
@@ -494,7 +494,7 @@ fn value_of() {
 fn raw() {
     let call_site = Object::new();
     let raw = Array::of3(&"foo".into(), &"bar".into(), &"123".into());
-    Reflect::set(&call_site.as_ref(), &"raw".into(), &raw.into());
+    Reflect::set(&call_site.as_ref(), &"raw".into(), &raw.into()).unwrap();
     assert_eq!(JsString::raw_2(&call_site, "5", "JavaScript").unwrap(), "foo5barJavaScript123");
     let substitutions = Array::of2(&"5".into(), &"JavaScript".into());
     assert_eq!(JsString::raw(&call_site, &substitutions).unwrap(), "foo5barJavaScript123");

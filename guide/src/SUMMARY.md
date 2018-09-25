@@ -30,6 +30,7 @@
   - [Passing Rust Closures to JS](./reference/passing-rust-closures-to-js.md)
   - [Receiving JS Closures in Rust](./reference/receiving-js-closures-in-rust.md)
   - [`Promise`s and `Future`s](./reference/js-promises-and-rust-futures.md)
+  - [Iterating over JS Values](./reference/iterating-over-js-values.md)
   - [No ES Modules](./reference/no-esm.md)
   - [Arbitrary Data with Serde](./reference/arbitrary-data-with-serde.md)
   - [Accessing Properties of Untyped JS Values](./reference/accessing-properties-of-untyped-js-values.md)

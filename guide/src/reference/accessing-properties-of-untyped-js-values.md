@@ -18,7 +18,7 @@ A function that returns the value of a property.
 #### Rust Usage
 
 ```rust
-let value = js_sys::Reflect::get(&target, &property_key);
+let value = js_sys::Reflect::get(&target, &property_key)?;
 ```
 
 #### JavaScript Equivalent
@@ -37,7 +37,7 @@ the update was successful.
 #### Rust Usage
 
 ```rust
-js_sys::Reflect::set(&target, &property_key, &value);
+js_sys::Reflect::set(&target, &property_key, &value)?;
 ```
 
 #### JavaScript Equivalent
@@ -56,7 +56,7 @@ an own or inherited property exists on the target.
 #### Rust Usage
 
 ```rust
-if js_sys::Reflect::has(&target, &property_key) {
+if js_sys::Reflect::has(&target, &property_key)? {
     // ...
 } else {
     // ...
