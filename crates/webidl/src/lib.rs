@@ -93,32 +93,34 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
     });
     let filter = |name: &str| {
         match &allowed_types {
-            Some(set) => set.contains(&camel_case_ident(name)[..]),
+            Some(set) => set.contains(name),
             None => true,
         }
     };
 
     for (name, e) in first_pass_record.enums.iter() {
-        if filter(name) {
+        if filter(&camel_case_ident(name)) {
             first_pass_record.append_enum(&mut program, e);
         }
     }
     for (name, d) in first_pass_record.dictionaries.iter() {
-        if filter(name) {
+        if filter(&camel_case_ident(name)) {
             first_pass_record.append_dictionary(&mut program, d);
         }
     }
     for (name, n) in first_pass_record.namespaces.iter() {
-        let prog = first_pass_record.append_ns(name, n);
-        submodules.push((snake_case_ident(name).to_string(), prog));
+        if filter(&snake_case_ident(name)) {
+            let prog = first_pass_record.append_ns(name, n);
+            submodules.push((snake_case_ident(name).to_string(), prog));
+        }
     }
     for (name, d) in first_pass_record.interfaces.iter() {
-        if filter(name) {
+        if filter(&camel_case_ident(name)) {
             first_pass_record.append_interface(&mut program, name, d);
         }
     }
     for (name, d) in first_pass_record.callback_interfaces.iter() {
-        if filter(name) {
+        if filter(&camel_case_ident(name)) {
             first_pass_record.append_callback_interface(&mut program, d);
         }
     }
@@ -181,7 +183,8 @@ fn compile_ast(mut ast: Program) -> String {
                 }
             };
             ast.main.imported_type_definitions(&mut cb);
-            for (_, m) in ast.submodules.iter() {
+            for (name, m) in ast.submodules.iter() {
+                cb(&Ident::new(name, Span::call_site()));
                 m.imported_type_references(&mut cb);
             }
         }
@@ -196,6 +199,7 @@ fn compile_ast(mut ast: Program) -> String {
     }
     if let Some(path) = track {
         let contents = all_definitions.into_iter()
+            .filter(|def| !builtin.contains(def))
             .map(|s| format!("{} = []", s))
             .collect::<Vec<_>>()
             .join("\n");
@@ -412,8 +416,12 @@ impl<'src> FirstPassRecord<'src> {
         );
 
         let kind = backend::ast::ImportFunctionKind::Normal;
+        let extra = snake_case_ident(self_name);
+        let extra = &[&extra[..]];
         for mut import_function in self.create_imports(None, kind, id, data) {
-            import_function.doc_comment = Some(doc_comment.clone());
+            let mut doc = Some(doc_comment.clone());
+            self.append_required_features_doc(&import_function, &mut doc, extra);
+            import_function.doc_comment = doc;
             module.imports.push(
                 backend::ast::Import {
                     module: None,
@@ -482,12 +490,15 @@ impl<'src> FirstPassRecord<'src> {
             attrs: vec![derive],
             doc_comment: None,
             instanceof_shim: format!("__widl_instanceof_{}", name),
-            extends: self.all_superclasses(name)
+            extends: Vec::new(),
+        };
+        let extra = camel_case_ident(name);
+        let extra = &[&extra[..]];
+        self.append_required_features_doc(&import_type, &mut doc_comment, extra);
+        import_type.extends = self.all_superclasses(name)
                 .map(|name| Ident::new(&name, Span::call_site()))
                 .chain(Some(Ident::new("Object", Span::call_site())))
-                .collect(),
-        };
-        self.append_required_features_doc(&import_type, &mut doc_comment);
+                .collect();
         import_type.doc_comment = doc_comment;
 
         program.imports.push(backend::ast::Import {
@@ -570,7 +581,7 @@ impl<'src> FirstPassRecord<'src> {
             container_attrs,
         ) {
             let mut doc = import_function.doc_comment.take();
-            self.append_required_features_doc(&import_function, &mut doc);
+            self.append_required_features_doc(&import_function, &mut doc, &[]);
             import_function.doc_comment = doc;
             program.imports.push(wrap_import_function(import_function));
         }
@@ -585,7 +596,7 @@ impl<'src> FirstPassRecord<'src> {
                 container_attrs,
             ) {
                 let mut doc = import_function.doc_comment.take();
-                self.append_required_features_doc(&import_function, &mut doc);
+                self.append_required_features_doc(&import_function, &mut doc, &[]);
                 import_function.doc_comment = doc;
                 program.imports.push(wrap_import_function(import_function));
             }
@@ -648,7 +659,7 @@ impl<'src> FirstPassRecord<'src> {
         let attrs = data.definition_attributes;
         for mut method in self.create_imports(attrs, kind, id, op_data) {
             let mut doc = doc.clone();
-            self.append_required_features_doc(&method, &mut doc);
+            self.append_required_features_doc(&method, &mut doc, &[]);
             method.doc_comment = doc;
             program.imports.push(wrap_import_function(method));
         }
@@ -658,12 +669,15 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         item: impl ImportedTypeReferences,
         doc: &mut Option<String>,
+        extra: &[&str],
     ) {
         let doc = match doc {
             Some(doc) => doc,
             None => return,
         };
-        let mut required = BTreeSet::new();
+        let mut required = extra.iter()
+            .map(|s| Ident::new(s, Span::call_site()))
+            .collect::<BTreeSet<_>>();
         item.imported_type_references(&mut |f| {
             if !self.builtin_idents.contains(f) {
                 required.insert(f.clone());
@@ -677,7 +691,7 @@ impl<'src> FirstPassRecord<'src> {
             .collect::<Vec<_>>()
             .join(", ");
         doc.push_str(&format!(
-            "\n\n*This function requires the following crate features \
+            "\n\n*This API requires the following crate features \
              to be activated: {}*",
             list,
         ));

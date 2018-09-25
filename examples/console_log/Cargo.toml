@@ -8,4 +8,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = { path = "../.." }
-web-sys = { path = '../../crates/web-sys' }
+web-sys = { path = '../../crates/web-sys', features = ['console'] }
