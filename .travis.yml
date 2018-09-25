@@ -43,8 +43,8 @@ INSTALL_AWS: &INSTALL_AWS
 
 matrix:
   include:
-    # Tests pass on nightly
-    - rust: nightly
+    # Tests for wasm-bindgen itself pass
+    - rust: beta
       env: JOB=test-bindgen
       install:
         - *INSTALL_NODE_VIA_NVM
@@ -56,7 +56,6 @@ matrix:
         - cargo test
         # Run the main body of the test suite
         - cargo test --target wasm32-unknown-unknown
-        - cargo test --target wasm32-unknown-unknown --features nightly
         # Rerun the test suite but disable `--debug` in generated JS
         - WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown
         # Make sure our serde tests work
@@ -68,6 +67,15 @@ matrix:
         - cargo test -p wasm-bindgen-futures --target wasm32-unknown-unknown
       addons:
         firefox: latest
+      if: branch = master
+
+    # Tests the `nightly` feature of wasm-bindgen
+    - rust: nightly
+      env: JOB=test-bindgen-nightly
+      install:
+        - *INSTALL_NODE_VIA_NVM
+      script:
+        - cargo test --target wasm32-unknown-unknown --features nightly --test wasm
       if: branch = master
 
     # All examples work
@@ -89,8 +97,8 @@ matrix:
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then aws s3 sync --quiet ~/$TRAVIS_BUILD_NUMBER s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER; fi
       if: branch = master
 
-    # The `web-sys` crate's tests pass on nightly.
-    - rust: nightly
+    # The `web-sys` crate's tests pass
+    - rust: beta
       env: JOB=test-web-sys
       install:
         - *INSTALL_NODE_VIA_NVM
@@ -110,8 +118,8 @@ matrix:
         chrome: stable
       if: branch = master
 
-    # The `js-sys` crate's tests pass on nightly.
-    - rust: nightly
+    # The `js-sys` crate's tests pass
+    - rust: beta
       env: JOB=test-js-sys
       install:
         - *INSTALL_NODE_VIA_NVM
@@ -124,8 +132,8 @@ matrix:
         chrome: stable
       if: branch = master
 
-    # WebIDL tests pass on nightly
-    - rust: nightly
+    # WebIDL tests pass
+    - rust: beta
       env: JOB=test-webidl
       install: *INSTALL_NODE_VIA_NVM
       script:
@@ -162,14 +170,9 @@ matrix:
       env: JOB=check-stable-cli
       script: cargo check --manifest-path crates/cli/Cargo.toml
       if: branch = master
-    # CLI builds on nightly
-    - rust: nightly
-      env: JOB=check-nightly-cli
-      script: cargo check --manifest-path crates/cli/Cargo.toml
-      if: branch = master
 
     # Build mdbook documentation
-    - rust: nightly
+    - rust: stable
       env: JOB=guide-build
       install:
         - mkdir -p $HOME/mdbook
