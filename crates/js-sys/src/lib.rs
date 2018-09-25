@@ -1184,6 +1184,9 @@ pub struct Iter<'a> {
     state: IterState,
 }
 
+/// An iterator over the JS `Symbol.iterator` iteration protocol.
+///
+/// Use the `IntoIterator for js_sys::Iterator` implementation to create this.
 pub struct IntoIter {
     js: Iterator,
     state: IterState,
