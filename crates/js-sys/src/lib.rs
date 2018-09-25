@@ -20,12 +20,12 @@
 
 extern crate wasm_bindgen;
 
-use std::mem;
 use std::fmt;
+use std::mem;
 
-use std::sync::atomic::{AtomicUsize, ATOMIC_USIZE_INIT, Ordering::SeqCst};
-use wasm_bindgen::JsCast;
+use std::sync::atomic::{AtomicUsize, Ordering::SeqCst, ATOMIC_USIZE_INIT};
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 
 // When adding new imports:
 //
@@ -304,14 +304,22 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
     #[wasm_bindgen(method)]
-    pub fn reduce(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: &JsValue) -> JsValue;
+    pub fn reduce(
+        this: &Array,
+        predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue,
+        initial_value: &JsValue,
+    ) -> JsValue;
 
     /// The reduceRight() method applies a function against an accumulator and each value
     /// of the array (from right-to-left) to reduce it to a single value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/ReduceRight)
     #[wasm_bindgen(method, js_name = reduceRight)]
-    pub fn reduce_right(this: &Array, predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue, initial_value: &JsValue) -> JsValue;
+    pub fn reduce_right(
+        this: &Array,
+        predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue,
+        initial_value: &JsValue,
+    ) -> JsValue;
 
     /// The reverse() method reverses an array in place. The first array
     /// element becomes the last, and the last array element becomes the first.
@@ -831,14 +839,25 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)
     #[wasm_bindgen(method, catch, js_name = call)]
-    pub fn call2(this: &Function, context: &JsValue, arg1: &JsValue, arg2: &JsValue) -> Result<JsValue, JsValue>;
+    pub fn call2(
+        this: &Function,
+        context: &JsValue,
+        arg1: &JsValue,
+        arg2: &JsValue,
+    ) -> Result<JsValue, JsValue>;
 
     /// The `call()` method calls a function with a given this value and
     /// arguments provided individually.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)
     #[wasm_bindgen(method, catch, js_name = call)]
-    pub fn call3(this: &Function, context: &JsValue, arg1: &JsValue, arg2: &JsValue, arg3: &JsValue) -> Result<JsValue, JsValue>;
+    pub fn call3(
+        this: &Function,
+        context: &JsValue,
+        arg1: &JsValue,
+        arg2: &JsValue,
+        arg3: &JsValue,
+    ) -> Result<JsValue, JsValue>;
 
     /// The bind() method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.
@@ -885,7 +904,7 @@ impl Function {
 
 // Generator
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Generator;
@@ -1072,7 +1091,7 @@ extern "C" {
 
 // Map
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Map;
@@ -1134,7 +1153,7 @@ extern {
 
 // Map Iterator
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// The entries() method returns a new Iterator object that contains
     /// the [key, value] pairs for each element in the Map object in
     /// insertion order.
@@ -1160,7 +1179,7 @@ extern {
 
 // Iterator
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// Any object that conforms to the JS iterator protocol. For example,
     /// something returned by `myArray[Symbol.iterator]()`.
     ///
@@ -1201,7 +1220,10 @@ impl<'a> IntoIterator for &'a Iterator {
     type IntoIter = Iter<'a>;
 
     fn into_iter(self) -> Iter<'a> {
-        Iter { js: self, state: IterState::new() }
+        Iter {
+            js: self,
+            state: IterState::new(),
+        }
     }
 }
 
@@ -1218,7 +1240,10 @@ impl IntoIterator for Iterator {
     type IntoIter = IntoIter;
 
     fn into_iter(self) -> IntoIter {
-        IntoIter { js: self, state: IterState::new() }
+        IntoIter {
+            js: self,
+            state: IterState::new(),
+        }
     }
 }
 
@@ -1237,13 +1262,13 @@ impl IterState {
 
     fn next(&mut self, js: &Iterator) -> Option<Result<JsValue, JsValue>> {
         if self.done {
-            return None
+            return None;
         }
         let next = match js.next() {
             Ok(val) => val,
             Err(e) => {
                 self.done = true;
-                return Some(Err(e))
+                return Some(Err(e));
             }
         };
         if next.done() {
@@ -1283,7 +1308,7 @@ pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
 
 // IteratorNext
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// The result of calling `next()` on a JS iterator.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
@@ -1399,7 +1424,6 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cos)
     #[wasm_bindgen(static_method_of = Math)]
     pub fn cos(x: f64) -> f64;
-
 
     /// The Math.cosh() function returns the hyperbolic cosine of a number,
     /// that can be expressed using the constant e.
@@ -2028,7 +2052,8 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
     #[wasm_bindgen(static_method_of = Object, js_name = assign)]
-    pub fn assign3(target: &Object, source1: &Object, source2: &Object, source3: &Object) -> Object;
+    pub fn assign3(target: &Object, source1: &Object, source2: &Object, source3: &Object)
+        -> Object;
 
     /// The Object.create() method creates a new object, using an existing
     /// object to provide the newly created object's prototype.
@@ -2245,7 +2270,7 @@ impl Object {
 
 // Proxy
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[derive(Clone, Debug)]
     pub type Proxy;
 
@@ -2267,7 +2292,7 @@ extern {
 
 // RangeError
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// The RangeError object indicates an error when a value is not in the set
     /// or range of allowed values.
     ///
@@ -2286,7 +2311,7 @@ extern {
 
 // ReferenceError
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// The ReferenceError object represents an error when a non-existent
     /// variable is referenced.
     ///
@@ -2625,7 +2650,7 @@ extern "C" {
 
 // Set
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Set;
@@ -2681,7 +2706,7 @@ extern {
 
 // SetIterator
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// The `entries()` method returns a new Iterator object that contains an
     /// array of [value, value] for each element in the Set object, in insertion
     /// order. For Set objects there is no key like in Map objects. However, to
@@ -2710,7 +2735,7 @@ extern {
 
 // SyntaxError
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// A SyntaxError is thrown when the JavaScript engine encounters tokens or
     /// token order that does not conform to the syntax of the language when
     /// parsing code.
@@ -2731,7 +2756,7 @@ extern {
 
 // TypeError
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// The TypeError object represents an error when a value is not of the
     /// expected type.
     ///
@@ -2964,7 +2989,7 @@ extern "C" {
 
 // URIError
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// The URIError object represents an error when a global URI handling
     /// function was used in a wrong way.
     ///
@@ -3508,7 +3533,12 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare)
     #[wasm_bindgen(method, js_class = "String", js_name = localeCompare)]
-    pub fn locale_compare(this: &JsString, compare_string: &str, locales: &Array, options: &Object) -> i32;
+    pub fn locale_compare(
+        this: &JsString,
+        compare_string: &str,
+        locales: &Array,
+        options: &Object,
+    ) -> i32;
 
     /// The match() method retrieves the matches when matching a string against a regular expression.
     ///
@@ -3560,14 +3590,22 @@ extern "C" {
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
     #[wasm_bindgen(method, js_class = "String", js_name = replace)]
-    pub fn replace_with_function(this: &JsString, pattern: &str, replacement: &Function) -> JsString;
+    pub fn replace_with_function(
+        this: &JsString,
+        pattern: &str,
+        replacement: &Function,
+    ) -> JsString;
 
     #[wasm_bindgen(method, js_class = "String", js_name = replace)]
     pub fn replace_by_pattern(this: &JsString, pattern: &RegExp, replacement: &str) -> JsString;
 
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
     #[wasm_bindgen(method, js_class = "String", js_name = replace)]
-    pub fn replace_by_pattern_with_function(this: &JsString, pattern: &RegExp, replacement: &Function) -> JsString;
+    pub fn replace_by_pattern_with_function(
+        this: &JsString,
+        pattern: &RegExp,
+        replacement: &Function,
+    ) -> JsString;
 
     /// The search() method executes a search for a match between
     /// a regular expression and this String object.
@@ -4210,7 +4248,7 @@ pub mod Intl {
 
 // Promise
 #[wasm_bindgen]
-extern {
+extern "C" {
     /// The `Promise` object represents the eventual completion (or failure) of
     /// an asynchronous operation, and its resulting value.
     ///
@@ -4289,9 +4327,11 @@ extern {
 
     /// Same as `then`, only with both arguments provided.
     #[wasm_bindgen(method, js_name = then)]
-    pub fn then2(this: &Promise,
-                 resolve: &Closure<FnMut(JsValue)>,
-                 reject: &Closure<FnMut(JsValue)>) -> Promise;
+    pub fn then2(
+        this: &Promise,
+        resolve: &Closure<FnMut(JsValue)>,
+        reject: &Closure<FnMut(JsValue)>,
+    ) -> Promise;
 
     /// The `finally()` method returns a `Promise`. When the promise is settled,
     /// whether fulfilled or rejected, the specified callback function is
