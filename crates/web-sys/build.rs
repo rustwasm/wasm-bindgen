@@ -69,6 +69,7 @@ fn try_main() -> Result<(), failure::Error> {
     }
 
     // If we're printing all features don't filter anything
+    println!("cargo:rerun-if-env-changed=__WASM_BINDGEN_DUMP_FEATURES");
     let allowed = if env::var("__WASM_BINDGEN_DUMP_FEATURES").is_ok() {
         None
     } else {
