@@ -72,7 +72,7 @@ fn stringify() {
 fn stringify_error() {
     let func = Function::new_no_args("throw new Error(\"rust really rocks\")");
     let obj = Object::new();
-    Reflect::set(obj.as_ref(), &JsValue::from("toJSON"), func.as_ref());
+    Reflect::set(obj.as_ref(), &JsValue::from("toJSON"), func.as_ref()).unwrap();
 
     let result = JSON::stringify(&JsValue::from(obj));
     assert!(result.is_err());

@@ -178,7 +178,7 @@ fn webassembly_instance() {
 
     // Has expected exports.
     let exports = instance.exports();
-    assert!(Reflect::has(exports.as_ref(), &"exported_func".into()));
+    assert!(Reflect::has(exports.as_ref(), &"exported_func".into()).unwrap());
 }
 
 #[wasm_bindgen_test(async)]
@@ -201,6 +201,7 @@ fn instantiate_streaming() -> impl Future<Item = (), Error = JsValue> {
         .map(|obj| {
             assert!(
                 Reflect::get(obj.as_ref(), &"instance".into())
+                    .unwrap()
                     .is_instance_of::<WebAssembly::Instance>()
             );
         })
@@ -209,7 +210,7 @@ fn instantiate_streaming() -> impl Future<Item = (), Error = JsValue> {
 #[wasm_bindgen_test]
 fn memory_works() {
     let obj = Object::new();
-    Reflect::set(obj.as_ref(), &"initial".into(), &1.into());
+    Reflect::set(obj.as_ref(), &"initial".into(), &1.into()).unwrap();
     let mem = WebAssembly::Memory::new(&obj).unwrap();
     assert!(mem.is_instance_of::<WebAssembly::Memory>());
     assert!(mem.is_instance_of::<Object>());

@@ -2289,47 +2289,67 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/apply)
     #[wasm_bindgen(static_method_of = Reflect, catch)]
-    pub fn apply(target: &Function, this_argument: &JsValue, arguments_list: &Array)
-        -> Result<JsValue, JsValue>;
+    pub fn apply(
+        target: &Function,
+        this_argument: &JsValue,
+        arguments_list: &Array,
+    ) -> Result<JsValue, JsValue>;
 
     /// The static `Reflect.construct()` method acts like the new operator, but
     /// as a function.  It is equivalent to calling `new target(...args)`. It
     /// gives also the added option to specify a different prototype.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
-    #[wasm_bindgen(static_method_of = Reflect)]
-    pub fn construct(target: &Function, arguments_list: &Array) -> JsValue;
-    #[wasm_bindgen(static_method_of = Reflect, js_name = construct)]
-    pub fn construct_with_new_target(target: &Function, arguments_list: &Array, new_target: &Function) -> JsValue;
+    #[wasm_bindgen(static_method_of = Reflect, catch)]
+    pub fn construct(target: &Function, arguments_list: &Array) -> Result<JsValue, JsValue>;
+
+    /// The static `Reflect.construct()` method acts like the new operator, but
+    /// as a function.  It is equivalent to calling `new target(...args)`. It
+    /// gives also the added option to specify a different prototype.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
+    #[wasm_bindgen(static_method_of = Reflect, js_name = construct, catch)]
+    pub fn construct_with_new_target(
+        target: &Function,
+        arguments_list: &Array,
+        new_target: &Function,
+    ) -> Result<JsValue, JsValue>;
 
     /// The static `Reflect.defineProperty()` method is like
     /// `Object.defineProperty()` but returns a `Boolean`.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/defineProperty)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = defineProperty)]
-    pub fn define_property(target: &Object, property_key: &JsValue, attributes: &Object) -> bool;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = defineProperty, catch)]
+    pub fn define_property(
+        target: &Object,
+        property_key: &JsValue,
+        attributes: &Object,
+    ) -> Result<bool, JsValue>;
 
     /// The static `Reflect.deleteProperty()` method allows to delete
     /// properties.  It is like the `delete` operator as a function.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/deleteProperty)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = deleteProperty)]
-    pub fn delete_property(target: &Object, key: &JsValue) -> bool;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = deleteProperty, catch)]
+    pub fn delete_property(target: &Object, key: &JsValue) -> Result<bool, JsValue>;
 
     /// The static `Reflect.get()` method works like getting a property from
     /// an object (`target[propertyKey]`) as a function.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/get)
-    #[wasm_bindgen(static_method_of = Reflect)]
-    pub fn get(target: &JsValue, key: &JsValue) -> JsValue;
+    #[wasm_bindgen(static_method_of = Reflect, catch)]
+    pub fn get(target: &JsValue, key: &JsValue) -> Result<JsValue, JsValue>;
 
     /// The static `Reflect.getOwnPropertyDescriptor()` method is similar to
     /// `Object.getOwnPropertyDescriptor()`. It returns a property descriptor
     /// of the given property if it exists on the object, `undefined` otherwise.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getOwnPropertyDescriptor)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = getOwnPropertyDescriptor)]
-    pub fn get_own_property_descriptor(target: &Object, property_key: &JsValue) -> JsValue;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = getOwnPropertyDescriptor, catch)]
+    pub fn get_own_property_descriptor(
+        target: &Object,
+        property_key: &JsValue,
+    ) -> Result<JsValue, JsValue>;
 
     /// The static `Reflect.getPrototypeOf()` method is almost the same
     /// method as `Object.getPrototypeOf()`. It returns the prototype
@@ -2337,30 +2357,30 @@ extern "C" {
     /// the specified object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getPrototypeOf)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = getPrototypeOf)]
-    pub fn get_prototype_of(target: &JsValue) -> Object;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = getPrototypeOf, catch)]
+    pub fn get_prototype_of(target: &JsValue) -> Result<Object, JsValue>;
 
     /// The static `Reflect.has()` method works like the in operator as a
     /// function.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/has)
-    #[wasm_bindgen(static_method_of = Reflect)]
-    pub fn has(target: &JsValue, property_key: &JsValue) -> bool;
+    #[wasm_bindgen(static_method_of = Reflect, catch)]
+    pub fn has(target: &JsValue, property_key: &JsValue) -> Result<bool, JsValue>;
 
     /// The static `Reflect.isExtensible()` method determines if an object is
     /// extensible (whether it can have new properties added to it). It is
     /// similar to `Object.isExtensible()`, but with some differences.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/isExtensible)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = isExtensible)]
-    pub fn is_extensible(target: &Object) -> bool;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = isExtensible, catch)]
+    pub fn is_extensible(target: &Object) -> Result<bool, JsValue>;
 
     /// The static `Reflect.ownKeys()` method returns an array of the
     /// target object's own property keys.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = ownKeys)]
-    pub fn own_keys(target: &JsValue) -> Array;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = ownKeys, catch)]
+    pub fn own_keys(target: &JsValue) -> Result<Array, JsValue>;
 
     /// The static `Reflect.preventExtensions()` method prevents new
     /// properties from ever being added to an object (i.e. prevents
@@ -2368,17 +2388,27 @@ extern "C" {
     /// `Object.preventExtensions()`, but with some differences.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/preventExtensions)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = preventExtensions)]
-    pub fn prevent_extensions(target: &Object) -> bool;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = preventExtensions, catch)]
+    pub fn prevent_extensions(target: &Object) -> Result<bool, JsValue>;
 
     /// The static `Reflect.set()` method works like setting a
     /// property on an object.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set)
-    #[wasm_bindgen(static_method_of = Reflect)]
-    pub fn set(target: &JsValue, property_key: &JsValue, value: &JsValue) -> bool;
-    #[wasm_bindgen(static_method_of = Reflect, js_name = set)]
-    pub fn set_with_receiver(target: &JsValue, property_key: &JsValue, value: &JsValue, receiver: &JsValue) -> bool;
+    #[wasm_bindgen(static_method_of = Reflect, catch)]
+    pub fn set(target: &JsValue, property_key: &JsValue, value: &JsValue) -> Result<bool, JsValue>;
+
+    /// The static `Reflect.set()` method works like setting a
+    /// property on an object.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set)
+    #[wasm_bindgen(static_method_of = Reflect, js_name = set, catch)]
+    pub fn set_with_receiver(
+        target: &JsValue,
+        property_key: &JsValue,
+        value: &JsValue,
+        receiver: &JsValue,
+    ) -> Result<bool, JsValue>;
 
     /// The static `Reflect.setPrototypeOf()` method is the same
     /// method as `Object.setPrototypeOf()`. It sets the prototype
@@ -2386,13 +2416,13 @@ extern "C" {
     /// object to another object or to null.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/setPrototypeOf)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = setPrototypeOf)]
-    pub fn set_prototype_of(target: &Object, prototype: &JsValue) -> bool;
+    #[wasm_bindgen(static_method_of = Reflect, js_name = setPrototypeOf, catch)]
+    pub fn set_prototype_of(target: &Object, prototype: &JsValue) -> Result<bool, JsValue>;
 }
 
 // RegExp
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type RegExp;

@@ -57,23 +57,23 @@ fn assign() {
     let c = JsValue::from("c");
 
     let target = Object::new();
-    Reflect::set(target.as_ref(), a.as_ref(), a.as_ref());
+    Reflect::set(target.as_ref(), a.as_ref(), a.as_ref()).unwrap();
 
     let src1 = Object::new();
-    Reflect::set(src1.as_ref(), &a, &c);
+    Reflect::set(src1.as_ref(), &a, &c).unwrap();
 
     let src2 = Object::new();
-    Reflect::set(src2.as_ref(), &b, &b);
+    Reflect::set(src2.as_ref(), &b, &b).unwrap();
 
     let src3 = Object::new();
-    Reflect::set(src3.as_ref(), &c, &c);
+    Reflect::set(src3.as_ref(), &c, &c).unwrap();
 
     let res = Object::assign3(&target, &src1, &src2, &src3);
 
     assert!(Object::is(target.as_ref(), res.as_ref()));
-    assert_eq!(Reflect::get(target.as_ref(), &a), c);
-    assert_eq!(Reflect::get(target.as_ref(), &b), b);
-    assert_eq!(Reflect::get(target.as_ref(), &c), c);
+    assert_eq!(Reflect::get(target.as_ref(), &a).unwrap(), c);
+    assert_eq!(Reflect::get(target.as_ref(), &b).unwrap(), b);
+    assert_eq!(Reflect::get(target.as_ref(), &c).unwrap(), c);
 }
 
 #[wasm_bindgen_test]
@@ -102,8 +102,8 @@ fn define_properties() {
     let descriptor = DefinePropertyAttrs::from(JsValue::from(Object::new()));
     descriptor.set_value(&42.into());
     let descriptor = JsValue::from(descriptor);
-    Reflect::set(props.as_ref(), &JsValue::from("bar"), &descriptor);
-    Reflect::set(props.as_ref(), &JsValue::from("car"), &descriptor);
+    Reflect::set(props.as_ref(), &JsValue::from("bar"), &descriptor).unwrap();
+    Reflect::set(props.as_ref(), &JsValue::from("car"), &descriptor).unwrap();
     let foo = foo_42();
     let foo = Object::define_properties(&foo, &props);
     assert!(foo.has_own_property(&"bar".into()));
@@ -136,7 +136,7 @@ fn get_own_property_descriptor() {
 fn get_own_property_descriptors() {
     let foo = foo_42();
     let descriptors = Object::get_own_property_descriptors(&foo);
-    let foo_desc = Reflect::get(&descriptors, &"foo".into());
+    let foo_desc = Reflect::get(&descriptors, &"foo".into()).unwrap();
     assert_eq!(PropertyDescriptor::from(foo_desc).value(), 42);
 }
 
