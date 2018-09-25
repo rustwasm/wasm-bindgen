@@ -451,9 +451,6 @@ impl TryToTokens for ast::Export {
             #[allow(non_snake_case)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub extern fn #generated_name(#(#args),*) #ret_ty {
-                // See definition of `link_mem_intrinsics` for what this is doing
-                ::wasm_bindgen::__rt::link_mem_intrinsics();
-
                 // Scope all local variables to be destroyed after we call the
                 // function to ensure that `#convert_ret`, if it panics, doesn't
                 // leak anything.
@@ -887,8 +884,6 @@ impl TryToTokens for ast::ImportFunction {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[doc = #doc_comment]
             #vis fn #rust_name(#me #(#arguments),*) #ret {
-                // See definition of `link_mem_intrinsics` for what this is doing
-                ::wasm_bindgen::__rt::link_mem_intrinsics();
                 #[link(wasm_import_module = "__wbindgen_placeholder__")]
                 extern {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
@@ -1256,6 +1251,8 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub extern fn #name() {
                 use wasm_bindgen::describe::*;
+                // See definition of `link_mem_intrinsics` for what this is doing
+                ::wasm_bindgen::__rt::link_mem_intrinsics();
                 #inner
             }
         }).to_tokens(tokens);

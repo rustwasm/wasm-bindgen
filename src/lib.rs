@@ -846,22 +846,8 @@ pub mod __rt {
     /// above. That means if this function is called and referenced we'll pull
     /// in the object file and link the intrinsics.
     ///
-    /// Note that this is an `#[inline]` function to remove the function call
-    /// overhead we inject in functions, but right now it's unclear how to do
-    /// this in a zero-cost fashion. The lowest cost seems to be generating a
-    /// store that can't be optimized away (to a global), which is listed below.
-    ///
     /// Ideas for how to improve this are most welcome!
-    #[inline]
     pub fn link_mem_intrinsics() {
-        // the above symbols only exist with the `std` feature enabled.
-        if !cfg!(feature = "std") {
-            return
-        }
-
-        use core::sync::atomic::*;
-        static FOO: AtomicUsize = ATOMIC_USIZE_INIT;
-        FOO.store(0, Ordering::SeqCst);
     }
 }
 
