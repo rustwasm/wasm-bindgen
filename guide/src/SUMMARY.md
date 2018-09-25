@@ -35,6 +35,7 @@
   - [Accessing Properties of Untyped JS Values](./reference/accessing-properties-of-untyped-js-values.md)
   - [Working with Duck-Typed Interfaces](./reference/working-with-duck-typed-interfaces.md)
   - [Command Line Interface](./reference/cli.md)
+  - [Optimizing for Size](./reference/optimize-size.md)
   - [Supported Types](./reference/types.md)
     - [Imported JavaScript Types](./reference/types/imported-js-types.md)
     - [Exported Rust Types](./reference/types/exported-rust-types.md)
