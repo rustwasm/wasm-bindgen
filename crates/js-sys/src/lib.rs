@@ -1176,6 +1176,9 @@ extern {
     pub fn next(this: &Iterator) -> Result<IteratorNext, JsValue>;
 }
 
+/// An iterator over the JS `Symbol.iterator` iteration protocol.
+///
+/// Use the `IntoIterator for &js_sys::Iterator` implementation to create this.
 pub struct Iter<'a> {
     js: &'a Iterator,
     state: IterState,
