@@ -28,7 +28,7 @@ in `Cargo.toml`:
 
 ```toml
 [dependencies.web-sys]
-git = "https://github.com/rustwasm/wasm-bindgen"
+version = "0.3"
 features = [
   "Window"
 ]
