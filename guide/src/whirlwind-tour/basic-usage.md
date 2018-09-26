@@ -124,7 +124,7 @@ Next, define our JS dependencies by creating a `package.json`:
   "devDependencies": {
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.0.1",
-    "webpack-cli": "^2.0.10",
+    "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.1.0"
   }
 }
