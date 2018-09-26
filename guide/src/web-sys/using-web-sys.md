@@ -46,7 +46,8 @@ use web_sys::Window;
 #[wasm_bindgen]
 pub fn make_the_window_small() {
     // Resize the window to 500px by 500px.
-    Window::resize_to(500, 500)
+    let window = web_sys::window().unwrap();
+    window.resize_to(500, 500)
         .expect("could not resize the window");
 }
 ```
