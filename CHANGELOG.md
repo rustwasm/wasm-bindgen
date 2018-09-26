@@ -32,6 +32,58 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.23
+
+Released 2018-09-26.
+
+### Added
+
+* [This is the first release of the `web-sys`
+  crate!](https://rustwasm.github.io/2018/09/26/announcing-web-sys.html)
+
+* Added support for unions of interfaces and non-interfaces in the WebIDL
+  frontend.
+
+* Added a policy for inclusion of new ECMAScript features in `js-sys`: the
+  feature must be in stage 4 or greater for us to support it.
+
+* Added some documentation about size profiling and optimization with
+  `wasm-bindgen` to the guide.
+
+* Added the `Clamped<T>` type for generating JavaScript `Uint8ClampedArray`s.
+
+* CI is now running on beta! Can't wait for the `rustc` release trains to roll
+  over, so we can run CI on stable too!
+
+* Added the `js_sys::try_iter` function, which checks arbitrary JS values for
+  compliance with the JS iteration protocol, and if they are iterable, converts
+  them into an iterator over the JS values that they yield.
+
+### Changed
+
+* We now only generate null checks on methods on the JS side when in debug
+  mode. For safety we will always null check on the Rust side, however.
+
+* Improved error messages when defining setters that don't start with `set_` and
+  don't use `js_name = ...`.
+
+* Improved generated code for classes in a way that avoids an unnecessary
+  allocation with static methods that return `Self` but are not the "main"
+  constructor.
+
+* **BREAKING:** `js_sys::Reflect` APIs are all fallible now. This is because
+  reflecting on `Proxy`s whose trap handlers throw an exception can cause any of
+  the reflection APIs to throw. Accordingly, `js_sys` has been bumped from
+  `0.2.X` to `0.3.X`.
+
+### Fixed
+
+* The method of ensuring that `__wbindgen_malloc` and `__wbindgen_free` are
+  always emitted in the `.wasm` binary, regardless of seeming reachability is
+  now zero-overhead.
+
+--------------------------------------------------------------------------------
+
 ## 0.2.22
 
 Released 2018-09-21

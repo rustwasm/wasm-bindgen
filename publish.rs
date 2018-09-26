@@ -27,13 +27,13 @@ const CRATES_TO_PUBLISH: &[&str] = &[
     "wasm-bindgen-test",
     "wasm-bindgen-test-macro",
     "wasm-bindgen-wasm-interpreter",
+    "wasm-bindgen-webidl",
+    "web-sys",
 ];
 
 const CRATES_TO_AVOID_PUBLISH: &[&str] = &[
     // We'll publish these when they're ready one day
     "wasm-bindgen-typescript",
-    "web-sys",
-    "wasm-bindgen-webidl",
 
     // These are internal crates, unlikely to ever be published
     "ui-tests",
