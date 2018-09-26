@@ -1,6 +1,6 @@
 use core::mem;
 
-use convert::{FromWasmAbi, IntoWasmAbi, GlobalStack, Stack, ReturnWasmAbi};
+use convert::{FromWasmAbi, GlobalStack, IntoWasmAbi, ReturnWasmAbi, Stack};
 use throw_str;
 
 macro_rules! stack_closures {
@@ -91,4 +91,3 @@ stack_closures! {
     (A B C D E F)
     (A B C D E F G)
 }
-

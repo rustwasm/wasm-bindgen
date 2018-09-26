@@ -1,8 +1,8 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
 extern crate parity_wasm;
-extern crate wasm_bindgen_shared as shared;
 extern crate serde_json;
+extern crate wasm_bindgen_shared as shared;
 extern crate wasm_gc;
 #[macro_use]
 extern crate failure;
@@ -90,7 +90,7 @@ impl Bindgen {
         if let Some(module) = (&mut module as &mut Any).downcast_mut::<Module>() {
             let blank = Module::new(Vec::new());
             self.input = Input::Module(mem::replace(module, blank), name);
-            return self
+            return self;
         }
 
         self.input = Input::Bytes(into_bytes(module), name);
@@ -213,7 +213,11 @@ impl Bindgen {
             cx.finalize(stem)?
         };
 
-        let extension = if self.nodejs_experimental_modules { "mjs" } else { "js" };
+        let extension = if self.nodejs_experimental_modules {
+            "mjs"
+        } else {
+            "js"
+        };
         let js_path = out_dir.join(stem).with_extension(extension);
         fs::write(&js_path, reset_indentation(&js))
             .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
@@ -251,12 +255,12 @@ impl Bindgen {
 
         if self.nodejs_experimental_modules {
             for (i, module) in imports.iter().enumerate() {
-                shim.push_str(&format!("import * as import{} from '{}';\n",
-                                       i, module));
+                shim.push_str(&format!("import * as import{} from '{}';\n", i, module));
             }
             // On windows skip the leading `/` which comes out when we parse a
             // url to use `C:\...` instead of `\C:\...`
-            shim.push_str(&format!("
+            shim.push_str(&format!(
+                "
                 import * as path from 'path';
                 import * as fs from 'fs';
                 import * as url from 'url';
@@ -267,12 +271,17 @@ impl Bindgen {
                     file = file.substring(1);
                 }}
                 const bytes = fs.readFileSync(path.join(file, '{}'));
-            ", path.file_name().unwrap().to_str().unwrap()));
+            ",
+                path.file_name().unwrap().to_str().unwrap()
+            ));
         } else {
-            shim.push_str(&format!("
+            shim.push_str(&format!(
+                "
                 const path = require('path').join(__dirname, '{}');
                 const bytes = require('fs').readFileSync(path);
-            ", path.file_name().unwrap().to_str().unwrap()));
+            ",
+                path.file_name().unwrap().to_str().unwrap()
+            ));
         }
         shim.push_str("let imports = {};\n");
         for (i, module) in imports.iter().enumerate() {
@@ -387,7 +396,11 @@ fn reset_indentation(s: &str) -> String {
         if line.starts_with('}') || (line.ends_with('}') && !line.starts_with('*')) {
             indent = indent.saturating_sub(1);
         }
-        let extra = if line.starts_with(':') || line.starts_with('?') { 1 } else { 0 };
+        let extra = if line.starts_with(':') || line.starts_with('?') {
+            1
+        } else {
+            0
+        };
         if !line.is_empty() {
             for _ in 0..indent + extra {
                 dst.push_str("    ");
@@ -399,5 +412,5 @@ fn reset_indentation(s: &str) -> String {
             indent += 1;
         }
     }
-    return dst
+    return dst;
 }

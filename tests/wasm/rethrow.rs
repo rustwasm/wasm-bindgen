@@ -1,8 +1,8 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/rethrow.js")]
-extern {
+extern "C" {
     fn call_throw_one();
     fn call_ok();
 }

@@ -1,22 +1,22 @@
 #![cfg(target_arch = "wasm32")]
 
-extern crate wasm_bindgen_test;
-extern crate wasm_bindgen;
 extern crate js_sys;
+extern crate wasm_bindgen;
+extern crate wasm_bindgen_test;
 
+use js_sys::Array;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-use js_sys::Array;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
 #[wasm_bindgen(module = "./tests/headless.js")]
-extern {
-    fn is_array_values_supported()-> bool;
+extern "C" {
+    fn is_array_values_supported() -> bool;
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     type ValuesIterator;
     #[wasm_bindgen(method, structural)]
     fn next(this: &ValuesIterator) -> IterNext;
@@ -32,7 +32,7 @@ extern {
 #[wasm_bindgen_test]
 fn array_iterator_values() {
     if !is_array_values_supported() {
-        return
+        return;
     }
     let array = Array::new();
     array.push(&8.into());

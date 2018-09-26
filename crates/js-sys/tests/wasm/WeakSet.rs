@@ -1,10 +1,10 @@
-use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
 use js_sys::*;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     type SomeValue;
     #[wasm_bindgen(method, setter, structural)]
     fn set_some(this: &SomeValue, val: JsValue);

@@ -1,8 +1,8 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/comments.js")]
-extern {
+extern "C" {
     fn assert_comments_exist();
 }
 
@@ -17,7 +17,7 @@ pub fn annotated() -> String {
 pub struct Annotated {
     a: String,
     /// annotated struct field
-    pub b: u32
+    pub b: u32,
 }
 
 #[wasm_bindgen]

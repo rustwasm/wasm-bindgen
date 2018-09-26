@@ -1,10 +1,10 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 include!(concat!(env!("OUT_DIR"), "/dictionary.rs"));
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn assert_dict_c(c: &C);
     #[wasm_bindgen(js_name = assert_dict_c)]
     fn assert_dict_c2(c: C);
@@ -44,8 +44,7 @@ fn casing() {
 
 #[wasm_bindgen_test]
 fn many_types() {
-    ManyTypes::new()
-        .a("a");
+    ManyTypes::new().a("a");
 }
 
 #[wasm_bindgen_test]

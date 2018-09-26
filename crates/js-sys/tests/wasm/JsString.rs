@@ -1,11 +1,11 @@
-use wasm_bindgen::JsValue;
+use js_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
-use js_sys::*;
 
 #[wasm_bindgen(module = "tests/wasm/JsString.js")]
-extern {
+extern "C" {
     fn new_string_object() -> JsValue;
     fn get_replacer_function() -> Function;
 }
@@ -55,7 +55,10 @@ fn concat() {
     let s = JsString::from("Hello ").concat(&"World".into());
     assert_eq!(JsValue::from(s), "Hello World");
     let foo = JsString::from("foo");
-    assert_eq!(JsValue::from(foo.concat(&Object::new().into())), "foo[object Object]");
+    assert_eq!(
+        JsValue::from(foo.concat(&Object::new().into())),
+        "foo[object Object]"
+    );
     assert_eq!(JsValue::from(foo.concat(&Array::new().into())), "foo");
     assert_eq!(JsValue::from(foo.concat(&JsValue::null())), "foonull");
     assert_eq!(JsValue::from(foo.concat(&true.into())), "footrue");
@@ -76,27 +79,38 @@ fn ends_with() {
 #[wasm_bindgen_test]
 fn from_char_code() {
     let s = "½+¾=";
-    let codes : Vec<u32> = s.chars()
-        .map(|char| char as u32)
-        .collect();
+    let codes: Vec<u32> = s.chars().map(|char| char as u32).collect();
 
     assert_eq!(JsString::from_char_code1(codes[0]), "½");
     assert_eq!(JsString::from_char_code2(codes[0], codes[1]), "½+");
-    assert_eq!(JsString::from_char_code3(codes[0], codes[1], codes[2]), "½+¾");
-    assert_eq!(JsString::from_char_code4(codes[0], codes[1], codes[2], codes[3]), "½+¾=");
+    assert_eq!(
+        JsString::from_char_code3(codes[0], codes[1], codes[2]),
+        "½+¾"
+    );
+    assert_eq!(
+        JsString::from_char_code4(codes[0], codes[1], codes[2], codes[3]),
+        "½+¾="
+    );
 }
 
 #[wasm_bindgen_test]
 fn from_code_point() {
     let s = "☃★♲你";
-    let codes : Vec<u32> = s.chars()
-        .map(|char| char as u32)
-        .collect();
+    let codes: Vec<u32> = s.chars().map(|char| char as u32).collect();
 
     assert_eq!(JsString::from_code_point1(codes[0]).unwrap(), "☃");
-    assert_eq!(JsString::from_code_point2(codes[0], codes[1]).unwrap(), "☃★");
-    assert_eq!(JsString::from_code_point3(codes[0], codes[1], codes[2]).unwrap(), "☃★♲");
-    assert_eq!(JsString::from_code_point4(codes[0], codes[1], codes[2], codes[3]).unwrap(), "☃★♲你");
+    assert_eq!(
+        JsString::from_code_point2(codes[0], codes[1]).unwrap(),
+        "☃★"
+    );
+    assert_eq!(
+        JsString::from_code_point3(codes[0], codes[1], codes[2]).unwrap(),
+        "☃★♲"
+    );
+    assert_eq!(
+        JsString::from_code_point4(codes[0], codes[1], codes[2], codes[3]).unwrap(),
+        "☃★♲你"
+    );
 
     assert!(!JsString::from_code_point1(0x10FFFF).is_err());
     assert!(JsString::from_code_point1(0x110000).is_err());
@@ -235,8 +249,14 @@ fn match_() {
     let result = JsString::from(s).match_(&re);
     let obj = result.unwrap();
 
-    assert_eq!(Reflect::get(obj.as_ref(), &"0".into()).unwrap(), "see Chapter 3.4.5.1");
-    assert_eq!(Reflect::get(obj.as_ref(), &"1".into()).unwrap(), "Chapter 3.4.5.1");
+    assert_eq!(
+        Reflect::get(obj.as_ref(), &"0".into()).unwrap(),
+        "see Chapter 3.4.5.1"
+    );
+    assert_eq!(
+        Reflect::get(obj.as_ref(), &"1".into()).unwrap(),
+        "Chapter 3.4.5.1"
+    );
     assert_eq!(Reflect::get(obj.as_ref(), &"2".into()).unwrap(), ".1");
     assert_eq!(Reflect::get(obj.as_ref(), &"index".into()).unwrap(), 22);
     assert_eq!(Reflect::get(obj.as_ref(), &"input".into()).unwrap(), s);
@@ -248,9 +268,15 @@ fn normalize() {
 
     // TODO: Handle undefined
     assert_eq!(JsValue::from(js.normalize("NFC")), "\u{1E9B}\u{0323}");
-    assert_eq!(JsValue::from(js.normalize("NFD")), "\u{017F}\u{0323}\u{0307}");
+    assert_eq!(
+        JsValue::from(js.normalize("NFD")),
+        "\u{017F}\u{0323}\u{0307}"
+    );
     assert_eq!(JsValue::from(js.normalize("NFKC")), "\u{1E69}");
-    assert_eq!(JsValue::from(js.normalize("NFKD")), "\u{0073}\u{0323}\u{0307}");
+    assert_eq!(
+        JsValue::from(js.normalize("NFKD")),
+        "\u{0073}\u{0323}\u{0307}"
+    );
 }
 
 #[wasm_bindgen_test]
@@ -287,17 +313,24 @@ fn repeat() {
 
 #[wasm_bindgen_test]
 fn replace() {
-    let js = JsString::from("The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?");
+    let js = JsString::from(
+        "The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?",
+    );
     let result = js.replace("dog", "ferret");
 
-    assert_eq!(result, "The quick brown fox jumped over the lazy ferret. If the dog reacted, was it really lazy?");
+    assert_eq!(
+        result,
+        "The quick brown fox jumped over the lazy ferret. If the dog reacted, was it really lazy?"
+    );
 
     let js = JsString::from("borderTop");
     let result = js.replace_with_function("T", &get_replacer_function());
 
     assert_eq!(result, "border-top");
 
-    let js = JsString::from("The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?");
+    let js = JsString::from(
+        "The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?",
+    );
     let re = RegExp::new("dog", "g");
     let result = js.replace_by_pattern(&re, "ferret");
 
@@ -312,7 +345,9 @@ fn replace() {
 
 #[wasm_bindgen_test]
 fn search() {
-    let js = JsString::from("The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?");
+    let js = JsString::from(
+        "The quick brown fox jumped over the lazy dog. If the dog reacted, was it really lazy?",
+    );
     let re = RegExp::new("[^\\w\\s]", "g");
 
     assert_eq!(js.search(&re), 44);
@@ -495,8 +530,14 @@ fn raw() {
     let call_site = Object::new();
     let raw = Array::of3(&"foo".into(), &"bar".into(), &"123".into());
     Reflect::set(&call_site.as_ref(), &"raw".into(), &raw.into()).unwrap();
-    assert_eq!(JsString::raw_2(&call_site, "5", "JavaScript").unwrap(), "foo5barJavaScript123");
+    assert_eq!(
+        JsString::raw_2(&call_site, "5", "JavaScript").unwrap(),
+        "foo5barJavaScript123"
+    );
     let substitutions = Array::of2(&"5".into(), &"JavaScript".into());
-    assert_eq!(JsString::raw(&call_site, &substitutions).unwrap(), "foo5barJavaScript123");
+    assert_eq!(
+        JsString::raw(&call_site, &substitutions).unwrap(),
+        "foo5barJavaScript123"
+    );
     assert!(JsString::raw_0(&JsValue::null().unchecked_into()).is_err());
 }

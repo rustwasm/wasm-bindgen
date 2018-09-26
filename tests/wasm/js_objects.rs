@@ -1,8 +1,8 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/js_objects.js")]
-extern {
+extern "C" {
     fn simple_foo(s: &JsValue);
     fn js_simple();
 
@@ -123,16 +123,17 @@ fn serde() {
         a: u32,
     }
 
-
     let js = JsValue::from_serde("foo").unwrap();
     assert_eq!(js.as_string(), Some("foo".to_string()));
 
-    let ret = verify_serde(JsValue::from_serde(&Foo {
-        a: 0,
-        b: "foo".to_string(),
-        c: None,
-        d: Bar { a: 1 },
-    }).unwrap());
+    let ret = verify_serde(
+        JsValue::from_serde(&Foo {
+            a: 0,
+            b: "foo".to_string(),
+            c: None,
+            d: Bar { a: 1 },
+        }).unwrap(),
+    );
 
     let foo = ret.into_serde::<Foo>().unwrap();
     assert_eq!(foo.a, 2);

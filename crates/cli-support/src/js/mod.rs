@@ -390,7 +390,8 @@ impl<'a> Context<'a> {
                 function() {{
                     return addHeapObject({});
                 }}
-                ", mem
+                ",
+                mem
             ))
         })?;
 
@@ -549,7 +550,7 @@ impl<'a> Context<'a> {
                     constructor() {
                         throw new Error('cannot invoke `new` directly');
                     }
-                "
+                ",
             );
         }
 
@@ -705,8 +706,7 @@ impl<'a> Context<'a> {
             .filter_map(|s| match *s {
                 Section::Import(ref mut s) => Some(s),
                 _ => None,
-            })
-            .flat_map(|s| s.entries_mut());
+            }).flat_map(|s| s.entries_mut());
 
         for import in imports {
             if import.module() == "__wbindgen_placeholder__" {
@@ -726,7 +726,7 @@ impl<'a> Context<'a> {
                 import.module_mut().truncate(0);
                 import.module_mut().push_str("./");
                 import.module_mut().push_str(module_name);
-                continue
+                continue;
             }
 
             let renamed_import = format!("__wbindgen_{}", import.field());
@@ -817,7 +817,9 @@ impl<'a> Context<'a> {
                 slab_next = idx;
             }}
             ",
-            validate_owned, INITIAL_SLAB_VALUES.len(), dec_ref
+            validate_owned,
+            INITIAL_SLAB_VALUES.len(),
+            dec_ref
         ));
     }
 
@@ -848,7 +850,8 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("slab") {
             return;
         }
-        let initial_values = INITIAL_SLAB_VALUES.iter()
+        let initial_values = INITIAL_SLAB_VALUES
+            .iter()
             .map(|s| format!("{{ obj: {} }}", s))
             .collect::<Vec<_>>();
         self.global(&format!("const slab = [{}];", initial_values.join(", ")));
@@ -1013,7 +1016,8 @@ impl<'a> Context<'a> {
         self.require_internal_export("__wbindgen_malloc")?;
         self.expose_uint32_memory();
         self.expose_add_heap_object();
-        self.global("
+        self.global(
+            "
             function passArrayJsValueToWasm(array) {
                 const ptr = wasm.__wbindgen_malloc(array.length * 4);
                 const mem = getUint32Memory();
@@ -1023,7 +1027,8 @@ impl<'a> Context<'a> {
                 return [ptr, array.length];
             }
 
-        ");
+        ",
+        );
         Ok(())
     }
 
@@ -1126,7 +1131,8 @@ impl<'a> Context<'a> {
         // non-shared mode there's no need to copy the data except for the
         // string itself.
         self.memory(); // set self.memory_init
-        let is_shared = self.module
+        let is_shared = self
+            .module
             .memory_section()
             .map(|s| s.entries()[0].limits().shared())
             .unwrap_or(match &self.memory_init {
@@ -1135,11 +1141,14 @@ impl<'a> Context<'a> {
             });
         let method = if is_shared { "slice" } else { "subarray" };
 
-        self.global(&format!("
+        self.global(&format!(
+            "
             function getStringFromWasm(ptr, len) {{
                 return cachedDecoder.decode(getUint8Memory().{}(ptr, ptr + len));
             }}
-        ", method));
+        ",
+            method
+        ));
     }
 
     fn expose_get_array_js_value_from_wasm(&mut self) {
@@ -1646,18 +1655,20 @@ impl<'a> Context<'a> {
 
     fn expose_is_like_none(&mut self) {
         if !self.exposed_globals.insert("is_like_none") {
-            return
+            return;
         }
-        self.global("
+        self.global(
+            "
             function isLikeNone(x) {
                 return x === undefined || x === null;
             }
-        ");
+        ",
+        );
     }
 
     fn expose_cleanup_groups(&mut self) {
         if !self.exposed_globals.insert("cleanup_groups") {
-            return
+            return;
         }
         self.global(
             "
@@ -1668,7 +1679,7 @@ impl<'a> Context<'a> {
                     const ref = CLEANUPS.makeRef(obj, () => free(ptr));
                     CLEANUPS_MAP.set(ptr, ref);
                 }
-            "
+            ",
         );
     }
 
@@ -1719,17 +1730,16 @@ impl<'a> Context<'a> {
             return "wasm.memory";
         }
 
-        let (entry, mem) = self.module.import_section()
+        let (entry, mem) = self
+            .module
+            .import_section()
             .expect("must import memory")
             .entries()
             .iter()
-            .filter_map(|i| {
-                match i.external() {
-                    External::Memory(m) => Some((i, m)),
-                    _ => None,
-                }
-            })
-            .next()
+            .filter_map(|i| match i.external() {
+                External::Memory(m) => Some((i, m)),
+                _ => None,
+            }).next()
             .expect("must import memory");
         assert_eq!(entry.module(), "env");
         assert_eq!(entry.field(), "memory");
@@ -1822,8 +1832,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
         };
         let (js, ts, js_doc) = Js2Rust::new(function_name, self.cx)
             .method(export.method, export.consumed)
-            .constructor(if export.is_constructor { Some(class_name) } else { None })
-            .process(descriptor.unwrap_function())?
+            .constructor(if export.is_constructor {
+                Some(class_name)
+            } else {
+                None
+            }).process(descriptor.unwrap_function())?
             .finish("", &format!("wasm.{}", wasm_name));
 
         let class = self
@@ -1837,8 +1850,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         if export.is_constructor {
             if class.has_constructor {
-                bail!("found duplicate constructor `{}`",
-                      export.function.name);
+                bail!("found duplicate constructor `{}`", export.function.name);
             }
             class.has_constructor = true;
         } else if !export.method {
@@ -1871,10 +1883,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
             shared::ImportKind::Type(ref ty) => {
                 self.generate_import_type(import, ty).with_context(|_| {
-                    format!(
-                        "failed to generate bindings for JS import `{}`",
-                        ty.name,
-                    )
+                    format!("failed to generate bindings for JS import `{}`", ty.name,)
                 })?;
             }
             shared::ImportKind::Enum(_) => {}
@@ -1890,7 +1899,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         // The same static can be imported in multiple locations, so only
         // generate bindings once for it.
         if !self.cx.imported_statics.insert(import.shim.clone()) {
-            return Ok(())
+            return Ok(());
         }
 
         // TODO: should support more types to import here
@@ -1962,7 +1971,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     format!("{}_target", import.shim)
                 } else {
                     name
-                })
+                });
             }
         };
 
@@ -2052,9 +2061,15 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         class, location, s, binding,
                     )
                 }
-                shared::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
-                shared::OperationKind::IndexingSetter => panic!("indexing setter should be structural"),
-                shared::OperationKind::IndexingDeleter => panic!("indexing deleter should be structural"),
+                shared::OperationKind::IndexingGetter => {
+                    panic!("indexing getter should be structural")
+                }
+                shared::OperationKind::IndexingSetter => {
+                    panic!("indexing setter should be structural")
+                }
+                shared::OperationKind::IndexingDeleter => {
+                    panic!("indexing deleter should be structural")
+                }
             }
         };
 
@@ -2090,7 +2105,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         let name = self.import_name(info, &import.name)?;
         self.cx.expose_get_object();
-        let body = format!("
+        let body = format!(
+            "
                 function(idx) {{
                     return getObject(idx) instanceof {} ? 1 : 0;
                 }}
@@ -2139,10 +2155,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         // Figure out what identifier we're importing from the module. If we've
         // got a namespace we use that, otherwise it's the name specified above.
-        let name_to_import = import.js_namespace
-            .as_ref()
-            .map(|s| &**s)
-            .unwrap_or(item);
+        let name_to_import = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
 
         // Here's where it's a bit tricky. We need to make sure that importing
         // the same identifier from two different modules works, and they're
@@ -2158,7 +2171,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let use_node_require = self.cx.use_node_require();
         let imported_identifiers = &mut self.cx.imported_identifiers;
         let imports = &mut self.cx.imports;
-        let identifier = self.cx.imported_names.entry(import.module.clone())
+        let identifier = self
+            .cx
+            .imported_names
+            .entry(import.module.clone())
             .or_insert_with(Default::default)
             .entry(name_to_import.to_string())
             .or_insert_with(|| {
@@ -2170,10 +2186,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             name, module, name_to_import
                         ));
                     } else if name_to_import == name {
-                        imports.push_str(&format!(
-                            "import {{ {} }} from '{}';\n",
-                            name, module
-                        ));
+                        imports.push_str(&format!("import {{ {} }} from '{}';\n", name, module));
                     } else {
                         imports.push_str(&format!(
                             "import {{ {} as {} }} from '{}';\n",

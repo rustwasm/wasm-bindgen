@@ -1,10 +1,10 @@
-extern crate wasm_bindgen;
 extern crate js_sys;
+extern crate wasm_bindgen;
 extern crate web_sys;
 
-use js_sys::{Date, Array};
-use wasm_bindgen::JsCast;
+use js_sys::{Array, Date};
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 use web_sys::{Document, Element, HtmlElement, Window};
 
 #[wasm_bindgen]
@@ -18,15 +18,13 @@ pub fn run() -> Result<(), JsValue> {
     array.push(&"Hello".into());
     array.push(&1.into());
     let mut first_item = None;
-    array.for_each(&mut |obj, idx, _arr| {
-        match idx {
-            0 => {
-                assert_eq!(obj, "Hello");
-                first_item = obj.as_string();
-            }
-            1 => assert_eq!(obj, 1),
-            _ => panic!("unknown index: {}", idx)
+    array.for_each(&mut |obj, idx, _arr| match idx {
+        0 => {
+            assert_eq!(obj, "Hello");
+            first_item = obj.as_string();
         }
+        1 => assert_eq!(obj, 1),
+        _ => panic!("unknown index: {}", idx),
     });
     assert_eq!(first_item, Some("Hello".to_string()));
 
@@ -69,18 +67,13 @@ fn setup_clock(window: &Window, document: &Document) -> Result<(), JsValue> {
         .get_element_by_id("current-time")
         .expect("should have #current-time on the page");
     update_time(&current_time);
-    let a = Closure::wrap(Box::new(move || {
-        update_time(&current_time)
-    }) as Box<Fn()>);
-    window.set_interval_with_callback_and_timeout_and_arguments_0(
-        a.as_ref().unchecked_ref(),
-        1000,
-    )?;
+    let a = Closure::wrap(Box::new(move || update_time(&current_time)) as Box<Fn()>);
+    window
+        .set_interval_with_callback_and_timeout_and_arguments_0(a.as_ref().unchecked_ref(), 1000)?;
     fn update_time(current_time: &Element) {
-        current_time
-            .set_inner_html(&String::from(
-                Date::new_0().to_locale_string("en-GB", &JsValue::undefined()),
-            ));
+        current_time.set_inner_html(&String::from(
+            Date::new_0().to_locale_string("en-GB", &JsValue::undefined()),
+        ));
     }
 
     // The instances of `Closure` that we created will invalidate their

@@ -5,7 +5,7 @@ use wasm_bindgen_test::*;
 include!(concat!(env!("OUT_DIR"), "/global.rs"));
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn get_global() -> Global;
 }
 

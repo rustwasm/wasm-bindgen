@@ -1,13 +1,13 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/structural.js")]
-extern {
+extern "C" {
     fn js_works();
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     pub type Foo;
 
     #[wasm_bindgen(method, structural)]

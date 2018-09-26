@@ -1,9 +1,9 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 use web_sys::Response;
 
 #[wasm_bindgen(module = "./tests/wasm/response.js")]
-extern {
+extern "C" {
     fn new_response() -> Response;
 }
 

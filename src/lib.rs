@@ -351,13 +351,19 @@ impl From<bool> for JsValue {
     }
 }
 
-impl<'a, T> From<&'a T> for JsValue where T: JsCast {
+impl<'a, T> From<&'a T> for JsValue
+where
+    T: JsCast,
+{
     fn from(s: &'a T) -> JsValue {
         s.as_ref().clone()
     }
 }
 
-impl<T> From<Option<T>> for JsValue where JsValue: From<T> {
+impl<T> From<Option<T>> for JsValue
+where
+    JsValue: From<T>,
+{
     fn from(s: Option<T>) -> JsValue {
         match s {
             Some(s) => s.into(),
@@ -368,13 +374,21 @@ impl<T> From<Option<T>> for JsValue where JsValue: From<T> {
 
 impl JsCast for JsValue {
     // everything is a `JsValue`!
-    fn instanceof(_val: &JsValue) -> bool { true }
-    fn unchecked_from_js(val: JsValue) -> Self { val }
-    fn unchecked_from_js_ref(val: &JsValue) -> &Self { val }
+    fn instanceof(_val: &JsValue) -> bool {
+        true
+    }
+    fn unchecked_from_js(val: JsValue) -> Self {
+        val
+    }
+    fn unchecked_from_js_ref(val: &JsValue) -> &Self {
+        val
+    }
 }
 
 impl AsRef<JsValue> for JsValue {
-    fn as_ref(&self) -> &JsValue { self }
+    fn as_ref(&self) -> &JsValue {
+        self
+    }
 }
 
 macro_rules! numbers {
@@ -562,7 +576,6 @@ pub fn throw(s: &str) -> ! {
     throw_str(s)
 }
 
-
 /// Throws a JS exception.
 ///
 /// This function will throw a JS exception with the message provided. The
@@ -604,7 +617,9 @@ pub fn throw_val(s: JsValue) -> ! {
 /// Returns a handle to this wasm instance's `WebAssembly.Memory`
 pub fn memory() -> JsValue {
     unsafe {
-        JsValue { idx: __wbindgen_memory() }
+        JsValue {
+            idx: __wbindgen_memory(),
+        }
     }
 }
 
@@ -847,8 +862,7 @@ pub mod __rt {
     /// in the object file and link the intrinsics.
     ///
     /// Ideas for how to improve this are most welcome!
-    pub fn link_mem_intrinsics() {
-    }
+    pub fn link_mem_intrinsics() {}
 }
 
 /// A wrapper type around slices and vectors for binding the `Uint8ClampedArray`

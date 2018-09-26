@@ -30,7 +30,7 @@ enum Repr {
     SynError(Error),
     Multi {
         diagnostics: Vec<Diagnostic>,
-    }
+    },
 }
 
 impl Diagnostic {
@@ -39,7 +39,7 @@ impl Diagnostic {
             inner: Repr::Single {
                 text: text.into(),
                 span: None,
-            }
+            },
         }
     }
 
@@ -48,7 +48,7 @@ impl Diagnostic {
             inner: Repr::Single {
                 text: text.into(),
                 span: extract_spans(node),
-            }
+            },
         }
     }
 
@@ -56,7 +56,9 @@ impl Diagnostic {
         if diagnostics.len() == 0 {
             Ok(())
         } else {
-            Err(Diagnostic { inner: Repr::Multi { diagnostics }  })
+            Err(Diagnostic {
+                inner: Repr::Multi { diagnostics },
+            })
         }
     }
 
@@ -72,7 +74,7 @@ impl Diagnostic {
 
 impl From<Error> for Diagnostic {
     fn from(err: Error) -> Diagnostic {
-       Diagnostic {
+        Diagnostic {
             inner: Repr::SynError(err),
         }
     }

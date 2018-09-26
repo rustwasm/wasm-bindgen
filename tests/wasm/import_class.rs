@@ -2,11 +2,11 @@
 
 #![deny(missing_docs)] // test that documenting public bindings is enough
 
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/import_class.js")]
-extern {
+extern "C" {
     fn math_log(f: f64) -> f64;
 
     #[wasm_bindgen(js_namespace = StaticFunction)]
@@ -87,7 +87,7 @@ extern {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_namespace = Math)]
     fn random() -> f64;
     #[wasm_bindgen(js_namespace = Math)]
@@ -172,9 +172,7 @@ pub struct AssertDenyDocsWorks {
 
 /// dox
 #[wasm_bindgen]
-pub fn assert_deny_docs_works() {
-}
-
+pub fn assert_deny_docs_works() {}
 
 #[wasm_bindgen_test]
 fn options() {

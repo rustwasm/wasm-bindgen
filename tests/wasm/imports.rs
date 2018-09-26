@@ -1,8 +1,8 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/imports.js")]
-extern {
+extern "C" {
     fn test_simple();
 
     fn simple_foo(s: &str);
@@ -53,7 +53,7 @@ extern {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn parseInt(a: &str) -> u32;
 }
 
@@ -160,7 +160,6 @@ impl CustomType {
         panic!()
     }
 }
-
 
 #[wasm_bindgen_test]
 fn rename_with_string() {

@@ -3,8 +3,8 @@
 //! Currently this is quite simple, rendering the same as the console tests in
 //! node.js. Output here is rendered in a `pre`, however.
 
-use wasm_bindgen::prelude::*;
 use js_sys::Error;
+use wasm_bindgen::prelude::*;
 
 /// Implementation of `Formatter` for browsers.
 ///
@@ -15,7 +15,7 @@ pub struct Browser {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     type HTMLDocument;
     static document: HTMLDocument;
     #[wasm_bindgen(method, structural)]
@@ -38,9 +38,7 @@ impl Browser {
     pub fn new() -> Browser {
         let pre = document.getElementById("output");
         pre.set_inner_html("");
-        Browser {
-            pre,
-        }
+        Browser { pre }
     }
 }
 
@@ -75,11 +73,10 @@ impl super::Formatter for Browser {
         // probably a chome-like error which is already rendered well, so just
         // return this info
         if stack.contains(&header) {
-            return stack
+            return stack;
         }
 
         // Fallback to make sure we don't lose any info
         format!("{}\n{}", header, stack)
     }
 }
-

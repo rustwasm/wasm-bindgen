@@ -1,9 +1,9 @@
-use wasm_bindgen_test::*;
-use wasm_bindgen::prelude::*;
 use self::inner::ColorWithCustomValues;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/enums.js")]
-extern {
+extern "C" {
     fn js_c_style_enum();
     fn js_c_style_enum_with_custom_values();
 }

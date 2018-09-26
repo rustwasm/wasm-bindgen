@@ -24,31 +24,34 @@ extern crate syn;
 extern crate wasm_bindgen_backend as backend;
 extern crate weedle;
 
+mod error;
 mod first_pass;
 mod idl_type;
 mod util;
-mod error;
 
 use std::collections::{BTreeSet, HashSet};
 use std::env;
 use std::fs;
 use std::iter::FromIterator;
 
-use backend::TryToTokens;
 use backend::ast;
 use backend::defined::ImportedTypeReferences;
 use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
-use backend::util::{ident_ty, rust_ident, raw_ident, wrap_import_function};
+use backend::util::{ident_ty, raw_ident, rust_ident, wrap_import_function};
+use backend::TryToTokens;
 use proc_macro2::{Ident, Span};
 use quote::ToTokens;
-use weedle::attribute::{ExtendedAttributeList};
+use weedle::attribute::ExtendedAttributeList;
 use weedle::dictionary::DictionaryMember;
 use weedle::interface::InterfaceMember;
 
-use first_pass::{FirstPass, FirstPassRecord, OperationId, InterfaceData};
-use first_pass::{OperationData, CallbackInterfaceData};
-use util::{public, webidl_const_v_to_backend_const_v, TypePosition, camel_case_ident, shouty_snake_case_ident, snake_case_ident, mdn_doc};
+use first_pass::{CallbackInterfaceData, OperationData};
+use first_pass::{FirstPass, FirstPassRecord, InterfaceData, OperationId};
 use idl_type::ToIdlType;
+use util::{
+    camel_case_ident, mdn_doc, public, shouty_snake_case_ident, snake_case_ident,
+    webidl_const_v_to_backend_const_v, TypePosition,
+};
 
 pub use error::{Error, ErrorKind, Result};
 
@@ -58,25 +61,22 @@ struct Program {
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
-fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
-    -> Result<Program>
-{
+fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program> {
     let definitions = match weedle::parse(webidl_source) {
         Ok(def) => def,
         Err(e) => {
             return Err(match &e {
-                weedle::Err::Incomplete(needed) => {
-                    format_err!("needed {:?} more bytes", needed)
-                        .context(ErrorKind::ParsingWebIDLSource).into()
-                }
-                weedle::Err::Error(cx) |
-                weedle::Err::Failure(cx) => {
+                weedle::Err::Incomplete(needed) => format_err!("needed {:?} more bytes", needed)
+                    .context(ErrorKind::ParsingWebIDLSource)
+                    .into(),
+                weedle::Err::Error(cx) | weedle::Err::Failure(cx) => {
                     let remaining = match cx {
                         weedle::Context::Code(remaining, _) => remaining,
                     };
                     let pos = webidl_source.len() - remaining.len();
                     format_err!("failed to parse WebIDL")
-                        .context(ErrorKind::ParsingWebIDLSourcePos(pos)).into()
+                        .context(ErrorKind::ParsingWebIDLSourcePos(pos))
+                        .into()
                 }
             });
         }
@@ -88,14 +88,10 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
     let mut program = Default::default();
     let mut submodules = Vec::new();
 
-    let allowed_types = allowed_types.map(|list| {
-        list.iter().cloned().collect::<HashSet<_>>()
-    });
-    let filter = |name: &str| {
-        match &allowed_types {
-            Some(set) => set.contains(name),
-            None => true,
-        }
+    let allowed_types = allowed_types.map(|list| list.iter().cloned().collect::<HashSet<_>>());
+    let filter = |name: &str| match &allowed_types {
+        Some(set) => set.contains(name),
+        None => true,
     };
 
     for (name, e) in first_pass_record.enums.iter() {
@@ -130,10 +126,8 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
     // `AsRef` and such implementations.
     for import in program.imports.iter_mut() {
         if let backend::ast::ImportKind::Type(t) = &mut import.kind {
-            t.extends.retain(|n| {
-                first_pass_record.builtin_idents.contains(n) ||
-                    filter(&n.to_string())
-            });
+            t.extends
+                .retain(|n| first_pass_record.builtin_idents.contains(n) || filter(&n.to_string()));
         }
     }
 
@@ -145,10 +139,7 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>)
 
 /// Compile the given WebIDL source text into Rust source text containing
 /// `wasm-bindgen` bindings to the things described in the WebIDL.
-pub fn compile(
-    webidl_source: &str,
-    allowed_types: Option<&[&str]>,
-) -> Result<String> {
+pub fn compile(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<String> {
     let ast = parse(webidl_source, allowed_types)?;
     Ok(compile_ast(ast))
 }
@@ -156,11 +147,34 @@ pub fn compile(
 fn builtin_idents() -> BTreeSet<Ident> {
     BTreeSet::from_iter(
         vec![
-            "str", "char", "bool", "JsValue", "u8", "i8", "u16", "i16", "u32", "i32", "u64", "i64",
-            "usize", "isize", "f32", "f64", "Result", "String", "Vec", "Option",
-            "Array", "ArrayBuffer", "Object", "Promise", "Function", "Clamped",
+            "str",
+            "char",
+            "bool",
+            "JsValue",
+            "u8",
+            "i8",
+            "u16",
+            "i16",
+            "u32",
+            "i32",
+            "u64",
+            "i64",
+            "usize",
+            "isize",
+            "f32",
+            "f64",
+            "Result",
+            "String",
+            "Vec",
+            "Option",
+            "Array",
+            "ArrayBuffer",
+            "Object",
+            "Promise",
+            "Function",
+            "Clamped",
         ].into_iter()
-            .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
+        .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
     )
 }
 
@@ -188,17 +202,20 @@ fn compile_ast(mut ast: Program) -> String {
                 m.imported_type_references(&mut cb);
             }
         }
-        let changed =
-            ast.main.remove_undefined_imports(&|id| defined.contains(id)) ||
-            ast.submodules.iter_mut().any(|(_, m)| {
-                m.remove_undefined_imports(&|id| defined.contains(id))
-            });
+        let changed = ast
+            .main
+            .remove_undefined_imports(&|id| defined.contains(id))
+            || ast
+                .submodules
+                .iter_mut()
+                .any(|(_, m)| m.remove_undefined_imports(&|id| defined.contains(id)));
         if !changed {
-            break
+            break;
         }
     }
     if let Some(path) = track {
-        let contents = all_definitions.into_iter()
+        let contents = all_definitions
+            .into_iter()
             .filter(|def| !builtin.contains(def))
             .map(|s| format!("{} = []", s))
             .collect::<Vec<_>>()
@@ -229,7 +246,7 @@ impl<'src> FirstPassRecord<'src> {
     fn append_enum(
         &self,
         program: &mut backend::ast::Program,
-        enum_: &'src weedle::EnumDefinition<'src>
+        enum_: &'src weedle::EnumDefinition<'src>,
     ) {
         let variants = &enum_.values.body.list;
         program.imports.push(backend::ast::Import {
@@ -246,8 +263,7 @@ impl<'src> FirstPassRecord<'src> {
                         } else {
                             rust_ident("None")
                         }
-                    })
-                    .collect(),
+                    }).collect(),
                 variant_values: variants.iter().map(|v| v.0.to_string()).collect(),
                 rust_attrs: vec![parse_quote!(#[derive(Copy, Clone, PartialEq, Debug)])],
             }),
@@ -267,7 +283,7 @@ impl<'src> FirstPassRecord<'src> {
         };
         let mut fields = Vec::new();
         if !self.append_dictionary_members(def.identifier.0, &mut fields) {
-            return
+            return;
         }
 
         program.dictionaries.push(ast::Dictionary {
@@ -289,7 +305,7 @@ impl<'src> FirstPassRecord<'src> {
         // > non-inherited members ...
         if let Some(parent) = &definition.inheritance {
             if !self.append_dictionary_members(parent.identifier.0, dst) {
-                return false
+                return false;
             }
         }
 
@@ -313,7 +329,7 @@ impl<'src> FirstPassRecord<'src> {
                     // avoid generating bindings for the field and keep
                     // going otherwise.
                     if member.required.is_some() {
-                        return false
+                        return false;
                     }
                 }
             }
@@ -324,7 +340,7 @@ impl<'src> FirstPassRecord<'src> {
         // now!
         dst[start..].sort_by_key(|f| f.name.clone());
 
-        return true
+        return true;
     }
 
     fn dictionary_field(
@@ -332,31 +348,35 @@ impl<'src> FirstPassRecord<'src> {
         field: &'src DictionaryMember<'src>,
     ) -> Option<ast::DictionaryField> {
         // use argument position now as we're just binding setters
-        let ty = field.type_.to_idl_type(self)?.to_syn_type(TypePosition::Argument)?;
+        let ty = field
+            .type_
+            .to_idl_type(self)?
+            .to_syn_type(TypePosition::Argument)?;
 
         // Slice types aren't supported because they don't implement
         // `Into<JsValue>`
         match ty {
-            syn::Type::Reference(ref i) =>
-                match &*i.elem {
-                    syn::Type::Slice(_) => return None,
-                    _ => ()
-                }
+            syn::Type::Reference(ref i) => match &*i.elem {
+                syn::Type::Slice(_) => return None,
+                _ => (),
+            },
             syn::Type::Path(ref path, ..) =>
-                // check that our inner don't contains slices either
+            // check that our inner don't contains slices either
+            {
                 for seg in path.path.segments.iter() {
                     if let syn::PathArguments::AngleBracketed(ref arg) = seg.arguments {
                         for elem in &arg.args {
                             if let syn::GenericArgument::Type(syn::Type::Reference(ref i)) = elem {
                                 match &*i.elem {
                                     syn::Type::Slice(_) => return None,
-                                    _ => ()
+                                    _ => (),
                                 }
                             }
                         }
                     }
                 }
-            _ => ()
+            }
+            _ => (),
         };
 
         // Similarly i64/u64 aren't supported because they don't
@@ -366,7 +386,7 @@ impl<'src> FirstPassRecord<'src> {
             any_64bit = any_64bit || i == "u64" || i == "i64";
         });
         if any_64bit {
-            return None
+            return None;
         }
 
         Some(ast::DictionaryField {
@@ -387,7 +407,7 @@ impl<'src> FirstPassRecord<'src> {
             self.append_ns_member(&mut ret, name, id, data);
         }
 
-        return ret
+        return ret;
     }
 
     fn append_ns_member(
@@ -399,13 +419,13 @@ impl<'src> FirstPassRecord<'src> {
     ) {
         let name = match id {
             OperationId::Operation(Some(name)) => name,
-            OperationId::Constructor(_) |
-            OperationId::Operation(None) |
-            OperationId::IndexingGetter |
-            OperationId::IndexingSetter |
-            OperationId::IndexingDeleter => {
+            OperationId::Constructor(_)
+            | OperationId::Operation(None)
+            | OperationId::IndexingGetter
+            | OperationId::IndexingSetter
+            | OperationId::IndexingDeleter => {
                 warn!("Unsupported unnamed operation: on {:?}", self_name);
-                return
+                return;
             }
         };
         let doc_comment = format!(
@@ -422,13 +442,11 @@ impl<'src> FirstPassRecord<'src> {
             let mut doc = Some(doc_comment.clone());
             self.append_required_features_doc(&import_function, &mut doc, extra);
             import_function.doc_comment = doc;
-            module.imports.push(
-                backend::ast::Import {
-                    module: None,
-                    js_namespace: Some(raw_ident(self_name)),
-                    kind: backend::ast::ImportKind::Function(import_function),
-                }
-            );
+            module.imports.push(backend::ast::Import {
+                module: None,
+                js_namespace: Some(raw_ident(self_name)),
+                kind: backend::ast::ImportKind::Function(import_function),
+            });
         }
     }
 
@@ -448,12 +466,10 @@ impl<'src> FirstPassRecord<'src> {
             None => {
                 warn!(
                     "Cannot convert const type to syn type: {:?} in {:?} on {:?}",
-                    idl_type,
-                    member,
-                    self_name
+                    idl_type, member, self_name
                 );
-                return
-            },
+                return;
+            }
         };
 
         program.consts.push(backend::ast::Const {
@@ -471,11 +487,7 @@ impl<'src> FirstPassRecord<'src> {
         name: &'src str,
         data: &InterfaceData<'src>,
     ) {
-        let mut doc_comment = Some(format!(
-            "The `{}` object\n\n{}",
-            name,
-            mdn_doc(name, None),
-        ));
+        let mut doc_comment = Some(format!("The `{}` object\n\n{}", name, mdn_doc(name, None),));
         let derive = syn::Attribute {
             pound_token: Default::default(),
             style: syn::AttrStyle::Outer,
@@ -495,10 +507,11 @@ impl<'src> FirstPassRecord<'src> {
         let extra = camel_case_ident(name);
         let extra = &[&extra[..]];
         self.append_required_features_doc(&import_type, &mut doc_comment, extra);
-        import_type.extends = self.all_superclasses(name)
-                .map(|name| Ident::new(&name, Span::call_site()))
-                .chain(Some(Ident::new("Object", Span::call_site())))
-                .collect();
+        import_type.extends = self
+            .all_superclasses(name)
+            .map(|name| Ident::new(&name, Span::call_site()))
+            .chain(Some(Ident::new("Object", Span::call_site())))
+            .collect();
         import_type.doc_comment = doc_comment;
 
         program.imports.push(backend::ast::Import {
@@ -611,9 +624,8 @@ impl<'src> FirstPassRecord<'src> {
         id: &OperationId<'src>,
         op_data: &OperationData<'src>,
     ) {
-        let import_function_kind = |opkind| {
-            self.import_function_kind(self_name, op_data.is_static, opkind)
-        };
+        let import_function_kind =
+            |opkind| self.import_function_kind(self_name, op_data.is_static, opkind);
         let kind = match id {
             OperationId::Constructor(ctor_name) => {
                 let self_ty = ident_ty(rust_ident(&camel_case_ident(self_name)));
@@ -623,9 +635,7 @@ impl<'src> FirstPassRecord<'src> {
                     kind: backend::ast::MethodKind::Constructor,
                 }
             }
-            OperationId::Operation(_) => {
-                import_function_kind(backend::ast::OperationKind::Regular)
-            }
+            OperationId::Operation(_) => import_function_kind(backend::ast::OperationKind::Regular),
             OperationId::IndexingGetter => {
                 import_function_kind(backend::ast::OperationKind::IndexingGetter)
             }
@@ -637,24 +647,15 @@ impl<'src> FirstPassRecord<'src> {
             }
         };
         let doc = match id {
-            OperationId::Constructor(_) |
-            OperationId::Operation(None) => Some(String::new()),
-            OperationId::Operation(Some(name)) => {
-                Some(format!(
-                    "The `{}()` method\n\n{}",
-                    name,
-                    mdn_doc(self_name, Some(name))
-                ))
-            }
-            OperationId::IndexingGetter => {
-                Some(format!("The indexing getter\n\n"))
-            }
-            OperationId::IndexingSetter => {
-                Some(format!("The indexing setter\n\n"))
-            }
-            OperationId::IndexingDeleter => {
-                Some(format!("The indexing deleter\n\n"))
-            }
+            OperationId::Constructor(_) | OperationId::Operation(None) => Some(String::new()),
+            OperationId::Operation(Some(name)) => Some(format!(
+                "The `{}()` method\n\n{}",
+                name,
+                mdn_doc(self_name, Some(name))
+            )),
+            OperationId::IndexingGetter => Some(format!("The indexing getter\n\n")),
+            OperationId::IndexingSetter => Some(format!("The indexing setter\n\n")),
+            OperationId::IndexingDeleter => Some(format!("The indexing deleter\n\n")),
         };
         let attrs = data.definition_attributes;
         for mut method in self.create_imports(attrs, kind, id, op_data) {
@@ -675,7 +676,8 @@ impl<'src> FirstPassRecord<'src> {
             Some(doc) => doc,
             None => return,
         };
-        let mut required = extra.iter()
+        let mut required = extra
+            .iter()
             .map(|s| Ident::new(s, Span::call_site()))
             .collect::<BTreeSet<_>>();
         item.imported_type_references(&mut |f| {
@@ -684,9 +686,10 @@ impl<'src> FirstPassRecord<'src> {
             }
         });
         if required.len() == 0 {
-            return
+            return;
         }
-        let list = required.iter()
+        let list = required
+            .iter()
             .map(|ident| format!("`{}`", ident))
             .collect::<Vec<_>>()
             .join(", ");
@@ -714,13 +717,14 @@ impl<'src> FirstPassRecord<'src> {
                     fields.push(ast::DictionaryField {
                         required: false,
                         name: rust_ident(&snake_case_ident(identifier)),
-                        ty: idl_type::IdlType::Callback.to_syn_type(pos)
-                            .unwrap(),
+                        ty: idl_type::IdlType::Callback.to_syn_type(pos).unwrap(),
                     });
                 }
                 _ => {
-                    warn!("skipping callback interface member on {}",
-                          item.definition.identifier.0);
+                    warn!(
+                        "skipping callback interface member on {}",
+                        item.definition.identifier.0
+                    );
                 }
             }
         }

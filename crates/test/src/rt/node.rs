@@ -6,11 +6,10 @@
 use wasm_bindgen::prelude::*;
 
 /// Implementation of the `Formatter` trait for node.js
-pub struct Node {
-}
+pub struct Node {}
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     // Not using `js_sys::Error` because node's errors specifically have a
     // `stack` attribute.
     type NodeError;
@@ -23,9 +22,9 @@ impl Node {
     /// is executing in a browser and Node won't work.
     pub fn new() -> Option<Node> {
         if super::detect::is_browser() {
-            return None
+            return None;
         }
-        Some(Node { })
+        Some(Node {})
     }
 }
 

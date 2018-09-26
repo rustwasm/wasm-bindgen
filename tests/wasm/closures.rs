@@ -1,12 +1,12 @@
 #![cfg(feature = "nightly")]
 
-use wasm_bindgen_test::*;
-use wasm_bindgen::prelude::*;
 use std::cell::Cell;
 use std::rc::Rc;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/closures.js")]
-extern {
+extern "C" {
     fn works_call(a: &Fn());
     fn works_thread(a: &Fn(u32) -> u32) -> u32;
 
@@ -121,18 +121,12 @@ fn many_arity() {
     many_arity_stack2(&(|a| assert_eq!(a, 1)));
     many_arity_stack3(&(|a, b| assert_eq!((a, b), (1, 2))));
     many_arity_stack4(&(|a, b, c| assert_eq!((a, b, c), (1, 2, 3))));
-    many_arity_stack5(&(|a, b, c, d| {
-        assert_eq!((a, b, c, d), (1, 2, 3, 4))
-    }));
-    many_arity_stack6(&(|a, b, c, d, e| {
-        assert_eq!((a, b, c, d, e), (1, 2, 3, 4, 5))
-    }));
-    many_arity_stack7(&(|a, b, c, d, e, f| {
-        assert_eq!((a, b, c, d, e, f), (1, 2, 3, 4, 5, 6))
-    }));
-    many_arity_stack8(&(|a, b, c, d, e, f, g| {
-        assert_eq!((a, b, c, d, e, f, g), (1, 2, 3, 4, 5, 6, 7))
-    }));
+    many_arity_stack5(&(|a, b, c, d| assert_eq!((a, b, c, d), (1, 2, 3, 4))));
+    many_arity_stack6(&(|a, b, c, d, e| assert_eq!((a, b, c, d, e), (1, 2, 3, 4, 5))));
+    many_arity_stack7(&(|a, b, c, d, e, f| assert_eq!((a, b, c, d, e, f), (1, 2, 3, 4, 5, 6))));
+    many_arity_stack8(
+        &(|a, b, c, d, e, f, g| assert_eq!((a, b, c, d, e, f, g), (1, 2, 3, 4, 5, 6, 7))),
+    );
 }
 
 #[wasm_bindgen_test]
@@ -164,10 +158,13 @@ fn fnmut() {
     assert!(a);
 
     let mut x = false;
-    assert_eq!(fnmut_thread(&mut |a| {
-        x = true;
-        a + 1
-    }), 3);
+    assert_eq!(
+        fnmut_thread(&mut |a| {
+            x = true;
+            a + 1
+        }),
+        3
+    );
     assert!(x);
 }
 

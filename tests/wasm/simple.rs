@@ -1,9 +1,9 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/simple.js")]
-extern {
+extern "C" {
     fn test_add();
     fn test_string_arguments();
     fn test_return_a_string();
@@ -56,7 +56,7 @@ pub fn simple_return_and_take_bool(a: bool, b: bool) -> bool {
 pub fn simple_raw_pointers_work(a: *mut u32, b: *const u8) -> *const u32 {
     unsafe {
         (*a) = (*b) as u32;
-        return a
+        return a;
     }
 }
 
@@ -108,8 +108,7 @@ fn other_exports() {
 }
 
 #[no_mangle]
-pub extern fn foo(_a: u32) {
-}
+pub extern "C" fn foo(_a: u32) {}
 
 #[wasm_bindgen_test]
 fn jsvalue_typeof() {
@@ -132,14 +131,15 @@ pub fn is_string(val: &JsValue) -> bool {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[derive(Clone)]
     type Array;
     #[wasm_bindgen(constructor)]
     fn new() -> Array;
     #[wasm_bindgen(method, catch)]
-    fn standardized_method_this_js_runtime_doesnt_implement_yet(this: &Array)
-        -> Result<(), JsValue>;
+    fn standardized_method_this_js_runtime_doesnt_implement_yet(
+        this: &Array,
+    ) -> Result<(), JsValue>;
 }
 
 #[wasm_bindgen_test]
@@ -167,7 +167,6 @@ fn optional_slices() {
 #[wasm_bindgen]
 pub fn take_optional_str_none(x: Option<String>) {
     assert!(x.is_none())
-
 }
 #[wasm_bindgen]
 pub fn take_optional_str_some(x: Option<String>) {

@@ -1,9 +1,9 @@
+use js_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-use js_sys::*;
 
 #[wasm_bindgen(module = "tests/wasm/Proxy.js")]
-extern {
+extern "C" {
     fn proxy_target() -> JsValue;
     fn proxy_handler() -> Object;
 
@@ -12,7 +12,6 @@ extern {
     fn a(this: &Custom) -> Result<u32, JsValue>;
     #[wasm_bindgen(method, getter, structural, catch)]
     fn b(this: &Custom) -> Result<u32, JsValue>;
-
 
     type RevocableResult;
     #[wasm_bindgen(method, getter, structural)]

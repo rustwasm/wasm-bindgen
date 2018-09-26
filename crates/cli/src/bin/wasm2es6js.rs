@@ -67,8 +67,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         if let Some(ref p) = args.flag_output {
             let dst = p.with_extension("d.ts");
             let ts = object.typescript();
-            fs::write(&dst, ts)
-                .with_context(|_| format!("failed to write `{}`", dst.display()))?;
+            fs::write(&dst, ts).with_context(|_| format!("failed to write `{}`", dst.display()))?;
         }
     }
 
@@ -76,8 +75,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
 
     match args.flag_output {
         Some(ref p) => {
-            fs::write(p, js)
-                .with_context(|_| format!("failed to write `{}`", p.display()))?;
+            fs::write(p, js).with_context(|_| format!("failed to write `{}`", p.display()))?;
         }
         None => {
             println!("{}", js);

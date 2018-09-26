@@ -197,10 +197,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.cx.expose_add_heap_object();
             if optional {
                 self.cx.expose_is_like_none();
-                self.rust_arguments.push(format!(
-                    "isLikeNone({0}) ? 0 : addHeapObject({0})",
-                    name,
-                ));
+                self.rust_arguments
+                    .push(format!("isLikeNone({0}) ? 0 : addHeapObject({0})", name,));
             } else {
                 self.rust_arguments.push(format!("addHeapObject({})", name));
             }
@@ -225,7 +223,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 }
 
                 self.rust_arguments.push(format!("!isLikeNone({0})", name));
-                self.rust_arguments.push(format!("isLikeNone({0}) ? 0 : {0}", name));
+                self.rust_arguments
+                    .push(format!("isLikeNone({0}) ? 0 : {0}", name));
                 return Ok(self);
             }
 
@@ -245,7 +244,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     ));
                 }
 
-                self.rust_arguments.push(format!("isLikeNone({0}) ? 0xFFFFFF : {0}", name));
+                self.rust_arguments
+                    .push(format!("isLikeNone({0}) ? 0xFFFFFF : {0}", name));
                 return Ok(self);
             }
 
@@ -278,7 +278,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             match *arg {
                 Descriptor::Boolean => {
                     self.cx.expose_is_like_none();
-                    self.js_arguments.push((name.clone(), "boolean".to_string()));
+                    self.js_arguments
+                        .push((name.clone(), "boolean".to_string()));
                     if self.cx.config.debug {
                         self.cx.expose_assert_bool();
                         self.prelude(&format!(
@@ -290,17 +291,22 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                             name,
                         ));
                     }
-                    self.rust_arguments.push(format!("isLikeNone({0}) ? 0xFFFFFF : {0} ? 1 : 0", name));
+                    self.rust_arguments
+                        .push(format!("isLikeNone({0}) ? 0xFFFFFF : {0} ? 1 : 0", name));
                     return Ok(self);
-                },
+                }
                 Descriptor::Char => {
                     self.cx.expose_is_like_none();
                     self.js_arguments.push((name.clone(), "string".to_string()));
                     self.rust_arguments.push(format!("!isLikeNone({0})", name));
-                    self.rust_arguments.push(format!("isLikeNone({0}) ? 0 : {0}.codePointAt(0)", name));
+                    self.rust_arguments
+                        .push(format!("isLikeNone({0}) ? 0 : {0}.codePointAt(0)", name));
                     return Ok(self);
-                },
-                _ => bail!("unsupported optional argument type for calling Rust function from JS: {:?}", arg),
+                }
+                _ => bail!(
+                    "unsupported optional argument type for calling Rust function from JS: {:?}",
+                    arg
+                ),
             };
         }
 
@@ -401,7 +407,10 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.js_arguments.push((name.clone(), "string".to_string()));
                 self.rust_arguments.push(format!("{}.codePointAt(0)", name))
             }
-            _ => bail!("unsupported argument type for calling Rust function from JS: {:?}", arg),
+            _ => bail!(
+                "unsupported argument type for calling Rust function from JS: {:?}",
+                arg
+            ),
         }
         Ok(self)
     }
@@ -412,14 +421,15 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 Some(class) if class == name => {
                     self.ret_expr = format!("this.ptr = RET;");
                     if self.cx.config.weak_refs {
-                        self.ret_expr.push_str(&format!("\
+                        self.ret_expr.push_str(&format!(
+                            "\
                             addCleanup(this, this.ptr, free{});
-                        ", name));
+                        ",
+                            name
+                        ));
                     }
                 }
-                Some(class) => {
-                    bail!("constructor for `{}` cannot return `{}`", class, name)
-                }
+                Some(class) => bail!("constructor for `{}` cannot return `{}`", class, name),
                 None => {
                     self.ret_ty = name.to_string();
                     self.cx.require_class_wrap(name);
@@ -465,7 +475,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                  ",
                 f,
                 ty.size(),
-                guard = if optional { "if (rustptr === 0) return;" } else { "" },
+                guard = if optional {
+                    "if (rustptr === 0) return;"
+                } else {
+                    ""
+                },
             );
             return Ok(self);
         }
@@ -559,7 +573,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                         return ret === 0xFFFFFF ? undefined : ret !== 0;
                     ".to_string();
                     return Ok(self);
-                },
+                }
                 Descriptor::Char => {
                     self.ret_ty = "string".to_string();
                     self.cx.expose_global_argument_ptr()?;
@@ -573,8 +587,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                         return present === 0 ? undefined : String.fromCodePoint(value);
                     ".to_string();
                     return Ok(self);
-                },
-                _ => bail!("unsupported optional return type for calling Rust function from JS: {:?}", ty),
+                }
+                _ => bail!(
+                    "unsupported optional return type for calling Rust function from JS: {:?}",
+                    ty
+                ),
             };
         }
 
@@ -633,15 +650,20 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.ret_ty = "string".to_string();
                 self.ret_expr = format!("return String.fromCodePoint(RET);")
             }
-            _ => bail!("unsupported return type for calling Rust function from JS: {:?}", ty),
+            _ => bail!(
+                "unsupported return type for calling Rust function from JS: {:?}",
+                ty
+            ),
         }
         Ok(self)
     }
 
     pub fn js_doc_comments(&self) -> String {
-        let mut ret: String = self.js_arguments.iter().map(|a| {
-            format!("@param {{{}}} {}\n", a.1, a.0)
-        }).collect();
+        let mut ret: String = self
+            .js_arguments
+            .iter()
+            .map(|a| format!("@param {{{}}} {}\n", a.1, a.0))
+            .collect();
         ret.push_str(&format!("@returns {{{}}}", self.ret_ty));
         ret
     }

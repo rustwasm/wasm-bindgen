@@ -7,10 +7,10 @@ use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
 use syn;
 use weedle;
-use weedle::attribute::{ExtendedAttributeList, ExtendedAttribute};
+use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
-use first_pass::{FirstPassRecord, OperationId, OperationData, Signature};
+use first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use idl_type::{IdlType, ToIdlType};
 
 /// For variadic operations an overload with a `js_sys::Array` argument is generated alongside with
@@ -24,7 +24,11 @@ pub(crate) fn shared_ref(ty: syn::Type, mutable: bool) -> syn::Type {
     syn::TypeReference {
         and_token: Default::default(),
         lifetime: None,
-        mutability: if mutable { Some(syn::token::Mut::default()) } else { None },
+        mutability: if mutable {
+            Some(syn::token::Mut::default())
+        } else {
+            None
+        },
         elem: Box::new(ty),
     }.into()
 }
@@ -66,30 +70,25 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
 pub(crate) fn array(base_ty: &str, pos: TypePosition) -> syn::Type {
     match pos {
         TypePosition::Argument => {
-            shared_ref(slice_ty(ident_ty(raw_ident(base_ty))), /*mutable =*/ true)
+            shared_ref(
+                slice_ty(ident_ty(raw_ident(base_ty))),
+                /*mutable =*/ true,
+            )
         }
-        TypePosition::Return => {
-            vec_ty(ident_ty(raw_ident(base_ty)))
-        }
+        TypePosition::Return => vec_ty(ident_ty(raw_ident(base_ty))),
     }
 }
 
 /// Map a webidl const value to the correct wasm-bindgen const value
 pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> backend::ast::ConstValue {
-    use std::f64::{NEG_INFINITY, INFINITY, NAN};
     use backend::ast;
+    use std::f64::{INFINITY, NAN, NEG_INFINITY};
 
     match *v {
         ConstValue::Boolean(b) => ast::ConstValue::BooleanLiteral(b.0),
-        ConstValue::Float(FloatLit::NegInfinity(_)) => {
-            ast::ConstValue::FloatLiteral(NEG_INFINITY)
-        }
-        ConstValue::Float(FloatLit::Infinity(_)) => {
-            ast::ConstValue::FloatLiteral(INFINITY)
-        }
-        ConstValue::Float(FloatLit::NaN(_)) => {
-            ast::ConstValue::FloatLiteral(NAN)
-        }
+        ConstValue::Float(FloatLit::NegInfinity(_)) => ast::ConstValue::FloatLiteral(NEG_INFINITY),
+        ConstValue::Float(FloatLit::Infinity(_)) => ast::ConstValue::FloatLiteral(INFINITY),
+        ConstValue::Float(FloatLit::NaN(_)) => ast::ConstValue::FloatLiteral(NAN),
         ConstValue::Float(FloatLit::Value(s)) => {
             ast::ConstValue::FloatLiteral(s.0.parse().unwrap())
         }
@@ -101,7 +100,7 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> backend::ast::ConstV
                     (false, orig_text)
                 };
                 if text == "0" {
-                    return ast::ConstValue::SignedIntegerLiteral(0)
+                    return ast::ConstValue::SignedIntegerLiteral(0);
                 }
                 let text = &text[offset..];
                 let n = u64::from_str_radix(text, base)
@@ -119,7 +118,7 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> backend::ast::ConstV
             };
             match lit {
                 IntegerLit::Hex(h) => mklit(h.0, 16, 2), // leading 0x
-                IntegerLit::Oct(h) => mklit(h.0, 8, 1), // leading 0
+                IntegerLit::Oct(h) => mklit(h.0, 8, 1),  // leading 0
                 IntegerLit::Dec(h) => mklit(h.0, 10, 0),
             }
         }
@@ -183,9 +182,7 @@ pub(crate) fn vec_ty(t: syn::Type) -> syn::Type {
     let arguments = syn::PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
         colon2_token: None,
         lt_token: Default::default(),
-        args: FromIterator::from_iter(vec![
-            syn::GenericArgument::Type(t),
-        ]),
+        args: FromIterator::from_iter(vec![syn::GenericArgument::Type(t)]),
         gt_token: Default::default(),
     });
 
@@ -231,7 +228,10 @@ impl<'src> FirstPassRecord<'src> {
         catch: bool,
         variadic: bool,
         doc_comment: Option<String>,
-    ) -> Option<backend::ast::ImportFunction> where 'src: 'a {
+    ) -> Option<backend::ast::ImportFunction>
+    where
+        'src: 'a,
+    {
         // Convert all of the arguments from their IDL type to a `syn` type,
         // ready to pass to the backend.
         //
@@ -239,15 +239,18 @@ impl<'src> FirstPassRecord<'src> {
         // but this type isn't actually used so it's just here for show mostly.
         let mut arguments = if let &backend::ast::ImportFunctionKind::Method {
             ref ty,
-            kind: backend::ast::MethodKind::Operation(
-                backend::ast::Operation {
+            kind:
+                backend::ast::MethodKind::Operation(backend::ast::Operation {
                     is_static: false, ..
-                }
-            ),
+                }),
             ..
-        } = &kind {
+        } = &kind
+        {
             let mut res = Vec::with_capacity(idl_arguments.size_hint().0 + 1);
-            res.push(simple_fn_arg(raw_ident("self_"), shared_ref(ty.clone(), false)));
+            res.push(simple_fn_arg(
+                raw_ident("self_"),
+                shared_ref(ty.clone(), false),
+            ));
             res
         } else {
             Vec::with_capacity(idl_arguments.size_hint().0)
@@ -260,10 +263,9 @@ impl<'src> FirstPassRecord<'src> {
                 None => {
                     warn!(
                         "Unsupported argument type: {:?} on {:?}",
-                        idl_type,
-                        rust_name
+                        idl_type, rust_name
                     );
-                    return None
+                    return None;
                 }
             };
             let syn_type = if variadic && i == arguments_count - 1 {
@@ -280,17 +282,11 @@ impl<'src> FirstPassRecord<'src> {
         // attribute here to use a `Result` in Rust.
         let ret = match ret {
             IdlType::Void => None,
-            ret @ _ => {
-                match ret.to_syn_type(TypePosition::Return) {
-                    Some(ret) => Some(ret),
-                    None => {
-                        warn!(
-                            "Unsupported return type: {:?} on {:?}",
-                            ret,
-                            rust_name
-                        );
-                        return None
-                    }
+            ret @ _ => match ret.to_syn_type(TypePosition::Return) {
+                Some(ret) => Some(ret),
+                None => {
+                    warn!("Unsupported return type: {:?} on {:?}", ret, rust_name);
+                    return None;
                 }
             },
         };
@@ -350,7 +346,11 @@ impl<'src> FirstPassRecord<'src> {
             is_structural(attrs.as_ref(), container_attrs),
             throws(attrs),
             false,
-            Some(format!("The `{}` getter\n\n{}", name, mdn_doc(self_name, Some(name)))),
+            Some(format!(
+                "The `{}` getter\n\n{}",
+                name,
+                mdn_doc(self_name, Some(name))
+            )),
         )
     }
 
@@ -376,7 +376,11 @@ impl<'src> FirstPassRecord<'src> {
             is_structural(attrs.as_ref(), container_attrs),
             throws(attrs),
             false,
-            Some(format!("The `{}` setter\n\n{}", name, mdn_doc(self_name, Some(name)))),
+            Some(format!(
+                "The `{}` setter\n\n{}",
+                name,
+                mdn_doc(self_name, Some(name))
+            )),
         )
     }
 
@@ -404,9 +408,7 @@ impl<'src> FirstPassRecord<'src> {
         kind: backend::ast::ImportFunctionKind,
         id: &OperationId<'src>,
         data: &OperationData<'src>,
-    )
-        -> Vec<backend::ast::ImportFunction>
-    {
+    ) -> Vec<backend::ast::ImportFunction> {
         // First up, prune all signatures that reference unsupported arguments.
         // We won't consider these until said arguments are implemented.
         //
@@ -416,14 +418,12 @@ impl<'src> FirstPassRecord<'src> {
         // signature where that and all remaining optional arguments are
         // undefined.
         let mut signatures = Vec::new();
-        'outer:
-        for signature in data.signatures.iter() {
+        'outer: for signature in data.signatures.iter() {
             let mut idl_args = Vec::with_capacity(signature.args.len());
             for (i, arg) in signature.args.iter().enumerate() {
                 if arg.optional {
                     assert!(
-                        signature
-                            .args[i..]
+                        signature.args[i..]
                             .iter()
                             .all(|arg| arg.optional || arg.variadic),
                         "Not optional or variadic argument after optional argument: {:?}",
@@ -503,7 +503,7 @@ impl<'src> FirstPassRecord<'src> {
             OperationId::Operation(Some(s)) => (*s, false, false),
             OperationId::Operation(None) => {
                 warn!("unsupported unnamed operation");
-                return Vec::new()
+                return Vec::new();
             }
             OperationId::IndexingGetter => ("get", true, false),
             OperationId::IndexingSetter => ("set", true, false),
@@ -551,7 +551,7 @@ impl<'src> FirstPassRecord<'src> {
                 // then there's nothing to disambiguate so we don't modify the
                 // name.
                 if !any_different {
-                    continue
+                    continue;
                 }
                 if first {
                     rust_name.push_str("_with_");
@@ -574,46 +574,58 @@ impl<'src> FirstPassRecord<'src> {
                     rust_name.push_str(&snake_case_ident(arg_name));
                 }
             }
-            let structural = force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
+            let structural =
+                force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
             let catch = force_throws || throws(&signature.orig.attrs);
-            let variadic = signature.args.len() == signature.orig.args.len()
-                && signature.orig.args.last().map(|arg| arg.variadic).unwrap_or(false);
-            ret.extend(self.create_one_function(
-                name,
-                &rust_name,
-                signature.args.iter()
-                    .zip(&signature.orig.args)
-                    .map(|(idl_type, orig_arg)| (orig_arg.name, idl_type)),
-                &ret_ty,
-                kind.clone(),
-                structural,
-                catch,
-                variadic,
-                None,
-            ));
+            let variadic = signature.args.len() == signature.orig.args.len() && signature
+                .orig
+                .args
+                .last()
+                .map(|arg| arg.variadic)
+                .unwrap_or(false);
+            ret.extend(
+                self.create_one_function(
+                    name,
+                    &rust_name,
+                    signature
+                        .args
+                        .iter()
+                        .zip(&signature.orig.args)
+                        .map(|(idl_type, orig_arg)| (orig_arg.name, idl_type)),
+                    &ret_ty,
+                    kind.clone(),
+                    structural,
+                    catch,
+                    variadic,
+                    None,
+                ),
+            );
             if !variadic {
                 continue;
             }
             let last_idl_type = &signature.args[signature.args.len() - 1];
             let last_name = signature.orig.args[signature.args.len() - 1].name;
             for i in 0..=MAX_VARIADIC_ARGUMENTS_COUNT {
-                ret.extend(self.create_one_function(
-                    name,
-                    &format!("{}_{}", rust_name, i),
-                    signature.args[..signature.args.len() - 1].iter()
-                        .zip(&signature.orig.args)
-                        .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type))
-                        .chain((1..=i).map(|j| (format!("{}_{}", last_name, j), last_idl_type)))
-                        .collect::<Vec<_>>()
-                        .iter()
-                        .map(|(name, idl_type)| (&name[..], idl_type.clone())),
-                    &ret_ty,
-                    kind.clone(),
-                    structural,
-                    catch,
-                    false,
-                    None,
-                ));
+                ret.extend(
+                    self.create_one_function(
+                        name,
+                        &format!("{}_{}", rust_name, i),
+                        signature.args[..signature.args.len() - 1]
+                            .iter()
+                            .zip(&signature.orig.args)
+                            .map(|(idl_type, orig_arg)| (orig_arg.name.to_string(), idl_type))
+                            .chain((1..=i).map(|j| (format!("{}_{}", last_name, j), last_idl_type)))
+                            .collect::<Vec<_>>()
+                            .iter()
+                            .map(|(name, idl_type)| (&name[..], idl_type.clone())),
+                        &ret_ty,
+                        kind.clone(),
+                        structural,
+                        catch,
+                        false,
+                        None,
+                    ),
+                );
             }
         }
         return ret;
@@ -659,9 +671,9 @@ pub fn is_structural(
     item_attrs: Option<&ExtendedAttributeList>,
     container_attrs: Option<&ExtendedAttributeList>,
 ) -> bool {
-    has_named_attribute(item_attrs, "Unforgeable") ||
-        has_named_attribute(container_attrs, "Unforgeable") ||
-        has_ident_attribute(container_attrs, "Global")
+    has_named_attribute(item_attrs, "Unforgeable")
+        || has_named_attribute(container_attrs, "Unforgeable")
+        || has_ident_attribute(container_attrs, "Global")
 }
 
 /// Whether a webidl object is marked as throwing.

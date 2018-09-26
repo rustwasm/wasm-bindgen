@@ -1,6 +1,6 @@
+use js_sys::*;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_test::*;
-use js_sys::*;
 
 #[wasm_bindgen_test]
 fn get_canonical_locales() {

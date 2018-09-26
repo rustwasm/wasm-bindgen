@@ -53,7 +53,8 @@ pub fn run() -> Promise {
         &opts,
     ).unwrap();
 
-    request.headers()
+    request
+        .headers()
         .set("Accept", "application/vnd.github.v3+json")
         .unwrap();
 

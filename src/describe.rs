@@ -3,7 +3,7 @@
 
 #![doc(hidden)]
 
-use {JsValue, Clamped};
+use {Clamped, JsValue};
 
 macro_rules! tys {
     ($($a:ident)*) => (tys! { @ ($($a)*) 0 });
@@ -134,14 +134,30 @@ if_std! {
 }
 
 macro_rules! cnt {
-    () => (0);
-    (A) => (1);
-    (A B) => (2);
-    (A B C) => (3);
-    (A B C D) => (4);
-    (A B C D E) => (5);
-    (A B C D E F) => (6);
-    (A B C D E F G) => (7);
+    () => {
+        0
+    };
+    (A) => {
+        1
+    };
+    (A B) => {
+        2
+    };
+    (A B C) => {
+        3
+    };
+    (A B C D) => {
+        4
+    };
+    (A B C D E) => {
+        5
+    };
+    (A B C D E F) => {
+        6
+    };
+    (A B C D E F G) => {
+        7
+    };
 }
 
 macro_rules! doit {

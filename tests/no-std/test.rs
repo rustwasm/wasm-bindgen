@@ -7,8 +7,8 @@
 #![no_std]
 #![allow(dead_code)]
 
-extern crate wasm_bindgen;
 extern crate std as _some_other_name;
+extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
 
@@ -16,7 +16,7 @@ use wasm_bindgen::prelude::*;
 pub fn foo(_a: u32) {}
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn test(a: &str);
 
     type Js;

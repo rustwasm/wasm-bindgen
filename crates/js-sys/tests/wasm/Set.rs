@@ -1,12 +1,12 @@
-use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
 use js_sys::*;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_test::*;
 
 fn set2vec(s: &Set) -> Vec<JsValue> {
     let mut result = Vec::new();
     s.for_each(&mut |x, _, _| result.push(x));
-    return result
+    return result;
 }
 
 #[wasm_bindgen_test]
@@ -97,7 +97,11 @@ fn keys() {
     set.add(&2.into());
     set.add(&3.into());
 
-    let list = set.keys().into_iter().map(|e| e.unwrap()).collect::<Vec<_>>();
+    let list = set
+        .keys()
+        .into_iter()
+        .map(|e| e.unwrap())
+        .collect::<Vec<_>>();
     assert_eq!(list.len(), 3);
     assert!(list.iter().any(|l| *l == 1));
     assert!(list.iter().any(|l| *l == 2));
@@ -111,7 +115,11 @@ fn values() {
     set.add(&2.into());
     set.add(&3.into());
 
-    let list = set.values().into_iter().map(|e| e.unwrap()).collect::<Vec<_>>();
+    let list = set
+        .values()
+        .into_iter()
+        .map(|e| e.unwrap())
+        .collect::<Vec<_>>();
     assert_eq!(list.len(), 3);
     assert!(list.iter().any(|l| *l == 1));
     assert!(list.iter().any(|l| *l == 2));

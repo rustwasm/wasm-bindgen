@@ -1,10 +1,10 @@
 use std::ffi::OsString;
-use std::path::Path;
 use std::fs;
 use std::net::SocketAddr;
+use std::path::Path;
 
-use failure::{ResultExt, Error};
-use rouille::{self, Response, Request, Server};
+use failure::{Error, ResultExt};
+use rouille::{self, Request, Response, Server};
 use wasm_bindgen_cli_support::wasm2es6js::Config;
 
 pub fn spawn(
@@ -15,7 +15,8 @@ pub fn spawn(
     args: &[OsString],
     tests: &[String],
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
-    let mut js_to_execute = format!(r#"
+    let mut js_to_execute = format!(
+        r#"
         import {{ Context, __wbgtest_console_log, __wbgtest_console_error }} from './{0}';
         import * as wasm from './{0}_bg';
 
@@ -52,8 +53,7 @@ pub fn spawn(
     js_to_execute.push_str("main(tests);\n");
 
     let js_path = tmpdir.join("run.js");
-    fs::write(&js_path, js_to_execute)
-        .context("failed to write JS file")?;
+    fs::write(&js_path, js_to_execute).context("failed to write JS file")?;
 
     // No browser today supports a wasm file as ES modules natively, so we need
     // to shim it. Use `wasm2es6js` here to fetch an appropriate URL and look
@@ -69,8 +69,7 @@ pub fn spawn(
         .fetch(Some(format!("/{}", wasm_name)))
         .generate(&wasm)?;
     let js = output.js()?;
-    fs::write(tmpdir.join(format!("{}_bg.js", module)), js)
-        .context("failed to write JS file")?;
+    fs::write(tmpdir.join(format!("{}_bg.js", module)), js).context("failed to write JS file")?;
 
     // For now, always run forever on this port. We may update this later!
     let tmpdir = tmpdir.to_path_buf();
@@ -85,7 +84,7 @@ pub fn spawn(
             } else {
                 include_str!("index.html")
             };
-            return Response::from_data("text/html", s)
+            return Response::from_data("text/html", s);
         }
 
         // Otherwise we need to find the asset here. It may either be in our
@@ -98,14 +97,14 @@ pub fn spawn(
         // Make sure browsers don't cache anything (Chrome appeared to with this
         // header?)
         response.headers.retain(|(k, _)| k != "Cache-Control");
-        return response
+        return response;
     }).map_err(|e| format_err!("{}", e))?;
     return Ok(srv);
 
     fn try_asset(request: &Request, dir: &Path) -> Response {
         let response = rouille::match_assets(request, dir);
         if response.is_success() {
-            return response
+            return response;
         }
 
         // When a browser is doing ES imports it's using the directives we
@@ -117,14 +116,15 @@ pub fn spawn(
                 let new_request = Request::fake_http(
                     request.method(),
                     format!("{}.js", request.url()),
-                    request.headers()
+                    request
+                        .headers()
                         .map(|(a, b)| (a.to_string(), b.to_string()))
                         .collect(),
                     Vec::new(),
                 );
                 let response = rouille::match_assets(&new_request, dir);
                 if response.is_success() {
-                    return response
+                    return response;
                 }
             }
         }

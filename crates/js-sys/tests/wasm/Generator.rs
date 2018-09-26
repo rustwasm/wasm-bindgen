@@ -1,10 +1,10 @@
-use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
 use js_sys::*;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/Generator.js")]
-extern {
+extern "C" {
     fn one_two_generator() -> Generator;
     fn dummy_generator() -> Generator;
     fn broken_generator() -> Generator;
@@ -61,6 +61,6 @@ fn throw() {
 #[wasm_bindgen_test]
 fn generator_inheritance() {
     let gen = dummy_generator();
-    
+
     assert!(gen.is_instance_of::<Object>());
 }

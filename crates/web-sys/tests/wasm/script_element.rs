@@ -1,9 +1,9 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 use web_sys::HtmlScriptElement;
 
 #[wasm_bindgen(module = "./tests/wasm/element.js")]
-extern {
+extern "C" {
     fn new_script() -> HtmlScriptElement;
 }
 
@@ -12,11 +12,19 @@ fn test_script_element() {
     let element = new_script();
     assert_eq!(element.src(), "", "Shouldn't have a src");
     element.set_src("https://example.com/script.js");
-    assert_eq!(element.src(), "https://example.com/script.js", "Should have a src");
+    assert_eq!(
+        element.src(),
+        "https://example.com/script.js",
+        "Should have a src"
+    );
 
     assert_eq!(element.type_(), "", "Shouldn't have a type");
     element.set_type("application/javascript");
-    assert_eq!(element.type_(), "application/javascript", "Should have a type");
+    assert_eq!(
+        element.type_(),
+        "application/javascript",
+        "Should have a type"
+    );
 
     assert!(!element.no_module(), "Shouldn't be a nomodule");
     element.set_no_module(true);
@@ -34,11 +42,21 @@ fn test_script_element() {
     element.set_defer(true);
     assert!(element.defer(), "Should be a defer");
 
-    assert!(element.cross_origin().is_none(), "Shouldn't have a crossorigin");
+    assert!(
+        element.cross_origin().is_none(),
+        "Shouldn't have a crossorigin"
+    );
     element.set_cross_origin(Some("anonymous"));
-    assert_eq!(element.cross_origin().unwrap(), "anonymous", "Should have a crossorigin");
+    assert_eq!(
+        element.cross_origin().unwrap(),
+        "anonymous",
+        "Should have a crossorigin"
+    );
     element.set_cross_origin(None);
-    assert!(element.cross_origin().is_none(), "Shouldn't have a crossorigin");
+    assert!(
+        element.cross_origin().is_none(),
+        "Shouldn't have a crossorigin"
+    );
 
     assert_eq!(element.text().unwrap(), "", "Shouldn't have text");
     assert_eq!(element.set_text("text").unwrap(), ());
@@ -54,5 +72,9 @@ fn test_script_element() {
 
     assert_eq!(element.integrity(), "", "Shouldn't have an integrity");
     element.set_integrity("integrity-val");
-    assert_eq!(element.integrity(), "integrity-val", "Should have an integrity");
+    assert_eq!(
+        element.integrity(),
+        "integrity-val",
+        "Should have an integrity"
+    );
 }

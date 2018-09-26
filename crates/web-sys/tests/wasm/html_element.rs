@@ -1,10 +1,10 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use wasm_bindgen_test::*;
 use web_sys::HtmlElement;
 
 #[wasm_bindgen(module = "./tests/wasm/element.js")]
-extern {
+extern "C" {
     fn new_html() -> HtmlElement;
 }
 
@@ -56,12 +56,20 @@ fn test_html_element() {
     element.set_draggable(true);
     assert!(element.draggable(), "Should be draggable");
 
-    assert_eq!(element.content_editable(), "inherit", "Shouldn't have a content_editable");
+    assert_eq!(
+        element.content_editable(),
+        "inherit",
+        "Shouldn't have a content_editable"
+    );
     element.set_content_editable("true");
-    assert_eq!(element.content_editable(), "true", "Should be content_editable");
+    assert_eq!(
+        element.content_editable(),
+        "true",
+        "Should be content_editable"
+    );
     assert!(element.is_content_editable(), "Should be content_editable");
 
-/*TODO doesn't work in Chrome
+    /*TODO doesn't work in Chrome
     // TODO verify case where menu is passed
     match element.context_menu() {
         None => assert!(true, "Shouldn't have a custom menu set"),
@@ -77,12 +85,24 @@ fn test_html_element() {
     // TODO verify case where we have an offset_parent
     match element.offset_parent() {
         None => assert!(true, "Shouldn't have an offset_parent set"),
-        _ => assert!(false, "Shouldn't have a offset_parent set")
+        _ => assert!(false, "Shouldn't have a offset_parent set"),
     };
 
     // TODO verify when we have offsets
     assert_eq!(element.offset_top(), 0, "Shouldn't have an offset_top yet");
-    assert_eq!(element.offset_left(), 0, "Shouldn't have an offset_left yet");
-    assert_eq!(element.offset_width(), 0, "Shouldn't have an offset_width yet");
-    assert_eq!(element.offset_height(), 0, "Shouldn't have an offset_height yet");
+    assert_eq!(
+        element.offset_left(),
+        0,
+        "Shouldn't have an offset_left yet"
+    );
+    assert_eq!(
+        element.offset_width(),
+        0,
+        "Shouldn't have an offset_width yet"
+    );
+    assert_eq!(
+        element.offset_height(),
+        0,
+        "Shouldn't have an offset_height yet"
+    );
 }

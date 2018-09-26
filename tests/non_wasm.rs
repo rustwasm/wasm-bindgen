@@ -29,7 +29,7 @@ pub fn foo(x: bool) {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn some_import();
     static A: JsValue;
 }
@@ -41,8 +41,7 @@ pub fn bar(_: &str) -> JsValue {
 }
 
 #[wasm_bindgen]
-pub fn baz(_: JsValue) {
-}
+pub fn baz(_: JsValue) {}
 
 #[test]
 fn test_foo() {

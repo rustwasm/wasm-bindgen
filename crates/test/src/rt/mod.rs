@@ -87,8 +87,7 @@
 // Overall this is all somewhat in flux as it's pretty new, and feedback is
 // always of course welcome!
 
-
-use std::cell::{RefCell, Cell};
+use std::cell::{Cell, RefCell};
 use std::fmt;
 use std::rc::Rc;
 
@@ -107,9 +106,9 @@ use wasm_bindgen_futures::future_to_promise;
 // conccurrently doing things by default would likely end up in a bad situation.
 const CONCURRENCY: usize = 1;
 
-pub mod node;
 pub mod browser;
 pub mod detect;
+pub mod node;
 
 /// Runtime test harness support instantiated in JS.
 ///
@@ -182,7 +181,7 @@ trait Formatter {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     #[doc(hidden)]
     pub fn js_console_log(s: &str);
@@ -259,7 +258,9 @@ impl Context {
     /// `false` if at least one test failed.
     pub fn run(&self, tests: Vec<JsValue>) -> Promise {
         let noun = if tests.len() == 1 { "test" } else { "tests" };
-        self.state.formatter.writeln(&format!("running {} {}", tests.len(), noun));
+        self.state
+            .formatter
+            .writeln(&format!("running {} {}", tests.len(), noun));
         self.state.formatter.writeln("");
 
         // Execute all our test functions through their wasm shims (unclear how
@@ -271,8 +272,10 @@ impl Context {
             match Function::from(test).call1(&JsValue::null(), &cx_arg) {
                 Ok(_) => {}
                 Err(e) => {
-                    panic!("exception thrown while creating a test: {}",
-                           self.state.formatter.stringify_error(&e));
+                    panic!(
+                        "exception thrown while creating a test: {}",
+                        self.state.formatter.stringify_error(&e)
+                    );
                 }
             }
         }
@@ -280,7 +283,8 @@ impl Context {
         // Now that we've collected all our tests we wrap everything up in a
         // future to actually do all the processing, and pass it out to JS as a
         // `Promise`.
-        let future = ExecuteTests(self.state.clone()).map(JsValue::from)
+        let future = ExecuteTests(self.state.clone())
+            .map(JsValue::from)
             .map_err(|e| match e {});
         future_to_promise(future)
     }
@@ -316,7 +320,7 @@ pub fn __wbgtest_console_error(original: &Function, args: &Array) {
 fn record(orig: &Function, args: &Array, dst: impl FnOnce(&mut Output) -> &mut String) {
     if !CURRENT_OUTPUT.is_set() {
         drop(orig.apply(&JsValue::null(), args));
-        return
+        return;
     }
 
     CURRENT_OUTPUT.with(|output| {
@@ -343,16 +347,13 @@ impl Context {
     /// `#[wasm_bindgen_test(async)]` macro generates invocations of this
     /// method.
     pub fn execute_async<F>(&self, name: &str, f: impl FnOnce() -> F + 'static)
-        where F: Future<Item = (), Error = JsValue> + 'static,
+    where
+        F: Future<Item = (), Error = JsValue> + 'static,
     {
         self.execute(name, future::lazy(f))
     }
 
-    fn execute(
-        &self,
-        name: &str,
-        test: impl Future<Item = (), Error = JsValue> + 'static,
-    ) {
+    fn execute(&self, name: &str, test: impl Future<Item = (), Error = JsValue> + 'static) {
         // If our test is filtered out, record that it was filtered and move
         // on, nothing to do here.
         let filter = self.state.filter.borrow();
@@ -360,7 +361,7 @@ impl Context {
             if !name.contains(filter) {
                 let ignored = self.state.ignored.get();
                 self.state.ignored.set(ignored + 1);
-                return
+                return;
             }
         }
 
@@ -416,7 +417,7 @@ impl Future for ExecuteTests {
                 Ok(Async::Ready(())) => Ok(()),
                 Ok(Async::NotReady) => {
                     running.push(test);
-                    continue
+                    continue;
                 }
                 Err(e) => Err(e),
             };
@@ -426,7 +427,7 @@ impl Future for ExecuteTests {
         // Tests are still executing, we're registered to get a notification,
         // keep going.
         if running.len() != 0 {
-            return Ok(Async::NotReady)
+            return Ok(Async::NotReady);
         }
 
         // If there are no tests running then we must have finished everything,
@@ -532,7 +533,7 @@ struct TestFuture<F> {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(catch)]
     fn __wbg_test_invoke(f: &mut FnMut()) -> Result<(), JsValue>;
 }

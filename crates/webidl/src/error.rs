@@ -8,16 +8,16 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 #[derive(Debug, Fail, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum ErrorKind {
     /// Failed to open a WebIDL file.
-    #[fail(display="opening WebIDL file")]
+    #[fail(display = "opening WebIDL file")]
     OpeningWebIDLFile,
     /// Failed to read a WebIDL file.
-    #[fail(display="reading WebIDL file")]
+    #[fail(display = "reading WebIDL file")]
     ReadingWebIDLFile,
     /// Failed to parse a WebIDL file.
-    #[fail(display="parsing WebIDL source text at {}", _0)]
+    #[fail(display = "parsing WebIDL source text at {}", _0)]
     ParsingWebIDLSourcePos(usize),
     /// Failed to parse a WebIDL file.
-    #[fail(display="parsing WebIDL source text")]
+    #[fail(display = "parsing WebIDL source text")]
     ParsingWebIDLSource,
 }
 
@@ -52,7 +52,9 @@ impl Error {
 
 impl From<ErrorKind> for Error {
     fn from(kind: ErrorKind) -> Error {
-        Error { inner: Context::new(kind) }
+        Error {
+            inner: Context::new(kind),
+        }
     }
 }
 
@@ -61,5 +63,3 @@ impl From<Context<ErrorKind>> for Error {
         Error { inner: inner }
     }
 }
-
-

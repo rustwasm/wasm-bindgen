@@ -2,8 +2,8 @@ extern crate wasm_bindgen;
 extern crate web_sys;
 
 use std::ops::Add;
-use wasm_bindgen::Clamped;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::Clamped;
 use web_sys::{CanvasRenderingContext2d, ImageData};
 
 #[wasm_bindgen]
@@ -15,7 +15,7 @@ pub fn draw(
     imaginary: f64,
 ) -> Result<(), JsValue> {
     // The real workhorse of this algorithm, generating pixel data
-    let c = Complex { real, imaginary, };
+    let c = Complex { real, imaginary };
     let mut data = get_julia_set(width, height, c);
     let data = ImageData::new_with_u8_clamped_array_and_sh(Clamped(&mut data), width, height)?;
     ctx.put_image_data(&data, 0.0, 0.0)
@@ -50,7 +50,7 @@ fn get_iter_index(z: Complex, c: Complex) -> u32 {
     let mut z = z;
     while iter_index < 900 {
         if z.norm() > 2.0 {
-            break
+            break;
         }
         z = z.square() + c;
         iter_index += 1;

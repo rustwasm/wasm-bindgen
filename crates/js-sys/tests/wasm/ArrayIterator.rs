@@ -1,6 +1,6 @@
+use js_sys::*;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
-use js_sys::*;
 
 #[wasm_bindgen_test]
 fn keys() {

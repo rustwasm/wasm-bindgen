@@ -1,9 +1,9 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 use web_sys::Headers;
 
 #[wasm_bindgen(module = "./tests/wasm/headers.js")]
-extern {
+extern "C" {
     fn new_headers() -> Headers;
 }
 

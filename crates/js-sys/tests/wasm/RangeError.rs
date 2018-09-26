@@ -1,7 +1,7 @@
+use js_sys::*;
+use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
-use js_sys::*;
 
 #[wasm_bindgen_test]
 fn range_error() {

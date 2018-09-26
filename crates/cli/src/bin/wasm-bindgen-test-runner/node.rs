@@ -4,12 +4,16 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
-use failure::{ResultExt, Error};
+use failure::{Error, ResultExt};
 
-pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
-    -> Result<(), Error>
-{
-    let mut js_to_execute = format!(r#"
+pub fn execute(
+    module: &str,
+    tmpdir: &Path,
+    args: &[OsString],
+    tests: &[String],
+) -> Result<(), Error> {
+    let mut js_to_execute = format!(
+        r#"
         const {{ exit }} = require('process');
 
         let console_log_redirect = null;
@@ -68,17 +72,18 @@ pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
         js_to_execute.push_str(&format!("tests.push('{}')\n", test));
     }
     // And as a final addendum, exit with a nonzero code if any tests fail.
-    js_to_execute.push_str("
+    js_to_execute.push_str(
+        "
         main(tests)
             .catch(e => {
                 console.error(e);
                 exit(1);
             });
-    ");
+    ",
+    );
 
     let js_path = tmpdir.join("run.js");
-    fs::write(&js_path, js_to_execute)
-        .context("failed to write JS file")?;
+    fs::write(&js_path, js_to_execute).context("failed to write JS file")?;
 
     // Augment `NODE_PATH` so things like `require("tests/my-custom.js")` work
     // and Rust code can import from custom JS shims. This is a bit of a hack
@@ -91,14 +96,16 @@ pub fn execute(module: &str, tmpdir: &Path, args: &[OsString], tests: &[String])
         Command::new("node")
             .env("NODE_PATH", env::join_paths(&path).unwrap())
             .arg(&js_path)
-            .args(args)
+            .args(args),
     )
 }
 
 #[cfg(unix)]
 fn exec(cmd: &mut Command) -> Result<(), Error> {
     use std::os::unix::prelude::*;
-    Err(Error::from(cmd.exec()).context("failed to execute `node`").into())
+    Err(Error::from(cmd.exec())
+        .context("failed to execute `node`")
+        .into())
 }
 
 #[cfg(windows)]

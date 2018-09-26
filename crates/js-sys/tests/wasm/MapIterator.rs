@@ -1,5 +1,5 @@
-use wasm_bindgen_test::*;
 use js_sys::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]
 fn entries() {

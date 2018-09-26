@@ -197,11 +197,13 @@ impl BindgenAttrs {
 impl Parse for BindgenAttrs {
     fn parse(input: ParseStream) -> SynResult<Self> {
         if input.is_empty() {
-            return Ok(BindgenAttrs { attrs: Vec::new() })
+            return Ok(BindgenAttrs { attrs: Vec::new() });
         }
 
         let opts = syn::punctuated::Punctuated::<_, syn::token::Comma>::parse_terminated(input)?;
-        Ok(BindgenAttrs { attrs: opts.into_iter().collect() })
+        Ok(BindgenAttrs {
+            attrs: opts.into_iter().collect(),
+        })
     }
 }
 
@@ -232,65 +234,65 @@ impl Parse for BindgenAttr {
         let original = input.fork();
         let attr: Ident = input.parse()?;
         if attr == "catch" {
-            return Ok(BindgenAttr::Catch)
+            return Ok(BindgenAttr::Catch);
         }
         if attr == "constructor" {
-            return Ok(BindgenAttr::Constructor)
+            return Ok(BindgenAttr::Constructor);
         }
         if attr == "method" {
-            return Ok(BindgenAttr::Method)
+            return Ok(BindgenAttr::Method);
         }
         if attr == "indexing_getter" {
-            return Ok(BindgenAttr::IndexingGetter)
+            return Ok(BindgenAttr::IndexingGetter);
         }
         if attr == "indexing_setter" {
-            return Ok(BindgenAttr::IndexingSetter)
+            return Ok(BindgenAttr::IndexingSetter);
         }
         if attr == "indexing_deleter" {
-            return Ok(BindgenAttr::IndexingDeleter)
+            return Ok(BindgenAttr::IndexingDeleter);
         }
         if attr == "structural" {
-            return Ok(BindgenAttr::Structural)
+            return Ok(BindgenAttr::Structural);
         }
         if attr == "readonly" {
-            return Ok(BindgenAttr::Readonly)
+            return Ok(BindgenAttr::Readonly);
         }
         if attr == "variadic" {
-            return Ok(BindgenAttr::Variadic)
+            return Ok(BindgenAttr::Variadic);
         }
         if attr == "static_method_of" {
             input.parse::<Token![=]>()?;
-            return Ok(BindgenAttr::StaticMethodOf(input.parse::<AnyIdent>()?.0))
+            return Ok(BindgenAttr::StaticMethodOf(input.parse::<AnyIdent>()?.0));
         }
         if attr == "getter" {
             if input.parse::<Token![=]>().is_ok() {
-                return Ok(BindgenAttr::Getter(Some(input.parse::<AnyIdent>()?.0)))
+                return Ok(BindgenAttr::Getter(Some(input.parse::<AnyIdent>()?.0)));
             } else {
-                return Ok(BindgenAttr::Getter(None))
+                return Ok(BindgenAttr::Getter(None));
             }
         }
         if attr == "setter" {
             if input.parse::<Token![=]>().is_ok() {
-                return Ok(BindgenAttr::Setter(Some(input.parse::<AnyIdent>()?.0)))
+                return Ok(BindgenAttr::Setter(Some(input.parse::<AnyIdent>()?.0)));
             } else {
-                return Ok(BindgenAttr::Setter(None))
+                return Ok(BindgenAttr::Setter(None));
             }
         }
         if attr == "js_namespace" {
             input.parse::<Token![=]>()?;
-            return Ok(BindgenAttr::JsNamespace(input.parse::<AnyIdent>()?.0))
+            return Ok(BindgenAttr::JsNamespace(input.parse::<AnyIdent>()?.0));
         }
         if attr == "extends" {
             input.parse::<Token![=]>()?;
-            return Ok(BindgenAttr::Extends(input.parse::<AnyIdent>()?.0))
+            return Ok(BindgenAttr::Extends(input.parse::<AnyIdent>()?.0));
         }
         if attr == "module" {
             input.parse::<Token![=]>()?;
-            return Ok(BindgenAttr::Module(input.parse::<syn::LitStr>()?.value()))
+            return Ok(BindgenAttr::Module(input.parse::<syn::LitStr>()?.value()));
         }
         if attr == "js_class" {
             input.parse::<Token![=]>()?;
-            return Ok(BindgenAttr::JsClass(input.parse::<syn::LitStr>()?.value()))
+            return Ok(BindgenAttr::JsClass(input.parse::<syn::LitStr>()?.value()));
         }
         if attr == "js_name" {
             input.parse::<Token![=]>()?;
@@ -301,7 +303,7 @@ impl Parse for BindgenAttr {
                     (ident.to_string(), ident.span())
                 }
             };
-            return Ok(BindgenAttr::JsName(val, span))
+            return Ok(BindgenAttr::JsName(val, span));
         }
 
         Err(original.error("unknown attribute"))
@@ -312,11 +314,9 @@ struct AnyIdent(Ident);
 
 impl Parse for AnyIdent {
     fn parse(input: ParseStream) -> SynResult<Self> {
-        input.step(|cursor| {
-            match cursor.ident() {
-                Some((ident, remaining)) => Ok((AnyIdent(ident), remaining)),
-                None => Err(cursor.error("expected an identifier")),
-            }
+        input.step(|cursor| match cursor.ident() {
+            Some((ident, remaining)) => Ok((AnyIdent(ident), remaining)),
+            None => Err(cursor.error("expected an identifier")),
         })
     }
 }
@@ -563,9 +563,10 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
 impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemStatic {
     type Target = ast::ImportKind;
 
-    fn convert(self, (opts, module): (BindgenAttrs, &'a Option<String>))
-        -> Result<Self::Target, Diagnostic>
-    {
+    fn convert(
+        self,
+        (opts, module): (BindgenAttrs, &'a Option<String>),
+    ) -> Result<Self::Target, Diagnostic> {
         if self.mutability.is_some() {
             bail_span!(self.mutability, "cannot import mutable globals yet")
         }
@@ -606,7 +607,15 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
         }
         assert_not_variadic(&attrs, &self)?;
 
-        Ok(function_from_decl(&self.ident, &attrs, self.decl, self.attrs, self.vis, false, None)?.0)
+        Ok(function_from_decl(
+            &self.ident,
+            &attrs,
+            self.decl,
+            self.attrs,
+            self.vis,
+            false,
+            None,
+        )?.0)
     }
 }
 
@@ -687,7 +696,9 @@ fn function_from_decl(
     let js_name = opts.js_name();
     Ok((
         ast::Function {
-            name: js_name.map(|s| s.0.to_string()).unwrap_or(decl_name.to_string()),
+            name: js_name
+                .map(|s| s.0.to_string())
+                .unwrap_or(decl_name.to_string()),
             name_span: js_name.map(|s| s.1).unwrap_or(decl_name.span()),
             renamed_via_js_name: js_name.is_some(),
             arguments,
@@ -1031,28 +1042,31 @@ fn extract_first_ty_param(ty: Option<&syn::Type>) -> Result<Option<syn::Type>, D
 /// Extract the documentation comments from a Vec of attributes
 fn extract_doc_comments(attrs: &[syn::Attribute]) -> Vec<String> {
     attrs
-    .iter()
-    .filter_map(|a| {
-        // if the path segments include an ident of "doc" we know this
-        // this is a doc comment
-        if a.path.segments.iter().any(|s| s.ident.to_string() == "doc") {
-            Some(
-                // We want to filter out any Puncts so just grab the Literals
-                a.tts.clone().into_iter().filter_map(|t| match t {
-                    TokenTree::Literal(lit) => {
-                        // this will always return the quoted string, we deal with
-                        // that in the cli when we read in the comments
-                        Some(lit.to_string())
-                    },
-                    _ => None,
-                })
-            )
-        } else {
-            None
-        }
-    })
-    //Fold up the [[String]] iter we created into Vec<String>
-    .fold(vec![], |mut acc, a| {acc.extend(a); acc})
+        .iter()
+        .filter_map(|a| {
+            // if the path segments include an ident of "doc" we know this
+            // this is a doc comment
+            if a.path.segments.iter().any(|s| s.ident.to_string() == "doc") {
+                Some(
+                    // We want to filter out any Puncts so just grab the Literals
+                    a.tts.clone().into_iter().filter_map(|t| match t {
+                        TokenTree::Literal(lit) => {
+                            // this will always return the quoted string, we deal with
+                            // that in the cli when we read in the comments
+                            Some(lit.to_string())
+                        }
+                        _ => None,
+                    }),
+                )
+            } else {
+                None
+            }
+        })
+        //Fold up the [[String]] iter we created into Vec<String>
+        .fold(vec![], |mut acc, a| {
+            acc.extend(a);
+            acc
+        })
 }
 
 /// Check there are no lifetimes on the function.
@@ -1080,8 +1094,11 @@ fn assert_no_lifetimes(decl: &syn::FnDecl) -> Result<(), Diagnostic> {
 /// This method always fails if the BindgenAttrs contain variadic
 fn assert_not_variadic(attrs: &BindgenAttrs, span: &dyn ToTokens) -> Result<(), Diagnostic> {
     if attrs.variadic() {
-        bail_span!(span, "the `variadic` attribute can only be applied to imported \
-            (`extern`) functions")
+        bail_span!(
+            span,
+            "the `variadic` attribute can only be applied to imported \
+             (`extern`) functions"
+        )
     }
     Ok(())
 }
