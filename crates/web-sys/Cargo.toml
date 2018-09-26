@@ -5,6 +5,11 @@ authors = ["The wasm-bindgen Developers"]
 readme = "./README.md"
 homepage = "https://rustwasm.github.io/wasm-bindgen/web-sys/index.html"
 documentation = "https://rustwasm.github.io/wasm-bindgen/api/web_sys/"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/web-sys"
+description = """
+Bindings for all Web APIs, a procedurally generated crate from WebIDL
+"""
+license = "MIT/Apache-2.0"
 
 [package.metadata.docs.rs]
 all-features = true
