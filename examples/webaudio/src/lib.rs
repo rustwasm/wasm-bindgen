@@ -36,6 +36,12 @@ pub struct FmOsc {
     fm_gain_ratio: f32,
 }
 
+impl Drop for FmOsc {
+    fn drop(&mut self) {
+        let _ = self.ctx.close();
+    }
+}
+
 #[wasm_bindgen]
 impl FmOsc {
     #[wasm_bindgen(constructor)]
