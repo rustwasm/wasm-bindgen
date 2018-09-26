@@ -396,6 +396,7 @@ impl<T: FromWasmAbi> FromWasmAbi for Clamped<T> {
 impl IntoWasmAbi for () {
     type Abi = ();
 
+    #[inline]
     fn into_abi(self, _extra: &mut Stack) -> () {
         self
     }
