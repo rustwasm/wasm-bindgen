@@ -1,8 +1,8 @@
 extern crate env_logger;
 #[macro_use]
 extern crate failure;
-extern crate wasm_bindgen_webidl;
 extern crate sourcefile;
+extern crate wasm_bindgen_webidl;
 
 use failure::{Fail, ResultExt};
 use sourcefile::SourceFile;
@@ -35,10 +35,11 @@ fn try_main() -> Result<(), failure::Error> {
         let entry = entry.context("getting webidls/enabled/*.webidl entry")?;
         let path = entry.path();
         if path.extension() != Some(OsStr::new("webidl")) {
-            continue
+            continue;
         }
         println!("cargo:rerun-if-changed={}", path.display());
-        source = source.add_file(&path)
+        source = source
+            .add_file(&path)
             .with_context(|_| format!("reading contents of file \"{}\"", path.display()))?;
     }
 
@@ -48,7 +49,9 @@ fn try_main() -> Result<(), failure::Error> {
     // the webidl compiler.
     let manifest_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap());
     let manifest = fs::read_to_string(manifest_dir.join("Cargo.toml"))?;
-    let features = manifest.lines().skip_while(|f| !f.starts_with("[features]"));
+    let features = manifest
+        .lines()
+        .skip_while(|f| !f.starts_with("[features]"));
 
     let enabled_features = env::vars()
         .map(|p| p.0)
@@ -56,8 +59,7 @@ fn try_main() -> Result<(), failure::Error> {
         .map(|mut p| {
             p.drain(0.."CARGO_FEATURE_".len());
             p
-        })
-        .collect::<HashSet<_>>();
+        }).collect::<HashSet<_>>();
 
     let mut allowed = Vec::new();
     for feature in features.filter(|f| !f.starts_with("#") && !f.starts_with("[")) {
@@ -81,23 +83,31 @@ fn try_main() -> Result<(), failure::Error> {
         Err(e) => match e.kind() {
             wasm_bindgen_webidl::ErrorKind::ParsingWebIDLSourcePos(pos) => {
                 if let Some(pos) = source.resolve_offset(pos) {
-                    let ctx = format!("compiling WebIDL into wasm-bindgen bindings in file \
-                        \"{}\", line {} column {}", pos.filename, pos.line + 1, pos.col + 1);
+                    let ctx = format!(
+                        "compiling WebIDL into wasm-bindgen bindings in file \
+                         \"{}\", line {} column {}",
+                        pos.filename,
+                        pos.line + 1,
+                        pos.col + 1
+                    );
                     return Err(e.context(ctx).into());
                 } else {
-                    return Err(e.context("compiling WebIDL into wasm-bindgen bindings").into());
+                    return Err(e
+                        .context("compiling WebIDL into wasm-bindgen bindings")
+                        .into());
                 }
             }
             _ => {
-                return Err(e.context("compiling WebIDL into wasm-bindgen bindings").into());
+                return Err(e
+                    .context("compiling WebIDL into wasm-bindgen bindings")
+                    .into());
             }
-        }
+        },
     };
 
     let out_dir = env::var("OUT_DIR").context("reading OUT_DIR environment variable")?;
     let out_file_path = path::Path::new(&out_dir).join("bindings.rs");
-    fs::write(&out_file_path, bindings)
-        .context("writing bindings to output file")?;
+    fs::write(&out_file_path, bindings).context("writing bindings to output file")?;
 
     // run rustfmt on the generated file - really handy for debugging
     println!("cargo:rerun-if-env-changed=WEBIDL_RUSTFMT_BINDINGS");
@@ -113,4 +123,3 @@ fn try_main() -> Result<(), failure::Error> {
 
     Ok(())
 }
-

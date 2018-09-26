@@ -119,7 +119,7 @@ impl Interpreter {
                     _ => continue,
                 }
                 if entry.module() != "__wbindgen_placeholder__" {
-                    continue
+                    continue;
                 }
                 if entry.field() == "__wbindgen_describe" {
                     ret.describe_idx = Some(idx - 1 as u32);
@@ -140,7 +140,7 @@ impl Interpreter {
             }
         }
 
-        return ret
+        return ret;
     }
 
     /// Interprets the execution of the descriptor function `func`.
@@ -163,22 +163,14 @@ impl Interpreter {
     ///
     /// Returns `Some` if `func` was found in the `module` and `None` if it was
     /// not found in the `module`.
-    pub fn interpret_descriptor(
-        &mut self,
-        func: &str,
-        module: &Module,
-    ) -> Option<&[u32]> {
+    pub fn interpret_descriptor(&mut self, func: &str, module: &Module) -> Option<&[u32]> {
         let idx = *self.name_map.get(func)?;
         self.with_sections(module, |me, sections| {
             me.interpret_descriptor_idx(idx, sections)
         })
     }
 
-    fn interpret_descriptor_idx(
-        &mut self,
-        idx: u32,
-        sections: &Sections,
-    ) -> Option<&[u32]> {
+    fn interpret_descriptor_idx(&mut self, idx: u32, sections: &Sections) -> Option<&[u32]> {
         self.descriptor.truncate(0);
 
         // We should have a blank wasm and LLVM stack at both the start and end
@@ -250,27 +242,27 @@ impl Interpreter {
         // After we've got the table index of the descriptor function we're
         // interested go take a look in the function table to find what the
         // actual index of the function is.
-        let (entry_idx, offset, entry) = sections.elements.entries()
+        let (entry_idx, offset, entry) = sections
+            .elements
+            .entries()
             .iter()
             .enumerate()
             .filter_map(|(i, entry)| {
                 let code = entry.offset().code();
                 if code.len() != 2 {
-                    return None
+                    return None;
                 }
                 if code[1] != Instruction::End {
-                    return None
+                    return None;
                 }
                 match code[0] {
                     Instruction::I32Const(x) => Some((i, x as u32, entry)),
                     _ => None,
                 }
-            })
-            .find(|(_i, offset, entry)| {
-                *offset <= descriptor_table_idx &&
-                    descriptor_table_idx < (*offset + entry.members().len() as u32)
-            })
-            .expect("failed to find index in table elements");
+            }).find(|(_i, offset, entry)| {
+                *offset <= descriptor_table_idx
+                    && descriptor_table_idx < (*offset + entry.members().len() as u32)
+            }).expect("failed to find index in table elements");
         let idx = (descriptor_table_idx - offset) as usize;
         let descriptor_idx = entry.members()[idx];
 
@@ -299,13 +291,13 @@ impl Interpreter {
         // Allocate space for our call frame's local variables. All local
         // variables should be of the `i32` type.
         assert!(body.locals().len() <= 1, "too many local types");
-        let nlocals = body.locals()
+        let nlocals = body
+            .locals()
             .get(0)
             .map(|i| {
                 assert_eq!(i.value_type(), ValueType::I32);
                 i.count()
-            })
-            .unwrap_or(0);
+            }).unwrap_or(0);
 
         let code_sig = sections.functions.entries()[code_idx].type_ref();
         let function_ty = match &sections.types.types()[code_sig as usize] {
@@ -352,8 +344,7 @@ impl Interpreter {
                     if Some(*idx) == self.describe_idx {
                         self.descriptor.push(self.stack.pop().unwrap() as u32);
                     } else if Some(*idx) == self.describe_closure_idx {
-                        self.descriptor_table_idx =
-                            Some(self.stack.pop().unwrap() as u32);
+                        self.descriptor_table_idx = Some(self.stack.pop().unwrap() as u32);
                         self.stack.pop();
                         self.stack.pop();
                         self.stack.push(0);
@@ -428,6 +419,14 @@ impl Interpreter {
             let functions = module.sections[self.functions_idx] (Function);
             let elements = module.sections[self.elements_idx] (Element);
         }
-        f(self, &Sections { code, types, functions, elements })
+        f(
+            self,
+            &Sections {
+                code,
+                types,
+                functions,
+                elements,
+            },
+        )
     }
 }

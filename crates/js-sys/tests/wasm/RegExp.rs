@@ -1,6 +1,6 @@
-use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
 use js_sys::*;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]
 fn regexp_inheritance() {
@@ -95,7 +95,10 @@ fn multiline() {
 
 #[wasm_bindgen_test]
 fn n1_to_n9() {
-    let re = RegExp::new(r"(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)", "");
+    let re = RegExp::new(
+        r"(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)\s(\w+)",
+        "",
+    );
     re.test("The Quick Brown Fox Jumps Over The Lazy Dog");
     assert_eq!(RegExp::n1(), "The");
     assert_eq!(RegExp::n2(), "Quick");

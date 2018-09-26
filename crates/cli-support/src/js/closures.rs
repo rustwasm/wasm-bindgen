@@ -16,8 +16,8 @@ use failure::Error;
 use parity_wasm::elements::*;
 
 use descriptor::Descriptor;
-use js::Context;
 use js::js2rust::Js2Rust;
+use js::Context;
 
 pub fn rewrite(input: &mut Context) -> Result<(), Error> {
     let info = ClosureDescriptors::new(input);
@@ -29,7 +29,7 @@ pub fn rewrite(input: &mut Context) -> Result<(), Error> {
         info.code_idx_to_descriptor.len(),
     );
     if info.element_removal_list.len() == 0 {
-        return Ok(())
+        return Ok(());
     }
 
     // Make sure the names section is available in the wasm module because we'll
@@ -39,7 +39,8 @@ pub fn rewrite(input: &mut Context) -> Result<(), Error> {
     input.parse_wasm_names();
     Remap {
         code_idx_to_descriptor: &info.code_idx_to_descriptor,
-        old_num_imports: input.module
+        old_num_imports: input
+            .module
             .import_section()
             .map(|s| s.functions())
             .unwrap_or(0) as u32,
@@ -90,7 +91,9 @@ impl ClosureDescriptors {
             Some(i) => i,
             None => return Default::default(),
         };
-        let imports = input.module.import_section()
+        let imports = input
+            .module
+            .import_section()
             .map(|s| s.functions())
             .unwrap_or(0);
         let mut ret = ClosureDescriptors::default();
@@ -100,24 +103,18 @@ impl ClosureDescriptors {
             None => return Default::default(),
         };
         for (i, function) in code.bodies().iter().enumerate() {
-            let call_pos = function.code()
-                .elements()
-                .iter()
-                .position(|i| {
-                    match i {
-                        Instruction::Call(i) => *i == wbindgen_describe_closure,
-                        _ => false,
-                    }
-                });
+            let call_pos = function.code().elements().iter().position(|i| match i {
+                Instruction::Call(i) => *i == wbindgen_describe_closure,
+                _ => false,
+            });
             let call_pos = match call_pos {
                 Some(i) => i,
                 None => continue,
             };
-            let descriptor = input.interpreter.interpret_closure_descriptor(
-                i,
-                input.module,
-                &mut ret.element_removal_list,
-            ).unwrap();
+            let descriptor = input
+                .interpreter
+                .interpret_closure_descriptor(i, input.module, &mut ret.element_removal_list)
+                .unwrap();
             // `new_idx` is the function-space index of the function that we'll
             // be injecting. Calls to the code function `i` will instead be
             // rewritten to calls to `new_idx`, which is an import that we'll
@@ -132,7 +129,7 @@ impl ClosureDescriptors {
                 },
             );
         }
-        return ret
+        return ret;
     }
 
     /// Here we remove elements from the function table. All our descriptor
@@ -165,7 +162,7 @@ impl ClosureDescriptors {
                 // If we keep this entry, then keep going
                 if !to_remove.contains(&j) {
                     current.push(*idx);
-                    continue
+                    continue;
                 }
 
                 // If we have members of `current` then we save off a section
@@ -173,10 +170,8 @@ impl ClosureDescriptors {
                 let next_offset = offset + (current.len() as i32) + 1;
                 if current.len() > 0 {
                     let members = mem::replace(&mut current, Vec::new());
-                    let offset = InitExpr::new(vec![
-                        Instruction::I32Const(offset),
-                        Instruction::End,
-                    ]);
+                    let offset =
+                        InitExpr::new(vec![Instruction::I32Const(offset), Instruction::End]);
                     let new_entry = ElementSegment::new(0, offset, members);
                     elements.entries_mut().push(new_entry);
                 }
@@ -184,10 +179,7 @@ impl ClosureDescriptors {
             }
             // Any remaining function table entries get pushed at the end.
             if current.len() > 0 {
-                let offset = InitExpr::new(vec![
-                    Instruction::I32Const(offset),
-                    Instruction::End,
-                ]);
+                let offset = InitExpr::new(vec![Instruction::I32Const(offset), Instruction::End]);
                 let new_entry = ElementSegment::new(0, offset, current);
                 elements.entries_mut().push(new_entry);
             }
@@ -211,9 +203,8 @@ impl ClosureDescriptors {
         // signature of our `#[inline(never)]` functions. Find the type
         // signature index so we can assign it below.
         let type_idx = {
-            let kind = input.module.import_section()
-                .unwrap()
-                .entries()[wbindgen_describe_closure as usize]
+            let kind = input.module.import_section().unwrap().entries()
+                [wbindgen_describe_closure as usize]
                 .external();
             match kind {
                 External::Function(i) => *i,
@@ -268,7 +259,9 @@ impl ClosureDescriptors {
                 import_name,
                 External::Function(type_idx as u32),
             );
-            input.module.import_section_mut()
+            input
+                .module
+                .import_section_mut()
                 .unwrap()
                 .entries_mut()
                 .push(new_import);
@@ -313,7 +306,9 @@ impl<'a> Remap<'a> {
                 Section::Export(e) => self.remap_export_section(e),
                 Section::Element(e) => self.remap_element_section(e),
                 Section::Code(e) => self.remap_code_section(e),
-                Section::Start(i) => { self.remap_idx(i); }
+                Section::Start(i) => {
+                    self.remap_idx(i);
+                }
                 Section::Name(n) => self.remap_name_section(n),
                 _ => {}
             }
@@ -328,10 +323,11 @@ impl<'a> Remap<'a> {
 
     fn remap_export_entry(&self, entry: &mut ExportEntry) {
         match entry.internal_mut() {
-            Internal::Function(i) => { self.remap_idx(i); }
+            Internal::Function(i) => {
+                self.remap_idx(i);
+            }
             _ => {}
         }
-
     }
 
     fn remap_element_section(&self, section: &mut ElementSection) {
@@ -364,7 +360,9 @@ impl<'a> Remap<'a> {
 
     fn remap_instruction(&self, instr: &mut Instruction) {
         match instr {
-            Instruction::Call(i) => { self.remap_idx(i); }
+            Instruction::Call(i) => {
+                self.remap_idx(i);
+            }
             _ => {}
         }
     }
@@ -403,7 +401,7 @@ impl<'a> Remap<'a> {
         // If this was an imported function we didn't reorder those, so nothing
         // to do.
         if *idx < self.old_num_imports {
-            return false
+            return false;
         }
         // ... otherwise we're injecting a number of new imports, so offset
         // everything.

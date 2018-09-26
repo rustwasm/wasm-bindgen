@@ -13,7 +13,8 @@ fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
     fs::write(input.path(), wat).unwrap();
     let status = Command::new("wat2wasm")
         .arg(input.path())
-        .arg("-o").arg(output.path())
+        .arg("-o")
+        .arg(output.path())
         .status()
         .unwrap();
     println!("status: {}", status);

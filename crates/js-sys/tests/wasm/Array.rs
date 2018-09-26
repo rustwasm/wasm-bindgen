@@ -1,7 +1,7 @@
+use js_sys::*;
+use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
-use js_sys::*;
 
 macro_rules! js_array {
     ($($e:expr),*) => ({
@@ -31,10 +31,16 @@ fn filter() {
     assert!(array.filter(&mut |x, _, _| x.as_f64().is_some()).length() == 0);
 
     let array = js_array![1, 2, 3, 4];
-    assert_eq!(array.filter(&mut |x, _, _| x.as_f64().is_some()).length(), 4);
+    assert_eq!(
+        array.filter(&mut |x, _, _| x.as_f64().is_some()).length(),
+        4
+    );
 
     let array = js_array!["a", 1, "b", 2];
-    assert_eq!(array.filter(&mut |x, _, _| x.as_f64().is_some()).length(), 2);
+    assert_eq!(
+        array.filter(&mut |x, _, _| x.as_f64().is_some()).length(),
+        2
+    );
 }
 
 #[wasm_bindgen_test]
@@ -223,14 +229,20 @@ fn every() {
 #[wasm_bindgen_test]
 fn find() {
     let even = js_array![2, 4, 6, 8];
-    assert_eq!(even.find(&mut |x, _, _| x.as_f64().unwrap() % 2.0 == 0.0), 2);
+    assert_eq!(
+        even.find(&mut |x, _, _| x.as_f64().unwrap() % 2.0 == 0.0),
+        2
+    );
     let odd = js_array![1, 3, 5, 7];
     assert_eq!(
         odd.find(&mut |x, _, _| x.as_f64().unwrap() % 2.0 == 0.0),
         JsValue::undefined(),
     );
     let mixed = js_array![3, 5, 7, 10];
-    assert_eq!(mixed.find(&mut |x, _, _| x.as_f64().unwrap() % 2.0 == 0.0), 10);
+    assert_eq!(
+        mixed.find(&mut |x, _, _| x.as_f64().unwrap() % 2.0 == 0.0),
+        10
+    );
 }
 
 #[wasm_bindgen_test]
@@ -242,38 +254,43 @@ fn map() {
 
 #[wasm_bindgen_test]
 fn reduce() {
-    let arr = js_array!["0", "1", "2", "3", "4"]
-        .reduce(
-            &mut |ac, cr, _, _| {
-                format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap())
-                    .into()
-            },
-            &"".into(),
-        );
+    let arr = js_array!["0", "1", "2", "3", "4"].reduce(
+        &mut |ac, cr, _, _| {
+            format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap()).into()
+        },
+        &"".into(),
+    );
     assert_eq!(arr, "01234");
 }
 
 #[wasm_bindgen_test]
 fn reduce_right() {
-    let arr = js_array!["0", "1", "2", "3", "4"]
-        .reduce_right(
-            &mut |ac, cr, _, _| {
-                format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap())
-                    .into()
-            },
-            &"".into(),
-        );
+    let arr = js_array!["0", "1", "2", "3", "4"].reduce_right(
+        &mut |ac, cr, _, _| {
+            format!("{}{}", &ac.as_string().unwrap(), &cr.as_string().unwrap()).into()
+        },
+        &"".into(),
+    );
     assert_eq!(arr, "43210");
 }
 
 #[wasm_bindgen_test]
 fn find_index() {
     let even = js_array![2, 4, 6, 8];
-    assert_eq!(even.find_index(&mut |e, _, _| e.as_f64().unwrap() % 2. == 0.), 0);
+    assert_eq!(
+        even.find_index(&mut |e, _, _| e.as_f64().unwrap() % 2. == 0.),
+        0
+    );
     let odd = js_array![1, 3, 5, 7];
-    assert_eq!(odd.find_index(&mut |e, _, _| e.as_f64().unwrap() % 2. == 0.), -1);
+    assert_eq!(
+        odd.find_index(&mut |e, _, _| e.as_f64().unwrap() % 2. == 0.),
+        -1
+    );
     let mixed = js_array![3, 5, 7, 10];
-    assert_eq!(mixed.find_index(&mut |e, _, _| e.as_f64().unwrap() % 2. == 0.), 3);
+    assert_eq!(
+        mixed.find_index(&mut |e, _, _| e.as_f64().unwrap() % 2. == 0.),
+        3
+    );
 }
 
 #[wasm_bindgen_test]
@@ -287,11 +304,9 @@ fn to_locale_string() {
 fn for_each() {
     fn sum_indices_of_evens(array: &Array) -> u32 {
         let mut res = 0;
-        array.for_each(&mut |elem: JsValue, i, _| {
-            match elem.as_f64() {
-                Some(val) if val % 2. == 0. => res += i,
-                _ => { }
-            }
+        array.for_each(&mut |elem: JsValue, i, _| match elem.as_f64() {
+            Some(val) if val % 2. == 0. => res += i,
+            _ => {}
         });
         res
     }

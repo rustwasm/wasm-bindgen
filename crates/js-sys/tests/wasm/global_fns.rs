@@ -1,7 +1,7 @@
-use std::f64::{NAN, INFINITY};
+use std::f64::{INFINITY, NAN};
 
-use wasm_bindgen_test::*;
 use js_sys::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]
 fn test_decode_uri() {

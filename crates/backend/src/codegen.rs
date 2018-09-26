@@ -1,6 +1,6 @@
 use std::collections::HashSet;
-use std::sync::Mutex;
 use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
+use std::sync::Mutex;
 
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::ToTokens;
@@ -9,8 +9,8 @@ use shared;
 use syn;
 
 use ast;
-use Diagnostic;
 use util::ShortHash;
+use Diagnostic;
 
 pub trait TryToTokens {
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic>;
@@ -51,7 +51,7 @@ impl TryToTokens for ast::Program {
                         Ok(kind) => kind,
                         Err(e) => {
                             errors.push(e);
-                            continue
+                            continue;
                         }
                     };
                     (quote! { impl #ns { #kind } }).to_tokens(tokens);
@@ -275,9 +275,12 @@ impl ToTokens for ast::StructField {
             }
         }).to_tokens(tokens);
 
-        Descriptor(&getter, quote! {
-            <#ty as WasmDescribe>::describe();
-        }).to_tokens(tokens);
+        Descriptor(
+            &getter,
+            quote! {
+                <#ty as WasmDescribe>::describe();
+            },
+        ).to_tokens(tokens);
 
         if self.readonly {
             return;
@@ -307,9 +310,7 @@ impl ToTokens for ast::StructField {
 }
 
 impl TryToTokens for ast::Export {
-    fn try_to_tokens(self: &ast::Export, into: &mut TokenStream)
-        -> Result<(), Diagnostic>
-    {
+    fn try_to_tokens(self: &ast::Export, into: &mut TokenStream) -> Result<(), Diagnostic> {
         let generated_name = self.rust_symbol();
         let export_name = self.export_name();
         let mut args = vec![];
@@ -424,10 +425,7 @@ impl TryToTokens for ast::Export {
         });
         let syn_ret = self.function.ret.as_ref().unwrap_or(&syn_unit);
         if let syn::Type::Reference(_) = syn_ret {
-            bail_span!(
-                syn_ret,
-                "cannot return a borrowed ref with #[wasm_bindgen]",
-            )
+            bail_span!(syn_ret, "cannot return a borrowed ref with #[wasm_bindgen]",)
         }
         let ret_ty = quote! {
             -> <#syn_ret as ::wasm_bindgen::convert::ReturnWasmAbi>::Abi
@@ -482,12 +480,15 @@ impl TryToTokens for ast::Export {
         // this, but the tl;dr; is that this is stripped from the final wasm
         // binary along with anything it references.
         let export = Ident::new(&export_name, Span::call_site());
-        Descriptor(&export, quote! {
-            inform(FUNCTION);
-            inform(#nargs);
-            #(<#argtys as WasmDescribe>::describe();)*
-            #describe_ret
-        }).to_tokens(into);
+        Descriptor(
+            &export,
+            quote! {
+                inform(FUNCTION);
+                inform(#nargs);
+                #(<#argtys as WasmDescribe>::describe();)*
+                #describe_ret
+            },
+        ).to_tokens(into);
 
         Ok(())
     }
@@ -680,8 +681,7 @@ impl ToTokens for ast::ImportEnum {
                 let this_index = current_idx;
                 current_idx += 1;
                 Literal::usize_unsuffixed(this_index)
-            })
-            .collect();
+            }).collect();
 
         // Borrow variant_indexes because we need to use it multiple times inside the quote! macro
         let variant_indexes_ref = &variant_indexes;
@@ -792,12 +792,10 @@ impl TryToTokens for ast::ImportFunction {
                     ..
                 }) => ident.clone(),
                 syn::Pat::Wild(_) => syn::Ident::new(&format!("__genarg_{}", i), Span::call_site()),
-                _ => {
-                    bail_span!(
-                        pat,
-                        "unsupported pattern in #[wasm_bindgen] imported function",
-                    )
-                }
+                _ => bail_span!(
+                    pat,
+                    "unsupported pattern in #[wasm_bindgen] imported function",
+                ),
             };
 
             abi_argument_names.push(name.clone());
@@ -819,7 +817,10 @@ impl TryToTokens for ast::ImportFunction {
         let mut convert_ret;
         match &self.js_ret {
             Some(syn::Type::Reference(_)) => {
-                bail_span!(self.js_ret, "cannot return references in #[wasm_bindgen] imports yet");
+                bail_span!(
+                    self.js_ret,
+                    "cannot return references in #[wasm_bindgen] imports yet"
+                );
             }
             Some(ref ty) => {
                 abi_ret = quote! {
@@ -943,12 +944,15 @@ impl<'a> ToTokens for DescribeImport<'a> {
             None => quote! { <() as WasmDescribe>::describe(); },
         };
 
-        Descriptor(&f.shim, quote! {
-            inform(FUNCTION);
-            inform(#nargs);
-            #(<#argtys as WasmDescribe>::describe();)*
-            #inform_ret
-        }).to_tokens(tokens);
+        Descriptor(
+            &f.shim,
+            quote! {
+                inform(FUNCTION);
+                inform(#nargs);
+                #(<#argtys as WasmDescribe>::describe();)*
+                #inform_ret
+            },
+        ).to_tokens(tokens);
     }
 }
 
@@ -1055,15 +1059,15 @@ impl ToTokens for ast::Const {
             FloatLiteral(f) => {
                 let f = Literal::f64_suffixed(f);
                 quote!(#f)
-            },
+            }
             SignedIntegerLiteral(i) => {
                 let i = Literal::i64_suffixed(i);
                 quote!(#i)
-            },
+            }
             UnsignedIntegerLiteral(i) => {
                 let i = Literal::u64_suffixed(i);
                 quote!(#i)
-            },
+            }
             Null => unimplemented!(),
         };
 
@@ -1088,11 +1092,15 @@ impl ToTokens for ast::Dictionary {
         for field in self.fields.iter() {
             field.to_tokens(&mut methods);
         }
-        let required_names = &self.fields.iter()
+        let required_names = &self
+            .fields
+            .iter()
             .filter(|f| f.required)
             .map(|f| &f.name)
             .collect::<Vec<_>>();
-        let required_types = &self.fields.iter()
+        let required_types = &self
+            .fields
+            .iter()
             .filter(|f| f.required)
             .map(|f| &f.ty)
             .collect::<Vec<_>>();
@@ -1240,8 +1248,12 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         lazy_static! {
             static ref DESCRIPTORS_EMITTED: Mutex<HashSet<String>> = Default::default();
         }
-        if !DESCRIPTORS_EMITTED.lock().unwrap().insert(self.0.to_string()) {
-            return
+        if !DESCRIPTORS_EMITTED
+            .lock()
+            .unwrap()
+            .insert(self.0.to_string())
+        {
+            return;
         }
 
         let name = Ident::new(&format!("__wbindgen_describe_{}", self.0), self.0.span());

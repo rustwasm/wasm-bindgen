@@ -6,7 +6,7 @@ use weedle::term;
 use weedle::types::*;
 
 use first_pass::FirstPassRecord;
-use util::{TypePosition, camel_case_ident, snake_case_ident, shared_ref, option_ty, array};
+use util::{array, camel_case_ident, option_ty, shared_ref, snake_case_ident, TypePosition};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]
 pub(crate) enum IdlType<'a> {
@@ -49,7 +49,10 @@ pub(crate) enum IdlType<'a> {
     Interface(&'a str),
     Dictionary(&'a str),
     Enum(&'a str),
-    CallbackInterface { name: &'a str, single_function: bool },
+    CallbackInterface {
+        name: &'a str,
+        single_function: bool,
+    },
 
     Nullable(Box<IdlType<'a>>),
     FrozenArray(Box<IdlType<'a>>),
@@ -132,13 +135,17 @@ impl<'a> ToIdlType<'a> for NonAnyType<'a> {
 
 impl<'a> ToIdlType<'a> for SequenceType<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        Some(IdlType::Sequence(Box::new(self.generics.body.to_idl_type(record)?)))
+        Some(IdlType::Sequence(Box::new(
+            self.generics.body.to_idl_type(record)?,
+        )))
     }
 }
 
 impl<'a> ToIdlType<'a> for FrozenArrayType<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        Some(IdlType::FrozenArray(Box::new(self.generics.body.to_idl_type(record)?)))
+        Some(IdlType::FrozenArray(Box::new(
+            self.generics.body.to_idl_type(record)?,
+        )))
     }
 }
 
@@ -155,7 +162,9 @@ impl<'a, T: ToIdlType<'a>> ToIdlType<'a> for MayBeNull<T> {
 
 impl<'a> ToIdlType<'a> for PromiseType<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        Some(IdlType::Promise(Box::new(self.generics.body.to_idl_type(record)?)))
+        Some(IdlType::Promise(Box::new(
+            self.generics.body.to_idl_type(record)?,
+        )))
     }
 }
 
@@ -230,12 +239,10 @@ impl<'a> ToIdlType<'a> for DoubleType {
 
 impl<'a> ToIdlType<'a> for RecordType<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        Some(
-            IdlType::Record(
-                Box::new(self.generics.body.0.to_idl_type(record)?),
-                Box::new(self.generics.body.2.to_idl_type(record)?)
-            )
-        )
+        Some(IdlType::Record(
+            Box::new(self.generics.body.0.to_idl_type(record)?),
+            Box::new(self.generics.body.2.to_idl_type(record)?),
+        ))
     }
 }
 
@@ -375,13 +382,9 @@ impl<'a> IdlType<'a> {
             IdlType::UnsignedLong => dst.push_str("u32"),
             IdlType::LongLong => dst.push_str("i64"),
             IdlType::UnsignedLongLong => dst.push_str("u64"),
-            | IdlType::Float
-            | IdlType::UnrestrictedFloat => dst.push_str("f32"),
-            | IdlType::Double
-            | IdlType::UnrestrictedDouble => dst.push_str("f64"),
-            | IdlType::DomString
-            | IdlType::ByteString
-            | IdlType::UsvString => dst.push_str("str"),
+            IdlType::Float | IdlType::UnrestrictedFloat => dst.push_str("f32"),
+            IdlType::Double | IdlType::UnrestrictedDouble => dst.push_str("f64"),
+            IdlType::DomString | IdlType::ByteString | IdlType::UsvString => dst.push_str("str"),
             IdlType::Object => dst.push_str("object"),
             IdlType::Symbol => dst.push_str("symbol"),
             IdlType::Error => dst.push_str("error"),
@@ -405,32 +408,30 @@ impl<'a> IdlType<'a> {
             IdlType::Interface(name) => dst.push_str(&snake_case_ident(name)),
             IdlType::Dictionary(name) => dst.push_str(&snake_case_ident(name)),
             IdlType::Enum(name) => dst.push_str(&snake_case_ident(name)),
-            IdlType::CallbackInterface { name, .. } => {
-                dst.push_str(&snake_case_ident(name))
-            }
+            IdlType::CallbackInterface { name, .. } => dst.push_str(&snake_case_ident(name)),
 
             IdlType::Nullable(idl_type) => {
                 dst.push_str("opt_");
                 idl_type.push_snake_case_name(dst);
-            },
+            }
             IdlType::FrozenArray(idl_type) => {
                 idl_type.push_snake_case_name(dst);
                 dst.push_str("_frozen_array");
-            },
+            }
             IdlType::Sequence(idl_type) => {
                 idl_type.push_snake_case_name(dst);
                 dst.push_str("_sequence");
-            },
+            }
             IdlType::Promise(idl_type) => {
                 idl_type.push_snake_case_name(dst);
                 dst.push_str("_promise");
-            },
+            }
             IdlType::Record(idl_type_from, idl_type_to) => {
                 dst.push_str("record_from_");
                 idl_type_from.push_snake_case_name(dst);
                 dst.push_str("_to_");
                 idl_type_to.push_snake_case_name(dst);
-            },
+            }
             IdlType::Union(idl_types) => {
                 dst.push_str("union_of_");
                 let mut first = true;
@@ -442,7 +443,7 @@ impl<'a> IdlType<'a> {
                     }
                     idl_type.push_snake_case_name(dst);
                 }
-            },
+            }
 
             IdlType::Any => dst.push_str("any"),
             IdlType::Void => dst.push_str("void"),
@@ -483,16 +484,13 @@ impl<'a> IdlType<'a> {
             //
             // Perhaps one day we'll bind to u64/i64 here, but we need `BigInt`
             // to see more usage!
-            IdlType::LongLong |
-            IdlType::UnsignedLongLong => Some(ident_ty(raw_ident("f64"))),
+            IdlType::LongLong | IdlType::UnsignedLongLong => Some(ident_ty(raw_ident("f64"))),
 
             IdlType::Float => Some(ident_ty(raw_ident("f32"))),
             IdlType::UnrestrictedFloat => Some(ident_ty(raw_ident("f32"))),
             IdlType::Double => Some(ident_ty(raw_ident("f64"))),
             IdlType::UnrestrictedDouble => Some(ident_ty(raw_ident("f64"))),
-            | IdlType::DomString
-            | IdlType::ByteString
-            | IdlType::UsvString => match pos {
+            IdlType::DomString | IdlType::ByteString | IdlType::UsvString => match pos {
                 TypePosition::Argument => Some(shared_ref(ident_ty(raw_ident("str")), false)),
                 TypePosition::Return => Some(ident_ty(raw_ident("String"))),
             },
@@ -519,7 +517,7 @@ impl<'a> IdlType<'a> {
             | IdlType::CallbackInterface { name, .. } => {
                 let ty = ident_ty(rust_ident(camel_case_ident(name).as_str()));
                 anyref(ty)
-            },
+            }
             IdlType::Enum(name) => Some(ident_ty(rust_ident(camel_case_ident(name).as_str()))),
 
             IdlType::Nullable(idl_type) => {
@@ -532,11 +530,14 @@ impl<'a> IdlType<'a> {
                 // it's up to users to dispatch and/or create instances
                 // appropriately.
                 if let syn::Type::Path(path) = &inner {
-                    if path.qself.is_none() &&
-                        path.path.segments.last().map(|p| p.value().ident == "JsValue")
-                            .unwrap_or(false)
+                    if path.qself.is_none() && path
+                        .path
+                        .segments
+                        .last()
+                        .map(|p| p.value().ident == "JsValue")
+                        .unwrap_or(false)
                     {
-                        return Some(inner.clone())
+                        return Some(inner.clone());
                     }
                 }
 
@@ -570,24 +571,20 @@ impl<'a> IdlType<'a> {
                 //    Such an enum, however, might have a relatively high
                 //    overhead in creating it from a JS value, but would be
                 //    cheap to convert from a variant back to a JS value.
-                if idl_types
-                    .iter()
-                    .all(|idl_type|
-                        match idl_type {
-                            IdlType::Interface(..) => true,
-                            _ => false,
-                        }
-                    ) {
+                if idl_types.iter().all(|idl_type| match idl_type {
+                    IdlType::Interface(..) => true,
+                    _ => false,
+                }) {
                     IdlType::Object.to_syn_type(pos)
                 } else {
                     IdlType::Any.to_syn_type(pos)
                 }
-            },
+            }
 
             IdlType::Any => {
                 let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
                 anyref(leading_colon_path_ty(path))
-            },
+            }
             IdlType::Void => None,
             IdlType::Callback => js_sys("Function"),
         }
@@ -629,33 +626,26 @@ impl<'a> IdlType<'a> {
                 let mut idl_types = Vec::new();
                 for idl_type_from in idl_type_from.flatten() {
                     for idl_type_to in idl_type_to.flatten() {
-                        idl_types.push(
-                            IdlType::Record(
-                                Box::new(idl_type_from.clone()),
-                                Box::new(idl_type_to.clone())
-                            )
-                        );
+                        idl_types.push(IdlType::Record(
+                            Box::new(idl_type_from.clone()),
+                            Box::new(idl_type_to.clone()),
+                        ));
                     }
                 }
                 idl_types
-            },
+            }
             IdlType::Union(idl_types) => idl_types
                 .iter()
                 .flat_map(|idl_type| idl_type.flatten())
                 .collect(),
-            IdlType::ArrayBufferView => {
-                vec![IdlType::ArrayBufferView, IdlType::Uint8ArrayMut]
-            }
-            IdlType::BufferSource => {
-                vec![IdlType::BufferSource, IdlType::Uint8ArrayMut]
-            }
-            IdlType::LongLong => {
-                vec![IdlType::Long, IdlType::Double]
-            }
-            IdlType::UnsignedLongLong => {
-                vec![IdlType::UnsignedLong, IdlType::Double]
-            }
-            IdlType::CallbackInterface { name, single_function: true } => {
+            IdlType::ArrayBufferView => vec![IdlType::ArrayBufferView, IdlType::Uint8ArrayMut],
+            IdlType::BufferSource => vec![IdlType::BufferSource, IdlType::Uint8ArrayMut],
+            IdlType::LongLong => vec![IdlType::Long, IdlType::Double],
+            IdlType::UnsignedLongLong => vec![IdlType::UnsignedLong, IdlType::Double],
+            IdlType::CallbackInterface {
+                name,
+                single_function: true,
+            } => {
                 // According to the webidl spec [1] single-function callback
                 // interfaces can also be replaced in arguments with simply a
                 // single callable function, which we map to a `Callback`.
@@ -663,7 +653,10 @@ impl<'a> IdlType<'a> {
                 // [1]: https://heycam.github.io/webidl/#es-user-objects
                 vec![
                     IdlType::Callback,
-                    IdlType::CallbackInterface { name, single_function: false },
+                    IdlType::CallbackInterface {
+                        name,
+                        single_function: false,
+                    },
                 ]
             }
             idl_type @ _ => vec![idl_type.clone()],
@@ -678,26 +671,15 @@ fn idl_type_flatten_test() {
     assert_eq!(
         Union(vec![
             Interface("Node"),
-            Union(vec![
-                Sequence(
-                    Box::new(Long),
-                ),
-                Interface("Event"),
-            ]),
-            Nullable(
-                Box::new(Union(vec![
-                    Interface("XMLHttpRequest"),
-                    DomString,
-                ])),
-            ),
-            Sequence(
-                Box::new(Union(vec![
-                    Sequence(
-                        Box::new(Double),
-                    ),
-                    Interface("NodeList"),
-                ])),
-            ),
+            Union(vec![Sequence(Box::new(Long),), Interface("Event"),]),
+            Nullable(Box::new(Union(vec![
+                Interface("XMLHttpRequest"),
+                DomString,
+            ])),),
+            Sequence(Box::new(Union(vec![
+                Sequence(Box::new(Double),),
+                Interface("NodeList"),
+            ])),),
         ]).flatten(),
         vec![
             Interface("Node"),
@@ -726,10 +708,9 @@ fn clamped(t: syn::Type) -> syn::Type {
         qself: None,
         path: syn::Path {
             leading_colon: Some(Default::default()),
-            segments: vec![
-                Ident::new("wasm_bindgen", Span::call_site()).into(),
-                seg,
-            ].into_iter().collect(),
+            segments: vec![Ident::new("wasm_bindgen", Span::call_site()).into(), seg]
+                .into_iter()
+                .collect(),
         },
     }.into()
 }

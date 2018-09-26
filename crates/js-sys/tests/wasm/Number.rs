@@ -1,9 +1,9 @@
 use std::f64::{INFINITY, NAN};
 
+use js_sys::*;
+use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
-use js_sys::*;
 
 #[wasm_bindgen_test]
 fn is_finite() {
@@ -41,7 +41,10 @@ fn is_nan() {
 #[wasm_bindgen_test]
 fn is_safe_integer() {
     assert_eq!(Number::is_safe_integer(&42.into()), true);
-    assert_eq!(Number::is_safe_integer(&(Math::pow(2., 53.) - 1.).into()), true);
+    assert_eq!(
+        Number::is_safe_integer(&(Math::pow(2., 53.) - 1.).into()),
+        true
+    );
     assert_eq!(Number::is_safe_integer(&Math::pow(2., 53.).into()), false);
     assert_eq!(Number::is_safe_integer(&"42".into()), false);
     assert_eq!(Number::is_safe_integer(&42.1.into()), false);
@@ -102,7 +105,10 @@ fn to_fixed() {
 
 #[wasm_bindgen_test]
 fn to_exponential() {
-    assert_eq!(Number::new(&123456.into()).to_exponential(2).unwrap(), "1.23e+5");
+    assert_eq!(
+        Number::new(&123456.into()).to_exponential(2).unwrap(),
+        "1.23e+5"
+    );
     assert!(Number::new(&10.into()).to_exponential(101).is_err());
 }
 

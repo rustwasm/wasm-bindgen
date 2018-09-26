@@ -1,11 +1,10 @@
-use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
 use js_sys::*;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]
 fn parse_array() {
-
     let js_array = JSON::parse("[1, 2, 3]").unwrap();;
     assert!(Array::is_array(&js_array));
 
@@ -14,12 +13,10 @@ fn parse_array() {
     assert_eq!(array.pop(), 3);
     assert_eq!(array.pop(), 2);
     assert_eq!(array.pop(), 1);
-
 }
 
 #[wasm_bindgen_test]
 fn parse_object() {
-
     let js_object = JSON::parse("{\"x\": 5, \"y\": true, \"z\": [\"foo\", \"bar\"]}").unwrap();
     assert!(js_object.is_object());
 
@@ -45,7 +42,6 @@ fn parse_object() {
     assert!(Number::is_integer(&x));
     let x_num = Number::new(&x);
     assert_eq!(x_num.value_of(), 5.0);
-
 }
 
 #[wasm_bindgen_test]
@@ -86,7 +82,7 @@ fn stringify_error() {
 #[wasm_bindgen_test]
 fn json_extends() {
     #[wasm_bindgen]
-    extern {
+    extern "C" {
         #[wasm_bindgen(js_name = JSON)]
         static json: JSON;
     }

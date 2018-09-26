@@ -1,9 +1,9 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 use web_sys::HtmlAnchorElement;
 
 #[wasm_bindgen(module = "./tests/wasm/element.js")]
-extern {
+extern "C" {
     fn new_a() -> HtmlAnchorElement;
 }
 
@@ -26,9 +26,17 @@ fn test_anchor_element() {
     element.set_rel("boop");
     assert_eq!(element.rel(), "boop", "Should have a rel");
 
-    assert_eq!(element.referrer_policy(), "", "Shouldn't have a referrer_policy");
+    assert_eq!(
+        element.referrer_policy(),
+        "",
+        "Shouldn't have a referrer_policy"
+    );
     element.set_referrer_policy("origin");
-    assert_eq!(element.referrer_policy(), "origin", "Should have a referrer_policy");
+    assert_eq!(
+        element.referrer_policy(),
+        "origin",
+        "Should have a referrer_policy"
+    );
 
     assert_eq!(element.hreflang(), "", "Shouldn't have a hreflang");
     element.set_hreflang("en-us");

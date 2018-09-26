@@ -1,10 +1,10 @@
+use js_sys::{Uint8Array, WebAssembly};
+use wasm_bindgen::prelude::*;
 use wasm_bindgen::{self, JsCast};
 use wasm_bindgen_test::*;
-use wasm_bindgen::prelude::*;
-use js_sys::{WebAssembly, Uint8Array};
 
 #[wasm_bindgen(module = "tests/wasm/api.js")]
-extern {
+extern "C" {
     fn js_works();
     fn js_eq_works();
     fn assert_null(v: JsValue);
@@ -47,11 +47,7 @@ pub fn api_js_undefined() -> JsValue {
 }
 
 #[wasm_bindgen]
-pub fn api_test_is_null_undefined(
-    a: &JsValue,
-    b: &JsValue,
-    c: &JsValue,
-) {
+pub fn api_test_is_null_undefined(a: &JsValue, b: &JsValue, c: &JsValue) {
     assert!(a.is_null());
     assert!(!a.is_undefined());
 
@@ -73,11 +69,7 @@ pub fn api_get_false() -> JsValue {
 }
 
 #[wasm_bindgen]
-pub fn api_test_bool(
-    a: &JsValue,
-    b: &JsValue,
-    c: &JsValue,
-) {
+pub fn api_test_bool(a: &JsValue, b: &JsValue, c: &JsValue) {
     assert_eq!(a.as_bool(), Some(true));
     assert_eq!(format!("{:?}", a), "true");
     assert_eq!(b.as_bool(), Some(false));
@@ -148,6 +140,8 @@ fn memory_accessor_appears_to_work() {
     let buf = mem.buffer();
     let slice = Uint8Array::new(&buf);
     let mut v = Vec::new();
-    slice.subarray(ptr, ptr + 4).for_each(&mut |val, _, _| v.push(val));
+    slice
+        .subarray(ptr, ptr + 4)
+        .for_each(&mut |val, _, _| v.push(val));
     assert_eq!(v, [3, 0, 0, 0]);
 }

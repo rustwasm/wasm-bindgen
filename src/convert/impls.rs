@@ -1,10 +1,10 @@
 use core::char;
 use core::mem::{self, ManuallyDrop};
 
-use convert::{Stack, FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
-use convert::{OptionIntoWasmAbi, OptionFromWasmAbi, ReturnWasmAbi};
 use convert::traits::WasmAbi;
-use {JsValue, Clamped};
+use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, Stack};
+use convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
+use {Clamped, JsValue};
 
 unsafe impl WasmAbi for () {}
 
@@ -224,12 +224,16 @@ impl FromWasmAbi for bool {
 
 impl OptionIntoWasmAbi for bool {
     #[inline]
-    fn none() -> u32 { 0xFFFFFFu32 }
+    fn none() -> u32 {
+        0xFFFFFFu32
+    }
 }
 
 impl OptionFromWasmAbi for bool {
     #[inline]
-    fn is_none(js: &u32) -> bool { *js == 0xFFFFFFu32 }
+    fn is_none(js: &u32) -> bool {
+        *js == 0xFFFFFFu32
+    }
 }
 
 impl IntoWasmAbi for char {

@@ -71,8 +71,7 @@ where
         .map(|i| syn::PathSegment {
             ident: i,
             arguments: syn::PathArguments::None,
-        })
-        .collect();
+        }).collect();
 
     syn::TypePath {
         qself: None,

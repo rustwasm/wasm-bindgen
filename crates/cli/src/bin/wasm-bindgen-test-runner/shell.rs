@@ -2,8 +2,7 @@ const WIDTH: usize = 50;
 
 use std::io::{self, Write};
 
-pub struct Shell {
-}
+pub struct Shell {}
 
 impl Shell {
     pub fn new() -> Shell {
@@ -11,11 +10,7 @@ impl Shell {
     }
 
     pub fn status(&self, s: &str) {
-        let s = if s.len() > WIDTH {
-            &s[..WIDTH]
-        } else {
-            s
-        };
+        let s = if s.len() > WIDTH { &s[..WIDTH] } else { s };
         print!("{:<1$}\r", s, WIDTH);
         io::stdout().flush().unwrap();
     }

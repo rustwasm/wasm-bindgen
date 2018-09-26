@@ -109,7 +109,11 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 abi,
                 abi2,
                 func = f,
-                prefix = if optional { format!("{} == 0 ? undefined : ", abi) } else { String::new() },
+                prefix = if optional {
+                    format!("{} == 0 ? undefined : ", abi)
+                } else {
+                    String::new()
+                },
             ));
 
             if !arg.is_by_ref() && !arg.is_clamped_by_ref() {
@@ -123,9 +127,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     abi,
                     abi2,
                     size = ty.size(),
-                    start = if optional { format!("if ({} !== 0) {{", abi) } else { String::new() },
+                    start = if optional {
+                        format!("if ({} !== 0) {{", abi)
+                    } else {
+                        String::new()
+                    },
                     end = if optional { "}" } else { "" },
-
                 ));
                 self.cx.require_internal_export("__wbindgen_free")?;
             }
@@ -138,11 +145,11 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         if arg.is_anyref() {
             self.cx.expose_take_object();
             self.js_arguments.push(format!("takeObject({})", abi));
-            return Ok(())
+            return Ok(());
         } else if arg.is_ref_anyref() {
             self.cx.expose_get_object();
             self.js_arguments.push(format!("getObject({})", abi));
-            return Ok(())
+            return Ok(());
         }
 
         if optional {
@@ -153,12 +160,13 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     value = value,
                     present = abi,
                 ));
-                return Ok(())
+                return Ok(());
             }
 
             if arg.is_abi_as_u32() {
-                self.js_arguments.push(format!("{0} === 0xFFFFFF ? undefined : {0}", abi));
-                return Ok(())
+                self.js_arguments
+                    .push(format!("{0} === 0xFFFFFF ? undefined : {0}", abi));
+                return Ok(());
             }
 
             if let Some(signed) = arg.get_64() {
@@ -189,9 +197,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
             match *arg {
                 Descriptor::Boolean => {
-                    self.js_arguments.push(format!("{0} === 0xFFFFFF ? undefined : {0} !== 0", abi));
-                    return Ok(())
-                },
+                    self.js_arguments
+                        .push(format!("{0} === 0xFFFFFF ? undefined : {0} !== 0", abi));
+                    return Ok(());
+                }
                 Descriptor::Char => {
                     let value = self.shim_argument();
                     self.js_arguments.push(format!(
@@ -199,9 +208,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         value = value,
                         present = abi,
                     ));
-                    return Ok(())
-                },
-                _ => bail!("unsupported optional argument type for calling JS function from Rust: {:?}", arg),
+                    return Ok(());
+                }
+                _ => bail!(
+                    "unsupported optional argument type for calling JS function from Rust: {:?}",
+                    arg
+                ),
             };
         }
 
@@ -280,7 +292,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ref d if d.is_number() => abi,
             Descriptor::Boolean => format!("{} !== 0", abi),
             Descriptor::Char => format!("String.fromCodePoint({})", abi),
-            _ => bail!("unsupported argument type for calling JS function from Rust: {:?}", arg),
+            _ => bail!(
+                "unsupported argument type for calling JS function from Rust: {:?}",
+                arg
+            ),
         };
         self.js_arguments.push(invoc_arg);
         Ok(())
@@ -318,8 +333,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 mem[ret / 4] = retptr;
                 mem[ret / 4 + 1] = retlen;
                 ",
-                prelude,
-                expr
+                prelude, expr
             );
             return Ok(());
         }
@@ -334,7 +348,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             } else {
                 self.ret_expr = "return addHeapObject(JS);".to_string()
             }
-            return Ok(())
+            return Ok(());
         }
         if optional {
             if ty.is_wasm_native() {
@@ -411,7 +425,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         return isLikeNone(val) ? 0xFFFFFF : val ? 1 : 0;
                     ".to_string();
                     return Ok(());
-                },
+                }
                 Descriptor::Char => {
                     self.cx.expose_is_like_none();
                     self.cx.expose_uint32_memory();
@@ -422,8 +436,11 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         getUint32Memory()[ret / 4 + 1] = isLikeNone(val) ? 0 : val.codePointAt(0);
                     ".to_string();
                     return Ok(());
-                },
-                _ => bail!("unsupported optional return type for calling JS function from Rust: {:?}", ty),
+                }
+                _ => bail!(
+                    "unsupported optional return type for calling JS function from Rust: {:?}",
+                    ty
+                ),
             };
         }
         if ty.is_number() {
@@ -474,7 +491,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         self.ret_expr = match *ty {
             Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
             Descriptor::Char => "return JS.codePointAt(0);".to_string(),
-            _ => bail!("unsupported return type for calling JS function from Rust: {:?}", ty),
+            _ => bail!(
+                "unsupported return type for calling JS function from Rust: {:?}",
+                ty
+            ),
         };
         Ok(())
     }
@@ -494,7 +514,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
         let mut invoc = if self.variadic {
             if self.js_arguments.is_empty() {
-                return Err(failure::err_msg("a function with no arguments cannot be variadic"));
+                return Err(failure::err_msg(
+                    "a function with no arguments cannot be variadic",
+                ));
             }
             let last_arg = self.js_arguments.len() - 1; // check implies >= 0
             if self.js_arguments.len() != 1 {
@@ -505,16 +527,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         invoc,
                         self.js_arguments[..last_arg].join(", "),
                         self.js_arguments[last_arg],
-                    )
+                    ),
                 )
             } else {
                 self.ret_expr.replace(
                     "JS",
-                    &format!(
-                        "{}(...{})",
-                        invoc,
-                        self.js_arguments[last_arg],
-                    )
+                    &format!("{}(...{})", invoc, self.js_arguments[last_arg],),
                 )
             }
         } else {

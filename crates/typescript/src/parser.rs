@@ -93,8 +93,7 @@ fn build_function(
                     segments,
                 },
             })
-        })
-        .collect::<Vec<_>>();
+        }).collect::<Vec<_>>();
 
     let mut ret_segments = syn::punctuated::Punctuated::new();
     ret_segments.push(syn::PathSegment {

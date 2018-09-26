@@ -1,7 +1,7 @@
+use js_sys::*;
+use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
-use js_sys::*;
 
 #[wasm_bindgen_test]
 fn get_date() {
@@ -343,7 +343,10 @@ fn to_date_string() {
 #[wasm_bindgen_test]
 fn to_iso_string() {
     let date = Date::new(&"05 October 2011 14:48 UTC".into());
-    assert_eq!(JsValue::from(date.to_iso_string()), "2011-10-05T14:48:00.000Z");
+    assert_eq!(
+        JsValue::from(date.to_iso_string()),
+        "2011-10-05T14:48:00.000Z"
+    );
 }
 
 #[wasm_bindgen_test]

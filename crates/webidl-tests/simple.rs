@@ -1,7 +1,7 @@
 use js_sys::Object;
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use wasm_bindgen_test::*;
 
 include!(concat!(env!("OUT_DIR"), "/simple.rs"));
 
@@ -73,10 +73,9 @@ fn nullable_method() {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn get_global_method() -> GlobalMethod;
 }
-
 
 #[wasm_bindgen_test]
 fn global_method() {
@@ -97,16 +96,46 @@ fn indexing() {
 #[wasm_bindgen_test]
 fn optional_and_union_arguments() {
     let f = OptionalAndUnionArguments::new().unwrap();
-    assert_eq!(f.m("abc"), "string, abc, boolean, true, number, 123, number, 456");
-    assert_eq!(f.m_with_b("abc", false), "string, abc, boolean, false, number, 123, number, 456");
-    assert_eq!(f.m_with_b_and_i16("abc", false, 5), "string, abc, boolean, false, number, 5, number, 456");
-    assert_eq!(f.m_with_b_and_str("abc", false, "5"), "string, abc, boolean, false, string, 5, number, 456");
-    assert_eq!(f.m_with_b_and_i16_and_opt_i32("abc", false, 5, Some(10)), "string, abc, boolean, false, number, 5, number, 10");
-    assert_eq!(f.m_with_b_and_i16_and_opt_f64("abc", false, 5, Some(10.0)), "string, abc, boolean, false, number, 5, number, 10");
-    assert_eq!(f.m_with_b_and_i16_and_opt_bool("abc", false, 5, Some(true)), "string, abc, boolean, false, number, 5, boolean, true");
-    assert_eq!(f.m_with_b_and_str_and_opt_i32("abc", false, "5", Some(10)), "string, abc, boolean, false, string, 5, number, 10");
-    assert_eq!(f.m_with_b_and_str_and_opt_f64("abc", false, "5", Some(12.0)), "string, abc, boolean, false, string, 5, number, 12");
-    assert_eq!(f.m_with_b_and_str_and_opt_bool("abc", false, "5", Some(true)), "string, abc, boolean, false, string, 5, boolean, true");
+    assert_eq!(
+        f.m("abc"),
+        "string, abc, boolean, true, number, 123, number, 456"
+    );
+    assert_eq!(
+        f.m_with_b("abc", false),
+        "string, abc, boolean, false, number, 123, number, 456"
+    );
+    assert_eq!(
+        f.m_with_b_and_i16("abc", false, 5),
+        "string, abc, boolean, false, number, 5, number, 456"
+    );
+    assert_eq!(
+        f.m_with_b_and_str("abc", false, "5"),
+        "string, abc, boolean, false, string, 5, number, 456"
+    );
+    assert_eq!(
+        f.m_with_b_and_i16_and_opt_i32("abc", false, 5, Some(10)),
+        "string, abc, boolean, false, number, 5, number, 10"
+    );
+    assert_eq!(
+        f.m_with_b_and_i16_and_opt_f64("abc", false, 5, Some(10.0)),
+        "string, abc, boolean, false, number, 5, number, 10"
+    );
+    assert_eq!(
+        f.m_with_b_and_i16_and_opt_bool("abc", false, 5, Some(true)),
+        "string, abc, boolean, false, number, 5, boolean, true"
+    );
+    assert_eq!(
+        f.m_with_b_and_str_and_opt_i32("abc", false, "5", Some(10)),
+        "string, abc, boolean, false, string, 5, number, 10"
+    );
+    assert_eq!(
+        f.m_with_b_and_str_and_opt_f64("abc", false, "5", Some(12.0)),
+        "string, abc, boolean, false, string, 5, number, 12"
+    );
+    assert_eq!(
+        f.m_with_b_and_str_and_opt_bool("abc", false, "5", Some(true)),
+        "string, abc, boolean, false, string, 5, boolean, true"
+    );
 }
 
 #[wasm_bindgen_test]
@@ -114,15 +143,13 @@ fn variadic() {
     let f = Variadic::new().unwrap();
     assert_eq!(f.sum_5(1, 2, 3, 4, 5), 15);
     assert_eq!(
-        f.sum(
-            &::js_sys::Array::of5(
-                &JsValue::from_f64(1f64),
-                &JsValue::from_f64(2f64),
-                &JsValue::from_f64(3f64),
-                &JsValue::from_f64(4f64),
-                &JsValue::from_f64(5f64),
-            )
-        ),
+        f.sum(&::js_sys::Array::of5(
+            &JsValue::from_f64(1f64),
+            &JsValue::from_f64(2f64),
+            &JsValue::from_f64(3f64),
+            &JsValue::from_f64(4f64),
+            &JsValue::from_f64(5f64),
+        )),
         15
     );
 }
@@ -167,20 +194,18 @@ fn callback() {
     let o = InvokeCallback::new().unwrap();
     {
         static mut HIT: bool = false;
-        let cb = Closure::wrap(Box::new(move || {
-            unsafe { HIT = true; }
+        let cb = Closure::wrap(Box::new(move || unsafe {
+            HIT = true;
         }) as Box<FnMut()>);
         o.invoke(cb.as_ref().unchecked_ref());
         assert!(unsafe { HIT });
     }
 
-    let cb = Closure::wrap(Box::new(move |a, b| {
-        a + b
-    }) as Box<FnMut(u32, u32) -> u32>);
+    let cb = Closure::wrap(Box::new(move |a, b| a + b) as Box<FnMut(u32, u32) -> u32>);
     assert_eq!(o.call_add(cb.as_ref().unchecked_ref()), 3);
 
-    let cb = Closure::wrap(Box::new(move |a: String, b| {
-        a.repeat(b)
-    }) as Box<FnMut(String, usize) -> String>);
+    let cb = Closure::wrap(
+        Box::new(move |a: String, b| a.repeat(b)) as Box<FnMut(String, usize) -> String>
+    );
     assert_eq!(o.call_repeat(cb.as_ref().unchecked_ref()), "abababab");
 }

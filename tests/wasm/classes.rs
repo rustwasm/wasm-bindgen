@@ -1,8 +1,8 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/classes.js")]
-extern {
+extern "C" {
     fn js_simple();
     fn js_strings();
     fn js_exceptions();
@@ -76,7 +76,9 @@ impl ClassesStrings1 {
     }
 
     pub fn bar(&self, mix: &str) -> ClassesStrings2 {
-        ClassesStrings2 { contents: format!("foo-{}-{}", mix, self.name) }
+        ClassesStrings2 {
+            contents: format!("foo-{}-{}", mix, self.name),
+        }
     }
 }
 
@@ -242,7 +244,9 @@ pub struct OtherEmpty {}
 
 #[wasm_bindgen]
 impl OtherEmpty {
-    pub fn return_a_value() -> MissingClass { MissingClass {} }
+    pub fn return_a_value() -> MissingClass {
+        MissingClass {}
+    }
 }
 
 #[wasm_bindgen_test]

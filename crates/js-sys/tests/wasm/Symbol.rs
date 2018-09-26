@@ -1,9 +1,9 @@
+use js_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-use js_sys::*;
 
 #[wasm_bindgen(module = "tests/wasm/Symbol.js")]
-extern {
+extern "C" {
     fn test_has_instance(sym: &Symbol);
     fn test_is_concat_spreadable(sym: &Symbol);
     fn test_iterator(sym: &Symbol);
@@ -17,7 +17,7 @@ extern {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = Symbol)]
     fn gensym(val: JsValue) -> Symbol;
 }
@@ -101,7 +101,10 @@ fn to_string() {
 
 #[wasm_bindgen_test]
 fn unscopables() {
-    assert_eq!(Symbol::unscopables().to_string(), "Symbol(Symbol.unscopables)");
+    assert_eq!(
+        Symbol::unscopables().to_string(),
+        "Symbol(Symbol.unscopables)"
+    );
 }
 
 #[wasm_bindgen_test]

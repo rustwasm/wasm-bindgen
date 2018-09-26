@@ -11,9 +11,9 @@ extern crate syn;
 extern crate wasm_bindgen_backend as backend;
 extern crate wasm_bindgen_shared as shared;
 
+use backend::{Diagnostic, TryToTokens};
 pub use parser::BindgenAttrs;
 use parser::MacroParse;
-use backend::{Diagnostic, TryToTokens};
 use proc_macro2::TokenStream;
 
 mod parser;

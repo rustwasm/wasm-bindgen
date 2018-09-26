@@ -1,14 +1,14 @@
 use std::f64::consts::PI;
-use std::f64::{NEG_INFINITY, NAN};
+use std::f64::{NAN, NEG_INFINITY};
 
-use wasm_bindgen::{JsCast, prelude::*};
-use wasm_bindgen_test::*;
 use js_sys::*;
+use wasm_bindgen::{prelude::*, JsCast};
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]
 fn math_extends() {
     #[wasm_bindgen]
-    extern {
+    extern "C" {
         #[wasm_bindgen(js_name = Math)]
         static math: Math;
     }
@@ -18,15 +18,19 @@ fn math_extends() {
 }
 
 macro_rules! assert_eq {
-    ($a:expr, $b:expr) => ({
+    ($a:expr, $b:expr) => {{
         let (a, b) = (&$a, &$b);
         if f64::is_infinite(*a) && f64::is_infinite(*b) {
             assert!(a == b);
         } else {
-            assert!((*a - *b).abs() < 1.0e-6,
-                    "not approximately equal {:?} ?= {:?}", a, b);
+            assert!(
+                (*a - *b).abs() < 1.0e-6,
+                "not approximately equal {:?} ?= {:?}",
+                a,
+                b
+            );
         }
-    })
+    }};
 }
 
 #[wasm_bindgen_test]

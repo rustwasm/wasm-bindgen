@@ -1,9 +1,9 @@
-use wasm_bindgen::{JsCast, prelude::*};
-use wasm_bindgen_test::*;
 use js_sys::*;
+use wasm_bindgen::{prelude::*, JsCast};
+use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/Reflect.js")]
-extern {
+extern "C" {
     fn get_char_at() -> Function;
 
     #[wasm_bindgen(js_name = Rectangle)]
@@ -26,7 +26,7 @@ extern {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = prototype, js_namespace = Object)]
     static OBJECT_PROTOTYPE: JsValue;
     #[wasm_bindgen(js_name = prototype, js_namespace = Array)]
@@ -45,7 +45,10 @@ extern {
 fn apply() {
     let args = Array::new();
     args.push(&3.into());
-    assert_eq!(Reflect::apply(&get_char_at(), &"ponies".into(), &args).unwrap(), "i");
+    assert_eq!(
+        Reflect::apply(&get_char_at(), &"ponies".into(), &args).unwrap(),
+        "i"
+    );
 }
 
 #[wasm_bindgen_test]
@@ -62,11 +65,8 @@ fn construct_with_new_target() {
     let args = Array::new();
     args.push(&10.into());
     args.push(&10.into());
-    let instance = Reflect::construct_with_new_target(
-        &RECTANGLE_CLASS,
-        &args,
-        &RECTANGLE2_CLASS,
-    ).unwrap();
+    let instance =
+        Reflect::construct_with_new_target(&RECTANGLE_CLASS, &args, &RECTANGLE2_CLASS).unwrap();
     assert_eq!(Rectangle::from(instance).x(), 10);
 }
 
@@ -180,13 +180,16 @@ fn set_prototype_of() {
     let obj = Object::new();
     assert!(Reflect::set_prototype_of(&obj, &JsValue::null()).unwrap());
     let obj = JsValue::from(obj);
-    assert_eq!(JsValue::from(Reflect::get_prototype_of(&obj).unwrap()), JsValue::null());
+    assert_eq!(
+        JsValue::from(Reflect::get_prototype_of(&obj).unwrap()),
+        JsValue::null()
+    );
 }
 
 #[wasm_bindgen_test]
 fn reflect_extends() {
     #[wasm_bindgen]
-    extern {
+    extern "C" {
         #[wasm_bindgen(js_name = Reflect)]
         static reflect: Reflect;
     }

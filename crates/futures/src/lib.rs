@@ -104,13 +104,13 @@
 #![deny(missing_docs)]
 
 extern crate futures;
-extern crate wasm_bindgen;
 extern crate js_sys;
+extern crate wasm_bindgen;
 
+use std::cell::{Cell, RefCell};
 use std::sync::Arc;
-use std::cell::{RefCell, Cell};
 
-use futures::executor::{self, Spawn, Notify};
+use futures::executor::{self, Notify, Spawn};
 use futures::prelude::*;
 use futures::sync::oneshot;
 use js_sys::{Function, Promise};
@@ -170,11 +170,11 @@ impl Future for JsFuture {
         // till we're done, so we dont need to handle that.
         if let Ok(Async::Ready(val)) = self.resolved.poll() {
             drop(self.callbacks.take());
-            return Ok(val.into())
+            return Ok(val.into());
         }
         if let Ok(Async::Ready(val)) = self.rejected.poll() {
             drop(self.callbacks.take());
-            return Err(val)
+            return Err(val);
         }
         Ok(Async::NotReady)
     }
@@ -201,7 +201,8 @@ impl Future for JsFuture {
 /// resolve**. Instead it will be a leaked promise. This is an unfortunate
 /// limitation of wasm currently that's hoped to be fixed one day!
 pub fn future_to_promise<F>(future: F) -> Promise
-    where F: Future<Item = JsValue, Error = JsValue> + 'static,
+where
+    F: Future<Item = JsValue, Error = JsValue> + 'static,
 {
     _future_to_promise(Box::new(future))
 }
@@ -310,7 +311,7 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
                     // our `Waiting` state, and resume the polling process
                     State::Polling => {
                         me.notified.set(State::Waiting(me.clone()));
-                        break
+                        break;
                     }
 
                     State::Waiting(_) => panic!("shouldn't see waiting state!"),
@@ -328,7 +329,7 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
                 };
 
                 drop(f.call1(&JsValue::undefined(), &val));
-                break
+                break;
             }
         }
     }

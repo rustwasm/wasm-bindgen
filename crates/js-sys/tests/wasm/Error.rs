@@ -1,7 +1,7 @@
+use js_sys::*;
+use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
-use wasm_bindgen::JsCast;
-use js_sys::*;
 
 #[wasm_bindgen_test]
 fn new() {
@@ -34,7 +34,10 @@ fn to_string() {
     let error = Error::new("error message 1");
     assert_eq!(JsValue::from(error.to_string()), "Error: error message 1");
     error.set_name("error_name_1");
-    assert_eq!(JsValue::from(error.to_string()), "error_name_1: error message 1");
+    assert_eq!(
+        JsValue::from(error.to_string()),
+        "error_name_1: error message 1"
+    );
 }
 
 #[wasm_bindgen_test]

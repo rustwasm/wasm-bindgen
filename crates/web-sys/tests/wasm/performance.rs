@@ -3,7 +3,7 @@ use wasm_bindgen_test::*;
 use web_sys::Performance;
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = performance)]
     static PERFORMANCE: Performance;
 }

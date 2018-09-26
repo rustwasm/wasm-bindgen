@@ -1,14 +1,14 @@
 use std::env;
 use std::io::{self, Read};
 use std::net::{SocketAddr, TcpListener, TcpStream};
-use std::path::{PathBuf, Path};
+use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::thread;
-use std::time::{Instant, Duration};
+use std::time::{Duration, Instant};
 
 use curl::easy::Easy;
-use failure::{ResultExt, Error};
-use serde::{Serialize, Deserialize};
+use failure::{Error, ResultExt};
+use serde::{Deserialize, Serialize};
 use serde_json;
 
 use shell::Shell;
@@ -22,9 +22,11 @@ use shell::Shell;
 /// will return an error if some tests failed.
 pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
     let (driver, args) = Driver::find()?;
-    println!("Running headless tests in {} with `{}`",
-             driver.browser(),
-             driver.path().display());
+    println!(
+        "Running headless tests in {} with `{}`",
+        driver.browser(),
+        driver.path().display()
+    );
 
     // Allow tests to run in parallel (in theory) by finding any open port
     // available for our driver. We can't bind the port for the driver, but
@@ -47,7 +49,7 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
     while start.elapsed() < max {
         if TcpStream::connect(&driver_addr).is_ok() {
             bound = true;
-            break
+            break;
         }
         thread::sleep(Duration::from_millis(100));
     }
@@ -94,7 +96,7 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
     let max = Duration::new(20, 0);
     while start.elapsed() < max {
         if client.text(&id, &output)?.contains("test result: ") {
-            break
+            break;
         }
         thread::sleep(Duration::from_millis(100));
     }
@@ -174,30 +176,29 @@ impl Driver {
                 Some(path) => path,
                 None => continue,
             };
-            return Ok((ctor(path.into()), env_args(driver)))
+            return Ok((ctor(path.into()), env_args(driver)));
         }
 
         // Next, check PATH. If we can find any supported driver, use that by
         // default.
         for path in env::split_paths(&env::var_os("PATH").unwrap_or_default()) {
-            let found = drivers
-                .iter()
-                .find(|(name, _)| {
-                    path.join(name)
-                        .with_extension(env::consts::EXE_EXTENSION)
-                        .exists()
-                });
+            let found = drivers.iter().find(|(name, _)| {
+                path.join(name)
+                    .with_extension(env::consts::EXE_EXTENSION)
+                    .exists()
+            });
             let (name, ctor) = match found {
                 Some(p) => p,
                 None => continue,
             };
-            return Ok((ctor(name.into()), env_args(name)))
+            return Ok((ctor(name.into()), env_args(name)));
         }
 
         // TODO: download an appropriate driver? How to know which one to
         //       download?
 
-        bail!("\
+        bail!(
+            "\
 failed to find a suitable WebDriver binary to drive headless testing; to
 configure the location of the webdriver binary you can use environment
 variables like `GECKODRIVER=/path/to/geckodriver` or make sure that the binary
@@ -217,7 +218,8 @@ visit in a web browser, and headless testing should not be used.
 
 If you're still having difficulty resolving this error, please feel free to open
 an issue against rustwasm/wasm-bindgen!
-    ")
+    "
+        )
     }
 
     fn path(&self) -> &Path {
@@ -320,8 +322,7 @@ impl Client {
 
     fn close_window(&mut self, id: &str) -> Result<(), Error> {
         #[derive(Deserialize)]
-        struct Response {
-        }
+        struct Response {}
         let x: Response = self.delete(&format!("/session/{}/window", id))?;
         drop(x);
         Ok(())
@@ -333,8 +334,7 @@ impl Client {
             url: String,
         }
         #[derive(Deserialize)]
-        struct Response {
-        }
+        struct Response {}
 
         let request = Request {
             url: url.to_string(),
@@ -367,10 +367,10 @@ impl Client {
             value: selector.to_string(),
         };
         let x: Response = self.post(&format!("/session/{}/element", id), &request)?;
-        Ok(x.value.gecko_reference
-           .or(x.value.safari_reference)
-           .ok_or(format_err!("failed to find element reference in response"))?)
-
+        Ok(x.value
+            .gecko_reference
+            .or(x.value.safari_reference)
+            .ok_or(format_err!("failed to find element reference in response"))?)
     }
 
     fn text(&mut self, id: &str, element: &str) -> Result<String, Error> {
@@ -383,7 +383,8 @@ impl Client {
     }
 
     fn get<U>(&mut self, path: &str) -> Result<U, Error>
-        where U: for<'a> Deserialize<'a>,
+    where
+        U: for<'a> Deserialize<'a>,
     {
         debug!("GET {}", path);
         let result = self.doit(path, Method::Get)?;
@@ -391,8 +392,9 @@ impl Client {
     }
 
     fn post<T, U>(&mut self, path: &str, data: &T) -> Result<U, Error>
-        where T: Serialize,
-              U: for<'a> Deserialize<'a>,
+    where
+        T: Serialize,
+        U: for<'a> Deserialize<'a>,
     {
         let input = serde_json::to_string(data)?;
         debug!("POST {} {}", path, input);
@@ -401,7 +403,8 @@ impl Client {
     }
 
     fn delete<U>(&mut self, path: &str) -> Result<U, Error>
-        where U: for<'a> Deserialize<'a>,
+    where
+        U: for<'a> Deserialize<'a>,
     {
         debug!("DELETE {}", path);
         let result = self.doit(path, Method::Delete)?;
@@ -431,7 +434,11 @@ impl Client {
         }
         let result = String::from_utf8_lossy(&result);
         if self.handle.response_code()? != 200 {
-            bail!("non-200 response code: {}\n{}", self.handle.response_code()?, result);
+            bail!(
+                "non-200 response code: {}\n{}",
+                self.handle.response_code()?,
+                result
+            );
         }
         debug!("got: {}", result);
         Ok(result.into_owned())
@@ -475,14 +482,16 @@ struct BackgroundChild<'a> {
 }
 
 impl<'a> BackgroundChild<'a> {
-    fn spawn(path: &Path, cmd: &mut Command, shell: &'a Shell)
-        -> Result<BackgroundChild<'a>, Error>
-    {
-        cmd
-            .stdout(Stdio::piped())
+    fn spawn(
+        path: &Path,
+        cmd: &mut Command,
+        shell: &'a Shell,
+    ) -> Result<BackgroundChild<'a>, Error> {
+        cmd.stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .stdin(Stdio::null());
-        let mut child = cmd.spawn()
+        let mut child = cmd
+            .spawn()
             .context(format!("failed to spawn {:?} binary", path))?;
         let mut stdout = child.stdout.take().unwrap();
         let mut stderr = child.stderr.take().unwrap();
@@ -503,7 +512,7 @@ impl<'a> Drop for BackgroundChild<'a> {
         self.child.kill().unwrap();
         let status = self.child.wait().unwrap();
         if !self.print_stdio_on_drop {
-            return
+            return;
         }
 
         self.shell.clear();

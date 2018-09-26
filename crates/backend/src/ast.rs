@@ -396,7 +396,7 @@ impl ImportFunction {
         // if `#[wasm_bindgen(js_name = "...")]` is used then that explicitly
         // because it was hand-written anyway.
         if self.function.renamed_via_js_name {
-            return Ok(name)
+            return Ok(name);
         }
 
         // Otherwise we infer names based on the Rust function name.
@@ -417,18 +417,14 @@ impl ImportFunction {
                 OperationKind::Regular => shared::OperationKind::Regular,
                 OperationKind::Getter(g) => {
                     let g = g.as_ref().map(|g| g.to_string());
-                    shared::OperationKind::Getter(
-                        g.unwrap_or_else(|| self.infer_getter_property()),
-                        )
+                    shared::OperationKind::Getter(g.unwrap_or_else(|| self.infer_getter_property()))
                 }
                 OperationKind::Setter(s) => {
                     let s = s.as_ref().map(|s| s.to_string());
-                    shared::OperationKind::Setter(
-                        match s {
-                            Some(s) => s,
-                            None => self.infer_setter_property()?,
-                        }
-                    )
+                    shared::OperationKind::Setter(match s {
+                        Some(s) => s,
+                        None => self.infer_setter_property()?,
+                    })
                 }
                 OperationKind::IndexingGetter => shared::OperationKind::IndexingGetter,
                 OperationKind::IndexingSetter => shared::OperationKind::IndexingSetter,

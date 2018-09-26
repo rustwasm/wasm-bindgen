@@ -1,5 +1,8 @@
 #![recursion_limit = "256"]
-#![cfg_attr(feature = "extra-traits", deny(missing_debug_implementations))]
+#![cfg_attr(
+    feature = "extra-traits",
+    deny(missing_debug_implementations)
+)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-backend/0.2")]
 
 #[macro_use]

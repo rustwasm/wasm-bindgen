@@ -1,5 +1,5 @@
-extern crate wasm_bindgen_webidl;
 extern crate env_logger;
+extern crate wasm_bindgen_webidl;
 
 use std::env;
 use std::fs;
@@ -19,13 +19,11 @@ fn main() {
         println!("processing {:?}", path);
         let mut generated_rust = wasm_bindgen_webidl::compile(&idl, None).unwrap();
 
-        let out_file = out_dir.join(path.file_name().unwrap())
-            .with_extension("rs");
+        let out_file = out_dir.join(path.file_name().unwrap()).with_extension("rs");
 
-        let js_file = path.with_extension("js")
-            .canonicalize()
-            .unwrap();
-        generated_rust.push_str(&format!(r#"
+        let js_file = path.with_extension("js").canonicalize().unwrap();
+        generated_rust.push_str(&format!(
+            r#"
             pub mod import_script {{
                 use wasm_bindgen::prelude::*;
                 use wasm_bindgen_test::*;
@@ -42,7 +40,10 @@ fn main() {
                     }}
                 }}
             }}
-        "#, js_file.display(), i));
+        "#,
+            js_file.display(),
+            i
+        ));
 
         fs::write(&out_file, generated_rust).unwrap();
 

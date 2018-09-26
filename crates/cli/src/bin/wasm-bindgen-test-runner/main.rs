@@ -32,8 +32,8 @@ use std::path::PathBuf;
 use std::process;
 use std::thread;
 
-use failure::{ResultExt, Error};
-use parity_wasm::elements::{Module, Deserialize, Section};
+use failure::{Error, ResultExt};
+use parity_wasm::elements::{Deserialize, Module, Section};
 use wasm_bindgen_cli_support::Bindgen;
 
 mod headless;
@@ -67,33 +67,29 @@ fn rmain() -> Result<(), Error> {
 
     // Assume a cargo-like directory layout and generate output at
     // `target/wasm32-unknown-unknown/wbg-tmp/...`
-    let tmpdir = wasm_file_to_test.parent() // chop off file name
-        .and_then(|p| p.parent())           // chop off `deps`
-        .and_then(|p| p.parent())           // chop off `debug`
+    let tmpdir = wasm_file_to_test
+        .parent() // chop off file name
+        .and_then(|p| p.parent()) // chop off `deps`
+        .and_then(|p| p.parent()) // chop off `debug`
         .map(|p| p.join("wbg-tmp"))
-        .ok_or_else(|| {
-            format_err!("file to test doesn't follow the expected Cargo conventions")
-        })?;
+        .ok_or_else(|| format_err!("file to test doesn't follow the expected Cargo conventions"))?;
 
     // Make sure there's no stale state from before
     drop(fs::remove_dir_all(&tmpdir));
-    fs::create_dir(&tmpdir)
-        .context("creating temporary directory")?;
+    fs::create_dir(&tmpdir).context("creating temporary directory")?;
 
     let module = "wasm-bindgen-test";
 
     // Collect all tests that the test harness is supposed to run. We assume
     // that any exported function with the prefix `__wbg_test` is a test we need
     // to execute.
-    let wasm = fs::read(&wasm_file_to_test)
-        .context("failed to read wasm file")?;
-    let wasm = Module::deserialize(&mut &wasm[..])
-        .context("failed to deserialize wasm module")?;
+    let wasm = fs::read(&wasm_file_to_test).context("failed to read wasm file")?;
+    let wasm = Module::deserialize(&mut &wasm[..]).context("failed to deserialize wasm module")?;
     let mut tests = Vec::new();
     if let Some(exports) = wasm.export_section() {
         for export in exports.entries() {
             if !export.field().starts_with("__wbg_test") {
-                continue
+                continue;
             }
             tests.push(export.field().to_string());
         }
@@ -104,7 +100,7 @@ fn rmain() -> Result<(), Error> {
     // early saying everything is ok.
     if tests.len() == 0 {
         println!("no tests to run!");
-        return Ok(())
+        return Ok(());
     }
 
     // Figure out if this tests is supposed to execute in node.js or a browser.
@@ -118,7 +114,7 @@ fn rmain() -> Result<(), Error> {
             _ => continue,
         };
         if custom.name() != "__wasm_bindgen_test_unstable" {
-            continue
+            continue;
         }
         node = !custom.payload().contains(&0x01);
     }
@@ -138,7 +134,7 @@ fn rmain() -> Result<(), Error> {
 
     // If we're executing in node.js, that module will take it from here.
     if node {
-        return node::execute(&module, &tmpdir, &args.collect::<Vec<_>>(), &tests)
+        return node::execute(&module, &tmpdir, &args.collect::<Vec<_>>(), &tests);
     }
 
     // Otherwise we're executing in a browser. Spawn a server which serves up
@@ -160,13 +156,16 @@ fn rmain() -> Result<(), Error> {
     // TODO: eventually we should provide the ability to exit at some point
     // (gracefully) here, but for now this just runs forever.
     if !headless {
-        println!("Interactive browsers tests are now available at http://{}", addr);
+        println!(
+            "Interactive browsers tests are now available at http://{}",
+            addr
+        );
         println!("");
         println!("Note that interactive mode is enabled because `NO_HEADLESS`");
         println!("is specified in the environment of this process. Once you're");
         println!("done with testing you'll need to kill this server with");
         println!("Ctrl-C.");
-        return Ok(srv.run())
+        return Ok(srv.run());
     }
 
     thread::spawn(|| srv.run());

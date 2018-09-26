@@ -4,8 +4,8 @@ use std::prelude::v1::*;
 use core::slice;
 use core::str;
 
-use convert::{WasmAbi, IntoWasmAbi, FromWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi};
-use convert::{Stack, OptionIntoWasmAbi};
+use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
+use convert::{OptionIntoWasmAbi, Stack};
 
 if_std! {
     use core::mem;
@@ -188,7 +188,9 @@ impl<'a> IntoWasmAbi for &'a str {
 }
 
 impl<'a> OptionIntoWasmAbi for &'a str {
-    fn none() -> WasmSlice { null_slice() }
+    fn none() -> WasmSlice {
+        null_slice()
+    }
 }
 
 impl RefFromWasmAbi for str {

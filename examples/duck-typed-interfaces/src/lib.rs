@@ -8,7 +8,7 @@ use wasm_bindgen::prelude::*;
 /// `JsCast::is_instance_of` (i.e. the `instanceof` operator) will fail because
 /// there is no JS class named `Quacks`.
 #[wasm_bindgen]
-extern {
+extern "C" {
     pub type Quacks;
 
     #[wasm_bindgen(structural, method)]

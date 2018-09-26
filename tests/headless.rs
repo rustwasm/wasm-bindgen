@@ -1,10 +1,10 @@
 #![cfg(target_arch = "wasm32")]
 
-extern crate wasm_bindgen_test;
 extern crate wasm_bindgen;
+extern crate wasm_bindgen_test;
 
-use wasm_bindgen_test::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
@@ -17,7 +17,9 @@ impl ConsumeRetString {
     //
     // This used to cause two `const ptr = ...` declarations, which is invalid
     // JS.
-    pub fn consume(self) -> String { String::new() }
+    pub fn consume(self) -> String {
+        String::new()
+    }
 }
 
 #[wasm_bindgen_test]

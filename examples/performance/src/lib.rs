@@ -21,7 +21,9 @@ macro_rules! console_log {
 #[wasm_bindgen]
 pub fn run() {
     let window = web_sys::window().expect("should have a window in this context");
-    let performance = window.performance().expect("performance should be available");
+    let performance = window
+        .performance()
+        .expect("performance should be available");
 
     console_log!("the current time (in ms) is {}", performance.now());
 

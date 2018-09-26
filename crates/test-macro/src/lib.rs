@@ -6,8 +6,8 @@ extern crate proc_macro2;
 #[macro_use]
 extern crate quote;
 
-use std::sync::atomic::*;
 use proc_macro2::*;
+use std::sync::atomic::*;
 
 static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
 
@@ -38,7 +38,7 @@ pub fn wasm_bindgen_test(
         leading_tokens.push(token.clone());
         if let TokenTree::Ident(token) = token {
             if token == "fn" {
-                break
+                break;
             }
         }
     }
@@ -58,18 +58,24 @@ pub fn wasm_bindgen_test(
     // We generate a `#[no_mangle]` with a known prefix so the test harness can
     // later slurp up all of these functions and pass them as arguments to the
     // main test harness. This is the entry point for all tests.
-    let name = format!("__wbg_test_{}_{}", ident, CNT.fetch_add(1, Ordering::SeqCst));
+    let name = format!(
+        "__wbg_test_{}_{}",
+        ident,
+        CNT.fetch_add(1, Ordering::SeqCst)
+    );
     let name = Ident::new(&name, Span::call_site());
-    tokens.extend((quote! {
-        #[no_mangle]
-        pub extern fn #name(cx: *const ::wasm_bindgen_test::__rt::Context) {
-            unsafe {
-                let cx = &*cx;
-                let test_name = concat!(module_path!(), "::", stringify!(#ident));
-                #test_body
+    tokens.extend(
+        (quote! {
+            #[no_mangle]
+            pub extern fn #name(cx: *const ::wasm_bindgen_test::__rt::Context) {
+                unsafe {
+                    let cx = &*cx;
+                    let test_name = concat!(module_path!(), "::", stringify!(#ident));
+                    #test_body
+                }
             }
-        }
-    }).into_iter());
+        }).into_iter(),
+    );
 
     tokens.extend(leading_tokens);
     tokens.push(ident.into());

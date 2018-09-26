@@ -163,20 +163,14 @@ impl Descriptor {
 
     pub fn is_wasm_native(&self) -> bool {
         match *self {
-            Descriptor::I32
-            | Descriptor::U32
-            | Descriptor::F32
-            | Descriptor::F64 => true,
+            Descriptor::I32 | Descriptor::U32 | Descriptor::F32 | Descriptor::F64 => true,
             _ => return false,
         }
     }
 
     pub fn is_abi_as_u32(&self) -> bool {
         match *self {
-            Descriptor::I8
-            | Descriptor::U8
-            | Descriptor::I16
-            | Descriptor::U16 => true,
+            Descriptor::I8 | Descriptor::U8 | Descriptor::I16 | Descriptor::U16 => true,
             _ => return false,
         }
     }
@@ -223,12 +217,10 @@ impl Descriptor {
                 Descriptor::Slice(ref d) => &**d,
                 _ => return None,
             },
-            Descriptor::Clamped(ref d) => {
-                match d.vector_kind()? {
-                    VectorKind::U8 => return Some(VectorKind::ClampedU8),
-                    _ => return None,
-                }
-            }
+            Descriptor::Clamped(ref d) => match d.vector_kind()? {
+                VectorKind::U8 => return Some(VectorKind::ClampedU8),
+                _ => return None,
+            },
             _ => return None,
         };
         match *inner {

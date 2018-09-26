@@ -17,7 +17,7 @@ pub struct Timeout {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = setTimeout)]
     fn set_timeout(closure: JsValue, millis: f64) -> u32;
 
@@ -27,7 +27,8 @@ extern {
 
 impl Timeout {
     pub fn new(dur: Duration) -> Timeout {
-        let millis = dur.as_secs()
+        let millis = dur
+            .as_secs()
             .checked_mul(1000)
             .unwrap()
             .checked_add(dur.subsec_millis() as u64)

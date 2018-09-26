@@ -210,7 +210,7 @@ impl ImportedTypes for syn::PathArguments {
                     arg.imported_types(f);
                 }
             }
-//TOCHECK
+            //TOCHECK
             syn::PathArguments::Parenthesized(data) => {
                 for input in data.inputs.iter() {
                     input.imported_types(f);
@@ -231,13 +231,12 @@ impl ImportedTypes for syn::GenericArgument {
         match self {
             syn::GenericArgument::Lifetime(_) => {}
             syn::GenericArgument::Type(ty) => ty.imported_types(f),
-            syn::GenericArgument::Binding(_) => {}, // TODO
-            syn::GenericArgument::Const(_) => {}, // TODO
-            syn::GenericArgument::Constraint(_) => {}, // TODO
+            syn::GenericArgument::Binding(_) => {}    // TODO
+            syn::GenericArgument::Const(_) => {}      // TODO
+            syn::GenericArgument::Constraint(_) => {} // TODO
         }
     }
 }
-
 
 impl ImportedTypes for ast::ImportFunction {
     fn imported_types<F>(&self, f: &mut F)
@@ -351,14 +350,15 @@ impl RemoveUndefinedImports for ast::Program {
 
         let mut dictionaries_to_remove = Vec::new();
         for (i, dictionary) in self.dictionaries.iter_mut().enumerate() {
-            let num_required = |dict: &ast::Dictionary| {
-                dict.fields.iter().filter(|f| f.required).count()
-            };
+            let num_required =
+                |dict: &ast::Dictionary| dict.fields.iter().filter(|f| f.required).count();
             let before = num_required(dictionary);
             changed = dictionary.fields.remove_undefined_imports(is_defined) || changed;
             if before != num_required(dictionary) {
-                warn!("removing {} due to a required field being removed",
-                      dictionary.name);
+                warn!(
+                    "removing {} due to a required field being removed",
+                    dictionary.name
+                );
                 dictionaries_to_remove.push(i);
             }
         }
