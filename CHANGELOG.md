@@ -38,6 +38,9 @@ Released 2018-09-26.
 
 ### Added
 
+* [This is the first release of the `web-sys`
+  crate!](https://rustwasm.github.io/2018/09/26/announcing-web-sys.html)
+
 * Added support for unions of interfaces and non-interfaces in the WebIDL
   frontend.
 
