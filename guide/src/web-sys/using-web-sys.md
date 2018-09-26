@@ -2,15 +2,12 @@
 
 ## Add `web-sys` as a dependency to your `Cargo.toml`
 
-***Note:** `web-sys` is not available on crates.io yet, so you'll need to depend
-on the git version of it, and of `wasm-bindgen`:*
-
 ```toml
 [dependencies]
-wasm-bindgen = { git = "https://github.com/rustwasm/wasm-bindgen" }
+wasm-bindgen = "0.2"
 
 [dependencies.web-sys]
-git = "https://github.com/rustwasm/wasm-bindgen"
+version = "0.3"
 features = [
 ]
 ```
