@@ -647,7 +647,13 @@ impl<'src> FirstPassRecord<'src> {
             }
         };
         let doc = match id {
-            OperationId::Constructor(_) | OperationId::Operation(None) => Some(String::new()),
+            OperationId::Operation(None) => Some(String::new()),
+            OperationId::Constructor(_) => {
+                Some(format!("The `new {}(..)` constructor, creating a new \
+                              instance of `{0}`\n\n{}",
+                              self_name,
+                              mdn_doc(self_name, Some(self_name))))
+            }
             OperationId::Operation(Some(name)) => Some(format!(
                 "The `{}()` method\n\n{}",
                 name,
