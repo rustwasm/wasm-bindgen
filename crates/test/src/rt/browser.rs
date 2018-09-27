@@ -45,7 +45,14 @@ impl Browser {
 impl super::Formatter for Browser {
     fn writeln(&self, line: &str) {
         let mut html = self.pre.inner_html();
-        html.push_str(&line);
+        for c in line.chars() {
+            match c {
+                '<' => html.push_str("&lt;"),
+                '>' => html.push_str("&gt;"),
+                '&' => html.push_str("&amp;"),
+                c => html.push(c),
+            }
+        }
         html.push_str("\n");
         self.pre.set_inner_html(&html);
     }
