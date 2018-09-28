@@ -144,6 +144,7 @@ pub struct ImportType {
     pub doc_comment: Option<String>,
     pub instanceof_shim: String,
     pub extends: Vec<Ident>,
+    pub polyfills: Vec<Ident>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -478,6 +479,7 @@ impl ImportType {
         shared::ImportType {
             name: self.js_name.clone(),
             instanceof_shim: self.instanceof_shim.clone(),
+            polyfills: self.polyfills.iter().map(|s| s.to_string()).collect(),
         }
     }
 }

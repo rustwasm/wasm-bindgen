@@ -189,6 +189,7 @@ impl Bindgen {
             let mut cx = js::Context {
                 globals: String::new(),
                 imports: String::new(),
+                imports_post: String::new(),
                 footer: String::new(),
                 typescript: format!("/* tslint:disable */\n"),
                 exposed_globals: Default::default(),
@@ -208,6 +209,7 @@ impl Bindgen {
                 js::SubContext {
                     program,
                     cx: &mut cx,
+                    polyfills: Default::default(),
                 }.generate()?;
             }
             cx.finalize(stem)?

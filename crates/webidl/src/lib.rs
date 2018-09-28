@@ -503,7 +503,16 @@ impl<'src> FirstPassRecord<'src> {
             doc_comment: None,
             instanceof_shim: format!("__widl_instanceof_{}", name),
             extends: Vec::new(),
+            polyfills: Vec::new(),
         };
+
+        // whitelist a few names that have known polyfills
+        match name {
+            "AudioContext" => {
+                import_type.polyfills.push(Ident::new("webkitAudioContext", Span::call_site()));
+            }
+            _ => {}
+        }
         let extra = camel_case_ident(name);
         let extra = &[&extra[..]];
         self.append_required_features_doc(&import_type, &mut doc_comment, extra);
