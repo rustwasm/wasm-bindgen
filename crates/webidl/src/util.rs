@@ -7,7 +7,7 @@ use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
 use syn;
 use weedle;
-use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList};
+use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList, IdentifierOrString};
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
 use first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
@@ -664,6 +664,29 @@ pub fn is_chrome_only(ext_attrs: &Option<ExtendedAttributeList>) -> bool {
 /// Whether a webidl object is marked as a no interface object.
 pub fn is_no_interface_object(ext_attrs: &Option<ExtendedAttributeList>) -> bool {
     has_named_attribute(ext_attrs.as_ref(), "NoInterfaceObject")
+}
+
+pub fn get_rust_deprecated<'a>(ext_attrs: &Option<ExtendedAttributeList<'a>>)
+    -> Option<&'a str>
+{
+    ext_attrs.as_ref()?
+        .body
+        .list
+        .iter()
+        .filter_map(|attr| {
+            match attr {
+                ExtendedAttribute::Ident(id) => Some(id),
+                _ => None,
+            }
+        })
+        .filter_map(|ident| {
+            match ident.rhs {
+                IdentifierOrString::String(s) => Some(s),
+                IdentifierOrString::Identifier(_) => None,
+            }
+        })
+        .next()
+        .map(|s| s.0)
 }
 
 /// Whether a webidl object is marked as structural.

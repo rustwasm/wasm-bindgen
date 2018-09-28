@@ -488,18 +488,15 @@ impl<'src> FirstPassRecord<'src> {
         data: &InterfaceData<'src>,
     ) {
         let mut doc_comment = Some(format!("The `{}` object\n\n{}", name, mdn_doc(name, None),));
-        let derive = syn::Attribute {
-            pound_token: Default::default(),
-            style: syn::AttrStyle::Outer,
-            bracket_token: Default::default(),
-            path: Ident::new("derive", Span::call_site()).into(),
-            tts: quote!((Debug, Clone)),
-        };
+
+        let mut attrs = Vec::new();
+        attrs.push(parse_quote!( #[derive(Debug, Clone)] ));
+        self.add_deprecated(data, &mut attrs);
         let mut import_type = backend::ast::ImportType {
             vis: public(),
             rust_name: rust_ident(camel_case_ident(name).as_str()),
             js_name: name.to_string(),
-            attrs: vec![derive],
+            attrs,
             doc_comment: None,
             instanceof_shim: format!("__widl_instanceof_{}", name),
             extends: Vec::new(),
@@ -539,6 +536,7 @@ impl<'src> FirstPassRecord<'src> {
             self.member_attribute(
                 program,
                 name,
+                data,
                 member.modifier,
                 member.readonly.is_some(),
                 &member.type_,
@@ -559,6 +557,7 @@ impl<'src> FirstPassRecord<'src> {
                 self.member_attribute(
                     program,
                     name,
+                    data,
                     if let Some(s) = member.stringifier {
                         Some(weedle::interface::StringifierOrInheritOrStatic::Stringifier(s))
                     } else {
@@ -578,6 +577,7 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         program: &mut backend::ast::Program,
         self_name: &'src str,
+        data: &InterfaceData<'src>,
         modifier: Option<weedle::interface::StringifierOrInheritOrStatic>,
         readonly: bool,
         type_: &'src weedle::types::AttributedType<'src>,
@@ -620,6 +620,7 @@ impl<'src> FirstPassRecord<'src> {
                 let mut doc = import_function.doc_comment.take();
                 self.append_required_features_doc(&import_function, &mut doc, &[]);
                 import_function.doc_comment = doc;
+                self.add_deprecated(data, &mut import_function.function.rust_attrs);
                 program.imports.push(wrap_import_function(import_function));
             }
         }
@@ -677,8 +678,17 @@ impl<'src> FirstPassRecord<'src> {
             let mut doc = doc.clone();
             self.append_required_features_doc(&method, &mut doc, &[]);
             method.doc_comment = doc;
+            self.add_deprecated(data, &mut method.function.rust_attrs);
             program.imports.push(wrap_import_function(method));
         }
+    }
+
+    fn add_deprecated(&self, data: &InterfaceData<'src>, dst: &mut Vec<syn::Attribute>) {
+        let msg = match &data.deprecated {
+            Some(s) => s,
+            None => return,
+        };
+        dst.push(parse_quote!( #[deprecated(note = #msg)] ));
     }
 
     fn append_required_features_doc(

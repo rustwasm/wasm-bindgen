@@ -44,6 +44,7 @@ pub(crate) struct FirstPassRecord<'src> {
 pub(crate) struct InterfaceData<'src> {
     /// Whether only partial interfaces were encountered
     pub(crate) partial: bool,
+    pub(crate) deprecated: Option<String>,
     pub(crate) attributes: Vec<&'src AttributeInterfaceMember<'src>>,
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
     pub(crate) operations: BTreeMap<OperationId<'src>, OperationData<'src>>,
@@ -311,6 +312,8 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
             interface_data.partial = false;
             interface_data.superclass = self.inheritance.map(|s| s.identifier.0);
             interface_data.definition_attributes = self.attributes.as_ref();
+            interface_data.deprecated = util::get_rust_deprecated(&self.attributes)
+                .map(|s| s.to_string());
         }
         if let Some(attrs) = &self.attributes {
             for attr in attrs.body.list.iter() {

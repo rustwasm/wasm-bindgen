@@ -2,9 +2,7 @@ extern crate wasm_bindgen;
 extern crate web_sys;
 
 use wasm_bindgen::prelude::*;
-use web_sys::{
-    AudioContext, AudioNode, AudioScheduledSourceNode, BaseAudioContext, OscillatorType,
-};
+use web_sys::{AudioContext, AudioNode, OscillatorType};
 
 /// Converts a midi note to frequency
 ///
@@ -45,22 +43,14 @@ impl Drop for FmOsc {
 #[wasm_bindgen]
 impl FmOsc {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> FmOsc {
-        let ctx = web_sys::AudioContext::new().unwrap();
-        let primary;
-        let fm_osc;
-        let gain;
-        let fm_gain;
+    pub fn new() -> Result<FmOsc, JsValue> {
+        let ctx = web_sys::AudioContext::new()?;
 
-        {
-            let base: &BaseAudioContext = ctx.as_ref();
-
-            // Create our web audio objects.
-            primary = base.create_oscillator().unwrap();
-            fm_osc = base.create_oscillator().unwrap();
-            gain = base.create_gain().unwrap();
-            fm_gain = base.create_gain().unwrap();
-        }
+        // Create our web audio objects.
+        let primary = ctx.create_oscillator()?;
+        let fm_osc = ctx.create_oscillator()?;
+        let gain = ctx.create_gain()?;
+        let fm_gain = ctx.create_gain()?;
 
         // Some initial settings:
         primary.set_type(OscillatorType::Sine);
@@ -76,42 +66,34 @@ impl FmOsc {
             let gain_node: &AudioNode = gain.as_ref();
             let fm_osc_node: &AudioNode = fm_osc.as_ref();
             let fm_gain_node: &AudioNode = fm_gain.as_ref();
-            let base: &BaseAudioContext = ctx.as_ref();
-            let destination = base.destination();
+            let destination = ctx.destination();
             let destination_node: &AudioNode = destination.as_ref();
 
             // Connect the nodes up!
 
             // The primary oscillator is routed through the gain node, so that
             // it can control the overall output volume.
-            primary_node.connect_with_audio_node(gain.as_ref()).unwrap();
+            primary_node.connect_with_audio_node(gain.as_ref())?;
 
             // Then connect the gain node to the AudioContext destination (aka
             // your speakers).
-            gain_node.connect_with_audio_node(destination_node).unwrap();
+            gain_node.connect_with_audio_node(destination_node)?;
 
             // The FM oscillator is connected to its own gain node, so it can
             // control the amount of modulation.
-            fm_osc_node
-                .connect_with_audio_node(fm_gain.as_ref())
-                .unwrap();
+            fm_osc_node.connect_with_audio_node(fm_gain.as_ref())?;
+
 
             // Connect the FM oscillator to the frequency parameter of the main
             // oscillator, so that the FM node can modulate its frequency.
-            fm_gain_node
-                .connect_with_audio_param(&primary.frequency())
-                .unwrap();
+            fm_gain_node.connect_with_audio_param(&primary.frequency())?;
         }
 
         // Start the oscillators!
-        AsRef::<AudioScheduledSourceNode>::as_ref(&primary)
-            .start()
-            .unwrap();
-        AsRef::<AudioScheduledSourceNode>::as_ref(&fm_osc)
-            .start()
-            .unwrap();
+        primary.start()?;
+        fm_osc.start()?;
 
-        FmOsc {
+        Ok(FmOsc {
             ctx,
             primary,
             gain,
@@ -119,7 +101,7 @@ impl FmOsc {
             fm_osc,
             fm_freq_ratio: 0.0,
             fm_gain_ratio: 0.0,
-        }
+        })
     }
 
     /// Sets the gain for this oscillator, between 0.0 and 1.0.

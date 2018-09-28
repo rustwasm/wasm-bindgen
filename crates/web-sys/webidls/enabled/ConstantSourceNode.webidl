@@ -19,3 +19,5 @@ dictionary ConstantSourceOptions {
 interface ConstantSourceNode :  AudioScheduledSourceNode {
     readonly        attribute AudioParam   offset;
 };
+
+ConstantSourceNode includes rustAudioScheduledSourceNode;

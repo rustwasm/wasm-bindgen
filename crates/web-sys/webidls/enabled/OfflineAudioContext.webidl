@@ -29,3 +29,5 @@ interface OfflineAudioContext : BaseAudioContext {
     readonly        attribute unsigned long length;
                     attribute EventHandler  oncomplete;
 };
+
+OfflineAudioContext includes rustBaseAudioContext;

@@ -32,7 +32,12 @@ interface AudioBufferSourceNode : AudioScheduledSourceNode {
     attribute double loopStart;
     attribute double loopEnd;
 
+    attribute EventHandler onended;
+
     [Throws]
     void start(optional double when = 0, optional double grainOffset = 0,
                optional double grainDuration);
+
+    [Throws]
+    void stop (optional double when = 0);
 };

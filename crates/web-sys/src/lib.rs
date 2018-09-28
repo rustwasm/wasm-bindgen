@@ -12,6 +12,7 @@
 //! require.
 
 #![doc(html_root_url = "https://docs.rs/web-sys/0.2")]
+#![allow(deprecated)]
 
 extern crate js_sys;
 extern crate wasm_bindgen;

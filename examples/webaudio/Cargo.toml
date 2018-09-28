@@ -16,8 +16,6 @@ features = [
   'AudioDestinationNode',
   'AudioNode',
   'AudioParam',
-  'AudioScheduledSourceNode',
-  'BaseAudioContext',
   'GainNode',
   'OscillatorNode',
   'OscillatorType',
