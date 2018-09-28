@@ -2,4 +2,6 @@
 // example
 const rust = import('./import_js');
 
-rust.then(m => m.run());
+rust
+  .then(m => m.run())
+  .catch(console.error);
