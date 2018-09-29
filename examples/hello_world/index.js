@@ -3,4 +3,6 @@
 // will work here one day as well!
 const rust = import('./hello_world');
 
-rust.then(m => m.greet('World!'));
+rust
+  .then(m => m.greet('World!'))
+  .catch(console.error);
