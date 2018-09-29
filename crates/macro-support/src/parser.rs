@@ -185,6 +185,13 @@ impl BindgenAttrs {
         })
     }
 
+    fn polyfills(&self) -> impl Iterator<Item = &Ident> {
+        self.attrs.iter().filter_map(|a| match a {
+            BindgenAttr::Polyfill(s) => Some(s),
+            _ => None,
+        })
+    }
+
     /// Whether the variadic attributes is present
     fn variadic(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
@@ -226,6 +233,7 @@ pub enum BindgenAttr {
     JsName(String, Span),
     JsClass(String),
     Extends(Ident),
+    Polyfill(Ident),
     Variadic,
 }
 
@@ -285,6 +293,10 @@ impl Parse for BindgenAttr {
         if attr == "extends" {
             input.parse::<Token![=]>()?;
             return Ok(BindgenAttr::Extends(input.parse::<AnyIdent>()?.0));
+        }
+        if attr == "polyfill" {
+            input.parse::<Token![=]>()?;
+            return Ok(BindgenAttr::Polyfill(input.parse::<AnyIdent>()?.0));
         }
         if attr == "module" {
             input.parse::<Token![=]>()?;
@@ -556,6 +568,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             rust_name: self.ident,
             js_name,
             extends: attrs.extends().cloned().collect(),
+            polyfills: attrs.polyfills().cloned().collect(),
         }))
     }
 }

@@ -21,6 +21,7 @@ mod closures;
 pub struct Context<'a> {
     pub globals: String,
     pub imports: String,
+    pub imports_post: String,
     pub footer: String,
     pub typescript: String,
     pub exposed_globals: HashSet<&'static str>,
@@ -68,6 +69,7 @@ struct ClassField {
 pub struct SubContext<'a, 'b: 'a> {
     pub program: &'a shared::Program,
     pub cx: &'a mut Context<'b>,
+    pub polyfills: HashMap<String, Vec<String>>,
 }
 
 const INITIAL_SLAB_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -469,12 +471,14 @@ impl<'a> Context<'a> {
                 /* tslint:disable */\n\
                 {import_wasm}\n\
                 {imports}\n\
+                {imports_post}\n\
 
                 {globals}\n\
                 {footer}",
                 import_wasm = import_wasm,
                 globals = self.globals,
                 imports = self.imports,
+                imports_post = self.imports_post,
                 footer = self.footer,
             )
         };
@@ -1766,6 +1770,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
             })?;
         }
         for f in self.program.imports.iter() {
+            if let shared::ImportKind::Type(ty) = &f.kind {
+                self.register_polyfills(ty);
+            }
+        }
+        for f in self.program.imports.iter() {
             self.generate_import(f)?;
         }
         for e in self.program.enums.iter() {
@@ -2140,6 +2149,19 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.typescript.push_str("}\n");
     }
 
+    fn register_polyfills(
+        &mut self,
+        info: &shared::ImportType,
+    ) {
+        if info.polyfills.len() == 0 {
+            return
+        }
+        self.polyfills
+            .entry(info.name.to_string())
+            .or_insert(Vec::new())
+            .extend(info.polyfills.iter().cloned());
+    }
+
     fn import_name(&mut self, import: &shared::Import, item: &str) -> Result<String, Error> {
         // First up, imports don't work at all in `--no-modules` mode as we're
         // not sure how to import them.
@@ -2150,6 +2172,30 @@ impl<'a, 'b> SubContext<'a, 'b> {
                      use `--nodejs` or `--browser` instead",
                     module
                 );
+            }
+        }
+
+        // Similar to `--no-modules`, only allow polyfills basically for web
+        // apis, shouldn't be necessary for things like npm packages or other
+        // imported items.
+        let polyfills = self.polyfills.get(item);
+        if let Some(polyfills) = polyfills {
+            assert!(polyfills.len() > 0);
+
+            if let Some(module) = &import.module {
+                bail!(
+                    "import of `{}` from `{}` has a polyfill of `{}` listed, but
+                     polyfills aren't supported when importing from modules",
+                    item,
+                    module,
+                    &polyfills[0],
+                );
+            }
+            if let Some(ns) = &import.js_namespace {
+                bail!("import of `{}` through js namespace `{}` isn't supported \
+                       right now when it lists a polyfill",
+                      item,
+                      ns);
             }
         }
 
@@ -2171,6 +2217,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let use_node_require = self.cx.use_node_require();
         let imported_identifiers = &mut self.cx.imported_identifiers;
         let imports = &mut self.cx.imports;
+        let imports_post = &mut self.cx.imports_post;
         let identifier = self
             .cx
             .imported_names
@@ -2193,8 +2240,33 @@ impl<'a, 'b> SubContext<'a, 'b> {
                             name_to_import, name, module
                         ));
                     }
+                    name
+                } else if let Some(polyfills) = polyfills {
+                    imports_post.push_str("const l");
+                    imports_post.push_str(&name);
+                    imports_post.push_str(" = ");
+                    switch(imports_post, &name, polyfills);
+                    imports_post.push_str(";\n");
+
+                    fn switch(dst: &mut String, name: &str, left: &[String]) {
+                        if left.len() == 0 {
+                            return dst.push_str(name);
+                        }
+                        dst.push_str("(typeof ");
+                        dst.push_str(name);
+                        dst.push_str(" == 'undefined' ? ");
+                        match left.len() {
+                            1 => dst.push_str(&left[0]),
+                            _ => switch(dst, &left[0], &left[1..]),
+                        }
+                        dst.push_str(" : ");
+                        dst.push_str(name);
+                        dst.push_str(")");
+                    }
+                    format!("l{}", name)
+                } else {
+                    name
                 }
-                name
             });
 
         // If there's a namespace we didn't actually import `item` but rather
