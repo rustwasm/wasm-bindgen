@@ -568,7 +568,7 @@ impl<'src> FirstPassRecord<'src> {
                     &member.type_,
                     member.identifier.0,
                     &member.attributes,
-                    mixin_data.definition_attributes,
+                    data.definition_attributes,
                 );
             }
         }
