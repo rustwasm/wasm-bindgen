@@ -20,6 +20,7 @@ pub mod duplicates;
 pub mod enums;
 pub mod import_class;
 pub mod imports;
+pub mod into_js;
 pub mod js_objects;
 pub mod jscast;
 pub mod math;

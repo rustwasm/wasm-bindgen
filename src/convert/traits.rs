@@ -1,6 +1,7 @@
 use core::ops::{Deref, DerefMut};
 
-use describe::*;
+use describe::WasmDescribe;
+use JsValue;
 
 /// A trait for anything that can be converted into a type that can cross the
 /// wasm ABI directly, eg `u32` or `f64`.
@@ -100,12 +101,9 @@ pub trait Stack {
 /// This is an unsafe trait to implement as there's no guarantee the type is
 /// actually safe to transfer across the was boundary, it's up to you to
 /// guarantee this so codegen works correctly.
-pub unsafe trait WasmAbi {}
-
-unsafe impl WasmAbi for u32 {}
-unsafe impl WasmAbi for i32 {}
-unsafe impl WasmAbi for f32 {}
-unsafe impl WasmAbi for f64 {}
+pub unsafe trait WasmAbi {
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue;
+}
 
 /// A trait representing how to interepret the return value of a function for
 /// the wasm ABI.

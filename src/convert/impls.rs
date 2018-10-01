@@ -4,9 +4,54 @@ use core::mem::{self, ManuallyDrop};
 use convert::traits::WasmAbi;
 use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, Stack};
 use convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
+use describe::WasmDescribe;
 use {Clamped, JsValue};
 
-unsafe impl WasmAbi for () {}
+unsafe impl WasmAbi for () {
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        JsValue::UNDEFINED
+    }
+}
+
+unsafe impl WasmAbi for u32 {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        unsafe {
+            JsValue {
+                idx: ::__wbindgen_into_js_u32(self, T::describe as u32),
+            }
+        }
+    }
+}
+
+unsafe impl WasmAbi for i32 {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        (self as u32).into_js_value::<T>()
+    }
+}
+
+unsafe impl WasmAbi for f32 {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        unsafe {
+            JsValue {
+                idx: ::__wbindgen_into_js_f32(self, T::describe as u32),
+            }
+        }
+    }
+}
+
+unsafe impl WasmAbi for f64 {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        unsafe {
+            JsValue {
+                idx: ::__wbindgen_into_js_f64(self, T::describe as u32),
+            }
+        }
+    }
+}
 
 #[repr(C)]
 pub struct WasmOptionalI32 {
@@ -14,7 +59,14 @@ pub struct WasmOptionalI32 {
     pub value: i32,
 }
 
-unsafe impl WasmAbi for WasmOptionalI32 {}
+unsafe impl WasmAbi for WasmOptionalI32 {
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        WasmOptionalU32 {
+            present: self.present,
+            value: self.value as u32,
+        }.into_js_value::<T>()
+    }
+}
 
 #[repr(C)]
 pub struct WasmOptionalU32 {
@@ -22,7 +74,20 @@ pub struct WasmOptionalU32 {
     pub value: u32,
 }
 
-unsafe impl WasmAbi for WasmOptionalU32 {}
+unsafe impl WasmAbi for WasmOptionalU32 {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        unsafe {
+            JsValue {
+                idx: ::__wbindgen_into_js_optional_u32(
+                    self.present,
+                    self.value,
+                    T::describe as u32,
+                ),
+            }
+        }
+    }
+}
 
 #[repr(C)]
 pub struct WasmOptionalF32 {
@@ -30,7 +95,20 @@ pub struct WasmOptionalF32 {
     pub value: f32,
 }
 
-unsafe impl WasmAbi for WasmOptionalF32 {}
+unsafe impl WasmAbi for WasmOptionalF32 {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        unsafe {
+            JsValue {
+                idx: ::__wbindgen_into_js_optional_f32(
+                    self.present,
+                    self.value,
+                    T::describe as u32,
+                ),
+            }
+        }
+    }
+}
 
 #[repr(C)]
 pub struct WasmOptionalF64 {
@@ -38,7 +116,20 @@ pub struct WasmOptionalF64 {
     pub value: f64,
 }
 
-unsafe impl WasmAbi for WasmOptionalF64 {}
+unsafe impl WasmAbi for WasmOptionalF64 {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        unsafe {
+            JsValue {
+                idx: ::__wbindgen_into_js_optional_f64(
+                    self.present,
+                    self.value,
+                    T::describe as u32,
+                ),
+            }
+        }
+    }
+}
 
 #[repr(C)]
 pub struct Wasm64 {
@@ -46,7 +137,20 @@ pub struct Wasm64 {
     pub high: u32,
 }
 
-unsafe impl WasmAbi for Wasm64 {}
+unsafe impl WasmAbi for Wasm64 {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        unsafe {
+            JsValue {
+                idx: ::__wbindgen_into_js_u64(
+                    self.low,
+                    self.high,
+                    T::describe as u32,
+                ),
+            }
+        }
+    }
+}
 
 #[repr(C)]
 pub struct WasmOptional64 {
@@ -56,7 +160,21 @@ pub struct WasmOptional64 {
     pub high: u32,
 }
 
-unsafe impl WasmAbi for WasmOptional64 {}
+unsafe impl WasmAbi for WasmOptional64 {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        unsafe {
+            JsValue {
+                idx: ::__wbindgen_into_js_optional_u64(
+                    self.present,
+                    self.low,
+                    self.high,
+                    T::describe as u32,
+                ),
+            }
+        }
+    }
+}
 
 macro_rules! type_wasm_native {
     ($($t:tt as $c:tt => $r:tt)*) => ($(

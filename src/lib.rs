@@ -87,6 +87,59 @@ impl JsValue {
     /// The `false` JS value constant.
     pub const FALSE: JsValue = JsValue { idx: JSIDX_FALSE };
 
+    /// Converts any Rust value implementing the `IntoWasmAbi` trait into a
+    /// `JsValue`.
+    ///
+    /// This function will convert any Rust value which can be used in function
+    /// signatures to the corresponding `JsValue` that it would wrepresent on
+    /// the JS side of the world. A reference to the fresh JS object is then
+    /// returned to Rust.
+    ///
+    /// Note that while this is morally the same functionality of the `From`
+    /// trait, it is different in that it may not be as optimized. The `From`
+    /// implementations are generally as fast as they can possibly be, whereas
+    /// this implementation will always go through a JS shim. Eventually when
+    /// Rust has specialization though this will simply be part of the `From`
+    /// trait implementation!
+    ///
+    /// # Examples
+    ///
+    /// ```ignore
+    /// // First, we could bind a function manually:
+    ///
+    /// #[wasm_bindgen]
+    /// extern {
+    ///     fn log_binary_data(data: &[u8]);
+    /// }
+    ///
+    /// log_binary_data(&my_data);
+    ///
+    /// // ... but we could alternatively also do:
+    /// #[wasm_bindgen]
+    /// extern {
+    ///     fn log_binary_data(data: &JsValue);
+    /// }
+    ///
+    /// let value = JsValue::from_wasm_abi(&my_data);
+    /// // ... `value` is an instance of `Uint8Array`
+    /// log_binary_data(&value);
+    /// ```
+    ///
+    /// # Memory Management
+    ///
+    /// Note that some values, like exported Rust structures, need to be
+    /// manually deallocated in JS. If they are passed to this function then
+    /// they still need to be deallocated at some point!
+    pub fn from_wasm_abi<T: convert::IntoWasmAbi>(t: T) -> JsValue {
+        use convert::{GlobalStack, WasmAbi};
+
+        unsafe {
+            let mut stack = GlobalStack::new();
+            t.into_abi(&mut stack)
+                .into_js_value::<T>()
+        }
+    }
+
     /// Creates a new JS value which is a string.
     ///
     /// The utf-8 string provided is copied to the JS heap and the string will
@@ -450,6 +503,16 @@ externs! {
 
     fn __wbindgen_describe(v: u32) -> ();
     fn __wbindgen_describe_closure(a: u32, b: u32, c: u32, d: u32, e: u32) -> u32;
+
+    fn __wbindgen_into_js_u32(val: u32, describe: u32) -> u32;
+    fn __wbindgen_into_js_u64(low: u32, high: u32, describe: u32) -> u32;
+    fn __wbindgen_into_js_f32(val: f32, describe: u32) -> u32;
+    fn __wbindgen_into_js_f64(val: f64, describe: u32) -> u32;
+    fn __wbindgen_into_js_slice(ptr: u32, len: u32, describe: u32) -> u32;
+    fn __wbindgen_into_js_optional_u32(present: u32, val: u32, describe: u32) -> u32;
+    fn __wbindgen_into_js_optional_u64(present: u32, low: u32, high: u32, describe: u32) -> u32;
+    fn __wbindgen_into_js_optional_f32(present: u32, val: f32, describe: u32) -> u32;
+    fn __wbindgen_into_js_optional_f64(present: u32, val: f64, describe: u32) -> u32;
 
     fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_json_serialize(idx: u32, ptr: *mut *mut u8) -> usize;

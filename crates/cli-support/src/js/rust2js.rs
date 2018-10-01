@@ -86,14 +86,14 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
     }
 
     /// Get a generated name for an argument.
-    fn shim_argument(&mut self) -> String {
+    pub fn shim_argument(&mut self) -> String {
         let s = format!("arg{}", self.arg_idx);
         self.arg_idx += 1;
         self.shim_arguments.push(s.clone());
         s
     }
 
-    fn argument(&mut self, arg: &Descriptor) -> Result<(), Error> {
+    pub fn argument(&mut self, arg: &Descriptor) -> Result<(), Error> {
         let abi = self.shim_argument();
 
         let (arg, optional) = match arg {
@@ -301,7 +301,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         Ok(())
     }
 
-    fn ret(&mut self, ty: &Descriptor) -> Result<(), Error> {
+    pub fn ret(&mut self, ty: &Descriptor) -> Result<(), Error> {
         if let Descriptor::Unit = ty {
             self.ret_expr = "JS;".to_string();
             return Ok(());

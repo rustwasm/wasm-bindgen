@@ -6,6 +6,7 @@ use core::str;
 
 use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
 use convert::{OptionIntoWasmAbi, Stack};
+use describe::WasmDescribe;
 
 if_std! {
     use core::mem;
@@ -18,7 +19,20 @@ pub struct WasmSlice {
     pub len: u32,
 }
 
-unsafe impl WasmAbi for WasmSlice {}
+unsafe impl WasmAbi for WasmSlice {
+    #[inline(never)]
+    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
+        unsafe {
+            JsValue {
+                idx: ::__wbindgen_into_js_slice(
+                    self.ptr,
+                    self.len,
+                    T::describe as u32,
+                ),
+            }
+        }
+    }
+}
 
 #[inline]
 fn null_slice() -> WasmSlice {
