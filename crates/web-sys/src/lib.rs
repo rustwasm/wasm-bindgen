@@ -16,6 +16,7 @@
 extern crate js_sys;
 extern crate wasm_bindgen;
 
+#[allow(unused_imports)]
 use js_sys::Object;
 
 #[cfg(feature = "Window")]
