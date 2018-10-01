@@ -37,3 +37,5 @@ interface OscillatorNode : AudioScheduledSourceNode {
 
     void setPeriodicWave(PeriodicWave periodicWave);
 };
+
+OscillatorNode includes rustAudioScheduledSourceNode;

@@ -37,3 +37,5 @@ interface AudioContext : BaseAudioContext {
     [NewObject, Throws]
     MediaStreamAudioDestinationNode createMediaStreamDestination();
 };
+
+AudioContext includes rustBaseAudioContext;

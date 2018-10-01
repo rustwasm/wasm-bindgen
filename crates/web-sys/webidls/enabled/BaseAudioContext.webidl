@@ -19,7 +19,13 @@ enum AudioContextState {
     "closed"
 };
 
+[RustDeprecated="doesn't exist in Safari, use `AudioContext` instead now"]
 interface BaseAudioContext : EventTarget {
+};
+
+BaseAudioContext includes rustBaseAudioContext;
+
+interface mixin rustBaseAudioContext {
     readonly        attribute AudioDestinationNode destination;
     readonly        attribute float                sampleRate;
     readonly        attribute double               currentTime;
