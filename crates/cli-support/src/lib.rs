@@ -209,7 +209,7 @@ impl Bindgen {
                 js::SubContext {
                     program,
                     cx: &mut cx,
-                    polyfills: Default::default(),
+                    vendor_prefixes: Default::default(),
                 }.generate()?;
             }
             cx.finalize(stem)?

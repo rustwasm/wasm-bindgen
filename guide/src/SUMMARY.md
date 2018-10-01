@@ -67,7 +67,7 @@
       - [`static_method_of = Blah`](./reference/attributes/on-js-imports/static_method_of.md)
       - [`structural`](./reference/attributes/on-js-imports/structural.md)
       - [`variadic`](./reference/attributes/on-js-imports/variadic.md)
-      - [`polyfill`](./reference/attributes/on-js-imports/polyfill.md)
+      - [`vendor_prefix`](./reference/attributes/on-js-imports/vendor_prefix.md)
     - [On Rust Exports](./reference/attributes/on-rust-exports/index.md)
       - [`constructor`](./reference/attributes/on-rust-exports/constructor.md)
       - [`js_name = Blah`](./reference/attributes/on-rust-exports/js_name.md)

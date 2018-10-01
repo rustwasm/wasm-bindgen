@@ -87,7 +87,7 @@ pub struct ImportStatic {
 pub struct ImportType {
     pub name: String,
     pub instanceof_shim: String,
-    pub polyfills: Vec<String>,
+    pub vendor_prefixes: Vec<String>,
 }
 
 #[derive(Deserialize, Serialize)]
