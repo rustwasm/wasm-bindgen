@@ -185,9 +185,9 @@ impl BindgenAttrs {
         })
     }
 
-    fn polyfills(&self) -> impl Iterator<Item = &Ident> {
+    fn vendor_prefixes(&self) -> impl Iterator<Item = &Ident> {
         self.attrs.iter().filter_map(|a| match a {
-            BindgenAttr::Polyfill(s) => Some(s),
+            BindgenAttr::VendorPrefix(s) => Some(s),
             _ => None,
         })
     }
@@ -233,7 +233,7 @@ pub enum BindgenAttr {
     JsName(String, Span),
     JsClass(String),
     Extends(Ident),
-    Polyfill(Ident),
+    VendorPrefix(Ident),
     Variadic,
 }
 
@@ -294,9 +294,9 @@ impl Parse for BindgenAttr {
             input.parse::<Token![=]>()?;
             return Ok(BindgenAttr::Extends(input.parse::<AnyIdent>()?.0));
         }
-        if attr == "polyfill" {
+        if attr == "vendor_prefix" {
             input.parse::<Token![=]>()?;
-            return Ok(BindgenAttr::Polyfill(input.parse::<AnyIdent>()?.0));
+            return Ok(BindgenAttr::VendorPrefix(input.parse::<AnyIdent>()?.0));
         }
         if attr == "module" {
             input.parse::<Token![=]>()?;
@@ -568,7 +568,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             rust_name: self.ident,
             js_name,
             extends: attrs.extends().cloned().collect(),
-            polyfills: attrs.polyfills().cloned().collect(),
+            vendor_prefixes: attrs.vendor_prefixes().cloned().collect(),
         }))
     }
 }

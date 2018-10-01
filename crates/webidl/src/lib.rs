@@ -503,13 +503,13 @@ impl<'src> FirstPassRecord<'src> {
             doc_comment: None,
             instanceof_shim: format!("__widl_instanceof_{}", name),
             extends: Vec::new(),
-            polyfills: Vec::new(),
+            vendor_prefixes: Vec::new(),
         };
 
         // whitelist a few names that have known polyfills
         match name {
             "AudioContext" => {
-                import_type.polyfills.push(Ident::new("webkitAudioContext", Span::call_site()));
+                import_type.vendor_prefixes.push(Ident::new("webkit", Span::call_site()));
             }
             _ => {}
         }

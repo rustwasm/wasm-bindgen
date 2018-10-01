@@ -69,7 +69,7 @@ struct ClassField {
 pub struct SubContext<'a, 'b: 'a> {
     pub program: &'a shared::Program,
     pub cx: &'a mut Context<'b>,
-    pub polyfills: HashMap<String, Vec<String>>,
+    pub vendor_prefixes: HashMap<String, Vec<String>>,
 }
 
 const INITIAL_SLAB_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -1771,7 +1771,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         for f in self.program.imports.iter() {
             if let shared::ImportKind::Type(ty) = &f.kind {
-                self.register_polyfills(ty);
+                self.register_vendor_prefix(ty);
             }
         }
         for f in self.program.imports.iter() {
@@ -2149,17 +2149,17 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.typescript.push_str("}\n");
     }
 
-    fn register_polyfills(
+    fn register_vendor_prefix(
         &mut self,
         info: &shared::ImportType,
     ) {
-        if info.polyfills.len() == 0 {
+        if info.vendor_prefixes.len() == 0 {
             return
         }
-        self.polyfills
+        self.vendor_prefixes
             .entry(info.name.to_string())
             .or_insert(Vec::new())
-            .extend(info.polyfills.iter().cloned());
+            .extend(info.vendor_prefixes.iter().cloned());
     }
 
     fn import_name(&mut self, import: &shared::Import, item: &str) -> Result<String, Error> {
@@ -2175,20 +2175,20 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
         }
 
-        // Similar to `--no-modules`, only allow polyfills basically for web
+        // Similar to `--no-modules`, only allow vendor prefixes basically for web
         // apis, shouldn't be necessary for things like npm packages or other
         // imported items.
-        let polyfills = self.polyfills.get(item);
-        if let Some(polyfills) = polyfills {
-            assert!(polyfills.len() > 0);
+        let vendor_prefixes = self.vendor_prefixes.get(item);
+        if let Some(vendor_prefixes) = vendor_prefixes {
+            assert!(vendor_prefixes.len() > 0);
 
             if let Some(module) = &import.module {
                 bail!(
                     "import of `{}` from `{}` has a polyfill of `{}` listed, but
-                     polyfills aren't supported when importing from modules",
+                     vendor prefixes aren't supported when importing from modules",
                     item,
                     module,
-                    &polyfills[0],
+                    &vendor_prefixes[0],
                 );
             }
             if let Some(ns) = &import.js_namespace {
@@ -2241,25 +2241,31 @@ impl<'a, 'b> SubContext<'a, 'b> {
                         ));
                     }
                     name
-                } else if let Some(polyfills) = polyfills {
+                } else if let Some(vendor_prefixes) = vendor_prefixes {
                     imports_post.push_str("const l");
                     imports_post.push_str(&name);
                     imports_post.push_str(" = ");
-                    switch(imports_post, &name, polyfills);
+                    switch(imports_post, &name, "", vendor_prefixes);
                     imports_post.push_str(";\n");
 
-                    fn switch(dst: &mut String, name: &str, left: &[String]) {
+                    fn switch(dst: &mut String, name: &str, prefix: &str, left: &[String]) {
                         if left.len() == 0 {
+                            dst.push_str(prefix);
                             return dst.push_str(name);
                         }
                         dst.push_str("(typeof ");
+                        dst.push_str(prefix);
                         dst.push_str(name);
                         dst.push_str(" == 'undefined' ? ");
                         match left.len() {
-                            1 => dst.push_str(&left[0]),
-                            _ => switch(dst, &left[0], &left[1..]),
+                            1 => {
+                                dst.push_str(&left[0]);
+                                dst.push_str(name);
+                            }
+                            _ => switch(dst, name, &left[0], &left[1..]),
                         }
                         dst.push_str(" : ");
+                        dst.push_str(prefix);
                         dst.push_str(name);
                         dst.push_str(")");
                     }
