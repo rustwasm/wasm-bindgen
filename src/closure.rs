@@ -232,10 +232,8 @@ impl<T> Closure<T>
     /// cleanup as it can.
     pub fn forget(self) {
         unsafe {
-            let idx = self.js.idx;
-            if idx != !0 {
-                super::__wbindgen_cb_forget(idx);
-            }
+            super::__wbindgen_cb_forget(self.js.idx);
+            mem::forget(self);
         }
     }
 }
