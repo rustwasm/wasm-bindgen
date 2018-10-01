@@ -327,9 +327,13 @@ impl<'a> Context<'a> {
             Ok(String::from(
                 "
                 function(i) {
-                    let obj = getObject(i).original;
-                    obj.a = obj.b = 0;
+                    const obj = getObject(i).original;
                     dropRef(i);
+                    if (obj.cnt-- == 1) {
+                        obj.a = 0;
+                        return 1;
+                    }
+                    return 0;
                 }
                 ",
             ))
@@ -337,13 +341,7 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_cb_forget", &|me| {
             me.expose_drop_ref();
-            Ok(String::from(
-                "
-                function(i) {
-                    dropRef(i);
-                }
-                ",
-            ))
+            Ok("dropRef".to_string())
         })?;
 
         self.bind("__wbindgen_json_parse", &|me| {

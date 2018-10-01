@@ -91,3 +91,9 @@ exports.string_arguments_call = a => {
 exports.string_ret_call = a => {
     assert.strictEqual(a('foo'), 'foobar');
 };
+
+let DROP_DURING_CALL = null;
+exports.drop_during_call_save = f => {
+  DROP_DURING_CALL = f;
+};
+exports.drop_during_call_call = () => DROP_DURING_CALL();
