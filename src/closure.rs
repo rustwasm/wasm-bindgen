@@ -327,6 +327,7 @@ macro_rules! doit {
                 <&Self>::describe();
             }
 
+            #[inline]
             fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
                 unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
@@ -354,6 +355,7 @@ macro_rules! doit {
                 invoke::<$($var,)* R> as u32
             }
 
+            #[inline]
             fn destroy_fn() -> u32 {
                 unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
@@ -376,6 +378,7 @@ macro_rules! doit {
                 <&mut Self>::describe();
             }
 
+            #[inline]
             fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
                 unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
@@ -404,6 +407,7 @@ macro_rules! doit {
                 invoke::<$($var,)* R> as u32
             }
 
+            #[inline]
             fn destroy_fn() -> u32 {
                 unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,

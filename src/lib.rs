@@ -91,6 +91,7 @@ impl JsValue {
     ///
     /// The utf-8 string provided is copied to the JS heap and the string will
     /// be owned by the JS garbage collector.
+    #[inline]
     pub fn from_str(s: &str) -> JsValue {
         unsafe {
             JsValue {
@@ -103,6 +104,7 @@ impl JsValue {
     ///
     /// This function creates a JS value representing a number (a heap
     /// allocated number) and returns a handle to the JS version of it.
+    #[inline]
     pub fn from_f64(n: f64) -> JsValue {
         unsafe {
             JsValue {
@@ -115,22 +117,21 @@ impl JsValue {
     ///
     /// This function creates a JS object representing a boolean (a heap
     /// allocated boolean) and returns a handle to the JS version of it.
+    #[inline]
     pub fn from_bool(b: bool) -> JsValue {
-        JsValue {
-            idx: if b { JSIDX_TRUE } else { JSIDX_FALSE },
-        }
+        if b { JsValue::TRUE } else { JsValue::FALSE }
     }
 
     /// Creates a new JS value representing `undefined`.
+    #[inline]
     pub fn undefined() -> JsValue {
-        JsValue {
-            idx: JSIDX_UNDEFINED,
-        }
+        JsValue::UNDEFINED
     }
 
     /// Creates a new JS value representing `null`.
+    #[inline]
     pub fn null() -> JsValue {
-        JsValue { idx: JSIDX_NULL }
+        JsValue::NULL
     }
 
     /// Creates a new JS symbol with the optional description specified.
@@ -263,50 +264,59 @@ impl JsValue {
     }
 
     /// Tests whether this JS value is `null`
+    #[inline]
     pub fn is_null(&self) -> bool {
         unsafe { __wbindgen_is_null(self.idx) == 1 }
     }
 
     /// Tests whether this JS value is `undefined`
+    #[inline]
     pub fn is_undefined(&self) -> bool {
         unsafe { __wbindgen_is_undefined(self.idx) == 1 }
     }
 
     /// Tests whether the type of this JS value is `symbol`
+    #[inline]
     pub fn is_symbol(&self) -> bool {
         unsafe { __wbindgen_is_symbol(self.idx) == 1 }
     }
 
     /// Tests whether `typeof self == "object" && self !== null`.
+    #[inline]
     pub fn is_object(&self) -> bool {
         unsafe { __wbindgen_is_object(self.idx) == 1 }
     }
 
     /// Tests whether the type of this JS value is `function`.
+    #[inline]
     pub fn is_function(&self) -> bool {
         unsafe { __wbindgen_is_function(self.idx) == 1 }
     }
 }
 
 impl PartialEq for JsValue {
+    #[inline]
     fn eq(&self, other: &JsValue) -> bool {
         unsafe { __wbindgen_jsval_eq(self.idx, other.idx) != 0 }
     }
 }
 
 impl PartialEq<bool> for JsValue {
+    #[inline]
     fn eq(&self, other: &bool) -> bool {
         self.as_bool() == Some(*other)
     }
 }
 
 impl PartialEq<str> for JsValue {
+    #[inline]
     fn eq(&self, other: &str) -> bool {
         *self == JsValue::from_str(other)
     }
 }
 
 impl<'a> PartialEq<&'a str> for JsValue {
+    #[inline]
     fn eq(&self, other: &&'a str) -> bool {
         <JsValue as PartialEq<str>>::eq(self, other)
     }
@@ -314,11 +324,13 @@ impl<'a> PartialEq<&'a str> for JsValue {
 
 if_std! {
     impl PartialEq<String> for JsValue {
+        #[inline]
         fn eq(&self, other: &String) -> bool {
             <JsValue as PartialEq<str>>::eq(self, other)
         }
     }
     impl<'a> PartialEq<&'a String> for JsValue {
+        #[inline]
         fn eq(&self, other: &&'a String) -> bool {
             <JsValue as PartialEq<str>>::eq(self, other)
         }
@@ -326,6 +338,7 @@ if_std! {
 }
 
 impl<'a> From<&'a str> for JsValue {
+        #[inline]
     fn from(s: &'a str) -> JsValue {
         JsValue::from_str(s)
     }
@@ -333,12 +346,14 @@ impl<'a> From<&'a str> for JsValue {
 
 if_std! {
     impl<'a> From<&'a String> for JsValue {
+        #[inline]
         fn from(s: &'a String) -> JsValue {
             JsValue::from_str(s)
         }
     }
 
     impl From<String> for JsValue {
+        #[inline]
         fn from(s: String) -> JsValue {
             JsValue::from_str(&s)
         }
@@ -346,6 +361,7 @@ if_std! {
 }
 
 impl From<bool> for JsValue {
+    #[inline]
     fn from(s: bool) -> JsValue {
         JsValue::from_bool(s)
     }
@@ -355,6 +371,7 @@ impl<'a, T> From<&'a T> for JsValue
 where
     T: JsCast,
 {
+    #[inline]
     fn from(s: &'a T) -> JsValue {
         s.as_ref().clone()
     }
@@ -364,6 +381,7 @@ impl<T> From<Option<T>> for JsValue
 where
     JsValue: From<T>,
 {
+    #[inline]
     fn from(s: Option<T>) -> JsValue {
         match s {
             Some(s) => s.into(),
@@ -374,18 +392,22 @@ where
 
 impl JsCast for JsValue {
     // everything is a `JsValue`!
+    #[inline]
     fn instanceof(_val: &JsValue) -> bool {
         true
     }
+    #[inline]
     fn unchecked_from_js(val: JsValue) -> Self {
         val
     }
+    #[inline]
     fn unchecked_from_js_ref(val: &JsValue) -> &Self {
         val
     }
 }
 
 impl AsRef<JsValue> for JsValue {
+    #[inline]
     fn as_ref(&self) -> &JsValue {
         self
     }
@@ -394,12 +416,14 @@ impl AsRef<JsValue> for JsValue {
 macro_rules! numbers {
     ($($n:ident)*) => ($(
         impl PartialEq<$n> for JsValue {
+            #[inline]
             fn eq(&self, other: &$n) -> bool {
                 self.as_f64() == Some(f64::from(*other))
             }
         }
 
         impl From<$n> for JsValue {
+            #[inline]
             fn from(n: $n) -> JsValue {
                 JsValue::from_f64(n.into())
             }
@@ -495,6 +519,7 @@ impl fmt::Debug for JsValue {
 }
 
 impl Drop for JsValue {
+    #[inline]
     fn drop(&mut self) {
         unsafe {
             // if the first bit is set then this is a stack value, so we for
