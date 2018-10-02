@@ -77,6 +77,7 @@ macro_rules! type_wasm_native {
         impl IntoWasmAbi for Option<$t> {
             type Abi = $r;
 
+            #[inline]
             fn into_abi(self, _extra: &mut Stack) -> $r {
                 match self {
                     None => $r {
@@ -94,6 +95,7 @@ macro_rules! type_wasm_native {
         impl FromWasmAbi for Option<$t> {
             type Abi = $r;
 
+            #[inline]
             unsafe fn from_abi(js: $r, _extra: &mut Stack) -> Self {
                 if js.present == 0 {
                     None
@@ -170,6 +172,7 @@ macro_rules! type_64 {
         impl IntoWasmAbi for Option<$t> {
             type Abi = WasmOptional64;
 
+            #[inline]
             fn into_abi(self, _extra: &mut Stack) -> WasmOptional64 {
                 match self {
                     None => WasmOptional64 {
@@ -191,6 +194,7 @@ macro_rules! type_64 {
         impl FromWasmAbi for Option<$t> {
             type Abi = WasmOptional64;
 
+            #[inline]
             unsafe fn from_abi(js: WasmOptional64, _extra: &mut Stack) -> Self {
                 if js.present == 0 {
                     None
@@ -257,6 +261,7 @@ impl FromWasmAbi for char {
 impl IntoWasmAbi for Option<char> {
     type Abi = WasmOptionalU32;
 
+    #[inline]
     fn into_abi(self, _extra: &mut Stack) -> WasmOptionalU32 {
         match self {
             None => WasmOptionalU32 {
@@ -274,6 +279,7 @@ impl IntoWasmAbi for Option<char> {
 impl FromWasmAbi for Option<char> {
     type Abi = WasmOptionalU32;
 
+    #[inline]
     unsafe fn from_abi(js: WasmOptionalU32, _extra: &mut Stack) -> Self {
         if js.present == 0 {
             None
