@@ -81,6 +81,7 @@ struct DescribeInstruction {
 enum DescriptorKind {
     Closure,
     IntoJs,
+    FromJs,
 }
 
 impl Intrinsics {
@@ -111,9 +112,15 @@ impl Intrinsics {
                 }
                 if entry.field() == "__wbindgen_describe_closure" {
                     descriptors.insert(idx - 1 as u32, DescriptorKind::Closure);
+                    continue;
                 }
                 if entry.field().starts_with("__wbindgen_into_js_") {
                     descriptors.insert(idx - 1 as u32, DescriptorKind::IntoJs);
+                    continue;
+                }
+                if entry.field().starts_with("__wbindgen_from_js_") {
+                    descriptors.insert(idx - 1 as u32, DescriptorKind::FromJs);
+                    continue;
                 }
             }
         }
@@ -263,6 +270,7 @@ impl Intrinsics {
         match instr.kind {
             DescriptorKind::Closure => self.manufacture_closure_wrapper(input, i, instr),
             DescriptorKind::IntoJs => self.manufacture_into_js(input, i, instr),
+            DescriptorKind::FromJs => self.manufacture_from_js(input, i, instr),
         }
     }
 
@@ -327,8 +335,30 @@ impl Intrinsics {
         let js = {
             let mut builder = Rust2Js::new(input);
             builder.argument(&instr.descriptor)?;
-            builder.shim_argument(); // ignore last argument as it's an ignored descriptor
+            builder.extra_argument(); // ignore last argument as it's an ignored descriptor
             builder.ret(&Descriptor::Anyref)?;
+            builder.finish("")?
+        };
+        input.export(&import_name, &js, None);
+
+        Ok(import_name)
+    }
+
+    fn manufacture_from_js(
+        &self,
+        input: &mut Context,
+        i: u32,
+        instr: &DescribeInstruction,
+    ) -> Result<String, Error> {
+        let import_name = format!("__wbindgen_from_js{}", i);
+
+        input.expose_add_heap_object();
+        let js = {
+            let mut builder = Rust2Js::new(input);
+            builder.catch(true);
+            builder.argument(&Descriptor::Ref(Box::new(Descriptor::Anyref)))?;
+            builder.extra_argument(); // ignore last argument as it's an ignored descriptor
+            builder.ret(&instr.descriptor)?;
             builder.finish("")?
         };
         input.export(&import_name, &js, None);

@@ -18,6 +18,7 @@ pub mod comments;
 pub mod duplicate_deps;
 pub mod duplicates;
 pub mod enums;
+pub mod from_js;
 pub mod import_class;
 pub mod imports;
 pub mod into_js;

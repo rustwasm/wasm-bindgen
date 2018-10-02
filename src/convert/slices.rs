@@ -4,34 +4,13 @@ use std::prelude::v1::*;
 use core::slice;
 use core::str;
 
-use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
+use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi};
 use convert::{OptionIntoWasmAbi, Stack};
-use describe::WasmDescribe;
+use convert::abi::WasmSlice;
 
 if_std! {
     use core::mem;
     use convert::OptionFromWasmAbi;
-}
-
-#[repr(C)]
-pub struct WasmSlice {
-    pub ptr: u32,
-    pub len: u32,
-}
-
-unsafe impl WasmAbi for WasmSlice {
-    #[inline(never)]
-    fn into_js_value<T: WasmDescribe>(self) -> JsValue {
-        unsafe {
-            JsValue {
-                idx: ::__wbindgen_into_js_slice(
-                    self.ptr,
-                    self.len,
-                    T::describe as u32,
-                ),
-            }
-        }
-    }
 }
 
 #[inline]

@@ -131,7 +131,8 @@ impl Interpreter {
                     ret.describe_idx = Some(idx - 1 as u32);
                 }
                 if entry.field() == "__wbindgen_describe_closure" ||
-                    entry.field().starts_with("__wbindgen_into_js")
+                    entry.field().starts_with("__wbindgen_into_js") ||
+                    entry.field().starts_with("__wbindgen_from_js")
                 {
                     let ty = match &types.types()[*type_idx as usize] {
                         Type::Function(t) => t.clone(),
@@ -252,8 +253,15 @@ impl Interpreter {
         }
 
         self.call(closure_descriptor_idx, sections);
-        assert_eq!(self.stack.len(), 1);
-        assert_eq!(self.stack.pop(), Some(0xf100f));
+        match function_ty.return_type() {
+            Some(ValueType::I32) => {
+                assert_eq!(self.stack.len(), 1);
+                assert_eq!(self.stack.pop(), Some(0xf100f));
+            }
+            _ => {
+                assert_eq!(self.stack.len(), 0);
+            }
+        }
         let descriptor_table_idx = self.descriptor_table_idx.take().unwrap();
 
         // After we've got the table index of the descriptor function we're
@@ -355,10 +363,8 @@ impl Interpreter {
         // value
         let before = self.stack.len();
         let (stack_after, has_ret) = match function_ty.return_type() {
-            Some(t) => {
-                assert_eq!(t, ValueType::I32);
-                (before + 1, true)
-            }
+            Some(ValueType::I32) => (before + 1, true),
+            Some(_) |
             None => (before, false),
         };
 
@@ -413,8 +419,9 @@ impl Interpreter {
                             }
                         }
 
-                        assert_eq!(ty.return_type(), Some(ValueType::I32));
-                        self.stack.push(0xf100f);
+                        if ty.return_type() == Some(ValueType::I32) {
+                            self.stack.push(0xf100f);
+                        }
                         continue
                     }
 
