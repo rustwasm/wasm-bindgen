@@ -1088,6 +1088,8 @@ impl<'a> Context<'a> {
                 ", s)
             );
             self.global(&format!("let cached{0} = new l{0}('utf-8');", s));
+        } else {
+            self.global(&format!("let cached{0} = new {0}('utf-8');", s));
         }
     }
 

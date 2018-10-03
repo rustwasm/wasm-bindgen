@@ -30,7 +30,9 @@
 
       // here we tell bindgen the path to the wasm file so it can run
       // initialization and return to us a promise when it's done
-      wasm_bindgen('./no_modules_bg.wasm').then(run);
+      wasm_bindgen('./no_modules_bg.wasm')
+        .then(run)
+        .catch(console.error);
     </script>
   </body>
 </html>
