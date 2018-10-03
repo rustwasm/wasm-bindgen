@@ -970,7 +970,7 @@ impl<'a> Context<'a> {
             "
             function passStringToWasm(arg) {{
                 {}
-                const buf = cachedEncoder.encode(arg);
+                const buf = cachedTextEncoder.encode(arg);
                 const ptr = wasm.__wbindgen_malloc(buf.length);
                 getUint8Memory().set(buf, ptr);
                 return [ptr, buf.length];
@@ -1063,58 +1063,32 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("text_encoder") {
             return;
         }
-        if self.config.nodejs_experimental_modules {
-            self.imports
-                .push_str("import { TextEncoder } from 'util';\n");
-        } else if self.config.nodejs {
-            self.global(
-                "
-                const TextEncoder = require('util').TextEncoder;
-                ",
-            );
-        } else if !(self.config.browser || self.config.no_modules) {
-            self.global(
-                "
-                const TextEncoder = typeof self === 'object' && self.TextEncoder
-                    ? self.TextEncoder
-                    : require('util').TextEncoder;
-                ",
-            );
-        }
-        self.global(
-            "
-            let cachedEncoder = new TextEncoder('utf-8');
-            ",
-        );
+        self.expose_text_processor("TextEncoder");
     }
 
     fn expose_text_decoder(&mut self) {
         if !self.exposed_globals.insert("text_decoder") {
             return;
         }
+        self.expose_text_processor("TextDecoder");
+    }
+
+    fn expose_text_processor(&mut self, s: &str) {
         if self.config.nodejs_experimental_modules {
-            self.imports
-                .push_str("import { TextDecoder } from 'util';\n");
+            self.imports.push_str(&format!("import {{ {} }} from 'util';\n", s));
+            self.global(&format!("let cached{0} = new {0}('utf-8');", s));
         } else if self.config.nodejs {
-            self.global(
-                "
-                const TextDecoder = require('util').TextDecoder;
-                ",
-            );
+            self.global(&format!("const {0} = require('util').{0};", s));
+            self.global(&format!("let cached{0} = new {0}('utf-8');", s));
         } else if !(self.config.browser || self.config.no_modules) {
             self.global(
-                "
-                const TextDecoder = typeof self === 'object' && self.TextDecoder
-                    ? self.TextDecoder
-                    : require('util').TextDecoder;
-                ",
+                &format!("
+                    const l{0} = typeof {0} === 'undefined' ? \
+                        require('util').{0} : {0};\
+                ", s)
             );
+            self.global(&format!("let cached{0} = new l{0}('utf-8');", s));
         }
-        self.global(
-            "
-            let cachedDecoder = new TextDecoder('utf-8');
-            ",
-        );
     }
 
     fn expose_get_string_from_wasm(&mut self) {
@@ -1146,7 +1120,7 @@ impl<'a> Context<'a> {
         self.global(&format!(
             "
             function getStringFromWasm(ptr, len) {{
-                return cachedDecoder.decode(getUint8Memory().{}(ptr, ptr + len));
+                return cachedTextDecoder.decode(getUint8Memory().{}(ptr, ptr + len));
             }}
         ",
             method
