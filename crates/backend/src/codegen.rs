@@ -165,7 +165,7 @@ impl ToTokens for ast::Struct {
                     let ptr = js as *mut WasmRefCell<#name>;
                     assert_not_null(ptr);
                     let js = Box::from_raw(ptr);
-                    js.borrow_mut(); // make sure no one's borrowing
+                    (*js).borrow_mut(); // make sure no one's borrowing
                     js.into_inner()
                 }
             }

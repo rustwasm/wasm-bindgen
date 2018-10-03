@@ -1,3 +1,6 @@
+#[allow(unused_imports)] // test for #919
+use std::borrow::BorrowMut;
+
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
