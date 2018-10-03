@@ -126,8 +126,11 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
     // `AsRef` and such implementations.
     for import in program.imports.iter_mut() {
         if let backend::ast::ImportKind::Type(t) = &mut import.kind {
-            t.extends
-                .retain(|n| first_pass_record.builtin_idents.contains(n) || filter(&n.to_string()));
+            t.extends.retain(|n| {
+                let ident = &n.segments.last().unwrap().value().ident;
+                first_pass_record.builtin_idents.contains(ident) ||
+                    filter(&ident.to_string())
+            });
         }
     }
 
@@ -515,8 +518,8 @@ impl<'src> FirstPassRecord<'src> {
         self.append_required_features_doc(&import_type, &mut doc_comment, extra);
         import_type.extends = self
             .all_superclasses(name)
-            .map(|name| Ident::new(&name, Span::call_site()))
-            .chain(Some(Ident::new("Object", Span::call_site())))
+            .map(|name| Ident::new(&name, Span::call_site()).into())
+            .chain(Some(Ident::new("Object", Span::call_site()).into()))
             .collect();
         import_type.doc_comment = doc_comment;
 

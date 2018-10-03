@@ -288,7 +288,7 @@ impl ImportedTypes for ast::ImportType {
     {
         f(&self.rust_name, ImportedTypeKind::Definition);
         for class in self.extends.iter() {
-            f(class, ImportedTypeKind::Reference);
+            class.imported_types(f);
         }
     }
 }

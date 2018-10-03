@@ -178,7 +178,7 @@ impl BindgenAttrs {
     }
 
     /// Return the list of classes that a type extends
-    fn extends(&self) -> impl Iterator<Item = &Ident> {
+    fn extends(&self) -> impl Iterator<Item = &syn::Path> {
         self.attrs.iter().filter_map(|a| match a {
             BindgenAttr::Extends(s) => Some(s),
             _ => None,
@@ -232,7 +232,7 @@ pub enum BindgenAttr {
     Readonly,
     JsName(String, Span),
     JsClass(String),
-    Extends(Ident),
+    Extends(syn::Path),
     VendorPrefix(Ident),
     Variadic,
 }
@@ -292,7 +292,7 @@ impl Parse for BindgenAttr {
         }
         if attr == "extends" {
             input.parse::<Token![=]>()?;
-            return Ok(BindgenAttr::Extends(input.parse::<AnyIdent>()?.0));
+            return Ok(BindgenAttr::Extends(input.parse()?));
         }
         if attr == "vendor_prefix" {
             input.parse::<Token![=]>()?;
