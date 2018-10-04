@@ -92,9 +92,16 @@ pub fn execute(
     let mut path = env::split_paths(&path).collect::<Vec<_>>();
     path.push(env::current_dir().unwrap());
     path.push(tmpdir.to_path_buf());
+    let extra_node_args = env::var("NODE_ARGS")
+        .unwrap_or_default()
+        .split(",")
+        .map(|s| s.to_string())
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<_>>();
     exec(
         Command::new("node")
             .env("NODE_PATH", env::join_paths(&path).unwrap())
+            .args(&extra_node_args)
             .arg(&js_path)
             .args(args),
     )
