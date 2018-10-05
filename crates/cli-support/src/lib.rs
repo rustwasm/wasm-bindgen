@@ -3,7 +3,7 @@
 extern crate parity_wasm;
 extern crate serde_json;
 extern crate wasm_bindgen_shared as shared;
-extern crate wasm_gc;
+extern crate wasm_bindgen_gc;
 #[macro_use]
 extern crate failure;
 extern crate wasm_bindgen_wasm_interpreter as wasm_interpreter;
