@@ -12,7 +12,7 @@ if you'd prefer to follow along in your own console let's install the tools we
 need:
 
 ```shell
-$ rustup target add wasm32-unknown-unknown
+$ rustup target add wasm32-unknown-unknown --toolchain nightly
 $ cargo +nightly install wasm-bindgen-cli
 ```
 
