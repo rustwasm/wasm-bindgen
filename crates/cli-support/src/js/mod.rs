@@ -3,10 +3,9 @@ use std::fmt::Write;
 use std::mem;
 
 use failure::{Error, ResultExt};
-use parity_wasm;
 use parity_wasm::elements::*;
 use shared;
-use wasm_gc;
+use wasm_bindgen_gc;
 
 use super::Bindgen;
 use descriptor::{Descriptor, VectorKind};
@@ -403,7 +402,7 @@ impl<'a> Context<'a> {
         self.create_memory_export();
         self.unexport_unused_internal_exports();
         closures::rewrite(self)?;
-        self.gc()?;
+        self.gc();
 
         // Note that it's important `throw` comes last *after* we gc. The
         // `__wbindgen_malloc` function may call this but we only want to
@@ -482,7 +481,7 @@ impl<'a> Context<'a> {
         };
 
         self.export_table();
-        self.gc()?;
+        self.gc();
 
         while js.contains("\n\n\n") {
             js = js.replace("\n\n\n", "\n\n");
@@ -1661,18 +1660,12 @@ impl<'a> Context<'a> {
         );
     }
 
-    fn gc(&mut self) -> Result<(), Error> {
+    fn gc(&mut self) {
         self.parse_wasm_names();
-        let module = mem::replace(self.module, Module::default());
-        let result = wasm_gc::Config::new()
+        wasm_bindgen_gc::Config::new()
             .demangle(self.config.demangle)
             .keep_debug(self.config.keep_debug || self.config.debug)
-            .run(module, |m| parity_wasm::serialize(m).unwrap())?;
-        *self.module = match result.into_module() {
-            Ok(m) => m,
-            Err(result) => deserialize_buffer(&result.into_bytes()?)?,
-        };
-        Ok(())
+            .run(&mut self.module);
     }
 
     fn parse_wasm_names(&mut self) {
