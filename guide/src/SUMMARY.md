@@ -26,6 +26,7 @@
   - [web-sys: WebAudio](./examples/web-audio.md)
   - [web-sys: WebGL](./examples/webgl.md)
   - [web-sys: A Simple Paint Program](./examples/paint.md)
+  - [Parallel Raytracing](./examples/raytrace.md)
 - [Reference](./reference/index.md)
   - [Passing Rust Closures to JS](./reference/passing-rust-closures-to-js.md)
   - [Receiving JS Closures in Rust](./reference/receiving-js-closures-in-rust.md)

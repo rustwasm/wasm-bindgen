@@ -491,6 +491,7 @@ externs! {
     fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
 
     fn __wbindgen_memory() -> u32;
+    fn __wbindgen_module() -> u32;
 }
 
 impl Clone for JsValue {
@@ -630,6 +631,19 @@ pub fn throw_val(s: JsValue) -> ! {
         let idx = s.idx;
         mem::forget(s);
         __wbindgen_rethrow(idx);
+    }
+}
+
+/// Returns a handle to this wasm instance's `WebAssembly.Module`
+///
+/// Note that this is only available when the final wasm app is built with
+/// `--no-modules`, it's not recommended to rely on this API yet! This is
+/// largely just an experimental addition to enable threading demos. Using this
+/// may prevent your wasm module from building down the road.
+#[doc(hidden)]
+pub fn module() -> JsValue {
+    unsafe {
+        JsValue::_new(__wbindgen_module())
     }
 }
 

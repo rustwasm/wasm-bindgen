@@ -3,10 +3,11 @@
 extern crate parity_wasm;
 #[macro_use]
 extern crate wasm_bindgen_shared as shared;
-extern crate wasm_bindgen_gc;
+extern crate wasm_bindgen_gc as gc;
 #[macro_use]
 extern crate failure;
 extern crate wasm_bindgen_wasm_interpreter as wasm_interpreter;
+extern crate wasm_bindgen_threads_xform as threads_xform;
 
 use std::collections::BTreeSet;
 use std::env;
@@ -37,6 +38,9 @@ pub struct Bindgen {
     // Experimental support for `WeakRefGroup`, an upcoming ECMAScript feature.
     // Currently only enable-able through an env var.
     weak_refs: bool,
+    // Experimental support for the wasm threads proposal, transforms the wasm
+    // module to be "ready to be instantiated on any thread"
+    threads: Option<threads_xform::Config>,
 }
 
 enum Input {
@@ -59,6 +63,7 @@ impl Bindgen {
             demangle: true,
             keep_debug: false,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
+            threads: threads_config(),
         }
     }
 
@@ -142,6 +147,11 @@ impl Bindgen {
         let mut program_storage = Vec::new();
         let programs = extract_programs(&mut module, &mut program_storage)
             .with_context(|_| "failed to extract wasm-bindgen custom sections")?;
+
+        if let Some(cfg) = &self.threads {
+            cfg.run(&mut module)
+                .with_context(|_| "failed to prepare module for threading")?;
+        }
 
         // Here we're actually instantiating the module we've parsed above for
         // execution. Why, you might be asking, are we executing wasm code? A
@@ -446,4 +456,21 @@ fn reset_indentation(s: &str) -> String {
         }
     }
     return dst;
+}
+
+// Eventually these will all be CLI options, but while they're unstable features
+// they're left as environment variables. We don't guarantee anything about
+// backwards-compatibility with these options.
+fn threads_config() -> Option<threads_xform::Config> {
+    if env::var("WASM_BINDGEN_THREADS").is_err() {
+        return None
+    }
+    let mut cfg = threads_xform::Config::new();
+    if let Ok(s) = env::var("WASM_BINDGEN_THREADS_MAX_MEMORY") {
+        cfg.maximum_memory(s.parse().unwrap());
+    }
+    if let Ok(s) = env::var("WASM_BINDGEN_THREADS_STACK_SIZE") {
+        cfg.thread_stack_size(s.parse().unwrap());
+    }
+    Some(cfg)
 }

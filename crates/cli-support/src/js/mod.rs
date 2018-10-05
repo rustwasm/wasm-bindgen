@@ -6,7 +6,7 @@ use decode;
 use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
 use shared;
-use wasm_bindgen_gc;
+use gc;
 
 use super::Bindgen;
 use descriptor::{Descriptor, VectorKind};
@@ -388,12 +388,26 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_module", &|me| {
+            if !me.config.no_modules {
+                bail!("`wasm_bindgen::module` is currently only supported with \
+                       --no-modules");
+            }
+            me.expose_add_heap_object();
+            Ok(format!(
+                "
+                function() {{
+                    return addHeapObject(init.__wbindgen_wasm_module);
+                }}
+                ",
+            ))
+        })?;
+
         self.bind("__wbindgen_rethrow", &|me| {
             me.expose_take_object();
             Ok(String::from("function(idx) { throw takeObject(idx); }"))
         })?;
 
-        self.create_memory_export();
         self.unexport_unused_internal_exports();
         closures::rewrite(self)?;
         self.gc();
@@ -415,7 +429,76 @@ impl<'a> Context<'a> {
 
         self.rewrite_imports(module_name);
 
-        let mut js = if self.config.no_modules {
+        let mut js = if self.config.threads.is_some() {
+            // TODO: It's not clear right now how to best use threads with
+            // bundlers like webpack. We need a way to get the existing
+            // module/memory into web workers for now and we don't quite know
+            // idiomatically how to do that! In the meantime, always require
+            // `--no-modules`
+            if !self.config.no_modules {
+                bail!("most use `--no-modules` with threads for now")
+            }
+            self.memory(); // set `memory_limit` if it's not already set
+            let limits = match &self.memory_init {
+                Some(l) if l.shared() => l.clone(),
+                _ => bail!("must impot a shared memory with threads"),
+            };
+
+            let mut memory = String::from("new WebAssembly.Memory({");
+            memory.push_str(&format!("initial:{}", limits.initial()));
+            if let Some(max) = limits.maximum() {
+                memory.push_str(&format!(",maximum:{}", max));
+            }
+            if limits.shared() {
+                memory.push_str(",shared:true");
+            }
+            memory.push_str("})");
+
+            format!(
+                    "\
+(function() {{
+    var wasm;
+    var memory;
+    const __exports = {{}};
+    {globals}
+    function init(module_or_path, maybe_memory) {{
+        let result;
+        const imports = {{ './{module}': __exports }};
+        if (module_or_path instanceof WebAssembly.Module) {{
+            memory = __exports.memory = maybe_memory;
+            result = WebAssembly.instantiate(module_or_path, imports)
+                .then(instance => {{
+                    return {{ instance, module: module_or_path }}
+                }});
+        }} else {{
+            memory = __exports.memory = {init_memory};
+            const response = fetch(module_or_path);
+            if (typeof WebAssembly.instantiateStreaming === 'function') {{
+                result = WebAssembly.instantiateStreaming(response, imports);
+            }} else {{
+                result = response
+                    .then(r => r.arrayBuffer())
+                    .then(bytes => WebAssembly.instantiate(bytes, imports));
+            }}
+        }}
+        return result.then(({{instance, module}}) => {{
+            wasm = init.wasm = instance.exports;
+            init.__wbindgen_wasm_instance = instance;
+            init.__wbindgen_wasm_module = module;
+            init.__wbindgen_wasm_memory = __exports.memory;
+        }});
+    }};
+    self.{global_name} = Object.assign(init, __exports);
+}})();",
+                    globals = self.globals,
+                    module = module_name,
+                    global_name = self.config.no_modules_global
+                        .as_ref()
+                        .map(|s| &**s)
+                        .unwrap_or("wasm_bindgen"),
+                    init_memory = memory,
+            )
+        } else if self.config.no_modules {
             format!(
                     "\
 (function() {{
@@ -635,20 +718,6 @@ impl<'a> Context<'a> {
             exports.entries_mut().push(entry);
             break;
         }
-    }
-
-    fn create_memory_export(&mut self) {
-        let limits = match self.memory_init.clone() {
-            Some(limits) => limits,
-            None => return,
-        };
-        let mut initializer = String::from("new WebAssembly.Memory({");
-        initializer.push_str(&format!("initial:{}", limits.initial()));
-        if let Some(max) = limits.maximum() {
-            initializer.push_str(&format!(",maximum:{}", max));
-        }
-        initializer.push_str("})");
-        self.export("memory", &initializer, None);
     }
 
     fn rewrite_imports(&mut self, module_name: &str) {
@@ -1621,7 +1690,7 @@ impl<'a> Context<'a> {
 
     fn gc(&mut self) {
         self.parse_wasm_names();
-        wasm_bindgen_gc::Config::new()
+        gc::Config::new()
             .demangle(self.config.demangle)
             .keep_debug(self.config.keep_debug || self.config.debug)
             .run(&mut self.module);
@@ -1671,7 +1740,6 @@ impl<'a> Context<'a> {
                 _ => None,
             }).next()
             .expect("must import memory");
-        assert_eq!(entry.module(), "env");
         assert_eq!(entry.field(), "memory");
         self.memory_init = Some(mem.limits().clone());
         "memory"

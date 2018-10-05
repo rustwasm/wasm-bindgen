@@ -80,14 +80,14 @@ matrix:
 
     # All examples work
     - rust: nightly
-      env: JOB=examples-build
+      name: "examples - almost all examples"
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_AWS
         - npm install
       script:
         - |
-          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v no_modules`; do
+          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v no_modules`; do
             (cd examples/$dir &&
              sed -i "s|: \"webpack-dev-server\"|: \"webpack --output-path $HOME/$TRAVIS_BUILD_NUMBER/exbuild/$dir\"|" package.json &&
              sed -i 's/npm install//' build.sh &&
@@ -95,6 +95,21 @@ matrix:
              ./build.sh) || exit 1;
           done
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then aws s3 sync --quiet ~/$TRAVIS_BUILD_NUMBER s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER; fi
+      if: branch = master
+    - rust: nightly
+      name: "examples - raytracer"
+      install:
+        - *INSTALL_AWS
+        - rustup component add rust-src
+        - curl -L https://github.com/japaric/xargo/releases/download/v0.3.11/xargo-v0.3.11-x86_64-unknown-linux-musl.tar.gz | tar xzf -
+        - export PATH=$PATH:`pwd`
+      script:
+        - sed -i 's/python/#python/' examples/raytrace-parallel/build.sh
+        - (cd examples/raytrace-parallel && ./build.sh)
+        - dst=$HOME/$TRAVIS_BUILD_NUMBER/exbuild/raytrace-parallel
+        - mkdir -p $dst
+        - cp examples/raytrace-parallel/*.{js,html,wasm} $dst
+        - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER; fi
       if: branch = master
 
     # The `web-sys` crate's tests pass
