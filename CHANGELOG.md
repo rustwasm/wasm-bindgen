@@ -32,6 +32,50 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.24
+
+Released 2018-10-05.
+
+### Added
+
+* Constructors for types in `web-sys` should now have better documentation.
+
+* A new `vendor_prefix` attribute in `#[wasm_bindgen]` is supported to bind APIs
+  on the web which may have a vendor prefix (like `webkitAudioContext`). This is
+  then subsequently used to fix `AudioContext` usage in Safari.
+
+* The `#[wasm_bindgen(extends = Foo)]` attribute now supports full paths, so you
+  can also say `#[wasm_bindgen(extends = foo::Bar)]` and such.
+
+### Changed
+
+* The `Closure<T>` type is now optimized when the underlying closure is a ZST.
+  The type now no longer allocates memory in this situation.
+
+* The documentation now has a list of caveats for browser support, including how
+  `TextEncoder` and `TextDecoder` are not implemented in Edge. If you're using
+  webpack there's a listed strategy available, and improvements to the polyfill
+  strategy are always welcome!
+
+* The `BaseAudioContext` and `AudioScheduledSourceNode` types in `web-sys` have
+  been deprecated as they don't exist in Safari or Edge.
+
+### Fixed
+
+* Fixed the `#[wasm_bindgen_test]`'s error messages in a browser to correctly
+  escape HTML-looking output.
+
+* WebIDL Attributes on `Window` are now correctly bound to not go through
+  `Window.prototype` which doesn't exist but instead use a `structural`
+  definition.
+
+* Fixed a codegen error when the `BorrowMut` trait was in scope.
+
+* Fixed TypeScript generation for constructors of classes, it was accidentally
+  producing a syntactially invalid file!
+
+--------------------------------------------------------------------------------
+
 ## 0.2.23
 
 Released 2018-09-26.
