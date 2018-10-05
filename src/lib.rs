@@ -22,12 +22,31 @@ use core::mem;
 use core::ops::{Deref, DerefMut};
 use core::ptr;
 
-use convert::FromWasmAbi;
+use convert::{GlobalStack, FromWasmAbi, IntoWasmAbi};
+use convert::abi::WasmAbi;
 
 macro_rules! if_std {
     ($($i:item)*) => ($(
         #[cfg(feature = "std")] $i
     )*)
+}
+
+macro_rules! externs {
+    ($(fn $name:ident($($args:tt)*) -> $ret:ty;)*) => (
+        #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+        #[link(wasm_import_module = "__wbindgen_placeholder__")]
+        extern {
+            $(fn $name($($args)*) -> $ret;)*
+        }
+
+        $(
+            #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+            #[allow(unused_variables)]
+            unsafe extern fn $name($($args)*) -> $ret {
+                panic!("function not implemented on non-wasm32 targets")
+            }
+        )*
+    )
 }
 
 /// A module which is typically glob imported from:
@@ -86,6 +105,82 @@ impl JsValue {
 
     /// The `false` JS value constant.
     pub const FALSE: JsValue = JsValue { idx: JSIDX_FALSE };
+
+    /// Converts any Rust value implementing the `IntoWasmAbi` trait into a
+    /// `JsValue`.
+    ///
+    /// This function will convert any Rust value which can be used in function
+    /// signatures to the corresponding `JsValue` that it would wrepresent on
+    /// the JS side of the world. A reference to the fresh JS object is then
+    /// returned to Rust.
+    ///
+    /// Note that while this is morally the same functionality of the `From`
+    /// trait, it is different in that it may not be as optimized. The `From`
+    /// implementations are generally as fast as they can possibly be, whereas
+    /// this implementation will always go through a JS shim. Eventually when
+    /// Rust has specialization though this will simply be part of the `From`
+    /// trait implementation!
+    ///
+    /// # Examples
+    ///
+    /// ```ignore
+    /// // First, we could bind a function manually:
+    ///
+    /// #[wasm_bindgen]
+    /// extern {
+    ///     fn log_binary_data(data: &[u8]);
+    /// }
+    ///
+    /// log_binary_data(&my_data);
+    ///
+    /// // ... but we could alternatively also do:
+    /// #[wasm_bindgen]
+    /// extern {
+    ///     fn log_binary_data(data: &JsValue);
+    /// }
+    ///
+    /// let value = JsValue::from_wasm_abi(&my_data);
+    /// // ... `value` is an instance of `Uint8Array`
+    /// log_binary_data(&value);
+    /// ```
+    ///
+    /// # Memory Management
+    ///
+    /// Note that some values, like exported Rust structures, need to be
+    /// manually deallocated in JS. If they are passed to this function then
+    /// they still need to be deallocated at some point!
+    pub fn from_wasm_abi<T: IntoWasmAbi>(t: T) -> JsValue {
+
+        unsafe {
+            let mut stack = GlobalStack::new();
+            t.into_abi(&mut stack)
+                .into_js_value::<T>()
+        }
+    }
+
+    /// Converts this JS value into any Rust type usable in imported/exported JS
+    /// functions.
+    ///
+    /// This function is the inverse of `from_wasm_abi` above, allowing
+    /// conversion from a JS value to any arbitrary Rust type which implements
+    /// the `FromWasmAbi` trait. This trait is automatically implemented for
+    /// many base types as well as imported/exported types.
+    ///
+    /// This is not an optimized conversion, and may run the risk of being less
+    /// performant than other conversions available. In a pinch though this
+    /// should be usable for conversions!
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if JS throws an exception while
+    /// converting the argument, such as when this JS value is a number and you
+    /// try to convert it to `Vec<f32>`.
+    pub fn into_wasm_abi<T: FromWasmAbi>(&self) -> Result<T, JsValue> {
+        unsafe {
+            let abi = <T::Abi as WasmAbi>::from_js_value::<T>(&self)?;
+            Ok(T::from_abi(abi, &mut GlobalStack::new()))
+        }
+    }
 
     /// Creates a new JS value which is a string.
     ///
@@ -432,24 +527,6 @@ macro_rules! numbers {
 }
 
 numbers! { i8 u8 i16 u16 i32 u32 f32 f64 }
-
-macro_rules! externs {
-    ($(fn $name:ident($($args:tt)*) -> $ret:ty;)*) => (
-        #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-        #[link(wasm_import_module = "__wbindgen_placeholder__")]
-        extern {
-            $(fn $name($($args)*) -> $ret;)*
-        }
-
-        $(
-            #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-            #[allow(unused_variables)]
-            unsafe extern fn $name($($args)*) -> $ret {
-                panic!("function not implemented on non-wasm32 targets")
-            }
-        )*
-    )
-}
 
 externs! {
     fn __wbindgen_object_clone_ref(idx: u32) -> u32;

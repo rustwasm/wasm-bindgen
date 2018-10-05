@@ -4,21 +4,14 @@ use std::prelude::v1::*;
 use core::slice;
 use core::str;
 
-use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
+use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi};
 use convert::{OptionIntoWasmAbi, Stack};
+use convert::abi::WasmSlice;
 
 if_std! {
     use core::mem;
     use convert::OptionFromWasmAbi;
 }
-
-#[repr(C)]
-pub struct WasmSlice {
-    pub ptr: u32,
-    pub len: u32,
-}
-
-unsafe impl WasmAbi for WasmSlice {}
 
 #[inline]
 fn null_slice() -> WasmSlice {

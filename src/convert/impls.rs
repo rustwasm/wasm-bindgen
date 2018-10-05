@@ -1,62 +1,12 @@
 use core::char;
 use core::mem::{self, ManuallyDrop};
 
-use convert::traits::WasmAbi;
 use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, Stack};
 use convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
+use convert::abi::{WasmOptionalI32, WasmOptionalU32};
+use convert::abi::{WasmOptionalF32, WasmOptionalF64};
+use convert::abi::{WasmOptional64, Wasm64};
 use {Clamped, JsValue};
-
-unsafe impl WasmAbi for () {}
-
-#[repr(C)]
-pub struct WasmOptionalI32 {
-    pub present: u32,
-    pub value: i32,
-}
-
-unsafe impl WasmAbi for WasmOptionalI32 {}
-
-#[repr(C)]
-pub struct WasmOptionalU32 {
-    pub present: u32,
-    pub value: u32,
-}
-
-unsafe impl WasmAbi for WasmOptionalU32 {}
-
-#[repr(C)]
-pub struct WasmOptionalF32 {
-    pub present: u32,
-    pub value: f32,
-}
-
-unsafe impl WasmAbi for WasmOptionalF32 {}
-
-#[repr(C)]
-pub struct WasmOptionalF64 {
-    pub present: u32,
-    pub value: f64,
-}
-
-unsafe impl WasmAbi for WasmOptionalF64 {}
-
-#[repr(C)]
-pub struct Wasm64 {
-    pub low: u32,
-    pub high: u32,
-}
-
-unsafe impl WasmAbi for Wasm64 {}
-
-#[repr(C)]
-pub struct WasmOptional64 {
-    pub present: u32,
-    pub padding: u32,
-    pub low: u32,
-    pub high: u32,
-}
-
-unsafe impl WasmAbi for WasmOptional64 {}
 
 macro_rules! type_wasm_native {
     ($($t:tt as $c:tt => $r:tt)*) => ($(

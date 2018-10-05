@@ -39,6 +39,9 @@ pub struct Rust2Js<'a, 'b: 'a> {
 
     /// Whether or not the last argument is a slice representing variadic arguments.
     variadic: bool,
+
+    /// whether or not a throwaway argument is appended to the end
+    extra_argument: bool,
 }
 
 impl<'a, 'b> Rust2Js<'a, 'b> {
@@ -54,6 +57,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ret_expr: String::new(),
             catch: false,
             variadic: false,
+            extra_argument: false,
         }
     }
 
@@ -86,6 +90,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
     }
 
     /// Get a generated name for an argument.
+    pub fn extra_argument(&mut self) {
+        assert!(!self.extra_argument);
+        self.extra_argument = true;
+    }
+
+    /// Get a generated name for an argument.
     fn shim_argument(&mut self) -> String {
         let s = format!("arg{}", self.arg_idx);
         self.arg_idx += 1;
@@ -93,7 +103,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         s
     }
 
-    fn argument(&mut self, arg: &Descriptor) -> Result<(), Error> {
+    pub fn argument(&mut self, arg: &Descriptor) -> Result<(), Error> {
         let abi = self.shim_argument();
 
         let (arg, optional) = match arg {
@@ -301,7 +311,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         Ok(())
     }
 
-    fn ret(&mut self, ty: &Descriptor) -> Result<(), Error> {
+    pub fn ret(&mut self, ty: &Descriptor) -> Result<(), Error> {
         if let Descriptor::Unit = ty {
             self.ret_expr = "JS;".to_string();
             return Ok(());
@@ -508,6 +518,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 ret.push_str(", ")
             }
             ret.push_str("exnptr");
+        }
+        if self.extra_argument {
+            ret.push_str(", _extra");
         }
         ret.push_str(") {\n");
         ret.push_str(&self.prelude);

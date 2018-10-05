@@ -17,10 +17,11 @@ use parity_wasm::elements::*;
 
 use descriptor::Descriptor;
 use js::js2rust::Js2Rust;
+use js::rust2js::Rust2Js;
 use js::Context;
 
 pub fn rewrite(input: &mut Context) -> Result<(), Error> {
-    let info = ClosureDescriptors::new(input);
+    let info = Intrinsics::new(input);
 
     // Sanity check to make sure things look ok and skip everything below if
     // there's not calls to `Closure::new`.
@@ -53,15 +54,15 @@ pub fn rewrite(input: &mut Context) -> Result<(), Error> {
 }
 
 #[derive(Default)]
-struct ClosureDescriptors {
+struct Intrinsics {
     /// A list of elements to remove from the function table. The first element
     /// of the pair is the index of the entry in the element section, and the
     /// second element of the pair is the index within that entry to remove.
     element_removal_list: Vec<(usize, usize)>,
 
-    /// A map from indexes in the code section which contain calls to
-    /// `__wbindgen_describe_closure` to the new function the whole function is
-    /// replaced with as well as the descriptor that the function describes.
+    /// A map from indexes in the code section which contain calls to intrinsics
+    /// to the new function the whole function is replaced with as well as the
+    /// descriptor that the function describes.
     ///
     /// This map is later used to replace all calls to the keys of this map with
     /// calls to the value of the map.
@@ -69,13 +70,22 @@ struct ClosureDescriptors {
 }
 
 struct DescribeInstruction {
+    old_idx: u32,
     new_idx: u32,
     instr_idx: usize,
     descriptor: Descriptor,
+    kind: DescriptorKind,
 }
 
-impl ClosureDescriptors {
-    /// Find all invocations of `__wbindgen_describe_closure`.
+#[derive(Copy, Clone)]
+enum DescriptorKind {
+    Closure,
+    IntoJs,
+    FromJs,
+}
+
+impl Intrinsics {
+    /// Find all invocations of intrinsics.
     ///
     /// We'll be rewriting all calls to functions who call this import. Here we
     /// iterate over all code found in the module, and anything which calls our
@@ -84,36 +94,61 @@ impl ClosureDescriptors {
     /// function is never needed at runtime) as well as a `Descriptor` which
     /// describes the type of closure needed.
     ///
-    /// All this information is then returned in the `ClosureDescriptors` return
+    /// All this information is then returned in the `Intrinsics` return
     /// value.
-    fn new(input: &mut Context) -> ClosureDescriptors {
-        let wbindgen_describe_closure = match input.interpreter.describe_closure_idx() {
-            Some(i) => i,
-            None => return Default::default(),
-        };
-        let imports = input
-            .module
-            .import_section()
-            .map(|s| s.functions())
-            .unwrap_or(0);
-        let mut ret = ClosureDescriptors::default();
+    fn new(input: &mut Context) -> Intrinsics {
+        let mut descriptors = HashMap::new();
+        let mut imports = 0;
+        if let Some(s) = input.module.import_section() {
+            imports = s.functions();
+            let mut idx = 0;
+            for entry in s.entries() {
+                match entry.external() {
+                    External::Function(_) => idx += 1,
+                    _ => continue,
+                }
+                if entry.module() != "__wbindgen_placeholder__" {
+                    continue;
+                }
+                if entry.field() == "__wbindgen_describe_closure" {
+                    descriptors.insert(idx - 1 as u32, DescriptorKind::Closure);
+                    continue;
+                }
+                if entry.field().starts_with("__wbindgen_into_js_") {
+                    descriptors.insert(idx - 1 as u32, DescriptorKind::IntoJs);
+                    continue;
+                }
+                if entry.field().starts_with("__wbindgen_from_js_") {
+                    descriptors.insert(idx - 1 as u32, DescriptorKind::FromJs);
+                    continue;
+                }
+            }
+        }
+        let mut ret = Intrinsics::default();
 
         let code = match input.module.code_section() {
             Some(code) => code,
             None => return Default::default(),
         };
         for (i, function) in code.bodies().iter().enumerate() {
-            let call_pos = function.code().elements().iter().position(|i| match i {
-                Instruction::Call(i) => *i == wbindgen_describe_closure,
-                _ => false,
-            });
-            let call_pos = match call_pos {
-                Some(i) => i,
+            let call_pos = function.code()
+                .elements()
+                .iter()
+                .enumerate()
+                .filter_map(|(i, instr)| {
+                    match instr {
+                        Instruction::Call(f) => descriptors.get(&f).map(|y| (i, y, f)),
+                        _ => None,
+                    }
+                })
+                .next();
+            let (call_pos, kind, old_idx) = match call_pos {
+                Some(p) => p,
                 None => continue,
             };
             let descriptor = input
                 .interpreter
-                .interpret_closure_descriptor(i, input.module, &mut ret.element_removal_list)
+                .interpret_intrinsic_descriptor(i, input.module, &mut ret.element_removal_list)
                 .unwrap();
             // `new_idx` is the function-space index of the function that we'll
             // be injecting. Calls to the code function `i` will instead be
@@ -123,9 +158,11 @@ impl ClosureDescriptors {
             ret.code_idx_to_descriptor.insert(
                 i as u32,
                 DescribeInstruction {
+                    old_idx: *old_idx,
                     new_idx,
                     instr_idx: call_pos,
                     descriptor: Descriptor::decode(descriptor),
+                    kind: *kind,
                 },
             );
         }
@@ -192,25 +229,9 @@ impl ClosureDescriptors {
     /// described by the fields internally. These new imports will be closure
     /// factories and are freshly generated shim in JS.
     fn inject_imports(&self, input: &mut Context) -> Result<(), Error> {
-        let wbindgen_describe_closure = match input.interpreter.describe_closure_idx() {
-            Some(i) => i,
-            None => return Ok(()),
-        };
-
-        // We'll be injecting new imports and we'll need to give them all a
-        // type.  The signature is all `(i32, i32) -> i32` currently and we know
-        // that this signature already exists in the module as it's the
-        // signature of our `#[inline(never)]` functions. Find the type
-        // signature index so we can assign it below.
-        let type_idx = {
-            let kind = input.module.import_section().unwrap().entries()
-                [wbindgen_describe_closure as usize]
-                .external();
-            match kind {
-                External::Function(i) => *i,
-                _ => unreachable!(),
-            }
-        };
+        if self.code_idx_to_descriptor.len() == 0 {
+            return Ok(())
+        }
 
         // The last piece of the magic. For all our descriptors we found we
         // inject a JS shim for the descriptor. This JS shim will manufacture a
@@ -219,64 +240,133 @@ impl ClosureDescriptors {
         // Once all that's said and done we inject a new import into the wasm module
         // of our new wrapper, and the `Remap` step above already wrote calls to
         // this function within the module.
+        input.expose_add_heap_object();
+        input.function_table_needed = true;
         for (i, instr) in self.code_idx_to_descriptor.iter() {
-            let import_name = format!("__wbindgen_closure_wrapper{}", i);
+            let import_name = self.manufacture_imports(input, *i, instr)?;
 
-            let closure = instr.descriptor.closure().unwrap();
-
-            let (js, _ts, _js_doc) = {
-                let mut builder = Js2Rust::new("", input);
-                builder.prelude("this.cnt++;");
-                if closure.mutable {
-                    builder
-                        .prelude("let a = this.a;\n")
-                        .prelude("this.a = 0;\n")
-                        .rust_argument("a")
-                        .rust_argument("b")
-                        .finally("this.a = a;\n");
-                } else {
-                    builder.rust_argument("this.a")
-                        .rust_argument("b");
-                }
-                builder.finally("if (this.cnt-- == 1) d(this.a, b);");
-                builder
-                    .process(&closure.function)?
-                    .finish("function", "f")
-            };
-            input.expose_add_heap_object();
-            input.function_table_needed = true;
-            let body = format!(
-                "function(a, b, fi, di, _ignored) {{
-                    const f = wasm.__wbg_function_table.get(fi);
-                    const d = wasm.__wbg_function_table.get(di);
-                    const cb = {};
-                    cb.a = a;
-                    cb.cnt = 1;
-                    let real = cb.bind(cb);
-                    real.original = cb;
-                    return addHeapObject(real);
-                }}",
-                js,
-            );
-            input.export(&import_name, &body, None);
-
+            let imports = input
+                .module
+                .import_section_mut()
+                .unwrap();
             let new_import = ImportEntry::new(
                 "__wbindgen_placeholder__".to_string(),
                 import_name,
-                External::Function(type_idx as u32),
+                // Use the same type as the original descriptor we called, as
+                // we're not changing signatures at this time.
+                imports.entries()[instr.old_idx as usize].external().clone(),
             );
-            input
-                .module
-                .import_section_mut()
-                .unwrap()
-                .entries_mut()
-                .push(new_import);
+            imports.entries_mut().push(new_import);
         }
         Ok(())
     }
 
-    /// The final step, rewriting calls to `__wbindgen_describe_closure` to the
-    /// imported functions
+    fn manufacture_imports(
+        &self,
+        input: &mut Context,
+        i: u32,
+        instr: &DescribeInstruction,
+    ) -> Result<String, Error> {
+        match instr.kind {
+            DescriptorKind::Closure => self.manufacture_closure_wrapper(input, i, instr),
+            DescriptorKind::IntoJs => self.manufacture_into_js(input, i, instr),
+            DescriptorKind::FromJs => self.manufacture_from_js(input, i, instr),
+        }
+    }
+
+    fn manufacture_closure_wrapper(
+        &self,
+        input: &mut Context,
+        i: u32,
+        instr: &DescribeInstruction,
+    ) -> Result<String, Error> {
+        let import_name = format!("__wbindgen_closure_wrapper{}", i);
+
+        let closure = instr.descriptor.closure().unwrap();
+
+        let (js, _ts, _js_doc) = {
+            let mut builder = Js2Rust::new("", input);
+            builder.prelude("this.cnt++;");
+            if closure.mutable {
+                builder
+                    .prelude("let a = this.a;\n")
+                    .prelude("this.a = 0;\n")
+                    .rust_argument("a")
+                    .rust_argument("b")
+                    .finally("this.a = a;\n");
+            } else {
+                builder.rust_argument("this.a")
+                    .rust_argument("b");
+            }
+            builder.finally("if (this.cnt-- == 1) d(this.a, b);");
+            builder
+                .process(&closure.function)?
+                .finish("function", "f")
+        };
+        input.expose_add_heap_object();
+        input.function_table_needed = true;
+        let body = format!(
+            "function(a, b, fi, di, _ignored) {{
+                const f = wasm.__wbg_function_table.get(fi);
+                const d = wasm.__wbg_function_table.get(di);
+                const cb = {};
+                cb.a = a;
+                cb.cnt = 1;
+                let real = cb.bind(cb);
+                real.original = cb;
+                return addHeapObject(real);
+            }}",
+            js,
+        );
+        input.export(&import_name, &body, None);
+
+        Ok(import_name)
+    }
+
+    fn manufacture_into_js(
+        &self,
+        input: &mut Context,
+        i: u32,
+        instr: &DescribeInstruction,
+    ) -> Result<String, Error> {
+        let import_name = format!("__wbindgen_into_js{}", i);
+
+        input.expose_add_heap_object();
+        let js = {
+            let mut builder = Rust2Js::new(input);
+            builder.argument(&instr.descriptor)?;
+            builder.extra_argument(); // ignore last argument as it's an ignored descriptor
+            builder.ret(&Descriptor::Anyref)?;
+            builder.finish("")?
+        };
+        input.export(&import_name, &js, None);
+
+        Ok(import_name)
+    }
+
+    fn manufacture_from_js(
+        &self,
+        input: &mut Context,
+        i: u32,
+        instr: &DescribeInstruction,
+    ) -> Result<String, Error> {
+        let import_name = format!("__wbindgen_from_js{}", i);
+
+        input.expose_add_heap_object();
+        let js = {
+            let mut builder = Rust2Js::new(input);
+            builder.catch(true);
+            builder.argument(&Descriptor::Ref(Box::new(Descriptor::Anyref)))?;
+            builder.extra_argument(); // ignore last argument as it's an ignored descriptor
+            builder.ret(&instr.descriptor)?;
+            builder.finish("")?
+        };
+        input.export(&import_name, &js, None);
+
+        Ok(import_name)
+    }
+
+    /// The final step, rewriting calls to intrinsics to the imported functions
     fn rewrite_calls(&self, input: &mut Context) {
         // FIXME: Ok so this is a bit sketchy in that it introduces overhead.
         // What we're doing is taking a our #[inline(never)] shim and *not*

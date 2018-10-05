@@ -20,7 +20,7 @@
 
 extern crate parity_wasm;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use parity_wasm::elements::*;
 
@@ -35,11 +35,13 @@ pub struct Interpreter {
     // calculations)
     imports: usize,
 
-    // Function index of the `__wbindgen_describe` and
-    // `__wbindgen_describe_closure` imported functions. We special case this
-    // to know when the environment's imported function is called.
+    // Function index of the `__wbindgen_describe` imported function. We special
+    // case this to know when the environment's imported function is called.
     describe_idx: Option<u32>,
-    describe_closure_idx: Option<u32>,
+
+    // Known indices of intrinsic functions that we'll recognize function calls
+    // to to fill out the `descriptor_table_idx` below.
+    intrinsics: HashMap<u32, FunctionType>,
 
     // A mapping of string names to the function index, filled with all exported
     // functions.
@@ -66,9 +68,9 @@ pub struct Interpreter {
     // this module.
     descriptor: Vec<u32>,
 
-    // When invoking the `__wbindgen_describe_closure` imported function, this
-    // stores the last table index argument, used for finding a different
-    // descriptor.
+    // When invoking the some intrinsic descriptor imported functions (like
+    // `__wbindgen_describe_closure`), this stores the last table index
+    // argument, used for finding a different descriptor.
     descriptor_table_idx: Option<u32>,
 }
 
@@ -111,20 +113,31 @@ impl Interpreter {
         // interpretation should only invoke this function as an imported
         // function.
         if let Some(i) = module.import_section() {
+            let types = module.type_section().unwrap();
             ret.imports = i.functions();
             let mut idx = 0;
             for entry in i.entries() {
-                match entry.external() {
-                    External::Function(_) => idx += 1,
+                let type_idx = match entry.external() {
+                    External::Function(t) => {
+                        idx += 1;
+                        t
+                    }
                     _ => continue,
-                }
+                };
                 if entry.module() != "__wbindgen_placeholder__" {
                     continue;
                 }
                 if entry.field() == "__wbindgen_describe" {
                     ret.describe_idx = Some(idx - 1 as u32);
-                } else if entry.field() == "__wbindgen_describe_closure" {
-                    ret.describe_closure_idx = Some(idx - 1 as u32);
+                }
+                if entry.field() == "__wbindgen_describe_closure" ||
+                    entry.field().starts_with("__wbindgen_into_js") ||
+                    entry.field().starts_with("__wbindgen_from_js")
+                {
+                    let ty = match &types.types()[*type_idx as usize] {
+                        Type::Function(t) => t.clone(),
+                    };
+                    ret.intrinsics.insert(idx - 1 as u32, ty);
                 }
             }
         }
@@ -183,34 +196,34 @@ impl Interpreter {
         Some(&self.descriptor)
     }
 
-    /// Interprets a "closure descriptor", figuring out the signature of the
-    /// closure that was intended.
+    /// Interprets an "intrinsic descriptor", figuring out the signature for the
+    /// intrinsic that was intended.
     ///
     /// This function will take a `code_idx` which is known to internally
-    /// execute `__wbindgen_describe_closure` and interpret it. The
-    /// `wasm-bindgen` crate controls all callers of this internal import. It
-    /// will then take the index passed to `__wbindgen_describe_closure` and
-    /// interpret it as a function pointer. This means it'll look up within the
-    /// element section (function table) which index it points to. Upon finding
-    /// the relevant entry it'll assume that function is a descriptor function,
-    /// and then it will execute the descriptor function.
+    /// execute an intrinsic function (like `__wbindgen_describe_closure`) and
+    /// interpret it. The `wasm-bindgen` crate controls all callers of this
+    /// internal import. It will then take the last index passed to
+    /// the intrinsic and interpret it as a function pointer.  This means it'll
+    /// look up within the element section (function table) which index it
+    /// points to. Upon finding the relevant entry it'll assume that function is
+    /// a descriptor function, and then it will execute the descriptor function.
     ///
     /// The returned value is the return value of the descriptor function found.
     /// The `entry_removal_list` list is also then populated with an index of
     /// the entry in the elements section (and then the index within that
     /// section) of the function that needs to be snip'd out.
-    pub fn interpret_closure_descriptor(
+    pub fn interpret_intrinsic_descriptor(
         &mut self,
         code_idx: usize,
         module: &Module,
         entry_removal_list: &mut Vec<(usize, usize)>,
     ) -> Option<&[u32]> {
         self.with_sections(module, |me, sections| {
-            me._interpret_closure_descriptor(code_idx, sections, entry_removal_list)
+            me._interpret_intrinsic_descriptor(code_idx, sections, entry_removal_list)
         })
     }
 
-    fn _interpret_closure_descriptor(
+    fn _interpret_intrinsic_descriptor(
         &mut self,
         code_idx: usize,
         sections: &Sections,
@@ -230,13 +243,25 @@ impl Interpreter {
         let function_ty = match &sections.types.types()[code_sig as usize] {
             Type::Function(t) => t,
         };
-        for _ in 0..function_ty.params().len() {
-            self.stack.push(0);
+        // Ignore all non-i32 parameters as they're ignored in `call` below
+        // anyway.
+        for param in function_ty.params() {
+            match param {
+                ValueType::I32 => self.stack.push(0),
+                _ => {}
+            }
         }
 
         self.call(closure_descriptor_idx, sections);
-        assert_eq!(self.stack.len(), 1);
-        self.stack.pop();
+        match function_ty.return_type() {
+            Some(ValueType::I32) => {
+                assert_eq!(self.stack.len(), 1);
+                assert_eq!(self.stack.pop(), Some(0xf100f));
+            }
+            _ => {
+                assert_eq!(self.stack.len(), 0);
+            }
+        }
         let descriptor_table_idx = self.descriptor_table_idx.take().unwrap();
 
         // After we've got the table index of the descriptor function we're
@@ -274,12 +299,6 @@ impl Interpreter {
         self.interpret_descriptor_idx(descriptor_idx, sections)
     }
 
-    /// Returns the function space index of the `__wbindgen_describe_closure`
-    /// imported function.
-    pub fn describe_closure_idx(&self) -> Option<u32> {
-        self.describe_closure_idx
-    }
-
     fn call(&mut self, idx: u32, sections: &Sections) {
         use parity_wasm::elements::Instruction::*;
 
@@ -288,41 +307,65 @@ impl Interpreter {
         let code_idx = idx - self.imports;
         let body = &sections.code.bodies()[code_idx];
 
-        // Allocate space for our call frame's local variables. All local
-        // variables should be of the `i32` type.
-        assert!(body.locals().len() <= 1, "too many local types");
-        let nlocals = body
-            .locals()
-            .get(0)
-            .map(|i| {
-                assert_eq!(i.value_type(), ValueType::I32);
-                i.count()
-            }).unwrap_or(0);
-
         let code_sig = sections.functions.entries()[code_idx].type_ref();
         let function_ty = match &sections.types.types()[code_sig as usize] {
             Type::Function(t) => t,
         };
-        let mut locals = Vec::with_capacity(function_ty.params().len() + nlocals as usize);
-        // Any function parameters we have get popped off the stack and put into
-        // the first few locals ...
-        for param in function_ty.params() {
-            assert_eq!(*param, ValueType::I32);
-            locals.push(self.stack.pop().unwrap());
+
+        // Build up our local stack. We don't keep track of f32/f64 local
+        // variables as they're just shuffled around. Keep maps of indices so we
+        // know what get/set local instructions to ignore.
+        //
+        // The `locals` stack only keeps track of i32 values.
+        let mut local_f32 = HashSet::new();
+        let mut local_f64 = HashSet::new();
+        let mut locals = Vec::new();
+
+        // First up, take all `i32` parameters and push them on our stack
+        for (i, param) in function_ty.params().iter().enumerate() {
+            match param {
+                ValueType::I32 => locals.push(self.stack.pop().unwrap()),
+                ValueType::F32 => {
+                    local_f32.insert(i as u32);
+                    locals.push(0xbadc0de); // poison value, should not be used
+                }
+                ValueType::F64 => {
+                    local_f64.insert(i as u32);
+                    locals.push(0xbadc0de); // like above
+                }
+                _ => panic!("invalid local type: {:?}", param),
+            }
         }
-        // ... and the remaining locals all start as zero ...
-        for _ in 0..nlocals {
-            locals.push(0);
+
+        // ... and next allocate spac efor all this function's local variables.
+        // All `i32` values start as 0, and again we don't keep track of f32/f64
+        // values
+        let mut offset = function_ty.params().len() as u32;
+        for local in body.locals() {
+            for i in (0..local.count()).map(|i| i + offset) {
+                match local.value_type() {
+                    ValueType::I32 => locals.push(0),
+                    ValueType::F32 => {
+                        local_f32.insert(i);
+                        locals.push(0xbadc0de); // poison, like above
+                    }
+                    ValueType::F64 => {
+                        local_f64.insert(i);
+                        locals.push(0xbadc0de); // like above
+                    }
+                    param => panic!("invalid local type: {:?}", param),
+                }
+            }
+            offset += local.count();
         }
+
         // ... and we expect one stack slot at the end if there's a returned
         // value
         let before = self.stack.len();
-        let stack_after = match function_ty.return_type() {
-            Some(t) => {
-                assert_eq!(t, ValueType::I32);
-                before + 1
-            }
-            None => before,
+        let (stack_after, has_ret) = match function_ty.return_type() {
+            Some(ValueType::I32) => (before + 1, true),
+            Some(_) |
+            None => (before, false),
         };
 
         // Actual interpretation loop! We keep track of our stack's length to
@@ -330,6 +373,17 @@ impl Interpreter {
         // a pretty straightforward interpretation loop.
         for instr in body.code().elements() {
             match instr {
+                // Ignore loads/stores of locals which are f32/f64, as we're
+                // ignoring all of these values.
+                SetLocal(i) if local_f32.contains(i) => {}
+                SetLocal(i) if local_f64.contains(i) => {}
+                GetLocal(i) if local_f32.contains(i) => {}
+                GetLocal(i) if local_f64.contains(i) => {}
+                F32Store(2, _offset) => {}
+                F32Load(2, _offset) => {}
+                F64Store(3, _offset) => {}
+                F64Load(3, _offset) => {}
+
                 I32Const(x) => self.stack.push(*x),
                 SetLocal(i) => locals[*i as usize] = self.stack.pop().unwrap(),
                 GetLocal(i) => self.stack.push(locals[*i as usize]),
@@ -340,19 +394,38 @@ impl Interpreter {
                     // descriptor to return. We "call" the imported function
                     // here by directly inlining it.
                     //
-                    // Otherwise this is a normal call so we recurse.
+                    // We know the signature of this function is `fn(i32) -> ()`
+                    // so we just consume a stack slot.
                     if Some(*idx) == self.describe_idx {
                         self.descriptor.push(self.stack.pop().unwrap() as u32);
-                    } else if Some(*idx) == self.describe_closure_idx {
-                        self.descriptor_table_idx = Some(self.stack.pop().unwrap() as u32);
-                        self.stack.pop();
-                        self.stack.pop();
-                        self.stack.pop();
-                        self.stack.pop();
-                        self.stack.push(0);
-                    } else {
-                        self.call(*idx, sections);
+                        continue
                     }
+
+                    // Otherwise if this is calling an intrinsic then it's a bit
+                    // more special. We first consume all the arguments on the
+                    // stack, but only the `i32` arguments. The last is known to
+                    // be a function poitner, so we save that off in a local
+                    // field. All intrinsics then return an `i32` again, so we
+                    // populate the stack with that value.
+                    if let Some(ty) = self.intrinsics.get(idx) {
+                        let params = ty.params();
+                        assert_eq!(params.last(), Some(&ValueType::I32));
+                        self.descriptor_table_idx = Some(self.stack.pop().unwrap() as u32);
+
+                        for param in params[..params.len() - 1].iter().rev() {
+                            match param {
+                                ValueType::I32 => { self.stack.pop(); }
+                                _ => {}
+                            }
+                        }
+
+                        if ty.return_type() == Some(ValueType::I32) {
+                            self.stack.push(0xf100f);
+                        }
+                        continue
+                    }
+
+                    self.call(*idx, sections);
                 }
                 GetGlobal(0) => self.stack.push(self.sp),
                 SetGlobal(0) => self.sp = self.stack.pop().unwrap(),
@@ -375,7 +448,17 @@ impl Interpreter {
                     let addr = self.stack.pop().unwrap() as u32;
                     self.stack.push(self.mem[((addr + *offset) as usize) / 4]);
                 }
-                Return => self.stack.truncate(stack_after),
+                Return => {
+                    let val = if has_ret {
+                        Some(self.stack.pop().unwrap())
+                    } else {
+                        None
+                    };
+                    self.stack.truncate(stack_after - has_ret as usize);
+                    if let Some(val) = val {
+                        self.stack.push(val);
+                    }
+                }
                 End => break,
 
                 // All other instructions shouldn't be used by our various

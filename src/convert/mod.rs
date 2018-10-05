@@ -5,8 +5,8 @@ mod closures;
 mod impls;
 mod slices;
 mod traits;
+pub mod abi;
 
-pub use self::slices::WasmSlice;
 pub use self::traits::*;
 
 pub struct GlobalStack {

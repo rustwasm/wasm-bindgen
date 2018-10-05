@@ -16,7 +16,7 @@ mod js2rust;
 use self::js2rust::Js2Rust;
 mod rust2js;
 use self::rust2js::Rust2Js;
-mod closures;
+mod rewrite_intrinsics;
 
 pub struct Context<'a> {
     pub globals: String,
@@ -402,7 +402,7 @@ impl<'a> Context<'a> {
 
         self.create_memory_export();
         self.unexport_unused_internal_exports();
-        closures::rewrite(self)?;
+        rewrite_intrinsics::rewrite(self)?;
         self.gc()?;
 
         // Note that it's important `throw` comes last *after* we gc. The
