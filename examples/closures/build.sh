@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# For more coments about what's going on here, see the `hello_world` example
+# For more comments about what's going on here, see the `hello_world` example
 
 set -ex
 
