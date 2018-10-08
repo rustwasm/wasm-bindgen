@@ -175,3 +175,31 @@ fn rename_static_with_string() {
 fn dead_imports_not_generated() {
     assert_dead_import_not_generated();
 }
+
+#[wasm_bindgen_test]
+#[cfg(feature = "nightly")]
+fn import_inside_function_works() {
+    #[wasm_bindgen(module = "tests/wasm/imports.js")]
+    extern {
+        fn import_inside_function_works();
+    }
+    import_inside_function_works();
+}
+
+#[wasm_bindgen_test]
+#[cfg(feature = "nightly")]
+fn private_module_imports_work() {
+    private::foo();
+}
+
+mod private {
+    use wasm_bindgen::prelude::*;
+
+    pub fn foo() {
+        #[wasm_bindgen(module = "tests/wasm/imports.js")]
+        extern {
+            fn import_inside_private_module();
+        }
+        import_inside_private_module();
+    }
+}
