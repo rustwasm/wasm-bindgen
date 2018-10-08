@@ -126,7 +126,7 @@ fn rmain() -> Result<(), Error> {
     let mut b = Bindgen::new();
     b.debug(debug)
         .nodejs(node)
-        .input_module(module, wasm, |w| parity_wasm::serialize(w).unwrap())
+        .input_module(module, wasm)
         .keep_debug(false)
         .generate(&tmpdir)
         .context("executing `wasm-bindgen` over the wasm file")?;
