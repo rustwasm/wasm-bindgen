@@ -101,3 +101,6 @@ exports.assert_dead_import_not_generated = function() {
   const bindings = fs.readFileSync(filename);
   assert.ok(!bindings.includes("unused_import"));
 };
+
+exports.import_inside_function_works = function() {};
+exports.import_inside_private_module = function() {};
