@@ -108,6 +108,7 @@ fn try_main() -> Result<(), failure::Error> {
     let out_dir = env::var("OUT_DIR").context("reading OUT_DIR environment variable")?;
     let out_file_path = path::Path::new(&out_dir).join("bindings.rs");
     fs::write(&out_file_path, bindings).context("writing bindings to output file")?;
+    println!("cargo:rustc-env=BINDINGS={}", out_file_path.display());
 
     // run rustfmt on the generated file - really handy for debugging
     println!("cargo:rerun-if-env-changed=WEBIDL_RUSTFMT_BINDINGS");

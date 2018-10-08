@@ -27,4 +27,4 @@ pub fn window() -> Option<Window> {
     js_sys::global().dyn_into::<Window>().ok()
 }
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+include!(env!("BINDINGS"));
