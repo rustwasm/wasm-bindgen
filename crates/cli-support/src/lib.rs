@@ -8,7 +8,6 @@ extern crate wasm_bindgen_gc;
 extern crate failure;
 extern crate wasm_bindgen_wasm_interpreter as wasm_interpreter;
 
-use std::any::Any;
 use std::collections::BTreeSet;
 use std::env;
 use std::fs;
@@ -40,7 +39,6 @@ pub struct Bindgen {
 
 enum Input {
     Path(PathBuf),
-    Bytes(Vec<u8>, String),
     Module(Module, String),
     None,
 }
@@ -68,33 +66,10 @@ impl Bindgen {
     }
 
     /// Explicitly specify the already parsed input module.
-    ///
-    /// Note that this API is a little wonky to avoid tying itself with a public
-    /// dependency on the `parity-wasm` crate, what we currently use to parse
-    /// wasm mdoules.
-    ///
-    /// If the `module` argument is a `parity_wasm::Module` then it will be used
-    /// directly. Otherwise it will be passed to `into_bytes` to serialize the
-    /// module to a vector of bytes, and this will deserialize the module later.
-    ///
-    /// Note that even if the argument passed in is a `parity_wasm::Module` it
-    /// doesn't mean that this won't invoke `into_bytes`, if the `parity_wasm`
-    /// crate versions are different we'll have to go through serialization.
-    pub fn input_module<T: Any>(
-        &mut self,
-        name: &str,
-        mut module: T,
-        into_bytes: impl FnOnce(T) -> Vec<u8>,
-    ) -> &mut Bindgen {
+    pub fn input_module(&mut self, name: &str, module: Module) -> &mut Bindgen {
         let name = name.to_string();
-        if let Some(module) = (&mut module as &mut Any).downcast_mut::<Module>() {
-            let blank = Module::new(Vec::new());
-            self.input = Input::Module(mem::replace(module, blank), name);
-            return self;
-        }
-
-        self.input = Input::Bytes(into_bytes(module), name);
-        self
+        self.input = Input::Module(module, name);
+        return self;
     }
 
     pub fn nodejs(&mut self, node: bool) -> &mut Bindgen {
@@ -152,11 +127,6 @@ impl Bindgen {
             Input::Module(ref mut m, ref name) => {
                 let blank_module = Module::new(Vec::new());
                 (mem::replace(m, blank_module), &name[..])
-            }
-            Input::Bytes(ref b, ref name) => {
-                let module = parity_wasm::deserialize_buffer::<Module>(&b)
-                    .context("failed to parse input file as wasm")?;
-                (module, &name[..])
             }
             Input::Path(ref path) => {
                 let contents = fs::read(&path)

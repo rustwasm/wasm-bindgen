@@ -354,6 +354,7 @@ impl<'a> LiveContext<'a> {
             ValueType::I64 => {}
             ValueType::F32 => {}
             ValueType::F64 => {}
+            ValueType::V128 => {}
         }
     }
 
