@@ -1,31 +1,6 @@
 # Using `wasm-bindgen-test`
 
-## Install the Test Runner
-
-> ⚡ If you are using `wasm-pack`, skip this step! `wasm-pack test` will
-> automatically ensure that the right version of the test runner is installed.
-
-The test runner comes along with the main `wasm-bindgen` CLI tool. Make sure to
-replace "X.Y.Z" with the same version of `wasm-bindgen` that you already have in
-`Cargo.toml`!
-
-```shell
-cargo install wasm-bindgen-cli --vers "X.Y.Z"
-```
-
-## Configure `.cargo/config` to use the Test Runner
-
-> ⚡ If you are using `wasm-pack`, skip this step! `wasm-pack test` will
-> automatically configure `cargo test` to use the `wasm-bindgen` test runner.
-
-Add this to `$MY_CRATE/.cargo/config`:
-
-```toml
-[target.wasm32-unknown-unknown]
-runner = 'wasm-bindgen-test-runner'
-```
-
-## Add `wasm-bindgen-test` to Your `Cargo.toml`'s `[dev-dependencies]`
+### Add `wasm-bindgen-test` to Your `Cargo.toml`'s `[dev-dependencies]`
 
 Make sure to replace "X.Y.Z" with the same version of `wasm-bindgen` that you
 have in the `[dependencies]` section!
@@ -62,15 +37,12 @@ within a `pub mod`. Putting them inside a private module will not work.
 
 ## Execute Your Tests
 
-> ⚡ If you are using `wasm-pack`, run `wasm-pack test` instead! For more
-> details, run `wasm-pack test --help`.
-
-Run the tests by specifying the `wasm32-unknown-unknown` target when running
-`cargo test`. By default, the tests are run in Node.js, but you can [configure
-tests to run inside headless browsers](./browsers.html) as well.
+Run the tests with `wasm-pack test`. By default, the tests are generated to
+target Node.js, but you can [configure tests to run inside headless
+browsers](./browsers.html) as well.
 
 ```shell
-$ cargo test --target wasm32-unknown-unknown
+$ wasm-pack test --node
     Finished dev [unoptimized + debuginfo] target(s) in 0.11s
      Running /home/.../target/wasm32-unknown-unknown/debug/deps/wasm-4a309ffe6ad80503.wasm
 running 2 tests
@@ -107,4 +79,44 @@ failures:
 test result: FAILED. 1 passed; 1 failed; 0 ignored
 
 error: test failed, to rerun pass '--test wasm'
+```
+
+That's it!
+
+--------------------------------------------------------------------------------
+
+## Appendix: Using `wasm-bindgn-test` without `wasm-pack`
+
+**⚠️ The recommended way to use `wasm-bindgen-test` is with `wasm-pack`, since it
+will handle installing the test runner, installing a WebDriver client for your
+browser, and informing `cargo` how to use the custom test runner.** However, you
+can also manage those tasks yourself, if you wish.
+
+In addition to the steps above, you must also do the following.
+
+### Install the Test Runner
+
+The test runner comes along with the main `wasm-bindgen` CLI tool. Make sure to
+replace "X.Y.Z" with the same version of `wasm-bindgen` that you already have in
+`Cargo.toml`!
+
+```shell
+cargo install wasm-bindgen-cli --vers "X.Y.Z"
+```
+
+### Configure `.cargo/config` to use the Test Runner
+
+Add this to `$MY_CRATE/.cargo/config`:
+
+```toml
+[target.wasm32-unknown-unknown]
+runner = 'wasm-bindgen-test-runner'
+```
+
+### Run the Tests
+
+Run the tests by passing `--target wasm32-unknown-unknown` to `cargo test`:
+
+```
+cargo test --target wasm32-unknown-unknown
 ```
