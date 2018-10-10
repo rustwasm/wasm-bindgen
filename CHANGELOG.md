@@ -32,6 +32,26 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.25
+
+Released 2018-10-10.
+
+### Fixed
+
+* Using `wasm-bindgen` will no longer unconditionally pull in Rust's default
+  allocator for Wasm (dlmalloc) regardless if you configured a custom global
+  allocator (eg wee_alloc).
+  [#947](https://github.com/rustwasm/wasm-bindgen/pull/947)
+
+* Fixed web-sys build on some Windows machines.
+  [#943](https://github.com/rustwasm/wasm-bindgen/issues/943)
+
+* Fixed generated ES class bindings to Rust structs that were only referenced
+  through struct fields.
+  [#948](https://github.com/rustwasm/wasm-bindgen/issues/948)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.24
 
 Released 2018-10-05.

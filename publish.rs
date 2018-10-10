@@ -21,6 +21,7 @@ const CRATES_TO_PUBLISH: &[&str] = &[
     "wasm-bindgen-cli",
     "wasm-bindgen-cli-support",
     "wasm-bindgen-futures",
+    "wasm-bindgen-gc",
     "wasm-bindgen-macro",
     "wasm-bindgen-macro-support",
     "wasm-bindgen-shared",
