@@ -20,6 +20,7 @@ extern "C" {
     fn js_readonly_fields();
     fn js_double_consume();
     fn js_js_rename();
+    fn js_access_fields();
 }
 
 #[wasm_bindgen_test]
@@ -351,3 +352,30 @@ impl JsRename {
 
 #[wasm_bindgen(js_name = classes_foo)]
 pub fn foo() {}
+
+
+#[wasm_bindgen]
+pub struct AccessFieldFoo {
+    pub bar: AccessFieldBar,
+}
+
+#[wasm_bindgen]
+#[derive(Copy, Clone)]
+pub struct AccessFieldBar {
+    value: u32,
+}
+
+#[wasm_bindgen]
+impl AccessFieldFoo {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> AccessFieldFoo {
+        AccessFieldFoo {
+            bar: AccessFieldBar { value: 2 },
+        }
+    }
+}
+
+#[wasm_bindgen_test]
+fn access_fields() {
+    js_access_fields();
+}
