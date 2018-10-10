@@ -50,6 +50,7 @@ extern "C" {
 
     fn unused_import();
     fn assert_dead_import_not_generated();
+    fn should_call_undefined_functions() -> bool;
 }
 
 #[wasm_bindgen]
@@ -203,4 +204,31 @@ mod private {
         }
         import_inside_private_module();
     }
+}
+
+#[wasm_bindgen]
+extern {
+    fn something_not_defined_in_the_environment();
+
+    type TypeThatIsNotDefined;
+    #[wasm_bindgen(constructor)]
+    fn new() -> TypeThatIsNotDefined;
+    #[wasm_bindgen(method)]
+    fn method(this: &TypeThatIsNotDefined);
+    #[wasm_bindgen(method, getter)]
+    fn property(this: &TypeThatIsNotDefined) -> u32;
+    #[wasm_bindgen(method, setter)]
+    fn set_property(this: &TypeThatIsNotDefined, val: u32);
+}
+
+#[wasm_bindgen_test]
+fn undefined_function_is_ok() {
+    if !should_call_undefined_functions() {
+        return
+    }
+    something_not_defined_in_the_environment();
+
+    let x = TypeThatIsNotDefined::new();
+    x.method();
+    x.set_property(x.property());
 }
