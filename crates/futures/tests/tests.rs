@@ -7,6 +7,7 @@ extern crate wasm_bindgen_futures;
 extern crate wasm_bindgen_test;
 
 use futures::Future;
+use futures::unsync::oneshot;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::{future_to_promise, JsFuture};
 use wasm_bindgen_test::*;
@@ -47,4 +48,21 @@ fn error_future_is_rejected_promise() -> impl Future<Item = (), Error = JsValue>
         assert_eq!(e, 42);
         Ok(())
     })
+}
+
+#[wasm_bindgen]
+extern {
+    fn setTimeout(c: &Closure<FnMut()>);
+}
+
+#[wasm_bindgen_test(async)]
+fn oneshot_works() -> impl Future<Item = (), Error = JsValue> {
+    let (tx, rx) = oneshot::channel::<u32>();
+    let mut tx = Some(tx);
+    let closure = Closure::wrap(Box::new(move || {
+        drop(tx.take().unwrap());
+    }) as Box<FnMut()>);
+    setTimeout(&closure);
+    closure.forget();
+    rx.then(|_| Ok(()))
 }
