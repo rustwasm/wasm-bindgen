@@ -88,3 +88,15 @@ macro_rules! test_fill {
 fn new_fill() {
     each!(test_fill);
 }
+
+macro_rules! test_slice {
+    ($arr:ident) => {{
+        let arr = $arr::new(&4.into());
+        assert_eq!(arr.length(), 4);
+        assert_eq!(arr.slice(1, 2).length(), 1);
+    }};
+}
+#[wasm_bindgen_test]
+fn new_slice() {
+    each!(test_slice);
+}
