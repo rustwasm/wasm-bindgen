@@ -56,13 +56,6 @@ pub struct ExportedClass {
     typescript: String,
     has_constructor: bool,
     wrap_needed: bool,
-    fields: Vec<ClassField>,
-}
-
-struct ClassField {
-    comments: Vec<String>,
-    name: String,
-    readonly: bool,
 }
 
 pub struct SubContext<'a, 'b: 'a> {
@@ -588,46 +581,6 @@ impl<'a> Context<'a> {
                 name,
                 mkweakref.replace("this", "obj"),
             ));
-        }
-
-        for field in class.fields.iter() {
-            let wasm_getter = shared::struct_field_get(name, &field.name);
-            let wasm_setter = shared::struct_field_set(name, &field.name);
-            let descriptor = match self.describe(&wasm_getter) {
-                None => continue,
-                Some(d) => d,
-            };
-
-            let set = {
-                let mut cx = Js2Rust::new(&field.name, self);
-                cx.method(true, false)
-                    .argument(&descriptor)?
-                    .ret(&Descriptor::Unit)?;
-                ts_dst.push_str(&format!(
-                    "{}{}: {}\n",
-                    if field.readonly { "readonly " } else { "" },
-                    field.name,
-                    &cx.js_arguments[0].1
-                ));
-                cx.finish("", &format!("wasm.{}", wasm_setter)).0
-            };
-            let (get, _ts, js_doc) = Js2Rust::new(&field.name, self)
-                .method(true, false)
-                .ret(&descriptor)?
-                .finish("", &format!("wasm.{}", wasm_getter));
-            if !dst.ends_with("\n") {
-                dst.push_str("\n");
-            }
-            dst.push_str(&format_doc_comments(&field.comments, Some(js_doc)));
-            dst.push_str("get ");
-            dst.push_str(&field.name);
-            dst.push_str(&get);
-            dst.push_str("\n");
-            if !field.readonly {
-                dst.push_str("set ");
-                dst.push_str(&field.name);
-                dst.push_str(&set);
-            }
         }
 
         self.global(&format!(
@@ -1748,17 +1701,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             self.generate_enum(e);
         }
         for s in self.program.structs.iter() {
-            let mut class = self
-                .cx
-                .exported_classes
-                .entry(s.name.clone())
-                .or_insert_with(Default::default);
-            class.comments = format_doc_comments(&s.comments, None);
-            class.fields.extend(s.fields.iter().map(|f| ClassField {
-                name: f.name.clone(),
-                readonly: f.readonly,
-                comments: f.comments.clone(),
-            }));
+            self.generate_struct(s);
         }
 
         Ok(())
@@ -2114,6 +2057,62 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         self.cx.typescript.push_str(&variants);
         self.cx.typescript.push_str("}\n");
+    }
+
+    fn generate_struct(&mut self, struct_: &shared::Struct) -> Result<(), Error> {
+        let mut dst = String::new();
+        let mut ts_dst = String::new();
+        for field in struct_.fields.iter() {
+            let wasm_getter = shared::struct_field_get(&struct_.name, &field.name);
+            let wasm_setter = shared::struct_field_set(&struct_.name, &field.name);
+            let descriptor = match self.cx.describe(&wasm_getter) {
+                None => continue,
+                Some(d) => d,
+            };
+
+            let set = {
+                let mut cx = Js2Rust::new(&field.name, self.cx);
+                cx.method(true, false)
+                    .argument(&descriptor)?
+                    .ret(&Descriptor::Unit)?;
+                ts_dst.push_str(&format!(
+                    "{}{}: {}\n",
+                    if field.readonly { "readonly " } else { "" },
+                    field.name,
+                    &cx.js_arguments[0].1
+                ));
+                cx.finish("", &format!("wasm.{}", wasm_setter)).0
+            };
+            let (get, _ts, js_doc) = Js2Rust::new(&field.name, self.cx)
+                .method(true, false)
+                .ret(&descriptor)?
+                .finish("", &format!("wasm.{}", wasm_getter));
+            if !dst.ends_with("\n") {
+                dst.push_str("\n");
+            }
+            dst.push_str(&format_doc_comments(&field.comments, Some(js_doc)));
+            dst.push_str("get ");
+            dst.push_str(&field.name);
+            dst.push_str(&get);
+            dst.push_str("\n");
+            if !field.readonly {
+                dst.push_str("set ");
+                dst.push_str(&field.name);
+                dst.push_str(&set);
+            }
+        }
+
+        let class = self
+            .cx
+            .exported_classes
+            .entry(struct_.name.clone())
+            .or_insert_with(Default::default);
+        class.comments = format_doc_comments(&struct_.comments, None);
+        class.contents.push_str(&dst);
+        class.contents.push_str("\n");
+        class.typescript.push_str(&ts_dst);
+        class.typescript.push_str("\n");
+        Ok(())
     }
 
     fn register_vendor_prefix(
