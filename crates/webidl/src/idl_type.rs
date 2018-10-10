@@ -73,7 +73,9 @@ impl<'a> ToIdlType<'a> for UnionType<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
         let mut idl_types = Vec::with_capacity(self.body.list.len());
         for t in &self.body.list {
-            idl_types.push(t.to_idl_type(record)?);
+            if let Some(idl_type) = t.to_idl_type(record) {
+                idl_types.push(idl_type);
+            }
         }
         Some(IdlType::Union(idl_types))
     }
