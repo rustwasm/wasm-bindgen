@@ -719,6 +719,12 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn subarray(this: &Float32Array, begin: u32, end: u32) -> Float32Array;
 
+    /// The `slice()` method returns a shallow copy of a portion of a typed
+    /// array into a new typed array object. This method has the same algorithm
+    /// as `Array.prototype.slice()`.
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Float32Array, begin: u32, end: u32) -> Uint8ClampedArray;
+
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
     /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
@@ -771,6 +777,12 @@ extern "C" {
     /// reading input values from a specified array.
     #[wasm_bindgen(method)]
     pub fn subarray(this: &Float64Array, begin: u32, end: u32) -> Float64Array;
+
+    /// The `slice()` method returns a shallow copy of a portion of a typed
+    /// array into a new typed array object. This method has the same algorithm
+    /// as `Array.prototype.slice()`.
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Float64Array, begin: u32, end: u32) -> Uint8ClampedArray;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
@@ -960,6 +972,12 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn subarray(this: &Int8Array, begin: u32, end: u32) -> Int8Array;
 
+    /// The `slice()` method returns a shallow copy of a portion of a typed
+    /// array into a new typed array object. This method has the same algorithm
+    /// as `Array.prototype.slice()`.
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Int8Array, begin: u32, end: u32) -> Uint8ClampedArray;
+
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
     /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
@@ -1013,6 +1031,12 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn subarray(this: &Int16Array, begin: u32, end: u32) -> Int16Array;
 
+    /// The `slice()` method returns a shallow copy of a portion of a typed
+    /// array into a new typed array object. This method has the same algorithm
+    /// as `Array.prototype.slice()`.
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Int16Array, begin: u32, end: u32) -> Uint8ClampedArray;
+
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
     /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
@@ -1065,6 +1089,12 @@ extern "C" {
     /// reading input values from a specified array.
     #[wasm_bindgen(method)]
     pub fn subarray(this: &Int32Array, begin: u32, end: u32) -> Int32Array;
+
+    /// The `slice()` method returns a shallow copy of a portion of a typed
+    /// array into a new typed array object. This method has the same algorithm
+    /// as `Array.prototype.slice()`.
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Int32Array, begin: u32, end: u32) -> Uint8ClampedArray;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
@@ -2803,6 +2833,12 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn subarray(this: &Uint8Array, begin: u32, end: u32) -> Uint8Array;
 
+    /// The `slice()` method returns a shallow copy of a portion of a typed
+    /// array into a new typed array object. This method has the same algorithm
+    /// as `Array.prototype.slice()`.
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Uint8Array, begin: u32, end: u32) -> Uint8ClampedArray;
+
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
     /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
@@ -2858,6 +2894,12 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn subarray(this: &Uint8ClampedArray, begin: u32, end: u32) -> Uint8ClampedArray;
 
+    /// The `slice()` method returns a shallow copy of a portion of a typed
+    /// array into a new typed array object. This method has the same algorithm
+    /// as `Array.prototype.slice()`.
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Uint8ClampedArray, begin: u32, end: u32) -> Uint8ClampedArray;
+
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
     /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
@@ -2911,6 +2953,12 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn subarray(this: &Uint16Array, begin: u32, end: u32) -> Uint16Array;
 
+    /// The `slice()` method returns a shallow copy of a portion of a typed
+    /// array into a new typed array object. This method has the same algorithm
+    /// as `Array.prototype.slice()`.
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Uint16Array, begin: u32, end: u32) -> Uint8ClampedArray;
+
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
     /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
@@ -2963,6 +3011,12 @@ extern "C" {
     /// reading input values from a specified array.
     #[wasm_bindgen(method)]
     pub fn subarray(this: &Uint32Array, begin: u32, end: u32) -> Uint32Array;
+
+    /// The `slice()` method returns a shallow copy of a portion of a typed
+    /// array into a new typed array object. This method has the same algorithm
+    /// as `Array.prototype.slice()`.
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &Uint32Array, begin: u32, end: u32) -> Uint8ClampedArray;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
