@@ -809,7 +809,7 @@ pub mod __rt {
     }
 
     if_std! {
-        use std::alloc::{System, GlobalAlloc, Layout};
+        use std::alloc::{alloc, dealloc, Layout};
         use std::mem;
 
         #[no_mangle]
@@ -817,7 +817,7 @@ pub mod __rt {
             let align = mem::align_of::<usize>();
             if let Ok(layout) = Layout::from_size_align(size, align) {
                 unsafe {
-                    let ptr = System.alloc(layout);
+                    let ptr = alloc(layout);
                     if !ptr.is_null() {
                         return ptr
                     }
@@ -836,7 +836,7 @@ pub mod __rt {
             }
             let align = mem::align_of::<usize>();
             let layout = Layout::from_size_align_unchecked(size, align);
-            System.dealloc(ptr, layout);
+            dealloc(ptr, layout);
         }
     }
 
