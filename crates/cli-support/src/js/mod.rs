@@ -1701,7 +1701,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             self.generate_enum(e);
         }
         for s in self.program.structs.iter() {
-            self.generate_struct(s);
+            self.generate_struct(s)?;
         }
 
         Ok(())

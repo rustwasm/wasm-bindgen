@@ -192,6 +192,7 @@ fn private_module_imports_work() {
     private::foo();
 }
 
+#[cfg(feature = "nightly")]
 mod private {
     use wasm_bindgen::prelude::*;
 
