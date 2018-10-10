@@ -4308,6 +4308,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
     #[wasm_bindgen(extends = Object)]
+    #[derive(Clone, Debug)]
     pub type Promise;
 
     /// Creates a new `Promise` with the provided executor `cb`
