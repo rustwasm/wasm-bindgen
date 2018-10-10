@@ -16,8 +16,8 @@ extern crate serde_json;
 
 extern crate wasm_bindgen_macro;
 
-use core::cell::UnsafeCell;
 use core::fmt;
+use core::marker;
 use core::mem;
 use core::ops::{Deref, DerefMut};
 use core::ptr;
@@ -64,6 +64,7 @@ if_std! {
 /// but for now it may be slightly slow.
 pub struct JsValue {
     idx: u32,
+    _marker: marker::PhantomData<*mut u8>, // not at all threadsafe
 }
 
 const JSIDX_UNDEFINED: u32 = 0;
@@ -74,18 +75,36 @@ const JSIDX_RESERVED: u32 = 8;
 
 impl JsValue {
     /// The `null` JS value constant.
-    pub const NULL: JsValue = JsValue { idx: JSIDX_NULL };
+    pub const NULL: JsValue = JsValue {
+        idx: JSIDX_NULL,
+        _marker: marker::PhantomData,
+    };
 
     /// The `undefined` JS value constant.
     pub const UNDEFINED: JsValue = JsValue {
         idx: JSIDX_UNDEFINED,
+        _marker: marker::PhantomData,
     };
 
+
     /// The `true` JS value constant.
-    pub const TRUE: JsValue = JsValue { idx: JSIDX_TRUE };
+    pub const TRUE: JsValue = JsValue {
+        idx: JSIDX_TRUE,
+        _marker: marker::PhantomData,
+    };
 
     /// The `false` JS value constant.
-    pub const FALSE: JsValue = JsValue { idx: JSIDX_FALSE };
+    pub const FALSE: JsValue = JsValue {
+        idx: JSIDX_FALSE,
+        _marker: marker::PhantomData,
+    };
+
+    fn _new(idx: u32) -> JsValue {
+        JsValue {
+            idx,
+            _marker: marker::PhantomData,
+        }
+    }
 
     /// Creates a new JS value which is a string.
     ///
@@ -94,9 +113,7 @@ impl JsValue {
     #[inline]
     pub fn from_str(s: &str) -> JsValue {
         unsafe {
-            JsValue {
-                idx: __wbindgen_string_new(s.as_ptr(), s.len()),
-            }
+            JsValue::_new(__wbindgen_string_new(s.as_ptr(), s.len()))
         }
     }
 
@@ -107,9 +124,7 @@ impl JsValue {
     #[inline]
     pub fn from_f64(n: f64) -> JsValue {
         unsafe {
-            JsValue {
-                idx: __wbindgen_number_new(n),
-            }
+            JsValue::_new(__wbindgen_number_new(n))
         }
     }
 
@@ -142,9 +157,7 @@ impl JsValue {
         unsafe {
             let ptr = description.map(|s| s.as_ptr()).unwrap_or(ptr::null());
             let len = description.map(|s| s.len()).unwrap_or(0);
-            JsValue {
-                idx: __wbindgen_symbol_new(ptr, len),
-            }
+            JsValue::_new(__wbindgen_symbol_new(ptr, len))
         }
     }
 
@@ -170,9 +183,7 @@ impl JsValue {
     {
         let s = serde_json::to_string(t)?;
         unsafe {
-            Ok(JsValue {
-                idx: __wbindgen_json_parse(s.as_ptr(), s.len()),
-            })
+            Ok(JsValue::_new(__wbindgen_json_parse(s.as_ptr(), s.len())))
         }
     }
 
@@ -486,7 +497,7 @@ impl Clone for JsValue {
     fn clone(&self) -> JsValue {
         unsafe {
             let idx = __wbindgen_object_clone_ref(self.idx);
-            JsValue { idx }
+            JsValue::_new(idx)
         }
     }
 }
@@ -552,43 +563,26 @@ impl Drop for JsValue {
 ///
 /// This type implements `Deref` to the inner type so it's typically used as if
 /// it were `&T`.
+#[cfg(feature = "std")]
 pub struct JsStatic<T: 'static> {
     #[doc(hidden)]
-    pub __inner: &'static UnsafeCell<Option<T>>,
-    #[doc(hidden)]
-    pub __init: fn() -> T,
+    pub __inner: &'static std::thread::LocalKey<T>,
 }
 
-unsafe impl<T: Sync> Sync for JsStatic<T> {}
-unsafe impl<T: Send> Send for JsStatic<T> {}
-
+#[cfg(feature = "std")]
 impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
     type Target = T;
     fn deref(&self) -> &T {
+        // We know that our tls key is never overwritten after initialization,
+        // so it should be safe (on that axis at least) to hand out a reference
+        // that lives longer than the closure below.
+        //
+        // FIXME: this is not sound if we ever implement thread exit hooks on
+        // wasm, as the pointer will eventually be invalidated but you can get
+        // `&'static T` from this interface. We... probably need to deprecate
+        // and/or remove this interface nowadays.
         unsafe {
-            // Ideally we want to use `get_or_insert_with` here but
-            // unfortunately that has subpar codegen for now.
-            //
-            // If we get past the `Some` branch here LLVM statically
-            // knows that we're `None`, but the after the call to the `__init`
-            // function LLVM can no longer know this because `__init` could
-            // recursively call this function again (aka if JS came back to Rust
-            // and Rust referenced this static).
-            //
-            // We know, however, that cannot happen. As a result we can
-            // conclude that even after the call to `__init` our `ptr` still
-            // points to `None` (and a debug assertion to this effect). Then
-            // using `ptr::write` should tell rustc to not run destuctors
-            // (as one isn't there) and this should tighten up codegen for
-            // `JsStatic` a bit as well.
-            let ptr = self.__inner.get();
-            if let Some(ref t) = *ptr {
-                return t;
-            }
-            let init = Some((self.__init)());
-            debug_assert!((*ptr).is_none());
-            ptr::write(ptr, init);
-            (*ptr).as_ref().unwrap()
+            self.__inner.with(|ptr| &*(ptr as *const T))
         }
     }
 }
@@ -642,9 +636,7 @@ pub fn throw_val(s: JsValue) -> ! {
 /// Returns a handle to this wasm instance's `WebAssembly.Memory`
 pub fn memory() -> JsValue {
     unsafe {
-        JsValue {
-            idx: __wbindgen_memory(),
-        }
+        JsValue::_new(__wbindgen_memory())
     }
 }
 
