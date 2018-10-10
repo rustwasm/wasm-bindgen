@@ -50,6 +50,14 @@ also like to be aware of it!
      has a [`TextEncoder` polyfill implementation][mdntepi] to get you started
      as well.
 
+* **BigInt and `u64`** - currently the WebAssembly specification for the web
+  forbids the usage of 64-bit integers (Rust types `i64` and `u64`) in
+  exported/imported functions. When using `wasm-bindgen`, however, `u64` is
+  allowed! The reason for this is that it's translated to the `BigInt` type in
+  JS. The `BigInt` class, however, is only currently supported in Chrome (as of
+  the time of this writing) and isn't supported in Firefox or Edge, for
+  example.
+
 If you find other incompatibilities please report them to us! We'd love to
 either keep this list up-to-date or fix the underlying bugs :)
 
