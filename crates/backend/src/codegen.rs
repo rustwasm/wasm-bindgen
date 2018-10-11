@@ -1042,11 +1042,9 @@ impl ToTokens for ast::ImportStatic {
                 fn init() -> #ty {
                     panic!("cannot access imported statics on non-wasm targets")
                 }
-                static mut _VAL: ::wasm_bindgen::__rt::core::cell::UnsafeCell<Option<#ty>> =
-                    ::wasm_bindgen::__rt::core::cell::UnsafeCell::new(None);
+                thread_local!(static _VAL: #ty = init(););
                 ::wasm_bindgen::JsStatic {
-                    __inner: unsafe { &_VAL },
-                    __init: init,
+                    __inner: &_VAL,
                 }
             };
         }).to_tokens(into);

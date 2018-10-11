@@ -337,7 +337,7 @@ impl FromWasmAbi for JsValue {
 
     #[inline]
     unsafe fn from_abi(js: u32, _extra: &mut Stack) -> JsValue {
-        JsValue { idx: js }
+        JsValue::_new(js)
     }
 }
 
@@ -356,7 +356,7 @@ impl RefFromWasmAbi for JsValue {
 
     #[inline]
     unsafe fn ref_from_abi(js: u32, _extra: &mut Stack) -> Self::Anchor {
-        ManuallyDrop::new(JsValue { idx: js })
+        ManuallyDrop::new(JsValue::_new(js))
     }
 }
 

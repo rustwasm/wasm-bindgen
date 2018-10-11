@@ -214,7 +214,7 @@ impl<T> Closure<T>
         };
 
         Closure {
-            js: ManuallyDrop::new(JsValue { idx }),
+            js: ManuallyDrop::new(JsValue::_new(idx)),
             data: ManuallyDrop::new(data),
         }
     }
