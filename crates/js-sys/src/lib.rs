@@ -23,7 +23,6 @@ extern crate wasm_bindgen;
 use std::fmt;
 use std::mem;
 
-use std::sync::atomic::{AtomicUsize, Ordering::SeqCst, ATOMIC_USIZE_INIT};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -4407,48 +4406,30 @@ extern "C" {
 /// This allows access to the global properties and global names by accessing
 /// the `Object` returned.
 pub fn global() -> Object {
-    // Cached `Box<JsValue>`, if we've already executed this.
-    //
-    // 0 = not calculated
-    // n = Some(n) == Some(Box<JsValue>)
-    static GLOBAL: AtomicUsize = ATOMIC_USIZE_INIT;
+    thread_local!(static GLOBAL: Object = {
+        // According to StackOverflow you can access the global object via:
+        //
+        //      const global = Function('return this')();
+        //
+        // I think that's because the manufactured function isn't in "strict" mode.
+        // It also turns out that non-strict functions will ignore `undefined`
+        // values for `this` when using the `apply` function.
+        //
+        // As a result we use the equivalent of this snippet to get a handle to the
+        // global object in a sort of roundabout way that should hopefully work in
+        // all contexts like ESM, node, browsers, etc.
+        let this = Function::new_no_args("return this")
+            .call0(&JsValue::undefined())
+            .ok();
 
-    match GLOBAL.load(SeqCst) {
-        0 => {}
-        n => return unsafe { (*(n as *const JsValue)).clone().unchecked_into() },
-    }
+        // Note that we avoid `unwrap()` on `call0` to avoid code size bloat, we
+        // just handle the `Err` case as returning a different object.
+        debug_assert!(this.is_some());
+        match this {
+            Some(this) => this.unchecked_into(),
+            None => JsValue::undefined().unchecked_into(),
+        }
+    });
 
-    // Ok we don't have a cached value, let's load one!
-    //
-    // According to StackOverflow you can access the global object via:
-    //
-    //      const global = Function('return this')();
-    //
-    // I think that's because the manufactured function isn't in "strict" mode.
-    // It also turns out that non-strict functions will ignore `undefined`
-    // values for `this` when using the `apply` function.
-    //
-    // As a result we use the equivalent of this snippet to get a handle to the
-    // global object in a sort of roundabout way that should hopefully work in
-    // all contexts like ESM, node, browsers, etc.
-    let this = Function::new_no_args("return this")
-        .call0(&JsValue::undefined())
-        .ok();
-
-    // Note that we avoid `unwrap()` on `call0` to avoid code size bloat, we
-    // just handle the `Err` case as returning a different object.
-    debug_assert!(this.is_some());
-    let this = match this {
-        Some(this) => this,
-        None => return JsValue::undefined().unchecked_into(),
-    };
-
-    let ptr: *mut JsValue = Box::into_raw(Box::new(this.clone()));
-    match GLOBAL.compare_exchange(0, ptr as usize, SeqCst, SeqCst) {
-        // We stored out value, relinquishing ownership of `ptr`
-        Ok(_) => {}
-        // Another thread one, drop our value
-        Err(_) => unsafe { drop(Box::from_raw(ptr)) },
-    }
-    this.unchecked_into()
+    GLOBAL.with(|g| g.clone())
 }
