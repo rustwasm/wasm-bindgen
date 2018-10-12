@@ -1542,7 +1542,7 @@ impl<'a> Context<'a> {
                 if (desc) return desc;
                 obj = Object.getPrototypeOf(obj);
               }
-              throw new Error(`descriptor for id='${id}' not found`);
+              return {}
             }
             ",
         );
@@ -1956,29 +1956,26 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 ),
             }
         } else {
-            let (location, binding) = if op.is_static {
-                ("", format!(".bind({})", class))
-            } else {
-                (".prototype", "".into())
-            };
-
-            match &op.kind {
+            let target = format!("typeof {0} === 'undefined' ? null : {}{}",
+                                 class,
+                                 if op.is_static { "" } else { ".prototype" });
+            let (mut target, name) = match &op.kind {
                 shared::OperationKind::Regular => {
-                    format!("{}{}.{}{}", class, location, import.function.name, binding)
+                    (format!("{}.{}", target, import.function.name), &import.function.name)
                 }
                 shared::OperationKind::Getter(g) => {
                     self.cx.expose_get_inherited_descriptor();
-                    format!(
-                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').get{}",
-                        class, location, g, binding,
-                    )
+                    (format!(
+                        "GetOwnOrInheritedPropertyDescriptor({}, '{}').get",
+                        target, g,
+                    ), g)
                 }
                 shared::OperationKind::Setter(s) => {
                     self.cx.expose_get_inherited_descriptor();
-                    format!(
-                        "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').set{}",
-                        class, location, s, binding,
-                    )
+                    (format!(
+                        "GetOwnOrInheritedPropertyDescriptor({}, '{}').set",
+                        target, s,
+                    ), s)
                 }
                 shared::OperationKind::IndexingGetter => {
                     panic!("indexing getter should be structural")
@@ -1989,24 +1986,20 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 shared::OperationKind::IndexingDeleter => {
                     panic!("indexing deleter should be structural")
                 }
+            };
+            target.push_str(&format!(" || function() {{
+                throw new Error(`wasm-bindgen: {}.{} does not exist`);
+            }}", class, name));
+            if op.is_static {
+                target.insert(0, '(');
+                target.push_str(").bind(");
+                target.push_str(&class);
+                target.push_str(")");
             }
+            target
         };
 
-        let fallback = if import.structural {
-            "".to_string()
-        } else {
-            format!(
-                " || function() {{
-                    throw new Error(`wasm-bindgen: {} does not exist`);
-                }}",
-                target
-            )
-        };
-
-        self.cx.global(&format!(
-            "const {}_target = {}{};",
-            import.shim, target, fallback
-        ));
+        self.cx.global(&format!("const {}_target = {};", import.shim, target));
         Ok(format!(
             "{}_target{}",
             import.shim,
