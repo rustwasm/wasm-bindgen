@@ -1,0 +1,7 @@
+<li data-id="{{ id }}"{% if completed %} class="completed"{% endif %}>
+	<div class="view">
+		<input class="toggle" type="checkbox"{% if completed %} checked{% endif %}>
+		<label>{{ title }}</label>
+		<button class="destroy"></button>
+	</div>
+</li>
