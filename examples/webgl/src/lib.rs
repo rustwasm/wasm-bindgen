@@ -47,10 +47,10 @@ pub fn draw() {
 
     let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
     let memory_buffer = wasm_bindgen::memory().dyn_into::<WebAssembly::Memory>().unwrap().buffer();
-    let verticles_location = vertices.as_ptr() as u32 / 4;
+    let vertices_location = vertices.as_ptr() as u32 / 4;
     let vert_array = js_sys::Float32Array::new(&memory_buffer).subarray(
-        verticles_location,
-        verticles_location + vertices.len() as u32,
+        vertices_location,
+        vertices_location + vertices.len() as u32,
     );
 
     let buffer = context.create_buffer().unwrap();
