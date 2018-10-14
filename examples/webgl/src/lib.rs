@@ -7,6 +7,12 @@ use wasm_bindgen::JsCast;
 use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader};
 
 #[wasm_bindgen]
+extern {
+    #[wasm_bindgen(js_namespace = Reflect)]
+    fn get(obj: &JsValue, member: &str) -> JsValue;
+}
+
+#[wasm_bindgen]
 pub fn draw() {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
@@ -44,17 +50,17 @@ pub fn draw() {
     let program = link_program(&context, [vert_shader, frag_shader].iter()).unwrap();
     context.use_program(Some(&program));
 
-    let vertices = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
-    let vert_array = js_sys::Float32Array::new(&wasm_bindgen::JsValue::from(vertices.len() as u32));
-    for (i, f) in vertices.iter().enumerate() {
-        vert_array.fill(*f, i as u32, (i + 1) as u32);
-    }
+    let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
+    let vert_array = js_sys::Float32Array::new(&get(&wasm_bindgen::memory(), "buffer")).subarray(
+        &vertices as *const f32 as u32 / 4,
+        &vertices as *const f32 as u32 / 4 + vertices.len() as u32,
+    );
 
     let buffer = context.create_buffer().unwrap();
     context.bind_buffer(WebGlRenderingContext::ARRAY_BUFFER, Some(&buffer));
-    context.buffer_data_with_opt_array_buffer(
+    context.buffer_data_with_array_buffer_view(
         WebGlRenderingContext::ARRAY_BUFFER,
-        Some(&vert_array.buffer()),
+        vert_array.as_ref(),
         WebGlRenderingContext::STATIC_DRAW,
     );
     context.vertex_attrib_pointer_with_i32(0, 3, WebGlRenderingContext::FLOAT, false, 0, 0);
