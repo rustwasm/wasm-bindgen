@@ -5,12 +5,7 @@ extern crate web_sys;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader};
-
-#[wasm_bindgen]
-extern {
-    #[wasm_bindgen(js_namespace = Reflect)]
-    fn get(obj: &JsValue, member: &str) -> JsValue;
-}
+use js_sys::{WebAssembly};
 
 #[wasm_bindgen]
 pub fn draw() {
@@ -51,7 +46,8 @@ pub fn draw() {
     context.use_program(Some(&program));
 
     let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
-    let vert_array = js_sys::Float32Array::new(&get(&wasm_bindgen::memory(), "buffer")).subarray(
+    let memory_buffer = wasm_bindgen::memory().dyn_into::<WebAssembly::Memory>().unwrap().buffer();
+    let vert_array = js_sys::Float32Array::new(&memory_buffer).subarray(
         &vertices as *const f32 as u32 / 4,
         &vertices as *const f32 as u32 / 4 + vertices.len() as u32,
     );
