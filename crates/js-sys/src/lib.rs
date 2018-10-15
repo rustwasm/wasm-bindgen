@@ -604,14 +604,14 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getFloat32)]
     pub fn get_float32_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> f32;
 
-    /// The getFloat64() method gets a signed 32-bit float (float) at the specified
+    /// The getFloat64() method gets a signed 64-bit float (float) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat64)
     #[wasm_bindgen(method, js_name = getFloat64)]
     pub fn get_float64(this: &DataView, byte_offset: usize) -> f64;
 
-    /// The getFloat64() method gets a signed 32-bit float (float) at the specified
+    /// The getFloat64() method gets a signed 64-bit float (float) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat64)
