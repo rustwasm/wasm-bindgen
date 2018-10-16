@@ -1,14 +1,14 @@
 use std::collections::HashSet;
-use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
 use std::sync::Mutex;
+use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
 
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::ToTokens;
-use serde_json;
 use shared;
 use syn;
 
 use ast;
+use encode;
 use util::ShortHash;
 use Diagnostic;
 
@@ -87,20 +87,20 @@ impl TryToTokens for ast::Program {
         );
         let generated_static_name = Ident::new(&generated_static_name, Span::call_site());
 
-        let description = serde_json::to_string(&self.shared()?).unwrap();
+        // See comments in `crates/cli-support/src/lib.rs` about what this
+        // `schema_version` is.
+        let prefix_json = format!(r#"{{"schema_version":"{}","version":"{}"}}"#,
+                                  shared::SCHEMA_VERSION,
+                                  shared::version());
+        let mut bytes = Vec::new();
+        bytes.push((prefix_json.len() >> 0) as u8);
+        bytes.push((prefix_json.len() >> 8) as u8);
+        bytes.push((prefix_json.len() >> 16) as u8);
+        bytes.push((prefix_json.len() >> 24) as u8);
+        bytes.extend_from_slice(prefix_json.as_bytes());
+        bytes.extend_from_slice(&encode::encode(self)?);
 
-        // Each JSON blob is prepended with the length of the JSON blob so when
-        // all these sections are concatenated in the final wasm file we know
-        // how to extract all the JSON pieces, so insert the byte length here.
-        // The value is little-endian.
-        let generated_static_length = description.len() + 4;
-        let mut bytes = vec![
-            (description.len() >> 0) as u8,
-            (description.len() >> 8) as u8,
-            (description.len() >> 16) as u8,
-            (description.len() >> 24) as u8,
-        ];
-        bytes.extend_from_slice(description.as_bytes());
+        let generated_static_length = bytes.len();
         let generated_static_value = syn::LitByteStr::new(&bytes, Span::call_site());
 
         (quote! {

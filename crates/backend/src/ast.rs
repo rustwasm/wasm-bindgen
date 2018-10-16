@@ -1,8 +1,7 @@
+use Diagnostic;
 use proc_macro2::{Ident, Span};
 use shared;
 use syn;
-
-use Diagnostic;
 
 /// An abstract syntax tree representing a rust program. Contains
 /// extra information for joining up this rust code with javascript.
@@ -260,36 +259,6 @@ pub struct DictionaryField {
     pub ty: syn::Type,
 }
 
-impl Program {
-    pub(crate) fn shared(&self) -> Result<shared::Program, Diagnostic> {
-        let mut errors = Vec::new();
-        let mut imports = Vec::new();
-        for import in self.imports.iter() {
-            match import.shared() {
-                Ok(i) => imports.push(i),
-                Err(e) => errors.push(e),
-            }
-        }
-        Diagnostic::from_vec(errors)?;
-        Ok(shared::Program {
-            exports: self.exports.iter().map(|a| a.shared()).collect(),
-            structs: self.structs.iter().map(|a| a.shared()).collect(),
-            enums: self.enums.iter().map(|a| a.shared()).collect(),
-            imports,
-            version: shared::version(),
-            schema_version: shared::SCHEMA_VERSION.to_string(),
-        })
-    }
-}
-
-impl Function {
-    fn shared(&self) -> shared::Function {
-        shared::Function {
-            name: self.name.to_string(),
-        }
-    }
-}
-
 impl Export {
     /// Mangles a rust -> javascript export, so that the created Ident will be unique over function
     /// name and class name, if the function belongs to a javascript class.
@@ -314,51 +283,6 @@ impl Export {
             None => shared::free_function_export_name(&fn_name),
         }
     }
-
-    fn shared(&self) -> shared::Export {
-        let (method, consumed) = match self.method_self {
-            Some(MethodSelf::ByValue) => (true, true),
-            Some(_) => (true, false),
-            None => (false, false),
-        };
-        shared::Export {
-            class: self.class.as_ref().map(|s| s.to_string()),
-            method,
-            consumed,
-            is_constructor: self.is_constructor,
-            function: self.function.shared(),
-            comments: self.comments.clone(),
-        }
-    }
-}
-
-impl Enum {
-    fn shared(&self) -> shared::Enum {
-        shared::Enum {
-            name: self.name.to_string(),
-            variants: self.variants.iter().map(|v| v.shared()).collect(),
-            comments: self.comments.clone(),
-        }
-    }
-}
-
-impl Variant {
-    fn shared(&self) -> shared::EnumVariant {
-        shared::EnumVariant {
-            name: self.name.to_string(),
-            value: self.value,
-        }
-    }
-}
-
-impl Import {
-    fn shared(&self) -> Result<shared::Import, Diagnostic> {
-        Ok(shared::Import {
-            module: self.module.clone(),
-            js_namespace: self.js_namespace.as_ref().map(|s| s.to_string()),
-            kind: self.kind.shared()?,
-        })
-    }
 }
 
 impl ImportKind {
@@ -371,27 +295,18 @@ impl ImportKind {
             ImportKind::Enum(_) => false,
         }
     }
-
-    fn shared(&self) -> Result<shared::ImportKind, Diagnostic> {
-        Ok(match *self {
-            ImportKind::Function(ref f) => shared::ImportKind::Function(f.shared()?),
-            ImportKind::Static(ref f) => shared::ImportKind::Static(f.shared()),
-            ImportKind::Type(ref f) => shared::ImportKind::Type(f.shared()),
-            ImportKind::Enum(ref f) => shared::ImportKind::Enum(f.shared()),
-        })
-    }
 }
 
 impl ImportFunction {
     /// If the rust object has a `fn xxx(&self) -> MyType` method, get the name for a getter in
     /// javascript (in this case `xxx`, so you can write `val = obj.xxx`)
-    fn infer_getter_property(&self) -> String {
-        self.function.name.to_string()
+    pub fn infer_getter_property(&self) -> &str {
+        &self.function.name
     }
 
     /// If the rust object has a `fn set_xxx(&mut self, MyType)` style method, get the name
     /// for a setter in javascript (in this case `xxx`, so you can write `obj.xxx = val`)
-    fn infer_setter_property(&self) -> Result<String, Diagnostic> {
+    pub fn infer_setter_property(&self) -> Result<String, Diagnostic> {
         let name = self.function.name.to_string();
 
         // if `#[wasm_bindgen(js_name = "...")]` is used then that explicitly
@@ -409,103 +324,5 @@ impl ImportFunction {
             );
         }
         Ok(name[4..].to_string())
-    }
-
-    fn shared(&self) -> Result<shared::ImportFunction, Diagnostic> {
-        let shared_operation = |operation: &Operation| -> Result<_, Diagnostic> {
-            let is_static = operation.is_static;
-            let kind = match &operation.kind {
-                OperationKind::Regular => shared::OperationKind::Regular,
-                OperationKind::Getter(g) => {
-                    let g = g.as_ref().map(|g| g.to_string());
-                    shared::OperationKind::Getter(g.unwrap_or_else(|| self.infer_getter_property()))
-                }
-                OperationKind::Setter(s) => {
-                    let s = s.as_ref().map(|s| s.to_string());
-                    shared::OperationKind::Setter(match s {
-                        Some(s) => s,
-                        None => self.infer_setter_property()?,
-                    })
-                }
-                OperationKind::IndexingGetter => shared::OperationKind::IndexingGetter,
-                OperationKind::IndexingSetter => shared::OperationKind::IndexingSetter,
-                OperationKind::IndexingDeleter => shared::OperationKind::IndexingDeleter,
-            };
-            Ok(shared::Operation { is_static, kind })
-        };
-
-        let method = match self.kind {
-            ImportFunctionKind::Method {
-                ref class,
-                ref kind,
-                ..
-            } => {
-                let kind = match kind {
-                    MethodKind::Constructor => shared::MethodKind::Constructor,
-                    MethodKind::Operation(op) => {
-                        shared::MethodKind::Operation(shared_operation(op)?)
-                    }
-                };
-                Some(shared::MethodData {
-                    class: class.clone(),
-                    kind,
-                })
-            }
-            ImportFunctionKind::Normal => None,
-        };
-
-        Ok(shared::ImportFunction {
-            shim: self.shim.to_string(),
-            catch: self.catch,
-            variadic: self.variadic,
-            method,
-            structural: self.structural,
-            function: self.function.shared(),
-        })
-    }
-}
-
-impl ImportStatic {
-    fn shared(&self) -> shared::ImportStatic {
-        shared::ImportStatic {
-            name: self.js_name.to_string(),
-            shim: self.shim.to_string(),
-        }
-    }
-}
-
-impl ImportType {
-    fn shared(&self) -> shared::ImportType {
-        shared::ImportType {
-            name: self.js_name.clone(),
-            instanceof_shim: self.instanceof_shim.clone(),
-            vendor_prefixes: self.vendor_prefixes.iter().map(|s| s.to_string()).collect(),
-        }
-    }
-}
-
-impl ImportEnum {
-    fn shared(&self) -> shared::ImportEnum {
-        shared::ImportEnum {}
-    }
-}
-
-impl Struct {
-    fn shared(&self) -> shared::Struct {
-        shared::Struct {
-            name: self.name.to_string(),
-            fields: self.fields.iter().map(|s| s.shared()).collect(),
-            comments: self.comments.clone(),
-        }
-    }
-}
-
-impl StructField {
-    fn shared(&self) -> shared::StructField {
-        shared::StructField {
-            name: self.name.to_string(),
-            readonly: self.readonly,
-            comments: self.comments.clone(),
-        }
     }
 }
