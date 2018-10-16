@@ -248,7 +248,10 @@ impl Interpreter {
             .iter()
             .enumerate()
             .filter_map(|(i, entry)| {
-                let code = entry.offset().code();
+                let code = match entry.offset() {
+                    Some(offset) => offset.code(),
+                    None => return None,
+                };
                 if code.len() != 2 {
                     return None;
                 }
