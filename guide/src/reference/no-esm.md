@@ -59,14 +59,14 @@ for the wasm-module-to-be. The page is configured with one exported global, in
 this case `wasm_bindgen`. The name of this global can be configured with the
 `--no-modules-global` option.
 
-The global `wasm_bindgen` is a function that takes one argument, the path to the
-wasm file. When invoked `wasm_bindgen` will return a promise for when the wasm
-file is ready-to-go. After that all exported functionality on
-`wasm_bindgen` will be functional.
+The global `wasm_bindgen` is a function that takes one argument: either the path
+to the wasm file to fetch or a `WebAssembly.Module`. When invoked `wasm_bindgen`
+will return a promise for when the wasm module is ready-to-go. After that all
+exported functionality on `wasm_bindgen` will be functional.
 
 In the example above, after calling `wasm_bindgen('./hello_bg.wasm')` we wait
-for the wasm module to be compiled, and afterwards we're invoking our `greet`
-export.
+for the wasm module to be fetched and compiled, and afterwards we're invoking
+our `greet` export.
 
 Note that exports are available for binding before the wasm module has been
 instantiated, for example this would have also worked:
