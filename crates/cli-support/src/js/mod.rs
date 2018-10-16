@@ -418,27 +418,32 @@ impl<'a> Context<'a> {
         let mut js = if self.config.no_modules {
             format!(
                     "\
-                    (function() {{
-                        var wasm;
-                        const __exports = {{}};
-                        {globals}
-                        function init(wasm_path) {{
-                            const fetchPromise = fetch(wasm_path);
-                            let resultPromise;
-                            if (typeof WebAssembly.instantiateStreaming === 'function') {{
-                                resultPromise = WebAssembly.instantiateStreaming(fetchPromise, {{ './{module}': __exports }});
-                            }} else {{
-                                resultPromise = fetchPromise
-                                    .then(response => response.arrayBuffer())
-                                    .then(buffer => WebAssembly.instantiate(buffer, {{ './{module}': __exports }}));
-                            }}
-                            return resultPromise.then(({{instance}}) => {{
-                                wasm = init.wasm = instance.exports;
-                                return;
-                            }});
-                        }};
-                        self.{global_name} = Object.assign(init, __exports);
-                    }})();",
+(function() {{
+    var wasm;
+    const __exports = {{}};
+    {globals}
+    function init(path_or_module) {{
+        let instantiation;
+        const imports = {{ './{module}': __exports }};
+        if (path_or_module instanceof WebAssembly.Module) {{
+            instantiation = WebAssembly.instantiate(path_or_module, imports);
+        }} else {{
+            const data = fetch(path_or_module);
+            if (typeof WebAssembly.instantiateStreaming === 'function') {{
+                instantiation = WebAssembly.instantiateStreaming(data, imports);
+            }} else {{
+                instantiation = data
+                    .then(response => response.arrayBuffer())
+                    .then(buffer => WebAssembly.instantiate(buffer, imports));
+            }}
+        }}
+        return instantiation.then(({{instance}}) => {{
+            wasm = init.wasm = instance.exports;
+            return;
+        }});
+    }};
+    self.{global_name} = Object.assign(init, __exports);
+}})();",
                     globals = self.globals,
                     module = module_name,
                     global_name = self.config.no_modules_global
