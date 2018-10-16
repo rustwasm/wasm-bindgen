@@ -153,8 +153,9 @@ impl ClosureDescriptors {
             let to_remove = remove.get(&i).unwrap_or(&empty);
 
             let mut current = Vec::new();
-            assert_eq!(entry.offset().code().len(), 2);
-            let mut offset = match entry.offset().code()[0] {
+            let offset = entry.offset().as_ref().unwrap();
+            assert_eq!(offset.code().len(), 2);
+            let mut offset = match offset.code()[0] {
                 Instruction::I32Const(x) => x,
                 _ => unreachable!(),
             };
@@ -172,7 +173,7 @@ impl ClosureDescriptors {
                     let members = mem::replace(&mut current, Vec::new());
                     let offset =
                         InitExpr::new(vec![Instruction::I32Const(offset), Instruction::End]);
-                    let new_entry = ElementSegment::new(0, offset, members);
+                    let new_entry = ElementSegment::new(0, Some(offset), members, false);
                     elements.entries_mut().push(new_entry);
                 }
                 offset = next_offset;
@@ -180,7 +181,7 @@ impl ClosureDescriptors {
             // Any remaining function table entries get pushed at the end.
             if current.len() > 0 {
                 let offset = InitExpr::new(vec![Instruction::I32Const(offset), Instruction::End]);
-                let new_entry = ElementSegment::new(0, offset, current);
+                let new_entry = ElementSegment::new(0, Some(offset), current, false);
                 elements.entries_mut().push(new_entry);
             }
         }
