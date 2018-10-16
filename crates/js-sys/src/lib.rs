@@ -785,6 +785,31 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Float32Array;
 
+    /// An `Float32Array()` which creates an array with an intenral buffer large
+    /// enough for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(length: u32) -> Float32Array;
+
+    /// An `Float32Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Float32Array;
+
+    /// An `Float32Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset` for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset_and_length(
+        buffer: &JsValue,
+        byte_offset: u32,
+        length: u32,
+    ) -> Float32Array;
+
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
     ///
@@ -843,6 +868,31 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array)
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Float64Array;
+
+    /// An `Float64Array()` which creates an array with an intenral buffer large
+    /// enough for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(length: u32) -> Float64Array;
+
+    /// An `Float64Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Float64Array;
+
+    /// An `Float64Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset` for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset_and_length(
+        buffer: &JsValue,
+        byte_offset: u32,
+        length: u32,
+    ) -> Float64Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -1038,6 +1088,31 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Int8Array;
 
+    /// An `Int8Array()` which creates an array with an intenral buffer large
+    /// enough for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(length: u32) -> Int8Array;
+
+    /// An `Int8Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Int8Array;
+
+    /// An `Int8Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset` for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset_and_length(
+        buffer: &JsValue,
+        byte_offset: u32,
+        length: u32,
+    ) -> Int8Array;
+
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
     ///
@@ -1097,6 +1172,31 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Int16Array;
 
+    /// An `Int16Array()` which creates an array with an intenral buffer large
+    /// enough for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(length: u32) -> Int16Array;
+
+    /// An `Int16Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Int16Array;
+
+    /// An `Int16Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset` for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset_and_length(
+        buffer: &JsValue,
+        byte_offset: u32,
+        length: u32,
+    ) -> Int16Array;
+
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
     ///
@@ -1155,6 +1255,31 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array)
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Int32Array;
+
+    /// An `Int32Array()` which creates an array with an intenral buffer large
+    /// enough for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(length: u32) -> Int32Array;
+
+    /// An `Int32Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Int32Array;
+
+    /// An `Int32Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset` for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset_and_length(
+        buffer: &JsValue,
+        byte_offset: u32,
+        length: u32,
+    ) -> Int32Array;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -2899,6 +3024,31 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Uint8Array;
 
+    /// An `Uint8Array()` which creates an array with an intenral buffer large
+    /// enough for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(length: u32) -> Uint8Array;
+
+    /// An `Uint8Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Uint8Array;
+
+    /// An `Uint8Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset` for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset_and_length(
+        buffer: &JsValue,
+        byte_offset: u32,
+        length: u32,
+    ) -> Uint8Array;
+
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
     ///
@@ -2960,6 +3110,31 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Uint8ClampedArray;
 
+    /// An `Uint8ClampedArray()` which creates an array with an intenral buffer large
+    /// enough for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(length: u32) -> Uint8ClampedArray;
+
+    /// An `Uint8ClampedArray()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Uint8ClampedArray;
+
+    /// An `Uint8ClampedArray()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset` for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset_and_length(
+        buffer: &JsValue,
+        byte_offset: u32,
+        length: u32,
+    ) -> Uint8ClampedArray;
+
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
     ///
@@ -3019,6 +3194,31 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Uint16Array;
 
+    /// An `Uint16Array()` which creates an array with an intenral buffer large
+    /// enough for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(length: u32) -> Uint16Array;
+
+    /// An `Uint16Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Uint16Array;
+
+    /// An `Uint16Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset` for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset_and_length(
+        buffer: &JsValue,
+        byte_offset: u32,
+        length: u32,
+    ) -> Uint16Array;
+
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
     ///
@@ -3071,6 +3271,31 @@ extern "C" {
     #[wasm_bindgen(extends = Object)]
     #[derive(Clone, Debug)]
     pub type Uint32Array;
+
+    /// An `Uint32Array()` which creates an array with an intenral buffer large
+    /// enough for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(length: u32) -> Uint32Array;
+
+    /// An `Uint32Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Uint32Array;
+
+    /// An `Uint32Array()` which creates an array with the given buffer but is a
+    /// view starting at `byte_offset` for `length` elements.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_byte_offset_and_length(
+        buffer: &JsValue,
+        byte_offset: u32,
+        length: u32,
+    ) -> Uint32Array;
 
     /// The `Uint32Array()` constructor creates an array of unsigned 32-bit integers.
     ///
