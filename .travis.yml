@@ -151,7 +151,12 @@ matrix:
     - rust: nightly
       env: JOB=dist-linux TARGET=x86_64-unknown-linux-musl
       before_script: rustup target add $TARGET
-      script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET --features vendored-openssl
+      script:
+        - cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET --features vendored-openssl
+        # no need to ship debuginfo to users
+        - strip -g target/$TARGET/release/wasm-bindgen
+        - strip -g target/$TARGET/release/wasm-bindgen-test-runner
+        - strip -g target/$TARGET/release/wasm2es6js
       addons:
         apt:
           packages:

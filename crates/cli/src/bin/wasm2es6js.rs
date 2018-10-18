@@ -11,6 +11,10 @@ use std::process;
 use docopt::Docopt;
 use failure::{Error, ResultExt};
 
+// no need for jemalloc bloat in this binary (and we don't need speed)
+#[global_allocator]
+static ALLOC: std::alloc::System = std::alloc::System;
+
 const USAGE: &'static str = "
 Converts a wasm file to an ES6 JS module
 
