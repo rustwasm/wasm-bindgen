@@ -13,6 +13,10 @@ use docopt::Docopt;
 use failure::Error;
 use wasm_bindgen_cli_support::Bindgen;
 
+// no need for jemalloc bloat in this binary (and we don't need speed)
+#[global_allocator]
+static ALLOC: std::alloc::System = std::alloc::System;
+
 const USAGE: &'static str = "
 Generating JS bindings for a wasm file
 

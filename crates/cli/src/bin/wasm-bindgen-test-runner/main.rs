@@ -36,6 +36,10 @@ use failure::{Error, ResultExt};
 use parity_wasm::elements::{Deserialize, Module, Section};
 use wasm_bindgen_cli_support::Bindgen;
 
+// no need for jemalloc bloat in this binary (and we don't need speed)
+#[global_allocator]
+static ALLOC: std::alloc::System = std::alloc::System;
+
 mod headless;
 mod node;
 mod server;
