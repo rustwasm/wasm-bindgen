@@ -191,7 +191,10 @@ fn set_f64() {
 
     Reflect::set_f64(&a, 0.0, &JsValue::from_str("Bye!")).unwrap();
 
-    assert_eq!(Reflect::get_f64(&a, 0.0).unwrap(), JsValue::from_str("Bye!"));
+    assert_eq!(
+        Reflect::get_f64(&a, 0.0).unwrap(),
+        JsValue::from_str("Bye!")
+    );
 }
 
 #[wasm_bindgen_test]

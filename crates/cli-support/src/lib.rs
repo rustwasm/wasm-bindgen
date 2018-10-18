@@ -35,6 +35,7 @@ pub struct Bindgen {
     // Experimental support for the wasm threads proposal, transforms the wasm
     // module to be "ready to be instantiated on any thread"
     threads: Option<wasm_bindgen_threads_xform::Config>,
+    anyref: bool,
 }
 
 enum Input {
@@ -62,6 +63,7 @@ impl Bindgen {
             emit_start: true,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
+            anyref: env::var("WASM_BINDGEN_ANYREF").is_ok(),
         }
     }
 
@@ -176,6 +178,22 @@ impl Bindgen {
                 (module, stem)
             }
         };
+
+        // This isn't the hardest thing in the world too support but we
+        // basically don't know how to rationalize #[wasm_bindgen(start)] and
+        // the actual `start` function if present. Figure this out later if it
+        // comes up, but otherwise we should continue to be compatible with
+        // LLVM's output today.
+        //
+        // Note that start function handling in `js/mod.rs` will need to be
+        // updated as well, because `#[wasm_bindgen(start)]` is inserted *after*
+        // a module's start function, if any, because we assume start functions
+        // only show up when injected on behalf of wasm-bindgen's passes.
+        if module.start.is_some() {
+            bail!("wasm-bindgen is currently incompatible with modules that \
+                   already have a start function");
+        }
+
         let mut program_storage = Vec::new();
         let programs = extract_programs(&mut module, &mut program_storage)
             .with_context(|_| "failed to extract wasm-bindgen custom sections")?;
@@ -233,7 +251,10 @@ impl Bindgen {
                 imported_statics: Default::default(),
                 direct_imports: Default::default(),
                 start: None,
+                anyref: Default::default(),
             };
+            cx.anyref.enabled = self.anyref;
+            cx.anyref.prepare(cx.module)?;
             for program in programs.iter() {
                 js::SubContext {
                     program,

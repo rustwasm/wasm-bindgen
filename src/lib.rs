@@ -30,6 +30,24 @@ macro_rules! if_std {
     )*)
 }
 
+macro_rules! externs {
+    ($(#[$attr:meta])* extern "C" { $(fn $name:ident($($args:tt)*) -> $ret:ty;)* }) => (
+        #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+        $(#[$attr])*
+        extern "C" {
+            $(fn $name($($args)*) -> $ret;)*
+        }
+
+        $(
+            #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+            #[allow(unused_variables)]
+            unsafe extern fn $name($($args)*) -> $ret {
+                panic!("function not implemented on non-wasm32 targets")
+            }
+        )*
+    )
+}
+
 /// A module which is typically glob imported from:
 ///
 /// ```
@@ -57,6 +75,7 @@ if_std! {
     extern crate std;
     use std::prelude::v1::*;
     pub mod closure;
+    mod anyref;
 }
 
 /// Representation of an object owned by JS.
@@ -462,58 +481,44 @@ macro_rules! numbers {
 
 numbers! { i8 u8 i16 u16 i32 u32 f32 f64 }
 
-macro_rules! externs {
-    ($(fn $name:ident($($args:tt)*) -> $ret:ty;)*) => (
-        #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-        #[link(wasm_import_module = "__wbindgen_placeholder__")]
-        extern "C" {
-            $(fn $name($($args)*) -> $ret;)*
-        }
-
-        $(
-            #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-            #[allow(unused_variables)]
-            unsafe extern "C" fn $name($($args)*) -> $ret {
-                panic!("function not implemented on non-wasm32 targets")
-            }
-        )*
-    )
-}
-
 externs! {
-    fn __wbindgen_object_clone_ref(idx: u32) -> u32;
-    fn __wbindgen_object_drop_ref(idx: u32) -> ();
-    fn __wbindgen_string_new(ptr: *const u8, len: usize) -> u32;
-    fn __wbindgen_number_new(f: f64) -> u32;
-    fn __wbindgen_number_get(idx: u32, invalid: *mut u8) -> f64;
-    fn __wbindgen_is_null(idx: u32) -> u32;
-    fn __wbindgen_is_undefined(idx: u32) -> u32;
-    fn __wbindgen_boolean_get(idx: u32) -> u32;
-    fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
-    fn __wbindgen_is_symbol(idx: u32) -> u32;
-    fn __wbindgen_is_object(idx: u32) -> u32;
-    fn __wbindgen_is_function(idx: u32) -> u32;
-    fn __wbindgen_is_string(idx: u32) -> u32;
-    fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
-    fn __wbindgen_debug_string(idx: u32, len: *mut usize) -> *mut u8;
-    fn __wbindgen_throw(a: *const u8, b: usize) -> !;
-    fn __wbindgen_rethrow(a: u32) -> !;
+    #[link(wasm_import_module = "__wbindgen_placeholder__")]
+    extern "C" {
+        fn __wbindgen_object_clone_ref(idx: u32) -> u32;
+        fn __wbindgen_object_drop_ref(idx: u32) -> ();
+        fn __wbindgen_string_new(ptr: *const u8, len: usize) -> u32;
+        fn __wbindgen_number_new(f: f64) -> u32;
+        fn __wbindgen_number_get(idx: u32, invalid: *mut u8) -> f64;
+        fn __wbindgen_is_null(idx: u32) -> u32;
+        fn __wbindgen_is_undefined(idx: u32) -> u32;
+        fn __wbindgen_boolean_get(idx: u32) -> u32;
+        fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
+        fn __wbindgen_is_symbol(idx: u32) -> u32;
+        fn __wbindgen_is_object(idx: u32) -> u32;
+        fn __wbindgen_is_function(idx: u32) -> u32;
+        fn __wbindgen_is_string(idx: u32) -> u32;
+        fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
+        fn __wbindgen_debug_string(idx: u32, len: *mut usize) -> *mut u8;
+        fn __wbindgen_throw(a: *const u8, b: usize) -> !;
+        fn __wbindgen_rethrow(a: u32) -> !;
 
-    fn __wbindgen_cb_drop(idx: u32) -> u32;
-    fn __wbindgen_cb_forget(idx: u32) -> ();
+        fn __wbindgen_cb_drop(idx: u32) -> u32;
+        fn __wbindgen_cb_forget(idx: u32) -> ();
 
-    fn __wbindgen_describe(v: u32) -> ();
-    fn __wbindgen_describe_closure(a: u32, b: u32, c: u32) -> u32;
+        fn __wbindgen_describe(v: u32) -> ();
+        fn __wbindgen_describe_closure(a: u32, b: u32, c: u32) -> u32;
 
-    fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
-    fn __wbindgen_json_serialize(idx: u32, ptr: *mut *mut u8) -> usize;
-    fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
+        fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
+        fn __wbindgen_json_serialize(idx: u32, ptr: *mut *mut u8) -> usize;
+        fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
 
-    fn __wbindgen_memory() -> u32;
-    fn __wbindgen_module() -> u32;
+        fn __wbindgen_memory() -> u32;
+        fn __wbindgen_module() -> u32;
+    }
 }
 
 impl Clone for JsValue {
+    #[inline]
     fn clone(&self) -> JsValue {
         unsafe {
             let idx = __wbindgen_object_clone_ref(self.idx);
@@ -973,7 +978,9 @@ pub mod __rt {
     /// in the object file and link the intrinsics.
     ///
     /// Ideas for how to improve this are most welcome!
-    pub fn link_mem_intrinsics() {}
+    pub fn link_mem_intrinsics() {
+        ::anyref::link_intrinsics();
+    }
 }
 
 /// A wrapper type around slices and vectors for binding the `Uint8ClampedArray`

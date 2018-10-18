@@ -44,6 +44,15 @@ pub struct Js2Rust<'a, 'b: 'a> {
     /// The string value here is the class that this should be a constructor
     /// for.
     constructor: Option<String>,
+
+    /// metadata for anyref transformations
+    anyref_args: Vec<(usize, bool)>,
+    ret_anyref: bool,
+}
+
+pub enum ExportedShim<'a> {
+    Named(&'a str),
+    TableElement(&'a mut u32),
 }
 
 impl<'a, 'b> Js2Rust<'a, 'b> {
@@ -59,6 +68,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             ret_ty: String::new(),
             ret_expr: String::new(),
             constructor: None,
+            anyref_args: Vec::new(),
+            ret_anyref: false,
         }
     }
 
@@ -193,13 +204,25 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
         if arg.is_anyref() {
             self.js_arguments.push((name.clone(), "any".to_string()));
-            self.cx.expose_add_heap_object();
-            if optional {
-                self.cx.expose_is_like_none();
-                self.rust_arguments
-                    .push(format!("isLikeNone({0}) ? 0 : addHeapObject({0})", name,));
+            if self.cx.config.anyref {
+                if optional {
+                    self.cx.expose_add_to_anyref_table()?;
+                    self.cx.expose_is_like_none();
+                    self.rust_arguments
+                        .push(format!("isLikeNone({0}) ? 0 : addToAnyrefTable({0})", name));
+                } else {
+                    self.anyref_args.push((self.rust_arguments.len(), true));
+                    self.rust_arguments.push(name);
+                }
             } else {
-                self.rust_arguments.push(format!("addHeapObject({})", name));
+                self.cx.expose_add_heap_object();
+                if optional {
+                    self.cx.expose_is_like_none();
+                    self.rust_arguments
+                        .push(format!("isLikeNone({0}) ? 0 : addHeapObject({0})", name));
+                } else {
+                    self.rust_arguments.push(format!("addHeapObject({})", name));
+                }
             }
             return Ok(self);
         }
@@ -383,14 +406,19 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
         if arg.is_ref_anyref() {
             self.js_arguments.push((name.clone(), "any".to_string()));
-            self.cx.expose_borrowed_objects();
-            self.cx.expose_global_stack_pointer();
-            // the "stack-ful" nature means that we're always popping from the
-            // stack, and make sure that we actually clear our reference to
-            // allow stale values to get GC'd
-            self.finally("heap[stack_pointer++] = undefined;");
-            self.rust_arguments
-                .push(format!("addBorrowedObject({})", name));
+            if self.cx.config.anyref {
+                self.anyref_args.push((self.rust_arguments.len(), false));
+                self.rust_arguments.push(name);
+            } else {
+                // the "stack-ful" nature means that we're always popping from the
+                // stack, and make sure that we actually clear our reference to
+                // allow stale values to get GC'd
+                self.cx.expose_borrowed_objects();
+                self.cx.expose_global_stack_pointer();
+                self.finally("heap[stack_pointer++] = undefined;");
+                self.rust_arguments
+                    .push(format!("addBorrowedObject({})", name));
+            }
             return Ok(self);
         }
 
@@ -462,7 +490,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
         if let Some(ty) = ty.vector_kind() {
             self.ret_ty = ty.js_ty().to_string();
-            let f = self.cx.expose_get_vector_from_wasm(ty);
+            let f = self.cx.expose_get_vector_from_wasm(ty)?;
             self.cx.expose_global_argument_ptr()?;
             self.cx.expose_uint32_memory();
             self.cx.require_internal_export("__wbindgen_free")?;
@@ -494,8 +522,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         // that `takeObject` will naturally pluck out `undefined`.
         if ty.is_anyref() {
             self.ret_ty = "any".to_string();
-            self.cx.expose_take_object();
-            self.ret_expr = format!("return takeObject(RET);");
+            self.ret_expr = format!("return {};", self.cx.take_object("RET"));
+            self.ret_anyref = true;
             return Ok(self);
         }
 
@@ -708,7 +736,12 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     /// Returns two strings, the first of which is the JS expression for the
     /// generated function shim and the second is a TypeScript signature of the
     /// JS expression.
-    pub fn finish(&self, prefix: &str, invoc: &str) -> (String, String, String) {
+    pub fn finish(
+        &mut self,
+        prefix: &str,
+        invoc: &str,
+        exported_shim: ExportedShim,
+    ) -> (String, String, String) {
         let js_args = self
             .js_arguments
             .iter()
@@ -754,6 +787,24 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             ts.push_str(&self.ret_ty);
         }
         ts.push(';');
+
+        if self.ret_anyref || self.anyref_args.len() > 0 {
+            match exported_shim {
+                ExportedShim::Named(name) => {
+                    self.cx
+                        .anyref
+                        .export_xform(name, &self.anyref_args, self.ret_anyref);
+                }
+                ExportedShim::TableElement(idx) => {
+                    *idx = self.cx.anyref.table_element_xform(
+                        *idx,
+                        &self.anyref_args,
+                        self.ret_anyref,
+                    );
+                }
+            }
+        }
+
         (js, ts, self.js_doc_comments())
     }
 

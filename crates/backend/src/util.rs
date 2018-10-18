@@ -3,9 +3,9 @@ use std::env;
 use std::fmt;
 use std::hash::{Hash, Hasher};
 use std::iter::FromIterator;
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
-use std::sync::atomic::{AtomicBool};
-use std::sync::atomic::{AtomicUsize};
 
 use ast;
 use proc_macro2::{self, Ident};

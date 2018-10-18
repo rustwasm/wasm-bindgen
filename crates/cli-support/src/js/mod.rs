@@ -7,7 +7,7 @@ use walrus::{MemoryId, Module};
 use wasm_bindgen_wasm_interpreter::Interpreter;
 
 mod js2rust;
-use self::js2rust::Js2Rust;
+use self::js2rust::{ExportedShim, Js2Rust};
 mod rust2js;
 use self::rust2js::Rust2Js;
 mod closures;
@@ -52,6 +52,8 @@ pub struct Context<'a> {
     pub function_table_needed: bool,
     pub interpreter: &'a mut Interpreter,
     pub memory: MemoryId,
+
+    pub anyref: wasm_bindgen_anyref_xform::Context,
 }
 
 #[derive(Default)]
@@ -163,6 +165,410 @@ impl<'a> Context<'a> {
     }
 
     pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
+        self.bind("__wbindgen_string_new", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_string_new",
+                &[],
+                true,
+            );
+            me.expose_get_string_from_wasm();
+            Ok(format!(
+                "function(p, l) {{ return {}; }}",
+                me.add_heap_object("getStringFromWasm(p, l)")
+            ))
+        })?;
+
+        self.bind("__wbindgen_number_new", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_number_new",
+                &[],
+                true,
+            );
+            Ok(format!(
+                "function(i) {{ return {}; }}",
+                me.add_heap_object("i")
+            ))
+        })?;
+
+        self.bind("__wbindgen_number_get", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_number_get",
+                &[(0, false)],
+                false,
+            );
+            me.expose_uint8_memory();
+            Ok(format!(
+                "
+                function(n, invalid) {{
+                    let obj = {};
+                    if (typeof(obj) === 'number') return obj;
+                    getUint8Memory()[invalid] = 1;
+                    return 0;
+                }}
+                ",
+                me.get_object("n"),
+            ))
+        })?;
+
+        self.bind("__wbindgen_is_null", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_is_null",
+                &[(0, false)],
+                false,
+            );
+            Ok(format!(
+                "function(i) {{ return {} === null ? 1 : 0; }}",
+                me.get_object("i")
+            ))
+        })?;
+
+        self.bind("__wbindgen_is_undefined", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_is_undefined",
+                &[(0, false)],
+                false,
+            );
+            Ok(format!(
+                "function(i) {{ return {} === undefined ? 1 : 0; }}",
+                me.get_object("i")
+            ))
+        })?;
+
+        self.bind("__wbindgen_boolean_get", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_boolean_get",
+                &[(0, false)],
+                false,
+            );
+            Ok(format!(
+                "
+                function(i) {{
+                    let v = {};
+                    return typeof(v) === 'boolean' ? (v ? 1 : 0) : 2;
+                }}
+                ",
+                me.get_object("i"),
+            ))
+        })?;
+
+        self.bind("__wbindgen_symbol_new", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_symbol_new",
+                &[],
+                true,
+            );
+            me.expose_get_string_from_wasm();
+            let expr = "ptr === 0 ? Symbol() : Symbol(getStringFromWasm(ptr, len))";
+            Ok(format!(
+                "function(ptr, len) {{ return {}; }}",
+                me.add_heap_object(expr)
+            ))
+        })?;
+
+        self.bind("__wbindgen_is_symbol", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_is_symbol",
+                &[(0, false)],
+                false,
+            );
+            Ok(format!(
+                "function(i) {{ return typeof({}) === 'symbol' ? 1 : 0; }}",
+                me.get_object("i")
+            ))
+        })?;
+
+        self.bind("__wbindgen_is_object", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_is_object",
+                &[(0, false)],
+                false,
+            );
+            Ok(format!(
+                "
+                function(i) {{
+                    const val = {};
+                    return typeof(val) === 'object' && val !== null ? 1 : 0;
+                }}",
+                me.get_object("i"),
+            ))
+        })?;
+
+        self.bind("__wbindgen_is_function", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_is_function",
+                &[(0, false)],
+                false,
+            );
+            Ok(format!(
+                "function(i) {{ return typeof({}) === 'function' ? 1 : 0; }}",
+                me.get_object("i")
+            ))
+        })?;
+
+        self.bind("__wbindgen_is_string", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_is_string",
+                &[(0, false)],
+                false,
+            );
+            Ok(format!(
+                "function(i) {{ return typeof({}) === 'string' ? 1 : 0; }}",
+                me.get_object("i")
+            ))
+        })?;
+
+        self.bind("__wbindgen_string_get", &|me| {
+            me.expose_pass_string_to_wasm()?;
+            me.expose_uint32_memory();
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_string_get",
+                &[(0, false)],
+                false,
+            );
+            Ok(format!(
+                "
+                function(i, len_ptr) {{
+                    let obj = {};
+                    if (typeof(obj) !== 'string') return 0;
+                    const ptr = passStringToWasm(obj);
+                    getUint32Memory()[len_ptr / 4] = WASM_VECTOR_LEN;
+                    return ptr;
+                }}
+                ",
+                me.get_object("i"),
+            ))
+        })?;
+
+        self.bind("__wbindgen_debug_string", &|me| {
+            me.expose_pass_string_to_wasm()?;
+            me.expose_uint32_memory();
+
+            let debug_str = "
+                val => {
+                    // primitive types
+                    const type = typeof val;
+                    if (type == 'number' || type == 'boolean' || val == null) {
+                        return  `${val}`;
+                    }
+                    if (type == 'string') {
+                        return `\"${val}\"`;
+                    }
+                    if (type == 'symbol') {
+                        const description = val.description;
+                        if (description == null) {
+                            return 'Symbol';
+                        } else {
+                            return `Symbol(${description})`;
+                        }
+                    }
+                    if (type == 'function') {
+                        const name = val.name;
+                        if (typeof name == 'string' && name.length > 0) {
+                            return `Function(${name})`;
+                        } else {
+                            return 'Function';
+                        }
+                    }
+                    // objects
+                    if (Array.isArray(val)) {
+                        const length = val.length;
+                        let debug = '[';
+                        if (length > 0) {
+                            debug += debug_str(val[0]);
+                        }
+                        for(let i = 1; i < length; i++) {
+                            debug += ', ' + debug_str(val[i]);
+                        }
+                        debug += ']';
+                        return debug;
+                    }
+                    // Test for built-in
+                    const builtInMatches = /\\[object ([^\\]]+)\\]/.exec(toString.call(val));
+                    let className;
+                    if (builtInMatches.length > 1) {
+                        className = builtInMatches[1];
+                    } else {
+                        // Failed to match the standard '[object ClassName]'
+                        return toString.call(val);
+                    }
+                    if (className == 'Object') {
+                        // we're a user defined class or Object
+                        // JSON.stringify avoids problems with cycles, and is generally much
+                        // easier than looping through ownProperties of `val`.
+                        try {
+                            return 'Object(' + JSON.stringify(val) + ')';
+                        } catch (_) {
+                            return 'Object';
+                        }
+                    }
+                    // errors
+                    if (val instanceof Error) {
+                        return `${val.name}: ${val.message}\n${val.stack}`;
+                    }
+                    // TODO we could test for more things here, like `Set`s and `Map`s.
+                    return className;
+                }
+            ";
+            Ok(format!(
+                "
+                function(i, len_ptr) {{
+                    const debug_str = {};
+                    const toString = Object.prototype.toString;
+                    const val = {};
+                    const debug = debug_str(val);
+                    const ptr = passStringToWasm(debug);
+                    getUint32Memory()[len_ptr / 4] = WASM_VECTOR_LEN;
+                    return ptr;
+                }}
+                ",
+                debug_str,
+                me.get_object("i"),
+            ))
+        })?;
+
+        self.bind("__wbindgen_cb_drop", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_cb_drop",
+                &[(0, true)],
+                false,
+            );
+            Ok(format!(
+                "
+                function(i) {{
+                    const obj = {}.original;
+                    if (obj.cnt-- == 1) {{
+                        obj.a = 0;
+                        return 1;
+                    }}
+                    return 0;
+                }}
+                ",
+                me.take_object("i"),
+            ))
+        })?;
+
+        self.bind("__wbindgen_cb_forget", &|me| {
+            Ok(if me.config.anyref {
+                // TODO: we should rewrite this in the anyref xform to not even
+                // call into JS
+                me.anyref.import_xform(
+                    "__wbindgen_placeholder__",
+                    "__wbindgen_cb_drop",
+                    &[(0, true)],
+                    false,
+                );
+                String::from("function(obj) {}")
+            } else {
+                me.expose_drop_ref();
+                "dropObject".to_string()
+            })
+        })?;
+
+        self.bind("__wbindgen_json_parse", &|me| {
+            me.expose_get_string_from_wasm();
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_json_parse",
+                &[],
+                true,
+            );
+            let expr = "JSON.parse(getStringFromWasm(ptr, len))";
+            let expr = me.add_heap_object(expr);
+            Ok(format!("function(ptr, len) {{ return {}; }}", expr))
+        })?;
+
+        self.bind("__wbindgen_json_serialize", &|me| {
+            me.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                "__wbindgen_json_serialize",
+                &[(0, false)],
+                false,
+            );
+            me.expose_pass_string_to_wasm()?;
+            me.expose_uint32_memory();
+            Ok(format!(
+                "
+                function(idx, ptrptr) {{
+                    const ptr = passStringToWasm(JSON.stringify({}));
+                    getUint32Memory()[ptrptr / 4] = ptr;
+                    return WASM_VECTOR_LEN;
+                }}
+                ",
+                me.get_object("idx"),
+            ))
+        })?;
+
+        self.bind("__wbindgen_jsval_eq", &|me| {
+            Ok(format!(
+                "function(a, b) {{ return {} === {} ? 1 : 0; }}",
+                me.get_object("a"),
+                me.get_object("b")
+            ))
+        })?;
+
+        self.bind("__wbindgen_memory", &|me| {
+            let mem = me.memory();
+            Ok(format!(
+                "function() {{ return {}; }}",
+                me.add_heap_object(mem)
+            ))
+        })?;
+
+        self.bind("__wbindgen_module", &|me| {
+            if !me.config.no_modules {
+                bail!(
+                    "`wasm_bindgen::module` is currently only supported with \
+                     --no-modules"
+                );
+            }
+            Ok(format!(
+                "function() {{ return {}; }}",
+                me.add_heap_object("init.__wbindgen_wasm_module")
+            ))
+        })?;
+
+        self.bind("__wbindgen_rethrow", &|me| {
+            Ok(format!(
+                "function(idx) {{ throw {}; }}",
+                me.take_object("idx")
+            ))
+        })?;
+
+        closures::rewrite(self).with_context(|_| "failed to generate internal closure shims")?;
+        self.write_classes()?;
+        self.anyref.run(self.module)?;
+
+        // After the anyref pass has executed, if this intrinsic is needed then
+        // we expose a function which initializes it
+        self.bind("__wbindgen_init_anyref_table", &|me| {
+            me.expose_anyref_table();
+            Ok(String::from(
+                "function() {
+                const table = wasm.__wbg_anyref_table;
+                const offset = table.grow(4);
+                table.set(offset + 0, undefined);
+                table.set(offset + 1, null);
+                table.set(offset + 2, true);
+                table.set(offset + 3, false);
+            }",
+            ))
+        })?;
+
+        // make sure that the anyref pass runs before binding this as anyref may
+        // remove calls to this import and then gc would remove it
         self.bind("__wbindgen_object_clone_ref", &|me| {
             me.expose_get_object();
             me.expose_add_heap_object();
@@ -175,333 +581,13 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        // like above, make sure anyref runs first and the anyref pass may
+        // remove usages of this.
         self.bind("__wbindgen_object_drop_ref", &|me| {
             me.expose_drop_ref();
             Ok(String::from("function(i) { dropObject(i); }"))
         })?;
 
-        self.bind("__wbindgen_string_new", &|me| {
-            me.expose_add_heap_object();
-            me.expose_get_string_from_wasm();
-            Ok(String::from(
-                "
-                function(p, l) {
-                    return addHeapObject(getStringFromWasm(p, l));
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_number_new", &|me| {
-            me.expose_add_heap_object();
-            Ok(String::from("function(i) { return addHeapObject(i); }"))
-        })?;
-
-        self.bind("__wbindgen_number_get", &|me| {
-            me.expose_get_object();
-            me.expose_uint8_memory();
-            Ok(String::from(
-                "
-                function(n, invalid) {
-                    let obj = getObject(n);
-                    if (typeof(obj) === 'number') return obj;
-                    getUint8Memory()[invalid] = 1;
-                    return 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_null", &|me| {
-            me.expose_get_object();
-            Ok(String::from(
-                "
-                function(idx) {
-                    return getObject(idx) === null ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_undefined", &|me| {
-            me.expose_get_object();
-            Ok(String::from(
-                "
-                function(idx) {
-                    return getObject(idx) === undefined ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_boolean_get", &|me| {
-            me.expose_get_object();
-            Ok(String::from(
-                "
-                function(i) {
-                    let v = getObject(i);
-                    if (typeof(v) === 'boolean') {
-                        return v ? 1 : 0;
-                    } else {
-                        return 2;
-                    }
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_symbol_new", &|me| {
-            me.expose_get_string_from_wasm();
-            me.expose_add_heap_object();
-            Ok(String::from(
-                "
-                function(ptr, len) {
-                    let a;
-                    if (ptr === 0) {
-                        a = Symbol();
-                    } else {
-                        a = Symbol(getStringFromWasm(ptr, len));
-                    }
-                    return addHeapObject(a);
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_symbol", &|me| {
-            me.expose_get_object();
-            Ok(String::from(
-                "
-                function(i) {
-                    return typeof(getObject(i)) === 'symbol' ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_object", &|me| {
-            me.expose_get_object();
-            Ok(String::from(
-                "
-                function(i) {
-                    const val = getObject(i);
-                    return typeof(val) === 'object' && val !== null ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_function", &|me| {
-            me.expose_get_object();
-            Ok(String::from(
-                "
-                function(i) {
-                    return typeof(getObject(i)) === 'function' ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_string", &|me| {
-            me.expose_get_object();
-            Ok(String::from(
-                "
-                function(i) {
-                    return typeof(getObject(i)) === 'string' ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_string_get", &|me| {
-            me.expose_pass_string_to_wasm()?;
-            me.expose_get_object();
-            me.expose_uint32_memory();
-            Ok(String::from(
-                "
-                function(i, len_ptr) {
-                    let obj = getObject(i);
-                    if (typeof(obj) !== 'string') return 0;
-                    const ptr = passStringToWasm(obj);
-                    getUint32Memory()[len_ptr / 4] = WASM_VECTOR_LEN;
-                    return ptr;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_debug_string", &|me| {
-            me.expose_pass_string_to_wasm()?;
-            me.expose_get_object();
-            me.expose_uint32_memory();
-            Ok(String::from(
-                "
-                function(i, len_ptr) {
-                    const toString = Object.prototype.toString;
-                    const debug_str = val => {
-                        // primitive types
-                        const type = typeof val;
-                        if (type == 'number' || type == 'boolean' || val == null) {
-                            return  `${val}`;
-                        }
-                        if (type == 'string') {
-                            return `\"${val}\"`;
-                        }
-                        if (type == 'symbol') {
-                            const description = val.description;
-                            if (description == null) {
-                                return 'Symbol';
-                            } else {
-                                return `Symbol(${description})`;
-                            }
-                        }
-                        if (type == 'function') {
-                            const name = val.name;
-                            if (typeof name == 'string' && name.length > 0) {
-                                return `Function(${name})`;
-                            } else {
-                                return 'Function';
-                            }
-                        }
-                        // objects
-                        if (Array.isArray(val)) {
-                            const length = val.length;
-                            let debug = '[';
-                            if (length > 0) {
-                                debug += debug_str(val[0]);
-                            }
-                            for(let i = 1; i < length; i++) {
-                                debug += ', ' + debug_str(val[i]);
-                            }
-                            debug += ']';
-                            return debug;
-                        }
-                        // Test for built-in
-                        const builtInMatches = /\\[object ([^\\]]+)\\]/.exec(toString.call(val));
-                        let className;
-                        if (builtInMatches.length > 1) {
-                            className = builtInMatches[1];
-                        } else {
-                            // Failed to match the standard '[object ClassName]'
-                            return toString.call(val);
-                        }
-                        if (className == 'Object') {
-                            // we're a user defined class or Object
-                            // JSON.stringify avoids problems with cycles, and is generally much
-                            // easier than looping through ownProperties of `val`.
-                            try {
-                                return 'Object(' + JSON.stringify(val) + ')';
-                            } catch (_) {
-                                return 'Object';
-                            }
-                        }
-                        // errors
-                        if (val instanceof Error) {
-                            return `${val.name}: ${val.message}\n${val.stack}`;
-                        }
-                        // TODO we could test for more things here, like `Set`s and `Map`s.
-                        return className;
-                    };
-                    const val = getObject(i);
-                    const debug = debug_str(val);
-                    const ptr = passStringToWasm(debug);
-                    getUint32Memory()[len_ptr / 4] = WASM_VECTOR_LEN;
-                    return ptr;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_cb_drop", &|me| {
-            me.expose_drop_ref();
-            Ok(String::from(
-                "
-                function(i) {
-                    const obj = getObject(i).original;
-                    dropObject(i);
-                    if (obj.cnt-- == 1) {
-                        obj.a = 0;
-                        return 1;
-                    }
-                    return 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_cb_forget", &|me| {
-            me.expose_drop_ref();
-            Ok("dropObject".to_string())
-        })?;
-
-        self.bind("__wbindgen_json_parse", &|me| {
-            me.expose_add_heap_object();
-            me.expose_get_string_from_wasm();
-            Ok(String::from(
-                "
-                function(ptr, len) {
-                    return addHeapObject(JSON.parse(getStringFromWasm(ptr, len)));
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_json_serialize", &|me| {
-            me.expose_get_object();
-            me.expose_pass_string_to_wasm()?;
-            me.expose_uint32_memory();
-            Ok(String::from(
-                "
-                function(idx, ptrptr) {
-                    const ptr = passStringToWasm(JSON.stringify(getObject(idx)));
-                    getUint32Memory()[ptrptr / 4] = ptr;
-                    return WASM_VECTOR_LEN;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_jsval_eq", &|me| {
-            me.expose_get_object();
-            Ok(String::from(
-                "
-                function(a, b) {
-                    return getObject(a) === getObject(b) ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_memory", &|me| {
-            me.expose_add_heap_object();
-            let mem = me.memory();
-            Ok(format!("function() {{ return addHeapObject({}); }}", mem))
-        })?;
-
-        self.bind("__wbindgen_module", &|me| {
-            if !me.config.no_modules {
-                bail!(
-                    "`wasm_bindgen::module` is currently only supported with \
-                     --no-modules"
-                );
-            }
-            me.expose_add_heap_object();
-            Ok(format!(
-                "
-                function() {{
-                    return addHeapObject(init.__wbindgen_wasm_module);
-                }}
-                ",
-            ))
-        })?;
-
-        self.bind("__wbindgen_rethrow", &|me| {
-            me.expose_take_object();
-            Ok(String::from("function(idx) { throw takeObject(idx); }"))
-        })?;
-
-        closures::rewrite(self).with_context(|_| "failed to generate internal closure shims")?;
-        self.write_classes()?;
         self.unexport_unused_internal_exports();
 
         // Handle the `start` function, if one was specified. If we're in a
@@ -529,9 +615,6 @@ impl<'a> Context<'a> {
         if self.config.emit_start {
             self.add_start_function()?;
             has_start_function = self.unstart_start_function();
-            if has_start_function && !self.config.no_modules {
-                self.inject_start_shim();
-            }
         }
 
         self.export_table()?;
@@ -703,6 +786,14 @@ impl<'a> Context<'a> {
                 },
             )
         } else {
+            // In the "we're pretending to be an ES module use case if we've got
+            // a start function then we use an injected shim to actually execute
+            // the real start function on the next tick of the microtask queue
+            // (explained above)
+            if has_start_function {
+                self.inject_start_shim();
+            }
+
             let import_wasm = if self.globals.len() == 0 {
                 String::new()
             } else if self.use_node_require() {
@@ -804,21 +895,13 @@ impl<'a> Context<'a> {
         let mut wrap_needed = class.wrap_needed;
         let new_name = wasm_bindgen_shared::new_function(&name);
         if self.wasm_import_needed(&new_name) {
-            self.expose_add_heap_object();
             wrap_needed = true;
-
-            self.export(
-                &new_name,
-                &format!(
-                    "
-                    function(ptr) {{
-                        return addHeapObject({}.__wrap(ptr));
-                    }}
-                    ",
-                    name
-                ),
-                None,
-            );
+            self.anyref
+                .import_xform("__wbindgen_placeholder__", &new_name, &[], true);
+            let expr = format!("{}.__wrap(ptr)", name);
+            let expr = self.add_heap_object(&expr);
+            let body = format!("function(ptr) {{ return {}; }}", expr);
+            self.export(&new_name, &body, None);
         }
 
         if wrap_needed {
@@ -924,7 +1007,10 @@ impl<'a> Context<'a> {
                 math_imports.push((renamed_import.clone(), format!("function{}", expr)));
             };
 
-            // FIXME(#32): try to not use function shims
+            // Note that since Rust 1.32.0 this is no longer necessary. Imports
+            // of these functions were fixed in rust-lang/rust#54257 and we're
+            // just waiting until pre-1.32.0 compilers are basically no longer
+            // in use to remove this.
             match import.name.as_str() {
                 "Math_acos" => bind_math("(x) { return Math.acos(x); }"),
                 "Math_asin" => bind_math("(x) { return Math.asin(x); }"),
@@ -1007,6 +1093,7 @@ impl<'a> Context<'a> {
         if !self.should_write_global("heap") {
             return;
         }
+        assert!(!self.config.anyref);
         self.global(&format!("const heap = new Array({});", INITIAL_HEAP_OFFSET));
         self.global("heap.fill(undefined);");
         self.global(&format!("heap.push({});", INITIAL_HEAP_VALUES.join(", ")));
@@ -1133,21 +1220,40 @@ impl<'a> Context<'a> {
         }
         self.require_internal_export("__wbindgen_malloc")?;
         self.expose_uint32_memory();
-        self.expose_add_heap_object();
-        self.global(
-            "
-            function passArrayJsValueToWasm(array) {
-                const ptr = wasm.__wbindgen_malloc(array.length * 4);
-                const mem = getUint32Memory();
-                for (let i = 0; i < array.length; i++) {
-                    mem[ptr / 4 + i] = addHeapObject(array[i]);
+        if self.config.anyref {
+            // TODO: using `addToAnyrefTable` goes back and forth between wasm
+            // and JS a lot, we should have a bulk operation for this.
+            self.expose_add_to_anyref_table()?;
+            self.global(
+                "
+                function passArrayJsValueToWasm(array) {
+                    const ptr = wasm.__wbindgen_malloc(array.length * 4);
+                    const mem = getUint32Memory();
+                    for (let i = 0; i < array.length; i++) {
+                        mem[ptr / 4 + i] = addToAnyrefTable(array[i]);
+                    }
+                    WASM_VECTOR_LEN = array.length;
+                    return ptr;
                 }
-                WASM_VECTOR_LEN = array.length;
-                return ptr;
-            }
+            ",
+            );
+        } else {
+            self.expose_add_heap_object();
+            self.global(
+                "
+                function passArrayJsValueToWasm(array) {
+                    const ptr = wasm.__wbindgen_malloc(array.length * 4);
+                    const mem = getUint32Memory();
+                    for (let i = 0; i < array.length; i++) {
+                        mem[ptr / 4 + i] = addHeapObject(array[i]);
+                    }
+                    WASM_VECTOR_LEN = array.length;
+                    return ptr;
+                }
 
-        ",
-        );
+            ",
+            );
+        }
         Ok(())
     }
 
@@ -1242,25 +1348,45 @@ impl<'a> Context<'a> {
         ));
     }
 
-    fn expose_get_array_js_value_from_wasm(&mut self) {
+    fn expose_get_array_js_value_from_wasm(&mut self) -> Result<(), Error> {
         if !self.should_write_global("get_array_js_value_from_wasm") {
-            return;
+            return Ok(());
         }
         self.expose_uint32_memory();
-        self.expose_take_object();
-        self.global(
-            "
-            function getArrayJsValueFromWasm(ptr, len) {
-                const mem = getUint32Memory();
-                const slice = mem.subarray(ptr / 4, ptr / 4 + len);
-                const result = [];
-                for (let i = 0; i < slice.length; i++) {
-                    result.push(takeObject(slice[i]));
+        if self.config.anyref {
+            self.expose_anyref_table();
+            self.global(
+                "
+                function getArrayJsValueFromWasm(ptr, len) {
+                    const mem = getUint32Memory();
+                    const slice = mem.subarray(ptr / 4, ptr / 4 + len);
+                    const result = [];
+                    for (let i = 0; i < slice.length; i++) {
+                        result.push(wasm.__wbg_anyref_table.get(slice[i]));
+                    }
+                    wasm.__wbindgen_drop_anyref_slice(ptr, len);
+                    return result;
                 }
-                return result;
-            }
-            ",
-        );
+                ",
+            );
+            self.require_internal_export("__wbindgen_drop_anyref_slice")?;
+        } else {
+            self.expose_take_object();
+            self.global(
+                "
+                function getArrayJsValueFromWasm(ptr, len) {
+                    const mem = getUint32Memory();
+                    const slice = mem.subarray(ptr / 4, ptr / 4 + len);
+                    const result = [];
+                    for (let i = 0; i < slice.length; i++) {
+                        result.push(takeObject(slice[i]));
+                    }
+                    return result;
+                }
+                ",
+            );
+        }
+        Ok(())
     }
 
     fn expose_get_array_i8_from_wasm(&mut self) {
@@ -1553,21 +1679,36 @@ impl<'a> Context<'a> {
         ));
     }
 
-    fn expose_handle_error(&mut self) {
+    fn expose_handle_error(&mut self) -> Result<(), Error> {
         if !self.should_write_global("handle_error") {
-            return;
+            return Ok(());
         }
         self.expose_uint32_memory();
-        self.expose_add_heap_object();
-        self.global(
-            "
-            function handleError(exnptr, e) {
-                const view = getUint32Memory();
-                view[exnptr / 4] = 1;
-                view[exnptr / 4 + 1] = addHeapObject(e);
-            }
-            ",
-        );
+        if self.config.anyref {
+            self.expose_add_to_anyref_table()?;
+            self.global(
+                "
+                function handleError(exnptr, e) {
+                    const idx = addToAnyrefTable(e);
+                    const view = getUint32Memory();
+                    view[exnptr / 4] = 1;
+                    view[exnptr / 4 + 1] = idx;
+                }
+                ",
+            );
+        } else {
+            self.expose_add_heap_object();
+            self.global(
+                "
+                function handleError(exnptr, e) {
+                    const view = getUint32Memory();
+                    view[exnptr / 4] = 1;
+                    view[exnptr / 4 + 1] = addHeapObject(e);
+                }
+                ",
+            );
+        }
+        Ok(())
     }
 
     fn wasm_import_needed(&self, name: &str) -> bool {
@@ -1615,8 +1756,8 @@ impl<'a> Context<'a> {
         Ok(s)
     }
 
-    fn expose_get_vector_from_wasm(&mut self, ty: VectorKind) -> &'static str {
-        match ty {
+    fn expose_get_vector_from_wasm(&mut self, ty: VectorKind) -> Result<&'static str, Error> {
+        Ok(match ty {
             VectorKind::String => {
                 self.expose_get_string_from_wasm();
                 "getStringFromWasm"
@@ -1666,10 +1807,10 @@ impl<'a> Context<'a> {
                 "getArrayF64FromWasm"
             }
             VectorKind::Anyref => {
-                self.expose_get_array_js_value_from_wasm();
+                self.expose_get_array_js_value_from_wasm()?;
                 "getArrayJsValueFromWasm"
             }
-        }
+        })
     }
 
     fn expose_global_argument_ptr(&mut self) -> Result<(), Error> {
@@ -2051,24 +2192,24 @@ impl<'a> Context<'a> {
             _ => bail!("export `{}` wasn't a function", start),
         };
 
-        if let Some(prev) = self.module.start {
-            let prev = self.module.funcs.get(prev);
-            if let Some(prev) = &prev.name {
-                bail!(
-                    "cannot flag `{}` as start function as `{}` is \
-                     already the start function",
-                    start,
-                    prev
-                );
+        let prev_start = match self.module.start {
+            Some(f) => f,
+            None => {
+                self.module.start = Some(id);
+                return Ok(());
             }
-            bail!(
-                "cannot flag `{}` as start function as another \
-                 function is already the start function",
-                start
-            );
-        }
+        };
 
-        self.module.start = Some(id);
+        // Note that we call the previous start function, if any, first. This is
+        // because the start function currently only shows up when it's injected
+        // through thread/anyref transforms. These injected start functions need
+        // to happen before user code, so we always schedule them first.
+        let mut builder = walrus::FunctionBuilder::new();
+        let call1 = builder.call(prev_start, Box::new([]));
+        let call2 = builder.call(id, Box::new([]));
+        let ty = self.module.funcs.get(id).ty();
+        let new_start = builder.finish(ty, Vec::new(), vec![call1, call2], self.module);
+        self.module.start = Some(new_start);
         Ok(())
     }
 
@@ -2098,7 +2239,65 @@ impl<'a> Context<'a> {
         let id =
             self.module
                 .add_import_func("__wbindgen_placeholder__", "__wbindgen_defer_start", ty);
+        assert!(self.module.start.is_none());
         self.module.start = Some(id);
+    }
+
+    fn expose_anyref_table(&mut self) {
+        assert!(self.config.anyref);
+        if !self.should_write_global("anyref_table") {
+            return;
+        }
+        self.module
+            .exports
+            .add("__wbg_anyref_table", self.anyref.anyref_table_id());
+    }
+
+    fn expose_add_to_anyref_table(&mut self) -> Result<(), Error> {
+        assert!(self.config.anyref);
+        if !self.should_write_global("add_to_anyref_table") {
+            return Ok(());
+        }
+        self.expose_anyref_table();
+        self.require_internal_export("__wbindgen_anyref_table_alloc")?;
+        self.global(
+            "
+                function addToAnyrefTable(obj) {
+                    const idx = wasm.__wbindgen_anyref_table_alloc();
+                    wasm.__wbg_anyref_table.set(idx, obj);
+                    return idx;
+                }
+            ",
+        );
+
+        Ok(())
+    }
+
+    fn add_heap_object(&mut self, expr: &str) -> String {
+        if self.config.anyref {
+            expr.to_string()
+        } else {
+            self.expose_add_heap_object();
+            format!("addHeapObject({})", expr)
+        }
+    }
+
+    fn take_object(&mut self, expr: &str) -> String {
+        if self.config.anyref {
+            expr.to_string()
+        } else {
+            self.expose_take_object();
+            format!("takeObject({})", expr)
+        }
+    }
+
+    fn get_object(&mut self, expr: &str) -> String {
+        if self.config.anyref {
+            expr.to_string()
+        } else {
+            self.expose_get_object();
+            format!("getObject({})", expr)
+        }
     }
 }
 
@@ -2153,7 +2352,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         let (js, ts, js_doc) = Js2Rust::new(&export.function.name, self.cx)
             .process(descriptor.unwrap_function())?
-            .finish("function", &format!("wasm.{}", export.function.name));
+            .finish(
+                "function",
+                &format!("wasm.{}", export.function.name),
+                ExportedShim::Named(&export.function.name),
+            );
         self.cx.export(
             &export.function.name,
             &js,
@@ -2205,7 +2408,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 None
             })
             .process(descriptor.unwrap_function())?
-            .finish("", &format!("wasm.{}", wasm_name));
+            .finish(
+                "",
+                &format!("wasm.{}", wasm_name),
+                ExportedShim::Named(&wasm_name),
+            );
 
         let class = self
             .cx
@@ -2276,19 +2483,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
         // TODO: should support more types to import here
         let obj = self.import_name(info, &import.name)?;
-        self.cx.expose_add_heap_object();
-        self.cx.export(
-            &import.shim,
-            &format!(
-                "
-                function() {{
-                    return addHeapObject({});
-                }}
-                ",
-                obj
-            ),
-            None,
-        );
+        self.cx
+            .anyref
+            .import_xform("__wbindgen_placeholder__", &import.shim, &[], true);
+        let body = format!("function() {{ return {}; }}", self.cx.add_heap_object(&obj));
+        self.cx.export(&import.shim, &body, None);
         Ok(())
     }
 
@@ -2342,6 +2541,15 @@ impl<'a, 'b> SubContext<'a, 'b> {
             } = name
             {
                 shim.cx.direct_imports.insert(import.shim, (module, name));
+
+                if shim.ret_anyref || shim.anyref_args.len() > 0 {
+                    shim.cx.anyref.import_xform(
+                        "__wbindgen_placeholder__",
+                        &import.shim,
+                        &shim.anyref_args,
+                        shim.ret_anyref,
+                    );
+                }
                 return Ok(());
             }
         }
@@ -2350,7 +2558,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         // here (possibly emitting some glue in our JS module) and then emit the
         // shim as the wasm will be importing the shim.
         let target = shim.cx.generated_import_target(name, import)?;
-        let js = shim.finish(&target)?;
+        let js = shim.finish(&target, &import.shim)?;
         shim.cx.export(&import.shim, &js, None);
         Ok(())
     }
@@ -2364,14 +2572,16 @@ impl<'a, 'b> SubContext<'a, 'b> {
             return Ok(());
         }
         let name = self.import_name(info, &import.name)?;
-        self.cx.expose_get_object();
+        self.cx.anyref.import_xform(
+            "__wbindgen_placeholder__",
+            &import.instanceof_shim,
+            &[(0, false)],
+            false,
+        );
         let body = format!(
-            "
-                function(idx) {{
-                    return getObject(idx) instanceof {} ? 1 : 0;
-                }}
-            ",
-            name,
+            "function(idx) {{ return {} instanceof {} ? 1 : 0; }}",
+            self.cx.get_object("idx"),
+            name
         );
         self.cx.export(&import.instanceof_shim, &body, None);
         Ok(())
@@ -2412,6 +2622,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             };
 
             let set = {
+                let setter = ExportedShim::Named(&wasm_setter);
                 let mut cx = Js2Rust::new(&field.name, self.cx);
                 cx.method(true, false)
                     .argument(&descriptor)?
@@ -2422,12 +2633,13 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     field.name,
                     &cx.js_arguments[0].1
                 ));
-                cx.finish("", &format!("wasm.{}", wasm_setter)).0
+                cx.finish("", &format!("wasm.{}", wasm_setter), setter).0
             };
+            let getter = ExportedShim::Named(&wasm_getter);
             let (get, _ts, js_doc) = Js2Rust::new(&field.name, self.cx)
                 .method(true, false)
                 .ret(&descriptor)?
-                .finish("", &format!("wasm.{}", wasm_getter));
+                .finish("", &format!("wasm.{}", wasm_getter), getter);
             if !dst.ends_with("\n") {
                 dst.push_str("\n");
             }
