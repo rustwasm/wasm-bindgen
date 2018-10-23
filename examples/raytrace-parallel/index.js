@@ -12,8 +12,10 @@ concurrency.disabled = true;
 
 // First up, but try to do feature detection to provide better error messages
 function loadWasm() {
+  let msg = 'This demo currently requires Firefox Nightly (64.0) with\n'
+  msg += 'the `javascript.options.shared_memory` option enabled in `about:config`';
   if (typeof SharedArrayBuffer !== 'function') {
-    alert('this browser does not have SharedArrayBuffer support enabled');
+    alert('this browser does not have SharedArrayBuffer support enabled' + '\n\n' + msg);
     return
   }
   // Test for bulk memory operations with passive data segments
@@ -21,7 +23,7 @@ function loadWasm() {
   const buf = new Uint8Array([0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
     0x05, 0x03, 0x01, 0x00, 0x01, 0x0b, 0x03, 0x01, 0x01, 0x00]);
   if (!WebAssembly.validate(buf)) {
-    alert('this browser does not support passive wasm memory, demo does not work');
+    alert('this browser does not support passive wasm memory, demo does not work' + '\n\n' + msg);
     return
   }
 
