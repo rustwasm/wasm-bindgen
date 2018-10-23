@@ -108,6 +108,7 @@ extern crate js_sys;
 extern crate wasm_bindgen;
 
 use std::cell::{Cell, RefCell};
+use std::rc::Rc;
 use std::sync::Arc;
 
 use futures::executor::{self, Notify, Spawn};
@@ -336,15 +337,14 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
 
     impl Notify for Package {
         fn notify(&self, _id: usize) {
-            match self.notified.replace(State::Notified) {
-                // we need to schedule polling to resume, so we do so
-                // immediately for now
-                State::Waiting(me) => Package::poll(&me),
+            let me = match self.notified.replace(State::Notified) {
+                // we need to schedule polling to resume, so keep going
+                State::Waiting(me) => me,
 
                 // we were already notified, and were just notified again;
                 // having now coalesced the notifications we return as it's
                 // still someone else's job to process this
-                State::Notified => {}
+                State::Notified => return,
 
                 // the future was previously being polled, and we've just
                 // switched it to the "you're notified" state. We don't have
@@ -353,8 +353,27 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
                 // continue polling. For us, though, there's nothing else to do,
                 // so we bail out.
                 // later see
-                State::Polling => {}
-            }
+                State::Polling => return,
+            };
+
+            // Use `Promise.then` on a resolved promise to place our execution
+            // onto the next turn of the microtask queue, enqueueing our poll
+            // operation. We don't currently poll immediately as it turns out
+            // `futures` crate adapters aren't compatible with it and it also
+            // helps avoid blowing the stack by accident.
+            //
+            // Note that the `Rc`/`RefCell` trick here is basically to just
+            // ensure that our `Closure` gets cleaned up appropriately.
+            let promise = Promise::resolve(&JsValue::undefined());
+            let slot = Rc::new(RefCell::new(None));
+            let slot2 = slot.clone();
+            let closure = Closure::wrap(Box::new(move |_| {
+                let myself = slot2.borrow_mut().take();
+                debug_assert!(myself.is_some());
+                Package::poll(&me);
+            }) as Box<FnMut(JsValue)>);
+            promise.then(&closure);
+            *slot.borrow_mut() = Some(closure);
         }
     }
 }
