@@ -1,0 +1,3 @@
+[dependencies.std]
+stage = 0
+features = ['wasm-bindgen-threads']

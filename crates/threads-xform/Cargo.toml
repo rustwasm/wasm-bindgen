@@ -1,0 +1,15 @@
+[package]
+name = "wasm-bindgen-threads-xform"
+version = "0.2.25"
+authors = ["The wasm-bindgen Developers"]
+license = "MIT/Apache-2.0"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/threads-xform"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
+documentation = "https://docs.rs/wasm-bindgen-threads-xform"
+description = """
+Support for threading-related transformations in wasm-bindgen
+"""
+
+[dependencies]
+parity-wasm = "0.35"
+failure = "0.1"
