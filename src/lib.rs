@@ -534,10 +534,14 @@ impl Drop for JsValue {
     #[inline]
     fn drop(&mut self) {
         unsafe {
-            // if the first bit is set then this is a stack value, so we for
-            // sure need to drop it. Otherwise if this is one of the special
-            // reserved values there's no need to drop it.
-            if (self.idx & 1) == 1 || self.idx >= JSIDX_RESERVED {
+            // The first bit indicates whether this is a stack value or not.
+            // Stack values should never be dropped (they're always in
+            // `ManuallyDrop`)
+            debug_assert!(self.idx & 1 == 0);
+
+            // We don't want to drop the first few elements as they're all
+            // reserved, but everything else is safe to drop.
+            if self.idx >= JSIDX_RESERVED {
                 __wbindgen_object_drop_ref(self.idx);
             }
         }
