@@ -17,7 +17,7 @@ RUSTFLAGS='-C target-feature=+atomics' \
 # here to turn it on for our bindings generation. Also note that webpack isn't
 # currently compatible with atomics, so we go with the --no-modules output.
 WASM_BINDGEN_THREADS=1 \
-  cargo +nightly run --manifest-path ../../crates/cli/Cargo.toml \
+  cargo run --manifest-path ../../crates/cli/Cargo.toml \
     --bin wasm-bindgen -- \
     ../../target/wasm32-unknown-unknown/release/raytrace_parallel.wasm --out-dir . \
     --no-modules
