@@ -13,6 +13,10 @@ install:
   - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
   - rustc -V
   - cargo -V
+  - appveyor-retry appveyor DownloadFile https://github.com/mozilla/sccache/releases/download/0.2.7/sccache-0.2.7-x86_64-pc-windows-msvc.tar.gz
+  - tar xzf sccache-0.2.7-x86_64-pc-windows-msvc.tar.gz
+  - set PATH=%PATH%;%CD%/sccache-0.2.7-x86_64-pc-windows-msvc
+  - set RUSTC_WRAPPER=sccache
 
 build: false
 
