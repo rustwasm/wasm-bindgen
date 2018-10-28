@@ -44,8 +44,7 @@ INSTALL_AWS: &INSTALL_AWS
 matrix:
   include:
     # Tests for wasm-bindgen itself pass
-    - rust: beta
-      env: JOB=test-bindgen
+    - name: "test wasm-bindgen crate"
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_GECKODRIVER
@@ -71,7 +70,7 @@ matrix:
 
     # Tests the `nightly` feature of wasm-bindgen
     - rust: nightly
-      env: JOB=test-bindgen-nightly
+      name: "test: wasm-bindgen crate nightly feature"
       install:
         - *INSTALL_NODE_VIA_NVM
       script:
@@ -79,8 +78,7 @@ matrix:
       if: branch = master
 
     # All examples work
-    - rust: nightly
-      name: "examples - almost all examples"
+    - name: "examples - almost all examples"
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_AWS
@@ -113,8 +111,7 @@ matrix:
       if: branch = master
 
     # The `web-sys` crate's tests pass
-    - rust: beta
-      env: JOB=test-web-sys
+    - name: "test web-sys crate"
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_GECKODRIVER
@@ -134,8 +131,7 @@ matrix:
       if: branch = master
 
     # The `js-sys` crate's tests pass
-    - rust: beta
-      env: JOB=test-js-sys
+    - name: "test js-sys crate"
       install:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_GECKODRIVER
@@ -148,8 +144,7 @@ matrix:
       if: branch = master
 
     # WebIDL tests pass
-    - rust: beta
-      env: JOB=test-webidl
+    - name: "test wasm-bindgen-webidl crate"
       install: *INSTALL_NODE_VIA_NVM
       script:
         - cargo test -p wasm-bindgen-webidl
@@ -158,12 +153,12 @@ matrix:
 
     # UI tests for the macro work just fine
     - rust: nightly
-      env: JOB=macro-ui
+      name: "test ui tests"
       script: cargo test -p ui-tests
       if: branch = master
 
     # Dist linux binary
-    - rust: nightly
+    - name: "dist: Linux (x86_64-unknown-linux-musl)"
       env: JOB=dist-linux TARGET=x86_64-unknown-linux-musl
       before_script: rustup target add $TARGET
       script:
@@ -179,21 +174,14 @@ matrix:
       <<: *DEPLOY_TO_GITHUB
 
     # Dist OSX binary
-    - rust: nightly
+    - name: "dist: OSX (x86_64-apple-darwin)"
       os: osx
       env: JOB=dist-osx MACOSX_DEPLOYMENT_TARGET=10.7 TARGET=x86_64-apple-darwin
       script: cargo build --manifest-path crates/cli/Cargo.toml --release --target $TARGET
       <<: *DEPLOY_TO_GITHUB
 
-    # CLI builds on stable
-    - rust: stable
-      env: JOB=check-stable-cli
-      script: cargo check --manifest-path crates/cli/Cargo.toml
-      if: branch = master
-
     # Build mdbook documentation
-    - rust: stable
-      env: JOB=guide-build
+    - name: "doc: Guide documentation"
       install:
         - mkdir -p $HOME/mdbook
         - curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.2.1/mdbook-v0.2.1-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C $HOME/mdbook
@@ -208,10 +196,10 @@ matrix:
 
     # Build API documentation
     - rust: nightly
-      env: JOB=api-docs
+      name: "doc: API documentation"
       install: *INSTALL_AWS
       script:
-        - cargo doc --no-deps
+        - cargo doc --no-deps --features 'nightly serde-serialize'
         - cargo doc --no-deps --manifest-path crates/js-sys/Cargo.toml
         - cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
         - cargo doc --no-deps --manifest-path crates/web-sys/Cargo.toml --all-features

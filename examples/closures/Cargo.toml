@@ -7,7 +7,7 @@ authors = ["Alex Crichton <alex@alexcrichton.com>"]
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { path = "../..", features = ['nightly'] }
+wasm-bindgen = { path = "../.." }
 js-sys = { path = "../../crates/js-sys" }
 
 [dependencies.web-sys]

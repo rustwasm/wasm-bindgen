@@ -3,8 +3,8 @@
 set -ex
 
 # Compile our wasm module and run `wasm-bindgen`
-cargo +nightly build --target wasm32-unknown-unknown --release
-cargo +nightly run --manifest-path ../../crates/cli/Cargo.toml \
+cargo build --target wasm32-unknown-unknown --release
+cargo run --manifest-path ../../crates/cli/Cargo.toml \
   --bin wasm-bindgen -- \
   ../../target/wasm32-unknown-unknown/release/wasm2js.wasm --out-dir .
 
