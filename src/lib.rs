@@ -827,9 +827,13 @@ pub mod __rt {
             let align = mem::align_of::<usize>();
             if let Ok(layout) = Layout::from_size_align(size, align) {
                 unsafe {
-                    let ptr = alloc(layout);
-                    if !ptr.is_null() {
-                        return ptr
+                    if layout.size() > 0 {
+                        let ptr = alloc(layout);
+                        if !ptr.is_null() {
+                            return ptr
+                        }
+                    } else {
+                        return align as *mut u8
                     }
                 }
             }
