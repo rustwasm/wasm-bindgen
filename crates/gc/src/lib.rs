@@ -8,7 +8,7 @@ extern crate parity_wasm;
 extern crate log;
 extern crate rustc_demangle;
 
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 use std::iter;
 use std::mem;
 
@@ -474,14 +474,20 @@ impl<'a> RemapContext<'a> {
         let mut memories = Vec::new();
 
         if let Some(s) = m.type_section() {
-            let mut removed = 0;
-            for i in 0..(s.types().len() as u32) {
-                if analysis.types.contains(&i) {
-                    types.push(i - removed);
+            let mut ntypes = 0;
+            let mut map = HashMap::new();
+            for (i, ty) in s.types().iter().enumerate() {
+                if analysis.types.contains(&(i as u32)) {
+                    if let Some(prev) = map.get(&ty) {
+                        types.push(*prev);
+                        continue
+                    }
+                    map.insert(ty, ntypes);
+                    types.push(ntypes);
+                    ntypes += 1;
                 } else {
                     debug!("gc type {}", i);
                     types.push(u32::max_value());
-                    removed += 1;
                 }
             }
         }
