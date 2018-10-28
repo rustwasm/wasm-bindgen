@@ -284,15 +284,27 @@ impl Client {
             Driver::Safari(_) => {
                 #[derive(Deserialize)]
                 struct Response {
+                    // returned by `--legacy`
+                    #[serde(rename = "sessionId")]
+                    session_id: Option<String>,
+                    // returned by the now-default `--w3c` mode
+                    value: Option<Value>,
+                }
+                #[derive(Deserialize)]
+                struct Value {
                     #[serde(rename = "sessionId")]
                     session_id: String,
                 }
                 let request = json!({
+                    // this is needed for the now `--legacy` mode
                     "desiredCapabilities": {
+                    },
+                    // this is needed for the now `--w3c` (default) mode
+                    "capabilities": {
                     }
                 });
                 let x: Response = self.post("/session", &request)?;
-                Ok(x.session_id)
+                Ok(x.session_id.or(x.value.map(|v| v.session_id)).unwrap())
             }
             Driver::Chrome(_) => {
                 #[derive(Deserialize)]
