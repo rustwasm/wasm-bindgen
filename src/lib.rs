@@ -99,6 +99,7 @@ impl JsValue {
         _marker: marker::PhantomData,
     };
 
+    #[inline]
     fn _new(idx: u32) -> JsValue {
         JsValue {
             idx,
