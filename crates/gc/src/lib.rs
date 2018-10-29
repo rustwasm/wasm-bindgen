@@ -58,10 +58,11 @@ fn run(config: &mut Config, module: &mut Module) {
         cx.blacklist.insert("__heap_base");
         cx.blacklist.insert("__data_end");
 
-        // always treat memory as a root
+        // Always treat memory as a root. In theory we could actually gc this
+        // away in some circumstances, but it's probably not worth the effort.
         cx.add_memory(0);
 
-        // All exports are a root
+        // All non-blacklisted exports are roots
         if let Some(section) = module.export_section() {
             for (i, entry) in section.entries().iter().enumerate() {
                 if cx.blacklist.contains(entry.field()) {
@@ -71,24 +72,7 @@ fn run(config: &mut Config, module: &mut Module) {
             }
         }
 
-        // Pessimistically assume all passive data and table segments are
-        // required
-        if let Some(section) = module.data_section() {
-            for entry in section.entries() {
-                if entry.passive() {
-                    cx.add_data_segment(entry);
-                }
-            }
-        }
-        if let Some(elements) = module.elements_section() {
-            for (i, seg) in elements.entries().iter().enumerate() {
-                if seg.passive() {
-                    cx.add_element_segment(i as u32, seg);
-                }
-            }
-        }
-
-        // The start function is also a root
+        // ... and finally, the start function
         if let Some(i) = module.start_section() {
             cx.add_function(i);
         }
@@ -147,6 +131,7 @@ struct Analysis {
     exports: BitSet,
     functions: BitSet,
     elements: BitSet,
+    data_segments: BitSet,
     imported_functions: u32,
     imported_globals: u32,
     imported_memories: u32,
@@ -241,11 +226,9 @@ impl<'a> LiveContext<'a> {
             let iter = elements.entries()
                 .iter()
                 .enumerate()
-                .filter(|(_, d)| !d.passive());
-            for (i, entry) in iter {
-                if entry.index() == idx {
-                    self.add_element_segment(i as u32, entry);
-                }
+                .filter(|(_, d)| !d.passive() && d.index() == idx);
+            for (i, _) in iter {
+                self.add_element_segment(i as u32);
             }
         }
 
@@ -280,10 +263,12 @@ impl<'a> LiveContext<'a> {
 
         // Add all data segments that initialize this memory
         if let Some(data) = self.data_section {
-            for entry in data.entries().iter().filter(|d| !d.passive()) {
-                if entry.index() == idx {
-                    self.add_data_segment(entry);
-                }
+            let iter = data.entries()
+                .iter()
+                .enumerate()
+                .filter(|(_, d)| !d.passive() && d.index() == idx);
+            for (i, _) in iter {
+                self.add_data_segment(i as u32);
             }
         }
 
@@ -402,6 +387,16 @@ impl<'a> LiveContext<'a> {
             }
             Instruction::GetGlobal(i) |
             Instruction::SetGlobal(i) => self.add_global(i),
+            Instruction::MemoryInit(i) |
+            Instruction::MemoryDrop(i) => {
+                self.add_memory(0);
+                self.add_data_segment(i);
+            }
+            Instruction::TableInit(i) |
+            Instruction::TableDrop(i) => {
+                self.add_table(0);
+                self.add_element_segment(i);
+            }
             _ => {}
         }
     }
@@ -438,23 +433,32 @@ impl<'a> LiveContext<'a> {
         }
     }
 
-    fn add_data_segment(&mut self, data: &DataSegment) {
-        if let Some(offset) = data.offset() {
-            self.add_memory(data.index());
-            self.add_init_expr(offset);
+    fn add_data_segment(&mut self, idx: u32) {
+        if !self.analysis.data_segments.insert(idx) {
+            return
+        }
+        let data = &self.data_section.unwrap().entries()[idx as usize];
+        if !data.passive() {
+            if let Some(offset) = data.offset() {
+                self.add_memory(data.index());
+                self.add_init_expr(offset);
+            }
         }
     }
 
-    fn add_element_segment(&mut self, idx: u32, seg: &ElementSegment) {
+    fn add_element_segment(&mut self, idx: u32) {
         if !self.analysis.elements.insert(idx) {
             return
         }
+        let seg = &self.element_section.unwrap().entries()[idx as usize];
         for member in seg.members() {
             self.add_function(*member);
         }
-        if let Some(offset) = seg.offset() {
-            self.add_table(seg.index());
-            self.add_init_expr(offset);
+        if !seg.passive() {
+            if let Some(offset) = seg.offset() {
+                self.add_table(seg.index());
+                self.add_init_expr(offset);
+            }
         }
     }
 }
@@ -467,6 +471,8 @@ struct RemapContext<'a> {
     types: Vec<u32>,
     tables: Vec<u32>,
     memories: Vec<u32>,
+    elements: Vec<u32>,
+    data_segments: Vec<u32>,
 }
 
 impl<'a> RemapContext<'a> {
@@ -561,6 +567,34 @@ impl<'a> RemapContext<'a> {
             }
         }
 
+        let mut elements = Vec::new();
+        if let Some(s) = m.elements_section() {
+            let mut nelements = 0;
+            for i in 0..(s.entries().len() as u32) {
+                if analysis.elements.contains(&i) {
+                    elements.push(nelements);
+                    nelements += 1;
+                } else {
+                    debug!("gc element segment {}", i);
+                    elements.push(u32::max_value());
+                }
+            }
+        }
+
+        let mut data_segments = Vec::new();
+        if let Some(s) = m.data_section() {
+            let mut ndata_segments = 0;
+            for i in 0..(s.entries().len() as u32) {
+                if analysis.data_segments.contains(&i) {
+                    data_segments.push(ndata_segments);
+                    ndata_segments += 1;
+                } else {
+                    debug!("gc data segment {}", i);
+                    data_segments.push(u32::max_value());
+                }
+            }
+        }
+
         RemapContext {
             analysis,
             functions,
@@ -569,6 +603,8 @@ impl<'a> RemapContext<'a> {
             tables,
             types,
             config,
+            elements,
+            data_segments,
         }
     }
 
@@ -729,9 +765,11 @@ impl<'a> RemapContext<'a> {
     }
 
     fn remap_element_segment(&self, s: &mut ElementSegment) {
-        let mut i = s.index();
-        self.remap_table_idx(&mut i);
-        assert_eq!(s.index(), i);
+        if !s.passive() {
+            let mut i = s.index();
+            self.remap_table_idx(&mut i);
+            assert_eq!(s.index(), i);
+        }
         for m in s.members_mut() {
             self.remap_function_idx(m);
         }
@@ -772,6 +810,10 @@ impl<'a> RemapContext<'a> {
             Instruction::CallIndirect(ref mut t, _) => self.remap_type_idx(t),
             Instruction::GetGlobal(ref mut i) |
             Instruction::SetGlobal(ref mut i) => self.remap_global_idx(i),
+            Instruction::TableInit(ref mut i) |
+            Instruction::TableDrop(ref mut i) => self.remap_element_idx(i),
+            Instruction::MemoryInit(ref mut i) |
+            Instruction::MemoryDrop(ref mut i) => self.remap_data_idx(i),
             _ => {}
         }
     }
@@ -784,6 +826,7 @@ impl<'a> RemapContext<'a> {
     }
 
     fn remap_data_section(&self, s: &mut DataSection) -> bool {
+        self.retain(&self.analysis.data_segments, s.entries_mut(), "data", 0);
         for data in s.entries_mut() {
             self.remap_data_segment(data);
         }
@@ -822,6 +865,16 @@ impl<'a> RemapContext<'a> {
 
     fn remap_memory_idx(&self, i: &mut u32) {
         *i = self.memories[*i as usize];
+        assert!(*i != u32::max_value());
+    }
+
+    fn remap_element_idx(&self, i: &mut u32) {
+        *i = self.elements[*i as usize];
+        assert!(*i != u32::max_value());
+    }
+
+    fn remap_data_idx(&self, i: &mut u32) {
+        *i = self.data_segments[*i as usize];
         assert!(*i != u32::max_value());
     }
 

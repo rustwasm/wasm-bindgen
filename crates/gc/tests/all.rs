@@ -75,6 +75,7 @@ fn run_test(test: &Test) -> Result<(), Box<Error>> {
     let expected = extract_expected(&input);
     let status = Command::new("wat2wasm")
         .arg("--debug-names")
+        .arg("--enable-bulk-memory")
         .arg(&test.input)
         .arg("-o")
         .arg(f.path())
@@ -94,6 +95,7 @@ fn run_test(test: &Test) -> Result<(), Box<Error>> {
     fs::write(f.path(), wasm)?;
 
     let status = Command::new("wasm2wat")
+        .arg("--enable-bulk-memory")
         .arg(&f.path())
         .stderr(Stdio::inherit())
         .output()?;
