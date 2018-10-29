@@ -53,6 +53,9 @@ fn run(config: &mut Config, module: &mut Module) {
     let analysis = {
         let mut cx = LiveContext::new(&module);
         cx.blacklist.insert("rust_eh_personality");
+        cx.blacklist.insert("__indirect_function_table");
+        cx.blacklist.insert("__heap_base");
+        cx.blacklist.insert("__data_end");
 
         if let Some(section) = module.export_section() {
             for (i, entry) in section.entries().iter().enumerate() {
