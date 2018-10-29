@@ -71,20 +71,18 @@ fn run(config: &mut Config, module: &mut Module) {
             }
         }
 
-        // Pessimistically assume all passive data and table segments are
+        // Pessimistically assume all data and table segments are
         // required
+        //
+        // TODO: this shouldn't assume this!
         if let Some(section) = module.data_section() {
             for entry in section.entries() {
-                if entry.passive() {
-                    cx.add_data_segment(entry);
-                }
+                cx.add_data_segment(entry);
             }
         }
         if let Some(elements) = module.elements_section() {
             for seg in elements.entries() {
-                if seg.passive() {
-                    cx.add_element_segment(seg);
-                }
+                cx.add_element_segment(seg);
             }
         }
 
@@ -526,7 +524,8 @@ impl<'a> RemapContext<'a> {
         }
         if let Some(s) = m.table_section() {
             for i in 0..(s.entries().len() as u32) {
-                if analysis.tables.contains(&(i + analysis.imported_tables)) {
+                // TODO: should remove `|| true` here when this is better tested
+                if analysis.tables.contains(&(i + analysis.imported_tables)) || true {
                     tables.push(ntables);
                     ntables += 1;
                 } else {
@@ -537,7 +536,8 @@ impl<'a> RemapContext<'a> {
         }
         if let Some(s) = m.memory_section() {
             for i in 0..(s.entries().len() as u32) {
-                if analysis.memories.contains(&(i + analysis.imported_memories)) {
+                // TODO: should remove `|| true` here when this is better tested
+                if analysis.memories.contains(&(i + analysis.imported_memories)) || true {
                     memories.push(nmemories);
                     nmemories += 1;
                 } else {
