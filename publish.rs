@@ -9,27 +9,30 @@
 //! * Merge when green
 //! * Execute `./publish publish` to publish crates
 
+use std::collections::HashMap;
 use std::env;
 use std::fs;
+use std::io;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+// note that this list must be topologically sorted by dependencies
 const CRATES_TO_PUBLISH: &[&str] = &[
-    "wasm-bindgen",
-    "js-sys",
-    "wasm-bindgen-backend",
-    "wasm-bindgen-cli",
-    "wasm-bindgen-cli-support",
-    "wasm-bindgen-futures",
-    "wasm-bindgen-gc",
-    "wasm-bindgen-macro",
-    "wasm-bindgen-macro-support",
     "wasm-bindgen-shared",
-    "wasm-bindgen-test",
+    "wasm-bindgen-backend",
+    "wasm-bindgen-gc",
+    "wasm-bindgen-macro-support",
+    "wasm-bindgen-macro",
     "wasm-bindgen-test-macro",
+    "wasm-bindgen-test",
     "wasm-bindgen-wasm-interpreter",
     "wasm-bindgen-webidl",
     "wasm-bindgen-threads-xform",
+    "wasm-bindgen-cli-support",
+    "wasm-bindgen-cli",
+    "wasm-bindgen",
+    "wasm-bindgen-futures",
+    "js-sys",
     "web-sys",
 ];
 
@@ -54,6 +57,13 @@ fn main() {
     let mut crates = Vec::new();
     crates.push(read_crate("./Cargo.toml".as_ref()));
     find_crates("crates".as_ref(), &mut crates);
+
+    let pos = CRATES_TO_PUBLISH.iter()
+        .chain(CRATES_TO_AVOID_PUBLISH)
+        .enumerate()
+        .map(|(i, c)| (*c, i))
+        .collect::<HashMap<_, _>>();
+    crates.sort_by_key(|krate| pos[&krate.name[..]]);
 
     match &env::args().nth(1).expect("must have one argument")[..] {
         "bump" => {
@@ -186,6 +196,14 @@ fn publish(krate: &Crate) {
     if !CRATES_TO_PUBLISH.iter().any(|s| *s == krate.name) {
         return
     }
+    if krate.name == "wasm-bindgen" {
+        println!("ABOUT TO PUBLISH wasm-bindgen");
+        println!("for this to work you need to comment out the `dev-dependencies`");
+        println!("section in `Cargo.toml` and everything below");
+        println!("");
+        println!("hit enter when done");
+        drop(io::stdin().read_line(&mut String::new()));
+    }
     let status = Command::new("cargo")
         .arg("publish")
         .current_dir(krate.manifest.parent().unwrap())
@@ -195,5 +213,12 @@ fn publish(krate: &Crate) {
         .expect("failed to run cargo");
     if !status.success() {
         println!("FAIL: failed to publish `{}`: {}", krate.name, status);
+    }
+
+    if krate.name == "wasm-bindgen" {
+        println!("ok please now uncomment the section you just commented");
+        println!("");
+        println!("hit enter when done");
+        drop(io::stdin().read_line(&mut String::new()));
     }
 }
