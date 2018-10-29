@@ -73,6 +73,7 @@ members = [
   "examples/paint",
   "examples/performance",
   "examples/raytrace-parallel",
+  "examples/todomvc",
   "examples/wasm-in-wasm",
   "examples/wasm2js",
   "examples/webaudio",
