@@ -8,8 +8,9 @@ extern crate parity_wasm;
 extern crate log;
 extern crate rustc_demangle;
 
-use std::mem;
 use std::collections::HashSet;
+use std::iter;
+use std::mem;
 
 use parity_wasm::elements::*;
 
@@ -132,6 +133,8 @@ fn run(config: &mut Config, module: &mut Module) {
             module.sections_mut().remove(i);
         }
     }
+
+    gc_locals(module);
 }
 
 #[derive(Default)]
@@ -838,4 +841,125 @@ impl<'a> RemapContext<'a> {
             NameSection::Unparsed { .. } => {}
         }
     }
+}
+
+fn gc_locals(module: &mut Module) {
+    let mut code = None;
+    let mut types = None;
+    let mut functions = None;
+    let mut locals = None;
+    let mut imported_functions = 0;
+    for section in module.sections_mut() {
+        match section {
+            Section::Import(s) => imported_functions = s.functions(),
+            Section::Code(s) => code = Some(s),
+            Section::Function(s) => functions = Some(s),
+            Section::Type(s) => types = Some(s),
+            Section::Name(NameSection::Local(s)) => locals = Some(s),
+            _ => {}
+        }
+    }
+    let code = match code {
+        Some(s) => s,
+        None => return,
+    };
+    let types = types.unwrap();
+    let functions = functions.unwrap();
+
+    for (i, body) in code.bodies_mut().iter_mut().enumerate() {
+        let ty_idx = functions.entries()[i].type_ref();
+        let ty = match &types.types()[ty_idx as usize] {
+            Type::Function(f) => f,
+        };
+        gc_body((i + imported_functions) as u32, body, ty, &mut locals);
+    }
+}
+
+/// Each body of a function has a list of locals, and each local has a type and
+/// a number of how many locals of this type there are. The purpose of this is
+/// to collapse something like:
+///
+///     Local::new(1, ValueType::I32);
+///     Local::new(1, ValueType::I32);
+///
+/// to ...
+///
+///     Local::new(2, ValueType::I32);
+///
+/// to encode this a bit more compactly
+fn gc_body(
+    idx: u32,
+    body: &mut FuncBody,
+    ty: &FunctionType,
+    names: &mut Option<&mut LocalNameSection>,
+) {
+    let mut local_tys = ty.params().to_vec();
+    for local in body.locals_mut().drain(..) {
+        local_tys.extend(iter::repeat(local.value_type()).take(local.count() as usize));
+    }
+    let mut used = vec![false; local_tys.len()];
+
+    for instr in body.code().elements() {
+        match instr {
+            Instruction::GetLocal(i) => used[*i as usize] = true,
+            Instruction::SetLocal(i) => used[*i as usize] = true,
+            Instruction::TeeLocal(i) => used[*i as usize] = true,
+            _ => {}
+        }
+    }
+
+    let mut map = vec![None; local_tys.len()];
+    for i in 0..ty.params().len() {
+        map[i] = Some(i as u32);
+    }
+    let mut next = ty.params().len() as u32;
+    for i in ty.params().len()..used.len() {
+        if !used[i] {
+            continue
+        }
+        // We're using this local, so map it to the next index (the lowest).
+        // Find all other locals with the same type and lump then into our
+        // `Local` declaration.
+        let before = next;
+        map[i] = Some(next);
+        next += 1;
+        for j in i + 1..used.len() {
+            if used[j] && local_tys[i] == local_tys[j] {
+                used[j] = false; // make sure we don't visit this later
+                map[j] = Some(next);
+                next += 1;
+            }
+        }
+        body.locals_mut().push(Local::new((next - before) as u32, local_tys[i]));
+    }
+
+    for instr in body.code_mut().elements_mut() {
+        let get = |i: &u32| {
+            map[*i as usize].unwrap()
+        };
+        match instr {
+            Instruction::GetLocal(i) => *i = get(i),
+            Instruction::SetLocal(i) => *i = get(i),
+            Instruction::TeeLocal(i) => *i = get(i),
+            _ => {}
+        }
+    }
+
+    if let Some(names) = names {
+        remap_local_names(idx, &map, names);
+    }
+}
+
+fn remap_local_names(idx: u32, map: &[Option<u32>], names: &mut LocalNameSection) {
+    let prev = match names.local_names_mut().remove(idx) {
+        Some(map) => map,
+        None => return,
+    };
+    let mut new = IndexMap::with_capacity(map.len());
+    for (idx, name) in prev {
+        if let Some(new_idx) = map[idx as usize] {
+            new.insert(new_idx, name);
+        }
+    }
+    names.local_names_mut().insert(idx, new);
 }
