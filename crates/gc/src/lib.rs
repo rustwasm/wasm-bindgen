@@ -71,18 +71,20 @@ fn run(config: &mut Config, module: &mut Module) {
             }
         }
 
-        // Pessimistically assume all data and table segments are
+        // Pessimistically assume all passive data and table segments are
         // required
-        //
-        // TODO: this shouldn't assume this!
         if let Some(section) = module.data_section() {
             for entry in section.entries() {
-                cx.add_data_segment(entry);
+                if entry.passive() {
+                    cx.add_data_segment(entry);
+                }
             }
         }
         if let Some(elements) = module.elements_section() {
-            for seg in elements.entries() {
-                cx.add_element_segment(seg);
+            for (i, seg) in elements.entries().iter().enumerate() {
+                if seg.passive() {
+                    cx.add_element_segment(i as u32, seg);
+                }
             }
         }
 
@@ -144,6 +146,7 @@ struct Analysis {
     imports: BitSet,
     exports: BitSet,
     functions: BitSet,
+    elements: BitSet,
     imported_functions: u32,
     imported_globals: u32,
     imported_memories: u32,
@@ -235,9 +238,13 @@ impl<'a> LiveContext<'a> {
 
         // Add all element segments that initialize this table
         if let Some(elements) = self.element_section {
-            for entry in elements.entries().iter().filter(|d| !d.passive()) {
+            let iter = elements.entries()
+                .iter()
+                .enumerate()
+                .filter(|(_, d)| !d.passive());
+            for (i, entry) in iter {
                 if entry.index() == idx {
-                    self.add_element_segment(entry);
+                    self.add_element_segment(i as u32, entry);
                 }
             }
         }
@@ -438,7 +445,10 @@ impl<'a> LiveContext<'a> {
         }
     }
 
-    fn add_element_segment(&mut self, seg: &ElementSegment) {
+    fn add_element_segment(&mut self, idx: u32, seg: &ElementSegment) {
+        if !self.analysis.elements.insert(idx) {
+            return
+        }
         for member in seg.members() {
             self.add_function(*member);
         }
@@ -530,8 +540,7 @@ impl<'a> RemapContext<'a> {
         }
         if let Some(s) = m.table_section() {
             for i in 0..(s.entries().len() as u32) {
-                // TODO: should remove `|| true` here when this is better tested
-                if analysis.tables.contains(&(i + analysis.imported_tables)) || true {
+                if analysis.tables.contains(&(i + analysis.imported_tables)) {
                     tables.push(ntables);
                     ntables += 1;
                 } else {
@@ -542,8 +551,7 @@ impl<'a> RemapContext<'a> {
         }
         if let Some(s) = m.memory_section() {
             for i in 0..(s.entries().len() as u32) {
-                // TODO: should remove `|| true` here when this is better tested
-                if analysis.memories.contains(&(i + analysis.imported_memories)) || true {
+                if analysis.memories.contains(&(i + analysis.imported_memories)) {
                     memories.push(nmemories);
                     nmemories += 1;
                 } else {
@@ -713,6 +721,7 @@ impl<'a> RemapContext<'a> {
     }
 
     fn remap_element_section(&self, s: &mut ElementSection) -> bool {
+        self.retain(&self.analysis.elements, s.entries_mut(), "element", 0);
         for s in s.entries_mut() {
             self.remap_element_segment(s);
         }

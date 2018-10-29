@@ -167,6 +167,16 @@ matrix:
       script: cargo test -p ui-tests
       if: branch = master
 
+    # wasm-gc tests work alright
+    - name: "test wasm-bindgen-gc crate"
+      install:
+        - git clone https://github.com/WebAssembly/wabt
+        - mkdir -p wabt/build
+        - (cd wabt/wabt && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=sccache -DCMAKE_CXX_COMPILER_ARG1=c++ && cmake --build . -- -j4)
+        - export PATH=$PATH:`pwd`/wabt/build
+      script: cargo test -p wasm-bindgen-gc
+      if: branch = master
+
     # Dist linux binary
     - name: "dist: Linux (x86_64-unknown-linux-musl)"
       env: JOB=dist-linux TARGET=x86_64-unknown-linux-musl
