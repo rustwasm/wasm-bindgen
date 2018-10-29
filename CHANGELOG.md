@@ -32,6 +32,17 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.27
+
+Released 2018-10-29.
+
+### Fixed
+
+* Fixed an internal panic where the gc passes were being too aggressive
+  [#995](https://github.com/rustwasm/wasm-bindgen/pull/995)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.26
 
 Released 2018-10-29.
