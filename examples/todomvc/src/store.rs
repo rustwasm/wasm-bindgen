@@ -1,6 +1,5 @@
 use js_sys::JSON;
 use wasm_bindgen::prelude::*;
-use crate::exit;
 
 /// Stores items into localstorage
 pub struct Store {

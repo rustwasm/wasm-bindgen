@@ -26,7 +26,7 @@ impl Scheduler {
 
     pub fn set_controller(&self, controller: Controller) {
         if let Ok(mut controller_data) = self.controller.try_borrow_mut() {
-            controller_data.replace(controller);
+            *controller_data = Some(controller);
         } else {
             exit("This might be a deadlock");
         }
@@ -34,7 +34,7 @@ impl Scheduler {
 
     pub fn set_view(&self, view: View) {
         if let Ok(mut view_data) = self.view.try_borrow_mut() {
-            view_data.replace(view);
+            *view_data = Some(view);
         } else {
             exit("This might be a deadlock");
         }

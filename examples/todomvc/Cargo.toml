@@ -6,10 +6,6 @@ authors = ["The wasm-bindgen Developers"]
 [lib]
 crate-type = ["cdylib"]
 
-[profile.release]
-lto = true
-opt-level = 's'
-
 [build-dependencies]
 askama = "0.7.2"
 

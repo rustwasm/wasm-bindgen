@@ -5,9 +5,9 @@
 set -ex
 cd "$(dirname $0)"
 
-cargo +nightly build --target wasm32-unknown-unknown
+cargo build --target wasm32-unknown-unknown
 
-cargo +nightly run --manifest-path ../../crates/cli/Cargo.toml \
+cargo run --manifest-path ../../crates/cli/Cargo.toml \
   --bin wasm-bindgen -- \
   ../../target/wasm32-unknown-unknown/debug/todomvc.wasm --out-dir .
 

@@ -10,7 +10,6 @@ extern crate js_sys;
 extern crate web_sys;
 use std::rc::Rc;
 
-#[macro_use]
 extern crate askama;
 
 /// Controller of the program
