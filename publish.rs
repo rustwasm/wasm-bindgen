@@ -29,6 +29,7 @@ const CRATES_TO_PUBLISH: &[&str] = &[
     "wasm-bindgen-test-macro",
     "wasm-bindgen-wasm-interpreter",
     "wasm-bindgen-webidl",
+    "wasm-bindgen-threads-xform",
     "web-sys",
 ];
 

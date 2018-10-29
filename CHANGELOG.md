@@ -32,6 +32,39 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.26
+
+Released 2018-10-29.
+
+### Added
+
+* The `TypedArray.slice` methods have now been bound in `js-sys`.
+  [#956](https://github.com/rustwasm/wasm-bindgen/pull/956)
+
+* The `Debug` and `Clone` traits are now implemented for `js_sys::Promise`.
+  [#957](https://github.com/rustwasm/wasm-bindgen/pull/957)
+
+* The `js_sys::DataView` type now exposes overloads to specify endianness.
+  [#966](https://github.com/rustwasm/wasm-bindgen/pull/966)
+
+* When using `--no-modules` a `WebAssembly.Module` can now be directly passed
+  into the instantiation glue.
+  [#969](https://github.com/rustwasm/wasm-bindgen/pull/969)
+
+### Fixed
+
+* The `JsValue` type is no longer considered `Send`.
+  [#955](https://github.com/rustwasm/wasm-bindgen/pull/955)
+
+* The generated JS glue is now more robust in the face of missing APIs.
+  [#959](https://github.com/rustwasm/wasm-bindgen/pull/959)
+
+* An issue with the latest version of `safaridriver` used to run headless tests
+  has been resolved.
+  [#991](https://github.com/rustwasm/wasm-bindgen/pull/991)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.25
 
 Released 2018-10-10.
