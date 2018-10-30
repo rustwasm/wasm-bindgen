@@ -51,7 +51,7 @@ impl Config {
 }
 
 fn run(config: &mut Config, module: &mut Module) {
-    let analysis = {
+    let mut analysis = {
         let mut cx = LiveContext::new(&module);
         cx.blacklist.insert("rust_eh_personality");
         cx.blacklist.insert("__indirect_function_table");
@@ -80,7 +80,7 @@ fn run(config: &mut Config, module: &mut Module) {
         cx.analysis
     };
 
-    let cx = RemapContext::new(&module, &analysis, config);
+    let cx = RemapContext::new(&module, &mut analysis, config);
     for i in (0..module.sections().len()).rev() {
         let retain = match module.sections_mut()[i] {
             Section::Unparsed { .. } => {
@@ -476,7 +476,7 @@ struct RemapContext<'a> {
 }
 
 impl<'a> RemapContext<'a> {
-    fn new(m: &Module, analysis: &'a Analysis, config: &'a Config) -> RemapContext<'a> {
+    fn new(m: &Module, analysis: &'a mut Analysis, config: &'a Config) -> RemapContext<'a> {
         let mut nfunctions = 0;
         let mut functions = Vec::new();
         let mut nglobals = 0;
@@ -494,6 +494,7 @@ impl<'a> RemapContext<'a> {
                 if analysis.types.contains(&(i as u32)) {
                     if let Some(prev) = map.get(&ty) {
                         types.push(*prev);
+                        analysis.types.remove(&(i as u32));
                         continue
                     }
                     map.insert(ty, ntypes);

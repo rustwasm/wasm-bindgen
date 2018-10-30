@@ -172,7 +172,7 @@ matrix:
       install:
         - git clone https://github.com/WebAssembly/wabt
         - mkdir -p wabt/build
-        - (cd wabt/wabt && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=sccache -DCMAKE_CXX_COMPILER_ARG1=c++ && cmake --build . -- -j4)
+        - (cd wabt/build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=sccache -DCMAKE_CXX_COMPILER_ARG1=c++ -DBUILD_TESTS=OFF && cmake --build . -- -j4)
         - export PATH=$PATH:`pwd`/wabt/build
       script: cargo test -p wasm-bindgen-gc
       if: branch = master

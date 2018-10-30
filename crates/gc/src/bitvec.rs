@@ -29,6 +29,15 @@ impl BitSet {
         }
     }
 
+    pub fn remove(&mut self, i: &u32) {
+        let i = *i as usize;
+        let idx = i / BITS;
+        let bit = 1 << (i % BITS);
+        if let Some(slot) = self.bits.get_mut(idx) {
+            *slot &= !bit;
+        }
+    }
+
     pub fn contains(&self, i: &u32) -> bool {
         let i = *i as usize;
         let idx = i / BITS;
