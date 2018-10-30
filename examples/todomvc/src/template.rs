@@ -1,5 +1,5 @@
-use store::{ItemList, ItemListTrait, Item};
 use askama::Template as AskamaTemplate;
+use store::{ItemList, ItemListTrait};
 
 #[derive(AskamaTemplate)]
 #[template(path = "row.html")]
@@ -8,7 +8,6 @@ struct RowTemplate<'a> {
     title: &'a str,
     completed: bool,
 }
-
 
 #[derive(AskamaTemplate)]
 #[template(path = "itemsLeft.html")]
@@ -46,9 +45,7 @@ impl Template {
     ///
     /// Returns the contents for an "items left" indicator
     pub fn item_counter(active_todos: usize) -> String {
-        let items_left = ItemsLeftTemplate {
-            active_todos
-        };
+        let items_left = ItemsLeftTemplate { active_todos };
         if let Ok(res) = items_left.render() {
             res
         } else {

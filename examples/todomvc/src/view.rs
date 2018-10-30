@@ -1,6 +1,6 @@
 use crate::controller::ControllerMessage;
-use crate::exit;
 use crate::element::Element;
+use crate::exit;
 use crate::store::ItemList;
 use crate::{Message, Scheduler};
 use std::cell::RefCell;
@@ -28,31 +28,19 @@ pub enum ViewMessage {
     EditItemDone(String, String),
     SetItemComplete(String, bool),
 }
-
-fn item_id(element: &web_sys::EventTarget) -> Option<String> {
-    //TODO ugly reformat
-    let dyn_el: Option<&web_sys::Node> = wasm_bindgen::JsCast::dyn_ref(element);
-    if let Some(element_node) = dyn_el {
-        element_node.parent_node().map(|parent| {
-            let mut res = None;
-            if let Some(e) = wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlElement>(&parent) {
-                if e.dataset().get("id") != "" {
-                    res = Some(e.dataset().get("id"))
-                }
-            };
-            if None == res {
-                if let Some(ep) = parent.parent_node() {
-                    if let Some(dyn_el) = wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlElement>(&ep)
-                    {
-                        res = Some(dyn_el.dataset().get("id"));
-                    }
-                }
+fn item_id(mut element: Element) -> Option<String> {
+    element.parent_element().map(|mut parent| {
+        let mut res = None;
+        let parent_id = parent.dataset_get("id");
+        if parent_id != "" {
+            res = Some(parent_id);
+        } else {
+            if let Some(mut ep) = parent.parent_element() {
+                res = Some(ep.dataset_get("id"));
             }
-            res.unwrap()
-        })
-    } else {
-        None
-    }
+        }
+        res.unwrap()
+    })
 }
 
 /// Presentation layer
@@ -103,19 +91,16 @@ impl View {
             if let Some(location) = document.location() {
                 if let Ok(hash) = location.hash() {
                     if let Ok(sched) = &(sched.try_borrow_mut()) {
-                        sched.add_message(Message::Controller(ControllerMessage::SetPage(
-                            hash,
-                        )));
+                        sched.add_message(Message::Controller(ControllerMessage::SetPage(hash)));
                     }
                 }
             }
         }) as Box<FnMut()>);
 
         let window_et: web_sys::EventTarget = window.into();
-        window_et.add_event_listener_with_callback(
-            "hashchange",
-            set_page.as_ref().unchecked_ref(),
-        );
+        window_et
+            .add_event_listener_with_callback("hashchange", set_page.as_ref().unchecked_ref())
+            .unwrap();
         set_page.forget(); // Cycle collect this
                            //self.callbacks.push((window_et, "hashchange".to_string(), set_page));
         self.bind_add_item();
@@ -134,9 +119,7 @@ impl View {
             "dblclick",
             |e: web_sys::Event| {
                 if let Some(target) = e.target() {
-                    if let Ok(el) = wasm_bindgen::JsCast::dyn_into::<web_sys::Element>(target) {
-                        View::edit_item(el);
-                    }
+                    View::edit_item(target.into());
                 }
             },
             false,
@@ -144,26 +127,19 @@ impl View {
     }
 
     /// Put an item into edit mode.
-    fn edit_item(target: web_sys::Element) {
-        let target_node: web_sys::Node = target.into();
-        if let Some(parent_element) = target_node.parent_element() {
-            let parent_node: web_sys::Node = parent_element.into();
-            if let Some(list_item) = parent_node.parent_element() {
-                list_item.class_list().add_1("editing");
-                if let Some(input) = create_element("input") {
+    fn edit_item(mut el: Element) {
+        if let Some(mut parent_element) = el.parent_element() {
+            if let Some(mut list_item) = parent_element.parent_element() {
+                list_item.class_list_add("editing");
+                if let Some(mut input) = Element::create_element("input") {
                     input.set_class_name("edit");
-                    let list_item_node: web_sys::Node = list_item.into();
-                    list_item_node.append_child(&input.into());
+                    if let Some(text) = el.text_content() {
+                        input.set_value(&text);
+                    }
+                    list_item.append_child(&mut input);
+                    input.focus();
                 }
             }
-        }
-        if let Some(el) = wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlElement>(&target_node) {
-            if let Some(input_el) =
-                wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlInputElement>(&target_node)
-            {
-                input_el.set_value(&el.inner_text());
-            }
-            el.focus();
         }
     }
 
@@ -210,7 +186,6 @@ impl View {
 
     /// Set the number in the 'items left' display.
     fn set_items_left(&mut self, items_left: usize) {
-        // TODO what is items left?
         self.todo_item_counter
             .set_inner_html(Template::item_counter(items_left));
     }
@@ -335,7 +310,8 @@ impl View {
             "click",
             move |e: web_sys::Event| {
                 if let Some(target) = e.target() {
-                    if let Some(item_id) = item_id(&target) {
+                    let el: Element = target.into();
+                    if let Some(item_id) = item_id(el) {
                         if let Ok(sched) = &(sched.try_borrow_mut()) {
                             sched.add_message(Message::Controller(ControllerMessage::RemoveItem(
                                 item_id,
@@ -355,15 +331,13 @@ impl View {
             "click",
             move |e: web_sys::Event| {
                 if let Some(target) = e.target() {
-                    if let Some(input_el) =
-                        wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlInputElement>(&target)
-                    {
-                        if let Some(item_id) = item_id(&target) {
-                            if let Ok(sched) = &(sched.try_borrow_mut()) {
-                                sched.add_message(Message::Controller(
-                                    ControllerMessage::ToggleItem(item_id, input_el.checked()),
-                                ));
-                            }
+                    let mut el: Element = target.into();
+                    let checked = el.checked();
+                    if let Some(item_id) = item_id(el) {
+                        if let Ok(sched) = &(sched.try_borrow_mut()) {
+                            sched.add_message(Message::Controller(ControllerMessage::ToggleItem(
+                                item_id, checked,
+                            )));
                         }
                     }
                 }
@@ -380,25 +354,18 @@ impl View {
             "blur",
             move |e: web_sys::Event| {
                 if let Some(target) = e.target() {
-                    if let Some(target_el) =
-                        wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlElement>(&target)
-                    {
-                        if target_el.dataset().get("iscanceled") != "true" {
-                            if let Some(input_el) =
-                                wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlInputElement>(&target)
-                            {
-                                if let Some(item) = item_id(&target) {
-                                    // TODO refactor back into fn
-                                    // Was: &self.add_message(ControllerMessage::SetPage(hash));
-                                    if let Ok(sched) = &(sched.try_borrow_mut()) {
-                                        sched.add_message(Message::Controller(
-                                            ControllerMessage::EditItemSave(item, input_el.value()),
-                                        ));
-                                    }
-
-                                    // TODO refactor back into fn
-                                }
+                    let mut target_el: Element = target.into();
+                    if target_el.dataset_get("iscancelled") != "true" {
+                        let val = target_el.value();
+                        if let Some(item) = item_id(target_el) {
+                            // TODO refactor back into fn
+                            // Was: &self.add_message(ControllerMessage::SetPage(hash));
+                            if let Ok(sched) = &(sched.try_borrow_mut()) {
+                                sched.add_message(Message::Controller(
+                                    ControllerMessage::EditItemSave(item, val),
+                                ));
                             }
+                            // TODO refactor back into fn
                         }
                     }
                 }
@@ -414,11 +381,8 @@ impl View {
                 if let Some(key_e) = wasm_bindgen::JsCast::dyn_ref::<web_sys::KeyboardEvent>(&e) {
                     if key_e.key_code() == ENTER_KEY {
                         if let Some(target) = e.target() {
-                            if let Some(el) =
-                                wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlElement>(&target)
-                            {
-                                el.blur();
-                            }
+                            let mut el: Element = target.into();
+                            el.blur();
                         }
                     }
                 }
@@ -436,14 +400,10 @@ impl View {
                 if let Some(key_e) = wasm_bindgen::JsCast::dyn_ref::<web_sys::KeyboardEvent>(&e) {
                     if key_e.key_code() == ESCAPE_KEY {
                         if let Some(target) = e.target() {
-                            if let Some(el) =
-                                wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlElement>(&target)
-                            {
-                                el.dataset().set("iscanceled", "true");
-                                el.blur();
-                            }
-
-                            if let Some(item_id) = item_id(&target) {
+                            let mut el: Element = target.into();
+                            el.dataset_set("iscanceled", "true");
+                            el.blur();
+                            if let Some(item_id) = item_id(el) {
                                 if let Ok(sched) = &(sched.try_borrow_mut()) {
                                     sched.add_message(Message::Controller(
                                         ControllerMessage::EditItemCancel(item_id),
@@ -459,20 +419,19 @@ impl View {
     }
 }
 
-fn create_element(tag: &str) -> Option<web_sys::Element> {
-    web_sys::window()?.document()?.create_element(tag).ok()
-}
-
 impl Drop for View {
     fn drop(&mut self) {
         exit("calling drop on view");
         let callbacks: Vec<(web_sys::EventTarget, String, Closure<FnMut()>)> =
             self.callbacks.drain(..).collect();
         for callback in callbacks {
-            callback.0.remove_event_listener_with_callback(
-                callback.1.as_str(),
-                &callback.2.as_ref().unchecked_ref(),
-            );
+            callback
+                .0
+                .remove_event_listener_with_callback(
+                    callback.1.as_str(),
+                    &callback.2.as_ref().unchecked_ref(),
+                )
+                .unwrap();
         }
     }
 }
