@@ -14,3 +14,14 @@ Support for removing unused items from a wasm executable
 parity-wasm = "0.35.1"
 log = "0.4"
 rustc-demangle = "0.1.9"
+
+[dev-dependencies]
+rayon = "1.0.2"
+tempfile = "3.0.4"
+
+[lib]
+doctest = false
+
+[[test]]
+name = 'all'
+harness = false

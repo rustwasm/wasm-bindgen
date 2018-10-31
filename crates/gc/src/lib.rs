@@ -51,17 +51,18 @@ impl Config {
 }
 
 fn run(config: &mut Config, module: &mut Module) {
-    let analysis = {
+    let mut analysis = {
         let mut cx = LiveContext::new(&module);
         cx.blacklist.insert("rust_eh_personality");
         cx.blacklist.insert("__indirect_function_table");
         cx.blacklist.insert("__heap_base");
         cx.blacklist.insert("__data_end");
 
-        // always treat memory as a root
+        // Always treat memory as a root. In theory we could actually gc this
+        // away in some circumstances, but it's probably not worth the effort.
         cx.add_memory(0);
 
-        // All exports are a root
+        // All non-blacklisted exports are roots
         if let Some(section) = module.export_section() {
             for (i, entry) in section.entries().iter().enumerate() {
                 if cx.blacklist.contains(entry.field()) {
@@ -71,22 +72,7 @@ fn run(config: &mut Config, module: &mut Module) {
             }
         }
 
-        // Pessimistically assume all data and table segments are
-        // required
-        //
-        // TODO: this shouldn't assume this!
-        if let Some(section) = module.data_section() {
-            for entry in section.entries() {
-                cx.add_data_segment(entry);
-            }
-        }
-        if let Some(elements) = module.elements_section() {
-            for seg in elements.entries() {
-                cx.add_element_segment(seg);
-            }
-        }
-
-        // The start function is also a root
+        // ... and finally, the start function
         if let Some(i) = module.start_section() {
             cx.add_function(i);
         }
@@ -94,7 +80,7 @@ fn run(config: &mut Config, module: &mut Module) {
         cx.analysis
     };
 
-    let cx = RemapContext::new(&module, &analysis, config);
+    let cx = RemapContext::new(&module, &mut analysis, config);
     for i in (0..module.sections().len()).rev() {
         let retain = match module.sections_mut()[i] {
             Section::Unparsed { .. } => {
@@ -144,6 +130,8 @@ struct Analysis {
     imports: BitSet,
     exports: BitSet,
     functions: BitSet,
+    elements: BitSet,
+    data_segments: BitSet,
     imported_functions: u32,
     imported_globals: u32,
     imported_memories: u32,
@@ -235,10 +223,12 @@ impl<'a> LiveContext<'a> {
 
         // Add all element segments that initialize this table
         if let Some(elements) = self.element_section {
-            for entry in elements.entries().iter().filter(|d| !d.passive()) {
-                if entry.index() == idx {
-                    self.add_element_segment(entry);
-                }
+            let iter = elements.entries()
+                .iter()
+                .enumerate()
+                .filter(|(_, d)| !d.passive() && d.index() == idx);
+            for (i, _) in iter {
+                self.add_element_segment(i as u32);
             }
         }
 
@@ -273,10 +263,12 @@ impl<'a> LiveContext<'a> {
 
         // Add all data segments that initialize this memory
         if let Some(data) = self.data_section {
-            for entry in data.entries().iter().filter(|d| !d.passive()) {
-                if entry.index() == idx {
-                    self.add_data_segment(entry);
-                }
+            let iter = data.entries()
+                .iter()
+                .enumerate()
+                .filter(|(_, d)| !d.passive() && d.index() == idx);
+            for (i, _) in iter {
+                self.add_data_segment(i as u32);
             }
         }
 
@@ -395,6 +387,16 @@ impl<'a> LiveContext<'a> {
             }
             Instruction::GetGlobal(i) |
             Instruction::SetGlobal(i) => self.add_global(i),
+            Instruction::MemoryInit(i) |
+            Instruction::MemoryDrop(i) => {
+                self.add_memory(0);
+                self.add_data_segment(i);
+            }
+            Instruction::TableInit(i) |
+            Instruction::TableDrop(i) => {
+                self.add_table(0);
+                self.add_element_segment(i);
+            }
             _ => {}
         }
     }
@@ -431,20 +433,32 @@ impl<'a> LiveContext<'a> {
         }
     }
 
-    fn add_data_segment(&mut self, data: &DataSegment) {
-        if let Some(offset) = data.offset() {
-            self.add_memory(data.index());
-            self.add_init_expr(offset);
+    fn add_data_segment(&mut self, idx: u32) {
+        if !self.analysis.data_segments.insert(idx) {
+            return
+        }
+        let data = &self.data_section.unwrap().entries()[idx as usize];
+        if !data.passive() {
+            if let Some(offset) = data.offset() {
+                self.add_memory(data.index());
+                self.add_init_expr(offset);
+            }
         }
     }
 
-    fn add_element_segment(&mut self, seg: &ElementSegment) {
+    fn add_element_segment(&mut self, idx: u32) {
+        if !self.analysis.elements.insert(idx) {
+            return
+        }
+        let seg = &self.element_section.unwrap().entries()[idx as usize];
         for member in seg.members() {
             self.add_function(*member);
         }
-        if let Some(offset) = seg.offset() {
-            self.add_table(seg.index());
-            self.add_init_expr(offset);
+        if !seg.passive() {
+            if let Some(offset) = seg.offset() {
+                self.add_table(seg.index());
+                self.add_init_expr(offset);
+            }
         }
     }
 }
@@ -457,10 +471,12 @@ struct RemapContext<'a> {
     types: Vec<u32>,
     tables: Vec<u32>,
     memories: Vec<u32>,
+    elements: Vec<u32>,
+    data_segments: Vec<u32>,
 }
 
 impl<'a> RemapContext<'a> {
-    fn new(m: &Module, analysis: &'a Analysis, config: &'a Config) -> RemapContext<'a> {
+    fn new(m: &Module, analysis: &'a mut Analysis, config: &'a Config) -> RemapContext<'a> {
         let mut nfunctions = 0;
         let mut functions = Vec::new();
         let mut nglobals = 0;
@@ -478,6 +494,7 @@ impl<'a> RemapContext<'a> {
                 if analysis.types.contains(&(i as u32)) {
                     if let Some(prev) = map.get(&ty) {
                         types.push(*prev);
+                        analysis.types.remove(&(i as u32));
                         continue
                     }
                     map.insert(ty, ntypes);
@@ -530,8 +547,7 @@ impl<'a> RemapContext<'a> {
         }
         if let Some(s) = m.table_section() {
             for i in 0..(s.entries().len() as u32) {
-                // TODO: should remove `|| true` here when this is better tested
-                if analysis.tables.contains(&(i + analysis.imported_tables)) || true {
+                if analysis.tables.contains(&(i + analysis.imported_tables)) {
                     tables.push(ntables);
                     ntables += 1;
                 } else {
@@ -542,13 +558,40 @@ impl<'a> RemapContext<'a> {
         }
         if let Some(s) = m.memory_section() {
             for i in 0..(s.entries().len() as u32) {
-                // TODO: should remove `|| true` here when this is better tested
-                if analysis.memories.contains(&(i + analysis.imported_memories)) || true {
+                if analysis.memories.contains(&(i + analysis.imported_memories)) {
                     memories.push(nmemories);
                     nmemories += 1;
                 } else {
                     debug!("gc memory {}", i);
                     memories.push(u32::max_value());
+                }
+            }
+        }
+
+        let mut elements = Vec::new();
+        if let Some(s) = m.elements_section() {
+            let mut nelements = 0;
+            for i in 0..(s.entries().len() as u32) {
+                if analysis.elements.contains(&i) {
+                    elements.push(nelements);
+                    nelements += 1;
+                } else {
+                    debug!("gc element segment {}", i);
+                    elements.push(u32::max_value());
+                }
+            }
+        }
+
+        let mut data_segments = Vec::new();
+        if let Some(s) = m.data_section() {
+            let mut ndata_segments = 0;
+            for i in 0..(s.entries().len() as u32) {
+                if analysis.data_segments.contains(&i) {
+                    data_segments.push(ndata_segments);
+                    ndata_segments += 1;
+                } else {
+                    debug!("gc data segment {}", i);
+                    data_segments.push(u32::max_value());
                 }
             }
         }
@@ -561,6 +604,8 @@ impl<'a> RemapContext<'a> {
             tables,
             types,
             config,
+            elements,
+            data_segments,
         }
     }
 
@@ -713,6 +758,7 @@ impl<'a> RemapContext<'a> {
     }
 
     fn remap_element_section(&self, s: &mut ElementSection) -> bool {
+        self.retain(&self.analysis.elements, s.entries_mut(), "element", 0);
         for s in s.entries_mut() {
             self.remap_element_segment(s);
         }
@@ -720,9 +766,11 @@ impl<'a> RemapContext<'a> {
     }
 
     fn remap_element_segment(&self, s: &mut ElementSegment) {
-        let mut i = s.index();
-        self.remap_table_idx(&mut i);
-        assert_eq!(s.index(), i);
+        if !s.passive() {
+            let mut i = s.index();
+            self.remap_table_idx(&mut i);
+            assert_eq!(s.index(), i);
+        }
         for m in s.members_mut() {
             self.remap_function_idx(m);
         }
@@ -763,6 +811,10 @@ impl<'a> RemapContext<'a> {
             Instruction::CallIndirect(ref mut t, _) => self.remap_type_idx(t),
             Instruction::GetGlobal(ref mut i) |
             Instruction::SetGlobal(ref mut i) => self.remap_global_idx(i),
+            Instruction::TableInit(ref mut i) |
+            Instruction::TableDrop(ref mut i) => self.remap_element_idx(i),
+            Instruction::MemoryInit(ref mut i) |
+            Instruction::MemoryDrop(ref mut i) => self.remap_data_idx(i),
             _ => {}
         }
     }
@@ -775,6 +827,7 @@ impl<'a> RemapContext<'a> {
     }
 
     fn remap_data_section(&self, s: &mut DataSection) -> bool {
+        self.retain(&self.analysis.data_segments, s.entries_mut(), "data", 0);
         for data in s.entries_mut() {
             self.remap_data_segment(data);
         }
@@ -813,6 +866,16 @@ impl<'a> RemapContext<'a> {
 
     fn remap_memory_idx(&self, i: &mut u32) {
         *i = self.memories[*i as usize];
+        assert!(*i != u32::max_value());
+    }
+
+    fn remap_element_idx(&self, i: &mut u32) {
+        *i = self.elements[*i as usize];
+        assert!(*i != u32::max_value());
+    }
+
+    fn remap_data_idx(&self, i: &mut u32) {
+        *i = self.data_segments[*i as usize];
         assert!(*i != u32::max_value());
     }
 
