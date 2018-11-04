@@ -495,7 +495,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
         if optional {
             if ty.is_wasm_native() {
-                self.ret_ty = "number".to_string();
+                self.ret_ty = "number | undefined".to_string();
                 self.cx.expose_global_argument_ptr()?;
                 self.cx.expose_uint32_memory();
                 match ty {
@@ -533,7 +533,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             }
 
             if ty.is_abi_as_u32() {
-                self.ret_ty = "number".to_string();
+                self.ret_ty = "number | undefined".to_string();
                 self.ret_expr = "
                     const ret = RET;
                     return ret === 0xFFFFFF ? undefined : ret;
@@ -542,7 +542,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             }
 
             if let Some(signed) = ty.get_64() {
-                self.ret_ty = "BigInt".to_string();
+                self.ret_ty = "BigInt | undefined".to_string();
                 self.cx.expose_global_argument_ptr()?;
                 let f = if signed {
                     self.cx.expose_int64_memory();
@@ -567,7 +567,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
             match *ty {
                 Descriptor::Boolean => {
-                    self.ret_ty = "boolean".to_string();
+                    self.ret_ty = "boolean | undefined".to_string();
                     self.ret_expr = "
                         const ret = RET;
                         return ret === 0xFFFFFF ? undefined : ret !== 0;
@@ -575,7 +575,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     return Ok(self);
                 }
                 Descriptor::Char => {
-                    self.ret_ty = "string".to_string();
+                    self.ret_ty = "string | undefined".to_string();
                     self.cx.expose_global_argument_ptr()?;
                     self.cx.expose_uint32_memory();
                     self.prelude("const retptr = globalArgumentPtr();");
