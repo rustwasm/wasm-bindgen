@@ -44,3 +44,18 @@ extern {
 
 All of these functions will call `console.log` in JavaScript, but each
 identifier will have only one signature in Rust.
+
+Note that if you use `js_name` when importing a type you'll also need to use the
+[`js_class` attribute][jsclass] when defining methods on the type:
+
+```rust
+#[wasm_bindgen]
+extern {
+    #[wasm_bindgen(js_name = String)]
+    type JsString;
+    #[wasm_bindgen(method, getter, js_class = "String")]
+    pub fn length(this: &JsString) -> u32;
+}
+```
+
+[jsclass]: js_class.html
