@@ -29,8 +29,10 @@ pub struct Program {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct Export {
-    /// The javascript class name.
-    pub class: Option<Ident>,
+    /// The struct name, in Rust, this is attached to
+    pub rust_class: Option<Ident>,
+    /// The class name in JS this is attached to
+    pub js_class: Option<String>,
     /// The type of `self` (either `self`, `&self`, or `&mut self`)
     pub method_self: Option<MethodSelf>,
     /// Whether or not this export is flagged as a constructor, returning an
@@ -176,7 +178,8 @@ pub struct Function {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct Struct {
-    pub name: Ident,
+    pub rust_name: Ident,
+    pub js_name: String,
     pub fields: Vec<StructField>,
     pub comments: Vec<String>,
 }
@@ -264,9 +267,9 @@ impl Export {
     /// name and class name, if the function belongs to a javascript class.
     pub(crate) fn rust_symbol(&self) -> Ident {
         let mut generated_name = String::from("__wasm_bindgen_generated");
-        if let Some(class) = &self.class {
+        if let Some(class) = &self.js_class {
             generated_name.push_str("_");
-            generated_name.push_str(&class.to_string());
+            generated_name.push_str(class);
         }
         generated_name.push_str("_");
         generated_name.push_str(&self.function.name.to_string());
@@ -278,8 +281,8 @@ impl Export {
     /// "high level" form before calling the actual function.
     pub(crate) fn export_name(&self) -> String {
         let fn_name = self.function.name.to_string();
-        match &self.class {
-            Some(class) => shared::struct_function_export_name(&class.to_string(), &fn_name),
+        match &self.js_class {
+            Some(class) => shared::struct_function_export_name(class, &fn_name),
             None => shared::free_function_export_name(&fn_name),
         }
     }

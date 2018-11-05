@@ -21,6 +21,7 @@ extern "C" {
     fn js_double_consume();
     fn js_js_rename();
     fn js_access_fields();
+    fn js_renamed_export();
 }
 
 #[wasm_bindgen_test]
@@ -378,4 +379,30 @@ impl AccessFieldFoo {
 #[wasm_bindgen_test]
 fn access_fields() {
     js_access_fields();
+}
+
+#[wasm_bindgen(js_name = JsRenamedExport)]
+pub struct RenamedExport {
+    pub x: u32,
+}
+
+#[wasm_bindgen(js_class = JsRenamedExport)]
+impl RenamedExport {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> RenamedExport{
+        RenamedExport {
+            x: 3,
+        }
+    }
+    pub fn foo(&self) {
+    }
+
+    pub fn bar(&self, other: &RenamedExport) {
+        drop(other);
+    }
+}
+
+#[wasm_bindgen_test]
+fn renamed_export() {
+    js_renamed_export();
 }

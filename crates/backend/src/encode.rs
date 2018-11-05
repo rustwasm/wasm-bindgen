@@ -58,7 +58,7 @@ fn shared_export<'a>(export: &'a ast::Export, intern: &'a Interner) -> Export<'a
         None => (false, false),
     };
     Export {
-        class: export.class.as_ref().map(|s| intern.intern(s)),
+        class: export.js_class.as_ref().map(|s| &**s),
         method,
         consumed,
         is_constructor: export.is_constructor,
@@ -187,7 +187,7 @@ fn shared_import_enum<'a>(_i: &'a ast::ImportEnum, _intern: &'a Interner)
 
 fn shared_struct<'a>(s: &'a ast::Struct, intern: &'a Interner) -> Struct<'a> {
     Struct {
-        name: intern.intern(&s.name),
+        name: &s.js_name,
         fields: s.fields.iter().map(|s| shared_struct_field(s, intern)).collect(),
         comments: s.comments.iter().map(|s| &**s).collect(),
     }

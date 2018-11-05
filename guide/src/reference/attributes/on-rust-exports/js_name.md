@@ -22,3 +22,33 @@ import { doTheThing } from './my_module';
 const x = doTheThing();
 console.log(x);
 ```
+
+Like imports, `js_name` can also be used to rename types exported to JS:
+
+```rust
+#[wasm_bindgen(js_name = Foo)]
+pub struct JsFoo {
+    // ..
+}
+```
+
+to be accessed like:
+
+```js
+import { Foo } from './my_module';
+
+// ...
+```
+
+Note that attaching methods to the JS class `Foo` should be done via the
+[`js_class` attribute](js_class.html):
+
+```rust
+#[wasm_bindgen(js_name = Foo)]
+pub struct JsFoo { /* ... */ }
+
+#[wasm_bindgen(js_class = Foo)]
+impl JsFoo {
+    // ...
+}
+```
