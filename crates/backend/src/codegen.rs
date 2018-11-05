@@ -118,8 +118,8 @@ impl TryToTokens for ast::Program {
 
 impl ToTokens for ast::Struct {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let name = &self.name;
-        let name_str = name.to_string();
+        let name = &self.rust_name;
+        let name_str = self.js_name.to_string();
         let name_len = name_str.len() as u32;
         let name_chars = name_str.chars().map(|c| c as u32);
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
@@ -328,7 +328,7 @@ impl TryToTokens for ast::Export {
         let name = &self.rust_name;
         let receiver = match self.method_self {
             Some(ast::MethodSelf::ByValue) => {
-                let class = self.class.as_ref().unwrap();
+                let class = self.rust_class.as_ref().unwrap();
                 arg_conversions.push(quote! {
                     let me = unsafe {
                         <#class as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
@@ -340,7 +340,7 @@ impl TryToTokens for ast::Export {
                 quote! { me.#name }
             }
             Some(ast::MethodSelf::RefMutable) => {
-                let class = self.class.as_ref().unwrap();
+                let class = self.rust_class.as_ref().unwrap();
                 arg_conversions.push(quote! {
                     let mut me = unsafe {
                         <#class as ::wasm_bindgen::convert::RefMutFromWasmAbi>
@@ -354,7 +354,7 @@ impl TryToTokens for ast::Export {
                 quote! { me.#name }
             }
             Some(ast::MethodSelf::RefShared) => {
-                let class = self.class.as_ref().unwrap();
+                let class = self.rust_class.as_ref().unwrap();
                 arg_conversions.push(quote! {
                     let me = unsafe {
                         <#class as ::wasm_bindgen::convert::RefFromWasmAbi>
@@ -367,7 +367,7 @@ impl TryToTokens for ast::Export {
                 });
                 quote! { me.#name }
             }
-            None => match &self.class {
+            None => match &self.rust_class {
                 Some(class) => quote! { #class::#name },
                 None => quote! { #name },
             },

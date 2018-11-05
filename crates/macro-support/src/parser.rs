@@ -304,7 +304,11 @@ impl Parse for BindgenAttr {
         }
         if attr == "js_class" {
             input.parse::<Token![=]>()?;
-            return Ok(BindgenAttr::JsClass(input.parse::<syn::LitStr>()?.value()));
+            let val = match input.parse::<syn::LitStr>() {
+                Ok(str) => str.value(),
+                Err(_) => input.parse::<AnyIdent>()?.0.to_string(),
+            };
+            return Ok(BindgenAttr::JsClass(val));
         }
         if attr == "js_name" {
             input.parse::<Token![=]>()?;
@@ -346,10 +350,10 @@ trait ConvertToAst<Ctx> {
     fn convert(self, context: Ctx) -> Result<Self::Target, Diagnostic>;
 }
 
-impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
+impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
     type Target = ast::Struct;
 
-    fn convert(self, (): ()) -> Result<Self::Target, Diagnostic> {
+    fn convert(self, opts: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         if self.generics.params.len() > 0 {
             bail_span!(
                 self.generics,
@@ -358,6 +362,9 @@ impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
             );
         }
         let mut fields = Vec::new();
+        let js_name = opts.js_name()
+            .map(|s| s.0.to_string())
+            .unwrap_or(self.ident.to_string());
         if let syn::Fields::Named(names) = &mut self.fields {
             for field in names.named.iter_mut() {
                 match field.vis {
@@ -368,10 +375,9 @@ impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
                     Some(n) => n,
                     None => continue,
                 };
-                let ident = self.ident.to_string();
                 let name_str = name.to_string();
-                let getter = shared::struct_field_get(&ident, &name_str);
-                let setter = shared::struct_field_set(&ident, &name_str);
+                let getter = shared::struct_field_get(&js_name, &name_str);
+                let setter = shared::struct_field_set(&js_name, &name_str);
                 let opts = BindgenAttrs::find(&mut field.attrs)?;
                 assert_not_variadic(&opts, &field)?;
                 let comments = extract_doc_comments(&field.attrs);
@@ -388,7 +394,8 @@ impl<'a> ConvertToAst<()> for &'a mut syn::ItemStruct {
         }
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
         Ok(ast::Struct {
-            name: self.ident.clone(),
+            rust_name: self.ident.clone(),
+            js_name,
             fields,
             comments,
         })
@@ -755,7 +762,8 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 f.to_tokens(tokens);
                 let opts = opts.unwrap_or_default();
                 program.exports.push(ast::Export {
-                    class: None,
+                    rust_class: None,
+                    js_class: None,
                     method_self: None,
                     is_constructor: false,
                     comments,
@@ -764,11 +772,13 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 });
             }
             syn::Item::Struct(mut s) => {
-                program.structs.push((&mut s).convert(())?);
+                let opts = opts.unwrap_or_default();
+                program.structs.push((&mut s).convert(opts)?);
                 s.to_tokens(tokens);
             }
             syn::Item::Impl(mut i) => {
-                (&mut i).macro_parse(program, ())?;
+                let opts = opts.unwrap_or_default();
+                (&mut i).macro_parse(program, opts)?;
                 i.to_tokens(tokens);
             }
             syn::Item::ForeignMod(mut f) => {
@@ -793,8 +803,8 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
     }
 }
 
-impl<'a> MacroParse<()> for &'a mut syn::ItemImpl {
-    fn macro_parse(self, program: &mut ast::Program, (): ()) -> Result<(), Diagnostic> {
+impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
+    fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
         if self.defaultness.is_some() {
             bail_span!(
                 self.defaultness,
@@ -828,7 +838,7 @@ impl<'a> MacroParse<()> for &'a mut syn::ItemImpl {
         };
         let mut errors = Vec::new();
         for item in self.items.iter_mut() {
-            if let Err(e) = (&name, item).macro_parse(program, ()) {
+            if let Err(e) = (&name, item).macro_parse(program, &opts) {
                 errors.push(e);
             }
         }
@@ -836,8 +846,10 @@ impl<'a> MacroParse<()> for &'a mut syn::ItemImpl {
     }
 }
 
-impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
-    fn macro_parse(self, program: &mut ast::Program, (): ()) -> Result<(), Diagnostic> {
+impl<'a, 'b> MacroParse<&'a BindgenAttrs> for (&'a Ident, &'b mut syn::ImplItem) {
+    fn macro_parse(self, program: &mut ast::Program, impl_opts: &'a BindgenAttrs)
+        -> Result<(), Diagnostic>
+    {
         let (class, item) = self;
         let method = match item {
             syn::ImplItem::Method(ref mut m) => m,
@@ -889,9 +901,13 @@ impl<'a, 'b> MacroParse<()> for (&'a Ident, &'b mut syn::ImplItem) {
             true,
             Some(class),
         )?;
+        let js_class = impl_opts.js_class()
+            .map(|s| s.to_string())
+            .unwrap_or(class.to_string());
 
         program.exports.push(ast::Export {
-            class: Some(class.clone()),
+            rust_class: Some(class.clone()),
+            js_class: Some(js_class),
             method_self,
             is_constructor,
             function,

@@ -136,3 +136,10 @@ exports.js_js_rename = () => {
 exports.js_access_fields = () => {
     assert.ok((new wasm.AccessFieldFoo()).bar instanceof wasm.AccessFieldBar);
 };
+
+exports.js_renamed_export = () => {
+    const x = new wasm.JsRenamedExport();
+    assert.ok(x.x === 3);
+    x.foo();
+    x.bar(x);
+};
