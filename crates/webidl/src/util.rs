@@ -336,7 +336,7 @@ impl<'src> FirstPassRecord<'src> {
     ) -> Option<backend::ast::ImportFunction> {
         let kind = backend::ast::OperationKind::Getter(Some(raw_ident(name)));
         let kind = self.import_function_kind(self_name, is_static, kind);
-        let ret = ty.to_idl_type(self)?;
+        let ret = ty.to_idl_type(self);
         self.create_one_function(
             &name,
             &snake_case_ident(name),
@@ -366,7 +366,7 @@ impl<'src> FirstPassRecord<'src> {
     ) -> Option<backend::ast::ImportFunction> {
         let kind = backend::ast::OperationKind::Setter(Some(raw_ident(name)));
         let kind = self.import_function_kind(self_name, is_static, kind);
-        let field_ty = field_ty.to_idl_type(self)?;
+        let field_ty = field_ty.to_idl_type(self);
         self.create_one_function(
             &name,
             &format!("set_{}", name).to_snake_case(),
@@ -431,10 +431,7 @@ impl<'src> FirstPassRecord<'src> {
                     );
                     signatures.push((signature, idl_args.clone()));
                 }
-                match arg.ty.to_idl_type(self) {
-                    Some(t) => idl_args.push(t),
-                    None => continue 'outer,
-                }
+                idl_args.push(arg.ty.to_idl_type(self));
             }
             signatures.push((signature, idl_args));
         }
@@ -517,10 +514,7 @@ impl<'src> FirstPassRecord<'src> {
             // TODO: overloads probably never change return types, so we should
             //       do this much earlier to avoid all the above work if
             //       possible.
-            let ret_ty = match signature.orig.ret.to_idl_type(self) {
-                Some(ty) => ty,
-                None => continue,
-            };
+            let ret_ty = signature.orig.ret.to_idl_type(self);
 
             let mut rust_name = snake_case_ident(name);
             let mut first = true;

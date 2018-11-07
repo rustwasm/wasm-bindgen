@@ -353,7 +353,7 @@ impl<'src> FirstPassRecord<'src> {
         // use argument position now as we're just binding setters
         let ty = field
             .type_
-            .to_idl_type(self)?
+            .to_idl_type(self)
             .to_syn_type(TypePosition::Argument)?;
 
         // Slice types aren't supported because they don't implement
@@ -459,11 +459,7 @@ impl<'src> FirstPassRecord<'src> {
         self_name: &'src str,
         member: &'src weedle::interface::ConstMember<'src>,
     ) {
-        let idl_type = match member.const_type.to_idl_type(self) {
-            Some(idl_type) => idl_type,
-            None => return,
-        };
-
+        let idl_type = member.const_type.to_idl_type(self);
         let ty = match idl_type.to_syn_type(TypePosition::Return) {
             Some(ty) => ty,
             None => {
