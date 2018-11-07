@@ -10,12 +10,12 @@ crate-type = ["cdylib"]
 askama = "0.7.2"
 
 [dependencies]
-js-sys = { path = "../../crates/js-sys" }
-wasm-bindgen = { path = "../../" }
+js-sys = "0.3.4"
+wasm-bindgen = "0.2.27"
 askama = "0.7.2"
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
+version = "0.3.4"
 features = [
   'console',
   'CssStyleDeclaration',

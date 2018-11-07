@@ -83,3 +83,6 @@ members = [
 
 [patch.crates-io]
 wasm-bindgen = { path = '.' }
+wasm-bindgen-futures = { path = 'crates/futures' }
+js-sys = { path = 'crates/js-sys' }
+web-sys = { path = 'crates/web-sys' }
