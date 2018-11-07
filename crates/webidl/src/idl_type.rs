@@ -63,24 +63,26 @@ pub(crate) enum IdlType<'a> {
 
     Any,
     Void,
+
+    UnknownInterface(&'a str),
 }
 
 pub(crate) trait ToIdlType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>>;
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a>;
 }
 
 impl<'a> ToIdlType<'a> for UnionType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         let mut idl_types = Vec::with_capacity(self.body.list.len());
         for t in &self.body.list {
-            idl_types.push(t.to_idl_type(record)?);
+            idl_types.push(t.to_idl_type(record));
         }
-        Some(IdlType::Union(idl_types))
+        IdlType::Union(idl_types)
     }
 }
 
 impl<'a> ToIdlType<'a> for Type<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
             Type::Single(t) => t.to_idl_type(record),
             Type::Union(t) => t.to_idl_type(record),
@@ -89,7 +91,7 @@ impl<'a> ToIdlType<'a> for Type<'a> {
 }
 
 impl<'a> ToIdlType<'a> for SingleType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
             SingleType::Any(t) => t.to_idl_type(record),
             SingleType::NonAny(t) => t.to_idl_type(record),
@@ -98,7 +100,7 @@ impl<'a> ToIdlType<'a> for SingleType<'a> {
 }
 
 impl<'a> ToIdlType<'a> for NonAnyType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
             NonAnyType::Promise(t) => t.to_idl_type(record),
             NonAnyType::Integer(t) => t.to_idl_type(record),
@@ -134,42 +136,36 @@ impl<'a> ToIdlType<'a> for NonAnyType<'a> {
 }
 
 impl<'a> ToIdlType<'a> for SequenceType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        Some(IdlType::Sequence(Box::new(
-            self.generics.body.to_idl_type(record)?,
-        )))
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
+        IdlType::Sequence(Box::new(self.generics.body.to_idl_type(record)))
     }
 }
 
 impl<'a> ToIdlType<'a> for FrozenArrayType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        Some(IdlType::FrozenArray(Box::new(
-            self.generics.body.to_idl_type(record)?,
-        )))
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
+        IdlType::FrozenArray(Box::new(self.generics.body.to_idl_type(record)))
     }
 }
 
 impl<'a, T: ToIdlType<'a>> ToIdlType<'a> for MayBeNull<T> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        let inner_idl_type = self.type_.to_idl_type(record)?;
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
+        let inner_idl_type = self.type_.to_idl_type(record);
         if self.q_mark.is_some() {
-            Some(IdlType::Nullable(Box::new(inner_idl_type)))
+            IdlType::Nullable(Box::new(inner_idl_type))
         } else {
-            Some(inner_idl_type)
+            inner_idl_type
         }
     }
 }
 
 impl<'a> ToIdlType<'a> for PromiseType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        Some(IdlType::Promise(Box::new(
-            self.generics.body.to_idl_type(record)?,
-        )))
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
+        IdlType::Promise(Box::new(self.generics.body.to_idl_type(record)))
     }
 }
 
 impl<'a> ToIdlType<'a> for IntegerType {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
             IntegerType::LongLong(t) => t.to_idl_type(record),
             IntegerType::Long(t) => t.to_idl_type(record),
@@ -179,37 +175,37 @@ impl<'a> ToIdlType<'a> for IntegerType {
 }
 
 impl<'a> ToIdlType<'a> for LongLongType {
-    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
         if self.unsigned.is_some() {
-            Some(IdlType::UnsignedLongLong)
+            IdlType::UnsignedLongLong
         } else {
-            Some(IdlType::LongLong)
+            IdlType::LongLong
         }
     }
 }
 
 impl<'a> ToIdlType<'a> for LongType {
-    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
         if self.unsigned.is_some() {
-            Some(IdlType::UnsignedLong)
+            IdlType::UnsignedLong
         } else {
-            Some(IdlType::Long)
+            IdlType::Long
         }
     }
 }
 
 impl<'a> ToIdlType<'a> for ShortType {
-    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
         if self.unsigned.is_some() {
-            Some(IdlType::UnsignedShort)
+            IdlType::UnsignedShort
         } else {
-            Some(IdlType::Short)
+            IdlType::Short
         }
     }
 }
 
 impl<'a> ToIdlType<'a> for FloatingPointType {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
             FloatingPointType::Float(t) => t.to_idl_type(record),
             FloatingPointType::Double(t) => t.to_idl_type(record),
@@ -218,36 +214,36 @@ impl<'a> ToIdlType<'a> for FloatingPointType {
 }
 
 impl<'a> ToIdlType<'a> for FloatType {
-    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
         if self.unrestricted.is_some() {
-            Some(IdlType::UnrestrictedFloat)
+            IdlType::UnrestrictedFloat
         } else {
-            Some(IdlType::Float)
+            IdlType::Float
         }
     }
 }
 
 impl<'a> ToIdlType<'a> for DoubleType {
-    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
         if self.unrestricted.is_some() {
-            Some(IdlType::UnrestrictedDouble)
+            IdlType::UnrestrictedDouble
         } else {
-            Some(IdlType::Double)
+            IdlType::Double
         }
     }
 }
 
 impl<'a> ToIdlType<'a> for RecordType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-        Some(IdlType::Record(
-            Box::new(self.generics.body.0.to_idl_type(record)?),
-            Box::new(self.generics.body.2.to_idl_type(record)?),
-        ))
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
+        IdlType::Record(
+            Box::new(self.generics.body.0.to_idl_type(record)),
+            Box::new(self.generics.body.2.to_idl_type(record)),
+        )
     }
 }
 
 impl<'a> ToIdlType<'a> for StringType {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
             StringType::Byte(t) => t.to_idl_type(record),
             StringType::DOM(t) => t.to_idl_type(record),
@@ -257,7 +253,7 @@ impl<'a> ToIdlType<'a> for StringType {
 }
 
 impl<'a> ToIdlType<'a> for UnionMemberType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
             UnionMemberType::Single(t) => t.to_idl_type(record),
             UnionMemberType::Union(t) => t.to_idl_type(record),
@@ -266,7 +262,7 @@ impl<'a> ToIdlType<'a> for UnionMemberType<'a> {
 }
 
 impl<'a> ToIdlType<'a> for ConstType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
             ConstType::Integer(t) => t.to_idl_type(record),
             ConstType::FloatingPoint(t) => t.to_idl_type(record),
@@ -279,7 +275,7 @@ impl<'a> ToIdlType<'a> for ConstType<'a> {
 }
 
 impl<'a> ToIdlType<'a> for ReturnType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         match self {
             ReturnType::Void(t) => t.to_idl_type(record),
             ReturnType::Type(t) => t.to_idl_type(record),
@@ -288,31 +284,31 @@ impl<'a> ToIdlType<'a> for ReturnType<'a> {
 }
 
 impl<'a> ToIdlType<'a> for AttributedType<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         self.type_.to_idl_type(record)
     }
 }
 
 impl<'a> ToIdlType<'a> for Identifier<'a> {
-    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         if self.0 == "DOMTimeStamp" {
             // https://heycam.github.io/webidl/#DOMTimeStamp
-            Some(IdlType::UnsignedLongLong)
+            IdlType::UnsignedLongLong
         } else if let Some(idl_type) = record.typedefs.get(&self.0) {
             idl_type.to_idl_type(record)
         } else if record.interfaces.contains_key(self.0) {
-            Some(IdlType::Interface(self.0))
+            IdlType::Interface(self.0)
         } else if record.dictionaries.contains_key(self.0) {
-            Some(IdlType::Dictionary(self.0))
+            IdlType::Dictionary(self.0)
         } else if record.enums.contains_key(self.0) {
-            Some(IdlType::Enum(self.0))
+            IdlType::Enum(self.0)
         } else if record.callbacks.contains(self.0) {
-            Some(IdlType::Callback)
+            IdlType::Callback
         } else if let Some(data) = record.callback_interfaces.get(self.0) {
-            Some(IdlType::CallbackInterface {
+            IdlType::CallbackInterface {
                 name: self.0,
                 single_function: data.single_function,
-            })
+            }
         } else if self.0 == "WindowProxy" {
             // See this for more info:
             //
@@ -320,10 +316,10 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
             //
             // namely this seems to be "legalese" for "this is a `Window`", so
             // let's translate it as such.
-            Some(IdlType::Interface("Window"))
+            IdlType::Interface("Window")
         } else {
             warn!("Unrecognized type: {}", self.0);
-            None
+            IdlType::UnknownInterface(self.0)
         }
     }
 }
@@ -331,8 +327,8 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
 macro_rules! terms_to_idl_type {
     ($($t:tt => $r:tt)*) => ($(
         impl<'a> ToIdlType<'a> for term::$t {
-            fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> Option<IdlType<'a>> {
-                Some(IdlType::$r)
+            fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
+                IdlType::$r
             }
         }
     )*)
@@ -406,6 +402,7 @@ impl<'a> IdlType<'a> {
             IdlType::BufferSource => dst.push_str("buffer_source"),
 
             IdlType::Interface(name) => dst.push_str(&snake_case_ident(name)),
+            IdlType::UnknownInterface(name) => dst.push_str(&snake_case_ident(name)),
             IdlType::Dictionary(name) => dst.push_str(&snake_case_ident(name)),
             IdlType::Enum(name) => dst.push_str(&snake_case_ident(name)),
             IdlType::CallbackInterface { name, .. } => dst.push_str(&snake_case_ident(name)),
@@ -587,6 +584,7 @@ impl<'a> IdlType<'a> {
             }
             IdlType::Void => None,
             IdlType::Callback => js_sys("Function"),
+            IdlType::UnknownInterface(_) => None,
         }
     }
 
