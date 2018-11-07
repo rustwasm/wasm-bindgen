@@ -57,13 +57,14 @@ fn main() {
     let mut crates = Vec::new();
     crates.push(read_crate("./Cargo.toml".as_ref()));
     find_crates("crates".as_ref(), &mut crates);
+    find_crates("examples".as_ref(), &mut crates);
 
     let pos = CRATES_TO_PUBLISH.iter()
         .chain(CRATES_TO_AVOID_PUBLISH)
         .enumerate()
         .map(|(i, c)| (*c, i))
         .collect::<HashMap<_, _>>();
-    crates.sort_by_key(|krate| pos[&krate.name[..]]);
+    crates.sort_by_key(|krate| pos.get(&krate.name[..]));
 
     match &env::args().nth(1).expect("must have one argument")[..] {
         "bump" => {
@@ -89,6 +90,8 @@ fn find_crates(dir: &Path, dst: &mut Vec<Crate>) {
             .chain(CRATES_TO_AVOID_PUBLISH)
             .any(|c| krate.name == *c)
         {
+            dst.push(krate);
+        } else if dir.iter().any(|s| s == "examples") {
             dst.push(krate);
         } else {
             panic!("failed to find {:?} in whitelist or blacklist", krate.name);

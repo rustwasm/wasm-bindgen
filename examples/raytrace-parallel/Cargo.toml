@@ -9,13 +9,13 @@ crate-type = ["cdylib"]
 [dependencies]
 console_error_panic_hook = "0.1"
 futures = "0.1"
-js-sys = { path = '../../crates/js-sys' }
+js-sys = "0.3.4"
 raytracer = { git = 'https://github.com/alexcrichton/raytracer', branch = 'update-deps' }
-wasm-bindgen = { path = "../..", features = ['serde-serialize'] }
-wasm-bindgen-futures = { path = '../../crates/futures' }
+wasm-bindgen = { version = "0.2.27", features = ['serde-serialize'] }
+wasm-bindgen-futures = "0.3.4"
 
 [dependencies.web-sys]
-path = '../../crates/web-sys'
+version = "0.3.4"
 features = [
   'CanvasRenderingContext2d',
   'ErrorEvent',

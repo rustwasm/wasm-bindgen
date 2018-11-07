@@ -1,17 +1,17 @@
 [package]
 name = "closures"
 version = "0.1.0"
-authors = ["Alex Crichton <alex@alexcrichton.com>"]
+authors = ["The wasm-bindgen Developers"]
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { path = "../.." }
-js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = "0.2.27"
+js-sys = "0.3.4"
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
+version = "0.3.4"
 features = [
   'CssStyleDeclaration',
   'Document',

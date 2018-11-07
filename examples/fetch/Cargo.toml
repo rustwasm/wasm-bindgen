@@ -8,14 +8,14 @@ crate-type = ["cdylib"]
 
 [dependencies]
 futures = "0.1.20"
-wasm-bindgen = { path = "../..", features = ["serde-serialize"]  }
-js-sys = { path = "../../crates/js-sys" }
-wasm-bindgen-futures = { path = "../../crates/futures" }
+wasm-bindgen = { version = "0.2.27", features = ["serde-serialize"]  }
+js-sys = "0.3.4"
+wasm-bindgen-futures = "0.3.4"
 serde = "^1.0.59"
 serde_derive = "^1.0.59"
 
 [dependencies.web-sys]
-path = "../../crates/web-sys"
+version = "0.3.4"
 features = [
   'Headers',
   'Request',
