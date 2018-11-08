@@ -535,7 +535,7 @@ impl ToTokens for ast::ImportType {
                 use wasm_bindgen::convert::RefFromWasmAbi;
                 use wasm_bindgen::describe::WasmDescribe;
                 use wasm_bindgen::{JsValue, JsCast};
-                use wasm_bindgen::__rt::core::mem::ManuallyDrop;
+                use wasm_bindgen::__rt::core;
 
                 impl WasmDescribe for #rust_name {
                     fn describe() {
@@ -589,13 +589,13 @@ impl ToTokens for ast::ImportType {
 
                 impl RefFromWasmAbi for #rust_name {
                     type Abi = <JsValue as RefFromWasmAbi>::Abi;
-                    type Anchor = ManuallyDrop<#rust_name>;
+                    type Anchor = core::mem::ManuallyDrop<#rust_name>;
 
                     #[inline]
                     unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor {
                         let tmp = <JsValue as RefFromWasmAbi>::ref_from_abi(js, extra);
-                        ManuallyDrop::new(#rust_name {
-                            obj: ManuallyDrop::into_inner(tmp),
+                        core::mem::ManuallyDrop::new(#rust_name {
+                            obj: core::mem::ManuallyDrop::into_inner(tmp),
                         })
                     }
                 }
@@ -657,6 +657,20 @@ impl ToTokens for ast::ImportType {
             };
         }).to_tokens(tokens);
 
+        let deref_target = match self.extends.first() {
+            Some(target) => quote! { #target },
+            None => quote! { JsValue },
+        };
+        (quote! {
+            impl core::ops::Deref for #rust_name {
+                type Target = #deref_target;
+
+                #[inline]
+                fn deref(&self) -> &#deref_target {
+                    self.as_ref()
+                }
+            }
+        }).to_tokens(tokens);
         for superclass in self.extends.iter() {
             (quote! {
                 impl From<#rust_name> for #superclass {

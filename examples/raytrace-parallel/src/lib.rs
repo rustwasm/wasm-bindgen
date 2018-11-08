@@ -139,7 +139,7 @@ impl WorkerPool {
             //   thread?
             // * Need to handle the `?` on `post_message` as well.
             array.push(&wasm_bindgen::memory());
-            worker.post_message(array.as_ref())?;
+            worker.post_message(&array)?;
             worker.set_onmessage(Some(callback.as_ref().unchecked_ref()));
             worker.set_onerror(Some(callback.as_ref().unchecked_ref()));
             workers.push(worker);
@@ -355,10 +355,10 @@ impl Shared {
             self.scene.height as f64,
         )?;
         let arr = Array::new();
-        arr.push(data.as_ref());
+        arr.push(&data);
         arr.push(&JsValue::from(done));
         arr.push(&JsValue::from(self.id as f64));
-        global.post_message(arr.as_ref())?;
+        global.post_message(&arr)?;
         Ok(())
     }
 }

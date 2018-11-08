@@ -83,6 +83,7 @@
   - [Cargo Features](./web-sys/cargo-features.md)
   - [Function Overloads](./web-sys/function-overloads.md)
   - [Type Translations](./web-sys/type-translations.md)
+  - [Inheritance](./web-sys/inheritance.md)
 
 --------------------------------------------------------------------------------
 

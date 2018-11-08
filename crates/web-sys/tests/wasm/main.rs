@@ -7,7 +7,8 @@ extern crate wasm_bindgen_futures;
 extern crate wasm_bindgen_test;
 extern crate web_sys;
 
-use wasm_bindgen_test::wasm_bindgen_test_configure;
+use wasm_bindgen::{JsValue, JsCast};
+use wasm_bindgen_test::*;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
@@ -56,3 +57,11 @@ pub mod table_element;
 pub mod title_element;
 pub mod xpath_result;
 pub mod indexeddb;
+
+#[wasm_bindgen_test]
+fn deref_works() {
+    let x = JsValue::from(3);
+    let x = x.unchecked_into::<web_sys::XmlHttpRequestUpload>();
+    let y: &web_sys::XmlHttpRequestEventTarget = &x;
+    drop(y);
+}

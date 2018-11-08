@@ -16,10 +16,7 @@ pub fn run() -> Result<(), JsValue> {
     let val = document.create_element("p")?;
     val.set_inner_html("Hello from Rust!");
 
-    // Right now the class inheritance hierarchy of the DOM isn't super
-    // ergonomic, so we manually cast `val: Element` to `&Node` to call the
-    // `append_child` method.
-    AsRef::<web_sys::Node>::as_ref(&body).append_child(val.as_ref())?;
+    body.append_child(&val)?;
 
     Ok(())
 }

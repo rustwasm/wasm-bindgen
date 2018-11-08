@@ -2,7 +2,7 @@ extern crate wasm_bindgen;
 extern crate web_sys;
 
 use wasm_bindgen::prelude::*;
-use web_sys::{AudioContext, AudioNode, OscillatorType};
+use web_sys::{AudioContext, OscillatorType};
 
 /// Converts a midi note to frequency
 ///
@@ -60,34 +60,24 @@ impl FmOsc {
         fm_osc.set_type(OscillatorType::Sine);
         fm_osc.frequency().set_value(0.0);
 
-        // Create base class references:
-        {
-            let primary_node: &AudioNode = primary.as_ref();
-            let gain_node: &AudioNode = gain.as_ref();
-            let fm_osc_node: &AudioNode = fm_osc.as_ref();
-            let fm_gain_node: &AudioNode = fm_gain.as_ref();
-            let destination = ctx.destination();
-            let destination_node: &AudioNode = destination.as_ref();
+        // Connect the nodes up!
 
-            // Connect the nodes up!
+        // The primary oscillator is routed through the gain node, so that
+        // it can control the overall output volume.
+        primary.connect_with_audio_node(&gain)?;
 
-            // The primary oscillator is routed through the gain node, so that
-            // it can control the overall output volume.
-            primary_node.connect_with_audio_node(gain.as_ref())?;
+        // Then connect the gain node to the AudioContext destination (aka
+        // your speakers).
+        gain.connect_with_audio_node(&ctx.destination())?;
 
-            // Then connect the gain node to the AudioContext destination (aka
-            // your speakers).
-            gain_node.connect_with_audio_node(destination_node)?;
-
-            // The FM oscillator is connected to its own gain node, so it can
-            // control the amount of modulation.
-            fm_osc_node.connect_with_audio_node(fm_gain.as_ref())?;
+        // The FM oscillator is connected to its own gain node, so it can
+        // control the amount of modulation.
+        fm_osc.connect_with_audio_node(&fm_gain)?;
 
 
-            // Connect the FM oscillator to the frequency parameter of the main
-            // oscillator, so that the FM node can modulate its frequency.
-            fm_gain_node.connect_with_audio_param(&primary.frequency())?;
-        }
+        // Connect the FM oscillator to the frequency parameter of the main
+        // oscillator, so that the FM node can modulate its frequency.
+        fm_gain.connect_with_audio_param(&primary.frequency())?;
 
         // Start the oscillators!
         primary.start()?;
