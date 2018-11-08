@@ -1979,17 +1979,20 @@ impl<'a, 'b> SubContext<'a, 'b> {
             match &op.kind {
                 decode::OperationKind::Regular => {
                     let nargs = descriptor.unwrap_function().arguments.len();
+                    let nargs = nargs - if op.is_static { 0 } else { 1 };
                     let mut s = format!("function(");
-                    for i in 0..nargs - 1 {
+                    for i in 0..nargs {
                         if i > 0 {
                             drop(write!(s, ", "));
                         }
                         drop(write!(s, "x{}", i));
                     }
-                    s.push_str(") { \nreturn this.");
+                    s.push_str(") { \nreturn ");
+                    s.push_str(&location);
+                    s.push_str(".");
                     s.push_str(&import.function.name);
                     s.push_str("(");
-                    for i in 0..nargs - 1 {
+                    for i in 0..nargs {
                         if i > 0 {
                             drop(write!(s, ", "));
                         }

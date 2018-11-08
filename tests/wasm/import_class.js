@@ -131,3 +131,9 @@ exports.CatchConstructors = class {
     }
   }
 };
+
+exports.StaticStructural = class {
+  static static_structural(x) {
+    return x + 3;
+  }
+};

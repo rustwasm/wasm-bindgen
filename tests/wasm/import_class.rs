@@ -84,6 +84,10 @@ extern "C" {
     type CatchConstructors;
     #[wasm_bindgen(constructor, catch)]
     fn new(x: u32) -> Result<CatchConstructors, JsValue>;
+
+    type StaticStructural;
+    #[wasm_bindgen(static_method_of = StaticStructural, structural)]
+    fn static_structural(a: u32) -> u32;
 }
 
 #[wasm_bindgen]
@@ -212,4 +216,9 @@ pub fn rust_return_some() -> Option<Options> {
 fn catch_constructors() {
     assert!(CatchConstructors::new(0).is_err());
     assert!(CatchConstructors::new(1).is_ok());
+}
+
+#[wasm_bindgen_test]
+fn static_structural() {
+    assert_eq!(StaticStructural::static_structural(30), 33);
 }
