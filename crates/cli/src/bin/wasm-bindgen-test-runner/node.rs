@@ -23,19 +23,19 @@ pub fn execute(
         // ensure they're bound correctly in wasm. This'll allow us to intercept
         // all these calls and capture the output of tests
         const prev_log = console.log;
-        console.log = function() {{
+        console.log = function(...args) {{
             if (console_log_redirect === null)  {{
-                prev_log.apply(null, arguments);
+                prev_log.apply(null, args);
             }} else {{
-                console_log_redirect(prev_log, arguments);
+                console_log_redirect(prev_log, args);
             }}
         }};
         const prev_error = console.error;
-        console.error = function() {{
+        console.error = function(...args) {{
             if (console_error_redirect === null) {{
-                prev_error.apply(null, arguments);
+                prev_error.apply(null, args);
             }} else {{
-                console_error_redirect(prev_error, arguments);
+                console_error_redirect(prev_error, args);
             }}
         }};
 
