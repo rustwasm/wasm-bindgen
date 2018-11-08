@@ -140,7 +140,7 @@ fn switch_methods() {
     SwitchMethods::new().b();
     assert!(switch_methods_called());
 
-    switch_methods_a();
+    switch_methods_b();
 
     assert!(!switch_methods_called());
     SwitchMethods::new().b();
