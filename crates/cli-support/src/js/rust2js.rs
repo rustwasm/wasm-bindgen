@@ -489,7 +489,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
 
         self.ret_expr = match *ty {
-            Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
+            Descriptor::Boolean => "return JS;".to_string(),
             Descriptor::Char => "return JS.codePointAt(0);".to_string(),
             _ => bail!(
                 "unsupported return type for calling JS function from Rust: {:?}",
