@@ -1,5 +1,15 @@
 # `structural`
 
+> **Note**: As of [RFC 5] this attribute is the default for all imported
+> functions. This attribute is largely ignored today and is only retained for
+> backwards compatibility and learning purposes.
+>
+> The inverse of this attribute, [the `host_binding`
+> attribute](host_binding.html) is more functionally interesting than
+> `structural` (as `structural` is simply the default)
+
+[RFC 5]: https://rustwasm.github.io/rfcs/005-structural-and-deref.html
+
 The `structural` flag can be added to `method` annotations, indicating that the
 method being accessed (or property with getters/setters) should be accessed in a
 structural, duck-type-y fashion. Rather than walking the constructor's prototype
@@ -36,15 +46,3 @@ function quack(duck) {
   duck.quack();
 }
 ```
-
-## Why don't we always use the `structural` behavior?
-
-In theory, it is faster since the prototype chain doesn't need to be traversed
-every time the method or property is accessed, but today's optimizing JIT
-compilers are really good about eliminating that cost. The real reason is to be
-future compatible with the ["host bindings" proposal][host-bindings], which
-requires that there be no JavaScript shim between the caller and the native host
-function. In this scenario, the properties and methods *must* be resolved before
-the wasm is instantiated.
-
-[host-bindings]: https://github.com/WebAssembly/host-bindings/blob/master/proposals/host-bindings/Overview.md

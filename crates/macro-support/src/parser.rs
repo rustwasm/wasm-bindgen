@@ -149,6 +149,14 @@ impl BindgenAttrs {
         })
     }
 
+    /// Whether the `host_binding` attribute is present
+    fn host_binding(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::HostBinding => true,
+            _ => false,
+        })
+    }
+
     /// Whether the readonly attributes is present
     fn readonly(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
@@ -229,6 +237,7 @@ pub enum BindgenAttr {
     IndexingSetter,
     IndexingDeleter,
     Structural,
+    HostBinding,
     Readonly,
     JsName(String, Span),
     JsClass(String),
@@ -261,6 +270,9 @@ impl Parse for BindgenAttr {
         }
         if attr == "structural" {
             return Ok(BindgenAttr::Structural);
+        }
+        if attr == "host_binding" {
+            return Ok(BindgenAttr::HostBinding);
         }
         if attr == "readonly" {
             return Ok(BindgenAttr::Readonly);
@@ -549,7 +561,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
             js_ret,
             catch,
             variadic,
-            structural: opts.structural(),
+            structural: opts.structural() || !opts.host_binding(),
             rust_name: self.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment: None,
