@@ -1,5 +1,4 @@
 use std::collections::{HashMap, HashSet};
-use std::fmt::Write;
 use std::mem;
 
 use decode;
@@ -63,6 +62,18 @@ pub struct SubContext<'a, 'b: 'a> {
     pub program: &'b decode::Program<'b>,
     pub cx: &'a mut Context<'b>,
     pub vendor_prefixes: HashMap<&'b str, Vec<&'b str>>,
+}
+
+pub enum ImportTarget {
+    Function(String),
+    Method(String),
+    Constructor(String),
+    StructuralMethod(String),
+    StructuralGetter(Option<String>, String),
+    StructuralSetter(Option<String>, String),
+    StructuralIndexingGetter(Option<String>),
+    StructuralIndexingSetter(Option<String>),
+    StructuralIndexingDeleter(Option<String>),
 }
 
 const INITIAL_SLAB_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -1933,7 +1944,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(d) => d,
         };
 
-        let target = self.generated_import_target(info, import, &descriptor)?;
+        let target = self.generated_import_target(info, import)?;
 
         let js = Rust2Js::new(self.cx)
             .catch(import.catch)
@@ -1948,140 +1959,103 @@ impl<'a, 'b> SubContext<'a, 'b> {
         &mut self,
         info: &decode::Import<'b>,
         import: &decode::ImportFunction,
-        descriptor: &Descriptor,
-    ) -> Result<String, Error> {
+    ) -> Result<ImportTarget, Error> {
         let method_data = match &import.method {
             Some(data) => data,
             None => {
                 let name = self.import_name(info, &import.function.name)?;
-                return Ok(if name.contains(".") {
-                    self.cx.global(&format!(
-                        "
-                        const {}_target = {};
-                        ",
-                        import.shim, name
-                    ));
-                    format!("{}_target", import.shim)
-                } else {
-                    name
-                });
+                if import.structural || !name.contains(".") {
+                    return Ok(ImportTarget::Function(name))
+                }
+                self.cx.global(&format!("const {}_target = {};", import.shim, name));
+                let target = format!("{}_target", import.shim);
+                return Ok(ImportTarget::Function(target))
             }
         };
 
         let class = self.import_name(info, &method_data.class)?;
         let op = match &method_data.kind {
-            decode::MethodKind::Constructor => return Ok(format!("new {}", class)),
+            decode::MethodKind::Constructor => {
+                return Ok(ImportTarget::Constructor(class.to_string()))
+            }
             decode::MethodKind::Operation(op) => op,
         };
-        let target = if import.structural {
-            let location = if op.is_static { &class } else { "this" };
+        if import.structural {
+            let class = if op.is_static { Some(class.clone()) } else { None };
 
-            match &op.kind {
+            return Ok(match &op.kind {
                 decode::OperationKind::Regular => {
-                    let nargs = descriptor.unwrap_function().arguments.len();
-                    let nargs = nargs - if op.is_static { 0 } else { 1 };
-                    let mut s = format!("function(");
-                    for i in 0..nargs {
-                        if i > 0 {
-                            drop(write!(s, ", "));
-                        }
-                        drop(write!(s, "x{}", i));
+                    let name = import.function.name.to_string();
+                    match class {
+                        Some(c) => ImportTarget::Function(format!("{}.{}", c, name)),
+                        None => ImportTarget::StructuralMethod(name),
                     }
-                    s.push_str(") { \nreturn ");
-                    s.push_str(&location);
-                    s.push_str(".");
-                    s.push_str(&import.function.name);
-                    s.push_str("(");
-                    for i in 0..nargs {
-                        if i > 0 {
-                            drop(write!(s, ", "));
-                        }
-                        drop(write!(s, "x{}", i));
-                    }
-                    s.push_str(");\n}");
-                    s
-                }
-                decode::OperationKind::Getter(g) => format!(
-                    "function() {{
-                        return {}.{};
-                    }}",
-                    location, g
-                ),
-                decode::OperationKind::Setter(s) => format!(
-                    "function(y) {{
-                        {}.{} = y;
-                    }}",
-                    location, s
-                ),
-                decode::OperationKind::IndexingGetter => format!(
-                    "function(y) {{
-                        return {}[y];
-                    }}",
-                    location
-                ),
-                decode::OperationKind::IndexingSetter => format!(
-                    "function(y, z) {{
-                        {}[y] = z;
-                    }}",
-                    location
-                ),
-                decode::OperationKind::IndexingDeleter => format!(
-                    "function(y) {{
-                        delete {}[y];
-                    }}",
-                    location
-                ),
-            }
-        } else {
-            let target = format!("typeof {0} === 'undefined' ? null : {}{}",
-                                 class,
-                                 if op.is_static { "" } else { ".prototype" });
-            let (mut target, name) = match &op.kind {
-                decode::OperationKind::Regular => {
-                    (format!("{}.{}", target, import.function.name), &import.function.name)
                 }
                 decode::OperationKind::Getter(g) => {
-                    self.cx.expose_get_inherited_descriptor();
-                    (format!(
-                        "GetOwnOrInheritedPropertyDescriptor({}, '{}').get",
-                        target, g,
-                    ), g)
+                    ImportTarget::StructuralGetter(class, g.to_string())
                 }
                 decode::OperationKind::Setter(s) => {
-                    self.cx.expose_get_inherited_descriptor();
-                    (format!(
-                        "GetOwnOrInheritedPropertyDescriptor({}, '{}').set",
-                        target, s,
-                    ), s)
+                    ImportTarget::StructuralSetter(class, s.to_string())
                 }
                 decode::OperationKind::IndexingGetter => {
-                    panic!("indexing getter should be structural")
+                    ImportTarget::StructuralIndexingGetter(class)
                 }
                 decode::OperationKind::IndexingSetter => {
-                    panic!("indexing setter should be structural")
+                    ImportTarget::StructuralIndexingSetter(class)
                 }
                 decode::OperationKind::IndexingDeleter => {
-                    panic!("indexing deleter should be structural")
+                    ImportTarget::StructuralIndexingDeleter(class)
                 }
-            };
-            target.push_str(&format!(" || function() {{
-                throw new Error(`wasm-bindgen: {}.{} does not exist`);
-            }}", class, name));
-            if op.is_static {
-                target.insert(0, '(');
-                target.push_str(").bind(");
-                target.push_str(&class);
-                target.push_str(")");
+            })
+        }
+
+        let target = format!("typeof {0} === 'undefined' ? null : {}{}",
+                             class,
+                             if op.is_static { "" } else { ".prototype" });
+        let (mut target, name) = match &op.kind {
+            decode::OperationKind::Regular => {
+                (format!("{}.{}", target, import.function.name), &import.function.name)
             }
-            target
+            decode::OperationKind::Getter(g) => {
+                self.cx.expose_get_inherited_descriptor();
+                (format!(
+                    "GetOwnOrInheritedPropertyDescriptor({}, '{}').get",
+                    target, g,
+                ), g)
+            }
+            decode::OperationKind::Setter(s) => {
+                self.cx.expose_get_inherited_descriptor();
+                (format!(
+                    "GetOwnOrInheritedPropertyDescriptor({}, '{}').set",
+                    target, s,
+                ), s)
+            }
+            decode::OperationKind::IndexingGetter => {
+                panic!("indexing getter should be structural")
+            }
+            decode::OperationKind::IndexingSetter => {
+                panic!("indexing setter should be structural")
+            }
+            decode::OperationKind::IndexingDeleter => {
+                panic!("indexing deleter should be structural")
+            }
         };
+        target.push_str(&format!(" || function() {{
+            throw new Error(`wasm-bindgen: {}.{} does not exist`);
+        }}", class, name));
+        if op.is_static {
+            target.insert(0, '(');
+            target.push_str(").bind(");
+            target.push_str(&class);
+            target.push_str(")");
+        }
 
         self.cx.global(&format!("const {}_target = {};", import.shim, target));
-        Ok(format!(
-            "{}_target{}",
-            import.shim,
-            if op.is_static { "" } else { ".call" }
-        ))
+        Ok(if op.is_static {
+            ImportTarget::Function(format!("{}_target", import.shim))
+        } else {
+            ImportTarget::Method(format!("{}_target", import.shim))
+        })
     }
 
     fn generate_import_type(

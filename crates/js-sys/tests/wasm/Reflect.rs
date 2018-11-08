@@ -114,7 +114,7 @@ fn get_own_property_descriptor() {
     let desc = Reflect::get_own_property_descriptor(&obj, &"x".into()).unwrap();
     assert_eq!(PropertyDescriptor::from(desc).value(), 10);
     let desc = Reflect::get_own_property_descriptor(&obj, &"foo".into()).unwrap();
-    assert!(PropertyDescriptor::from(desc).value().is_undefined());
+    assert!(desc.is_undefined());
 }
 
 #[wasm_bindgen_test]
