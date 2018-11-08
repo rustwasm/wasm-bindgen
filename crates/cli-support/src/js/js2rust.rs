@@ -85,7 +85,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             if self.cx.config.debug {
                 self.prelude(
                     "if (this.ptr === 0) {
-                        throw new Error('Attempt to use a moved value');
+                         throw new Error('Attempt to use a moved value');
                     }",
                 );
             }
@@ -330,12 +330,24 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.prelude(&format!(
                     "\
                     const ptr{i} = {arg}.ptr;\n\
-                    if (ptr{i} === 0) {{
-                        throw new Error('Attempt to use a moved value');
-                    }}
-                    {arg}.ptr = 0;\n\
-                ",
+                    ",
                     i = i,
+                    arg = name
+                ));
+                if self.cx.config.debug {
+                    self.prelude(&format!(
+                        "\
+                        if (ptr{i} === 0) {{
+                            throw new Error('Attempt to use a moved value');
+                        }}
+                        ",
+                        i = i,
+                    ));
+                }
+                self.prelude(&format!(
+                    "\
+                    {arg}.ptr = 0;\n\
+                    ",
                     arg = name
                 ));
                 self.rust_arguments.push(format!("ptr{}", i));

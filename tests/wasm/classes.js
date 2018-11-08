@@ -124,7 +124,7 @@ exports.js_readonly_fields = () => {
 
 exports.js_double_consume = () => {
     const r = new wasm.DoubleConsume();
-    assert.throws(() => r.consume(r), /Attempt to use a moved value/);
+    assert.throws(() => r.consume(r));
 };
 
 
