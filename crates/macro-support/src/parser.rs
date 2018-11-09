@@ -150,11 +150,11 @@ impl BindgenAttrs {
     }
 
     /// Whether the `host_binding` attribute is present
-    fn host_binding(&self) -> bool {
-        self.attrs.iter().any(|a| match *a {
-            BindgenAttr::HostBinding => true,
-            _ => false,
-        })
+    fn host_binding(&self) -> Option<&Ident> {
+        self.attrs.iter().filter_map(|a| match a {
+            BindgenAttr::HostBinding(i) => Some(i),
+            _ => None,
+        }).next()
     }
 
     /// Whether the readonly attributes is present
@@ -237,7 +237,7 @@ pub enum BindgenAttr {
     IndexingSetter,
     IndexingDeleter,
     Structural,
-    HostBinding,
+    HostBinding(Ident),
     Readonly,
     JsName(String, Span),
     JsClass(String),
@@ -272,7 +272,7 @@ impl Parse for BindgenAttr {
             return Ok(BindgenAttr::Structural);
         }
         if attr == "host_binding" {
-            return Ok(BindgenAttr::HostBinding);
+            return Ok(BindgenAttr::HostBinding(attr))
         }
         if attr == "readonly" {
             return Ok(BindgenAttr::Readonly);
@@ -555,13 +555,18 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
                 ShortHash(data)
             )
         };
+        if let Some(ident) = opts.host_binding() {
+            if opts.structural() {
+                bail_span!(ident, "cannot specify both `structural` and `host_binding`");
+            }
+        }
         Ok(ast::ImportKind::Function(ast::ImportFunction {
             function: wasm,
             kind,
             js_ret,
             catch,
             variadic,
-            structural: opts.structural() || !opts.host_binding(),
+            structural: opts.structural() || opts.host_binding().is_none(),
             rust_name: self.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment: None,
