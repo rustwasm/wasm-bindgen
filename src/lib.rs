@@ -840,7 +840,11 @@ pub mod __rt {
                 }
             }
 
-            super::throw_str("invalid malloc request");
+            if cfg!(debug_assertions) {
+                super::throw_str("invalid malloc request")
+            } else {
+                std::process::abort();
+            }
         }
 
         #[no_mangle]
