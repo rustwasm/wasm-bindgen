@@ -116,6 +116,7 @@ impl<'a> Context<'a> {
     }
 
     pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
+        self.parse_wasm_names();
         self.write_classes()?;
 
         self.bind("__wbindgen_object_clone_ref", &|me| {
@@ -1692,7 +1693,6 @@ impl<'a> Context<'a> {
     }
 
     fn gc(&mut self) {
-        self.parse_wasm_names();
         gc::Config::new()
             .demangle(self.config.demangle)
             .keep_debug(self.config.keep_debug || self.config.debug)
@@ -1703,6 +1703,14 @@ impl<'a> Context<'a> {
         let module = mem::replace(self.module, Module::default());
         let module = module.parse_names().unwrap_or_else(|p| p.1);
         *self.module = module;
+        if self.config.remove_name_section {
+            self.module.sections_mut().retain(|s| {
+                match s {
+                    Section::Name(_) => false,
+                    _ => true,
+                }
+            });
+        }
     }
 
     fn describe(&mut self, name: &str) -> Option<Descriptor> {

@@ -35,6 +35,7 @@ pub struct Bindgen {
     typescript: bool,
     demangle: bool,
     keep_debug: bool,
+    remove_name_section: bool,
     // Experimental support for `WeakRefGroup`, an upcoming ECMAScript feature.
     // Currently only enable-able through an env var.
     weak_refs: bool,
@@ -62,6 +63,7 @@ impl Bindgen {
             typescript: false,
             demangle: true,
             keep_debug: false,
+            remove_name_section: false,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
         }
@@ -121,6 +123,11 @@ impl Bindgen {
 
     pub fn keep_debug(&mut self, keep_debug: bool) -> &mut Bindgen {
         self.keep_debug = keep_debug;
+        self
+    }
+
+    pub fn remove_name_section(&mut self, remove: bool) -> &mut Bindgen {
+        self.remove_name_section = remove;
         self
     }
 
