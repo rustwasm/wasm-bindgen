@@ -509,7 +509,10 @@ impl<'a> Context<'a> {
         let instantiation;
         const imports = {{ './{module}': __exports }};
         if (path_or_module instanceof WebAssembly.Module) {{
-            instantiation = WebAssembly.instantiate(path_or_module, imports);
+            instantiation = WebAssembly.instantiate(path_or_module, imports)
+                .then(instance => {{
+                    return {{ instance, module: module_or_path }}
+                }});
         }} else {{
             const data = fetch(path_or_module);
             if (typeof WebAssembly.instantiateStreaming === 'function') {{
