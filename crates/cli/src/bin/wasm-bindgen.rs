@@ -37,6 +37,7 @@ Options:
     --debug                  Include otherwise-extraneous debug checks in output
     --no-demangle            Don't demangle Rust symbol names
     --keep-debug             Keep debug sections in wasm files
+    --remove-name-section    Remove the debugging `name` section of the file
     -V --version             Print the version number of wasm-bindgen
 ";
 
@@ -52,6 +53,7 @@ struct Args {
     flag_version: bool,
     flag_no_demangle: bool,
     flag_no_modules_global: Option<String>,
+    flag_remove_name_section: bool,
     flag_keep_debug: bool,
     arg_input: Option<PathBuf>,
 }
@@ -92,6 +94,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .debug(args.flag_debug)
         .demangle(!args.flag_no_demangle)
         .keep_debug(args.flag_keep_debug)
+        .remove_name_section(args.flag_remove_name_section)
         .typescript(typescript);
     if let Some(ref name) = args.flag_no_modules_global {
         b.no_modules_global(name);
