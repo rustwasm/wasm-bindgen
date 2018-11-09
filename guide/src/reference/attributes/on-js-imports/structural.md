@@ -4,8 +4,8 @@
 > functions. This attribute is largely ignored today and is only retained for
 > backwards compatibility and learning purposes.
 >
-> The inverse of this attribute, [the `host_binding`
-> attribute](host_binding.html) is more functionally interesting than
+> The inverse of this attribute, [the `final`
+> attribute](final.html) is more functionally interesting than
 > `structural` (as `structural` is simply the default)
 
 [RFC 5]: https://rustwasm.github.io/rfcs/005-structural-and-deref.html

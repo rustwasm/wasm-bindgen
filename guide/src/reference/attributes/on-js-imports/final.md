@@ -1,21 +1,23 @@
-# `host_binding`
+# `final`
 
-The `host_binding` attribute is the converse of the [`structural`
+The `final` attribute is the converse of the [`structural`
 attribute](structural.html). It configures how `wasm-bindgen` will generate JS
-glue to call the imported function. The naming here is intended convey that this
-attribute is intended to implement the semantics of the future [host bindings
-proposal][host-bindings] for WebAssembly.
+imports to call the imported function. Notably a function imported by `final`
+never changes after it was imported, whereas a function imported by default (or
+with `structural`) is subject to runtime lookup rules such as walking the
+prototype chain of an object.
 
 [host-bindings]: https://github.com/WebAssembly/host-bindings
 [reference-types]: https://github.com/WebAssembly/reference-types
 
-The `host_binding` attribute is intended to be purely related to performance. It
-ideally has no user-visible effect, and well-typed `structural` imports (the
-default) should be able to transparently switch to `host_binding` eventually.
+The `final` attribute is intended to be purely related to performance. It
+ideally has no user-visible effect, and `structural` imports (the default)
+should be able to transparently switch to `host_binding` eventually.
 
 The eventual performance aspect is that with the [host bindings
 proposal][host-bindings] then `wasm-bindgen` will need to generate far fewer JS
-shims to import than it does today. For example, consider this import today:
+functino shims to import than it does today. For example, consider this import
+today:
 
 ```rust
 #[wasm_bindgen]
@@ -26,20 +28,20 @@ extern {
 }
 ```
 
-**Without the `host_binding` attribute** the generated JS looks like this:
+**Without the `final` attribute** the generated JS looks like this:
 
 ```js
-// without `host_binding`
+// without `final`
 export function __wbg_bar_a81456386e6b526f(arg0, arg1, arg2) {
     let varg1 = getStringFromWasm(arg1, arg2);
     return addHeapObject(getObject(arg0).bar(varg1));
 }
 ```
 
-We can see here that this JS shim is required, but it's all relatively
+We can see here that this JS function shim is required, but it's all relatively
 self-contained. It does, however, execute the `bar` method in a duck-type-y
-fashion in the sense that it never validates `getObject(arg0)` is of type
-`Foo` to actually call the `Foo.prototype.bar` method.
+fashion in the sense that it never validates `getObject(arg0)` is of type `Foo`
+to actually call the `Foo.prototype.bar` method.
 
 If we instead, however, write this:
 
@@ -47,7 +49,7 @@ If we instead, however, write this:
 #[wasm_bindgen]
 extern {
     type Foo;
-    #[wasm_bindgen(method, host_binding)] // note the change here
+    #[wasm_bindgen(method, final)] // note the change here
     fn bar(this: &Foo, argument: &str) -> JsValue;
 }
 ```
@@ -68,7 +70,7 @@ called is hoisted out of the generated shim and is bound to always be
 `Foo.prototype.bar`. This then uses the `Function.call` method to invoke that
 function with `getObject(arg0)` as the receiver.
 
-But wait, there's still a JS shim here even with `host_binding`! That's true,
+But wait, there's still a JS function shim here even with `final`! That's true,
 and this is simply a fact of future WebAssembly proposals not being implemented
 yet. The semantics, though, match the future [host bindings
 proposal][host-bindings] because the method being called is determined exactly
@@ -77,8 +79,8 @@ runtime when the function is called.
 
 ## Interaction with future proposals
 
-If you're curious to see how our JS shim will be eliminated entirely, let's take
-a look at the generated bindings. We're starting off with this:
+If you're curious to see how our JS function shim will be eliminated entirely,
+let's take a look at the generated bindings. We're starting off with this:
 
 ```js
 const __wbg_bar_target = Foo.prototype.bar;
@@ -135,5 +137,18 @@ export const __wbg_bar_a81456386e6b526f = Foo.prototype.bar;
 ```
 
 and voila! We, with [reference types][reference-types] and [host
-bindings][host-bindings], now have no JS shim at all necessary to call the
-imported function!
+bindings][host-bindings], now have no JS function shim at all necessary to call
+the imported function. Additionally future wasm proposals to the ES module
+system may also mean that don't even need the `export const ...` here too.
+
+It's also worth pointing out that with all these wasm proposals implemented the
+default way to import the `bar` function (aka `structural`) would generate a JS
+function shim that looks like:
+
+```js
+export function __wbg_bar_a81456386e6b526f(varg1) {
+    return this.bar(varg1);
+}
+```
+
+where this import is still subject to runtime prototype chain lookups and such.
