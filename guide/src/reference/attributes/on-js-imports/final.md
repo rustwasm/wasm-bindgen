@@ -12,7 +12,7 @@ prototype chain of an object.
 
 The `final` attribute is intended to be purely related to performance. It
 ideally has no user-visible effect, and `structural` imports (the default)
-should be able to transparently switch to `host_binding` eventually.
+should be able to transparently switch to `final` eventually.
 
 The eventual performance aspect is that with the [host bindings
 proposal][host-bindings] then `wasm-bindgen` will need to generate far fewer JS

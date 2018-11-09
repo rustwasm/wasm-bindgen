@@ -61,7 +61,7 @@
       - [`constructor`](./reference/attributes/on-js-imports/constructor.md)
       - [`extends`](./reference/attributes/on-js-imports/extends.md)
       - [`getter` and `setter`](./reference/attributes/on-js-imports/getter-and-setter.md)
-      - [`host_binding`](./reference/attributes/on-js-imports/host_binding.md)
+      - [`final`](./reference/attributes/on-js-imports/final.md)
       - [`indexing_getter`, `indexing_setter`, and `indexing_deleter`](./reference/attributes/on-js-imports/indexing-getter-setter-deleter.md)
       - [`js_class = "Blah"`](./reference/attributes/on-js-imports/js_class.md)
       - [`js_name`](./reference/attributes/on-js-imports/js_name.md)

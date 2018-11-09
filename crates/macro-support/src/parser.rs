@@ -149,10 +149,10 @@ impl BindgenAttrs {
         })
     }
 
-    /// Whether the `host_binding` attribute is present
-    fn host_binding(&self) -> Option<&Ident> {
+    /// Whether the `final` attribute is present
+    fn final_(&self) -> Option<&Ident> {
         self.attrs.iter().filter_map(|a| match a {
-            BindgenAttr::HostBinding(i) => Some(i),
+            BindgenAttr::Final(i) => Some(i),
             _ => None,
         }).next()
     }
@@ -237,7 +237,7 @@ pub enum BindgenAttr {
     IndexingSetter,
     IndexingDeleter,
     Structural,
-    HostBinding(Ident),
+    Final(Ident),
     Readonly,
     JsName(String, Span),
     JsClass(String),
@@ -249,7 +249,8 @@ pub enum BindgenAttr {
 impl Parse for BindgenAttr {
     fn parse(input: ParseStream) -> SynResult<Self> {
         let original = input.fork();
-        let attr: Ident = input.parse()?;
+        let attr: AnyIdent = input.parse()?;
+        let attr = attr.0;
         if attr == "catch" {
             return Ok(BindgenAttr::Catch);
         }
@@ -271,8 +272,8 @@ impl Parse for BindgenAttr {
         if attr == "structural" {
             return Ok(BindgenAttr::Structural);
         }
-        if attr == "host_binding" {
-            return Ok(BindgenAttr::HostBinding(attr))
+        if attr == "final" {
+            return Ok(BindgenAttr::Final(attr))
         }
         if attr == "readonly" {
             return Ok(BindgenAttr::Readonly);
@@ -555,9 +556,9 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
                 ShortHash(data)
             )
         };
-        if let Some(ident) = opts.host_binding() {
+        if let Some(ident) = opts.final_() {
             if opts.structural() {
-                bail_span!(ident, "cannot specify both `structural` and `host_binding`");
+                bail_span!(ident, "cannot specify both `structural` and `final`");
             }
         }
         Ok(ast::ImportKind::Function(ast::ImportFunction {
@@ -566,7 +567,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
             js_ret,
             catch,
             variadic,
-            structural: opts.structural() || opts.host_binding().is_none(),
+            structural: opts.structural() || opts.final_().is_none(),
             rust_name: self.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment: None,

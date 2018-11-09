@@ -1,8 +1,0 @@
-error: cannot specify both `structural` and `host_binding`
- --> $DIR/structural-and-host-binding.rs:9:40
-  |
-9 |     #[wasm_bindgen(method, structural, host_binding)]
-  |                                        ^^^^^^^^^^^^
-
-error: aborting due to previous error
-

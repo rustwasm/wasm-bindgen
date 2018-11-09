@@ -6,6 +6,6 @@ use wasm_bindgen::prelude::*;
 extern "C" {
     type Foo;
 
-    #[wasm_bindgen(method, structural, host_binding)]
+    #[wasm_bindgen(method, structural, final)]
     fn bar(this: &Foo);
 }
