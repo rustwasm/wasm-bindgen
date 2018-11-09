@@ -241,8 +241,9 @@ impl JsValue {
     /// value into wasm linear memory, encoded as UTF-8, and returns it as a
     /// Rust `String`.
     ///
-    /// To avoid the copying and re-encoding, consider the `as_js_string()`
-    /// method instead.
+    /// To avoid the copying and re-encoding, consider the
+    /// `JsString::try_from()` function from [js-sys](https://docs.rs/js-sys)
+    /// instead.
     ///
     /// If this JS value is not an instance of a string or if it's not valid
     /// utf-8 then this returns `None`.
