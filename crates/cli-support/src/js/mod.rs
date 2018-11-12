@@ -37,11 +37,20 @@ pub struct Context<'a> {
     /// from, `None` being the global module. The second key is a map of
     /// identifiers we've already imported from the module to what they're
     /// called locally.
-    pub imported_names: HashMap<Option<&'a str>, HashMap<String, String>>,
+    pub imported_names: HashMap<Option<&'a str>, HashMap<&'a str, String>>,
 
     /// A set of all imported identifiers to the number of times they've been
     /// imported, used to generate new identifiers.
     pub imported_identifiers: HashMap<String, usize>,
+
+    /// A map of all imported shim functions which can actually be directly
+    /// imported from the containing module. The mapping here maps to a tuple,
+    /// where the first element is the module to import from and the second
+    /// element is the name to import from the module.
+    ///
+    /// Note that for `direct_imports` no shims are generated in JS that
+    /// wasm-bindgen emits.
+    pub direct_imports: HashMap<&'a str, (&'a str, &'a str)>,
 
     pub exported_classes: HashMap<String, ExportedClass>,
     pub function_table_needed: bool,
@@ -74,6 +83,32 @@ pub enum ImportTarget {
     StructuralIndexingGetter(Option<String>),
     StructuralIndexingSetter(Option<String>),
     StructuralIndexingDeleter(Option<String>),
+}
+
+/// Return value of `determine_import` which is where we look at an imported
+/// function AST and figure out where it's actually being imported from
+/// (performing some validation checks and whatnot).
+enum Import<'a> {
+    /// An item is imported from the global scope. The `name` is what's imported
+    /// and the optional `field` is the field on that item we're importing.
+    Global {
+        name: &'a str,
+        field: Option<&'a str>,
+    },
+    /// Same as `Global`, except the `name` is imported via an ESM import from
+    /// the specified `module` path.
+    Module {
+        module: &'a str,
+        name: &'a str,
+        field: Option<&'a str>,
+    },
+    /// A global import which may have a number of vendor prefixes associated
+    /// with it, like `webkitAudioPrefix`. The `name` is the name to test
+    /// whether it's prefixed.
+    VendorPrefixed {
+        name: &'a str,
+        prefixes: Vec<&'a str>,
+    },
 }
 
 const INITIAL_SLAB_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -755,8 +790,14 @@ impl<'a> Context<'a> {
         for import in imports {
             if import.module() == "__wbindgen_placeholder__" {
                 import.module_mut().truncate(0);
-                import.module_mut().push_str("./");
-                import.module_mut().push_str(module_name);
+                if let Some((module, name)) = self.direct_imports.get(import.field()) {
+                    import.field_mut().truncate(0);
+                    import.module_mut().push_str(module);
+                    import.field_mut().push_str(name);
+                } else {
+                    import.module_mut().push_str("./");
+                    import.module_mut().push_str(module_name);
+                }
                 continue;
             }
 
@@ -1773,6 +1814,193 @@ impl<'a> Context<'a> {
             .or_insert_with(ExportedClass::default)
             .wrap_needed = true;
     }
+
+    fn import_identifier(&mut self, import: Import<'a>) -> String {
+        // Here's where it's a bit tricky. We need to make sure that importing
+        // the same identifier from two different modules works, and they're
+        // named uniquely below. Additionally if we've already imported the same
+        // identifier from the module in question then we'd like to reuse the
+        // one that was previously imported.
+        //
+        // Our `imported_names` map keeps track of all imported identifiers from
+        // modules, mapping the imported names onto names actually available for
+        // use in our own module. If our identifier isn't present then we
+        // generate a new identifier and are sure to generate the appropriate JS
+        // import for our new identifier.
+        let use_node_require = self.use_node_require();
+        let imported_identifiers = &mut self.imported_identifiers;
+        let imports = &mut self.imports;
+        let imports_post = &mut self.imports_post;
+        let identifier = self
+            .imported_names
+            .entry(import.module())
+            .or_insert_with(Default::default)
+            .entry(import.name())
+            .or_insert_with(|| {
+                let name = generate_identifier(import.name(), imported_identifiers);
+                match &import {
+                    Import::Module { module, .. } => {
+                        if use_node_require {
+                            imports.push_str(&format!(
+                                "const {} = require(String.raw`{}`).{};\n",
+                                name, module, import.name()
+                            ));
+                        } else if import.name() == name {
+                            imports.push_str(&format!("import {{ {} }} from '{}';\n", name, module));
+                        } else {
+                            imports.push_str(&format!(
+                                "import {{ {} as {} }} from '{}';\n",
+                                import.name(), name, module
+                            ));
+                        }
+                        name
+                    }
+
+                    Import::VendorPrefixed { prefixes, .. } => {
+                        imports_post.push_str("const l");
+                        imports_post.push_str(&name);
+                        imports_post.push_str(" = ");
+                        switch(imports_post, &name, "", prefixes);
+                        imports_post.push_str(";\n");
+
+                        fn switch(dst: &mut String, name: &str, prefix: &str, left: &[&str]) {
+                            if left.len() == 0 {
+                                dst.push_str(prefix);
+                                return dst.push_str(name);
+                            }
+                            dst.push_str("(typeof ");
+                            dst.push_str(prefix);
+                            dst.push_str(name);
+                            dst.push_str(" == 'undefined' ? ");
+                            match left.len() {
+                                1 => {
+                                    dst.push_str(&left[0]);
+                                    dst.push_str(name);
+                                }
+                                _ => switch(dst, name, &left[0], &left[1..]),
+                            }
+                            dst.push_str(" : ");
+                            dst.push_str(prefix);
+                            dst.push_str(name);
+                            dst.push_str(")");
+                        }
+                        format!("l{}", name)
+                    }
+
+                    Import::Global { .. } => name,
+                }
+            });
+
+        // If there's a namespace we didn't actually import `item` but rather
+        // the namespace, so access through that.
+        match import.field() {
+            Some(field) => format!("{}.{}", identifier, field),
+            None => identifier.clone(),
+        }
+    }
+
+    fn generated_import_target(
+        &mut self,
+        name: Import<'a>,
+        import: &decode::ImportFunction<'a>,
+    ) -> Result<ImportTarget, Error> {
+        let method_data = match &import.method {
+            Some(data) => data,
+            None => {
+                let name = self.import_identifier(name);
+                if import.structural || !name.contains(".") {
+                    return Ok(ImportTarget::Function(name))
+                }
+                self.global(&format!("const {}_target = {};", import.shim, name));
+                let target = format!("{}_target", import.shim);
+                return Ok(ImportTarget::Function(target))
+            }
+        };
+
+        let class = self.import_identifier(name);
+        let op = match &method_data.kind {
+            decode::MethodKind::Constructor => {
+                return Ok(ImportTarget::Constructor(class.to_string()))
+            }
+            decode::MethodKind::Operation(op) => op,
+        };
+        if import.structural {
+            let class = if op.is_static { Some(class.clone()) } else { None };
+
+            return Ok(match &op.kind {
+                decode::OperationKind::Regular => {
+                    let name = import.function.name.to_string();
+                    match class {
+                        Some(c) => ImportTarget::Function(format!("{}.{}", c, name)),
+                        None => ImportTarget::StructuralMethod(name),
+                    }
+                }
+                decode::OperationKind::Getter(g) => {
+                    ImportTarget::StructuralGetter(class, g.to_string())
+                }
+                decode::OperationKind::Setter(s) => {
+                    ImportTarget::StructuralSetter(class, s.to_string())
+                }
+                decode::OperationKind::IndexingGetter => {
+                    ImportTarget::StructuralIndexingGetter(class)
+                }
+                decode::OperationKind::IndexingSetter => {
+                    ImportTarget::StructuralIndexingSetter(class)
+                }
+                decode::OperationKind::IndexingDeleter => {
+                    ImportTarget::StructuralIndexingDeleter(class)
+                }
+            })
+        }
+
+        let target = format!("typeof {0} === 'undefined' ? null : {}{}",
+                             class,
+                             if op.is_static { "" } else { ".prototype" });
+        let (mut target, name) = match &op.kind {
+            decode::OperationKind::Regular => {
+                (format!("{}.{}", target, import.function.name), &import.function.name)
+            }
+            decode::OperationKind::Getter(g) => {
+                self.expose_get_inherited_descriptor();
+                (format!(
+                    "GetOwnOrInheritedPropertyDescriptor({}, '{}').get",
+                    target, g,
+                ), g)
+            }
+            decode::OperationKind::Setter(s) => {
+                self.expose_get_inherited_descriptor();
+                (format!(
+                    "GetOwnOrInheritedPropertyDescriptor({}, '{}').set",
+                    target, s,
+                ), s)
+            }
+            decode::OperationKind::IndexingGetter => {
+                panic!("indexing getter should be structural")
+            }
+            decode::OperationKind::IndexingSetter => {
+                panic!("indexing setter should be structural")
+            }
+            decode::OperationKind::IndexingDeleter => {
+                panic!("indexing deleter should be structural")
+            }
+        };
+        target.push_str(&format!(" || function() {{
+            throw new Error(`wasm-bindgen: {}.{} does not exist`);
+        }}", class, name));
+        if op.is_static {
+            target.insert(0, '(');
+            target.push_str(").bind(");
+            target.push_str(&class);
+            target.push_str(")");
+        }
+
+        self.global(&format!("const {}_target = {};", import.shim, target));
+        Ok(if op.is_static {
+            ImportTarget::Function(format!("{}_target", import.shim))
+        } else {
+            ImportTarget::Method(format!("{}_target", import.shim))
+        })
+    }
 }
 
 impl<'a, 'b> SubContext<'a, 'b> {
@@ -1955,124 +2183,45 @@ impl<'a, 'b> SubContext<'a, 'b> {
             Some(d) => d,
         };
 
-        let target = self.generated_import_target(info, import)?;
+        // Figure out the name that we're importing to dangle further references
+        // off of. This is the function name if there's no method all here, or
+        // the class if there's a method call.
+        let name = match &import.method {
+            Some(data) => self.determine_import(info, &data.class)?,
+            None => self.determine_import(info, &import.function.name)?,
+        };
 
-        let js = Rust2Js::new(self.cx)
-            .catch(import.catch)
+        // Build up our shim's state, and we'll use that to guide whether we
+        // actually emit an import here or not.
+        let mut shim = Rust2Js::new(self.cx);
+        shim.catch(import.catch)
             .variadic(import.variadic)
-            .process(descriptor.unwrap_function())?
-            .finish(&target)?;
-        self.cx.export(&import.shim, &js, None);
+            .process(descriptor.unwrap_function())?;
+
+        // If this is a bare function import and the shim doesn't actually do
+        // anything (all argument/return conversions are noops) then we can wire
+        // up the wasm import directly to the destination. We don't actually
+        // wire up anything here, but we record it to get wired up later.
+        if import.method.is_none() && shim.is_noop() {
+            if let Import::Module { module, name, field: None } = name {
+                shim.cx.direct_imports.insert(import.shim, (module, name));
+                return Ok(())
+            }
+        }
+
+        // If the above optimization fails then we actually generate the import
+        // here (possibly emitting some glue in our JS module) and then emit the
+        // shim as the wasm will be importing the shim.
+        let target = shim.cx.generated_import_target(name, import)?;
+        let js = shim.finish(&target)?;
+        shim.cx.export(&import.shim, &js, None);
         Ok(())
-    }
-
-    fn generated_import_target(
-        &mut self,
-        info: &decode::Import<'b>,
-        import: &decode::ImportFunction,
-    ) -> Result<ImportTarget, Error> {
-        let method_data = match &import.method {
-            Some(data) => data,
-            None => {
-                let name = self.import_name(info, &import.function.name)?;
-                if import.structural || !name.contains(".") {
-                    return Ok(ImportTarget::Function(name))
-                }
-                self.cx.global(&format!("const {}_target = {};", import.shim, name));
-                let target = format!("{}_target", import.shim);
-                return Ok(ImportTarget::Function(target))
-            }
-        };
-
-        let class = self.import_name(info, &method_data.class)?;
-        let op = match &method_data.kind {
-            decode::MethodKind::Constructor => {
-                return Ok(ImportTarget::Constructor(class.to_string()))
-            }
-            decode::MethodKind::Operation(op) => op,
-        };
-        if import.structural {
-            let class = if op.is_static { Some(class.clone()) } else { None };
-
-            return Ok(match &op.kind {
-                decode::OperationKind::Regular => {
-                    let name = import.function.name.to_string();
-                    match class {
-                        Some(c) => ImportTarget::Function(format!("{}.{}", c, name)),
-                        None => ImportTarget::StructuralMethod(name),
-                    }
-                }
-                decode::OperationKind::Getter(g) => {
-                    ImportTarget::StructuralGetter(class, g.to_string())
-                }
-                decode::OperationKind::Setter(s) => {
-                    ImportTarget::StructuralSetter(class, s.to_string())
-                }
-                decode::OperationKind::IndexingGetter => {
-                    ImportTarget::StructuralIndexingGetter(class)
-                }
-                decode::OperationKind::IndexingSetter => {
-                    ImportTarget::StructuralIndexingSetter(class)
-                }
-                decode::OperationKind::IndexingDeleter => {
-                    ImportTarget::StructuralIndexingDeleter(class)
-                }
-            })
-        }
-
-        let target = format!("typeof {0} === 'undefined' ? null : {}{}",
-                             class,
-                             if op.is_static { "" } else { ".prototype" });
-        let (mut target, name) = match &op.kind {
-            decode::OperationKind::Regular => {
-                (format!("{}.{}", target, import.function.name), &import.function.name)
-            }
-            decode::OperationKind::Getter(g) => {
-                self.cx.expose_get_inherited_descriptor();
-                (format!(
-                    "GetOwnOrInheritedPropertyDescriptor({}, '{}').get",
-                    target, g,
-                ), g)
-            }
-            decode::OperationKind::Setter(s) => {
-                self.cx.expose_get_inherited_descriptor();
-                (format!(
-                    "GetOwnOrInheritedPropertyDescriptor({}, '{}').set",
-                    target, s,
-                ), s)
-            }
-            decode::OperationKind::IndexingGetter => {
-                panic!("indexing getter should be structural")
-            }
-            decode::OperationKind::IndexingSetter => {
-                panic!("indexing setter should be structural")
-            }
-            decode::OperationKind::IndexingDeleter => {
-                panic!("indexing deleter should be structural")
-            }
-        };
-        target.push_str(&format!(" || function() {{
-            throw new Error(`wasm-bindgen: {}.{} does not exist`);
-        }}", class, name));
-        if op.is_static {
-            target.insert(0, '(');
-            target.push_str(").bind(");
-            target.push_str(&class);
-            target.push_str(")");
-        }
-
-        self.cx.global(&format!("const {}_target = {};", import.shim, target));
-        Ok(if op.is_static {
-            ImportTarget::Function(format!("{}_target", import.shim))
-        } else {
-            ImportTarget::Method(format!("{}_target", import.shim))
-        })
     }
 
     fn generate_import_type(
         &mut self,
         info: &decode::Import<'b>,
-        import: &decode::ImportType,
+        import: &decode::ImportType<'b>,
     ) -> Result<(), Error> {
         if !self.cx.wasm_import_needed(&import.instanceof_shim) {
             return Ok(());
@@ -2183,7 +2332,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .extend(info.vendor_prefixes.iter().cloned());
     }
 
-    fn import_name(&mut self, import: &decode::Import<'b>, item: &str) -> Result<String, Error> {
+    fn determine_import(&self, import: &decode::Import<'b>, item: &'b str)
+        -> Result<Import<'b>, Error>
+    {
         // First up, imports don't work at all in `--no-modules` mode as we're
         // not sure how to import them.
         if self.cx.config.no_modules {
@@ -2218,90 +2369,49 @@ impl<'a, 'b> SubContext<'a, 'b> {
                       item,
                       ns);
             }
+            return Ok(Import::VendorPrefixed {
+                name: item,
+                prefixes: vendor_prefixes.clone(),
+            })
         }
 
-        // Figure out what identifier we're importing from the module. If we've
-        // got a namespace we use that, otherwise it's the name specified above.
-        let name_to_import = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
+        let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
+        let field = if import.js_namespace.is_some() { Some(item) } else { None };
 
-        // Here's where it's a bit tricky. We need to make sure that importing
-        // the same identifier from two different modules works, and they're
-        // named uniquely below. Additionally if we've already imported the same
-        // identifier from the module in question then we'd like to reuse the
-        // one that was previously imported.
-        //
-        // Our `imported_names` map keeps track of all imported identifiers from
-        // modules, mapping the imported names onto names actually available for
-        // use in our own module. If our identifier isn't present then we
-        // generate a new identifier and are sure to generate the appropriate JS
-        // import for our new identifier.
-        let use_node_require = self.cx.use_node_require();
-        let imported_identifiers = &mut self.cx.imported_identifiers;
-        let imports = &mut self.cx.imports;
-        let imports_post = &mut self.cx.imports_post;
-        let identifier = self
-            .cx
-            .imported_names
-            .entry(import.module)
-            .or_insert_with(Default::default)
-            .entry(name_to_import.to_string())
-            .or_insert_with(|| {
-                let name = generate_identifier(name_to_import, imported_identifiers);
-                if let Some(module) = &import.module {
-                    if use_node_require {
-                        imports.push_str(&format!(
-                            "const {} = require(String.raw`{}`).{};\n",
-                            name, module, name_to_import
-                        ));
-                    } else if name_to_import == name {
-                        imports.push_str(&format!("import {{ {} }} from '{}';\n", name, module));
-                    } else {
-                        imports.push_str(&format!(
-                            "import {{ {} as {} }} from '{}';\n",
-                            name_to_import, name, module
-                        ));
-                    }
-                    name
-                } else if let Some(vendor_prefixes) = vendor_prefixes {
-                    imports_post.push_str("const l");
-                    imports_post.push_str(&name);
-                    imports_post.push_str(" = ");
-                    switch(imports_post, &name, "", vendor_prefixes);
-                    imports_post.push_str(";\n");
+        Ok(match import.module {
+            Some(module) => Import::Module { module, name, field },
+            None => Import::Global { name, field },
+        })
+    }
 
-                    fn switch(dst: &mut String, name: &str, prefix: &str, left: &[&str]) {
-                        if left.len() == 0 {
-                            dst.push_str(prefix);
-                            return dst.push_str(name);
-                        }
-                        dst.push_str("(typeof ");
-                        dst.push_str(prefix);
-                        dst.push_str(name);
-                        dst.push_str(" == 'undefined' ? ");
-                        match left.len() {
-                            1 => {
-                                dst.push_str(&left[0]);
-                                dst.push_str(name);
-                            }
-                            _ => switch(dst, name, &left[0], &left[1..]),
-                        }
-                        dst.push_str(" : ");
-                        dst.push_str(prefix);
-                        dst.push_str(name);
-                        dst.push_str(")");
-                    }
-                    format!("l{}", name)
-                } else {
-                    name
-                }
-            });
+    fn import_name(&mut self, import: &decode::Import<'b>, item: &'b str)
+        -> Result<String, Error>
+    {
+        let import = self.determine_import(import, item)?;
+        Ok(self.cx.import_identifier(import))
+    }
+}
 
-        // If there's a namespace we didn't actually import `item` but rather
-        // the namespace, so access through that.
-        if import.js_namespace.is_some() {
-            Ok(format!("{}.{}", identifier, item))
-        } else {
-            Ok(identifier.to_string())
+impl<'a> Import<'a> {
+    fn module(&self) -> Option<&'a str> {
+        match self {
+            Import::Module { module, .. } => Some(module),
+            _ => None,
+        }
+    }
+
+    fn field(&self) -> Option<&'a str> {
+        match self {
+            Import::Module { field, .. } | Import::Global { field, .. } => *field,
+            Import::VendorPrefixed { .. } => None,
+        }
+    }
+
+    fn name(&self) -> &'a str {
+        match self {
+            Import::Module { name, .. } |
+            Import::Global { name, .. } |
+            Import::VendorPrefixed { name, .. } => *name,
         }
     }
 }

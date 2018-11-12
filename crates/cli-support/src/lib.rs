@@ -194,6 +194,7 @@ impl Bindgen {
                 memory_init: None,
                 imported_functions: Default::default(),
                 imported_statics: Default::default(),
+                direct_imports: Default::default(),
             };
             for program in programs.iter() {
                 js::SubContext {
