@@ -8,29 +8,19 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
 #[wasm_bindgen]
-pub fn main() {
+pub fn main() -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document
-        .create_element("canvas")
-        .unwrap()
-        .dyn_into::<web_sys::HtmlCanvasElement>()
-        .map_err(|_| ())
-        .unwrap();
-    (document.body().unwrap().as_ref() as &web_sys::Node)
-        .append_child(canvas.as_ref() as &web_sys::Node)
-        .unwrap();
+        .create_element("canvas")?
+        .dyn_into::<web_sys::HtmlCanvasElement>()?;
+    document.body().unwrap().append_child(&canvas)?;
     canvas.set_width(640);
     canvas.set_height(480);
-    (canvas.as_ref() as &web_sys::HtmlElement)
-        .style()
-        .set_property("border", "solid")
-        .unwrap();
+    canvas.style().set_property("border", "solid")?;
     let context = canvas
-        .get_context("2d")
+        .get_context("2d")?
         .unwrap()
-        .unwrap()
-        .dyn_into::<web_sys::CanvasRenderingContext2d>()
-        .unwrap();
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()?;
     let context = Rc::new(context);
     let pressed = Rc::new(Cell::new(false));
     {
@@ -41,9 +31,10 @@ pub fn main() {
             context.move_to(event.offset_x() as f64, event.offset_y() as f64);
             pressed.set(true);
         }) as Box<FnMut(_)>);
-        (canvas.as_ref() as &web_sys::EventTarget)
-            .add_event_listener_with_callback("mousedown", closure.as_ref().unchecked_ref())
-            .unwrap();
+        canvas.add_event_listener_with_callback(
+            "mousedown",
+            closure.as_ref().unchecked_ref(),
+        )?;
         closure.forget();
     }
     {
@@ -57,9 +48,10 @@ pub fn main() {
                 context.move_to(event.offset_x() as f64, event.offset_y() as f64);
             }
         }) as Box<FnMut(_)>);
-        (canvas.as_ref() as &web_sys::EventTarget)
-            .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())
-            .unwrap();
+        canvas.add_event_listener_with_callback(
+            "mousemove",
+            closure.as_ref().unchecked_ref(),
+        )?;
         closure.forget();
     }
     {
@@ -70,9 +62,12 @@ pub fn main() {
             context.line_to(event.offset_x() as f64, event.offset_y() as f64);
             context.stroke();
         }) as Box<FnMut(_)>);
-        (canvas.as_ref() as &web_sys::EventTarget)
-            .add_event_listener_with_callback("mouseup", closure.as_ref().unchecked_ref())
-            .unwrap();
+        canvas.add_event_listener_with_callback(
+            "mouseup",
+            closure.as_ref().unchecked_ref(),
+        )?;
         closure.forget();
     }
+
+    Ok(())
 }

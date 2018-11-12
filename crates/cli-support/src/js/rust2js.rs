@@ -1,6 +1,6 @@
-use failure::{self, Error};
+use failure::Error;
 
-use super::{Context, Js2Rust};
+use super::{Context, Js2Rust, ImportTarget};
 use descriptor::{Descriptor, Function};
 
 /// Helper struct for manufacturing a shim in JS used to translate Rust types to
@@ -489,7 +489,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
 
         self.ret_expr = match *ty {
-            Descriptor::Boolean => "return JS ? 1 : 0;".to_string(),
+            Descriptor::Boolean => "return JS;".to_string(),
             Descriptor::Char => "return JS.codePointAt(0);".to_string(),
             _ => bail!(
                 "unsupported return type for calling JS function from Rust: {:?}",
@@ -499,7 +499,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         Ok(())
     }
 
-    pub fn finish(&self, invoc: &str) -> Result<String, Error> {
+    pub fn finish(&self, invoc: &ImportTarget) -> Result<String, Error> {
         let mut ret = String::new();
         ret.push_str("function(");
         ret.push_str(&self.shim_arguments.join(", "));
@@ -512,35 +512,92 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         ret.push_str(") {\n");
         ret.push_str(&self.prelude);
 
-        let mut invoc = if self.variadic {
-            if self.js_arguments.is_empty() {
-                return Err(failure::err_msg(
-                    "a function with no arguments cannot be variadic",
-                ));
-            }
-            let last_arg = self.js_arguments.len() - 1; // check implies >= 0
-            if self.js_arguments.len() != 1 {
-                self.ret_expr.replace(
-                    "JS",
-                    &format!(
-                        "{}({}, ...{})",
-                        invoc,
-                        self.js_arguments[..last_arg].join(", "),
-                        self.js_arguments[last_arg],
-                    ),
-                )
+        let handle_variadic = |invoc: &str, js_arguments: &[String]| {
+            let ret = if self.variadic {
+                let (last_arg, args) = match js_arguments.split_last() {
+                    Some(pair) => pair,
+                    None => bail!("a function with no arguments cannot be variadic"),
+                };
+                if args.len() > 0 {
+                    self.ret_expr.replace(
+                        "JS",
+                        &format!("{}({}, ...{})", invoc, args.join(", "), last_arg),
+                    )
+                } else {
+                    self.ret_expr.replace(
+                        "JS",
+                        &format!("{}(...{})", invoc, last_arg),
+                    )
+                }
             } else {
                 self.ret_expr.replace(
                     "JS",
-                    &format!("{}(...{})", invoc, self.js_arguments[last_arg],),
+                    &format!("{}({})", invoc, js_arguments.join(", ")),
                 )
-            }
-        } else {
-            self.ret_expr.replace(
-                "JS",
-                &format!("{}({})", invoc, self.js_arguments.join(", ")),
-            )
+            };
+            Ok(ret)
         };
+
+        let fixed = |desc: &str, class: &Option<String>, amt: usize| {
+            if self.variadic {
+                bail!("{} cannot be variadic", desc);
+            }
+            match (class, self.js_arguments.len()) {
+                (None, n) if n == amt + 1 => {
+                    Ok((self.js_arguments[0].clone(), &self.js_arguments[1..]))
+                }
+                (None, _) => bail!("setters must have {} arguments", amt + 1),
+                (Some(class), n) if n == amt => {
+                    Ok((class.clone(), &self.js_arguments[..]))
+                }
+                (Some(_), _) => bail!("static setters must have {} arguments", amt),
+            }
+        };
+
+        let mut invoc = match invoc {
+            ImportTarget::Function(f) => {
+                handle_variadic(&f, &self.js_arguments)?
+            }
+            ImportTarget::Constructor(c) => {
+                handle_variadic(&format!("new {}", c), &self.js_arguments)?
+            }
+            ImportTarget::Method(f) => {
+                handle_variadic(&format!("{}.call", f), &self.js_arguments)?
+            }
+            ImportTarget::StructuralMethod(f) => {
+                let (receiver, args) = match self.js_arguments.split_first() {
+                    Some(pair) => pair,
+                    None => bail!("methods must have at least one argument"),
+                };
+                handle_variadic(&format!("{}.{}", receiver, f), args)?
+            }
+            ImportTarget::StructuralGetter(class, field) => {
+                let (receiver, _) = fixed("getter", class, 0)?;
+                let expr = format!("{}.{}", receiver, field);
+                self.ret_expr.replace("JS", &expr)
+            }
+            ImportTarget::StructuralSetter(class, field) => {
+                let (receiver, val) = fixed("setter", class, 1)?;
+                let expr = format!("{}.{} = {}", receiver, field, val[0]);
+                self.ret_expr.replace("JS", &expr)
+            }
+            ImportTarget::StructuralIndexingGetter(class) => {
+                let (receiver, field) = fixed("indexing getter", class, 1)?;
+                let expr = format!("{}[{}]", receiver, field[0]);
+                self.ret_expr.replace("JS", &expr)
+            }
+            ImportTarget::StructuralIndexingSetter(class) => {
+                let (receiver, field) = fixed("indexing setter", class, 2)?;
+                let expr = format!("{}[{}] = {}", receiver, field[0], field[1]);
+                self.ret_expr.replace("JS", &expr)
+            }
+            ImportTarget::StructuralIndexingDeleter(class) => {
+                let (receiver, field) = fixed("indexing deleter", class, 1)?;
+                let expr = format!("delete {}[{}]", receiver, field[0]);
+                self.ret_expr.replace("JS", &expr)
+            }
+        };
+
         if self.catch {
             let catch = "\
                          const view = getUint32Memory();\n\

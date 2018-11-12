@@ -129,7 +129,7 @@ fn get_own_property_descriptor() {
     let desc = Object::get_own_property_descriptor(&foo, &"foo".into());
     assert_eq!(PropertyDescriptor::from(desc).value(), 42);
     let desc = Object::get_own_property_descriptor(&foo, &"bar".into());
-    assert!(PropertyDescriptor::from(desc).value().is_undefined());
+    assert!(desc.is_undefined());
 }
 
 #[wasm_bindgen_test]

@@ -149,6 +149,14 @@ impl BindgenAttrs {
         })
     }
 
+    /// Whether the `final` attribute is present
+    fn final_(&self) -> Option<&Ident> {
+        self.attrs.iter().filter_map(|a| match a {
+            BindgenAttr::Final(i) => Some(i),
+            _ => None,
+        }).next()
+    }
+
     /// Whether the readonly attributes is present
     fn readonly(&self) -> bool {
         self.attrs.iter().any(|a| match *a {
@@ -229,6 +237,7 @@ pub enum BindgenAttr {
     IndexingSetter,
     IndexingDeleter,
     Structural,
+    Final(Ident),
     Readonly,
     JsName(String, Span),
     JsClass(String),
@@ -240,7 +249,8 @@ pub enum BindgenAttr {
 impl Parse for BindgenAttr {
     fn parse(input: ParseStream) -> SynResult<Self> {
         let original = input.fork();
-        let attr: Ident = input.parse()?;
+        let attr: AnyIdent = input.parse()?;
+        let attr = attr.0;
         if attr == "catch" {
             return Ok(BindgenAttr::Catch);
         }
@@ -261,6 +271,9 @@ impl Parse for BindgenAttr {
         }
         if attr == "structural" {
             return Ok(BindgenAttr::Structural);
+        }
+        if attr == "final" {
+            return Ok(BindgenAttr::Final(attr))
         }
         if attr == "readonly" {
             return Ok(BindgenAttr::Readonly);
@@ -543,13 +556,18 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
                 ShortHash(data)
             )
         };
+        if let Some(ident) = opts.final_() {
+            if opts.structural() {
+                bail_span!(ident, "cannot specify both `structural` and `final`");
+            }
+        }
         Ok(ast::ImportKind::Function(ast::ImportFunction {
             function: wasm,
             kind,
             js_ret,
             catch,
             variadic,
-            structural: opts.structural(),
+            structural: opts.structural() || opts.final_().is_none(),
             rust_name: self.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment: None,

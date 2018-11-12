@@ -8,20 +8,16 @@ use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader};
 use js_sys::{WebAssembly};
 
 #[wasm_bindgen]
-pub fn draw() {
+pub fn draw() -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
-        .dyn_into::<web_sys::HtmlCanvasElement>()
-        .map_err(|_| ())
-        .unwrap();
+        .dyn_into::<web_sys::HtmlCanvasElement>()?;
 
     let context = canvas
-        .get_context("webgl")
+        .get_context("webgl")?
         .unwrap()
-        .unwrap()
-        .dyn_into::<WebGlRenderingContext>()
-        .unwrap();
+        .dyn_into::<WebGlRenderingContext>()?;
 
     let vert_shader = compile_shader(
         &context,
@@ -32,7 +28,7 @@ pub fn draw() {
             gl_Position = position;
         }
     "#,
-    ).unwrap();
+    )?;
     let frag_shader = compile_shader(
         &context,
         WebGlRenderingContext::FRAGMENT_SHADER,
@@ -41,23 +37,23 @@ pub fn draw() {
             gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
         }
     "#,
-    ).unwrap();
-    let program = link_program(&context, [vert_shader, frag_shader].iter()).unwrap();
+    )?;
+    let program = link_program(&context, [vert_shader, frag_shader].iter())?;
     context.use_program(Some(&program));
 
     let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
-    let memory_buffer = wasm_bindgen::memory().dyn_into::<WebAssembly::Memory>().unwrap().buffer();
+    let memory_buffer = wasm_bindgen::memory().dyn_into::<WebAssembly::Memory>()?.buffer();
     let vertices_location = vertices.as_ptr() as u32 / 4;
     let vert_array = js_sys::Float32Array::new(&memory_buffer).subarray(
         vertices_location,
         vertices_location + vertices.len() as u32,
     );
 
-    let buffer = context.create_buffer().unwrap();
+    let buffer = context.create_buffer().ok_or("failed to create buffer")?;
     context.bind_buffer(WebGlRenderingContext::ARRAY_BUFFER, Some(&buffer));
     context.buffer_data_with_array_buffer_view(
         WebGlRenderingContext::ARRAY_BUFFER,
-        vert_array.as_ref(),
+        &vert_array,
         WebGlRenderingContext::STATIC_DRAW,
     );
     context.vertex_attrib_pointer_with_i32(0, 3, WebGlRenderingContext::FLOAT, false, 0, 0);
@@ -71,6 +67,7 @@ pub fn draw() {
         0,
         (vertices.len() / 3) as i32,
     );
+    Ok(())
 }
 
 pub fn compile_shader(

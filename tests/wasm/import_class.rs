@@ -32,12 +32,12 @@ extern "C" {
     fn switch_methods_a();
     fn switch_methods_b();
     type SwitchMethods;
-    #[wasm_bindgen(constructor)]
+    #[wasm_bindgen(constructor, final)]
     fn new() -> SwitchMethods;
-    #[wasm_bindgen(js_namespace = SwitchMethods)]
+    #[wasm_bindgen(js_namespace = SwitchMethods, final)]
     fn a();
     fn switch_methods_called() -> bool;
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, final)]
     fn b(this: &SwitchMethods);
 
     type Properties;
@@ -84,6 +84,10 @@ extern "C" {
     type CatchConstructors;
     #[wasm_bindgen(constructor, catch)]
     fn new(x: u32) -> Result<CatchConstructors, JsValue>;
+
+    type StaticStructural;
+    #[wasm_bindgen(static_method_of = StaticStructural, structural)]
+    fn static_structural(a: u32) -> u32;
 }
 
 #[wasm_bindgen]
@@ -136,7 +140,7 @@ fn switch_methods() {
     SwitchMethods::new().b();
     assert!(switch_methods_called());
 
-    switch_methods_a();
+    switch_methods_b();
 
     assert!(!switch_methods_called());
     SwitchMethods::new().b();
@@ -212,4 +216,9 @@ pub fn rust_return_some() -> Option<Options> {
 fn catch_constructors() {
     assert!(CatchConstructors::new(0).is_err());
     assert!(CatchConstructors::new(1).is_ok());
+}
+
+#[wasm_bindgen_test]
+fn static_structural() {
+    assert_eq!(StaticStructural::static_structural(30), 33);
 }

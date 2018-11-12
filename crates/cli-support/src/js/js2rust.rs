@@ -413,7 +413,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                         name = name
                     ));
                 }
-                self.rust_arguments.push(format!("{} ? 1 : 0", name));
+                self.rust_arguments.push(format!("{}", name));
             }
             Descriptor::Char => {
                 self.js_arguments.push((name.clone(), "string".to_string()));

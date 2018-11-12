@@ -18,6 +18,8 @@ pub mod comments;
 pub mod duplicate_deps;
 pub mod duplicates;
 pub mod enums;
+#[path = "final.rs"]
+pub mod final_;
 pub mod import_class;
 pub mod imports;
 pub mod js_objects;

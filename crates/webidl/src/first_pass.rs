@@ -735,11 +735,17 @@ impl<'src> FirstPass<'src, ()> for weedle::CallbackInterfaceDefinition<'src> {
 impl<'a> FirstPassRecord<'a> {
     pub fn all_superclasses<'me>(&'me self, interface: &str) -> impl Iterator<Item = String> + 'me {
         let mut set = BTreeSet::new();
-        self.fill_superclasses(interface, &mut set);
-        set.into_iter()
+        let mut list = Vec::new();
+        self.fill_superclasses(interface, &mut set, &mut list);
+        list.into_iter()
     }
 
-    fn fill_superclasses(&self, interface: &str, set: &mut BTreeSet<String>) {
+    fn fill_superclasses(
+        &self,
+        interface: &str,
+        set: &mut BTreeSet<&'a str>,
+        list: &mut Vec<String>,
+    ) {
         let data = match self.interfaces.get(interface) {
             Some(data) => data,
             None => return,
@@ -749,8 +755,9 @@ impl<'a> FirstPassRecord<'a> {
             None => return,
         };
         if self.interfaces.contains_key(superclass) {
-            if set.insert(camel_case_ident(superclass)) {
-                self.fill_superclasses(superclass, set);
+            if set.insert(superclass) {
+                list.push(camel_case_ident(superclass));
+                self.fill_superclasses(superclass, set, list);
             }
         }
     }
