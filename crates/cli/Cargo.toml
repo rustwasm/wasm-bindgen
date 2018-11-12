@@ -15,7 +15,7 @@ information see https://github.com/alexcrichton/wasm-bindgen.
 [dependencies]
 curl = "0.4.13"
 docopt = "1.0"
-env_logger = "0.5"
+env_logger = "0.6"
 failure = "0.1.2"
 log = "0.4"
 parity-wasm = "0.35"

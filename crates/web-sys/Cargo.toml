@@ -19,7 +19,7 @@ doctest = false
 test = false
 
 [build-dependencies]
-env_logger = "0.5.10"
+env_logger = "0.6.0"
 failure = "0.1.2"
 wasm-bindgen-webidl = { path = "../webidl", version = "=0.2.21" }
 sourcefile = "0.1"
