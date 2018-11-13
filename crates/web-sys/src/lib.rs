@@ -20,6 +20,13 @@ extern crate wasm_bindgen;
 #[allow(unused_imports)]
 use js_sys::Object;
 
+/// Getter for the `Window` object
+///
+/// [MDN Documentation]
+///
+/// *This API requires the following crate features to be activated: `Window`*
+///
+/// [MDN Documentation]: https://developer.mozilla.org/en-US/docs/Web/API/Window
 #[cfg(feature = "Window")]
 pub fn window() -> Option<Window> {
     use wasm_bindgen::JsCast;
