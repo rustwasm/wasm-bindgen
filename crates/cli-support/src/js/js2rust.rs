@@ -155,7 +155,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 format!("{}({})", func, name)
             };
             self.prelude(&format!(
-                "const [ptr{i}, len{i}] = {val};",
+                "const ptr{i} = {val};\nconst len{i} = WASM_VECTOR_LEN;",
                 i = i,
                 val = val,
             ));

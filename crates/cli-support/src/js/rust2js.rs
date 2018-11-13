@@ -328,7 +328,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             self.ret_expr = format!(
                 "\
                 {}
-                const [retptr, retlen] = {};
+                const retptr = {};
+                const retlen = WASM_VECTOR_LEN;
                 const mem = getUint32Memory();
                 mem[ret / 4] = retptr;
                 mem[ret / 4 + 1] = retlen;

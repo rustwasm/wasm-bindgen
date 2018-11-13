@@ -319,8 +319,8 @@ impl<'a> Context<'a> {
                 function(i, len_ptr) {
                     let obj = getObject(i);
                     if (typeof(obj) !== 'string') return 0;
-                    const [ptr, len] = passStringToWasm(obj);
-                    getUint32Memory()[len_ptr / 4] = len;
+                    const ptr = passStringToWasm(obj);
+                    getUint32Memory()[len_ptr / 4] = WASM_VECTOR_LEN;
                     return ptr;
                 }
                 ",
@@ -368,9 +368,9 @@ impl<'a> Context<'a> {
             Ok(String::from(
                 "
                 function(idx, ptrptr) {
-                    const [ptr, len] = passStringToWasm(JSON.stringify(getObject(idx)));
+                    const ptr = passStringToWasm(JSON.stringify(getObject(idx)));
                     getUint32Memory()[ptrptr / 4] = ptr;
-                    return len;
+                    return WASM_VECTOR_LEN;
                 }
                 ",
             ))
@@ -994,6 +994,13 @@ impl<'a> Context<'a> {
         ));
     }
 
+    fn expose_wasm_vector_len(&mut self) {
+        if !self.exposed_globals.insert("wasm_vector_len") {
+            return;
+        }
+        self.global("let WASM_VECTOR_LEN = 0;");
+    }
+
     fn expose_pass_string_to_wasm(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("pass_string_to_wasm") {
             return Ok(());
@@ -1001,6 +1008,7 @@ impl<'a> Context<'a> {
         self.require_internal_export("__wbindgen_malloc")?;
         self.expose_text_encoder();
         self.expose_uint8_memory();
+        self.expose_wasm_vector_len();
         let debug = if self.config.debug {
             "
                 if (typeof(arg) !== 'string') throw new Error('expected a string argument');
@@ -1015,7 +1023,8 @@ impl<'a> Context<'a> {
                 const buf = cachedTextEncoder.encode(arg);
                 const ptr = wasm.__wbindgen_malloc(buf.length);
                 getUint8Memory().set(buf, ptr);
-                return [ptr, buf.length];
+                WASM_VECTOR_LEN = buf.length;
+                return ptr;
             }}
             ",
             debug
@@ -1068,7 +1077,8 @@ impl<'a> Context<'a> {
                 for (let i = 0; i < array.length; i++) {
                     mem[ptr / 4 + i] = addHeapObject(array[i]);
                 }
-                return [ptr, array.length];
+                WASM_VECTOR_LEN = array.length;
+                return ptr;
             }
 
         ",
@@ -1086,12 +1096,14 @@ impl<'a> Context<'a> {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_malloc")?;
+        self.expose_wasm_vector_len();
         self.global(&format!(
             "
             function {}(arg) {{
                 const ptr = wasm.__wbindgen_malloc(arg.length * {size});
                 {}().set(arg, ptr / {size});
-                return [ptr, arg.length];
+                WASM_VECTOR_LEN = arg.length;
+                return ptr;
             }}
             ",
             name,
