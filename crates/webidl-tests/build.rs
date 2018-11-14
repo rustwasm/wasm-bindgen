@@ -30,13 +30,13 @@ fn main() {
 
                 #[wasm_bindgen(module = r"{}")]
                 extern {{
-                    fn not_actually_a_function{1}();
+                    fn not_actually_a_function{1}(x: &str);
                 }}
 
                 #[wasm_bindgen_test]
                 fn foo() {{
                     if ::std::env::var("NOT_GONNA_WORK").is_ok() {{
-                        not_actually_a_function{1}();
+                        not_actually_a_function{1}("foo");
                     }}
                 }}
             }}

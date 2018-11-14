@@ -3,7 +3,7 @@ use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/vendor_prefix.js")]
 extern "C" {
-    fn import_me();
+    fn import_me(x: &str);
 }
 
 #[wasm_bindgen]
@@ -32,7 +32,7 @@ extern "C" {
 
 #[wasm_bindgen_test]
 pub fn polyfill_works() {
-    import_me();
+    import_me("foo");
 
     assert_eq!(MySpecialApi::new().foo(), 123);
     assert_eq!(MySpecialApi2::new().foo(), 124);

@@ -6,7 +6,7 @@ use descriptor::{Descriptor, Function};
 /// Helper struct for manufacturing a shim in JS used to translate Rust types to
 /// JS, then invoking an imported JS function.
 pub struct Rust2Js<'a, 'b: 'a> {
-    cx: &'a mut Context<'b>,
+    pub cx: &'a mut Context<'b>,
 
     /// Arguments of the JS shim that we're generating, aka the variables passed
     /// from Rust which are only numbers.
@@ -498,6 +498,42 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             ),
         };
         Ok(())
+    }
+
+    /// Returns whether this shim won't actually do anything when called other
+    /// than forward the invocation somewhere else.
+    ///
+    /// This is used as an optimization to wire up imports directly where
+    /// possible and avoid a shim in some circumstances.
+    pub fn is_noop(&self) -> bool {
+        let Rust2Js {
+            // fields which may affect whether we do nontrivial work
+            catch,
+            finally,
+            js_arguments,
+            prelude,
+            ret_expr,
+            variadic,
+            shim_arguments,
+
+            // all other fields, listed explicitly here so if one is added we'll
+            // trigger a nonexhaustive error.
+            arg_idx: _,
+            cx: _,
+            global_idx: _,
+        } = self;
+
+        !catch &&
+            !variadic &&
+            prelude.is_empty() &&
+            finally.is_empty() &&
+            // make sure our faux return expression is "simple" by not
+            // performing any sort of transformation on the return value
+            (ret_expr == "JS;" || ret_expr == "return JS;") &&
+            // similarly we want to make sure that all the arguments are simply
+            // forwarded from the shim we would generate to the import,
+            // requiring no transformations
+            js_arguments == shim_arguments
     }
 
     pub fn finish(&self, invoc: &ImportTarget) -> Result<String, Error> {
