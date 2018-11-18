@@ -12,6 +12,7 @@ struct Program<'a> {
     enums: Vec<Enum<'a>>,
     imports: Vec<Import<'a>>,
     structs: Vec<Struct<'a>>,
+    typescript_custom_sections: Vec<&'a str>,
     // version: &'a str,
     // schema_version: &'a str,
 }

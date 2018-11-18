@@ -2143,6 +2143,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
         for s in self.program.structs.iter() {
             self.generate_struct(s)?;
         }
+        for s in self.program.typescript_custom_sections.iter() {
+            self.cx.typescript.push_str(s);
+            self.cx.typescript.push_str("\n\n");
+        }
 
         Ok(())
     }
