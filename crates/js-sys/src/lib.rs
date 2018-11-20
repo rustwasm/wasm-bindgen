@@ -1429,98 +1429,31 @@ extern "C" {
     /// properties including done and value. If a non-object value gets returned
     /// (such as false or undefined), a TypeError ("iterator.next() returned a
     /// non-object value") will be thrown.
-    #[wasm_bindgen(catch, method, structural)]
-    pub fn next(this: &Iterator) -> Result<IteratorNext, JsValue>;
+    #[wasm_bindgen(catch, method, structural, js_name = next)]
+    pub fn js_next(this: &Iterator) -> Result<IteratorNext, JsValue>;
 }
 
-/// An iterator over the JS `Symbol.iterator` iteration protocol.
-///
-/// Use the `IntoIterator for &js_sys::Iterator` implementation to create this.
-pub struct Iter<'a> {
-    js: &'a Iterator,
-    state: IterState,
-}
-
-/// An iterator over the JS `Symbol.iterator` iteration protocol.
-///
-/// Use the `IntoIterator for js_sys::Iterator` implementation to create this.
-pub struct IntoIter {
-    js: Iterator,
-    state: IterState,
-}
-
-struct IterState {
-    done: bool,
-}
-
-impl<'a> IntoIterator for &'a Iterator {
+impl std::iter::Iterator for Iterator {
     type Item = Result<JsValue, JsValue>;
-    type IntoIter = Iter<'a>;
 
-    fn into_iter(self) -> Iter<'a> {
-        Iter {
-            js: self,
-            state: IterState::new(),
+    fn next(&mut self) -> Option<Result<JsValue, JsValue>> {
+        match self.js_next() {
+            Ok(iter_next) => {
+                if ! iter_next.done() {
+                    Some(Ok(iter_next.value()))
+                } else {
+                    None
+                }
+            },
+            Err(e) => Some(Err(e))
         }
     }
 }
 
-impl<'a> std::iter::Iterator for Iter<'a> {
-    type Item = Result<JsValue, JsValue>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.state.next(self.js)
-    }
-}
-
-impl IntoIterator for Iterator {
-    type Item = Result<JsValue, JsValue>;
-    type IntoIter = IntoIter;
-
-    fn into_iter(self) -> IntoIter {
-        IntoIter {
-            js: self,
-            state: IterState::new(),
-        }
-    }
-}
-
-impl std::iter::Iterator for IntoIter {
-    type Item = Result<JsValue, JsValue>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.state.next(&self.js)
-    }
-}
-
-impl IterState {
-    fn new() -> IterState {
-        IterState { done: false }
-    }
-
-    fn next(&mut self, js: &Iterator) -> Option<Result<JsValue, JsValue>> {
-        if self.done {
-            return None;
-        }
-        let next = match js.next() {
-            Ok(val) => val,
-            Err(e) => {
-                self.done = true;
-                return Some(Err(e));
-            }
-        };
-        if next.done() {
-            self.done = true;
-            None
-        } else {
-            Some(Ok(next.value()))
-        }
-    }
-}
 
 /// Create an iterator over `val` using the JS iteration protocol and
 /// `Symbol.iterator`.
-pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
+pub fn try_iter(val: &JsValue) -> Result<Option<Iterator>, JsValue> {
     let iter_sym = Symbol::iterator();
     let iter_fn = Reflect::get(val, iter_sym.as_ref())?;
     if !iter_fn.is_function() {
@@ -1538,7 +1471,7 @@ pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
 
     Ok(if next.is_function() {
         let it: Iterator = it.unchecked_into();
-        Some(it.into_iter())
+        Some(it)
     } else {
         None
     })
