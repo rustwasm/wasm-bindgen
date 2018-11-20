@@ -1436,7 +1436,7 @@ extern "C" {
 impl std::iter::Iterator for Iterator {
     type Item = Result<JsValue, JsValue>;
 
-    fn next(&mut self) -> Option<Result<JsValue, JsValue>> {
+    fn next(&mut self) -> Option<Self::Item> {
         match self.js_next() {
             Ok(iter_next) => {
                 if ! iter_next.done() {
@@ -1475,6 +1475,31 @@ pub fn try_iter(val: &JsValue) -> Result<Option<Iterator>, JsValue> {
     } else {
         None
     })
+}
+
+/// An `Iterator` wrapper for when we know the type that will be returned.
+///
+/// We also assume that errors from the use of this iterator are not possible.
+pub struct TypedIterator<T> {
+    inner: Iterator,
+    ty: std::marker::PhantomData<T>,
+}
+
+impl<T> TypedIterator<T> {
+    pub fn from_iterator_unchecked(inner: Iterator) -> Self {
+        TypedIterator {
+            inner,
+            ty: std::marker::PhantomData,
+        }
+    }
+}
+
+impl<T: JsCast> std::iter::Iterator for TypedIterator<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.inner.next().map(|val| JsCast::unchecked_from_js(val.expect("error in typed iter")))
+    }
 }
 
 // IteratorNext
