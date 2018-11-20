@@ -4,6 +4,7 @@ use std::mem;
 use decode;
 use failure::{Error, ResultExt};
 use parity_wasm::elements::*;
+use parity_wasm::elements::Error as ParityError;
 use shared;
 use gc;
 
@@ -475,6 +476,7 @@ impl<'a> Context<'a> {
         })?;
 
         self.rewrite_imports(module_name);
+        self.update_producers_section();
 
         let mut js = if self.config.threads.is_some() {
             // TODO: It's not clear right now how to best use threads with
@@ -2012,6 +2014,108 @@ impl<'a> Context<'a> {
         } else {
             ImportTarget::Method(format!("{}_target", import.shim))
         })
+    }
+
+    /// Update the wasm file's `producers` section to include information about
+    /// the wasm-bindgen tool.
+    ///
+    /// Specified at:
+    /// https://github.com/WebAssembly/tool-conventions/blob/master/ProducersSection.md
+    fn update_producers_section(&mut self) {
+        for section in self.module.sections_mut() {
+            let section = match section {
+                Section::Custom(s) => s,
+                _ => continue,
+            };
+            if section.name() != "producers" {
+                return
+            }
+            drop(update(section));
+            return
+        }
+
+        // `CustomSection::new` added in paritytech/parity-wasm#244 which isn't
+        // merged just yet
+        let data = [
+            ("producers".len() + 2) as u8,
+            "producers".len() as u8,
+            b'p', b'r', b'o', b'd', b'u', b'c', b'e', b'r', b's',
+            0,
+        ];
+        let mut section = CustomSection::deserialize(&mut &data[..]).unwrap();
+        assert_eq!(section.name(), "producers");
+        assert_eq!(section.payload(), [0]);
+        drop(update(&mut section));
+        self.module.sections_mut().push(Section::Custom(section));
+
+        fn update(section: &mut CustomSection) -> Result<(), ParityError> {
+            struct Field {
+                name: String,
+                values: Vec<FieldValue>,
+            }
+            struct FieldValue {
+                name: String,
+                version: String,
+            }
+
+            let wasm_bindgen = || {
+                FieldValue {
+                    name: "wasm-bindgen".to_string(),
+                    version: shared::version(),
+                }
+            };
+            let mut fields = Vec::new();
+
+            // Deserialize the fields, appending the wasm-bidngen field/value
+            // where applicable
+            {
+                let mut data = section.payload();
+                let amt: u32 = VarUint32::deserialize(&mut data)?.into();
+                let mut found_processed_by = false;
+                for _ in 0..amt {
+                    let name = String::deserialize(&mut data)?;
+                    let cnt: u32 = VarUint32::deserialize(&mut data)?.into();
+                    let mut values = Vec::with_capacity(cnt as usize);
+                    for _ in 0..cnt {
+                        let name = String::deserialize(&mut data)?;
+                        let version = String::deserialize(&mut data)?;
+                        values.push(FieldValue { name, version });
+                    }
+
+                    if name == "processed-by" {
+                        found_processed_by = true;
+                        values.push(wasm_bindgen());
+                    }
+
+                    fields.push(Field { name, values });
+                }
+                if data.len() != 0 {
+                    return Err(ParityError::InconsistentCode)
+                }
+
+                if !found_processed_by {
+                    fields.push(Field {
+                        name: "processed-by".to_string(),
+                        values: vec![wasm_bindgen()],
+                    });
+                }
+            }
+
+            // re-serialize these fields back into the custom section
+            let dst = section.payload_mut();
+            dst.truncate(0);
+            VarUint32::from(fields.len() as u32).serialize(dst)?;
+            for field in fields.iter() {
+                field.name.clone().serialize(dst)?;
+                VarUint32::from(field.values.len() as u32).serialize(dst)?;
+                for value in field.values.iter() {
+                    value.name.clone().serialize(dst)?;
+                    value.version.clone().serialize(dst)?;
+                }
+            }
+
+            Ok(())
+        }
     }
 }
 
