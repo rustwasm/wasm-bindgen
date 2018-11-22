@@ -560,7 +560,7 @@ impl<'a> Context<'a> {
         if (path_or_module instanceof WebAssembly.Module) {{
             instantiation = WebAssembly.instantiate(path_or_module, imports)
                 .then(instance => {{
-                    return {{ instance, module: module_or_path }}
+                    return {{ instance, module: path_or_module }}
                 }});
         }} else {{
             const data = fetch(path_or_module);
