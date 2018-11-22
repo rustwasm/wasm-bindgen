@@ -1,6 +1,6 @@
 # Supported Browsers
 
-The output of `wasm-bindgn` includes a JS file, and as a result it's good to
+The output of `wasm-bindgen` includes a JS file, and as a result it's good to
 know what browsers that file is expected to be used in! By default the output
 uses ES modules which isn't implemented in all browsers today, but when using a
 bundler (like Webpack) you should be able to produce output suitable for all
