@@ -207,6 +207,13 @@ impl BindgenAttrs {
             _ => false,
         })
     }
+
+    fn typescript_custom_section(&self) -> bool {
+        self.attrs.iter().any(|a| match *a {
+            BindgenAttr::TypescriptCustomSection => true,
+            _ => false,
+        })
+    }
 }
 
 impl Parse for BindgenAttrs {
@@ -244,6 +251,7 @@ pub enum BindgenAttr {
     Extends(syn::Path),
     VendorPrefix(Ident),
     Variadic,
+    TypescriptCustomSection,
 }
 
 impl Parse for BindgenAttr {
@@ -333,6 +341,9 @@ impl Parse for BindgenAttr {
                 }
             };
             return Ok(BindgenAttr::JsName(val, span));
+        }
+        if attr == "typescript_custom_section" {
+            return Ok(BindgenAttr::TypescriptCustomSection);
         }
 
         Err(original.error("unknown attribute"))
@@ -810,11 +821,20 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 e.to_tokens(tokens);
                 e.macro_parse(program, ())?;
             }
-            _ => bail_span!(
-                self,
-                "#[wasm_bindgen] can only be applied to a function, \
-                 struct, enum, impl, or extern block"
-            ),
+            syn::Item::Const(mut c) => {
+                let opts = match opts {
+                    Some(opts) => opts,
+                    None => BindgenAttrs::find(&mut c.attrs)?,
+                };
+                c.macro_parse(program, opts)?;
+            }
+            _ => {
+                bail_span!(
+                    self,
+                    "#[wasm_bindgen] can only be applied to a function, \
+                    struct, enum, impl, or extern block",
+                );
+            }
         }
 
         Ok(())
@@ -988,6 +1008,29 @@ impl MacroParse<()> for syn::ItemEnum {
             variants,
             comments,
         });
+        Ok(())
+    }
+}
+
+impl MacroParse<BindgenAttrs> for syn::ItemConst {
+    fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
+        // Shortcut
+        if !opts.typescript_custom_section() {
+            bail_span!(self, "#[wasm_bindgen] will not work on constants unless you are defining a #[wasm_bindgen(typescript_custom_section)].");
+        }
+
+        match *self.expr {
+            syn::Expr::Lit(syn::ExprLit {
+                lit: syn::Lit::Str(litstr),
+                ..
+            }) => {
+                program.typescript_custom_sections.push(litstr.value());
+            },
+            _ => {
+                bail_span!(self, "Expected a string literal to be used with #[wasm_bindgen(typescript_custom_section)].");
+            },
+        }
+
         Ok(())
     }
 }

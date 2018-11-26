@@ -46,6 +46,7 @@ fn shared_program<'a>(prog: &'a ast::Program, intern: &'a Interner)
         imports: prog.imports.iter()
             .map(|a| shared_import(a, intern))
             .collect::<Result<Vec<_>, _>>()?,
+        typescript_custom_sections: prog.typescript_custom_sections.iter().map(|x| -> &'a str { &x }).collect(),
         // version: shared::version(),
         // schema_version: shared::SCHEMA_VERSION.to_string(),
     })

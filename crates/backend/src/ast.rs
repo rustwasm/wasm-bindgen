@@ -22,6 +22,8 @@ pub struct Program {
     /// objects" in the sense that they represent a JS object with a particular
     /// shape in JIT parlance.
     pub dictionaries: Vec<Dictionary>,
+    /// custom typescript sections to be included in the definition file
+    pub typescript_custom_sections: Vec<String>,
 }
 
 /// A rust to js interface. Allows interaction with rust objects/functions
