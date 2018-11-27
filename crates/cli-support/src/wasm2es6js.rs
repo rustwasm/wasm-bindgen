@@ -48,82 +48,77 @@ impl Config {
     }
 }
 
+pub fn typescript(module: &Module) -> String {
+    let mut exports = format!("/* tslint:disable */\n");
+
+    if let Some(i) = module.export_section() {
+        let imported_functions = module
+            .import_section()
+            .map(|m| m.functions() as u32)
+            .unwrap_or(0);
+        for entry in i.entries() {
+            let idx = match *entry.internal() {
+                Internal::Function(i) => i - imported_functions,
+                Internal::Memory(_) => {
+                    exports.push_str(&format!(
+                        "export const {}: WebAssembly.Memory;\n",
+                        entry.field()
+                    ));
+                    continue;
+                }
+                Internal::Table(_) => {
+                    exports.push_str(&format!(
+                        "export const {}: WebAssembly.Table;\n",
+                        entry.field()
+                    ));
+                    continue;
+                }
+                Internal::Global(_) => continue,
+            };
+
+            let functions = module
+                .function_section()
+                .expect("failed to find function section");
+            let idx = functions.entries()[idx as usize].type_ref();
+
+            let types = module
+                .type_section()
+                .expect("failed to find type section");
+            let ty = match types.types()[idx as usize] {
+                Type::Function(ref f) => f,
+            };
+            let mut args = String::new();
+            for (i, _) in ty.params().iter().enumerate() {
+                if i > 0 {
+                    args.push_str(", ");
+                }
+                args.push((b'a' + (i as u8)) as char);
+                args.push_str(": number");
+            }
+
+            exports.push_str(&format!(
+                "export function {name}({args}): {ret};\n",
+                name = entry.field(),
+                args = args,
+                ret = if ty.return_type().is_some() {
+                    "number"
+                } else {
+                    "void"
+                },
+            ));
+        }
+    }
+
+    return exports;
+}
+
 impl Output {
     pub fn typescript(&self) -> String {
-        let mut exports = format!("/* tslint:disable */\n");
-
-        if let Some(i) = self.module.export_section() {
-            let imported_functions = self
-                .module
-                .import_section()
-                .map(|m| m.functions() as u32)
-                .unwrap_or(0);
-            for entry in i.entries() {
-                let idx = match *entry.internal() {
-                    Internal::Function(i) => i - imported_functions,
-                    Internal::Memory(_) => {
-                        exports.push_str(&format!(
-                            "
-                            export const {}: WebAssembly.Memory;
-                            ",
-                            entry.field()
-                        ));
-                        continue;
-                    }
-                    Internal::Table(_) => {
-                        exports.push_str(&format!(
-                            "
-                            export const {}: WebAssembly.Table;
-                            ",
-                            entry.field()
-                        ));
-                        continue;
-                    }
-                    Internal::Global(_) => continue,
-                };
-
-                let functions = self
-                    .module
-                    .function_section()
-                    .expect("failed to find function section");
-                let idx = functions.entries()[idx as usize].type_ref();
-
-                let types = self
-                    .module
-                    .type_section()
-                    .expect("failed to find type section");
-                let ty = match types.types()[idx as usize] {
-                    Type::Function(ref f) => f,
-                };
-                let mut args = String::new();
-                for (i, _) in ty.params().iter().enumerate() {
-                    if i > 0 {
-                        args.push_str(", ");
-                    }
-                    args.push((b'a' + (i as u8)) as char);
-                    args.push_str(": number");
-                }
-
-                exports.push_str(&format!(
-                    "
-                    export function {name}({args}): {ret};
-                    ",
-                    name = entry.field(),
-                    args = args,
-                    ret = if ty.return_type().is_some() {
-                        "number"
-                    } else {
-                        "void"
-                    },
-                ));
-            }
-        }
-
+        let mut ts = typescript(&self.module);
         if self.base64 {
-            exports.push_str("export const booted: Promise<boolean>;");
+            ts.push_str("export const booted: Promise<boolean>;\n");
         }
-
-        return exports;
+        return ts
     }
 
     pub fn js(self) -> Result<String, Error> {
