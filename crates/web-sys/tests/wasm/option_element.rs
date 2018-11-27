@@ -8,7 +8,8 @@ fn test_option_element() {
         "option_value",
         false,
         true,
-    ).unwrap();
+    )
+    .unwrap();
 
     option.set_disabled(true);
     assert_eq!(

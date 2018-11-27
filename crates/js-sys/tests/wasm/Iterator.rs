@@ -30,19 +30,13 @@ fn try_iter_handles_iteration_protocol() {
 
     assert!(try_iter(&get_not_iterable()).unwrap().is_none());
     assert!(try_iter(&get_symbol_iterator_throws()).is_err());
-    assert!(
-        try_iter(&get_symbol_iterator_not_function())
-            .unwrap()
-            .is_none()
-    );
-    assert!(
-        try_iter(&get_symbol_iterator_returns_not_object())
-            .unwrap()
-            .is_none()
-    );
-    assert!(
-        try_iter(&get_symbol_iterator_returns_object_without_next())
-            .unwrap()
-            .is_none()
-    );
+    assert!(try_iter(&get_symbol_iterator_not_function())
+        .unwrap()
+        .is_none());
+    assert!(try_iter(&get_symbol_iterator_returns_not_object())
+        .unwrap()
+        .is_none());
+    assert!(try_iter(&get_symbol_iterator_returns_object_without_next())
+        .unwrap()
+        .is_none());
 }

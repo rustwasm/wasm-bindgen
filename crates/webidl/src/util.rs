@@ -30,7 +30,8 @@ pub(crate) fn shared_ref(ty: syn::Type, mutable: bool) -> syn::Type {
             None
         },
         elem: Box::new(ty),
-    }.into()
+    }
+    .into()
 }
 
 /// Fix case of identifiers like `HTMLBRElement` or `texImage2D`
@@ -174,7 +175,8 @@ pub(crate) fn slice_ty(t: syn::Type) -> syn::Type {
     syn::TypeSlice {
         bracket_token: Default::default(),
         elem: Box::new(t),
-    }.into()
+    }
+    .into()
 }
 
 /// From `T` create `Vec<T>`.
@@ -571,12 +573,13 @@ impl<'src> FirstPassRecord<'src> {
             let structural =
                 force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
             let catch = force_throws || throws(&signature.orig.attrs);
-            let variadic = signature.args.len() == signature.orig.args.len() && signature
-                .orig
-                .args
-                .last()
-                .map(|arg| arg.variadic)
-                .unwrap_or(false);
+            let variadic = signature.args.len() == signature.orig.args.len()
+                && signature
+                    .orig
+                    .args
+                    .last()
+                    .map(|arg| arg.variadic)
+                    .unwrap_or(false);
             ret.extend(
                 self.create_one_function(
                     name,
@@ -660,25 +663,20 @@ pub fn is_no_interface_object(ext_attrs: &Option<ExtendedAttributeList>) -> bool
     has_named_attribute(ext_attrs.as_ref(), "NoInterfaceObject")
 }
 
-pub fn get_rust_deprecated<'a>(ext_attrs: &Option<ExtendedAttributeList<'a>>)
-    -> Option<&'a str>
-{
-    ext_attrs.as_ref()?
+pub fn get_rust_deprecated<'a>(ext_attrs: &Option<ExtendedAttributeList<'a>>) -> Option<&'a str> {
+    ext_attrs
+        .as_ref()?
         .body
         .list
         .iter()
-        .filter_map(|attr| {
-            match attr {
-                ExtendedAttribute::Ident(id) => Some(id),
-                _ => None,
-            }
+        .filter_map(|attr| match attr {
+            ExtendedAttribute::Ident(id) => Some(id),
+            _ => None,
         })
         .filter(|attr| attr.lhs_identifier.0 == "RustDeprecated")
-        .filter_map(|ident| {
-            match ident.rhs {
-                IdentifierOrString::String(s) => Some(s),
-                IdentifierOrString::Identifier(_) => None,
-            }
+        .filter_map(|ident| match ident.rhs {
+            IdentifierOrString::String(s) => Some(s),
+            IdentifierOrString::Identifier(_) => None,
         })
         .next()
         .map(|s| s.0)

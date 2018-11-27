@@ -262,10 +262,12 @@ impl Interpreter {
                     Instruction::I32Const(x) => Some((i, x as u32, entry)),
                     _ => None,
                 }
-            }).find(|(_i, offset, entry)| {
+            })
+            .find(|(_i, offset, entry)| {
                 *offset <= descriptor_table_idx
                     && descriptor_table_idx < (*offset + entry.members().len() as u32)
-            }).expect("failed to find index in table elements");
+            })
+            .expect("failed to find index in table elements");
         let idx = (descriptor_table_idx - offset) as usize;
         let descriptor_idx = entry.members()[idx];
 
@@ -300,7 +302,8 @@ impl Interpreter {
             .map(|i| {
                 assert_eq!(i.value_type(), ValueType::I32);
                 i.count()
-            }).unwrap_or(0);
+            })
+            .unwrap_or(0);
 
         let code_sig = sections.functions.entries()[code_idx].type_ref();
         let function_ty = match &sections.types.types()[code_sig as usize] {

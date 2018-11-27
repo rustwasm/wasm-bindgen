@@ -10,8 +10,8 @@ extern "C" {
 #[wasm_bindgen_test]
 fn element() {
     /* Tests needed for:
-  namespace_uri
-*/
+      namespace_uri
+    */
     let element = new_div();
 
     assert_eq!(element.prefix(), None, "Shouldn't have a prefix");
@@ -52,17 +52,17 @@ fn element() {
         "Should return nothing if removed"
     );
     /* Tests needed for:
-get_attribute_ns
-*/
+    get_attribute_ns
+    */
 
     /*TODO should we enable toggle_attribute tests? (Firefox Nightly + Chrome canary only)
-    // TODO toggle_attribute should permit a single argument when optional arguments are supported
-    assert!(!element.has_attribute("disabled"), "Should not be disabled");
-    assert!(element.toggle_attribute("disabled", true).unwrap(), "Should return true when attribute is set");
-    assert!(element.has_attribute("disabled"), "Should be disabled");
-    assert!(!element.toggle_attribute("disabled", false).unwrap(), "Should return false when attribute is not set");
-    assert!(!element.has_attribute("disabled"), "Should not be disabled");
-*/
+        // TODO toggle_attribute should permit a single argument when optional arguments are supported
+        assert!(!element.has_attribute("disabled"), "Should not be disabled");
+        assert!(element.toggle_attribute("disabled", true).unwrap(), "Should return true when attribute is set");
+        assert!(element.has_attribute("disabled"), "Should be disabled");
+        assert!(!element.toggle_attribute("disabled", false).unwrap(), "Should return false when attribute is not set");
+        assert!(!element.has_attribute("disabled"), "Should not be disabled");
+    */
 
     assert!(!element.has_attribute("title"), "Should not have a title");
     assert_eq!(
@@ -79,8 +79,8 @@ get_attribute_ns
     );
     assert!(!element.has_attribute("title"), "Should not have a title");
     /* Tests needed for:
-set_attribute_ns
-*/
+    set_attribute_ns
+    */
 
     assert!(!element.has_attributes(), "Should not have any attributes");
     assert_eq!(
@@ -95,10 +95,10 @@ set_attribute_ns
         "Should return nothing if removed"
     );
     /* Tests needed for:
-remove_attribute_ns
-has_attribure_ns
-closest
-*/
+    remove_attribute_ns
+    has_attribure_ns
+    closest
+    */
 
     assert_eq!(
         element.matches(".this-is-a-thing").unwrap(),
@@ -130,29 +130,29 @@ closest
     // TODO non standard moz_matches_selector should we even support?
 
     /* Tests needed for:
-insert_adjacent_element
-insert_adjacent_text
-set_pointer_capture
-release_pointer_capture
-has_pointer_capture
-set_capture
-release_capture
-scroll_top
-set_scroll_top
-scroll_left
-set_scroll_left
-scroll_width
-scroll_height
-scroll,
-scroll_to
-scroll_by
-client_top
-client_left
-client_width
-client_height
-scroll_top_max
-scroll_left_max
-*/
+    insert_adjacent_element
+    insert_adjacent_text
+    set_pointer_capture
+    release_pointer_capture
+    has_pointer_capture
+    set_capture
+    release_capture
+    scroll_top
+    set_scroll_top
+    scroll_left
+    set_scroll_left
+    scroll_width
+    scroll_height
+    scroll,
+    scroll_to
+    scroll_by
+    client_top
+    client_left
+    client_width
+    client_height
+    scroll_top_max
+    scroll_left_max
+    */
     assert_eq!(element.inner_html(), "", "Should return no content");
     element.set_inner_html("<strong>Hey!</strong><em>Web!</em>");
     assert_eq!(
@@ -173,10 +173,10 @@ scroll_left_max
     assert_eq!(element.inner_html(), "", "Should return no content");
 
     /* Tests needed for:
-outer_html
-set_outer_html
-insert_adjacent_html
-*/
+    outer_html
+    set_outer_html
+    insert_adjacent_html
+    */
 
     assert!(
         element.query_selector(".none-existant").unwrap().is_none(),
@@ -191,9 +191,9 @@ insert_adjacent_html
         "Should return no results"
     );
     /* Tests needed for:
-  slot
-  set_slot
-  request_fullscreen
-  request_pointer_lock
-*/
+      slot
+      set_slot
+      request_fullscreen
+      request_pointer_lock
+    */
 }

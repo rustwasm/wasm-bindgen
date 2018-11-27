@@ -312,8 +312,8 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
             interface_data.partial = false;
             interface_data.superclass = self.inheritance.map(|s| s.identifier.0);
             interface_data.definition_attributes = self.attributes.as_ref();
-            interface_data.deprecated = util::get_rust_deprecated(&self.attributes)
-                .map(|s| s.to_string());
+            interface_data.deprecated =
+                util::get_rust_deprecated(&self.attributes).map(|s| s.to_string());
         }
         if let Some(attrs) = &self.attributes {
             for attr in attrs.body.list.iter() {

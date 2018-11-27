@@ -74,7 +74,6 @@ impl FmOsc {
         // control the amount of modulation.
         fm_osc.connect_with_audio_node(&fm_gain)?;
 
-
         // Connect the FM oscillator to the frequency parameter of the main
         // oscillator, so that the FM node can modulate its frequency.
         fm_gain.connect_with_audio_param(&primary.frequency())?;

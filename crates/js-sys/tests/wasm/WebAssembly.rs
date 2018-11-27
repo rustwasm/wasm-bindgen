@@ -62,7 +62,8 @@ fn compile_valid() -> impl Future<Item = (), Error = JsValue> {
     JsFuture::from(p)
         .map(|module| {
             assert!(module.is_instance_of::<WebAssembly::Module>());
-        }).map_err(|_| unreachable!())
+        })
+        .map_err(|_| unreachable!())
 }
 
 #[wasm_bindgen_test]
@@ -197,11 +198,9 @@ fn instantiate_streaming() -> impl Future<Item = (), Error = JsValue> {
     let imports = get_imports();
     let p = WebAssembly::instantiate_streaming(&response, &imports);
     JsFuture::from(p).map(|obj| {
-        assert!(
-            Reflect::get(obj.as_ref(), &"instance".into())
-                .unwrap()
-                .is_instance_of::<WebAssembly::Instance>()
-        );
+        assert!(Reflect::get(obj.as_ref(), &"instance".into())
+            .unwrap()
+            .is_instance_of::<WebAssembly::Instance>());
     })
 }
 

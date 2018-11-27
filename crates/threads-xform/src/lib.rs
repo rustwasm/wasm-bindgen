@@ -21,7 +21,7 @@ impl Config {
     /// Create a new configuration with default settings.
     pub fn new() -> Config {
         Config {
-            maximum_memory: 1 << 30, // 1GB
+            maximum_memory: 1 << 30,    // 1GB
             thread_stack_size: 1 << 20, // 1MB
         }
     }
@@ -103,9 +103,7 @@ struct PassiveSegment {
     len: u32,
 }
 
-fn switch_data_segments_to_passive(module: &mut Module)
-    -> Result<Vec<PassiveSegment>, Error>
-{
+fn switch_data_segments_to_passive(module: &mut Module) -> Result<Vec<PassiveSegment>, Error> {
     // If there's no data, nothing to make passive!
     let section = match module.data_section_mut() {
         Some(section) => section,
@@ -147,9 +145,7 @@ fn get_offset(offset: &mut InitExpr) -> Result<&mut i32, Error> {
     }
 }
 
-fn import_memory_zero(module: &mut Module)
-    -> Result<(), Error>
-{
+fn import_memory_zero(module: &mut Module) -> Result<(), Error> {
     // If memory is exported, let's switch it to imported. If memory isn't
     // exported then there's nothing to do as we'll deal with importing it
     // later.
@@ -170,18 +166,14 @@ fn import_memory_zero(module: &mut Module)
 
     // Remove all memory sections as well as exported memory, we're switching to
     // an import
-    module.sections_mut().retain(|s| {
-        match s {
-            Section::Memory(_) => false,
-            _ => true,
-        }
+    module.sections_mut().retain(|s| match s {
+        Section::Memory(_) => false,
+        _ => true,
     });
     if let Some(s) = module.export_section_mut() {
-        s.entries_mut().retain(|s| {
-            match s.internal() {
-                Internal::Memory(_) => false,
-                _ => true,
-            }
+        s.entries_mut().retain(|s| match s.internal() {
+            Internal::Memory(_) => false,
+            _ => true,
         });
     }
 
@@ -215,14 +207,14 @@ fn maybe_add_import_section(module: &mut Module) -> usize {
             _ => {}
         }
         pos = Some(i);
-        break
+        break;
     }
     let empty = ImportSection::with_entries(Vec::new());
     let section = Section::Import(empty);
     let len = module.sections().len();
     let pos = pos.unwrap_or_else(|| len - 1);
     module.sections_mut().insert(pos, section);
-    return pos
+    return pos;
 }
 
 fn share_imported_memory_zero(module: &mut Module, memory_max: u32) -> Result<(), Error> {
@@ -245,7 +237,7 @@ fn share_imported_memory_zero(module: &mut Module, memory_max: u32) -> Result<()
             Some(mem.limits().maximum().unwrap_or(memory_max / PAGE_SIZE)),
             true,
         );
-        return Ok(())
+        return Ok(());
     }
     panic!("failed to find an imported memory")
 }
@@ -293,23 +285,23 @@ fn maybe_add_global_section(module: &mut Module) -> usize {
     // https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#high-level-structure
     for i in 0..module.sections().len() {
         match &mut module.sections_mut()[i] {
-            Section::Type(_) |
-            Section::Import(_) |
-            Section::Function(_) |
-            Section::Table(_) |
-            Section::Memory(_) => continue,
+            Section::Type(_)
+            | Section::Import(_)
+            | Section::Function(_)
+            | Section::Table(_)
+            | Section::Memory(_) => continue,
             Section::Global(_) => return i,
             _ => {}
         }
         pos = Some(i);
-        break
+        break;
     }
     let empty = GlobalSection::with_entries(Vec::new());
     let section = Section::Global(empty);
     let len = module.sections().len();
     let pos = pos.unwrap_or_else(|| len - 1);
     module.sections_mut().insert(pos, section);
-    return pos
+    return pos;
 }
 
 fn inject_thread_id_counter(module: &mut Module) -> Result<u32, Error> {
@@ -323,14 +315,13 @@ fn inject_thread_id_counter(module: &mut Module) -> Result<u32, Error> {
             None => bail!("failed to find `__heap_base` for injecting thread id"),
         };
 
-        exports.entries()
+        exports
+            .entries()
             .iter()
             .filter(|e| e.field() == "__heap_base")
-            .filter_map(|e| {
-                match e.internal() {
-                    Internal::Global(idx) => Some(*idx),
-                    _ => None,
-                }
+            .filter_map(|e| match e.internal() {
+                Internal::Global(idx) => Some(*idx),
+                _ => None,
             })
             .next()
     };
@@ -414,7 +405,8 @@ fn find_stack_pointer(module: &mut Module) -> Result<Option<u32>, Error> {
         Some(s) => s,
         None => bail!("failed to find the stack pointer"),
     };
-    let candidates = globals.entries()
+    let candidates = globals
+        .entries()
         .iter()
         .enumerate()
         .filter(|(_, g)| g.global_type().content_type() == ValueType::I32)
@@ -424,17 +416,19 @@ fn find_stack_pointer(module: &mut Module) -> Result<Option<u32>, Error> {
     // If there are no mutable i32 globals, assume this module doesn't even need
     // a stack pointer!
     if candidates.len() == 0 {
-        return Ok(None)
+        return Ok(None);
     }
 
     // Currently LLVM/LLD always use global 0 as the stack pointer, let's just
     // blindly assume that.
     if candidates[0].0 == 0 {
-        return Ok(Some(0))
+        return Ok(Some(0));
     }
 
-    bail!("the first global wasn't a mutable i32, has LLD changed or was \
-           this wasm file not produced by LLD?")
+    bail!(
+        "the first global wasn't a mutable i32, has LLD changed or was \
+         this wasm file not produced by LLD?"
+    )
 }
 
 fn start_with_init_memory(
@@ -451,7 +445,10 @@ fn start_with_init_memory(
     // Execute an atomic add to learn what our thread ID is
     instrs.push(Instruction::I32Const(addr as i32));
     instrs.push(Instruction::I32Const(1));
-    let mem = parity_wasm::elements::MemArg { align: 2, offset: 0 };
+    let mem = parity_wasm::elements::MemArg {
+        align: 2,
+        offset: 0,
+    };
     instrs.push(Instruction::I32AtomicRmwAdd(mem));
 
     // Store this thread ID into our thread ID global
@@ -500,7 +497,7 @@ fn start_with_init_memory(
         instrs.push(Instruction::I32Const(segment.offset as i32));
         // offset into segment
         instrs.push(Instruction::I32Const(0)); // offset into segment
-        // amount to copy
+                                               // amount to copy
         instrs.push(Instruction::I32Const(segment.len as i32));
         instrs.push(Instruction::MemoryInit(segment.idx));
     }
@@ -531,13 +528,14 @@ fn start_with_init_memory(
     };
     // ... and also be sure to add its signature to the function section ...
     let type_idx = {
-        let section = module.type_section_mut().expect("module has no type section");
-        let pos = section.types()
+        let section = module
+            .type_section_mut()
+            .expect("module has no type section");
+        let pos = section
+            .types()
             .iter()
-            .map(|t| {
-                match t {
-                    Type::Function(t) => t,
-                }
+            .map(|t| match t {
+                Type::Function(t) => t,
             })
             .position(|t| t.params().is_empty() && t.return_type().is_none());
         match pos {
@@ -549,7 +547,8 @@ fn start_with_init_memory(
             }
         }
     };
-    module.function_section_mut()
+    module
+        .function_section_mut()
         .expect("module has no function section")
         .entries_mut()
         .push(Func::new(type_idx));
@@ -566,21 +565,21 @@ fn update_start_section(module: &mut Module, start: u32) {
     let mut pos = None;
     for i in 0..module.sections().len() {
         match &mut module.sections_mut()[i] {
-            Section::Type(_) |
-            Section::Import(_) |
-            Section::Function(_) |
-            Section::Table(_) |
-            Section::Memory(_) |
-            Section::Global(_) |
-            Section::Export(_) => continue,
+            Section::Type(_)
+            | Section::Import(_)
+            | Section::Function(_)
+            | Section::Table(_)
+            | Section::Memory(_)
+            | Section::Global(_)
+            | Section::Export(_) => continue,
             Section::Start(start_idx) => {
                 *start_idx = start;
-                return
+                return;
             }
             _ => {}
         }
         pos = Some(i);
-        break
+        break;
     }
     let section = Section::Start(start);
     let len = module.sections().len();
@@ -588,28 +587,22 @@ fn update_start_section(module: &mut Module, start: u32) {
     module.sections_mut().insert(pos, section);
 }
 
-fn implement_thread_intrinsics(
-    module: &mut Module,
-    globals: &Globals,
-) -> Result<(), Error> {
+fn implement_thread_intrinsics(module: &mut Module, globals: &Globals) -> Result<(), Error> {
     let mut map = HashMap::new();
     {
         let imports = match module.import_section() {
             Some(i) => i,
             None => return Ok(()),
         };
-        let entries = imports.entries()
+        let entries = imports
+            .entries()
             .iter()
-            .filter(|i| {
-                match i.external() {
-                    External::Function(_) => true,
-                    _ => false,
-                }
+            .filter(|i| match i.external() {
+                External::Function(_) => true,
+                _ => false,
             })
             .enumerate()
-            .filter(|(_, entry)| {
-                entry.module() == "__wbindgen_thread_xform__"
-            });
+            .filter(|(_, entry)| entry.module() == "__wbindgen_thread_xform__");
         for (idx, entry) in entries {
             let type_idx = match entry.external() {
                 External::Function(i) => *i,
@@ -622,17 +615,13 @@ fn implement_thread_intrinsics(
             // Validate the type for this intrinsic
             match entry.field() {
                 "__wbindgen_thread_id" => {
-                    if !fty.params().is_empty() ||
-                        fty.return_type() != Some(ValueType::I32)
-                    {
+                    if !fty.params().is_empty() || fty.return_type() != Some(ValueType::I32) {
                         bail!("__wbindgen_thread_id intrinsic has the wrong signature");
                     }
                     map.insert(idx as u32, Instruction::GetGlobal(globals.thread_id));
                 }
                 "__wbindgen_tcb_get" => {
-                    if !fty.params().is_empty() ||
-                        fty.return_type() != Some(ValueType::I32)
-                    {
+                    if !fty.params().is_empty() || fty.return_type() != Some(ValueType::I32) {
                         bail!("__wbindgen_tcb_get intrinsic has the wrong signature");
                     }
                     map.insert(idx as u32, Instruction::GetGlobal(globals.thread_tcb));
@@ -653,12 +642,10 @@ fn implement_thread_intrinsics(
     for body in module.code_section_mut().unwrap().bodies_mut() {
         for instr in body.code_mut().elements_mut() {
             let other = match instr {
-                Instruction::Call(idx) => {
-                    match map.get(idx) {
-                        Some(other) => other,
-                        None => continue,
-                    }
-                }
+                Instruction::Call(idx) => match map.get(idx) {
+                    Some(other) => other,
+                    None => continue,
+                },
                 _ => continue,
             };
             *instr = other.clone();

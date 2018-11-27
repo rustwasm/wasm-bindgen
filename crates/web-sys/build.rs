@@ -59,7 +59,8 @@ fn try_main() -> Result<(), failure::Error> {
         .map(|mut p| {
             p.drain(0.."CARGO_FEATURE_".len());
             p
-        }).collect::<HashSet<_>>();
+        })
+        .collect::<HashSet<_>>();
 
     let mut allowed = Vec::new();
     for feature in features.filter(|f| !f.starts_with("#") && !f.starts_with("[")) {

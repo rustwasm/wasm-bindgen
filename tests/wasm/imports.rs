@@ -181,7 +181,7 @@ fn dead_imports_not_generated() {
 #[cfg(feature = "nightly")]
 fn import_inside_function_works() {
     #[wasm_bindgen(module = "tests/wasm/imports.js")]
-    extern {
+    extern "C" {
         fn import_inside_function_works();
     }
     import_inside_function_works();
@@ -199,7 +199,7 @@ mod private {
 
     pub fn foo() {
         #[wasm_bindgen(module = "tests/wasm/imports.js")]
-        extern {
+        extern "C" {
             fn import_inside_private_module();
         }
         import_inside_private_module();
@@ -207,7 +207,7 @@ mod private {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn something_not_defined_in_the_environment();
 
     type TypeThatIsNotDefined;
@@ -224,7 +224,7 @@ extern {
 #[wasm_bindgen_test]
 fn undefined_function_is_ok() {
     if !should_call_undefined_functions() {
-        return
+        return;
     }
     something_not_defined_in_the_environment();
 

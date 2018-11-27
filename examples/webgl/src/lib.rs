@@ -2,17 +2,16 @@ extern crate js_sys;
 extern crate wasm_bindgen;
 extern crate web_sys;
 
+use js_sys::WebAssembly;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader};
-use js_sys::{WebAssembly};
 
 #[wasm_bindgen]
 pub fn draw() -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
-    let canvas: web_sys::HtmlCanvasElement = canvas
-        .dyn_into::<web_sys::HtmlCanvasElement>()?;
+    let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into::<web_sys::HtmlCanvasElement>()?;
 
     let context = canvas
         .get_context("webgl")?
@@ -42,12 +41,12 @@ pub fn draw() -> Result<(), JsValue> {
     context.use_program(Some(&program));
 
     let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
-    let memory_buffer = wasm_bindgen::memory().dyn_into::<WebAssembly::Memory>()?.buffer();
+    let memory_buffer = wasm_bindgen::memory()
+        .dyn_into::<WebAssembly::Memory>()?
+        .buffer();
     let vertices_location = vertices.as_ptr() as u32 / 4;
-    let vert_array = js_sys::Float32Array::new(&memory_buffer).subarray(
-        vertices_location,
-        vertices_location + vertices.len() as u32,
-    );
+    let vert_array = js_sys::Float32Array::new(&memory_buffer)
+        .subarray(vertices_location, vertices_location + vertices.len() as u32);
 
     let buffer = context.create_buffer().ok_or("failed to create buffer")?;
     context.bind_buffer(WebGlRenderingContext::ARRAY_BUFFER, Some(&buffer));

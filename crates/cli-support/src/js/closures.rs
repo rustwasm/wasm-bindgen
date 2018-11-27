@@ -44,7 +44,8 @@ pub fn rewrite(input: &mut Context) -> Result<(), Error> {
             .import_section()
             .map(|s| s.functions())
             .unwrap_or(0) as u32,
-    }.remap_module(input.module);
+    }
+    .remap_module(input.module);
 
     info.delete_function_table_entries(input);
     info.inject_imports(input)?;
@@ -236,13 +237,10 @@ impl ClosureDescriptors {
                         .rust_argument("b")
                         .finally("this.a = a;\n");
                 } else {
-                    builder.rust_argument("this.a")
-                        .rust_argument("b");
+                    builder.rust_argument("this.a").rust_argument("b");
                 }
                 builder.finally("if (this.cnt-- == 1) d(this.a, b);");
-                builder
-                    .process(&closure.function)?
-                    .finish("function", "f")
+                builder.process(&closure.function)?.finish("function", "f")
             };
             input.expose_add_heap_object();
             input.function_table_needed = true;

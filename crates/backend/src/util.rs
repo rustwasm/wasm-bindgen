@@ -71,7 +71,8 @@ where
         .map(|i| syn::PathSegment {
             ident: i,
             arguments: syn::PathArguments::None,
-        }).collect();
+        })
+        .collect();
 
     syn::TypePath {
         qself: None,
@@ -83,7 +84,8 @@ where
             },
             segments: syn::punctuated::Punctuated::from_iter(segments),
         },
-    }.into()
+    }
+    .into()
 }
 
 pub fn ident_ty(ident: Ident) -> syn::Type {

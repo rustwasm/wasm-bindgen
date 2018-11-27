@@ -3,8 +3,8 @@ use std::collections::HashMap;
 
 use proc_macro2::{Ident, Span};
 
-use Diagnostic;
 use ast;
+use Diagnostic;
 
 pub fn encode(program: &ast::Program) -> Result<Vec<u8>, Diagnostic> {
     let mut e = Encoder::new();
@@ -19,13 +19,15 @@ struct Interner {
 
 impl Interner {
     fn new() -> Interner {
-        Interner { map: RefCell::new(HashMap::new()) }
+        Interner {
+            map: RefCell::new(HashMap::new()),
+        }
     }
 
     fn intern(&self, s: &Ident) -> &str {
         let mut map = self.map.borrow_mut();
         if let Some(s) = map.get(s) {
-            return unsafe { &*(&**s as *const str) }
+            return unsafe { &*(&**s as *const str) };
         }
         map.insert(s.clone(), s.to_string());
         unsafe { &*(&*map[s] as *const str) }
@@ -36,17 +38,32 @@ impl Interner {
     }
 }
 
-fn shared_program<'a>(prog: &'a ast::Program, intern: &'a Interner)
-    -> Result<Program<'a>, Diagnostic>
-{
+fn shared_program<'a>(
+    prog: &'a ast::Program,
+    intern: &'a Interner,
+) -> Result<Program<'a>, Diagnostic> {
     Ok(Program {
-        exports: prog.exports.iter().map(|a| shared_export(a, intern)).collect(),
-        structs: prog.structs.iter().map(|a| shared_struct(a, intern)).collect(),
+        exports: prog
+            .exports
+            .iter()
+            .map(|a| shared_export(a, intern))
+            .collect(),
+        structs: prog
+            .structs
+            .iter()
+            .map(|a| shared_struct(a, intern))
+            .collect(),
         enums: prog.enums.iter().map(|a| shared_enum(a, intern)).collect(),
-        imports: prog.imports.iter()
+        imports: prog
+            .imports
+            .iter()
             .map(|a| shared_import(a, intern))
             .collect::<Result<Vec<_>, _>>()?,
-        typescript_custom_sections: prog.typescript_custom_sections.iter().map(|x| -> &'a str { &x }).collect(),
+        typescript_custom_sections: prog
+            .typescript_custom_sections
+            .iter()
+            .map(|x| -> &'a str { &x })
+            .collect(),
         // version: shared::version(),
         // schema_version: shared::SCHEMA_VERSION.to_string(),
     })
@@ -69,15 +86,17 @@ fn shared_export<'a>(export: &'a ast::Export, intern: &'a Interner) -> Export<'a
 }
 
 fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Function<'a> {
-    Function {
-        name: &func.name,
-    }
+    Function { name: &func.name }
 }
 
 fn shared_enum<'a>(e: &'a ast::Enum, intern: &'a Interner) -> Enum<'a> {
     Enum {
         name: intern.intern(&e.name),
-        variants: e.variants.iter().map(|v| shared_variant(v, intern)).collect(),
+        variants: e
+            .variants
+            .iter()
+            .map(|v| shared_variant(v, intern))
+            .collect(),
         comments: e.comments.iter().map(|s| &**s).collect(),
     }
 }
@@ -89,9 +108,7 @@ fn shared_variant<'a>(v: &'a ast::Variant, intern: &'a Interner) -> EnumVariant<
     }
 }
 
-fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner)
-    -> Result<Import<'a>, Diagnostic>
-{
+fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<'a>, Diagnostic> {
     Ok(Import {
         module: i.module.as_ref().map(|s| &**s),
         js_namespace: i.js_namespace.as_ref().map(|s| intern.intern(s)),
@@ -99,9 +116,10 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner)
     })
 }
 
-fn shared_import_kind<'a>(i: &'a ast::ImportKind, intern: &'a Interner)
-    -> Result<ImportKind<'a>, Diagnostic>
-{
+fn shared_import_kind<'a>(
+    i: &'a ast::ImportKind,
+    intern: &'a Interner,
+) -> Result<ImportKind<'a>, Diagnostic> {
     Ok(match i {
         ast::ImportKind::Function(f) => ImportKind::Function(shared_import_function(f, intern)?),
         ast::ImportKind::Static(f) => ImportKind::Static(shared_import_static(f, intern)),
@@ -110,11 +128,12 @@ fn shared_import_kind<'a>(i: &'a ast::ImportKind, intern: &'a Interner)
     })
 }
 
-fn shared_import_function<'a>(i: &'a ast::ImportFunction, intern: &'a Interner)
-    -> Result<ImportFunction<'a>, Diagnostic>
-{
+fn shared_import_function<'a>(
+    i: &'a ast::ImportFunction,
+    intern: &'a Interner,
+) -> Result<ImportFunction<'a>, Diagnostic> {
     let method = match &i.kind {
-        ast::ImportFunctionKind::Method { class, kind, ..  } => {
+        ast::ImportFunctionKind::Method { class, kind, .. } => {
             let kind = match kind {
                 ast::MethodKind::Constructor => MethodKind::Constructor,
                 ast::MethodKind::Operation(ast::Operation { is_static, kind }) => {
@@ -123,9 +142,7 @@ fn shared_import_function<'a>(i: &'a ast::ImportFunction, intern: &'a Interner)
                         ast::OperationKind::Regular => OperationKind::Regular,
                         ast::OperationKind::Getter(g) => {
                             let g = g.as_ref().map(|g| intern.intern(g));
-                            OperationKind::Getter(
-                                g.unwrap_or_else(|| i.infer_getter_property()),
-                            )
+                            OperationKind::Getter(g.unwrap_or_else(|| i.infer_getter_property()))
                         }
                         ast::OperationKind::Setter(s) => {
                             let s = s.as_ref().map(|s| intern.intern(s));
@@ -141,10 +158,7 @@ fn shared_import_function<'a>(i: &'a ast::ImportFunction, intern: &'a Interner)
                     MethodKind::Operation(Operation { is_static, kind })
                 }
             };
-            Some(MethodData {
-                class,
-                kind,
-            })
+            Some(MethodData { class, kind })
         }
         ast::ImportFunctionKind::Normal => None,
     };
@@ -159,44 +173,38 @@ fn shared_import_function<'a>(i: &'a ast::ImportFunction, intern: &'a Interner)
     })
 }
 
-fn shared_import_static<'a>(i: &'a ast::ImportStatic, intern: &'a Interner)
-    -> ImportStatic<'a>
-{
+fn shared_import_static<'a>(i: &'a ast::ImportStatic, intern: &'a Interner) -> ImportStatic<'a> {
     ImportStatic {
         name: &i.js_name,
         shim: intern.intern(&i.shim),
     }
 }
 
-fn shared_import_type<'a>(i: &'a ast::ImportType, intern: &'a Interner)
-    -> ImportType<'a>
-{
+fn shared_import_type<'a>(i: &'a ast::ImportType, intern: &'a Interner) -> ImportType<'a> {
     ImportType {
         name: &i.js_name,
         instanceof_shim: &i.instanceof_shim,
-        vendor_prefixes: i.vendor_prefixes.iter()
-            .map(|x| intern.intern(x))
-            .collect(),
+        vendor_prefixes: i.vendor_prefixes.iter().map(|x| intern.intern(x)).collect(),
     }
 }
 
-fn shared_import_enum<'a>(_i: &'a ast::ImportEnum, _intern: &'a Interner)
-    -> ImportEnum
-{
+fn shared_import_enum<'a>(_i: &'a ast::ImportEnum, _intern: &'a Interner) -> ImportEnum {
     ImportEnum {}
 }
 
 fn shared_struct<'a>(s: &'a ast::Struct, intern: &'a Interner) -> Struct<'a> {
     Struct {
         name: &s.js_name,
-        fields: s.fields.iter().map(|s| shared_struct_field(s, intern)).collect(),
+        fields: s
+            .fields
+            .iter()
+            .map(|s| shared_struct_field(s, intern))
+            .collect(),
         comments: s.comments.iter().map(|s| &**s).collect(),
     }
 }
 
-fn shared_struct_field<'a>(s: &'a ast::StructField, intern: &'a Interner)
-    -> StructField<'a>
-{
+fn shared_struct_field<'a>(s: &'a ast::StructField, intern: &'a Interner) -> StructField<'a> {
     StructField {
         name: intern.intern(&s.name),
         readonly: s.readonly,

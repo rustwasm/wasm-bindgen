@@ -6,8 +6,8 @@ extern crate wasm_bindgen_shared as shared;
 extern crate wasm_bindgen_gc as gc;
 #[macro_use]
 extern crate failure;
-extern crate wasm_bindgen_wasm_interpreter as wasm_interpreter;
 extern crate wasm_bindgen_threads_xform as threads_xform;
+extern crate wasm_bindgen_wasm_interpreter as wasm_interpreter;
 
 use std::collections::BTreeSet;
 use std::env;
@@ -201,7 +201,8 @@ impl Bindgen {
                     program,
                     cx: &mut cx,
                     vendor_prefixes: Default::default(),
-                }.generate()?;
+                }
+                .generate()?;
             }
             cx.finalize(stem)?
         };
@@ -390,7 +391,7 @@ to open an issue at https://github.com/rustwasm/wasm-bindgen/issues!
 
 fn get_remaining<'a>(data: &mut &'a [u8]) -> Option<&'a [u8]> {
     if data.len() == 0 {
-        return None
+        return None;
     }
     let len = ((data[0] as usize) << 0)
         | ((data[1] as usize) << 8)
@@ -401,11 +402,11 @@ fn get_remaining<'a>(data: &mut &'a [u8]) -> Option<&'a [u8]> {
     Some(a)
 }
 
-fn verify_schema_matches<'a>(data: &'a [u8])
-    -> Result<Option<&'a str>, Error>
-{
+fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
     macro_rules! bad {
-        () => (bail!("failed to decode what looked like wasm-bindgen data"))
+        () => {
+            bail!("failed to decode what looked like wasm-bindgen data")
+        };
     }
     let data = match str::from_utf8(data) {
         Ok(s) => s,
@@ -424,7 +425,7 @@ fn verify_schema_matches<'a>(data: &'a [u8])
         None => bad!(),
     };
     if their_schema_version == shared::SCHEMA_VERSION {
-        return Ok(None)
+        return Ok(None);
     }
     let needle = "\"version\":\"";
     let rest = match data.find(needle) {
@@ -471,7 +472,7 @@ fn reset_indentation(s: &str) -> String {
 // backwards-compatibility with these options.
 fn threads_config() -> Option<threads_xform::Config> {
     if env::var("WASM_BINDGEN_THREADS").is_err() {
-        return None
+        return None;
     }
     let mut cfg = threads_xform::Config::new();
     if let Ok(s) = env::var("WASM_BINDGEN_THREADS_MAX_MEMORY") {

@@ -51,7 +51,8 @@ pub fn run() -> Promise {
     let request = Request::new_with_str_and_init(
         "https://api.github.com/repos/rustwasm/wasm-bindgen/branches/master",
         &opts,
-    ).unwrap();
+    )
+    .unwrap();
 
     request
         .headers()
@@ -67,10 +68,12 @@ pub fn run() -> Promise {
             assert!(resp_value.is_instance_of::<Response>());
             let resp: Response = resp_value.dyn_into().unwrap();
             resp.json()
-        }).and_then(|json_value: Promise| {
+        })
+        .and_then(|json_value: Promise| {
             // Convert this other `Promise` into a rust `Future`.
             JsFuture::from(json_value)
-        }).and_then(|json| {
+        })
+        .and_then(|json| {
             // Use serde to parse the JSON into a struct.
             let branch_info: Branch = json.into_serde().unwrap();
 

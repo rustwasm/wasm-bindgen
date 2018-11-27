@@ -50,7 +50,8 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::Module(s) => Some(&s[..]),
                 _ => None,
-            }).next()
+            })
+            .next()
     }
 
     /// Whether the catch attribute is present
@@ -76,7 +77,8 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::StaticMethodOf(c) => Some(c),
                 _ => None,
-            }).next()
+            })
+            .next()
     }
 
     /// Whether the method attributes is present
@@ -94,7 +96,8 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::JsNamespace(s) => Some(s),
                 _ => None,
-            }).next()
+            })
+            .next()
     }
 
     /// Get the first getter attribute
@@ -104,7 +107,8 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::Getter(g) => Some(g.clone()),
                 _ => None,
-            }).next()
+            })
+            .next()
     }
 
     /// Get the first setter attribute
@@ -114,7 +118,8 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::Setter(s) => Some(s.clone()),
                 _ => None,
-            }).next()
+            })
+            .next()
     }
 
     /// Whether the indexing getter attributes is present
@@ -151,10 +156,13 @@ impl BindgenAttrs {
 
     /// Whether the `final` attribute is present
     fn final_(&self) -> Option<&Ident> {
-        self.attrs.iter().filter_map(|a| match a {
-            BindgenAttr::Final(i) => Some(i),
-            _ => None,
-        }).next()
+        self.attrs
+            .iter()
+            .filter_map(|a| match a {
+                BindgenAttr::Final(i) => Some(i),
+                _ => None,
+            })
+            .next()
     }
 
     /// Whether the readonly attributes is present
@@ -172,7 +180,8 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::JsName(s, span) => Some((&s[..], *span)),
                 _ => None,
-            }).next()
+            })
+            .next()
     }
 
     /// Get the first js_class attribute
@@ -182,7 +191,8 @@ impl BindgenAttrs {
             .filter_map(|a| match a {
                 BindgenAttr::JsClass(s) => Some(&s[..]),
                 _ => None,
-            }).next()
+            })
+            .next()
     }
 
     /// Return the list of classes that a type extends
@@ -281,7 +291,7 @@ impl Parse for BindgenAttr {
             return Ok(BindgenAttr::Structural);
         }
         if attr == "final" {
-            return Ok(BindgenAttr::Final(attr))
+            return Ok(BindgenAttr::Final(attr));
         }
         if attr == "readonly" {
             return Ok(BindgenAttr::Readonly);
@@ -386,7 +396,8 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             );
         }
         let mut fields = Vec::new();
-        let js_name = opts.js_name()
+        let js_name = opts
+            .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.to_string());
         if let syn::Fields::Named(names) = &mut self.fields {
@@ -441,7 +452,8 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
             self.vis.clone(),
             false,
             None,
-        )?.0;
+        )?
+        .0;
         let catch = opts.catch();
         let variadic = opts.variadic();
         let js_ret = if catch {
@@ -664,7 +676,8 @@ impl ConvertToAst<BindgenAttrs> for syn::ItemFn {
             self.vis,
             false,
             None,
-        )?.0)
+        )?
+        .0)
     }
 }
 
@@ -735,7 +748,8 @@ fn function_from_decl(
                 None
             }
             _ => panic!("arguments cannot be `self` or ignored"),
-        }).collect::<Vec<_>>();
+        })
+        .collect::<Vec<_>>();
 
     let ret = match output {
         syn::ReturnType::Default => None,
@@ -832,7 +846,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 bail_span!(
                     self,
                     "#[wasm_bindgen] can only be applied to a function, \
-                    struct, enum, impl, or extern block",
+                     struct, enum, impl, or extern block",
                 );
             }
         }
@@ -885,9 +899,11 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
 }
 
 impl<'a, 'b> MacroParse<&'a BindgenAttrs> for (&'a Ident, &'b mut syn::ImplItem) {
-    fn macro_parse(self, program: &mut ast::Program, impl_opts: &'a BindgenAttrs)
-        -> Result<(), Diagnostic>
-    {
+    fn macro_parse(
+        self,
+        program: &mut ast::Program,
+        impl_opts: &'a BindgenAttrs,
+    ) -> Result<(), Diagnostic> {
         let (class, item) = self;
         let method = match item {
             syn::ImplItem::Method(ref mut m) => m,
@@ -939,7 +955,8 @@ impl<'a, 'b> MacroParse<&'a BindgenAttrs> for (&'a Ident, &'b mut syn::ImplItem)
             true,
             Some(class),
         )?;
-        let js_class = impl_opts.js_class()
+        let js_class = impl_opts
+            .js_class()
             .map(|s| s.to_string())
             .unwrap_or(class.to_string());
 
@@ -1001,7 +1018,8 @@ impl MacroParse<()> for syn::ItemEnum {
                     name: v.ident.clone(),
                     value,
                 })
-            }).collect::<Result<_, Diagnostic>>()?;
+            })
+            .collect::<Result<_, Diagnostic>>()?;
         let comments = extract_doc_comments(&self.attrs);
         program.enums.push(ast::Enum {
             name: self.ident,
@@ -1025,10 +1043,10 @@ impl MacroParse<BindgenAttrs> for syn::ItemConst {
                 ..
             }) => {
                 program.typescript_custom_sections.push(litstr.value());
-            },
+            }
             _ => {
                 bail_span!(self, "Expected a string literal to be used with #[wasm_bindgen(typescript_custom_section)].");
-            },
+            }
         }
 
         Ok(())

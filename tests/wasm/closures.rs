@@ -218,13 +218,17 @@ fn drop_drops() {
 
     impl Drop for A {
         fn drop(&mut self) {
-            unsafe { HIT = true; }
+            unsafe {
+                HIT = true;
+            }
         }
     }
     let a = A;
     let x: Closure<Fn()> = Closure::new(move || drop(&a));
     drop(x);
-    unsafe { assert!(HIT); }
+    unsafe {
+        assert!(HIT);
+    }
 }
 
 #[wasm_bindgen_test]
@@ -233,7 +237,9 @@ fn drop_during_call_ok() {
     struct A;
     impl Drop for A {
         fn drop(&mut self) {
-            unsafe { HIT = true; }
+            unsafe {
+                HIT = true;
+            }
         }
     }
 
@@ -246,7 +252,9 @@ fn drop_during_call_ok() {
         drop(rc2.borrow_mut().take().unwrap());
 
         // `A` should not have been destroyed as a result
-        unsafe { assert!(!HIT); }
+        unsafe {
+            assert!(!HIT);
+        }
 
         // allocate some heap memory to try to paper over our `3`
         drop(String::from("1234567890"));
@@ -256,12 +264,18 @@ fn drop_during_call_ok() {
 
         // make sure `A` is bound to our closure environment.
         drop(&a);
-        unsafe { assert!(!HIT); }
+        unsafe {
+            assert!(!HIT);
+        }
     });
     drop_during_call_save(&x);
     *rc.borrow_mut() = Some(x);
     drop(rc);
-    unsafe { assert!(!HIT); }
+    unsafe {
+        assert!(!HIT);
+    }
     drop_during_call_call();
-    unsafe { assert!(HIT); }
+    unsafe {
+        assert!(HIT);
+    }
 }

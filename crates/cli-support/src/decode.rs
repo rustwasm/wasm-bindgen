@@ -6,14 +6,14 @@ pub trait Decode<'src>: Sized {
     fn decode_all(mut data: &'src [u8]) -> Self {
         let ret = Self::decode(&mut data);
         assert!(data.len() == 0);
-        return ret
+        return ret;
     }
 }
 
 fn get<'a>(b: &mut &'a [u8]) -> u8 {
     let r = b[0];
     *b = &b[1..];
-    return r
+    return r;
 }
 
 impl<'src> Decode<'src> for bool {
@@ -30,7 +30,7 @@ impl<'src> Decode<'src> for u32 {
             let byte = get(data);
             cur |= ((byte & 0x7f) as u32) << offset;
             if byte & 0x80 == 0 {
-                break cur
+                break cur;
             }
             offset += 7;
         }

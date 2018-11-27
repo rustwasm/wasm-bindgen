@@ -1,7 +1,7 @@
-use Diagnostic;
 use proc_macro2::{Ident, Span};
 use shared;
 use syn;
+use Diagnostic;
 
 /// An abstract syntax tree representing a rust program. Contains
 /// extra information for joining up this rust code with javascript.

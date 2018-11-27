@@ -527,12 +527,13 @@ impl<'a> IdlType<'a> {
                 // it's up to users to dispatch and/or create instances
                 // appropriately.
                 if let syn::Type::Path(path) = &inner {
-                    if path.qself.is_none() && path
-                        .path
-                        .segments
-                        .last()
-                        .map(|p| p.value().ident == "JsValue")
-                        .unwrap_or(false)
+                    if path.qself.is_none()
+                        && path
+                            .path
+                            .segments
+                            .last()
+                            .map(|p| p.value().ident == "JsValue")
+                            .unwrap_or(false)
                     {
                         return Some(inner.clone());
                     }
@@ -678,7 +679,8 @@ fn idl_type_flatten_test() {
                 Sequence(Box::new(Double),),
                 Interface("NodeList"),
             ])),),
-        ]).flatten(),
+        ])
+        .flatten(),
         vec![
             Interface("Node"),
             Sequence(Box::new(Long)),
@@ -710,5 +712,6 @@ fn clamped(t: syn::Type) -> syn::Type {
                 .into_iter()
                 .collect(),
         },
-    }.into()
+    }
+    .into()
 }

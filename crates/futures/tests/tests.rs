@@ -6,8 +6,8 @@ extern crate wasm_bindgen;
 extern crate wasm_bindgen_futures;
 extern crate wasm_bindgen_test;
 
-use futures::Future;
 use futures::unsync::oneshot;
+use futures::Future;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::{future_to_promise, JsFuture};
 use wasm_bindgen_test::*;
@@ -18,7 +18,8 @@ fn promise_resolve_is_ok_future() -> impl Future<Item = (), Error = JsValue> {
     JsFuture::from(p)
         .map(|x| {
             assert_eq!(x, 42);
-        }).map_err(|_| unreachable!())
+        })
+        .map_err(|_| unreachable!())
 }
 
 #[wasm_bindgen_test(async)]
@@ -37,7 +38,8 @@ fn ok_future_is_resolved_promise() -> impl Future<Item = (), Error = JsValue> {
     JsFuture::from(p)
         .map(|x| {
             assert_eq!(x, 42);
-        }).map_err(|_| unreachable!())
+        })
+        .map_err(|_| unreachable!())
 }
 
 #[wasm_bindgen_test(async)]
@@ -51,7 +53,7 @@ fn error_future_is_rejected_promise() -> impl Future<Item = (), Error = JsValue>
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn setTimeout(c: &Closure<FnMut()>);
 }
 

@@ -132,7 +132,8 @@ fn serde() {
             b: "foo".to_string(),
             c: None,
             d: Bar { a: 1 },
-        }).unwrap(),
+        })
+        .unwrap(),
     );
 
     let foo = ret.into_serde::<Foo>().unwrap();

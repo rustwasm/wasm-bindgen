@@ -74,7 +74,8 @@ pub fn wasm_bindgen_test(
                     #test_body
                 }
             }
-        }).into_iter(),
+        })
+        .into_iter(),
     );
 
     tokens.extend(leading_tokens);

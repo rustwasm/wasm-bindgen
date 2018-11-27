@@ -86,7 +86,6 @@ impl JsValue {
         _marker: marker::PhantomData,
     };
 
-
     /// The `true` JS value constant.
     pub const TRUE: JsValue = JsValue {
         idx: JSIDX_TRUE,
@@ -113,9 +112,7 @@ impl JsValue {
     /// be owned by the JS garbage collector.
     #[inline]
     pub fn from_str(s: &str) -> JsValue {
-        unsafe {
-            JsValue::_new(__wbindgen_string_new(s.as_ptr(), s.len()))
-        }
+        unsafe { JsValue::_new(__wbindgen_string_new(s.as_ptr(), s.len())) }
     }
 
     /// Creates a new JS value which is a number.
@@ -124,9 +121,7 @@ impl JsValue {
     /// allocated number) and returns a handle to the JS version of it.
     #[inline]
     pub fn from_f64(n: f64) -> JsValue {
-        unsafe {
-            JsValue::_new(__wbindgen_number_new(n))
-        }
+        unsafe { JsValue::_new(__wbindgen_number_new(n)) }
     }
 
     /// Creates a new JS value which is a boolean.
@@ -135,7 +130,11 @@ impl JsValue {
     /// allocated boolean) and returns a handle to the JS version of it.
     #[inline]
     pub fn from_bool(b: bool) -> JsValue {
-        if b { JsValue::TRUE } else { JsValue::FALSE }
+        if b {
+            JsValue::TRUE
+        } else {
+            JsValue::FALSE
+        }
     }
 
     /// Creates a new JS value representing `undefined`.
@@ -183,9 +182,7 @@ impl JsValue {
         T: serde::ser::Serialize + ?Sized,
     {
         let s = serde_json::to_string(t)?;
-        unsafe {
-            Ok(JsValue::_new(__wbindgen_json_parse(s.as_ptr(), s.len())))
-        }
+        unsafe { Ok(JsValue::_new(__wbindgen_json_parse(s.as_ptr(), s.len()))) }
     }
 
     /// Invokes `JSON.stringify` on this value and then parses the resulting
@@ -351,7 +348,7 @@ if_std! {
 }
 
 impl<'a> From<&'a str> for JsValue {
-        #[inline]
+    #[inline]
     fn from(s: &'a str) -> JsValue {
         JsValue::from_str(s)
     }
@@ -588,9 +585,7 @@ impl<T: FromWasmAbi + 'static> Deref for JsStatic<T> {
         // wasm, as the pointer will eventually be invalidated but you can get
         // `&'static T` from this interface. We... probably need to deprecate
         // and/or remove this interface nowadays.
-        unsafe {
-            self.__inner.with(|ptr| &*(ptr as *const T))
-        }
+        unsafe { self.__inner.with(|ptr| &*(ptr as *const T)) }
     }
 }
 
@@ -648,16 +643,12 @@ pub fn throw_val(s: JsValue) -> ! {
 /// may prevent your wasm module from building down the road.
 #[doc(hidden)]
 pub fn module() -> JsValue {
-    unsafe {
-        JsValue::_new(__wbindgen_module())
-    }
+    unsafe { JsValue::_new(__wbindgen_module()) }
 }
 
 /// Returns a handle to this wasm instance's `WebAssembly.Memory`
 pub fn memory() -> JsValue {
-    unsafe {
-        JsValue::_new(__wbindgen_memory())
-    }
+    unsafe { JsValue::_new(__wbindgen_memory()) }
 }
 
 #[doc(hidden)]

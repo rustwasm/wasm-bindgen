@@ -42,9 +42,7 @@ impl BitSet {
         let i = *i as usize;
         let idx = i / BITS;
         let bit = 1 << (i % BITS);
-        self.bits.get(idx)
-            .map(|x| *x & bit != 0)
-            .unwrap_or(false)
+        self.bits.get(idx).map(|x| *x & bit != 0).unwrap_or(false)
     }
 }
 

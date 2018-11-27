@@ -329,8 +329,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             } else {
                 self.prelude(&format!(
                     "\
-                    const ptr{i} = {arg}.ptr;\n\
-                    ",
+                     const ptr{i} = {arg}.ptr;\n\
+                     ",
                     i = i,
                     arg = name
                 ));
@@ -346,8 +346,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 }
                 self.prelude(&format!(
                     "\
-                    {arg}.ptr = 0;\n\
-                    ",
+                     {arg}.ptr = 0;\n\
+                     ",
                     arg = name
                 ));
                 self.rust_arguments.push(format!("ptr{}", i));
@@ -549,7 +549,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.ret_expr = "
                     const ret = RET;
                     return ret === 0xFFFFFF ? undefined : ret;
-                ".to_string();
+                "
+                .to_string();
                 return Ok(self);
             }
 
@@ -583,7 +584,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     self.ret_expr = "
                         const ret = RET;
                         return ret === 0xFFFFFF ? undefined : ret !== 0;
-                    ".to_string();
+                    "
+                    .to_string();
                     return Ok(self);
                 }
                 Descriptor::Char => {
@@ -597,7 +599,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                         const present = getUint32Memory()[retptr / 4];
                         const value = getUint32Memory()[retptr / 4 + 1];
                         return present === 0 ? undefined : String.fromCodePoint(value);
-                    ".to_string();
+                    "
+                    .to_string();
                     return Ok(self);
                 }
                 _ => bail!(

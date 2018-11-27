@@ -31,10 +31,7 @@ pub fn main() -> Result<(), JsValue> {
             context.move_to(event.offset_x() as f64, event.offset_y() as f64);
             pressed.set(true);
         }) as Box<FnMut(_)>);
-        canvas.add_event_listener_with_callback(
-            "mousedown",
-            closure.as_ref().unchecked_ref(),
-        )?;
+        canvas.add_event_listener_with_callback("mousedown", closure.as_ref().unchecked_ref())?;
         closure.forget();
     }
     {
@@ -48,10 +45,7 @@ pub fn main() -> Result<(), JsValue> {
                 context.move_to(event.offset_x() as f64, event.offset_y() as f64);
             }
         }) as Box<FnMut(_)>);
-        canvas.add_event_listener_with_callback(
-            "mousemove",
-            closure.as_ref().unchecked_ref(),
-        )?;
+        canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
         closure.forget();
     }
     {
@@ -62,10 +56,7 @@ pub fn main() -> Result<(), JsValue> {
             context.line_to(event.offset_x() as f64, event.offset_y() as f64);
             context.stroke();
         }) as Box<FnMut(_)>);
-        canvas.add_event_listener_with_callback(
-            "mouseup",
-            closure.as_ref().unchecked_ref(),
-        )?;
+        canvas.add_event_listener_with_callback("mouseup", closure.as_ref().unchecked_ref())?;
         closure.forget();
     }
 

@@ -8,7 +8,7 @@ extern crate parity_wasm;
 extern crate log;
 extern crate rustc_demangle;
 
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 use std::iter;
 use std::mem;
 
@@ -66,7 +66,7 @@ fn run(config: &mut Config, module: &mut Module) {
         if let Some(section) = module.export_section() {
             for (i, entry) in section.entries().iter().enumerate() {
                 if cx.blacklist.contains(entry.field()) {
-                    continue
+                    continue;
                 }
                 cx.add_export_entry(entry, i as u32);
             }
@@ -85,19 +85,19 @@ fn run(config: &mut Config, module: &mut Module) {
         let retain = match module.sections_mut()[i] {
             Section::Unparsed { .. } => {
                 info!("unparsed section");
-                continue
+                continue;
             }
             Section::Custom(ref s) => {
                 if !cx.config.keep_debug && s.name().starts_with(".debug_") {
                     false
                 } else {
                     info!("skipping custom section: {}", s.name());
-                    continue
+                    continue;
                 }
             }
             Section::Reloc(..) => {
                 info!("skipping reloc section");
-                continue
+                continue;
             }
             Section::Type(ref mut s) => cx.remap_type_section(s),
             Section::Import(ref mut s) => cx.remap_import_section(s),
@@ -106,11 +106,17 @@ fn run(config: &mut Config, module: &mut Module) {
             Section::Memory(ref mut s) => cx.remap_memory_section(s),
             Section::Global(ref mut s) => cx.remap_global_section(s),
             Section::Export(ref mut s) => cx.remap_export_section(s),
-            Section::Start(ref mut i) => { cx.remap_function_idx(i); true }
+            Section::Start(ref mut i) => {
+                cx.remap_function_idx(i);
+                true
+            }
             Section::Element(ref mut s) => cx.remap_element_section(s),
             Section::Code(ref mut s) => cx.remap_code_section(s),
             Section::Data(ref mut s) => cx.remap_data_section(s),
-            Section::Name(ref mut s) => { cx.remap_name_section(s); true }
+            Section::Name(ref mut s) => {
+                cx.remap_name_section(s);
+                true
+            }
         };
         if !retain {
             debug!("remove empty section");
@@ -187,20 +193,19 @@ impl<'a> LiveContext<'a> {
 
     fn add_function(&mut self, idx: u32) {
         if !self.analysis.functions.insert(idx) {
-            return
+            return;
         }
         debug!("adding function: {}", idx);
 
         if idx < self.analysis.imported_functions {
             let imports = self.import_section.unwrap();
-            let (i, import) = imports.entries()
+            let (i, import) = imports
+                .entries()
                 .iter()
                 .enumerate()
-                .filter(|&(_, i)| {
-                    match *i.external() {
-                        External::Function(_) => true,
-                        _ => false,
-                    }
+                .filter(|&(_, i)| match *i.external() {
+                    External::Function(_) => true,
+                    _ => false,
                 })
                 .skip(idx as usize)
                 .next()
@@ -217,13 +222,14 @@ impl<'a> LiveContext<'a> {
 
     fn add_table(&mut self, idx: u32) {
         if !self.analysis.tables.insert(idx) {
-            return
+            return;
         }
         debug!("adding table: {}", idx);
 
         // Add all element segments that initialize this table
         if let Some(elements) = self.element_section {
-            let iter = elements.entries()
+            let iter = elements
+                .entries()
                 .iter()
                 .enumerate()
                 .filter(|(_, d)| !d.passive() && d.index() == idx);
@@ -234,14 +240,13 @@ impl<'a> LiveContext<'a> {
 
         if idx < self.analysis.imported_tables {
             let imports = self.import_section.unwrap();
-            let (i, import) = imports.entries()
+            let (i, import) = imports
+                .entries()
                 .iter()
                 .enumerate()
-                .filter(|&(_, i)| {
-                    match *i.external() {
-                        External::Table(_) => true,
-                        _ => false,
-                    }
+                .filter(|&(_, i)| match *i.external() {
+                    External::Table(_) => true,
+                    _ => false,
                 })
                 .skip(idx as usize)
                 .next()
@@ -257,13 +262,14 @@ impl<'a> LiveContext<'a> {
 
     fn add_memory(&mut self, idx: u32) {
         if !self.analysis.memories.insert(idx) {
-            return
+            return;
         }
         debug!("adding memory: {}", idx);
 
         // Add all data segments that initialize this memory
         if let Some(data) = self.data_section {
-            let iter = data.entries()
+            let iter = data
+                .entries()
                 .iter()
                 .enumerate()
                 .filter(|(_, d)| !d.passive() && d.index() == idx);
@@ -275,14 +281,13 @@ impl<'a> LiveContext<'a> {
         // ... and add the import if it's an imported memory ..
         if idx < self.analysis.imported_memories {
             let imports = self.import_section.unwrap();
-            let (i, import) = imports.entries()
+            let (i, import) = imports
+                .entries()
                 .iter()
                 .enumerate()
-                .filter(|&(_, i)| {
-                    match *i.external() {
-                        External::Memory(_) => true,
-                        _ => false,
-                    }
+                .filter(|&(_, i)| match *i.external() {
+                    External::Memory(_) => true,
+                    _ => false,
                 })
                 .skip(idx as usize)
                 .next()
@@ -296,20 +301,19 @@ impl<'a> LiveContext<'a> {
 
     fn add_global(&mut self, idx: u32) {
         if !self.analysis.globals.insert(idx) {
-            return
+            return;
         }
         debug!("adding global: {}", idx);
 
         if idx < self.analysis.imported_globals {
             let imports = self.import_section.unwrap();
-            let (i, import) = imports.entries()
+            let (i, import) = imports
+                .entries()
                 .iter()
                 .enumerate()
-                .filter(|&(_, i)| {
-                    match *i.external() {
-                        External::Global(_) => true,
-                        _ => false,
-                    }
+                .filter(|&(_, i)| match *i.external() {
+                    External::Global(_) => true,
+                    _ => false,
                 })
                 .skip(idx as usize)
                 .next()
@@ -337,7 +341,7 @@ impl<'a> LiveContext<'a> {
 
     fn add_type(&mut self, idx: u32) {
         if !self.analysis.types.insert(idx) {
-            return
+            return;
         }
         let types = self.type_section.expect("no types section");
         match types.types()[idx as usize] {
@@ -377,23 +381,20 @@ impl<'a> LiveContext<'a> {
 
     fn add_opcode(&mut self, code: &Instruction) {
         match *code {
-            Instruction::Block(ref b) |
-            Instruction::Loop(ref b) |
-            Instruction::If(ref b) => self.add_block_type(b),
+            Instruction::Block(ref b) | Instruction::Loop(ref b) | Instruction::If(ref b) => {
+                self.add_block_type(b)
+            }
             Instruction::Call(f) => self.add_function(f),
             Instruction::CallIndirect(t, _) => {
                 self.add_type(t);
                 self.add_table(0);
             }
-            Instruction::GetGlobal(i) |
-            Instruction::SetGlobal(i) => self.add_global(i),
-            Instruction::MemoryInit(i) |
-            Instruction::MemoryDrop(i) => {
+            Instruction::GetGlobal(i) | Instruction::SetGlobal(i) => self.add_global(i),
+            Instruction::MemoryInit(i) | Instruction::MemoryDrop(i) => {
                 self.add_memory(0);
                 self.add_data_segment(i);
             }
-            Instruction::TableInit(i) |
-            Instruction::TableDrop(i) => {
+            Instruction::TableInit(i) | Instruction::TableDrop(i) => {
                 self.add_table(0);
                 self.add_element_segment(i);
             }
@@ -410,7 +411,7 @@ impl<'a> LiveContext<'a> {
 
     fn add_export_entry(&mut self, entry: &ExportEntry, idx: u32) {
         if !self.analysis.exports.insert(idx) {
-            return
+            return;
         }
         match *entry.internal() {
             Internal::Function(i) => self.add_function(i),
@@ -422,7 +423,7 @@ impl<'a> LiveContext<'a> {
 
     fn add_import_entry(&mut self, entry: &ImportEntry, idx: u32) {
         if !self.analysis.imports.insert(idx) {
-            return
+            return;
         }
         debug!("adding import: {}", idx);
         match *entry.external() {
@@ -435,7 +436,7 @@ impl<'a> LiveContext<'a> {
 
     fn add_data_segment(&mut self, idx: u32) {
         if !self.analysis.data_segments.insert(idx) {
-            return
+            return;
         }
         let data = &self.data_section.unwrap().entries()[idx as usize];
         if !data.passive() {
@@ -448,7 +449,7 @@ impl<'a> LiveContext<'a> {
 
     fn add_element_segment(&mut self, idx: u32) {
         if !self.analysis.elements.insert(idx) {
-            return
+            return;
         }
         let seg = &self.element_section.unwrap().entries()[idx as usize];
         for member in seg.members() {
@@ -495,7 +496,7 @@ impl<'a> RemapContext<'a> {
                     if let Some(prev) = map.get(&ty) {
                         types.push(*prev);
                         analysis.types.remove(&(i as u32));
-                        continue
+                        continue;
                     }
                     map.insert(ty, ntypes);
                     types.push(ntypes);
@@ -525,7 +526,10 @@ impl<'a> RemapContext<'a> {
         }
         if let Some(s) = m.function_section() {
             for i in 0..(s.entries().len() as u32) {
-                if analysis.functions.contains(&(i + analysis.imported_functions)) {
+                if analysis
+                    .functions
+                    .contains(&(i + analysis.imported_functions))
+                {
                     functions.push(nfunctions);
                     nfunctions += 1;
                 } else {
@@ -558,7 +562,10 @@ impl<'a> RemapContext<'a> {
         }
         if let Some(s) = m.memory_section() {
             for i in 0..(s.entries().len() as u32) {
-                if analysis.memories.contains(&(i + analysis.imported_memories)) {
+                if analysis
+                    .memories
+                    .contains(&(i + analysis.imported_memories))
+                {
                     memories.push(nmemories);
                     nmemories += 1;
                 } else {
@@ -804,17 +811,20 @@ impl<'a> RemapContext<'a> {
 
     fn remap_instruction(&self, i: &mut Instruction) {
         match *i {
-            Instruction::Block(ref mut b) |
-            Instruction::Loop(ref mut b) |
-            Instruction::If(ref mut b) => self.remap_block_type(b),
+            Instruction::Block(ref mut b)
+            | Instruction::Loop(ref mut b)
+            | Instruction::If(ref mut b) => self.remap_block_type(b),
             Instruction::Call(ref mut f) => self.remap_function_idx(f),
             Instruction::CallIndirect(ref mut t, _) => self.remap_type_idx(t),
-            Instruction::GetGlobal(ref mut i) |
-            Instruction::SetGlobal(ref mut i) => self.remap_global_idx(i),
-            Instruction::TableInit(ref mut i) |
-            Instruction::TableDrop(ref mut i) => self.remap_element_idx(i),
-            Instruction::MemoryInit(ref mut i) |
-            Instruction::MemoryDrop(ref mut i) => self.remap_data_idx(i),
+            Instruction::GetGlobal(ref mut i) | Instruction::SetGlobal(ref mut i) => {
+                self.remap_global_idx(i)
+            }
+            Instruction::TableInit(ref mut i) | Instruction::TableDrop(ref mut i) => {
+                self.remap_element_idx(i)
+            }
+            Instruction::MemoryInit(ref mut i) | Instruction::MemoryDrop(ref mut i) => {
+                self.remap_data_idx(i)
+            }
             _ => {}
         }
     }
@@ -984,7 +994,7 @@ fn gc_body(
     let mut next = ty.params().len() as u32;
     for i in ty.params().len()..used.len() {
         if !used[i] {
-            continue
+            continue;
         }
         // We're using this local, so map it to the next index (the lowest).
         // Find all other locals with the same type and lump then into our
@@ -999,13 +1009,12 @@ fn gc_body(
                 next += 1;
             }
         }
-        body.locals_mut().push(Local::new((next - before) as u32, local_tys[i]));
+        body.locals_mut()
+            .push(Local::new((next - before) as u32, local_tys[i]));
     }
 
     for instr in body.code_mut().elements_mut() {
-        let get = |i: &u32| {
-            map[*i as usize].unwrap()
-        };
+        let get = |i: &u32| map[*i as usize].unwrap();
         match instr {
             Instruction::GetLocal(i) => *i = get(i),
             Instruction::SetLocal(i) => *i = get(i),

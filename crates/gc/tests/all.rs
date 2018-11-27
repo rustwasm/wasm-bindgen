@@ -10,8 +10,8 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-use rayon::prelude::*;
 use parity_wasm::elements::Module;
+use rayon::prelude::*;
 use tempfile::NamedTempFile;
 
 struct Test {
@@ -31,13 +31,11 @@ fn find_tests(tests: &mut Vec<Test>, path: &Path) {
         let path = entry.path();
         if entry.file_type().unwrap().is_dir() {
             find_tests(tests, &path);
-            continue
+            continue;
         }
 
         if path.extension().and_then(|s| s.to_str()) == Some("wat") {
-            tests.push(Test {
-                input: path,
-            });
+            tests.push(Test { input: path });
         }
     }
 }
@@ -45,10 +43,9 @@ fn find_tests(tests: &mut Vec<Test>, path: &Path) {
 fn run_tests(tests: &[Test]) {
     println!("");
 
-    let results = tests.par_iter()
-        .map(|test| {
-            run_test(test).map_err(|e| (test, e.to_string()))
-        })
+    let results = tests
+        .par_iter()
+        .map(|test| run_test(test).map_err(|e| (test, e.to_string())))
         .collect::<Vec<_>>();
 
     let mut bad = false;
@@ -81,7 +78,7 @@ fn run_test(test: &Test) -> Result<(), Box<Error>> {
         .arg(f.path())
         .status()?;
     if !status.success() {
-        return Err(io::Error::new(io::ErrorKind::Other, "failed to run wat2wasm").into())
+        return Err(io::Error::new(io::ErrorKind::Other, "failed to run wat2wasm").into());
     }
 
     let wasm = fs::read(f.path())?;
@@ -100,7 +97,7 @@ fn run_test(test: &Test) -> Result<(), Box<Error>> {
         .stderr(Stdio::inherit())
         .output()?;
     if !status.status.success() {
-        return Err(io::Error::new(io::ErrorKind::Other, "failed to run wasm2wat").into())
+        return Err(io::Error::new(io::ErrorKind::Other, "failed to run wasm2wat").into());
     }
     let actual = String::from_utf8(status.stdout)?;
     let actual = actual.trim();
@@ -110,8 +107,7 @@ fn run_test(test: &Test) -> Result<(), Box<Error>> {
     } else {
         if actual != expected {
             println!("{:?} {:?}", actual, expected);
-            return Err(io::Error::new(io::ErrorKind::Other,
-                                      "test failed").into())
+            return Err(io::Error::new(io::ErrorKind::Other, "test failed").into());
         }
     }
 
@@ -119,7 +115,8 @@ fn run_test(test: &Test) -> Result<(), Box<Error>> {
 }
 
 fn extract_expected(input: &str) -> String {
-    input.lines()
+    input
+        .lines()
         .filter(|l| l.starts_with(";; "))
         .skip_while(|l| !l.contains("STDOUT"))
         .skip(1)
@@ -130,7 +127,8 @@ fn extract_expected(input: &str) -> String {
 }
 
 fn generate_blesssed(input: &str, actual: &str) -> String {
-    let mut input = input.lines()
+    let mut input = input
+        .lines()
         .filter(|l| !l.starts_with(";;"))
         .collect::<Vec<_>>()
         .join("\n")
@@ -144,5 +142,5 @@ fn generate_blesssed(input: &str, actual: &str) -> String {
         input.push_str("\n");
     }
     input.push_str(";; STDOUT\n");
-    return input
+    return input;
 }

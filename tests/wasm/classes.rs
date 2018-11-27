@@ -354,7 +354,6 @@ impl JsRename {
 #[wasm_bindgen(js_name = classes_foo)]
 pub fn foo() {}
 
-
 #[wasm_bindgen]
 pub struct AccessFieldFoo {
     pub bar: AccessFieldBar,
@@ -389,13 +388,10 @@ pub struct RenamedExport {
 #[wasm_bindgen(js_class = JsRenamedExport)]
 impl RenamedExport {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> RenamedExport{
-        RenamedExport {
-            x: 3,
-        }
+    pub fn new() -> RenamedExport {
+        RenamedExport { x: 3 }
     }
-    pub fn foo(&self) {
-    }
+    pub fn foo(&self) {}
 
     pub fn bar(&self, other: &RenamedExport) {
         drop(other);

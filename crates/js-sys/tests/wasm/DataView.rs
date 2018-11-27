@@ -52,8 +52,14 @@ fn test() {
     v.set_float64(0, 123456789.123456);
     assert_eq!(v.get_float64(0), 123456789.123456);
     v.set_float64_endian(0, f64::from_bits(0x1122334411223344), true);
-    assert_eq!(v.get_float64_endian(0, true), f64::from_bits(0x1122334411223344));
-    assert_eq!(v.get_float64_endian(0, false), f64::from_bits(0x4433221144332211));
+    assert_eq!(
+        v.get_float64_endian(0, true),
+        f64::from_bits(0x1122334411223344)
+    );
+    assert_eq!(
+        v.get_float64_endian(0, false),
+        f64::from_bits(0x4433221144332211)
+    );
 
     v.set_int8(0, 42);
 

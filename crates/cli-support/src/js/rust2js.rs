@@ -1,6 +1,6 @@
 use failure::Error;
 
-use super::{Context, Js2Rust, ImportTarget};
+use super::{Context, ImportTarget, Js2Rust};
 use descriptor::{Descriptor, Function};
 
 /// Helper struct for manufacturing a shim in JS used to translate Rust types to
@@ -345,7 +345,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 self.ret_expr = "
                     const val = JS;
                     return isLikeNone(val) ? 0 : addHeapObject(val);
-                ".to_string();
+                "
+                .to_string();
             } else {
                 self.ret_expr = "return addHeapObject(JS);".to_string()
             }
@@ -392,7 +393,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 self.ret_expr = "
                     const val = JS;
                     return isLikeNone(val) ? 0xFFFFFF : val;
-                ".to_string();
+                "
+                .to_string();
                 return Ok(());
             }
 
@@ -424,7 +426,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     self.ret_expr = "
                         const val = JS;
                         return isLikeNone(val) ? 0xFFFFFF : val ? 1 : 0;
-                    ".to_string();
+                    "
+                    .to_string();
                     return Ok(());
                 }
                 Descriptor::Char => {
@@ -435,7 +438,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         const val = JS;
                         getUint32Memory()[ret / 4] = !isLikeNone(val);
                         getUint32Memory()[ret / 4 + 1] = isLikeNone(val) ? 0 : val.codePointAt(0);
-                    ".to_string();
+                    "
+                    .to_string();
                     return Ok(());
                 }
                 _ => bail!(
@@ -561,16 +565,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         &format!("{}({}, ...{})", invoc, args.join(", "), last_arg),
                     )
                 } else {
-                    self.ret_expr.replace(
-                        "JS",
-                        &format!("{}(...{})", invoc, last_arg),
-                    )
+                    self.ret_expr
+                        .replace("JS", &format!("{}(...{})", invoc, last_arg))
                 }
             } else {
-                self.ret_expr.replace(
-                    "JS",
-                    &format!("{}({})", invoc, js_arguments.join(", ")),
-                )
+                self.ret_expr
+                    .replace("JS", &format!("{}({})", invoc, js_arguments.join(", ")))
             };
             Ok(ret)
         };
@@ -584,23 +584,17 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     Ok((self.js_arguments[0].clone(), &self.js_arguments[1..]))
                 }
                 (None, _) => bail!("setters must have {} arguments", amt + 1),
-                (Some(class), n) if n == amt => {
-                    Ok((class.clone(), &self.js_arguments[..]))
-                }
+                (Some(class), n) if n == amt => Ok((class.clone(), &self.js_arguments[..])),
                 (Some(_), _) => bail!("static setters must have {} arguments", amt),
             }
         };
 
         let mut invoc = match invoc {
-            ImportTarget::Function(f) => {
-                handle_variadic(&f, &self.js_arguments)?
-            }
+            ImportTarget::Function(f) => handle_variadic(&f, &self.js_arguments)?,
             ImportTarget::Constructor(c) => {
                 handle_variadic(&format!("new {}", c), &self.js_arguments)?
             }
-            ImportTarget::Method(f) => {
-                handle_variadic(&format!("{}.call", f), &self.js_arguments)?
-            }
+            ImportTarget::Method(f) => handle_variadic(&format!("{}.call", f), &self.js_arguments)?,
             ImportTarget::StructuralMethod(f) => {
                 let (receiver, args) = match self.js_arguments.split_first() {
                     Some(pair) => pair,

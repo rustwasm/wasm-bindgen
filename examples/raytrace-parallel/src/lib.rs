@@ -7,16 +7,16 @@ extern crate web_sys;
 use std::cell::RefCell;
 use std::cmp;
 use std::rc::Rc;
-use std::sync::atomic::{AtomicUsize, AtomicBool, Ordering::SeqCst};
 use std::sync::atomic::ATOMIC_USIZE_INIT;
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering::SeqCst};
 use std::sync::{Arc, Mutex, MutexGuard};
 
-use futures::Future;
 use futures::sync::oneshot;
-use js_sys::{Promise, Error, WebAssembly, Uint8ClampedArray, Array};
-use wasm_bindgen::JsCast;
+use futures::Future;
+use js_sys::{Array, Error, Promise, Uint8ClampedArray, WebAssembly};
 use wasm_bindgen::prelude::*;
-use web_sys::{CanvasRenderingContext2d, Worker, Event, ErrorEvent};
+use wasm_bindgen::JsCast;
+use web_sys::{CanvasRenderingContext2d, ErrorEvent, Event, Worker};
 use web_sys::{DedicatedWorkerGlobalScope, MessageEvent};
 
 macro_rules! console_log {
@@ -42,7 +42,8 @@ impl Scene {
     pub fn new(object: &JsValue) -> Result<Scene, JsValue> {
         console_error_panic_hook::set_once();
         Ok(Scene {
-            inner: object.into_serde()
+            inner: object
+                .into_serde()
                 .map_err(|e| JsValue::from(e.to_string()))?,
         })
     }
@@ -82,7 +83,7 @@ impl Scene {
                     Ok(false) => *slot = Some(data),
                     Err(e) => {
                         *slot = Some(data);
-                        return Err(e)
+                        return Err(e);
                     }
                 }
             }
@@ -145,10 +146,7 @@ impl WorkerPool {
             workers.push(worker);
         }
 
-        Ok(WorkerPool {
-            workers,
-            callback,
-        })
+        Ok(WorkerPool { workers, callback })
     }
 }
 
@@ -211,7 +209,7 @@ struct Shared {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     type ImageData;
 
     #[wasm_bindgen(constructor, catch)]
@@ -234,12 +232,12 @@ impl Render {
                 if let Some(id) = id.as_f64() {
                     if id == self.shared.id as f64 {
                         self.ctx.put_image_data(image.unchecked_ref(), 0.0, 0.0)?;
-                        return Ok(done.as_bool() == Some(true))
+                        return Ok(done.as_bool() == Some(true));
                     }
                 }
             }
             console_log!("unhandled message: {:?}", data);
-            return Ok(false)
+            return Ok(false);
         }
 
         console_log!("unhandled event: {}", event.type_());
@@ -250,13 +248,10 @@ impl Render {
 
 #[wasm_bindgen]
 pub fn child_entry_point(ptr: u32) -> Result<(), JsValue> {
-    let ptr = unsafe {
-        Arc::from_raw(ptr as *const Shared)
-    };
+    let ptr = unsafe { Arc::from_raw(ptr as *const Shared) };
     assert_send(&ptr);
 
-    let global = js_sys::global()
-        .unchecked_into::<DedicatedWorkerGlobalScope>();
+    let global = js_sys::global().unchecked_into::<DedicatedWorkerGlobalScope>();
     ptr.work(&global)?;
 
     return Ok(());
@@ -288,7 +283,7 @@ impl Shared {
             // If we're beyond the end then we're done!
             let start = self.next_pixel.fetch_add(BLOCK, SeqCst);
             if start >= end {
-                break
+                break;
             }
 
             // Raytrace all our pixels synchronously, writing all the results
@@ -308,8 +303,7 @@ impl Shared {
             // Ok, time to synchronize and commit this data back into the main
             // image buffer for other threads and the main thread to see.
             let mut data = self.rgb_data.lock().unwrap();
-            data[start * 4..(start + len) * 4]
-                .copy_from_slice(&mut local_rgb[..len * 4]);
+            data[start * 4..(start + len) * 4].copy_from_slice(&mut local_rgb[..len * 4]);
 
             // As a "nifty feature" we try to have a live progressive rendering.
             // That means that we need to periodically send an `ImageData` to
@@ -318,7 +312,6 @@ impl Shared {
                 self.update_image(false, data, global)?;
             }
         }
-
 
         // If we're the last thread out, be sure to update the main thread's
         // image as this is the last chance we'll get!
@@ -341,19 +334,13 @@ impl Shared {
         // JS array using `slice`. This means we can't use
         // `web_sys::ImageData` right now but rather we have to use our own
         // binding.
-        let mem = wasm_bindgen::memory()
-            .unchecked_into::<WebAssembly::Memory>();
-        let mem = Uint8ClampedArray::new(&mem.buffer())
-            .slice(
-                data.as_ptr() as u32,
-                data.as_ptr() as u32 + data.len() as u32,
-            );
+        let mem = wasm_bindgen::memory().unchecked_into::<WebAssembly::Memory>();
+        let mem = Uint8ClampedArray::new(&mem.buffer()).slice(
+            data.as_ptr() as u32,
+            data.as_ptr() as u32 + data.len() as u32,
+        );
         drop(data); // unlock the lock, we've copied the data now
-        let data = ImageData::new(
-            &mem,
-            self.scene.width as f64,
-            self.scene.height as f64,
-        )?;
+        let data = ImageData::new(&mem, self.scene.width as f64, self.scene.height as f64)?;
         let arr = Array::new();
         arr.push(&data);
         arr.push(&JsValue::from(done));

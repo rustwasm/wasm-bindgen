@@ -31,6 +31,7 @@ pub mod input_element;
 //pub mod menu_element;
 //pub mod menu_item_element;
 pub mod dom_point;
+pub mod indexeddb;
 pub mod location;
 pub mod meta_element;
 pub mod meter_element;
@@ -55,7 +56,6 @@ pub mod style_element;
 pub mod table_element;
 pub mod title_element;
 pub mod xpath_result;
-pub mod indexeddb;
 
 #[wasm_bindgen_test]
 fn deref_works() {

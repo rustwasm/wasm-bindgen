@@ -1,6 +1,6 @@
 use std::collections::HashSet;
-use std::sync::Mutex;
 use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
+use std::sync::Mutex;
 
 use proc_macro2::{Ident, Literal, Span, TokenStream};
 use quote::ToTokens;
@@ -89,9 +89,11 @@ impl TryToTokens for ast::Program {
 
         // See comments in `crates/cli-support/src/lib.rs` about what this
         // `schema_version` is.
-        let prefix_json = format!(r#"{{"schema_version":"{}","version":"{}"}}"#,
-                                  shared::SCHEMA_VERSION,
-                                  shared::version());
+        let prefix_json = format!(
+            r#"{{"schema_version":"{}","version":"{}"}}"#,
+            shared::SCHEMA_VERSION,
+            shared::version()
+        );
         let mut bytes = Vec::new();
         bytes.push((prefix_json.len() >> 0) as u8);
         bytes.push((prefix_json.len() >> 8) as u8);
@@ -110,7 +112,8 @@ impl TryToTokens for ast::Program {
             #[doc(hidden)]
             pub static #generated_static_name: [u8; #generated_static_length] =
                 *#generated_static_value;
-        }).to_tokens(tokens);
+        })
+        .to_tokens(tokens);
 
         Ok(())
     }
@@ -237,7 +240,8 @@ impl ToTokens for ast::Struct {
                     (*js).borrow_mut()
                 }
             }
-        }).to_tokens(tokens);
+        })
+        .to_tokens(tokens);
 
         for field in self.fields.iter() {
             field.to_tokens(tokens);
@@ -273,14 +277,16 @@ impl ToTokens for ast::StructField {
                     &mut GlobalStack::new(),
                 )
             }
-        }).to_tokens(tokens);
+        })
+        .to_tokens(tokens);
 
         Descriptor(
             &getter,
             quote! {
                 <#ty as WasmDescribe>::describe();
             },
-        ).to_tokens(tokens);
+        )
+        .to_tokens(tokens);
 
         if self.readonly {
             return;
@@ -305,7 +311,8 @@ impl ToTokens for ast::StructField {
                 );
                 (*js).borrow_mut().#name = val;
             }
-        }).to_tokens(tokens);
+        })
+        .to_tokens(tokens);
     }
 }
 
@@ -461,7 +468,8 @@ impl TryToTokens for ast::Export {
                 };
                 #convert_ret
             }
-        }).to_tokens(into);
+        })
+        .to_tokens(into);
 
         // In addition to generating the shim function above which is what
         // our generated JS will invoke, we *also* generate a "descriptor"
@@ -488,7 +496,8 @@ impl TryToTokens for ast::Export {
                 #(<#argtys as WasmDescribe>::describe();)*
                 #describe_ret
             },
-        ).to_tokens(into);
+        )
+        .to_tokens(into);
 
         Ok(())
     }
@@ -670,7 +679,8 @@ impl ToTokens for ast::ImportType {
                     self.as_ref()
                 }
             }
-        }).to_tokens(tokens);
+        })
+        .to_tokens(tokens);
         for superclass in self.extends.iter() {
             (quote! {
                 impl From<#rust_name> for #superclass {
@@ -688,7 +698,8 @@ impl ToTokens for ast::ImportType {
                         #superclass::unchecked_from_js_ref(self.as_ref())
                     }
                 }
-            }).to_tokens(tokens);
+            })
+            .to_tokens(tokens);
         }
     }
 }
@@ -709,7 +720,8 @@ impl ToTokens for ast::ImportEnum {
                 let this_index = current_idx;
                 current_idx += 1;
                 Literal::usize_unsuffixed(this_index)
-            }).collect();
+            })
+            .collect();
 
         // Borrow variant_indexes because we need to use it multiple times inside the quote! macro
         let variant_indexes_ref = &variant_indexes;
@@ -946,7 +958,8 @@ impl TryToTokens for ast::ImportFunction {
                 impl #class {
                     #invocation
                 }
-            }).to_tokens(tokens);
+            })
+            .to_tokens(tokens);
         } else {
             invocation.to_tokens(tokens);
         }
@@ -981,7 +994,8 @@ impl<'a> ToTokens for DescribeImport<'a> {
                 #(<#argtys as WasmDescribe>::describe();)*
                 #inform_ret
             },
-        ).to_tokens(tokens);
+        )
+        .to_tokens(tokens);
     }
 }
 
@@ -1025,7 +1039,8 @@ impl ToTokens for ast::Enum {
                     inform(ENUM);
                 }
             }
-        }).to_tokens(into);
+        })
+        .to_tokens(into);
     }
 }
 
@@ -1061,7 +1076,8 @@ impl ToTokens for ast::ImportStatic {
                     __inner: &_VAL,
                 }
             };
-        }).to_tokens(into);
+        })
+        .to_tokens(into);
     }
 }
 
@@ -1106,7 +1122,8 @@ impl ToTokens for ast::Const {
                 impl #class {
                     #declaration
                 }
-            }).to_tokens(tokens);
+            })
+            .to_tokens(tokens);
         } else {
             declaration.to_tokens(tokens);
         }
@@ -1247,7 +1264,8 @@ impl ToTokens for ast::Dictionary {
                     }
                 }
             };
-        }).to_tokens(tokens);
+        })
+        .to_tokens(tokens);
     }
 }
 
@@ -1309,6 +1327,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
                 ::wasm_bindgen::__rt::link_mem_intrinsics();
                 #inner
             }
-        }).to_tokens(tokens);
+        })
+        .to_tokens(tokens);
     }
 }

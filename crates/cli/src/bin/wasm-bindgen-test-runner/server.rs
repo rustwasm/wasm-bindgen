@@ -98,7 +98,8 @@ pub fn spawn(
         // header?)
         response.headers.retain(|(k, _)| k != "Cache-Control");
         return response;
-    }).map_err(|e| format_err!("{}", e))?;
+    })
+    .map_err(|e| format_err!("{}", e))?;
     return Ok(srv);
 
     fn try_asset(request: &Request, dir: &Path) -> Response {

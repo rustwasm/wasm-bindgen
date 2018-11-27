@@ -6,113 +6,114 @@ pub const SCHEMA_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[macro_export]
 macro_rules! shared_api {
-    ($mac:ident) => ($mac! {
-struct Program<'a> {
-    exports: Vec<Export<'a>>,
-    enums: Vec<Enum<'a>>,
-    imports: Vec<Import<'a>>,
-    structs: Vec<Struct<'a>>,
-    typescript_custom_sections: Vec<&'a str>,
-    // version: &'a str,
-    // schema_version: &'a str,
-}
+    ($mac:ident) => {
+        $mac! {
+        struct Program<'a> {
+            exports: Vec<Export<'a>>,
+            enums: Vec<Enum<'a>>,
+            imports: Vec<Import<'a>>,
+            structs: Vec<Struct<'a>>,
+            typescript_custom_sections: Vec<&'a str>,
+            // version: &'a str,
+            // schema_version: &'a str,
+        }
 
-struct Import<'a> {
-    module: Option<&'a str>,
-    js_namespace: Option<&'a str>,
-    kind: ImportKind<'a>,
-}
+        struct Import<'a> {
+            module: Option<&'a str>,
+            js_namespace: Option<&'a str>,
+            kind: ImportKind<'a>,
+        }
 
-enum ImportKind<'a> {
-    Function(ImportFunction<'a>),
-    Static(ImportStatic<'a>),
-    Type(ImportType<'a>),
-    Enum(ImportEnum),
-}
+        enum ImportKind<'a> {
+            Function(ImportFunction<'a>),
+            Static(ImportStatic<'a>),
+            Type(ImportType<'a>),
+            Enum(ImportEnum),
+        }
 
-struct ImportFunction<'a> {
-    shim: &'a str,
-    catch: bool,
-    variadic: bool,
-    method: Option<MethodData<'a>>,
-    structural: bool,
-    function: Function<'a>,
-}
+        struct ImportFunction<'a> {
+            shim: &'a str,
+            catch: bool,
+            variadic: bool,
+            method: Option<MethodData<'a>>,
+            structural: bool,
+            function: Function<'a>,
+        }
 
-struct MethodData<'a> {
-    class: &'a str,
-    kind: MethodKind<'a>,
-}
+        struct MethodData<'a> {
+            class: &'a str,
+            kind: MethodKind<'a>,
+        }
 
-enum MethodKind<'a> {
-    Constructor,
-    Operation(Operation<'a>),
-}
+        enum MethodKind<'a> {
+            Constructor,
+            Operation(Operation<'a>),
+        }
 
-struct Operation<'a> {
-    is_static: bool,
-    kind: OperationKind<'a>,
-}
+        struct Operation<'a> {
+            is_static: bool,
+            kind: OperationKind<'a>,
+        }
 
-enum OperationKind<'a> {
-    Regular,
-    Getter(&'a str),
-    Setter(&'a str),
-    IndexingGetter,
-    IndexingSetter,
-    IndexingDeleter,
-}
+        enum OperationKind<'a> {
+            Regular,
+            Getter(&'a str),
+            Setter(&'a str),
+            IndexingGetter,
+            IndexingSetter,
+            IndexingDeleter,
+        }
 
-struct ImportStatic<'a> {
-    name: &'a str,
-    shim: &'a str,
-}
+        struct ImportStatic<'a> {
+            name: &'a str,
+            shim: &'a str,
+        }
 
-struct ImportType<'a> {
-    name: &'a str,
-    instanceof_shim: &'a str,
-    vendor_prefixes: Vec<&'a str>,
-}
+        struct ImportType<'a> {
+            name: &'a str,
+            instanceof_shim: &'a str,
+            vendor_prefixes: Vec<&'a str>,
+        }
 
-struct ImportEnum {}
+        struct ImportEnum {}
 
-struct Export<'a> {
-    class: Option<&'a str>,
-    method: bool,
-    consumed: bool,
-    is_constructor: bool,
-    function: Function<'a>,
-    comments: Vec<&'a str>,
-}
+        struct Export<'a> {
+            class: Option<&'a str>,
+            method: bool,
+            consumed: bool,
+            is_constructor: bool,
+            function: Function<'a>,
+            comments: Vec<&'a str>,
+        }
 
-struct Enum<'a> {
-    name: &'a str,
-    variants: Vec<EnumVariant<'a>>,
-    comments: Vec<&'a str>,
-}
+        struct Enum<'a> {
+            name: &'a str,
+            variants: Vec<EnumVariant<'a>>,
+            comments: Vec<&'a str>,
+        }
 
-struct EnumVariant<'a> {
-    name: &'a str,
-    value: u32,
-}
+        struct EnumVariant<'a> {
+            name: &'a str,
+            value: u32,
+        }
 
-struct Function<'a> {
-    name: &'a str,
-}
+        struct Function<'a> {
+            name: &'a str,
+        }
 
-struct Struct<'a> {
-    name: &'a str,
-    fields: Vec<StructField<'a>>,
-    comments: Vec<&'a str>,
-}
+        struct Struct<'a> {
+            name: &'a str,
+            fields: Vec<StructField<'a>>,
+            comments: Vec<&'a str>,
+        }
 
-struct StructField<'a> {
-    name: &'a str,
-    readonly: bool,
-    comments: Vec<&'a str>,
-}
-}) // end of mac case
-
+        struct StructField<'a> {
+            name: &'a str,
+            readonly: bool,
+            comments: Vec<&'a str>,
+        }
+        }
+    }; // end of mac case
 } // end of mac definition
 
 pub fn new_function(struct_name: &str) -> String {

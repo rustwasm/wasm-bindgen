@@ -128,8 +128,7 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
         if let backend::ast::ImportKind::Type(t) = &mut import.kind {
             t.extends.retain(|n| {
                 let ident = &n.segments.last().unwrap().value().ident;
-                first_pass_record.builtin_idents.contains(ident) ||
-                    filter(&ident.to_string())
+                first_pass_record.builtin_idents.contains(ident) || filter(&ident.to_string())
             });
         }
     }
@@ -176,7 +175,8 @@ fn builtin_idents() -> BTreeSet<Ident> {
             "Promise",
             "Function",
             "Clamped",
-        ].into_iter()
+        ]
+        .into_iter()
         .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
     )
 }
@@ -240,7 +240,8 @@ fn compile_ast(mut ast: Program) -> String {
 
         (quote! {
             pub mod #name { #m_tokens }
-        }).to_tokens(&mut tokens);
+        })
+        .to_tokens(&mut tokens);
     }
     tokens.to_string()
 }
@@ -266,7 +267,8 @@ impl<'src> FirstPassRecord<'src> {
                         } else {
                             rust_ident("None")
                         }
-                    }).collect(),
+                    })
+                    .collect(),
                 variant_values: variants.iter().map(|v| v.0.to_string()).collect(),
                 rust_attrs: vec![parse_quote!(#[derive(Copy, Clone, PartialEq, Debug)])],
             }),
@@ -505,7 +507,9 @@ impl<'src> FirstPassRecord<'src> {
         // whitelist a few names that have known polyfills
         match name {
             "AudioContext" => {
-                import_type.vendor_prefixes.push(Ident::new("webkit", Span::call_site()));
+                import_type
+                    .vendor_prefixes
+                    .push(Ident::new("webkit", Span::call_site()));
             }
             _ => {}
         }
@@ -657,12 +661,12 @@ impl<'src> FirstPassRecord<'src> {
         };
         let doc = match id {
             OperationId::Operation(None) => Some(String::new()),
-            OperationId::Constructor(_) => {
-                Some(format!("The `new {}(..)` constructor, creating a new \
-                              instance of `{0}`\n\n{}",
-                              self_name,
-                              mdn_doc(self_name, Some(self_name))))
-            }
+            OperationId::Constructor(_) => Some(format!(
+                "The `new {}(..)` constructor, creating a new \
+                 instance of `{0}`\n\n{}",
+                self_name,
+                mdn_doc(self_name, Some(self_name))
+            )),
             OperationId::Operation(Some(name)) => Some(format!(
                 "The `{}()` method\n\n{}",
                 name,

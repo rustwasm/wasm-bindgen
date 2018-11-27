@@ -3,10 +3,10 @@ use std::mem;
 
 use decode;
 use failure::{Error, ResultExt};
-use parity_wasm::elements::*;
-use parity_wasm::elements::Error as ParityError;
-use shared;
 use gc;
+use parity_wasm::elements::Error as ParityError;
+use parity_wasm::elements::*;
+use shared;
 
 use super::Bindgen;
 use descriptor::{Descriptor, VectorKind};
@@ -438,8 +438,10 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_module", &|me| {
             if !me.config.no_modules {
-                bail!("`wasm_bindgen::module` is currently only supported with \
-                       --no-modules");
+                bail!(
+                    "`wasm_bindgen::module` is currently only supported with \
+                     --no-modules"
+                );
             }
             me.expose_add_heap_object();
             Ok(format!(
@@ -504,7 +506,7 @@ impl<'a> Context<'a> {
             memory.push_str("})");
 
             format!(
-                    "\
+                "\
 (function() {{
     var wasm;
     var memory;
@@ -539,17 +541,19 @@ impl<'a> Context<'a> {
     }};
     self.{global_name} = Object.assign(init, __exports);
 }})();",
-                    globals = self.globals,
-                    module = module_name,
-                    global_name = self.config.no_modules_global
-                        .as_ref()
-                        .map(|s| &**s)
-                        .unwrap_or("wasm_bindgen"),
-                    init_memory = memory,
+                globals = self.globals,
+                module = module_name,
+                global_name = self
+                    .config
+                    .no_modules_global
+                    .as_ref()
+                    .map(|s| &**s)
+                    .unwrap_or("wasm_bindgen"),
+                init_memory = memory,
             )
         } else if self.config.no_modules {
             format!(
-                    "\
+                "\
 (function() {{
     var wasm;
     const __exports = {{}};
@@ -579,12 +583,14 @@ impl<'a> Context<'a> {
     }};
     self.{global_name} = Object.assign(init, __exports);
 }})();",
-                    globals = self.globals,
-                    module = module_name,
-                    global_name = self.config.no_modules_global
-                        .as_ref()
-                        .map(|s| &**s)
-                        .unwrap_or("wasm_bindgen"),
+                globals = self.globals,
+                module = module_name,
+                global_name = self
+                    .config
+                    .no_modules_global
+                    .as_ref()
+                    .map(|s| &**s)
+                    .unwrap_or("wasm_bindgen"),
             )
         } else {
             let import_wasm = if self.globals.len() == 0 {
@@ -787,7 +793,8 @@ impl<'a> Context<'a> {
             .filter_map(|s| match *s {
                 Section::Import(ref mut s) => Some(s),
                 _ => None,
-            }).flat_map(|s| s.entries_mut());
+            })
+            .flat_map(|s| s.entries_mut());
 
         for import in imports {
             if import.module() == "__wbindgen_placeholder__" {
@@ -1172,18 +1179,20 @@ impl<'a> Context<'a> {
 
     fn expose_text_processor(&mut self, s: &str) {
         if self.config.nodejs_experimental_modules {
-            self.imports.push_str(&format!("import {{ {} }} from 'util';\n", s));
+            self.imports
+                .push_str(&format!("import {{ {} }} from 'util';\n", s));
             self.global(&format!("let cached{0} = new {0}('utf-8');", s));
         } else if self.config.nodejs {
             self.global(&format!("const {0} = require('util').{0};", s));
             self.global(&format!("let cached{0} = new {0}('utf-8');", s));
         } else if !(self.config.browser || self.config.no_modules) {
-            self.global(
-                &format!("
+            self.global(&format!(
+                "
                     const l{0} = typeof {0} === 'undefined' ? \
                         require('util').{0} : {0};\
-                ", s)
-            );
+                ",
+                s
+            ));
             self.global(&format!("let cached{0} = new l{0}('utf-8');", s));
         } else {
             self.global(&format!("let cached{0} = new {0}('utf-8');", s));
@@ -1770,11 +1779,9 @@ impl<'a> Context<'a> {
         let module = module.parse_names().unwrap_or_else(|p| p.1);
         *self.module = module;
         if self.config.remove_name_section {
-            self.module.sections_mut().retain(|s| {
-                match s {
-                    Section::Name(_) => false,
-                    _ => true,
-                }
+            self.module.sections_mut().retain(|s| match s {
+                Section::Name(_) => false,
+                _ => true,
             });
         }
     }
@@ -1815,7 +1822,8 @@ impl<'a> Context<'a> {
             .filter_map(|i| match i.external() {
                 External::Memory(m) => Some((i, m)),
                 _ => None,
-            }).next()
+            })
+            .next()
             .expect("must import memory");
         assert_eq!(entry.field(), "memory");
         self.memory_init = Some(mem.limits().clone());
@@ -1857,14 +1865,19 @@ impl<'a> Context<'a> {
                         if use_node_require {
                             imports.push_str(&format!(
                                 "const {} = require(String.raw`{}`).{};\n",
-                                name, module, import.name()
+                                name,
+                                module,
+                                import.name()
                             ));
                         } else if import.name() == name {
-                            imports.push_str(&format!("import {{ {} }} from '{}';\n", name, module));
+                            imports
+                                .push_str(&format!("import {{ {} }} from '{}';\n", name, module));
                         } else {
                             imports.push_str(&format!(
                                 "import {{ {} as {} }} from '{}';\n",
-                                import.name(), name, module
+                                import.name(),
+                                name,
+                                module
                             ));
                         }
                         name
@@ -1923,11 +1936,11 @@ impl<'a> Context<'a> {
             None => {
                 let name = self.import_identifier(name);
                 if import.structural || !name.contains(".") {
-                    return Ok(ImportTarget::Function(name))
+                    return Ok(ImportTarget::Function(name));
                 }
                 self.global(&format!("const {}_target = {};", import.shim, name));
                 let target = format!("{}_target", import.shim);
-                return Ok(ImportTarget::Function(target))
+                return Ok(ImportTarget::Function(target));
             }
         };
 
@@ -1939,7 +1952,11 @@ impl<'a> Context<'a> {
             decode::MethodKind::Operation(op) => op,
         };
         if import.structural {
-            let class = if op.is_static { Some(class.clone()) } else { None };
+            let class = if op.is_static {
+                Some(class.clone())
+            } else {
+                None
+            };
 
             return Ok(match &op.kind {
                 decode::OperationKind::Regular => {
@@ -1964,43 +1981,51 @@ impl<'a> Context<'a> {
                 decode::OperationKind::IndexingDeleter => {
                     ImportTarget::StructuralIndexingDeleter(class)
                 }
-            })
+            });
         }
 
-        let target = format!("typeof {0} === 'undefined' ? null : {}{}",
-                             class,
-                             if op.is_static { "" } else { ".prototype" });
+        let target = format!(
+            "typeof {0} === 'undefined' ? null : {}{}",
+            class,
+            if op.is_static { "" } else { ".prototype" }
+        );
         let (mut target, name) = match &op.kind {
-            decode::OperationKind::Regular => {
-                (format!("{}.{}", target, import.function.name), &import.function.name)
-            }
+            decode::OperationKind::Regular => (
+                format!("{}.{}", target, import.function.name),
+                &import.function.name,
+            ),
             decode::OperationKind::Getter(g) => {
                 self.expose_get_inherited_descriptor();
-                (format!(
-                    "GetOwnOrInheritedPropertyDescriptor({}, '{}').get",
-                    target, g,
-                ), g)
+                (
+                    format!(
+                        "GetOwnOrInheritedPropertyDescriptor({}, '{}').get",
+                        target, g,
+                    ),
+                    g,
+                )
             }
             decode::OperationKind::Setter(s) => {
                 self.expose_get_inherited_descriptor();
-                (format!(
-                    "GetOwnOrInheritedPropertyDescriptor({}, '{}').set",
-                    target, s,
-                ), s)
+                (
+                    format!(
+                        "GetOwnOrInheritedPropertyDescriptor({}, '{}').set",
+                        target, s,
+                    ),
+                    s,
+                )
             }
-            decode::OperationKind::IndexingGetter => {
-                panic!("indexing getter should be structural")
-            }
-            decode::OperationKind::IndexingSetter => {
-                panic!("indexing setter should be structural")
-            }
+            decode::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
+            decode::OperationKind::IndexingSetter => panic!("indexing setter should be structural"),
             decode::OperationKind::IndexingDeleter => {
                 panic!("indexing deleter should be structural")
             }
         };
-        target.push_str(&format!(" || function() {{
+        target.push_str(&format!(
+            " || function() {{
             throw new Error(`wasm-bindgen: {}.{} does not exist`);
-        }}", class, name));
+        }}",
+            class, name
+        ));
         if op.is_static {
             target.insert(0, '(');
             target.push_str(").bind(");
@@ -2028,10 +2053,10 @@ impl<'a> Context<'a> {
                 _ => continue,
             };
             if section.name() != "producers" {
-                return
+                return;
             }
             drop(update(section));
-            return
+            return;
         }
 
         // `CustomSection::new` added in paritytech/parity-wasm#244 which isn't
@@ -2039,7 +2064,15 @@ impl<'a> Context<'a> {
         let data = [
             ("producers".len() + 2) as u8,
             "producers".len() as u8,
-            b'p', b'r', b'o', b'd', b'u', b'c', b'e', b'r', b's',
+            b'p',
+            b'r',
+            b'o',
+            b'd',
+            b'u',
+            b'c',
+            b'e',
+            b'r',
+            b's',
             0,
         ];
         let mut section = CustomSection::deserialize(&mut &data[..]).unwrap();
@@ -2058,11 +2091,9 @@ impl<'a> Context<'a> {
                 version: String,
             }
 
-            let wasm_bindgen = || {
-                FieldValue {
-                    name: "wasm-bindgen".to_string(),
-                    version: shared::version(),
-                }
+            let wasm_bindgen = || FieldValue {
+                name: "wasm-bindgen".to_string(),
+                version: shared::version(),
             };
             let mut fields = Vec::new();
 
@@ -2090,7 +2121,7 @@ impl<'a> Context<'a> {
                     fields.push(Field { name, values });
                 }
                 if data.len() != 0 {
-                    return Err(ParityError::InconsistentCode)
+                    return Err(ParityError::InconsistentCode);
                 }
 
                 if !found_processed_by {
@@ -2199,7 +2230,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 Some(class_name)
             } else {
                 None
-            }).process(descriptor.unwrap_function())?
+            })
+            .process(descriptor.unwrap_function())?
             .finish("", &format!("wasm.{}", wasm_name));
 
         let class = self
@@ -2323,9 +2355,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
         // up the wasm import directly to the destination. We don't actually
         // wire up anything here, but we record it to get wired up later.
         if import.method.is_none() && shim.is_noop() {
-            if let Import::Module { module, name, field: None } = name {
+            if let Import::Module {
+                module,
+                name,
+                field: None,
+            } = name
+            {
                 shim.cx.direct_imports.insert(import.shim, (module, name));
-                return Ok(())
+                return Ok(());
             }
         }
 
@@ -2439,12 +2476,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
         Ok(())
     }
 
-    fn register_vendor_prefix(
-        &mut self,
-        info: &decode::ImportType<'b>,
-    ) {
+    fn register_vendor_prefix(&mut self, info: &decode::ImportType<'b>) {
         if info.vendor_prefixes.len() == 0 {
-            return
+            return;
         }
         self.vendor_prefixes
             .entry(info.name)
@@ -2452,9 +2486,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .extend(info.vendor_prefixes.iter().cloned());
     }
 
-    fn determine_import(&self, import: &decode::Import<'b>, item: &'b str)
-        -> Result<Import<'b>, Error>
-    {
+    fn determine_import(
+        &self,
+        import: &decode::Import<'b>,
+        item: &'b str,
+    ) -> Result<Import<'b>, Error> {
         // First up, imports don't work at all in `--no-modules` mode as we're
         // not sure how to import them.
         if self.cx.config.no_modules {
@@ -2484,29 +2520,37 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 );
             }
             if let Some(ns) = &import.js_namespace {
-                bail!("import of `{}` through js namespace `{}` isn't supported \
-                       right now when it lists a polyfill",
-                      item,
-                      ns);
+                bail!(
+                    "import of `{}` through js namespace `{}` isn't supported \
+                     right now when it lists a polyfill",
+                    item,
+                    ns
+                );
             }
             return Ok(Import::VendorPrefixed {
                 name: item,
                 prefixes: vendor_prefixes.clone(),
-            })
+            });
         }
 
         let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
-        let field = if import.js_namespace.is_some() { Some(item) } else { None };
+        let field = if import.js_namespace.is_some() {
+            Some(item)
+        } else {
+            None
+        };
 
         Ok(match import.module {
-            Some(module) => Import::Module { module, name, field },
+            Some(module) => Import::Module {
+                module,
+                name,
+                field,
+            },
             None => Import::Global { name, field },
         })
     }
 
-    fn import_name(&mut self, import: &decode::Import<'b>, item: &'b str)
-        -> Result<String, Error>
-    {
+    fn import_name(&mut self, import: &decode::Import<'b>, item: &'b str) -> Result<String, Error> {
         let import = self.determine_import(import, item)?;
         Ok(self.cx.import_identifier(import))
     }
@@ -2529,9 +2573,9 @@ impl<'a> Import<'a> {
 
     fn name(&self) -> &'a str {
         match self {
-            Import::Module { name, .. } |
-            Import::Global { name, .. } |
-            Import::VendorPrefixed { name, .. } => *name,
+            Import::Module { name, .. }
+            | Import::Global { name, .. }
+            | Import::VendorPrefixed { name, .. } => *name,
         }
     }
 }
