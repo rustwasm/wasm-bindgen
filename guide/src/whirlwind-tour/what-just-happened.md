@@ -15,7 +15,7 @@ the attribute also serializes some information to the output artifact which
 
 There's a more thorough explanation below of the various bits and pieces of the
 attribute, but it suffices for now to say that you can attach it to free
-functions, structs, impl blocks for those structs and `extern { ... }` blocks.
+functions, structs, impl blocks for those structs and `extern "C" { ... }` blocks.
 Some Rust features like generics, lifetime parameters, etc, aren't supported on
 functions tagged with `#[wasm_bindgen]` right now.
 

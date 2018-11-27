@@ -9,7 +9,7 @@ For example to use `AudioContext` you might do:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(vendor_prefix = webkit)]
     type AudioContext;
 

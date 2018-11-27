@@ -24,7 +24,7 @@ We would import this with the following `#[wasm_bindgen]` attributes:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     type TheDude;
 
     #[wasm_bindgen(method, getter)]
@@ -48,7 +48,7 @@ example the below is equivalent to the above:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     type TheDude;
 
     #[wasm_bindgen(method, getter = white_russians)]

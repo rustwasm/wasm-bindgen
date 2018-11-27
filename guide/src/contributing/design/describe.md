@@ -39,7 +39,7 @@ In addition to the shims we talked about above which JS generates the macro
 
 ```
 #[no_mangle]
-pub extern fn __wbindgen_describe_greet() {
+pub extern "C" fn __wbindgen_describe_greet() {
     <Fn(&str)>::describe();
 }
 ```

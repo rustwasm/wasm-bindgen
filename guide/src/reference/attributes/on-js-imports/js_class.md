@@ -6,7 +6,7 @@ Rust side.
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     // We don't want to import JS strings as `String`, since Rust already has a
     // `String` type in its prelude, so rename it as `JsString`.
     #[wasm_bindgen(js_name = String)]

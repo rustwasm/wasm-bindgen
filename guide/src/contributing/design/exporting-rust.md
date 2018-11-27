@@ -87,12 +87,12 @@ at a mostly abbreviated and/or "simplified" in the sense of this is what it
 compiles down to:
 
 ```rust
-pub extern fn greet(a: &str) -> String {
+pub extern "C" fn greet(a: &str) -> String {
     format!("Hello, {}!", a)
 }
 
 #[export_name = "greet"]
-pub extern fn __wasm_bindgen_generated_greet(
+pub extern "C" fn __wasm_bindgen_generated_greet(
     arg0_ptr: *const u8,
     arg0_len: usize,
 ) -> *mut String {

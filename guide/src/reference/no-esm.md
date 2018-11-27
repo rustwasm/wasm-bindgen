@@ -13,7 +13,7 @@ also [follow along in the repository][repo].
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn alert(msg: &str);
 }
 

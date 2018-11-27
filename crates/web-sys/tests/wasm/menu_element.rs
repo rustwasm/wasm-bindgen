@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 use web_sys::HtmlMenuElement;
 
 #[wasm_bindgen(module = "./tests/wasm/element.js")]
-extern {
+extern "C" {
     fn new_menu() -> HtmlMenuElement;
 }
 

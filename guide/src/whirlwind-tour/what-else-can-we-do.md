@@ -55,7 +55,7 @@ pub struct Bar {
 }
 
 #[wasm_bindgen(module = "./index")] // what ES6 module to import from
-extern {
+extern "C" {
     fn bar_on_reset(to: &str, opaque: &JsValue);
 
     // We can import classes and annotate functionality on those classes as well

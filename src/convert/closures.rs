@@ -13,7 +13,7 @@ macro_rules! stack_closures {
 
             fn into_abi(self, extra: &mut Stack) -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                unsafe extern "C" fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
                     b: usize,
                     $($var: <$var as FromWasmAbi>::Abi),*
@@ -50,7 +50,7 @@ macro_rules! stack_closures {
 
             fn into_abi(self, extra: &mut Stack) -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                unsafe extern "C" fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
                     b: usize,
                     $($var: <$var as FromWasmAbi>::Abi),*

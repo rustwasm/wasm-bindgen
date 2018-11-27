@@ -21,7 +21,7 @@ today:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     type Foo;
     #[wasm_bindgen(method)]
     fn bar(this: &Foo, argument: &str) -> JsValue;
@@ -47,7 +47,7 @@ If we instead, however, write this:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     type Foo;
     #[wasm_bindgen(method, final)] // note the change here
     fn bar(this: &Foo, argument: &str) -> JsValue;

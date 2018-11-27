@@ -7,7 +7,7 @@ the inheritance hierarchy:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     type Foo;
 
     #[wasm_bindgen(extends = Foo)]
@@ -33,7 +33,7 @@ the types.
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     type Foo;
 
     #[wasm_bindgen(extends = Foo)]

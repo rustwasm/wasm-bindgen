@@ -9,7 +9,7 @@ greetings in JS but call it from Rust. We might have, for example:
 
 ```rust
 #[wasm_bindgen(module = "./greet")]
-extern {
+extern "C" {
     fn greet(a: &str) -> String;
 }
 
@@ -51,8 +51,8 @@ generated Rust as well. Like before this is simplified from what's actually
 generated.
 
 ```rust
-extern fn greet(a: &str) -> String {
-    extern {
+extern "C" fn greet(a: &str) -> String {
+    extern "C" {
         fn __wbg_f_greet(a_ptr: *const u8, a_len: usize, ret_len: *mut usize) -> *mut u8;
     }
     unsafe {
