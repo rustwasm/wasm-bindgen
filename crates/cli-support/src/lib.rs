@@ -217,7 +217,7 @@ impl Bindgen {
             .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
 
         if self.typescript {
-            let ts_path = out_dir.join(stem).with_extension("d.ts");
+            let ts_path = js_path.with_extension("d.ts");
             fs::write(&ts_path, ts)
                 .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
         }
@@ -231,9 +231,17 @@ impl Bindgen {
                 .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
         }
 
+        if self.typescript {
+            let ts_path = wasm_path.with_extension("d.ts");
+            let ts = wasm2es6js::typescript(&module);
+            fs::write(&ts_path, ts)
+                .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
+        }
+
         let wasm_bytes = parity_wasm::serialize(module)?;
         fs::write(&wasm_path, wasm_bytes)
             .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
+
         Ok(())
     }
 
