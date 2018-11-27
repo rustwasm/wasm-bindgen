@@ -10,7 +10,7 @@ As usual though, let's dive into an example!
 
 ```rust
 #[wasm_bindgen(module = "./bar")]
-extern {
+extern "C" {
     type Bar;
 
     #[wasm_bindgen(constructor)]
@@ -125,7 +125,7 @@ pub struct Bar {
 
 impl Bar {
     fn new() -> Bar {
-        extern {
+        extern "C" {
             fn __wbg_s_Bar_new() -> u32;
         }
         unsafe {
@@ -135,7 +135,7 @@ impl Bar {
     }
 
     fn another_function() -> i32 {
-        extern {
+        extern "C" {
             fn __wbg_s_Bar_another_function() -> i32;
         }
         unsafe {
@@ -144,7 +144,7 @@ impl Bar {
     }
 
     fn get(&self) -> i32 {
-        extern {
+        extern "C" {
             fn __wbg_s_Bar_get(ptr: u32) -> i32;
         }
         unsafe {
@@ -155,7 +155,7 @@ impl Bar {
     }
 
     fn set(&self, val: i32) {
-        extern {
+        extern "C" {
             fn __wbg_s_Bar_set(ptr: u32, val: i32);
         }
         unsafe {
@@ -165,7 +165,7 @@ impl Bar {
     }
 
     fn property(&self) -> i32 {
-        extern {
+        extern "C" {
             fn __wbg_s_Bar_property(ptr: u32) -> i32;
         }
         unsafe {
@@ -176,7 +176,7 @@ impl Bar {
     }
 
     fn set_property(&self, val: i32) {
-        extern {
+        extern "C" {
             fn __wbg_s_Bar_set_property(ptr: u32, val: i32);
         }
         unsafe {

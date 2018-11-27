@@ -6,7 +6,7 @@ which is a shared reference to an imported JavaScript type.
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     type Set;
 
     #[wasm_bindgen(method)]

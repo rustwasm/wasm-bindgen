@@ -7,7 +7,7 @@ used in the generated glue:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     type Shoes;
 
     #[wasm_bindgen(constructor)]

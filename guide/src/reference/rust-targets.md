@@ -32,7 +32,7 @@ will unconditionally panic on non-wasm targets. For example:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
 }

@@ -29,7 +29,7 @@ fn main() {
                 use wasm_bindgen_test::*;
 
                 #[wasm_bindgen(module = r"{}")]
-                extern {{
+                extern "C" {{
                     fn not_actually_a_function{1}(x: &str);
                 }}
 

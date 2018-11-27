@@ -52,7 +52,7 @@ fn export() {
 macro_rules! import_macro {
     ($(($rust:ident, $js:ident, $i:ident))*) => ($(
         #[wasm_bindgen(module = "tests/wasm/slice.js")]
-        extern {
+        extern "C" {
             fn $js(a: &[$i]) -> Vec<$i>;
         }
 
@@ -113,7 +113,7 @@ macro_rules! import_mut_macro {
     ($(($rust:ident, $js:ident, $i:ident))*) => (
         $(
             #[wasm_bindgen(module = "tests/wasm/slice.js")]
-            extern {
+            extern "C" {
                 fn $js(a: &mut [$i]);
             }
 

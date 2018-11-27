@@ -95,13 +95,13 @@ let's take a look at that.
 // original input to `#[wasm_bindgen]` omitted ...
 
 #[export_name = "foo_new"]
-pub extern fn __wasm_bindgen_generated_Foo_new(arg0: i32) -> u32
+pub extern "C" fn __wasm_bindgen_generated_Foo_new(arg0: i32) -> u32
     let ret = Foo::new(arg0);
     Box::into_raw(Box::new(WasmRefCell::new(ret))) as u32
 }
 
 #[export_name = "foo_get"]
-pub extern fn __wasm_bindgen_generated_Foo_get(me: u32) -> i32 {
+pub extern "C" fn __wasm_bindgen_generated_Foo_get(me: u32) -> i32 {
     let me = me as *mut WasmRefCell<Foo>;
     wasm_bindgen::__rt::assert_not_null(me);
     let me = unsafe { &*me };
@@ -109,7 +109,7 @@ pub extern fn __wasm_bindgen_generated_Foo_get(me: u32) -> i32 {
 }
 
 #[export_name = "foo_set"]
-pub extern fn __wasm_bindgen_generated_Foo_set(me: u32, arg1: i32) {
+pub extern "C" fn __wasm_bindgen_generated_Foo_set(me: u32, arg1: i32) {
     let me = me as *mut WasmRefCell<Foo>;
     ::wasm_bindgen::__rt::assert_not_null(me);
     let me = unsafe { &*me };
@@ -117,7 +117,7 @@ pub extern fn __wasm_bindgen_generated_Foo_set(me: u32, arg1: i32) {
 }
 
 #[no_mangle]
-pub unsafe extern fn __wbindgen_foo_free(me: u32) {
+pub unsafe extern "C" fn __wbindgen_foo_free(me: u32) {
     let me = me as *mut WasmRefCell<Foo>;
     wasm_bindgen::__rt::assert_not_null(me);
     (*me).borrow_mut(); // ensure no active borrows

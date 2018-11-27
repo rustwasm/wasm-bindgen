@@ -18,7 +18,7 @@ use wasm_bindgen::prelude::*;
 
 // Import the `window.alert` function from the Web.
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn alert(s: &str);
 }
 

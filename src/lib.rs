@@ -447,14 +447,14 @@ macro_rules! externs {
     ($(fn $name:ident($($args:tt)*) -> $ret:ty;)*) => (
         #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
         #[link(wasm_import_module = "__wbindgen_placeholder__")]
-        extern {
+        extern "C" {
             $(fn $name($($args)*) -> $ret;)*
         }
 
         $(
             #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
             #[allow(unused_variables)]
-            unsafe extern fn $name($($args)*) -> $ret {
+            unsafe extern "C" fn $name($($args)*) -> $ret {
                 panic!("function not implemented on non-wasm32 targets")
             }
         )*
@@ -554,7 +554,7 @@ impl Drop for JsValue {
 ///
 /// ```ignore
 /// #[wasm_bindgen]
-/// extern {
+/// extern "C" {
 ///     static console: JsValue;
 /// }
 /// ```
@@ -816,7 +816,7 @@ pub mod __rt {
         use std::mem;
 
         #[no_mangle]
-        pub extern fn __wbindgen_malloc(size: usize) -> *mut u8 {
+        pub extern "C" fn __wbindgen_malloc(size: usize) -> *mut u8 {
             let align = mem::align_of::<usize>();
             if let Ok(layout) = Layout::from_size_align(size, align) {
                 unsafe {
@@ -839,7 +839,7 @@ pub mod __rt {
         }
 
         #[no_mangle]
-        pub unsafe extern fn __wbindgen_free(ptr: *mut u8, size: usize) {
+        pub unsafe extern "C" fn __wbindgen_free(ptr: *mut u8, size: usize) {
             // This happens for zero-length slices, and in that case `ptr` is
             // likely bogus so don't actually send this to the system allocator
             if size == 0 {

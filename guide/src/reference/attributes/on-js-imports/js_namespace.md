@@ -8,7 +8,7 @@ name (like a class or function name) it'll be accessed through this namespace.
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
 }

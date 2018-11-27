@@ -6,7 +6,7 @@ attached to any imported function or method, and the function must return a
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     // `catch` on a standalone function.
     #[wasm_bindgen(catch)]
     fn foo() -> Result<(), JsValue>;

@@ -184,7 +184,7 @@ impl ToTokens for ast::Struct {
                     );
 
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    extern {
+                    extern "C" {
                         fn #new_fn(ptr: u32) -> u32;
                     }
 
@@ -206,7 +206,7 @@ impl ToTokens for ast::Struct {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[no_mangle]
             #[doc(hidden)]
-            pub unsafe extern fn #free_fn(ptr: u32) {
+            pub unsafe extern "C" fn #free_fn(ptr: u32) {
                 <#name as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
                     ptr,
                     &mut ::wasm_bindgen::convert::GlobalStack::new(),
@@ -260,7 +260,7 @@ impl ToTokens for ast::StructField {
             #[no_mangle]
             #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            pub unsafe extern fn #getter(js: u32)
+            pub unsafe extern "C" fn #getter(js: u32)
                 -> <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
             {
                 use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
@@ -296,7 +296,7 @@ impl ToTokens for ast::StructField {
             #[no_mangle]
             #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            pub unsafe extern fn #setter(
+            pub unsafe extern "C" fn #setter(
                 js: u32,
                 val: <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi,
             ) {
@@ -455,7 +455,7 @@ impl TryToTokens for ast::Export {
             #[export_name = #export_name]
             #[allow(non_snake_case)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            pub extern fn #generated_name(#(#args),*) #ret_ty {
+            pub extern "C" fn #generated_name(#(#args),*) #ret_ty {
                 // Scope all local variables to be destroyed after we call the
                 // function to ensure that `#convert_ret`, if it panics, doesn't
                 // leak anything.
@@ -634,7 +634,7 @@ impl ToTokens for ast::ImportType {
                     #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                     fn instanceof(val: &JsValue) -> bool {
                         #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                        extern {
+                        extern "C" {
                             fn #instanceof_shim(val: u32) -> u32;
                         }
                         unsafe {
@@ -927,7 +927,7 @@ impl TryToTokens for ast::ImportFunction {
             #[doc = #doc_comment]
             #vis fn #rust_name(#me #(#arguments),*) #ret {
                 #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                extern {
+                extern "C" {
                     fn #import_name(#(#abi_arguments),*) -> #abi_ret;
                 }
                 unsafe {
@@ -1056,7 +1056,7 @@ impl ToTokens for ast::ImportStatic {
                 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 fn init() -> #ty {
                     #[link(wasm_import_module = "__wbindgen_placeholder__")]
-                    extern {
+                    extern "C" {
                         fn #shim_name() -> <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi;
                     }
                     unsafe {
@@ -1321,7 +1321,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             #[allow(non_snake_case)]
             #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
-            pub extern fn #name() {
+            pub extern "C" fn #name() {
                 use wasm_bindgen::describe::*;
                 // See definition of `link_mem_intrinsics` for what this is doing
                 ::wasm_bindgen::__rt::link_mem_intrinsics();

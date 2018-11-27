@@ -5,7 +5,7 @@
 [online]: https://rustwasm.github.io/wasm-bindgen/exbuild/import_js/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/import_js
 
-The `#[wasm_bindgen]` attribute can be used on `extern { .. }` blocks to import
+The `#[wasm_bindgen]` attribute can be used on `extern "C" { .. }` blocks to import
 functionality from JS. This is how the `js-sys` and the `web-sys` crates are
 built, but you can also use it in your own crate!
 

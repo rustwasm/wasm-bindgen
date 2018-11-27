@@ -8,7 +8,7 @@ snake-cased Rust identifier:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = jsOftenUsesCamelCase)]
     fn js_often_uses_camel_case() -> u32;
 }
@@ -20,7 +20,7 @@ identifiers, in which case `js_name = "some string"` is used instead of `js_name
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = "$$$")]
     fn cash_money() -> u32;
 }
@@ -30,7 +30,7 @@ polymorphic JavaScript functions:
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn console_log_str(s: &str);
 
@@ -50,7 +50,7 @@ Note that if you use `js_name` when importing a type you'll also need to use the
 
 ```rust
 #[wasm_bindgen]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = String)]
     type JsString;
     #[wasm_bindgen(method, getter, js_class = "String")]

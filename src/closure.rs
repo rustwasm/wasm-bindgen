@@ -39,7 +39,7 @@ use throw_str;
 ///
 /// ```rust,no_run
 /// #[wasm_bindgen]
-/// extern {
+/// extern "C" {
 ///     fn setTimeout(closure: &Closure<FnMut()>, time: u32);
 ///
 ///     #[wasm_bindgen(js_namespace = console)]
@@ -188,7 +188,7 @@ impl<T> Closure<T>
         // See crates/cli-support/src/js/closures.rs for a more information
         // about what's going on here.
 
-        extern fn describe<T: WasmClosure + ?Sized>() {
+        extern "C" fn describe<T: WasmClosure + ?Sized>() {
             inform(CLOSURE);
             T::describe()
         }
@@ -328,7 +328,7 @@ macro_rules! doit {
             #[inline]
             fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                unsafe extern "C" fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
                     b: usize,
                     $($var: <$var as FromWasmAbi>::Abi),*
@@ -355,7 +355,7 @@ macro_rules! doit {
 
             #[inline]
             fn destroy_fn() -> u32 {
-                unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                unsafe extern "C" fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
                     b: usize,
                 ) {
@@ -379,7 +379,7 @@ macro_rules! doit {
             #[inline]
             fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
-                unsafe extern fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                unsafe extern "C" fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
                     b: usize,
                     $($var: <$var as FromWasmAbi>::Abi),*
@@ -407,7 +407,7 @@ macro_rules! doit {
 
             #[inline]
             fn destroy_fn() -> u32 {
-                unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                unsafe extern "C" fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
                     b: usize,
                 ) {
