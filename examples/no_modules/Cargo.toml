@@ -8,3 +8,13 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = "0.2.28"
+
+[dependencies.web-sys]
+version = "0.3.4"
+features = [
+  'Document',
+  'Element',
+  'HtmlElement',
+  'Node',
+  'Window',
+]
