@@ -13,6 +13,7 @@ The part of the implementation of the `#[wasm_bindgen]` attribute that is not in
 [features]
 spans = ["wasm-bindgen-backend/spans"]
 extra-traits = ["syn/extra-traits"]
+strict-macro = []
 
 [dependencies]
 syn = { version = '0.15.0', features = ['visit'] }

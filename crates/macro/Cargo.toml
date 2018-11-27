@@ -16,6 +16,7 @@ proc-macro = true
 [features]
 spans = ["wasm-bindgen-macro-support/spans"]
 xxx_debug_only_print_generated_code = []
+strict-macro = ["wasm-bindgen-macro-support/strict-macro"]
 
 [dependencies]
 wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.28" }

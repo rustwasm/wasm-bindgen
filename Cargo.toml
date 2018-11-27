@@ -30,6 +30,10 @@ std = []
 serde-serialize = ["serde", "serde_json", "std"]
 nightly = []
 
+# Whether or not the `#[wasm_bindgen]` macro is strict and generates an error on
+# all unused attributes
+strict-macro = ["wasm-bindgen-macro/strict-macro"]
+
 # This is only for debugging wasm-bindgen! No stability guarantees, so enable
 # this at your own peril!
 xxx_debug_only_print_generated_code = ["wasm-bindgen-macro/xxx_debug_only_print_generated_code"]

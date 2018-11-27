@@ -13,7 +13,6 @@ pub struct Fruit {
 
 #[wasm_bindgen]
 impl Fruit {
-    #[wasm_bindgen(method)]
     pub fn name(&self) -> String {
         self.name.clone()
     }

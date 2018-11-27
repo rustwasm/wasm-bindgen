@@ -9,7 +9,7 @@ doctest = false
 harness = false
 
 [dependencies]
-wasm-bindgen = { path = "../../.." }
+wasm-bindgen = { path = "../../..", features = ["strict-macro"] }
 
 [dev-dependencies]
 compiletest_rs = "0.3"
