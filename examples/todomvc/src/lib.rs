@@ -1,7 +1,6 @@
 //! # TODO MVC
 //!
 //! A [TODO MVC](https://todomvc.com/) implementation written using [web-sys](https://rustwasm.github.io/wasm-bindgen/web-sys/overview.html)
-#![warn(missing_docs)]
 
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
@@ -11,6 +10,7 @@ extern crate web_sys;
 use std::rc::Rc;
 
 extern crate askama;
+extern crate console_error_panic_hook;
 
 /// Controller of the program
 pub mod controller;
@@ -65,5 +65,6 @@ fn app(name: &str) {
 /// Entry point into the program from JavaScript
 #[wasm_bindgen]
 pub fn run() {
+    console_error_panic_hook::set_once();
     app("todos-wasmbindgen");
 }

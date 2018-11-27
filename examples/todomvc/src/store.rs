@@ -70,7 +70,8 @@ impl Store {
         if let Ok(storage_string) = JSON::stringify(&JsValue::from(array)) {
             let storage_string: String = storage_string.to_string().into();
             self.local_storage
-                .set_item(&self.name, storage_string.as_str());
+                .set_item(&self.name, storage_string.as_str())
+                .unwrap();
         }
     }
 
@@ -82,7 +83,12 @@ impl Store {
     ///	 // data will contain items whose completed properties are true
     /// ```
     pub fn find(&mut self, query: ItemQuery) -> Option<ItemListSlice> {
-        Some(self.data.iter().filter(|todo| query.matches(*todo)).collect())
+        Some(
+            self.data
+                .iter()
+                .filter(|todo| query.matches(*todo))
+                .collect(),
+        )
     }
 
     /// Update an item in the Store.
@@ -161,12 +167,10 @@ pub struct ItemList {
     list: Vec<Item>,
 }
 impl ItemList {
-    fn into_iter(self) -> std::vec::IntoIter<Item> {
-        self.list.into_iter()
-    }
     fn retain<F>(&mut self, f: F)
     where
-      F: FnMut(&Item) -> bool {
+        F: FnMut(&Item) -> bool,
+    {
         self.list.retain(f);
     }
     fn iter_mut(&mut self) -> std::slice::IterMut<Item> {
