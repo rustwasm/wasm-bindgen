@@ -47,6 +47,7 @@ macro_rules! attrgen {
             (vendor_prefix, VendorPrefix(Span, Ident)),
             (variadic, Variadic(Span)),
             (typescript_custom_section, TypescriptCustomSection(Span)),
+            (start, Start(Span)),
         }
     )
 }
@@ -730,6 +731,20 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 let comments = extract_doc_comments(&f.attrs);
                 f.to_tokens(tokens);
                 let opts = opts.unwrap_or_default();
+                if opts.start().is_some() {
+                    if f.decl.generics.params.len() > 0 {
+                        bail_span!(
+                            &f.decl.generics,
+                            "the start function cannot have generics",
+                        );
+                    }
+                    if f.decl.inputs.len() > 0 {
+                        bail_span!(
+                            &f.decl.inputs,
+                            "the start function cannot have arguments",
+                        );
+                    }
+                }
                 program.exports.push(ast::Export {
                     rust_class: None,
                     js_class: None,
@@ -737,6 +752,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     is_constructor: false,
                     comments,
                     rust_name: f.ident.clone(),
+                    start: opts.start().is_some(),
                     function: f.convert(opts)?,
                 });
             }
@@ -898,6 +914,7 @@ impl<'a, 'b> MacroParse<&'a BindgenAttrs> for (&'a Ident, &'b mut syn::ImplItem)
             is_constructor,
             function,
             comments,
+            start: false,
             rust_name: method.sig.ident.clone(),
         });
         opts.check_used()?;

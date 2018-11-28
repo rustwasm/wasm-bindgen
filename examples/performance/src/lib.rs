@@ -17,8 +17,7 @@ macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
-// Called by our JS entry point to run the example
-#[wasm_bindgen]
+#[wasm_bindgen(start)]
 pub fn run() {
     let window = web_sys::window().expect("should have a window in this context");
     let performance = window

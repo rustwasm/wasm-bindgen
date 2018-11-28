@@ -450,12 +450,21 @@ impl TryToTokens for ast::Export {
         let argtys = self.function.arguments.iter().map(|arg| &arg.ty);
         let attrs = &self.function.rust_attrs;
 
+        let start_check = if self.start {
+            quote! {
+                const _ASSERT: fn() = || #ret_ty { loop {} };
+            }
+        } else {
+            quote! {}
+        };
+
         (quote! {
             #(#attrs)*
             #[export_name = #export_name]
             #[allow(non_snake_case)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             pub extern "C" fn #generated_name(#(#args),*) #ret_ty {
+                #start_check
                 // Scope all local variables to be destroyed after we call the
                 // function to ensure that `#convert_ret`, if it panics, doesn't
                 // leak anything.

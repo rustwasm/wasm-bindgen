@@ -22,6 +22,7 @@ use parity_wasm::elements::*;
 mod decode;
 mod descriptor;
 mod js;
+mod wasm_utils;
 pub mod wasm2es6js;
 
 pub struct Bindgen {
@@ -36,6 +37,7 @@ pub struct Bindgen {
     demangle: bool,
     keep_debug: bool,
     remove_name_section: bool,
+    emit_start: bool,
     // Experimental support for `WeakRefGroup`, an upcoming ECMAScript feature.
     // Currently only enable-able through an env var.
     weak_refs: bool,
@@ -64,6 +66,7 @@ impl Bindgen {
             demangle: true,
             keep_debug: false,
             remove_name_section: false,
+            emit_start: true,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
         }
@@ -131,6 +134,11 @@ impl Bindgen {
         self
     }
 
+    pub fn emit_start(&mut self, emit: bool) -> &mut Bindgen {
+        self.emit_start = emit;
+        self
+    }
+
     pub fn generate<P: AsRef<Path>>(&mut self, path: P) -> Result<(), Error> {
         self._generate(path.as_ref())
     }
@@ -195,7 +203,9 @@ impl Bindgen {
                 imported_functions: Default::default(),
                 imported_statics: Default::default(),
                 direct_imports: Default::default(),
+                start: None,
             };
+            cx.parse_wasm_names();
             for program in programs.iter() {
                 js::SubContext {
                     program,

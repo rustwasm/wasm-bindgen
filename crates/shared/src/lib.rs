@@ -84,6 +84,7 @@ macro_rules! shared_api {
             is_constructor: bool,
             function: Function<'a>,
             comments: Vec<&'a str>,
+            start: bool,
         }
 
         struct Enum<'a> {

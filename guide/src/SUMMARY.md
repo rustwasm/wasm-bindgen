@@ -76,6 +76,7 @@
       - [`constructor`](./reference/attributes/on-rust-exports/constructor.md)
       - [`js_name = Blah`](./reference/attributes/on-rust-exports/js_name.md)
       - [`readonly`](./reference/attributes/on-rust-exports/readonly.md)
+      - [`start`](./reference/attributes/on-rust-exports/start.md)
       - [`typescript_custom_section`](./reference/attributes/on-rust-exports/typescript_custom_section.md)
 
 --------------------------------------------------------------------------------
