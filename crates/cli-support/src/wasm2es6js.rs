@@ -121,7 +121,7 @@ impl Output {
         return ts
     }
 
-    pub fn js(self) -> Result<String, Error> {
+    pub fn js_and_wasm(mut self) -> Result<(String, Option<Vec<u8>>), Error> {
         let mut js_imports = String::new();
         let mut exports = String::new();
         let mut set_exports = String::new();
@@ -136,7 +136,7 @@ impl Output {
 
                 let name = (b'a' + (set.len() as u8)) as char;
                 js_imports.push_str(&format!(
-                    "import * as import_{} from '{}';",
+                    "import * as import_{} from '{}';\n",
                     name,
                     entry.module()
                 ));
@@ -155,6 +155,29 @@ impl Output {
                 set_exports.push_str(";\n");
             }
         }
+
+        // This is sort of tricky, but the gist of it is that if there's a start
+        // function we want to defer execution of the start function until after
+        // all our module's exports are bound. That way we'll execute it as soon
+        // as we're ready, but the module's imports and such will be able to
+        // work as everything is wired up.
+        //
+        // This ends up helping out in situations such as:
+        //
+        // * The start function calls an imported function
+        // * That imported function in turn tries to access the wasm module
+        //
+        // If we don't do this then the second step won't work because the start
+        // function is automatically executed before the promise of
+        // instantiation resolves, meaning that we won't actually have anything
+        // bound for it to access.
+        //
+        // If we remove the start function here (via `unstart`) then we'll
+        // reexport it as `__wasm2es6js_start` so be manually executed here.
+        if self.unstart() {
+            set_exports.push_str("wasm.exports.__wasm2es6js_start();\n");
+        }
+
         let inst = format!(
             "
             WebAssembly.instantiate(bytes,{{ {imports} }})
@@ -166,8 +189,8 @@ impl Output {
             imports = imports,
             set_exports = set_exports,
         );
+        let wasm = serialize(self.module).expect("failed to serialize");
         let (bytes, booted) = if self.base64 {
-            let wasm = serialize(self.module).expect("failed to serialize");
             (
                 format!(
                     "
@@ -199,8 +222,8 @@ impl Output {
         } else {
             bail!("the option --base64 or --fetch is required");
         };
-        Ok(format!(
-            "
+        let js = format!(
+            "\
             {js_imports}
             {bytes}
             export const booted = {booted};
@@ -210,6 +233,32 @@ impl Output {
             booted = booted,
             js_imports = js_imports,
             exports = exports,
-        ))
+        );
+        let wasm = if self.base64 { None } else { Some(wasm) };
+        Ok((js, wasm))
+    }
+
+    /// See comments above for what this is doing, but in a nutshell this
+    /// removes the start section, if any, and moves it to an exported function.
+    /// Returns whether a start function was found and removed.
+    fn unstart(&mut self) -> bool {
+        let mut start = None;
+        for (i, section) in self.module.sections().iter().enumerate() {
+            if let Section::Start(idx) = section  {
+                start = Some((i, *idx));
+                break;
+            }
+        }
+        let (i, idx) = match start {
+            Some(p) => p,
+            None => return false,
+        };
+        self.module.sections_mut().remove(i);
+        let entry = ExportEntry::new(
+            "__wasm2es6js_start".to_string(),
+            Internal::Function(idx),
+        );
+        self.module.export_section_mut().unwrap().entries_mut().push(entry);
+        true
     }
 }

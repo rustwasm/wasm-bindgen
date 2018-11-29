@@ -25,6 +25,7 @@ Usage:
 Options:
     -h --help               Show this screen.
     -o --output FILE        File to place output in
+    --out-dir DIR           Directory to place ouptut in
     --typescript            Output a `*.d.ts` file next to the JS output
     --base64                Inline the wasm module using base64 encoding
     --fetch PATH            Load module by passing the PATH argument to `fetch()`
@@ -37,6 +38,7 @@ bundlers for working with wasm. Use this program with care!
 #[derive(Debug, Deserialize)]
 struct Args {
     flag_output: Option<PathBuf>,
+    flag_out_dir: Option<PathBuf>,
     flag_typescript: bool,
     flag_base64: bool,
     flag_fetch: Option<String>,
@@ -68,22 +70,34 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .generate(&wasm)?;
 
     if args.flag_typescript {
-        if let Some(ref p) = args.flag_output {
-            let dst = p.with_extension("d.ts");
-            let ts = object.typescript();
-            fs::write(&dst, ts).with_context(|_| format!("failed to write `{}`", dst.display()))?;
-        }
+        let ts = object.typescript();
+        write(&args, "d.ts", ts.as_bytes(), false)?;
     }
 
-    let js = object.js()?;
+    let (js, wasm) = object.js_and_wasm()?;
 
-    match args.flag_output {
-        Some(ref p) => {
-            fs::write(p, js).with_context(|_| format!("failed to write `{}`", p.display()))?;
-        }
-        None => {
-            println!("{}", js);
-        }
+    write(args, "js", js.as_bytes(), false)?;
+    if let Some(wasm) = wasm {
+        write(args, "wasm", &wasm, false)?;
+    }
+    Ok(())
+}
+
+fn write(
+    args: &Args,
+    extension: &str,
+    contents: &[u8],
+    print_fallback: bool,
+) -> Result<(), Error> {
+    if let Some(p) = &args.flag_output {
+        let dst = p.with_extension(extension);
+        fs::write(&dst, contents).with_context(|_| format!("failed to write `{}`", dst.display()))?;
+    } else if let Some(p) = &args.flag_out_dir {
+        let filename = args.arg_input.file_name().unwrap();
+        let dst = p.join(filename).with_extension(extension);
+        fs::write(&dst, contents).with_context(|_| format!("failed to write `{}`", dst.display()))?;
+    } else if print_fallback {
+        println!("{}", String::from_utf8_lossy(contents))
     }
 
     Ok(())
