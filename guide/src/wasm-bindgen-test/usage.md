@@ -85,7 +85,7 @@ That's it!
 
 --------------------------------------------------------------------------------
 
-## Appendix: Using `wasm-bindgn-test` without `wasm-pack`
+## Appendix: Using `wasm-bindgen-test` without `wasm-pack`
 
 **⚠️ The recommended way to use `wasm-bindgen-test` is with `wasm-pack`, since it
 will handle installing the test runner, installing a WebDriver client for your
