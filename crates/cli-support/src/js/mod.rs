@@ -643,7 +643,7 @@ impl<'a> Context<'a> {
                     .push_str(&format!("wasm = require('./{}_bg');", module_name));
                 format!("var wasm;")
             } else {
-                format!("import * as wasm from './{}_bg';", module_name)
+                format!("import * as wasm from './{}_bg.wasm';", module_name)
             };
 
             format!(
