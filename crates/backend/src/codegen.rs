@@ -501,6 +501,7 @@ impl TryToTokens for ast::Export {
             &export,
             quote! {
                 inform(FUNCTION);
+                inform(0);
                 inform(#nargs);
                 #(<#argtys as WasmDescribe>::describe();)*
                 #describe_ret
@@ -999,6 +1000,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
             &f.shim,
             quote! {
                 inform(FUNCTION);
+                inform(0);
                 inform(#nargs);
                 #(<#argtys as WasmDescribe>::describe();)*
                 #inform_ret

@@ -459,8 +459,10 @@ impl<'a> Context<'a> {
             Ok(String::from("function(idx) { throw takeObject(idx); }"))
         })?;
 
+        closures::rewrite(self).with_context(|_| {
+            "failed to generate internal closure shims"
+        })?;
         self.unexport_unused_internal_exports();
-        closures::rewrite(self)?;
 
         // Handle the `start` function, if one was specified. If we're in a
         // --test mode (such as wasm-bindgen-test-runner) then we skip this
@@ -1682,23 +1684,6 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn expose_get_global_argument(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("get_global_argument") {
-            return Ok(());
-        }
-        self.expose_uint32_memory();
-        self.expose_global_argument_ptr()?;
-        self.global(
-            "
-            function getGlobalArgument(arg) {
-                const idx = globalArgumentPtr() / 4 + arg;
-                return getUint32Memory()[idx];
-            }
-            ",
-        );
-        Ok(())
-    }
-
     fn expose_global_argument_ptr(&mut self) -> Result<(), Error> {
         if !self.exposed_globals.insert("global_argument_ptr") {
             return Ok(());
@@ -2337,7 +2322,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
             self.generate_enum(e);
         }
         for s in self.program.structs.iter() {
-            self.generate_struct(s)?;
+            self.generate_struct(s).with_context(|_| {
+                format!(
+                    "failed to generate bindings for Rust struct `{}`",
+                    s.name,
+                )
+            })?;
         }
         for s in self.program.typescript_custom_sections.iter() {
             self.cx.typescript.push_str(s);

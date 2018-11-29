@@ -252,6 +252,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         }
 
         if let Some((f, mutable)) = arg.stack_closure() {
+            let arg2 = self.shim_argument();
             let (js, _ts, _js_doc) = {
                 let mut builder = Js2Rust::new("", self.cx);
                 if mutable {
@@ -268,20 +269,19 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     .process(f)?
                     .finish("function", "this.f")
             };
-            self.cx.expose_get_global_argument()?;
             self.cx.function_table_needed = true;
-            let next_global = self.global_idx();
             self.global_idx();
             self.prelude(&format!(
                 "\
                  let cb{0} = {js};\n\
-                 cb{0}.f = wasm.__wbg_function_table.get({0});\n\
-                 cb{0}.a = getGlobalArgument({next_global});\n\
-                 cb{0}.b = getGlobalArgument({next_global} + 1);\n\
+                 cb{0}.f = wasm.__wbg_function_table.get({idx});\n\
+                 cb{0}.a = {0};\n\
+                 cb{0}.b = {1};\n\
                  ",
                 abi,
+                arg2,
                 js = js,
-                next_global = next_global
+                idx = f.shim_idx,
             ));
             self.finally(&format!("cb{0}.a = cb{0}.b = 0;", abi));
             self.js_arguments.push(format!("cb{0}.bind(cb{0})", abi));
