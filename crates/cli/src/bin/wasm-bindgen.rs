@@ -5,6 +5,7 @@ extern crate docopt;
 extern crate wasm_bindgen_shared;
 #[macro_use]
 extern crate failure;
+extern crate env_logger;
 
 use std::path::PathBuf;
 use std::process;
@@ -59,6 +60,7 @@ struct Args {
 }
 
 fn main() {
+    env_logger::init();
     let args: Args = Docopt::new(USAGE)
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
