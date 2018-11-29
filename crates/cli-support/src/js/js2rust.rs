@@ -256,7 +256,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     self.cx.expose_uint64_cvt_shim()
                 };
                 self.cx.expose_uint32_memory();
-                self.cx.expose_global_argument_ptr()?;
                 self.js_arguments.push((name.clone(), "BigInt".to_string()));
                 self.prelude(&format!(
                     "
@@ -374,7 +373,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.cx.expose_uint64_cvt_shim()
             };
             self.cx.expose_uint32_memory();
-            self.cx.expose_global_argument_ptr()?;
             self.js_arguments.push((name.clone(), "BigInt".to_string()));
             self.prelude(&format!(
                 "

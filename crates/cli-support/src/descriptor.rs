@@ -70,11 +70,14 @@ pub enum Descriptor {
 #[derive(Debug)]
 pub struct Function {
     pub arguments: Vec<Descriptor>,
+    pub shim_idx: u32,
     pub ret: Descriptor,
 }
 
 #[derive(Debug)]
 pub struct Closure {
+    pub shim_idx: u32,
+    pub dtor_idx: u32,
     pub function: Function,
     pub mutable: bool,
 }
@@ -293,9 +296,13 @@ fn get(a: &mut &[u32]) -> u32 {
 
 impl Closure {
     fn decode(data: &mut &[u32]) -> Closure {
+        let shim_idx = get(data);
+        let dtor_idx = get(data);
         let mutable = get(data) == REFMUT;
         assert_eq!(get(data), FUNCTION);
         Closure {
+            shim_idx,
+            dtor_idx,
             mutable,
             function: Function::decode(data),
         }
@@ -304,11 +311,13 @@ impl Closure {
 
 impl Function {
     fn decode(data: &mut &[u32]) -> Function {
+        let shim_idx = get(data);
         let arguments = (0..get(data))
             .map(|_| Descriptor::_decode(data))
             .collect::<Vec<_>>();
         Function {
             arguments,
+            shim_idx,
             ret: Descriptor::_decode(data),
         }
     }

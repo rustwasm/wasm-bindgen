@@ -483,7 +483,7 @@ externs! {
     fn __wbindgen_cb_forget(idx: u32) -> ();
 
     fn __wbindgen_describe(v: u32) -> ();
-    fn __wbindgen_describe_closure(a: u32, b: u32, c: u32, d: u32, e: u32) -> u32;
+    fn __wbindgen_describe_closure(a: u32, b: u32, c: u32) -> u32;
 
     fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_json_serialize(idx: u32, ptr: *mut *mut u8) -> usize;

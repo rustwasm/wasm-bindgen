@@ -197,20 +197,16 @@ impl<T> Closure<T>
         unsafe fn breaks_if_inlined<T: WasmClosure + ?Sized>(
             a: usize,
             b: usize,
-            invoke: u32,
-            destroy: u32,
         ) -> u32 {
             super::__wbindgen_describe_closure(
                 a as u32,
                 b as u32,
-                invoke,
-                destroy,
                 describe::<T> as u32,
             )
         }
 
         let idx = unsafe {
-            breaks_if_inlined::<T>(a, b, T::invoke_fn(), T::destroy_fn())
+            breaks_if_inlined::<T>(a, b)
         };
 
         Closure {
@@ -294,9 +290,6 @@ impl<T> Drop for Closure<T>
 #[doc(hidden)]
 pub unsafe trait WasmClosure: 'static {
     fn describe();
-
-    fn invoke_fn() -> u32;
-    fn destroy_fn() -> u32;
 }
 
 // The memory safety here in these implementations below is a bit tricky. We
@@ -322,11 +315,6 @@ macro_rules! doit {
                   R: ReturnWasmAbi + 'static,
         {
             fn describe() {
-                <&Self>::describe();
-            }
-
-            #[inline]
-            fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
                 unsafe extern "C" fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
@@ -350,12 +338,10 @@ macro_rules! doit {
                     };
                     ret.return_abi(&mut GlobalStack::new())
                 }
-                invoke::<$($var,)* R> as u32
-            }
 
-            #[inline]
-            fn destroy_fn() -> u32 {
-                unsafe extern "C" fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                inform(invoke::<$($var,)* R> as u32);
+
+                unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
                     b: usize,
                 ) {
@@ -364,7 +350,9 @@ macro_rules! doit {
                         fields: (a, b)
                     }.ptr));
                 }
-                destroy::<$($var,)* R> as u32
+                inform(destroy::<$($var,)* R> as u32);
+
+                <&Self>::describe();
             }
         }
 
@@ -373,11 +361,6 @@ macro_rules! doit {
                   R: ReturnWasmAbi + 'static,
         {
             fn describe() {
-                <&mut Self>::describe();
-            }
-
-            #[inline]
-            fn invoke_fn() -> u32 {
                 #[allow(non_snake_case)]
                 unsafe extern "C" fn invoke<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
@@ -402,12 +385,10 @@ macro_rules! doit {
                     };
                     ret.return_abi(&mut GlobalStack::new())
                 }
-                invoke::<$($var,)* R> as u32
-            }
 
-            #[inline]
-            fn destroy_fn() -> u32 {
-                unsafe extern "C" fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
+                inform(invoke::<$($var,)* R> as u32);
+
+                unsafe extern fn destroy<$($var: FromWasmAbi,)* R: ReturnWasmAbi>(
                     a: usize,
                     b: usize,
                 ) {
@@ -416,7 +397,9 @@ macro_rules! doit {
                         fields: (a, b)
                     }.ptr));
                 }
-                destroy::<$($var,)* R> as u32
+                inform(destroy::<$($var,)* R> as u32);
+
+                <&mut Self>::describe();
             }
         }
     )*)

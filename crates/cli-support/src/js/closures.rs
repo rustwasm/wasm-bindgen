@@ -47,11 +47,12 @@ pub fn rewrite(input: &mut Context) -> Result<(), Error> {
         // If this was an imported function we didn't reorder those, so nothing
         // to do.
         if idx < old_num_imports {
-            return idx
+            idx
+        } else {
+            // ... otherwise we're injecting a number of new imports, so offset
+            // everything.
+            idx + info.code_idx_to_descriptor.len() as u32
         }
-        // ... otherwise we're injecting a number of new imports, so offset
-        // everything.
-        idx + info.code_idx_to_descriptor.len() as u32
     }).remap_module(input.module);
 
     info.delete_function_table_entries(input);
@@ -252,9 +253,9 @@ impl ClosureDescriptors {
             input.expose_add_heap_object();
             input.function_table_needed = true;
             let body = format!(
-                "function(a, b, fi, di, _ignored) {{
-                    const f = wasm.__wbg_function_table.get(fi);
-                    const d = wasm.__wbg_function_table.get(di);
+                "function(a, b, _ignored) {{
+                    const f = wasm.__wbg_function_table.get({});
+                    const d = wasm.__wbg_function_table.get({});
                     const cb = {};
                     cb.a = a;
                     cb.cnt = 1;
@@ -262,6 +263,8 @@ impl ClosureDescriptors {
                     real.original = cb;
                     return addHeapObject(real);
                 }}",
+                closure.shim_idx,
+                closure.dtor_idx,
                 js,
             );
             input.export(&import_name, &body, None);
