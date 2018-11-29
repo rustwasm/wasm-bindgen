@@ -11,8 +11,6 @@ emitted for the types and methods described in the WebIDL.
 
 #[macro_use]
 extern crate failure;
-#[macro_use]
-extern crate failure_derive;
 extern crate heck;
 #[macro_use]
 extern crate log;
