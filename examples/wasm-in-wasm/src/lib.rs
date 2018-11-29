@@ -18,7 +18,7 @@ macro_rules! console_log {
 
 const WASM: &[u8] = include_bytes!("add.wasm");
 
-#[wasm_bindgen]
+#[wasm_bindgen(start)]
 pub fn run() -> Result<(), JsValue> {
     console_log!("instantiating a new wasm module directly");
     let my_memory = wasm_bindgen::memory()

@@ -6,8 +6,8 @@ use std::f64;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
-#[wasm_bindgen]
-pub fn draw() {
+#[wasm_bindgen(start)]
+pub fn start() {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas

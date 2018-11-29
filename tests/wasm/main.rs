@@ -10,6 +10,8 @@ extern crate wasm_bindgen_test_crate_b;
 #[macro_use]
 extern crate serde_derive;
 
+use wasm_bindgen::prelude::*;
+
 pub mod api;
 pub mod char;
 pub mod classes;
@@ -36,3 +38,9 @@ pub mod u64;
 pub mod validate_prt;
 pub mod variadic;
 pub mod vendor_prefix;
+
+// should not be executed
+#[wasm_bindgen(start)]
+pub fn start() {
+    panic!();
+}

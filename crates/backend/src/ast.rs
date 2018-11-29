@@ -46,6 +46,9 @@ pub struct Export {
     pub comments: Vec<String>,
     /// The name of the rust function/method on the rust side.
     pub rust_name: Ident,
+    /// Whether or not this function should be flagged as the wasm start
+    /// function.
+    pub start: bool,
 }
 
 /// The 3 types variations of `self`.

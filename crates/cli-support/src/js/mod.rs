@@ -11,6 +11,7 @@ use shared;
 use super::Bindgen;
 use descriptor::{Descriptor, VectorKind};
 use wasm_interpreter::Interpreter;
+use wasm_utils::Remap;
 
 mod js2rust;
 use self::js2rust::Js2Rust;
@@ -30,6 +31,7 @@ pub struct Context<'a> {
     pub imported_statics: HashSet<&'a str>,
     pub config: &'a Bindgen,
     pub module: &'a mut Module,
+    pub start: Option<String>,
 
     /// A map which maintains a list of what identifiers we've imported and what
     /// they're named locally.
@@ -163,7 +165,6 @@ impl<'a> Context<'a> {
     }
 
     pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
-        self.parse_wasm_names();
         self.write_classes()?;
 
         self.bind("__wbindgen_object_clone_ref", &|me| {
@@ -460,6 +461,37 @@ impl<'a> Context<'a> {
 
         self.unexport_unused_internal_exports();
         closures::rewrite(self)?;
+
+        // Handle the `start` function, if one was specified. If we're in a
+        // --test mode (such as wasm-bindgen-test-runner) then we skip this
+        // entirely. Otherwise we want to first add a start function to the
+        // `start` section if one is specified.
+        //
+        // Afterwards, we need to perform what's a bit of a hack. Right after we
+        // added the start function, we remove it again because no current
+        // strategy for bundlers and deployment works well enough with it. For
+        // `--no-modules` output we need to be sure to call the start function
+        // after our exports are wired up (or most imported functions won't
+        // work).
+        //
+        // For ESM outputs bundlers like webpack also don't work because
+        // currently they run the wasm initialization before the JS glue
+        // initialization, meaning that if the wasm start function calls
+        // imported functions the JS glue isn't ready to go just yet.
+        //
+        // To handle `--no-modules` we just unstart the start function and call
+        // it manually. To handle the ESM use case we switch the start function
+        // to calling an imported function which defers the start function via
+        // `Promise.resolve().then(...)` to execute on the next microtask tick.
+        let mut has_start_function = false;
+        if self.config.emit_start {
+            self.add_start_function()?;
+            has_start_function = self.unstart_start_function();
+            if has_start_function && !self.config.no_modules {
+                self.inject_start_shim();
+            }
+        }
+
         self.gc();
 
         // Note that it's important `throw` comes last *after* we gc. The
@@ -537,6 +569,7 @@ impl<'a> Context<'a> {
             init.__wbindgen_wasm_instance = instance;
             init.__wbindgen_wasm_module = module;
             init.__wbindgen_wasm_memory = __exports.memory;
+            {start}
         }});
     }};
     self.{global_name} = Object.assign(init, __exports);
@@ -550,6 +583,11 @@ impl<'a> Context<'a> {
                     .map(|s| &**s)
                     .unwrap_or("wasm_bindgen"),
                 init_memory = memory,
+                start = if has_start_function {
+                    "wasm.__wbindgen_start();"
+                } else {
+                    ""
+                },
             )
         } else if self.config.no_modules {
             format!(
@@ -578,7 +616,7 @@ impl<'a> Context<'a> {
         }}
         return instantiation.then(({{instance}}) => {{
             wasm = init.wasm = instance.exports;
-            return;
+            {start}
         }});
     }};
     self.{global_name} = Object.assign(init, __exports);
@@ -591,6 +629,11 @@ impl<'a> Context<'a> {
                     .as_ref()
                     .map(|s| &**s)
                     .unwrap_or("wasm_bindgen"),
+                start = if has_start_function {
+                    "wasm.__wbindgen_start();"
+                } else {
+                    ""
+                },
             )
         } else {
             let import_wasm = if self.globals.len() == 0 {
@@ -1774,7 +1817,7 @@ impl<'a> Context<'a> {
             .run(&mut self.module);
     }
 
-    fn parse_wasm_names(&mut self) {
+    pub fn parse_wasm_names(&mut self) {
         let module = mem::replace(self.module, Module::default());
         let module = module.parse_names().unwrap_or_else(|p| p.1);
         *self.module = module;
@@ -2148,6 +2191,128 @@ impl<'a> Context<'a> {
             Ok(())
         }
     }
+
+    fn add_start_function(&mut self) -> Result<(), Error> {
+        let start = match &self.start {
+            Some(name) => name.clone(),
+            None => return Ok(()),
+        };
+        let idx = {
+            let exports = self.module.export_section()
+                .ok_or_else(|| format_err!("no export section found"))?;
+            let entry = exports
+                .entries()
+                .iter()
+                .find(|e| e.field() == start)
+                .ok_or_else(|| format_err!("export `{}` not found", start))?;
+            match entry.internal() {
+                Internal::Function(i) => *i,
+                _ => bail!("export `{}` wasn't a function", start),
+            }
+        };
+        if let Some(prev_start) = self.module.start_section() {
+            if let Some(NameSection::Function(n)) = self.module.names_section() {
+                if let Some(prev) = n.names().get(prev_start) {
+                    bail!("cannot flag `{}` as start function as `{}` is \
+                           already the start function", start, prev);
+                }
+            }
+
+            bail!("cannot flag `{}` as start function as another \
+                   function is already the start function", start);
+        }
+
+        self.set_start_section(idx);
+        Ok(())
+    }
+
+    fn set_start_section(&mut self, start: u32) {
+        let mut pos = None;
+        // See http://webassembly.github.io/spec/core/binary/modules.html#binary-module
+        // for section ordering
+        for (i, section) in self.module.sections().iter().enumerate() {
+            match section {
+                Section::Type(_) |
+                Section::Import(_) |
+                Section::Function(_) |
+                Section::Table(_) |
+                Section::Memory(_) |
+                Section::Global(_) |
+                Section::Export(_) => continue,
+                _ => {
+                    pos = Some(i);
+                    break
+                }
+            }
+        }
+        let pos = pos.unwrap_or(self.module.sections().len() - 1);
+        self.module.sections_mut().insert(pos, Section::Start(start));
+    }
+
+    /// If a start function is present, it removes it from the `start` section
+    /// of the wasm module and then moves it to an exported function, named
+    /// `__wbindgen_start`.
+    fn unstart_start_function(&mut self) -> bool {
+        let mut pos = None;
+        let mut start = 0;
+        for (i, section) in self.module.sections().iter().enumerate() {
+            if let Section::Start(idx) = section {
+                start = *idx;
+                pos = Some(i);
+                break;
+            }
+        }
+        match pos {
+            Some(i) => {
+                self.module.sections_mut().remove(i);
+                let entry = ExportEntry::new(
+                    "__wbindgen_start".to_string(),
+                    Internal::Function(start),
+                );
+                self.module.export_section_mut().unwrap().entries_mut().push(entry);
+                true
+            }
+            None => false,
+        }
+    }
+
+    /// Injects a `start` function into the wasm module. This start function
+    /// calls a shim in the generated JS which defers the actual start function
+    /// to the next microtask tick of the event queue.
+    ///
+    /// See docs above at callsite for why this happens.
+    fn inject_start_shim(&mut self) {
+        let body = "function() {
+            Promise.resolve().then(() => wasm.__wbindgen_start());
+        }";
+        self.export("__wbindgen_defer_start", body, None);
+
+        let imports = self.module.import_section()
+            .map(|s| s.functions() as u32)
+            .unwrap_or(0);
+        Remap(|idx| {
+            if idx < imports { idx } else { idx + 1 }
+        }).remap_module(self.module);
+
+        let type_idx = {
+            let types = self.module.type_section_mut().unwrap();
+            let ty = Type::Function(FunctionType::new(Vec::new(), None));
+            types.types_mut().push(ty);
+            (types.types_mut().len() - 1) as u32
+        };
+
+        let entry = ImportEntry::new(
+            "__wbindgen_placeholder__".to_string(),
+            "__wbindgen_defer_start".to_string(),
+            External::Function(type_idx),
+        );
+        self.module
+            .import_section_mut()
+            .unwrap()
+            .entries_mut()
+            .push(entry);
+        self.set_start_section(imports);
+    }
 }
 
 impl<'a, 'b> SubContext<'a, 'b> {
@@ -2184,6 +2349,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn generate_export(&mut self, export: &decode::Export<'b>) -> Result<(), Error> {
         if let Some(ref class) = export.class {
+            assert!(!export.start);
             return self.generate_export_for_class(class, export);
         }
 
@@ -2191,6 +2357,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
             None => return Ok(()),
             Some(d) => d,
         };
+
+        if export.start {
+            self.set_start_function(export.function.name)?;
+        }
 
         let (js, ts, js_doc) = Js2Rust::new(&export.function.name, self.cx)
             .process(descriptor.unwrap_function())?
@@ -2204,6 +2374,15 @@ impl<'a, 'b> SubContext<'a, 'b> {
         self.cx.typescript.push_str("export ");
         self.cx.typescript.push_str(&ts);
         self.cx.typescript.push_str("\n");
+        Ok(())
+    }
+
+    fn set_start_function(&mut self, start: &str) -> Result<(), Error> {
+        if let Some(prev) = &self.cx.start {
+            bail!("cannot flag `{}` as start function as `{}` is \
+                   already the start function", start, prev);
+        }
+        self.cx.start = Some(start.to_string());
         Ok(())
     }
 

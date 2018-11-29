@@ -26,7 +26,7 @@ extern "C" {
     fn log(s: &str);
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(start)]
 pub fn run() {
     log(&format!("Hello, {}!", name()));
 

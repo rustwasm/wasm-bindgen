@@ -82,6 +82,7 @@ fn shared_export<'a>(export: &'a ast::Export, intern: &'a Interner) -> Export<'a
         is_constructor: export.is_constructor,
         function: shared_function(&export.function, intern),
         comments: export.comments.iter().map(|s| &**s).collect(),
+        start: export.start,
     }
 }
 

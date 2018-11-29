@@ -7,8 +7,8 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
-#[wasm_bindgen]
-pub fn main() -> Result<(), JsValue> {
+#[wasm_bindgen(start)]
+pub fn start() -> Result<(), JsValue> {
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document
         .create_element("canvas")?

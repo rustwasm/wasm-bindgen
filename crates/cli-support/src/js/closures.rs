@@ -18,6 +18,7 @@ use parity_wasm::elements::*;
 use descriptor::Descriptor;
 use js::js2rust::Js2Rust;
 use js::Context;
+use wasm_utils::Remap;
 
 pub fn rewrite(input: &mut Context) -> Result<(), Error> {
     let info = ClosureDescriptors::new(input);
@@ -37,15 +38,21 @@ pub fn rewrite(input: &mut Context) -> Result<(), Error> {
     // function indices. We're going to be injecting a few imported functions
     // below which will shift the index space for all defined functions.
     input.parse_wasm_names();
-    Remap {
-        code_idx_to_descriptor: &info.code_idx_to_descriptor,
-        old_num_imports: input
-            .module
-            .import_section()
-            .map(|s| s.functions())
-            .unwrap_or(0) as u32,
-    }
-    .remap_module(input.module);
+    let old_num_imports = input
+        .module
+        .import_section()
+        .map(|s| s.functions())
+        .unwrap_or(0) as u32;
+    Remap(|idx| {
+        // If this was an imported function we didn't reorder those, so nothing
+        // to do.
+        if idx < old_num_imports {
+            return idx
+        }
+        // ... otherwise we're injecting a number of new imports, so offset
+        // everything.
+        idx + info.code_idx_to_descriptor.len() as u32
+    }).remap_module(input.module);
 
     info.delete_function_table_entries(input);
     info.inject_imports(input)?;
@@ -296,121 +303,5 @@ impl ClosureDescriptors {
             let new_instr = Instruction::Call(instr.new_idx);
             func.code_mut().elements_mut()[instr.instr_idx] = new_instr;
         }
-    }
-}
-
-struct Remap<'a> {
-    code_idx_to_descriptor: &'a BTreeMap<u32, DescribeInstruction>,
-    old_num_imports: u32,
-}
-
-impl<'a> Remap<'a> {
-    fn remap_module(&self, module: &mut Module) {
-        for section in module.sections_mut() {
-            match section {
-                Section::Export(e) => self.remap_export_section(e),
-                Section::Element(e) => self.remap_element_section(e),
-                Section::Code(e) => self.remap_code_section(e),
-                Section::Start(i) => {
-                    self.remap_idx(i);
-                }
-                Section::Name(n) => self.remap_name_section(n),
-                _ => {}
-            }
-        }
-    }
-
-    fn remap_export_section(&self, section: &mut ExportSection) {
-        for entry in section.entries_mut() {
-            self.remap_export_entry(entry);
-        }
-    }
-
-    fn remap_export_entry(&self, entry: &mut ExportEntry) {
-        match entry.internal_mut() {
-            Internal::Function(i) => {
-                self.remap_idx(i);
-            }
-            _ => {}
-        }
-    }
-
-    fn remap_element_section(&self, section: &mut ElementSection) {
-        for entry in section.entries_mut() {
-            self.remap_element_entry(entry);
-        }
-    }
-
-    fn remap_element_entry(&self, entry: &mut ElementSegment) {
-        for member in entry.members_mut() {
-            self.remap_idx(member);
-        }
-    }
-
-    fn remap_code_section(&self, section: &mut CodeSection) {
-        for body in section.bodies_mut() {
-            self.remap_func_body(body);
-        }
-    }
-
-    fn remap_func_body(&self, body: &mut FuncBody) {
-        self.remap_instructions(body.code_mut());
-    }
-
-    fn remap_instructions(&self, code: &mut Instructions) {
-        for instr in code.elements_mut() {
-            self.remap_instruction(instr);
-        }
-    }
-
-    fn remap_instruction(&self, instr: &mut Instruction) {
-        match instr {
-            Instruction::Call(i) => {
-                self.remap_idx(i);
-            }
-            _ => {}
-        }
-    }
-
-    fn remap_name_section(&self, names: &mut NameSection) {
-        match names {
-            NameSection::Function(f) => self.remap_function_name_section(f),
-            NameSection::Local(f) => self.remap_local_name_section(f),
-            _ => {}
-        }
-    }
-
-    fn remap_function_name_section(&self, names: &mut FunctionNameSection) {
-        let map = names.names_mut();
-        let new = IndexMap::with_capacity(map.len());
-        for (mut idx, name) in mem::replace(map, new) {
-            if !self.remap_idx(&mut idx) {
-                map.insert(idx, name);
-            }
-        }
-    }
-
-    fn remap_local_name_section(&self, names: &mut LocalNameSection) {
-        let map = names.local_names_mut();
-        let new = IndexMap::with_capacity(map.len());
-        for (mut idx, name) in mem::replace(map, new) {
-            if !self.remap_idx(&mut idx) {
-                map.insert(idx, name);
-            }
-        }
-    }
-
-    /// Returns whether `idx` pointed to a previously known descriptor function
-    /// that we're switching to an import
-    fn remap_idx(&self, idx: &mut u32) -> bool {
-        // If this was an imported function we didn't reorder those, so nothing
-        // to do.
-        if *idx < self.old_num_imports {
-            return false;
-        }
-        // ... otherwise we're injecting a number of new imports, so offset
-        // everything.
-        *idx += self.code_idx_to_descriptor.len() as u32;
-        false
     }
 }
