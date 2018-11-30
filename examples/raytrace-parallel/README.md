@@ -4,7 +4,7 @@
 online][compiled]
 
 [dox]: https://rustwasm.github.io/wasm-bindgen/examples/raytrace.html
-[compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/raytrace/
+[compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/raytrace-parallel/
 
 You can build the example locally with:
 
