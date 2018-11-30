@@ -58,20 +58,17 @@ pub fn typescript(module: &Module) -> String {
             .unwrap_or(0);
         for entry in i.entries() {
             let idx = match *entry.internal() {
-                Internal::Function(i) if i < imported_functions => {
-                    *module.import_section()
-                        .unwrap()
-                        .entries()
-                        .iter()
-                        .filter_map(|f| {
-                            match f.external() {
-                                External::Function(i) => Some(i),
-                                _ => None,
-                            }
-                        })
-                        .nth(i as usize)
-                        .unwrap()
-                }
+                Internal::Function(i) if i < imported_functions => *module
+                    .import_section()
+                    .unwrap()
+                    .entries()
+                    .iter()
+                    .filter_map(|f| match f.external() {
+                        External::Function(i) => Some(i),
+                        _ => None,
+                    })
+                    .nth(i as usize)
+                    .unwrap(),
                 Internal::Function(i) => {
                     let idx = i - imported_functions;
                     let functions = module
@@ -96,9 +93,7 @@ pub fn typescript(module: &Module) -> String {
                 Internal::Global(_) => continue,
             };
 
-            let types = module
-                .type_section()
-                .expect("failed to find type section");
+            let types = module.type_section().expect("failed to find type section");
             let ty = match types.types()[idx as usize] {
                 Type::Function(ref f) => f,
             };
@@ -133,7 +128,7 @@ impl Output {
         if self.base64 {
             ts.push_str("export const booted: Promise<boolean>;\n");
         }
-        return ts
+        return ts;
     }
 
     pub fn js_and_wasm(mut self) -> Result<(String, Option<Vec<u8>>), Error> {
@@ -259,7 +254,7 @@ impl Output {
     fn unstart(&mut self) -> bool {
         let mut start = None;
         for (i, section) in self.module.sections().iter().enumerate() {
-            if let Section::Start(idx) = section  {
+            if let Section::Start(idx) = section {
                 start = Some((i, *idx));
                 break;
             }
@@ -269,11 +264,12 @@ impl Output {
             None => return false,
         };
         self.module.sections_mut().remove(i);
-        let entry = ExportEntry::new(
-            "__wasm2es6js_start".to_string(),
-            Internal::Function(idx),
-        );
-        self.module.export_section_mut().unwrap().entries_mut().push(entry);
+        let entry = ExportEntry::new("__wasm2es6js_start".to_string(), Internal::Function(idx));
+        self.module
+            .export_section_mut()
+            .unwrap()
+            .entries_mut()
+            .push(entry);
         true
     }
 }

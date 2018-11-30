@@ -53,7 +53,8 @@ pub fn rewrite(input: &mut Context) -> Result<(), Error> {
             // everything.
             idx + info.code_idx_to_descriptor.len() as u32
         }
-    }).remap_module(input.module);
+    })
+    .remap_module(input.module);
 
     info.delete_function_table_entries(input);
     info.inject_imports(input)?;
@@ -263,9 +264,7 @@ impl ClosureDescriptors {
                     real.original = cb;
                     return addHeapObject(real);
                 }}",
-                closure.shim_idx,
-                closure.dtor_idx,
-                js,
+                closure.shim_idx, closure.dtor_idx, js,
             );
             input.export(&import_name, &body, None);
 

@@ -560,12 +560,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         &format!("{}({}, ...{})", invoc, args.join(", "), last_arg),
                     )
                 } else {
-                    ret_expr
-                        .replace("JS", &format!("{}(...{})", invoc, last_arg))
+                    ret_expr.replace("JS", &format!("{}(...{})", invoc, last_arg))
                 }
             } else {
-                ret_expr
-                    .replace("JS", &format!("{}({})", invoc, js_arguments.join(", ")))
+                ret_expr.replace("JS", &format!("{}({})", invoc, js_arguments.join(", ")))
             };
             Ok(ret)
         };
@@ -575,9 +573,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 bail!("{} cannot be variadic", desc);
             }
             match (class, js_arguments.len()) {
-                (None, n) if n == amt + 1 => {
-                    Ok((js_arguments[0].clone(), &js_arguments[1..]))
-                }
+                (None, n) if n == amt + 1 => Ok((js_arguments[0].clone(), &js_arguments[1..])),
                 (None, _) => bail!("setters must have {} arguments", amt + 1),
                 (Some(class), n) if n == amt => Ok((class.clone(), &js_arguments[..])),
                 (Some(_), _) => bail!("static setters must have {} arguments", amt),

@@ -71,7 +71,8 @@ pub fn spawn(
     let (js, wasm) = output.js_and_wasm()?;
     let wasm = wasm.unwrap();
     fs::write(tmpdir.join(format!("{}_bg.js", module)), js).context("failed to write JS file")?;
-    fs::write(tmpdir.join(format!("{}_bg.wasm", module)), wasm).context("failed to write wasm file")?;
+    fs::write(tmpdir.join(format!("{}_bg.wasm", module)), wasm)
+        .context("failed to write wasm file")?;
 
     // For now, always run forever on this port. We may update this later!
     let tmpdir = tmpdir.to_path_buf();

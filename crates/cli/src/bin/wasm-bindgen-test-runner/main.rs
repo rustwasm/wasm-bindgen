@@ -155,7 +155,8 @@ fn rmain() -> Result<(), Error> {
         &tmpdir,
         &args.collect::<Vec<_>>(),
         &tests,
-    ).context("failed to spawn server")?;
+    )
+    .context("failed to spawn server")?;
     let addr = srv.server_addr();
 
     // TODO: eventually we should provide the ability to exit at some point

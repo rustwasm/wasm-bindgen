@@ -1,8 +1,8 @@
 use core::mem;
 
-use convert::{FromWasmAbi, GlobalStack, IntoWasmAbi, ReturnWasmAbi, Stack};
 use convert::slices::WasmSlice;
-use describe::{inform, FUNCTION, WasmDescribe};
+use convert::{FromWasmAbi, GlobalStack, IntoWasmAbi, ReturnWasmAbi, Stack};
+use describe::{inform, WasmDescribe, FUNCTION};
 use throw_str;
 
 macro_rules! stack_closures {

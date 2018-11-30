@@ -22,8 +22,8 @@ use parity_wasm::elements::*;
 mod decode;
 mod descriptor;
 mod js;
-mod wasm_utils;
 pub mod wasm2es6js;
+mod wasm_utils;
 
 pub struct Bindgen {
     input: Input,

@@ -25,7 +25,7 @@ pub struct BindgenAttrs {
 }
 
 macro_rules! attrgen {
-    ($mac:ident) => (
+    ($mac:ident) => {
         $mac! {
             (catch, Catch(Span)),
             (constructor, Constructor(Span)),
@@ -49,7 +49,7 @@ macro_rules! attrgen {
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (start, Start(Span)),
         }
-    )
+    };
 }
 
 macro_rules! methods {
@@ -175,14 +175,11 @@ impl Parse for BindgenAttrs {
     fn parse(input: ParseStream) -> SynResult<Self> {
         let mut attrs = BindgenAttrs::default();
         if input.is_empty() {
-            return Ok(attrs)
+            return Ok(attrs);
         }
 
         let opts = syn::punctuated::Punctuated::<_, syn::token::Comma>::parse_terminated(input)?;
-        attrs.attrs = opts
-            .into_iter()
-            .map(|c| (Cell::new(false), c))
-            .collect();
+        attrs.attrs = opts.into_iter().map(|c| (Cell::new(false), c)).collect();
         Ok(attrs)
     }
 }
@@ -487,7 +484,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn
         if let Some(span) = opts.final_() {
             if opts.structural().is_some() {
                 let msg = "cannot specify both `structural` and `final`";
-                return Err(Diagnostic::span_error(*span, msg))
+                return Err(Diagnostic::span_error(*span, msg));
             }
         }
         let ret = ast::ImportKind::Function(ast::ImportFunction {
@@ -558,7 +555,11 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemSt
         }
         assert_not_variadic(&opts)?;
         let default_name = self.ident.to_string();
-        let js_name = opts.js_name().map(|p| p.0).unwrap_or(&default_name).to_string();
+        let js_name = opts
+            .js_name()
+            .map(|p| p.0)
+            .unwrap_or(&default_name)
+            .to_string();
         let shim = format!(
             "__wbg_static_accessor_{}_{}",
             self.ident,
@@ -733,16 +734,10 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 let opts = opts.unwrap_or_default();
                 if opts.start().is_some() {
                     if f.decl.generics.params.len() > 0 {
-                        bail_span!(
-                            &f.decl.generics,
-                            "the start function cannot have generics",
-                        );
+                        bail_span!(&f.decl.generics, "the start function cannot have generics",);
                     }
                     if f.decl.inputs.len() > 0 {
-                        bail_span!(
-                            &f.decl.inputs,
-                            "the start function cannot have arguments",
-                        );
+                        bail_span!(&f.decl.inputs, "the start function cannot have arguments",);
                     }
                 }
                 program.exports.push(ast::Export {
@@ -1043,7 +1038,10 @@ impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
             };
             BindgenAttrs::find(attrs)?
         };
-        let module = item_opts.module().or(opts.module()).map(|s| s.0.to_string());
+        let module = item_opts
+            .module()
+            .or(opts.module())
+            .map(|s| s.0.to_string());
         let js_namespace = item_opts.js_namespace().or(opts.js_namespace()).cloned();
         let kind = match self {
             syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
@@ -1156,8 +1154,8 @@ fn assert_no_lifetimes(decl: &syn::FnDecl) -> Result<(), Diagnostic> {
 fn assert_not_variadic(attrs: &BindgenAttrs) -> Result<(), Diagnostic> {
     if let Some(span) = attrs.variadic() {
         let msg = "the `variadic` attribute can only be applied to imported \
-                  (`extern`) functions";
-        return Err(Diagnostic::span_error(*span, msg))
+                   (`extern`) functions";
+        return Err(Diagnostic::span_error(*span, msg));
     }
     Ok(())
 }

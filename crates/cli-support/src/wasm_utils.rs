@@ -4,7 +4,10 @@ use parity_wasm::elements::*;
 
 pub struct Remap<F>(pub F);
 
-impl<F> Remap<F> where F: FnMut(u32) -> u32 {
+impl<F> Remap<F>
+where
+    F: FnMut(u32) -> u32,
+{
     pub fn remap_module(&mut self, module: &mut Module) {
         for section in module.sections_mut() {
             match section {

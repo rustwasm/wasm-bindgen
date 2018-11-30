@@ -177,7 +177,7 @@ impl<'a> Context<'a> {
                 function(idx) {
                     return addHeapObject(getObject(idx));
                 }
-                "
+                ",
             ))
         })?;
 
@@ -424,9 +424,7 @@ impl<'a> Context<'a> {
             Ok(String::from("function(idx) { throw takeObject(idx); }"))
         })?;
 
-        closures::rewrite(self).with_context(|_| {
-            "failed to generate internal closure shims"
-        })?;
+        closures::rewrite(self).with_context(|_| "failed to generate internal closure shims")?;
         self.unexport_unused_internal_exports();
 
         // Handle the `start` function, if one was specified. If we're in a
@@ -1405,7 +1403,7 @@ impl<'a> Context<'a> {
                 heap[--stack_pointer] = obj;
                 return stack_pointer;
             }
-            "
+            ",
         );
     }
 
@@ -2067,7 +2065,9 @@ impl<'a> Context<'a> {
             None => return Ok(()),
         };
         let idx = {
-            let exports = self.module.export_section()
+            let exports = self
+                .module
+                .export_section()
                 .ok_or_else(|| format_err!("no export section found"))?;
             let entry = exports
                 .entries()
@@ -2082,13 +2082,20 @@ impl<'a> Context<'a> {
         if let Some(prev_start) = self.module.start_section() {
             if let Some(NameSection::Function(n)) = self.module.names_section() {
                 if let Some(prev) = n.names().get(prev_start) {
-                    bail!("cannot flag `{}` as start function as `{}` is \
-                           already the start function", start, prev);
+                    bail!(
+                        "cannot flag `{}` as start function as `{}` is \
+                         already the start function",
+                        start,
+                        prev
+                    );
                 }
             }
 
-            bail!("cannot flag `{}` as start function as another \
-                   function is already the start function", start);
+            bail!(
+                "cannot flag `{}` as start function as another \
+                 function is already the start function",
+                start
+            );
         }
 
         self.set_start_section(idx);
@@ -2101,21 +2108,23 @@ impl<'a> Context<'a> {
         // for section ordering
         for (i, section) in self.module.sections().iter().enumerate() {
             match section {
-                Section::Type(_) |
-                Section::Import(_) |
-                Section::Function(_) |
-                Section::Table(_) |
-                Section::Memory(_) |
-                Section::Global(_) |
-                Section::Export(_) => continue,
+                Section::Type(_)
+                | Section::Import(_)
+                | Section::Function(_)
+                | Section::Table(_)
+                | Section::Memory(_)
+                | Section::Global(_)
+                | Section::Export(_) => continue,
                 _ => {
                     pos = Some(i);
-                    break
+                    break;
                 }
             }
         }
         let pos = pos.unwrap_or(self.module.sections().len() - 1);
-        self.module.sections_mut().insert(pos, Section::Start(start));
+        self.module
+            .sections_mut()
+            .insert(pos, Section::Start(start));
     }
 
     /// If a start function is present, it removes it from the `start` section
@@ -2134,11 +2143,13 @@ impl<'a> Context<'a> {
         match pos {
             Some(i) => {
                 self.module.sections_mut().remove(i);
-                let entry = ExportEntry::new(
-                    "__wbindgen_start".to_string(),
-                    Internal::Function(start),
-                );
-                self.module.export_section_mut().unwrap().entries_mut().push(entry);
+                let entry =
+                    ExportEntry::new("__wbindgen_start".to_string(), Internal::Function(start));
+                self.module
+                    .export_section_mut()
+                    .unwrap()
+                    .entries_mut()
+                    .push(entry);
                 true
             }
             None => false,
@@ -2156,12 +2167,12 @@ impl<'a> Context<'a> {
         }";
         self.export("__wbindgen_defer_start", body, None);
 
-        let imports = self.module.import_section()
+        let imports = self
+            .module
+            .import_section()
             .map(|s| s.functions() as u32)
             .unwrap_or(0);
-        Remap(|idx| {
-            if idx < imports { idx } else { idx + 1 }
-        }).remap_module(self.module);
+        Remap(|idx| if idx < imports { idx } else { idx + 1 }).remap_module(self.module);
 
         let type_idx = {
             let types = self.module.type_section_mut().unwrap();
@@ -2207,10 +2218,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         for s in self.program.structs.iter() {
             self.generate_struct(s).with_context(|_| {
-                format!(
-                    "failed to generate bindings for Rust struct `{}`",
-                    s.name,
-                )
+                format!("failed to generate bindings for Rust struct `{}`", s.name,)
             })?;
         }
         for s in self.program.typescript_custom_sections.iter() {
@@ -2253,8 +2261,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
 
     fn set_start_function(&mut self, start: &str) -> Result<(), Error> {
         if let Some(prev) = &self.cx.start {
-            bail!("cannot flag `{}` as start function as `{}` is \
-                   already the start function", start, prev);
+            bail!(
+                "cannot flag `{}` as start function as `{}` is \
+                 already the start function",
+                start,
+                prev
+            );
         }
         self.cx.start = Some(start.to_string());
         Ok(())

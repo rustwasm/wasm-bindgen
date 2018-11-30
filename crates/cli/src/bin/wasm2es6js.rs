@@ -83,19 +83,16 @@ fn rmain(args: &Args) -> Result<(), Error> {
     Ok(())
 }
 
-fn write(
-    args: &Args,
-    extension: &str,
-    contents: &[u8],
-    print_fallback: bool,
-) -> Result<(), Error> {
+fn write(args: &Args, extension: &str, contents: &[u8], print_fallback: bool) -> Result<(), Error> {
     if let Some(p) = &args.flag_output {
         let dst = p.with_extension(extension);
-        fs::write(&dst, contents).with_context(|_| format!("failed to write `{}`", dst.display()))?;
+        fs::write(&dst, contents)
+            .with_context(|_| format!("failed to write `{}`", dst.display()))?;
     } else if let Some(p) = &args.flag_out_dir {
         let filename = args.arg_input.file_name().unwrap();
         let dst = p.join(filename).with_extension(extension);
-        fs::write(&dst, contents).with_context(|_| format!("failed to write `{}`", dst.display()))?;
+        fs::write(&dst, contents)
+            .with_context(|_| format!("failed to write `{}`", dst.display()))?;
     } else if print_fallback {
         println!("{}", String::from_utf8_lossy(contents))
     }
