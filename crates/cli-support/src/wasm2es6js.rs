@@ -58,7 +58,27 @@ pub fn typescript(module: &Module) -> String {
             .unwrap_or(0);
         for entry in i.entries() {
             let idx = match *entry.internal() {
-                Internal::Function(i) => i - imported_functions,
+                Internal::Function(i) if i < imported_functions => {
+                    *module.import_section()
+                        .unwrap()
+                        .entries()
+                        .iter()
+                        .filter_map(|f| {
+                            match f.external() {
+                                External::Function(i) => Some(i),
+                                _ => None,
+                            }
+                        })
+                        .nth(i as usize)
+                        .unwrap()
+                }
+                Internal::Function(i) => {
+                    let idx = i - imported_functions;
+                    let functions = module
+                        .function_section()
+                        .expect("failed to find function section");
+                    functions.entries()[idx as usize].type_ref()
+                }
                 Internal::Memory(_) => {
                     exports.push_str(&format!(
                         "export const {}: WebAssembly.Memory;\n",
@@ -75,11 +95,6 @@ pub fn typescript(module: &Module) -> String {
                 }
                 Internal::Global(_) => continue,
             };
-
-            let functions = module
-                .function_section()
-                .expect("failed to find function section");
-            let idx = functions.entries()[idx as usize].type_ref();
 
             let types = module
                 .type_section()
