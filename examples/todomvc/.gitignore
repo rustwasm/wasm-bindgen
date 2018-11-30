@@ -1,3 +1,6 @@
 target/
-todomvc.js
+dist/
+_site/
+
+todomvc*
 *.swp
