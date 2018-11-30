@@ -907,6 +907,7 @@ impl<'a> Context<'a> {
             return;
         }
         self.global(&format!("const heap = new Array({});", INITIAL_HEAP_OFFSET));
+        self.global("heap.fill(undefined);");
         self.global(&format!("heap.push({});", INITIAL_HEAP_VALUES.join(", ")));
     }
 
