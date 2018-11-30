@@ -58,19 +58,11 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
     }
 
     pub fn catch(&mut self, catch: bool) -> &mut Self {
-        if catch {
-            self.cx.expose_uint32_memory();
-            self.cx.expose_add_heap_object();
-        }
         self.catch = catch;
         self
     }
 
     pub fn variadic(&mut self, variadic: bool) -> &mut Self {
-        if variadic {
-            self.cx.expose_uint32_memory();
-            self.cx.expose_add_heap_object();
-        }
         self.variadic = variadic;
         self
     }
@@ -540,7 +532,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             js_arguments == shim_arguments
     }
 
-    pub fn finish(&self, invoc: &ImportTarget) -> Result<String, Error> {
+    pub fn finish(&mut self, invoc: &ImportTarget) -> Result<String, Error> {
         let mut ret = String::new();
         ret.push_str("function(");
         ret.push_str(&self.shim_arguments.join(", "));
@@ -553,38 +545,41 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         ret.push_str(") {\n");
         ret.push_str(&self.prelude);
 
+        let variadic = self.variadic;
+        let ret_expr = &self.ret_expr;
+        let js_arguments = &self.js_arguments;
         let handle_variadic = |invoc: &str, js_arguments: &[String]| {
-            let ret = if self.variadic {
+            let ret = if variadic {
                 let (last_arg, args) = match js_arguments.split_last() {
                     Some(pair) => pair,
                     None => bail!("a function with no arguments cannot be variadic"),
                 };
                 if args.len() > 0 {
-                    self.ret_expr.replace(
+                    ret_expr.replace(
                         "JS",
                         &format!("{}({}, ...{})", invoc, args.join(", "), last_arg),
                     )
                 } else {
-                    self.ret_expr
+                    ret_expr
                         .replace("JS", &format!("{}(...{})", invoc, last_arg))
                 }
             } else {
-                self.ret_expr
+                ret_expr
                     .replace("JS", &format!("{}({})", invoc, js_arguments.join(", ")))
             };
             Ok(ret)
         };
 
         let fixed = |desc: &str, class: &Option<String>, amt: usize| {
-            if self.variadic {
+            if variadic {
                 bail!("{} cannot be variadic", desc);
             }
-            match (class, self.js_arguments.len()) {
+            match (class, js_arguments.len()) {
                 (None, n) if n == amt + 1 => {
-                    Ok((self.js_arguments[0].clone(), &self.js_arguments[1..]))
+                    Ok((js_arguments[0].clone(), &js_arguments[1..]))
                 }
                 (None, _) => bail!("setters must have {} arguments", amt + 1),
-                (Some(class), n) if n == amt => Ok((class.clone(), &self.js_arguments[..])),
+                (Some(class), n) if n == amt => Ok((class.clone(), &js_arguments[..])),
                 (Some(_), _) => bail!("static setters must have {} arguments", amt),
             }
         };
@@ -630,6 +625,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         };
 
         if self.catch {
+            self.cx.expose_uint32_memory();
+            self.cx.expose_add_heap_object();
             let catch = "\
                          const view = getUint32Memory();\n\
                          view[exnptr / 4] = 1;\n\
