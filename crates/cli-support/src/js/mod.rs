@@ -114,7 +114,9 @@ enum Import<'a> {
     },
 }
 
-const INITIAL_SLAB_VALUES: &[&str] = &["undefined", "null", "true", "false"];
+const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
+// Must be kept in sync with `src/lib.rs` of the `wasm-bindgen` crate
+const INITIAL_HEAP_OFFSET: usize = 32;
 
 impl<'a> Context<'a> {
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
@@ -168,44 +170,20 @@ impl<'a> Context<'a> {
         self.write_classes()?;
 
         self.bind("__wbindgen_object_clone_ref", &|me| {
-            me.expose_add_heap_object();
             me.expose_get_object();
-            let bump_cnt = if me.config.debug {
-                String::from(
-                    "
-                    if (typeof(val) === 'number') throw new Error('corrupt slab');
-                    val.cnt += 1;
-                    ",
-                )
-            } else {
-                String::from("val.cnt += 1;")
-            };
-            Ok(format!(
+            me.expose_add_heap_object();
+            Ok(String::from(
                 "
-                function(idx) {{
-                    // If this object is on the stack promote it to the heap.
-                    if ((idx & 1) === 1) return addHeapObject(getObject(idx));
-
-                    // Otherwise if the object is on the heap just bump the
-                    // refcount and move on
-                    const val = slab[idx >> 1];
-                    {}
-                    return idx;
-                }}
-                ",
-                bump_cnt
+                function(idx) {
+                    return addHeapObject(getObject(idx));
+                }
+                "
             ))
         })?;
 
         self.bind("__wbindgen_object_drop_ref", &|me| {
             me.expose_drop_ref();
-            Ok(String::from(
-                "
-                function(i) {
-                    dropRef(i);
-                }
-                ",
-            ))
+            Ok(String::from("function(i) { dropObject(i); }"))
         })?;
 
         self.bind("__wbindgen_string_new", &|me| {
@@ -222,13 +200,7 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_number_new", &|me| {
             me.expose_add_heap_object();
-            Ok(String::from(
-                "
-                function(i) {
-                    return addHeapObject(i);
-                }
-                ",
-            ))
+            Ok(String::from("function(i) { return addHeapObject(i); }"))
         })?;
 
         self.bind("__wbindgen_number_get", &|me| {
@@ -370,7 +342,7 @@ impl<'a> Context<'a> {
                 "
                 function(i) {
                     const obj = getObject(i).original;
-                    dropRef(i);
+                    dropObject(i);
                     if (obj.cnt-- == 1) {
                         obj.a = 0;
                         return 1;
@@ -383,7 +355,7 @@ impl<'a> Context<'a> {
 
         self.bind("__wbindgen_cb_forget", &|me| {
             me.expose_drop_ref();
-            Ok("dropRef".to_string())
+            Ok("dropObject".to_string())
         })?;
 
         self.bind("__wbindgen_json_parse", &|me| {
@@ -427,14 +399,7 @@ impl<'a> Context<'a> {
         self.bind("__wbindgen_memory", &|me| {
             me.expose_add_heap_object();
             let mem = me.memory();
-            Ok(format!(
-                "
-                function() {{
-                    return addHeapObject({});
-                }}
-                ",
-                mem
-            ))
+            Ok(format!("function() {{ return addHeapObject({}); }}", mem))
         })?;
 
         self.bind("__wbindgen_module", &|me| {
@@ -916,149 +881,54 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("drop_ref") {
             return;
         }
-        self.expose_global_slab();
-        self.expose_global_slab_next();
-        let validate_owned = if self.config.debug {
-            String::from(
-                "
-                if ((idx & 1) === 1) throw new Error('cannot drop ref of stack objects');
-                ",
-            )
-        } else {
-            String::new()
-        };
-        let dec_ref = if self.config.debug {
-            String::from(
-                "
-                if (typeof(obj) === 'number') throw new Error('corrupt slab');
-                obj.cnt -= 1;
-                if (obj.cnt > 0) return;
-                ",
-            )
-        } else {
-            String::from(
-                "
-                obj.cnt -= 1;
-                if (obj.cnt > 0) return;
-                ",
-            )
-        };
+        self.expose_global_heap();
+        self.expose_global_heap_next();
+
+        // Note that here we check if `idx` shouldn't actually be dropped. This
+        // is due to the fact that `JsValue::null()` and friends can be passed
+        // by value to JS where we'll automatically call this method. Those
+        // constants, however, cannot be dropped. See #1054 for removing this
+        // branch.
+        //
+        // Otherwise the free operation here is pretty simple, just appending to
+        // the linked list of heap slots that are free.
         self.global(&format!(
             "
-            function dropRef(idx) {{
-                {}
-                idx = idx >> 1;
+            function dropObject(idx) {{
                 if (idx < {}) return;
-                let obj = slab[idx];
-                {}
-                // If we hit 0 then free up our space in the slab
-                slab[idx] = slab_next;
-                slab_next = idx;
+                heap[idx] = heap_next;
+                heap_next = idx;
             }}
             ",
-            validate_owned,
-            INITIAL_SLAB_VALUES.len(),
-            dec_ref
+            INITIAL_HEAP_OFFSET + INITIAL_HEAP_VALUES.len(),
         ));
     }
 
-    fn expose_global_stack(&mut self) {
-        if !self.exposed_globals.insert("stack") {
+    fn expose_global_heap(&mut self) {
+        if !self.exposed_globals.insert("heap") {
             return;
         }
-        self.global(&format!(
-            "
-            const stack = [];
-        "
-        ));
-        if self.config.debug {
-            self.export(
-                "assertStackEmpty",
-                "
-                function() {
-                    if (stack.length === 0) return;
-                    throw new Error('stack is not currently empty');
-                }
-                ",
-                None,
-            );
-        }
+        self.global(&format!("const heap = new Array({});", INITIAL_HEAP_OFFSET));
+        self.global(&format!("heap.push({});", INITIAL_HEAP_VALUES.join(", ")));
     }
 
-    fn expose_global_slab(&mut self) {
-        if !self.exposed_globals.insert("slab") {
+    fn expose_global_heap_next(&mut self) {
+        if !self.exposed_globals.insert("heap_next") {
             return;
         }
-        let initial_values = INITIAL_SLAB_VALUES
-            .iter()
-            .map(|s| format!("{{ obj: {} }}", s))
-            .collect::<Vec<_>>();
-        self.global(&format!("const slab = [{}];", initial_values.join(", ")));
-        if self.config.debug {
-            self.export(
-                "assertSlabEmpty",
-                &format!(
-                    "
-                    function() {{
-                        for (let i = {}; i < slab.length; i++) {{
-                            if (typeof(slab[i]) === 'number') continue;
-                            throw new Error('slab is not currently empty');
-                        }}
-                    }}
-                    ",
-                    initial_values.len()
-                ),
-                None,
-            );
-        }
-    }
-
-    fn expose_global_slab_next(&mut self) {
-        if !self.exposed_globals.insert("slab_next") {
-            return;
-        }
-        self.expose_global_slab();
-        self.global(
-            "
-            let slab_next = slab.length;
-            ",
-        );
+        self.expose_global_heap();
+        self.global("let heap_next = heap.length;");
     }
 
     fn expose_get_object(&mut self) {
         if !self.exposed_globals.insert("get_object") {
             return;
         }
-        self.expose_global_stack();
-        self.expose_global_slab();
+        self.expose_global_heap();
 
-        let get_obj = if self.config.debug {
-            String::from(
-                "
-                if (typeof(val) === 'number') throw new Error('corrupt slab');
-                return val.obj;
-                ",
-            )
-        } else {
-            String::from(
-                "
-                return val.obj;
-                ",
-            )
-        };
-        self.global(&format!(
-            "
-            function getObject(idx) {{
-                if ((idx & 1) === 1) {{
-                    return stack[idx >> 1];
-                }} else {{
-                    const val = slab[idx >> 1];
-                    {}
-                }}
-            }}
-            ",
-            get_obj
-        ));
+        // Accessing a heap object is just a simple index operation due to how
+        // the stack/heap are laid out.
+        self.global("function getObject(idx) { return heap[idx]; }");
     }
 
     fn expose_assert_num(&mut self) {
@@ -1510,18 +1380,32 @@ impl<'a> Context<'a> {
         );
     }
 
+    fn expose_global_stack_pointer(&mut self) {
+        if !self.exposed_globals.insert("stack_pointer") {
+            return;
+        }
+        self.global(&format!("let stack_pointer = {};", INITIAL_HEAP_OFFSET));
+    }
+
     fn expose_borrowed_objects(&mut self) {
         if !self.exposed_globals.insert("borrowed_objects") {
             return;
         }
-        self.expose_global_stack();
+        self.expose_global_heap();
+        self.expose_global_stack_pointer();
+        // Our `stack_pointer` points to where we should start writing stack
+        // objects, and the `stack_pointer` is incremented in a `finally` block
+        // after executing this. Once we've reserved stack space we write the
+        // value. Eventually underflow will throw an exception, but JS sort of
+        // just handles it today...
         self.global(
             "
             function addBorrowedObject(obj) {
-                stack.push(obj);
-                return ((stack.length - 1) << 1) | 1;
+                if (stack_pointer == 1) throw new Error('out of js stack');
+                heap[--stack_pointer] = obj;
+                return stack_pointer;
             }
-            ",
+            "
         );
     }
 
@@ -1535,7 +1419,7 @@ impl<'a> Context<'a> {
             "
             function takeObject(idx) {
                 const ret = getObject(idx);
-                dropRef(idx);
+                dropObject(idx);
                 return ret;
             }
             ",
@@ -1546,34 +1430,34 @@ impl<'a> Context<'a> {
         if !self.exposed_globals.insert("add_heap_object") {
             return;
         }
-        self.expose_global_slab();
-        self.expose_global_slab_next();
-        let set_slab_next = if self.config.debug {
+        self.expose_global_heap();
+        self.expose_global_heap_next();
+        let set_heap_next = if self.config.debug {
             String::from(
                 "
-                if (typeof(next) !== 'number') throw new Error('corrupt slab');
-                slab_next = next;
+                if (typeof(heap_next) !== 'number') throw new Error('corrupt heap');
                 ",
             )
         } else {
-            String::from(
-                "
-                slab_next = next;
-                ",
-            )
+            String::new()
         };
+
+        // Allocating a slot on the heap first goes through the linked list
+        // (starting at `heap_next`). Once that linked list is exhausted we'll
+        // be pointing beyond the end of the array, at which point we'll reserve
+        // one more slot and use that.
         self.global(&format!(
             "
             function addHeapObject(obj) {{
-                if (slab_next === slab.length) slab.push(slab.length + 1);
-                const idx = slab_next;
-                const next = slab[idx];
+                if (heap_next === heap.length) heap.push(heap.length + 1);
+                const idx = heap_next;
+                heap_next = heap[idx];
                 {}
-                slab[idx] = {{ obj, cnt: 1 }};
-                return idx << 1;
+                heap[idx] = obj;
+                return idx;
             }}
             ",
-            set_slab_next
+            set_heap_next
         ));
     }
 

@@ -5,18 +5,21 @@ around JS objects in wasm, but that's not allowed today! While indeed true,
 that's where the polyfill comes in.
 
 The question here is how we shoehorn JS objects into a `u32` for wasm to use.
-The current strategy for this approach is to maintain two module-local variables
-in the generated `foo.js` file: a stack and a heap.
+The current strategy for this approach is to maintain a module-local variable
+in the generated `foo.js` file: a `heap`.
 
-### Temporary JS objects on the stack
+### Temporary JS objects on the "stack"
 
-The stack in `foo.js` is, well, a stack. JS objects are pushed on the top of the
-stack, and their index in the stack is the identifier that's passed to wasm. JS
-objects are then only removed from the top of the stack as well. This data
-structure is mainly useful for efficiently passing a JS object into wasm without
-a sort of "heap allocation". The downside of this, however, is that it only
-works for when wasm doesn't hold onto a JS object (aka it only gets a
-"reference" in Rust parlance).
+The first slots in the `heap` in `foo.js` are considered a stack. This stack,
+like typical program execution stacks, grows down. JS objects are pushed on the
+bottom of the stack, and their index in the stack is the identifier that's passed
+to wasm. A stack pointer is maintained to figure out where the next item is
+pushed.
+
+JS objects are then only removed from the bottom of the stack as well. Removal
+is simply storing null then incrementing a counter.  Because of the "stack-y"
+nature of this sceheme it only works for when wasm doesn't hold onto a JS object
+(aka it only gets a "reference" in Rust parlance).
 
 Let's take a look at an example.
 
@@ -47,11 +50,14 @@ and what we actually generate looks something like:
 // foo.js
 import * as wasm from './foo_bg';
 
-const stack = [];
+const heap = new Array(32);
+heap.push(undefined, null, true, false);
+let stack_pointer = 32;
 
 function addBorrowedObject(obj) {
-  stack.push(obj);
-  return stack.length - 1;
+  stack_pointer -= 1;
+  heap[stack_pointer] = obj;
+  return stack_pointer;
 }
 
 export function foo(arg0) {
@@ -59,7 +65,7 @@ export function foo(arg0) {
   try {
     wasm.foo(idx0);
   } finally {
-    stack.pop();
+    heap[stack_pointer++] = undefined;
   }
 }
 ```
@@ -68,13 +74,13 @@ Here we can see a few notable points of action:
 
 * The wasm file was renamed to `foo_bg.wasm`, and we can see how the JS module
   generated here is importing from the wasm file.
-* Next we can see our `stack` module variable which is used to push/pop items
-  from the stack.
+* Next we can see our `heap` module variable which is to store all JS values
+  reference-able from wasm.
 * Our exported function `foo`, takes an arbitrary argument, `arg0`, which is
   converted to an index with the `addBorrowedObject` object function. The index
   is then passed to wasm so wasm can operate with it.
 * Finally, we have a `finally` which frees the stack slot as it's no longer
-  used, issuing a `pop` for what was pushed at the start of the function.
+  used, popping the value that was pushed at the start of the function.
 
 It's also helpful to dig into the Rust side of things to see what's going on
 there! Let's take a look at the code that `#[wasm_bindgen]` generates in Rust:
@@ -104,12 +110,13 @@ And as with the JS, the notable points here are:
   in a `JsValue`. There's some trickery here that's not worth going into just
   yet, but we'll see in a bit what's happening under the hood.
 
-### Long-lived JS objects in a slab
+### Long-lived JS objects
 
 The above strategy is useful when JS objects are only temporarily used in Rust,
 for example only during one function call. Sometimes, though, objects may have a
 dynamic lifetime or otherwise need to be stored on Rust's heap. To cope with
-this there's a second half of management of JS objects, a slab.
+this there's a second half of management of JS objects, naturally corresponding
+to the other side of the JS `heap` array.
 
 JS Objects passed to wasm that are not references are assumed to have a dynamic
 lifetime inside of the wasm module. As a result the strict push/pop of the stack
@@ -135,16 +142,16 @@ different. Let's see the generated JS's slab in action:
 ```js
 import * as wasm from './foo_bg'; // imports from wasm file
 
-const slab = [];
-let slab_next = 0;
+const heap = new Array(32);
+heap.push(undefined, null, true, false);
+let heap_next = 36;
 
 function addHeapObject(obj) {
-  if (slab_next === slab.length)
-    slab.push(slab.length + 1);
-  const idx = slab_next;
-  const next = slab[idx];
-  slab_next = next;
-  slab[idx] = { obj, cnt: 1 };
+  if (heap_next === heap.length)
+    heap.push(heap.length + 1);
+  const idx = heap_next;
+  heap_next = heap[idx];
+  heap[idx] = obj;
   return idx;
 }
 
@@ -154,24 +161,17 @@ export function foo(arg0) {
 }
 
 export function __wbindgen_object_drop_ref(idx) {
-  let obj = slab[idx];
-  obj.cnt -= 1;
-  if (obj.cnt > 0)
-    return;
-  // If we hit 0 then free up our space in the slab
-  slab[idx] = slab_next;
-  slab_next = idx;
+  heap[idx ] = heap_next;
+  heap_next = idx;
 }
 ```
 
 Unlike before we're now calling `addHeapObject` on the argument to `foo` rather
-than `addBorrowedObject`. This function will use `slab` and `slab_next` as a
+than `addBorrowedObject`. This function will use `heap` and `heap_next` as a
 slab allocator to acquire a slot to store the object, placing a structure there
-once it's found.
-
-Note here that a reference count is used in addition to storing the object.
-That's so we can create multiple references to the JS object in Rust without
-using `Rc`, but it's overall not too important to worry about here.
+once it's found. Note that this is going on the right-half of the array, unlike
+the stack which resides on the left half. This discipline mirrors the stack/heap
+in normal programs, roughly.
 
 Another curious aspect of this generated module is the
 `__wbindgen_object_drop_ref` function. This is one that's actually imported from
@@ -229,10 +229,9 @@ If you'll recall as well, when we took `&JsValue` above we generated a wrapper
 of `ManuallyDrop` around the local binding, and that's because we wanted to
 avoid invoking this destructor when the object comes from the stack.
 
-### Indexing both a slab and the stack
+### Working with `heap` in reality
 
-You might be thinking at this point that this system may not work! There's
-indexes into both the slab and the stack mixed up, but how do we differentiate?
-It turns out that the examples above have been simplified a bit, but otherwise
-the lowest bit is currently used as an indicator of whether you're a slab or a
-stack index.
+The above explanations are pretty close to what happens today, but in reality
+there's a few differences especially around handling constant values like
+`undefined`, `null`, etc. Be sure to check out the actual generated JS and the
+generation code for the full details!

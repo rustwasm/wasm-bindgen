@@ -67,11 +67,12 @@ pub struct JsValue {
     _marker: marker::PhantomData<*mut u8>, // not at all threadsafe
 }
 
-const JSIDX_UNDEFINED: u32 = 0;
-const JSIDX_NULL: u32 = 2;
-const JSIDX_TRUE: u32 = 4;
-const JSIDX_FALSE: u32 = 6;
-const JSIDX_RESERVED: u32 = 8;
+const JSIDX_OFFSET: u32 = 32; // keep in sync with js/mod.rs
+const JSIDX_UNDEFINED: u32 = JSIDX_OFFSET + 0;
+const JSIDX_NULL: u32 = JSIDX_OFFSET + 1;
+const JSIDX_TRUE: u32 = JSIDX_OFFSET + 2;
+const JSIDX_FALSE: u32 = JSIDX_OFFSET + 3;
+const JSIDX_RESERVED: u32 = JSIDX_OFFSET + 4;
 
 impl JsValue {
     /// The `null` JS value constant.
@@ -533,13 +534,12 @@ impl Drop for JsValue {
     #[inline]
     fn drop(&mut self) {
         unsafe {
-            // The first bit indicates whether this is a stack value or not.
-            // Stack values should never be dropped (they're always in
-            // `ManuallyDrop`)
-            debug_assert!(self.idx & 1 == 0);
+            // We definitely should never drop anything in the stack area
+            debug_assert!(self.idx >= JSIDX_OFFSET);
 
-            // We don't want to drop the first few elements as they're all
-            // reserved, but everything else is safe to drop.
+            // Otherwise if we're not dropping one of our reserved values,
+            // actually call the intrinsic. See #1054 for eventually removing
+            // this branch.
             if self.idx >= JSIDX_RESERVED {
                 __wbindgen_object_drop_ref(self.idx);
             }

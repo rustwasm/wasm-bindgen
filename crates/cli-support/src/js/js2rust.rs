@@ -392,7 +392,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         if arg.is_ref_anyref() {
             self.js_arguments.push((name.clone(), "any".to_string()));
             self.cx.expose_borrowed_objects();
-            self.finally("stack.pop();");
+            self.cx.expose_global_stack_pointer();
+            // the "stack-ful" nature means that we're always popping from the
+            // stack, and make sure that we actually clear our reference to
+            // allow stale values to get GC'd
+            self.finally("heap[stack_pointer++] = undefined;");
             self.rust_arguments
                 .push(format!("addBorrowedObject({})", name));
             return Ok(self);
