@@ -30,7 +30,7 @@ where
     /// Performs a dynamic cast (checked at runtime) of this value into the
     /// target type `T`.
     ///
-    /// This method will return `Err(self)` is `self.is_instance_of::<T>()`
+    /// This method will return `Err(self)` if `self.is_instance_of::<T>()`
     /// returns `false`, and otherwise it will return `Ok(T)` manufactured with
     /// an unchecked cast (verified correct via the `instanceof` operation).
     fn dyn_into<T>(self) -> Result<T, Self>
@@ -47,7 +47,7 @@ where
     /// Performs a dynamic cast (checked at runtime) of this value into the
     /// target type `T`.
     ///
-    /// This method will return `None` is `self.is_instance_of::<T>()`
+    /// This method will return `None` if `self.is_instance_of::<T>()`
     /// returns `false`, and otherwise it will return `Some(&T)` manufactured
     /// with an unchecked cast (verified correct via the `instanceof` operation).
     fn dyn_ref<T>(&self) -> Option<&T>
