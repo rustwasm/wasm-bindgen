@@ -1,6 +1,7 @@
+const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: './index.js',
@@ -12,6 +13,10 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: "index.html"
         }),
+        new CopyWebpackPlugin([
+            { from: 'index.css', to: 'index.css' },
+        ]),
+
         // Have this example work in Edge which doesn't ship `TextEncoder` or
         // `TextDecoder` at this time.
         new webpack.ProvidePlugin({
