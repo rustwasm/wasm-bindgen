@@ -448,21 +448,21 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys)
     #[wasm_bindgen(method)]
-    pub fn keys(this: &Array) -> Iterator;
+    pub fn keys(this: &Array) -> JsIterator;
 
     /// The entries() method returns a new Array Iterator object that contains
     /// the key/value pairs for each index in the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries)
     #[wasm_bindgen(method)]
-    pub fn entries(this: &Array) -> Iterator;
+    pub fn entries(this: &Array) -> JsIterator;
 
     /// The values() method returns a new Array Iterator object that
     /// contains the values for each index in the array.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values)
     #[wasm_bindgen(method)]
-    pub fn values(this: &Array) -> Iterator;
+    pub fn values(this: &Array) -> JsIterator;
 }
 
 // Boolean
@@ -1398,21 +1398,21 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries)
     #[wasm_bindgen(method)]
-    pub fn entries(this: &Map) -> Iterator;
+    pub fn entries(this: &Map) -> JsIterator;
 
     /// The keys() method returns a new Iterator object that contains the
     /// keys for each element in the Map object in insertion order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys)
     #[wasm_bindgen(method)]
-    pub fn keys(this: &Map) -> Iterator;
+    pub fn keys(this: &Map) -> JsIterator;
 
     /// The values() method returns a new Iterator object that contains the
     /// values for each element in the Map object in insertion order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/values)
     #[wasm_bindgen(method)]
-    pub fn values(this: &Map) -> Iterator;
+    pub fn values(this: &Map) -> JsIterator;
 }
 
 // Iterator
@@ -1423,49 +1423,63 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
     #[derive(Clone, Debug)]
-    pub type Iterator;
+    pub type JsIterator;
 
     /// The next method always has to return an object with appropriate
     /// properties including done and value. If a non-object value gets returned
     /// (such as false or undefined), a TypeError ("iterator.next() returned a
     /// non-object value") will be thrown.
+    ///
+    /// We don't use the `Iterator` trait directly because the semantics of iterators in javascript
+    /// and rust are subtly different. In javascript, we have exceptions, and so in rust the `next`
+    /// method will return an Err. However, unlike in rust, the iterator should not be used after
+    /// this has occurred. To get this behavior we need to manually `fuse` the iterator
     #[wasm_bindgen(catch, method, structural)]
-    pub fn next(this: &Iterator) -> Result<IteratorNext, JsValue>;
+    pub fn next(this: &JsIterator) -> Result<JsIteratorNext, JsValue>;
+
+    /// The result of calling `next()` on a JS iterator.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
+    #[derive(Clone, Debug)]
+    pub type JsIteratorNext;
+
+    /// Has the value `true` if the iterator is past the end of the iterated
+    /// sequence. In this case value optionally specifies the return value of
+    /// the iterator.
+    ///
+    /// Has the value `false` if the iterator was able to produce the next value
+    /// in the sequence. This is equivalent of not specifying the done property
+    /// altogether.
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn done(this: &JsIteratorNext) -> bool;
+
+    /// Any JavaScript value returned by the iterator. Can be omitted when done
+    /// is true.
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn value(this: &JsIteratorNext) -> JsValue;
 }
 
 /// An iterator over the JS `Symbol.iterator` iteration protocol.
 ///
 /// Use the `IntoIterator for &js_sys::Iterator` implementation to create this.
-pub struct Iter<'a> {
-    js: &'a Iterator,
+pub struct IntoIterBorrowed<'a> {
+    js: &'a JsIterator,
     state: IterState,
 }
 
-/// An iterator over the JS `Symbol.iterator` iteration protocol.
-///
-/// Use the `IntoIterator for js_sys::Iterator` implementation to create this.
-pub struct IntoIter {
-    js: Iterator,
-    state: IterState,
-}
-
-struct IterState {
-    done: bool,
-}
-
-impl<'a> IntoIterator for &'a Iterator {
+impl<'a> IntoIterator for &'a JsIterator {
     type Item = Result<JsValue, JsValue>;
-    type IntoIter = Iter<'a>;
+    type IntoIter = IntoIterBorrowed<'a>;
 
-    fn into_iter(self) -> Iter<'a> {
-        Iter {
+    fn into_iter(self) -> Self::IntoIter {
+        IntoIterBorrowed {
             js: self,
             state: IterState::new(),
         }
     }
 }
 
-impl<'a> std::iter::Iterator for Iter<'a> {
+impl<'a> std::iter::Iterator for IntoIterBorrowed<'a> {
     type Item = Result<JsValue, JsValue>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -1473,19 +1487,27 @@ impl<'a> std::iter::Iterator for Iter<'a> {
     }
 }
 
-impl IntoIterator for Iterator {
-    type Item = Result<JsValue, JsValue>;
-    type IntoIter = IntoIter;
+/// An iterator over the JS `Symbol.iterator` iteration protocol.
+///
+/// Use the `IntoIterator for js_sys::Iterator` implementation to create this.
+pub struct IntoIterOwned {
+    js: JsIterator,
+    state: IterState,
+}
 
-    fn into_iter(self) -> IntoIter {
-        IntoIter {
+impl IntoIterator for JsIterator {
+    type Item = Result<JsValue, JsValue>;
+    type IntoIter = IntoIterOwned;
+
+    fn into_iter(self) -> Self::IntoIter {
+        IntoIterOwned {
             js: self,
             state: IterState::new(),
         }
     }
 }
 
-impl std::iter::Iterator for IntoIter {
+impl std::iter::Iterator for IntoIterOwned {
     type Item = Result<JsValue, JsValue>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -1493,12 +1515,17 @@ impl std::iter::Iterator for IntoIter {
     }
 }
 
+/// Extra state we need to convert from javascript iterators to rust iterator protocol.
+struct IterState {
+    done: bool,
+}
+
 impl IterState {
     fn new() -> IterState {
         IterState { done: false }
     }
 
-    fn next(&mut self, js: &Iterator) -> Option<Result<JsValue, JsValue>> {
+    fn next(&mut self, js: &JsIterator) -> Option<Result<JsValue, JsValue>> {
         if self.done {
             return None;
         }
@@ -1520,7 +1547,7 @@ impl IterState {
 
 /// Create an iterator over `val` using the JS iteration protocol and
 /// `Symbol.iterator`.
-pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
+pub fn try_iter(val: &JsValue) -> Result<Option<IntoIterOwned>, JsValue> {
     let iter_sym = Symbol::iterator();
     let iter_fn = Reflect::get(val, iter_sym.as_ref())?;
     if !iter_fn.is_function() {
@@ -1537,36 +1564,11 @@ pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
     let next = Reflect::get(&it, &next)?;
 
     Ok(if next.is_function() {
-        let it: Iterator = it.unchecked_into();
+        let it: JsIterator = it.unchecked_into();
         Some(it.into_iter())
     } else {
         None
     })
-}
-
-// IteratorNext
-#[wasm_bindgen]
-extern "C" {
-    /// The result of calling `next()` on a JS iterator.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
-    #[derive(Clone, Debug)]
-    pub type IteratorNext;
-
-    /// Has the value `true` if the iterator is past the end of the iterated
-    /// sequence. In this case value optionally specifies the return value of
-    /// the iterator.
-    ///
-    /// Has the value `false` if the iterator was able to produce the next value
-    /// in the sequence. This is equivalent of not specifying the done property
-    /// altogether.
-    #[wasm_bindgen(method, getter, structural)]
-    pub fn done(this: &IteratorNext) -> bool;
-
-    /// Any JavaScript value returned by the iterator. Can be omitted when done
-    /// is true.
-    #[wasm_bindgen(method, getter, structural)]
-    pub fn value(this: &IteratorNext) -> JsValue;
 }
 
 // Math
@@ -2953,7 +2955,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/entries)
     #[wasm_bindgen(method)]
-    pub fn entries(set: &Set) -> Iterator;
+    pub fn entries(set: &Set) -> JsIterator;
 
     /// The `keys()` method is an alias for this method (for similarity with
     /// Map objects); it behaves exactly the same and returns values
@@ -2961,14 +2963,14 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values)
     #[wasm_bindgen(method)]
-    pub fn keys(set: &Set) -> Iterator;
+    pub fn keys(set: &Set) -> JsIterator;
 
     /// The `values()` method returns a new Iterator object that contains the
     /// values for each element in the Set object in insertion order.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/values)
     #[wasm_bindgen(method)]
-    pub fn values(set: &Set) -> Iterator;
+    pub fn values(set: &Set) -> JsIterator;
 }
 
 // SyntaxError
