@@ -25,6 +25,7 @@ pub mod wasm2es6js;
 
 pub struct Bindgen {
     path: Option<PathBuf>,
+    out_name: Option<String>,
     nodejs: bool,
     nodejs_experimental_modules: bool,
     browser: bool,
@@ -40,6 +41,7 @@ impl Bindgen {
     pub fn new() -> Bindgen {
         Bindgen {
             path: None,
+            out_name: None,
             nodejs: false,
             nodejs_experimental_modules: false,
             browser: false,
@@ -54,6 +56,11 @@ impl Bindgen {
 
     pub fn input_path<P: AsRef<Path>>(&mut self, path: P) -> &mut Bindgen {
         self.path = Some(path.as_ref().to_path_buf());
+        self
+    }
+
+    pub fn out_name(&mut self, name: &str) -> &mut Bindgen {
+        self.out_name = Some(name.to_string());
         self
     }
 
@@ -111,7 +118,10 @@ impl Bindgen {
             Some(ref path) => path,
             None => bail!("must have a path input for now"),
         };
-        let stem = input.file_stem().unwrap().to_str().unwrap();
+        let stem = match &self.out_name {
+            Some(name) => name,
+            None => input.file_stem().unwrap().to_str().unwrap(),
+        };
         let mut contents = Vec::new();
         File::open(&input)
             .and_then(|mut f| f.read_to_end(&mut contents))
