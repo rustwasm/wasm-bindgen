@@ -32,6 +32,47 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.29
+
+Released 2018-12-04.
+
+### Added
+
+* Add a `#[wasm_bindgen(start)]` attribute to customize the `start` section of
+  the wasm module.
+  [#1057](https://github.com/rustwasm/wasm-bindgen/pull/1057)
+
+* Add support for producing the new "producers" section of wasm binaries
+  [#1041](https://github.com/rustwasm/wasm-bindgen/pull/1041)
+
+* Add support a `typescript_custom_section` attribute for producing custom
+  typescript abstractions
+  [#1048](https://github.com/rustwasm/wasm-bindgen/pull/1048)
+
+* Generate `*.d.ts` files for wasm files in addition to the JS bindings
+  [#1053](https://github.com/rustwasm/wasm-bindgen/pull/1053)
+
+* Add a feature to assert that all attributes in `#[wasm_bindgen]` are used to
+  help catch typos and mistakes
+  [#1055](https://github.com/rustwasm/wasm-bindgen/pull/1055)
+
+### Changed
+
+* JS glue generation has received a few small optimizations such as removing
+  shims and removing object allocations
+  [#1033](https://github.com/rustwasm/wasm-bindgen/pull/1033)
+  [#1030](https://github.com/rustwasm/wasm-bindgen/pull/1030)
+
+* JS glue now just uses one array of JS objects instead of two
+  [#1069](https://github.com/rustwasm/wasm-bindgen/pull/1069)
+
+### Fixed
+
+* Fix a typo in the `--no-modules` generated JS
+  [#1045](https://github.com/rustwasm/wasm-bindgen/pull/1045)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.28
 
 Released 2018-11-12.
