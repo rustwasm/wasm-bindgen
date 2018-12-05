@@ -29,6 +29,7 @@ Usage:
 Options:
     -h --help                Show this screen.
     --out-dir DIR            Output directory
+    --out-name VAR           Set a custom output filename (Without extension. Defaults to crate name)
     --nodejs                 Generate output that only works in node.js
     --browser                Generate output that only works in a browser
     --no-modules             Generate output that only works in a browser (without modules)
@@ -50,6 +51,7 @@ struct Args {
     flag_typescript: bool,
     flag_no_typescript: bool,
     flag_out_dir: Option<PathBuf>,
+    flag_out_name: Option<String>,
     flag_debug: bool,
     flag_version: bool,
     flag_no_demangle: bool,
@@ -100,6 +102,9 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .typescript(typescript);
     if let Some(ref name) = args.flag_no_modules_global {
         b.no_modules_global(name);
+    }
+    if let Some(ref name) = args.flag_out_name {
+        b.out_name(name);
     }
 
     let out_dir = match args.flag_out_dir {
