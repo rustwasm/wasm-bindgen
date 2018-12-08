@@ -637,7 +637,7 @@ impl<'a> IdlType<'a> {
                 .iter()
                 .flat_map(|idl_type| idl_type.flatten())
                 .collect(),
-            IdlType::ArrayBufferView => vec![IdlType::ArrayBufferView, IdlType::Uint8ArrayMut],
+            IdlType::ArrayBufferView => vec![IdlType::ArrayBufferView, IdlType::Uint8ArrayMut, IdlType::Uint16Array],
             IdlType::BufferSource => vec![IdlType::BufferSource, IdlType::Uint8ArrayMut],
             IdlType::LongLong => vec![IdlType::Long, IdlType::Double],
             IdlType::UnsignedLongLong => vec![IdlType::UnsignedLong, IdlType::Double],
