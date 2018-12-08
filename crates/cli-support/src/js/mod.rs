@@ -118,6 +118,58 @@ const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 // Must be kept in sync with `src/lib.rs` of the `wasm-bindgen` crate
 const INITIAL_HEAP_OFFSET: usize = 32;
 
+lazy_static! {
+    static ref JS_KEYWORDS: HashSet<&'static str> = {
+        let mut keywords = HashSet::new();
+        keywords.insert("await");
+        keywords.insert("break");
+        keywords.insert("case");
+        keywords.insert("catch");
+        keywords.insert("class");
+        keywords.insert("const");
+        keywords.insert("continue");
+        keywords.insert("debugger");
+        keywords.insert("default");
+        keywords.insert("delete");
+        keywords.insert("do");
+        keywords.insert("else");
+        keywords.insert("enum");
+        keywords.insert("export");
+        keywords.insert("extends");
+        keywords.insert("false");
+        keywords.insert("finally");
+        keywords.insert("for");
+        keywords.insert("function");
+        keywords.insert("if");
+        keywords.insert("implements");
+        keywords.insert("import");
+        keywords.insert("in");
+        keywords.insert("instanceof");
+        keywords.insert("interface");
+        keywords.insert("new");
+        keywords.insert("null");
+        keywords.insert("package");
+        keywords.insert("private");
+        keywords.insert("protected");
+        keywords.insert("public");
+        keywords.insert("return");
+        keywords.insert("super");
+        keywords.insert("switch");
+        keywords.insert("this");
+        keywords.insert("throw");
+        keywords.insert("true");
+        keywords.insert("try");
+        keywords.insert("typeof");
+        keywords.insert("undefined");
+        keywords.insert("var");
+        keywords.insert("void");
+        keywords.insert("while");
+        keywords.insert("with");
+        keywords.insert("yield");
+        keywords
+    };
+}
+
 impl<'a> Context<'a> {
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
         let contents = contents.trim();
@@ -1858,7 +1910,7 @@ impl<'a> Context<'a> {
         let class = self.import_identifier(name);
         let op = match &method_data.kind {
             decode::MethodKind::Constructor => {
-                return Ok(ImportTarget::Constructor(class.to_string()))
+                return Ok(ImportTarget::Constructor(class.to_string()));
             }
             decode::MethodKind::Operation(op) => op,
         };
@@ -2649,7 +2701,7 @@ impl<'a> Import<'a> {
 fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> String {
     let cnt = used_names.entry(name.to_string()).or_insert(0);
     *cnt += 1;
-    if *cnt == 1 {
+    if *cnt == 1 && !JS_KEYWORDS.contains(name) {
         name.to_string()
     } else {
         format!("{}{}", name, cnt)
@@ -2667,4 +2719,25 @@ fn format_doc_comments(comments: &[&str], js_doc_comments: Option<String>) -> St
         String::new()
     };
     format!("/**\n{}{}*/\n", body, doc)
+}
+
+#[test]
+fn test_generate_identifier() {
+    let mut used_names: HashMap<String, usize> = HashMap::new();
+    assert_eq!(
+        generate_identifier("someVar", &mut used_names),
+        "someVar".to_string()
+    );
+    assert_eq!(
+        generate_identifier("someVar", &mut used_names),
+        "someVar2".to_string()
+    );
+    assert_eq!(
+        generate_identifier("default", &mut used_names),
+        "default1".to_string()
+    );
+    assert_eq!(
+        generate_identifier("default", &mut used_names),
+        "default2".to_string()
+    );
 }

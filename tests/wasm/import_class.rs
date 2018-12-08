@@ -29,6 +29,13 @@ extern "C" {
     #[wasm_bindgen(method)]
     fn get(this: &NewConstructors) -> i32;
 
+    #[wasm_bindgen(js_name = default)]
+    type RenamedTypes;
+    #[wasm_bindgen(constructor)]
+    fn new(arg: i32) -> RenamedTypes;
+    #[wasm_bindgen(method)]
+    fn get(this: &RenamedTypes) -> i32;
+
     fn switch_methods_a();
     fn switch_methods_b();
     type SwitchMethods;
@@ -122,6 +129,12 @@ fn construct() {
 #[wasm_bindgen_test]
 fn new_constructors() {
     let f = NewConstructors::new(1);
+    assert_eq!(f.get(), 2);
+}
+
+#[wasm_bindgen_test]
+fn rename_type() {
+    let f = RenamedTypes::new(1);
     assert_eq!(f.get(), 2);
 }
 

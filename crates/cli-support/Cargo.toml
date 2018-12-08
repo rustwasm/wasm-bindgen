@@ -13,6 +13,7 @@ Shared support for the wasm-bindgen-cli package, an internal dependency
 [dependencies]
 base64 = "0.9"
 failure = "0.1.2"
+lazy_static = "1.0.0"
 parity-wasm = "0.35"
 tempfile = "3.0"
 wasm-bindgen-gc = { path = '../gc', version = '=0.2.29' }

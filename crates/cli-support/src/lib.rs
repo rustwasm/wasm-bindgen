@@ -1,5 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
+#[macro_use]
+extern crate lazy_static;
 extern crate parity_wasm;
 #[macro_use]
 extern crate wasm_bindgen_shared as shared;
