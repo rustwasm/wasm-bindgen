@@ -1824,7 +1824,12 @@ impl<'a> Context<'a> {
             .or_insert_with(Default::default)
             .entry(import.name())
             .or_insert_with(|| {
-                let name = generate_identifier(import.name(), imported_identifiers);
+                let name = match &import {
+                    Import::Module { .. } => {
+                        generate_identifier(import.name(), imported_identifiers, true)
+                    }
+                    _ => generate_identifier(import.name(), imported_identifiers, false),
+                };
                 match &import {
                     Import::Module { module, .. } => {
                         if use_node_require {
@@ -2700,10 +2705,14 @@ impl<'a> Import<'a> {
     }
 }
 
-fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> String {
+fn generate_identifier(
+    name: &str,
+    used_names: &mut HashMap<String, usize>,
+    mangle_reserved_names: bool,
+) -> String {
     let cnt = used_names.entry(name.to_string()).or_insert(0);
     *cnt += 1;
-    if *cnt == 1 && !JS_RESERVED_WORDS.contains(name) {
+    if *cnt == 1 && !(mangle_reserved_names && JS_RESERVED_WORDS.contains(name)) {
         name.to_string()
     } else {
         format!("{}{}", name, cnt)
@@ -2727,19 +2736,23 @@ fn format_doc_comments(comments: &[&str], js_doc_comments: Option<String>) -> St
 fn test_generate_identifier() {
     let mut used_names: HashMap<String, usize> = HashMap::new();
     assert_eq!(
-        generate_identifier("someVar", &mut used_names),
+        generate_identifier("someVar", &mut used_names, true),
         "someVar".to_string()
     );
     assert_eq!(
-        generate_identifier("someVar", &mut used_names),
+        generate_identifier("someVar", &mut used_names, true),
         "someVar2".to_string()
     );
     assert_eq!(
-        generate_identifier("default", &mut used_names),
+        generate_identifier("default", &mut used_names, true),
         "default1".to_string()
     );
     assert_eq!(
-        generate_identifier("default", &mut used_names),
+        generate_identifier("default", &mut used_names, true),
         "default2".to_string()
+    );
+    assert_eq!(
+        generate_identifier("eval", &mut used_names, false),
+        "eval".to_string()
     );
 }
