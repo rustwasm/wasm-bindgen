@@ -31,9 +31,9 @@ extern "C" {
 
     #[wasm_bindgen(js_name = default)]
     type RenamedTypes;
-    #[wasm_bindgen(constructor)]
+    #[wasm_bindgen(constructor, js_class = default)]
     fn new(arg: i32) -> RenamedTypes;
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_class = default)]
     fn get(this: &RenamedTypes) -> i32;
 
     fn switch_methods_a();
