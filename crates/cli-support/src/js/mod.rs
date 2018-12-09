@@ -119,54 +119,59 @@ const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 const INITIAL_HEAP_OFFSET: usize = 32;
 
 lazy_static! {
-    static ref JS_KEYWORDS: HashSet<&'static str> = {
-        let mut keywords = HashSet::new();
-        keywords.insert("await");
-        keywords.insert("break");
-        keywords.insert("case");
-        keywords.insert("catch");
-        keywords.insert("class");
-        keywords.insert("const");
-        keywords.insert("continue");
-        keywords.insert("debugger");
-        keywords.insert("default");
-        keywords.insert("delete");
-        keywords.insert("do");
-        keywords.insert("else");
-        keywords.insert("enum");
-        keywords.insert("export");
-        keywords.insert("extends");
-        keywords.insert("false");
-        keywords.insert("finally");
-        keywords.insert("for");
-        keywords.insert("function");
-        keywords.insert("if");
-        keywords.insert("implements");
-        keywords.insert("import");
-        keywords.insert("in");
-        keywords.insert("instanceof");
-        keywords.insert("interface");
-        keywords.insert("new");
-        keywords.insert("null");
-        keywords.insert("package");
-        keywords.insert("private");
-        keywords.insert("protected");
-        keywords.insert("public");
-        keywords.insert("return");
-        keywords.insert("super");
-        keywords.insert("switch");
-        keywords.insert("this");
-        keywords.insert("throw");
-        keywords.insert("true");
-        keywords.insert("try");
-        keywords.insert("typeof");
-        keywords.insert("undefined");
-        keywords.insert("var");
-        keywords.insert("void");
-        keywords.insert("while");
-        keywords.insert("with");
-        keywords.insert("yield");
-        keywords
+    static ref JS_RESERVED_WORDS: HashSet<&'static str> = {
+        let mut words = HashSet::with_capacity(49);
+        words.insert("Infinity");
+        words.insert("NaN");
+        words.insert("arguments");
+        words.insert("await");
+        words.insert("break");
+        words.insert("case");
+        words.insert("catch");
+        words.insert("class");
+        words.insert("const");
+        words.insert("continue");
+        words.insert("debugger");
+        words.insert("default");
+        words.insert("delete");
+        words.insert("do");
+        words.insert("else");
+        words.insert("enum");
+        words.insert("export");
+        words.insert("extends");
+        words.insert("false");
+        words.insert("finally");
+        words.insert("for");
+        words.insert("function");
+        words.insert("if");
+        words.insert("implements");
+        words.insert("import");
+        words.insert("in");
+        words.insert("instanceof");
+        words.insert("interface");
+        words.insert("let");
+        words.insert("new");
+        words.insert("null");
+        words.insert("package");
+        words.insert("private");
+        words.insert("protected");
+        words.insert("public");
+        words.insert("require");
+        words.insert("return");
+        words.insert("super");
+        words.insert("switch");
+        words.insert("this");
+        words.insert("throw");
+        words.insert("true");
+        words.insert("try");
+        words.insert("typeof");
+        words.insert("undefined");
+        words.insert("var");
+        words.insert("void");
+        words.insert("while");
+        words.insert("with");
+        words.insert("yield");
+        words
     };
 }
 
@@ -2701,7 +2706,7 @@ impl<'a> Import<'a> {
 fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> String {
     let cnt = used_names.entry(name.to_string()).or_insert(0);
     *cnt += 1;
-    if *cnt == 1 && !JS_KEYWORDS.contains(name) {
+    if *cnt == 1 && !JS_RESERVED_WORDS.contains(name) {
         name.to_string()
     } else {
         format!("{}{}", name, cnt)
