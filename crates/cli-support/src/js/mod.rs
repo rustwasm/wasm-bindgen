@@ -120,9 +120,7 @@ const INITIAL_HEAP_OFFSET: usize = 32;
 
 lazy_static! {
     static ref JS_RESERVED_WORDS: HashSet<&'static str> = {
-        let mut words = HashSet::with_capacity(49);
-        words.insert("Infinity");
-        words.insert("NaN");
+        let mut words = HashSet::with_capacity(47);
         words.insert("arguments");
         words.insert("await");
         words.insert("break");
@@ -137,6 +135,7 @@ lazy_static! {
         words.insert("do");
         words.insert("else");
         words.insert("enum");
+        words.insert("eval");
         words.insert("export");
         words.insert("extends");
         words.insert("false");
@@ -156,7 +155,6 @@ lazy_static! {
         words.insert("private");
         words.insert("protected");
         words.insert("public");
-        words.insert("require");
         words.insert("return");
         words.insert("super");
         words.insert("switch");
@@ -165,7 +163,6 @@ lazy_static! {
         words.insert("true");
         words.insert("try");
         words.insert("typeof");
-        words.insert("undefined");
         words.insert("var");
         words.insert("void");
         words.insert("while");
