@@ -1,4 +1,3 @@
-extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 /// Here is a duck-typed interface for any JavaScript object that has a `quack`
@@ -18,6 +17,6 @@ extern "C" {
 /// Next, we can export a function that takes any object that quacks:
 #[wasm_bindgen]
 pub fn make_em_quack_to_this(duck: &Quacks) {
-    let s = duck.quack();
+    let _s = duck.quack();
     // ...
 }
