@@ -1,5 +1,5 @@
-extern crate wasm_bindgen;
-extern crate web_sys;
+
+use web_sys;
 
 use wasm_bindgen::prelude::*;
 
