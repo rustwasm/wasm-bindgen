@@ -1,7 +1,3 @@
-extern crate js_sys;
-extern crate wasm_bindgen;
-extern crate web_sys;
-
 use std::f64;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
