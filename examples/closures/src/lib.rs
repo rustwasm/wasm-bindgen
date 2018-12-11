@@ -1,5 +1,3 @@
-use web_sys;
-
 use js_sys::{Array, Date};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
