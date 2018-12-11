@@ -30,7 +30,7 @@ class Construct {
 Construct.internal_string = '';
 exports.Construct = Construct;
 
-exports.NewConstructors = class {
+class NewConstructor {
   constructor(field) {
     this.field = field;
   }
@@ -38,7 +38,10 @@ exports.NewConstructors = class {
   get() {
     return this.field + 1;
   }
-};
+}
+
+exports.NewConstructors = NewConstructor;
+exports.default = NewConstructor;
 
 let switch_called = false;
 class SwitchMethods {
