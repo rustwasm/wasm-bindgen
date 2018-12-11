@@ -1,6 +1,6 @@
 #![allow(unused_variables, dead_code)]
 
-extern crate wasm_bindgen;
+use wasm_bindgen;
 
 pub mod bool;
 pub mod boxed_js_value_slice;
