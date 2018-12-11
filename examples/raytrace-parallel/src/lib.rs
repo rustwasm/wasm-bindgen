@@ -1,9 +1,3 @@
-extern crate futures;
-extern crate js_sys;
-extern crate raytracer;
-extern crate wasm_bindgen;
-extern crate web_sys;
-
 use std::cell::RefCell;
 use std::cmp;
 use std::rc::Rc;
@@ -88,7 +82,7 @@ impl Scene {
                 }
             }
             Ok(())
-        }) as Box<FnMut(_) -> Result<(), JsValue>>);
+        }) as Box<dyn FnMut(_) -> Result<(), JsValue>>);
 
         for worker in &pool.workers[..concurrency] {
             let ptr_to_send = Arc::into_raw(r.shared.clone()) as u32;
@@ -112,7 +106,7 @@ impl Scene {
 #[wasm_bindgen]
 pub struct WorkerPool {
     workers: Vec<Worker>,
-    callback: Closure<FnMut(Event)>,
+    callback: Closure<dyn FnMut(Event)>,
 }
 
 #[wasm_bindgen]
@@ -193,7 +187,7 @@ impl RenderingScene {
 }
 
 struct Render {
-    callback: Option<Closure<FnMut(Event) -> Result<(), JsValue>>>,
+    callback: Option<Closure<dyn FnMut(Event) -> Result<(), JsValue>>>,
     tx: Option<oneshot::Sender<()>>,
     shared: Arc<Shared>,
     ctx: CanvasRenderingContext2d,
@@ -326,7 +320,7 @@ impl Shared {
     fn update_image(
         &self,
         done: bool,
-        data: MutexGuard<Vec<u8>>,
+        data: MutexGuard<'_,Vec<u8>>,
         global: &DedicatedWorkerGlobalScope,
     ) -> Result<(), JsValue> {
         // This is pretty icky. We can't create an `ImageData` backed by
