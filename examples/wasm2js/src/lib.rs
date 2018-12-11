@@ -1,5 +1,3 @@
-extern crate wasm_bindgen;
-
 use wasm_bindgen::prelude::*;
 
 // lifted from the `console_log` example
