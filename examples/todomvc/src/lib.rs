@@ -2,15 +2,9 @@
 //!
 //! A [TODO MVC](https://todomvc.com/) implementation written using [web-sys](https://rustwasm.github.io/wasm-bindgen/web-sys/overview.html)
 
-extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
-extern crate js_sys;
-extern crate web_sys;
 use std::rc::Rc;
-
-extern crate askama;
-extern crate console_error_panic_hook;
 
 /// Controller of the program
 pub mod controller;

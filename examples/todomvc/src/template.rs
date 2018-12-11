@@ -1,5 +1,5 @@
 use askama::Template as AskamaTemplate;
-use store::{ItemList, ItemListTrait};
+use crate::store::{ItemList, ItemListTrait};
 
 #[derive(AskamaTemplate)]
 #[template(path = "row.html")]
