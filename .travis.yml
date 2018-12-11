@@ -120,6 +120,11 @@ matrix:
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER; fi
       if: branch = master
 
+    # The `cli-support` crate's tests pass
+    - name: "test cli-support crate"
+      script: cargo test -p wasm-bindgen-cli-support
+      if: branch = master
+
     # The `web-sys` crate's tests pass
     - name: "test web-sys crate"
       install:

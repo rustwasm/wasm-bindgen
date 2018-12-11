@@ -1858,7 +1858,7 @@ impl<'a> Context<'a> {
         let class = self.import_identifier(name);
         let op = match &method_data.kind {
             decode::MethodKind::Constructor => {
-                return Ok(ImportTarget::Constructor(class.to_string()))
+                return Ok(ImportTarget::Constructor(class.to_string()));
             }
             decode::MethodKind::Operation(op) => op,
         };
@@ -2649,7 +2649,9 @@ impl<'a> Import<'a> {
 fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> String {
     let cnt = used_names.entry(name.to_string()).or_insert(0);
     *cnt += 1;
-    if *cnt == 1 {
+    // We want to mangle `default` at once, so we can support default exports and don't generate
+    // invalid glue code like this: `import { default } from './module';`.
+    if *cnt == 1 && name != "default" {
         name.to_string()
     } else {
         format!("{}{}", name, cnt)
@@ -2667,4 +2669,25 @@ fn format_doc_comments(comments: &[&str], js_doc_comments: Option<String>) -> St
         String::new()
     };
     format!("/**\n{}{}*/\n", body, doc)
+}
+
+#[test]
+fn test_generate_identifier() {
+    let mut used_names: HashMap<String, usize> = HashMap::new();
+    assert_eq!(
+        generate_identifier("someVar", &mut used_names),
+        "someVar".to_string()
+    );
+    assert_eq!(
+        generate_identifier("someVar", &mut used_names),
+        "someVar2".to_string()
+    );
+    assert_eq!(
+        generate_identifier("default", &mut used_names),
+        "default1".to_string()
+    );
+    assert_eq!(
+        generate_identifier("default", &mut used_names),
+        "default2".to_string()
+    );
 }
