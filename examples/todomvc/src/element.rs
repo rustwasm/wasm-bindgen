@@ -1,4 +1,3 @@
-extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::EventTarget;
@@ -62,7 +61,7 @@ impl Element {
     where
         T: 'static + FnMut(web_sys::Event),
     {
-        let cb = Closure::wrap(Box::new(handler) as Box<FnMut(_)>);
+        let cb = Closure::wrap(Box::new(handler) as Box<dyn FnMut(_)>);
         if let Some(el) = self.el.take() {
             let el_et: EventTarget = el.into();
             el_et
@@ -117,7 +116,7 @@ impl Element {
                                 }
                             }
                         }
-                    }) as Box<FnMut(_)>);
+                    }) as Box<dyn FnMut(_)>);
 
                     dyn_el
                         .add_event_listener_with_callback_and_bool(

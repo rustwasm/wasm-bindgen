@@ -43,7 +43,7 @@ impl Store {
                 let title = item_array.shift().as_string()?;
                 let completed = item_array.shift().as_bool()?;
                 let id = item_array.shift().as_string()?;
-                let mut temp_item = Item {
+                let temp_item = Item {
                     title,
                     completed,
                     id,
@@ -59,7 +59,7 @@ impl Store {
     fn sync_local_storage(&mut self) {
         let array = js_sys::Array::new();
         for item in self.data.iter() {
-            let mut child = js_sys::Array::new();
+            let child = js_sys::Array::new();
             let s = item.title.clone();
             child.push(&JsValue::from(&s));
             child.push(&JsValue::from(item.completed));
@@ -82,7 +82,7 @@ impl Store {
     ///  let data = db.find(ItemQuery::Completed {completed: true});
     ///	 // data will contain items whose completed properties are true
     /// ```
-    pub fn find(&mut self, query: ItemQuery) -> Option<ItemListSlice> {
+    pub fn find(&mut self, query: ItemQuery) -> Option<ItemListSlice<'_>> {
         Some(
             self.data
                 .iter()
@@ -160,7 +160,7 @@ pub trait ItemListTrait<T> {
     fn get(&self, i: usize) -> Option<&T>;
     fn length(&self) -> usize;
     fn push(&mut self, item: T);
-    fn iter(&self) -> std::slice::Iter<T>;
+    fn iter(&self) -> std::slice::Iter<'_, T>;
 }
 
 pub struct ItemList {
@@ -173,7 +173,7 @@ impl ItemList {
     {
         self.list.retain(f);
     }
-    fn iter_mut(&mut self) -> std::slice::IterMut<Item> {
+    fn iter_mut(&mut self) -> std::slice::IterMut<'_, Item> {
         self.list.iter_mut()
     }
 }
@@ -190,7 +190,7 @@ impl ItemListTrait<Item> for ItemList {
     fn push(&mut self, item: Item) {
         self.list.push(item)
     }
-    fn iter(&self) -> std::slice::Iter<Item> {
+    fn iter(&self) -> std::slice::Iter<'_, Item> {
         self.list.iter()
     }
 }
@@ -224,7 +224,7 @@ impl<'a> ItemListTrait<&'a Item> for ItemListSlice<'a> {
     fn push(&mut self, item: &'a Item) {
         self.list.push(item)
     }
-    fn iter(&self) -> std::slice::Iter<&'a Item> {
+    fn iter(&self) -> std::slice::Iter<'_, &'a Item> {
         self.list.iter()
     }
 }

@@ -1,6 +1,3 @@
-extern crate js_sys;
-extern crate wasm_bindgen;
-
 use js_sys::{Function, Object, Reflect, Uint8Array, WebAssembly};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;

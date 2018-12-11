@@ -12,7 +12,6 @@ use crate::template::Template;
 const ENTER_KEY: u32 = 13;
 const ESCAPE_KEY: u32 = 27;
 
-extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 /// Messages that represent the methods to be called on the View
@@ -53,7 +52,7 @@ pub struct View {
     main: Element,
     toggle_all: Element,
     new_todo: Element,
-    callbacks: Vec<(web_sys::EventTarget, String, Closure<FnMut()>)>,
+    callbacks: Vec<(web_sys::EventTarget, String, Closure<dyn FnMut()>)>,
 }
 
 impl View {
@@ -95,7 +94,7 @@ impl View {
                     }
                 }
             }
-        }) as Box<FnMut()>);
+        }) as Box<dyn FnMut()>);
 
         let window_et: web_sys::EventTarget = window.into();
         window_et
@@ -422,7 +421,7 @@ impl View {
 impl Drop for View {
     fn drop(&mut self) {
         exit("calling drop on view");
-        let callbacks: Vec<(web_sys::EventTarget, String, Closure<FnMut()>)> =
+        let callbacks: Vec<(web_sys::EventTarget, String, Closure<dyn FnMut()>)> =
             self.callbacks.drain(..).collect();
         for callback in callbacks {
             callback
