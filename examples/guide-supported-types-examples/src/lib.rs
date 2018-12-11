@@ -1,7 +1,5 @@
 #![allow(unused_variables, dead_code)]
 
-use wasm_bindgen;
-
 pub mod bool;
 pub mod boxed_js_value_slice;
 pub mod boxed_number_slices;

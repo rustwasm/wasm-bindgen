@@ -1,6 +1,4 @@
 
-use web_sys;
-
 use wasm_bindgen::prelude::*;
 
 // Called by our JS entry point to run the example
