@@ -1,7 +1,4 @@
-extern crate humantime;
-extern crate wasm_bindgen;
-extern crate web_sys;
-
+use humantime;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use wasm_bindgen::prelude::*;
