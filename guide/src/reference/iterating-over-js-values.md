@@ -75,7 +75,7 @@ use wasm_bindgen::prelude::*;
 pub fn collect_numbers(some_iterable: &JsValue) -> Result<js_sys::Array, JsValue> {
     let nums = js_sys::Array::new();
 
-    let iterator = match js_sys::try_iter(some_iterable)?.ok_or_else(|| {
+    let iterator = js_sys::try_iter(some_iterable)?.ok_or_else(|| {
         "need to pass iterable JS values!".into()
     })?;
 
