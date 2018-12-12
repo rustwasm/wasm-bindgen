@@ -1,7 +1,3 @@
-extern crate js_sys;
-extern crate wasm_bindgen;
-extern crate web_sys;
-
 use std::cell::Cell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
@@ -30,7 +26,7 @@ pub fn start() -> Result<(), JsValue> {
             context.begin_path();
             context.move_to(event.offset_x() as f64, event.offset_y() as f64);
             pressed.set(true);
-        }) as Box<FnMut(_)>);
+        }) as Box<dyn FnMut(_)>);
         canvas.add_event_listener_with_callback("mousedown", closure.as_ref().unchecked_ref())?;
         closure.forget();
     }
@@ -44,7 +40,7 @@ pub fn start() -> Result<(), JsValue> {
                 context.begin_path();
                 context.move_to(event.offset_x() as f64, event.offset_y() as f64);
             }
-        }) as Box<FnMut(_)>);
+        }) as Box<dyn FnMut(_)>);
         canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())?;
         closure.forget();
     }
@@ -55,7 +51,7 @@ pub fn start() -> Result<(), JsValue> {
             pressed.set(false);
             context.line_to(event.offset_x() as f64, event.offset_y() as f64);
             context.stroke();
-        }) as Box<FnMut(_)>);
+        }) as Box<dyn FnMut(_)>);
         canvas.add_event_listener_with_callback("mouseup", closure.as_ref().unchecked_ref())?;
         closure.forget();
     }
