@@ -1,4 +1,3 @@
-use humantime;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use wasm_bindgen::prelude::*;
