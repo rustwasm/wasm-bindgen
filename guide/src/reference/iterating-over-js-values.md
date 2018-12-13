@@ -76,7 +76,7 @@ pub fn collect_numbers(some_iterable: &JsValue) -> Result<js_sys::Array, JsValue
     let nums = js_sys::Array::new();
 
     let iterator = js_sys::try_iter(some_iterable)?.ok_or_else(|| {
-        "need to pass iterable JS values!".into()
+        "need to pass iterable JS values!"
     })?;
 
     for x in iterator {
@@ -85,7 +85,7 @@ pub fn collect_numbers(some_iterable: &JsValue) -> Result<js_sys::Array, JsValue
         let x = x?;
 
         // If `x` is a number, add it to our array of numbers!
-        if x.is_f64() {
+        if x.as_f64().is_some() {
             nums.push(&x);
         }
     }
