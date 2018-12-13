@@ -11,7 +11,7 @@ object. Therefore, we end up with these `web-sys` functions that all bind to the
 
 * [`Window::fetch_with_str`](https://rustwasm.github.io/wasm-bindgen/api/web_sys/struct.Window.html#method.fetch_with_str)
 * [`Window::fetch_with_request`](https://rustwasm.github.io/wasm-bindgen/api/web_sys/struct.Window.html#method.fetch_with_request)
-* [`Window::fetch_with_str_and_init`](https://rustwasm.github.io/wasm-bindgen/api/web_sys/str_and_inituct.Window.html#method.fetch_with_str_and_init)
+* [`Window::fetch_with_str_and_init`](https://rustwasm.github.io/wasm-bindgen/api/web_sys/struct.Window.html#method.fetch_with_str_and_init)
 * [`Window::fetch_with_request_and_init`](https://rustwasm.github.io/wasm-bindgen/api/web_sys/struct.Window.html#method.fetch_with_request_and_init)
 
 Note that different overloads can use different interfaces, and therefore can

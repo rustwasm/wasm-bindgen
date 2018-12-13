@@ -5,7 +5,7 @@
 [online]: https://rustwasm.github.io/wasm-bindgen/exbuild/todomvc/
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/todomvc
 
-[wasm-bindgen](https://github.com/rustwasm/wasm-bindgen) and [web-sys](https://rustwasm.github.io/wasm-bindgen/api/web_sys/) coded [TODO MVC](https://todomvc.com/)
+[wasm-bindgen](https://github.com/rustwasm/wasm-bindgen) and [web-sys](https://rustwasm.github.io/wasm-bindgen/api/web_sys/) coded [TODO MVC](http://todomvc.com/)
 
 The code was rewritten from the [ES6 version](http://todomvc.com/examples/vanilla-es6/).
 
