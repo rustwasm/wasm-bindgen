@@ -37,10 +37,8 @@ interface HTMLSelectElement : HTMLElement {
   HTMLOptionElement? namedItem(DOMString name);
   [CEReactions, Throws]
   void add((HTMLOptionElement or HTMLOptGroupElement) element, optional (HTMLElement or long)? before = null);
-/* TODO not permitted multiple functions with the same name
   [CEReactions]
   void remove(long index);
-*/
   [CEReactions, Throws]
   setter void (unsigned long index, HTMLOptionElement? option);
 
