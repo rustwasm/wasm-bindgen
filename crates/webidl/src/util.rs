@@ -687,7 +687,11 @@ pub fn is_structural(
     item_attrs: Option<&ExtendedAttributeList>,
     container_attrs: Option<&ExtendedAttributeList>,
 ) -> bool {
-    has_named_attribute(item_attrs, "Unforgeable")
+    // Note that once host bindings is implemented we'll want to switch this
+    // from `true` to `false`, and then we'll want to largely read information
+    // from the WebIDL about whether to use structural bindings or not.
+    true
+        || has_named_attribute(item_attrs, "Unforgeable")
         || has_named_attribute(container_attrs, "Unforgeable")
         || has_ident_attribute(container_attrs, "Global")
 }
