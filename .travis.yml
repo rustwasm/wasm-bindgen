@@ -109,7 +109,7 @@ matrix:
       install:
         - *INSTALL_AWS
         - rustup component add rust-src
-        - curl -L https://github.com/japaric/xargo/releases/download/v0.3.11/xargo-v0.3.11-x86_64-unknown-linux-musl.tar.gz | tar xzf -
+        - curl -L https://github.com/japaric/xargo/releases/download/v0.3.13/xargo-v0.3.13-x86_64-unknown-linux-musl.tar.gz | tar xzf -
         - export PATH=$PATH:`pwd`
       script:
         - sed -i 's/python/#python/' examples/raytrace-parallel/build.sh
