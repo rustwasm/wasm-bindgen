@@ -12,7 +12,7 @@
 ;;   (type (;0;) (func (param i32)))
 ;;   (func $foo (type 0) (param i32)
 ;;     (local i32)
-;;     get_local 0
-;;     set_local 1)
+;;     local.get 0
+;;     local.set 1)
 ;;   (export "foo" (func $foo)))
 ;; STDOUT

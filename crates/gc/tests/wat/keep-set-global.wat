@@ -17,7 +17,7 @@
 ;;   (type (;0;) (func))
 ;;   (func $foo (type 0)
 ;;     i32.const 1
-;;     set_global 0)
+;;     global.set 0)
 ;;   (global (;0;) (mut i32) (i32.const 0))
 ;;   (start 0))
 ;; STDOUT

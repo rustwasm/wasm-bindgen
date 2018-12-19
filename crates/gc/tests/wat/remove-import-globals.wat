@@ -24,11 +24,11 @@
 ;;   (import "" "a" (global (;0;) i32))
 ;;   (import "" "c" (global (;1;) i32))
 ;;   (func $foo (type 0)
-;;     get_global 0
+;;     global.get 0
 ;;     drop
-;;     get_global 1
+;;     global.get 1
 ;;     drop
-;;     get_global 2
+;;     global.get 2
 ;;     drop)
 ;;   (global (;2;) i32 (i32.const 2))
 ;;   (export "foo" (func $foo)))

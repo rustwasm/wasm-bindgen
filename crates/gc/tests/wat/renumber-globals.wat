@@ -10,7 +10,7 @@
 ;; (module
 ;;   (type (;0;) (func (result i32)))
 ;;   (func (;0;) (type 0) (result i32)
-;;     get_global 0)
+;;     global.get 0)
 ;;   (global (;0;) i32 (i32.const 0))
 ;;   (export "foo" (func 0)))
 ;; STDOUT
