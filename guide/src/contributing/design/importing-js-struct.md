@@ -48,7 +48,7 @@ what's written down in Rust. Now there's a few attribute annotations here, so
 let's go through one-by-one:
 
 * `#[wasm_bindgen(module = "./bar")]` - seen before with imports this is declare
-  where all the subsequent functionality is imported form. For example the `Bar`
+  where all the subsequent functionality is imported from. For example the `Bar`
   type is going to be imported from the `./bar` module.
 * `type Bar` - this is a declaration of JS class as a new type in Rust. This
   means that a new type `Bar` is generated which is "opaque" but is represented
