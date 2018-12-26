@@ -19,6 +19,10 @@ $ cargo +nightly install wasm-bindgen-cli
 The first command here installs the wasm target so you can compile to it, and
 the latter will install the `wasm-bindgen` CLI tool we'll be using later.
 
+If you run into errors while installing the CLI tool, you may need to install a C++
+build chain. On linux, run `sudo apt install build-essential`. On Windows, download and install
+[Visual Studio 2017](https://visualstudio.microsoft.com/downloads/); when asked in the installer, include the C++ workload.
+
 Next up let's make our project
 
 ```shell
