@@ -52,7 +52,7 @@ use throw_str;
 /// #[wasm_bindgen]
 /// pub fn run() -> ClosureHandle {
 ///     // First up we use `Closure::wrap` to wrap up a Rust closure and create
-///     a JS closure.
+///     // a JS closure.
 ///     let cb = Closure::wrap(Box::new(move || {
 ///         log("timeout elapsed!");
 ///     }) as Box<FnMut()>);
