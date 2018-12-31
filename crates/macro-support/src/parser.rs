@@ -786,7 +786,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 bail_span!(
                     self,
                     "#[wasm_bindgen] can only be applied to a function, \
-                     struct, enum, impl, or extern block",
+                     struct, enum, impl, extern block, or typescript_custom_section const",
                 );
             }
         }
@@ -976,9 +976,16 @@ impl MacroParse<()> for syn::ItemEnum {
 
 impl MacroParse<BindgenAttrs> for syn::ItemConst {
     fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
+        use syn::spanned::Spanned;
+        let source_path = self.span().unstable().source_file().path();
+
         // Shortcut
         if opts.typescript_custom_section().is_none() {
-            bail_span!(self, "#[wasm_bindgen] will not work on constants unless you are defining a #[wasm_bindgen(typescript_custom_section)].");
+            bail_span!(
+                self,
+                "#[wasm_bindgen] will not work on constants unless you are defining a \
+                 #[wasm_bindgen(typescript_custom_section)]."
+            );
         }
 
         match *self.expr {
@@ -988,8 +995,54 @@ impl MacroParse<BindgenAttrs> for syn::ItemConst {
             }) => {
                 program.typescript_custom_sections.push(litstr.value());
             }
+            syn::Expr::Macro(syn::ExprMacro { mac, .. }) => {
+                if !mac
+                    .path
+                    .is_ident(Ident::new("include_str", Span::call_site()))
+                {
+                    bail_span!(
+                        &mac.path,
+                        "The only macro allowed with typescript_custom_section is include_str"
+                    )
+                }
+                let lit: syn::Lit = match syn::parse2(mac.tts) {
+                    Ok(lit) => lit,
+                    Err(_) => bail_span!(
+                        &mac.path,
+                        "The only accepted parameter to include_str! is a string literal"
+                    ),
+                };
+                let path = match &lit {
+                    syn::Lit::Str(strlit) => strlit.value(),
+                    _ => bail_span!(
+                        lit,
+                        "The only accepted parameter to include_str! is a string literal"
+                    ),
+                };
+                let mut include_path = std::env::current_dir()
+                    .expect(
+                        "Could not get current working directory for\
+                         typescript_custom_section include_str",
+                    )
+                    .join(source_path);
+                include_path.pop();
+                include_path.push(path);
+                let ts_include = match std::fs::read_to_string(include_path) {
+                    Ok(content) => content,
+                    Err(err) => bail_span!(
+                        &lit,
+                        "Error while reading included typescript file: {}",
+                        err
+                    ),
+                };
+                program.typescript_custom_sections.push(ts_include);
+            }
             _ => {
-                bail_span!(self, "Expected a string literal to be used with #[wasm_bindgen(typescript_custom_section)].");
+                bail_span!(
+                    self.expr,
+                    "Expected a string literal or include_str! macro to be \
+                     used with #[wasm_bindgen(typescript_custom_section)]."
+                );
             }
         }
 

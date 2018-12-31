@@ -18,6 +18,6 @@ strict-macro = []
 [dependencies]
 syn = { version = '0.15.0', features = ['visit'] }
 quote = '0.6'
-proc-macro2 = "0.4.9"
+proc-macro2 = { version = "0.4.9", features = ["nightly"] }
 wasm-bindgen-backend = { path = "../backend", version = "=0.2.29" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.29" }
