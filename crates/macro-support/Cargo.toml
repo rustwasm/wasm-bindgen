@@ -14,10 +14,11 @@ The part of the implementation of the `#[wasm_bindgen]` attribute that is not in
 spans = ["wasm-bindgen-backend/spans"]
 extra-traits = ["syn/extra-traits"]
 strict-macro = []
+nightly = ["proc-macro2/nightly"]
 
 [dependencies]
 syn = { version = '0.15.0', features = ['visit'] }
 quote = '0.6'
-proc-macro2 = { version = "0.4.9", features = ["nightly"] }
+proc-macro2 = { version = "0.4.9" }
 wasm-bindgen-backend = { path = "../backend", version = "=0.2.29" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.29" }

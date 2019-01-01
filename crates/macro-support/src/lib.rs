@@ -1,7 +1,7 @@
 //! This crate contains the part of the implementation of the `#[wasm_bindgen]` optsibute that is
 //! not in the shared backend crate.
 
-#![feature(proc_macro_span)]
+#![cfg_attr(feature = "nightly", feature(proc_macro_span))]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-macro-support/0.2")]
 
 extern crate proc_macro2;

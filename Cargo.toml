@@ -28,7 +28,7 @@ default = ["spans", "std"]
 spans = ["wasm-bindgen-macro/spans"]
 std = []
 serde-serialize = ["serde", "serde_json", "std"]
-nightly = []
+nightly = ["wasm-bindgen-macro/nightly"]
 
 # Whether or not the `#[wasm_bindgen]` macro is strict and generates an error on
 # all unused attributes

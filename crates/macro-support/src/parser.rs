@@ -976,7 +976,9 @@ impl MacroParse<()> for syn::ItemEnum {
 
 impl MacroParse<BindgenAttrs> for syn::ItemConst {
     fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
+        #[cfg(feature = "nightly")]
         use syn::spanned::Spanned;
+        #[cfg(feature = "nightly")]
         let source_path = self.span().unstable().source_file().path();
 
         // Shortcut
@@ -995,6 +997,7 @@ impl MacroParse<BindgenAttrs> for syn::ItemConst {
             }) => {
                 program.typescript_custom_sections.push(litstr.value());
             }
+            #[cfg(feature = "nightly")]
             syn::Expr::Macro(syn::ExprMacro { mac, .. }) => {
                 if !mac
                     .path
@@ -1036,6 +1039,23 @@ impl MacroParse<BindgenAttrs> for syn::ItemConst {
                     ),
                 };
                 program.typescript_custom_sections.push(ts_include);
+            }
+            #[cfg(not(feature = "nightly"))]
+            syn::Expr::Macro(syn::ExprMacro { mac, .. }) => {
+                if !mac
+                    .path
+                    .is_ident(Ident::new("include_str", Span::call_site()))
+                {
+                    bail_span!(
+                        &mac.path,
+                        "The only macro allowed with typescript_custom_section is include_str"
+                    )
+                }
+                bail_span!(
+                    mac,
+                    "In order to use include_str! for a typescript_custom_section, the \
+                     \"nightly\" feature must be enabled."
+                );
             }
             _ => {
                 bail_span!(
