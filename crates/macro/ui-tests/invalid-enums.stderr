@@ -1,25 +1,25 @@
 error: only public enums are allowed with #[wasm_bindgen]
- --> $DIR/invalid-enums.rs:6:1
+ --> $DIR/invalid-enums.rs:8:1
   |
-6 | enum A {}
+8 | enum A {}
   | ^^^^^^^^^
 
 error: only C-Style enums allowed with #[wasm_bindgen]
-  --> $DIR/invalid-enums.rs:10:6
+  --> $DIR/invalid-enums.rs:12:6
    |
-10 |     D(u32),
+12 |     D(u32),
    |      ^^^^^
 
 error: enums with #[wasm_bidngen] may only have number literal values
-  --> $DIR/invalid-enums.rs:15:9
+  --> $DIR/invalid-enums.rs:17:9
    |
-15 |     X = 1 + 3,
+17 |     X = 1 + 3,
    |         ^^^^^
 
 error: enums with #[wasm_bindgen] can only support numbers that can be represented as u32
-  --> $DIR/invalid-enums.rs:20:9
+  --> $DIR/invalid-enums.rs:22:9
    |
-20 |     X = 4294967296,
+22 |     X = 4294967296,
    |         ^^^^^^^^^^
 
 error: aborting due to 4 previous errors

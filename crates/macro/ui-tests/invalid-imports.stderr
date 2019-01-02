@@ -1,91 +1,91 @@
 error: it is currently not sound to use lifetimes in function signatures
- --> $DIR/invalid-imports.rs:9:16
-  |
-9 |     fn f() -> &'static u32;
-  |                ^^^^^^^
+  --> $DIR/invalid-imports.rs:11:16
+   |
+11 |     fn f() -> &'static u32;
+   |                ^^^^^^^
 
 error: imported methods must have at least one argument
-  --> $DIR/invalid-imports.rs:12:5
+  --> $DIR/invalid-imports.rs:14:5
    |
-12 |     fn f1();
+14 |     fn f1();
    |     ^^^^^^^^
 
 error: first argument of method must be a shared reference
-  --> $DIR/invalid-imports.rs:14:14
+  --> $DIR/invalid-imports.rs:16:14
    |
-14 |     fn f2(x: u32);
+16 |     fn f2(x: u32);
    |              ^^^
 
 error: first argument of method must be a path
-  --> $DIR/invalid-imports.rs:16:14
+  --> $DIR/invalid-imports.rs:18:14
    |
-16 |     fn f3(x: &&u32);
+18 |     fn f3(x: &&u32);
    |              ^^^^^
 
 error: multi-segment paths are not supported yet
-  --> $DIR/invalid-imports.rs:18:15
+  --> $DIR/invalid-imports.rs:20:15
    |
-18 |     fn f4(x: &foo::Bar);
+20 |     fn f4(x: &foo::Bar);
    |               ^^^^^^^^
 
 error: global paths are not supported yet
-  --> $DIR/invalid-imports.rs:20:15
-   |
-20 |     fn f4(x: &::Bar);
-   |               ^^^^^
-
-error: paths with type parameters are not supported yet
   --> $DIR/invalid-imports.rs:22:15
    |
-22 |     fn f4(x: &Bar<T>);
-   |               ^^^^^^
+22 |     fn f4(x: &::Bar);
+   |               ^^^^^
 
 error: paths with type parameters are not supported yet
   --> $DIR/invalid-imports.rs:24:15
    |
-24 |     fn f4(x: &Fn(T));
+24 |     fn f4(x: &Bar<T>);
+   |               ^^^^^^
+
+error: paths with type parameters are not supported yet
+  --> $DIR/invalid-imports.rs:26:15
+   |
+26 |     fn f4(x: &Fn(T));
    |               ^^^^^
 
 error: constructor returns must be bare types
-  --> $DIR/invalid-imports.rs:27:5
+  --> $DIR/invalid-imports.rs:29:5
    |
-27 |     fn f();
+29 |     fn f();
    |     ^^^^^^^
 
 error: global paths are not supported yet
-  --> $DIR/invalid-imports.rs:29:15
+  --> $DIR/invalid-imports.rs:31:15
    |
-29 |     fn f() -> ::Bar;
+31 |     fn f() -> ::Bar;
    |               ^^^^^
 
 error: return value of constructor must be a bare path
-  --> $DIR/invalid-imports.rs:31:5
+  --> $DIR/invalid-imports.rs:33:5
    |
-31 |     fn f() -> &Bar;
+33 |     fn f() -> &Bar;
    |     ^^^^^^^^^^^^^^^
-
-error: must be Result<...>
-  --> $DIR/invalid-imports.rs:34:15
-   |
-34 |     fn f() -> u32;
-   |               ^^^
 
 error: must be Result<...>
   --> $DIR/invalid-imports.rs:36:15
    |
-36 |     fn f() -> &u32;
+36 |     fn f() -> u32;
+   |               ^^^
+
+error: must be Result<...>
+  --> $DIR/invalid-imports.rs:38:15
+   |
+38 |     fn f() -> &u32;
    |               ^^^^
 
 error: must have at least one generic parameter
-  --> $DIR/invalid-imports.rs:38:15
+  --> $DIR/invalid-imports.rs:40:15
    |
-38 |     fn f() -> Result<>;
+40 |     fn f() -> Result<>;
    |               ^^^^^^^^
 
 error: it is currently not sound to use lifetimes in function signatures
-  --> $DIR/invalid-imports.rs:40:22
+  --> $DIR/invalid-imports.rs:42:22
    |
-40 |     fn f() -> Result<'a>;
+42 |     fn f() -> Result<'a>;
    |                      ^^
 
 error: aborting due to 15 previous errors
