@@ -854,6 +854,11 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Float32Array) -> u32;
+
+    /// The `set()` method stores multiple values in the typed array, reading
+    /// input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Float32Array, src: &JsValue, offset: u32);
 }
 
 // Float64Array
@@ -938,6 +943,11 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Float64Array) -> u32;
+
+    /// The `set()` method stores multiple values in the typed array, reading
+    /// input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Float64Array, src: &JsValue, offset: u32);
 }
 
 // Function
@@ -1157,6 +1167,11 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Int8Array) -> u32;
+
+    /// The `set()` method stores multiple values in the typed array, reading
+    /// input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Int8Array, src: &JsValue, offset: u32);
 }
 
 // Int16Array
@@ -1241,6 +1256,11 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Int16Array) -> u32;
+
+    /// The `set()` method stores multiple values in the typed array, reading
+    /// input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Int16Array, src: &JsValue, offset: u32);
 }
 
 // Int32Array
@@ -1325,6 +1345,11 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Int32Array) -> u32;
+
+    /// The `set()` method stores multiple values in the typed array, reading
+    /// input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Int32Array, src: &JsValue, offset: u32);
 }
 
 // Map
@@ -3093,6 +3118,11 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Uint8Array) -> u32;
+
+    /// The `set()` method stores multiple values in the typed array, reading
+    /// input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Uint8Array, src: &JsValue, offset: u32);
 }
 
 // Uint8ClampedArray
@@ -3179,6 +3209,11 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Uint8ClampedArray) -> u32;
+
+    /// The `set()` method stores multiple values in the typed array, reading
+    /// input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Uint8ClampedArray, src: &JsValue, offset: u32);
 }
 
 // Uint16Array
@@ -3263,6 +3298,11 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Uint16Array) -> u32;
+
+    /// The `set()` method stores multiple values in the typed array, reading
+    /// input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Uint16Array, src: &JsValue, offset: u32);
 }
 
 // Uint32Array
@@ -3347,6 +3387,11 @@ extern "C" {
     /// typed array from the start of its `ArrayBuffer`.
     #[wasm_bindgen(method, getter, js_name = byteOffset)]
     pub fn byte_offset(this: &Uint32Array) -> u32;
+
+    /// The `set()` method stores multiple values in the typed array, reading
+    /// input values from a specified array.
+    #[wasm_bindgen(method)]
+    pub fn set(this: &Uint32Array, src: &JsValue, offset: u32);
 }
 
 // URIError
@@ -4741,4 +4786,71 @@ pub fn global() -> Object {
     });
 
     GLOBAL.with(|g| g.clone())
+}
+
+macro_rules! arrays {
+    ($($name:ident: $ty:ident,)*) => ($(
+        impl $name {
+            /// Creates a JS typed array which is a few into wasm's linear
+            /// memory at the slice specified.
+            ///
+            /// This function returns a new typed array which is a view into
+            /// wasm's memory. This view does not copy the underlying data.
+            ///
+            /// # Unsafety
+            ///
+            /// Views into WebAssembly memory are only valid so long as the
+            /// backing buffer isn't resized in JS. Once this function is called
+            /// any future calls to `Box::new` (or malloc of any form) may cause
+            /// the returned value here to be invalidated. Use with caution!
+            ///
+            /// Additionally the returned object can be safely mutated but the
+            /// input slice isn't guaranteed to be mutable.
+            ///
+            /// Finally, the returned objet is disconnected from the input
+            /// slice's lifetime, so there's no guarantee that the data is read
+            /// at the right time.
+            pub unsafe fn view(rust: &[$ty]) -> $name {
+                let buf = wasm_bindgen::memory();
+                let mem = buf.unchecked_ref::<WebAssembly::Memory>();
+                $name::new_with_byte_offset_and_length(
+                    &mem.buffer(),
+                    rust.as_ptr() as u32,
+                    rust.len() as u32,
+                )
+            }
+
+            /// Copy the contents of this JS typed array into the destination
+            /// Rust slice.
+            ///
+            /// This function will efficiently copy the memory from a typed
+            /// array into this wasm module's own linear memory, initializing
+            /// the memory destination provided.
+            ///
+            /// # Panics
+            ///
+            /// This function will panic if this typed array's length is
+            /// different than the length of the provided `dst` array.
+            pub fn copy_to(&self, dst: &mut [$ty]) {
+                assert_eq!(self.length() as usize, dst.len());
+                let buf = wasm_bindgen::memory();
+                let mem = buf.unchecked_ref::<WebAssembly::Memory>();
+                let all_wasm_memory = $name::new(&mem.buffer());
+                let offset = dst.as_ptr() as usize / mem::size_of::<$ty>();
+                all_wasm_memory.set(self, offset as u32);
+            }
+        }
+    )*)
+}
+
+arrays! {
+    Int8Array: i8,
+    Int16Array: i16,
+    Int32Array: i32,
+    Uint8Array: u8,
+    Uint8ClampedArray: u8,
+    Uint16Array: u16,
+    Uint32Array: u32,
+    Float32Array: f32,
+    Float64Array: f64,
 }
