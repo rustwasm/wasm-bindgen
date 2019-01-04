@@ -58,7 +58,7 @@ error: can't #[wasm_bindgen] functions with lifetime or type parameters
 33 | pub fn foo6<'a, T>() {}
    |            ^^^^^^^
 
-error: #[wasm_bindgen] can only be applied to a function, struct, enum, impl, or extern block
+error: #[wasm_bindgen] can only be applied to a function, struct, enum, impl, extern block, or typescript_custom_section const
   --> $DIR/invalid-items.rs:36:1
    |
 36 | trait X {}
