@@ -457,6 +457,7 @@ impl<'a> Context<'a> {
             }
         }
 
+        self.export_table();
         self.gc();
 
         // Note that it's important `throw` comes last *after* we gc. The
@@ -627,9 +628,6 @@ impl<'a> Context<'a> {
                 footer = self.footer,
             )
         };
-
-        self.export_table();
-        self.gc();
 
         while js.contains("\n\n\n") {
             js = js.replace("\n\n\n", "\n\n");
