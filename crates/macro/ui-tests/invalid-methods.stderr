@@ -1,61 +1,61 @@
 error: #[wasm_bindgen] default impls are not supported
- --> $DIR/invalid-methods.rs:9:1
-  |
-9 | default impl A {
-  | ^^^^^^^
+  --> $DIR/invalid-methods.rs:11:1
+   |
+11 | default impl A {
+   | ^^^^^^^
 
 error: #[wasm_bindgen] unsafe impls are not supported
-  --> $DIR/invalid-methods.rs:13:1
+  --> $DIR/invalid-methods.rs:15:1
    |
-13 | unsafe impl A {
+15 | unsafe impl A {
    | ^^^^^^
 
 error: #[wasm_bindgen] trait impls are not supported
-  --> $DIR/invalid-methods.rs:17:6
+  --> $DIR/invalid-methods.rs:19:6
    |
-17 | impl Clone for A {
+19 | impl Clone for A {
    |      ^^^^^
 
 error: #[wasm_bindgen] generic impls aren't supported
-  --> $DIR/invalid-methods.rs:21:5
+  --> $DIR/invalid-methods.rs:23:5
    |
-21 | impl<T> A {
+23 | impl<T> A {
    |     ^^^
 
 error: unsupported self type in #[wasm_bindgen] impl
-  --> $DIR/invalid-methods.rs:25:6
+  --> $DIR/invalid-methods.rs:27:6
    |
-25 | impl &'static A {
+27 | impl &'static A {
    |      ^^^^^^^^^^
 
 error: const definitions aren't supported with #[wasm_bindgen]
-  --> $DIR/invalid-methods.rs:32:5
+  --> $DIR/invalid-methods.rs:34:5
    |
-32 |     const X: u32 = 3;
+34 |     const X: u32 = 3;
    |     ^^^^^^^^^^^^^^^^^
 
 error: type definitions in impls aren't supported with #[wasm_bindgen]
-  --> $DIR/invalid-methods.rs:33:5
+  --> $DIR/invalid-methods.rs:35:5
    |
-33 |     type Y = u32;
+35 |     type Y = u32;
    |     ^^^^^^^^^^^^^
 
 error: macros in impls aren't supported
-  --> $DIR/invalid-methods.rs:34:5
+  --> $DIR/invalid-methods.rs:36:5
    |
-34 |     x!();
+36 |     x!();
    |     ^^^^^
 
 error: can only #[wasm_bindgen] non-const functions
-  --> $DIR/invalid-methods.rs:39:9
+  --> $DIR/invalid-methods.rs:41:9
    |
-39 |     pub const fn foo() {}
+41 |     pub const fn foo() {}
    |         ^^^^^
 
 error: can only bindgen safe functions
-  --> $DIR/invalid-methods.rs:40:9
+  --> $DIR/invalid-methods.rs:42:9
    |
-40 |     pub unsafe fn foo() {}
+42 |     pub unsafe fn foo() {}
    |         ^^^^^^
 
 error: aborting due to 10 previous errors

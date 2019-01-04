@@ -80,8 +80,6 @@
       - [`start`](./reference/attributes/on-rust-exports/start.md)
       - [`typescript_custom_section`](./reference/attributes/on-rust-exports/typescript_custom_section.md)
 
---------------------------------------------------------------------------------
-
 - [`web-sys`](./web-sys/index.md)
   - [Using `web-sys`](./web-sys/using-web-sys.md)
   - [Cargo Features](./web-sys/cargo-features.md)
@@ -89,15 +87,11 @@
   - [Type Translations](./web-sys/type-translations.md)
   - [Inheritance](./web-sys/inheritance.md)
 
---------------------------------------------------------------------------------
-
 - [Testing with `wasm-bindgen-test`](./wasm-bindgen-test/index.md)
   - [Usage](./wasm-bindgen-test/usage.md)
   - [Writing Asynchronous Tests](./wasm-bindgen-test/asynchronous-tests.md)
   - [Testing in Headless Browsers](./wasm-bindgen-test/browsers.md)
   - [Continuous Integration](./wasm-bindgen-test/continuous-integration.md)
-
---------------------------------------------------------------------------------
 
 - [Contributing to `wasm-bindgen`](./contributing/index.md)
   - [Testing](./contributing/testing.md)

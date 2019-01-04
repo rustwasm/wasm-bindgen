@@ -1,19 +1,19 @@
 error: unknown attribute
- --> $DIR/invalid-attr.rs:5:16
+ --> $DIR/invalid-attr.rs:7:16
   |
-5 | #[wasm_bindgen(x)]
+7 | #[wasm_bindgen(x)]
   |                ^
 
 error: unknown attribute
-  --> $DIR/invalid-attr.rs:10:20
+  --> $DIR/invalid-attr.rs:12:20
    |
-10 |     #[wasm_bindgen(y)]
+12 |     #[wasm_bindgen(y)]
    |                    ^
 
 error: malformed #[wasm_bindgen] attribute
-  --> $DIR/invalid-attr.rs:13:5
+  --> $DIR/invalid-attr.rs:15:5
    |
-13 |     #[wasm_bindgen {  }]
+15 |     #[wasm_bindgen {  }]
    |     ^^^^^^^^^^^^^^^^^^^^
 
 error: aborting due to 3 previous errors

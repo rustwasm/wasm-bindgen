@@ -785,7 +785,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Float32Array;
 
-    /// An `Float32Array()` which creates an array with an intenral buffer large
+    /// An `Float32Array()` which creates an array with an internal buffer large
     /// enough for `length` elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array)
@@ -869,7 +869,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Float64Array;
 
-    /// An `Float64Array()` which creates an array with an intenral buffer large
+    /// An `Float64Array()` which creates an array with an internal buffer large
     /// enough for `length` elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array)
@@ -1088,7 +1088,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Int8Array;
 
-    /// An `Int8Array()` which creates an array with an intenral buffer large
+    /// An `Int8Array()` which creates an array with an internal buffer large
     /// enough for `length` elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array)
@@ -1172,7 +1172,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Int16Array;
 
-    /// An `Int16Array()` which creates an array with an intenral buffer large
+    /// An `Int16Array()` which creates an array with an internal buffer large
     /// enough for `length` elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array)
@@ -1256,7 +1256,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Int32Array;
 
-    /// An `Int32Array()` which creates an array with an intenral buffer large
+    /// An `Int32Array()` which creates an array with an internal buffer large
     /// enough for `length` elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array)
@@ -3024,7 +3024,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Uint8Array;
 
-    /// An `Uint8Array()` which creates an array with an intenral buffer large
+    /// An `Uint8Array()` which creates an array with an internal buffer large
     /// enough for `length` elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
@@ -3110,7 +3110,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Uint8ClampedArray;
 
-    /// An `Uint8ClampedArray()` which creates an array with an intenral buffer large
+    /// An `Uint8ClampedArray()` which creates an array with an internal buffer large
     /// enough for `length` elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray)
@@ -3194,7 +3194,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(constructor_arg: &JsValue) -> Uint16Array;
 
-    /// An `Uint16Array()` which creates an array with an intenral buffer large
+    /// An `Uint16Array()` which creates an array with an internal buffer large
     /// enough for `length` elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array)
@@ -3272,7 +3272,7 @@ extern "C" {
     #[derive(Clone, Debug)]
     pub type Uint32Array;
 
-    /// An `Uint32Array()` which creates an array with an intenral buffer large
+    /// An `Uint32Array()` which creates an array with an internal buffer large
     /// enough for `length` elements.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array)

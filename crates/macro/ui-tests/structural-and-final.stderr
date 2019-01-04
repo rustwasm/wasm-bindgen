@@ -1,8 +1,8 @@
 error: cannot specify both `structural` and `final`
- --> $DIR/structural-and-final.rs:9:40
-  |
-9 |     #[wasm_bindgen(method, structural, final)]
-  |                                        ^^^^^
+  --> $DIR/structural-and-final.rs:11:40
+   |
+11 |     #[wasm_bindgen(method, structural, final)]
+   |                                        ^^^^^
 
 error: aborting due to previous error
 
