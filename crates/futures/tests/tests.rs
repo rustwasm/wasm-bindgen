@@ -9,7 +9,7 @@ extern crate wasm_bindgen_test;
 use futures::unsync::oneshot;
 use futures::Future;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen_futures::{future_to_promise, JsFuture};
+use wasm_bindgen_futures::{future_to_promise, spawn_local, JsFuture};
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test(async)]
@@ -67,4 +67,22 @@ fn oneshot_works() -> impl Future<Item = (), Error = JsValue> {
     setTimeout(&closure);
     closure.forget();
     rx.then(|_| Ok(()))
+}
+
+#[wasm_bindgen_test(async)]
+fn spawn_local_runs() -> impl Future<Item = (), Error = JsValue> {
+    let (tx, rx) = oneshot::channel::<u32>();
+    let fn_box = Box::new(move || {
+        tx.send(42).unwrap();
+    });
+    spawn_local(futures::future::ok::<(), ()>(()).map(|_| {
+        fn_box();
+    }));
+    rx.then(|val| {
+        if val == Ok(42) {
+            Ok(())
+        } else {
+            Err(JsValue::undefined())
+        }
+    })
 }

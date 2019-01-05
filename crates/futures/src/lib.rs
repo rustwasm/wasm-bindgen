@@ -377,3 +377,15 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
         }
     }
 }
+
+/// Spawns a future.
+pub fn spawn_local<F>(future: F)
+where
+    F: Future<Item = (), Error = ()> + 'static,
+{
+    future_to_promise(
+        future
+            .map(|_| JsValue::undefined())
+            .map_err(|_| JsValue::undefined()),
+    );
+}
