@@ -388,7 +388,7 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
 /// This function has the same panic behavior as `future_to_promise`.
 pub fn spawn_local<F>(future: F)
 where
-    F: Future<Item = (), Error = ()> + 'static,
+    F: Future + 'static,
 {
     future_to_promise(
         future
