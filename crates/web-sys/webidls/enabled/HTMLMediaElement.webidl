@@ -21,6 +21,8 @@ interface HTMLMediaElement : HTMLElement {
            attribute DOMString src;
   readonly attribute DOMString currentSrc;
 
+  attribute MediaStream? srcObject;
+
   [CEReactions, SetterThrows]
            attribute DOMString? crossOrigin;
   const unsigned short NETWORK_EMPTY = 0;
