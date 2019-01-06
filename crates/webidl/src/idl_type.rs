@@ -542,7 +542,7 @@ impl<'a> IdlType<'a> {
                 Some(option_ty(inner))
             }
             IdlType::FrozenArray(_idl_type) => None,
-            IdlType::Sequence(_idl_type) => None,
+            IdlType::Sequence(_idl_type) => js_sys("Array"),
             IdlType::Promise(_idl_type) => js_sys("Promise"),
             IdlType::Record(_idl_type_from, _idl_type_to) => None,
             IdlType::Union(idl_types) => {
