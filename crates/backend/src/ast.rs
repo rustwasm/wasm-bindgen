@@ -262,7 +262,8 @@ pub struct Dictionary {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct DictionaryField {
-    pub name: Ident,
+    pub rust_name: Ident,
+    pub js_name: String,
     pub required: bool,
     pub ty: syn::Type,
 }

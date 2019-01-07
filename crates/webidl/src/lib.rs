@@ -337,11 +337,7 @@ impl<'src> FirstPassRecord<'src> {
                 }
             }
         }
-        // Note that this sort isn't *quite* right in that it is sorting
-        // based on snake case instead of the original casing which could
-        // produce inconsistent results, but should work well enough for
-        // now!
-        dst[start..].sort_by_key(|f| f.name.clone());
+        dst[start..].sort_by_key(|f| f.js_name.clone());
 
         return true;
     }
@@ -394,7 +390,8 @@ impl<'src> FirstPassRecord<'src> {
 
         Some(ast::DictionaryField {
             required: field.required.is_some(),
-            name: rust_ident(&snake_case_ident(field.identifier.0)),
+            rust_name: rust_ident(&snake_case_ident(field.identifier.0)),
+            js_name: field.identifier.0.to_string(),
             ty,
         })
     }
@@ -742,7 +739,8 @@ impl<'src> FirstPassRecord<'src> {
                     let pos = TypePosition::Argument;
                     fields.push(ast::DictionaryField {
                         required: false,
-                        name: rust_ident(&snake_case_ident(identifier)),
+                        rust_name: rust_ident(&snake_case_ident(identifier)),
+                        js_name: identifier.to_string(),
                         ty: idl_type::IdlType::Callback.to_syn_type(pos).unwrap(),
                     });
                 }
