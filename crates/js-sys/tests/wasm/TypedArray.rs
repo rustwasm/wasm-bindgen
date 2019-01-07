@@ -100,3 +100,24 @@ macro_rules! test_slice {
 fn new_slice() {
     each!(test_slice);
 }
+
+#[wasm_bindgen_test]
+fn view() {
+    let x = [1, 2, 3];
+    let array = unsafe { Int32Array::view(&x) };
+    assert_eq!(array.length(), 3);
+    array.for_each(&mut |x, i, _| {
+        assert_eq!(x, (i + 1) as i32);
+    });
+}
+
+#[wasm_bindgen_test]
+fn copy_to() {
+    let mut x = [0; 10];
+    let array = Int32Array::new(&10.into());
+    array.fill(5, 0, 10);
+    array.copy_to(&mut x);
+    for i in x.iter() {
+        assert_eq!(*i, 5);
+    }
+}
