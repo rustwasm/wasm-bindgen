@@ -20,3 +20,7 @@ global.assert_dict_required = function(c) {
   assert.strictEqual(c.b, "a");
   assert.strictEqual(c.c, 4);
 };
+
+global.assert_camel_case = function(dict) {
+  assert.strictEqual(dict.wierd_fieldName, 1);
+}

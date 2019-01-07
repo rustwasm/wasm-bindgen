@@ -45,3 +45,7 @@ dictionary Required {
   required long a;
   long c;
 };
+
+dictionary PreserveNames {
+  long wierd_fieldName;
+};

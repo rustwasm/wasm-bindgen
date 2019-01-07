@@ -16,6 +16,7 @@ extern "C" {
     #[wasm_bindgen(js_name = mk_dict_a)]
     fn mk_dict_a2() -> Option<A>;
     fn assert_dict_required(r: &Required);
+    fn assert_camel_case(dict: &PreserveNames);
 }
 
 #[wasm_bindgen_test]
@@ -50,4 +51,9 @@ fn many_types() {
 #[wasm_bindgen_test]
 fn required() {
     assert_dict_required(Required::new(3, "a").c(4));
+}
+
+#[wasm_bindgen_test]
+fn correct_casing_in_js() {
+    assert_camel_case(PreserveNames::new().wierd_field_name(4));
 }
