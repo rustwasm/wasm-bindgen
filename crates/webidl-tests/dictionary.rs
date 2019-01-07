@@ -55,5 +55,5 @@ fn required() {
 
 #[wasm_bindgen_test]
 fn correct_casing_in_js() {
-    assert_camel_case(PreserveNames::new().wierd_field_name(4));
+    assert_camel_case(PreserveNames::new().wierd_field_name(1));
 }
