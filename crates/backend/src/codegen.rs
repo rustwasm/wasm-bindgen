@@ -1152,7 +1152,7 @@ impl ToTokens for ast::Dictionary {
             .fields
             .iter()
             .filter(|f| f.required)
-            .map(|f| &f.name)
+            .map(|f| &f.rust_name)
             .collect::<Vec<_>>();
         let required_types = &self
             .fields
@@ -1282,14 +1282,15 @@ impl ToTokens for ast::Dictionary {
 
 impl ToTokens for ast::DictionaryField {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let name = &self.name;
+        let rust_name = &self.rust_name;
+        let js_name = &self.js_name;
         let ty = &self.ty;
         (quote! {
-            pub fn #name(&mut self, val: #ty) -> &mut Self {
+            pub fn #rust_name(&mut self, val: #ty) -> &mut Self {
                 use wasm_bindgen::JsValue;
                 let r = ::js_sys::Reflect::set(
                     self.obj.as_ref(),
-                    &JsValue::from(stringify!(#name)),
+                    &JsValue::from(#js_name),
                     &JsValue::from(val),
                 );
                 debug_assert!(r.is_ok(), "setting properties should never fail on our dictionary objects");
