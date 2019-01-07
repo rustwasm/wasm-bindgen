@@ -4791,7 +4791,7 @@ pub fn global() -> Object {
 macro_rules! arrays {
     ($($name:ident: $ty:ident,)*) => ($(
         impl $name {
-            /// Creates a JS typed array which is a few into wasm's linear
+            /// Creates a JS typed array which is a view into wasm's linear
             /// memory at the slice specified.
             ///
             /// This function returns a new typed array which is a view into
