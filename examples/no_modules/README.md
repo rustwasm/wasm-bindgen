@@ -7,9 +7,7 @@
 You can build the example locally with:
 
 ```
-$ ./build.sh
+$ wasm-pack build --target no-modules
 ```
-
-(or running the commands on Windows manually)
 
 and then opening `index.html` in a browser should run the example!

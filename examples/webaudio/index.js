@@ -1,4 +1,4 @@
-import('./webaudio')
+import('./pkg/webaudio')
   .then(rust_module => {
     let fm = null;
 

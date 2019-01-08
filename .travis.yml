@@ -93,14 +93,15 @@ matrix:
         - *INSTALL_NODE_VIA_NVM
         - *INSTALL_AWS
         - npm install
+        - curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
       script:
+        - cargo build -p wasm-bindgen-cli
+        - ln -snf target/debug/wasm-bindgen $HOME/.cargo/wasm-bindgen
         - |
           for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v no_modules`; do
             (cd examples/$dir &&
-             sed -i "s|: \"webpack-dev-server\"|: \"webpack --output-path $HOME/$TRAVIS_BUILD_NUMBER/exbuild/$dir\"|" package.json &&
-             sed -i 's/npm install//' build.sh &&
              ln -fs ../../node_modules . &&
-             ./build.sh) || exit 1;
+             npm run build -- --output-path $HOME/$TRAVIS_BUILD_NUMBER/exbuild/$dir) || exit 1;
           done
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then aws s3 sync --quiet ~/$TRAVIS_BUILD_NUMBER s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER; fi
       if: branch = master

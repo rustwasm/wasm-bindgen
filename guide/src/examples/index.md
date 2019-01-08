@@ -5,8 +5,9 @@ This subsection contains examples of using the `wasm-bindgen`, `js-sys`, and
 doing.
 
 The source code for all examples can also be [found online][code] to download an
-run locally. Each example is accompanied with a `build.sh` script to outline the
-steps necessary to build and run it as well.
+run locally. Most examples are configured with Webpack/`wasm-pack` and can
+be built with `npm run serve`. Other examples which don't use Webpack are
+accompanied with a `build.sh` showing how to build it.
 
 Note that most examples currently use Webpack to assemble the final output
 artifact, but this is not required! You can use the bundler of choice,

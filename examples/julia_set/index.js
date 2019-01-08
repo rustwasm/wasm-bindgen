@@ -1,4 +1,4 @@
-import('./julia_set')
+import('./pkg/julia_set')
     .then(wasm => {
         const canvas = document.getElementById('drawing');
         const ctx = canvas.getContext('2d');
