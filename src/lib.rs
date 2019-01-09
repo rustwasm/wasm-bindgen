@@ -313,6 +313,21 @@ impl JsValue {
             String::from_utf8_unchecked(s)
         }
     }
+
+    /// Get the string value of self using the JS `toString` method.
+    #[cfg(feature = "std")]
+    fn js_to_string(&self) -> String {
+        unsafe {
+            let mut len = 0;
+            let ptr = __wbindgen_to_string(self.idx, &mut len);
+            if ptr.is_null() {
+                unreachable!("Object.toString must return a valid string")
+            } else {
+                let data = Vec::from_raw_parts(ptr, len, len);
+                String::from_utf8_unchecked(data)
+            }
+        }
+    }
 }
 
 impl PartialEq for JsValue {
@@ -488,6 +503,7 @@ externs! {
     fn __wbindgen_is_function(idx: u32) -> u32;
     fn __wbindgen_is_string(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
+    fn __wbindgen_to_string(idx: u32, len: *mut usize) -> *mut u8;
     fn __wbindgen_throw(a: *const u8, b: usize) -> !;
     fn __wbindgen_rethrow(a: u32) -> !;
 
@@ -539,7 +555,7 @@ impl fmt::Debug for JsValue {
         }
         let json = self.as_json();
         if json == "{}" {
-            f.write_str("[object]")
+            f.write_str(&self.js_to_string())
         } else {
             f.write_str(&json)
         }

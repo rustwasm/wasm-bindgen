@@ -350,6 +350,23 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_to_string", &|me| {
+            me.expose_pass_string_to_wasm()?;
+            me.expose_get_object();
+            me.expose_uint32_memory();
+            Ok(String::from(
+                "
+                function(i, len_ptr) {
+                    let toString = getObject(i).toString();
+                    if (typeof(toString) !== 'string') return 0;
+                    const ptr = passStringToWasm(toString);
+                    getUint32Memory()[len_ptr / 4] = WASM_VECTOR_LEN;
+                    return ptr;
+                }
+                ",
+            ))
+        })?;
+
         self.bind("__wbindgen_cb_drop", &|me| {
             me.expose_drop_ref();
             Ok(String::from(
