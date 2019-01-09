@@ -204,13 +204,7 @@ impl JsValue {
     where
         T: for<'a> serde::de::Deserialize<'a>,
     {
-        unsafe {
-            let mut ptr = ptr::null_mut();
-            let len = __wbindgen_json_serialize(self.idx, &mut ptr);
-            let s = Vec::from_raw_parts(ptr, len, len);
-            let s = String::from_utf8_unchecked(s);
-            serde_json::from_str(&s)
-        }
+        serde_json::from_str(&self.as_json())
     }
 
     /// Returns the `f64` value of this JS value if it's an instance of a
@@ -298,10 +292,26 @@ impl JsValue {
         unsafe { __wbindgen_is_object(self.idx) == 1 }
     }
 
+    /// Tests whether `Array.isArray(self)`.
+    #[inline]
+    pub fn is_array(&self) -> bool {
+        unsafe { __wbindgen_is_array(self.idx) == 1 }
+    }
+
     /// Tests whether the type of this JS value is `function`.
     #[inline]
     pub fn is_function(&self) -> bool {
         unsafe { __wbindgen_is_function(self.idx) == 1 }
+    }
+
+    /// Helper method to get the value as a json String (serialized in javascript)
+    fn as_json(&self) -> String {
+        unsafe {
+            let mut ptr = ptr::null_mut();
+            let len = __wbindgen_json_serialize(self.idx, &mut ptr);
+            let s = Vec::from_raw_parts(ptr, len, len);
+            String::from_utf8_unchecked(s)
+        }
     }
 }
 
@@ -474,6 +484,7 @@ externs! {
     fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
     fn __wbindgen_is_symbol(idx: u32) -> u32;
     fn __wbindgen_is_object(idx: u32) -> u32;
+    fn __wbindgen_is_array(idx: u32) -> u32;
     fn __wbindgen_is_function(idx: u32) -> u32;
     fn __wbindgen_is_string(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
@@ -526,7 +537,12 @@ impl fmt::Debug for JsValue {
         if self.is_symbol() {
             return fmt::Display::fmt("Symbol(..)", f);
         }
-        fmt::Display::fmt("[object]", f)
+        let json = self.as_json();
+        if json == "{}" {
+            f.write_str("[object]")
+        } else {
+            f.write_str(&json)
+        }
     }
 }
 
