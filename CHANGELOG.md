@@ -32,6 +32,51 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.31
+
+Released 2019-01-09.
+
+### Added
+
+* A new `spawn_local` function has been added to the `wasm-bindgen-futures`
+  crate.
+  [#1148](https://github.com/rustwasm/wasm-bindgen/pull/1148)
+
+* Built-in conversions are now available from typed arrays and Rust arrays.
+  [#1147](https://github.com/rustwasm/wasm-bindgen/pull/1147)
+
+### Fixed
+
+* Some casing of dictionary properties in WebIDL has been fixed.
+  [#1155](https://github.com/rustwasm/wasm-bindgen/pull/1155)
+
+--------------------------------------------------------------------------------
+
+## 0.2.30
+
+Released 2019-01-07.
+
+### Added
+
+* The `wasm-bindgen` CLI now has an `--out-name` argument to name the output
+  module.
+  [#1084](https://github.com/rustwasm/wasm-bindgen/pull/1084)
+
+* Support for importing the `default` export has been added.
+  [#1106](https://github.com/rustwasm/wasm-bindgen/pull/1106)
+
+### Changed
+
+* All `web-sys` methods are now flagged as `structural`, fixing a few bindings.
+  [#1117](https://github.com/rustwasm/wasm-bindgen/pull/1117)
+
+### Fixed
+
+* A small bug with LTO and closures has been fixed.
+  [#1145](https://github.com/rustwasm/wasm-bindgen/pull/1145)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.29
 
 Released 2018-12-04.
