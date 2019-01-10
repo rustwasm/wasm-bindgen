@@ -529,7 +529,6 @@ impl Clone for JsValue {
 #[cfg(feature = "std")]
 impl fmt::Debug for JsValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use std::fmt::Write;
         write!(f, "JsValue({})", self.as_debug_string())
     }
 }

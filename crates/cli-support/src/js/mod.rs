@@ -369,7 +369,7 @@ impl<'a> Context<'a> {
                         if (type == 'symbol') {
                             const description = val.description;
                             if (description == null) {
-                                return 'Symbol()';
+                                return 'Symbol';
                             } else {
                                 return 'Symbol(' + description + ')';
                             }

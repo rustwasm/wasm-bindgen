@@ -71,7 +71,7 @@ pub fn api_get_false() -> JsValue {
 #[wasm_bindgen]
 pub fn api_test_bool(a: &JsValue, b: &JsValue, c: &JsValue) {
     assert_eq!(a.as_bool(), Some(true));
-    assert_eq!(format!("{:?}", a), "true");
+    assert_eq!(format!("{:?}", a), "JsValue(true)");
     assert_eq!(b.as_bool(), Some(false));
     assert_eq!(c.as_bool(), None);
 }
@@ -80,7 +80,7 @@ pub fn api_test_bool(a: &JsValue, b: &JsValue, c: &JsValue) {
 pub fn api_mk_symbol() -> JsValue {
     let a = JsValue::symbol(None);
     assert!(a.is_symbol());
-    assert_eq!(format!("{:?}", a), "Symbol()");
+    assert_eq!(format!("{:?}", a), "JsValue(Symbol)");
     return a;
 }
 
@@ -100,7 +100,7 @@ pub fn api_assert_symbols(a: &JsValue, b: &JsValue) {
 #[wasm_bindgen]
 pub fn api_acquire_string(a: &JsValue, b: &JsValue) {
     assert_eq!(a.as_string().unwrap(), "foo");
-    assert_eq!(format!("{:?}", a), "\"foo\"");
+    assert_eq!(format!("{:?}", a), "JsValue(\"foo\")");
     assert_eq!(b.as_string(), None);
 }
 
