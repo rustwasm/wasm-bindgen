@@ -529,7 +529,8 @@ impl Clone for JsValue {
 #[cfg(feature = "std")]
 impl fmt::Debug for JsValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str(&self.as_debug_string())
+        use std::fmt::Write;
+        write!(f, "JsValue({})", self.as_debug_string())
     }
 }
 
@@ -538,7 +539,7 @@ impl fmt::Debug for JsValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         // TODO before merge - this is less info than before - is this OK? Can we do the above
         // without using allocation (no_std)?
-        f.write_str("[object]")
+        f.write_str("JsValue(..)")
     }
 }
 
