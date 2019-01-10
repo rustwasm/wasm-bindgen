@@ -80,7 +80,7 @@ pub fn api_test_bool(a: &JsValue, b: &JsValue, c: &JsValue) {
 pub fn api_mk_symbol() -> JsValue {
     let a = JsValue::symbol(None);
     assert!(a.is_symbol());
-    assert_eq!(format!("{:?}", a), "Symbol(..)");
+    assert_eq!(format!("{:?}", a), "Symbol()");
     return a;
 }
 

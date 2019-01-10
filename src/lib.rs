@@ -204,7 +204,13 @@ impl JsValue {
     where
         T: for<'a> serde::de::Deserialize<'a>,
     {
-        serde_json::from_str(&self.as_json())
+        unsafe {
+            let mut ptr = ptr::null_mut();
+            let len = __wbindgen_json_serialize(self.idx, &mut ptr);
+            let s = Vec::from_raw_parts(ptr, len, len);
+            let s = String::from_utf8_unchecked(s);
+            serde_json::from_str(&s)
+        }
     }
 
     /// Returns the `f64` value of this JS value if it's an instance of a
@@ -304,24 +310,14 @@ impl JsValue {
         unsafe { __wbindgen_is_function(self.idx) == 1 }
     }
 
-    /// Helper method to get the value as a json String (serialized in javascript)
-    fn as_json(&self) -> String {
-        unsafe {
-            let mut ptr = ptr::null_mut();
-            let len = __wbindgen_json_serialize(self.idx, &mut ptr);
-            let s = Vec::from_raw_parts(ptr, len, len);
-            String::from_utf8_unchecked(s)
-        }
-    }
-
-    /// Get the string value of self using the JS `toString` method.
+    /// Get a string representation of the JavaScript object for debugging
     #[cfg(feature = "std")]
-    fn js_to_string(&self) -> String {
+    fn as_debug_string(&self) -> String {
         unsafe {
             let mut len = 0;
-            let ptr = __wbindgen_to_string(self.idx, &mut len);
+            let ptr = __wbindgen_debug_string(self.idx, &mut len);
             if ptr.is_null() {
-                unreachable!("Object.toString must return a valid string")
+                unreachable!("`__wbindgen_debug_string` must return a valid string")
             } else {
                 let data = Vec::from_raw_parts(ptr, len, len);
                 String::from_utf8_unchecked(data)
@@ -503,7 +499,7 @@ externs! {
     fn __wbindgen_is_function(idx: u32) -> u32;
     fn __wbindgen_is_string(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
-    fn __wbindgen_to_string(idx: u32, len: *mut usize) -> *mut u8;
+    fn __wbindgen_debug_string(idx: u32, len: *mut usize) -> *mut u8;
     fn __wbindgen_throw(a: *const u8, b: usize) -> !;
     fn __wbindgen_rethrow(a: u32) -> !;
 
@@ -530,35 +526,19 @@ impl Clone for JsValue {
     }
 }
 
+#[cfg(feature = "std")]
 impl fmt::Debug for JsValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        if let Some(n) = self.as_f64() {
-            return n.fmt(f);
-        }
-        #[cfg(feature = "std")]
-        {
-            if let Some(n) = self.as_string() {
-                return n.fmt(f);
-            }
-        }
-        if let Some(n) = self.as_bool() {
-            return n.fmt(f);
-        }
-        if self.is_null() {
-            return fmt::Display::fmt("null", f);
-        }
-        if self.is_undefined() {
-            return fmt::Display::fmt("undefined", f);
-        }
-        if self.is_symbol() {
-            return fmt::Display::fmt("Symbol(..)", f);
-        }
-        let json = self.as_json();
-        if json == "{}" {
-            f.write_str(&self.js_to_string())
-        } else {
-            f.write_str(&json)
-        }
+        f.write_str(&self.as_debug_string())
+    }
+}
+
+#[cfg(not(feature = "std"))]
+impl fmt::Debug for JsValue {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // TODO before merge - this is less info than before - is this OK? Can we do the above
+        // without using allocation (no_std)?
+        f.write_str("[object]")
     }
 }
 
