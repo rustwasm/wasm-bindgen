@@ -460,6 +460,10 @@ impl<'a> IdlType<'a> {
             let ty = leading_colon_path_ty(path);
             anyref(ty)
         };
+        let js_value = {
+            let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
+            anyref(leading_colon_path_ty(path))
+        };
         match self {
             IdlType::Boolean => Some(ident_ty(raw_ident("bool"))),
             IdlType::Byte => Some(ident_ty(raw_ident("i8"))),
@@ -542,7 +546,12 @@ impl<'a> IdlType<'a> {
                 Some(option_ty(inner))
             }
             IdlType::FrozenArray(_idl_type) => None,
-            IdlType::Sequence(_idl_type) => None,
+            // webidl sequences must always be returned as javascript `Array`s. They may accept
+            // anything implementing the @@iterable interface.
+            IdlType::Sequence(_idl_type) => match pos {
+                TypePosition::Argument => js_value,
+                TypePosition::Return => js_sys("Array"),
+            },
             IdlType::Promise(_idl_type) => js_sys("Promise"),
             IdlType::Record(_idl_type_from, _idl_type_to) => None,
             IdlType::Union(idl_types) => {
@@ -579,10 +588,7 @@ impl<'a> IdlType<'a> {
                 }
             }
 
-            IdlType::Any => {
-                let path = vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")];
-                anyref(leading_colon_path_ty(path))
-            }
+            IdlType::Any => js_value,
             IdlType::Void => None,
             IdlType::Callback => js_sys("Function"),
             IdlType::UnknownInterface(_) => None,
