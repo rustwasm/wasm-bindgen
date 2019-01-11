@@ -56,7 +56,6 @@ members = [
   "crates/js-sys",
   "crates/test",
   "crates/test/sample",
-  "crates/typescript",
   "crates/macro/ui-tests",
   "crates/web-sys",
   "crates/webidl",
@@ -85,6 +84,7 @@ members = [
   "examples/webgl",
   "tests/no-std",
 ]
+exclude = ['crates/typescript']
 
 [patch.crates-io]
 wasm-bindgen = { path = '.' }
