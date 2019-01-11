@@ -298,12 +298,6 @@ impl JsValue {
         unsafe { __wbindgen_is_object(self.idx) == 1 }
     }
 
-    /// Tests whether `Array.isArray(self)`.
-    #[inline]
-    pub fn is_array(&self) -> bool {
-        unsafe { __wbindgen_is_array(self.idx) == 1 }
-    }
-
     /// Tests whether the type of this JS value is `function`.
     #[inline]
     pub fn is_function(&self) -> bool {
