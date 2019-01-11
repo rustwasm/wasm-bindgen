@@ -21,7 +21,7 @@ fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
     assert!(status.success());
     let module = parity_wasm::deserialize_file(output.path()).unwrap();
     let mut i = Interpreter::new(&module);
-    assert_eq!(i.interpret(name, &module), result);
+    assert_eq!(i.interpret_descriptor(name, &module), result);
 }
 
 #[test]
@@ -62,8 +62,8 @@ fn locals() {
             (func $foo
                 (local i32)
                 i32.const 2
-                set_local 0
-                get_local 0
+                local.set 0
+                local.get 0
                 call $__wbindgen_describe
             )
 
@@ -80,16 +80,16 @@ fn globals() {
             (import "__wbindgen_placeholder__" "__wbindgen_describe"
               (func $__wbindgen_describe (param i32)))
 
-            (global i32 (i32.const 0))
+            (global (mut i32) (i32.const 0))
 
             (func $foo
                 (local i32)
-                get_global 0
-                set_local 0
-                get_local 0
+                global.get 0
+                local.set 0
+                local.get 0
                 call $__wbindgen_describe
-                get_local 0
-                set_global 0
+                local.get 0
+                global.set 0
             )
 
             (export "foo" (func $foo))
@@ -149,7 +149,7 @@ fn loads_and_stores() {
             (import "__wbindgen_placeholder__" "__wbindgen_describe"
               (func $__wbindgen_describe (param i32)))
 
-            (global i32 (i32.const 0))
+            (global (mut i32) (i32.const 0))
             (memory 1)
 
             (func $foo
@@ -157,48 +157,48 @@ fn loads_and_stores() {
 
                 ;; decrement the stack pointer, setting our local to the
                 ;; lowest address of our stack
-                get_global 0
+                global.get 0
                 i32.const 16
                 i32.sub
-                set_local 0
-                get_local 0
-                set_global 0
+                local.set 0
+                local.get 0
+                global.set 0
 
                 ;; store 1 at fp+0
-                get_local 0
+                local.get 0
                 i32.const 1
                 i32.store offset=0
 
                 ;; store 2 at fp+4
-                get_local 0
+                local.get 0
                 i32.const 2
                 i32.store offset=4
 
                 ;; store 3 at fp+8
-                get_local 0
+                local.get 0
                 i32.const 3
                 i32.store offset=8
 
                 ;; load fp+0 and call
-                get_local 0
+                local.get 0
                 i32.load offset=0
                 call $__wbindgen_describe
 
                 ;; load fp+4 and call
-                get_local 0
+                local.get 0
                 i32.load offset=4
                 call $__wbindgen_describe
 
                 ;; load fp+8 and call
-                get_local 0
+                local.get 0
                 i32.load offset=8
                 call $__wbindgen_describe
 
                 ;; increment our stack pointer
-                get_local 0
+                local.get 0
                 i32.const 16
                 i32.add
-                set_global 0
+                global.set 0
             )
 
             (export "foo" (func $foo))
