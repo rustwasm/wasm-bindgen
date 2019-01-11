@@ -357,25 +357,31 @@ impl<'a> Context<'a> {
             Ok(String::from(
                 "
                 function(i, len_ptr) {
+                    const toString = Object.prototype.toString;
                     const debug_str = val => {
                         // primitive types
                         const type = typeof val;
                         if (type == 'number' || type == 'boolean' || val == null) {
-                            return  val + '';
+                            return  `${val}`;
                         }
                         if (type == 'string') {
-                            return '\"' + val + '\"';
+                            return `\"${val}\"`;
                         }
                         if (type == 'symbol') {
                             const description = val.description;
                             if (description == null) {
                                 return 'Symbol';
                             } else {
-                                return 'Symbol(' + description + ')';
+                                return `Symbol(${description})`;
                             }
                         }
                         if (type == 'function') {
-                            return 'Function';
+                            const name = val.name;
+                            if (typeof name == 'string') {
+                                return `Function(${name})`;
+                            } else {
+                                return 'Function';
+                            }
                         }
                         // objects
                         if (Array.isArray(val)) {
@@ -391,19 +397,23 @@ impl<'a> Context<'a> {
                             return debug;
                         }
                         // Test for built-in
-                        const builtInMatches = /\\[object ([^])+\\]/.exec(val.toString());
+                        const builtInMatches = /\\[object ([^])+\\]/.exec(toString.call(val));
                         let className;
                         if (builtInMatches.len > 0) {
                             className = builtInMatches[0];
                         } else {
                             // Failed to match the standard '[object ClassName]'
-                            return val.toString();
+                            return toString.call(val);
                         }
                         if (className == 'Object') {
                             // we're a user defined class or Object
                             // JSON.stringify avoids problems with cycles, and is generally much
                             // easier than looping through ownProperties of `val`.
-                            return 'Object(' + JSON.stringify(val) + ')';
+                            try {
+                                return 'Object(' + JSON.stringify(val) + ')';
+                            } catch (_) {
+                                return 'Object';
+                            }
                         } else {
                             return className;
                         }
