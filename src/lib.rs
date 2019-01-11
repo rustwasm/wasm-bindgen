@@ -536,9 +536,7 @@ impl fmt::Debug for JsValue {
 #[cfg(not(feature = "std"))]
 impl fmt::Debug for JsValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // TODO before merge - this is less info than before - is this OK? Can we do the above
-        // without using allocation (no_std)?
-        f.write_str("JsValue(..)")
+        f.write_str("JsValue")
     }
 }
 
