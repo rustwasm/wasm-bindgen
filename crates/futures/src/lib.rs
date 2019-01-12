@@ -113,6 +113,7 @@ use std::sync::Arc;
 
 use futures::executor::{self, Notify, Spawn};
 use futures::prelude::*;
+use futures::future;
 use futures::sync::oneshot;
 use js_sys::{Function, Promise};
 use wasm_bindgen::prelude::*;
@@ -393,6 +394,6 @@ where
     future_to_promise(
         future
             .map(|()| JsValue::undefined())
-            .map_err(|()| JsValue::undefined()),
+            .or_else(|()| future::ok::<JsValue, JsValue>(JsValue::undefined())),
     );
 }
