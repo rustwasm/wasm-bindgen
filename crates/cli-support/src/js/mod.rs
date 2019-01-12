@@ -377,7 +377,7 @@ impl<'a> Context<'a> {
                         }
                         if (type == 'function') {
                             const name = val.name;
-                            if (typeof name == 'string') {
+                            if (typeof name == 'string' && name.length > 0) {
                                 return `Function(${name})`;
                             } else {
                                 return 'Function';
@@ -391,16 +391,16 @@ impl<'a> Context<'a> {
                                 debug += debug_str(val[0]);
                             }
                             for(let i = 1; i < length; i++) {
-                                debug += debug_str(val[i]) + ', ';
+                                debug += ', ' + debug_str(val[i]);
                             }
                             debug += ']';
                             return debug;
                         }
                         // Test for built-in
-                        const builtInMatches = /\\[object ([^])+\\]/.exec(toString.call(val));
+                        const builtInMatches = /\\[object ([^\\]]+)\\]/.exec(toString.call(val));
                         let className;
-                        if (builtInMatches.len > 0) {
-                            className = builtInMatches[0];
+                        if (builtInMatches.length > 1) {
+                            className = builtInMatches[1];
                         } else {
                             // Failed to match the standard '[object ClassName]'
                             return toString.call(val);
@@ -414,6 +414,7 @@ impl<'a> Context<'a> {
                             } catch (_) {
                                 return 'Object';
                             }
+                        // TODO we could test for more things here, like `Set`s and `Map`s.
                         } else {
                             return className;
                         }
