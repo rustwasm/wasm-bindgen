@@ -460,16 +460,17 @@ impl<'a> Context<'a> {
         self.export_table();
         self.gc();
 
-        // Note that it's important `throw` comes last *after* we gc. The
+        // Note that it's important `error_new` comes last *after* we gc. The
         // `__wbindgen_malloc` function may call this but we only want to
         // generate code for this if it's actually live (and __wbindgen_malloc
         // isn't gc'd).
-        self.bind("__wbindgen_throw", &|me| {
+        self.bind("__wbindgen_error_new", &|me| {
+            me.expose_add_heap_object();
             me.expose_get_string_from_wasm();
             Ok(String::from(
                 "
                 function(ptr, len) {
-                    throw new Error(getStringFromWasm(ptr, len));
+                    return addHeapObject(new Error(getStringFromWasm(ptr, len)));
                 }
                 ",
             ))
