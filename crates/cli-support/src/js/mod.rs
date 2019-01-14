@@ -171,8 +171,6 @@ impl<'a> Context<'a> {
     }
 
     pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
-        self.write_classes()?;
-
         self.bind("__wbindgen_object_clone_ref", &|me| {
             me.expose_get_object();
             me.expose_add_heap_object();
@@ -429,6 +427,7 @@ impl<'a> Context<'a> {
         })?;
 
         closures::rewrite(self).with_context(|_| "failed to generate internal closure shims")?;
+        self.write_classes()?;
         self.unexport_unused_internal_exports();
 
         // Handle the `start` function, if one was specified. If we're in a

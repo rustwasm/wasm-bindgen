@@ -1,4 +1,5 @@
 const assert = require('assert');
+const wasm = require('wasm-bindgen-test');
 
 exports.works_call = a => {
     a();
@@ -97,3 +98,7 @@ exports.drop_during_call_save = f => {
   DROP_DURING_CALL = f;
 };
 exports.drop_during_call_call = () => DROP_DURING_CALL();
+
+exports.js_test_closure_returner = () => {
+  wasm.closure_returner().someKey();
+};
