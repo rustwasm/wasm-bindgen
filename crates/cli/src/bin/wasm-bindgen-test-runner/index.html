@@ -7,17 +7,21 @@
     <script>
       const orig_console_log = console.log;
       const orig_console_error = console.error;
+
       console.log = function(...args) {
-        if (window.console_log_redirect)
-          window.console_log_redirect(orig_console_log, args);
-        else
-          orig_console_log.apply(this, args);
+        if (window.console_log_redirect) {
+          window.console_log_redirect(args);
+        }
+
+        orig_console_log.apply(this, args);
       };
+
       console.error = function(...args) {
-        if (window.console_error_redirect)
-          window.console_error_redirect(orig_console_error, args);
-        else
-          orig_console_error.apply(this, args);
+        if (window.console_error_redirect) {
+          window.console_error_redirect(args);
+        }
+
+        orig_console_error.apply(this, args);
       };
 
       window.__wbg_test_invoke = f => f();

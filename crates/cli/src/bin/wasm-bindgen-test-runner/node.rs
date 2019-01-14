@@ -24,19 +24,17 @@ pub fn execute(
         // all these calls and capture the output of tests
         const prev_log = console.log;
         console.log = function(...args) {{
-            if (console_log_redirect === null)  {{
-                prev_log.apply(null, args);
-            }} else {{
-                console_log_redirect(prev_log, args);
+            if (console_log_redirect)  {{
+                console_log_redirect(args);
             }}
+            prev_log.apply(null, args);
         }};
         const prev_error = console.error;
         console.error = function(...args) {{
-            if (console_error_redirect === null) {{
-                prev_error.apply(null, args);
-            }} else {{
-                console_error_redirect(prev_error, args);
+            if (console_error_redirect) {{
+                console_error_redirect(args);
             }}
+            prev_error.apply(null, args);
         }};
 
         global.__wbg_test_invoke = f => f();

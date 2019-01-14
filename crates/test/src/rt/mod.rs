@@ -305,21 +305,20 @@ scoped_thread_local!(static CURRENT_OUTPUT: RefCell<Output>);
 // attach it to. The main `test` crate in the rust repo also has issues about
 // how not all output is captured, causing some inconsistencies sometimes.
 #[wasm_bindgen]
-pub fn __wbgtest_console_log(original: &Function, args: &Array) {
-    record(original, args, |output| &mut output.log)
+pub fn __wbgtest_console_log(args: &Array) {
+    record(args, |output| &mut output.log)
 }
 
 /// Handler for `console.error` invocations.
 ///
 /// Works the same as `console_log` above.
 #[wasm_bindgen]
-pub fn __wbgtest_console_error(original: &Function, args: &Array) {
-    record(original, args, |output| &mut output.error)
+pub fn __wbgtest_console_error(args: &Array) {
+    record(args, |output| &mut output.error)
 }
 
-fn record(orig: &Function, args: &Array, dst: impl FnOnce(&mut Output) -> &mut String) {
+fn record(args: &Array, dst: impl FnOnce(&mut Output) -> &mut String) {
     if !CURRENT_OUTPUT.is_set() {
-        drop(orig.apply(&JsValue::null(), args));
         return;
     }
 
