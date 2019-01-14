@@ -31,8 +31,8 @@ pub fn spawn(
             await wasm.booted;
 
             const cx = new Context();
-            window.console_log_redirect = __wbgtest_console_log;
-            window.console_error_redirect = __wbgtest_console_error;
+            window.on_console_log = __wbgtest_console_log;
+            window.on_console_error = __wbgtest_console_error;
 
             // Forward runtime arguments. These arguments are also arguments to the
             // `wasm-bindgen-test-runner` which forwards them to node which we

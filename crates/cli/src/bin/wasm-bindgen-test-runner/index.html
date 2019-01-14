@@ -9,16 +9,16 @@
       const orig_console_error = console.error;
 
       console.log = function(...args) {
-        if (window.console_log_redirect) {
-          window.console_log_redirect(args);
+        if (window.on_console_log) {
+          window.on_console_log(args);
         }
 
         orig_console_log.apply(this, args);
       };
 
       console.error = function(...args) {
-        if (window.console_error_redirect) {
-          window.console_error_redirect(args);
+        if (window.on_console_error) {
+          window.on_console_error(args);
         }
 
         orig_console_error.apply(this, args);
