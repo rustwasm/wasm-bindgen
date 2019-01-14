@@ -433,7 +433,10 @@ impl<'src> FirstPassRecord<'src> {
                     );
                     signatures.push((signature, idl_args.clone()));
                 }
-                idl_args.push(arg.ty.to_idl_type(self));
+
+                let idl_type = arg.ty.to_idl_type(self);
+                let idl_type = maybe_adjust(idl_type, id);
+                idl_args.push(idl_type);
             }
             signatures.push((signature, idl_args));
         }
@@ -706,4 +709,22 @@ pub fn public() -> syn::Visibility {
     syn::Visibility::Public(syn::VisPublic {
         pub_token: Default::default(),
     })
+}
+
+/// When generating our web_sys APIs we default to setting slice references that
+/// get passed to JS as mutable in case they get mutated in JS.
+///
+/// In certain cases we know for sure that the slice will not get mutated - for
+/// example when working with the WebGlRenderingContext APIs.
+///
+/// Here we implement a whitelist for those cases. This whitelist is currently
+/// maintained by hand.
+fn maybe_adjust<'a> (idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
+    match id {
+        OperationId::Operation(Some(op)) => {
+            // TODO: `match op` and return an adjusted idl_type if necessary
+            idl_type
+        }
+        _ => idl_type
+    }
 }
