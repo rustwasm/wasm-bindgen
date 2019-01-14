@@ -36,6 +36,7 @@ pub struct Rust2Js<'a, 'b: 'a> {
 
     /// Whether or not we're catching JS exceptions
     catch: bool,
+    catch_and_rethrow: bool,
 
     /// Whether or not the last argument is a slice representing variadic arguments.
     variadic: bool,
@@ -53,12 +54,18 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             arg_idx: 0,
             ret_expr: String::new(),
             catch: false,
+            catch_and_rethrow: false,
             variadic: false,
         }
     }
 
     pub fn catch(&mut self, catch: bool) -> &mut Self {
         self.catch = catch;
+        self
+    }
+
+    pub fn catch_and_rethrow(&mut self, catch_and_rethrow: bool) -> &mut Self {
+        self.catch_and_rethrow = catch_and_rethrow;
         self
     }
 
@@ -505,6 +512,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         let Rust2Js {
             // fields which may affect whether we do nontrivial work
             catch,
+            catch_and_rethrow,
             finally,
             js_arguments,
             prelude,
@@ -520,6 +528,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         } = self;
 
         !catch &&
+            !catch_and_rethrow &&
             !variadic &&
             prelude.is_empty() &&
             finally.is_empty() &&
@@ -639,7 +648,21 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 ",
                 &invoc, catch
             );
-        };
+        } else if self.catch_and_rethrow {
+            invoc = format!(
+                "\
+                try {{\n\
+                    {}
+                }} catch (e) {{\n\
+                    console.error(\"wasm-bindgen: imported JS function that \
+                                    was not marked as `catch` threw an error:\", \
+                                    e);
+                    throw e;
+                }}\
+                ",
+                &invoc,
+            );
+        }
 
         if self.finally.len() > 0 {
             invoc = format!(

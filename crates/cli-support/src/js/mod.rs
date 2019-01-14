@@ -2410,6 +2410,9 @@ impl<'a, 'b> SubContext<'a, 'b> {
         // Build up our shim's state, and we'll use that to guide whether we
         // actually emit an import here or not.
         let mut shim = Rust2Js::new(self.cx);
+        if shim.cx.config.debug {
+            shim.catch_and_rethrow(true);
+        }
         shim.catch(import.catch)
             .variadic(import.variadic)
             .process(descriptor.unwrap_function())?;
