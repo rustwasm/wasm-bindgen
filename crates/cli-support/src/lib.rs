@@ -196,6 +196,7 @@ impl Bindgen {
         let (js, ts) = {
             let mut cx = js::Context {
                 globals: String::new(),
+                globals_written: false,
                 imports: String::new(),
                 imports_post: String::new(),
                 footer: String::new(),

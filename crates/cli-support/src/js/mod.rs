@@ -21,6 +21,7 @@ mod closures;
 
 pub struct Context<'a> {
     pub globals: String,
+    pub globals_written: bool,
     pub imports: String,
     pub imports_post: String,
     pub footer: String,
@@ -119,6 +120,11 @@ const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 const INITIAL_HEAP_OFFSET: usize = 32;
 
 impl<'a> Context<'a> {
+    fn should_write_global(&mut self, name: &'static str) -> bool {
+        assert!(!self.globals_written);
+        self.exposed_globals.insert(name)
+    }
+
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
         let contents = contents.trim();
         if let Some(ref c) = comments {
@@ -477,6 +483,10 @@ impl<'a> Context<'a> {
 
         self.rewrite_imports(module_name);
         self.update_producers_section();
+
+        // Cause any future calls to `should_write_global` to panic, making sure
+        // we don't ask for items which we can no longer emit.
+        self.globals_written = true;
 
         let mut js = if self.config.threads.is_some() {
             // TODO: It's not clear right now how to best use threads with
@@ -874,7 +884,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_drop_ref(&mut self) {
-        if !self.exposed_globals.insert("drop_ref") {
+        if !self.should_write_global("drop_ref") {
             return;
         }
         self.expose_global_heap();
@@ -901,7 +911,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_global_heap(&mut self) {
-        if !self.exposed_globals.insert("heap") {
+        if !self.should_write_global("heap") {
             return;
         }
         self.global(&format!("const heap = new Array({});", INITIAL_HEAP_OFFSET));
@@ -910,7 +920,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_global_heap_next(&mut self) {
-        if !self.exposed_globals.insert("heap_next") {
+        if !self.should_write_global("heap_next") {
             return;
         }
         self.expose_global_heap();
@@ -918,7 +928,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_object(&mut self) {
-        if !self.exposed_globals.insert("get_object") {
+        if !self.should_write_global("get_object") {
             return;
         }
         self.expose_global_heap();
@@ -929,7 +939,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_assert_num(&mut self) {
-        if !self.exposed_globals.insert("assert_num") {
+        if !self.should_write_global("assert_num") {
             return;
         }
         self.global(&format!(
@@ -942,7 +952,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_assert_bool(&mut self) {
-        if !self.exposed_globals.insert("assert_bool") {
+        if !self.should_write_global("assert_bool") {
             return;
         }
         self.global(&format!(
@@ -957,14 +967,14 @@ impl<'a> Context<'a> {
     }
 
     fn expose_wasm_vector_len(&mut self) {
-        if !self.exposed_globals.insert("wasm_vector_len") {
+        if !self.should_write_global("wasm_vector_len") {
             return;
         }
         self.global("let WASM_VECTOR_LEN = 0;");
     }
 
     fn expose_pass_string_to_wasm(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("pass_string_to_wasm") {
+        if !self.should_write_global("pass_string_to_wasm") {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_malloc")?;
@@ -1025,7 +1035,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_pass_array_jsvalue_to_wasm(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("pass_array_jsvalue") {
+        if !self.should_write_global("pass_array_jsvalue") {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_malloc")?;
@@ -1054,7 +1064,7 @@ impl<'a> Context<'a> {
         delegate: &str,
         size: usize,
     ) -> Result<(), Error> {
-        if !self.exposed_globals.insert(name) {
+        if !self.should_write_global(name) {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_malloc")?;
@@ -1076,14 +1086,14 @@ impl<'a> Context<'a> {
     }
 
     fn expose_text_encoder(&mut self) {
-        if !self.exposed_globals.insert("text_encoder") {
+        if !self.should_write_global("text_encoder") {
             return;
         }
         self.expose_text_processor("TextEncoder");
     }
 
     fn expose_text_decoder(&mut self) {
-        if !self.exposed_globals.insert("text_decoder") {
+        if !self.should_write_global("text_decoder") {
             return;
         }
         self.expose_text_processor("TextDecoder");
@@ -1112,7 +1122,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_string_from_wasm(&mut self) {
-        if !self.exposed_globals.insert("get_string_from_wasm") {
+        if !self.should_write_global("get_string_from_wasm") {
             return;
         }
         self.expose_text_decoder();
@@ -1148,7 +1158,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_array_js_value_from_wasm(&mut self) {
-        if !self.exposed_globals.insert("get_array_js_value_from_wasm") {
+        if !self.should_write_global("get_array_js_value_from_wasm") {
             return;
         }
         self.expose_uint32_memory();
@@ -1224,7 +1234,7 @@ impl<'a> Context<'a> {
     }
 
     fn arrayget(&mut self, name: &'static str, mem: &'static str, size: usize) {
-        if !self.exposed_globals.insert(name) {
+        if !self.should_write_global(name) {
             return;
         }
         self.global(&format!(
@@ -1341,7 +1351,7 @@ impl<'a> Context<'a> {
     }
 
     fn memview(&mut self, name: &'static str, js: &str) {
-        if !self.exposed_globals.insert(name) {
+        if !self.should_write_global(name) {
             return;
         }
         let mem = self.memory();
@@ -1362,7 +1372,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_assert_class(&mut self) {
-        if !self.exposed_globals.insert("assert_class") {
+        if !self.should_write_global("assert_class") {
             return;
         }
         self.global(
@@ -1378,14 +1388,14 @@ impl<'a> Context<'a> {
     }
 
     fn expose_global_stack_pointer(&mut self) {
-        if !self.exposed_globals.insert("stack_pointer") {
+        if !self.should_write_global("stack_pointer") {
             return;
         }
         self.global(&format!("let stack_pointer = {};", INITIAL_HEAP_OFFSET));
     }
 
     fn expose_borrowed_objects(&mut self) {
-        if !self.exposed_globals.insert("borrowed_objects") {
+        if !self.should_write_global("borrowed_objects") {
             return;
         }
         self.expose_global_heap();
@@ -1407,7 +1417,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_take_object(&mut self) {
-        if !self.exposed_globals.insert("take_object") {
+        if !self.should_write_global("take_object") {
             return;
         }
         self.expose_get_object();
@@ -1424,7 +1434,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_add_heap_object(&mut self) {
-        if !self.exposed_globals.insert("add_heap_object") {
+        if !self.should_write_global("add_heap_object") {
             return;
         }
         self.expose_global_heap();
@@ -1566,7 +1576,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_global_argument_ptr(&mut self) -> Result<(), Error> {
-        if !self.exposed_globals.insert("global_argument_ptr") {
+        if !self.should_write_global("global_argument_ptr") {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_global_argument_ptr")?;
@@ -1585,7 +1595,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_get_inherited_descriptor(&mut self) {
-        if !self.exposed_globals.insert("get_inherited_descriptor") {
+        if !self.should_write_global("get_inherited_descriptor") {
             return;
         }
         // It looks like while rare some browsers will move descriptors up the
@@ -1613,7 +1623,7 @@ impl<'a> Context<'a> {
 
     fn expose_u32_cvt_shim(&mut self) -> &'static str {
         let name = "u32CvtShim";
-        if !self.exposed_globals.insert(name) {
+        if !self.should_write_global(name) {
             return name;
         }
         self.global(&format!("const {} = new Uint32Array(2);", name));
@@ -1622,7 +1632,7 @@ impl<'a> Context<'a> {
 
     fn expose_int64_cvt_shim(&mut self) -> &'static str {
         let name = "int64CvtShim";
-        if !self.exposed_globals.insert(name) {
+        if !self.should_write_global(name) {
             return name;
         }
         let n = self.expose_u32_cvt_shim();
@@ -1635,7 +1645,7 @@ impl<'a> Context<'a> {
 
     fn expose_uint64_cvt_shim(&mut self) -> &'static str {
         let name = "uint64CvtShim";
-        if !self.exposed_globals.insert(name) {
+        if !self.should_write_global(name) {
             return name;
         }
         let n = self.expose_u32_cvt_shim();
@@ -1647,7 +1657,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_is_like_none(&mut self) {
-        if !self.exposed_globals.insert("is_like_none") {
+        if !self.should_write_global("is_like_none") {
             return;
         }
         self.global(
@@ -1660,7 +1670,7 @@ impl<'a> Context<'a> {
     }
 
     fn expose_cleanup_groups(&mut self) {
-        if !self.exposed_globals.insert("cleanup_groups") {
+        if !self.should_write_global("cleanup_groups") {
             return;
         }
         self.global(
