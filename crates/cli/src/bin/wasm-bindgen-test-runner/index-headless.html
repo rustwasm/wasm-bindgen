@@ -13,24 +13,30 @@
           logs.innerHTML += `${msg}\n`;
         }
       };
+
       const orig_console_error = function(...args) {
         const logs = document.getElementById('console_error');
         for (let msg of args) {
           logs.innerHTML += `${msg}\n`;
         }
       };
+
       console.log = function(...args) {
-        if (window.console_log_redirect)
-          window.console_log_redirect(orig_console_log, args);
-        else
-          orig_console_log.apply(this, args);
+        if (window.on_console_log) {
+          window.on_console_log(args);
+        }
+
+        orig_console_log.apply(this, args);
       };
+
       console.error = function(...args) {
-        if (window.console_error_redirect)
-          window.console_error_redirect(orig_console_error, args);
-        else
-          orig_console_error.apply(this, args);
+        if (window.on_console_error) {
+          window.on_console_error(args);
+        }
+
+        orig_console_error.apply(this, args);
       };
+
       window.__wbg_test_invoke = f => f();
     </script>
     <script src='run.js' type=module></script>

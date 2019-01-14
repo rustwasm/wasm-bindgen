@@ -16,27 +16,25 @@ pub fn execute(
         r#"
         const {{ exit }} = require('process');
 
-        let console_log_redirect = null;
-        let console_error_redirect = null;
+        let on_console_log = null;
+        let on_console_error = null;
 
         // override `console.log` and `console.error` before we import tests to
         // ensure they're bound correctly in wasm. This'll allow us to intercept
         // all these calls and capture the output of tests
         const prev_log = console.log;
         console.log = function(...args) {{
-            if (console_log_redirect === null)  {{
-                prev_log.apply(null, args);
-            }} else {{
-                console_log_redirect(prev_log, args);
+            if (on_console_log)  {{
+                on_console_log(args);
             }}
+            prev_log.apply(null, args);
         }};
         const prev_error = console.error;
         console.error = function(...args) {{
-            if (console_error_redirect === null) {{
-                prev_error.apply(null, args);
-            }} else {{
-                console_error_redirect(prev_error, args);
+            if (on_console_error) {{
+                on_console_error(args);
             }}
+            prev_error.apply(null, args);
         }};
 
         global.__wbg_test_invoke = f => f();
@@ -46,8 +44,8 @@ pub fn execute(
             const wasm = require("./{0}_bg");
 
             cx = new support.Context();
-            console_log_redirect = support.__wbgtest_console_log;
-            console_error_redirect = support.__wbgtest_console_error;
+            on_console_log = support.__wbgtest_console_log;
+            on_console_error = support.__wbgtest_console_error;
 
             // Forward runtime arguments. These arguments are also arguments to the
             // `wasm-bindgen-test-runner` which forwards them to node which we
