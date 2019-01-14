@@ -29,7 +29,9 @@ macro_rules! console_log {
 ///
 /// This macro is invoked as:
 ///
-///     wasm_bindgen_test_configure!(foo bar baz);
+/// ```ignore
+/// wasm_bindgen_test_configure!(foo bar baz);
+/// ```
 ///
 /// where all of `foo`, `bar`, and `baz`, would be recognized options to this
 /// macro. The currently known options to this macro are:
