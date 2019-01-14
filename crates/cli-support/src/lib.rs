@@ -196,16 +196,15 @@ impl Bindgen {
         let (js, ts) = {
             let mut cx = js::Context {
                 globals: String::new(),
-                globals_written: false,
                 imports: String::new(),
                 imports_post: String::new(),
                 footer: String::new(),
                 typescript: format!("/* tslint:disable */\n"),
-                exposed_globals: Default::default(),
+                exposed_globals: Some(Default::default()),
                 required_internal_exports: Default::default(),
                 imported_names: Default::default(),
                 imported_identifiers: Default::default(),
-                exported_classes: Default::default(),
+                exported_classes: Some(Default::default()),
                 config: &self,
                 module: &mut module,
                 function_table_needed: false,

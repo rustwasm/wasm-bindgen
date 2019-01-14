@@ -21,12 +21,11 @@ mod closures;
 
 pub struct Context<'a> {
     pub globals: String,
-    pub globals_written: bool,
     pub imports: String,
     pub imports_post: String,
     pub footer: String,
     pub typescript: String,
-    pub exposed_globals: HashSet<&'static str>,
+    pub exposed_globals: Option<HashSet<&'static str>>,
     pub required_internal_exports: HashSet<&'static str>,
     pub imported_functions: HashSet<&'a str>,
     pub imported_statics: HashSet<&'a str>,
@@ -56,7 +55,7 @@ pub struct Context<'a> {
     /// wasm-bindgen emits.
     pub direct_imports: HashMap<&'a str, (&'a str, &'a str)>,
 
-    pub exported_classes: HashMap<String, ExportedClass>,
+    pub exported_classes: Option<HashMap<String, ExportedClass>>,
     pub function_table_needed: bool,
     pub interpreter: &'a mut Interpreter,
     pub memory_init: Option<ResizableLimits>,
@@ -121,8 +120,7 @@ const INITIAL_HEAP_OFFSET: usize = 32;
 
 impl<'a> Context<'a> {
     fn should_write_global(&mut self, name: &'static str) -> bool {
-        assert!(!self.globals_written);
-        self.exposed_globals.insert(name)
+        self.exposed_globals.as_mut().unwrap().insert(name)
     }
 
     fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
@@ -486,7 +484,7 @@ impl<'a> Context<'a> {
 
         // Cause any future calls to `should_write_global` to panic, making sure
         // we don't ask for items which we can no longer emit.
-        self.globals_written = true;
+        drop(self.exposed_globals.take().unwrap());
 
         let mut js = if self.config.threads.is_some() {
             // TODO: It's not clear right now how to best use threads with
@@ -661,8 +659,7 @@ impl<'a> Context<'a> {
     }
 
     fn write_classes(&mut self) -> Result<(), Error> {
-        let classes = mem::replace(&mut self.exported_classes, Default::default());
-        for (class, exports) in classes {
+        for (class, exports) in self.exported_classes.take().unwrap() {
             self.write_class(&class, &exports)?;
         }
         Ok(())
@@ -1751,6 +1748,8 @@ impl<'a> Context<'a> {
 
     fn require_class_wrap(&mut self, class: &str) {
         self.exported_classes
+            .as_mut()
+            .expect("classes already written")
             .entry(class.to_string())
             .or_insert_with(ExportedClass::default)
             .wrap_needed = true;
@@ -2311,6 +2310,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let class = self
             .cx
             .exported_classes
+            .as_mut()
+            .expect("classes already written")
             .entry(class_name.to_string())
             .or_insert(ExportedClass::default());
         class
@@ -2540,6 +2541,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let class = self
             .cx
             .exported_classes
+            .as_mut()
+            .expect("classes already written")
             .entry(struct_.name.to_string())
             .or_insert_with(Default::default);
         class.comments = format_doc_comments(&struct_.comments, None);
