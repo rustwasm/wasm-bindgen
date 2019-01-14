@@ -63,6 +63,8 @@ extern "C" {
 
     fn drop_during_call_save(a: &Closure<Fn()>);
     fn drop_during_call_call();
+
+    fn js_test_closure_returner();
 }
 
 #[wasm_bindgen_test]
@@ -277,5 +279,35 @@ fn drop_during_call_ok() {
     drop_during_call_call();
     unsafe {
         assert!(HIT);
+    }
+}
+
+#[wasm_bindgen_test]
+fn test_closure_returner() {
+    type ClosureType = FnMut() -> BadStruct;
+
+    use js_sys::{Object, Reflect};
+    use wasm_bindgen::JsCast;
+
+    js_test_closure_returner();
+
+    #[wasm_bindgen]
+    pub struct ClosureHandle(Closure<ClosureType>);
+
+    #[wasm_bindgen]
+    pub struct BadStruct {}
+
+    #[wasm_bindgen]
+    pub fn closure_returner() -> Result<Object, JsValue> {
+
+        let o = Object::new();
+
+        let some_fn = Closure::wrap(Box::new(move || BadStruct {}) as Box<ClosureType>);
+        Reflect::set(&o, &JsValue::from("someKey"), &some_fn.as_ref().unchecked_ref())
+            .unwrap();
+        Reflect::set(&o, &JsValue::from("handle"), &JsValue::from(ClosureHandle(some_fn)))
+            .unwrap();
+
+        Ok(o)
     }
 }
