@@ -2514,7 +2514,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     .argument(&descriptor)?
                     .ret(&Descriptor::Unit)?;
                 ts_dst.push_str(&format!(
-                    "{}{}: {}\n",
+                    "{}{}: {};\n",
                     if field.readonly { "readonly " } else { "" },
                     field.name,
                     &cx.js_arguments[0].1
