@@ -17,7 +17,14 @@ pub fn spawn(
 ) -> Result<Server<impl Fn(&Request) -> Response + Send + Sync>, Error> {
     let mut js_to_execute = format!(
         r#"
-        import {{ Context, __wbgtest_console_log, __wbgtest_console_error }} from './{0}';
+        import {{
+            Context,
+            __wbgtest_console_debug,
+            __wbgtest_console_log,
+            __wbgtest_console_info,
+            __wbgtest_console_warn,
+            __wbgtest_console_error
+        }} from './{0}';
         import * as wasm from './{0}_bg';
 
         // Now that we've gotten to the point where JS is executing, update our
@@ -31,7 +38,10 @@ pub fn spawn(
             await wasm.booted;
 
             const cx = new Context();
+            window.on_console_debug = __wbgtest_console_debug;
             window.on_console_log = __wbgtest_console_log;
+            window.on_console_info = __wbgtest_console_info;
+            window.on_console_warn = __wbgtest_console_warn;
             window.on_console_error = __wbgtest_console_error;
 
             // Forward runtime arguments. These arguments are also arguments to the

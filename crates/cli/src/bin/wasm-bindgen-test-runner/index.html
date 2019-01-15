@@ -5,26 +5,24 @@
   <body>
     <pre id='output'>Loading scripts...</pre>
     <script>
-      const orig_console_log = console.log;
-      const orig_console_error = console.error;
+     const wrap = method => {
+         const og = console[method];
+         const on_method = `on_console_${method}`;
+         console[method] = function (...args) {
+             if (window[on_method]) {
+                 window[on_method](args);
+             }
+             og.apply(this, args);
+         };
+     };
 
-      console.log = function(...args) {
-        if (window.on_console_log) {
-          window.on_console_log(args);
-        }
+     wrap("debug");
+     wrap("log");
+     wrap("info");
+     wrap("warn");
+     wrap("error");
 
-        orig_console_log.apply(this, args);
-      };
-
-      console.error = function(...args) {
-        if (window.on_console_error) {
-          window.on_console_error(args);
-        }
-
-        orig_console_error.apply(this, args);
-      };
-
-      window.__wbg_test_invoke = f => f();
+     window.__wbg_test_invoke = f => f();
     </script>
     <script src='run.js' type=module></script>
   </body>
