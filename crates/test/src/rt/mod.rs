@@ -164,7 +164,10 @@ struct Test {
 /// Captured output of each test.
 #[derive(Default)]
 struct Output {
+    debug: String,
     log: String,
+    info: String,
+    warn: String,
     error: String,
 }
 
@@ -309,9 +312,25 @@ pub fn __wbgtest_console_log(args: &Array) {
     record(args, |output| &mut output.log)
 }
 
-/// Handler for `console.error` invocations.
-///
-/// Works the same as `console_log` above.
+/// Handler for `console.debug` invocations. See above.
+#[wasm_bindgen]
+pub fn __wbgtest_console_debug(args: &Array) {
+    record(args, |output| &mut output.debug)
+}
+
+/// Handler for `console.info` invocations. See above.
+#[wasm_bindgen]
+pub fn __wbgtest_console_info(args: &Array) {
+    record(args, |output| &mut output.info)
+}
+
+/// Handler for `console.warn` invocations. See above.
+#[wasm_bindgen]
+pub fn __wbgtest_console_warn(args: &Array) {
+    record(args, |output| &mut output.warn)
+}
+
+/// Handler for `console.error` invocations. See above.
 #[wasm_bindgen]
 pub fn __wbgtest_console_error(args: &Array) {
     record(args, |output| &mut output.error)
@@ -477,19 +496,24 @@ impl State {
         ));
     }
 
+    fn accumulate_console_output(&self, logs: &mut String, which: &str, output: &str) {
+        if output.is_empty() {
+            return;
+        }
+        logs.push_str(which);
+        logs.push_str(" output:\n");
+        logs.push_str(&tab(output));
+        logs.push('\n');
+    }
+
     fn print_failure(&self, test: &Test, error: &JsValue) {
         let mut logs = String::new();
         let output = test.output.borrow();
-        if output.log.len() > 0 {
-            logs.push_str("log output:\n");
-            logs.push_str(&tab(&output.log));
-            logs.push_str("\n");
-        }
-        if output.error.len() > 0 {
-            logs.push_str("error output:\n");
-            logs.push_str(&tab(&output.error));
-            logs.push_str("\n");
-        }
+        self.accumulate_console_output(&mut logs, "debug", &output.debug);
+        self.accumulate_console_output(&mut logs, "log", &output.log);
+        self.accumulate_console_output(&mut logs, "info", &output.info);
+        self.accumulate_console_output(&mut logs, "warn", &output.warn);
+        self.accumulate_console_output(&mut logs, "error", &output.error);
         logs.push_str("JS exception that was thrown:\n");
         let error_string = self.formatter.stringify_error(error);
         logs.push_str(&tab(&error_string));
