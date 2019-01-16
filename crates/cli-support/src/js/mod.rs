@@ -414,10 +414,13 @@ impl<'a> Context<'a> {
                             } catch (_) {
                                 return 'Object';
                             }
-                        // TODO we could test for more things here, like `Set`s and `Map`s.
-                        } else {
-                            return className;
                         }
+                        // errors
+                        if (val instanceof Error) {
+                            return `${className}: ${val.message}\n${val.stack}`;
+                        }
+                        // TODO we could test for more things here, like `Set`s and `Map`s.
+                        return className;
                     };
                     const val = getObject(i);
                     const debug = debug_str(val);
