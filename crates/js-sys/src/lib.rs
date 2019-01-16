@@ -3783,14 +3783,48 @@ extern "C" {
     #[wasm_bindgen(catch, static_method_of = JSON)]
     pub fn parse(text: &str) -> Result<JsValue, JsValue>;
 
-    /// The JSON.stringify() method converts a JavaScript value to a JSON string,
-    /// optionally replacing values if a replacer function is specified or
-    /// optionally including only the specified properties if a replacer array is
-    /// specified.
+    /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
     #[wasm_bindgen(catch, static_method_of = JSON)]
     pub fn stringify(obj: &JsValue) -> Result<JsString, JsValue>;
+
+    /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
+    ///
+    /// The `replacer` argument is a function that alters the behavior of the stringification
+    /// process, or an array of String and Number objects that serve as a whitelist
+    /// for selecting/filtering the properties of the value object to be included
+    /// in the JSON string. If this value is null or not provided, all properties
+    /// of the object are included in the resulting JSON string.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+    #[wasm_bindgen(catch, static_method_of = JSON, js_name = stringify)]
+    pub fn stringify_with_replacer(obj: &JsValue, replacer: &JsValue) -> Result<JsString, JsValue>;
+
+    /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
+    ///
+    /// The `replacer` argument is a function that alters the behavior of the stringification
+    /// process, or an array of String and Number objects that serve as a whitelist
+    /// for selecting/filtering the properties of the value object to be included
+    /// in the JSON string. If this value is null or not provided, all properties
+    /// of the object are included in the resulting JSON string.
+    ///
+    /// The `space` argument is a String or Number object that's used to insert white space into
+    /// the output JSON string for readability purposes. If this is a Number, it
+    /// indicates the number of space characters to use as white space; this number
+    /// is capped at 10 (if it is greater, the value is just 10). Values less than
+    /// 1 indicate that no space should be used. If this is a String, the string
+    /// (or the first 10 characters of the string, if it's longer than that) is
+    /// used as white space. If this parameter is not provided (or is null), no
+    /// white space is used.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+    #[wasm_bindgen(catch, static_method_of = JSON, js_name = stringify)]
+    pub fn stringify_with_replacer_and_space(
+        obj: &JsValue,
+        replacer: &JsValue,
+        space: &JsValue,
+    ) -> Result<JsString, JsValue>;
 
 }
 
