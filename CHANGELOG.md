@@ -32,6 +32,44 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.32
+
+Released 2019-01-16.
+
+### Added
+
+* Added support for Web IDL sequences. This enabled bindings generation for a
+  couple more Web APIs. We generate functions for Web APIs that take sequences
+  to accept any iterable, and for Web APIs that return sequences, a
+  `js_sys::Array` is returned. See
+  [#1152](https://github.com/rustwasm/wasm-bindgen/pull/1152) and
+  [#1038](https://github.com/rustwasm/wasm-bindgen/issues/1038).
+* The `wasm-bindgen-test` test runner will capture `console.debug`,
+  `console.info`, and `console.warn` log messages and print them to `stdout`
+  now. It already supported `console.log` and `console.error` and continues to
+  support them. See
+  [#1183](https://github.com/rustwasm/wasm-bindgen/issues/1183) and
+  [#1184](https://github.com/rustwasm/wasm-bindgen/pull/1184).
+* Added additional `--debug`-only assertions in the emitted JS glue for cases
+  where an imported JS function that is not annotated with
+  `#[wasm_bindgen(catch)]` throws an exception. This should help catch some bugs
+  earlier! See [#1179](https://github.com/rustwasm/wasm-bindgen/pull/1179).
+
+### Fixed
+
+* Fixed a bug where `#[wasm_bindgen_test]` tests would fail in non-headless Web
+  browsers if they used `console.log`. See
+  [#1167](https://github.com/rustwasm/wasm-bindgen/pull/1167).
+* Fixed a bug where returning closures from exported functions sometimes
+  resulted in a faulty error. See
+  [#1174](https://github.com/rustwasm/wasm-bindgen/issues/1174) and
+  [#1175](https://github.com/rustwasm/wasm-bindgen/pull/1175).
+* Sometimes our generated TypeScript interface files had syntax errors in them
+  (missing semicolons). This has been fixed. See
+  [#1181](https://github.com/rustwasm/wasm-bindgen/pull/1181).
+
+--------------------------------------------------------------------------------
+
 ## 0.2.31
 
 Released 2019-01-09.
