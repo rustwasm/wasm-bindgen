@@ -34,6 +34,7 @@ test_script:
   # the features.
   - cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features "Node Window Document"
 
+
 before_deploy:
   - ps: |
         $NAME = "wasm-bindgen-${env:APPVEYOR_REPO_TAG_NAME}-${env:TARGET}"
