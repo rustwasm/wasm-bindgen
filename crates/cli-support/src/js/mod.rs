@@ -299,18 +299,6 @@ impl<'a> Context<'a> {
             ))
         })?;
 
-        self.bind("__wbindgen_is_array", &|me| {
-            me.expose_get_object();
-            Ok(String::from(
-                "
-                function(i) {
-                    const val = getObject(i);
-                    return Array.isArray(val) ? 1 : 0;
-                }
-                ",
-            ))
-        })?;
-
         self.bind("__wbindgen_is_function", &|me| {
             me.expose_get_object();
             Ok(String::from(
