@@ -32,6 +32,24 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.33
+
+Released 2019-01-18.
+
+### Added
+
+* Improved the `Debug` output of `JsValue`
+  [#1161](https://github.com/rustwasm/wasm-bindgen/pull/1161)
+
+* Bindings for `JSON.stringify` and its optional arguments have been added
+  [#1190](https://github.com/rustwasm/wasm-bindgen/pull/1190)
+
+### Fixed
+
+* A bug with windows binaries being released has ben resolved.
+
+--------------------------------------------------------------------------------
+
 ## 0.2.32
 
 Released 2019-01-16.
