@@ -1,4 +1,4 @@
 // For more comments about what's going on here, check out the `hello_world`
 // example.
-import('./canvas')
+import('./pkg/canvas')
   .catch(console.error);

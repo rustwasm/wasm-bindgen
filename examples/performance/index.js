@@ -1,4 +1,4 @@
 // For more comments about what's going on here, check out the `hello_world`
 // example
-import('./performance')
+import('./pkg/performance')
   .catch(console.error);

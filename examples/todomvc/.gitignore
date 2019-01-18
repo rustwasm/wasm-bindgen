@@ -1,6 +1,0 @@
-target/
-dist/
-_site/
-
-todomvc*
-*.swp

@@ -1,8 +1,8 @@
-const rust = import('./fetch');
+const rust = import('./pkg/fetch');
 
 rust
   .then(m => {
-      m.run().then((data) => {
+      return m.run().then((data) => {
           console.log(data);
 
           console.log("The latest commit to the wasm-bindgen %s branch is:", data.name);
