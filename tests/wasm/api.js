@@ -41,3 +41,17 @@ exports.js_eq_works = () => {
     assert.strictEqual(wasm.eq_test(x, x), true);
     assert.strictEqual(wasm.eq_test1(x), true);
 };
+
+exports.debug_values = () => ([
+    null,
+    undefined,
+    0,
+    1.0,
+    true,
+    [1,2,3],
+    "string",
+    {test: "object"},
+    [1.0, [2.0, 3.0]],
+    () => (null),
+    new Set(),
+]);

@@ -338,6 +338,88 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_debug_string", &|me| {
+            me.expose_pass_string_to_wasm()?;
+            me.expose_get_object();
+            me.expose_uint32_memory();
+            Ok(String::from(
+                "
+                function(i, len_ptr) {
+                    const toString = Object.prototype.toString;
+                    const debug_str = val => {
+                        // primitive types
+                        const type = typeof val;
+                        if (type == 'number' || type == 'boolean' || val == null) {
+                            return  `${val}`;
+                        }
+                        if (type == 'string') {
+                            return `\"${val}\"`;
+                        }
+                        if (type == 'symbol') {
+                            const description = val.description;
+                            if (description == null) {
+                                return 'Symbol';
+                            } else {
+                                return `Symbol(${description})`;
+                            }
+                        }
+                        if (type == 'function') {
+                            const name = val.name;
+                            if (typeof name == 'string' && name.length > 0) {
+                                return `Function(${name})`;
+                            } else {
+                                return 'Function';
+                            }
+                        }
+                        // objects
+                        if (Array.isArray(val)) {
+                            const length = val.length;
+                            let debug = '[';
+                            if (length > 0) {
+                                debug += debug_str(val[0]);
+                            }
+                            for(let i = 1; i < length; i++) {
+                                debug += ', ' + debug_str(val[i]);
+                            }
+                            debug += ']';
+                            return debug;
+                        }
+                        // Test for built-in
+                        const builtInMatches = /\\[object ([^\\]]+)\\]/.exec(toString.call(val));
+                        let className;
+                        if (builtInMatches.length > 1) {
+                            className = builtInMatches[1];
+                        } else {
+                            // Failed to match the standard '[object ClassName]'
+                            return toString.call(val);
+                        }
+                        if (className == 'Object') {
+                            // we're a user defined class or Object
+                            // JSON.stringify avoids problems with cycles, and is generally much
+                            // easier than looping through ownProperties of `val`.
+                            try {
+                                return 'Object(' + JSON.stringify(val) + ')';
+                            } catch (_) {
+                                return 'Object';
+                            }
+                        }
+                        // errors
+                        if (val instanceof Error) {
+                            return `${val.name}: ${val.message}\n${val.stack}`;
+                        }
+                        // TODO we could test for more things here, like `Set`s and `Map`s.
+                        return className;
+                    };
+                    const val = getObject(i);
+                    const debug = debug_str(val);
+                    const ptr = passStringToWasm(debug);
+                    getUint32Memory()[len_ptr / 4] = WASM_VECTOR_LEN;
+                    return ptr;
+                }
+                ",
+            ))
+        })?;
+
         self.bind("__wbindgen_cb_drop", &|me| {
             me.expose_drop_ref();
             Ok(String::from(

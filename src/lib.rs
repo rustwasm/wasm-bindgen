@@ -303,6 +303,21 @@ impl JsValue {
     pub fn is_function(&self) -> bool {
         unsafe { __wbindgen_is_function(self.idx) == 1 }
     }
+
+    /// Get a string representation of the JavaScript object for debugging
+    #[cfg(feature = "std")]
+    fn as_debug_string(&self) -> String {
+        unsafe {
+            let mut len = 0;
+            let ptr = __wbindgen_debug_string(self.idx, &mut len);
+            if ptr.is_null() {
+                unreachable!("`__wbindgen_debug_string` must return a valid string")
+            } else {
+                let data = Vec::from_raw_parts(ptr, len, len);
+                String::from_utf8_unchecked(data)
+            }
+        }
+    }
 }
 
 impl PartialEq for JsValue {
@@ -477,6 +492,7 @@ externs! {
     fn __wbindgen_is_function(idx: u32) -> u32;
     fn __wbindgen_is_string(idx: u32) -> u32;
     fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
+    fn __wbindgen_debug_string(idx: u32, len: *mut usize) -> *mut u8;
     fn __wbindgen_throw(a: *const u8, b: usize) -> !;
     fn __wbindgen_rethrow(a: u32) -> !;
 
@@ -503,30 +519,17 @@ impl Clone for JsValue {
     }
 }
 
+#[cfg(feature = "std")]
 impl fmt::Debug for JsValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        if let Some(n) = self.as_f64() {
-            return n.fmt(f);
-        }
-        #[cfg(feature = "std")]
-        {
-            if let Some(n) = self.as_string() {
-                return n.fmt(f);
-            }
-        }
-        if let Some(n) = self.as_bool() {
-            return n.fmt(f);
-        }
-        if self.is_null() {
-            return fmt::Display::fmt("null", f);
-        }
-        if self.is_undefined() {
-            return fmt::Display::fmt("undefined", f);
-        }
-        if self.is_symbol() {
-            return fmt::Display::fmt("Symbol(..)", f);
-        }
-        fmt::Display::fmt("[object]", f)
+        write!(f, "JsValue({})", self.as_debug_string())
+    }
+}
+
+#[cfg(not(feature = "std"))]
+impl fmt::Debug for JsValue {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("JsValue")
     }
 }
 

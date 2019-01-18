@@ -8,6 +8,7 @@ extern "C" {
     fn js_works();
     fn js_eq_works();
     fn assert_null(v: JsValue);
+    fn debug_values() -> JsValue;
 }
 
 #[wasm_bindgen_test]
@@ -71,7 +72,7 @@ pub fn api_get_false() -> JsValue {
 #[wasm_bindgen]
 pub fn api_test_bool(a: &JsValue, b: &JsValue, c: &JsValue) {
     assert_eq!(a.as_bool(), Some(true));
-    assert_eq!(format!("{:?}", a), "true");
+    assert_eq!(format!("{:?}", a), "JsValue(true)");
     assert_eq!(b.as_bool(), Some(false));
     assert_eq!(c.as_bool(), None);
 }
@@ -80,7 +81,7 @@ pub fn api_test_bool(a: &JsValue, b: &JsValue, c: &JsValue) {
 pub fn api_mk_symbol() -> JsValue {
     let a = JsValue::symbol(None);
     assert!(a.is_symbol());
-    assert_eq!(format!("{:?}", a), "Symbol(..)");
+    assert_eq!(format!("{:?}", a), "JsValue(Symbol)");
     return a;
 }
 
@@ -100,7 +101,7 @@ pub fn api_assert_symbols(a: &JsValue, b: &JsValue) {
 #[wasm_bindgen]
 pub fn api_acquire_string(a: &JsValue, b: &JsValue) {
     assert_eq!(a.as_string().unwrap(), "foo");
-    assert_eq!(format!("{:?}", a), "\"foo\"");
+    assert_eq!(format!("{:?}", a), "JsValue(\"foo\")");
     assert_eq!(b.as_string(), None);
 }
 
@@ -144,4 +145,25 @@ fn memory_accessor_appears_to_work() {
         .subarray(ptr, ptr + 4)
         .for_each(&mut |val, _, _| v.push(val));
     assert_eq!(v, [3, 0, 0, 0]);
+}
+
+#[wasm_bindgen_test]
+fn debug_output() {
+    let test_iter = debug_values().dyn_into::<js_sys::Array>().unwrap().values().into_iter();
+    let expecteds = vec![
+        "JsValue(null)",
+        "JsValue(undefined)",
+        "JsValue(0)",
+        "JsValue(1)",
+        "JsValue(true)",
+        "JsValue([1, 2, 3])",
+        "JsValue(\"string\")",
+        "JsValue(Object({\"test\":\"object\"}))",
+        "JsValue([1, [2, 3]])",
+        "JsValue(Function)",
+        "JsValue(Set)",
+    ];
+    for (test, expected) in test_iter.zip(expecteds) {
+        assert_eq!(format!("{:?}", test.unwrap()), expected);
+    }
 }
