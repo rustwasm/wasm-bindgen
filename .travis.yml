@@ -223,7 +223,7 @@ matrix:
       if: branch = master
 
     # Build API documentation
-    - rust: nightly
+    - rust: stable
       name: "doc: API documentation"
       install: *INSTALL_AWS
       script:
