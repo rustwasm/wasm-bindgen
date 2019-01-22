@@ -67,13 +67,13 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
     format!("[MDN Documentation]({})", link).into()
 }
 
-// Array type is borrowed for arguments (`&[T]`) and owned for return value (`Vec<T>`).
-pub(crate) fn array(base_ty: &str, pos: TypePosition) -> syn::Type {
+// Array type is borrowed for arguments (`&mut [T]` or `&[T]`) and owned for return value (`Vec<T>`).
+pub(crate) fn array(base_ty: &str, pos: TypePosition, immutable: bool) -> syn::Type {
     match pos {
         TypePosition::Argument => {
             shared_ref(
                 slice_ty(ident_ty(raw_ident(base_ty))),
-                /*mutable =*/ true,
+                /*mutable =*/ !immutable,
             )
         }
         TypePosition::Return => vec_ty(ident_ty(raw_ident(base_ty))),
@@ -721,9 +721,14 @@ pub fn public() -> syn::Visibility {
 /// maintained by hand.
 fn maybe_adjust<'a> (idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
     match id {
+        // TODO: `match op` and return an adjusted idl_type if necessary
         OperationId::Operation(Some(op)) => {
-            // TODO: `match op` and return an adjusted idl_type if necessary
-            idl_type
+            match *op {
+//                "vertexAttrib1fv" => {
+//                    IdlType::Float32Array { immutable: true}
+//                }
+                _ => idl_type
+            }
         }
         _ => idl_type
     }

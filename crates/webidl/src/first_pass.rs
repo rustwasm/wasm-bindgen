@@ -83,6 +83,9 @@ pub(crate) struct CallbackInterfaceData<'src> {
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
 pub(crate) enum OperationId<'src> {
     Constructor(IgnoreTraits<&'src str>),
+    /// The name of a function in crates/web-sys/webidls/enabled/*.webidl
+    ///
+    /// ex: Operation(Some("vertexAttrib1fv"))
     Operation(Option<&'src str>),
     IndexingGetter,
     IndexingSetter,

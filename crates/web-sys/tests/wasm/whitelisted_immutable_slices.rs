@@ -22,5 +22,5 @@ extern "C" {
 fn test_webgl_rendering_context_immutable_slices() {
     let gl = new_webgl_rendering_context();
 
-    gl.vertex_attrib1fv_with_f32_array(0, &[5000.]);
+     gl.vertex_attrib1fv_with_f32_array(0, &[5000.]);
 }
