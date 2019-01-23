@@ -1,3 +1,1 @@
-// intentionally left blank
-
-// QUESTION FOR REVIEWER: WHY? (I'll include this context in the comment)
+// Intentionally left blank in order for Cargo to work

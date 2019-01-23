@@ -12,6 +12,8 @@ use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
 use first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use idl_type::{IdlType, ToIdlType};
+// TODO: Remove.. just using this to see what idl types I need to change..
+use std::io::Write;
 
 /// For variadic operations an overload with a `js_sys::Array` argument is generated alongside with
 /// `operation_name_0`, `operation_name_1`, `operation_name_2`, ..., `operation_name_n` overloads
@@ -434,7 +436,7 @@ impl<'src> FirstPassRecord<'src> {
                     signatures.push((signature, idl_args.clone()));
                 }
 
-                let idl_type = arg.ty.to_idl_type(self);
+                let mut idl_type = arg.ty.to_idl_type(self);
                 let idl_type = maybe_adjust(idl_type, id);
                 idl_args.push(idl_type);
             }
@@ -719,16 +721,30 @@ pub fn public() -> syn::Visibility {
 ///
 /// Here we implement a whitelist for those cases. This whitelist is currently
 /// maintained by hand.
-fn maybe_adjust<'a> (idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
+fn maybe_adjust<'a> (mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
+//    let mut file = ::std::fs::OpenOptions::new().append(true).create(true).open("foo").unwrap();
+
     match id {
-        // TODO: `match op` and return an adjusted idl_type if necessary
         OperationId::Operation(Some(op)) => {
             match *op {
-//                "vertexAttrib1fv" => {
-//                    IdlType::Float32Array { immutable: true}
-//                }
-                _ => idl_type
-            }
+                "vertexAttrib1fv" => {
+// TODO: Remove.. just using this to see what idl types I need to change..
+//                    file.write(
+//                        format!("{:#?}", idl_type).as_bytes()
+//                    );
+//                    file.write(r#"
+//                    "#.as_bytes());
+
+                    if let IdlType::Union(ref mut union) = idl_type {
+                        if let IdlType::Float32Array { ref mut immutable } = union[0] {
+                            *immutable = true;
+                        }
+                    }
+                }
+                _ => {}
+            };
+
+            return idl_type
         }
         _ => idl_type
     }
