@@ -208,7 +208,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         if optional {
             if arg.is_wasm_native() {
                 self.cx.expose_is_like_none();
-                self.js_arguments.push((name.clone(), "number".to_string()));
+                self.js_arguments
+                    .push((name.clone(), "number | undefined".to_string()));
 
                 if self.cx.config.debug {
                     self.cx.expose_assert_num();
@@ -230,7 +231,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
             if arg.is_abi_as_u32() {
                 self.cx.expose_is_like_none();
-                self.js_arguments.push((name.clone(), "number".to_string()));
+                self.js_arguments
+                    .push((name.clone(), "number | undefined".to_string()));
 
                 if self.cx.config.debug {
                     self.cx.expose_assert_num();
@@ -256,7 +258,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     self.cx.expose_uint64_cvt_shim()
                 };
                 self.cx.expose_uint32_memory();
-                self.js_arguments.push((name.clone(), "BigInt".to_string()));
+                self.js_arguments
+                    .push((name.clone(), "BigInt | undefined".to_string()));
                 self.prelude(&format!(
                     "
                         {f}[0] = isLikeNone({name}) ? BigInt(0) : {name};
@@ -278,7 +281,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 Descriptor::Boolean => {
                     self.cx.expose_is_like_none();
                     self.js_arguments
-                        .push((name.clone(), "boolean".to_string()));
+                        .push((name.clone(), "boolean | undefined".to_string()));
                     if self.cx.config.debug {
                         self.cx.expose_assert_bool();
                         self.prelude(&format!(
@@ -296,7 +299,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 }
                 Descriptor::Char => {
                     self.cx.expose_is_like_none();
-                    self.js_arguments.push((name.clone(), "string".to_string()));
+                    self.js_arguments
+                        .push((name.clone(), "string | undefined".to_string()));
                     self.rust_arguments.push(format!("!isLikeNone({0})", name));
                     self.rust_arguments
                         .push(format!("isLikeNone({0}) ? 0 : {0}.codePointAt(0)", name));
