@@ -4841,7 +4841,7 @@ macro_rules! arrays {
             /// Additionally the returned object can be safely mutated but the
             /// input slice isn't guaranteed to be mutable.
             ///
-            /// Finally, the returned objet is disconnected from the input
+            /// Finally, the returned object is disconnected from the input
             /// slice's lifetime, so there's no guarantee that the data is read
             /// at the right time.
             pub unsafe fn view(rust: &[$ty]) -> $name {
