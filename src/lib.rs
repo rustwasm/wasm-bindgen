@@ -37,6 +37,8 @@ macro_rules! if_std {
 /// ```
 pub mod prelude {
     pub use wasm_bindgen_macro::wasm_bindgen;
+    #[doc(hidden)]
+    pub use wasm_bindgen_macro::__wasm_bindgen_class_marker;
     pub use JsValue;
 
     if_std! {

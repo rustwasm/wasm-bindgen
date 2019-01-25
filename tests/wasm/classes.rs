@@ -22,6 +22,7 @@ extern "C" {
     fn js_js_rename();
     fn js_access_fields();
     fn js_renamed_export();
+    fn js_conditional_bindings();
 }
 
 #[wasm_bindgen_test]
@@ -401,4 +402,20 @@ impl RenamedExport {
 #[wasm_bindgen_test]
 fn renamed_export() {
     js_renamed_export();
+}
+
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+pub struct ConditionalBindings {
+}
+
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
+impl ConditionalBindings {
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen(constructor))]
+    pub fn new() -> ConditionalBindings {
+        ConditionalBindings {}
+    }
+}
+#[wasm_bindgen_test]
+fn conditional_bindings() {
+    js_conditional_bindings();
 }

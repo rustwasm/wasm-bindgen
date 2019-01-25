@@ -143,3 +143,8 @@ exports.js_renamed_export = () => {
     x.foo();
     x.bar(x);
 };
+
+exports.js_conditional_bindings = () => {
+    const x = new wasm.ConditionalBindings();
+    x.free();
+};

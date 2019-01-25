@@ -47,15 +47,15 @@ error: macros in impls aren't supported
    |     ^^^^^
 
 error: can only #[wasm_bindgen] non-const functions
-  --> $DIR/invalid-methods.rs:41:9
+  --> $DIR/invalid-methods.rs:43:9
    |
-41 |     pub const fn foo() {}
+43 |     pub const fn foo() {}
    |         ^^^^^
 
 error: can only bindgen safe functions
-  --> $DIR/invalid-methods.rs:42:9
+  --> $DIR/invalid-methods.rs:48:9
    |
-42 |     pub unsafe fn foo() {}
+48 |     pub unsafe fn foo() {}
    |         ^^^^^^
 
 error: aborting due to 10 previous errors
