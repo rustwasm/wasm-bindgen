@@ -12,8 +12,8 @@ use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
 use first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use idl_type::{IdlType, ToIdlType};
-// TODO: Remove.. just using this to see what idl types I need to change..
-use std::io::Write;
+
+use std::collections::HashSet;
 
 /// For variadic operations an overload with a `js_sys::Array` argument is generated alongside with
 /// `operation_name_0`, `operation_name_1`, `operation_name_2`, ..., `operation_name_n` overloads
@@ -721,31 +721,40 @@ pub fn public() -> syn::Visibility {
 ///
 /// Here we implement a whitelist for those cases. This whitelist is currently
 /// maintained by hand.
-fn maybe_adjust<'a> (mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
-//    let mut file = ::std::fs::OpenOptions::new().append(true).create(true).open("foo").unwrap();
+fn maybe_adjust<'a>(mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
+    let immutable_f32_fns: Vec<&'static str> = vec![
+        // WebGlRenderingContext
+        "vertexAttrib1fv",
+        "vertexAttrib2fv",
+        "vertexAttrib3fv",
+        "vertexAttrib4fv",
+        "uniform1fv",
+        "uniform2fv",
+        "uniform3fv",
+        "uniform4fv",
+        "uniformMatrix2fv",
+        "uniformMatrix3fv",
+        "uniformMatrix4fv",
+        // TODO: Add another type's functions here
+    ];
 
-    match id {
-        OperationId::Operation(Some(op)) => {
-            match *op {
-                "vertexAttrib1fv" => {
-// TODO: Remove.. just using this to see what idl types I need to change..
-//                    file.write(
-//                        format!("{:#?}", idl_type).as_bytes()
-//                    );
-//                    file.write(r#"
-//                    "#.as_bytes());
-
-                    if let IdlType::Union(ref mut union) = idl_type {
-                        if let IdlType::Float32Array { ref mut immutable } = union[0] {
-                            *immutable = true;
-                        }
-                    }
-                }
-                _ => {}
-            };
-
-            return idl_type
-        }
-        _ => idl_type
+    let mut immutable_f32_slice_whitelist: HashSet<&'static str> = HashSet::new();
+    for function_name in immutable_f32_fns.into_iter() {
+        immutable_f32_slice_whitelist.insert(function_name);
     }
+
+        // example `op`... -> "vertexAttrib1fv"
+    if let OperationId::Operation(Some(op)) = id {
+        // Look up this funtion in our whitelist and see if we should make its
+        // slice argument immutable.
+        if immutable_f32_slice_whitelist.get(op).is_some() {
+            if let IdlType::Union(ref mut union) = idl_type {
+                if let IdlType::Float32Array { ref mut immutable } = union[0] {
+                    *immutable = true;
+                }
+            }
+        }
+    }
+
+    idl_type
 }

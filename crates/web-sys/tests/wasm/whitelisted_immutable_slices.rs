@@ -5,6 +5,8 @@
 //! example when working with the WebGlRenderingContext APIs.
 //!
 //! These tests ensure that whitelisted methods do indeed accept mutable slices.
+//! Especially important since this whitelist is stringly typed and currently
+//! maintained by hand.
 //!
 //! @see https://github.com/rustwasm/wasm-bindgen/issues/1005
 
@@ -20,7 +22,25 @@ extern "C" {
 // Ensure that our whitelisted WebGlRenderingContext methods work
 #[wasm_bindgen_test]
 fn test_webgl_rendering_context_immutable_slices() {
+    // WebGl wasn't working in headless firefox at the time of writing..
     let gl = new_webgl_rendering_context();
 
-     gl.vertex_attrib1fv_with_f32_array(0, &[5000.]);
+    gl.vertex_attrib1fv_with_f32_array(0, &[1.]);
+    gl.vertex_attrib2fv_with_f32_array(0, &[1.]);
+    gl.vertex_attrib3fv_with_f32_array(0, &[1.]);
+    gl.vertex_attrib4fv_with_f32_array(0, &[1.]);
+
+    gl.uniform1fv_with_f32_array(None, &[1.]);
+    gl.uniform2fv_with_f32_array(None, &[1.]);
+    gl.uniform3fv_with_f32_array(None, &[1.]);
+    gl.uniform4fv_with_f32_array(None, &[1.]);
+
+    gl.uniform_matrix2fv_with_f32_array(None, false, &[1.]);
+    gl.uniform_matrix3fv_with_f32_array(None, false, &[1.]);
+    gl.uniform_matrix4fv_with_f32_array(None, false, &[1.]);
 }
+
+// TODO:
+//#[wasm_bindgen_test]
+//fn test_another_types_immutable_slices_here() {
+//}

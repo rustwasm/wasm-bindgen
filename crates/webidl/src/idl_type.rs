@@ -340,10 +340,7 @@ macro_rules! terms_to_idl_type {
     ($($t:tt => $r:tt)*) => ($(
         impl<'a> ToIdlType<'a> for term::$t {
             fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
-                match IdlType::$r {
-                    IdlType::Callback => IdlType::Float32Array { immutable: false },
-                    _ => IdlType::$r
-                }
+                IdlType::$r
             }
         }
     )*);

@@ -152,9 +152,6 @@ export function new_title() {
 }
 
 export function new_webgl_rendering_context() {
-  const foo = document.createElement('canvas');
-  console.log('Does get context work? ' + foo.getContext('webgl'));
-
   const canvas = document.createElement('canvas');
   return canvas.getContext('webgl');
 }
