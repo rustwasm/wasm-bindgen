@@ -17,28 +17,36 @@ use web_sys::WebGlRenderingContext;
 #[wasm_bindgen(module = "./tests/wasm/element.js")]
 extern "C" {
     fn new_webgl_rendering_context() -> WebGlRenderingContext;
+    // TODO: Add a function to create another type to test here.
+    // These functions come from element.js
 }
+
+// TODO: Uncomment WebGlRenderingContext test...
+// Currently commented out because WebGl isn't working in geckodriver.
+// It currently works in chromedriver so if you need to run this in the meantime you can
+// uncomment this block and run it in using chromedriver.
+//
+// CHROMEDRIVER=chromedriver cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features --test test_webgl_rendering_context_immutable_slices
 
 // Ensure that our whitelisted WebGlRenderingContext methods work
-#[wasm_bindgen_test]
-fn test_webgl_rendering_context_immutable_slices() {
-    // WebGl wasn't working in headless firefox at the time of writing..
-    let gl = new_webgl_rendering_context();
-
-    gl.vertex_attrib1fv_with_f32_array(0, &[1.]);
-    gl.vertex_attrib2fv_with_f32_array(0, &[1.]);
-    gl.vertex_attrib3fv_with_f32_array(0, &[1.]);
-    gl.vertex_attrib4fv_with_f32_array(0, &[1.]);
-
-    gl.uniform1fv_with_f32_array(None, &[1.]);
-    gl.uniform2fv_with_f32_array(None, &[1.]);
-    gl.uniform3fv_with_f32_array(None, &[1.]);
-    gl.uniform4fv_with_f32_array(None, &[1.]);
-
-    gl.uniform_matrix2fv_with_f32_array(None, false, &[1.]);
-    gl.uniform_matrix3fv_with_f32_array(None, false, &[1.]);
-    gl.uniform_matrix4fv_with_f32_array(None, false, &[1.]);
-}
+//#[wasm_bindgen_test]
+//fn test_webgl_rendering_context_immutable_slices() {
+//    let gl = new_webgl_rendering_context();
+//
+//    gl.vertex_attrib1fv_with_f32_array(0, &[1.]);
+//    gl.vertex_attrib2fv_with_f32_array(0, &[1.]);
+//    gl.vertex_attrib3fv_with_f32_array(0, &[1.]);
+//    gl.vertex_attrib4fv_with_f32_array(0, &[1.]);
+//
+//    gl.uniform1fv_with_f32_array(None, &[1.]);
+//    gl.uniform2fv_with_f32_array(None, &[1.]);
+//    gl.uniform3fv_with_f32_array(None, &[1.]);
+//    gl.uniform4fv_with_f32_array(None, &[1.]);
+//
+//    gl.uniform_matrix2fv_with_f32_array(None, false, &[1.]);
+//    gl.uniform_matrix3fv_with_f32_array(None, false, &[1.]);
+//    gl.uniform_matrix4fv_with_f32_array(None, false, &[1.]);
+//}
 
 // TODO:
 //#[wasm_bindgen_test]

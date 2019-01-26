@@ -724,10 +724,6 @@ pub fn public() -> syn::Visibility {
 fn maybe_adjust<'a>(mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
     let immutable_f32_fns: Vec<&'static str> = vec![
         // WebGlRenderingContext
-        "vertexAttrib1fv",
-        "vertexAttrib2fv",
-        "vertexAttrib3fv",
-        "vertexAttrib4fv",
         "uniform1fv",
         "uniform2fv",
         "uniform3fv",
@@ -735,7 +731,11 @@ fn maybe_adjust<'a>(mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'
         "uniformMatrix2fv",
         "uniformMatrix3fv",
         "uniformMatrix4fv",
-        // TODO: Add another type's functions here
+        "vertexAttrib1fv",
+        "vertexAttrib2fv",
+        "vertexAttrib3fv",
+        "vertexAttrib4fv",
+        // TODO: Add another type's functions here. Leave a comment header with the type name
     ];
 
     let mut immutable_f32_slice_whitelist: HashSet<&'static str> = HashSet::new();
