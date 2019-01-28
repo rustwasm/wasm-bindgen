@@ -207,6 +207,7 @@ pub struct Enum {
     pub name: Ident,
     pub variants: Vec<Variant>,
     pub comments: Vec<String>,
+    pub hole: u32,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]

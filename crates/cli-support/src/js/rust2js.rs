@@ -200,6 +200,11 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         .push(format!("{0} === 0xFFFFFF ? undefined : {0} !== 0", abi));
                     return Ok(());
                 }
+                Descriptor::Enum { hole } => {
+                    self.js_arguments
+                        .push(format!("{0} === {1} ? undefined : {0}", abi, hole));
+                    return Ok(());
+                }
                 Descriptor::Char => {
                     let value = self.shim_argument();
                     self.js_arguments.push(format!(
@@ -439,6 +444,14 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         getUint32Memory()[ret / 4 + 1] = isLikeNone(val) ? 0 : val.codePointAt(0);
                     "
                     .to_string();
+                    return Ok(());
+                }
+                Descriptor::Enum { hole } => {
+                    self.cx.expose_is_like_none();
+                    self.ret_expr = format!("
+                        const val = JS;
+                        return isLikeNone(val) ? {} : val;
+                    ", hole);
                     return Ok(());
                 }
                 _ => bail!(
