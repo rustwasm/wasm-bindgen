@@ -44,6 +44,10 @@ also like to be aware of it!
      };
      ```
 
+     **Warning:** doing this implies the polyfill will always be used,
+     even if native APIs are available. This has a very significant
+     performance impact (the polyfill was measured to be 100x slower in Chromium)!
+
   2. If you're not using a bundler you can also include support manually by
      adding a `<script>` tag which defines the `TextEncoder` and `TextDecoder`
      globals. [This StackOverflow question][soq] has some example usage and MDN
