@@ -1,13 +1,13 @@
 error: unused #[wasm_bindgen] attribute
- --> $DIR/unused-attributes.rs:9:20
-  |
-9 |     #[wasm_bindgen(method)]
-  |                    ^^^^^^
+  --> $DIR/unused-attributes.rs:11:20
+   |
+11 |     #[wasm_bindgen(method)]
+   |                    ^^^^^^
 
 error: unused #[wasm_bindgen] attribute
-  --> $DIR/unused-attributes.rs:10:20
+  --> $DIR/unused-attributes.rs:12:20
    |
-10 |     #[wasm_bindgen(method)]
+12 |     #[wasm_bindgen(method)]
    |                    ^^^^^^
 
 error: aborting due to 2 previous errors
