@@ -953,6 +953,12 @@ impl MacroParse<()> for syn::ItemEnum {
             _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
         }
 
+        if self.variants.len() == 0 {
+            bail_span!(self, "cannot export empty enums to JS");
+        }
+
+        let has_discriminant = self.variants[0].discriminant.is_some();
+
         let variants = self
             .variants
             .iter()
@@ -962,6 +968,14 @@ impl MacroParse<()> for syn::ItemEnum {
                     syn::Fields::Unit => (),
                     _ => bail_span!(v.fields, "only C-Style enums allowed with #[wasm_bindgen]"),
                 }
+
+                // Require that everything either has a discriminant or doesn't.
+                // We don't really want to get in the business of emulating how
+                // rustc assigns values to enums.
+                if v.discriminant.is_some() != has_discriminant {
+                    bail_span!(v, "must either annotate discriminant of all variants or none");
+                }
+
                 let value = match v.discriminant {
                     Some((
                         _,
@@ -992,12 +1006,30 @@ impl MacroParse<()> for syn::ItemEnum {
                     value,
                 })
             })
-            .collect::<Result<_, Diagnostic>>()?;
+            .collect::<Result<Vec<_>, Diagnostic>>()?;
+
+        let mut values = variants.iter().map(|v| v.value).collect::<Vec<_>>();
+        values.sort();
+        let hole = values.windows(2)
+            .filter_map(|window| {
+                if window[0] + 1 != window[1] {
+                    Some(window[0] + 1)
+                } else {
+                    None
+                }
+            })
+            .next()
+            .unwrap_or(*values.last().unwrap() + 1);
+        for value in values {
+            assert!(hole != value);
+        }
+
         let comments = extract_doc_comments(&self.attrs);
         program.enums.push(ast::Enum {
             name: self.ident,
             variants,
             comments,
+            hole,
         });
         Ok(())
     }
