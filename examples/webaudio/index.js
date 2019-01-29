@@ -19,21 +19,21 @@ import('./pkg/webaudio')
     const primary_slider = document.getElementById("primary_input");
     primary_slider.addEventListener("input", event => {
       if (fm) {
-        fm.set_note(event.target.value);
+        fm.set_note(parseInt(event.target.value));
       }
     });
 
     const fm_freq = document.getElementById("fm_freq");
     fm_freq.addEventListener("input", event => {
       if (fm) {
-        fm.set_fm_frequency(event.target.value);
+        fm.set_fm_frequency(parseFloat(event.target.value));
       }
     });
 
     const fm_amount = document.getElementById("fm_amount");
     fm_amount.addEventListener("input", event => {
       if (fm) {
-        fm.set_fm_amount(event.target.value);
+        fm.set_fm_amount(parseFloat(event.target.value));
       }
     });
   })
