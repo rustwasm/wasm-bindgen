@@ -796,7 +796,11 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
 }
 
 impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
-    fn macro_parse(self, _program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
+    fn macro_parse(
+        self,
+        _program: &mut ast::Program,
+        opts: BindgenAttrs,
+    ) -> Result<(), Diagnostic> {
         if self.defaultness.is_some() {
             bail_span!(
                 self.defaultness,
@@ -851,7 +855,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
 fn prepare_for_impl_recursion(
     item: &mut syn::ImplItem,
     class: &Ident,
-    impl_opts: &BindgenAttrs
+    impl_opts: &BindgenAttrs,
 ) -> Result<(), Diagnostic> {
     let method = match item {
         syn::ImplItem::Method(m) => m,
@@ -884,13 +888,16 @@ fn prepare_for_impl_recursion(
         .map(|s| s.0.to_string())
         .unwrap_or(class.to_string());
 
-    method.attrs.insert(0, syn::Attribute {
-        pound_token: Default::default(),
-        style: syn::AttrStyle::Outer,
-        bracket_token: Default::default(),
-        path: syn::Ident::new("__wasm_bindgen_class_marker", Span::call_site()).into(),
-        tts: quote::quote! { (#class = #js_class) }.into(),
-    });
+    method.attrs.insert(
+        0,
+        syn::Attribute {
+            pound_token: Default::default(),
+            style: syn::AttrStyle::Outer,
+            bracket_token: Default::default(),
+            path: syn::Ident::new("__wasm_bindgen_class_marker", Span::call_site()).into(),
+            tts: quote::quote! { (#class = #js_class) }.into(),
+        },
+    );
 
     Ok(())
 }
@@ -973,7 +980,10 @@ impl MacroParse<()> for syn::ItemEnum {
                 // We don't really want to get in the business of emulating how
                 // rustc assigns values to enums.
                 if v.discriminant.is_some() != has_discriminant {
-                    bail_span!(v, "must either annotate discriminant of all variants or none");
+                    bail_span!(
+                        v,
+                        "must either annotate discriminant of all variants or none"
+                    );
                 }
 
                 let value = match v.discriminant {
@@ -1010,7 +1020,8 @@ impl MacroParse<()> for syn::ItemEnum {
 
         let mut values = variants.iter().map(|v| v.value).collect::<Vec<_>>();
         values.sort();
-        let hole = values.windows(2)
+        let hole = values
+            .windows(2)
             .filter_map(|window| {
                 if window[0] + 1 != window[1] {
                     Some(window[0] + 1)

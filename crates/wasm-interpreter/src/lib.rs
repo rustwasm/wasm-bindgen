@@ -1,7 +1,7 @@
 //! A tiny and incomplete wasm interpreter
 //!
 //! This module contains a tiny and incomplete wasm interpreter built on top of
-//! `parity-wasm`'s module structure. Each `Interpreter` contains some state
+//! `walrus`'s module structure. Each `Interpreter` contains some state
 //! about the execution of a wasm instance. The "incomplete" part here is
 //! related to the fact that this is *only* used to execute the various
 //! descriptor functions for wasm-bindgen.
@@ -18,11 +18,9 @@
 
 #![deny(missing_docs)]
 
-extern crate parity_wasm;
-
-use std::collections::HashMap;
-
-use parity_wasm::elements::*;
+use std::collections::{BTreeMap, HashMap};
+use walrus::ir::ExprId;
+use walrus::{FunctionId, LocalFunction, LocalId, Module, TableId};
 
 /// A ready-to-go interpreter of a wasm module.
 ///
@@ -31,35 +29,23 @@ use parity_wasm::elements::*;
 /// state like the wasm stack, wasm memory, etc.
 #[derive(Default)]
 pub struct Interpreter {
-    // Number of imported functions in the wasm module (used in index
-    // calculations)
-    imports: usize,
-
     // Function index of the `__wbindgen_describe` and
     // `__wbindgen_describe_closure` imported functions. We special case this
     // to know when the environment's imported function is called.
-    describe_idx: Option<u32>,
-    describe_closure_idx: Option<u32>,
+    describe_id: Option<FunctionId>,
+    describe_closure_id: Option<FunctionId>,
+
+    // Id of the function table
+    functions: Option<TableId>,
 
     // A mapping of string names to the function index, filled with all exported
     // functions.
-    name_map: HashMap<String, u32>,
-
-    // The numerical index of the sections in the wasm module, indexed into
-    // the module's list of sections.
-    code_idx: Option<usize>,
-    types_idx: Option<usize>,
-    functions_idx: Option<usize>,
-    elements_idx: Option<usize>,
+    name_map: HashMap<String, FunctionId>,
 
     // The current stack pointer (global 0) and wasm memory (the stack). Only
     // used in a limited capacity.
     sp: i32,
     mem: Vec<i32>,
-
-    // The wasm stack. Note how it's just `i32` which is intentional, we don't
-    // support other types.
-    stack: Vec<i32>,
 
     // The descriptor which we're assembling, a list of `u32` entries. This is
     // very specific to wasm-bindgen and is the purpose for the existence of
@@ -70,13 +56,6 @@ pub struct Interpreter {
     // stores the last table index argument, used for finding a different
     // descriptor.
     descriptor_table_idx: Option<u32>,
-}
-
-struct Sections<'a> {
-    code: &'a CodeSection,
-    types: &'a TypeSection,
-    functions: &'a FunctionSection,
-    elements: &'a ElementSection,
 }
 
 impl Interpreter {
@@ -95,49 +74,39 @@ impl Interpreter {
         ret.mem = vec![0; 0x100];
         ret.sp = ret.mem.len() as i32;
 
-        // Figure out where our code section, if any, is.
-        for (i, s) in module.sections().iter().enumerate() {
-            match s {
-                Section::Code(_) => ret.code_idx = Some(i),
-                Section::Element(_) => ret.elements_idx = Some(i),
-                Section::Type(_) => ret.types_idx = Some(i),
-                Section::Function(_) => ret.functions_idx = Some(i),
-                _ => {}
-            }
-        }
-
         // Figure out where the `__wbindgen_describe` imported function is, if
         // it exists. We'll special case calls to this function as our
         // interpretation should only invoke this function as an imported
         // function.
-        if let Some(i) = module.import_section() {
-            ret.imports = i.functions();
-            let mut idx = 0;
-            for entry in i.entries() {
-                match entry.external() {
-                    External::Function(_) => idx += 1,
-                    _ => continue,
-                }
-                if entry.module() != "__wbindgen_placeholder__" {
-                    continue;
-                }
-                if entry.field() == "__wbindgen_describe" {
-                    ret.describe_idx = Some(idx - 1 as u32);
-                } else if entry.field() == "__wbindgen_describe_closure" {
-                    ret.describe_closure_idx = Some(idx - 1 as u32);
-                }
+        for import in module.imports.iter() {
+            let id = match import.kind {
+                walrus::ImportKind::Function(id) => id,
+                _ => continue,
+            };
+            if import.module != "__wbindgen_placeholder__" {
+                continue;
+            }
+            if import.name == "__wbindgen_describe" {
+                ret.describe_id = Some(id);
+            } else if import.name == "__wbindgen_describe_closure" {
+                ret.describe_closure_id = Some(id);
             }
         }
 
-        // Build up the mapping of exported functions to function indices.
-        if let Some(e) = module.export_section() {
-            for e in e.entries() {
-                let i = match e.internal() {
-                    Internal::Function(i) => i,
-                    _ => continue,
-                };
-                ret.name_map.insert(e.field().to_string(), *i);
+        // Build up the mapping of exported functions to function ids.
+        for export in module.exports.iter() {
+            let id = match export.item {
+                walrus::ExportItem::Function(id) => id,
+                _ => continue,
+            };
+            ret.name_map.insert(export.name.to_string(), id);
+        }
+
+        for table in module.tables.iter() {
+            match table.kind {
+                walrus::TableKind::Function(_) => {}
             }
+            ret.functions = Some(table.id());
         }
 
         return ret;
@@ -164,21 +133,17 @@ impl Interpreter {
     /// Returns `Some` if `func` was found in the `module` and `None` if it was
     /// not found in the `module`.
     pub fn interpret_descriptor(&mut self, func: &str, module: &Module) -> Option<&[u32]> {
-        let idx = *self.name_map.get(func)?;
-        self.with_sections(module, |me, sections| {
-            me.interpret_descriptor_idx(idx, sections)
-        })
+        let id = *self.name_map.get(func)?;
+        self.interpret_descriptor_id(id, module)
     }
 
-    fn interpret_descriptor_idx(&mut self, idx: u32, sections: &Sections) -> Option<&[u32]> {
+    fn interpret_descriptor_id(&mut self, id: FunctionId, module: &Module) -> Option<&[u32]> {
         self.descriptor.truncate(0);
 
         // We should have a blank wasm and LLVM stack at both the start and end
         // of the call.
         assert_eq!(self.sp, self.mem.len() as i32);
-        assert_eq!(self.stack.len(), 0);
-        self.call(idx, sections);
-        assert_eq!(self.stack.len(), 0);
+        self.call(id, module, &[]);
         assert_eq!(self.sp, self.mem.len() as i32);
         Some(&self.descriptor)
     }
@@ -186,7 +151,7 @@ impl Interpreter {
     /// Interprets a "closure descriptor", figuring out the signature of the
     /// closure that was intended.
     ///
-    /// This function will take a `code_idx` which is known to internally
+    /// This function will take an `id` which is known to internally
     /// execute `__wbindgen_describe_closure` and interpret it. The
     /// `wasm-bindgen` crate controls all callers of this internal import. It
     /// will then take the index passed to `__wbindgen_describe_closure` and
@@ -201,22 +166,11 @@ impl Interpreter {
     /// section) of the function that needs to be snip'd out.
     pub fn interpret_closure_descriptor(
         &mut self,
-        code_idx: usize,
+        id: FunctionId,
         module: &Module,
-        entry_removal_list: &mut Vec<(usize, usize)>,
+        entry_removal_list: &mut Vec<usize>,
     ) -> Option<&[u32]> {
-        self.with_sections(module, |me, sections| {
-            me._interpret_closure_descriptor(code_idx, sections, entry_removal_list)
-        })
-    }
-
-    fn _interpret_closure_descriptor(
-        &mut self,
-        code_idx: usize,
-        sections: &Sections,
-        entry_removal_list: &mut Vec<(usize, usize)>,
-    ) -> Option<&[u32]> {
-        // Call the `code_idx` function. This is an internal `#[inline(never)]`
+        // Call the `id` function. This is an internal `#[inline(never)]`
         // whose code is completely controlled by the `wasm-bindgen` crate, so
         // it should take some arguments (the number of arguments depends on the
         // optimization level) and return one (all of which we don't care about
@@ -224,215 +178,219 @@ impl Interpreter {
         // it'll call `__wbindgen_describe_closure` with an argument that we
         // look for.
         assert!(self.descriptor_table_idx.is_none());
-        let closure_descriptor_idx = (code_idx + self.imports) as u32;
 
-        let code_sig = sections.functions.entries()[code_idx].type_ref();
-        let function_ty = match &sections.types.types()[code_sig as usize] {
-            Type::Function(t) => t,
-        };
-        for _ in 0..function_ty.params().len() {
-            self.stack.push(0);
-        }
-
-        self.call(closure_descriptor_idx, sections);
-        assert_eq!(self.stack.len(), 1);
-        self.stack.pop();
-        let descriptor_table_idx = self.descriptor_table_idx.take().unwrap();
+        let func = module.funcs.get(id);
+        assert_eq!(module.types.get(func.ty()).params().len(), 2);
+        self.call(id, module, &[0, 0]);
+        let descriptor_table_idx =
+            self.descriptor_table_idx
+                .take()
+                .expect("descriptor function should return index") as usize;
 
         // After we've got the table index of the descriptor function we're
         // interested go take a look in the function table to find what the
         // actual index of the function is.
-        let (entry_idx, offset, entry) = sections
+        let functions = self.functions.expect("function table should be present");
+        let functions = match &module.tables.get(functions).kind {
+            walrus::TableKind::Function(f) => f,
+        };
+        let descriptor_id = functions
             .elements
-            .entries()
-            .iter()
-            .enumerate()
-            .filter_map(|(i, entry)| {
-                let code = match entry.offset() {
-                    Some(offset) => offset.code(),
-                    None => return None,
-                };
-                if code.len() != 2 {
-                    return None;
-                }
-                if code[1] != Instruction::End {
-                    return None;
-                }
-                match code[0] {
-                    Instruction::I32Const(x) => Some((i, x as u32, entry)),
-                    _ => None,
-                }
-            })
-            .find(|(_i, offset, entry)| {
-                *offset <= descriptor_table_idx
-                    && descriptor_table_idx < (*offset + entry.members().len() as u32)
-            })
-            .expect("failed to find index in table elements");
-        let idx = (descriptor_table_idx - offset) as usize;
-        let descriptor_idx = entry.members()[idx];
+            .get(descriptor_table_idx)
+            .expect("out of bounds read of function table")
+            .expect("attempting to execute null function");
 
         // This is used later to actually remove the entry from the table, but
         // we don't do the removal just yet
-        entry_removal_list.push((entry_idx, idx));
+        entry_removal_list.push(descriptor_table_idx);
 
         // And now execute the descriptor!
-        self.interpret_descriptor_idx(descriptor_idx, sections)
+        self.interpret_descriptor_id(descriptor_id, module)
     }
 
-    /// Returns the function space index of the `__wbindgen_describe_closure`
+    /// Returns the function id of the `__wbindgen_describe_closure`
     /// imported function.
-    pub fn describe_closure_idx(&self) -> Option<u32> {
-        self.describe_closure_idx
+    pub fn describe_closure_id(&self) -> Option<FunctionId> {
+        self.describe_closure_id
     }
 
-    fn call(&mut self, idx: u32, sections: &Sections) {
-        use parity_wasm::elements::Instruction::*;
-
-        let idx = idx as usize;
-        assert!(idx >= self.imports); // can't call imported functions
-        let code_idx = idx - self.imports;
-        let body = &sections.code.bodies()[code_idx];
-
-        // Allocate space for our call frame's local variables. All local
-        // variables should be of the `i32` type.
-        assert!(body.locals().len() <= 1, "too many local types");
-        let nlocals = body
-            .locals()
-            .get(0)
-            .map(|i| {
-                assert_eq!(i.value_type(), ValueType::I32);
-                i.count()
-            })
-            .unwrap_or(0);
-
-        let code_sig = sections.functions.entries()[code_idx].type_ref();
-        let function_ty = match &sections.types.types()[code_sig as usize] {
-            Type::Function(t) => t,
-        };
-        let mut locals = Vec::with_capacity(function_ty.params().len() + nlocals as usize);
-        // Any function parameters we have get popped off the stack and put into
-        // the first few locals ...
-        for param in function_ty.params() {
-            assert_eq!(*param, ValueType::I32);
-            locals.push(self.stack.pop().unwrap());
-        }
-        // ... and the remaining locals all start as zero ...
-        for _ in 0..nlocals {
-            locals.push(0);
-        }
-        // ... and we expect one stack slot at the end if there's a returned
-        // value
-        let before = self.stack.len();
-        let stack_after = match function_ty.return_type() {
-            Some(t) => {
-                assert_eq!(t, ValueType::I32);
-                before + 1
-            }
-            None => before,
-        };
-
-        // Actual interpretation loop! We keep track of our stack's length to
-        // recover it as part of the `Return` instruction, and otherwise this is
-        // a pretty straightforward interpretation loop.
-        for instr in body.code().elements() {
-            match instr {
-                I32Const(x) => self.stack.push(*x),
-                SetLocal(i) => locals[*i as usize] = self.stack.pop().unwrap(),
-                GetLocal(i) => self.stack.push(locals[*i as usize]),
-                Call(idx) => {
-                    // If this function is calling the `__wbindgen_describe`
-                    // function, which we've precomputed the index for, then
-                    // it's telling us about the next `u32` element in the
-                    // descriptor to return. We "call" the imported function
-                    // here by directly inlining it.
-                    //
-                    // Otherwise this is a normal call so we recurse.
-                    if Some(*idx) == self.describe_idx {
-                        self.descriptor.push(self.stack.pop().unwrap() as u32);
-                    } else if Some(*idx) == self.describe_closure_idx {
-                        self.descriptor_table_idx = Some(self.stack.pop().unwrap() as u32);
-                        self.stack.pop();
-                        self.stack.pop();
-                        self.stack.push(0);
-                    } else {
-                        self.call(*idx, sections);
-                    }
-                }
-                GetGlobal(0) => self.stack.push(self.sp),
-                SetGlobal(0) => self.sp = self.stack.pop().unwrap(),
-                I32Sub => {
-                    let b = self.stack.pop().unwrap();
-                    let a = self.stack.pop().unwrap();
-                    self.stack.push(a - b);
-                }
-                I32Add => {
-                    let a = self.stack.pop().unwrap();
-                    let b = self.stack.pop().unwrap();
-                    self.stack.push(a + b);
-                }
-                I32Store(/* align = */ 2, offset) => {
-                    let val = self.stack.pop().unwrap();
-                    let addr = self.stack.pop().unwrap() as u32;
-                    self.mem[((addr + *offset) as usize) / 4] = val;
-                }
-                I32Load(/* align = */ 2, offset) => {
-                    let addr = self.stack.pop().unwrap() as u32;
-                    self.stack.push(self.mem[((addr + *offset) as usize) / 4]);
-                }
-                Return => self.stack.truncate(stack_after),
-                End => break,
-
-                // All other instructions shouldn't be used by our various
-                // descriptor functions. LLVM optimizations may mean that some
-                // of the above instructions aren't actually needed either, but
-                // the above instructions have empirically been required when
-                // executing our own test suite in wasm-bindgen.
-                //
-                // Note that LLVM may change over time to generate new
-                // instructions in debug mode, and we'll have to react to those
-                // sorts of changes as they arise.
-                s => panic!("unknown instruction {:?}", s),
-            }
-        }
-        assert_eq!(self.stack.len(), stack_after);
+    /// Returns the detected id of the function table.
+    pub fn function_table_id(&self) -> Option<TableId> {
+        self.functions
     }
 
-    fn with_sections<'a, T>(
-        &'a mut self,
-        module: &Module,
-        f: impl FnOnce(&'a mut Self, &Sections) -> T,
-    ) -> T {
-        macro_rules! access_with_defaults {
-            ($(
-                    let $var: ident = module.sections[self.$field:ident]
-                    ($name:ident);
-            )*) => {$(
-                let default = Default::default();
-                let $var = match self.$field {
-                    Some(i) => {
-                        match &module.sections()[i] {
-                            Section::$name(s) => s,
-                            _ => panic!(),
-                        }
-                    }
-                    None => &default,
-                };
-            )*}
+    fn call(&mut self, id: FunctionId, module: &Module, args: &[i32]) -> Option<i32> {
+        let func = module.funcs.get(id);
+        log::debug!("starting a call of {:?} {:?}", id, func.name);
+        log::debug!("arguments {:?}", args);
+        let local = match &func.kind {
+            walrus::FunctionKind::Local(l) => l,
+            _ => panic!("can only call locally defined functions"),
+        };
+
+        let entry = local.entry_block();
+        let block = local.block(entry);
+
+        let mut frame = Frame {
+            module,
+            local,
+            interp: self,
+            locals: BTreeMap::new(),
+            done: false,
+        };
+
+        assert_eq!(local.args.len(), args.len());
+        for (arg, val) in local.args.iter().zip(args) {
+            frame.locals.insert(*arg, *val);
         }
-        access_with_defaults! {
-            let code = module.sections[self.code_idx] (Code);
-            let types = module.sections[self.types_idx] (Type);
-            let functions = module.sections[self.functions_idx] (Function);
-            let elements = module.sections[self.elements_idx] (Element);
+
+        if block.exprs.len() > 0 {
+            for expr in block.exprs[..block.exprs.len() - 1].iter() {
+                let ret = frame.eval(*expr);
+                if frame.done {
+                    return ret;
+                }
+            }
         }
-        f(
-            self,
-            &Sections {
-                code,
-                types,
-                functions,
-                elements,
+        block.exprs.last().and_then(|e| frame.eval(*e))
+    }
+}
+
+struct Frame<'a> {
+    module: &'a Module,
+    local: &'a LocalFunction,
+    interp: &'a mut Interpreter,
+    locals: BTreeMap<LocalId, i32>,
+    done: bool,
+}
+
+impl Frame<'_> {
+    fn local(&self, id: LocalId) -> i32 {
+        self.locals.get(&id).cloned().unwrap_or(0)
+    }
+
+    fn eval(&mut self, expr: ExprId) -> Option<i32> {
+        use walrus::ir::*;
+
+        match self.local.get(expr) {
+            Expr::Const(c) => match c.value {
+                Value::I32(n) => Some(n),
+                _ => panic!("non-i32 constant"),
             },
-        )
+            Expr::LocalGet(e) => Some(self.local(e.local)),
+            Expr::LocalSet(e) => {
+                let val = self.eval(e.value).expect("must eval to i32");
+                self.locals.insert(e.local, val);
+                None
+            }
+
+            // Blindly assume all globals are the stack pointer
+            Expr::GlobalGet(_) => Some(self.interp.sp),
+            Expr::GlobalSet(e) => {
+                let val = self.eval(e.value).expect("must eval to i32");
+                self.interp.sp = val;
+                None
+            }
+
+            // Support simple arithmetic, mainly for the stack pointer
+            // manipulation
+            Expr::Binop(e) => {
+                let lhs = self.eval(e.lhs).expect("must eval to i32");
+                let rhs = self.eval(e.rhs).expect("must eval to i32");
+                match e.op {
+                    BinaryOp::I32Sub => Some(lhs - rhs),
+                    BinaryOp::I32Add => Some(lhs + rhs),
+                    op => panic!("invalid binary op {:?}", op),
+                }
+            }
+
+            // Support small loads/stores to the stack. These show up in debug
+            // mode where there's some traffic on the linear stack even when in
+            // theory there doesn't need to be.
+            Expr::Load(e) => {
+                let address = self.eval(e.address).expect("must eval to i32");
+                let address = address as u32 + e.arg.offset;
+                assert!(address % 4 == 0);
+                Some(self.interp.mem[address as usize / 4])
+            }
+            Expr::Store(e) => {
+                let address = self.eval(e.address).expect("must eval to i32");
+                let value = self.eval(e.value).expect("must eval to i32");
+                let address = address as u32 + e.arg.offset;
+                assert!(address % 4 == 0);
+                self.interp.mem[address as usize / 4] = value;
+                None
+            }
+
+            Expr::Return(e) => {
+                log::debug!("return");
+                self.done = true;
+                assert!(e.values.len() <= 1);
+                e.values.get(0).and_then(|id| self.eval(*id))
+            }
+
+            Expr::Drop(e) => {
+                log::debug!("drop");
+                self.eval(e.expr);
+                None
+            }
+
+            Expr::WithSideEffects(e) => {
+                log::debug!("side effects");
+                let ret = self.eval(e.value);
+                for x in e.side_effects.iter() {
+                    self.eval(*x);
+                }
+                return ret;
+            }
+
+            Expr::Call(e) => {
+                // If this function is calling the `__wbindgen_describe`
+                // function, which we've precomputed the id for, then
+                // it's telling us about the next `u32` element in the
+                // descriptor to return. We "call" the imported function
+                // here by directly inlining it.
+                if Some(e.func) == self.interp.describe_id {
+                    assert_eq!(e.args.len(), 1);
+                    let val = self.eval(e.args[0]).expect("must eval to i32");
+                    log::debug!("__wbindgen_describe({})", val);
+                    self.interp.descriptor.push(val as u32);
+                    None
+
+                // If this function is calling the `__wbindgen_describe_closure`
+                // function then it's similar to the above, except there's a
+                // slightly different signature. Note that we don't eval the
+                // previous arguments because they shouldn't have any side
+                // effects we're interested in.
+                } else if Some(e.func) == self.interp.describe_closure_id {
+                    assert_eq!(e.args.len(), 3);
+                    let val = self.eval(e.args[2]).expect("must eval to i32");
+                    log::debug!("__wbindgen_describe_closure({})", val);
+                    self.interp.descriptor_table_idx = Some(val as u32);
+                    Some(0)
+
+                // ... otherwise this is a normal call so we recurse.
+                } else {
+                    let args = e
+                        .args
+                        .iter()
+                        .map(|e| self.eval(*e).expect("must eval to i32"))
+                        .collect::<Vec<_>>();
+                    self.interp.call(e.func, self.module, &args);
+                    None
+                }
+            }
+
+            // All other instructions shouldn't be used by our various
+            // descriptor functions. LLVM optimizations may mean that some
+            // of the above instructions aren't actually needed either, but
+            // the above instructions have empirically been required when
+            // executing our own test suite in wasm-bindgen.
+            //
+            // Note that LLVM may change over time to generate new
+            // instructions in debug mode, and we'll have to react to those
+            // sorts of changes as they arise.
+            s => panic!("unknown instruction {:?}", s),
+        }
     }
 }

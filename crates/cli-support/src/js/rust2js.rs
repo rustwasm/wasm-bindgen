@@ -1,7 +1,6 @@
-use failure::Error;
-
-use super::{Context, ImportTarget, Js2Rust};
-use descriptor::{Descriptor, Function};
+use crate::descriptor::{Descriptor, Function};
+use crate::js::{Context, ImportTarget, Js2Rust};
+use failure::{bail, Error};
 
 /// Helper struct for manufacturing a shim in JS used to translate Rust types to
 /// JS, then invoking an imported JS function.
@@ -448,10 +447,13 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 }
                 Descriptor::Enum { hole } => {
                     self.cx.expose_is_like_none();
-                    self.ret_expr = format!("
+                    self.ret_expr = format!(
+                        "
                         const val = JS;
                         return isLikeNone(val) ? {} : val;
-                    ", hole);
+                    ",
+                        hole
+                    );
                     return Ok(());
                 }
                 _ => bail!(

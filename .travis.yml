@@ -173,17 +173,9 @@ matrix:
       script: cargo test -p ui-tests
       if: branch = master
 
-    # wasm-gc tests work alright
-    - name: "test wasm-bindgen-gc crate"
-      install:
-        - git clone https://github.com/WebAssembly/wabt
-        - mkdir -p wabt/build
-        - (cd wabt/build && cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=sccache -DCMAKE_CXX_COMPILER_ARG1=c++ -DBUILD_TESTS=OFF && cmake --build . -- -j4)
-        - export PATH=$PATH:`pwd`/wabt/build
-      script:
-        - cargo test -p wasm-bindgen-gc
-        # Interpreter tests should quickly pass
-        - cargo test -p wasm-bindgen-wasm-interpreter
+    # wasm-interpreter tests work alright
+    - name: "test wasm-bindgen-wasm-interpreter crate"
+      script: cargo test -p wasm-bindgen-wasm-interpreter
       if: branch = master
 
     # Dist linux binary

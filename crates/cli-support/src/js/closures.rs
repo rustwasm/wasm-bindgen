@@ -9,16 +9,14 @@
 //! through values into the final `Closure` object. More details about how all
 //! this works can be found in the code below.
 
-use std::collections::{BTreeMap, HashMap, HashSet};
-use std::mem;
-
+use crate::descriptor::Descriptor;
+use crate::js::js2rust::Js2Rust;
+use crate::js::Context;
 use failure::Error;
-use parity_wasm::elements::*;
-
-use descriptor::Descriptor;
-use js::js2rust::Js2Rust;
-use js::Context;
-use wasm_utils::Remap;
+use std::collections::BTreeMap;
+use std::mem;
+use walrus::ir::{Expr, ExprId};
+use walrus::{FunctionId, LocalFunction};
 
 pub fn rewrite(input: &mut Context) -> Result<(), Error> {
     let info = ClosureDescriptors::new(input);
@@ -27,38 +25,14 @@ pub fn rewrite(input: &mut Context) -> Result<(), Error> {
     // there's not calls to `Closure::new`.
     assert_eq!(
         info.element_removal_list.len(),
-        info.code_idx_to_descriptor.len(),
+        info.func_to_descriptor.len(),
     );
     if info.element_removal_list.len() == 0 {
         return Ok(());
     }
 
-    // Make sure the names section is available in the wasm module because we'll
-    // want to remap those function indices, and then actually remap all
-    // function indices. We're going to be injecting a few imported functions
-    // below which will shift the index space for all defined functions.
-    input.parse_wasm_names();
-    let old_num_imports = input
-        .module
-        .import_section()
-        .map(|s| s.functions())
-        .unwrap_or(0) as u32;
-    Remap(|idx| {
-        // If this was an imported function we didn't reorder those, so nothing
-        // to do.
-        if idx < old_num_imports {
-            idx
-        } else {
-            // ... otherwise we're injecting a number of new imports, so offset
-            // everything.
-            idx + info.code_idx_to_descriptor.len() as u32
-        }
-    })
-    .remap_module(input.module);
-
     info.delete_function_table_entries(input);
     info.inject_imports(input)?;
-    info.rewrite_calls(input);
     Ok(())
 }
 
@@ -67,20 +41,19 @@ struct ClosureDescriptors {
     /// A list of elements to remove from the function table. The first element
     /// of the pair is the index of the entry in the element section, and the
     /// second element of the pair is the index within that entry to remove.
-    element_removal_list: Vec<(usize, usize)>,
+    element_removal_list: Vec<usize>,
 
-    /// A map from indexes in the code section which contain calls to
-    /// `__wbindgen_describe_closure` to the new function the whole function is
-    /// replaced with as well as the descriptor that the function describes.
+    /// A map from local functions which contain calls to
+    /// `__wbindgen_describe_closure` to the information about the closure
+    /// descriptor it contains.
     ///
     /// This map is later used to replace all calls to the keys of this map with
     /// calls to the value of the map.
-    code_idx_to_descriptor: BTreeMap<u32, DescribeInstruction>,
+    func_to_descriptor: BTreeMap<FunctionId, DescribeInstruction>,
 }
 
 struct DescribeInstruction {
-    new_idx: u32,
-    instr_idx: usize,
+    call: ExprId,
     descriptor: Descriptor,
 }
 
@@ -97,49 +70,66 @@ impl ClosureDescriptors {
     /// All this information is then returned in the `ClosureDescriptors` return
     /// value.
     fn new(input: &mut Context) -> ClosureDescriptors {
-        let wbindgen_describe_closure = match input.interpreter.describe_closure_idx() {
+        use walrus::ir::*;
+
+        let wbindgen_describe_closure = match input.interpreter.describe_closure_id() {
             Some(i) => i,
             None => return Default::default(),
         };
-        let imports = input
-            .module
-            .import_section()
-            .map(|s| s.functions())
-            .unwrap_or(0);
         let mut ret = ClosureDescriptors::default();
 
-        let code = match input.module.code_section() {
-            Some(code) => code,
-            None => return Default::default(),
-        };
-        for (i, function) in code.bodies().iter().enumerate() {
-            let call_pos = function.code().elements().iter().position(|i| match i {
-                Instruction::Call(i) => *i == wbindgen_describe_closure,
-                _ => false,
-            });
-            let call_pos = match call_pos {
-                Some(i) => i,
-                None => continue,
+        for (id, local) in input.module.funcs.iter_local() {
+            let entry = local.entry_block();
+            let mut find = FindDescribeClosure {
+                func: local,
+                wbindgen_describe_closure,
+                cur: entry.into(),
+                call: None,
             };
-            let descriptor = input
-                .interpreter
-                .interpret_closure_descriptor(i, input.module, &mut ret.element_removal_list)
-                .unwrap();
-            // `new_idx` is the function-space index of the function that we'll
-            // be injecting. Calls to the code function `i` will instead be
-            // rewritten to calls to `new_idx`, which is an import that we'll
-            // inject based on `descriptor`.
-            let new_idx = (ret.code_idx_to_descriptor.len() + imports) as u32;
-            ret.code_idx_to_descriptor.insert(
-                i as u32,
-                DescribeInstruction {
-                    new_idx,
-                    instr_idx: call_pos,
-                    descriptor: Descriptor::decode(descriptor),
-                },
-            );
+            find.visit_block_id(&entry);
+            if let Some(call) = find.call {
+                let descriptor = input
+                    .interpreter
+                    .interpret_closure_descriptor(id, input.module, &mut ret.element_removal_list)
+                    .unwrap();
+                ret.func_to_descriptor.insert(
+                    id,
+                    DescribeInstruction {
+                        call,
+                        descriptor: Descriptor::decode(descriptor),
+                    },
+                );
+            }
         }
+
         return ret;
+
+        struct FindDescribeClosure<'a> {
+            func: &'a LocalFunction,
+            wbindgen_describe_closure: FunctionId,
+            cur: ExprId,
+            call: Option<ExprId>,
+        }
+
+        impl<'a> Visitor<'a> for FindDescribeClosure<'a> {
+            fn local_function(&self) -> &'a LocalFunction {
+                self.func
+            }
+
+            fn visit_expr_id(&mut self, id: &ExprId) {
+                let prev = mem::replace(&mut self.cur, *id);
+                id.visit(self);
+                self.cur = prev;
+            }
+
+            fn visit_call(&mut self, call: &Call) {
+                call.visit(self);
+                if call.func == self.wbindgen_describe_closure {
+                    assert!(self.call.is_none());
+                    self.call = Some(self.cur);
+                }
+            }
+        }
     }
 
     /// Here we remove elements from the function table. All our descriptor
@@ -151,49 +141,17 @@ impl ClosureDescriptors {
     /// altogether by splitting the section and having multiple `elem` sections
     /// with holes in them.
     fn delete_function_table_entries(&self, input: &mut Context) {
-        let elements = input.module.elements_section_mut().unwrap();
-        let mut remove = HashMap::new();
-        for (entry, idx) in self.element_removal_list.iter().cloned() {
-            remove.entry(entry).or_insert(HashSet::new()).insert(idx);
-        }
-
-        let entries = mem::replace(elements.entries_mut(), Vec::new());
-        let empty = HashSet::new();
-        for (i, entry) in entries.into_iter().enumerate() {
-            let to_remove = remove.get(&i).unwrap_or(&empty);
-
-            let mut current = Vec::new();
-            let offset = entry.offset().as_ref().unwrap();
-            assert_eq!(offset.code().len(), 2);
-            let mut offset = match offset.code()[0] {
-                Instruction::I32Const(x) => x,
-                _ => unreachable!(),
-            };
-            for (j, idx) in entry.members().iter().enumerate() {
-                // If we keep this entry, then keep going
-                if !to_remove.contains(&j) {
-                    current.push(*idx);
-                    continue;
-                }
-
-                // If we have members of `current` then we save off a section
-                // of the function table, then update `offset` and keep going.
-                let next_offset = offset + (current.len() as i32) + 1;
-                if current.len() > 0 {
-                    let members = mem::replace(&mut current, Vec::new());
-                    let offset =
-                        InitExpr::new(vec![Instruction::I32Const(offset), Instruction::End]);
-                    let new_entry = ElementSegment::new(0, Some(offset), members, false);
-                    elements.entries_mut().push(new_entry);
-                }
-                offset = next_offset;
-            }
-            // Any remaining function table entries get pushed at the end.
-            if current.len() > 0 {
-                let offset = InitExpr::new(vec![Instruction::I32Const(offset), Instruction::End]);
-                let new_entry = ElementSegment::new(0, Some(offset), current, false);
-                elements.entries_mut().push(new_entry);
-            }
+        let table_id = match input.interpreter.function_table_id() {
+            Some(id) => id,
+            None => return,
+        };
+        let table = input.module.tables.get_mut(table_id);
+        let table = match &mut table.kind {
+            walrus::TableKind::Function(f) => f,
+        };
+        for idx in self.element_removal_list.iter().cloned() {
+            assert!(table.elements[idx].is_some());
+            table.elements[idx] = None;
         }
     }
 
@@ -203,35 +161,24 @@ impl ClosureDescriptors {
     /// described by the fields internally. These new imports will be closure
     /// factories and are freshly generated shim in JS.
     fn inject_imports(&self, input: &mut Context) -> Result<(), Error> {
-        let wbindgen_describe_closure = match input.interpreter.describe_closure_idx() {
+        let wbindgen_describe_closure = match input.interpreter.describe_closure_id() {
             Some(i) => i,
             None => return Ok(()),
         };
 
         // We'll be injecting new imports and we'll need to give them all a
-        // type.  The signature is all `(i32, i32) -> i32` currently and we know
-        // that this signature already exists in the module as it's the
-        // signature of our `#[inline(never)]` functions. Find the type
-        // signature index so we can assign it below.
-        let type_idx = {
-            let kind = input.module.import_section().unwrap().entries()
-                [wbindgen_describe_closure as usize]
-                .external();
-            match kind {
-                External::Function(i) => *i,
-                _ => unreachable!(),
-            }
-        };
+        // type. The signature is all `(i32, i32, i32) -> i32` currently
+        let ty = input.module.funcs.get(wbindgen_describe_closure).ty();
 
-        // The last piece of the magic. For all our descriptors we found we
-        // inject a JS shim for the descriptor. This JS shim will manufacture a
-        // JS `function`, and prepare it to be invoked.
+        // For all our descriptors we found we inject a JS shim for the
+        // descriptor. This JS shim will manufacture a JS `function`, and
+        // prepare it to be invoked.
         //
-        // Once all that's said and done we inject a new import into the wasm module
-        // of our new wrapper, and the `Remap` step above already wrote calls to
-        // this function within the module.
-        for (i, instr) in self.code_idx_to_descriptor.iter() {
-            let import_name = format!("__wbindgen_closure_wrapper{}", i);
+        // Once all that's said and done we inject a new import into the wasm
+        // module of our new wrapper, and then rewrite the appropriate call
+        // instruction.
+        for (func, instr) in self.func_to_descriptor.iter() {
+            let import_name = format!("__wbindgen_closure_wrapper{}", func.index());
 
             let closure = instr.descriptor.closure().unwrap();
 
@@ -268,42 +215,22 @@ impl ClosureDescriptors {
             );
             input.export(&import_name, &body, None);
 
-            let new_import = ImportEntry::new(
-                "__wbindgen_placeholder__".to_string(),
-                import_name,
-                External::Function(type_idx as u32),
-            );
-            input
+            let id = input
                 .module
-                .import_section_mut()
-                .unwrap()
-                .entries_mut()
-                .push(new_import);
+                .add_import_func("__wbindgen_placeholder__", &import_name, ty);
+
+            let local = match &mut input.module.funcs.get_mut(*func).kind {
+                walrus::FunctionKind::Local(l) => l,
+                _ => unreachable!(),
+            };
+            match local.get_mut(instr.call) {
+                Expr::Call(e) => {
+                    assert_eq!(e.func, wbindgen_describe_closure);
+                    e.func = id;
+                }
+                _ => unreachable!(),
+            }
         }
         Ok(())
-    }
-
-    /// The final step, rewriting calls to `__wbindgen_describe_closure` to the
-    /// imported functions
-    fn rewrite_calls(&self, input: &mut Context) {
-        // FIXME: Ok so this is a bit sketchy in that it introduces overhead.
-        // What we're doing is taking a our #[inline(never)] shim and *not*
-        // removing it, only switching the one function that it calls internally.
-        //
-        // This isn't great because now we have this non-inlined function which
-        // would certainly benefit from getting inlined. It's a tiny function
-        // though and surrounded by allocation so it's probably not a huge
-        // problem in the long run. Note that `wasm-opt` also implements
-        // inlining, so we can likely rely on that too.
-        //
-        // Still though, it'd be great to not only delete calls to
-        // `__wbindgen_describe_closure`, it'd be great to remove all of the
-        // `breaks_if_inlined` functions entirely.
-        let code = input.module.code_section_mut().unwrap();
-        for (i, instr) in self.code_idx_to_descriptor.iter() {
-            let func = &mut code.bodies_mut()[*i as usize];
-            let new_instr = Instruction::Call(instr.new_idx);
-            func.code_mut().elements_mut()[instr.instr_idx] = new_instr;
-        }
     }
 }

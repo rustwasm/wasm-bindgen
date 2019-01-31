@@ -182,23 +182,21 @@ fn builtin_idents() -> BTreeSet<Ident> {
 }
 
 fn immutable_f32_whitelist() -> BTreeSet<&'static str> {
-    BTreeSet::from_iter(
-        vec![
-            // WebGlRenderingContext
-            "uniform1fv",
-            "uniform2fv",
-            "uniform3fv",
-            "uniform4fv",
-            "uniformMatrix2fv",
-            "uniformMatrix3fv",
-            "uniformMatrix4fv",
-            "vertexAttrib1fv",
-            "vertexAttrib2fv",
-            "vertexAttrib3fv",
-            "vertexAttrib4fv",
-            // TODO: Add another type's functions here. Leave a comment header with the type name
-        ]
-    )
+    BTreeSet::from_iter(vec![
+        // WebGlRenderingContext
+        "uniform1fv",
+        "uniform2fv",
+        "uniform3fv",
+        "uniform4fv",
+        "uniformMatrix2fv",
+        "uniformMatrix3fv",
+        "uniformMatrix4fv",
+        "vertexAttrib1fv",
+        "vertexAttrib2fv",
+        "vertexAttrib3fv",
+        "vertexAttrib4fv",
+        // TODO: Add another type's functions here. Leave a comment header with the type name
+    ])
 }
 
 /// Run codegen on the AST to generate rust code.

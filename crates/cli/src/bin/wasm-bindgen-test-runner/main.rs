@@ -11,29 +11,12 @@
 //! For more documentation about this see the `wasm-bindgen-test` crate README
 //! and source code.
 
-extern crate curl;
-extern crate env_logger;
-#[macro_use]
-extern crate failure;
-#[macro_use]
-extern crate log;
-extern crate parity_wasm;
-extern crate rouille;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-#[macro_use]
-extern crate serde_json;
-extern crate wasm_bindgen_cli_support;
-
+use failure::{bail, format_err, Error, ResultExt};
 use std::env;
 use std::fs;
 use std::path::PathBuf;
 use std::process;
 use std::thread;
-
-use failure::{Error, ResultExt};
-use parity_wasm::elements::{Deserialize, Module, Section};
 use wasm_bindgen_cli_support::Bindgen;
 
 // no need for jemalloc bloat in this binary (and we don't need speed)
@@ -88,15 +71,14 @@ fn rmain() -> Result<(), Error> {
     // that any exported function with the prefix `__wbg_test` is a test we need
     // to execute.
     let wasm = fs::read(&wasm_file_to_test).context("failed to read wasm file")?;
-    let wasm = Module::deserialize(&mut &wasm[..]).context("failed to deserialize wasm module")?;
+    let wasm = walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
     let mut tests = Vec::new();
-    if let Some(exports) = wasm.export_section() {
-        for export in exports.entries() {
-            if !export.field().starts_with("__wbg_test") {
-                continue;
-            }
-            tests.push(export.field().to_string());
+
+    for export in wasm.exports.iter() {
+        if !export.name.starts_with("__wbg_test") {
+            continue;
         }
+        tests.push(export.name.to_string());
     }
 
     // Right now there's a bug where if no tests are present then the
@@ -112,15 +94,11 @@ fn rmain() -> Result<(), Error> {
     // `wasm_bindgen_test_configure` macro, which emits a custom section for us
     // to read later on.
     let mut node = true;
-    for section in wasm.sections() {
-        let custom = match section {
-            Section::Custom(section) => section,
-            _ => continue,
-        };
-        if custom.name() != "__wasm_bindgen_test_unstable" {
+    for custom in wasm.custom.iter() {
+        if custom.name != "__wasm_bindgen_test_unstable" {
             continue;
         }
-        node = !custom.payload().contains(&0x01);
+        node = !custom.value.contains(&0x01);
     }
     let headless = env::var("NO_HEADLESS").is_err();
     let debug = env::var("WASM_BINDGEN_NO_DEBUG").is_err();

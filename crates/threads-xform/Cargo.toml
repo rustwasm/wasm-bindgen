@@ -9,7 +9,8 @@ documentation = "https://docs.rs/wasm-bindgen-threads-xform"
 description = """
 Support for threading-related transformations in wasm-bindgen
 """
+edition = "2018"
 
 [dependencies]
-parity-wasm = "0.36"
+walrus = "0.1"
 failure = "0.1"

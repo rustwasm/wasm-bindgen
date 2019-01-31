@@ -1,17 +1,10 @@
+use crate::decode;
+use crate::descriptor::{Descriptor, VectorKind};
+use crate::Bindgen;
+use failure::{bail, Error, ResultExt};
 use std::collections::{HashMap, HashSet};
-use std::mem;
-
-use decode;
-use failure::{Error, ResultExt};
-use gc;
-use parity_wasm::elements::Error as ParityError;
-use parity_wasm::elements::*;
-use shared;
-
-use super::Bindgen;
-use descriptor::{Descriptor, VectorKind};
-use wasm_interpreter::Interpreter;
-use wasm_utils::Remap;
+use walrus::{MemoryId, Module};
+use wasm_bindgen_wasm_interpreter::Interpreter;
 
 mod js2rust;
 use self::js2rust::Js2Rust;
@@ -58,7 +51,7 @@ pub struct Context<'a> {
     pub exported_classes: Option<HashMap<String, ExportedClass>>,
     pub function_table_needed: bool,
     pub interpreter: &'a mut Interpreter,
-    pub memory_init: Option<ResizableLimits>,
+    pub memory: MemoryId,
 }
 
 #[derive(Default)]
@@ -156,10 +149,9 @@ impl<'a> Context<'a> {
         if !self.required_internal_exports.insert(name) {
             return Ok(());
         }
-        if let Some(s) = self.module.export_section() {
-            if s.entries().iter().any(|e| e.field() == name) {
-                return Ok(());
-            }
+
+        if self.module.exports.iter().any(|e| e.name == name) {
+            return Ok(());
         }
 
         bail!(
@@ -542,8 +534,7 @@ impl<'a> Context<'a> {
             }
         }
 
-        self.export_table();
-        self.gc();
+        self.export_table()?;
 
         // Note that it's important `throw` comes last *after* we gc. The
         // `__wbindgen_malloc` function may call this but we only want to
@@ -576,18 +567,17 @@ impl<'a> Context<'a> {
             if !self.config.no_modules {
                 bail!("most use `--no-modules` with threads for now")
             }
-            self.memory(); // set `memory_limit` if it's not already set
-            let limits = match &self.memory_init {
-                Some(l) if l.shared() => l.clone(),
-                _ => bail!("must impot a shared memory with threads"),
-            };
+            let mem = self.module.memories.get(self.memory);
+            if mem.import.is_none() {
+                bail!("must impot a shared memory with threads")
+            }
 
             let mut memory = String::from("new WebAssembly.Memory({");
-            memory.push_str(&format!("initial:{}", limits.initial()));
-            if let Some(max) = limits.maximum() {
+            memory.push_str(&format!("initial:{}", mem.initial));
+            if let Some(max) = mem.maximum {
                 memory.push_str(&format!(",maximum:{}", max));
             }
-            if limits.shared() {
+            if mem.shared {
                 memory.push_str(",shared:true");
             }
             memory.push_str("})");
@@ -800,7 +790,7 @@ impl<'a> Context<'a> {
         }
 
         let mut wrap_needed = class.wrap_needed;
-        let new_name = shared::new_function(&name);
+        let new_name = wasm_bindgen_shared::new_function(&name);
         if self.wasm_import_needed(&new_name) {
             self.expose_add_heap_object();
             wrap_needed = true;
@@ -843,7 +833,7 @@ impl<'a> Context<'a> {
             ",
             name,
             freeref,
-            shared::free_function(&name)
+            wasm_bindgen_shared::free_function(&name)
         ));
         dst.push_str(&format!(
             "
@@ -867,19 +857,22 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn export_table(&mut self) {
+    fn export_table(&mut self) -> Result<(), Error> {
         if !self.function_table_needed {
-            return;
+            return Ok(());
         }
-        for section in self.module.sections_mut() {
-            let exports = match *section {
-                Section::Export(ref mut s) => s,
-                _ => continue,
-            };
-            let entry = ExportEntry::new("__wbg_function_table".to_string(), Internal::Table(0));
-            exports.entries_mut().push(entry);
-            break;
+        let mut tables = self.module.tables.iter().filter_map(|t| match t.kind {
+            walrus::TableKind::Function(_) => Some(t.id()),
+        });
+        let id = match tables.next() {
+            Some(id) => id,
+            None => return Ok(()),
+        };
+        if tables.next().is_some() {
+            bail!("couldn't find function table to export");
         }
+        self.module.exports.add("__wbg_function_table", id);
+        Ok(())
     }
 
     fn rewrite_imports(&mut self, module_name: &str) {
@@ -890,50 +883,43 @@ impl<'a> Context<'a> {
 
     fn _rewrite_imports(&mut self, module_name: &str) -> Vec<(String, String)> {
         let mut math_imports = Vec::new();
-        let imports = self
-            .module
-            .sections_mut()
-            .iter_mut()
-            .filter_map(|s| match *s {
-                Section::Import(ref mut s) => Some(s),
-                _ => None,
-            })
-            .flat_map(|s| s.entries_mut());
-
-        for import in imports {
-            if import.module() == "__wbindgen_placeholder__" {
-                import.module_mut().truncate(0);
-                if let Some((module, name)) = self.direct_imports.get(import.field()) {
-                    import.field_mut().truncate(0);
-                    import.module_mut().push_str(module);
-                    import.field_mut().push_str(name);
+        for import in self.module.imports.iter_mut() {
+            if import.module == "__wbindgen_placeholder__" {
+                import.module.truncate(0);
+                if let Some((module, name)) = self.direct_imports.get(import.name.as_str()) {
+                    import.name.truncate(0);
+                    import.module.push_str(module);
+                    import.name.push_str(name);
                 } else {
-                    import.module_mut().push_str("./");
-                    import.module_mut().push_str(module_name);
+                    import.module.push_str("./");
+                    import.module.push_str(module_name);
                 }
                 continue;
             }
 
-            if import.module() != "env" {
+            if import.module != "env" {
                 continue;
             }
 
             // If memory is imported we'll have exported it from the shim module
             // so let's import it from there.
-            if import.field() == "memory" {
-                import.module_mut().truncate(0);
-                import.module_mut().push_str("./");
-                import.module_mut().push_str(module_name);
+            //
+            // TODO: we should track this is in a more first-class fashion
+            // rather than just matching on strings.
+            if import.name == "memory" {
+                import.module.truncate(0);
+                import.module.push_str("./");
+                import.module.push_str(module_name);
                 continue;
             }
 
-            let renamed_import = format!("__wbindgen_{}", import.field());
+            let renamed_import = format!("__wbindgen_{}", import.name);
             let mut bind_math = |expr: &str| {
                 math_imports.push((renamed_import.clone(), format!("function{}", expr)));
             };
 
             // FIXME(#32): try to not use function shims
-            match import.field() {
+            match import.name.as_str() {
                 "Math_acos" => bind_math("(x) { return Math.acos(x); }"),
                 "Math_asin" => bind_math("(x) { return Math.asin(x); }"),
                 "Math_atan" => bind_math("(x) { return Math.atan(x); }"),
@@ -949,25 +935,38 @@ impl<'a> Context<'a> {
                 _ => continue,
             }
 
-            import.module_mut().truncate(0);
-            import.module_mut().push_str("./");
-            import.module_mut().push_str(module_name);
-            *import.field_mut() = renamed_import.clone();
+            import.module.truncate(0);
+            import.module.push_str("./");
+            import.module.push_str(module_name);
+            import.name = renamed_import.clone();
         }
 
         math_imports
     }
 
     fn unexport_unused_internal_exports(&mut self) {
-        let required = &self.required_internal_exports;
-        for section in self.module.sections_mut() {
-            let exports = match *section {
-                Section::Export(ref mut s) => s,
-                _ => continue,
-            };
-            exports.entries_mut().retain(|export| {
-                !export.field().starts_with("__wbindgen") || required.contains(export.field())
-            });
+        let mut to_remove = Vec::new();
+        for export in self.module.exports.iter() {
+            match export.name.as_str() {
+                // These are some internal imports set by LLD but currently
+                // we've got no use case for continuing to export them, so
+                // blacklist them.
+                "__heap_base" | "__data_end" | "__indirect_function_table" => {
+                    to_remove.push(export.id());
+                }
+
+                // Otherwise only consider our special exports, which all start
+                // with the same prefix which hopefully only we're using.
+                n if n.starts_with("__wbindgen") => {
+                    if !self.required_internal_exports.contains(n) {
+                        to_remove.push(export.id());
+                    }
+                }
+                _ => {}
+            }
+        }
+        for id in to_remove {
+            self.module.exports.remove_root(id);
         }
     }
 
@@ -1224,15 +1223,7 @@ impl<'a> Context<'a> {
         // creates just a view. That way in shared mode we copy more data but in
         // non-shared mode there's no need to copy the data except for the
         // string itself.
-        self.memory(); // set self.memory_init
-        let is_shared = self
-            .module
-            .memory_section()
-            .map(|s| s.entries()[0].limits().shared())
-            .unwrap_or(match &self.memory_init {
-                Some(limits) => limits.shared(),
-                None => false,
-            });
+        let is_shared = self.module.memories.get(self.memory).shared;
         let method = if is_shared { "slice" } else { "subarray" };
 
         self.global(&format!(
@@ -1574,15 +1565,10 @@ impl<'a> Context<'a> {
     }
 
     fn wasm_import_needed(&self, name: &str) -> bool {
-        let imports = match self.module.import_section() {
-            Some(s) => s,
-            None => return false,
-        };
-
-        imports
-            .entries()
+        self.module
+            .imports
             .iter()
-            .any(|i| i.module() == "__wbindgen_placeholder__" && i.field() == name)
+            .any(|i| i.module == "__wbindgen_placeholder__" && i.name == name)
     }
 
     fn pass_to_wasm_function(&mut self, t: VectorKind) -> Result<&'static str, Error> {
@@ -1791,25 +1777,6 @@ impl<'a> Context<'a> {
         );
     }
 
-    fn gc(&mut self) {
-        gc::Config::new()
-            .demangle(self.config.demangle)
-            .keep_debug(self.config.keep_debug || self.config.debug)
-            .run(&mut self.module);
-    }
-
-    pub fn parse_wasm_names(&mut self) {
-        let module = mem::replace(self.module, Module::default());
-        let module = module.parse_names().unwrap_or_else(|p| p.1);
-        *self.module = module;
-        if self.config.remove_name_section {
-            self.module.sections_mut().retain(|s| match s {
-                Section::Name(_) => false,
-                _ => true,
-            });
-        }
-    }
-
     fn describe(&mut self, name: &str) -> Option<Descriptor> {
         let name = format!("__wbindgen_describe_{}", name);
         let descriptor = self.interpreter.interpret_descriptor(&name, self.module)?;
@@ -1833,25 +1800,11 @@ impl<'a> Context<'a> {
     }
 
     fn memory(&mut self) -> &'static str {
-        if self.module.memory_section().is_some() {
-            return "wasm.memory";
+        if self.module.memories.get(self.memory).import.is_some() {
+            "memory"
+        } else {
+            "wasm.memory"
         }
-
-        let (entry, mem) = self
-            .module
-            .import_section()
-            .expect("must import memory")
-            .entries()
-            .iter()
-            .filter_map(|i| match i.external() {
-                External::Memory(m) => Some((i, m)),
-                _ => None,
-            })
-            .next()
-            .expect("must import memory");
-        assert_eq!(entry.field(), "memory");
-        self.memory_init = Some(mem.limits().clone());
-        "memory"
     }
 
     fn require_class_wrap(&mut self, class: &str) {
@@ -2073,106 +2026,9 @@ impl<'a> Context<'a> {
     /// Specified at:
     /// https://github.com/WebAssembly/tool-conventions/blob/master/ProducersSection.md
     fn update_producers_section(&mut self) {
-        for section in self.module.sections_mut() {
-            let section = match section {
-                Section::Custom(s) => s,
-                _ => continue,
-            };
-            if section.name() != "producers" {
-                return;
-            }
-            drop(update(section));
-            return;
-        }
-
-        // `CustomSection::new` added in paritytech/parity-wasm#244 which isn't
-        // merged just yet
-        let data = [
-            ("producers".len() + 2) as u8,
-            "producers".len() as u8,
-            b'p',
-            b'r',
-            b'o',
-            b'd',
-            b'u',
-            b'c',
-            b'e',
-            b'r',
-            b's',
-            0,
-        ];
-        let mut section = CustomSection::deserialize(&mut &data[..]).unwrap();
-        assert_eq!(section.name(), "producers");
-        assert_eq!(section.payload(), [0]);
-        drop(update(&mut section));
-        self.module.sections_mut().push(Section::Custom(section));
-
-        fn update(section: &mut CustomSection) -> Result<(), ParityError> {
-            struct Field {
-                name: String,
-                values: Vec<FieldValue>,
-            }
-            struct FieldValue {
-                name: String,
-                version: String,
-            }
-
-            let wasm_bindgen = || FieldValue {
-                name: "wasm-bindgen".to_string(),
-                version: shared::version(),
-            };
-            let mut fields = Vec::new();
-
-            // Deserialize the fields, appending the wasm-bidngen field/value
-            // where applicable
-            {
-                let mut data = section.payload();
-                let amt: u32 = VarUint32::deserialize(&mut data)?.into();
-                let mut found_processed_by = false;
-                for _ in 0..amt {
-                    let name = String::deserialize(&mut data)?;
-                    let cnt: u32 = VarUint32::deserialize(&mut data)?.into();
-                    let mut values = Vec::with_capacity(cnt as usize);
-                    for _ in 0..cnt {
-                        let name = String::deserialize(&mut data)?;
-                        let version = String::deserialize(&mut data)?;
-                        values.push(FieldValue { name, version });
-                    }
-
-                    if name == "processed-by" {
-                        found_processed_by = true;
-                        values.push(wasm_bindgen());
-                    }
-
-                    fields.push(Field { name, values });
-                }
-                if data.len() != 0 {
-                    return Err(ParityError::InconsistentCode);
-                }
-
-                if !found_processed_by {
-                    fields.push(Field {
-                        name: "processed-by".to_string(),
-                        values: vec![wasm_bindgen()],
-                    });
-                }
-            }
-
-            // re-serialize these fields back into the custom section
-            let dst = section.payload_mut();
-            dst.truncate(0);
-            VarUint32::from(fields.len() as u32).serialize(dst)?;
-            for field in fields.iter() {
-                field.name.clone().serialize(dst)?;
-                VarUint32::from(field.values.len() as u32).serialize(dst)?;
-                for value in field.values.iter() {
-                    value.name.clone().serialize(dst)?;
-                    value.version.clone().serialize(dst)?;
-                }
-            }
-
-            Ok(())
-        }
+        self.module
+            .producers
+            .add_processed_by("wasm-bindgen", &wasm_bindgen_shared::version());
     }
 
     fn add_start_function(&mut self) -> Result<(), Error> {
@@ -2180,33 +2036,25 @@ impl<'a> Context<'a> {
             Some(name) => name.clone(),
             None => return Ok(()),
         };
-        let idx = {
-            let exports = self
-                .module
-                .export_section()
-                .ok_or_else(|| format_err!("no export section found"))?;
-            let entry = exports
-                .entries()
-                .iter()
-                .find(|e| e.field() == start)
-                .ok_or_else(|| format_err!("export `{}` not found", start))?;
-            match entry.internal() {
-                Internal::Function(i) => *i,
-                _ => bail!("export `{}` wasn't a function", start),
-            }
+        let export = match self.module.exports.iter().find(|e| e.name == start) {
+            Some(export) => export,
+            None => bail!("export `{}` not found", start),
         };
-        if let Some(prev_start) = self.module.start_section() {
-            if let Some(NameSection::Function(n)) = self.module.names_section() {
-                if let Some(prev) = n.names().get(prev_start) {
-                    bail!(
-                        "cannot flag `{}` as start function as `{}` is \
-                         already the start function",
-                        start,
-                        prev
-                    );
-                }
-            }
+        let id = match export.item {
+            walrus::ExportItem::Function(i) => i,
+            _ => bail!("export `{}` wasn't a function", start),
+        };
 
+        if let Some(prev) = self.module.start {
+            let prev = self.module.funcs.get(prev);
+            if let Some(prev) = &prev.name {
+                bail!(
+                    "cannot flag `{}` as start function as `{}` is \
+                     already the start function",
+                    start,
+                    prev
+                );
+            }
             bail!(
                 "cannot flag `{}` as start function as another \
                  function is already the start function",
@@ -2214,62 +2062,20 @@ impl<'a> Context<'a> {
             );
         }
 
-        self.set_start_section(idx);
+        self.module.start = Some(id);
         Ok(())
-    }
-
-    fn set_start_section(&mut self, start: u32) {
-        let mut pos = None;
-        // See http://webassembly.github.io/spec/core/binary/modules.html#binary-module
-        // for section ordering
-        for (i, section) in self.module.sections().iter().enumerate() {
-            match section {
-                Section::Type(_)
-                | Section::Import(_)
-                | Section::Function(_)
-                | Section::Table(_)
-                | Section::Memory(_)
-                | Section::Global(_)
-                | Section::Export(_) => continue,
-                _ => {
-                    pos = Some(i);
-                    break;
-                }
-            }
-        }
-        let pos = pos.unwrap_or(self.module.sections().len() - 1);
-        self.module
-            .sections_mut()
-            .insert(pos, Section::Start(start));
     }
 
     /// If a start function is present, it removes it from the `start` section
     /// of the wasm module and then moves it to an exported function, named
     /// `__wbindgen_start`.
     fn unstart_start_function(&mut self) -> bool {
-        let mut pos = None;
-        let mut start = 0;
-        for (i, section) in self.module.sections().iter().enumerate() {
-            if let Section::Start(idx) = section {
-                start = *idx;
-                pos = Some(i);
-                break;
-            }
-        }
-        match pos {
-            Some(i) => {
-                self.module.sections_mut().remove(i);
-                let entry =
-                    ExportEntry::new("__wbindgen_start".to_string(), Internal::Function(start));
-                self.module
-                    .export_section_mut()
-                    .unwrap()
-                    .entries_mut()
-                    .push(entry);
-                true
-            }
-            None => false,
-        }
+        let start = match self.module.start.take() {
+            Some(id) => id,
+            None => return false,
+        };
+        self.module.exports.add("__wbindgen_start", start);
+        true
     }
 
     /// Injects a `start` function into the wasm module. This start function
@@ -2282,32 +2088,11 @@ impl<'a> Context<'a> {
             Promise.resolve().then(() => wasm.__wbindgen_start());
         }";
         self.export("__wbindgen_defer_start", body, None);
-
-        let imports = self
-            .module
-            .import_section()
-            .map(|s| s.functions() as u32)
-            .unwrap_or(0);
-        Remap(|idx| if idx < imports { idx } else { idx + 1 }).remap_module(self.module);
-
-        let type_idx = {
-            let types = self.module.type_section_mut().unwrap();
-            let ty = Type::Function(FunctionType::new(Vec::new(), None));
-            types.types_mut().push(ty);
-            (types.types_mut().len() - 1) as u32
-        };
-
-        let entry = ImportEntry::new(
-            "__wbindgen_placeholder__".to_string(),
-            "__wbindgen_defer_start".to_string(),
-            External::Function(type_idx),
-        );
-        self.module
-            .import_section_mut()
-            .unwrap()
-            .entries_mut()
-            .push(entry);
-        self.set_start_section(imports);
+        let ty = self.module.types.add(&[], &[]);
+        let id =
+            self.module
+                .add_import_func("__wbindgen_placeholder__", "__wbindgen_defer_start", ty);
+        self.module.start = Some(id);
     }
 }
 
@@ -2393,7 +2178,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
         class_name: &'b str,
         export: &decode::Export,
     ) -> Result<(), Error> {
-        let wasm_name = shared::struct_function_export_name(class_name, &export.function.name);
+        let wasm_name =
+            wasm_bindgen_shared::struct_function_export_name(class_name, &export.function.name);
 
         let descriptor = match self.cx.describe(&wasm_name) {
             None => return Ok(()),
@@ -2612,8 +2398,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
         let mut dst = String::new();
         let mut ts_dst = String::new();
         for field in struct_.fields.iter() {
-            let wasm_getter = shared::struct_field_get(&struct_.name, &field.name);
-            let wasm_setter = shared::struct_field_set(&struct_.name, &field.name);
+            let wasm_getter = wasm_bindgen_shared::struct_field_get(&struct_.name, &field.name);
+            let wasm_setter = wasm_bindgen_shared::struct_field_set(&struct_.name, &field.name);
             let descriptor = match self.cx.describe(&wasm_getter) {
                 None => continue,
                 Some(d) => d,

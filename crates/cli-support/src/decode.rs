@@ -144,4 +144,4 @@ macro_rules! decode_api {
     );
 }
 
-shared_api!(decode_api);
+wasm_bindgen_shared::shared_api!(decode_api);

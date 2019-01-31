@@ -9,9 +9,11 @@ documentation = "https://docs.rs/wasm-bindgen-wasm-interpreter"
 description = """
 Micro-interpreter optimized for wasm-bindgen's use case
 """
+edition = '2018'
 
 [dependencies]
-parity-wasm = "0.36"
+walrus = "0.1"
+log = "0.4"
 
 [dev-dependencies]
 tempfile = "3"

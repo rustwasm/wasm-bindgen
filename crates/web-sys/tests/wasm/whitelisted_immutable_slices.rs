@@ -17,8 +17,8 @@ use web_sys::WebGlRenderingContext;
 #[wasm_bindgen(module = "./tests/wasm/element.js")]
 extern "C" {
     fn new_webgl_rendering_context() -> WebGlRenderingContext;
-    // TODO: Add a function to create another type to test here.
-    // These functions come from element.js
+// TODO: Add a function to create another type to test here.
+// These functions come from element.js
 }
 
 // TODO: Uncomment WebGlRenderingContext test. Every now and then we can check if this works

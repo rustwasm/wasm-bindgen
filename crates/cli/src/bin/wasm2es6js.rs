@@ -1,15 +1,9 @@
-#[macro_use]
-extern crate serde_derive;
-extern crate docopt;
-extern crate failure;
-extern crate wasm_bindgen_cli_support;
-
+use docopt::Docopt;
+use failure::{Error, ResultExt};
+use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
 use std::process;
-
-use docopt::Docopt;
-use failure::{Error, ResultExt};
 
 // no need for jemalloc bloat in this binary (and we don't need speed)
 #[global_allocator]
@@ -70,7 +64,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .generate(&wasm)?;
 
     if args.flag_typescript {
-        let ts = object.typescript();
+        let ts = object.typescript()?;
         write(&args, "d.ts", ts.as_bytes(), false)?;
     }
 

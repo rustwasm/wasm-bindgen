@@ -405,8 +405,7 @@ fn renamed_export() {
 }
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
-pub struct ConditionalBindings {
-}
+pub struct ConditionalBindings {}
 
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl ConditionalBindings {

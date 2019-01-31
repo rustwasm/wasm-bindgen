@@ -55,8 +55,8 @@ pub mod span_element;
 pub mod style_element;
 pub mod table_element;
 pub mod title_element;
-pub mod xpath_result;
 pub mod whitelisted_immutable_slices;
+pub mod xpath_result;
 
 #[wasm_bindgen_test]
 fn deref_works() {

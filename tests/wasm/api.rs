@@ -149,7 +149,11 @@ fn memory_accessor_appears_to_work() {
 
 #[wasm_bindgen_test]
 fn debug_output() {
-    let test_iter = debug_values().dyn_into::<js_sys::Array>().unwrap().values().into_iter();
+    let test_iter = debug_values()
+        .dyn_into::<js_sys::Array>()
+        .unwrap()
+        .values()
+        .into_iter();
     let expecteds = vec![
         "JsValue(null)",
         "JsValue(undefined)",

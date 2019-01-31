@@ -9,13 +9,14 @@ documentation = "https://docs.rs/wasm-bindgen-cli-support"
 description = """
 Shared support for the wasm-bindgen-cli package, an internal dependency
 """
+edition = '2018'
 
 [dependencies]
 base64 = "0.9"
 failure = "0.1.2"
-parity-wasm = "0.36"
+rustc-demangle = "0.1.13"
 tempfile = "3.0"
-wasm-bindgen-gc = { path = '../gc', version = '=0.2.34' }
+walrus = "0.1"
 wasm-bindgen-shared = { path = "../shared", version = '=0.2.34' }
 wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.34' }
 wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.34' }
