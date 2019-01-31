@@ -21,6 +21,8 @@ extern crate quote;
 extern crate syn;
 extern crate wasm_bindgen_backend as backend;
 extern crate weedle;
+#[macro_use]
+extern crate lazy_static;
 
 mod error;
 mod first_pass;

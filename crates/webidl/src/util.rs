@@ -713,6 +713,7 @@ pub fn public() -> syn::Visibility {
     })
 }
 
+
 /// When generating our web_sys APIs we default to setting slice references that
 /// get passed to JS as mutable in case they get mutated in JS.
 ///
@@ -721,40 +722,63 @@ pub fn public() -> syn::Visibility {
 ///
 /// Here we implement a whitelist for those cases. This whitelist is currently
 /// maintained by hand.
+///
+/// When adding to this whitelist add tests to crates/web-sys/tests/wasm/whitelisted_immutable_slices.rs
 fn maybe_adjust<'a>(mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
-    let immutable_f32_fns: Vec<&'static str> = vec![
-        // WebGlRenderingContext
-        "uniform1fv",
-        "uniform2fv",
-        "uniform3fv",
-        "uniform4fv",
-        "uniformMatrix2fv",
-        "uniformMatrix3fv",
-        "uniformMatrix4fv",
-        "vertexAttrib1fv",
-        "vertexAttrib2fv",
-        "vertexAttrib3fv",
-        "vertexAttrib4fv",
-        // TODO: Add another type's functions here. Leave a comment header with the type name
-    ];
+    let op = match id {
+        OperationId::Operation(Some(op)) => op,
+        _ => return idl_type
+    };
 
-    let mut immutable_f32_slice_whitelist: HashSet<&'static str> = HashSet::new();
-    for function_name in immutable_f32_fns.into_iter() {
-        immutable_f32_slice_whitelist.insert(function_name);
+    if IMMUTABLE_F32_WHITELIST.contains(op) {
+        flag_slices_immutable(&mut idl_type)
     }
 
-        // example `op`... -> "vertexAttrib1fv"
-    if let OperationId::Operation(Some(op)) = id {
-        // Look up this funtion in our whitelist and see if we should make its
-        // slice argument immutable.
-        if immutable_f32_slice_whitelist.get(op).is_some() {
-            if let IdlType::Union(ref mut union) = idl_type {
-                if let IdlType::Float32Array { ref mut immutable } = union[0] {
-                    *immutable = true;
-                }
-            }
-        }
-    }
+    // TODO: Add other whitelisted slices here, such as F64 or u8..
 
     idl_type
+
+}
+
+fn flag_slices_immutable(ty: &mut IdlType) {
+    match ty {
+        IdlType::Float32Array { immutable } => *immutable = true,
+        IdlType::Union(list) => {
+            for item in list { flag_slices_immutable(item); }
+        }
+
+        // TODO: ... other recursive cases like Nullable handled here
+
+        // catch-all for everything else like Object
+        _ => {}
+    }
+}
+
+lazy_static! {
+    /// These functions will have their f32 slice arguments be immutable.
+    static ref IMMUTABLE_F32_WHITELIST: HashSet<&'static str> = {
+        let mut set = HashSet::new();
+
+        let fn_names = vec![
+            // WebGlRenderingContext
+            "uniform1fv",
+            "uniform2fv",
+            "uniform3fv",
+            "uniform4fv",
+            "uniformMatrix2fv",
+            "uniformMatrix3fv",
+            "uniformMatrix4fv",
+            "vertexAttrib1fv",
+            "vertexAttrib2fv",
+            "vertexAttrib3fv",
+            "vertexAttrib4fv",
+            // TODO: Add another type's functions here. Leave a comment header with the type name
+        ];
+
+        for fn_name in fn_names {
+            set.insert(fn_name);
+        }
+
+        set
+    };
 }

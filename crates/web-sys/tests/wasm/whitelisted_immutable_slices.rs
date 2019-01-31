@@ -26,7 +26,7 @@ extern "C" {
 // It currently works in chromedriver so if you need to run this in the meantime you can
 // uncomment this block and run it in using chromedriver.
 //
-// CHROMEDRIVER=chromedriver cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features --test test_webgl_rendering_context_immutable_slices
+// CHROMEDRIVER=chromedriver cargo test --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --all-features test_webgl_rendering_context_immutable_slices
 
 // Ensure that our whitelisted WebGlRenderingContext methods work
 //#[wasm_bindgen_test]
