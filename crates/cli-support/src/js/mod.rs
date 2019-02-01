@@ -2573,12 +2573,12 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .typescript
             .push_str(&format!("export enum {} {{", enum_.name));
 
-        variants.clear();
         for variant in enum_.variants.iter() {
-            variants.push_str(&format!("{},", variant.name));
+            self.cx
+                .typescript
+                .push_str(&format!("\n  {},", variant.name));
         }
-        self.cx.typescript.push_str(&variants);
-        self.cx.typescript.push_str("}\n");
+        self.cx.typescript.push_str("\n}\n");
     }
 
     fn generate_struct(&mut self, struct_: &decode::Struct) -> Result<(), Error> {
