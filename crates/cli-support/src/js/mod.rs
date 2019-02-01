@@ -845,7 +845,7 @@ impl<'a> Context<'a> {
             ",
             name,
         ));
-        ts_dst.push_str("free(): void;\n");
+        ts_dst.push_str("  free(): void;\n");
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
         dst.push_str("}\n");
@@ -2399,6 +2399,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .contents
             .push_str(&format_doc_comments(&export.comments, Some(js_doc)));
 
+        class.typescript.push_str("  "); // Indentation
+
         if export.is_constructor {
             if class.has_constructor {
                 bail!("found duplicate constructor `{}`", export.function.name);
@@ -2596,7 +2598,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     .argument(&descriptor)?
                     .ret(&Descriptor::Unit)?;
                 ts_dst.push_str(&format!(
-                    "{}{}: {};\n",
+                    "  {}{}: {};\n",
                     if field.readonly { "readonly " } else { "" },
                     field.name,
                     &cx.js_arguments[0].1
