@@ -24,7 +24,7 @@ install:
   - tar xf wasm-bindgen-0.2.21-x86_64-unknown-linux-musl.tar.gz
   - chmod +x wasm-bindgen-0.2.21-x86_64-unknown-linux-musl/wasm-bindgen
   # Moves the binaries to a directory that is in your PATH
-  - mv wasm-bindgen-0.2.19-x86_64-unknown-linux-musl/wasm-bindgen* ~/.cargo/bin 
+  - mv wasm-bindgen-0.2.21-x86_64-unknown-linux-musl/wasm-bindgen* ~/.cargo/bin 
   # Install node.js with nvm.
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
   - source ~/.nvm/nvm.sh
