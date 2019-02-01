@@ -845,7 +845,7 @@ impl<'a> Context<'a> {
             ",
             name,
         ));
-        ts_dst.push_str("  free(): void;\n");
+        ts_dst.push_str("  free(): void;");
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
         dst.push_str("}\n");
@@ -2598,7 +2598,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     .argument(&descriptor)?
                     .ret(&Descriptor::Unit)?;
                 ts_dst.push_str(&format!(
-                    "  {}{}: {};\n",
+                    "\n  {}{}: {};",
                     if field.readonly { "readonly " } else { "" },
                     field.name,
                     &cx.js_arguments[0].1

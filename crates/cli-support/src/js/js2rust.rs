@@ -743,7 +743,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             ts.push_str(": ");
             ts.push_str(&self.ret_ty);
         }
-        ts.push_str(";\n");
+        ts.push(';');
         (js, ts, self.js_doc_comments())
     }
 }
