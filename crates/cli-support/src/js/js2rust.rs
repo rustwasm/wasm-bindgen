@@ -750,12 +750,16 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             .map(|s| format!("{}: {}", s.0, s.1))
             .collect::<Vec<_>>()
             .join(", ");
-        let mut ts = format!("{} {}({})", prefix, self.js_name, ts_args);
+        let mut ts = if prefix.is_empty() {
+            format!("{}({})", self.js_name, ts_args)
+        } else {
+            format!("{} {}({})", prefix, self.js_name, ts_args)
+        };
         if self.constructor.is_none() {
             ts.push_str(": ");
             ts.push_str(&self.ret_ty);
         }
-        ts.push_str(";\n");
+        ts.push(';');
         (js, ts, self.js_doc_comments())
     }
 }
