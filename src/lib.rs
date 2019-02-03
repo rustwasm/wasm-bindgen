@@ -36,8 +36,11 @@ macro_rules! if_std {
 /// use wasm_bindgen::prelude::*;
 /// ```
 pub mod prelude {
+    #[doc(hidden)]
+    pub use wasm_bindgen_macro::__wasm_bindgen_class_marker;
     pub use wasm_bindgen_macro::wasm_bindgen;
     pub use JsValue;
+    pub use UnwrapThrowExt;
 
     if_std! {
         pub use closure::Closure;
@@ -635,6 +638,75 @@ pub fn throw_val(s: JsValue) -> ! {
         let idx = s.idx;
         mem::forget(s);
         __wbindgen_rethrow(idx);
+    }
+}
+
+/// An extension trait for `Option<T>` and `Result<T, E>` for unwraping the `T`
+/// value, or throwing a JS error if it is not available.
+///
+/// These methods should have a smaller code size footprint than the normal
+/// `Option::unwrap` and `Option::expect` methods, but they are specific to
+/// working with wasm and JS.
+///
+/// On non-wasm32 targets, defaults to the normal unwrap/expect calls.
+///
+/// # Example
+///
+/// ```no_run
+/// // If the value is `Option::Some` or `Result::Ok`, then we just get the
+/// // contained `T` value.
+/// let x = Some(42);
+/// assert_eq!(x.unwrap_throw(), 42);
+///
+/// let y: Option<i32> = None;
+///
+/// // This call would throw an error to JS!
+/// //
+/// //     y.unwrap_throw()
+/// //
+/// // And this call would throw an error to JS with a custom error message!
+/// //
+/// //     y.expect_throw("woopsie daisy!")
+/// ```
+pub trait UnwrapThrowExt<T>: Sized {
+    /// Unwrap this `Option` or `Result`, but instead of panicking on failure,
+    /// throw an exception to JavaScript.
+    fn unwrap_throw(self) -> T {
+        self.expect_throw("`unwrap_throw` failed")
+    }
+
+    /// Unwrap this container's `T` value, or throw an error to JS with the
+    /// given message if the `T` value is unavailable (e.g. an `Option<T>` is
+    /// `None`).
+    fn expect_throw(self, message: &str) -> T;
+}
+
+impl<T> UnwrapThrowExt<T> for Option<T> {
+    fn expect_throw(self, message: &str) -> T {
+        if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
+            match self {
+                Some(val) => val,
+                None => throw_str(message),
+            }
+        } else {
+            self.expect(message)
+        }
+    }
+}
+
+impl<T, E> UnwrapThrowExt<T> for Result<T, E>
+where
+    E: core::fmt::Debug,
+{
+    fn expect_throw(self, message: &str) -> T {
+        if cfg!(all(target_arch = "wasm32", not(target_os = "emscripten"))) {
+            match self {
+                Ok(val) => val,
+                Err(_) => throw_str(message),
+            }
+        } else {
+            self.expect(message)
+        }
     }
 }
 

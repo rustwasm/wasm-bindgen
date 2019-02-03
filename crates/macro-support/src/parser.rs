@@ -796,7 +796,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
 }
 
 impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
-    fn macro_parse(self, program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
+    fn macro_parse(self, _program: &mut ast::Program, opts: BindgenAttrs) -> Result<(), Diagnostic> {
         if self.defaultness.is_some() {
             bail_span!(
                 self.defaultness,
@@ -830,7 +830,7 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
         };
         let mut errors = Vec::new();
         for item in self.items.iter_mut() {
-            if let Err(e) = (&name, item).macro_parse(program, &opts) {
+            if let Err(e) = prepare_for_impl_recursion(item, &name, &opts) {
                 errors.push(e);
             }
         }
@@ -840,77 +840,106 @@ impl<'a> MacroParse<BindgenAttrs> for &'a mut syn::ItemImpl {
     }
 }
 
-impl<'a, 'b> MacroParse<&'a BindgenAttrs> for (&'a Ident, &'b mut syn::ImplItem) {
+// Prepare for recursion into an `impl` block. Here we want to attach an
+// internal attribute, `__wasm_bindgen_class_marker`, with any metadata we need
+// to pass from the impl to the impl item. Recursive macro expansion will then
+// expand the `__wasm_bindgen_class_marker` attribute.
+//
+// Note that we currently do this because inner items may have things like cfgs
+// on them, so we want to expand the impl first, let the insides get cfg'd, and
+// then go for the rest.
+fn prepare_for_impl_recursion(
+    item: &mut syn::ImplItem,
+    class: &Ident,
+    impl_opts: &BindgenAttrs
+) -> Result<(), Diagnostic> {
+    let method = match item {
+        syn::ImplItem::Method(m) => m,
+        syn::ImplItem::Const(_) => {
+            bail_span!(
+                &*item,
+                "const definitions aren't supported with #[wasm_bindgen]"
+            );
+        }
+        syn::ImplItem::Type(_) => bail_span!(
+            &*item,
+            "type definitions in impls aren't supported with #[wasm_bindgen]"
+        ),
+        syn::ImplItem::Existential(_) => bail_span!(
+            &*item,
+            "existentials in impls aren't supported with #[wasm_bindgen]"
+        ),
+        syn::ImplItem::Macro(_) => {
+            // In theory we want to allow this, but we have no way of expanding
+            // the macro and then placing our magical attributes on the expanded
+            // functions. As a result, just disallow it for now to hopefully
+            // ward off buggy results from this macro.
+            bail_span!(&*item, "macros in impls aren't supported");
+        }
+        syn::ImplItem::Verbatim(_) => panic!("unparsed impl item?"),
+    };
+
+    let js_class = impl_opts
+        .js_class()
+        .map(|s| s.0.to_string())
+        .unwrap_or(class.to_string());
+
+    method.attrs.insert(0, syn::Attribute {
+        pound_token: Default::default(),
+        style: syn::AttrStyle::Outer,
+        bracket_token: Default::default(),
+        path: syn::Ident::new("__wasm_bindgen_class_marker", Span::call_site()).into(),
+        tts: quote::quote! { (#class = #js_class) }.into(),
+    });
+
+    Ok(())
+}
+
+impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
     fn macro_parse(
         self,
         program: &mut ast::Program,
-        impl_opts: &'a BindgenAttrs,
+        (class, js_class): (&'a Ident, &'a str),
     ) -> Result<(), Diagnostic> {
-        let (class, item) = self;
-        let method = match item {
-            syn::ImplItem::Method(ref mut m) => m,
-            syn::ImplItem::Const(_) => {
-                bail_span!(
-                    &*item,
-                    "const definitions aren't supported with #[wasm_bindgen]"
-                );
-            }
-            syn::ImplItem::Type(_) => bail_span!(
-                &*item,
-                "type definitions in impls aren't supported with #[wasm_bindgen]"
-            ),
-            syn::ImplItem::Existential(_) => bail_span!(
-                &*item,
-                "existentials in impls aren't supported with #[wasm_bindgen]"
-            ),
-            syn::ImplItem::Macro(_) => {
-                bail_span!(&*item, "macros in impls aren't supported");
-            }
-            syn::ImplItem::Verbatim(_) => panic!("unparsed impl item?"),
-        };
-        match method.vis {
+        match self.vis {
             syn::Visibility::Public(_) => {}
             _ => return Ok(()),
         }
-        if method.defaultness.is_some() {
+        if self.defaultness.is_some() {
             panic!("default methods are not supported");
         }
-        if method.sig.constness.is_some() {
+        if self.sig.constness.is_some() {
             bail_span!(
-                method.sig.constness,
+                self.sig.constness,
                 "can only #[wasm_bindgen] non-const functions",
             );
         }
-        if method.sig.unsafety.is_some() {
-            bail_span!(method.sig.unsafety, "can only bindgen safe functions",);
+        if self.sig.unsafety.is_some() {
+            bail_span!(self.sig.unsafety, "can only bindgen safe functions",);
         }
 
-        let opts = BindgenAttrs::find(&mut method.attrs)?;
-        let comments = extract_doc_comments(&method.attrs);
+        let opts = BindgenAttrs::find(&mut self.attrs)?;
+        let comments = extract_doc_comments(&self.attrs);
         let is_constructor = opts.constructor().is_some();
         let (function, method_self) = function_from_decl(
-            &method.sig.ident,
+            &self.sig.ident,
             &opts,
-            Box::new(method.sig.decl.clone()),
-            method.attrs.clone(),
-            method.vis.clone(),
+            Box::new(self.sig.decl.clone()),
+            self.attrs.clone(),
+            self.vis.clone(),
             true,
             Some(class),
         )?;
-        let js_class = impl_opts
-            .js_class()
-            .map(|s| s.0.to_string())
-            .unwrap_or(class.to_string());
 
         program.exports.push(ast::Export {
             rust_class: Some(class.clone()),
-            js_class: Some(js_class),
+            js_class: Some(js_class.to_string()),
             method_self,
             is_constructor,
             function,
             comments,
             start: false,
-            rust_name: method.sig.ident.clone(),
+            rust_name: self.sig.ident.clone(),
         });
         opts.check_used()?;
         Ok(())
@@ -924,6 +953,12 @@ impl MacroParse<()> for syn::ItemEnum {
             _ => bail_span!(self, "only public enums are allowed with #[wasm_bindgen]"),
         }
 
+        if self.variants.len() == 0 {
+            bail_span!(self, "cannot export empty enums to JS");
+        }
+
+        let has_discriminant = self.variants[0].discriminant.is_some();
+
         let variants = self
             .variants
             .iter()
@@ -933,6 +968,14 @@ impl MacroParse<()> for syn::ItemEnum {
                     syn::Fields::Unit => (),
                     _ => bail_span!(v.fields, "only C-Style enums allowed with #[wasm_bindgen]"),
                 }
+
+                // Require that everything either has a discriminant or doesn't.
+                // We don't really want to get in the business of emulating how
+                // rustc assigns values to enums.
+                if v.discriminant.is_some() != has_discriminant {
+                    bail_span!(v, "must either annotate discriminant of all variants or none");
+                }
+
                 let value = match v.discriminant {
                     Some((
                         _,
@@ -963,12 +1006,30 @@ impl MacroParse<()> for syn::ItemEnum {
                     value,
                 })
             })
-            .collect::<Result<_, Diagnostic>>()?;
+            .collect::<Result<Vec<_>, Diagnostic>>()?;
+
+        let mut values = variants.iter().map(|v| v.value).collect::<Vec<_>>();
+        values.sort();
+        let hole = values.windows(2)
+            .filter_map(|window| {
+                if window[0] + 1 != window[1] {
+                    Some(window[0] + 1)
+                } else {
+                    None
+                }
+            })
+            .next()
+            .unwrap_or(*values.last().unwrap() + 1);
+        for value in values {
+            assert!(hole != value);
+        }
+
         let comments = extract_doc_comments(&self.attrs);
         program.enums.push(ast::Enum {
             name: self.ident,
             variants,
             comments,
+            hole,
         });
         Ok(())
     }

@@ -36,8 +36,14 @@ impl A {
     x!();
 
     // pub default fn foo() {} // TODO: compiler's pretty printer totally broken
+}
 
-
+#[wasm_bindgen]
+impl A {
     pub const fn foo() {}
+}
+
+#[wasm_bindgen]
+impl A {
     pub unsafe fn foo() {}
 }

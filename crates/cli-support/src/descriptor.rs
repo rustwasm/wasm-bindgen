@@ -59,7 +59,7 @@ pub enum Descriptor {
     Vector(Box<Descriptor>),
     String,
     Anyref,
-    Enum,
+    Enum { hole: u32 },
     RustStruct(String),
     Char,
     Option(Box<Descriptor>),
@@ -128,7 +128,7 @@ impl Descriptor {
             OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data))),
             STRING => Descriptor::String,
             ANYREF => Descriptor::Anyref,
-            ENUM => Descriptor::Enum,
+            ENUM => Descriptor::Enum { hole: get(data) },
             RUST_STRUCT => {
                 let name = (0..get(data))
                     .map(|_| char::from_u32(get(data)).unwrap())
@@ -159,7 +159,7 @@ impl Descriptor {
             | Descriptor::U32
             | Descriptor::F32
             | Descriptor::F64
-            | Descriptor::Enum => true,
+            | Descriptor::Enum { .. } => true,
             _ => return false,
         }
     }

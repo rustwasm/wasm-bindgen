@@ -18,3 +18,13 @@ exports.js_c_style_enum_with_custom_values = () => {
 
     assert.strictEqual(wasm.enum_with_custom_values_cycle(wasm.ColorWithCustomValues.Green), wasm.ColorWithCustomValues.Yellow);
 };
+
+exports.js_handle_optional_enums = x => wasm.handle_optional_enums(x);
+
+exports.js_expect_enum = (a, b) => {
+  assert.strictEqual(a, b);
+};
+
+exports.js_expect_enum_none = a => {
+  assert.strictEqual(a, undefined);
+};

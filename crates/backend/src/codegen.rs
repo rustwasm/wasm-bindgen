@@ -1038,6 +1038,7 @@ impl<'a> ToTokens for DescribeImport<'a> {
 impl ToTokens for ast::Enum {
     fn to_tokens(&self, into: &mut TokenStream) {
         let enum_name = &self.name;
+        let hole = &self.hole;
         let cast_clauses = self.variants.iter().map(|variant| {
             let variant_name = &variant.name;
             quote! {
@@ -1061,6 +1062,7 @@ impl ToTokens for ast::Enum {
                 type Abi = u32;
 
                 #[allow(clippy::*)]
+                #[inline]
                 unsafe fn from_abi(
                     js: u32,
                     _extra: &mut ::wasm_bindgen::convert::Stack,
@@ -1071,11 +1073,22 @@ impl ToTokens for ast::Enum {
                 }
             }
 
+            impl ::wasm_bindgen::convert::OptionFromWasmAbi for #enum_name {
+                #[inline]
+                fn is_none(val: &u32) -> bool { *val == #hole }
+            }
+
+            impl ::wasm_bindgen::convert::OptionIntoWasmAbi for #enum_name {
+                #[inline]
+                fn none() -> Self::Abi { #hole }
+            }
+
             impl ::wasm_bindgen::describe::WasmDescribe for #enum_name {
                 #[allow(clippy::*)]
                 fn describe() {
                     use wasm_bindgen::describe::*;
                     inform(ENUM);
+                    inform(#hole);
                 }
             }
         })

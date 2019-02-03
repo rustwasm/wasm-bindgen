@@ -6,9 +6,13 @@ use wasm_bindgen_test::*;
 extern "C" {
     fn js_c_style_enum();
     fn js_c_style_enum_with_custom_values();
+    fn js_handle_optional_enums(x: Option<Color>) -> Option<Color>;
+    fn js_expect_enum(x: Color, y: Option<Color>);
+    fn js_expect_enum_none(x: Option<Color>);
 }
 
 #[wasm_bindgen]
+#[derive(PartialEq, Debug)]
 pub enum Color {
     Green,
     Yellow,
@@ -22,7 +26,7 @@ pub mod inner {
     pub enum ColorWithCustomValues {
         Green = 21,
         Yellow = 34,
-        Red,
+        Red = 2,
     }
 }
 
@@ -52,4 +56,29 @@ fn c_style_enum() {
 #[wasm_bindgen_test]
 fn c_style_enum_with_custom_values() {
     js_c_style_enum_with_custom_values();
+}
+
+#[wasm_bindgen]
+pub fn handle_optional_enums(x: Option<Color>) -> Option<Color> {
+    x
+}
+
+#[wasm_bindgen_test]
+fn test_optional_enums() {
+    use self::Color::*;
+
+    assert_eq!(js_handle_optional_enums(None), None);
+    assert_eq!(js_handle_optional_enums(Some(Green)), Some(Green));
+    assert_eq!(js_handle_optional_enums(Some(Yellow)), Some(Yellow));
+    assert_eq!(js_handle_optional_enums(Some(Red)), Some(Red));
+}
+
+#[wasm_bindgen_test]
+fn test_optional_enum_values() {
+    use self::Color::*;
+
+    js_expect_enum(Green, Some(Green));
+    js_expect_enum(Yellow, Some(Yellow));
+    js_expect_enum(Red, Some(Red));
+    js_expect_enum_none(None);
 }
