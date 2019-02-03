@@ -265,6 +265,7 @@ impl ToTokens for ast::StructField {
             {
                 use wasm_bindgen::__rt::{WasmRefCell, assert_not_null};
                 use wasm_bindgen::convert::{GlobalStack, IntoWasmAbi};
+
                 fn assert_copy<T: Copy>(){}
                 assert_copy::<#ty>();
 
@@ -1216,7 +1217,6 @@ impl ToTokens for ast::Dictionary {
 
                 // Boundary conversion impls
                 impl WasmDescribe for #name {
-                    // #[allow(clippy::*)]
                     fn describe() {
                         Object::describe();
                     }
