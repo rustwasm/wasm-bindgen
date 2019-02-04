@@ -643,23 +643,16 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         };
 
         if self.catch {
-            self.cx.expose_uint32_memory();
-            self.cx.expose_add_heap_object();
-            let catch = "\
-                         const view = getUint32Memory();\n\
-                         view[exnptr / 4] = 1;\n\
-                         view[exnptr / 4 + 1] = addHeapObject(e);\n\
-                         ";
-
+            self.cx.expose_handle_error();
             invoc = format!(
                 "\
                 try {{\n\
                     {}
                 }} catch (e) {{\n\
-                    {}
+                    handleError(exnptr, e);\n\
                 }}\
                 ",
-                &invoc, catch
+                &invoc
             );
         } else if self.catch_and_rethrow {
             invoc = format!(

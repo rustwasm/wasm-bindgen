@@ -1546,6 +1546,23 @@ impl<'a> Context<'a> {
         ));
     }
 
+    fn expose_handle_error(&mut self) {
+        if !self.should_write_global("handle_error") {
+            return;
+        }
+        self.expose_uint32_memory();
+        self.expose_add_heap_object();
+        self.global(
+            "
+            function handleError(exnptr, e) {
+                const view = getUint32Memory();
+                view[exnptr / 4] = 1;
+                view[exnptr / 4 + 1] = addHeapObject(e);
+            }
+            ",
+        );
+    }
+
     fn wasm_import_needed(&self, name: &str) -> bool {
         let imports = match self.module.import_section() {
             Some(s) => s,
