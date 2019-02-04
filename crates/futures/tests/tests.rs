@@ -108,3 +108,10 @@ fn spawn_local_err_no_exception() -> impl Future<Item = (), Error = JsValue> {
     })
 }
 
+#[wasm_bindgen_test(async)]
+fn can_create_multiple_futures_from_same_promise() -> impl Future<Item = (), Error = JsValue> {
+    let promise = js_sys::Promise::resolve(&JsValue::null());
+    let a = JsFuture::from(promise.clone());
+    let b = JsFuture::from(promise);
+    futures::future::join_all(vec![a, b]).map(|_| ())
+}
