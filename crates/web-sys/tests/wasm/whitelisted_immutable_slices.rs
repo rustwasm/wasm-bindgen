@@ -21,8 +21,11 @@ extern "C" {
     // These functions come from element.js
 }
 
-// TODO: Uncomment WebGlRenderingContext test...
+// TODO: Uncomment WebGlRenderingContext test. Every now and then we can check if this works
+// in the latest geckodriver.
+//
 // Currently commented out because WebGl isn't working in geckodriver.
+//
 // It currently works in chromedriver so if you need to run this in the meantime you can
 // uncomment this block and run it in using chromedriver.
 //

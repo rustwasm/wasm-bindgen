@@ -13,7 +13,8 @@ use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 use first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use idl_type::{IdlType, ToIdlType};
 
-use std::collections::HashSet;
+use std::collections::BTreeSet;
+use std::cell::Ref;
 
 /// For variadic operations an overload with a `js_sys::Array` argument is generated alongside with
 /// `operation_name_0`, `operation_name_1`, `operation_name_2`, ..., `operation_name_n` overloads
@@ -437,7 +438,7 @@ impl<'src> FirstPassRecord<'src> {
                 }
 
                 let mut idl_type = arg.ty.to_idl_type(self);
-                let idl_type = maybe_adjust(idl_type, id);
+                let idl_type = self.maybe_adjust(idl_type, id);
                 idl_args.push(idl_type);
             }
             signatures.push((signature, idl_args));
@@ -632,6 +633,56 @@ impl<'src> FirstPassRecord<'src> {
         }
         return ret;
     }
+
+
+    /// When generating our web_sys APIs we default to setting slice references that
+    /// get passed to JS as mutable in case they get mutated in JS.
+    ///
+    /// In certain cases we know for sure that the slice will not get mutated - for
+    /// example when working with the WebGlRenderingContext APIs.
+    ///
+    /// Here we implement a whitelist for those cases. This whitelist is currently
+    /// maintained by hand.
+    ///
+    /// When adding to this whitelist add tests to crates/web-sys/tests/wasm/whitelisted_immutable_slices.rs
+    fn maybe_adjust<'a>(&self, mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
+        let op = match id {
+            OperationId::Operation(Some(op)) => op,
+            _ => return idl_type
+        };
+
+        if self.immutable_f32_whitelist().contains(op) {
+            flag_slices_immutable(&mut idl_type)
+        }
+
+        // TODO: Add other whitelisted slices here, such as F64 or u8..
+
+        idl_type
+    }
+
+    fn immutable_f32_whitelist(&self) -> Ref<BTreeSet<&'static str>> {
+        if self.immutable_f32_whitelist.borrow().len() == 0 {
+            *self.immutable_f32_whitelist.borrow_mut() = vec![
+                // WebGlRenderingContext
+                "uniform1fv",
+                "uniform2fv",
+                "uniform3fv",
+                "uniform4fv",
+                "uniformMatrix2fv",
+                "uniformMatrix3fv",
+                "uniformMatrix4fv",
+                "vertexAttrib1fv",
+                "vertexAttrib2fv",
+                "vertexAttrib3fv",
+                "vertexAttrib4fv",
+                // TODO: Add another type's functions here. Leave a comment header with the type name
+            ]
+                .into_iter()
+                .collect();
+        }
+
+        self.immutable_f32_whitelist.borrow()
+    }
 }
 
 /// Search for an attribute by name in some webidl object's attributes.
@@ -713,72 +764,21 @@ pub fn public() -> syn::Visibility {
     })
 }
 
-
-/// When generating our web_sys APIs we default to setting slice references that
-/// get passed to JS as mutable in case they get mutated in JS.
-///
-/// In certain cases we know for sure that the slice will not get mutated - for
-/// example when working with the WebGlRenderingContext APIs.
-///
-/// Here we implement a whitelist for those cases. This whitelist is currently
-/// maintained by hand.
-///
-/// When adding to this whitelist add tests to crates/web-sys/tests/wasm/whitelisted_immutable_slices.rs
-fn maybe_adjust<'a>(mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
-    let op = match id {
-        OperationId::Operation(Some(op)) => op,
-        _ => return idl_type
-    };
-
-    if IMMUTABLE_F32_WHITELIST.contains(op) {
-        flag_slices_immutable(&mut idl_type)
-    }
-
-    // TODO: Add other whitelisted slices here, such as F64 or u8..
-
-    idl_type
-
-}
-
 fn flag_slices_immutable(ty: &mut IdlType) {
     match ty {
         IdlType::Float32Array { immutable } => *immutable = true,
+        IdlType::Nullable(item) => flag_slices_immutable(item),
+        IdlType::FrozenArray(item) => flag_slices_immutable(item),
+        IdlType::Sequence(item) => flag_slices_immutable(item),
+        IdlType::Promise(item) => flag_slices_immutable(item),
+        IdlType::Record(item1, item2) => {
+            flag_slices_immutable(item1);
+            flag_slices_immutable(item2);
+        },
         IdlType::Union(list) => {
             for item in list { flag_slices_immutable(item); }
         }
-
-        // TODO: ... other recursive cases like Nullable handled here
-
         // catch-all for everything else like Object
         _ => {}
     }
-}
-
-lazy_static! {
-    /// These functions will have their f32 slice arguments be immutable.
-    static ref IMMUTABLE_F32_WHITELIST: HashSet<&'static str> = {
-        let mut set = HashSet::new();
-
-        let fn_names = vec![
-            // WebGlRenderingContext
-            "uniform1fv",
-            "uniform2fv",
-            "uniform3fv",
-            "uniform4fv",
-            "uniformMatrix2fv",
-            "uniformMatrix3fv",
-            "uniformMatrix4fv",
-            "vertexAttrib1fv",
-            "vertexAttrib2fv",
-            "vertexAttrib3fv",
-            "vertexAttrib4fv",
-            // TODO: Add another type's functions here. Leave a comment header with the type name
-        ];
-
-        for fn_name in fn_names {
-            set.insert(fn_name);
-        }
-
-        set
-    };
 }

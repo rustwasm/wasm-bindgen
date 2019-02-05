@@ -14,7 +14,6 @@ Support for parsing WebIDL specific to wasm-bindgen
 [dependencies]
 failure = "0.1.2"
 heck = "0.3"
-lazy_static = "1.2.0"
 log = "0.4.1"
 proc-macro2 = "0.4.8"
 quote = '0.6'
