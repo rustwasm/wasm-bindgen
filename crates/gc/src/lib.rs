@@ -99,6 +99,10 @@ fn run(config: &mut Config, module: &mut Module) {
                 info!("skipping reloc section");
                 continue;
             }
+            Section::DataCount(..) => {
+                info!("skipping data count section");
+                continue;
+            }
             Section::Type(ref mut s) => cx.remap_type_section(s),
             Section::Import(ref mut s) => cx.remap_import_section(s),
             Section::Function(ref mut s) => cx.remap_function_section(s),

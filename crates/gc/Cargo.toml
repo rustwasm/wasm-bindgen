@@ -11,7 +11,7 @@ Support for removing unused items from a wasm executable
 """
 
 [dependencies]
-parity-wasm = "0.35.1"
+parity-wasm = "0.36"
 log = "0.4"
 rustc-demangle = "0.1.9"
 
