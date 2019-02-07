@@ -13,9 +13,6 @@ use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 use first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
 use idl_type::{IdlType, ToIdlType};
 
-use std::collections::BTreeSet;
-use std::cell::Ref;
-
 /// For variadic operations an overload with a `js_sys::Array` argument is generated alongside with
 /// `operation_name_0`, `operation_name_1`, `operation_name_2`, ..., `operation_name_n` overloads
 /// which have the count of arguments for passing values to the variadic argument
@@ -651,7 +648,7 @@ impl<'src> FirstPassRecord<'src> {
             _ => return idl_type
         };
 
-        if self.immutable_f32_whitelist().contains(op) {
+        if self.immutable_f32_whitelist.contains(op) {
             flag_slices_immutable(&mut idl_type)
         }
 
@@ -660,29 +657,7 @@ impl<'src> FirstPassRecord<'src> {
         idl_type
     }
 
-    fn immutable_f32_whitelist(&self) -> Ref<BTreeSet<&'static str>> {
-        if self.immutable_f32_whitelist.borrow().len() == 0 {
-            *self.immutable_f32_whitelist.borrow_mut() = vec![
-                // WebGlRenderingContext
-                "uniform1fv",
-                "uniform2fv",
-                "uniform3fv",
-                "uniform4fv",
-                "uniformMatrix2fv",
-                "uniformMatrix3fv",
-                "uniformMatrix4fv",
-                "vertexAttrib1fv",
-                "vertexAttrib2fv",
-                "vertexAttrib3fv",
-                "vertexAttrib4fv",
-                // TODO: Add another type's functions here. Leave a comment header with the type name
-            ]
-                .into_iter()
-                .collect();
-        }
 
-        self.immutable_f32_whitelist.borrow()
-    }
 }
 
 /// Search for an attribute by name in some webidl object's attributes.

@@ -22,7 +22,6 @@ use weedle::{DictionaryDefinition, PartialDictionaryDefinition};
 use super::Result;
 use util;
 use util::camel_case_ident;
-use std::cell::RefCell;
 
 /// Collection of constructs that may use partial.
 #[derive(Default)]
@@ -38,7 +37,7 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) dictionaries: BTreeMap<&'src str, DictionaryData<'src>>,
     pub(crate) callbacks: BTreeSet<&'src str>,
     pub(crate) callback_interfaces: BTreeMap<&'src str, CallbackInterfaceData<'src>>,
-    pub(crate) immutable_f32_whitelist: RefCell<BTreeSet<&'static str>>
+    pub(crate) immutable_f32_whitelist: BTreeSet<&'static str>
 }
 
 /// We need to collect interface data during the first pass, to be used later.

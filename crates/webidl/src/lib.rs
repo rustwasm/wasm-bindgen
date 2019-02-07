@@ -82,6 +82,8 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
 
     let mut first_pass_record: FirstPassRecord = Default::default();
     first_pass_record.builtin_idents = builtin_idents();
+    first_pass_record.immutable_f32_whitelist = immutable_f32_whitelist();
+
     definitions.first_pass(&mut first_pass_record, ())?;
     let mut program = Default::default();
     let mut submodules = Vec::new();
@@ -176,6 +178,26 @@ fn builtin_idents() -> BTreeSet<Ident> {
         ]
         .into_iter()
         .map(|id| proc_macro2::Ident::new(id, proc_macro2::Span::call_site())),
+    )
+}
+
+fn immutable_f32_whitelist() -> BTreeSet<&'static str> {
+    BTreeSet::from_iter(
+        vec![
+            // WebGlRenderingContext
+            "uniform1fv",
+            "uniform2fv",
+            "uniform3fv",
+            "uniform4fv",
+            "uniformMatrix2fv",
+            "uniformMatrix3fv",
+            "uniformMatrix4fv",
+            "vertexAttrib1fv",
+            "vertexAttrib2fv",
+            "vertexAttrib3fv",
+            "vertexAttrib4fv",
+            // TODO: Add another type's functions here. Leave a comment header with the type name
+        ]
     )
 }
 
