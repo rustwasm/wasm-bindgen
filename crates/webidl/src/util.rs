@@ -67,13 +67,13 @@ pub fn mdn_doc(class: &str, method: Option<&str>) -> String {
     format!("[MDN Documentation]({})", link).into()
 }
 
-// Array type is borrowed for arguments (`&[T]`) and owned for return value (`Vec<T>`).
-pub(crate) fn array(base_ty: &str, pos: TypePosition) -> syn::Type {
+// Array type is borrowed for arguments (`&mut [T]` or `&[T]`) and owned for return value (`Vec<T>`).
+pub(crate) fn array(base_ty: &str, pos: TypePosition, immutable: bool) -> syn::Type {
     match pos {
         TypePosition::Argument => {
             shared_ref(
                 slice_ty(ident_ty(raw_ident(base_ty))),
-                /*mutable =*/ true,
+                /*mutable =*/ !immutable,
             )
         }
         TypePosition::Return => vec_ty(ident_ty(raw_ident(base_ty))),
@@ -433,7 +433,10 @@ impl<'src> FirstPassRecord<'src> {
                     );
                     signatures.push((signature, idl_args.clone()));
                 }
-                idl_args.push(arg.ty.to_idl_type(self));
+
+                let mut idl_type = arg.ty.to_idl_type(self);
+                let idl_type = self.maybe_adjust(idl_type, id);
+                idl_args.push(idl_type);
             }
             signatures.push((signature, idl_args));
         }
@@ -627,6 +630,34 @@ impl<'src> FirstPassRecord<'src> {
         }
         return ret;
     }
+
+
+    /// When generating our web_sys APIs we default to setting slice references that
+    /// get passed to JS as mutable in case they get mutated in JS.
+    ///
+    /// In certain cases we know for sure that the slice will not get mutated - for
+    /// example when working with the WebGlRenderingContext APIs.
+    ///
+    /// Here we implement a whitelist for those cases. This whitelist is currently
+    /// maintained by hand.
+    ///
+    /// When adding to this whitelist add tests to crates/web-sys/tests/wasm/whitelisted_immutable_slices.rs
+    fn maybe_adjust<'a>(&self, mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
+        let op = match id {
+            OperationId::Operation(Some(op)) => op,
+            _ => return idl_type
+        };
+
+        if self.immutable_f32_whitelist.contains(op) {
+            flag_slices_immutable(&mut idl_type)
+        }
+
+        // TODO: Add other whitelisted slices here, such as F64 or u8..
+
+        idl_type
+    }
+
+
 }
 
 /// Search for an attribute by name in some webidl object's attributes.
@@ -706,4 +737,23 @@ pub fn public() -> syn::Visibility {
     syn::Visibility::Public(syn::VisPublic {
         pub_token: Default::default(),
     })
+}
+
+fn flag_slices_immutable(ty: &mut IdlType) {
+    match ty {
+        IdlType::Float32Array { immutable } => *immutable = true,
+        IdlType::Nullable(item) => flag_slices_immutable(item),
+        IdlType::FrozenArray(item) => flag_slices_immutable(item),
+        IdlType::Sequence(item) => flag_slices_immutable(item),
+        IdlType::Promise(item) => flag_slices_immutable(item),
+        IdlType::Record(item1, item2) => {
+            flag_slices_immutable(item1);
+            flag_slices_immutable(item2);
+        },
+        IdlType::Union(list) => {
+            for item in list { flag_slices_immutable(item); }
+        }
+        // catch-all for everything else like Object
+        _ => {}
+    }
 }
