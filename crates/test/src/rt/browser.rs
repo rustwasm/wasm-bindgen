@@ -22,10 +22,10 @@ extern "C" {
     fn getElementById(this: &HTMLDocument, id: &str) -> Element;
 
     type Element;
-    #[wasm_bindgen(method, getter = innerHTML, structural)]
-    fn inner_html(this: &Element) -> String;
-    #[wasm_bindgen(method, setter = innerHTML, structural)]
-    fn set_inner_html(this: &Element, html: &str);
+    #[wasm_bindgen(method, getter = textContent, structural)]
+    fn text_content(this: &Element) -> String;
+    #[wasm_bindgen(method, setter = textContent, structural)]
+    fn set_text_content(this: &Element, text: &str);
 
     type BrowserError;
     #[wasm_bindgen(method, getter, structural)]
@@ -37,24 +37,16 @@ impl Browser {
     /// (requires `Node::new()` to have return `None` first).
     pub fn new() -> Browser {
         let pre = document.getElementById("output");
-        pre.set_inner_html("");
+        pre.set_text_content("");
         Browser { pre }
     }
 }
 
 impl super::Formatter for Browser {
     fn writeln(&self, line: &str) {
-        let mut html = self.pre.inner_html();
-        for c in line.chars() {
-            match c {
-                '<' => html.push_str("&lt;"),
-                '>' => html.push_str("&gt;"),
-                '&' => html.push_str("&amp;"),
-                c => html.push(c),
-            }
-        }
-        html.push_str("\n");
-        self.pre.set_inner_html(&html);
+        let mut html = self.pre.text_content();
+        html.extend(line.chars().chain(Some('\n')));
+        self.pre.set_text_content(&html);
     }
 
     fn log_test(&self, name: &str, result: &Result<(), JsValue>) {

@@ -11,5 +11,5 @@ Support for threading-related transformations in wasm-bindgen
 """
 
 [dependencies]
-parity-wasm = "0.35"
+parity-wasm = "0.36"
 failure = "0.1"

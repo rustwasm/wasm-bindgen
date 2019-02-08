@@ -13,7 +13,7 @@
      const orig = id => (...args) => {
          const logs = document.getElementById(id);
          for (let msg of args) {
-             logs.innerHTML += `${msg}\n`;
+             logs.textContent += `${msg}\n`;
          }
      };
 

@@ -37,6 +37,7 @@ pub(crate) struct FirstPassRecord<'src> {
     pub(crate) dictionaries: BTreeMap<&'src str, DictionaryData<'src>>,
     pub(crate) callbacks: BTreeSet<&'src str>,
     pub(crate) callback_interfaces: BTreeMap<&'src str, CallbackInterfaceData<'src>>,
+    pub(crate) immutable_f32_whitelist: BTreeSet<&'static str>
 }
 
 /// We need to collect interface data during the first pass, to be used later.
@@ -83,6 +84,9 @@ pub(crate) struct CallbackInterfaceData<'src> {
 #[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy)]
 pub(crate) enum OperationId<'src> {
     Constructor(IgnoreTraits<&'src str>),
+    /// The name of a function in crates/web-sys/webidls/enabled/*.webidl
+    ///
+    /// ex: Operation(Some("vertexAttrib1fv"))
     Operation(Option<&'src str>),
     IndexingGetter,
     IndexingSetter,

@@ -11,7 +11,7 @@ Micro-interpreter optimized for wasm-bindgen's use case
 """
 
 [dependencies]
-parity-wasm = "0.35"
+parity-wasm = "0.36"
 
 [dev-dependencies]
 tempfile = "3"
