@@ -654,6 +654,7 @@ impl ToTokens for ast::ImportType {
                     }
 
                     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
+                    #[allow(clippy::drop_ref)]
                     fn instanceof(val: &JsValue) -> bool {
                         drop(val);
                         panic!("cannot check instanceof on non-wasm targets");
@@ -899,7 +900,6 @@ impl TryToTokens for ast::ImportFunction {
             abi_arguments.push(quote! { #exn_data_ptr: *mut u32 });
             convert_ret = quote! { Ok(#convert_ret) };
             exceptional_ret = quote! {
-                #[allow(clippy::*)]
                 if #exn_data[0] == 1 {
                     return Err(
                         <
