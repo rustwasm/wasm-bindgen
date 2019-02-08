@@ -26,3 +26,14 @@ impl ConsumeRetString {
 fn works() {
     ConsumeRetString.consume();
 }
+
+#[wasm_bindgen]
+extern {
+    #[wasm_bindgen(js_namespace = console)]
+    pub fn log(s: &str);
+}
+
+#[wasm_bindgen_test]
+fn can_log_html_strings() {
+    log("<script>alert('lol')</script>");
+}
