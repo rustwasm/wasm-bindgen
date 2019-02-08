@@ -30,7 +30,7 @@ pub fn spawn(
         // Now that we've gotten to the point where JS is executing, update our
         // status text as at this point we should be asynchronously fetching the
         // wasm module.
-        document.getElementById('output').innerHTML = "Loading wasm module...";
+        document.getElementById('output').textContent = "Loading wasm module...";
 
         async function main(test) {{
             // this is a facet of using wasm2es6js, a hack until browsers have
