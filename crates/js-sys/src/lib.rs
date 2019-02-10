@@ -4339,7 +4339,7 @@ impl From<String> for JsString {
 
 impl<'a> From<&'a JsString> for String {
     fn from(s: &'a JsString) -> Self {
-        s.obj.as_string().unwrap()
+        s.obj.as_string().unwrap_throw()
     }
 }
 
