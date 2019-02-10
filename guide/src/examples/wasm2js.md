@@ -14,7 +14,7 @@ file (albeit a little bit larger and slower), and can be loaded into practically
 any browser.
 
 This example is relatively simple (cribbing from the [`console.log`
-example][console_log]):
+example](console-log.md)):
 
 ```rust
 {{#include ../../../examples/wasm2js/src/lib.rs}}
