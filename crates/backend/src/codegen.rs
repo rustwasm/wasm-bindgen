@@ -110,6 +110,7 @@ impl TryToTokens for ast::Program {
             #[cfg(target_arch = "wasm32")]
             #[link_section = "__wasm_bindgen_unstable"]
             #[doc(hidden)]
+            #[allow(clippy::all)]
             pub static #generated_static_name: [u8; #generated_static_length] =
                 *#generated_static_value;
         })
@@ -128,6 +129,7 @@ impl ToTokens for ast::Struct {
         let new_fn = Ident::new(&shared::new_function(&name_str), Span::call_site());
         let free_fn = Ident::new(&shared::free_function(&name_str), Span::call_site());
         (quote! {
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     use wasm_bindgen::__wbindgen_if_not_std;
@@ -144,6 +146,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = u32;
 
@@ -156,6 +159,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = u32;
 
@@ -173,6 +177,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::__rt::core::convert::From<#name> for
                 ::wasm_bindgen::JsValue
             {
@@ -206,6 +211,7 @@ impl ToTokens for ast::Struct {
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[no_mangle]
             #[doc(hidden)]
+            #[allow(clippy::all)]
             pub unsafe extern "C" fn #free_fn(ptr: u32) {
                 <#name as ::wasm_bindgen::convert::FromWasmAbi>::from_abi(
                     ptr,
@@ -213,6 +219,7 @@ impl ToTokens for ast::Struct {
                 );
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::RefFromWasmAbi for #name {
                 type Abi = u32;
                 type Anchor = ::wasm_bindgen::__rt::Ref<'static, #name>;
@@ -227,6 +234,7 @@ impl ToTokens for ast::Struct {
                 }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::RefMutFromWasmAbi for #name {
                 type Abi = u32;
                 type Anchor = ::wasm_bindgen::__rt::RefMut<'static, #name>;
@@ -260,6 +268,7 @@ impl ToTokens for ast::StructField {
             #[no_mangle]
             #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+            #[allow(clippy::all)]
             pub unsafe extern "C" fn #getter(js: u32)
                 -> <#ty as ::wasm_bindgen::convert::IntoWasmAbi>::Abi
             {
@@ -296,6 +305,7 @@ impl ToTokens for ast::StructField {
             #[no_mangle]
             #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+            #[allow(clippy::all)]
             pub unsafe extern "C" fn #setter(
                 js: u32,
                 val: <#ty as ::wasm_bindgen::convert::FromWasmAbi>::Abi,
@@ -463,6 +473,7 @@ impl TryToTokens for ast::Export {
             #[export_name = #export_name]
             #[allow(non_snake_case)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+            #[allow(clippy::all)]
             pub extern "C" fn #generated_name(#(#args),*) #ret_ty {
                 #start_check
                 // Scope all local variables to be destroyed after we call the
@@ -543,11 +554,13 @@ impl ToTokens for ast::ImportType {
             #(#attrs)*
             #[doc = #doc_comment]
             #[repr(transparent)]
+            #[allow(clippy::all)]
             #vis struct #rust_name {
                 obj: ::wasm_bindgen::JsValue,
             }
 
             #[allow(bad_style)]
+            #[allow(clippy::all)]
             const #const_name: () = {
                 use wasm_bindgen::convert::{IntoWasmAbi, FromWasmAbi, Stack};
                 use wasm_bindgen::convert::{OptionIntoWasmAbi, OptionFromWasmAbi};
@@ -681,6 +694,7 @@ impl ToTokens for ast::ImportType {
             None => quote! { JsValue },
         };
         (quote! {
+            #[allow(clippy::all)]
             impl core::ops::Deref for #rust_name {
                 type Target = #deref_target;
 
@@ -693,6 +707,7 @@ impl ToTokens for ast::ImportType {
         .to_tokens(tokens);
         for superclass in self.extends.iter() {
             (quote! {
+                #[allow(clippy::all)]
                 impl From<#rust_name> for #superclass {
                     #[inline]
                     fn from(obj: #rust_name) -> #superclass {
@@ -701,6 +716,7 @@ impl ToTokens for ast::ImportType {
                     }
                 }
 
+                #[allow(clippy::all)]
                 impl AsRef<#superclass> for #rust_name {
                     #[inline]
                     fn as_ref(&self) -> &#superclass {
@@ -749,12 +765,14 @@ impl ToTokens for ast::ImportEnum {
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
+            #[allow(clippy::all)]
             #vis enum #name {
                 #(#variants = #variant_indexes_ref,)*
                 #[doc(hidden)]
                 __Nonexhaustive,
             }
 
+            #[allow(clippy::all)]
             impl #name {
                 #vis fn from_js_value(obj: &::wasm_bindgen::JsValue) -> Option<#name> {
                     obj.as_string().and_then(|obj_str| match obj_str.as_str() {
@@ -764,12 +782,14 @@ impl ToTokens for ast::ImportEnum {
                 }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::describe::WasmDescribe for #name {
                 fn describe() {
                     ::wasm_bindgen::JsValue::describe()
                 }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = <::wasm_bindgen::JsValue as
                     ::wasm_bindgen::convert::IntoWasmAbi>::Abi;
@@ -780,6 +800,7 @@ impl ToTokens for ast::ImportEnum {
                 }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = <::wasm_bindgen::JsValue as
                     ::wasm_bindgen::convert::FromWasmAbi>::Abi;
@@ -792,6 +813,7 @@ impl ToTokens for ast::ImportEnum {
                 }
             }
 
+            #[allow(clippy::all)]
             impl From<#name> for ::wasm_bindgen::JsValue {
                 fn from(obj: #name) -> ::wasm_bindgen::JsValue {
                     match obj {
@@ -935,6 +957,7 @@ impl TryToTokens for ast::ImportFunction {
             #[allow(bad_style)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[doc = #doc_comment]
+            #[allow(clippy::all)]
             #vis fn #rust_name(#me #(#arguments),*) #ret {
                 #[link(wasm_import_module = "__wbindgen_placeholder__")]
                 extern "C" {
@@ -956,6 +979,7 @@ impl TryToTokens for ast::ImportFunction {
             #[allow(bad_style, unused_variables)]
             #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
             #[doc = #doc_comment]
+            #[allow(clippy::all)]
             #vis fn #rust_name(#me #(#arguments),*) #ret {
                 panic!("cannot call wasm-bindgen imported functions on \
                         non-wasm targets");
@@ -1023,6 +1047,7 @@ impl ToTokens for ast::Enum {
             }
         });
         (quote! {
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::IntoWasmAbi for #enum_name {
                 type Abi = u32;
 
@@ -1032,6 +1057,7 @@ impl ToTokens for ast::Enum {
                 }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::FromWasmAbi for #enum_name {
                 type Abi = u32;
 
@@ -1046,16 +1072,19 @@ impl ToTokens for ast::Enum {
                 }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::OptionFromWasmAbi for #enum_name {
                 #[inline]
                 fn is_none(val: &u32) -> bool { *val == #hole }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::convert::OptionIntoWasmAbi for #enum_name {
                 #[inline]
                 fn none() -> Self::Abi { #hole }
             }
 
+            #[allow(clippy::all)]
             impl ::wasm_bindgen::describe::WasmDescribe for #enum_name {
                 fn describe() {
                     use wasm_bindgen::describe::*;
@@ -1076,6 +1105,7 @@ impl ToTokens for ast::ImportStatic {
         let vis = &self.vis;
         (quote! {
             #[allow(bad_style)]
+            #[allow(clippy::all)]
             #vis static #name: ::wasm_bindgen::JsStatic<#ty> = {
                 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 fn init() -> #ty {
@@ -1180,10 +1210,12 @@ impl ToTokens for ast::Dictionary {
         (quote! {
             #[derive(Clone, Debug)]
             #[repr(transparent)]
+            #[allow(clippy::all)]
             pub struct #name {
                 obj: ::js_sys::Object,
             }
 
+            #[allow(clippy::all)]
             impl #name {
                 pub fn new(#(#required_names: #required_types),*) -> #name {
                     let mut _ret = #name { obj: ::js_sys::Object::new() };
@@ -1195,6 +1227,7 @@ impl ToTokens for ast::Dictionary {
             }
 
             #[allow(bad_style)]
+            #[allow(clippy::all)]
             const #const_name: () = {
                 use js_sys::Object;
                 use wasm_bindgen::describe::WasmDescribe;
@@ -1299,6 +1332,7 @@ impl ToTokens for ast::DictionaryField {
         let js_name = &self.js_name;
         let ty = &self.ty;
         (quote! {
+            #[allow(clippy::all)]
             pub fn #rust_name(&mut self, val: #ty) -> &mut Self {
                 use wasm_bindgen::JsValue;
                 let r = ::js_sys::Reflect::set(
@@ -1346,6 +1380,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
             #[allow(non_snake_case)]
             #[doc(hidden)]
             #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+            #[allow(clippy::all)]
             pub extern "C" fn #name() {
                 use wasm_bindgen::describe::*;
                 // See definition of `link_mem_intrinsics` for what this is doing
