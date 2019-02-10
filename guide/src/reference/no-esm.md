@@ -1,6 +1,6 @@
 # No ES Modules
 
-Explained a bit more in the [internal design](design.html) section one of the
+Explained a bit more in the [internal design](../contributing/design/index.md) section one of the
 key foundational principles of `wasm-bindgen` is ES modules. It supports working
 without ES modules, however! Not all JS tooling and browsers are ready for ES
 modules by default, so it can sometimes be helpful to quickly get up and running

@@ -34,13 +34,14 @@ pub fn timed(callback: &js_sys::Function) -> f64 {
 
 The `js-sys` crate doesn't contain bindings to any Web APIs like
 [`document.querySelectorAll`][mdn-qsa]. These will be part of the
-[`web-sys`](./web-sys.html) crate.
+[`web-sys`][web-sys] crate.
 
 [MDN]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 [js-sys]: https://crates.io/crates/js-sys
 [issue]: https://github.com/rustwasm/wasm-bindgen/issues/275
 [mdn-function]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
 [mdn-qsa]: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
+[web-sys]: https://crates.io/crates/web-sys
 [web-sys-contributing]: https://rustwasm.github.io/wasm-bindgen/web-sys.html
 [web-sys-issues]: https://github.com/rustwasm/wasm-bindgen/issues?q=is%3Aissue+is%3Aopen+label%3Aweb-sys
 [mdn-date-now]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
