@@ -1,4 +1,7 @@
 // For more comments about what's going on here, check out the `hello_world`
 // example
-import('./pkg/todomvc')
+const rust = import('./pkg/todomvc');
+
+rust
+  .then(m => m.run())
   .catch(console.error);

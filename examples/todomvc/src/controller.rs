@@ -68,7 +68,7 @@ impl Controller {
     }
 
     pub fn set_page(&mut self, raw: String) {
-        let route = raw.trim_left_matches("#/");
+        let route = raw.trim_start_matches("#/");
         self.active_route = route.to_string();
         self._filter(false);
         self.add_message(ViewMessage::UpdateFilterButtons(route.to_string()));
