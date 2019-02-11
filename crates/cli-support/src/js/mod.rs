@@ -1061,7 +1061,7 @@ impl<'a> Context<'a> {
         self.expose_wasm_vector_len();
         let debug = if self.config.debug {
             "
-                if (typeof(arg) !== 'string') throw new Error('expected a string argument');
+                if (typeof(arg) !== 'string' && arg !== undefined) throw new Error('expected a string or undefined argument');
             "
         } else {
             ""
