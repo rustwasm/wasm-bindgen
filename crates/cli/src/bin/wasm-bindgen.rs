@@ -1,17 +1,8 @@
-extern crate wasm_bindgen_cli_support;
-#[macro_use]
-extern crate serde_derive;
-extern crate docopt;
-extern crate wasm_bindgen_shared;
-#[macro_use]
-extern crate failure;
-extern crate env_logger;
-
+use docopt::Docopt;
+use failure::{bail, Error};
+use serde::Deserialize;
 use std::path::PathBuf;
 use std::process;
-
-use docopt::Docopt;
-use failure::Error;
 use wasm_bindgen_cli_support::Bindgen;
 
 // no need for jemalloc bloat in this binary (and we don't need speed)

@@ -1,10 +1,6 @@
-extern crate base64;
-extern crate tempfile;
-
+use failure::{bail, Error};
 use std::collections::HashSet;
-
-use failure::Error;
-use parity_wasm::elements::*;
+use walrus::Module;
 
 pub struct Config {
     base64: bool,
@@ -39,7 +35,7 @@ impl Config {
         if !self.base64 && !self.fetch_path.is_some() {
             bail!("one of --base64 or --fetch is required");
         }
-        let module = deserialize_buffer(wasm)?;
+        let module = Module::from_buffer(wasm)?;
         Ok(Output {
             module,
             base64: self.base64,
@@ -48,87 +44,62 @@ impl Config {
     }
 }
 
-pub fn typescript(module: &Module) -> String {
+pub fn typescript(module: &Module) -> Result<String, Error> {
     let mut exports = format!("/* tslint:disable */\n");
 
-    if let Some(i) = module.export_section() {
-        let imported_functions = module
-            .import_section()
-            .map(|m| m.functions() as u32)
-            .unwrap_or(0);
-        for entry in i.entries() {
-            let idx = match *entry.internal() {
-                Internal::Function(i) if i < imported_functions => *module
-                    .import_section()
-                    .unwrap()
-                    .entries()
-                    .iter()
-                    .filter_map(|f| match f.external() {
-                        External::Function(i) => Some(i),
-                        _ => None,
-                    })
-                    .nth(i as usize)
-                    .unwrap(),
-                Internal::Function(i) => {
-                    let idx = i - imported_functions;
-                    let functions = module
-                        .function_section()
-                        .expect("failed to find function section");
-                    functions.entries()[idx as usize].type_ref()
-                }
-                Internal::Memory(_) => {
-                    exports.push_str(&format!(
-                        "export const {}: WebAssembly.Memory;\n",
-                        entry.field()
-                    ));
-                    continue;
-                }
-                Internal::Table(_) => {
-                    exports.push_str(&format!(
-                        "export const {}: WebAssembly.Table;\n",
-                        entry.field()
-                    ));
-                    continue;
-                }
-                Internal::Global(_) => continue,
-            };
-
-            let types = module.type_section().expect("failed to find type section");
-            let ty = match types.types()[idx as usize] {
-                Type::Function(ref f) => f,
-            };
-            let mut args = String::new();
-            for (i, _) in ty.params().iter().enumerate() {
-                if i > 0 {
-                    args.push_str(", ");
-                }
-                args.push((b'a' + (i as u8)) as char);
-                args.push_str(": number");
+    for entry in module.exports.iter() {
+        let id = match entry.item {
+            walrus::ExportItem::Function(i) => i,
+            walrus::ExportItem::Memory(_) => {
+                exports.push_str(&format!(
+                    "export const {}: WebAssembly.Memory;\n",
+                    entry.name,
+                ));
+                continue;
             }
+            walrus::ExportItem::Table(_) => {
+                exports.push_str(&format!(
+                    "export const {}: WebAssembly.Table;\n",
+                    entry.name,
+                ));
+                continue;
+            }
+            walrus::ExportItem::Global(_) => continue,
+        };
 
-            exports.push_str(&format!(
-                "export function {name}({args}): {ret};\n",
-                name = entry.field(),
-                args = args,
-                ret = if ty.return_type().is_some() {
-                    "number"
-                } else {
-                    "void"
-                },
-            ));
+        let func = module.funcs.get(id);
+        let ty = module.types.get(func.ty());
+        let mut args = String::new();
+        for (i, _) in ty.params().iter().enumerate() {
+            if i > 0 {
+                args.push_str(", ");
+            }
+            args.push((b'a' + (i as u8)) as char);
+            args.push_str(": number");
         }
+
+        exports.push_str(&format!(
+            "export function {name}({args}): {ret};\n",
+            name = entry.name,
+            args = args,
+            ret = match ty.results().len() {
+                0 => "void",
+                1 => "number",
+                _ => bail!("cannot support multi-return yet"),
+            },
+        ));
     }
 
-    return exports;
+    Ok(exports)
 }
 
 impl Output {
-    pub fn typescript(&self) -> String {
-        let mut ts = typescript(&self.module);
+    pub fn typescript(&self) -> Result<String, Error> {
+        let mut ts = typescript(&self.module)?;
         if self.base64 {
             ts.push_str("export const booted: Promise<boolean>;\n");
         }
-        return ts;
+        Ok(ts)
     }
 
     pub fn js_and_wasm(mut self) -> Result<(String, Option<Vec<u8>>), Error> {
@@ -137,33 +108,28 @@ impl Output {
         let mut set_exports = String::new();
         let mut imports = String::new();
 
-        if let Some(i) = self.module.import_section() {
-            let mut set = HashSet::new();
-            for entry in i.entries() {
-                if !set.insert(entry.module()) {
-                    continue;
-                }
-
-                let name = (b'a' + (set.len() as u8)) as char;
-                js_imports.push_str(&format!(
-                    "import * as import_{} from '{}';\n",
-                    name,
-                    entry.module()
-                ));
-                imports.push_str(&format!("'{}': import_{}, ", entry.module(), name));
+        let mut set = HashSet::new();
+        for entry in self.module.imports.iter() {
+            if !set.insert(&entry.module) {
+                continue;
             }
+
+            let name = (b'a' + (set.len() as u8)) as char;
+            js_imports.push_str(&format!(
+                "import * as import_{} from '{}';\n",
+                name, entry.module
+            ));
+            imports.push_str(&format!("'{}': import_{}, ", entry.module, name));
         }
 
-        if let Some(i) = self.module.export_section() {
-            for entry in i.entries() {
-                exports.push_str("export let ");
-                exports.push_str(entry.field());
-                exports.push_str(";\n");
-                set_exports.push_str(entry.field());
-                set_exports.push_str(" = wasm.exports.");
-                set_exports.push_str(entry.field());
-                set_exports.push_str(";\n");
-            }
+        for entry in self.module.exports.iter() {
+            exports.push_str("export let ");
+            exports.push_str(&entry.name);
+            exports.push_str(";\n");
+            set_exports.push_str(&entry.name);
+            set_exports.push_str(" = wasm.exports.");
+            set_exports.push_str(&entry.name);
+            set_exports.push_str(";\n");
         }
 
         // This is sort of tricky, but the gist of it is that if there's a start
@@ -199,7 +165,7 @@ impl Output {
             imports = imports,
             set_exports = set_exports,
         );
-        let wasm = serialize(self.module).expect("failed to serialize");
+        let wasm = self.module.emit_wasm().expect("failed to serialize");
         let (bytes, booted) = if self.base64 {
             (
                 format!(
@@ -252,24 +218,11 @@ impl Output {
     /// removes the start section, if any, and moves it to an exported function.
     /// Returns whether a start function was found and removed.
     fn unstart(&mut self) -> bool {
-        let mut start = None;
-        for (i, section) in self.module.sections().iter().enumerate() {
-            if let Section::Start(idx) = section {
-                start = Some((i, *idx));
-                break;
-            }
-        }
-        let (i, idx) = match start {
-            Some(p) => p,
+        let start = match self.module.start.take() {
+            Some(id) => id,
             None => return false,
         };
-        self.module.sections_mut().remove(i);
-        let entry = ExportEntry::new("__wasm2es6js_start".to_string(), Internal::Function(idx));
-        self.module
-            .export_section_mut()
-            .unwrap()
-            .entries_mut()
-            .push(entry);
+        self.module.exports.add("__wasm2es6js_start", start);
         true
     }
 }

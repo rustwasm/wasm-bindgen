@@ -43,7 +43,7 @@ pub(crate) enum IdlType<'a> {
     Uint32Array,
     Float32Array {
         /// Whether or not the generated web-sys function should use an immutable slice
-        immutable: bool
+        immutable: bool,
     },
     Float64Array,
     ArrayBufferView,
@@ -332,7 +332,7 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
 // instead use the immutable version.
 impl<'a> ToIdlType<'a> for term::Float32Array {
     fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
-        IdlType::Float32Array {immutable: false}
+        IdlType::Float32Array { immutable: false }
     }
 }
 
@@ -520,7 +520,7 @@ impl<'a> IdlType<'a> {
             IdlType::Uint16Array => Some(array("u16", pos, false)),
             IdlType::Int32Array => Some(array("i32", pos, false)),
             IdlType::Uint32Array => Some(array("u32", pos, false)),
-            IdlType::Float32Array {immutable} => Some(array("f32", pos, *immutable)),
+            IdlType::Float32Array { immutable } => Some(array("f32", pos, *immutable)),
             IdlType::Float64Array => Some(array("f64", pos, false)),
 
             IdlType::ArrayBufferView | IdlType::BufferSource => js_sys("Object"),

@@ -13,11 +13,11 @@ extern crate wasm_bindgen_shared as shared;
 
 use backend::{Diagnostic, TryToTokens};
 pub use parser::BindgenAttrs;
-use quote::ToTokens;
 use parser::MacroParse;
 use proc_macro2::TokenStream;
-use syn::parse::{Parse, ParseStream, Result as SynResult};
+use quote::ToTokens;
 use quote::TokenStreamExt;
+use syn::parse::{Parse, ParseStream, Result as SynResult};
 
 mod parser;
 
@@ -41,7 +41,10 @@ pub fn expand(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diag
 }
 
 /// Takes the parsed input from a `#[wasm_bindgen]` macro and returns the generated bindings
-pub fn expand_class_marker(attr: TokenStream, input: TokenStream) -> Result<TokenStream, Diagnostic> {
+pub fn expand_class_marker(
+    attr: TokenStream,
+    input: TokenStream,
+) -> Result<TokenStream, Diagnostic> {
     parser::reset_attrs_used();
     let mut item = syn::parse2::<syn::ImplItemMethod>(input)?;
     let opts: ClassMarker = syn::parse2(attr)?;
@@ -62,11 +65,9 @@ pub fn expand_class_marker(attr: TokenStream, input: TokenStream) -> Result<Toke
     // We manually implement `ToTokens for ImplItemMethod` here, injecting our
     // program's tokens before the actual method's inner body tokens.
     let mut tokens = proc_macro2::TokenStream::new();
-    tokens.append_all(item.attrs.iter().filter(|attr| {
-        match attr.style {
-            syn::AttrStyle::Outer => true,
-            _ => false,
-        }
+    tokens.append_all(item.attrs.iter().filter(|attr| match attr.style {
+        syn::AttrStyle::Outer => true,
+        _ => false,
     }));
     item.vis.to_tokens(&mut tokens);
     item.sig.to_tokens(&mut tokens);
@@ -75,17 +76,15 @@ pub fn expand_class_marker(attr: TokenStream, input: TokenStream) -> Result<Toke
         if let Err(e) = program.try_to_tokens(tokens) {
             err = Some(e);
         }
-        tokens.append_all(item.attrs.iter().filter(|attr| {
-            match attr.style {
-                syn::AttrStyle::Inner(_) => true,
-                _ => false,
-            }
+        tokens.append_all(item.attrs.iter().filter(|attr| match attr.style {
+            syn::AttrStyle::Inner(_) => true,
+            _ => false,
         }));
         tokens.append_all(&item.block.stmts);
     });
 
     if let Some(err) = err {
-        return Err(err)
+        return Err(err);
     }
 
     Ok(tokens)

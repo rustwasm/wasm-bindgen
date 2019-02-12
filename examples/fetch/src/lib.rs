@@ -1,11 +1,11 @@
 use futures::{future, Future};
 use js_sys::Promise;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::future_to_promise;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
-use serde::{Deserialize, Serialize};
 
 /// A struct to hold some data from the github Branch API.
 ///

@@ -299,14 +299,21 @@ fn test_closure_returner() {
 
     #[wasm_bindgen]
     pub fn closure_returner() -> Result<Object, JsValue> {
-
         let o = Object::new();
 
         let some_fn = Closure::wrap(Box::new(move || BadStruct {}) as Box<ClosureType>);
-        Reflect::set(&o, &JsValue::from("someKey"), &some_fn.as_ref().unchecked_ref())
-            .unwrap();
-        Reflect::set(&o, &JsValue::from("handle"), &JsValue::from(ClosureHandle(some_fn)))
-            .unwrap();
+        Reflect::set(
+            &o,
+            &JsValue::from("someKey"),
+            &some_fn.as_ref().unchecked_ref(),
+        )
+        .unwrap();
+        Reflect::set(
+            &o,
+            &JsValue::from("handle"),
+            &JsValue::from(ClosureHandle(some_fn)),
+        )
+        .unwrap();
 
         Ok(o)
     }

@@ -1,7 +1,6 @@
-use failure::Error;
-
-use super::Context;
-use descriptor::{Descriptor, Function};
+use crate::descriptor::{Descriptor, Function};
+use crate::js::Context;
+use failure::{bail, Error};
 
 /// Helper struct for manufacturing a shim in JS used to translate JS types to
 /// Rust, aka pass from JS back into Rust
@@ -619,10 +618,13 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 }
                 Descriptor::Enum { hole } => {
                     self.ret_ty = "number | undefined".to_string();
-                    self.ret_expr = format!("
+                    self.ret_expr = format!(
+                        "
                         const ret = RET;
                         return ret === {} ? undefined : ret;
-                    ", hole);
+                    ",
+                        hole
+                    );
                     return Ok(self);
                 }
                 _ => bail!(

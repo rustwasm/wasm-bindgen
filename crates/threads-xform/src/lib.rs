@@ -1,11 +1,11 @@
-#[macro_use]
-extern crate failure;
-extern crate parity_wasm;
-
+use std::cmp;
 use std::collections::HashMap;
+use std::mem;
 
-use failure::{Error, ResultExt};
-use parity_wasm::elements::*;
+use failure::{bail, format_err, Error};
+use walrus::ir::Value;
+use walrus::{DataId, FunctionId, InitExpr, LocalFunction, ValType};
+use walrus::{ExportItem, GlobalId, GlobalKind, ImportKind, MemoryId, Module};
 
 const PAGE_SIZE: u32 = 1 << 16;
 
@@ -78,19 +78,24 @@ impl Config {
     ///
     /// More and/or less may happen here over time, stay tuned!
     pub fn run(&self, module: &mut Module) -> Result<(), Error> {
-        let segments = switch_data_segments_to_passive(module)?;
-        import_memory_zero(module)?;
-        share_imported_memory_zero(module, self.maximum_memory)?;
-        let stack_pointer_idx = find_stack_pointer(module)?;
-        let globals = inject_thread_globals(module);
-        let addr = inject_thread_id_counter(module)?;
+        let memory = update_memory(module, self.maximum_memory)?;
+        let segments = switch_data_segments_to_passive(module, memory)?;
+        let stack_pointer = find_stack_pointer(module)?;
+
+        let zero = InitExpr::Value(Value::I32(0));
+        let globals = Globals {
+            thread_id: module.globals.add_local(ValType::I32, true, zero),
+            thread_tcb: module.globals.add_local(ValType::I32, true, zero),
+        };
+        let addr = inject_thread_id_counter(module, memory)?;
         start_with_init_memory(
             module,
             &segments,
             &globals,
             addr,
-            stack_pointer_idx,
+            stack_pointer,
             self.thread_stack_size,
+            memory,
         );
         implement_thread_intrinsics(module, &globals)?;
         Ok(())
@@ -98,233 +103,78 @@ impl Config {
 }
 
 struct PassiveSegment {
-    idx: u32,
-    offset: u32,
+    id: DataId,
+    offset: InitExpr,
     len: u32,
 }
 
-fn switch_data_segments_to_passive(module: &mut Module) -> Result<Vec<PassiveSegment>, Error> {
-    // If there's no data, nothing to make passive!
-    let section = match module.data_section_mut() {
-        Some(section) => section,
-        None => return Ok(Vec::new()),
-    };
-
+fn switch_data_segments_to_passive(
+    module: &mut Module,
+    memory: MemoryId,
+) -> Result<Vec<PassiveSegment>, Error> {
     let mut ret = Vec::new();
-    for (i, segment) in section.entries_mut().iter_mut().enumerate() {
-        let mut offset = match segment.offset_mut().take() {
-            Some(offset) => offset,
-            // already passive ...
-            None => continue,
-        };
-        assert!(!segment.passive());
-
-        let offset = *get_offset(&mut offset)
-            .with_context(|_| format!("failed to read data segment {}", i))?;
-
-        // Flag it as passive after validation, and we've removed the offset via
-        // `take`, so time to process the next one
-        *segment.passive_mut() = true;
-        ret.push(PassiveSegment {
-            idx: i as u32,
-            offset: offset as u32,
-            len: segment.value().len() as u32,
-        });
+    let memory = module.memories.get_mut(memory);
+    let data = mem::replace(&mut memory.data, Default::default());
+    for (offset, value) in data.into_iter() {
+        let len = value.len() as u32;
+        let id = module.data.add(value);
+        ret.push(PassiveSegment { id, offset, len });
     }
 
     Ok(ret)
 }
 
-fn get_offset(offset: &mut InitExpr) -> Result<&mut i32, Error> {
-    if offset.code().len() != 2 || offset.code()[1] != Instruction::End {
-        bail!("unrecognized offset")
+fn update_memory(module: &mut Module, max: u32) -> Result<MemoryId, Error> {
+    assert!(max % PAGE_SIZE == 0);
+    let mut memories = module.memories.iter_mut();
+    let memory = memories
+        .next()
+        .ok_or_else(|| format_err!("currently incompatible with no memory modules"))?;
+    if memories.next().is_some() {
+        bail!("only one memory is currently supported");
     }
-    match &mut offset.code_mut()[0] {
-        Instruction::I32Const(n) => Ok(n),
-        _ => bail!("unrecognized offset"),
-    }
-}
 
-fn import_memory_zero(module: &mut Module) -> Result<(), Error> {
-    // If memory is exported, let's switch it to imported. If memory isn't
-    // exported then there's nothing to do as we'll deal with importing it
-    // later.
-    let limits = {
-        let section = match module.memory_section_mut() {
-            Some(section) => section,
-            None => return Ok(()),
-        };
-        let limits = match section.entries_mut().pop() {
-            Some(limits) => limits,
-            None => return Ok(()),
-        };
-        if section.entries().len() > 0 {
-            bail!("too many memories in wasm module for this tool to work");
+    // For multithreading if we want to use the exact same module on all
+    // threads we'll need to be sure to import memory, so switch it to an
+    // import if it's already here.
+    if memory.import.is_none() {
+        let id = module
+            .imports
+            .add("env", "memory", ImportKind::Memory(memory.id()));
+        memory.import = Some(id);
+    }
+
+    // If the memory isn't already shared, make it so as that's the whole point
+    // here!
+    if !memory.shared {
+        memory.shared = true;
+        if memory.maximum.is_none() {
+            memory.maximum = Some(max / PAGE_SIZE);
         }
-        limits
-    };
-
-    // Remove all memory sections as well as exported memory, we're switching to
-    // an import
-    module.sections_mut().retain(|s| match s {
-        Section::Memory(_) => false,
-        _ => true,
-    });
-    if let Some(s) = module.export_section_mut() {
-        s.entries_mut().retain(|s| match s.internal() {
-            Internal::Memory(_) => false,
-            _ => true,
-        });
     }
 
-    // Add our new import to the import section
-    let pos = maybe_add_import_section(module);
-    let imports = match &mut module.sections_mut()[pos] {
-        Section::Import(s) => s,
-        _ => unreachable!(),
-    };
-
-    // Hardcode the field names for now, these are all internal details anyway
-    let entry = ImportEntry::new(
-        "env".to_string(),
-        "memory".to_string(),
-        External::Memory(limits),
-    );
-    imports.entries_mut().push(entry);
-    Ok(())
-}
-
-fn maybe_add_import_section(module: &mut Module) -> usize {
-    let mut pos = None;
-    // See this URL for section orderings, but the import section comes just
-    // after the type section.
-    //
-    // https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#high-level-structure
-    for i in 0..module.sections().len() {
-        match &mut module.sections_mut()[i] {
-            Section::Type(_) => continue,
-            Section::Import(_) => return i,
-            _ => {}
-        }
-        pos = Some(i);
-        break;
-    }
-    let empty = ImportSection::with_entries(Vec::new());
-    let section = Section::Import(empty);
-    let len = module.sections().len();
-    let pos = pos.unwrap_or_else(|| len - 1);
-    module.sections_mut().insert(pos, section);
-    return pos;
-}
-
-fn share_imported_memory_zero(module: &mut Module, memory_max: u32) -> Result<(), Error> {
-    assert!(memory_max % PAGE_SIZE == 0);
-    // NB: this function assumes `import_memory_zero` has been called first to
-    // function correctly, which means we should find an imported memory here
-    // which we can rewrite to be unconditionally shared.
-    let imports = match module.import_section_mut() {
-        Some(s) => s,
-        None => panic!("failed to find an import section"),
-    };
-
-    for entry in imports.entries_mut() {
-        let mem = match entry.external_mut() {
-            External::Memory(m) => m,
-            _ => continue,
-        };
-        *mem = MemoryType::new(
-            mem.limits().initial(),
-            Some(mem.limits().maximum().unwrap_or(memory_max / PAGE_SIZE)),
-            true,
-        );
-        return Ok(());
-    }
-    panic!("failed to find an imported memory")
+    Ok(memory.id())
 }
 
 struct Globals {
-    thread_id: u32,
-    thread_tcb: u32,
+    thread_id: GlobalId,
+    thread_tcb: GlobalId,
 }
 
-fn inject_thread_globals(module: &mut Module) -> Globals {
-    let pos = maybe_add_global_section(module);
-    let globals = match &mut module.sections_mut()[pos] {
-        Section::Global(s) => s,
-        _ => unreachable!(),
-    };
-
-    // First up, our thread ID. The initial expression here isn't actually ever
-    // used but it's required. All threads will start off by setting this
-    // global to the thread's id.
-    globals.entries_mut().push(GlobalEntry::new(
-        GlobalType::new(ValueType::I32, true),
-        InitExpr::new(vec![Instruction::I32Const(0), Instruction::End]),
-    ));
-
-    // Next up the thread TCB, this is always set to null to start off with.
-    globals.entries_mut().push(GlobalEntry::new(
-        GlobalType::new(ValueType::I32, true),
-        InitExpr::new(vec![Instruction::I32Const(0), Instruction::End]),
-    ));
-
-    // ... and note that if either of the above globals isn't actually necessary
-    // we'll gc it away later.
-
-    let len = globals.entries().len() as u32;
-    Globals {
-        thread_id: len - 2,
-        thread_tcb: len - 1,
-    }
-}
-
-fn maybe_add_global_section(module: &mut Module) -> usize {
-    let mut pos = None;
-    // See this URL for section orderings:
-    //
-    // https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#high-level-structure
-    for i in 0..module.sections().len() {
-        match &mut module.sections_mut()[i] {
-            Section::Type(_)
-            | Section::Import(_)
-            | Section::Function(_)
-            | Section::Table(_)
-            | Section::Memory(_) => continue,
-            Section::Global(_) => return i,
-            _ => {}
-        }
-        pos = Some(i);
-        break;
-    }
-    let empty = GlobalSection::with_entries(Vec::new());
-    let section = Section::Global(empty);
-    let len = module.sections().len();
-    let pos = pos.unwrap_or_else(|| len - 1);
-    module.sections_mut().insert(pos, section);
-    return pos;
-}
-
-fn inject_thread_id_counter(module: &mut Module) -> Result<u32, Error> {
+fn inject_thread_id_counter(module: &mut Module, memory: MemoryId) -> Result<u32, Error> {
     // First up, look for a `__heap_base` export which is injected by LLD as
     // part of the linking process. Note that `__heap_base` should in theory be
     // *after* the stack and data, which means it's at the very end of the
     // address space and should be safe for us to inject 4 bytes of data at.
-    let heap_base = {
-        let exports = match module.export_section() {
-            Some(s) => s,
-            None => bail!("failed to find `__heap_base` for injecting thread id"),
-        };
-
-        exports
-            .entries()
-            .iter()
-            .filter(|e| e.field() == "__heap_base")
-            .filter_map(|e| match e.internal() {
-                Internal::Global(idx) => Some(*idx),
-                _ => None,
-            })
-            .next()
-    };
+    let heap_base = module
+        .exports
+        .iter()
+        .filter(|e| e.name == "__heap_base")
+        .filter_map(|e| match e.item {
+            ExportItem::Global(id) => Some(id),
+            _ => None,
+        })
+        .next();
     let heap_base = match heap_base {
         Some(idx) => idx,
         None => bail!("failed to find `__heap_base` for injecting thread id"),
@@ -345,21 +195,17 @@ fn inject_thread_id_counter(module: &mut Module) -> Result<u32, Error> {
     // Otherwise here we'll rewrite the `__heap_base` global's initializer to be
     // 4 larger, reserving us those 4 bytes for a thread id counter.
     let (address, add_a_page) = {
-        let globals = match module.global_section_mut() {
-            Some(s) => s,
-            None => bail!("failed to find globals section"),
-        };
-        let entry = match globals.entries_mut().get_mut(heap_base as usize) {
-            Some(i) => i,
-            None => bail!("the `__heap_base` export index is out of bounds"),
-        };
-        if entry.global_type().content_type() != ValueType::I32 {
+        let global = module.globals.get_mut(heap_base);
+        if global.ty != ValType::I32 {
             bail!("the `__heap_base` global doesn't have the type `i32`");
         }
-        if entry.global_type().is_mutable() {
+        if global.mutable {
             bail!("the `__heap_base` global is unexpectedly mutable");
         }
-        let offset = get_offset(entry.init_expr_mut())?;
+        let offset = match &mut global.kind {
+            GlobalKind::Local(InitExpr::Value(Value::I32(n))) => n,
+            _ => bail!("`__heap_base` not a locally defined `i32`"),
+        };
         let address = (*offset as u32 + 3) & !3; // align up
         let add_a_page = (address + 4) / PAGE_SIZE != address / PAGE_SIZE;
         *offset = (address + 4) as i32;
@@ -367,68 +213,36 @@ fn inject_thread_id_counter(module: &mut Module) -> Result<u32, Error> {
     };
 
     if add_a_page {
-        add_one_to_imported_memory_limits_minimum(module);
+        let memory = module.memories.get_mut(memory);
+        memory.initial += 1;
+        memory.maximum = memory.maximum.map(|m| cmp::max(m, memory.initial));
     }
     Ok(address)
 }
 
-// see `inject_thread_id_counter` for why this is used and where it's called
-fn add_one_to_imported_memory_limits_minimum(module: &mut Module) {
-    let imports = match module.import_section_mut() {
-        Some(s) => s,
-        None => panic!("failed to find import section"),
-    };
-
-    for entry in imports.entries_mut() {
-        let mem = match entry.external_mut() {
-            External::Memory(m) => m,
-            _ => continue,
-        };
-        *mem = MemoryType::new(
-            mem.limits().initial() + 1,
-            mem.limits().maximum().map(|m| {
-                if m == mem.limits().initial() {
-                    m + 1
-                } else {
-                    m
-                }
-            }),
-            mem.limits().shared(),
-        );
-        return;
-    }
-    panic!("failed to find an imported memory")
-}
-
-fn find_stack_pointer(module: &mut Module) -> Result<Option<u32>, Error> {
-    let globals = match module.global_section() {
-        Some(s) => s,
-        None => bail!("failed to find the stack pointer"),
-    };
-    let candidates = globals
-        .entries()
+fn find_stack_pointer(module: &mut Module) -> Result<Option<GlobalId>, Error> {
+    let candidates = module
+        .globals
         .iter()
-        .enumerate()
-        .filter(|(_, g)| g.global_type().content_type() == ValueType::I32)
-        .filter(|(_, g)| g.global_type().is_mutable())
+        .filter(|g| g.ty == ValType::I32)
+        .filter(|g| g.mutable)
+        .filter(|g| match g.kind {
+            GlobalKind::Local(_) => true,
+            GlobalKind::Import(_) => false,
+        })
         .collect::<Vec<_>>();
 
-    // If there are no mutable i32 globals, assume this module doesn't even need
-    // a stack pointer!
-    if candidates.len() == 0 {
-        return Ok(None);
-    }
+    match candidates.len() {
+        // If there are no mutable i32 globals, assume this module doesn't even
+        // need a stack pointer!
+        0 => Ok(None),
 
-    // Currently LLVM/LLD always use global 0 as the stack pointer, let's just
-    // blindly assume that.
-    if candidates[0].0 == 0 {
-        return Ok(Some(0));
+        // If there's more than one global give up for now. Eventually we can
+        // probably do better by pattern matching on functions, but this should
+        // be sufficient for LLVM's output for now.
+        1 => Ok(Some(candidates[0].id())),
+        _ => bail!("too many mutable globals to infer the stack pointer"),
     }
-
-    bail!(
-        "the first global wasn't a mutable i32, has LLD changed or was \
-         this wasm file not produced by LLD?"
-    )
 }
 
 fn start_with_init_memory(
@@ -436,224 +250,220 @@ fn start_with_init_memory(
     segments: &[PassiveSegment],
     globals: &Globals,
     addr: u32,
-    stack_pointer_idx: Option<u32>,
+    stack_pointer: Option<GlobalId>,
     stack_size: u32,
+    memory: MemoryId,
 ) {
+    use walrus::ir::*;
+
     assert!(stack_size % PAGE_SIZE == 0);
-    let mut instrs = Vec::new();
+    let mut builder = walrus::FunctionBuilder::new();
+    let mut exprs = Vec::new();
+    let local = module.locals.add(ValType::I32);
 
-    // Execute an atomic add to learn what our thread ID is
-    instrs.push(Instruction::I32Const(addr as i32));
-    instrs.push(Instruction::I32Const(1));
-    let mem = parity_wasm::elements::MemArg {
-        align: 2,
-        offset: 0,
-    };
-    instrs.push(Instruction::I32AtomicRmwAdd(mem));
-
-    // Store this thread ID into our thread ID global
-    instrs.push(Instruction::TeeLocal(0));
-    instrs.push(Instruction::SetGlobal(globals.thread_id));
+    let addr = builder.i32_const(addr as i32);
+    let one = builder.i32_const(1);
+    let thread_id = builder.atomic_rmw(
+        memory,
+        AtomicOp::Add,
+        AtomicWidth::I32,
+        MemArg {
+            align: 4,
+            offset: 0,
+        },
+        addr,
+        one,
+    );
+    let thread_id = builder.local_tee(local, thread_id);
+    let global_set = builder.global_set(globals.thread_id, thread_id);
+    exprs.push(global_set);
 
     // Perform an if/else based on whether we're the first thread or not. Our
     // thread ID will be zero if we're the first thread, otherwise it'll be
     // nonzero (assuming we don't overflow...)
     //
-    // In the nonzero case (the first block) we give ourselves a stack via
-    // memory.grow and we update our stack pointer.
-    //
-    // In the zero case (the second block) we can skip both of those operations,
-    // but we need to initialize all our memory data segments.
-    instrs.push(Instruction::GetLocal(0));
-    instrs.push(Instruction::If(BlockType::NoResult));
+    let thread_id_is_nonzero = builder.local_get(local);
 
-    if let Some(stack_pointer_idx) = stack_pointer_idx {
+    // If our thread id is nonzero then we're the second or greater thread, so
+    // we give ourselves a stack via memory.grow and we update our stack
+    // pointer as the default stack pointer is surely wrong for us.
+    let mut block = builder.if_else_block(Box::new([]), Box::new([]));
+    if let Some(stack_pointer) = stack_pointer {
         // local0 = grow_memory(stack_size);
-        instrs.push(Instruction::I32Const((stack_size / PAGE_SIZE) as i32));
-        instrs.push(Instruction::GrowMemory(0));
-        instrs.push(Instruction::SetLocal(0));
+        let grow_amount = block.i32_const((stack_size / PAGE_SIZE) as i32);
+        let memory_growth = block.memory_grow(memory, grow_amount);
+        let set_local = block.local_set(local, memory_growth);
+        block.expr(set_local);
 
         // if local0 == -1 then trap
-        instrs.push(Instruction::Block(BlockType::NoResult));
-        instrs.push(Instruction::GetLocal(0));
-        instrs.push(Instruction::I32Const(-1));
-        instrs.push(Instruction::I32Ne);
-        instrs.push(Instruction::BrIf(0));
-        instrs.push(Instruction::Unreachable);
-        instrs.push(Instruction::End); // end block
+        let if_negative_trap = {
+            let mut block = block.block(Box::new([]), Box::new([]));
+
+            let lhs = block.local_get(local);
+            let rhs = block.i32_const(-1);
+            let condition = block.binop(BinaryOp::I32Ne, lhs, rhs);
+            let id = block.id();
+            let br_if = block.br_if(condition, id, Box::new([]));
+            block.expr(br_if);
+
+            let unreachable = block.unreachable();
+            block.expr(unreachable);
+
+            id
+        };
+        block.expr(if_negative_trap.into());
 
         // stack_pointer = local0 + stack_size
-        instrs.push(Instruction::GetLocal(0));
-        instrs.push(Instruction::I32Const(PAGE_SIZE as i32));
-        instrs.push(Instruction::I32Mul);
-        instrs.push(Instruction::I32Const(stack_size as i32));
-        instrs.push(Instruction::I32Add);
-        instrs.push(Instruction::SetGlobal(stack_pointer_idx));
+        let get_local = block.local_get(local);
+        let page_size = block.i32_const(PAGE_SIZE as i32);
+        let sp_base = block.binop(BinaryOp::I32Mul, get_local, page_size);
+        let stack_size = block.i32_const(stack_size as i32);
+        let sp = block.binop(BinaryOp::I32Add, sp_base, stack_size);
+        let set_stack_pointer = block.global_set(stack_pointer, sp);
+        block.expr(set_stack_pointer);
     }
+    let if_nonzero_block = block.id();
+    drop(block);
 
-    instrs.push(Instruction::Else);
-    for segment in segments {
-        // offset into memory
-        instrs.push(Instruction::I32Const(segment.offset as i32));
-        // offset into segment
-        instrs.push(Instruction::I32Const(0)); // offset into segment
-                                               // amount to copy
-        instrs.push(Instruction::I32Const(segment.len as i32));
-        instrs.push(Instruction::MemoryInit(segment.idx));
-    }
-    instrs.push(Instruction::End); // endif
+    // If the thread ID is zero then we can skip the update of the stack
+    // pointer as we know our stack pointer is valid. We need to initialize
+    // memory, however, so do that here.
+    let if_zero_block = {
+        let mut block = builder.if_else_block(Box::new([]), Box::new([]));
+        for segment in segments {
+            let zero = block.i32_const(0);
+            let offset = match segment.offset {
+                InitExpr::Global(id) => block.global_get(id),
+                InitExpr::Value(v) => block.const_(v),
+            };
+            let len = block.i32_const(segment.len as i32);
+            let init = block.memory_init(memory, segment.id, offset, zero, len);
+            block.expr(init);
+        }
+        block.id()
+    };
+
+    let block = builder.if_else(thread_id_is_nonzero, if_nonzero_block, if_zero_block);
+    exprs.push(block);
 
     // On all threads now memory segments are no longer needed
     for segment in segments {
-        instrs.push(Instruction::MemoryDrop(segment.idx));
+        exprs.push(builder.data_drop(segment.id));
     }
 
     // If a start function previously existed we're done with our own
     // initialization so delegate to them now.
-    if let Some(idx) = module.start_section() {
-        instrs.push(Instruction::Call(idx));
+    if let Some(id) = module.start.take() {
+        exprs.push(builder.call(id, Box::new([])));
     }
 
-    // End the function
-    instrs.push(Instruction::End);
-
-    // Add this newly generated function to the code section ...
-    let instrs = Instructions::new(instrs);
-    let local = Local::new(1, ValueType::I32);
-    let body = FuncBody::new(vec![local], instrs);
-    let code_idx = {
-        let s = module.code_section_mut().expect("module had no code");
-        s.bodies_mut().push(body);
-        (s.bodies().len() - 1) as u32
-    };
-    // ... and also be sure to add its signature to the function section ...
-    let type_idx = {
-        let section = module
-            .type_section_mut()
-            .expect("module has no type section");
-        let pos = section
-            .types()
-            .iter()
-            .map(|t| match t {
-                Type::Function(t) => t,
-            })
-            .position(|t| t.params().is_empty() && t.return_type().is_none());
-        match pos {
-            Some(i) => i as u32,
-            None => {
-                let f = FunctionType::new(Vec::new(), None);
-                section.types_mut().push(Type::Function(f));
-                (section.types().len() - 1) as u32
-            }
-        }
-    };
-    module
-        .function_section_mut()
-        .expect("module has no function section")
-        .entries_mut()
-        .push(Func::new(type_idx));
+    // Finish off our newly generated function.
+    let ty = module.types.add(&[], &[]);
+    let id = builder.finish(ty, Vec::new(), exprs, module);
 
     // ... and finally flag it as the new start function
-    let idx = code_idx + (module.import_count(ImportCountType::Function) as u32);
-    update_start_section(module, idx);
-}
-
-fn update_start_section(module: &mut Module, start: u32) {
-    // See this URL for section orderings:
-    //
-    // https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#high-level-structure
-    let mut pos = None;
-    for i in 0..module.sections().len() {
-        match &mut module.sections_mut()[i] {
-            Section::Type(_)
-            | Section::Import(_)
-            | Section::Function(_)
-            | Section::Table(_)
-            | Section::Memory(_)
-            | Section::Global(_)
-            | Section::Export(_) => continue,
-            Section::Start(start_idx) => {
-                *start_idx = start;
-                return;
-            }
-            _ => {}
-        }
-        pos = Some(i);
-        break;
-    }
-    let section = Section::Start(start);
-    let len = module.sections().len();
-    let pos = pos.unwrap_or_else(|| len - 1);
-    module.sections_mut().insert(pos, section);
+    module.start = Some(id);
 }
 
 fn implement_thread_intrinsics(module: &mut Module, globals: &Globals) -> Result<(), Error> {
-    let mut map = HashMap::new();
-    {
-        let imports = match module.import_section() {
-            Some(i) => i,
-            None => return Ok(()),
-        };
-        let entries = imports
-            .entries()
-            .iter()
-            .filter(|i| match i.external() {
-                External::Function(_) => true,
-                _ => false,
-            })
-            .enumerate()
-            .filter(|(_, entry)| entry.module() == "__wbindgen_thread_xform__");
-        for (idx, entry) in entries {
-            let type_idx = match entry.external() {
-                External::Function(i) => *i,
-                _ => unreachable!(),
-            };
-            let types = module.type_section().unwrap();
-            let fty = match &types.types()[type_idx as usize] {
-                Type::Function(f) => f,
-            };
-            // Validate the type for this intrinsic
-            match entry.field() {
-                "__wbindgen_thread_id" => {
-                    if !fty.params().is_empty() || fty.return_type() != Some(ValueType::I32) {
-                        bail!("__wbindgen_thread_id intrinsic has the wrong signature");
-                    }
-                    map.insert(idx as u32, Instruction::GetGlobal(globals.thread_id));
-                }
-                "__wbindgen_tcb_get" => {
-                    if !fty.params().is_empty() || fty.return_type() != Some(ValueType::I32) {
-                        bail!("__wbindgen_tcb_get intrinsic has the wrong signature");
-                    }
-                    map.insert(idx as u32, Instruction::GetGlobal(globals.thread_tcb));
-                }
-                "__wbindgen_tcb_set" => {
-                    if fty.params().len() != 1 || fty.return_type().is_some() {
-                        bail!("__wbindgen_tcb_set intrinsic has the wrong signature");
-                    }
-                    map.insert(idx as u32, Instruction::SetGlobal(globals.thread_tcb));
-                }
-                other => bail!("unknown thread intrinsic: {}", other),
-            }
-        }
-    };
+    use walrus::ir::*;
 
-    // Rewrite everything that calls `import_idx` to instead load the global
-    // `thread_id`
-    for body in module.code_section_mut().unwrap().bodies_mut() {
-        for instr in body.code_mut().elements_mut() {
-            let other = match instr {
-                Instruction::Call(idx) => match map.get(idx) {
-                    Some(other) => other,
-                    None => continue,
-                },
-                _ => continue,
-            };
-            *instr = other.clone();
+    let mut map = HashMap::new();
+
+    enum Intrinsic {
+        GetThreadId,
+        GetTcb,
+        SetTcb,
+    }
+
+    let imports = module
+        .imports
+        .iter()
+        .filter(|i| i.module == "__wbindgen_thread_xform__");
+    for import in imports {
+        let function = match import.kind {
+            ImportKind::Function(id) => module.funcs.get(id),
+            _ => bail!("non-function import from special module"),
+        };
+        let ty = module.types.get(function.ty());
+
+        match &import.name[..] {
+            "__wbindgen_thread_id" => {
+                if !ty.params().is_empty() || ty.results() != &[ValType::I32] {
+                    bail!("`__wbindgen_thread_id` intrinsic has the wrong signature");
+                }
+                map.insert(function.id(), Intrinsic::GetThreadId);
+            }
+            "__wbindgen_tcb_get" => {
+                if !ty.params().is_empty() || ty.results() != &[ValType::I32] {
+                    bail!("`__wbindgen_tcb_get` intrinsic has the wrong signature");
+                }
+                map.insert(function.id(), Intrinsic::GetTcb);
+            }
+            "__wbindgen_tcb_set" => {
+                if !ty.results().is_empty() || ty.params() != &[ValType::I32] {
+                    bail!("`__wbindgen_tcb_set` intrinsic has the wrong signature");
+                }
+                map.insert(function.id(), Intrinsic::SetTcb);
+            }
+            other => bail!("unknown thread intrinsic: {}", other),
         }
     }
 
-    // ... and in theory we'd remove `import_idx` here but we let `wasm-gc`
-    // take care of that later.
+    struct Visitor<'a> {
+        map: &'a HashMap<FunctionId, Intrinsic>,
+        globals: &'a Globals,
+        func: &'a mut LocalFunction,
+    }
+
+    module.funcs.iter_local_mut().for_each(|(_id, func)| {
+        let mut entry = func.entry_block();
+        Visitor {
+            map: &map,
+            globals,
+            func,
+        }
+        .visit_block_id_mut(&mut entry);
+    });
+
+    impl VisitorMut for Visitor<'_> {
+        fn local_function_mut(&mut self) -> &mut LocalFunction {
+            self.func
+        }
+
+        fn visit_expr_mut(&mut self, expr: &mut Expr) {
+            let call = match expr {
+                Expr::Call(e) => e,
+                other => return other.visit_mut(self),
+            };
+            match self.map.get(&call.func) {
+                Some(Intrinsic::GetThreadId) => {
+                    assert!(call.args.is_empty());
+                    *expr = GlobalGet {
+                        global: self.globals.thread_id,
+                    }
+                    .into();
+                }
+                Some(Intrinsic::GetTcb) => {
+                    assert!(call.args.is_empty());
+                    *expr = GlobalGet {
+                        global: self.globals.thread_tcb,
+                    }
+                    .into();
+                }
+                Some(Intrinsic::SetTcb) => {
+                    assert_eq!(call.args.len(), 1);
+                    call.args[0].visit_mut(self);
+                    *expr = GlobalSet {
+                        global: self.globals.thread_tcb,
+                        value: call.args[0],
+                    }
+                    .into();
+                }
+                None => call.visit_mut(self),
+            }
+        }
+    }
 
     Ok(())
 }

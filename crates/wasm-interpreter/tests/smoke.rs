@@ -1,7 +1,3 @@
-extern crate parity_wasm;
-extern crate tempfile;
-extern crate wasm_bindgen_wasm_interpreter;
-
 use std::fs;
 use std::process::Command;
 
@@ -19,7 +15,7 @@ fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
         .unwrap();
     println!("status: {}", status);
     assert!(status.success());
-    let module = parity_wasm::deserialize_file(output.path()).unwrap();
+    let module = walrus::Module::from_file(output.path()).unwrap();
     let mut i = Interpreter::new(&module);
     assert_eq!(i.interpret_descriptor(name, &module), result);
 }

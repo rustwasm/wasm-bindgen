@@ -631,7 +631,6 @@ impl<'src> FirstPassRecord<'src> {
         return ret;
     }
 
-
     /// When generating our web_sys APIs we default to setting slice references that
     /// get passed to JS as mutable in case they get mutated in JS.
     ///
@@ -645,7 +644,7 @@ impl<'src> FirstPassRecord<'src> {
     fn maybe_adjust<'a>(&self, mut idl_type: IdlType<'a>, id: &'a OperationId) -> IdlType<'a> {
         let op = match id {
             OperationId::Operation(Some(op)) => op,
-            _ => return idl_type
+            _ => return idl_type,
         };
 
         if self.immutable_f32_whitelist.contains(op) {
@@ -656,8 +655,6 @@ impl<'src> FirstPassRecord<'src> {
 
         idl_type
     }
-
-
 }
 
 /// Search for an attribute by name in some webidl object's attributes.
@@ -721,8 +718,7 @@ pub fn is_structural(
     // Note that once host bindings is implemented we'll want to switch this
     // from `true` to `false`, and then we'll want to largely read information
     // from the WebIDL about whether to use structural bindings or not.
-    true
-        || has_named_attribute(item_attrs, "Unforgeable")
+    true || has_named_attribute(item_attrs, "Unforgeable")
         || has_named_attribute(container_attrs, "Unforgeable")
         || has_ident_attribute(container_attrs, "Global")
 }
@@ -749,9 +745,11 @@ fn flag_slices_immutable(ty: &mut IdlType) {
         IdlType::Record(item1, item2) => {
             flag_slices_immutable(item1);
             flag_slices_immutable(item2);
-        },
+        }
         IdlType::Union(list) => {
-            for item in list { flag_slices_immutable(item); }
+            for item in list {
+                flag_slices_immutable(item);
+            }
         }
         // catch-all for everything else like Object
         _ => {}

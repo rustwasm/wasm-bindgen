@@ -1,3 +1,9 @@
+use crate::shell::Shell;
+use curl::easy::Easy;
+use failure::{bail, format_err, Error, ResultExt};
+use log::{debug, warn};
+use serde::{Deserialize, Serialize};
+use serde_json::{self, json};
 use std::env;
 use std::io::{self, Read};
 use std::net::{SocketAddr, TcpListener, TcpStream};
@@ -5,13 +11,6 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
-
-use curl::easy::Easy;
-use failure::{Error, ResultExt};
-use serde::{Deserialize, Serialize};
-use serde_json;
-
-use shell::Shell;
 
 /// Execute a headless browser tests against a server running on `server`
 /// address.

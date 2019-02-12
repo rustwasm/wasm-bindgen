@@ -320,7 +320,7 @@ impl Shared {
     fn update_image(
         &self,
         done: bool,
-        data: MutexGuard<'_,Vec<u8>>,
+        data: MutexGuard<'_, Vec<u8>>,
         global: &DedicatedWorkerGlobalScope,
     ) -> Result<(), JsValue> {
         // This is pretty icky. We can't create an `ImageData` backed by

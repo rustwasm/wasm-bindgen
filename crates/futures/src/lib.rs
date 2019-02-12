@@ -112,8 +112,8 @@ use std::rc::Rc;
 use std::sync::Arc;
 
 use futures::executor::{self, Notify, Spawn};
-use futures::prelude::*;
 use futures::future;
+use futures::prelude::*;
 use futures::sync::oneshot;
 use js_sys::{Function, Promise};
 use wasm_bindgen::prelude::*;
@@ -389,7 +389,7 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
 /// This function has the same panic behavior as `future_to_promise`.
 pub fn spawn_local<F>(future: F)
 where
-    F: Future<Item=(), Error=()> + 'static,
+    F: Future<Item = (), Error = ()> + 'static,
 {
     future_to_promise(
         future

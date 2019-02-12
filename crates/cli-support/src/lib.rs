@@ -1,29 +1,18 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
-extern crate parity_wasm;
-#[macro_use]
-extern crate wasm_bindgen_shared as shared;
-extern crate wasm_bindgen_gc as gc;
-#[macro_use]
-extern crate failure;
-extern crate wasm_bindgen_threads_xform as threads_xform;
-extern crate wasm_bindgen_wasm_interpreter as wasm_interpreter;
-
+use failure::{bail, Error, ResultExt};
 use std::collections::BTreeSet;
 use std::env;
 use std::fs;
 use std::mem;
 use std::path::{Path, PathBuf};
 use std::str;
-
-use failure::{Error, ResultExt};
-use parity_wasm::elements::*;
+use walrus::Module;
 
 mod decode;
 mod descriptor;
 mod js;
 pub mod wasm2es6js;
-mod wasm_utils;
 
 pub struct Bindgen {
     input: Input,
@@ -44,7 +33,7 @@ pub struct Bindgen {
     weak_refs: bool,
     // Experimental support for the wasm threads proposal, transforms the wasm
     // module to be "ready to be instantiated on any thread"
-    threads: Option<threads_xform::Config>,
+    threads: Option<wasm_bindgen_threads_xform::Config>,
 }
 
 enum Input {
@@ -154,13 +143,21 @@ impl Bindgen {
         let (mut module, stem) = match self.input {
             Input::None => bail!("must have an input by now"),
             Input::Module(ref mut m, ref name) => {
-                let blank_module = Module::new(Vec::new());
+                let blank_module = Module::default();
                 (mem::replace(m, blank_module), &name[..])
             }
             Input::Path(ref path) => {
                 let contents = fs::read(&path)
                     .with_context(|_| format!("failed to read `{}`", path.display()))?;
-                let module = parity_wasm::deserialize_buffer::<Module>(&contents)
+                let module = walrus::ModuleConfig::new()
+                    // Skip validation of the module as LLVM's output is
+                    // generally already well-formed and so we won't gain much
+                    // from re-validating. Additionally LLVM's current output
+                    // for threads includes atomic instructions but doesn't
+                    // include shared memory, so it fails that part of
+                    // validation!
+                    .strict_validate(false)
+                    .parse(&contents)
                     .context("failed to parse input file as wasm")?;
                 let stem = match &self.out_name {
                     Some(name) => &name,
@@ -178,6 +175,10 @@ impl Bindgen {
                 .with_context(|_| "failed to prepare module for threading")?;
         }
 
+        if self.demangle {
+            demangle(&mut module);
+        }
+
         // Here we're actually instantiating the module we've parsed above for
         // execution. Why, you might be asking, are we executing wasm code? A
         // good question!
@@ -191,7 +192,15 @@ impl Bindgen {
         // This means that whenever we encounter an import or export we'll
         // execute a shim function which informs us about its type so we can
         // then generate the appropriate bindings.
-        let mut instance = wasm_interpreter::Interpreter::new(&module);
+        let mut instance = wasm_bindgen_wasm_interpreter::Interpreter::new(&module);
+
+        let mut memories = module.memories.iter().map(|m| m.id());
+        let memory = memories.next();
+        if memories.next().is_some() {
+            bail!("multiple memories currently not supported");
+        }
+        drop(memories);
+        let memory = memory.unwrap_or_else(|| module.memories.add_local(false, 1, None));
 
         let (js, ts) = {
             let mut cx = js::Context {
@@ -209,13 +218,12 @@ impl Bindgen {
                 module: &mut module,
                 function_table_needed: false,
                 interpreter: &mut instance,
-                memory_init: None,
+                memory,
                 imported_functions: Default::default(),
                 imported_statics: Default::default(),
                 direct_imports: Default::default(),
                 start: None,
             };
-            cx.parse_wasm_names();
             for program in programs.iter() {
                 js::SubContext {
                     program,
@@ -253,12 +261,12 @@ impl Bindgen {
 
         if self.typescript {
             let ts_path = wasm_path.with_extension("d.ts");
-            let ts = wasm2es6js::typescript(&module);
+            let ts = wasm2es6js::typescript(&module)?;
             fs::write(&ts_path, ts)
                 .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
         }
 
-        let wasm_bytes = parity_wasm::serialize(module)?;
+        let wasm_bytes = module.emit_wasm()?;
         fs::write(&wasm_path, wasm_bytes)
             .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
 
@@ -267,10 +275,8 @@ impl Bindgen {
 
     fn generate_node_wasm_import(&self, m: &Module, path: &Path) -> String {
         let mut imports = BTreeSet::new();
-        if let Some(i) = m.import_section() {
-            for i in i.entries() {
-                imports.insert(i.module());
-            }
+        for import in m.imports.iter() {
+            imports.insert(&import.module);
         }
 
         let mut shim = String::new();
@@ -322,14 +328,12 @@ impl Bindgen {
         ));
 
         if self.nodejs_experimental_modules {
-            if let Some(e) = m.export_section() {
-                for name in e.entries().iter().map(|e| e.field()) {
-                    shim.push_str("export const ");
-                    shim.push_str(name);
-                    shim.push_str(" = wasmInstance.exports.");
-                    shim.push_str(name);
-                    shim.push_str(";\n");
-                }
+            for entry in m.exports.iter() {
+                shim.push_str("export const ");
+                shim.push_str(&entry.name);
+                shim.push_str(" = wasmInstance.exports.");
+                shim.push_str(&entry.name);
+                shim.push_str(";\n");
             }
         } else {
             shim.push_str("module.exports = wasmInstance.exports;\n");
@@ -343,24 +347,20 @@ fn extract_programs<'a>(
     module: &mut Module,
     program_storage: &'a mut Vec<Vec<u8>>,
 ) -> Result<Vec<decode::Program<'a>>, Error> {
-    let my_version = shared::version();
+    let my_version = wasm_bindgen_shared::version();
     let mut to_remove = Vec::new();
     assert!(program_storage.is_empty());
 
-    for (i, s) in module.sections_mut().iter_mut().enumerate() {
-        let custom = match s {
-            Section::Custom(s) => s,
-            _ => continue,
-        };
-        if custom.name() != "__wasm_bindgen_unstable" {
+    for (i, custom) in module.custom.iter_mut().enumerate() {
+        if custom.name != "__wasm_bindgen_unstable" {
             continue;
         }
         to_remove.push(i);
-        program_storage.push(mem::replace(custom.payload_mut(), Vec::new()));
+        program_storage.push(mem::replace(&mut custom.value, Vec::new()));
     }
 
     for i in to_remove.into_iter().rev() {
-        module.sections_mut().remove(i);
+        module.custom.remove(i);
     }
 
     let mut ret = Vec::new();
@@ -452,7 +452,7 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
         Some(i) => &rest[..i],
         None => bad!(),
     };
-    if their_schema_version == shared::SCHEMA_VERSION {
+    if their_schema_version == wasm_bindgen_shared::SCHEMA_VERSION {
         return Ok(None);
     }
     let needle = "\"version\":\"";
@@ -498,11 +498,11 @@ fn reset_indentation(s: &str) -> String {
 // Eventually these will all be CLI options, but while they're unstable features
 // they're left as environment variables. We don't guarantee anything about
 // backwards-compatibility with these options.
-fn threads_config() -> Option<threads_xform::Config> {
+fn threads_config() -> Option<wasm_bindgen_threads_xform::Config> {
     if env::var("WASM_BINDGEN_THREADS").is_err() {
         return None;
     }
-    let mut cfg = threads_xform::Config::new();
+    let mut cfg = wasm_bindgen_threads_xform::Config::new();
     if let Ok(s) = env::var("WASM_BINDGEN_THREADS_MAX_MEMORY") {
         cfg.maximum_memory(s.parse().unwrap());
     }
@@ -510,4 +510,16 @@ fn threads_config() -> Option<threads_xform::Config> {
         cfg.thread_stack_size(s.parse().unwrap());
     }
     Some(cfg)
+}
+
+fn demangle(module: &mut Module) {
+    for func in module.funcs.iter_mut() {
+        let name = match &func.name {
+            Some(name) => name,
+            None => continue,
+        };
+        if let Ok(sym) = rustc_demangle::try_demangle(name) {
+            func.name = Some(sym.to_string());
+        }
+    }
 }

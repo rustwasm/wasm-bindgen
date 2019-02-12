@@ -3,8 +3,8 @@ use std::fs;
 use std::net::SocketAddr;
 use std::path::Path;
 
-use failure::{Error, ResultExt};
-use rouille::{self, Request, Response, Server};
+use failure::{format_err, Error, ResultExt};
+use rouille::{Request, Response, Server};
 use wasm_bindgen_cli_support::wasm2es6js::Config;
 
 pub fn spawn(
@@ -70,7 +70,7 @@ pub fn spawn(
     // like an ES module with the wasm module under the hood.
     //
     // TODO: don't reparse the wasm module here, should pass the
-    //       `parity_wasm::Module struct` directly from the output of
+    //       `Module struct` directly from the output of
     //       `wasm-bindgen` previously here and avoid unnecessary
     //       parsing.
     let wasm_name = format!("{}_bg.wasm", module);
