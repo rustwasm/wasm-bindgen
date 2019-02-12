@@ -662,7 +662,17 @@ impl<'a> Context<'a> {
         }} else {{
             const data = fetch(path_or_module);
             if (typeof WebAssembly.instantiateStreaming === 'function') {{
-                instantiation = WebAssembly.instantiateStreaming(data, imports);
+                instantiation = WebAssembly.instantiateStreaming(data, imports)
+                    .catch(e => {{
+                        console.warn(\"`WebAssembly.instantiateStreaming` failed. Assuming this is \
+                                       because your server does not serve wasm with \
+                                       `application/wasm` MIME type. Falling back to \
+                                       `WebAssembly.instantiate` which is slower. Original \
+                                       error:\\n\", e);
+                        return data
+                            .then(r => r.arrayBuffer())
+                            .then(bytes => WebAssembly.instantiate(bytes, imports));
+                    }});
             }} else {{
                 instantiation = data
                     .then(response => response.arrayBuffer())
