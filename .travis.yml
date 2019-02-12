@@ -1,5 +1,6 @@
 language: rust
 sudo: false
+cache: cargo
 
 INSTALL_NODE_VIA_NVM: &INSTALL_NODE_VIA_NVM
   |
@@ -212,14 +213,13 @@ matrix:
     # Build mdbook documentation
     - name: "doc: Guide documentation"
       install:
-        - mkdir -p $HOME/mdbook
-        - curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.2.1/mdbook-v0.2.1-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C $HOME/mdbook
-        - export PATH=$PATH:$HOME/mdbook
+        - cargo list | grep install-update || cargo install -f cargo-update
+        - cargo install-update -i mdbook mdbook-linkcheck
         - *INSTALL_AWS
       script:
         - (cd guide && mdbook build)
         - rm -rf ~/$TRAVIS_BUILD_NUMBER
-        - mv guide/book ~/$TRAVIS_BUILD_NUMBER
+        - mv guide/book/html ~/$TRAVIS_BUILD_NUMBER
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then aws s3 sync --quiet ~/$TRAVIS_BUILD_NUMBER s3://wasm-bindgen-ci/$TRAVIS_BUILD_NUMBER; fi
       if: branch = master
 
