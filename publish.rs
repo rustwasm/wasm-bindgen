@@ -20,7 +20,6 @@ use std::process::Command;
 const CRATES_TO_PUBLISH: &[&str] = &[
     "wasm-bindgen-shared",
     "wasm-bindgen-backend",
-    "wasm-bindgen-gc",
     "wasm-bindgen-macro-support",
     "wasm-bindgen-macro",
     "wasm-bindgen-test-macro",

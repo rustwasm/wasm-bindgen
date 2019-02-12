@@ -180,8 +180,19 @@ impl Interpreter {
         assert!(self.descriptor_table_idx.is_none());
 
         let func = module.funcs.get(id);
-        assert_eq!(module.types.get(func.ty()).params().len(), 2);
-        self.call(id, module, &[0, 0]);
+        let params = module.types.get(func.ty()).params();
+        assert!(
+            params.iter().all(|p| *p == walrus::ValType::I32),
+            "closure descriptors should only have i32 params"
+        );
+        let num_params = params.len();
+        assert!(
+            num_params <= 2,
+            "closure descriptors have 2 parameters, but might lose some parameters due to LTO"
+        );
+
+        let args = vec![0; num_params];
+        self.call(id, module, &args);
         let descriptor_table_idx =
             self.descriptor_table_idx
                 .take()
