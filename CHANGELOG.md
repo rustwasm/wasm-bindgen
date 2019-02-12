@@ -32,6 +32,24 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.35
+
+Released 2019-02-12.
+
+### Changed
+
+* `wasm-bindgen` now internally uses the `walrus` crate to perform its
+  transformations of the wasm that rustc/LLVM emits. See
+  [#1237](https://github.com/rustwasm/wasm-bindgen/pull/1237).
+
+### Fixed
+
+* When `WebAssembly.instantiateStreaming` fails due to incorrect MIME type,
+  *actually* properly recover. See
+  [#1243](https://github.com/rustwasm/wasm-bindgen/pull/1243).
+
+--------------------------------------------------------------------------------
+
 ## 0.2.34
 
 Released 2019-02-11.
