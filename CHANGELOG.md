@@ -32,6 +32,39 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.34
+
+Released 2019-02-11.
+
+### Added
+
+* Added support for optional `enum`s. See
+  [#1214](https://github.com/rustwasm/wasm-bindgen/pull/1214).
+* Added the `UnwrapThrowExt<T>` trait, which can enable smaller code sizes for
+  panics. See [#1219](https://github.com/rustwasm/wasm-bindgen/pull/1219).
+
+### Fixed
+
+* Some `WebGlRenderingContext` methods are now whitelisted to use shared slices
+  instead of exclusive slices. See
+  [#1199](https://github.com/rustwasm/wasm-bindgen/pull/1199).
+* Fixed TypeScript definitions for optional types. See
+  [#1201](https://github.com/rustwasm/wasm-bindgen/pull/1201).
+* Quiet clippy warnings inside generated code. See
+  [1207](https://github.com/rustwasm/wasm-bindgen/pull/1207).
+* Fixed using `cfg_attr` and `wasm_bindgen` together like `#[cfg_attr(...,
+  wasm_bindgen)]`. See
+  [1208](https://github.com/rustwasm/wasm-bindgen/pull/1208).
+* The WebAudio example program was fixed. See
+  [#1215](https://github.com/rustwasm/wasm-bindgen/pull/1215).
+* Fixed logging HTML in `wasm-bindgen-test`. See
+  [#1233](https://github.com/rustwasm/wasm-bindgen/pull/1233).
+* When `WebAssembly.instantiateStreaming` fails due to incorrect MIME type,
+  properly recover. See
+  [#1235](https://github.com/rustwasm/wasm-bindgen/pull/1235).
+
+--------------------------------------------------------------------------------
+
 ## 0.2.33
 
 Released 2019-01-18.
