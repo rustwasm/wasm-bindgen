@@ -32,6 +32,18 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.36
+
+Released 2019-02-12.
+
+### Fixed
+
+* Fixed a bug where using closures and LTO together caused a panic inside the
+  `wasm-bindgen` CLI tool. See
+  [#1244](https://github.com/rustwasm/wasm-bindgen/issues/1244).
+
+--------------------------------------------------------------------------------
+
 ## 0.2.35
 
 Released 2019-02-12.
