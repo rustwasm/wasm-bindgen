@@ -106,6 +106,22 @@ fn get() {
 }
 
 #[wasm_bindgen_test]
+fn get_f64() {
+    let a = Array::new();
+    assert_eq!(Reflect::get_f64(&a, 0.0).unwrap(), JsValue::UNDEFINED);
+    assert_eq!(a.push(&JsValue::from_str("Hi!")), 1);
+    assert_eq!(Reflect::get_f64(&a, 0.0).unwrap(), JsValue::from_str("Hi!"));
+}
+
+#[wasm_bindgen_test]
+fn get_u32() {
+    let a = Array::new();
+    assert_eq!(Reflect::get_u32(&a, 0).unwrap(), JsValue::UNDEFINED);
+    assert_eq!(a.push(&JsValue::from_str("Hi!")), 1);
+    assert_eq!(Reflect::get_u32(&a, 0).unwrap(), JsValue::from_str("Hi!"));
+}
+
+#[wasm_bindgen_test]
 fn get_own_property_descriptor() {
     let r = Rectangle::new();
     r.set_x(10);
@@ -167,6 +183,30 @@ fn set() {
 }
 
 #[wasm_bindgen_test]
+fn set_f64() {
+    let a = Array::new();
+    a.push(&JsValue::from_str("Hi!"));
+
+    assert_eq!(Reflect::get_f64(&a, 0.0).unwrap(), JsValue::from_str("Hi!"));
+
+    Reflect::set_f64(&a, 0.0, &JsValue::from_str("Bye!")).unwrap();
+
+    assert_eq!(Reflect::get_f64(&a, 0.0).unwrap(), JsValue::from_str("Bye!"));
+}
+
+#[wasm_bindgen_test]
+fn set_u32() {
+    let a = Array::new();
+    a.push(&JsValue::from_str("Hi!"));
+
+    assert_eq!(Reflect::get_u32(&a, 0).unwrap(), JsValue::from_str("Hi!"));
+
+    Reflect::set_u32(&a, 0, &JsValue::from_str("Bye!")).unwrap();
+
+    assert_eq!(Reflect::get_u32(&a, 0).unwrap(), JsValue::from_str("Bye!"));
+}
+
+#[wasm_bindgen_test]
 fn set_with_receiver() {
     let obj1 = JsValue::from(Object::new());
     let obj2 = JsValue::from(Object::new());
@@ -209,6 +249,8 @@ fn reflect_bindings_handle_proxies_that_just_throw_for_everything() {
     assert!(Reflect::delete_property(&p, &"a".into()).is_err());
 
     assert!(Reflect::get(p.as_ref(), &"a".into()).is_err());
+    assert!(Reflect::get_f64(p.as_ref(), 0.0).is_err());
+    assert!(Reflect::get_u32(p.as_ref(), 0).is_err());
 
     assert!(Reflect::get_own_property_descriptor(&p, &"a".into()).is_err());
 
@@ -223,6 +265,8 @@ fn reflect_bindings_handle_proxies_that_just_throw_for_everything() {
     assert!(Reflect::prevent_extensions(&p).is_err());
 
     assert!(Reflect::set(p.as_ref(), &"a".into(), &1.into()).is_err());
+    assert!(Reflect::set_f64(p.as_ref(), 0.0, &1.into()).is_err());
+    assert!(Reflect::set_u32(p.as_ref(), 0, &1.into()).is_err());
 
     assert!(Reflect::set_prototype_of(&p, Object::new().as_ref()).is_err());
 }
