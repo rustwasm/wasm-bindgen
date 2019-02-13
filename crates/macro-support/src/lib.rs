@@ -4,6 +4,7 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-macro-support/0.2")]
 
 extern crate proc_macro2;
+#[macro_use]
 extern crate quote;
 #[macro_use]
 extern crate syn;
