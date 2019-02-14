@@ -12,7 +12,7 @@ Micro-interpreter optimized for wasm-bindgen's use case
 edition = '2018'
 
 [dependencies]
-walrus = "0.1"
+walrus = "0.2"
 log = "0.4"
 
 [dev-dependencies]

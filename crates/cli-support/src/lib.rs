@@ -157,6 +157,8 @@ impl Bindgen {
                     // include shared memory, so it fails that part of
                     // validation!
                     .strict_validate(false)
+                    .generate_dwarf(self.keep_debug)
+                    .generate_name_section(!self.remove_name_section)
                     .parse(&contents)
                     .context("failed to parse input file as wasm")?;
                 let stem = match &self.out_name {
