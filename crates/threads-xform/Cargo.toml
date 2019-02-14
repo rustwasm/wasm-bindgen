@@ -12,5 +12,5 @@ Support for threading-related transformations in wasm-bindgen
 edition = "2018"
 
 [dependencies]
-walrus = "0.1"
+walrus = "0.2"
 failure = "0.1"
