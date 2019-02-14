@@ -18,20 +18,21 @@ Usage:
     wasm-bindgen -V | --version
 
 Options:
-    -h --help                Show this screen.
-    --out-dir DIR            Output directory
-    --out-name VAR           Set a custom output filename (Without extension. Defaults to crate name)
-    --nodejs                 Generate output that only works in node.js
-    --browser                Generate output that only works in a browser
-    --no-modules             Generate output that only works in a browser (without modules)
-    --no-modules-global VAR  Name of the global variable to initialize
-    --typescript             Output a TypeScript definition file (on by default)
-    --no-typescript          Don't emit a *.d.ts file
-    --debug                  Include otherwise-extraneous debug checks in output
-    --no-demangle            Don't demangle Rust symbol names
-    --keep-debug             Keep debug sections in wasm files
-    --remove-name-section    Remove the debugging `name` section of the file
-    -V --version             Print the version number of wasm-bindgen
+    -h --help                    Show this screen.
+    --out-dir DIR                Output directory
+    --out-name VAR               Set a custom output filename (Without extension. Defaults to crate name)
+    --nodejs                     Generate output that only works in node.js
+    --browser                    Generate output that only works in a browser
+    --no-modules                 Generate output that only works in a browser (without modules)
+    --no-modules-global VAR      Name of the global variable to initialize
+    --typescript                 Output a TypeScript definition file (on by default)
+    --no-typescript              Don't emit a *.d.ts file
+    --debug                      Include otherwise-extraneous debug checks in output
+    --no-demangle                Don't demangle Rust symbol names
+    --keep-debug                 Keep debug sections in wasm files
+    --remove-name-section        Remove the debugging `name` section of the file
+    --remove-producers-section   Remove the telemetry `producers` section
+    -V --version                 Print the version number of wasm-bindgen
 ";
 
 #[derive(Debug, Deserialize)]
@@ -48,6 +49,7 @@ struct Args {
     flag_no_demangle: bool,
     flag_no_modules_global: Option<String>,
     flag_remove_name_section: bool,
+    flag_remove_producers_section: bool,
     flag_keep_debug: bool,
     arg_input: Option<PathBuf>,
 }
@@ -90,6 +92,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .demangle(!args.flag_no_demangle)
         .keep_debug(args.flag_keep_debug)
         .remove_name_section(args.flag_remove_name_section)
+        .remove_producers_section(args.flag_remove_producers_section)
         .typescript(typescript);
     if let Some(ref name) = args.flag_no_modules_global {
         b.no_modules_global(name);
