@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 
 use proc_macro2::{Ident, Literal, Span, TokenStream};
@@ -79,7 +79,7 @@ impl TryToTokens for ast::Program {
         // of the wasm executable. For now it's just a plain old static, but we'll
         // eventually have it actually in its own section.
 
-        static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
+        static CNT: AtomicUsize = AtomicUsize::new(0);
 
         let generated_static_name = format!(
             "__WASM_BINDGEN_GENERATED_{}",

@@ -1,7 +1,6 @@
 use std::cell::RefCell;
 use std::cmp;
 use std::rc::Rc;
-use std::sync::atomic::ATOMIC_USIZE_INIT;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering::SeqCst};
 use std::sync::{Arc, Mutex, MutexGuard};
 
@@ -28,7 +27,7 @@ pub struct Scene {
     inner: raytracer::scene::Scene,
 }
 
-static NEXT_ID: AtomicUsize = ATOMIC_USIZE_INIT;
+static NEXT_ID: AtomicUsize = AtomicUsize::new(0);
 
 #[wasm_bindgen]
 impl Scene {
