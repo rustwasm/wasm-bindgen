@@ -4,8 +4,8 @@ use std::fmt;
 use std::hash::{Hash, Hasher};
 use std::iter::FromIterator;
 use std::sync::atomic::Ordering::SeqCst;
-use std::sync::atomic::{AtomicBool, ATOMIC_BOOL_INIT};
-use std::sync::atomic::{AtomicUsize, ATOMIC_USIZE_INIT};
+use std::sync::atomic::{AtomicBool};
+use std::sync::atomic::{AtomicUsize};
 
 use ast;
 use proc_macro2::{self, Ident};
@@ -109,8 +109,8 @@ pub struct ShortHash<T>(pub T);
 
 impl<T: Hash> fmt::Display for ShortHash<T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        static HASHED: AtomicBool = ATOMIC_BOOL_INIT;
-        static HASH: AtomicUsize = ATOMIC_USIZE_INIT;
+        static HASHED: AtomicBool = AtomicBool::new(false);
+        static HASH: AtomicUsize = AtomicUsize::new(0);
 
         // Try to amortize the cost of loading env vars a lot as we're gonna be
         // hashing for a lot of symbols.

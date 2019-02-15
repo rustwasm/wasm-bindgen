@@ -9,7 +9,7 @@ extern crate quote;
 use proc_macro2::*;
 use std::sync::atomic::*;
 
-static CNT: AtomicUsize = ATOMIC_USIZE_INIT;
+static CNT: AtomicUsize = AtomicUsize::new(0);
 
 #[proc_macro_attribute]
 pub fn wasm_bindgen_test(
