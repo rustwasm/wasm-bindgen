@@ -32,6 +32,39 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.37
+
+Released 2019-02-15.
+
+### Added
+
+* The `HtmlMediaElement` type now exposes a `src_object` getter.
+  [#1248](https://github.com/rustwasm/wasm-bindgen/pull/1248).
+
+* The `js_sys::Reflect` type now has specializes getter/setters for `u32` and
+  `f64` indices.
+  [#1225](https://github.com/rustwasm/wasm-bindgen/pull/1225).
+
+* A `--remove-producers-section` flag has been added to the CLI tool to, well,
+  remove the `producers` section from the final wasm file.
+  [#1256](https://github.com/rustwasm/wasm-bindgen/pull/1256).
+
+### Fixed
+
+* The `wasm-bindgen` CLI tool will correctly strip DWARF debug information
+  unless `--keep-debug` is passed.
+  [#1255](https://github.com/rustwasm/wasm-bindgen/pull/1255).
+
+### Changed
+
+* The `wasm-bindgen` CLI tool no longer emits the `producers` custom section by
+  default to work around a [webpack bug]. See
+  [#1260](https://github.com/rustwasm/wasm-bindgen/pull/1260).
+
+[webpack bug]: https://github.com/webpack/webpack/pull/8786
+
+--------------------------------------------------------------------------------
+
 ## 0.2.36
 
 Released 2019-02-12.

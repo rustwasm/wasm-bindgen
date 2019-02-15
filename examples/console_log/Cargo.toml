@@ -8,5 +8,5 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.2.36"
-web-sys = { version = "0.3.13", features = ['console'] }
+wasm-bindgen = "0.2.37"
+web-sys = { version = "0.3.14", features = ['console'] }
