@@ -27,6 +27,7 @@ pub struct Bindgen {
     demangle: bool,
     keep_debug: bool,
     remove_name_section: bool,
+    remove_producers_section: bool,
     emit_start: bool,
     // Experimental support for `WeakRefGroup`, an upcoming ECMAScript feature.
     // Currently only enable-able through an env var.
@@ -57,6 +58,7 @@ impl Bindgen {
             demangle: true,
             keep_debug: false,
             remove_name_section: false,
+            remove_producers_section: false,
             emit_start: true,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
@@ -130,6 +132,11 @@ impl Bindgen {
         self
     }
 
+    pub fn remove_producers_section(&mut self, remove: bool) -> &mut Bindgen {
+        self.remove_producers_section = remove;
+        self
+    }
+
     pub fn emit_start(&mut self, emit: bool) -> &mut Bindgen {
         self.emit_start = emit;
         self
@@ -159,6 +166,7 @@ impl Bindgen {
                     .strict_validate(false)
                     .generate_dwarf(self.keep_debug)
                     .generate_name_section(!self.remove_name_section)
+                    .generate_producers_section(!self.remove_producers_section)
                     .parse(&contents)
                     .context("failed to parse input file as wasm")?;
                 let stem = match &self.out_name {
