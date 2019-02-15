@@ -58,7 +58,7 @@ impl Bindgen {
             demangle: true,
             keep_debug: false,
             remove_name_section: false,
-            remove_producers_section: true,
+            remove_producers_section: false,
             emit_start: true,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
