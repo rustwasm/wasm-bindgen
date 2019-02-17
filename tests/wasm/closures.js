@@ -47,6 +47,9 @@ exports.many_arity_call7 = a => {
 exports.many_arity_call8 = a => {
     a(1, 2, 3, 4, 5, 6, 7);
 };
+exports.many_arity_call9 = a => {
+    a(1, 2, 3, 4, 5, 6, 7, 8);
+};
 
 let LONG_LIVED_DROPPING_CACHE = null;
 

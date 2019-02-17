@@ -695,6 +695,7 @@ doit! {
     (A B C D E)
     (A B C D E F)
     (A B C D E F G)
+    (A B C D E F G H)
 }
 
 // Copy the above impls down here for where there's only one argument and it's a
