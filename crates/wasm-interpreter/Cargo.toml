@@ -12,8 +12,9 @@ Micro-interpreter optimized for wasm-bindgen's use case
 edition = '2018'
 
 [dependencies]
-walrus = "0.2"
+failure = "0.1"
 log = "0.4"
+walrus = "0.4"
 
 [dev-dependencies]
 tempfile = "3"
