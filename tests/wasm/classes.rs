@@ -23,6 +23,13 @@ extern "C" {
     fn js_access_fields();
     fn js_renamed_export();
     fn js_conditional_bindings();
+
+    fn js_assert_none(a: Option<OptionClass>);
+    fn js_assert_some(a: Option<OptionClass>);
+    fn js_return_none1() -> Option<OptionClass>;
+    fn js_return_none2() -> Option<OptionClass>;
+    fn js_return_some(a: OptionClass) -> Option<OptionClass>;
+    fn js_test_option_classes();
 }
 
 #[wasm_bindgen_test]
@@ -414,7 +421,41 @@ impl ConditionalBindings {
         ConditionalBindings {}
     }
 }
+
 #[wasm_bindgen_test]
 fn conditional_bindings() {
     js_conditional_bindings();
+}
+
+#[wasm_bindgen]
+pub struct OptionClass(u32);
+
+#[wasm_bindgen_test]
+fn option_class() {
+    js_assert_none(None);
+    js_assert_some(Some(OptionClass(1)));
+    assert!(js_return_none1().is_none());
+    assert!(js_return_none2().is_none());
+    assert_eq!(js_return_some(OptionClass(2)).unwrap().0, 2);
+    js_test_option_classes();
+}
+
+#[wasm_bindgen]
+pub fn option_class_none() -> Option<OptionClass> {
+    None
+}
+
+#[wasm_bindgen]
+pub fn option_class_some() -> Option<OptionClass> {
+    Some(OptionClass(3))
+}
+
+#[wasm_bindgen]
+pub fn option_class_assert_none(x: Option<OptionClass>) {
+    assert!(x.is_none());
+}
+
+#[wasm_bindgen]
+pub fn option_class_assert_some(x: Option<OptionClass>) {
+    assert_eq!(x.unwrap().0, 3);
 }
