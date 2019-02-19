@@ -13,7 +13,7 @@ use crate::descriptor::Descriptor;
 use crate::js::js2rust::Js2Rust;
 use crate::js::Context;
 use failure::Error;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 use std::mem;
 use walrus::ir::{Expr, ExprId};
 use walrus::{FunctionId, LocalFunction};
@@ -21,12 +21,6 @@ use walrus::{FunctionId, LocalFunction};
 pub fn rewrite(input: &mut Context) -> Result<(), Error> {
     let info = ClosureDescriptors::new(input);
 
-    // Sanity check to make sure things look ok and skip everything below if
-    // there's not calls to `Closure::new`.
-    assert_eq!(
-        info.element_removal_list.len(),
-        info.func_to_descriptor.len(),
-    );
     if info.element_removal_list.len() == 0 {
         return Ok(());
     }
@@ -41,7 +35,7 @@ struct ClosureDescriptors {
     /// A list of elements to remove from the function table. The first element
     /// of the pair is the index of the entry in the element section, and the
     /// second element of the pair is the index within that entry to remove.
-    element_removal_list: Vec<usize>,
+    element_removal_list: HashSet<usize>,
 
     /// A map from local functions which contain calls to
     /// `__wbindgen_describe_closure` to the information about the closure
@@ -150,6 +144,7 @@ impl ClosureDescriptors {
             walrus::TableKind::Function(f) => f,
         };
         for idx in self.element_removal_list.iter().cloned() {
+            log::trace!("delete element {}", idx);
             assert!(table.elements[idx].is_some());
             table.elements[idx] = None;
         }
