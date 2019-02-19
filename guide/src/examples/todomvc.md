@@ -3,6 +3,7 @@
 [View full source code][code] or [view the compiled example online][online]
 
 [online]: https://rustwasm.github.io/wasm-bindgen/exbuild/todomvc/
+[code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/todomvc
 [element]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/todomvc/src/element.rs
 [scheduler]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/todomvc/src/scheduler.rs
 
