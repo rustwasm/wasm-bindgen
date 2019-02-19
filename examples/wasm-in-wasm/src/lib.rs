@@ -18,20 +18,19 @@ const WASM: &[u8] = include_bytes!("add.wasm");
 #[wasm_bindgen(start)]
 pub fn run() -> Result<(), JsValue> {
     console_log!("instantiating a new wasm module directly");
-    let my_memory = wasm_bindgen::memory()
-        .dyn_into::<WebAssembly::Memory>()
-        .unwrap();
 
-    // Note that this is somewhat dangerous, once we look at our
-    // `WebAssembly.Memory` buffer then if we allocate more pages for ourself
-    // (aka do a memory allocation in Rust) it'll cause the buffer to change.
-    // That means we can't actually do any memory allocations after we do this
-    // until we pass it back to JS.
-    let my_memory = Uint8Array::new(&my_memory.buffer()).subarray(
-        WASM.as_ptr() as u32,
-        WASM.as_ptr() as u32 + WASM.len() as u32,
-    );
-    let a = WebAssembly::Module::new(my_memory.as_ref())?;
+    // Note that `Uint8Array::view` this is somewhat dangerous (hence the
+    // `unsafe`!). This is creating a raw view into our module's
+    // `WebAssembly.Memory` buffer, but if we allocate more pages for ourself
+    // (aka do a memory allocation in Rust) it'll cause the buffer to change,
+    // causing the `Uint8Array` to be invalid.
+    //
+    // As a result, after `Uint8Array::view` we have to be very careful not to
+    // do any memory allocations before it's next used.
+    let a = unsafe {
+        let array = Uint8Array::view(WASM);
+        WebAssembly::Module::new(array.as_ref())?
+    };
     let b = WebAssembly::Instance::new(&a, &Object::new())?;
     let c = b.exports();
 
