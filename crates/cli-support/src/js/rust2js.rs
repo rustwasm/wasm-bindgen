@@ -213,6 +213,13 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     ));
                     return Ok(());
                 }
+                Descriptor::RustStruct(ref class) => {
+                    self.cx.require_class_wrap(class);
+                    let assign = format!("let c{0} = {0} === 0 ? undefined : {1}.__wrap({0});", abi, class);
+                    self.prelude(&assign);
+                    self.js_arguments.push(format!("c{}", abi));
+                    return Ok(());
+                }
                 _ => bail!(
                     "unsupported optional argument type for calling JS function from Rust: {:?}",
                     arg
@@ -453,6 +460,24 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         return isLikeNone(val) ? {} : val;
                     ",
                         hole
+                    );
+                    return Ok(());
+                }
+                Descriptor::RustStruct(ref class) => {
+                    // Like below, assert the type
+                    self.ret_expr = format!(
+                        "\
+                        const val = JS;
+                        if (val === undefined || val === null)
+                            return 0;
+                        if (!(val instanceof {0})) {{
+                            throw new Error('expected value of type {0}');
+                        }}
+                        const ret = val.ptr;
+                        val.ptr = 0;
+                        return ret;\
+                    ",
+                        class
                     );
                     return Ok(());
                 }

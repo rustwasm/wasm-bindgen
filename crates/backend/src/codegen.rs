@@ -248,6 +248,17 @@ impl ToTokens for ast::Struct {
                     (*js).borrow_mut()
                 }
             }
+
+            impl ::wasm_bindgen::convert::OptionIntoWasmAbi for #name {
+                #[inline]
+                fn none() -> Self::Abi { 0 }
+            }
+
+            impl ::wasm_bindgen::convert::OptionFromWasmAbi for #name {
+                #[inline]
+                fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
+            }
+
         })
         .to_tokens(tokens);
 

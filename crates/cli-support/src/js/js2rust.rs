@@ -313,6 +313,18 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                         .push(format!("isLikeNone({0}) ? {1} : {0}", name, hole));
                     return Ok(self);
                 }
+                Descriptor::RustStruct(ref s) => {
+                    self.js_arguments.push((name.clone(), format!("{} | undefined", s)));
+                    self.prelude(&format!("let ptr{} = 0;", i));
+                    self.prelude(&format!("if ({0} !== null && {0} !== undefined) {{", name));
+                    self.assert_class(&name, s);
+                    self.assert_not_moved(&name);
+                    self.prelude(&format!("ptr{} = {}.ptr;", i, name));
+                    self.prelude(&format!("{}.ptr = 0;", name));
+                    self.prelude("}");
+                    self.rust_arguments.push(format!("ptr{}", i));
+                    return Ok(self);
+                }
                 _ => bail!(
                     "unsupported optional argument type for calling Rust function from JS: {:?}",
                     arg
@@ -322,44 +334,13 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
         if let Some(s) = arg.rust_struct() {
             self.js_arguments.push((name.clone(), s.to_string()));
-
-            if self.cx.config.debug {
-                self.cx.expose_assert_class();
-                self.prelude(&format!(
-                    "\
-                     _assertClass({arg}, {struct_});\n\
-                     ",
-                    arg = name,
-                    struct_ = s
-                ));
-            }
-
+            self.assert_class(&name, s);
+            self.assert_not_moved(&name);
             if arg.is_by_ref() {
                 self.rust_arguments.push(format!("{}.ptr", name));
             } else {
-                self.prelude(&format!(
-                    "\
-                     const ptr{i} = {arg}.ptr;\n\
-                     ",
-                    i = i,
-                    arg = name
-                ));
-                if self.cx.config.debug {
-                    self.prelude(&format!(
-                        "\
-                        if (ptr{i} === 0) {{
-                            throw new Error('Attempt to use a moved value');
-                        }}
-                        ",
-                        i = i,
-                    ));
-                }
-                self.prelude(&format!(
-                    "\
-                     {arg}.ptr = 0;\n\
-                     ",
-                    arg = name
-                ));
+                self.prelude(&format!("const ptr{} = {}.ptr;", i, name));
+                self.prelude(&format!("{}.ptr = 0;", name));
                 self.rust_arguments.push(format!("ptr{}", i));
             }
             return Ok(self);
@@ -627,6 +608,17 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     );
                     return Ok(self);
                 }
+                Descriptor::RustStruct(ref name) => {
+                    self.ret_ty = format!("{} | undefined", name);
+                    self.cx.require_class_wrap(name);
+                    self.ret_expr = format!("
+                        const ptr = RET;
+                        return ptr === 0 ? undefined : {}.__wrap(ptr);
+                    ",
+                        name,
+                    );
+                    return Ok(self);
+                }
                 _ => bail!(
                     "unsupported optional return type for calling Rust function from JS: {:?}",
                     ty
@@ -763,5 +755,27 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
         ts.push(';');
         (js, ts, self.js_doc_comments())
+    }
+
+    fn assert_class(&mut self, arg: &str, class: &str) {
+        if !self.cx.config.debug {
+            return
+        }
+        self.cx.expose_assert_class();
+        self.prelude(&format!("_assertClass({}, {});", arg, class));
+    }
+
+    fn assert_not_moved(&mut self, arg: &str) {
+        if !self.cx.config.debug {
+            return
+        }
+        self.prelude(&format!(
+            "\
+                if ({0}.ptr === 0) {{
+                    throw new Error('Attempt to use a moved value');
+                }}
+            ",
+            arg,
+        ));
     }
 }

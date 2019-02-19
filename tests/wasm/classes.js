@@ -148,3 +148,22 @@ exports.js_conditional_bindings = () => {
     const x = new wasm.ConditionalBindings();
     x.free();
 };
+
+exports.js_assert_none = x => {
+  assert.strictEqual(x, undefined);
+};
+exports.js_assert_some = x => {
+  assert.ok(x instanceof wasm.OptionClass);
+};
+exports.js_return_none1 = () => null;
+exports.js_return_none2 = () => undefined;
+exports.js_return_some = x => x;
+
+exports.js_test_option_classes = () => {
+  assert.strictEqual(wasm.option_class_none(), undefined);
+  wasm.option_class_assert_none(undefined);
+  wasm.option_class_assert_none(null);
+  const c = wasm.option_class_some();
+  assert.ok(c instanceof wasm.OptionClass);
+  wasm.option_class_assert_some(c);
+};
