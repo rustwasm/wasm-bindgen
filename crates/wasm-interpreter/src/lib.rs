@@ -18,7 +18,7 @@
 
 #![deny(missing_docs)]
 
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use walrus::ir::ExprId;
 use walrus::{FunctionId, LocalFunction, LocalId, Module, TableId};
 
@@ -168,7 +168,7 @@ impl Interpreter {
         &mut self,
         id: FunctionId,
         module: &Module,
-        entry_removal_list: &mut Vec<usize>,
+        entry_removal_list: &mut HashSet<usize>,
     ) -> Option<&[u32]> {
         // Call the `id` function. This is an internal `#[inline(never)]`
         // whose code is completely controlled by the `wasm-bindgen` crate, so
@@ -213,7 +213,7 @@ impl Interpreter {
 
         // This is used later to actually remove the entry from the table, but
         // we don't do the removal just yet
-        entry_removal_list.push(descriptor_table_idx);
+        entry_removal_list.insert(descriptor_table_idx);
 
         // And now execute the descriptor!
         self.interpret_descriptor_id(descriptor_id, module)
