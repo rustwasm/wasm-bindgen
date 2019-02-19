@@ -64,7 +64,7 @@ impl Interpreter {
     ///
     /// Note that the `module` passed in to this function must be the same as
     /// the `module` passed to `interpret` below.
-    pub fn new(module: &Module) -> Interpreter {
+    pub fn new(module: &Module) -> Result<Interpreter, failure::Error> {
         let mut ret = Interpreter::default();
 
         // The descriptor functions shouldn't really use all that much memory
@@ -102,14 +102,9 @@ impl Interpreter {
             ret.name_map.insert(export.name.to_string(), id);
         }
 
-        for table in module.tables.iter() {
-            match table.kind {
-                walrus::TableKind::Function(_) => {}
-            }
-            ret.functions = Some(table.id());
-        }
+        ret.functions = module.tables.main_function_table()?;
 
-        return ret;
+        return Ok(ret);
     }
 
     /// Interprets the execution of the descriptor function `func`.
@@ -204,6 +199,7 @@ impl Interpreter {
         let functions = self.functions.expect("function table should be present");
         let functions = match &module.tables.get(functions).kind {
             walrus::TableKind::Function(f) => f,
+            _ => unreachable!(),
         };
         let descriptor_id = functions
             .elements
@@ -348,8 +344,11 @@ impl Frame<'_> {
 
             Expr::WithSideEffects(e) => {
                 log::debug!("side effects");
+                for x in e.before.iter() {
+                    self.eval(*x);
+                }
                 let ret = self.eval(e.value);
-                for x in e.side_effects.iter() {
+                for x in e.after.iter() {
                     self.eval(*x);
                 }
                 return ret;

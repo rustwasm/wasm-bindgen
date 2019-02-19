@@ -202,7 +202,7 @@ impl Bindgen {
         // This means that whenever we encounter an import or export we'll
         // execute a shim function which informs us about its type so we can
         // then generate the appropriate bindings.
-        let mut instance = wasm_bindgen_wasm_interpreter::Interpreter::new(&module);
+        let mut instance = wasm_bindgen_wasm_interpreter::Interpreter::new(&module)?;
 
         let mut memories = module.memories.iter().map(|m| m.id());
         let memory = memories.next();

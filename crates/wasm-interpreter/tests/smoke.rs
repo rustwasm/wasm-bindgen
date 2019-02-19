@@ -16,7 +16,7 @@ fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
     println!("status: {}", status);
     assert!(status.success());
     let module = walrus::Module::from_file(output.path()).unwrap();
-    let mut i = Interpreter::new(&module);
+    let mut i = Interpreter::new(&module).unwrap();
     assert_eq!(i.interpret_descriptor(name, &module), result);
 }
 

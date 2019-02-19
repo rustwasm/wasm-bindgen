@@ -142,6 +142,7 @@ impl ClosureDescriptors {
         let table = input.module.tables.get_mut(table_id);
         let table = match &mut table.kind {
             walrus::TableKind::Function(f) => f,
+            walrus::TableKind::Anyref(_) => unreachable!(),
         };
         for idx in self.element_removal_list.iter().cloned() {
             log::trace!("delete element {}", idx);

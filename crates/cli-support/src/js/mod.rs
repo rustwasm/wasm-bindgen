@@ -536,6 +536,8 @@ impl<'a> Context<'a> {
 
         self.export_table()?;
 
+        walrus::passes::gc::run(self.module);
+
         // Note that it's important `throw` comes last *after* we gc. The
         // `__wbindgen_malloc` function may call this but we only want to
         // generate code for this if it's actually live (and __wbindgen_malloc
@@ -871,16 +873,10 @@ impl<'a> Context<'a> {
         if !self.function_table_needed {
             return Ok(());
         }
-        let mut tables = self.module.tables.iter().filter_map(|t| match t.kind {
-            walrus::TableKind::Function(_) => Some(t.id()),
-        });
-        let id = match tables.next() {
+        let id = match self.module.tables.main_function_table()? {
             Some(id) => id,
-            None => return Ok(()),
+            None => bail!("no function table found in module"),
         };
-        if tables.next().is_some() {
-            bail!("couldn't find function table to export");
-        }
         self.module.exports.add("__wbg_function_table", id);
         Ok(())
     }
@@ -976,7 +972,7 @@ impl<'a> Context<'a> {
             }
         }
         for id in to_remove {
-            self.module.exports.remove_root(id);
+            self.module.exports.delete(id);
         }
     }
 
