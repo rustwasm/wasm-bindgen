@@ -25,6 +25,24 @@ extern "C" {
     fn many_arity_call6(a: &Closure<Fn(u32, u32, u32, u32, u32)>);
     fn many_arity_call7(a: &Closure<Fn(u32, u32, u32, u32, u32, u32)>);
     fn many_arity_call8(a: &Closure<Fn(u32, u32, u32, u32, u32, u32, u32)>);
+
+    #[wasm_bindgen(js_name = many_arity_call1)]
+    fn many_arity_call_mut1(a: &Closure<FnMut()>);
+    #[wasm_bindgen(js_name = many_arity_call2)]
+    fn many_arity_call_mut2(a: &Closure<FnMut(u32)>);
+    #[wasm_bindgen(js_name = many_arity_call3)]
+    fn many_arity_call_mut3(a: &Closure<FnMut(u32, u32)>);
+    #[wasm_bindgen(js_name = many_arity_call4)]
+    fn many_arity_call_mut4(a: &Closure<FnMut(u32, u32, u32)>);
+    #[wasm_bindgen(js_name = many_arity_call5)]
+    fn many_arity_call_mut5(a: &Closure<FnMut(u32, u32, u32, u32)>);
+    #[wasm_bindgen(js_name = many_arity_call6)]
+    fn many_arity_call_mut6(a: &Closure<FnMut(u32, u32, u32, u32, u32)>);
+    #[wasm_bindgen(js_name = many_arity_call7)]
+    fn many_arity_call_mut7(a: &Closure<FnMut(u32, u32, u32, u32, u32, u32)>);
+    #[wasm_bindgen(js_name = many_arity_call8)]
+    fn many_arity_call_mut8(a: &Closure<FnMut(u32, u32, u32, u32, u32, u32, u32)>);
+
     #[wasm_bindgen(js_name = many_arity_call1)]
     fn many_arity_stack1(a: &Fn());
     #[wasm_bindgen(js_name = many_arity_call2)]
@@ -65,6 +83,13 @@ extern "C" {
     fn drop_during_call_call();
 
     fn js_test_closure_returner();
+
+    fn calling_it_throws(a: &Closure<FnMut()>) -> bool;
+
+    fn call_val(f: &JsValue);
+
+    #[wasm_bindgen(js_name = calling_it_throws)]
+    fn call_val_throws(f: &JsValue) -> bool;
 }
 
 #[wasm_bindgen_test]
@@ -122,6 +147,44 @@ fn many_arity() {
         assert_eq!((a, b, c, d, e, f, g), (1, 2, 3, 4, 5, 6, 7))
     }));
 
+    let s = String::new();
+    many_arity_call_mut1(&Closure::once(move || drop(s)));
+    let s = String::new();
+    many_arity_call_mut2(&Closure::once(move |a| {
+        drop(s);
+        assert_eq!(a, 1);
+    }));
+    let s = String::new();
+    many_arity_call_mut3(&Closure::once(move |a, b| {
+        drop(s);
+        assert_eq!((a, b), (1, 2));
+    }));
+    let s = String::new();
+    many_arity_call_mut4(&Closure::once(move |a, b, c| {
+        drop(s);
+        assert_eq!((a, b, c), (1, 2, 3));
+    }));
+    let s = String::new();
+    many_arity_call_mut5(&Closure::once(move |a, b, c, d| {
+        drop(s);
+        assert_eq!((a, b, c, d), (1, 2, 3, 4));
+    }));
+    let s = String::new();
+    many_arity_call_mut6(&Closure::once(move |a, b, c, d, e| {
+        drop(s);
+        assert_eq!((a, b, c, d, e), (1, 2, 3, 4, 5));
+    }));
+    let s = String::new();
+    many_arity_call_mut7(&Closure::once(move |a, b, c, d, e, f| {
+        drop(s);
+        assert_eq!((a, b, c, d, e, f), (1, 2, 3, 4, 5, 6));
+    }));
+    let s = String::new();
+    many_arity_call_mut8(&Closure::once(move |a, b, c, d, e, f, g| {
+        drop(s);
+        assert_eq!((a, b, c, d, e, f, g), (1, 2, 3, 4, 5, 6, 7));
+    }));
+
     many_arity_stack1(&(|| {}));
     many_arity_stack2(&(|a| assert_eq!(a, 1)));
     many_arity_stack3(&(|a, b| assert_eq!((a, b), (1, 2))));
@@ -132,6 +195,58 @@ fn many_arity() {
     many_arity_stack8(
         &(|a, b, c, d, e, f, g| assert_eq!((a, b, c, d, e, f, g), (1, 2, 3, 4, 5, 6, 7))),
     );
+}
+
+struct Dropper(Rc<Cell<bool>>);
+impl Drop for Dropper {
+    fn drop(&mut self) {
+        assert!(!self.0.get());
+        self.0.set(true);
+    }
+}
+
+#[wasm_bindgen_test]
+fn call_fn_once_twice() {
+    let dropped = Rc::new(Cell::new(false));
+    let dropper = Dropper(dropped.clone());
+    let called = Rc::new(Cell::new(false));
+
+    let c = Closure::once({
+        let called = called.clone();
+        move || {
+            assert!(!called.get());
+            called.set(true);
+            drop(dropper);
+        }
+    });
+
+    many_arity_call_mut1(&c);
+    assert!(called.get());
+    assert!(dropped.get());
+
+    assert!(calling_it_throws(&c));
+}
+
+#[wasm_bindgen_test]
+fn once_into_js() {
+    let dropped = Rc::new(Cell::new(false));
+    let dropper = Dropper(dropped.clone());
+    let called = Rc::new(Cell::new(false));
+
+    let f = Closure::once_into_js({
+        let called = called.clone();
+        move || {
+            assert!(!called.get());
+            called.set(true);
+            drop(dropper);
+        }
+    });
+
+    call_val(&f);
+    assert!(called.get());
+    assert!(dropped.get());
+
+    assert!(call_val_throws(&f));
 }
 
 #[wasm_bindgen_test]
