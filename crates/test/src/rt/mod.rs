@@ -114,7 +114,7 @@ pub mod node;
 ///
 /// The node.js entry script instantiates a `Context` here which is used to
 /// drive test execution.
-#[wasm_bindgen]
+#[wasm_bindgen(js_name = WasmBindgenTestContext)]
 pub struct Context {
     state: Rc<State>,
 }
@@ -199,7 +199,7 @@ pub fn log(args: &fmt::Arguments) {
     js_console_log(&args.to_string());
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(js_class = WasmBindgenTestContext)]
 impl Context {
     /// Creates a new context ready to run tests.
     ///
