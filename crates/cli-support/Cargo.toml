@@ -18,6 +18,7 @@ log = "0.4"
 rustc-demangle = "0.1.13"
 tempfile = "3.0"
 walrus = "0.4.0"
+wasm-bindgen-anyref-xform = { path = '../anyref-xform', version = '=0.2.37' }
 wasm-bindgen-shared = { path = "../shared", version = '=0.2.37' }
 wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.37' }
 wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.37' }

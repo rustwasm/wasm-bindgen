@@ -10,7 +10,7 @@
 //! this works can be found in the code below.
 
 use crate::descriptor::Descriptor;
-use crate::js::js2rust::Js2Rust;
+use crate::js::js2rust::{ExportedShim, Js2Rust};
 use crate::js::Context;
 use failure::Error;
 use std::collections::{BTreeMap, HashSet};
@@ -142,7 +142,7 @@ impl ClosureDescriptors {
         let table = input.module.tables.get_mut(table_id);
         let table = match &mut table.kind {
             walrus::TableKind::Function(f) => f,
-            walrus::TableKind::Anyref(_) => unreachable!(),
+            _ => unreachable!(),
         };
         for idx in self.element_removal_list.iter().cloned() {
             log::trace!("delete element {}", idx);
@@ -178,6 +178,7 @@ impl ClosureDescriptors {
 
             let closure = instr.descriptor.closure().unwrap();
 
+            let mut shim = closure.shim_idx;
             let (js, _ts, _js_doc) = {
                 let mut builder = Js2Rust::new("", input);
                 builder.prelude("this.cnt++;");
@@ -192,9 +193,12 @@ impl ClosureDescriptors {
                     builder.rust_argument("this.a").rust_argument("b");
                 }
                 builder.finally("if (this.cnt-- == 1) d(this.a, b);");
-                builder.process(&closure.function)?.finish("function", "f")
+                builder.process(&closure.function)?.finish(
+                    "function",
+                    "f",
+                    ExportedShim::TableElement(&mut shim),
+                )
             };
-            input.expose_add_heap_object();
             input.function_table_needed = true;
             let body = format!(
                 "function(a, b, _ignored) {{
@@ -205,15 +209,19 @@ impl ClosureDescriptors {
                     cb.cnt = 1;
                     let real = cb.bind(cb);
                     real.original = cb;
-                    return addHeapObject(real);
+                    return {};
                 }}",
-                closure.shim_idx, closure.dtor_idx, js,
+                shim,
+                closure.dtor_idx,
+                js,
+                input.add_heap_object("real"),
             );
             input.export(&import_name, &body, None);
 
-            let id = input
-                .module
-                .add_import_func("__wbindgen_placeholder__", &import_name, ty);
+            let module = "__wbindgen_placeholder__";
+            let id = input.module.add_import_func(module, &import_name, ty);
+            input.anyref.import_xform(module, &import_name, &[], true);
+            input.module.funcs.get_mut(id).name = Some(import_name);
 
             let local = match &mut input.module.funcs.get_mut(*func).kind {
                 walrus::FunctionKind::Local(l) => l,

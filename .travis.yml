@@ -65,6 +65,8 @@ matrix:
         - cargo test
         # Run the main body of the test suite
         - cargo test --target wasm32-unknown-unknown
+        # Make sure the anyref pass at least compiles even if it doesn't run
+        - NODE_ARGS=/dev/null WASM_BINDGEN_ANYREF=1 cargo test --target wasm32-unknown-unknown --test wasm
         # Rerun the test suite but disable `--debug` in generated JS
         - WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown
         # Make sure our serde tests work

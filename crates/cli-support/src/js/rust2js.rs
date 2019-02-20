@@ -1,4 +1,5 @@
 use crate::descriptor::{Descriptor, Function};
+use crate::js::js2rust::ExportedShim;
 use crate::js::{Context, ImportTarget, Js2Rust};
 use failure::{bail, Error};
 
@@ -39,6 +40,11 @@ pub struct Rust2Js<'a, 'b: 'a> {
 
     /// Whether or not the last argument is a slice representing variadic arguments.
     variadic: bool,
+
+    /// list of arguments that are anyref, and whether they're an owned anyref
+    /// or not.
+    pub anyref_args: Vec<(usize, bool)>,
+    pub ret_anyref: bool,
 }
 
 impl<'a, 'b> Rust2Js<'a, 'b> {
@@ -55,6 +61,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             catch: false,
             catch_and_rethrow: false,
             variadic: false,
+            anyref_args: Vec::new(),
+            ret_anyref: false,
         }
     }
 
@@ -101,7 +109,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
         if let Some(ty) = arg.vector_kind() {
             let abi2 = self.shim_argument();
-            let f = self.cx.expose_get_vector_from_wasm(ty);
+            let f = self.cx.expose_get_vector_from_wasm(ty)?;
             self.prelude(&format!(
                 "let v{0} = {prefix}{func}({0}, {1});",
                 abi,
@@ -141,12 +149,14 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         // No need to special case `optional` here because `takeObject` will
         // naturally work.
         if arg.is_anyref() {
-            self.cx.expose_take_object();
-            self.js_arguments.push(format!("takeObject({})", abi));
+            let arg = self.cx.take_object(&abi);
+            self.js_arguments.push(arg);
+            self.anyref_args.push((self.arg_idx - 1, true));
             return Ok(());
         } else if arg.is_ref_anyref() {
-            self.cx.expose_get_object();
-            self.js_arguments.push(format!("getObject({})", abi));
+            let arg = self.cx.get_object(&abi);
+            self.js_arguments.push(arg);
+            self.anyref_args.push((self.arg_idx - 1, false));
             return Ok(());
         }
 
@@ -263,6 +273,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
         if let Some((f, mutable)) = arg.stack_closure() {
             let arg2 = self.shim_argument();
+            let mut shim = f.shim_idx;
             let (js, _ts, _js_doc) = {
                 let mut builder = Js2Rust::new("", self.cx);
                 if mutable {
@@ -274,10 +285,11 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 } else {
                     builder.rust_argument("this.a");
                 }
-                builder
-                    .rust_argument("this.b")
-                    .process(f)?
-                    .finish("function", "this.f")
+                builder.rust_argument("this.b").process(f)?.finish(
+                    "function",
+                    "this.f",
+                    ExportedShim::TableElement(&mut shim),
+                )
             };
             self.cx.function_table_needed = true;
             self.global_idx();
@@ -291,7 +303,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 abi,
                 arg2,
                 js = js,
-                idx = f.shim_idx,
+                idx = shim,
             ));
             self.finally(&format!("cb{0}.a = cb{0}.b = 0;", abi));
             self.js_arguments.push(format!("cb{0}.bind(cb{0})", abi));
@@ -349,16 +361,31 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             return Ok(());
         }
         if ty.is_anyref() {
-            self.cx.expose_add_heap_object();
-            if optional {
-                self.cx.expose_is_like_none();
-                self.ret_expr = "
-                    const val = JS;
-                    return isLikeNone(val) ? 0 : addHeapObject(val);
-                "
-                .to_string();
+            if self.cx.config.anyref {
+                if optional {
+                    self.cx.expose_add_to_anyref_table()?;
+                    self.cx.expose_is_like_none();
+                    self.ret_expr = "
+                        const val = JS;
+                        return isLikeNone(val) ? 0 : addToAnyrefTable(val);
+                    "
+                    .to_string();
+                } else {
+                    self.ret_anyref = true;
+                    self.ret_expr = "return JS;".to_string()
+                }
             } else {
-                self.ret_expr = "return addHeapObject(JS);".to_string()
+                self.cx.expose_add_heap_object();
+                if optional {
+                    self.cx.expose_is_like_none();
+                    self.ret_expr = "
+                        const val = JS;
+                        return isLikeNone(val) ? 0 : addHeapObject(val);
+                    "
+                    .to_string();
+                } else {
+                    self.ret_expr = "return addHeapObject(JS);".to_string()
+                }
             }
             return Ok(());
         }
@@ -565,6 +592,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             arg_idx: _,
             cx: _,
             global_idx: _,
+            anyref_args: _,
+            ret_anyref: _,
         } = self;
 
         !catch &&
@@ -581,7 +610,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             js_arguments == shim_arguments
     }
 
-    pub fn finish(&mut self, invoc: &ImportTarget) -> Result<String, Error> {
+    pub fn finish(&mut self, invoc: &ImportTarget, shim: &str) -> Result<String, Error> {
         let mut ret = String::new();
         ret.push_str("function(");
         ret.push_str(&self.shim_arguments.join(", "));
@@ -596,7 +625,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
         let variadic = self.variadic;
         let ret_expr = &self.ret_expr;
-        let js_arguments = &self.js_arguments;
         let handle_variadic = |invoc: &str, js_arguments: &[String]| {
             let ret = if variadic {
                 let (last_arg, args) = match js_arguments.split_last() {
@@ -617,6 +645,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             Ok(ret)
         };
 
+        let js_arguments = &self.js_arguments;
         let fixed = |desc: &str, class: &Option<String>, amt: usize| {
             if variadic {
                 bail!("{} cannot be variadic", desc);
@@ -670,7 +699,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         };
 
         if self.catch {
-            self.cx.expose_handle_error();
+            self.cx.expose_handle_error()?;
             invoc = format!(
                 "\
                 try {{\n\
@@ -712,6 +741,33 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         ret.push_str(&invoc);
 
         ret.push_str("\n}\n");
+
+        if self.ret_anyref || self.anyref_args.len() > 0 {
+            // Some return values go at the the beginning of the argument list
+            // (they force a return pointer). Handle that here by offsetting all
+            // our arg indices by one, but throw in some sanity checks for if
+            // this ever changes.
+            if let Some(start) = self.shim_arguments.get(0) {
+                if start == "ret" {
+                    assert!(!self.ret_anyref);
+                    if let Some(next) = self.shim_arguments.get(1) {
+                        assert_eq!(next, "arg0");
+                    }
+                    for (idx, _) in self.anyref_args.iter_mut() {
+                        *idx += 1;
+                    }
+                } else {
+                    assert_eq!(start, "arg0");
+                }
+            }
+            self.cx.anyref.import_xform(
+                "__wbindgen_placeholder__",
+                shim,
+                &self.anyref_args,
+                self.ret_anyref,
+            );
+        }
+
         Ok(ret)
     }
 
