@@ -1,6 +1,6 @@
 use crate::decode;
 use crate::descriptor::{Descriptor, VectorKind};
-use crate::Bindgen;
+use crate::{Bindgen, EncodeInto};
 use failure::{bail, Error, ResultExt};
 use std::collections::{HashMap, HashSet};
 use walrus::{MemoryId, Module};
@@ -1168,19 +1168,77 @@ impl<'a> Context<'a> {
         } else {
             ""
         };
-        self.global(&format!(
+
+        // The first implementation we have for this is to use
+        // `TextEncoder#encode` which has been around for quite some time.
+        let use_encode = format!(
             "
-            function passStringToWasm(arg) {{
                 {}
                 const buf = cachedTextEncoder.encode(arg);
                 const ptr = wasm.__wbindgen_malloc(buf.length);
                 getUint8Memory().set(buf, ptr);
                 WASM_VECTOR_LEN = buf.length;
                 return ptr;
-            }}
             ",
             debug
-        ));
+        );
+
+        // Another possibility is to use `TextEncoder#encodeInto` which is much
+        // newer and isn't implemented everywhere yet. It's more efficient,
+        // however, becaues it allows us to elide an intermediate allocation.
+        let use_encode_into = format!(
+            "
+                {}
+                let size = arg.length;
+                let ptr = wasm.__wbindgen_malloc(size);
+                let writeOffset = 0;
+                while (true) {{
+                    const view = getUint8Memory().subarray(ptr + writeOffset, ptr + size);
+                    const {{ read, written }} = cachedTextEncoder.encodeInto(arg, view);
+                    arg = arg.substring(read);
+                    writeOffset += written;
+                    if (arg.length === 0) {{
+                        break;
+                    }}
+                    ptr = wasm.__wbindgen_realloc(ptr, size, size * 2);
+                    size *= 2;
+                }}
+                WASM_VECTOR_LEN = writeOffset;
+                return ptr;
+            ",
+            debug
+        );
+
+        match self.config.encode_into {
+            EncodeInto::Never => {
+                self.global(&format!(
+                    "function passStringToWasm(arg) {{ {} }}",
+                    use_encode,
+                ));
+            }
+            EncodeInto::Always => {
+                self.require_internal_export("__wbindgen_realloc")?;
+                self.global(&format!(
+                    "function passStringToWasm(arg) {{ {} }}",
+                    use_encode_into,
+                ));
+            }
+            EncodeInto::Test => {
+                self.require_internal_export("__wbindgen_realloc")?;
+                self.global(&format!(
+                    "
+                        let passStringToWasm;
+                        if (typeof cachedTextEncoder.encodeInto === 'function') {{
+                            passStringToWasm = function(arg) {{ {} }};
+                        }} else {{
+                            passStringToWasm = function(arg) {{ {} }};
+                        }}
+                    ",
+                    use_encode_into,
+                    use_encode,
+                ));
+            }
+        }
         Ok(())
     }
 
