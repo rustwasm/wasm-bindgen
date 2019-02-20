@@ -44,7 +44,7 @@ pub fn execute(
             const support = require("./{0}");
             const wasm = require("./{0}_bg");
 
-            cx = new support.Context();
+            cx = new support.WasmBindgenTestContext();
             handlers.on_console_debug = support.__wbgtest_console_debug;
             handlers.on_console_log = support.__wbgtest_console_log;
             handlers.on_console_info = support.__wbgtest_console_info;

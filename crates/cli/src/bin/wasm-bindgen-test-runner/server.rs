@@ -18,7 +18,7 @@ pub fn spawn(
     let mut js_to_execute = format!(
         r#"
         import {{
-            Context,
+            WasmBindgenTestContext as Context,
             __wbgtest_console_debug,
             __wbgtest_console_log,
             __wbgtest_console_info,
