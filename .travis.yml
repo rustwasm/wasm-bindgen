@@ -100,7 +100,7 @@ matrix:
         - cargo build -p wasm-bindgen-cli
         - ln -snf target/debug/wasm-bindgen $HOME/.cargo/wasm-bindgen
         - |
-          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v no_modules`; do
+          for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler`; do
             (cd examples/$dir &&
              ln -fs ../../node_modules . &&
              npm run build -- --output-path $HOME/$TRAVIS_BUILD_NUMBER/exbuild/$dir) || exit 1;

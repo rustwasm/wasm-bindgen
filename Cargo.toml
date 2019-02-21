@@ -72,7 +72,6 @@ members = [
   "examples/hello_world",
   "examples/import_js",
   "examples/julia_set",
-  "examples/no_modules",
   "examples/paint",
   "examples/performance",
   "examples/raytrace-parallel",
@@ -82,6 +81,7 @@ members = [
   "examples/wasm2js",
   "examples/webaudio",
   "examples/webgl",
+  "examples/without-a-bundler",
   "tests/no-std",
 ]
 exclude = ['crates/typescript']
