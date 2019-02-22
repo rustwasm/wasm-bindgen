@@ -2,9 +2,6 @@
 
 Let's implement the equivalent of "Hello, world!" for this crate.
 
-> **Note:** Currently this projects uses *nightly Rust* which you can acquire
-> through [rustup] and configure with `rustup default nightly`
-
 [rustup]: https://rustup.rs
 
 If you'd like you can dive [straight into an online example][hello-online], but
@@ -12,8 +9,8 @@ if you'd prefer to follow along in your own console let's install the tools we
 need:
 
 ```shell
-$ rustup target add wasm32-unknown-unknown --toolchain nightly
-$ cargo +nightly install wasm-bindgen-cli
+$ rustup target add wasm32-unknown-unknown
+$ cargo install wasm-bindgen-cli
 ```
 
 The first command here installs the wasm target so you can compile to it, and
@@ -22,7 +19,7 @@ the latter will install the `wasm-bindgen` CLI tool we'll be using later.
 Next up let's make our project
 
 ```shell
-$ cargo +nightly new js-hello-world --lib
+$ cargo new js-hello-world --lib
 ```
 
 Now let's add a dependency on this project inside `Cargo.toml` as well as
@@ -61,7 +58,7 @@ of `alert` ensures that the right shims are generated.
 Next up let's build our project:
 
 ```shell
-$ cargo +nightly build --target wasm32-unknown-unknown
+$ cargo build --target wasm32-unknown-unknown
 ```
 
 After this you'll have a wasm file at
@@ -95,7 +92,7 @@ like before, acts like an ES6 module.
 At this point you'll probably plug these files into a larger build system.
 Files emitted by `wasm-bindgen` act like normal ES6 modules (one just happens to
 be wasm). As of the time of this writing there's unfortunately not a lot of
-tools that natively do this, but Webpack's 4.0 beta release has native wasm
+tools that natively do this, but Webpack 4 has native wasm
 support! Let's take a look at that and see how it works.
 
 First, create an `index.js` file:
@@ -123,9 +120,9 @@ Next, define our JS dependencies by creating a `package.json`:
   },
   "devDependencies": {
     "html-webpack-plugin": "^3.2.0",
-    "webpack": "^4.0.1",
-    "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.0"
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.2.0"
   }
 }
 ```
