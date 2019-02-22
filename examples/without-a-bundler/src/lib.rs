@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 
-// Called by our JS entry point to run the example
+// Called when the wasm module is instantiated
 #[wasm_bindgen(start)]
 pub fn main() -> Result<(), JsValue> {
     // Use `web_sys`'s global `window` function to get a handle on the global
@@ -16,4 +16,9 @@ pub fn main() -> Result<(), JsValue> {
     body.append_child(&val)?;
 
     Ok(())
+}
+
+#[wasm_bindgen]
+pub fn add(a: u32, b: u32) -> u32 {
+    a + b
 }
