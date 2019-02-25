@@ -88,9 +88,9 @@ fn rmain(args: &Args) -> Result<(), Error> {
 
     let mut b = Bindgen::new();
     b.input_path(input)
-        .nodejs(args.flag_nodejs)
-        .browser(args.flag_browser)
-        .no_modules(args.flag_no_modules)
+        .nodejs(args.flag_nodejs)?
+        .browser(args.flag_browser)?
+        .no_modules(args.flag_no_modules)?
         .debug(args.flag_debug)
         .demangle(!args.flag_no_demangle)
         .keep_debug(args.flag_keep_debug)
@@ -98,7 +98,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
         .remove_producers_section(args.flag_remove_producers_section)
         .typescript(typescript);
     if let Some(ref name) = args.flag_no_modules_global {
-        b.no_modules_global(name);
+        b.no_modules_global(name)?;
     }
     if let Some(ref name) = args.flag_out_name {
         b.out_name(name);

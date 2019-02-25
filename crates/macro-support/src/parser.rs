@@ -33,6 +33,7 @@ macro_rules! attrgen {
             (static_method_of, StaticMethodOf(Span, Ident)),
             (js_namespace, JsNamespace(Span, Ident)),
             (module, Module(Span, String, Span)),
+            (inline_js, InlineJs(Span, String, Span)),
             (getter, Getter(Span, Option<Ident>)),
             (setter, Setter(Span, Option<Ident>)),
             (indexing_getter, IndexingGetter(Span)),
@@ -339,12 +340,12 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
     }
 }
 
-impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemFn {
+impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignItemFn {
     type Target = ast::ImportKind;
 
     fn convert(
         self,
-        (opts, module): (BindgenAttrs, &'a Option<String>),
+        (opts, module): (BindgenAttrs, &'a ast::ImportModule),
     ) -> Result<Self::Target, Diagnostic> {
         let wasm = function_from_decl(
             &self.ident,
@@ -543,12 +544,12 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
     }
 }
 
-impl<'a> ConvertToAst<(BindgenAttrs, &'a Option<String>)> for syn::ForeignItemStatic {
+impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignItemStatic {
     type Target = ast::ImportKind;
 
     fn convert(
         self,
-        (opts, module): (BindgenAttrs, &'a Option<String>),
+        (opts, module): (BindgenAttrs, &'a ast::ImportModule),
     ) -> Result<Self::Target, Diagnostic> {
         if self.mutability.is_some() {
             bail_span!(self.mutability, "cannot import mutable globals yet")
@@ -1084,8 +1085,27 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
                 ));
             }
         }
-        for mut item in self.items.into_iter() {
-            if let Err(e) = item.macro_parse(program, &opts) {
+        let module = match opts.module() {
+            Some((name, span)) => {
+                if opts.inline_js().is_some() {
+                    let msg = "cannot specify both `module` and `inline_js`";
+                    errors.push(Diagnostic::span_error(span, msg));
+                }
+                ast::ImportModule::Named(name.to_string(), span)
+            }
+            None => {
+                match opts.inline_js() {
+                    Some((js, span)) => {
+                        let i = program.inline_js.len();
+                        program.inline_js.push(js.to_string());
+                        ast::ImportModule::Inline(i, span)
+                    }
+                    None => ast::ImportModule::None
+                }
+            }
+        };
+        for item in self.items.into_iter() {
+            if let Err(e) = item.macro_parse(program, module.clone()) {
                 errors.push(e);
             }
         }
@@ -1095,11 +1115,11 @@ impl MacroParse<BindgenAttrs> for syn::ItemForeignMod {
     }
 }
 
-impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
+impl MacroParse<ast::ImportModule> for syn::ForeignItem {
     fn macro_parse(
         mut self,
         program: &mut ast::Program,
-        opts: &'a BindgenAttrs,
+        module: ast::ImportModule,
     ) -> Result<(), Diagnostic> {
         let item_opts = {
             let attrs = match self {
@@ -1110,11 +1130,7 @@ impl<'a> MacroParse<&'a BindgenAttrs> for syn::ForeignItem {
             };
             BindgenAttrs::find(attrs)?
         };
-        let module = item_opts
-            .module()
-            .or(opts.module())
-            .map(|s| s.0.to_string());
-        let js_namespace = item_opts.js_namespace().or(opts.js_namespace()).cloned();
+        let js_namespace = item_opts.js_namespace().cloned();
         let kind = match self {
             syn::ForeignItem::Fn(f) => f.convert((item_opts, &module))?,
             syn::ForeignItem::Type(t) => t.convert(item_opts)?,

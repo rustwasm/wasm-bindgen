@@ -12,8 +12,8 @@ extern crate wasm_bindgen_backend as backend;
 extern crate wasm_bindgen_shared as shared;
 
 use backend::{Diagnostic, TryToTokens};
-pub use parser::BindgenAttrs;
-use parser::MacroParse;
+pub use crate::parser::BindgenAttrs;
+use crate::parser::MacroParse;
 use proc_macro2::TokenStream;
 use quote::ToTokens;
 use quote::TokenStreamExt;

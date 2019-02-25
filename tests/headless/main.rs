@@ -37,3 +37,5 @@ extern "C" {
 fn can_log_html_strings() {
     log("<script>alert('lol')</script>");
 }
+
+pub mod snippets;

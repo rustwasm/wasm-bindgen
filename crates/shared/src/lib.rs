@@ -14,14 +14,20 @@ macro_rules! shared_api {
             imports: Vec<Import<'a>>,
             structs: Vec<Struct<'a>>,
             typescript_custom_sections: Vec<&'a str>,
-            // version: &'a str,
-            // schema_version: &'a str,
+            local_modules: Vec<LocalModule<'a>>,
+            inline_js: Vec<&'a str>,
         }
 
         struct Import<'a> {
-            module: Option<&'a str>,
+            module: ImportModule<'a>,
             js_namespace: Option<&'a str>,
             kind: ImportKind<'a>,
+        }
+
+        enum ImportModule<'a> {
+            None,
+            Named(&'a str),
+            Inline(u32),
         }
 
         enum ImportKind<'a> {
@@ -112,6 +118,11 @@ macro_rules! shared_api {
             name: &'a str,
             readonly: bool,
             comments: Vec<&'a str>,
+        }
+
+        struct LocalModule<'a> {
+            identifier: &'a str,
+            contents: &'a str,
         }
         }
     }; // end of mac case

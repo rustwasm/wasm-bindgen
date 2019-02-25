@@ -272,7 +272,7 @@ impl<'src> FirstPassRecord<'src> {
     ) {
         let variants = &enum_.values.body.list;
         program.imports.push(backend::ast::Import {
-            module: None,
+            module: backend::ast::ImportModule::None,
             js_namespace: None,
             kind: backend::ast::ImportKind::Enum(backend::ast::ImportEnum {
                 vis: public(),
@@ -463,7 +463,7 @@ impl<'src> FirstPassRecord<'src> {
             self.append_required_features_doc(&import_function, &mut doc, extra);
             import_function.doc_comment = doc;
             module.imports.push(backend::ast::Import {
-                module: None,
+                module: backend::ast::ImportModule::None,
                 js_namespace: Some(raw_ident(self_name)),
                 kind: backend::ast::ImportKind::Function(import_function),
             });
@@ -539,7 +539,7 @@ impl<'src> FirstPassRecord<'src> {
         import_type.doc_comment = doc_comment;
 
         program.imports.push(backend::ast::Import {
-            module: None,
+            module: backend::ast::ImportModule::None,
             js_namespace: None,
             kind: backend::ast::ImportKind::Type(import_type),
         });

@@ -107,7 +107,8 @@ fn rmain() -> Result<(), Error> {
     shell.status("Executing bindgen...");
     let mut b = Bindgen::new();
     b.debug(debug)
-        .nodejs(node)
+        .nodejs(node)?
+        .browser(!node)?
         .input_module(module, wasm)
         .keep_debug(false)
         .emit_start(false)

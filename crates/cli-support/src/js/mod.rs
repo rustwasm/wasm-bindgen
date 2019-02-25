@@ -1,6 +1,6 @@
 use crate::decode;
 use crate::descriptor::{Descriptor, VectorKind};
-use crate::{Bindgen, EncodeInto};
+use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
 use std::collections::{HashMap, HashSet};
 use walrus::{MemoryId, Module};
@@ -33,7 +33,7 @@ pub struct Context<'a> {
     /// from, `None` being the global module. The second key is a map of
     /// identifiers we've already imported from the module to what they're
     /// called locally.
-    pub imported_names: HashMap<Option<&'a str>, HashMap<&'a str, String>>,
+    pub imported_names: HashMap<ImportModule<'a>, HashMap<&'a str, String>>,
 
     /// A set of all imported identifiers to the number of times they've been
     /// imported, used to generate new identifiers.
@@ -52,6 +52,14 @@ pub struct Context<'a> {
     pub function_table_needed: bool,
     pub interpreter: &'a mut Interpreter,
     pub memory: MemoryId,
+
+    /// A map of all local modules we've found, from the identifier they're
+    /// known as to their actual JS contents.
+    pub local_modules: HashMap<&'a str, &'a str>,
+
+    /// An integer offset of where to start assigning indexes to `inline_js`
+    /// snippets. This is incremented each time a `Program` is processed.
+    pub snippet_offset: usize,
 
     pub anyref: wasm_bindgen_anyref_xform::Context,
 }
@@ -100,6 +108,19 @@ enum Import<'a> {
         name: &'a str,
         field: Option<&'a str>,
     },
+    /// Same as `Module`, except we're importing from a local module defined in
+    /// a local JS snippet.
+    LocalModule {
+        module: &'a str,
+        name: &'a str,
+        field: Option<&'a str>,
+    },
+    /// Same as `Module`, except we're importing from an `inline_js` attribute
+    InlineJs {
+        idx: usize,
+        name: &'a str,
+        field: Option<&'a str>,
+    },
     /// A global import which may have a number of vendor prefixes associated
     /// with it, like `webkitAudioPrefix`. The `name` is the name to test
     /// whether it's prefixed.
@@ -124,28 +145,62 @@ impl<'a> Context<'a> {
             self.globals.push_str(c);
             self.typescript.push_str(c);
         }
-        let global = if self.use_node_require() {
-            if contents.starts_with("class") {
-                format!("{1}\nmodule.exports.{0} = {0};\n", name, contents)
-            } else {
-                format!("module.exports.{} = {};\n", name, contents)
+        let global = match self.config.mode {
+            OutputMode::Node {
+                experimental_modules: false,
+            } => {
+                if contents.starts_with("class") {
+                    format!("{1}\nmodule.exports.{0} = {0};\n", name, contents)
+                } else {
+                    format!("module.exports.{} = {};\n", name, contents)
+                }
             }
-        } else if self.config.no_modules {
-            if contents.starts_with("class") {
-                format!("{1}\n__exports.{0} = {0};\n", name, contents)
-            } else {
-                format!("__exports.{} = {};\n", name, contents)
+            OutputMode::NoModules { .. } => {
+                if contents.starts_with("class") {
+                    format!("{1}\n__exports.{0} = {0};\n", name, contents)
+                } else {
+                    format!("__exports.{} = {};\n", name, contents)
+                }
             }
-        } else {
-            if contents.starts_with("function") {
-                format!("export function {}{}\n", name, &contents[8..])
-            } else if contents.starts_with("class") {
-                format!("export {}\n", contents)
-            } else {
-                format!("export const {} = {};\n", name, contents)
+            OutputMode::Bundler
+            | OutputMode::Node {
+                experimental_modules: true,
+            } => {
+                if contents.starts_with("function") {
+                    format!("export function {}{}\n", name, &contents[8..])
+                } else if contents.starts_with("class") {
+                    format!("export {}\n", contents)
+                } else {
+                    format!("export const {} = {};\n", name, contents)
+                }
+            }
+            OutputMode::Browser => {
+                // In browser mode there's no need to export the internals of
+                // wasm-bindgen as we're not using the module itself as the
+                // import object but rather the `__exports` map we'll be
+                // initializing below.
+                let export = if name.starts_with("__wbindgen")
+                    || name.starts_with("__wbg_")
+                    || name.starts_with("__widl_")
+                {
+                    ""
+                } else {
+                    "export "
+                };
+                if contents.starts_with("function") {
+                    format!("{}function {}{}\n", export, name, &contents[8..])
+                } else if contents.starts_with("class") {
+                    format!("{}{}\n", export, contents)
+                } else {
+                    format!("{}const {} = {};\n", export, name, contents)
+                }
             }
         };
         self.global(&global);
+
+        if self.config.mode.browser() {
+            self.global(&format!("__exports.{} = {0};", name));
+        }
     }
 
     fn require_internal_export(&mut self, name: &'static str) -> Result<(), Error> {
@@ -529,7 +584,7 @@ impl<'a> Context<'a> {
         })?;
 
         self.bind("__wbindgen_module", &|me| {
-            if !me.config.no_modules {
+            if !me.config.mode.no_modules() && !me.config.mode.browser() {
                 bail!(
                     "`wasm_bindgen::module` is currently only supported with \
                      --no-modules"
@@ -596,35 +651,14 @@ impl<'a> Context<'a> {
         // entirely. Otherwise we want to first add a start function to the
         // `start` section if one is specified.
         //
-        // Afterwards, we need to perform what's a bit of a hack. Right after we
-        // added the start function, we remove it again because no current
-        // strategy for bundlers and deployment works well enough with it. For
-        // `--no-modules` output we need to be sure to call the start function
-        // after our exports are wired up (or most imported functions won't
-        // work).
-        //
-        // For ESM outputs bundlers like webpack also don't work because
-        // currently they run the wasm initialization before the JS glue
-        // initialization, meaning that if the wasm start function calls
-        // imported functions the JS glue isn't ready to go just yet.
-        //
-        // To handle `--no-modules` we just unstart the start function and call
-        // it manually. To handle the ESM use case we switch the start function
-        // to calling an imported function which defers the start function via
-        // `Promise.resolve().then(...)` to execute on the next microtask tick.
-        let mut has_start_function = false;
+        // Note that once a start function is added, if any, we immediately
+        // un-start it. This is done because we require that the JS glue
+        // initializes first, so we execute wasm startup manually once the JS
+        // glue is all in place.
+        let mut needs_manual_start = false;
         if self.config.emit_start {
             self.add_start_function()?;
-            has_start_function = self.unstart_start_function();
-
-            // In the "we're pretending to be an ES module use case if we've got
-            // a start function then we use an injected shim to actually execute
-            // the real start function on the next tick of the microtask queue
-            // (explained above)
-            if !self.config.no_modules && has_start_function {
-                self.inject_start_shim();
-            }
-
+            needs_manual_start = self.unstart_start_function();
         }
 
         self.export_table()?;
@@ -653,20 +687,94 @@ impl<'a> Context<'a> {
         // we don't ask for items which we can no longer emit.
         drop(self.exposed_globals.take().unwrap());
 
-        let mut js = if self.config.threads.is_some() {
-            // TODO: It's not clear right now how to best use threads with
-            // bundlers like webpack. We need a way to get the existing
-            // module/memory into web workers for now and we don't quite know
-            // idiomatically how to do that! In the meantime, always require
-            // `--no-modules`
-            if !self.config.no_modules {
-                bail!("most use `--no-modules` with threads for now")
-            }
-            let mem = self.module.memories.get(self.memory);
-            if mem.import.is_none() {
-                bail!("must impot a shared memory with threads")
+        let mut js = String::new();
+        if self.config.mode.no_modules() {
+            js.push_str("(function() {\n");
+        }
+
+        // Depending on the output mode, generate necessary glue to actually
+        // import the wasm file in one way or another.
+        let mut init = String::new();
+        match &self.config.mode {
+            // In `--no-modules` mode we need to both expose a name on the
+            // global object as well as generate our own custom start function.
+            OutputMode::NoModules { global } => {
+                js.push_str("const __exports = {};\n");
+                js.push_str("let wasm;\n");
+                init = self.gen_init(&module_name, needs_manual_start);
+                self.footer.push_str(&format!(
+                    "self.{} = Object.assign(init, __exports);\n",
+                    global
+                ));
             }
 
+            // With normal CommonJS node we need to defer requiring the wasm
+            // until the end so most of our own exports are hooked up
+            OutputMode::Node {
+                experimental_modules: false,
+            } => {
+                self.footer
+                    .push_str(&format!("wasm = require('./{}_bg');\n", module_name));
+                if needs_manual_start {
+                    self.footer.push_str("wasm.__wbindgen_start();\n");
+                }
+                js.push_str("var wasm;\n");
+            }
+
+            // With Bundlers and modern ES6 support in Node we can simply import
+            // the wasm file as if it were an ES module and let the
+            // bundler/runtime take care of it.
+            OutputMode::Bundler
+            | OutputMode::Node {
+                experimental_modules: true,
+            } => {
+                js.push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
+                if needs_manual_start {
+                    self.footer.push_str("wasm.__wbindgen_start();\n");
+                }
+            }
+
+            // With a browser-native output we're generating an ES module, but
+            // browsers don't support natively importing wasm right now so we
+            // expose the same initialization function as `--no-modules` as the
+            // default export of the module.
+            OutputMode::Browser => {
+                js.push_str("const __exports = {};\n");
+                self.imports_post.push_str("let wasm;\n");
+                init = self.gen_init(&module_name, needs_manual_start);
+                self.footer.push_str("export default init;\n");
+            }
+        }
+
+        // Emit all the JS for importing all our functionality
+        js.push_str(&self.imports);
+        js.push_str("\n");
+        js.push_str(&self.imports_post);
+        js.push_str("\n");
+
+        // Emit all our exports from this module
+        js.push_str(&self.globals);
+        js.push_str("\n");
+
+        // Generate the initialization glue, if there was any
+        js.push_str(&init);
+        js.push_str("\n");
+        js.push_str(&self.footer);
+        js.push_str("\n");
+        if self.config.mode.no_modules() {
+            js.push_str("})();\n");
+        }
+
+        while js.contains("\n\n\n") {
+            js = js.replace("\n\n\n", "\n\n");
+        }
+
+        Ok((js, self.typescript.clone()))
+    }
+
+    fn gen_init(&mut self, module_name: &str, needs_manual_start: bool) -> String {
+        let mem = self.module.memories.get(self.memory);
+        let (init_memory1, init_memory2) = if mem.import.is_some() {
             let mut memory = String::from("new WebAssembly.Memory({");
             memory.push_str(&format!("initial:{}", mem.initial));
             if let Some(max) = mem.maximum {
@@ -676,158 +784,64 @@ impl<'a> Context<'a> {
                 memory.push_str(",shared:true");
             }
             memory.push_str("})");
-
-            format!(
-                "\
-(function() {{
-    var wasm;
-    var memory;
-    const __exports = {{}};
-    {globals}
-    function init(module_or_path, maybe_memory) {{
-        let result;
-        const imports = {{ './{module}': __exports }};
-        if (module_or_path instanceof WebAssembly.Module) {{
-            memory = __exports.memory = maybe_memory;
-            result = WebAssembly.instantiate(module_or_path, imports)
-                .then(instance => {{
-                    return {{ instance, module: module_or_path }}
-                }});
-        }} else {{
-            memory = __exports.memory = {init_memory};
-            const response = fetch(module_or_path);
-            if (typeof WebAssembly.instantiateStreaming === 'function') {{
-                result = WebAssembly.instantiateStreaming(response, imports)
-                    .catch(e => {{
-                        console.warn(\"`WebAssembly.instantiateStreaming` failed. Assuming this is \
-                                        because your server does not serve wasm with \
-                                        `application/wasm` MIME type. Falling back to \
-                                        `WebAssembly.instantiate` which is slower. Original \
-                                        error:\\n\", e);
-                        return response
-                            .then(r => r.arrayBuffer())
-                            .then(bytes => WebAssembly.instantiate(bytes, imports));
-                    }});
-            }} else {{
-                result = response
-                    .then(r => r.arrayBuffer())
-                    .then(bytes => WebAssembly.instantiate(bytes, imports));
-            }}
-        }}
-        return result.then(({{instance, module}}) => {{
-            wasm = init.wasm = instance.exports;
-            init.__wbindgen_wasm_instance = instance;
-            init.__wbindgen_wasm_module = module;
-            init.__wbindgen_wasm_memory = __exports.memory;
-            {start}
-        }});
-    }};
-    self.{global_name} = Object.assign(init, __exports);
-}})();",
-                globals = self.globals,
-                module = module_name,
-                global_name = self
-                    .config
-                    .no_modules_global
-                    .as_ref()
-                    .map(|s| &**s)
-                    .unwrap_or("wasm_bindgen"),
-                init_memory = memory,
-                start = if has_start_function {
-                    "wasm.__wbindgen_start();"
-                } else {
-                    ""
-                },
-            )
-        } else if self.config.no_modules {
-            format!(
-                "\
-(function() {{
-    var wasm;
-    const __exports = {{}};
-    {globals}
-    function init(path_or_module) {{
-        let instantiation;
-        const imports = {{ './{module}': __exports }};
-        if (path_or_module instanceof WebAssembly.Module) {{
-            instantiation = WebAssembly.instantiate(path_or_module, imports)
-                .then(instance => {{
-                    return {{ instance, module: path_or_module }}
-                }});
-        }} else {{
-            const data = fetch(path_or_module);
-            if (typeof WebAssembly.instantiateStreaming === 'function') {{
-                instantiation = WebAssembly.instantiateStreaming(data, imports)
-                    .catch(e => {{
-                        console.warn(\"`WebAssembly.instantiateStreaming` failed. Assuming this is \
-                                       because your server does not serve wasm with \
-                                       `application/wasm` MIME type. Falling back to \
-                                       `WebAssembly.instantiate` which is slower. Original \
-                                       error:\\n\", e);
-                        return data
-                            .then(r => r.arrayBuffer())
-                            .then(bytes => WebAssembly.instantiate(bytes, imports));
-                    }});
-            }} else {{
-                instantiation = data
-                    .then(response => response.arrayBuffer())
-                    .then(buffer => WebAssembly.instantiate(buffer, imports));
-            }}
-        }}
-        return instantiation.then(({{instance}}) => {{
-            wasm = init.wasm = instance.exports;
-            {start}
-        }});
-    }};
-    self.{global_name} = Object.assign(init, __exports);
-}})();",
-                globals = self.globals,
-                module = module_name,
-                global_name = self
-                    .config
-                    .no_modules_global
-                    .as_ref()
-                    .map(|s| &**s)
-                    .unwrap_or("wasm_bindgen"),
-                start = if has_start_function {
-                    "wasm.__wbindgen_start();"
-                } else {
-                    ""
-                },
+            self.imports_post.push_str("let memory;\n");
+            (
+                format!("memory = __exports.memory = maybe_memory;"),
+                format!("memory = __exports.memory = {};", memory),
             )
         } else {
-            let import_wasm = if self.globals.len() == 0 {
-                String::new()
-            } else if self.use_node_require() {
-                self.footer
-                    .push_str(&format!("wasm = require('./{}_bg');", module_name));
-                format!("var wasm;")
-            } else {
-                format!("import * as wasm from './{}_bg';", module_name)
-            };
-
-            format!(
-                "\
-                /* tslint:disable */\n\
-                {import_wasm}\n\
-                {imports}\n\
-                {imports_post}\n\
-
-                {globals}\n\
-                {footer}",
-                import_wasm = import_wasm,
-                globals = self.globals,
-                imports = self.imports,
-                imports_post = self.imports_post,
-                footer = self.footer,
-            )
+            (String::new(), String::new())
         };
 
-        while js.contains("\n\n\n") {
-            js = js.replace("\n\n\n", "\n\n");
-        }
-
-        Ok((js, self.typescript.clone()))
+        format!(
+            "\
+                function init(module_or_path, maybe_memory) {{
+                    let result;
+                    const imports = {{ './{module}': __exports }};
+                    if (module_or_path instanceof WebAssembly.Module) {{
+                        {init_memory1}
+                        result = WebAssembly.instantiate(module_or_path, imports)
+                            .then(instance => {{
+                                return {{ instance, module: module_or_path }};
+                            }});
+                    }} else {{
+                        {init_memory2}
+                        const response = fetch(module_or_path);
+                        if (typeof WebAssembly.instantiateStreaming === 'function') {{
+                            result = WebAssembly.instantiateStreaming(response, imports)
+                                .catch(e => {{
+                                    console.warn(\"`WebAssembly.instantiateStreaming` failed. Assuming this is \
+                                                    because your server does not serve wasm with \
+                                                    `application/wasm` MIME type. Falling back to \
+                                                    `WebAssembly.instantiate` which is slower. Original \
+                                                    error:\\n\", e);
+                                    return response
+                                        .then(r => r.arrayBuffer())
+                                        .then(bytes => WebAssembly.instantiate(bytes, imports));
+                                }});
+                        }} else {{
+                            result = response
+                                .then(r => r.arrayBuffer())
+                                .then(bytes => WebAssembly.instantiate(bytes, imports));
+                        }}
+                    }}
+                    return result.then(({{instance, module}}) => {{
+                        wasm = instance.exports;
+                        init.__wbindgen_wasm_module = module;
+                        {start}
+                        return wasm;
+                    }});
+                }}
+            ",
+            module = module_name,
+            init_memory1 = init_memory1,
+            init_memory2 = init_memory2,
+            start = if needs_manual_start {
+                "wasm.__wbindgen_start();"
+            } else {
+                ""
+            },
+        )
     }
 
     fn bind(
@@ -1364,14 +1378,14 @@ impl<'a> Context<'a> {
     }
 
     fn expose_text_processor(&mut self, s: &str) {
-        if self.config.nodejs_experimental_modules {
+        if self.config.mode.nodejs_experimental_modules() {
             self.imports
                 .push_str(&format!("import {{ {} }} from 'util';\n", s));
             self.global(&format!("let cached{0} = new {0}('utf-8');", s));
-        } else if self.config.nodejs {
+        } else if self.config.mode.nodejs() {
             self.global(&format!("const {0} = require('util').{0};", s));
             self.global(&format!("let cached{0} = new {0}('utf-8');", s));
-        } else if !(self.config.browser || self.config.no_modules) {
+        } else if !self.config.mode.always_run_in_browser() {
             self.global(&format!(
                 "
                     const l{0} = typeof {0} === 'undefined' ? \
@@ -2008,7 +2022,7 @@ impl<'a> Context<'a> {
     }
 
     fn use_node_require(&self) -> bool {
-        self.config.nodejs && !self.config.nodejs_experimental_modules
+        self.config.mode.nodejs() && !self.config.mode.nodejs_experimental_modules()
     }
 
     fn memory(&mut self) -> &'static str {
@@ -2052,23 +2066,36 @@ impl<'a> Context<'a> {
             .or_insert_with(|| {
                 let name = generate_identifier(import.name(), imported_identifiers);
                 match &import {
-                    Import::Module { module, .. } => {
+                    Import::Module { .. }
+                    | Import::LocalModule { .. }
+                    | Import::InlineJs { .. } => {
+                        // When doing a modular import local snippets (either
+                        // inline or not) are routed to a local `./snippets`
+                        // directory which the rest of `wasm-bindgen` will fill
+                        // in.
+                        let path = match import {
+                            Import::Module { module, .. } => module.to_string(),
+                            Import::LocalModule { module, .. } => format!("./snippets/{}", module),
+                            Import::InlineJs { idx, .. } => {
+                                format!("./snippets/wbg-inline{}.js", idx)
+                            }
+                            _ => unreachable!(),
+                        };
                         if use_node_require {
                             imports.push_str(&format!(
                                 "const {} = require(String.raw`{}`).{};\n",
                                 name,
-                                module,
+                                path,
                                 import.name()
                             ));
                         } else if import.name() == name {
-                            imports
-                                .push_str(&format!("import {{ {} }} from '{}';\n", name, module));
+                            imports.push_str(&format!("import {{ {} }} from '{}';\n", name, path));
                         } else {
                             imports.push_str(&format!(
                                 "import {{ {} as {} }} from '{}';\n",
                                 import.name(),
                                 name,
-                                module
+                                path
                             ));
                         }
                         name
@@ -2290,24 +2317,6 @@ impl<'a> Context<'a> {
         true
     }
 
-    /// Injects a `start` function into the wasm module. This start function
-    /// calls a shim in the generated JS which defers the actual start function
-    /// to the next microtask tick of the event queue.
-    ///
-    /// See docs above at callsite for why this happens.
-    fn inject_start_shim(&mut self) {
-        let body = "function() {
-            Promise.resolve().then(() => wasm.__wbindgen_start());
-        }";
-        self.export("__wbindgen_defer_start", body, None);
-        let ty = self.module.types.add(&[], &[]);
-        let id =
-            self.module
-                .add_import_func("__wbindgen_placeholder__", "__wbindgen_defer_start", ty);
-        assert!(self.module.start.is_none());
-        self.module.start = Some(id);
-    }
-
     fn expose_anyref_table(&mut self) {
         assert!(self.config.anyref);
         if !self.should_write_global("anyref_table") {
@@ -2368,6 +2377,14 @@ impl<'a> Context<'a> {
 
 impl<'a, 'b> SubContext<'a, 'b> {
     pub fn generate(&mut self) -> Result<(), Error> {
+        for m in self.program.local_modules.iter() {
+            // All local modules we find should be unique, so assert such.
+            assert!(self
+                .cx
+                .local_modules
+                .insert(m.identifier, m.contents)
+                .is_none());
+        }
         for f in self.program.exports.iter() {
             self.generate_export(f).with_context(|_| {
                 format!(
@@ -2752,14 +2769,39 @@ impl<'a, 'b> SubContext<'a, 'b> {
     ) -> Result<Import<'b>, Error> {
         // First up, imports don't work at all in `--no-modules` mode as we're
         // not sure how to import them.
-        if self.cx.config.no_modules {
-            if let Some(module) = &import.module {
+        let is_local_snippet = match import.module {
+            decode::ImportModule::Named(s) => self.cx.local_modules.contains_key(s),
+            decode::ImportModule::Inline(_) => true,
+            decode::ImportModule::None => false,
+        };
+        if self.cx.config.mode.no_modules() {
+            if is_local_snippet {
+                bail!(
+                    "local JS snippets are not supported with `--no-modules`; \
+                     use `--browser` or no flag instead",
+                );
+            }
+            if let decode::ImportModule::Named(module) = &import.module {
                 bail!(
                     "import from `{}` module not allowed with `--no-modules`; \
-                     use `--nodejs` or `--browser` instead",
+                     use `--nodejs`, `--browser`, or no flag instead",
                     module
                 );
             }
+        }
+
+        // FIXME: currently we require that local JS snippets are written in ES
+        // module syntax for imports/exports, but nodejs uses CommonJS to handle
+        // this meaning that local JS snippets are basically guaranteed to be
+        // incompatible. We need to implement a pass that translates the ES
+        // module syntax in the snippet to a CommonJS module, which is in theory
+        // not that hard but is a chunk of work to do.
+        if is_local_snippet && self.cx.config.mode.nodejs() {
+            bail!(
+                "local JS snippets are not supported with `--nodejs`; \
+                 see rustwasm/rfcs#6 for more details, but this restriction \
+                 will be lifted in the future"
+            );
         }
 
         // Similar to `--no-modules`, only allow vendor prefixes basically for web
@@ -2769,7 +2811,15 @@ impl<'a, 'b> SubContext<'a, 'b> {
         if let Some(vendor_prefixes) = vendor_prefixes {
             assert!(vendor_prefixes.len() > 0);
 
-            if let Some(module) = &import.module {
+            if is_local_snippet {
+                bail!(
+                    "local JS snippets do not support vendor prefixes for \
+                     the import of `{}` with a polyfill of `{}`",
+                    item,
+                    &vendor_prefixes[0]
+                );
+            }
+            if let decode::ImportModule::Named(module) = &import.module {
                 bail!(
                     "import of `{}` from `{}` has a polyfill of `{}` listed, but
                      vendor prefixes aren't supported when importing from modules",
@@ -2792,20 +2842,28 @@ impl<'a, 'b> SubContext<'a, 'b> {
             });
         }
 
-        let name = import.js_namespace.as_ref().map(|s| &**s).unwrap_or(item);
-        let field = if import.js_namespace.is_some() {
-            Some(item)
-        } else {
-            None
+        let (name, field) = match import.js_namespace {
+            Some(ns) => (ns, Some(item)),
+            None => (item, None),
         };
 
         Ok(match import.module {
-            Some(module) => Import::Module {
+            decode::ImportModule::Named(module) if is_local_snippet => Import::LocalModule {
                 module,
                 name,
                 field,
             },
-            None => Import::Global { name, field },
+            decode::ImportModule::Named(module) => Import::Module {
+                module,
+                name,
+                field,
+            },
+            decode::ImportModule::Inline(idx) => Import::InlineJs {
+                idx: idx as usize + self.cx.snippet_offset,
+                name,
+                field,
+            },
+            decode::ImportModule::None => Import::Global { name, field },
         })
     }
 
@@ -2815,17 +2873,30 @@ impl<'a, 'b> SubContext<'a, 'b> {
     }
 }
 
+#[derive(Hash, Eq, PartialEq)]
+pub enum ImportModule<'a> {
+    Named(&'a str),
+    Inline(usize),
+    None,
+}
+
 impl<'a> Import<'a> {
-    fn module(&self) -> Option<&'a str> {
+    fn module(&self) -> ImportModule<'a> {
         match self {
-            Import::Module { module, .. } => Some(module),
-            _ => None,
+            Import::Module { module, .. } | Import::LocalModule { module, .. } => {
+                ImportModule::Named(module)
+            }
+            Import::InlineJs { idx, .. } => ImportModule::Inline(*idx),
+            Import::Global { .. } | Import::VendorPrefixed { .. } => ImportModule::None,
         }
     }
 
     fn field(&self) -> Option<&'a str> {
         match self {
-            Import::Module { field, .. } | Import::Global { field, .. } => *field,
+            Import::Module { field, .. }
+            | Import::LocalModule { field, .. }
+            | Import::InlineJs { field, .. }
+            | Import::Global { field, .. } => *field,
             Import::VendorPrefixed { .. } => None,
         }
     }
@@ -2833,6 +2904,8 @@ impl<'a> Import<'a> {
     fn name(&self) -> &'a str {
         match self {
             Import::Module { name, .. }
+            | Import::LocalModule { name, .. }
+            | Import::InlineJs { name, .. }
             | Import::Global { name, .. }
             | Import::VendorPrefixed { name, .. } => *name,
         }
