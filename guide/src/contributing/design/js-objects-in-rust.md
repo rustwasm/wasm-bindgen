@@ -18,7 +18,7 @@ pushed.
 
 JS objects are then only removed from the bottom of the stack as well. Removal
 is simply storing null then incrementing a counter.  Because of the "stack-y"
-nature of this sceheme it only works for when wasm doesn't hold onto a JS object
+nature of this scheme it only works for when wasm doesn't hold onto a JS object
 (aka it only gets a "reference" in Rust parlance).
 
 Let's take a look at an example.
