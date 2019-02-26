@@ -43,7 +43,7 @@ impl Interner {
             map: RefCell::new(HashMap::new()),
             strings: RefCell::new(HashSet::new()),
             files: RefCell::new(HashMap::new()),
-            root: env::current_dir().unwrap(),
+            root: env::var_os("CARGO_MANIFEST_DIR").unwrap().into(),
             crate_name: env::var("CARGO_PKG_NAME").unwrap(),
         }
     }
