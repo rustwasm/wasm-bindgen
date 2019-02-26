@@ -2378,12 +2378,12 @@ impl<'a> Context<'a> {
 impl<'a, 'b> SubContext<'a, 'b> {
     pub fn generate(&mut self) -> Result<(), Error> {
         for m in self.program.local_modules.iter() {
-            // All local modules we find should be unique, so assert such.
-            assert!(self
-                .cx
-                .local_modules
-                .insert(m.identifier, m.contents)
-                .is_none());
+            // All local modules we find should be unique, but the same module
+            // may have showed up in a few different blocks. If that's the case
+            // all the same identifiers should have the same contents.
+            if let Some(prev) = self.cx.local_modules.insert(m.identifier, m.contents) {
+                assert_eq!(prev, m.contents);
+            }
         }
         for f in self.program.exports.iter() {
             self.generate_export(f).with_context(|_| {

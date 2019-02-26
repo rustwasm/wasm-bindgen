@@ -4,11 +4,27 @@ use wasm_bindgen_test::*;
 #[wasm_bindgen(module = "/tests/headless/snippets1.js")]
 extern {
     fn get_two() -> u32;
+    #[wasm_bindgen(js_name = get_stateful)]
+    fn get_stateful1() -> u32;
+}
+
+#[wasm_bindgen(module = "/tests/headless/snippets1.js")]
+extern {
+    #[wasm_bindgen(js_name = get_stateful)]
+    fn get_stateful2() -> u32;
 }
 
 #[wasm_bindgen_test]
 fn test_get_two() {
     assert_eq!(get_two(), 2);
+}
+
+#[wasm_bindgen_test]
+fn stateful_deduplicated() {
+    assert_eq!(get_stateful1(), 1);
+    assert_eq!(get_stateful2(), 2);
+    assert_eq!(get_stateful1(), 3);
+    assert_eq!(get_stateful2(), 4);
 }
 
 #[wasm_bindgen(inline_js = "export function get_three() { return 3; }")]
