@@ -3,6 +3,7 @@ use crate::descriptor::{Descriptor, VectorKind};
 use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
 use std::collections::{HashMap, HashSet};
+use std::env;
 use walrus::{MemoryId, Module};
 use wasm_bindgen_wasm_interpreter::Interpreter;
 
@@ -2797,11 +2798,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
         // module syntax in the snippet to a CommonJS module, which is in theory
         // not that hard but is a chunk of work to do.
         if is_local_snippet && self.cx.config.mode.nodejs() {
-            bail!(
-                "local JS snippets are not supported with `--nodejs`; \
-                 see rustwasm/rfcs#6 for more details, but this restriction \
-                 will be lifted in the future"
-            );
+            // have a small unergonomic escape hatch for our webidl-tests tests
+            if env::var("WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE").is_err() {
+                bail!(
+                    "local JS snippets are not supported with `--nodejs`; \
+                     see rustwasm/rfcs#6 for more details, but this restriction \
+                     will be lifted in the future"
+                );
+            }
         }
 
         // Similar to `--no-modules`, only allow vendor prefixes basically for web
