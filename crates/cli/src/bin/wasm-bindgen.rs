@@ -3,7 +3,7 @@ use failure::{bail, Error};
 use serde::Deserialize;
 use std::path::PathBuf;
 use std::process;
-use wasm_bindgen_cli_support::Bindgen;
+use wasm_bindgen_cli_support::{Bindgen, EncodeInto};
 
 // no need for jemalloc bloat in this binary (and we don't need speed)
 #[global_allocator]
@@ -32,6 +32,8 @@ Options:
     --keep-debug                 Keep debug sections in wasm files
     --remove-name-section        Remove the debugging `name` section of the file
     --remove-producers-section   Remove the telemetry `producers` section
+    --encode-into MODE           Whether or not to use TextEncoder#encodeInto,
+                                 valid values are [test, always, never]
     -V --version                 Print the version number of wasm-bindgen
 ";
 
@@ -51,6 +53,7 @@ struct Args {
     flag_remove_name_section: bool,
     flag_remove_producers_section: bool,
     flag_keep_debug: bool,
+    flag_encode_into: Option<String>,
     arg_input: Option<PathBuf>,
 }
 
@@ -99,6 +102,14 @@ fn rmain(args: &Args) -> Result<(), Error> {
     }
     if let Some(ref name) = args.flag_out_name {
         b.out_name(name);
+    }
+    if let Some(mode) = &args.flag_encode_into {
+        match mode.as_str() {
+            "test" => b.encode_into(EncodeInto::Test),
+            "always" => b.encode_into(EncodeInto::Always),
+            "never" => b.encode_into(EncodeInto::Never),
+            s => bail!("invalid encode-into mode: `{}`", s),
+        };
     }
 
     let out_dir = match args.flag_out_dir {

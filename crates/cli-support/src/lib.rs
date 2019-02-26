@@ -36,12 +36,19 @@ pub struct Bindgen {
     // module to be "ready to be instantiated on any thread"
     threads: Option<wasm_bindgen_threads_xform::Config>,
     anyref: bool,
+    encode_into: EncodeInto,
 }
 
 enum Input {
     Path(PathBuf),
     Module(Module, String),
     None,
+}
+
+pub enum EncodeInto {
+    Test,
+    Always,
+    Never,
 }
 
 impl Bindgen {
@@ -64,6 +71,7 @@ impl Bindgen {
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
             anyref: env::var("WASM_BINDGEN_ANYREF").is_ok(),
+            encode_into: EncodeInto::Test,
         }
     }
 
@@ -141,6 +149,11 @@ impl Bindgen {
 
     pub fn emit_start(&mut self, emit: bool) -> &mut Bindgen {
         self.emit_start = emit;
+        self
+    }
+
+    pub fn encode_into(&mut self, mode: EncodeInto) -> &mut Bindgen {
+        self.encode_into = mode;
         self
     }
 

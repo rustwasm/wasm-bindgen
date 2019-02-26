@@ -892,7 +892,7 @@ pub mod __rt {
     }
 
     if_std! {
-        use std::alloc::{alloc, dealloc, Layout};
+        use std::alloc::{alloc, dealloc, realloc, Layout};
         use std::mem;
 
         #[no_mangle]
@@ -911,6 +911,27 @@ pub mod __rt {
                 }
             }
 
+            malloc_failure();
+        }
+
+        #[no_mangle]
+        pub extern "C" fn __wbindgen_realloc(ptr: *mut u8, old_size: usize, new_size: usize) -> *mut u8 {
+            let align = mem::align_of::<usize>();
+            debug_assert!(old_size > 0);
+            debug_assert!(new_size > 0);
+            if let Ok(layout) = Layout::from_size_align(old_size, align) {
+                unsafe {
+                    let ptr = realloc(ptr, layout, new_size);
+                    if !ptr.is_null() {
+                        return ptr
+                    }
+                }
+            }
+            malloc_failure();
+        }
+
+        #[cold]
+        fn malloc_failure() -> ! {
             if cfg!(debug_assertions) {
                 super::throw_str("invalid malloc request")
             } else {
