@@ -3,7 +3,7 @@ use wasm_bindgen::JsCast;
 use wasm_bindgen_test::*;
 use web_sys::HtmlElement;
 
-#[wasm_bindgen(module = "./tests/wasm/element.js")]
+#[wasm_bindgen(module = "/tests/wasm/element.js")]
 extern "C" {
     fn new_html() -> HtmlElement;
 }

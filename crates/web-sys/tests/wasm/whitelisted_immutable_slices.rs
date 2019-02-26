@@ -14,7 +14,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 use web_sys::WebGlRenderingContext;
 
-#[wasm_bindgen(module = "./tests/wasm/element.js")]
+#[wasm_bindgen(module = "/tests/wasm/element.js")]
 extern "C" {
     fn new_webgl_rendering_context() -> WebGlRenderingContext;
 // TODO: Add a function to create another type to test here.

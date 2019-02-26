@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 use web_sys::HtmlInputElement;
 
-#[wasm_bindgen(module = "./tests/wasm/element.js")]
+#[wasm_bindgen(module = "/tests/wasm/element.js")]
 extern "C" {
     fn new_input() -> HtmlInputElement;
 }

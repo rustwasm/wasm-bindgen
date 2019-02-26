@@ -10,7 +10,7 @@ use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
 use web_sys::Response;
 
-#[wasm_bindgen(module = "./tests/wasm/response.js")]
+#[wasm_bindgen(module = "/tests/wasm/response.js")]
 extern "C" {
     fn new_response() -> Response;
 }
