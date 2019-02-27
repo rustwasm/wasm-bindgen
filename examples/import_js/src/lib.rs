@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(module = "../defined-in-js")]
+#[wasm_bindgen(module = "/defined-in-js.js")]
 extern "C" {
     fn name() -> String;
 
