@@ -281,18 +281,20 @@ impl Client {
                 Ok(x.value.session_id)
             }
             Driver::Safari(_) => {
-                #[derive(Deserialize)]
+                #[derive(Clone, Deserialize)]
                 struct Response {
-                    // returned by `--legacy`
+                    // returned by `--legacy` or by default on High Sierra and lower.
                     #[serde(rename = "sessionId")]
                     session_id: Option<String>,
                     // returned by the now-default `--w3c` mode
                     value: Option<Value>,
                 }
-                #[derive(Deserialize)]
+                #[derive(Clone, Deserialize)]
                 struct Value {
+                    // This needs to be optional because both `--legacy` and High Sierra do not
+                    // include a session id in the value entry.
                     #[serde(rename = "sessionId")]
-                    session_id: String,
+                    session_id: Option<String>,
                 }
                 let request = json!({
                     // this is needed for the now `--legacy` mode
@@ -303,7 +305,10 @@ impl Client {
                     }
                 });
                 let x: Response = self.post("/session", &request)?;
-                Ok(x.session_id.or(x.value.map(|v| v.session_id)).unwrap())
+                Ok(x.clone()
+                    .session_id
+                    .or_else(|| x.value.map(|v| v.session_id.unwrap()))
+                    .unwrap())
             }
             Driver::Chrome(_) => {
                 #[derive(Deserialize)]
