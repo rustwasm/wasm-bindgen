@@ -1,5 +1,5 @@
 use proc_macro2::{Ident, Span};
-use std::cell::RefCell;
+use std::cell::{RefCell, Cell};
 use std::collections::HashMap;
 use std::env;
 use std::fs;
@@ -28,6 +28,7 @@ struct Interner {
     files: RefCell<HashMap<String, LocalFile>>,
     root: PathBuf,
     crate_name: String,
+    has_package_json: Cell<bool>,
 }
 
 struct LocalFile {
@@ -43,6 +44,7 @@ impl Interner {
             files: RefCell::new(HashMap::new()),
             root: env::var_os("CARGO_MANIFEST_DIR").unwrap().into(),
             crate_name: env::var("CARGO_PKG_NAME").unwrap(),
+            has_package_json: Cell::new(false),
         }
     }
 
@@ -67,6 +69,7 @@ impl Interner {
         if let Some(file) = files.get(id) {
             return Ok(self.intern_str(&file.new_identifier))
         }
+        self.check_for_package_json();
         let path = if id.starts_with("/") {
             self.root.join(&id[1..])
         } else if id.starts_with("./") || id.starts_with("../") {
@@ -91,6 +94,16 @@ impl Interner {
 
     fn unique_crate_identifier(&self) -> String {
         format!("{}-{}", self.crate_name, ShortHash(0))
+    }
+
+    fn check_for_package_json(&self) {
+        if self.has_package_json.get() {
+            return
+        }
+        let path = self.root.join("package.json");
+        if path.exists() {
+            self.has_package_json.set(true);
+        }
     }
 }
 
@@ -144,6 +157,11 @@ fn shared_program<'a>(
             .map(|js| intern.intern_str(js))
             .collect(),
         unique_crate_identifier: intern.intern_str(&intern.unique_crate_identifier()),
+        package_json: if intern.has_package_json.get() {
+            Some(intern.intern_str(intern.root.join("package.json").to_str().unwrap()))
+        } else {
+            None
+        },
     })
 }
 

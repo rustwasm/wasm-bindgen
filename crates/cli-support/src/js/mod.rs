@@ -4,6 +4,7 @@ use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
 use std::collections::{HashMap, HashSet, BTreeMap};
 use std::env;
+use std::fs;
 use walrus::{MemoryId, Module};
 use wasm_bindgen_wasm_interpreter::Interpreter;
 
@@ -63,6 +64,10 @@ pub struct Context<'a> {
     /// when there's multiple snippets within one crate that aren't all part of
     /// the same `Program`.
     pub snippet_offsets: HashMap<&'a str, usize>,
+
+    /// All package.json dependencies we've learned about so far
+    pub package_json_read: HashSet<&'a str>,
+    pub npm_dependencies: HashMap<String, (&'a str, String)>,
 
     pub anyref: wasm_bindgen_anyref_xform::Context,
 }
@@ -2480,6 +2485,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
             self.cx.typescript.push_str("\n\n");
         }
 
+        if let Some(path) = self.program.package_json {
+            self.add_package_json(path)?;
+        }
+
         Ok(())
     }
 
@@ -2950,6 +2959,67 @@ impl<'a, 'b> SubContext<'a, 'b> {
     fn import_name(&mut self, import: &decode::Import<'b>, item: &'b str) -> Result<String, Error> {
         let import = self.determine_import(import, item)?;
         Ok(self.cx.import_identifier(import))
+    }
+
+    fn add_package_json(&mut self, path: &'b str) -> Result<(), Error> {
+        if !self.cx.package_json_read.insert(path) {
+            return Ok(());
+        }
+        if !self.cx.config.mode.nodejs() && !self.cx.config.mode.bundler() {
+            bail!("NPM dependencies have been specified in `{}` but \
+                   this is only compatible with the default output of \
+                   `wasm-bindgen` or the `--nodejs` flag");
+        }
+        let contents = fs::read_to_string(path).context(format!("failed to read `{}`", path))?;
+        let json: serde_json::Value = serde_json::from_str(&contents)?;
+        let object = match json.as_object() {
+            Some(s) => s,
+            None => bail!(
+                "expected `package.json` to have an JSON object in `{}`",
+                path
+            ),
+        };
+        let mut iter = object.iter();
+        let (key, value) = match iter.next() {
+            Some(pair) => pair,
+            None => return Ok(()),
+        };
+        if key != "dependencies" || iter.next().is_some() {
+            bail!(
+                "NPM manifest found at `{}` can currently only have one key, \
+                 `dependencies`, and no other fields",
+                path
+            );
+        }
+        let value = match value.as_object() {
+            Some(s) => s,
+            None => bail!("expected `dependencies` to be a JSON object in `{}`", path),
+        };
+
+        for (name, value) in value.iter() {
+            let value = match value.as_str() {
+                Some(s) => s,
+                None => bail!(
+                    "keys in `dependencies` are expected to be strings in `{}`",
+                    path
+                ),
+            };
+            if let Some((prev, _prev_version)) = self.cx.npm_dependencies.get(name) {
+                bail!(
+                    "dependency on NPM package `{}` specified in two `package.json` files, \
+                     which at the time is not allowed:\n  * {}\n  * {}",
+                    name,
+                    path,
+                    prev
+                )
+            }
+
+            self.cx
+                .npm_dependencies
+                .insert(name.to_string(), (path, value.to_string()));
+        }
+
+        Ok(())
     }
 }
 

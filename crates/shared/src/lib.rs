@@ -17,6 +17,7 @@ macro_rules! shared_api {
             local_modules: Vec<LocalModule<'a>>,
             inline_js: Vec<&'a str>,
             unique_crate_identifier: &'a str,
+            package_json: Option<&'a str>,
         }
 
         struct Import<'a> {
