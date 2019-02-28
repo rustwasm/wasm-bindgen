@@ -122,6 +122,7 @@ impl<'a> Context<'a> {
         let contents = contents.trim();
         if let Some(ref c) = comments {
             self.globals.push_str(c);
+            self.typescript.push_str(c);
         }
         let global = if self.use_node_require() {
             if contents.starts_with("class") {
