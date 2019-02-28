@@ -28,5 +28,9 @@ function run(ptr) {
     return;
   }
   lastPtr = null;
-  wasm_bindgen.child_entry_point(ptr);
+  try {
+    wasm_bindgen.child_entry_point(ptr);
+  } catch (e) {
+    throw new Error(e.message + "\n\n" + e.stack);
+  }
 }

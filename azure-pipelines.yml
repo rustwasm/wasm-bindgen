@@ -164,14 +164,11 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2019-04-01
+          toolchain: nightly
       - template: ci/azure-install-sccache.yml
       - script: rustup component add rust-src
         displayName: "install rust-src"
-      - script: |
-          set -e
-          curl -L https://github.com/japaric/xargo/releases/download/v0.3.13/xargo-v0.3.13-x86_64-unknown-linux-musl.tar.gz | tar xzf -
-          echo "##vso[task.prependpath]$PWD"
+      - script: cargo install xargo
         displayName: "install xargo"
       - script: |
           set -e
