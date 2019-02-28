@@ -616,6 +616,15 @@ impl<'a> Context<'a> {
         if self.config.emit_start {
             self.add_start_function()?;
             has_start_function = self.unstart_start_function();
+
+            // In the "we're pretending to be an ES module use case if we've got
+            // a start function then we use an injected shim to actually execute
+            // the real start function on the next tick of the microtask queue
+            // (explained above)
+            if !self.config.no_modules && has_start_function {
+                self.inject_start_shim();
+            }
+
         }
 
         self.export_table()?;
@@ -787,14 +796,6 @@ impl<'a> Context<'a> {
                 },
             )
         } else {
-            // In the "we're pretending to be an ES module use case if we've got
-            // a start function then we use an injected shim to actually execute
-            // the real start function on the next tick of the microtask queue
-            // (explained above)
-            if has_start_function {
-                self.inject_start_shim();
-            }
-
             let import_wasm = if self.globals.len() == 0 {
                 String::new()
             } else if self.use_node_require() {
