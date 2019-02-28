@@ -67,6 +67,9 @@ pub struct Context<'a> {
 
     /// All package.json dependencies we've learned about so far
     pub package_json_read: HashSet<&'a str>,
+
+    /// A map of the name of npm dependencies we've loaded so far to the path
+    /// they're defined in as well as their version specification.
     pub npm_dependencies: HashMap<String, (&'a str, String)>,
 
     pub anyref: wasm_bindgen_anyref_xform::Context,
@@ -2967,8 +2970,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
         if !self.cx.config.mode.nodejs() && !self.cx.config.mode.bundler() {
             bail!("NPM dependencies have been specified in `{}` but \
-                   this is only compatible with the default output of \
-                   `wasm-bindgen` or the `--nodejs` flag");
+                   this is only compatible with the `bundler` and `nodejs` targets");
         }
         let contents = fs::read_to_string(path).context(format!("failed to read `{}`", path))?;
         let json: serde_json::Value = serde_json::from_str(&contents)?;

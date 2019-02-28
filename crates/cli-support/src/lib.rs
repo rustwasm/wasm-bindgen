@@ -716,7 +716,7 @@ impl OutputMode {
 
     fn bundler(&self) -> bool {
         match self {
-            OutputMode::Bundler => true,
+            OutputMode::Bundler { .. } => true,
             _ => false,
         }
     }
