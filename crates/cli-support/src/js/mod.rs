@@ -1211,21 +1211,20 @@ impl<'a> Context<'a> {
             debug
         );
 
+        // Looks like `encodeInto` doesn't currently work when the memory passed
+        // in is backed by a `SharedArrayBuffer`, so force usage of `encode` if
+        // a `SharedArrayBuffer` is in use.
+        let shared = self.module.memories.get(self.memory).shared;
+
         match self.config.encode_into {
-            EncodeInto::Never => {
-                self.global(&format!(
-                    "function passStringToWasm(arg) {{ {} }}",
-                    use_encode,
-                ));
-            }
-            EncodeInto::Always => {
+            EncodeInto::Always if !shared => {
                 self.require_internal_export("__wbindgen_realloc")?;
                 self.global(&format!(
                     "function passStringToWasm(arg) {{ {} }}",
                     use_encode_into,
                 ));
             }
-            EncodeInto::Test => {
+            EncodeInto::Test if !shared => {
                 self.require_internal_export("__wbindgen_realloc")?;
                 self.global(&format!(
                     "
@@ -1237,6 +1236,12 @@ impl<'a> Context<'a> {
                         }}
                     ",
                     use_encode_into,
+                    use_encode,
+                ));
+            }
+            _ => {
+                self.global(&format!(
+                    "function passStringToWasm(arg) {{ {} }}",
                     use_encode,
                 ));
             }
