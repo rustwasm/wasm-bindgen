@@ -657,7 +657,9 @@ pub fn throw_val(s: JsValue) -> ! {
 ///
 /// # Example
 ///
-/// ```no_run
+/// ```
+/// use wasm_bindgen::prelude::*;
+///
 /// // If the value is `Option::Some` or `Result::Ok`, then we just get the
 /// // contained `T` value.
 /// let x = Some(42);

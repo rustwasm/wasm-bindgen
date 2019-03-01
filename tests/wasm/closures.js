@@ -102,3 +102,14 @@ exports.drop_during_call_call = () => DROP_DURING_CALL();
 exports.js_test_closure_returner = () => {
   wasm.closure_returner().someKey();
 };
+
+exports.calling_it_throws = a => {
+  try {
+    a();
+    return false;
+  } catch(_) {
+    return true;
+  }
+};
+
+exports.call_val = f => f();

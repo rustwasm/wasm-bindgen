@@ -21,7 +21,6 @@ features = ['serde-serialize']
 
 [lib]
 test = false
-doctest = false
 
 [features]
 default = ["spans", "std"]

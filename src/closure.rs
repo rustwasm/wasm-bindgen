@@ -9,10 +9,11 @@ use std::marker::Unsize;
 use std::mem::{self, ManuallyDrop};
 use std::prelude::v1::*;
 
-use JsValue;
 use convert::*;
 use describe::*;
 use throw_str;
+use JsValue;
+use UnwrapThrowExt;
 
 /// A handle to both a closure in Rust as well as JS closure which will invoke
 /// the Rust closure.
@@ -33,69 +34,209 @@ use throw_str;
 /// trait must be numbers like `u32` for now, although this restriction may be
 /// lifted in the future!
 ///
-/// # Example
+/// # Examples
 ///
-/// Sample usage of `Closure` to invoke the `setTimeout` API.
+/// Here are a number of examples of using `Closure`.
+///
+/// ## Using the `setInterval` API
+///
+/// Sample usage of `Closure` to invoke the `setInterval` API.
 ///
 /// ```rust,no_run
+/// use wasm_bindgen::prelude::*;
+///
 /// #[wasm_bindgen]
 /// extern "C" {
-///     fn setTimeout(closure: &Closure<FnMut()>, time: u32);
+///     fn setInterval(closure: &Closure<FnMut()>, time: u32) -> i32;
+///     fn clearInterval(id: i32);
 ///
 ///     #[wasm_bindgen(js_namespace = console)]
 ///     fn log(s: &str);
 /// }
 ///
 /// #[wasm_bindgen]
-/// pub struct ClosureHandle(Closure<FnMut()>);
+/// pub struct IntervalHandle {
+///     interval_id: i32,
+///     _closure: Closure<FnMut()>,
+/// }
+///
+/// impl Drop for IntervalHandle {
+///     fn drop(&mut self) {
+///         clearInterval(self.interval_id);
+///     }
+/// }
 ///
 /// #[wasm_bindgen]
-/// pub fn run() -> ClosureHandle {
+/// pub fn run() -> IntervalHandle {
 ///     // First up we use `Closure::wrap` to wrap up a Rust closure and create
 ///     // a JS closure.
-///     let cb = Closure::wrap(Box::new(move || {
-///         log("timeout elapsed!");
+///     let cb = Closure::wrap(Box::new(|| {
+///         log("interval elapsed!");
 ///     }) as Box<FnMut()>);
 ///
-///     // Next we pass this via reference to the `setTimeout` function, and
-///     // `setTimeout` gets a handle to the corresponding JS closure.
-///     setTimeout(&cb, 1_000);
+///     // Next we pass this via reference to the `setInterval` function, and
+///     // `setInterval` gets a handle to the corresponding JS closure.
+///     let interval_id = setInterval(&cb, 1_000);
 ///
 ///     // If we were to drop `cb` here it would cause an exception to be raised
-///     // when the timeout elapses. Instead we *return* our handle back to JS
-///     // so JS can tell us later when it would like to deallocate this handle.
-///     ClosureHandle(cb)
+///     // whenever the interval elapses. Instead we *return* our handle back to JS
+///     // so JS can decide when to cancel the interval and deallocate the closure.
+///     IntervalHandle {
+///         interval_id,
+///         _closure: cb,
+///     }
 /// }
 /// ```
 ///
-/// Sample usage of the same example as above except using `web_sys` instead
+/// ## Casting a `Closure` to a `js_sys::Function`
 ///
-/// ```rust,no_run
-/// extern crate wasm_bindgen;
-/// extern crate web_sys;
+/// This is the same `setInterval` example as above, except it is using
+/// `web_sys` (which uses `js_sys::Function` for callbacks) instead of manually
+/// writing bindings to `setInterval` and other Web APIs.
 ///
+/// ```rust,ignore
 /// use wasm_bindgen::JsCast;
 ///
 /// #[wasm_bindgen]
-/// pub struct ClosureHandle(Closure<FnMut()>);
+/// pub struct IntervalHandle {
+///     interval_id: i32,
+///     _closure: Closure<FnMut()>,
+/// }
+///
+/// impl Drop for IntervalHandle {
+///     fn drop(&mut self) {
+///         let window = web_sys::window().unwrap();
+///         window.clear_interval_with_handle(self.interval_id);
+///     }
+/// }
 ///
 /// #[wasm_bindgen]
-/// pub fn run() -> ClosureHandle {
-///     let cb = Closure::wrap(Box::new(move || {
-///         web_sys::console::log_1(&"timeout elapsed!".into());
+/// pub fn run() -> Result<IntervalHandle, JsValue> {
+///     let cb = Closure::wrap(Box::new(|| {
+///         web_sys::console::log_1(&"inverval elapsed!".into());
 ///     }) as Box<FnMut()>);
 ///
 ///     let window = web_sys::window().unwrap();
-///     window.set_timeout_with_callback_and_timeout_and_arguments_0(
+///     let interval_id = window.set_interval_with_callback_and_timeout_and_arguments_0(
 ///         // Note this method call, which uses `as_ref()` to get a `JsValue`
 ///         // from our `Closure` which is then converted to a `&Function`
 ///         // using the `JsCast::unchecked_ref` function.
-///         cb.as_ref().unchecked_ref(),
+///         cb.as_ref().upnchecked_ref(),
 ///         1_000,
-///     );
+///     )?;
 ///
-///     // same as above
-///     ClosureHandle(cb)
+///     // Same as above.
+///     Ok(IntervalHandle {
+///         interval_id,
+///         _closure: cb,
+///     })
+/// }
+/// ```
+///
+/// ## Using `FnOnce` and `Closure::once` with `requestAnimationFrame`
+///
+/// Because `requestAnimationFrame` only calls its callback once, we can use
+/// `FnOnce` and `Closure::once` with it.
+///
+/// ```rust,no_run
+/// use wasm_bindgen::prelude::*;
+///
+/// #[wasm_bindgen]
+/// extern "C" {
+///     fn requestAnimationFrame(closure: &Closure<FnMut()>) -> u32;
+///     fn cancelAnimationFrame(id: u32);
+///
+///     #[wasm_bindgen(js_namespace = console)]
+///     fn log(s: &str);
+/// }
+///
+/// #[wasm_bindgen]
+/// pub struct AnimationFrameHandle {
+///     animation_id: u32,
+///     _closure: Closure<FnMut()>,
+/// }
+///
+/// impl Drop for AnimationFrameHandle {
+///     fn drop(&mut self) {
+///         cancelAnimationFrame(self.animation_id);
+///     }
+/// }
+///
+/// // A type that will log a message when it is dropped.
+/// struct LogOnDrop(&'static str);
+/// impl Drop for LogOnDrop {
+///     fn drop(&mut self) {
+///         log(self.0);
+///     }
+/// }
+///
+/// #[wasm_bindgen]
+/// pub fn run() -> AnimationFrameHandle {
+///     // We are using `Closure::once` which takes a `FnOnce`, so the function
+///     // can drop and/or move things that it closes over.
+///     let fired = LogOnDrop("animation frame fired or canceled");
+///     let cb = Closure::once(move || drop(fired));
+///
+///     // Schedule the animation frame!
+///     let animation_id = requestAnimationFrame(&cb);
+///
+///     // Again, return a handle to JS, so that the closure is not dropped
+///     // immediately and JS can decide whether to cancel the animation frame.
+///     AnimationFrameHandle {
+///         animation_id,
+///         _closure: cb,
+///     }
+/// }
+/// ```
+///
+/// ## Converting `FnOnce`s directly into JavaScript Functions with `Closure::once_into_js`
+///
+/// If we don't want to allow a `FnOnce` to be eagerly dropped (maybe because we
+/// just want it to drop after it is called and don't care about cancellation)
+/// then we can use the `Closure::once_into_js` function.
+///
+/// This is the same `requestAnimationFrame` example as above, but without
+/// supporting early cancellation.
+///
+/// ```
+/// use wasm_bindgen::prelude::*;
+///
+/// #[wasm_bindgen]
+/// extern "C" {
+///     // We modify the binding to take an untyped `JsValue` since that is what
+///     // is returned by `Closure::once_into_js`.
+///     //
+///     // If we were using the `web_sys` binding for `requestAnimationFrame`,
+///     // then the call sites would cast the `JsValue` into a `&js_sys::Function`
+///     // using `f.unchecked_ref::<js_sys::Function>()`. See the `web_sys`
+///     // example above for details.
+///     fn requestAnimationFrame(callback: JsValue);
+///
+///     #[wasm_bindgen(js_namespace = console)]
+///     fn log(s: &str);
+/// }
+///
+/// // A type that will log a message when it is dropped.
+/// struct LogOnDrop(&'static str);
+/// impl Drop for LogOnDrop {
+///     fn drop(&mut self) {
+///         log(self.0);
+///     }
+/// }
+///
+/// #[wasm_bindgen]
+/// pub fn run() {
+///     // We are using `Closure::once_into_js` which takes a `FnOnce` and
+///     // converts it into a JavaScript function, which is returned as a
+///     // `JsValue`.
+///     let fired = LogOnDrop("animation frame fired");
+///     let cb = Closure::once_into_js(move || drop(fired));
+///
+///     // Schedule the animation frame!
+///     requestAnimationFrame(cb);
+///
+///     // No need to worry about whether or not we drop a `Closure`
+///     // here or return some sort of handle to JS!
 /// }
 /// ```
 pub struct Closure<T: ?Sized> {
@@ -109,39 +250,47 @@ union FatPtr<T: ?Sized> {
 }
 
 impl<T> Closure<T>
-    where T: ?Sized + WasmClosure,
+where
+    T: ?Sized + WasmClosure,
 {
-    /// Creates a new instance of `Closure` from the provided Rust closure.
-    ///
-    /// Note that the closure provided here, `F`, has a few requirements
-    /// associated with it:
-    ///
-    /// * It must implement `Fn` or `FnMut`
-    /// * It must be `'static`, aka no stack references (use the `move` keyword)
-    /// * It can have at most 7 arguments
-    /// * Its arguments and return values are all wasm types like u32/f64.
-    ///
-    /// This is unfortunately pretty restrictive for now but hopefully some of
-    /// these restrictions can be lifted in the future!
+    /// A more ergonomic version of `Closure::wrap` that does the boxing and
+    /// cast to trait object for you.
     ///
     /// *This method requires the `nightly` feature of the `wasm-bindgen` crate
     /// to be enabled, meaning this is a nightly-only API. Users on stable
     /// should use `Closure::wrap`.*
     #[cfg(feature = "nightly")]
     pub fn new<F>(t: F) -> Closure<T>
-        where F: Unsize<T> + 'static
+    where
+        F: Unsize<T> + 'static,
     {
         Closure::wrap(Box::new(t) as Box<T>)
     }
 
-    /// A mostly internal function to wrap a boxed closure inside a `Closure`
-    /// type.
+    /// Creates a new instance of `Closure` from the provided boxed Rust
+    /// function.
     ///
-    /// This is the function where the JS closure is manufactured.
+    /// Note that the closure provided here, `Box<T>`, has a few requirements
+    /// associated with it:
+    ///
+    /// * It must implement `Fn` or `FnMut` (for `FnOnce` functions see
+    ///   `Closure::once` and `Closure::once_into_js`).
+    ///
+    /// * It must be `'static`, aka no stack references (use the `move`
+    ///   keyword).
+    ///
+    /// * It can have at most 7 arguments.
+    ///
+    /// * Its arguments and return values are all types that can be shared with
+    ///   JS (i.e. have `#[wasm_bindgen]` annotations or are simple numbers,
+    ///   etc.)
     pub fn wrap(mut data: Box<T>) -> Closure<T> {
         assert_eq!(mem::size_of::<*const T>(), mem::size_of::<FatPtr<T>>());
         let (a, b) = unsafe {
-            FatPtr { ptr: &mut *data as *mut T }.fields
+            FatPtr {
+                ptr: &mut *data as *mut T,
+            }
+            .fields
         };
 
         // Here we need to create a `JsValue` with the data and `T::invoke()`
@@ -194,20 +343,11 @@ impl<T> Closure<T>
         }
 
         #[inline(never)]
-        unsafe fn breaks_if_inlined<T: WasmClosure + ?Sized>(
-            a: usize,
-            b: usize,
-        ) -> u32 {
-            super::__wbindgen_describe_closure(
-                a as u32,
-                b as u32,
-                describe::<T> as u32,
-            )
+        unsafe fn breaks_if_inlined<T: WasmClosure + ?Sized>(a: usize, b: usize) -> u32 {
+            super::__wbindgen_describe_closure(a as u32, b as u32, describe::<T> as u32)
         }
 
-        let idx = unsafe {
-            breaks_if_inlined::<T>(a, b)
-        };
+        let idx = unsafe { breaks_if_inlined::<T>(a, b) };
 
         Closure {
             js: ManuallyDrop::new(JsValue::_new(idx)),
@@ -234,6 +374,84 @@ impl<T> Closure<T>
     }
 }
 
+// NB: we use a specific `T` for this `Closure<T>` impl block to avoid every
+// call site having to provide an explicit, turbo-fished type like
+// `Closure::<FnOnce()>::once(...)`.
+impl Closure<FnOnce()> {
+    /// Create a `Closure` from a function that can only be called once.
+    ///
+    /// Since we have no way of enforcing that JS cannot attempt to call this
+    /// `FnOne(A...) -> R` more than once, this produces a `Closure<FnMut(A...)
+    /// -> R>` that will dynamically throw a JavaScript error if called more
+    /// than once.
+    ///
+    /// # Example
+    ///
+    /// ```rust,no_run
+    /// use wasm_bindgen::prelude::*;
+    ///
+    /// // Create an non-`Copy`, owned `String`.
+    /// let mut s = String::from("Hello");
+    ///
+    /// // Close over `s`. Since `f` returns `s`, it is `FnOnce` and can only be
+    /// // called once. If it was called a second time, it wouldn't have any `s`
+    /// // to work with anymore!
+    /// let f = move || {
+    ///     s += ", World!";
+    ///     s
+    /// };
+    ///
+    /// // Create a `Closure` from `f`. Note that the `Closure`'s type parameter
+    /// // is `FnMut`, even though `f` is `FnOnce`.
+    /// let closure: Closure<FnMut() -> String> = Closure::once(f);
+    /// ```
+    pub fn once<F, A, R>(fn_once: F) -> Closure<F::FnMut>
+    where
+        F: 'static + WasmClosureFnOnce<A, R>,
+    {
+        Closure::wrap(fn_once.into_fn_mut())
+    }
+
+    /// Convert a `FnOnce(A...) -> R` into a JavaScript `Function` object.
+    ///
+    /// If the JavaScript function is invoked more than once, it will throw an
+    /// exception.
+    ///
+    /// Unlike `Closure::once`, this does *not* return a `Closure` that can be
+    /// dropped before the function is invoked to deallocate the closure. The
+    /// only way the `FnOnce` is deallocated is by calling the JavaScript
+    /// function. If the JavaScript function is never called then the `FnOnce`
+    /// and everything it closes over will leak.
+    ///
+    /// ```rust,ignore
+    /// use js_sys;
+    /// use wasm_bindgen::{prelude::*, JsCast};
+    ///
+    /// let f = Closure::once_into_js(move || {
+    ///     // ...
+    /// });
+    ///
+    /// assert!(f.is_instance_of::<js_sys::Function>());
+    /// ```
+    pub fn once_into_js<F, A, R>(fn_once: F) -> JsValue
+    where
+        F: 'static + WasmClosureFnOnce<A, R>,
+    {
+        fn_once.into_js_function()
+    }
+}
+
+/// A trait for converting an `FnOnce(A...) -> R` into a `FnMut(A...) -> R` that
+/// will throw if ever called more than once.
+#[doc(hidden)]
+pub trait WasmClosureFnOnce<A, R>: 'static {
+    type FnMut: ?Sized + 'static + WasmClosure;
+
+    fn into_fn_mut(self) -> Box<Self::FnMut>;
+
+    fn into_js_function(self) -> JsValue;
+}
+
 impl<T: ?Sized> AsRef<JsValue> for Closure<T> {
     fn as_ref(&self) -> &JsValue {
         &self.js
@@ -241,7 +459,8 @@ impl<T: ?Sized> AsRef<JsValue> for Closure<T> {
 }
 
 impl<T> WasmDescribe for Closure<T>
-    where T: WasmClosure + ?Sized,
+where
+    T: WasmClosure + ?Sized,
 {
     fn describe() {
         inform(ANYREF);
@@ -250,7 +469,8 @@ impl<T> WasmDescribe for Closure<T>
 
 // `Closure` can only be passed by reference to imports.
 impl<'a, T> IntoWasmAbi for &'a Closure<T>
-    where T: WasmClosure + ?Sized,
+where
+    T: WasmClosure + ?Sized,
 {
     type Abi = u32;
 
@@ -270,7 +490,8 @@ fn _check() {
 }
 
 impl<T> Drop for Closure<T>
-    where T: ?Sized,
+where
+    T: ?Sized,
 {
     fn drop(&mut self) {
         unsafe {
@@ -345,7 +566,7 @@ macro_rules! doit {
                     a: usize,
                     b: usize,
                 ) {
-                    debug_assert!(a != 0);
+                    debug_assert!(a != 0, "should never destroy a Fn whose pointer is 0");
                     drop(Box::from_raw(FatPtr::<Fn($($var,)*) -> R> {
                         fields: (a, b)
                     }.ptr));
@@ -392,7 +613,7 @@ macro_rules! doit {
                     a: usize,
                     b: usize,
                 ) {
-                    debug_assert!(a != 0);
+                    debug_assert!(a != 0, "should never destroy a FnMut whose pointer is 0");
                     drop(Box::from_raw(FatPtr::<FnMut($($var,)*) -> R> {
                         fields: (a, b)
                     }.ptr));
@@ -400,6 +621,56 @@ macro_rules! doit {
                 inform(destroy::<$($var,)* R> as u32);
 
                 <&mut Self>::describe();
+            }
+        }
+
+        #[allow(non_snake_case)]
+        impl<T, $($var,)* R> WasmClosureFnOnce<($($var),*), R> for T
+            where T: 'static + FnOnce($($var),*) -> R,
+                  $($var: FromWasmAbi + 'static,)*
+                  R: ReturnWasmAbi + 'static
+        {
+            type FnMut = FnMut($($var),*) -> R;
+
+            fn into_fn_mut(self) -> Box<Self::FnMut> {
+                let mut me = Some(self);
+                Box::new(move |$($var),*| {
+                    let me = me.take().expect_throw("FnOnce called more than once");
+                    me($($var),*)
+                })
+            }
+
+            fn into_js_function(self) -> JsValue {
+                use std::rc::Rc;
+                use __rt::WasmRefCell;
+
+                let mut me = Some(self);
+
+                let rc1 = Rc::new(WasmRefCell::new(None));
+                let rc2 = rc1.clone();
+
+                let closure = Closure::wrap(Box::new(move |$($var),*| {
+                    // Invoke ourself and get the result.
+                    let me = me.take().expect_throw("FnOnce called more than once");
+                    let result = me($($var),*);
+
+                    // And then drop the `Rc` holding this function's `Closure`
+                    // alive.
+                    debug_assert_eq!(Rc::strong_count(&rc2), 1);
+                    let option_closure = rc2.borrow_mut().take();
+                    debug_assert!(option_closure.is_some());
+                    drop(option_closure);
+
+                    result
+                }) as Box<FnMut($($var),*) -> R>);
+
+                let js_val = closure.as_ref().clone();
+
+                *rc1.borrow_mut() = Some(closure);
+                debug_assert_eq!(Rc::strong_count(&rc1), 2);
+                drop(rc1);
+
+                js_val
             }
         }
     )*)
