@@ -388,9 +388,9 @@ fn implement_thread_intrinsics(module: &mut Module, globals: &Globals) -> Result
         let ty = module.types.get(function.ty());
 
         match &import.name[..] {
-            "__wbindgen_thread_id" => {
+            "__wbindgen_current_id" => {
                 if !ty.params().is_empty() || ty.results() != &[ValType::I32] {
-                    bail!("`__wbindgen_thread_id` intrinsic has the wrong signature");
+                    bail!("`__wbindgen_current_id` intrinsic has the wrong signature");
                 }
                 map.insert(function.id(), Intrinsic::GetThreadId);
             }
