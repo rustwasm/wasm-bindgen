@@ -28,12 +28,6 @@ error: cannot import mutable globals yet
 21 |     static mut FOO: u32;
    |            ^^^
 
-error: can't #[wasm_bindgen] variadic functions
-  --> $DIR/invalid-items.rs:23:25
-   |
-23 |     pub fn foo3(x: i32, ...);
-   |                         ^^^
-
 error: only foreign mods with the `C` ABI are allowed
   --> $DIR/invalid-items.rs:27:8
    |
@@ -64,5 +58,5 @@ error: #[wasm_bindgen] can only be applied to a function, struct, enum, impl, or
 38 | trait X {}
    | ^^^^^^^^^^
 
-error: aborting due to 11 previous errors
+error: aborting due to 10 previous errors
 

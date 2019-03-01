@@ -20,7 +20,7 @@ struct Foo<T>(T);
 extern "C" {
     static mut FOO: u32;
 
-    pub fn foo3(x: i32, ...);
+    // pub fn foo3(x: i32, ...);
 }
 
 #[wasm_bindgen]
