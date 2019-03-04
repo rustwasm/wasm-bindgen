@@ -337,6 +337,6 @@ jobs:
         condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
         displayName: 'Create GitHub Release'
         inputs:
-          gitHubConnection: alexcrichton-oauth
+          gitHubConnection: alexcrichton-token
           repositoryName: rustwasm/wasm-bindgen
           assets: gh-release/*.tar.gz
