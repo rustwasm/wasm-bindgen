@@ -301,7 +301,7 @@ jobs:
           set -ex
           mkdir -p gh-release
           find .
-          tag=`git describe --abbrev=0`
+          tag=`git describe --tags`
           mk() {
             target=$1
             src=$2
@@ -338,5 +338,5 @@ jobs:
         displayName: 'Create GitHub Release'
         inputs:
           gitHubConnection: alexcrichton-oauth
-          repositoryName: alexcrichton/wasm-bindgen
+          repositoryName: rustwasm/wasm-bindgen
           assets: gh-release/*.tar.gz
