@@ -334,7 +334,7 @@ jobs:
         env:
           GITHUB_DEPLOY_KEY: $(GITHUB_DEPLOY_KEY)
       - task: GithubRelease@0
-        condition: condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+        condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
         displayName: 'Create GitHub Release'
         inputs:
           gitHubConnection: alexcrichton-oauth
