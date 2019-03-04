@@ -4,6 +4,7 @@
 
 **Facilitating high-level interactions between wasm modules and JavaScript.**
 
+[![Build Status](https://dev.azure.com/rustwasm/wasm-bindgen/_apis/build/status/rustwasm.wasm-bindgen?branchName=master)](https://dev.azure.com/rustwasm/wasm-bindgen/_build/latest?definitionId=1&branchName=master)
 [![Build Status](https://travis-ci.org/rustwasm/wasm-bindgen.svg?branch=master)](https://travis-ci.org/rustwasm/wasm-bindgen)
 [![Build status](https://ci.appveyor.com/api/projects/status/559c0lj5oh271u4c?svg=true)](https://ci.appveyor.com/project/alexcrichton/wasm-bindgen)
 [![](https://meritbadge.herokuapp.com/wasm-bindgen)](https://crates.io/crates/wasm-bindgen)
