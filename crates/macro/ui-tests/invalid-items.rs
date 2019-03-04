@@ -20,9 +20,7 @@ struct Foo<T>(T);
 extern "C" {
     static mut FOO: u32;
 
-    // FIXME(rust-lang/rust#58853) recent regression needs fixing before
-    // re-enabling.
-    // pub fn foo3(x: i32, ...);
+    pub fn foo3(x: i32, ...);
 }
 
 #[wasm_bindgen]
