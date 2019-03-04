@@ -127,7 +127,7 @@ jobs:
       - script: npm install
       - script: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
       - script: cargo build -p wasm-bindgen-cli
-      - script: ln -snf target/debug/wasm-bindgen $HOME/.cargo/wasm-bindgen
+      - script: ln -snf `pwd`/target/debug/wasm-bindgen $HOME/.cargo/bin/wasm-bindgen
       - script: |
           for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler`; do
             (cd examples/$dir &&

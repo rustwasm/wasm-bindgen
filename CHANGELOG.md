@@ -32,6 +32,52 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.38
+
+Released 2019-03-04.
+
+### Added
+
+* Support for `Option<RustStruct>` in `#[wasm_bindgen]` functions has now been
+  added.
+  [#1275](https://github.com/rustwasm/wasm-bindgen/pull/1275)
+
+* Experimental support for the `anyref` type proposal in WebAssembly has now
+  landed and is enabled with `WASM_BINDGEN_ANYREF=1`.
+  [#1002](https://github.com/rustwasm/wasm-bindgen/pull/1002)
+
+* Support fot the new browser `TextEncode#encodeInto` API has been added.
+  [#1279](https://github.com/rustwasm/wasm-bindgen/pull/1279)
+
+* JS doc comments are now added to TypeScript bindings in addition to the JS
+  bindings generated.
+  [#1302](https://github.com/rustwasm/wasm-bindgen/pull/1302)
+
+* Initial support for `FnOnce` closures has been added to the `Closure` type.
+  [#1281](https://github.com/rustwasm/wasm-bindgen/pull/1281)
+
+### Fixed
+
+* Fixed an internal assert tripping when some modules were compiled with LTO.
+  [#1274](https://github.com/rustwasm/wasm-bindgen/pull/1274)
+
+* The `Context` type in the `wasm-bindgen-test` crate had its JS name changed to
+  avoid conflicts with other crates that have a `Context` type being exported.
+  [#1280](https://github.com/rustwasm/wasm-bindgen/pull/1280)
+
+* The headless test runner for Safari on macOS High Sierra has been fixed.
+  [#1298](https://github.com/rustwasm/wasm-bindgen/pull/1298)
+
+### Changed
+
+* The `wasm-bindgen` CLI tool now emits the `producers` section again with
+  relevant bugs having been fixed in the meantime. The
+  `--remove-producers-section` flag can continue to be used to omit emission of
+  this section.
+  [#1263](https://github.com/rustwasm/wasm-bindgen/pull/1263)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.37
 
 Released 2019-02-15.
