@@ -16,6 +16,7 @@ macro_rules! shared_api {
             typescript_custom_sections: Vec<&'a str>,
             local_modules: Vec<LocalModule<'a>>,
             inline_js: Vec<&'a str>,
+            unique_crate_identifier: &'a str,
         }
 
         struct Import<'a> {

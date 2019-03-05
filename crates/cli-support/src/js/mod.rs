@@ -58,9 +58,11 @@ pub struct Context<'a> {
     /// known as to their actual JS contents.
     pub local_modules: HashMap<&'a str, &'a str>,
 
-    /// An integer offset of where to start assigning indexes to `inline_js`
-    /// snippets. This is incremented each time a `Program` is processed.
-    pub snippet_offset: usize,
+    /// A map of how many snippets we've seen from each unique crate identifier,
+    /// used to number snippets correctly when writing them to the filesystem
+    /// when there's multiple snippets within one crate that aren't all part of
+    /// the same `Program`.
+    pub snippet_offsets: HashMap<&'a str, usize>,
 
     pub anyref: wasm_bindgen_anyref_xform::Context,
 }
@@ -118,7 +120,8 @@ enum Import<'a> {
     },
     /// Same as `Module`, except we're importing from an `inline_js` attribute
     InlineJs {
-        idx: usize,
+        unique_crate_identifier: &'a str,
+        snippet_idx_in_crate: usize,
         name: &'a str,
         field: Option<&'a str>,
     },
@@ -2133,9 +2136,14 @@ impl<'a> Context<'a> {
                         let path = match import {
                             Import::Module { module, .. } => module.to_string(),
                             Import::LocalModule { module, .. } => format!("./snippets/{}", module),
-                            Import::InlineJs { idx, .. } => {
-                                format!("./snippets/wbg-inline{}.js", idx)
-                            }
+                            Import::InlineJs {
+                                unique_crate_identifier,
+                                snippet_idx_in_crate,
+                                ..
+                            } => format!(
+                                "./snippets/{}/inline{}.js",
+                                unique_crate_identifier, snippet_idx_in_crate
+                            ),
                             _ => unreachable!(),
                         };
                         if use_node_require {
@@ -2918,11 +2926,19 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 name,
                 field,
             },
-            decode::ImportModule::Inline(idx) => Import::InlineJs {
-                idx: idx as usize + self.cx.snippet_offset,
-                name,
-                field,
-            },
+            decode::ImportModule::Inline(idx) => {
+                let offset = *self
+                    .cx
+                    .snippet_offsets
+                    .get(self.program.unique_crate_identifier)
+                    .unwrap_or(&0);
+                Import::InlineJs {
+                    unique_crate_identifier: self.program.unique_crate_identifier,
+                    snippet_idx_in_crate: idx as usize + offset,
+                    name,
+                    field,
+                }
+            }
             decode::ImportModule::None => Import::Global { name, field },
         })
     }
@@ -2936,7 +2952,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
 #[derive(Hash, Eq, PartialEq)]
 pub enum ImportModule<'a> {
     Named(&'a str),
-    Inline(usize),
+    Inline(&'a str, usize),
     None,
 }
 
@@ -2946,7 +2962,11 @@ impl<'a> Import<'a> {
             Import::Module { module, .. } | Import::LocalModule { module, .. } => {
                 ImportModule::Named(module)
             }
-            Import::InlineJs { idx, .. } => ImportModule::Inline(*idx),
+            Import::InlineJs {
+                unique_crate_identifier,
+                snippet_idx_in_crate,
+                ..
+            } => ImportModule::Inline(unique_crate_identifier, *snippet_idx_in_crate),
             Import::Global { .. } | Import::VendorPrefixed { .. } => ImportModule::None,
         }
     }

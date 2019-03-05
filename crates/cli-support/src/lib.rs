@@ -304,7 +304,7 @@ impl Bindgen {
                 local_modules: Default::default(),
                 start: None,
                 anyref: Default::default(),
-                snippet_offset: 0,
+                snippet_offsets: Default::default(),
             };
             cx.anyref.enabled = self.anyref;
             cx.anyref.prepare(cx.module)?;
@@ -316,14 +316,21 @@ impl Bindgen {
                 }
                 .generate()?;
 
-                for (i, js) in program.inline_js.iter().enumerate() {
-                    let name = format!("wbg-inline{}.js", i + cx.snippet_offset);
-                    let path = out_dir.join("snippets").join(name);
+                let offset = cx
+                    .snippet_offsets
+                    .entry(program.unique_crate_identifier)
+                    .or_insert(0);
+                for js in program.inline_js.iter() {
+                    let name = format!("inline{}.js", *offset);
+                    *offset += 1;
+                    let path = out_dir
+                        .join("snippets")
+                        .join(program.unique_crate_identifier)
+                        .join(name);
                     fs::create_dir_all(path.parent().unwrap())?;
                     fs::write(&path, js)
                         .with_context(|_| format!("failed to write `{}`", path.display()))?;
                 }
-                cx.snippet_offset += program.inline_js.len();
             }
 
             // Write out all local JS snippets to the final destination now that
@@ -630,7 +637,9 @@ fn demangle(module: &mut Module) {
 impl OutputMode {
     fn nodejs_experimental_modules(&self) -> bool {
         match self {
-            OutputMode::Node { experimental_modules } => *experimental_modules,
+            OutputMode::Node {
+                experimental_modules,
+            } => *experimental_modules,
             _ => false,
         }
     }

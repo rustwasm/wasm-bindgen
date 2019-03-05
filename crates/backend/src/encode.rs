@@ -78,7 +78,7 @@ impl Interner {
 
         // Generate a unique ID which is somewhat readable as well, so mix in
         // the crate name, hash to make it unique, and then the original path.
-        let new_identifier = format!("{}-{}{}", self.crate_name, ShortHash(0), id);
+        let new_identifier = format!("{}{}", self.unique_crate_identifier(), id);
         let file = LocalFile {
             path,
             definition: span,
@@ -87,6 +87,10 @@ impl Interner {
         files.insert(id.to_string(), file);
         drop(files);
         self.resolve_import_module(id, span)
+    }
+
+    fn unique_crate_identifier(&self) -> String {
+        format!("{}-{}", self.crate_name, ShortHash(0))
     }
 }
 
@@ -139,6 +143,7 @@ fn shared_program<'a>(
             .iter()
             .map(|js| intern.intern_str(js))
             .collect(),
+        unique_crate_identifier: intern.intern_str(&intern.unique_crate_identifier()),
     })
 }
 
