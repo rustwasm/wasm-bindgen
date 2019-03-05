@@ -128,7 +128,6 @@ impl TryToTokens for ast::Program {
             #[doc(hidden)]
             #[allow(clippy::all)]
             pub static #generated_static_name: [u8; #generated_static_length] = {
-                #[doc(hidden)]
                 static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
 
                 *#generated_static_value
