@@ -47,6 +47,8 @@ jobs:
         displayName: "js-sys test suite"
       - script: cargo test --target wasm32-unknown-unknown -p webidl-tests
         displayName: "webidl-tests test suite"
+        env:
+          WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
       - script: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features "Node Window Document"
         displayName: "web-sys build"
 
