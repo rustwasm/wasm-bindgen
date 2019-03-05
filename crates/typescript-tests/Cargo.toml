@@ -1,0 +1,11 @@
+[package]
+name = "typescript-tests"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+edition = "2018"
+
+[dependencies]
+wasm-bindgen = { path = '../..' }
+
+[lib]
+crate-type = ['cdylib']
