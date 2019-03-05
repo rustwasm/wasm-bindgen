@@ -97,6 +97,8 @@ jobs:
       - template: ci/azure-install-sccache.yml
       - script: cargo test -p wasm-bindgen-webidl
       - script: cargo test -p webidl-tests --target wasm32-unknown-unknown
+        env:
+          WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
 
   - job: test_ui
     displayName: "Run UI tests"
