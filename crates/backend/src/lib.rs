@@ -2,6 +2,7 @@
 #![cfg_attr(feature = "extra-traits", deny(missing_debug_implementations))]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-backend/0.2")]
 
+extern crate bumpalo;
 #[macro_use]
 extern crate log;
 extern crate proc_macro2;

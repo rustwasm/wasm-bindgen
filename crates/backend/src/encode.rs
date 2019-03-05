@@ -1,6 +1,6 @@
 use proc_macro2::{Ident, Span};
 use std::cell::RefCell;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -24,8 +24,7 @@ pub fn encode(program: &ast::Program) -> Result<EncodeResult, Diagnostic> {
 }
 
 struct Interner {
-    map: RefCell<HashMap<Ident, String>>,
-    strings: RefCell<HashSet<String>>,
+    bump: bumpalo::Bump,
     files: RefCell<HashMap<String, LocalFile>>,
     root: PathBuf,
     crate_name: String,
@@ -40,8 +39,7 @@ struct LocalFile {
 impl Interner {
     fn new() -> Interner {
         Interner {
-            map: RefCell::new(HashMap::new()),
-            strings: RefCell::new(HashSet::new()),
+            bump: bumpalo::Bump::new(),
             files: RefCell::new(HashMap::new()),
             root: env::var_os("CARGO_MANIFEST_DIR").unwrap().into(),
             crate_name: env::var("CARGO_PKG_NAME").unwrap(),
@@ -49,22 +47,14 @@ impl Interner {
     }
 
     fn intern(&self, s: &Ident) -> &str {
-        let mut map = self.map.borrow_mut();
-        if let Some(s) = map.get(s) {
-            return unsafe { &*(&**s as *const str) };
-        }
-        map.insert(s.clone(), s.to_string());
-        unsafe { &*(&*map[s] as *const str) }
+        self.intern_str(&s.to_string())
     }
 
     fn intern_str(&self, s: &str) -> &str {
-        let mut strings = self.strings.borrow_mut();
-        if let Some(s) = strings.get(s) {
-            return unsafe { &*(&**s as *const str) };
-        }
-        strings.insert(s.to_string());
-        drop(strings);
-        self.intern_str(s)
+        // NB: eventually this could be used to intern `s` to only allocate one
+        // copy, but for now let's just "transmute" `s` to have the same
+        // lifetmie as this struct itself (which is our main goal here)
+        bumpalo::collections::String::from_str_in(s, &self.bump).into_bump_str()
     }
 
     /// Given an import to a local module `id` this generates a unique module id
