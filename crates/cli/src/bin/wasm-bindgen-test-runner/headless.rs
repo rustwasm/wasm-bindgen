@@ -506,6 +506,7 @@ impl<'a> BackgroundChild<'a> {
         cmd.stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .stdin(Stdio::null());
+        log::debug!("executing {:?}", cmd);
         let mut child = cmd
             .spawn()
             .context(format!("failed to spawn {:?} binary", path))?;

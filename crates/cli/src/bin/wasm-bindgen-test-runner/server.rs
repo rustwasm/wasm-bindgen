@@ -5,7 +5,6 @@ use std::path::Path;
 
 use failure::{format_err, Error, ResultExt};
 use rouille::{Request, Response, Server};
-use wasm_bindgen_cli_support::wasm2es6js::Config;
 
 pub fn spawn(
     addr: &SocketAddr,
@@ -23,9 +22,9 @@ pub fn spawn(
             __wbgtest_console_log,
             __wbgtest_console_info,
             __wbgtest_console_warn,
-            __wbgtest_console_error
+            __wbgtest_console_error,
+            default as init,
         }} from './{0}';
-        import * as wasm from './{0}_bg';
 
         // Now that we've gotten to the point where JS is executing, update our
         // status text as at this point we should be asynchronously fetching the
@@ -33,9 +32,7 @@ pub fn spawn(
         document.getElementById('output').textContent = "Loading wasm module...";
 
         async function main(test) {{
-            // this is a facet of using wasm2es6js, a hack until browsers have
-            // native ESM support for wasm modules.
-            await wasm.booted;
+            const wasm = await init('./{0}_bg.wasm');
 
             const cx = new Context();
             window.on_console_debug = __wbgtest_console_debug;
@@ -64,25 +61,6 @@ pub fn spawn(
 
     let js_path = tmpdir.join("run.js");
     fs::write(&js_path, js_to_execute).context("failed to write JS file")?;
-
-    // No browser today supports a wasm file as ES modules natively, so we need
-    // to shim it. Use `wasm2es6js` here to fetch an appropriate URL and look
-    // like an ES module with the wasm module under the hood.
-    //
-    // TODO: don't reparse the wasm module here, should pass the
-    //       `Module struct` directly from the output of
-    //       `wasm-bindgen` previously here and avoid unnecessary
-    //       parsing.
-    let wasm_name = format!("{}_bg.wasm", module);
-    let wasm = fs::read(tmpdir.join(&wasm_name))?;
-    let output = Config::new()
-        .fetch(Some(format!("/{}", wasm_name)))
-        .generate(&wasm)?;
-    let (js, wasm) = output.js_and_wasm()?;
-    let wasm = wasm.unwrap();
-    fs::write(tmpdir.join(format!("{}_bg.js", module)), js).context("failed to write JS file")?;
-    fs::write(tmpdir.join(format!("{}_bg.wasm", module)), wasm)
-        .context("failed to write wasm file")?;
 
     // For now, always run forever on this port. We may update this later!
     let tmpdir = tmpdir.to_path_buf();

@@ -27,6 +27,7 @@
   - [web-sys: A TODO MVC App](./examples/todomvc.md)
 - [Reference](./reference/index.md)
   - [Deployment](./reference/deployment.md)
+  - [JS snippets](./reference/js-snippets.md)
   - [Passing Rust Closures to JS](./reference/passing-rust-closures-to-js.md)
   - [Receiving JS Closures in Rust](./reference/receiving-js-closures-in-rust.md)
   - [`Promise`s and `Future`s](./reference/js-promises-and-rust-futures.md)

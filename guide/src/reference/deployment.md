@@ -29,26 +29,29 @@ necessary.
 
 If you're not using a bundler but you're still running code in a web browser,
 `wasm-bindgen` still supports this! For this use case you'll want to use the
-`--no-modules` flag. You can check out a [full example][nomex] in the
+`--browser` flag. You can check out a [full example][nomex] in the
 documentation, but the highlights of this output are:
 
-* When using `wasm-pack` you'll pass `--target no-modules`, and when using
-  `wasm-bindgen` directly you'll pass `--no-modules`.
+* When using `wasm-bindgen` directly you'll pass `--browser`.
 * The output can natively be included on a web page, and doesn't require any
-  further postprocessing.
-* The `--no-modules` mode is not able to use NPM dependencies nor local JS
-  snippets (both currently [proposed][rfc1] [features][rfc2])
+  further postprocessing. The output is included as an ES module.
+* The `--browser` mode is not able to use NPM dependencies.
 * You'll want to review the [browser requirements] for `wasm-bindgen` because
   no polyfills will be available.
+
+> **Note**: currently `--browser` is not supported in `wasm-pack` because it is
+> a very recent addition to `wasm-bindgen`, but support will be added soon!
 
 [nomex]: ../examples/without-a-bundler.html
 [rfc1]: https://github.com/rustwasm/rfcs/pull/6
 [rfc2]: https://github.com/rustwasm/rfcs/pull/8
 [browser requirements]: browser-support.html
 
-Despite these limitations almost all code today is compatible with
-`--no-modules`, but this area is actively being worked on to improve the
-experience so the experience here may be tweaked over time!
+The `wasm-bindgen` CLI also supports an output mode called `--no-modules` which
+is similar to `--browser` in that it requires manual initialization of the wasm
+and is intended to be included in web pages without any further postprocessing.
+See the [without a bundler example][nomex] for some more information about
+`--no-modules`, which corresponds to `--target no-modules` in `wasm-pack`.
 
 ## Node.js
 

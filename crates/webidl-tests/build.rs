@@ -21,14 +21,13 @@ fn main() {
 
         let out_file = out_dir.join(path.file_name().unwrap()).with_extension("rs");
 
-        let js_file = path.with_extension("js").canonicalize().unwrap();
         generated_rust.push_str(&format!(
             r#"
             pub mod import_script {{
                 use wasm_bindgen::prelude::*;
                 use wasm_bindgen_test::*;
 
-                #[wasm_bindgen(module = r"{}")]
+                #[wasm_bindgen(module = "/{}.js")]
                 extern "C" {{
                     fn not_actually_a_function{1}(x: &str);
                 }}
@@ -41,7 +40,7 @@ fn main() {
                 }}
             }}
         "#,
-            js_file.display(),
+            path.file_stem().unwrap().to_str().unwrap(),
             i
         ));
 

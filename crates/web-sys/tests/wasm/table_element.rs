@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 use web_sys::{HtmlTableCaptionElement, HtmlTableElement, HtmlTableSectionElement};
 
-#[wasm_bindgen(module = "./tests/wasm/element.js")]
+#[wasm_bindgen(module = "/tests/wasm/element.js")]
 extern "C" {
     fn new_table() -> HtmlTableElement;
     fn new_caption() -> HtmlTableCaptionElement;

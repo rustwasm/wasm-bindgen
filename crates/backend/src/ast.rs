@@ -2,6 +2,7 @@ use proc_macro2::{Ident, Span};
 use shared;
 use syn;
 use Diagnostic;
+use std::hash::{Hash, Hasher};
 
 /// An abstract syntax tree representing a rust program. Contains
 /// extra information for joining up this rust code with javascript.
@@ -24,6 +25,8 @@ pub struct Program {
     pub dictionaries: Vec<Dictionary>,
     /// custom typescript sections to be included in the definition file
     pub typescript_custom_sections: Vec<String>,
+    /// Inline JS snippets
+    pub inline_js: Vec<String>,
 }
 
 /// A rust to js interface. Allows interaction with rust objects/functions
@@ -66,9 +69,35 @@ pub enum MethodSelf {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub struct Import {
-    pub module: Option<String>,
+    pub module: ImportModule,
     pub js_namespace: Option<Ident>,
     pub kind: ImportKind,
+}
+
+#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[derive(Clone)]
+pub enum ImportModule {
+    None,
+    Named(String, Span),
+    Inline(usize, Span),
+}
+
+impl Hash for ImportModule {
+    fn hash<H: Hasher>(&self, h: &mut H) {
+        match self {
+            ImportModule::None => {
+                0u8.hash(h);
+            }
+            ImportModule::Named(name, _) => {
+                1u8.hash(h);
+                name.hash(h);
+            }
+            ImportModule::Inline(idx, _) => {
+                2u8.hash(h);
+                idx.hash(h);
+            }
+        }
+    }
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]

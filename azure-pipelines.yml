@@ -40,10 +40,15 @@ jobs:
       - template: ci/azure-install-sccache.yml
       - script: cargo test --target wasm32-unknown-unknown
         displayName: "wasm-bindgen test suite"
+        env:
+          RUST_LOG: wasm_bindgen_test_runner
+          GECKODRIVER_ARGS: --log trace
       - script: cargo test --target wasm32-unknown-unknown -p js-sys
         displayName: "js-sys test suite"
       - script: cargo test --target wasm32-unknown-unknown -p webidl-tests
         displayName: "webidl-tests test suite"
+        env:
+          WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
       - script: cargo build --manifest-path crates/web-sys/Cargo.toml --target wasm32-unknown-unknown --features "Node Window Document"
         displayName: "web-sys build"
 
@@ -94,6 +99,8 @@ jobs:
       - template: ci/azure-install-sccache.yml
       - script: cargo test -p wasm-bindgen-webidl
       - script: cargo test -p webidl-tests --target wasm32-unknown-unknown
+        env:
+          WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE: 1
 
   - job: test_ui
     displayName: "Run UI tests"

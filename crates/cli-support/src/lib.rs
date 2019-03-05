@@ -17,11 +17,7 @@ pub mod wasm2es6js;
 pub struct Bindgen {
     input: Input,
     out_name: Option<String>,
-    nodejs: bool,
-    nodejs_experimental_modules: bool,
-    browser: bool,
-    no_modules: bool,
-    no_modules_global: Option<String>,
+    mode: OutputMode,
     debug: bool,
     typescript: bool,
     demangle: bool,
@@ -37,6 +33,13 @@ pub struct Bindgen {
     threads: Option<wasm_bindgen_threads_xform::Config>,
     anyref: bool,
     encode_into: EncodeInto,
+}
+
+enum OutputMode {
+    Bundler,
+    Browser,
+    NoModules { global: String },
+    Node { experimental_modules: bool },
 }
 
 enum Input {
@@ -56,11 +59,7 @@ impl Bindgen {
         Bindgen {
             input: Input::None,
             out_name: None,
-            nodejs: false,
-            nodejs_experimental_modules: false,
-            browser: false,
-            no_modules: false,
-            no_modules_global: None,
+            mode: OutputMode::Bundler,
             debug: false,
             typescript: false,
             demangle: true,
@@ -92,29 +91,66 @@ impl Bindgen {
         return self;
     }
 
-    pub fn nodejs(&mut self, node: bool) -> &mut Bindgen {
-        self.nodejs = node;
-        self
+    fn switch_mode(&mut self, mode: OutputMode, flag: &str) -> Result<(), Error> {
+        match self.mode {
+            OutputMode::Bundler => self.mode = mode,
+            _ => bail!(
+                "cannot specify `{}` with another output mode already specified",
+                flag
+            ),
+        }
+        Ok(())
     }
 
-    pub fn nodejs_experimental_modules(&mut self, node: bool) -> &mut Bindgen {
-        self.nodejs_experimental_modules = node;
-        self
+    pub fn nodejs(&mut self, node: bool) -> Result<&mut Bindgen, Error> {
+        if node {
+            self.switch_mode(
+                OutputMode::Node {
+                    experimental_modules: false,
+                },
+                "--nodejs",
+            )?;
+        }
+        Ok(self)
     }
 
-    pub fn browser(&mut self, browser: bool) -> &mut Bindgen {
-        self.browser = browser;
-        self
+    pub fn nodejs_experimental_modules(&mut self, node: bool) -> Result<&mut Bindgen, Error> {
+        if node {
+            self.switch_mode(
+                OutputMode::Node {
+                    experimental_modules: true,
+                },
+                "--nodejs-experimental-modules",
+            )?;
+        }
+        Ok(self)
     }
 
-    pub fn no_modules(&mut self, no_modules: bool) -> &mut Bindgen {
-        self.no_modules = no_modules;
-        self
+    pub fn browser(&mut self, browser: bool) -> Result<&mut Bindgen, Error> {
+        if browser {
+            self.switch_mode(OutputMode::Browser, "--browser")?;
+        }
+        Ok(self)
     }
 
-    pub fn no_modules_global(&mut self, name: &str) -> &mut Bindgen {
-        self.no_modules_global = Some(name.to_string());
-        self
+    pub fn no_modules(&mut self, no_modules: bool) -> Result<&mut Bindgen, Error> {
+        if no_modules {
+            self.switch_mode(
+                OutputMode::NoModules {
+                    global: "wasm_bindgen".to_string(),
+                },
+                "--no-modules",
+            )?;
+        }
+        Ok(self)
+    }
+
+    pub fn no_modules_global(&mut self, name: &str) -> Result<&mut Bindgen, Error> {
+        match &mut self.mode {
+            OutputMode::NoModules { global } => *global = name.to_string(),
+            _ => bail!("can only specify `--no-modules-global` with `--no-modules`"),
+        }
+        Ok(self)
     }
 
     pub fn debug(&mut self, debug: bool) -> &mut Bindgen {
@@ -203,8 +239,10 @@ impl Bindgen {
         // a module's start function, if any, because we assume start functions
         // only show up when injected on behalf of wasm-bindgen's passes.
         if module.start.is_some() {
-            bail!("wasm-bindgen is currently incompatible with modules that \
-                   already have a start function");
+            bail!(
+                "wasm-bindgen is currently incompatible with modules that \
+                 already have a start function"
+            );
         }
 
         let mut program_storage = Vec::new();
@@ -263,8 +301,10 @@ impl Bindgen {
                 imported_functions: Default::default(),
                 imported_statics: Default::default(),
                 direct_imports: Default::default(),
+                local_modules: Default::default(),
                 start: None,
                 anyref: Default::default(),
+                snippet_offsets: Default::default(),
             };
             cx.anyref.enabled = self.anyref;
             cx.anyref.prepare(cx.module)?;
@@ -275,11 +315,37 @@ impl Bindgen {
                     vendor_prefixes: Default::default(),
                 }
                 .generate()?;
+
+                let offset = cx
+                    .snippet_offsets
+                    .entry(program.unique_crate_identifier)
+                    .or_insert(0);
+                for js in program.inline_js.iter() {
+                    let name = format!("inline{}.js", *offset);
+                    *offset += 1;
+                    let path = out_dir
+                        .join("snippets")
+                        .join(program.unique_crate_identifier)
+                        .join(name);
+                    fs::create_dir_all(path.parent().unwrap())?;
+                    fs::write(&path, js)
+                        .with_context(|_| format!("failed to write `{}`", path.display()))?;
+                }
             }
+
+            // Write out all local JS snippets to the final destination now that
+            // we've collected them from all the programs.
+            for (path, contents) in cx.local_modules.iter() {
+                let path = out_dir.join("snippets").join(path);
+                fs::create_dir_all(path.parent().unwrap())?;
+                fs::write(&path, contents)
+                    .with_context(|_| format!("failed to write `{}`", path.display()))?;
+            }
+
             cx.finalize(stem)?
         };
 
-        let extension = if self.nodejs_experimental_modules {
+        let extension = if self.mode.nodejs_experimental_modules() {
             "mjs"
         } else {
             "js"
@@ -296,7 +362,7 @@ impl Bindgen {
 
         let wasm_path = out_dir.join(format!("{}_bg", stem)).with_extension("wasm");
 
-        if self.nodejs {
+        if self.mode.nodejs() {
             let js_path = wasm_path.with_extension(extension);
             let shim = self.generate_node_wasm_import(&module, &wasm_path);
             fs::write(&js_path, shim)
@@ -325,7 +391,7 @@ impl Bindgen {
 
         let mut shim = String::new();
 
-        if self.nodejs_experimental_modules {
+        if self.mode.nodejs_experimental_modules() {
             for (i, module) in imports.iter().enumerate() {
                 shim.push_str(&format!("import * as import{} from '{}';\n", i, module));
             }
@@ -357,7 +423,7 @@ impl Bindgen {
         }
         shim.push_str("let imports = {};\n");
         for (i, module) in imports.iter().enumerate() {
-            if self.nodejs_experimental_modules {
+            if self.mode.nodejs_experimental_modules() {
                 shim.push_str(&format!("imports['{}'] = import{};\n", module, i));
             } else {
                 shim.push_str(&format!("imports['{0}'] = require('{0}');\n", module));
@@ -371,7 +437,7 @@ impl Bindgen {
             ",
         ));
 
-        if self.nodejs_experimental_modules {
+        if self.mode.nodejs_experimental_modules() {
             for entry in m.exports.iter() {
                 shim.push_str("export const ");
                 shim.push_str(&entry.name);
@@ -564,6 +630,46 @@ fn demangle(module: &mut Module) {
         };
         if let Ok(sym) = rustc_demangle::try_demangle(name) {
             func.name = Some(sym.to_string());
+        }
+    }
+}
+
+impl OutputMode {
+    fn nodejs_experimental_modules(&self) -> bool {
+        match self {
+            OutputMode::Node {
+                experimental_modules,
+            } => *experimental_modules,
+            _ => false,
+        }
+    }
+
+    fn nodejs(&self) -> bool {
+        match self {
+            OutputMode::Node { .. } => true,
+            _ => false,
+        }
+    }
+
+    fn no_modules(&self) -> bool {
+        match self {
+            OutputMode::NoModules { .. } => true,
+            _ => false,
+        }
+    }
+
+    fn always_run_in_browser(&self) -> bool {
+        match self {
+            OutputMode::Browser => true,
+            OutputMode::NoModules { .. } => true,
+            _ => false,
+        }
+    }
+
+    fn browser(&self) -> bool {
+        match self {
+            OutputMode::Browser => true,
+            _ => false,
         }
     }
 }

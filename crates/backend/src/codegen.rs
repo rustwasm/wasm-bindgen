@@ -94,16 +94,32 @@ impl TryToTokens for ast::Program {
             shared::SCHEMA_VERSION,
             shared::version()
         );
+        let encoded = encode::encode(self)?;
         let mut bytes = Vec::new();
         bytes.push((prefix_json.len() >> 0) as u8);
         bytes.push((prefix_json.len() >> 8) as u8);
         bytes.push((prefix_json.len() >> 16) as u8);
         bytes.push((prefix_json.len() >> 24) as u8);
         bytes.extend_from_slice(prefix_json.as_bytes());
-        bytes.extend_from_slice(&encode::encode(self)?);
+        bytes.extend_from_slice(&encoded.custom_section);
 
         let generated_static_length = bytes.len();
         let generated_static_value = syn::LitByteStr::new(&bytes, Span::call_site());
+
+        // We already consumed the contents of included files when generating
+        // the custom section, but we want to make sure that updates to the
+        // generated files will cause this macro to rerun incrementally. To do
+        // that we use `include_str!` to force rustc to think it has a
+        // dependency on these files. That way when the file changes Cargo will
+        // automatically rerun rustc which will rerun this macro. Other than
+        // this we don't actually need the results of the `include_str!`, so
+        // it's just shoved into an anonymous static.
+        let file_dependencies = encoded.included_files
+            .iter()
+            .map(|file| {
+                let file = file.to_str().unwrap();
+                quote! { include_str!(#file) }
+            });
 
         (quote! {
             #[allow(non_upper_case_globals)]
@@ -111,8 +127,12 @@ impl TryToTokens for ast::Program {
             #[link_section = "__wasm_bindgen_unstable"]
             #[doc(hidden)]
             #[allow(clippy::all)]
-            pub static #generated_static_name: [u8; #generated_static_length] =
-                *#generated_static_value;
+            pub static #generated_static_name: [u8; #generated_static_length] = {
+                static _INCLUDED_FILES: &[&str] = &[#(#file_dependencies),*];
+
+                *#generated_static_value
+            };
+
         })
         .to_tokens(tokens);
 

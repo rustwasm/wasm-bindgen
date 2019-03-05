@@ -9,6 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen"
 description = """
 The part of the implementation of the `#[wasm_bindgen]` attribute that is not in the shared backend crate
 """
+edition = '2018'
 
 [features]
 spans = ["wasm-bindgen-backend/spans"]

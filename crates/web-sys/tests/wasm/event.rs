@@ -6,7 +6,7 @@ use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
 use web_sys::Event;
 
-#[wasm_bindgen(module = "./tests/wasm/event.js")]
+#[wasm_bindgen(module = "/tests/wasm/event.js")]
 extern "C" {
     fn new_event() -> Promise;
 }

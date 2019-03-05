@@ -1,40 +1,96 @@
+use proc_macro2::{Ident, Span};
 use std::cell::RefCell;
 use std::collections::HashMap;
-
-use proc_macro2::{Ident, Span};
+use std::env;
+use std::fs;
+use std::path::PathBuf;
+use util::ShortHash;
 
 use ast;
 use Diagnostic;
 
-pub fn encode(program: &ast::Program) -> Result<Vec<u8>, Diagnostic> {
+pub struct EncodeResult {
+    pub custom_section: Vec<u8>,
+    pub included_files: Vec<PathBuf>,
+}
+
+pub fn encode(program: &ast::Program) -> Result<EncodeResult, Diagnostic> {
     let mut e = Encoder::new();
     let i = Interner::new();
     shared_program(program, &i)?.encode(&mut e);
-    Ok(e.finish())
+    let custom_section = e.finish();
+    let included_files = i.files.borrow().values().map(|p| &p.path).cloned().collect();
+    Ok(EncodeResult { custom_section, included_files })
 }
 
 struct Interner {
-    map: RefCell<HashMap<Ident, String>>,
+    bump: bumpalo::Bump,
+    files: RefCell<HashMap<String, LocalFile>>,
+    root: PathBuf,
+    crate_name: String,
+}
+
+struct LocalFile {
+    path: PathBuf,
+    definition: Span,
+    new_identifier: String,
 }
 
 impl Interner {
     fn new() -> Interner {
         Interner {
-            map: RefCell::new(HashMap::new()),
+            bump: bumpalo::Bump::new(),
+            files: RefCell::new(HashMap::new()),
+            root: env::var_os("CARGO_MANIFEST_DIR").unwrap().into(),
+            crate_name: env::var("CARGO_PKG_NAME").unwrap(),
         }
     }
 
     fn intern(&self, s: &Ident) -> &str {
-        let mut map = self.map.borrow_mut();
-        if let Some(s) = map.get(s) {
-            return unsafe { &*(&**s as *const str) };
-        }
-        map.insert(s.clone(), s.to_string());
-        unsafe { &*(&*map[s] as *const str) }
+        self.intern_str(&s.to_string())
     }
 
     fn intern_str(&self, s: &str) -> &str {
-        self.intern(&Ident::new(s, Span::call_site()))
+        // NB: eventually this could be used to intern `s` to only allocate one
+        // copy, but for now let's just "transmute" `s` to have the same
+        // lifetmie as this struct itself (which is our main goal here)
+        bumpalo::collections::String::from_str_in(s, &self.bump).into_bump_str()
+    }
+
+    /// Given an import to a local module `id` this generates a unique module id
+    /// to assign to the contents of `id`.
+    ///
+    /// Note that repeated invocations of this function will be memoized, so the
+    /// same `id` will always return the same resulting unique `id`.
+    fn resolve_import_module(&self, id: &str, span: Span) -> Result<&str, Diagnostic> {
+        let mut files = self.files.borrow_mut();
+        if let Some(file) = files.get(id) {
+            return Ok(self.intern_str(&file.new_identifier))
+        }
+        let path = if id.starts_with("/") {
+            self.root.join(&id[1..])
+        } else if id.starts_with("./") || id.starts_with("../") {
+            let msg = "relative module paths aren't supported yet";
+            return Err(Diagnostic::span_error(span, msg))
+        } else {
+            return Ok(self.intern_str(&id))
+        };
+
+        // Generate a unique ID which is somewhat readable as well, so mix in
+        // the crate name, hash to make it unique, and then the original path.
+        let new_identifier = format!("{}{}", self.unique_crate_identifier(), id);
+        let file = LocalFile {
+            path,
+            definition: span,
+            new_identifier,
+        };
+        files.insert(id.to_string(), file);
+        drop(files);
+        self.resolve_import_module(id, span)
+    }
+
+    fn unique_crate_identifier(&self) -> String {
+        format!("{}-{}", self.crate_name, ShortHash(0))
     }
 }
 
@@ -64,8 +120,30 @@ fn shared_program<'a>(
             .iter()
             .map(|x| -> &'a str { &x })
             .collect(),
-        // version: shared::version(),
-        // schema_version: shared::SCHEMA_VERSION.to_string(),
+        local_modules: intern
+            .files
+            .borrow()
+            .values()
+            .map(|file| {
+                fs::read_to_string(&file.path)
+                    .map(|s| {
+                        LocalModule {
+                            identifier: intern.intern_str(&file.new_identifier),
+                            contents: intern.intern_str(&s),
+                        }
+                    })
+                    .map_err(|e| {
+                        let msg = format!("failed to read file `{}`: {}", file.path.display(), e);
+                        Diagnostic::span_error(file.definition, msg)
+                    })
+            })
+            .collect::<Result<Vec<_>, _>>()?,
+        inline_js: prog
+            .inline_js
+            .iter()
+            .map(|js| intern.intern_str(js))
+            .collect(),
+        unique_crate_identifier: intern.intern_str(&intern.unique_crate_identifier()),
     })
 }
 
@@ -111,7 +189,13 @@ fn shared_variant<'a>(v: &'a ast::Variant, intern: &'a Interner) -> EnumVariant<
 
 fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<'a>, Diagnostic> {
     Ok(Import {
-        module: i.module.as_ref().map(|s| &**s),
+        module: match &i.module {
+            ast::ImportModule::Named(m, span) => {
+                ImportModule::Named(intern.resolve_import_module(m, *span)?)
+            }
+            ast::ImportModule::Inline(idx, _) => ImportModule::Inline(*idx as u32),
+            ast::ImportModule::None => ImportModule::None,
+        },
         js_namespace: i.js_namespace.as_ref().map(|s| intern.intern(s)),
         kind: shared_import_kind(&i.kind, intern)?,
     })

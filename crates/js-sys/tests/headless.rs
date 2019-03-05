@@ -10,7 +10,7 @@ use wasm_bindgen_test::*;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
-#[wasm_bindgen(module = "./tests/headless.js")]
+#[wasm_bindgen(module = "/tests/headless.js")]
 extern "C" {
     fn is_array_values_supported() -> bool;
 }
