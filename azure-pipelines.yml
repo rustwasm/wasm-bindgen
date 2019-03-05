@@ -119,6 +119,14 @@ jobs:
           echo "##vso[task.setvariable variable=PATH;]$PATH:$PWD"
       - script: cargo test -p wasm-bindgen-wasm-interpreter
 
+  - job: test_typescript_output
+    displayName: "Test TypeScript output of wasm-bindgen"
+    steps:
+      - template: ci/azure-install-rust.yml
+      - template: ci/azure-install-sccache.yml
+      - template: ci/azure-install-node.yml
+      - script: cd crates/typescript-tests && ./run.sh
+
   - job: build_examples
     displayName: "Build almost all examples"
     steps:

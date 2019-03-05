@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "tsc": "tsc"
+  },
+  "devDependencies": {
+    "@types/webassembly-js-api": "0.0.2",
+    "typescript": "^3.3.3333"
+  }
+}
