@@ -52,7 +52,7 @@ pub fn typescript(module: &Module) -> Result<String, Error> {
             walrus::ExportItem::Function(i) => i,
             walrus::ExportItem::Memory(_) => {
                 exports.push_str(&format!(
-                    "export const {}: WebAssembly.Memory;\n",
+                    "import 'webassembly-js-api';\nexport const {}: WebAssembly.Memory;\n",
                     entry.name,
                 ));
                 continue;
