@@ -110,8 +110,11 @@ impl Slab {
 }
 
 fn internal_error(msg: &str) -> ! {
-    let msg = if cfg!(debug_assertions) { msg } else { "" };
-    super::throw_str(msg)
+    if cfg!(debug_assertions) {
+        super::throw_str(msg)
+    } else {
+        std::process::abort()
+    }
 }
 
 // Whoa, there's two `tl` modules here! That's currently intention, but for sort

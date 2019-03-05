@@ -222,6 +222,170 @@ impl<'a> Context<'a> {
     }
 
     pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
+        // Wire up all default intrinsics, those which don't have any sort of
+        // dependency on the clsoure/anyref/etc passes. This is where almost all
+        // intrinsics are wired up.
+        self.wire_up_initial_intrinsics()?;
+
+        // Next up, perform our closure rewriting pass. This is where we'll
+        // update invocations of the closure intrinsics we have to instead call
+        // appropriate JS functions which actually create closures.
+        closures::rewrite(self).with_context(|_| "failed to generate internal closure shims")?;
+
+        // Finalize all bindings for JS classes. This is where we'll generate JS
+        // glue for all classes as well as finish up a few final imports like
+        // `__wrap` and such.
+        self.write_classes()?;
+
+        // And now that we're almost ready, run the final "anyref" pass. This is
+        // where we transform a wasm module which doesn't actually use `anyref`
+        // anywhere to using the type internally. The transformation here is
+        // based off all the previous data we've collected so far for each
+        // import/export listed.
+        self.anyref.run(self.module)?;
+
+        // With our transforms finished, we can now wire up the final list of
+        // intrinsics which may depend on the passes run above.
+        self.wire_up_late_intrinsics()?;
+
+        // We're almost done here, so we can delete any internal exports (like
+        // `__wbindgen_malloc`) if none of our JS glue actually needed it.
+        self.unexport_unused_internal_exports();
+
+        // Handle the `start` function, if one was specified. If we're in a
+        // --test mode (such as wasm-bindgen-test-runner) then we skip this
+        // entirely. Otherwise we want to first add a start function to the
+        // `start` section if one is specified.
+        //
+        // Note that once a start function is added, if any, we immediately
+        // un-start it. This is done because we require that the JS glue
+        // initializes first, so we execute wasm startup manually once the JS
+        // glue is all in place.
+        let mut needs_manual_start = false;
+        if self.config.emit_start {
+            self.add_start_function()?;
+            needs_manual_start = self.unstart_start_function();
+        }
+
+        // If our JS glue needs to access the function table, then do so here.
+        // JS closure shim generation may access the function table as an
+        // example, but if there's no closures in the module there's no need to
+        // export it!
+        self.export_table()?;
+
+        // After all we've done, especially
+        // `unexport_unused_internal_exports()`, we probably have a bunch of
+        // garbage in the module that's no longer necessary, so delete
+        // everything that we don't actually need.
+        walrus::passes::gc::run(self.module);
+
+        // Almost there, but before we're done make sure to rewrite the `module`
+        // field of all imports in the wasm module. The field is currently
+        // always `__wbindgen_placeholder__` coming out of rustc, but we need to
+        // update that here to the shim file or an actual ES module.
+        self.rewrite_imports(module_name);
+
+        // We likely made a ton of modifications, so add ourselves to the
+        // producers section!
+        self.update_producers_section();
+
+        // Cause any future calls to `should_write_global` to panic, making sure
+        // we don't ask for items which we can no longer emit.
+        drop(self.exposed_globals.take().unwrap());
+
+        Ok(self.finalize_js(module_name, needs_manual_start))
+    }
+
+    /// Performs the task of actually generating the final JS module, be it
+    /// `--no-modules`, `--browser`, or for bundlers. This is the very last step
+    /// performed in `finalize`.
+    fn finalize_js(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
+        let mut js = String::new();
+        if self.config.mode.no_modules() {
+            js.push_str("(function() {\n");
+        }
+
+        // Depending on the output mode, generate necessary glue to actually
+        // import the wasm file in one way or another.
+        let mut init = String::new();
+        match &self.config.mode {
+            // In `--no-modules` mode we need to both expose a name on the
+            // global object as well as generate our own custom start function.
+            OutputMode::NoModules { global } => {
+                js.push_str("const __exports = {};\n");
+                js.push_str("let wasm;\n");
+                init = self.gen_init(&module_name, needs_manual_start);
+                self.footer.push_str(&format!(
+                    "self.{} = Object.assign(init, __exports);\n",
+                    global
+                ));
+            }
+
+            // With normal CommonJS node we need to defer requiring the wasm
+            // until the end so most of our own exports are hooked up
+            OutputMode::Node {
+                experimental_modules: false,
+            } => {
+                self.footer
+                    .push_str(&format!("wasm = require('./{}_bg');\n", module_name));
+                if needs_manual_start {
+                    self.footer.push_str("wasm.__wbindgen_start();\n");
+                }
+                js.push_str("var wasm;\n");
+            }
+
+            // With Bundlers and modern ES6 support in Node we can simply import
+            // the wasm file as if it were an ES module and let the
+            // bundler/runtime take care of it.
+            OutputMode::Bundler
+            | OutputMode::Node {
+                experimental_modules: true,
+            } => {
+                js.push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
+                if needs_manual_start {
+                    self.footer.push_str("wasm.__wbindgen_start();\n");
+                }
+            }
+
+            // With a browser-native output we're generating an ES module, but
+            // browsers don't support natively importing wasm right now so we
+            // expose the same initialization function as `--no-modules` as the
+            // default export of the module.
+            OutputMode::Browser => {
+                js.push_str("const __exports = {};\n");
+                self.imports_post.push_str("let wasm;\n");
+                init = self.gen_init(&module_name, needs_manual_start);
+                self.footer.push_str("export default init;\n");
+            }
+        }
+
+        // Emit all the JS for importing all our functionality
+        js.push_str(&self.imports);
+        js.push_str("\n");
+        js.push_str(&self.imports_post);
+        js.push_str("\n");
+
+        // Emit all our exports from this module
+        js.push_str(&self.globals);
+        js.push_str("\n");
+
+        // Generate the initialization glue, if there was any
+        js.push_str(&init);
+        js.push_str("\n");
+        js.push_str(&self.footer);
+        js.push_str("\n");
+        if self.config.mode.no_modules() {
+            js.push_str("})();\n");
+        }
+
+        while js.contains("\n\n\n") {
+            js = js.replace("\n\n\n", "\n\n");
+        }
+
+        (js, self.typescript.clone())
+    }
+
+    fn wire_up_initial_intrinsics(&mut self) -> Result<(), Error> {
         self.bind("__wbindgen_string_new", &|me| {
             me.anyref.import_xform(
                 "__wbindgen_placeholder__",
@@ -604,10 +768,28 @@ impl<'a> Context<'a> {
             ))
         })?;
 
-        closures::rewrite(self).with_context(|_| "failed to generate internal closure shims")?;
-        self.write_classes()?;
-        self.anyref.run(self.module)?;
+        self.bind("__wbindgen_throw", &|me| {
+            me.expose_get_string_from_wasm();
+            Ok(String::from(
+                "
+                function(ptr, len) {
+                    throw new Error(getStringFromWasm(ptr, len));
+                }
+                ",
+            ))
+        })?;
 
+        Ok(())
+    }
+
+    /// Provide implementations of remaining intrinsics after initial passes
+    /// have been run on the wasm module.
+    ///
+    /// The intrinsics implemented here are added very late in the process or
+    /// otherwise may be overwritten by passes (such as the anyref pass). As a
+    /// result they don't go into the initial list of intrinsics but go just at
+    /// the end.
+    fn wire_up_late_intrinsics(&mut self) -> Result<(), Error> {
         // After the anyref pass has executed, if this intrinsic is needed then
         // we expose a function which initializes it
         self.bind("__wbindgen_init_anyref_table", &|me| {
@@ -645,132 +827,7 @@ impl<'a> Context<'a> {
             Ok(String::from("function(i) { dropObject(i); }"))
         })?;
 
-        self.unexport_unused_internal_exports();
-
-        // Handle the `start` function, if one was specified. If we're in a
-        // --test mode (such as wasm-bindgen-test-runner) then we skip this
-        // entirely. Otherwise we want to first add a start function to the
-        // `start` section if one is specified.
-        //
-        // Note that once a start function is added, if any, we immediately
-        // un-start it. This is done because we require that the JS glue
-        // initializes first, so we execute wasm startup manually once the JS
-        // glue is all in place.
-        let mut needs_manual_start = false;
-        if self.config.emit_start {
-            self.add_start_function()?;
-            needs_manual_start = self.unstart_start_function();
-        }
-
-        self.export_table()?;
-
-        walrus::passes::gc::run(self.module);
-
-        // Note that it's important `throw` comes last *after* we gc. The
-        // `__wbindgen_malloc` function may call this but we only want to
-        // generate code for this if it's actually live (and __wbindgen_malloc
-        // isn't gc'd).
-        self.bind("__wbindgen_throw", &|me| {
-            me.expose_get_string_from_wasm();
-            Ok(String::from(
-                "
-                function(ptr, len) {
-                    throw new Error(getStringFromWasm(ptr, len));
-                }
-                ",
-            ))
-        })?;
-
-        self.rewrite_imports(module_name);
-        self.update_producers_section();
-
-        // Cause any future calls to `should_write_global` to panic, making sure
-        // we don't ask for items which we can no longer emit.
-        drop(self.exposed_globals.take().unwrap());
-
-        let mut js = String::new();
-        if self.config.mode.no_modules() {
-            js.push_str("(function() {\n");
-        }
-
-        // Depending on the output mode, generate necessary glue to actually
-        // import the wasm file in one way or another.
-        let mut init = String::new();
-        match &self.config.mode {
-            // In `--no-modules` mode we need to both expose a name on the
-            // global object as well as generate our own custom start function.
-            OutputMode::NoModules { global } => {
-                js.push_str("const __exports = {};\n");
-                js.push_str("let wasm;\n");
-                init = self.gen_init(&module_name, needs_manual_start);
-                self.footer.push_str(&format!(
-                    "self.{} = Object.assign(init, __exports);\n",
-                    global
-                ));
-            }
-
-            // With normal CommonJS node we need to defer requiring the wasm
-            // until the end so most of our own exports are hooked up
-            OutputMode::Node {
-                experimental_modules: false,
-            } => {
-                self.footer
-                    .push_str(&format!("wasm = require('./{}_bg');\n", module_name));
-                if needs_manual_start {
-                    self.footer.push_str("wasm.__wbindgen_start();\n");
-                }
-                js.push_str("var wasm;\n");
-            }
-
-            // With Bundlers and modern ES6 support in Node we can simply import
-            // the wasm file as if it were an ES module and let the
-            // bundler/runtime take care of it.
-            OutputMode::Bundler
-            | OutputMode::Node {
-                experimental_modules: true,
-            } => {
-                js.push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
-                if needs_manual_start {
-                    self.footer.push_str("wasm.__wbindgen_start();\n");
-                }
-            }
-
-            // With a browser-native output we're generating an ES module, but
-            // browsers don't support natively importing wasm right now so we
-            // expose the same initialization function as `--no-modules` as the
-            // default export of the module.
-            OutputMode::Browser => {
-                js.push_str("const __exports = {};\n");
-                self.imports_post.push_str("let wasm;\n");
-                init = self.gen_init(&module_name, needs_manual_start);
-                self.footer.push_str("export default init;\n");
-            }
-        }
-
-        // Emit all the JS for importing all our functionality
-        js.push_str(&self.imports);
-        js.push_str("\n");
-        js.push_str(&self.imports_post);
-        js.push_str("\n");
-
-        // Emit all our exports from this module
-        js.push_str(&self.globals);
-        js.push_str("\n");
-
-        // Generate the initialization glue, if there was any
-        js.push_str(&init);
-        js.push_str("\n");
-        js.push_str(&self.footer);
-        js.push_str("\n");
-        if self.config.mode.no_modules() {
-            js.push_str("})();\n");
-        }
-
-        while js.contains("\n\n\n") {
-            js = js.replace("\n\n\n", "\n\n");
-        }
-
-        Ok((js, self.typescript.clone()))
+        Ok(())
     }
 
     fn gen_init(&mut self, module_name: &str, needs_manual_start: bool) -> String {
@@ -1250,8 +1307,7 @@ impl<'a> Context<'a> {
                             passStringToWasm = function(arg) {{ {} }};
                         }}
                     ",
-                    use_encode_into,
-                    use_encode,
+                    use_encode_into, use_encode,
                 ));
             }
             _ => {
