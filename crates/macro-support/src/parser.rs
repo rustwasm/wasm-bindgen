@@ -48,6 +48,7 @@ macro_rules! attrgen {
             (variadic, Variadic(Span)),
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (start, Start(Span)),
+            (ignore, Ignore(Span)),
         }
     };
 }
@@ -302,6 +303,12 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             .unwrap_or(self.ident.to_string());
         if let syn::Fields::Named(names) = &mut self.fields {
             for field in names.named.iter_mut() {
+                let attrs = BindgenAttrs::find(&mut field.attrs)?;
+                let ignored = attrs.ignore().is_some();
+                attrs.check_used()?;
+                if ignored {
+                    continue;
+                }
                 match field.vis {
                     syn::Visibility::Public(..) => {}
                     _ => continue,
