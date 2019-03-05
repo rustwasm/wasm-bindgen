@@ -40,6 +40,9 @@ jobs:
       - template: ci/azure-install-sccache.yml
       - script: cargo test --target wasm32-unknown-unknown
         displayName: "wasm-bindgen test suite"
+        env:
+          RUST_LOG: wasm_bindgen_test_runner
+          GECKODRIVER_ARGS: --log trace
       - script: cargo test --target wasm32-unknown-unknown -p js-sys
         displayName: "js-sys test suite"
       - script: cargo test --target wasm32-unknown-unknown -p webidl-tests
