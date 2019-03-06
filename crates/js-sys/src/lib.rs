@@ -831,7 +831,7 @@ extern "C" {
     /// array into a new typed array object. This method has the same algorithm
     /// as `Array.prototype.slice()`.
     #[wasm_bindgen(method)]
-    pub fn slice(this: &Float32Array, begin: u32, end: u32) -> Uint8ClampedArray;
+    pub fn slice(this: &Float32Array, begin: u32, end: u32) -> Float32Array;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
@@ -920,7 +920,7 @@ extern "C" {
     /// array into a new typed array object. This method has the same algorithm
     /// as `Array.prototype.slice()`.
     #[wasm_bindgen(method)]
-    pub fn slice(this: &Float64Array, begin: u32, end: u32) -> Uint8ClampedArray;
+    pub fn slice(this: &Float64Array, begin: u32, end: u32) -> Float64Array;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
@@ -1144,7 +1144,7 @@ extern "C" {
     /// array into a new typed array object. This method has the same algorithm
     /// as `Array.prototype.slice()`.
     #[wasm_bindgen(method)]
-    pub fn slice(this: &Int8Array, begin: u32, end: u32) -> Uint8ClampedArray;
+    pub fn slice(this: &Int8Array, begin: u32, end: u32) -> Int8Array;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
@@ -1233,7 +1233,7 @@ extern "C" {
     /// array into a new typed array object. This method has the same algorithm
     /// as `Array.prototype.slice()`.
     #[wasm_bindgen(method)]
-    pub fn slice(this: &Int16Array, begin: u32, end: u32) -> Uint8ClampedArray;
+    pub fn slice(this: &Int16Array, begin: u32, end: u32) -> Int16Array;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
@@ -1322,7 +1322,7 @@ extern "C" {
     /// array into a new typed array object. This method has the same algorithm
     /// as `Array.prototype.slice()`.
     #[wasm_bindgen(method)]
-    pub fn slice(this: &Int32Array, begin: u32, end: u32) -> Uint8ClampedArray;
+    pub fn slice(this: &Int32Array, begin: u32, end: u32) -> Int32Array;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
@@ -3111,7 +3111,7 @@ extern "C" {
     /// array into a new typed array object. This method has the same algorithm
     /// as `Array.prototype.slice()`.
     #[wasm_bindgen(method)]
-    pub fn slice(this: &Uint8Array, begin: u32, end: u32) -> Uint8ClampedArray;
+    pub fn slice(this: &Uint8Array, begin: u32, end: u32) -> Uint8Array;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
@@ -3291,7 +3291,7 @@ extern "C" {
     /// array into a new typed array object. This method has the same algorithm
     /// as `Array.prototype.slice()`.
     #[wasm_bindgen(method)]
-    pub fn slice(this: &Uint16Array, begin: u32, end: u32) -> Uint8ClampedArray;
+    pub fn slice(this: &Uint16Array, begin: u32, end: u32) -> Uint16Array;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
@@ -3380,7 +3380,7 @@ extern "C" {
     /// array into a new typed array object. This method has the same algorithm
     /// as `Array.prototype.slice()`.
     #[wasm_bindgen(method)]
-    pub fn slice(this: &Uint32Array, begin: u32, end: u32) -> Uint8ClampedArray;
+    pub fn slice(this: &Uint32Array, begin: u32, end: u32) -> Uint32Array;
 
     /// The `forEach()` method executes a provided function once per array
     /// element. This method has the same algorithm as
