@@ -350,6 +350,7 @@ impl Bindgen {
         } else {
             "js"
         };
+        fs::create_dir_all(out_dir)?;
         let js_path = out_dir.join(stem).with_extension(extension);
         fs::write(&js_path, reset_indentation(&js))
             .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
