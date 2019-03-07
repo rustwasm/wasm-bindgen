@@ -70,6 +70,7 @@ You can find general documentation about Rust and WebAssembly
 - [wasm-bindgen](https://docs.rs/wasm-bindgen)
 - [js-sys](https://docs.rs/js-sys)
 - [web-sys](https://docs.rs/web-sys)
+- [wasm-bindgen-futures](https://docs.rs/wasm-bindgen-futures)
 
 ## License
 
