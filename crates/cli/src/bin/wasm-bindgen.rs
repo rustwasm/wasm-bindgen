@@ -22,7 +22,8 @@ Options:
     --out-dir DIR                Output directory
     --out-name VAR               Set a custom output filename (Without extension. Defaults to crate name)
     --nodejs                     Generate output that only works in node.js
-    --browser                    Generate output that only works in a browser
+    --web                        Generate output that only works in a browser
+    --browser                    Hint that JS should only be compatible with a browser
     --no-modules                 Generate output that only works in a browser (without modules)
     --no-modules-global VAR      Name of the global variable to initialize
     --typescript                 Output a TypeScript definition file (on by default)
@@ -41,6 +42,7 @@ Options:
 struct Args {
     flag_nodejs: bool,
     flag_browser: bool,
+    flag_web: bool,
     flag_no_modules: bool,
     flag_typescript: bool,
     flag_no_typescript: bool,
@@ -89,6 +91,7 @@ fn rmain(args: &Args) -> Result<(), Error> {
     let mut b = Bindgen::new();
     b.input_path(input)
         .nodejs(args.flag_nodejs)?
+        .web(args.flag_web)?
         .browser(args.flag_browser)?
         .no_modules(args.flag_no_modules)?
         .debug(args.flag_debug)

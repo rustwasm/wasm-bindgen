@@ -29,11 +29,17 @@ usage of `require` of the generated JS and internally using `require` instead of
 ECMAScript modules. When using this flag no further postprocessing (aka a
 bundler) should be necessary to work with the wasm.
 
-### `--browser`
+For more information about this see the section on [deployment]
 
-This flag will tailor the output specifically for browsers, making it
-incompatible with Node. This will basically make the generated JS a tiny bit
-smaller as runtime checks for Node won't be necessary.
+[deployment]: deployment.html
+
+### `--web`
+
+This flag will generate output suitable for loading natively in browsers today.
+The generated JS shims are an ES module which export a `default` instantiation
+function, like `--no-modules` below.
+
+For more information about this see the section on [deployment]
 
 ### `--no-modules` and  `--no-modules-global VAR`
 
@@ -44,8 +50,7 @@ tailored for a properties on the JavaScript global object (e.g. `window`).
 The `--no-modules-global VAR` option makes `VAR` the global property that the
 JavaScript bindings are attached to.
 
-More information can be found in the [documentation for building without
-ECMAScript modules](./no-esm.html).
+For more information about this see the section on [deployment]
 
 ### `--typescript`
 
@@ -71,3 +76,9 @@ When post-processing the `.wasm` binary, do not demangle Rust symbols in the
 
 When post-processing the `.wasm` binary, do not strip DWARF debug info custom
 sections.
+
+### `--browser`
+
+When generating bundler-compatible code (see the section on [deployment]) this
+indicates that the bundled code is always intended to go into a browser so a few
+checks for Node.js can be elided.

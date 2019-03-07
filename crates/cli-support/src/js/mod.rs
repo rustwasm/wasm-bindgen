@@ -166,7 +166,7 @@ impl<'a> Context<'a> {
                     format!("__exports.{} = {};\n", name, contents)
                 }
             }
-            OutputMode::Bundler
+            OutputMode::Bundler { .. }
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
@@ -178,7 +178,7 @@ impl<'a> Context<'a> {
                     format!("export const {} = {};\n", name, contents)
                 }
             }
-            OutputMode::Browser => {
+            OutputMode::Web => {
                 // In browser mode there's no need to export the internals of
                 // wasm-bindgen as we're not using the module itself as the
                 // import object but rather the `__exports` map we'll be
@@ -202,7 +202,7 @@ impl<'a> Context<'a> {
         };
         self.global(&global);
 
-        if self.config.mode.browser() {
+        if self.config.mode.web() {
             self.global(&format!("__exports.{} = {0};", name));
         }
     }
@@ -300,7 +300,7 @@ impl<'a> Context<'a> {
     }
 
     /// Performs the task of actually generating the final JS module, be it
-    /// `--no-modules`, `--browser`, or for bundlers. This is the very last step
+    /// `--no-modules`, `--web`, or for bundlers. This is the very last step
     /// performed in `finalize`.
     fn finalize_js(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
         let mut js = String::new();
@@ -340,7 +340,7 @@ impl<'a> Context<'a> {
             // With Bundlers and modern ES6 support in Node we can simply import
             // the wasm file as if it were an ES module and let the
             // bundler/runtime take care of it.
-            OutputMode::Bundler
+            OutputMode::Bundler { .. }
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
@@ -354,7 +354,7 @@ impl<'a> Context<'a> {
             // browsers don't support natively importing wasm right now so we
             // expose the same initialization function as `--no-modules` as the
             // default export of the module.
-            OutputMode::Browser => {
+            OutputMode::Web => {
                 js.push_str("const __exports = {};\n");
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(&module_name, needs_manual_start);
@@ -752,10 +752,10 @@ impl<'a> Context<'a> {
         })?;
 
         self.bind("__wbindgen_module", &|me| {
-            if !me.config.mode.no_modules() && !me.config.mode.browser() {
+            if !me.config.mode.no_modules() && !me.config.mode.web() {
                 bail!(
                     "`wasm_bindgen::module` is currently only supported with \
-                     --no-modules"
+                     --no-modules and --web"
                 );
             }
             Ok(format!(
@@ -2843,13 +2843,13 @@ impl<'a, 'b> SubContext<'a, 'b> {
             if is_local_snippet {
                 bail!(
                     "local JS snippets are not supported with `--no-modules`; \
-                     use `--browser` or no flag instead",
+                     use `--web` or no flag instead",
                 );
             }
             if let decode::ImportModule::Named(module) = &import.module {
                 bail!(
                     "import from `{}` module not allowed with `--no-modules`; \
-                     use `--nodejs`, `--browser`, or no flag instead",
+                     use `--nodejs`, `--web`, or no flag instead",
                     module
                 );
             }
