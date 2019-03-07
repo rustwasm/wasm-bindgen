@@ -179,7 +179,7 @@ impl<'a> Context<'a> {
                 }
             }
             OutputMode::Web => {
-                // In browser mode there's no need to export the internals of
+                 // In web mode there's no need to export the internals of
                 // wasm-bindgen as we're not using the module itself as the
                 // import object but rather the `__exports` map we'll be
                 // initializing below.
