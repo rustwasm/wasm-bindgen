@@ -8,7 +8,7 @@ development. You may want to browse the [unpublished guide documentation] for
 
 ## Prerequisites
 
-1. Rust.[Install Rust]. Once Rust is installed, run
+1. Rust. [Install Rust]. Once Rust is installed, run
 
     ```shell
     rustup target add wasm32-unknown-unknown
