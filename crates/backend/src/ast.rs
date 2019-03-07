@@ -6,7 +6,7 @@ use std::hash::{Hash, Hasher};
 
 /// An abstract syntax tree representing a rust program. Contains
 /// extra information for joining up this rust code with javascript.
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Default, Clone)]
 pub struct Program {
     /// rust -> js interfaces
@@ -31,7 +31,7 @@ pub struct Program {
 
 /// A rust to js interface. Allows interaction with rust objects/functions
 /// from javascript.
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct Export {
     /// The struct name, in Rust, this is attached to
@@ -66,7 +66,7 @@ pub enum MethodSelf {
     RefShared,
 }
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct Import {
     pub module: ImportModule,
@@ -74,7 +74,7 @@ pub struct Import {
     pub kind: ImportKind,
 }
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub enum ImportModule {
     None,
@@ -100,7 +100,7 @@ impl Hash for ImportModule {
     }
 }
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub enum ImportKind {
     Function(ImportFunction),
@@ -109,7 +109,7 @@ pub enum ImportKind {
     Enum(ImportEnum),
 }
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct ImportFunction {
     pub function: Function,
@@ -197,7 +197,7 @@ pub struct ImportEnum {
     pub rust_attrs: Vec<syn::Attribute>,
 }
 
-#[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
+#[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct Function {
     pub name: String,
