@@ -236,7 +236,7 @@ jobs:
           curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.2.1/mdbook-v0.2.1-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C $HOME/mdbook
           echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/mdbook"
         displayName: "Install mdbook"
-      - script: (cd guide && mdbook build)
+      - script: (cd guide && mv _theme theme && mdbook build)
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: doc_book

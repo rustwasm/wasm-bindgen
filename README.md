@@ -60,13 +60,16 @@ greet("World!");
 
 ## Guide
 
-[**📚 Read the `wasm-bindgen` guide here! 📚**](https://rustwasm.github.io/wasm-bindgen)
+[**📚 Read the `wasm-bindgen` guide here! 📚**](https://rustwasm.github.io/docs/wasm-bindgen/)
+
+You can find general documentation about Rust and WebAssembly
+[here](https://rustwasm.github.io/docs).
 
 ## API Docs
 
-- [wasm-bindgen](https://rustwasm.github.io/wasm-bindgen/api/wasm_bindgen/)
-- [js-sys](https://rustwasm.github.io/wasm-bindgen/api/js_sys/)
-- [web-sys](https://rustwasm.github.io/wasm-bindgen/api/web_sys/)
+- [wasm-bindgen](https://docs.rs/wasm-bindgen)
+- [js-sys](https://docs.rs/js-sys)
+- [web-sys](https://docs.rs/web-sys)
 
 ## License
 
