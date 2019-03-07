@@ -108,7 +108,7 @@ fn rmain() -> Result<(), Error> {
     let mut b = Bindgen::new();
     b.debug(debug)
         .nodejs(node)?
-        .browser(!node)?
+        .web(!node)?
         .input_module(module, wasm)
         .keep_debug(false)
         .emit_start(false)

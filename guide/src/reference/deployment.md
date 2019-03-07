@@ -29,17 +29,17 @@ necessary.
 
 If you're not using a bundler but you're still running code in a web browser,
 `wasm-bindgen` still supports this! For this use case you'll want to use the
-`--browser` flag. You can check out a [full example][nomex] in the
+`--web` flag. You can check out a [full example][nomex] in the
 documentation, but the highlights of this output are:
 
-* When using `wasm-bindgen` directly you'll pass `--browser`.
+* When using `wasm-bindgen` directly you'll pass `--web`.
 * The output can natively be included on a web page, and doesn't require any
   further postprocessing. The output is included as an ES module.
-* The `--browser` mode is not able to use NPM dependencies.
+* The `--web` mode is not able to use NPM dependencies.
 * You'll want to review the [browser requirements] for `wasm-bindgen` because
   no polyfills will be available.
 
-> **Note**: currently `--browser` is not supported in `wasm-pack` because it is
+> **Note**: currently `--web` is not supported in `wasm-pack` because it is
 > a very recent addition to `wasm-bindgen`, but support will be added soon!
 
 [nomex]: ../examples/without-a-bundler.html
@@ -48,7 +48,7 @@ documentation, but the highlights of this output are:
 [browser requirements]: browser-support.html
 
 The `wasm-bindgen` CLI also supports an output mode called `--no-modules` which
-is similar to `--browser` in that it requires manual initialization of the wasm
+is similar to `--web` in that it requires manual initialization of the wasm
 and is intended to be included in web pages without any further postprocessing.
 See the [without a bundler example][nomex] for some more information about
 `--no-modules`, which corresponds to `--target no-modules` in `wasm-pack`.

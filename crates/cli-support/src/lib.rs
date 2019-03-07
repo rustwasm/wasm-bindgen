@@ -36,8 +36,8 @@ pub struct Bindgen {
 }
 
 enum OutputMode {
-    Bundler,
-    Browser,
+    Bundler { browser_only: bool },
+    Web,
     NoModules { global: String },
     Node { experimental_modules: bool },
 }
@@ -59,7 +59,7 @@ impl Bindgen {
         Bindgen {
             input: Input::None,
             out_name: None,
-            mode: OutputMode::Bundler,
+            mode: OutputMode::Bundler { browser_only: false },
             debug: false,
             typescript: false,
             demangle: true,
@@ -93,7 +93,7 @@ impl Bindgen {
 
     fn switch_mode(&mut self, mode: OutputMode, flag: &str) -> Result<(), Error> {
         match self.mode {
-            OutputMode::Bundler => self.mode = mode,
+            OutputMode::Bundler { .. } => self.mode = mode,
             _ => bail!(
                 "cannot specify `{}` with another output mode already specified",
                 flag
@@ -126,9 +126,9 @@ impl Bindgen {
         Ok(self)
     }
 
-    pub fn browser(&mut self, browser: bool) -> Result<&mut Bindgen, Error> {
-        if browser {
-            self.switch_mode(OutputMode::Browser, "--browser")?;
+    pub fn web(&mut self, web: bool) -> Result<&mut Bindgen, Error> {
+        if web {
+            self.switch_mode(OutputMode::Web, "--web")?;
         }
         Ok(self)
     }
@@ -141,6 +141,16 @@ impl Bindgen {
                 },
                 "--no-modules",
             )?;
+        }
+        Ok(self)
+    }
+
+    pub fn browser(&mut self, browser: bool) -> Result<&mut Bindgen, Error> {
+        if browser {
+            match &mut self.mode {
+                OutputMode::Bundler { browser_only } => *browser_only = true,
+                _ => bail!("cannot specify `--browser` with other output types"),
+            }
         }
         Ok(self)
     }
@@ -661,15 +671,16 @@ impl OutputMode {
 
     fn always_run_in_browser(&self) -> bool {
         match self {
-            OutputMode::Browser => true,
+            OutputMode::Web => true,
             OutputMode::NoModules { .. } => true,
+            OutputMode::Bundler { browser_only } => *browser_only,
             _ => false,
         }
     }
 
-    fn browser(&self) -> bool {
+    fn web(&self) -> bool {
         match self {
-            OutputMode::Browser => true,
+            OutputMode::Web => true,
             _ => false,
         }
     }

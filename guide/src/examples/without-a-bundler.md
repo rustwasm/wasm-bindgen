@@ -4,15 +4,15 @@
 
 [code]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/without-a-bundler
 
-This example shows how the `--browser` flag can be used load code in a
+This example shows how the `--web` flag can be used load code in a
 browser directly. For this deployment strategy bundlers like Webpack are not
 required. For more information on deployment see the [dedicated
 documentation][deployment].
 
-> **Note**: the `--browser` flag is quite new to `wasm-bindgen`, and does not
+> **Note**: the `--web` flag is quite new to `wasm-bindgen`, and does not
 > currently have support in `wasm-pack` yet. Support will be added soon though!
 
-First let's take a look at the code and see how when we're using `--browser`
+First let's take a look at the code and see how when we're using `--web`
 we're not actually losing any functionality!
 
 ```rust
@@ -40,7 +40,7 @@ The older version of using `wasm-bindgen` without a bundler is to use the
 `--no-modules` flag to the `wasm-bindgen` CLI. This corresponds to `--target
 no-modules` in `wasm-pack`.
 
-While similar to the newer `--browser`, the `--no-modules` flag has a few
+While similar to the newer `--web`, the `--no-modules` flag has a few
 caveats:
 
 * It does not support [local JS snippets][snippets]
