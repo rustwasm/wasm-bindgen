@@ -10,7 +10,7 @@ links = "wasm_bindgen"
 readme = "README.md"
 categories = ["wasm"]
 repository = "https://github.com/rustwasm/wasm-bindgen"
-homepage = "https://rustwasm.github.io/wasm-bindgen/"
+homepage = "https://rustwasm.github.io/"
 documentation = "https://docs.rs/wasm-bindgen"
 description = """
 Easy support for interacting between JS and Rust.

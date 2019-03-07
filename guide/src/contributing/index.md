@@ -1,14 +1,16 @@
 # Contributing to `wasm-bindgen`
 
 This section contains instructions on how to get this project up and running for
-development.
+development. You may want to browse the [unpublished guide documentation] for
+`wasm-bindgen` as well as it may have more up-to-date information.
+
+[unpublished documentation]: https://rustwasm.github.io/wasm-bindgen/
 
 ## Prerequisites
 
-1. Rust Nightly. [Install Rust]. Once Rust is installed, run
+1. Rust. [Install Rust]. Once Rust is installed, run
 
     ```shell
-    rustup default nightly
     rustup target add wasm32-unknown-unknown
     ```
 

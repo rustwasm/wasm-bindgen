@@ -6,8 +6,8 @@ and its source lives at [`wasm-bindgen/crates/js-sys`][src].  With the `js-sys`
 crate, we can work with `Object`s, `Array`s, `Function`s, `Map`s, `Set`s,
 etc... without writing the `#[wasm_bindgen]` imports by hand.
 
-Documentation for this crate will eventually be available on [docs.rs][docsrs]
-but temporarily you can also check out the [master branch
+Documentation for the published version of this crate is available on
+[docs.rs][docsrs] but you can also check out the [master branch
 documentation][masterdoc] for the crate.
 
 [docsrs]: https://docs.rs/js-sys
