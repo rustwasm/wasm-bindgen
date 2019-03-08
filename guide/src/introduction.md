@@ -29,16 +29,15 @@ Notable features of this project includes:
 * Automatically generating TypeScript bindings for Rust code being consumed by
   JS.
 
-With the addition of [`wasm-pack`] you can run the gamut from running Rust on
+With the addition of [`wasm-pack`][wasm-pack] you can run the gamut from running Rust on
 the web locally, publishing it as part of a larger application, or even
 publishing Rust-compiled-to-WebAssembly on NPM!
 
 [host]: https://github.com/WebAssembly/host-bindings
-[design doc]: https://rustwasm.github.io/wasm-bindgen/contributing/design/index.html
 [dom-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/dom
 [console-log]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/console_log
 [perf-ex]: https://github.com/rustwasm/wasm-bindgen/tree/master/examples/performance
 [hello-online]: https://webassembly.studio/?f=gzubao6tg3
 [rustwasm]: https://rustwasm.github.io/
-[gol]: https://rustwasm.github.io/book/
-[wasm-pack]: https://rustwasm.github.io/wasm-pack/book/
+[gol]: https://rustwasm.github.io/docs/book/
+[wasm-pack]: https://rustwasm.github.io/docs/wasm-pack/
