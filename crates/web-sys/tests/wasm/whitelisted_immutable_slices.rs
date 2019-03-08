@@ -12,11 +12,12 @@
 
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-use web_sys::WebGlRenderingContext;
+use web_sys::{WebGlRenderingContext, WebGl2RenderingContext};
 
 #[wasm_bindgen(module = "/tests/wasm/element.js")]
 extern "C" {
     fn new_webgl_rendering_context() -> WebGlRenderingContext;
+    fn new_webgl2_rendering_context() -> WebGl2RenderingContext;
 // TODO: Add a function to create another type to test here.
 // These functions come from element.js
 }
@@ -49,8 +50,41 @@ extern "C" {
 //    gl.uniform_matrix2fv_with_f32_array(None, false, &[1.]);
 //    gl.uniform_matrix3fv_with_f32_array(None, false, &[1.]);
 //    gl.uniform_matrix4fv_with_f32_array(None, false, &[1.]);
-//}
+//
+//    gl.tex_image_2d_with_i32_and_i32_and_i32_and_format_and_type_and_opt_u8_array(
+//        0,
+//        0,
+//        0,
+//        0,
+//        0,
+//        0,
+//        0,
+//        0,
+//        Some(&[1]),
+//    );
+//    gl.tex_sub_image_2d_with_i32_and_i32_and_u32_and_type_and_opt_u8_array(
+//        0,
+//        0,
+//        0,
+//        0,
+//        0,
+//        0,
+//        0,
+//        0,
+//        Some(&[1]),
+//    );
+//    gl.compressed_tex_image_2d_with_u8_array(0, 0, 0, 0, 0, 0, &[1]);
+// }
+//
+//#[wasm_bindgen_test]
+//fn test_webgl2_rendering_context_immutable_slices() {
+//    let gl = new_webgl2_rendering_context();
 
+//    gl.tex_image_3d_with_opt_u8_array(0, 0, 0, 0, 0, 0, 0, 0, 0, Some(&[1]));
+//    gl.tex_sub_image_3d_with_opt_u8_array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Some(&[1]));
+//    gl.compressed_tex_image_3d_with_u8_array(0, 0, 0, 0, 0, 0, 0, &[1]);
+//}
+//
 // TODO:
 //#[wasm_bindgen_test]
 //fn test_another_types_immutable_slices_here() {
