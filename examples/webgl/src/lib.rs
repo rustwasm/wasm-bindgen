@@ -33,7 +33,7 @@ pub fn start() -> Result<(), JsValue> {
         }
     "#,
     )?;
-    let program = link_program(&context, [vert_shader, frag_shader].iter())?;
+    let program = link_program(&context, &vert_shader, &frag_shader)?;
     context.use_program(Some(&program));
 
     let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
@@ -85,20 +85,21 @@ pub fn compile_shader(
     } else {
         Err(context
             .get_shader_info_log(&shader)
-            .unwrap_or_else(|| "Unknown error creating shader".into()))
+            .unwrap_or_else(|| String::from("Unknown error creating shader")))
     }
 }
 
-pub fn link_program<'a, T: IntoIterator<Item = &'a WebGlShader>>(
+pub fn link_program(
     context: &WebGlRenderingContext,
-    shaders: T,
+    vert_shader: &WebGlShader,
+    frag_shader: &WebGlShader,
 ) -> Result<WebGlProgram, String> {
     let program = context
         .create_program()
         .ok_or_else(|| String::from("Unable to create shader object"))?;
-    for shader in shaders {
-        context.attach_shader(&program, shader)
-    }
+
+    context.attach_shader(&program, vert_shader);
+    context.attach_shader(&program, frag_shader);
     context.link_program(&program);
 
     if context
@@ -110,6 +111,6 @@ pub fn link_program<'a, T: IntoIterator<Item = &'a WebGlShader>>(
     } else {
         Err(context
             .get_program_info_log(&program)
-            .unwrap_or_else(|| "Unknown error creating program object".into()))
+            .unwrap_or_else(|| String::from("Unknown error creating program object")))
     }
 }
