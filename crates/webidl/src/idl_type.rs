@@ -34,8 +34,10 @@ pub(crate) enum IdlType<'a> {
     ArrayBuffer,
     DataView,
     Int8Array,
-    Uint8Array,
-    Uint8ArrayMut,
+    Uint8Array {
+        /// Whether or not the generated web-sys function should use an immutable slice
+        immutable: bool,
+    },
     Uint8ClampedArray,
     Int16Array,
     Uint16Array,
@@ -46,8 +48,14 @@ pub(crate) enum IdlType<'a> {
         immutable: bool,
     },
     Float64Array,
-    ArrayBufferView,
-    BufferSource,
+    ArrayBufferView {
+        /// Whether or not the generated web-sys function should use an immutable slice
+        immutable: bool,
+    },
+    BufferSource {
+        /// Whether or not the generated web-sys function should use an immutable slice
+        immutable: bool,
+    },
 
     Interface(&'a str),
     Dictionary(&'a str),
@@ -327,20 +335,24 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
     }
 }
 
-// We default to Float32Array's being mutable, but in certain cases where we're certain that
-// slices won't get mutated on the JS side (such as the WebGL APIs) we might, later in the flow,
-// instead use the immutable version.
-impl<'a> ToIdlType<'a> for term::Float32Array {
-    fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
-        IdlType::Float32Array { immutable: false }
-    }
-}
-
 macro_rules! terms_to_idl_type {
     ($($t:tt => $r:tt)*) => ($(
         impl<'a> ToIdlType<'a> for term::$t {
             fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
                 IdlType::$r
+            }
+        }
+    )*);
+}
+
+// We default to arrays being mutable, but in certain cases where we're certain that
+// slices won't get mutated on the JS side (such as the WebGL APIs) we might, later in the flow,
+// instead use the immutable version.
+macro_rules! terms_to_idl_type_maybe_immutable {
+    ($($t:tt => $r:tt)*) => ($(
+        impl<'a> ToIdlType<'a> for term::$t {
+            fn to_idl_type(&self, _record: &FirstPassRecord<'a>) -> IdlType<'a> {
+                IdlType::$r { immutable: false }
             }
         }
     )*);
@@ -366,14 +378,18 @@ terms_to_idl_type! {
     Int8Array => Int8Array
     Int16Array => Int16Array
     Int32Array => Int32Array
-    Uint8Array => Uint8Array
     Uint16Array => Uint16Array
     Uint32Array => Uint32Array
     Uint8ClampedArray => Uint8ClampedArray
     Float64Array => Float64Array
+    Error => Error
+}
+
+terms_to_idl_type_maybe_immutable! {
+    Uint8Array => Uint8Array
+    Float32Array => Float32Array
     ArrayBufferView => ArrayBufferView
     BufferSource => BufferSource
-    Error => Error
 }
 
 impl<'a> IdlType<'a> {
@@ -400,8 +416,7 @@ impl<'a> IdlType<'a> {
             IdlType::ArrayBuffer => dst.push_str("array_buffer"),
             IdlType::DataView => dst.push_str("data_view"),
             IdlType::Int8Array => dst.push_str("i8_array"),
-            IdlType::Uint8Array => dst.push_str("u8_array"),
-            IdlType::Uint8ArrayMut => dst.push_str("u8_array"),
+            IdlType::Uint8Array { .. } => dst.push_str("u8_array"),
             IdlType::Uint8ClampedArray => dst.push_str("u8_clamped_array"),
             IdlType::Int16Array => dst.push_str("i16_array"),
             IdlType::Uint16Array => dst.push_str("u16_array"),
@@ -409,8 +424,8 @@ impl<'a> IdlType<'a> {
             IdlType::Uint32Array => dst.push_str("u32_array"),
             IdlType::Float32Array { .. } => dst.push_str("f32_array"),
             IdlType::Float64Array => dst.push_str("f64_array"),
-            IdlType::ArrayBufferView => dst.push_str("array_buffer_view"),
-            IdlType::BufferSource => dst.push_str("buffer_source"),
+            IdlType::ArrayBufferView { .. } => dst.push_str("array_buffer_view"),
+            IdlType::BufferSource { .. } => dst.push_str("buffer_source"),
 
             IdlType::Interface(name) => dst.push_str(&snake_case_ident(name)),
             IdlType::UnknownInterface(name) => dst.push_str(&snake_case_ident(name)),
@@ -513,8 +528,7 @@ impl<'a> IdlType<'a> {
             IdlType::ArrayBuffer => js_sys("ArrayBuffer"),
             IdlType::DataView => None,
             IdlType::Int8Array => Some(array("i8", pos, false)),
-            IdlType::Uint8Array => Some(array("u8", pos, false)),
-            IdlType::Uint8ArrayMut => Some(array("u8", pos, false)),
+            IdlType::Uint8Array { immutable } => Some(array("u8", pos, *immutable)),
             IdlType::Uint8ClampedArray => Some(clamped(array("u8", pos, false))),
             IdlType::Int16Array => Some(array("i16", pos, false)),
             IdlType::Uint16Array => Some(array("u16", pos, false)),
@@ -523,7 +537,7 @@ impl<'a> IdlType<'a> {
             IdlType::Float32Array { immutable } => Some(array("f32", pos, *immutable)),
             IdlType::Float64Array => Some(array("f64", pos, false)),
 
-            IdlType::ArrayBufferView | IdlType::BufferSource => js_sys("Object"),
+            IdlType::ArrayBufferView { .. } | IdlType::BufferSource { .. } => js_sys("Object"),
             IdlType::Interface(name)
             | IdlType::Dictionary(name)
             | IdlType::CallbackInterface { name, .. } => {
@@ -654,8 +668,22 @@ impl<'a> IdlType<'a> {
                 .iter()
                 .flat_map(|idl_type| idl_type.flatten())
                 .collect(),
-            IdlType::ArrayBufferView => vec![IdlType::ArrayBufferView, IdlType::Uint8ArrayMut],
-            IdlType::BufferSource => vec![IdlType::BufferSource, IdlType::Uint8ArrayMut],
+            IdlType::ArrayBufferView { immutable } => vec![
+                IdlType::ArrayBufferView {
+                    immutable: *immutable,
+                },
+                IdlType::Uint8Array {
+                    immutable: *immutable,
+                },
+            ],
+            IdlType::BufferSource { immutable } => vec![
+                IdlType::BufferSource {
+                    immutable: *immutable,
+                },
+                IdlType::Uint8Array {
+                    immutable: *immutable,
+                },
+            ],
             IdlType::LongLong => vec![IdlType::Long, IdlType::Double],
             IdlType::UnsignedLongLong => vec![IdlType::UnsignedLong, IdlType::Double],
             IdlType::CallbackInterface {

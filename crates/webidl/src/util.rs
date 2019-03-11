@@ -647,11 +647,9 @@ impl<'src> FirstPassRecord<'src> {
             _ => return idl_type,
         };
 
-        if self.immutable_f32_whitelist.contains(op) {
+        if self.immutable_slice_whitelist.contains(op) {
             flag_slices_immutable(&mut idl_type)
         }
-
-        // TODO: Add other whitelisted slices here, such as F64 or u8..
 
         idl_type
     }
@@ -737,7 +735,10 @@ pub fn public() -> syn::Visibility {
 
 fn flag_slices_immutable(ty: &mut IdlType) {
     match ty {
+        IdlType::Uint8Array { immutable } => *immutable = true,
         IdlType::Float32Array { immutable } => *immutable = true,
+        IdlType::ArrayBufferView { immutable } => *immutable = true,
+        IdlType::BufferSource { immutable } => *immutable = true,
         IdlType::Nullable(item) => flag_slices_immutable(item),
         IdlType::FrozenArray(item) => flag_slices_immutable(item),
         IdlType::Sequence(item) => flag_slices_immutable(item),

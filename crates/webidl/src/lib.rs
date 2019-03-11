@@ -82,7 +82,7 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
 
     let mut first_pass_record: FirstPassRecord = Default::default();
     first_pass_record.builtin_idents = builtin_idents();
-    first_pass_record.immutable_f32_whitelist = immutable_f32_whitelist();
+    first_pass_record.immutable_slice_whitelist = immutable_slice_whitelist();
 
     definitions.first_pass(&mut first_pass_record, ())?;
     let mut program = Default::default();
@@ -181,9 +181,9 @@ fn builtin_idents() -> BTreeSet<Ident> {
     )
 }
 
-fn immutable_f32_whitelist() -> BTreeSet<&'static str> {
+fn immutable_slice_whitelist() -> BTreeSet<&'static str> {
     BTreeSet::from_iter(vec![
-        // WebGlRenderingContext
+        // WebGlRenderingContext, WebGl2RenderingContext
         "uniform1fv",
         "uniform2fv",
         "uniform3fv",
@@ -195,6 +195,14 @@ fn immutable_f32_whitelist() -> BTreeSet<&'static str> {
         "vertexAttrib2fv",
         "vertexAttrib3fv",
         "vertexAttrib4fv",
+        "bufferData",
+        "texImage2D",
+        "texSubImage2D",
+        "compressedTexImage2D",
+        // WebGl2RenderingContext
+        "texImage3D",
+        "texSubImage3D",
+        "compressedTexImage3D",
         // TODO: Add another type's functions here. Leave a comment header with the type name
     ])
 }
