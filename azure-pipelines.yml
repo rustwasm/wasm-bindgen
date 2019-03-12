@@ -168,7 +168,7 @@ jobs:
           echo "##vso[task.setvariable variable=PATH;]$PATH:$PWD"
         displayName: "install xargo"
       - script: |
-          sed -i 's/python/#python/' examples/raytrace-parallel/build.sh
+          sed -i 's/basic-http-server/#basic-http-server/' examples/raytrace-parallel/build.sh
           (cd examples/raytrace-parallel && ./build.sh)
           cp examples/raytrace-parallel/*.{js,html,wasm} $BUILD_ARTIFACTSTAGINGDIRECTORY
         displayName: "build example"

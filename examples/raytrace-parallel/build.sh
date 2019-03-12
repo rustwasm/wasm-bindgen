@@ -22,4 +22,5 @@ WASM_BINDGEN_THREADS=1 \
     ../../target/wasm32-unknown-unknown/release/raytrace_parallel.wasm --out-dir . \
     --no-modules
 
-python3 -m http.server
+# `cargo install basic-http-server`
+basic-http-server

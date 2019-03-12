@@ -12,4 +12,5 @@ cargo run --manifest-path ../../crates/cli/Cargo.toml \
     ../../target/wasm32-unknown-unknown/release/without_a_bundler.wasm --out-dir pkg \
     --web
 
-python3 -m http.server
+# `cargo install basic-http-server`
+basic-http-server
