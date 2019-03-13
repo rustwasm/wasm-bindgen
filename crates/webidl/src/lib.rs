@@ -68,10 +68,17 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
                     .context(ErrorKind::ParsingWebIDLSource)
                     .into(),
                 weedle::Err::Error(cx) | weedle::Err::Failure(cx) => {
+                    // Note that #[allow] here is a workaround for Geal/nom#843
+                    // because the `Context` type here comes from `nom` and if
+                    // something else in our crate graph enables the
+                    // `verbose-errors` feature then we need to still compiled
+                    // against the changed enum definition.
+                    #[allow(unreachable_patterns)]
                     let remaining = match cx {
-                        weedle::Context::Code(remaining, _) => remaining,
+                        weedle::Context::Code(remaining, _) => remaining.len(),
+                        _ => 0,
                     };
-                    let pos = webidl_source.len() - remaining.len();
+                    let pos = webidl_source.len() - remaining;
                     format_err!("failed to parse WebIDL")
                         .context(ErrorKind::ParsingWebIDLSourcePos(pos))
                         .into()
