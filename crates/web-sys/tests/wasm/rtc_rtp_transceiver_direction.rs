@@ -2,15 +2,19 @@ use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
 
-use futures::Future;
+use futures::{
+    future::{ok, IntoFuture},
+    Future,
+};
 
 use web_sys::{
     RtcPeerConnection, RtcRtpTransceiver, RtcRtpTransceiverDirection, RtcRtpTransceiverInit,
     RtcSessionDescriptionInit,
 };
 
-
-#[wasm_bindgen(inline_js = "export function is_unified_avail() { return Object.keys(RTCRtpTransceiver.prototype).indexOf('currentDirection')>-1; }")]
+#[wasm_bindgen(
+    inline_js = "export function is_unified_avail() { return Object.keys(RTCRtpTransceiver.prototype).indexOf('currentDirection')>-1; }"
+)]
 extern "C" {
     /// Available in FF since forever, in Chrome since 72, in Safari since 12.1
     fn is_unified_avail() -> bool;
@@ -18,9 +22,8 @@ extern "C" {
 
 #[wasm_bindgen_test(async)]
 fn rtc_rtp_transceiver_direction() -> impl Future<Item = (), Error = JsValue> {
-
-    if !is_unified_avail(){
-        Ok(())
+    if !is_unified_avail() {
+        ok::<(), JsValue>(());
     }
 
     let mut tr_init: RtcRtpTransceiverInit = RtcRtpTransceiverInit::new();
