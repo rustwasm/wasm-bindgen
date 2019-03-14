@@ -2498,7 +2498,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         }
 
         let (js, ts, js_doc) = Js2Rust::new(&export.function.name, self.cx)
-            .process(descriptor.unwrap_function())?
+            .process(descriptor.unwrap_function(), &export.function.arg_names)?
             .finish(
                 "function",
                 &format!("wasm.{}", export.function.name),
@@ -2554,7 +2554,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             } else {
                 None
             })
-            .process(descriptor.unwrap_function())?
+            .process(descriptor.unwrap_function(), &export.function.arg_names)?
             .finish(
                 "",
                 &format!("wasm.{}", wasm_name),
@@ -2772,7 +2772,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 let setter = ExportedShim::Named(&wasm_setter);
                 let mut cx = Js2Rust::new(&field.name, self.cx);
                 cx.method(true, false)
-                    .argument(&descriptor)?
+                    .argument(&descriptor, None)?
                     .ret(&Descriptor::Unit)?;
                 ts_dst.push_str(&format!(
                     "\n  {}{}: {};",

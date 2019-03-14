@@ -46,6 +46,15 @@ impl<'src> Decode<'src> for &'src str {
     }
 }
 
+impl<'src> Decode<'src> for String {
+    fn decode(data: &mut &'src [u8]) -> String {
+        let n = u32::decode(data);
+        let (a, b) = data.split_at(n as usize);
+        *data = b;
+        String::from_utf8(a.to_vec()).unwrap()
+    }
+}
+
 impl<'src, T: Decode<'src>> Decode<'src> for Vec<T> {
     fn decode(data: &mut &'src [u8]) -> Self {
         let n = u32::decode(data);

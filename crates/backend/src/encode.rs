@@ -165,7 +165,22 @@ fn shared_export<'a>(export: &'a ast::Export, intern: &'a Interner) -> Export<'a
 }
 
 fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Function<'a> {
-    Function { name: &func.name }
+    let arg_names = func
+        .arguments
+        .iter()
+        .enumerate()
+        .map(|(idx, arg)| {
+            if let syn::Pat::Ident(ref x) = arg.pat {
+                x.ident.to_string()
+            } else {
+                format!("arg{}", idx)
+            }
+        })
+        .collect::<Vec<_>>();
+    Function {
+        name: &func.name,
+        arg_names,
+    }
 }
 
 fn shared_enum<'a>(e: &'a ast::Enum, intern: &'a Interner) -> Enum<'a> {
@@ -359,6 +374,12 @@ impl<'a> Encode for &'a [u8] {
 }
 
 impl<'a> Encode for &'a str {
+    fn encode(&self, dst: &mut Encoder) {
+        self.as_bytes().encode(dst);
+    }
+}
+
+impl<'a> Encode for String {
     fn encode(&self, dst: &mut Encoder) {
         self.as_bytes().encode(dst);
     }

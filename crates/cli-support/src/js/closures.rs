@@ -193,7 +193,7 @@ impl ClosureDescriptors {
                     builder.rust_argument("this.a").rust_argument("b");
                 }
                 builder.finally("if (this.cnt-- == 1) d(this.a, b);");
-                builder.process(&closure.function)?.finish(
+                builder.process(&closure.function, None)?.finish(
                     "function",
                     "f",
                     ExportedShim::TableElement(&mut shim),
