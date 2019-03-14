@@ -85,7 +85,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     {
         if let Some(arg_names) = opt_arg_names.into() {
             for (arg, arg_name) in function.arguments.iter().zip(arg_names) {
-                self.argument(arg, arg_name.clone())?;
+                self.argument(arg, arg_name.as_str())?;
             }
         } else {
             for arg in function.arguments.iter() {
@@ -151,9 +151,9 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         self
     }
 
-    fn abi_arg(&mut self, opt_arg_name: Option<String>) -> String {
+    fn abi_arg(&mut self, opt_arg_name: Option<&str>) -> String {
         let ret = if let Some(x) = opt_arg_name {
-            x
+            x.into()
         } else {
             format!("arg{}", self.arg_idx)
         };
@@ -161,9 +161,9 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         ret
     }
 
-    pub fn argument<I>(&mut self, arg: &Descriptor, opt_arg_name: I) -> Result<&mut Self, Error>
+    pub fn argument<'c, I>(&mut self, arg: &Descriptor, opt_arg_name: I) -> Result<&mut Self, Error>
     where
-        I: Into<Option<String>>,
+        I: Into<Option<&'c str>>,
     {
         let i = self.arg_idx;
         let name = self.abi_arg(opt_arg_name.into());
