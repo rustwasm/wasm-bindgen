@@ -845,6 +845,18 @@ impl ToTokens for ast::ImportEnum {
             }
 
             #[allow(clippy::all)]
+            impl ::wasm_bindgen::convert::OptionIntoWasmAbi for #name {
+                #[inline]
+                fn none() -> Self::Abi { Object::none() }
+            }
+
+            #[allow(clippy::all)]
+            impl ::wasm_bindgen::convert::OptionFromWasmAbi for #name {
+                #[inline]
+                fn is_none(abi: &Self::Abi) -> bool { Object::is_none(abi) }
+            }
+
+            #[allow(clippy::all)]
             impl From<#name> for ::wasm_bindgen::JsValue {
                 fn from(obj: #name) -> ::wasm_bindgen::JsValue {
                     match obj {
