@@ -44,6 +44,7 @@ const CRATES_TO_AVOID_PUBLISH: &[&str] = &[
     "ui-tests",
     "sample",
     "webidl-tests",
+    "typescript-tests",
 ];
 
 struct Crate {

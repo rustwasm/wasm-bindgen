@@ -32,6 +32,37 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.39
+
+Released 2018-03-13.
+
+### Added
+
+* Crates can now import locally written JS snippets to get bundled into the
+  final output. See [RFC 6] for more details as well as the PR.
+  [#1295](https://github.com/rustwasm/wasm-bindgen/pull/1295)
+
+[RFC 6]: https://github.com/rustwasm/rfcs/pull/6
+
+### Changed
+
+* A typo in the return value of `slice` methods on typed arrays in `js-sys` was
+  corrected.
+  [#1321](https://github.com/rustwasm/wasm-bindgen/pull/1321)
+
+* The directory specified by `--out-dir` is now created if it doesn't exist
+  already.
+  [#1330](https://github.com/rustwasm/wasm-bindgen/pull/1330)
+
+### Fixed
+
+* A bug where if `nom` was in a crate graph and was compiled with the
+  `verbose-errors` feature has been fixed. Previously the `wasm-bindgen-webidl`
+  crate wouldn't compile, and now it will.
+  [#1338](https://github.com/rustwasm/wasm-bindgen/pull/1338)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.38
 
 Released 2019-03-04.
