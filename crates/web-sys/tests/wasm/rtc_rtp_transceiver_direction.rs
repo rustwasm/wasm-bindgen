@@ -21,9 +21,9 @@ extern "C" {
 }
 
 #[wasm_bindgen_test(async)]
-fn rtc_rtp_transceiver_direction() -> impl Future<Item = (), Error = JsValue> {
+fn rtc_rtp_transceiver_direction() -> Box<dyn Future<Item = (), Error = JsValue>> {
     if !is_unified_avail() {
-        ok::<(), JsValue>(());
+        return Box::new(Ok(()).into_future());
     }
 
     let mut tr_init: RtcRtpTransceiverInit = RtcRtpTransceiverInit::new();
@@ -39,7 +39,7 @@ fn rtc_rtp_transceiver_direction() -> impl Future<Item = (), Error = JsValue> {
 
     let pc2: RtcPeerConnection = RtcPeerConnection::new().unwrap();
 
-    exchange_sdps(pc1, pc2).and_then(move |(_, p2)| {
+    let r = exchange_sdps(pc1, pc2).and_then(move |(_, p2)| {
         assert_eq!(tr1.direction(), RtcRtpTransceiverDirection::Sendonly);
         assert_eq!(
             tr1.current_direction(),
@@ -61,7 +61,9 @@ fn rtc_rtp_transceiver_direction() -> impl Future<Item = (), Error = JsValue> {
         );
 
         Ok(())
-    })
+    });
+
+    Box::new(r)
 }
 
 fn exchange_sdps(
