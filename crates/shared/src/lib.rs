@@ -106,6 +106,7 @@ macro_rules! shared_api {
         }
 
         struct Function<'a> {
+            arg_names: Vec<String>,
             name: &'a str,
         }
 

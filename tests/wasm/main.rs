@@ -13,6 +13,7 @@ extern crate serde_derive;
 use wasm_bindgen::prelude::*;
 
 pub mod api;
+pub mod arg_names;
 pub mod char;
 pub mod classes;
 pub mod closures;
