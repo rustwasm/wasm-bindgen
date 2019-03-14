@@ -75,9 +75,22 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
     /// Generates all bindings necessary for the signature in `Function`,
     /// creating necessary argument conversions and return value processing.
-    pub fn process(&mut self, function: &Function) -> Result<&mut Self, Error> {
-        for arg in function.arguments.iter() {
-            self.argument(arg)?;
+    pub fn process<'c, I>(
+        &mut self,
+        function: &Function,
+        opt_arg_names: I,
+    ) -> Result<&mut Self, Error>
+    where
+        I: Into<Option<&'c Vec<String>>>,
+    {
+        if let Some(arg_names) = opt_arg_names.into() {
+            for (arg, arg_name) in function.arguments.iter().zip(arg_names) {
+                self.argument(arg, arg_name.as_str())?;
+            }
+        } else {
+            for arg in function.arguments.iter() {
+                self.argument(arg, None)?;
+            }
         }
         self.ret(&function.ret)?;
         Ok(self)
@@ -138,15 +151,22 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         self
     }
 
-    fn abi_arg(&mut self) -> String {
-        let s = format!("arg{}", self.arg_idx);
+    fn abi_arg(&mut self, opt_arg_name: Option<&str>) -> String {
+        let ret = if let Some(x) = opt_arg_name {
+            x.into()
+        } else {
+            format!("arg{}", self.arg_idx)
+        };
         self.arg_idx += 1;
-        s
+        ret
     }
 
-    pub fn argument(&mut self, arg: &Descriptor) -> Result<&mut Self, Error> {
+    pub fn argument<'c, I>(&mut self, arg: &Descriptor, opt_arg_name: I) -> Result<&mut Self, Error>
+    where
+        I: Into<Option<&'c str>>,
+    {
         let i = self.arg_idx;
-        let name = self.abi_arg();
+        let name = self.abi_arg(opt_arg_name.into());
 
         let (arg, optional) = match arg {
             Descriptor::Option(t) => (&**t, true),

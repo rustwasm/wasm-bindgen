@@ -285,7 +285,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 } else {
                     builder.rust_argument("this.a");
                 }
-                builder.rust_argument("this.b").process(f)?.finish(
+                builder.rust_argument("this.b").process(f, None)?.finish(
                     "function",
                     "this.f",
                     ExportedShim::TableElement(&mut shim),
