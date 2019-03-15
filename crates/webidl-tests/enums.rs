@@ -35,3 +35,17 @@ fn invalid_enum_return() {
         _ => {} // Success
     };
 }
+
+#[wasm_bindgen_test]
+fn read_optional_enum_attribute_none() {
+    let shape = Shape::new(ShapeType::Circle).unwrap();
+    let shape_type: Option<ShapeType> = shape.shape_type_none();
+    assert_eq!(shape_type, None);
+}
+
+#[wasm_bindgen_test]
+fn read_optional_enum_attribute_some() {
+    let shape = Shape::new(ShapeType::Circle).unwrap();
+    let shape_type: Option<ShapeType> = shape.shape_type_some();
+    assert_eq!(shape_type, Some(ShapeType::Circle));
+}
