@@ -31,3 +31,8 @@ generates JavaScript import glue like:
 ```js
 let illmatic = this.illmatic;
 ```
+
+Note that if the string specified with `module` starts with `./`, `../`, or `/`
+then it's interpreted as a path to a [local JS snippet](../../js-snippets.html).
+If this doesn't work for your use case you might be interested in the
+[`raw_module` attribute](raw_module.html)

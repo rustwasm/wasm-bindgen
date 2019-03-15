@@ -79,6 +79,7 @@ pub struct Import {
 pub enum ImportModule {
     None,
     Named(String, Span),
+    RawNamed(String, Span),
     Inline(usize, Span),
 }
 
@@ -95,6 +96,10 @@ impl Hash for ImportModule {
             ImportModule::Inline(idx, _) => {
                 2u8.hash(h);
                 idx.hash(h);
+            }
+            ImportModule::RawNamed(name, _) => {
+                3u8.hash(h);
+                name.hash(h);
             }
         }
     }
