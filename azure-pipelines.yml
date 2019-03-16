@@ -232,15 +232,14 @@ jobs:
     displayName: "Doc - build the book"
     steps:
       - script: |
-          mkdir $HOME/mdbook
-          curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.2.1/mdbook-v0.2.1-x86_64-unknown-linux-musl.tar.gz | tar xzf - -C $HOME/mdbook
-          echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/mdbook"
+          which mdbook || cargo install mdbook
+          which mdbook-linkcheck || cargo install mdbook-linkcheck
         displayName: "Install mdbook"
       - script: (cd guide && mv _theme theme && mdbook build)
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: doc_book
-          targetPath: guide/book
+          targetPath: guide/book/html
 
   - job: doc_api
     displayName: "Doc - build the API documentation"

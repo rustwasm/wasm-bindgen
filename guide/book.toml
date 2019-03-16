@@ -3,3 +3,6 @@ authors = ["Nick Fitzgerald"]
 multilingual = false
 src = "src"
 title = "The `wasm-bindgen` Guide"
+
+[output.html]
+[output.linkcheck]
