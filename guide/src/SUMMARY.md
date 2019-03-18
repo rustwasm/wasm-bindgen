@@ -66,6 +66,7 @@
       - [`js_namespace`](./reference/attributes/on-js-imports/js_namespace.md)
       - [`method`](./reference/attributes/on-js-imports/method.md)
       - [`module = "blah"`](./reference/attributes/on-js-imports/module.md)
+      - [`raw_module = "blah"`](./reference/attributes/on-js-imports/raw_module.md)
       - [`static_method_of = Blah`](./reference/attributes/on-js-imports/static_method_of.md)
       - [`structural`](./reference/attributes/on-js-imports/structural.md)
       - [`variadic`](./reference/attributes/on-js-imports/variadic.md)

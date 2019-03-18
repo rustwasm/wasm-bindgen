@@ -208,6 +208,7 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
             ast::ImportModule::Named(m, span) => {
                 ImportModule::Named(intern.resolve_import_module(m, *span)?)
             }
+            ast::ImportModule::RawNamed(m, _span) => ImportModule::RawNamed(intern.intern_str(m)),
             ast::ImportModule::Inline(idx, _) => ImportModule::Inline(*idx as u32),
             ast::ImportModule::None => ImportModule::None,
         },

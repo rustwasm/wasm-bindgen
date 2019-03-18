@@ -2836,6 +2836,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         // not sure how to import them.
         let is_local_snippet = match import.module {
             decode::ImportModule::Named(s) => self.cx.local_modules.contains_key(s),
+            decode::ImportModule::RawNamed(_) => false,
             decode::ImportModule::Inline(_) => true,
             decode::ImportModule::None => false,
         };
@@ -2921,11 +2922,13 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 name,
                 field,
             },
-            decode::ImportModule::Named(module) => Import::Module {
-                module,
-                name,
-                field,
-            },
+            decode::ImportModule::Named(module) | decode::ImportModule::RawNamed(module) => {
+                Import::Module {
+                    module,
+                    name,
+                    field,
+                }
+            }
             decode::ImportModule::Inline(idx) => {
                 let offset = *self
                     .cx
