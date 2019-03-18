@@ -28,6 +28,7 @@ macro_rules! shared_api {
         enum ImportModule<'a> {
             None,
             Named(&'a str),
+            RawNamed(&'a str),
             Inline(u32),
         }
 

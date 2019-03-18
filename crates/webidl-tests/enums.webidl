@@ -12,4 +12,8 @@ interface Shape {
 
   [Pure]
     ShapeType getShape();
+
+  readonly attribute ShapeType? shapeTypeNone;
+
+  readonly attribute ShapeType? shapeTypeSome;
 };
