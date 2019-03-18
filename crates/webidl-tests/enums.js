@@ -18,4 +18,12 @@ global.Shape = class Shape {
   getShape() {
     return this.kind;
   }
+
+  get shapeTypeNone() {
+    return null;
+  }
+
+  get shapeTypeSome() {
+    return this.kind;
+  }
 };
