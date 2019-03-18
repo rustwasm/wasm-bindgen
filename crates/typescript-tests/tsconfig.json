@@ -9,6 +9,6 @@
         "baseUrl": "."
     },
     "include": [
-        "index.ts"
+        "src/*.ts"
     ]
 }

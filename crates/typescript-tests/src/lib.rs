@@ -1,20 +1,4 @@
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
-pub fn greet(_: &str) {}
-
-#[wasm_bindgen]
-struct A {
-}
-
-#[wasm_bindgen]
-impl A {
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> A {
-        A {}
-    }
-
-    pub fn other() {}
-
-    pub fn foo(&self) {}
-}
+mod custom_section;
+mod opt_args_and_ret;
+mod simple_fn;
+mod simple_struct;
