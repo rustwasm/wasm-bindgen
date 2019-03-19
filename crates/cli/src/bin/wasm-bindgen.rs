@@ -21,11 +21,11 @@ Options:
     -h --help                    Show this screen.
     --out-dir DIR                Output directory
     --out-name VAR               Set a custom output filename (Without extension. Defaults to crate name)
-    --nodejs                     Generate output that only works in node.js
-    --web                        Generate output that only works in a browser
-    --browser                    Hint that JS should only be compatible with a browser
-    --no-modules                 Generate output that only works in a browser (without modules)
+    --target TARGET              What type of output to generate, valid
+                                 values are [web, bundler, nodejs, no-modules],
+                                 and the default is [bundler]
     --no-modules-global VAR      Name of the global variable to initialize
+    --browser                    Hint that JS should only be compatible with a browser
     --typescript                 Output a TypeScript definition file (on by default)
     --no-typescript              Don't emit a *.d.ts file
     --debug                      Include otherwise-extraneous debug checks in output
@@ -35,6 +35,9 @@ Options:
     --remove-producers-section   Remove the telemetry `producers` section
     --encode-into MODE           Whether or not to use TextEncoder#encodeInto,
                                  valid values are [test, always, never]
+    --nodejs                     Deprecated, use `--target nodejs`
+    --web                        Deprecated, use `--target web`
+    --no-modules                 Deprecated, use `--target no-modules`
     -V --version                 Print the version number of wasm-bindgen
 ";
 
@@ -56,6 +59,7 @@ struct Args {
     flag_remove_producers_section: bool,
     flag_keep_debug: bool,
     flag_encode_into: Option<String>,
+    flag_target: Option<String>,
     arg_input: Option<PathBuf>,
 }
 
@@ -89,6 +93,15 @@ fn rmain(args: &Args) -> Result<(), Error> {
     let typescript = args.flag_typescript || !args.flag_no_typescript;
 
     let mut b = Bindgen::new();
+    if let Some(name) = &args.flag_target {
+        match name.as_str() {
+            "bundler" => b.bundler(true)?,
+            "web" => b.web(true)?,
+            "no-modules" => b.no_modules(true)?,
+            "nodejs" => b.nodejs(true)?,
+            s => bail!("invalid encode-into mode: `{}`", s),
+        };
+    }
     b.input_path(input)
         .nodejs(args.flag_nodejs)?
         .web(args.flag_web)?

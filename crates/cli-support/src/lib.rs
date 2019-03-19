@@ -59,7 +59,9 @@ impl Bindgen {
         Bindgen {
             input: Input::None,
             out_name: None,
-            mode: OutputMode::Bundler { browser_only: false },
+            mode: OutputMode::Bundler {
+                browser_only: false,
+            },
             debug: false,
             typescript: false,
             demangle: true,
@@ -108,7 +110,7 @@ impl Bindgen {
                 OutputMode::Node {
                     experimental_modules: false,
                 },
-                "--nodejs",
+                "--target nodejs",
             )?;
         }
         Ok(self)
@@ -126,9 +128,21 @@ impl Bindgen {
         Ok(self)
     }
 
+    pub fn bundler(&mut self, bundler: bool) -> Result<&mut Bindgen, Error> {
+        if bundler {
+            self.switch_mode(
+                OutputMode::Bundler {
+                    browser_only: false,
+                },
+                "--target bundler",
+            )?;
+        }
+        Ok(self)
+    }
+
     pub fn web(&mut self, web: bool) -> Result<&mut Bindgen, Error> {
         if web {
-            self.switch_mode(OutputMode::Web, "--web")?;
+            self.switch_mode(OutputMode::Web, "--target web")?;
         }
         Ok(self)
     }
@@ -139,7 +153,7 @@ impl Bindgen {
                 OutputMode::NoModules {
                     global: "wasm_bindgen".to_string(),
                 },
-                "--no-modules",
+                "--target no-modules",
             )?;
         }
         Ok(self)
@@ -158,7 +172,7 @@ impl Bindgen {
     pub fn no_modules_global(&mut self, name: &str) -> Result<&mut Bindgen, Error> {
         match &mut self.mode {
             OutputMode::NoModules { global } => *global = name.to_string(),
-            _ => bail!("can only specify `--no-modules-global` with `--no-modules`"),
+            _ => bail!("can only specify `--no-modules-global` with `--target no-modules`"),
         }
         Ok(self)
     }

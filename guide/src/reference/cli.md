@@ -22,33 +22,19 @@ wasm-bindgen [options] ./target/wasm32-unknown-unknown/release/crate.wasm
 The target directory to emit the JavaScript bindings, TypeScript definitions,
 processed `.wasm` binary, etc...
 
-### `--nodejs`
+### `--target`
 
-This flag will tailor output for Node instead of browsers, allowing for native
-usage of `require` of the generated JS and internally using `require` instead of
-ECMAScript modules. When using this flag no further postprocessing (aka a
-bundler) should be necessary to work with the wasm.
-
-For more information about this see the section on [deployment]
+This flag indicates what flavor of output what `wasm-bindgen` should generate.
+For example it could generate code to be loaded in a bundler like Webpack, a
+native web page, or Node.js. For a full list of options to pass this flag, see
+the section on [deployment]
 
 [deployment]: deployment.html
 
-### `--web`
+### `--no-modules-global VAR`
 
-This flag will generate output suitable for loading natively in browsers today.
-The generated JS shims are an ES module which export a `default` instantiation
-function, like `--no-modules` below.
-
-For more information about this see the section on [deployment]
-
-### `--no-modules` and  `--no-modules-global VAR`
-
-The default output of `wasm-bindgen` uses ECMAScript modules. These options
-indicate that ECMAScript modules should *not* be used, and that output should be
-tailored for a properties on the JavaScript global object (e.g. `window`).
-
-The `--no-modules-global VAR` option makes `VAR` the global property that the
-JavaScript bindings are attached to.
+When `--target no-modules` is used this flag can indicate what the name of the
+global to assign generated bindings to.
 
 For more information about this see the section on [deployment]
 

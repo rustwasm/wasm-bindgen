@@ -179,7 +179,7 @@ impl<'a> Context<'a> {
                 }
             }
             OutputMode::Web => {
-                 // In web mode there's no need to export the internals of
+                // In web mode there's no need to export the internals of
                 // wasm-bindgen as we're not using the module itself as the
                 // import object but rather the `__exports` map we'll be
                 // initializing below.
@@ -300,8 +300,8 @@ impl<'a> Context<'a> {
     }
 
     /// Performs the task of actually generating the final JS module, be it
-    /// `--no-modules`, `--web`, or for bundlers. This is the very last step
-    /// performed in `finalize`.
+    /// `--target no-modules`, `--target web`, or for bundlers. This is the very
+    /// last step performed in `finalize`.
     fn finalize_js(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
         let mut js = String::new();
         if self.config.mode.no_modules() {
@@ -312,8 +312,9 @@ impl<'a> Context<'a> {
         // import the wasm file in one way or another.
         let mut init = String::new();
         match &self.config.mode {
-            // In `--no-modules` mode we need to both expose a name on the
-            // global object as well as generate our own custom start function.
+            // In `--target no-modules` mode we need to both expose a name on
+            // the global object as well as generate our own custom start
+            // function.
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let wasm;\n");
@@ -352,8 +353,8 @@ impl<'a> Context<'a> {
 
             // With a browser-native output we're generating an ES module, but
             // browsers don't support natively importing wasm right now so we
-            // expose the same initialization function as `--no-modules` as the
-            // default export of the module.
+            // expose the same initialization function as `--target no-modules`
+            // as the default export of the module.
             OutputMode::Web => {
                 js.push_str("const __exports = {};\n");
                 self.imports_post.push_str("let wasm;\n");
@@ -755,7 +756,7 @@ impl<'a> Context<'a> {
             if !me.config.mode.no_modules() && !me.config.mode.web() {
                 bail!(
                     "`wasm_bindgen::module` is currently only supported with \
-                     --no-modules and --web"
+                     `--target no-modules` and `--target web`"
                 );
             }
             Ok(format!(
@@ -2832,8 +2833,8 @@ impl<'a, 'b> SubContext<'a, 'b> {
         import: &decode::Import<'b>,
         item: &'b str,
     ) -> Result<Import<'b>, Error> {
-        // First up, imports don't work at all in `--no-modules` mode as we're
-        // not sure how to import them.
+        // First up, imports don't work at all in `--target no-modules` mode as
+        // we're not sure how to import them.
         let is_local_snippet = match import.module {
             decode::ImportModule::Named(s) => self.cx.local_modules.contains_key(s),
             decode::ImportModule::RawNamed(_) => false,
@@ -2843,14 +2844,14 @@ impl<'a, 'b> SubContext<'a, 'b> {
         if self.cx.config.mode.no_modules() {
             if is_local_snippet {
                 bail!(
-                    "local JS snippets are not supported with `--no-modules`; \
-                     use `--web` or no flag instead",
+                    "local JS snippets are not supported with `--target no-modules`; \
+                     use `--target web` or no flag instead",
                 );
             }
             if let decode::ImportModule::Named(module) = &import.module {
                 bail!(
-                    "import from `{}` module not allowed with `--no-modules`; \
-                     use `--nodejs`, `--web`, or no flag instead",
+                    "import from `{}` module not allowed with `--target no-modules`; \
+                     use `nodejs`, `web`, or `bundler` target instead",
                     module
                 );
             }
@@ -2866,16 +2867,16 @@ impl<'a, 'b> SubContext<'a, 'b> {
             // have a small unergonomic escape hatch for our webidl-tests tests
             if env::var("WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE").is_err() {
                 bail!(
-                    "local JS snippets are not supported with `--nodejs`; \
+                    "local JS snippets are not supported with `--target nodejs`; \
                      see rustwasm/rfcs#6 for more details, but this restriction \
                      will be lifted in the future"
                 );
             }
         }
 
-        // Similar to `--no-modules`, only allow vendor prefixes basically for web
-        // apis, shouldn't be necessary for things like npm packages or other
-        // imported items.
+        // Similar to `--target no-modules`, only allow vendor prefixes
+        // basically for web apis, shouldn't be necessary for things like npm
+        // packages or other imported items.
         let vendor_prefixes = self.vendor_prefixes.get(item);
         if let Some(vendor_prefixes) = vendor_prefixes {
             assert!(vendor_prefixes.len() > 0);

@@ -7,11 +7,7 @@
 You can build the example locally with:
 
 ```
-$ cargo build --target wasm32-unknown-unknown --release
-$ cargo run -p wasm-bindgen-cli --bin wasm-bindgen -- \
-  ../../target/wasm32-unknown-unknown/release/without_a_bundler.wasm \
-  --out-dir pkg \
-  --web
+$ wasm-pack build --target web
 ```
 
 and then opening `index.html` in a browser should run the example!
