@@ -772,184 +772,6 @@ extern "C" {
     pub fn new(message: &str) -> EvalError;
 }
 
-// Float32Array
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
-    pub type Float32Array;
-
-    /// The `Float32Array()` constructor creates an array of 32-bit floats.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: &JsValue) -> Float32Array;
-
-    /// An `Float32Array()` which creates an array with an internal buffer large
-    /// enough for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length(length: u32) -> Float32Array;
-
-    /// An `Float32Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Float32Array;
-
-    /// An `Float32Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset` for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset_and_length(
-        buffer: &JsValue,
-        byte_offset: u32,
-        length: u32,
-    ) -> Float32Array;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Float32Array, value: f32, start: u32, end: u32) -> Float32Array;
-
-    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
-    /// by a `TypedArray` at construction time.
-    #[wasm_bindgen(getter, method)]
-    pub fn buffer(this: &Float32Array) -> ArrayBuffer;
-
-    /// The `subarray()` method stores multiple values in the typed array,
-    /// reading input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn subarray(this: &Float32Array, begin: u32, end: u32) -> Float32Array;
-
-    /// The `slice()` method returns a shallow copy of a portion of a typed
-    /// array into a new typed array object. This method has the same algorithm
-    /// as `Array.prototype.slice()`.
-    #[wasm_bindgen(method)]
-    pub fn slice(this: &Float32Array, begin: u32, end: u32) -> Float32Array;
-
-    /// The `forEach()` method executes a provided function once per array
-    /// element. This method has the same algorithm as
-    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
-    /// types here.
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Float32Array, callback: &mut FnMut(f32, u32, Float32Array));
-
-    /// The `length` accessor property represents the length (in elements) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter)]
-    pub fn length(this: &Float32Array) -> u32;
-
-    /// The `byteLength` accessor property represents the length (in bytes) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
-    pub fn byte_length(this: &Float32Array) -> u32;
-
-    /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    /// typed array from the start of its `ArrayBuffer`.
-    #[wasm_bindgen(method, getter, js_name = byteOffset)]
-    pub fn byte_offset(this: &Float32Array) -> u32;
-
-    /// The `set()` method stores multiple values in the typed array, reading
-    /// input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn set(this: &Float32Array, src: &JsValue, offset: u32);
-}
-
-// Float64Array
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
-    pub type Float64Array;
-
-    /// The `Float64Array()` constructor creates an array of 64-bit floats.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: &JsValue) -> Float64Array;
-
-    /// An `Float64Array()` which creates an array with an internal buffer large
-    /// enough for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length(length: u32) -> Float64Array;
-
-    /// An `Float64Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Float64Array;
-
-    /// An `Float64Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset` for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset_and_length(
-        buffer: &JsValue,
-        byte_offset: u32,
-        length: u32,
-    ) -> Float64Array;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Float64Array, value: f64, start: u32, end: u32) -> Float64Array;
-
-    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
-    /// by a `TypedArray` at construction time.
-    #[wasm_bindgen(getter, method)]
-    pub fn buffer(this: &Float64Array) -> ArrayBuffer;
-
-    /// The `subarray()` method stores multiple values in the typed array,
-    /// reading input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn subarray(this: &Float64Array, begin: u32, end: u32) -> Float64Array;
-
-    /// The `slice()` method returns a shallow copy of a portion of a typed
-    /// array into a new typed array object. This method has the same algorithm
-    /// as `Array.prototype.slice()`.
-    #[wasm_bindgen(method)]
-    pub fn slice(this: &Float64Array, begin: u32, end: u32) -> Float64Array;
-
-    /// The `forEach()` method executes a provided function once per array
-    /// element. This method has the same algorithm as
-    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
-    /// types here.
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Float64Array, callback: &mut FnMut(f64, u32, Float64Array));
-
-    /// The `length` accessor property represents the length (in elements) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter)]
-    pub fn length(this: &Float64Array) -> u32;
-
-    /// The `byteLength` accessor property represents the length (in bytes) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
-    pub fn byte_length(this: &Float64Array) -> u32;
-
-    /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    /// typed array from the start of its `ArrayBuffer`.
-    #[wasm_bindgen(method, getter, js_name = byteOffset)]
-    pub fn byte_offset(this: &Float64Array) -> u32;
-
-    /// The `set()` method stores multiple values in the typed array, reading
-    /// input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn set(this: &Float64Array, src: &JsValue, offset: u32);
-}
-
 // Function
 #[wasm_bindgen]
 extern "C" {
@@ -1083,273 +905,6 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator/throw)
     #[wasm_bindgen(method, structural, catch)]
     pub fn throw(this: &Generator, error: &Error) -> Result<JsValue, JsValue>;
-}
-
-// Int8Array
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
-    pub type Int8Array;
-
-    /// The `Int8Array()` constructor creates an array of signed 8-bit integers.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: &JsValue) -> Int8Array;
-
-    /// An `Int8Array()` which creates an array with an internal buffer large
-    /// enough for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length(length: u32) -> Int8Array;
-
-    /// An `Int8Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Int8Array;
-
-    /// An `Int8Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset` for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset_and_length(
-        buffer: &JsValue,
-        byte_offset: u32,
-        length: u32,
-    ) -> Int8Array;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Int8Array, value: i8, start: u32, end: u32) -> Int8Array;
-
-    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
-    /// by a `TypedArray` at construction time.
-    #[wasm_bindgen(getter, method)]
-    pub fn buffer(this: &Int8Array) -> ArrayBuffer;
-
-    /// The `subarray()` method stores multiple values in the typed array,
-    /// reading input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn subarray(this: &Int8Array, begin: u32, end: u32) -> Int8Array;
-
-    /// The `slice()` method returns a shallow copy of a portion of a typed
-    /// array into a new typed array object. This method has the same algorithm
-    /// as `Array.prototype.slice()`.
-    #[wasm_bindgen(method)]
-    pub fn slice(this: &Int8Array, begin: u32, end: u32) -> Int8Array;
-
-    /// The `forEach()` method executes a provided function once per array
-    /// element. This method has the same algorithm as
-    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
-    /// types here.
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Int8Array, callback: &mut FnMut(i8, u32, Int8Array));
-
-    /// The `length` accessor property represents the length (in elements) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter)]
-    pub fn length(this: &Int8Array) -> u32;
-
-    /// The `byteLength` accessor property represents the length (in bytes) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
-    pub fn byte_length(this: &Int8Array) -> u32;
-
-    /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    /// typed array from the start of its `ArrayBuffer`.
-    #[wasm_bindgen(method, getter, js_name = byteOffset)]
-    pub fn byte_offset(this: &Int8Array) -> u32;
-
-    /// The `set()` method stores multiple values in the typed array, reading
-    /// input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn set(this: &Int8Array, src: &JsValue, offset: u32);
-}
-
-// Int16Array
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
-    pub type Int16Array;
-
-    /// The `Int16Array()` constructor creates an array of signed 16-bit integers.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: &JsValue) -> Int16Array;
-
-    /// An `Int16Array()` which creates an array with an internal buffer large
-    /// enough for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length(length: u32) -> Int16Array;
-
-    /// An `Int16Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Int16Array;
-
-    /// An `Int16Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset` for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset_and_length(
-        buffer: &JsValue,
-        byte_offset: u32,
-        length: u32,
-    ) -> Int16Array;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Int16Array, value: i16, start: u32, end: u32) -> Int16Array;
-
-    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
-    /// by a `TypedArray` at construction time.
-    #[wasm_bindgen(getter, method)]
-    pub fn buffer(this: &Int16Array) -> ArrayBuffer;
-
-    /// The `subarray()` method stores multiple values in the typed array,
-    /// reading input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn subarray(this: &Int16Array, begin: u32, end: u32) -> Int16Array;
-
-    /// The `slice()` method returns a shallow copy of a portion of a typed
-    /// array into a new typed array object. This method has the same algorithm
-    /// as `Array.prototype.slice()`.
-    #[wasm_bindgen(method)]
-    pub fn slice(this: &Int16Array, begin: u32, end: u32) -> Int16Array;
-
-    /// The `forEach()` method executes a provided function once per array
-    /// element. This method has the same algorithm as
-    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
-    /// types here.
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Int16Array, callback: &mut FnMut(i16, u32, Int16Array));
-
-    /// The `length` accessor property represents the length (in elements) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter)]
-    pub fn length(this: &Int16Array) -> u32;
-
-    /// The `byteLength` accessor property represents the length (in bytes) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
-    pub fn byte_length(this: &Int16Array) -> u32;
-
-    /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    /// typed array from the start of its `ArrayBuffer`.
-    #[wasm_bindgen(method, getter, js_name = byteOffset)]
-    pub fn byte_offset(this: &Int16Array) -> u32;
-
-    /// The `set()` method stores multiple values in the typed array, reading
-    /// input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn set(this: &Int16Array, src: &JsValue, offset: u32);
-}
-
-// Int32Array
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
-    pub type Int32Array;
-
-    /// The `Int32Array()` constructor creates an array of signed 32-bit integers.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: &JsValue) -> Int32Array;
-
-    /// An `Int32Array()` which creates an array with an internal buffer large
-    /// enough for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length(length: u32) -> Int32Array;
-
-    /// An `Int32Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Int32Array;
-
-    /// An `Int32Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset` for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset_and_length(
-        buffer: &JsValue,
-        byte_offset: u32,
-        length: u32,
-    ) -> Int32Array;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Int32Array, value: i32, start: u32, end: u32) -> Int32Array;
-
-    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
-    /// by a `TypedArray` at construction time.
-    #[wasm_bindgen(getter, method)]
-    pub fn buffer(this: &Int32Array) -> ArrayBuffer;
-
-    /// The `subarray()` method stores multiple values in the typed array,
-    /// reading input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn subarray(this: &Int32Array, begin: u32, end: u32) -> Int32Array;
-
-    /// The `slice()` method returns a shallow copy of a portion of a typed
-    /// array into a new typed array object. This method has the same algorithm
-    /// as `Array.prototype.slice()`.
-    #[wasm_bindgen(method)]
-    pub fn slice(this: &Int32Array, begin: u32, end: u32) -> Int32Array;
-
-    /// The `forEach()` method executes a provided function once per array
-    /// element. This method has the same algorithm as
-    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
-    /// types here.
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Int32Array, callback: &mut FnMut(i32, u32, Int32Array));
-
-    /// The `length` accessor property represents the length (in elements) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter)]
-    pub fn length(this: &Int32Array) -> u32;
-
-    /// The `byteLength` accessor property represents the length (in bytes) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
-    pub fn byte_length(this: &Int32Array) -> u32;
-
-    /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    /// typed array from the start of its `ArrayBuffer`.
-    #[wasm_bindgen(method, getter, js_name = byteOffset)]
-    pub fn byte_offset(this: &Int32Array) -> u32;
-
-    /// The `set()` method stores multiple values in the typed array, reading
-    /// input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn set(this: &Int32Array, src: &JsValue, offset: u32);
 }
 
 // Map
@@ -3052,364 +2607,6 @@ extern "C" {
     pub fn new(message: &str) -> TypeError;
 }
 
-// Uint8Array
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
-    pub type Uint8Array;
-
-    /// The `Uint8Array()` constructor creates an array of unsigned 8-bit integers.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: &JsValue) -> Uint8Array;
-
-    /// An `Uint8Array()` which creates an array with an internal buffer large
-    /// enough for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length(length: u32) -> Uint8Array;
-
-    /// An `Uint8Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Uint8Array;
-
-    /// An `Uint8Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset` for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset_and_length(
-        buffer: &JsValue,
-        byte_offset: u32,
-        length: u32,
-    ) -> Uint8Array;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Uint8Array, value: u8, start: u32, end: u32) -> Uint8Array;
-
-    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
-    /// by a `TypedArray` at construction time.
-    #[wasm_bindgen(getter, method)]
-    pub fn buffer(this: &Uint8Array) -> ArrayBuffer;
-
-    /// The `subarray()` method stores multiple values in the typed array,
-    /// reading input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn subarray(this: &Uint8Array, begin: u32, end: u32) -> Uint8Array;
-
-    /// The `slice()` method returns a shallow copy of a portion of a typed
-    /// array into a new typed array object. This method has the same algorithm
-    /// as `Array.prototype.slice()`.
-    #[wasm_bindgen(method)]
-    pub fn slice(this: &Uint8Array, begin: u32, end: u32) -> Uint8Array;
-
-    /// The `forEach()` method executes a provided function once per array
-    /// element. This method has the same algorithm as
-    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
-    /// types here.
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Uint8Array, callback: &mut FnMut(u8, u32, Uint8Array));
-
-    /// The `length` accessor property represents the length (in elements) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter)]
-    pub fn length(this: &Uint8Array) -> u32;
-
-    /// The `byteLength` accessor property represents the length (in bytes) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
-    pub fn byte_length(this: &Uint8Array) -> u32;
-
-    /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    /// typed array from the start of its `ArrayBuffer`.
-    #[wasm_bindgen(method, getter, js_name = byteOffset)]
-    pub fn byte_offset(this: &Uint8Array) -> u32;
-
-    /// The `set()` method stores multiple values in the typed array, reading
-    /// input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn set(this: &Uint8Array, src: &JsValue, offset: u32);
-}
-
-// Uint8ClampedArray
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
-    pub type Uint8ClampedArray;
-
-    /// The `Uint8ClampedArray()` constructor creates an array of unsigned 8-bit integers clamped
-    /// to 0-255; if you specified a value that is out of the range of [0,255], 0 or 255 will be
-    /// set instead.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray)
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: &JsValue) -> Uint8ClampedArray;
-
-    /// An `Uint8ClampedArray()` which creates an array with an internal buffer large
-    /// enough for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length(length: u32) -> Uint8ClampedArray;
-
-    /// An `Uint8ClampedArray()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Uint8ClampedArray;
-
-    /// An `Uint8ClampedArray()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset` for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset_and_length(
-        buffer: &JsValue,
-        byte_offset: u32,
-        length: u32,
-    ) -> Uint8ClampedArray;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Uint8ClampedArray, value: u8, start: u32, end: u32) -> Uint8ClampedArray;
-
-    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
-    /// by a `TypedArray` at construction time.
-    #[wasm_bindgen(getter, method)]
-    pub fn buffer(this: &Uint8ClampedArray) -> ArrayBuffer;
-
-    /// The `subarray()` method stores multiple values in the typed array,
-    /// reading input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn subarray(this: &Uint8ClampedArray, begin: u32, end: u32) -> Uint8ClampedArray;
-
-    /// The `slice()` method returns a shallow copy of a portion of a typed
-    /// array into a new typed array object. This method has the same algorithm
-    /// as `Array.prototype.slice()`.
-    #[wasm_bindgen(method)]
-    pub fn slice(this: &Uint8ClampedArray, begin: u32, end: u32) -> Uint8ClampedArray;
-
-    /// The `forEach()` method executes a provided function once per array
-    /// element. This method has the same algorithm as
-    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
-    /// types here.
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Uint8ClampedArray, callback: &mut FnMut(u8, u32, Uint8ClampedArray));
-
-    /// The `length` accessor property represents the length (in elements) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter)]
-    pub fn length(this: &Uint8ClampedArray) -> u32;
-
-    /// The `byteLength` accessor property represents the length (in bytes) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
-    pub fn byte_length(this: &Uint8ClampedArray) -> u32;
-
-    /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    /// typed array from the start of its `ArrayBuffer`.
-    #[wasm_bindgen(method, getter, js_name = byteOffset)]
-    pub fn byte_offset(this: &Uint8ClampedArray) -> u32;
-
-    /// The `set()` method stores multiple values in the typed array, reading
-    /// input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn set(this: &Uint8ClampedArray, src: &JsValue, offset: u32);
-}
-
-// Uint16Array
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
-    pub type Uint16Array;
-
-    /// The `Uint16Array()` constructor creates an array of unsigned 16-bit integers.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: &JsValue) -> Uint16Array;
-
-    /// An `Uint16Array()` which creates an array with an internal buffer large
-    /// enough for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length(length: u32) -> Uint16Array;
-
-    /// An `Uint16Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Uint16Array;
-
-    /// An `Uint16Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset` for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset_and_length(
-        buffer: &JsValue,
-        byte_offset: u32,
-        length: u32,
-    ) -> Uint16Array;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Uint16Array, value: u16, start: u32, end: u32) -> Uint16Array;
-
-    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
-    /// by a `TypedArray` at construction time.
-    #[wasm_bindgen(getter, method)]
-    pub fn buffer(this: &Uint16Array) -> ArrayBuffer;
-
-    /// The `subarray()` method stores multiple values in the typed array,
-    /// reading input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn subarray(this: &Uint16Array, begin: u32, end: u32) -> Uint16Array;
-
-    /// The `slice()` method returns a shallow copy of a portion of a typed
-    /// array into a new typed array object. This method has the same algorithm
-    /// as `Array.prototype.slice()`.
-    #[wasm_bindgen(method)]
-    pub fn slice(this: &Uint16Array, begin: u32, end: u32) -> Uint16Array;
-
-    /// The `forEach()` method executes a provided function once per array
-    /// element. This method has the same algorithm as
-    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
-    /// types here.
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Uint16Array, callback: &mut FnMut(u16, u32, Uint16Array));
-
-    /// The `length` accessor property represents the length (in elements) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter)]
-    pub fn length(this: &Uint16Array) -> u32;
-
-    /// The `byteLength` accessor property represents the length (in bytes) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
-    pub fn byte_length(this: &Uint16Array) -> u32;
-
-    /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    /// typed array from the start of its `ArrayBuffer`.
-    #[wasm_bindgen(method, getter, js_name = byteOffset)]
-    pub fn byte_offset(this: &Uint16Array) -> u32;
-
-    /// The `set()` method stores multiple values in the typed array, reading
-    /// input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn set(this: &Uint16Array, src: &JsValue, offset: u32);
-}
-
-// Uint32Array
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
-    pub type Uint32Array;
-
-    /// An `Uint32Array()` which creates an array with an internal buffer large
-    /// enough for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_length(length: u32) -> Uint32Array;
-
-    /// An `Uint32Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> Uint32Array;
-
-    /// An `Uint32Array()` which creates an array with the given buffer but is a
-    /// view starting at `byte_offset` for `length` elements.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new_with_byte_offset_and_length(
-        buffer: &JsValue,
-        byte_offset: u32,
-        length: u32,
-    ) -> Uint32Array;
-
-    /// The `Uint32Array()` constructor creates an array of unsigned 32-bit integers.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array)
-    #[wasm_bindgen(constructor)]
-    pub fn new(constructor_arg: &JsValue) -> Uint32Array;
-
-    /// The fill() method fills all the elements of an array from a start index
-    /// to an end index with a static value. The end index is not included.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
-    #[wasm_bindgen(method)]
-    pub fn fill(this: &Uint32Array, value: u32, start: u32, end: u32) -> Uint32Array;
-
-    /// The `buffer` accessor property represents the `ArrayBuffer` referenced
-    /// by a `TypedArray` at construction time.
-    #[wasm_bindgen(getter, method)]
-    pub fn buffer(this: &Uint32Array) -> ArrayBuffer;
-
-    /// The `subarray()` method stores multiple values in the typed array,
-    /// reading input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn subarray(this: &Uint32Array, begin: u32, end: u32) -> Uint32Array;
-
-    /// The `slice()` method returns a shallow copy of a portion of a typed
-    /// array into a new typed array object. This method has the same algorithm
-    /// as `Array.prototype.slice()`.
-    #[wasm_bindgen(method)]
-    pub fn slice(this: &Uint32Array, begin: u32, end: u32) -> Uint32Array;
-
-    /// The `forEach()` method executes a provided function once per array
-    /// element. This method has the same algorithm as
-    /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
-    /// types here.
-    #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Uint32Array, callback: &mut FnMut(u32, u32, Uint32Array));
-
-    /// The `length` accessor property represents the length (in elements) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter)]
-    pub fn length(this: &Uint32Array) -> u32;
-
-    /// The `byteLength` accessor property represents the length (in bytes) of a
-    /// typed array.
-    #[wasm_bindgen(method, getter, js_name = byteLength)]
-    pub fn byte_length(this: &Uint32Array) -> u32;
-
-    /// The `byteOffset` accessor property represents the offset (in bytes) of a
-    /// typed array from the start of its `ArrayBuffer`.
-    #[wasm_bindgen(method, getter, js_name = byteOffset)]
-    pub fn byte_offset(this: &Uint32Array) -> u32;
-
-    /// The `set()` method stores multiple values in the typed array, reading
-    /// input values from a specified array.
-    #[wasm_bindgen(method)]
-    pub fn set(this: &Uint32Array, src: &JsValue, offset: u32);
-}
-
 // URIError
 #[wasm_bindgen]
 extern "C" {
@@ -4839,7 +4036,111 @@ pub fn global() -> Object {
 }
 
 macro_rules! arrays {
-    ($($name:ident: $ty:ident,)*) => ($(
+    ($(#[doc = $ctor:literal] #[doc = $mdn:literal] $name:ident: $ty:ident,)*) => ($(
+        #[wasm_bindgen]
+        extern "C" {
+            #[wasm_bindgen(extends = Object)]
+            #[derive(Clone, Debug)]
+            pub type $name;
+
+            /// The
+            #[doc = $ctor]
+            /// constructor creates an array of unsigned 8-bit integers.
+            ///
+            /// [MDN documentation](
+            #[doc = $mdn]
+            /// )
+            #[wasm_bindgen(constructor)]
+            pub fn new(constructor_arg: &JsValue) -> $name;
+
+            /// An
+            #[doc = $ctor]
+            /// which creates an array with an internal buffer large
+            /// enough for `length` elements.
+            ///
+            /// [MDN documentation](
+            #[doc = $mdn]
+            /// )
+            #[wasm_bindgen(constructor)]
+            pub fn new_with_length(length: u32) -> $name;
+
+            /// An
+            #[doc = $ctor]
+            /// which creates an array with the given buffer but is a
+            /// view starting at `byte_offset`.
+            ///
+            /// [MDN documentation](
+            #[doc = $mdn]
+            /// )
+            #[wasm_bindgen(constructor)]
+            pub fn new_with_byte_offset(buffer: &JsValue, byte_offset: u32) -> $name;
+
+            /// An
+            #[doc = $ctor]
+            /// which creates an array with the given buffer but is a
+            /// view starting at `byte_offset` for `length` elements.
+            ///
+            /// [MDN documentation](
+            #[doc = $mdn]
+            /// )
+            #[wasm_bindgen(constructor)]
+            pub fn new_with_byte_offset_and_length(
+                buffer: &JsValue,
+                byte_offset: u32,
+                length: u32,
+            ) -> $name;
+
+            /// The fill() method fills all the elements of an array from a start index
+            /// to an end index with a static value. The end index is not included.
+            ///
+            /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/fill)
+            #[wasm_bindgen(method)]
+            pub fn fill(this: &$name, value: $ty, start: u32, end: u32) -> $name;
+
+            /// The `buffer` accessor property represents the `ArrayBuffer` referenced
+            /// by a `TypedArray` at construction time.
+            #[wasm_bindgen(getter, method)]
+            pub fn buffer(this: &$name) -> ArrayBuffer;
+
+            /// The `subarray()` method stores multiple values in the typed array,
+            /// reading input values from a specified array.
+            #[wasm_bindgen(method)]
+            pub fn subarray(this: &$name, begin: u32, end: u32) -> $name;
+
+            /// The `slice()` method returns a shallow copy of a portion of a typed
+            /// array into a new typed array object. This method has the same algorithm
+            /// as `Array.prototype.slice()`.
+            #[wasm_bindgen(method)]
+            pub fn slice(this: &$name, begin: u32, end: u32) -> $name;
+
+            /// The `forEach()` method executes a provided function once per array
+            /// element. This method has the same algorithm as
+            /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
+            /// types here.
+            #[wasm_bindgen(method, js_name = forEach)]
+            pub fn for_each(this: &$name, callback: &mut FnMut($ty, u32, $name));
+
+            /// The `length` accessor property represents the length (in elements) of a
+            /// typed array.
+            #[wasm_bindgen(method, getter)]
+            pub fn length(this: &$name) -> u32;
+
+            /// The `byteLength` accessor property represents the length (in bytes) of a
+            /// typed array.
+            #[wasm_bindgen(method, getter, js_name = byteLength)]
+            pub fn byte_length(this: &$name) -> u32;
+
+            /// The `byteOffset` accessor property represents the offset (in bytes) of a
+            /// typed array from the start of its `ArrayBuffer`.
+            #[wasm_bindgen(method, getter, js_name = byteOffset)]
+            pub fn byte_offset(this: &$name) -> u32;
+
+            /// The `set()` method stores multiple values in the typed array, reading
+            /// input values from a specified array.
+            #[wasm_bindgen(method)]
+            pub fn set(this: &$name, src: &JsValue, offset: u32);
+        }
+
         impl $name {
             /// Creates a JS typed array which is a view into wasm's linear
             /// memory at the slice specified.
@@ -4890,17 +4191,43 @@ macro_rules! arrays {
                 all_wasm_memory.set(self, offset as u32);
             }
         }
-    )*)
+    )*);
 }
 
 arrays! {
+    /// `Int8Array()`
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array
     Int8Array: i8,
+
+    /// `Int16Array()`
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array
     Int16Array: i16,
+
+    /// `Int32Array()`
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array
     Int32Array: i32,
+
+    /// `Uint8Array()`
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
     Uint8Array: u8,
+
+    /// `Uint8ClampedArray()`
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray
     Uint8ClampedArray: u8,
+
+    /// `Uint16Array()`
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array
     Uint16Array: u16,
+
+    /// `Uint32Array()`
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array
     Uint32Array: u32,
+
+    /// `Float32Array()`
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array
     Float32Array: f32,
+
+    /// `Float64Array()`
+    /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array
     Float64Array: f64,
 }
