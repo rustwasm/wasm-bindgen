@@ -562,28 +562,28 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getUint16)]
     pub fn get_uint16_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> u16;
 
-    /// The getInt32() method gets a signed 16-bit integer (byte) at the specified
+    /// The getInt32() method gets a signed 32-bit integer (byte) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt32)
     #[wasm_bindgen(method, js_name = getInt32)]
     pub fn get_int32(this: &DataView, byte_offset: usize) -> i32;
 
-    /// The getInt32() method gets a signed 16-bit integer (byte) at the specified
+    /// The getInt32() method gets a signed 32-bit integer (byte) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt32)
     #[wasm_bindgen(method, js_name = getInt32)]
     pub fn get_int32_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> i32;
 
-    /// The getUint32() an unsigned 16-bit integer (unsigned byte) at the specified
+    /// The getUint32() an unsigned 32-bit integer (unsigned byte) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32)
     #[wasm_bindgen(method, js_name = getUint32)]
     pub fn get_uint32(this: &DataView, byte_offset: usize) -> u32;
 
-    /// The getUint32() an unsigned 16-bit integer (unsigned byte) at the specified
+    /// The getUint32() an unsigned 32-bit integer (unsigned byte) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32)
