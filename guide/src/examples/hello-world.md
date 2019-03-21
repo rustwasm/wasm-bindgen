@@ -40,6 +40,11 @@ Our JS entry point is quite small!
 
 ## Webpack-specific files
 
+> **Note**: Webpack is not required for this example, and if you're interested
+> in options that don't use a JS bundler [see other examples][wab].
+
+[wab]: without-a-bundler.html
+
 And finally here's the Webpack configuration and `package.json` for this
 project:
 
