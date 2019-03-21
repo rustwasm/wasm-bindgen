@@ -32,6 +32,47 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.40
+
+Released 2019-03-21.
+
+### Added
+
+* TypeScript and JS generation will now attempt to preserve argument names in
+  the generated JS where possible.
+  [#1344](https://github.com/rustwasm/wasm-bindgen/pull/1344)
+
+* Enable `Option<T>` support for enums defined in WebIDL.
+  [#1350](https://github.com/rustwasm/wasm-bindgen/pull/1350)
+
+* Add a `raw_module` attribute to `#[wasm_bindgen]` which is the same as
+  `module` except doesn't attempt to recognize `./`, `../`, `or `/` prefixed
+  paths.
+  [#1353](https://github.com/rustwasm/wasm-bindgen/pull/1353)
+
+* The `wasm-bindgen` CLI flags have now all been renamed under a `--target`
+  flag. Instead of `--web` you'll now pass `--target web`, for example. This
+  increases consistency between the `wasm-bindgen` and `wasm-pack` CLI.
+  [#1369](https://github.com/rustwasm/wasm-bindgen/pull/1369)
+
+### Fixed
+
+* Definitions for `TypedArray` imports of `js-sys` have been unified with a
+  macro to improve consistency and fix future bugs.
+  [#1371](https://github.com/rustwasm/wasm-bindgen/pull/1371)
+
+* Usage of `--no-modules` in CloudFlare workers should now work by default.
+  [#1384](https://github.com/rustwasm/wasm-bindgen/pull/1384)
+
+* A use-after-free when a closure is reinvoked after being destroyed on the Rust
+  die has been fixed.
+  [#1385](https://github.com/rustwasm/wasm-bindgen/pull/1385)
+
+* A bug causing nondeterministic generation of JS bindings has been fixed.
+  [#1383](https://github.com/rustwasm/wasm-bindgen/pull/1383)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.39
 
 Released 2018-03-13.
