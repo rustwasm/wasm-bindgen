@@ -2,7 +2,7 @@ use crate::decode;
 use crate::descriptor::{Descriptor, VectorKind};
 use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, BTreeMap};
 use std::env;
 use walrus::{MemoryId, Module};
 use wasm_bindgen_wasm_interpreter::Interpreter;
@@ -49,7 +49,7 @@ pub struct Context<'a> {
     /// wasm-bindgen emits.
     pub direct_imports: HashMap<&'a str, (&'a str, &'a str)>,
 
-    pub exported_classes: Option<HashMap<String, ExportedClass>>,
+    pub exported_classes: Option<BTreeMap<String, ExportedClass>>,
     pub function_table_needed: bool,
     pub interpreter: &'a mut Interpreter,
     pub memory: MemoryId,
