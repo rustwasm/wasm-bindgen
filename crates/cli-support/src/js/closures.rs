@@ -181,18 +181,36 @@ impl ClosureDescriptors {
             let mut shim = closure.shim_idx;
             let (js, _ts, _js_doc) = {
                 let mut builder = Js2Rust::new("", input);
+
+                // First up with a closure we increment the internal reference
+                // count. This ensures that the Rust closure environment won't
+                // be deallocated while we're invoking it.
                 builder.prelude("this.cnt++;");
+
                 if closure.mutable {
+                    // For mutable closures they can't be invoked recursively.
+                    // To handle that we swap out the `this.a` pointer with zero
+                    // while we invoke it. If we finish and the closure wasn't
+                    // destroyed, then we put back the pointer so a future
+                    // invocation can succeed.
                     builder
-                        .prelude("let a = this.a;\n")
-                        .prelude("this.a = 0;\n")
+                        .prelude("let a = this.a;")
+                        .prelude("this.a = 0;")
                         .rust_argument("a")
                         .rust_argument("b")
-                        .finally("this.a = a;\n");
+                        .finally("if (this.cnt-- == 1) d(a, b);")
+                        .finally("else this.a = a;");
                 } else {
-                    builder.rust_argument("this.a").rust_argument("b");
+                    // For shared closures they can be invoked recursively so we
+                    // just immediately pass through `this.a`. If we end up
+                    // executing the destructor, however, we clear out the
+                    // `this.a` pointer to prevent it being used again the
+                    // future.
+                    builder
+                        .rust_argument("this.a")
+                        .rust_argument("b")
+                        .finally("if (this.cnt-- == 1) { d(this.a, b); this.a = 0; }");
                 }
-                builder.finally("if (this.cnt-- == 1) d(this.a, b);");
                 builder.process(&closure.function, None)?.finish(
                     "function",
                     "f",
