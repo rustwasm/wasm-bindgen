@@ -42,16 +42,15 @@ impl<'src> Decode<'src> for &'src str {
         let n = u32::decode(data);
         let (a, b) = data.split_at(n as usize);
         *data = b;
-        str::from_utf8(a).unwrap()
+        let r = str::from_utf8(a).unwrap();
+        log::trace!("decoded string {:?}", r);
+        r
     }
 }
 
 impl<'src> Decode<'src> for String {
     fn decode(data: &mut &'src [u8]) -> String {
-        let n = u32::decode(data);
-        let (a, b) = data.split_at(n as usize);
-        *data = b;
-        String::from_utf8(a.to_vec()).unwrap()
+        <&'src str>::decode(data).to_string()
     }
 }
 
@@ -59,6 +58,7 @@ impl<'src, T: Decode<'src>> Decode<'src> for Vec<T> {
     fn decode(data: &mut &'src [u8]) -> Self {
         let n = u32::decode(data);
         let mut v = Vec::with_capacity(n as usize);
+        log::trace!("found a list of length {}", n);
         for _ in 0..n {
             v.push(Decode::decode(data));
         }
@@ -84,6 +84,7 @@ macro_rules! decode_struct {
 
         impl <'a> Decode<'a> for $name <$($lt)*> {
             fn decode(_data: &mut &'a [u8]) -> Self {
+                log::trace!("start decode `{}`", stringify!($name));
                 $name {
                     $($field: Decode::decode(_data),)*
                 }

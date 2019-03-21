@@ -491,6 +491,7 @@ fn extract_programs<'a>(
             continue;
         }
         to_remove.push(i);
+        log::debug!("custom section {} looks like a wasm bindgen section", i);
         program_storage.push(mem::replace(&mut custom.value, Vec::new()));
     }
 
@@ -546,6 +547,7 @@ to open an issue at https://github.com/rustwasm/wasm-bindgen/issues!
                 );
             }
             let next = get_remaining(&mut payload).unwrap();
+            log::debug!("found a program of length {}", next.len());
             ret.push(<decode::Program as decode::Decode>::decode_all(next));
         }
     }
@@ -575,6 +577,7 @@ fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
         Ok(s) => s,
         Err(_) => bad!(),
     };
+    log::debug!("found version specifier {}", data);
     if !data.starts_with("{") || !data.ends_with("}") {
         bad!()
     }
