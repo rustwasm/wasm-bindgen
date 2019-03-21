@@ -860,13 +860,7 @@ impl<'a> Context<'a> {
                 function init(module_or_path, maybe_memory) {{
                     let result;
                     const imports = {{ './{module}': __exports }};
-                    if (module_or_path instanceof WebAssembly.Module) {{
-                        {init_memory1}
-                        result = WebAssembly.instantiate(module_or_path, imports)
-                            .then(instance => {{
-                                return {{ instance, module: module_or_path }};
-                            }});
-                    }} else {{
+                    if (module_or_path instanceof URL || typeof module_or_path === 'string' || module_or_path instanceof Request) {{
                         {init_memory2}
                         const response = fetch(module_or_path);
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
@@ -886,6 +880,12 @@ impl<'a> Context<'a> {
                                 .then(r => r.arrayBuffer())
                                 .then(bytes => WebAssembly.instantiate(bytes, imports));
                         }}
+                    }} else {{
+                        {init_memory1}
+                        result = WebAssembly.instantiate(module_or_path, imports)
+                            .then(instance => {{
+                                return {{ instance, module: module_or_path }};
+                            }});
                     }}
                     return result.then(({{instance, module}}) => {{
                         wasm = instance.exports;
