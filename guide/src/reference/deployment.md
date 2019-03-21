@@ -5,12 +5,31 @@ locations unfortunately isn't a trivial task to do. This page hopes to serve
 as documentation for the various known options, and as always PRs are welcome
 to update this if it's out of date!
 
+The methods of deployment and integration here are primarily tied to the
+`--target` flag. Note that the `--target` flag of `wasm-pack` and `wasm-bindgen`
+should behave the same way in this respect. The values possible here are:
+
+| Value           | Summary                                                    |
+|-----------------|------------------------------------------------------------|
+| [`bundler`]     | Suitable for loading in bundlers like Webpack              |
+| [`web`]         | Directly loadable in a web browser                         |
+| [`nodejs`]      | Loadable via `require` as a Node.js module                 |
+| [`no-modules`]  | Like `web`, but older and doesn't use ES modules           |
+
+[`bundler`]: #bundlers
+[`web`]: #without-a-bundler
+[`no-modules`]: #without-a-bundler
+[`nodejs`]: #nodejs
+
 ## Bundlers
 
-The default output of `wasm-bindgen` assumes a model where the wasm module
-itself is natively an ES module. This model, however, not natively implemented
-in any JS implementation at this time. As a result, to consume the default
-output of `wasm-bindgen` you will need a bundler of some form.
+**`--target bundler`**
+
+The default output of `wasm-bindgen`, or the `bundler` target, assumes a model
+where the wasm module itself is natively an ES module. This model, however, not
+natively implemented in any JS implementation at this time. As a result, to
+consume the default output of `wasm-bindgen` you will need a bundler of some
+form.
 
 > **Note**: the choice of this default output was done to reflect the trends of
 > the JS ecosystem. While tools other than bundlers don't support wasm files as
@@ -27,37 +46,39 @@ necessary.
 
 ## Without a Bundler
 
+**`--target web` or `--target no-modules`**
+
 If you're not using a bundler but you're still running code in a web browser,
 `wasm-bindgen` still supports this! For this use case you'll want to use the
-`--web` flag. You can check out a [full example][nomex] in the
+`--target web` flag. You can check out a [full example][nomex] in the
 documentation, but the highlights of this output are:
 
-* When using `wasm-bindgen` directly you'll pass `--web`.
+* When compiling you'll pass `--target web` to `wasm-pack` (or `wasm-bindgen`
+  directly).
 * The output can natively be included on a web page, and doesn't require any
   further postprocessing. The output is included as an ES module.
-* The `--web` mode is not able to use NPM dependencies.
+* The `--target web` mode is not able to use NPM dependencies.
 * You'll want to review the [browser requirements] for `wasm-bindgen` because
   no polyfills will be available.
-
-> **Note**: currently `--web` is not supported in `wasm-pack` because it is
-> a very recent addition to `wasm-bindgen`, but support will be added soon!
 
 [nomex]: ../examples/without-a-bundler.html
 [rfc1]: https://github.com/rustwasm/rfcs/pull/6
 [rfc2]: https://github.com/rustwasm/rfcs/pull/8
 [browser requirements]: browser-support.html
 
-The `wasm-bindgen` CLI also supports an output mode called `--no-modules` which
-is similar to `--web` in that it requires manual initialization of the wasm
-and is intended to be included in web pages without any further postprocessing.
-See the [without a bundler example][nomex] for some more information about
-`--no-modules`, which corresponds to `--target no-modules` in `wasm-pack`.
+The CLI also supports an output mode called `--target no-modules` which is
+similar to the `web` target in that it requires manual initialization of the
+wasm and is intended to be included in web pages without any further
+postprocessing.  See the [without a bundler example][nomex] for some more
+information about `--target no-modules`.
 
 ## Node.js
 
+**`--target nodejs`**
+
 If you're deploying WebAssembly into Node.js (perhaps as an alternative to a
 native module), then you'll want to pass the `--target nodejs` flag to
-`wasm-pack` or the `--nodejs` flag to `wasm-bindgen`.
+`wasm-pack` or `wasm-bindgen`.
 
 Like the "without a bundler" strategy, this method of deployment does not
 require any further postprocessing. The generated JS shims can be `require`'d
@@ -72,4 +93,4 @@ which is currently Node 8 and above.
 If you'd like to deploy compiled WebAssembly to NPM, then the tool for the job
 is [`wasm-pack`]. More information on this coming soon!
 
-[`wasm-pack`]: https://rustwasm.github.io/wasm-pack/book/
+[`wasm-pack`]: https://rustwasm.github.io/docs/wasm-pack/

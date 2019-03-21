@@ -64,11 +64,12 @@ are important to be aware of. Many of these are temporary though!
   this. For now, though, js snippets must be standalone modules and can't import
   from anything else.
 
-* Only `--web` and the default bundler output mode are supported. To support
-  `--nodejs` we'd need to translate ES module syntax to CommonJS (this is
+* Only `--target web` and the default bundler output mode are supported. To
+  support `--target nodejs` we'd need to translate ES module syntax to CommonJS
+  (this is
   planned to be done, just hasn't been done yet). Additionally to support
-  `--no-modules` we'd have to similarly translate from ES modules to something
-  else.
+  `--target no-modules` we'd have to similarly translate from ES modules to
+  something else.
 
 * Paths in `module = "..."` must currently start with `/`, or be rooted at the
   crate root. It is intended to eventually support relative paths like `./` and
