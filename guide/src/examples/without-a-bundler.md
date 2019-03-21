@@ -9,9 +9,6 @@ browser directly. For this deployment strategy bundlers like Webpack are not
 required. For more information on deployment see the [dedicated
 documentation][deployment].
 
-> **Note**: the `--web` flag is quite new to `wasm-bindgen`, and does not
-> currently have support in `wasm-pack` yet. Support will be added soon though!
-
 First let's take a look at the code and see how when we're using `--web`
 we're not actually losing any functionality!
 
