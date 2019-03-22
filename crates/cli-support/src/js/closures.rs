@@ -198,7 +198,7 @@ impl ClosureDescriptors {
                         .prelude("this.a = 0;")
                         .rust_argument("a")
                         .rust_argument("b")
-                        .finally("if (this.cnt-- == 1) d(a, b);")
+                        .finally("if (--this.cnt === 0) d(a, b);")
                         .finally("else this.a = a;");
                 } else {
                     // For shared closures they can be invoked recursively so we
