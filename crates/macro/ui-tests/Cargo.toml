@@ -12,4 +12,4 @@ harness = false
 wasm-bindgen = { path = "../../..", features = ["strict-macro"] }
 
 [dev-dependencies]
-compiletest_rs = "0.3"
+compiletest_rs = { version = "0.3", features = ['stable'] }
