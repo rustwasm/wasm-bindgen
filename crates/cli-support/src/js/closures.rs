@@ -209,7 +209,7 @@ impl ClosureDescriptors {
                     builder
                         .rust_argument("this.a")
                         .rust_argument("b")
-                        .finally("if (this.cnt-- == 1) { d(this.a, b); this.a = 0; }");
+                        .finally("if (--this.cnt === 0) { d(this.a, b); this.a = 0; }");
                 }
                 builder.process(&closure.function, None)?.finish(
                     "function",
