@@ -1,7 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
 use failure::{bail, Error, ResultExt};
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, BTreeMap};
 use std::env;
 use std::fs;
 use std::mem;
@@ -329,6 +329,8 @@ impl Bindgen {
                 start: None,
                 anyref: Default::default(),
                 snippet_offsets: Default::default(),
+                npm_dependencies: Default::default(),
+                package_json_read: Default::default(),
             };
             cx.anyref.enabled = self.anyref;
             cx.anyref.prepare(cx.module)?;
@@ -364,6 +366,16 @@ impl Bindgen {
                 fs::create_dir_all(path.parent().unwrap())?;
                 fs::write(&path, contents)
                     .with_context(|_| format!("failed to write `{}`", path.display()))?;
+            }
+
+            if cx.npm_dependencies.len() > 0 {
+                let map = cx
+                    .npm_dependencies
+                    .iter()
+                    .map(|(k, v)| (k, &v.1))
+                    .collect::<BTreeMap<_, _>>();
+                let json = serde_json::to_string_pretty(&map)?;
+                fs::write(out_dir.join("package.json"), json)?;
             }
 
             cx.finalize(stem)?
@@ -698,6 +710,13 @@ impl OutputMode {
     fn web(&self) -> bool {
         match self {
             OutputMode::Web => true,
+            _ => false,
+        }
+    }
+
+    fn bundler(&self) -> bool {
+        match self {
+            OutputMode::Bundler { .. } => true,
             _ => false,
         }
     }

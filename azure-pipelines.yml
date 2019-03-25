@@ -62,12 +62,17 @@ jobs:
       - template: ci/azure-install-sccache.yml
       - script: cargo test --target wasm32-unknown-unknown --features nightly --test wasm
 
-  - job: test_cli_support
-    displayName: "Run wasm-bindgen-cli-support crate tests"
+  - job: test_cli
+    displayName: "Run wasm-bindgen-cli crate tests"
     steps:
       - template: ci/azure-install-rust.yml
       - template: ci/azure-install-sccache.yml
+      - script: rustup target add wasm32-unknown-unknown
+        displayName: "install wasm target"
       - script: cargo test -p wasm-bindgen-cli-support
+        displayName: "wasm-bindgen-cli-support tests"
+      - script: cargo test -p wasm-bindgen-cli
+        displayName: "wasm-bindgen-cli tests"
 
   - job: test_web_sys
     displayName: "Run web-sys crate tests"
@@ -139,16 +144,22 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
       - template: ci/azure-install-sccache.yml
-      - script: npm install
+      - script: mv _package.json package.json && npm install && rm package.json
+        displayName: "run npm install"
       - script: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
-      - script: cargo build -p wasm-bindgen-cli
-      - script: ln -snf `pwd`/target/debug/wasm-bindgen $HOME/.cargo/bin/wasm-bindgen
+        displayName: "install wasm-pack"
+      - script: |
+          set -ex
+          cargo build -p wasm-bindgen-cli
+          ln -snf `pwd`/target/debug/wasm-bindgen $HOME/.cargo/bin/wasm-bindgen
+        displayName: "install wasm-bindgen for `wasm-pack` to use"
       - script: |
           for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler`; do
             (cd examples/$dir &&
             ln -fs ../../node_modules . &&
             npm run build -- --output-path $BUILD_ARTIFACTSTAGINGDIRECTORY/exbuild/$dir) || exit 1;
           done
+        displayName: "build examples"
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: examples1

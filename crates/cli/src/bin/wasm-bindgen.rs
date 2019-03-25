@@ -79,7 +79,7 @@ fn main() {
     };
     eprintln!("error: {}", err);
     for cause in err.iter_causes() {
-        eprintln!("\tcaused by: {}", cause);
+        eprintln!("    caused by: {}", cause);
     }
     process::exit(1);
 }
