@@ -1236,8 +1236,6 @@ impl<'a> Context<'a> {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_malloc")?;
-        self.expose_text_encoder();
-        self.expose_uint8_memory();
         self.expose_wasm_vector_len();
         let debug = if self.config.debug {
             "
@@ -1246,6 +1244,33 @@ impl<'a> Context<'a> {
         } else {
             ""
         };
+
+        // If we are targeting Node.js, it doesn't have `encodeInto` yet
+        // but it does have `Buffer::write` which has similar semantics but
+        // doesn't require creating intermediate view using `subarray`
+        // and also has `Buffer::byteLength` to calculate size upfront.
+        if self.config.mode.nodejs() {
+            self.expose_node_buffer_memory();
+
+            self.global(&format!(
+                "
+                    function passStringToWasm(arg) {{
+                        {}
+                        const size = Buffer.byteLength(arg);
+                        const ptr = wasm.__wbindgen_malloc(size);
+                        getNodeBufferMemory().write(arg, ptr, size);
+                        WASM_VECTOR_LEN = size;
+                        return ptr;
+                    }}
+                ",
+                debug,
+            ));
+
+            return Ok(());
+        }
+
+        self.expose_text_encoder();
+        self.expose_uint8_memory();
 
         // The first implementation we have for this is to use
         // `TextEncoder#encode` which has been around for quite some time.
@@ -1600,48 +1625,52 @@ impl<'a> Context<'a> {
         ));
     }
 
+    fn expose_node_buffer_memory(&mut self) {
+        self.memview("getNodeBufferMemory", "Buffer.from");
+    }
+
     fn expose_int8_memory(&mut self) {
-        self.memview("getInt8Memory", "Int8Array");
+        self.memview("getInt8Memory", "new Int8Array");
     }
 
     fn expose_uint8_memory(&mut self) {
-        self.memview("getUint8Memory", "Uint8Array");
+        self.memview("getUint8Memory", "new Uint8Array");
     }
 
     fn expose_clamped_uint8_memory(&mut self) {
-        self.memview("getUint8ClampedMemory", "Uint8ClampedArray");
+        self.memview("getUint8ClampedMemory", "new Uint8ClampedArray");
     }
 
     fn expose_int16_memory(&mut self) {
-        self.memview("getInt16Memory", "Int16Array");
+        self.memview("getInt16Memory", "new Int16Array");
     }
 
     fn expose_uint16_memory(&mut self) {
-        self.memview("getUint16Memory", "Uint16Array");
+        self.memview("getUint16Memory", "new Uint16Array");
     }
 
     fn expose_int32_memory(&mut self) {
-        self.memview("getInt32Memory", "Int32Array");
+        self.memview("getInt32Memory", "new Int32Array");
     }
 
     fn expose_uint32_memory(&mut self) {
-        self.memview("getUint32Memory", "Uint32Array");
+        self.memview("getUint32Memory", "new Uint32Array");
     }
 
     fn expose_int64_memory(&mut self) {
-        self.memview("getInt64Memory", "BigInt64Array");
+        self.memview("getInt64Memory", "new BigInt64Array");
     }
 
     fn expose_uint64_memory(&mut self) {
-        self.memview("getUint64Memory", "BigUint64Array");
+        self.memview("getUint64Memory", "new BigUint64Array");
     }
 
     fn expose_f32_memory(&mut self) {
-        self.memview("getFloat32Memory", "Float32Array");
+        self.memview("getFloat32Memory", "new Float32Array");
     }
 
     fn expose_f64_memory(&mut self) {
-        self.memview("getFloat64Memory", "Float64Array");
+        self.memview("getFloat64Memory", "new Float64Array");
     }
 
     fn memview_function(&mut self, t: VectorKind) -> &'static str {
@@ -1711,7 +1740,7 @@ impl<'a> Context<'a> {
             let cache{name} = null;
             function {name}() {{
                 if (cache{name} === null || cache{name}.buffer !== {mem}.buffer) {{
-                    cache{name} = new {js}({mem}.buffer);
+                    cache{name} = {js}({mem}.buffer);
                 }}
                 return cache{name};
             }}
