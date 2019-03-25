@@ -13,13 +13,13 @@ For example if you're working with this JS file:
 
 ```js
 // defined-in-js.js
-{{#include ../../../examples/import_js/defined-in-js.js}}
+{{#include ../../../examples/import_js/crate/defined-in-js.js}}
 ```
 
 you can use it in Rust with:
 
 ```rust
-{{#include ../../../examples/import_js/src/lib.rs}}
+{{#include ../../../examples/import_js/crate/src/lib.rs}}
 ```
 
 You can also [explore the full list of ways to configure imports][attr]

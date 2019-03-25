@@ -66,7 +66,7 @@ members = [
   "examples/fetch",
   "examples/guide-supported-types-examples",
   "examples/hello_world",
-  "examples/import_js",
+  "examples/import_js/crate",
   "examples/julia_set",
   "examples/paint",
   "examples/performance",
