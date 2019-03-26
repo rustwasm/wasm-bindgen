@@ -1,9 +1,9 @@
 use core::mem;
 
-use convert::slices::WasmSlice;
-use convert::{FromWasmAbi, GlobalStack, IntoWasmAbi, ReturnWasmAbi, Stack};
-use describe::{inform, WasmDescribe, FUNCTION};
-use throw_str;
+use crate::convert::slices::WasmSlice;
+use crate::convert::{FromWasmAbi, GlobalStack, IntoWasmAbi, ReturnWasmAbi, Stack};
+use crate::describe::{inform, WasmDescribe, FUNCTION};
+use crate::throw_str;
 
 macro_rules! stack_closures {
     ($( ($cnt:tt $invoke:ident $invoke_mut:ident $($var:ident)*) )*) => ($(

@@ -19,7 +19,7 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     fn new() -> JsCast3;
 
-    #[wasm_bindgen(extends = ::jscast::JsCast1, extends = JsCast3)]
+    #[wasm_bindgen(extends = crate::jscast::JsCast1, extends = JsCast3)]
     type JsCast4;
     #[wasm_bindgen(constructor)]
     fn new() -> JsCast4;

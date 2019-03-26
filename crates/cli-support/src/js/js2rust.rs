@@ -357,7 +357,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     return Ok(self);
                 }
                 Descriptor::RustStruct(ref s) => {
-                    self.js_arguments.push((name.clone(), format!("{} | undefined", s)));
+                    self.js_arguments
+                        .push((name.clone(), format!("{} | undefined", s)));
                     self.prelude(&format!("let ptr{} = 0;", i));
                     self.prelude(&format!("if ({0} !== null && {0} !== undefined) {{", name));
                     self.assert_class(&name, s);
@@ -659,7 +660,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 Descriptor::RustStruct(ref name) => {
                     self.ret_ty = format!("{} | undefined", name);
                     self.cx.require_class_wrap(name);
-                    self.ret_expr = format!("
+                    self.ret_expr = format!(
+                        "
                         const ptr = RET;
                         return ptr === 0 ? undefined : {}.__wrap(ptr);
                     ",
@@ -830,7 +832,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
     fn assert_class(&mut self, arg: &str, class: &str) {
         if !self.cx.config.debug {
-            return
+            return;
         }
         self.cx.expose_assert_class();
         self.prelude(&format!("_assertClass({}, {});", arg, class));
@@ -838,7 +840,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
     fn assert_not_moved(&mut self, arg: &str) {
         if !self.cx.config.debug {
-            return
+            return;
         }
         self.prelude(&format!(
             "\

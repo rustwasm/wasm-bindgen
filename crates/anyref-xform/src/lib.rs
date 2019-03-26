@@ -431,7 +431,7 @@ impl Transform<'_> {
         let (is_export, ty) = match &mut target.kind {
             walrus::FunctionKind::Import(f) => (false, &mut f.ty),
             walrus::FunctionKind::Local(f) => (true, &mut f.ty),
-            _ => unreachable!()
+            _ => unreachable!(),
         };
 
         let target_ty = types.get(*ty);
@@ -496,7 +496,8 @@ impl Transform<'_> {
 
         let mut builder = walrus::FunctionBuilder::new();
         let mut before = Vec::new();
-        let params = types.get(shim_ty)
+        let params = types
+            .get(shim_ty)
             .params()
             .iter()
             .cloned()

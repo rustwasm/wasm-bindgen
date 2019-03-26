@@ -1,4 +1,4 @@
-use ast;
+use crate::ast;
 use proc_macro2::Ident;
 use syn;
 
@@ -355,7 +355,7 @@ impl RemoveUndefinedImports for ast::Program {
             let before = num_required(dictionary);
             changed = dictionary.fields.remove_undefined_imports(is_defined) || changed;
             if before != num_required(dictionary) {
-                warn!(
+                log::warn!(
                     "removing {} due to a required field being removed",
                     dictionary.name
                 );
@@ -384,7 +384,7 @@ where
             x.imported_type_references(&mut |id| {
                 if all_defined {
                     if !is_defined(id) {
-                        info!("removing due to {} not being defined", id);
+                        log::info!("removing due to {} not being defined", id);
                         all_defined = false;
                     }
                 }

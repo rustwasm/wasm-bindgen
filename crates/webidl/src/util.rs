@@ -1,17 +1,17 @@
 use std::iter::FromIterator;
 use std::ptr;
 
-use backend;
-use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
 use syn;
+use wasm_bindgen_backend::ast;
+use wasm_bindgen_backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
 use weedle;
 use weedle::attribute::{ExtendedAttribute, ExtendedAttributeList, IdentifierOrString};
 use weedle::literal::{ConstValue, FloatLit, IntegerLit};
 
-use first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
-use idl_type::{IdlType, ToIdlType};
+use crate::first_pass::{FirstPassRecord, OperationData, OperationId, Signature};
+use crate::idl_type::{IdlType, ToIdlType};
 
 /// For variadic operations an overload with a `js_sys::Array` argument is generated alongside with
 /// `operation_name_0`, `operation_name_1`, `operation_name_2`, ..., `operation_name_n` overloads
@@ -81,8 +81,7 @@ pub(crate) fn array(base_ty: &str, pos: TypePosition, immutable: bool) -> syn::T
 }
 
 /// Map a webidl const value to the correct wasm-bindgen const value
-pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> backend::ast::ConstValue {
-    use backend::ast;
+pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> ast::ConstValue {
     use std::f64::{INFINITY, NAN, NEG_INFINITY};
 
     match *v {
@@ -225,12 +224,12 @@ impl<'src> FirstPassRecord<'src> {
         rust_name: &str,
         idl_arguments: impl Iterator<Item = (&'a str, &'a IdlType<'src>)>,
         ret: &IdlType<'src>,
-        kind: backend::ast::ImportFunctionKind,
+        kind: ast::ImportFunctionKind,
         structural: bool,
         catch: bool,
         variadic: bool,
         doc_comment: Option<String>,
-    ) -> Option<backend::ast::ImportFunction>
+    ) -> Option<ast::ImportFunction>
     where
         'src: 'a,
     {
@@ -239,10 +238,10 @@ impl<'src> FirstPassRecord<'src> {
         //
         // Note that for non-static methods we add a `&self` type placeholder,
         // but this type isn't actually used so it's just here for show mostly.
-        let mut arguments = if let &backend::ast::ImportFunctionKind::Method {
+        let mut arguments = if let &ast::ImportFunctionKind::Method {
             ref ty,
             kind:
-                backend::ast::MethodKind::Operation(backend::ast::Operation {
+                ast::MethodKind::Operation(ast::Operation {
                     is_static: false, ..
                 }),
             ..
@@ -263,9 +262,10 @@ impl<'src> FirstPassRecord<'src> {
             let syn_type = match idl_type.to_syn_type(TypePosition::Argument) {
                 Some(t) => t,
                 None => {
-                    warn!(
+                    log::warn!(
                         "Unsupported argument type: {:?} on {:?}",
-                        idl_type, rust_name
+                        idl_type,
+                        rust_name
                     );
                     return None;
                 }
@@ -287,7 +287,7 @@ impl<'src> FirstPassRecord<'src> {
             ret @ _ => match ret.to_syn_type(TypePosition::Return) {
                 Some(ret) => Some(ret),
                 None => {
-                    warn!("Unsupported return type: {:?} on {:?}", ret, rust_name);
+                    log::warn!("Unsupported return type: {:?} on {:?}", ret, rust_name);
                     return None;
                 }
             },
@@ -299,8 +299,8 @@ impl<'src> FirstPassRecord<'src> {
             ret
         };
 
-        Some(backend::ast::ImportFunction {
-            function: backend::ast::Function {
+        Some(ast::ImportFunction {
+            function: ast::Function {
                 name: js_name.to_string(),
                 name_span: Span::call_site(),
                 renamed_via_js_name: false,
@@ -316,8 +316,8 @@ impl<'src> FirstPassRecord<'src> {
             structural,
             shim: {
                 let ns = match kind {
-                    backend::ast::ImportFunctionKind::Normal => "",
-                    backend::ast::ImportFunctionKind::Method { ref class, .. } => class,
+                    ast::ImportFunctionKind::Normal => "",
+                    ast::ImportFunctionKind::Method { ref class, .. } => class,
                 };
                 raw_ident(&format!("__widl_f_{}_{}", rust_name, ns))
             },
@@ -335,8 +335,8 @@ impl<'src> FirstPassRecord<'src> {
         is_static: bool,
         attrs: &Option<ExtendedAttributeList>,
         container_attrs: Option<&ExtendedAttributeList>,
-    ) -> Option<backend::ast::ImportFunction> {
-        let kind = backend::ast::OperationKind::Getter(Some(raw_ident(name)));
+    ) -> Option<ast::ImportFunction> {
+        let kind = ast::OperationKind::Getter(Some(raw_ident(name)));
         let kind = self.import_function_kind(self_name, is_static, kind);
         let ret = ty.to_idl_type(self);
         self.create_one_function(
@@ -365,8 +365,8 @@ impl<'src> FirstPassRecord<'src> {
         is_static: bool,
         attrs: &Option<ExtendedAttributeList>,
         container_attrs: Option<&ExtendedAttributeList>,
-    ) -> Option<backend::ast::ImportFunction> {
-        let kind = backend::ast::OperationKind::Setter(Some(raw_ident(name)));
+    ) -> Option<ast::ImportFunction> {
+        let kind = ast::OperationKind::Setter(Some(raw_ident(name)));
         let kind = self.import_function_kind(self_name, is_static, kind);
         let field_ty = field_ty.to_idl_type(self);
         self.create_one_function(
@@ -390,27 +390,27 @@ impl<'src> FirstPassRecord<'src> {
         &self,
         self_name: &str,
         is_static: bool,
-        operation_kind: backend::ast::OperationKind,
-    ) -> backend::ast::ImportFunctionKind {
-        let operation = backend::ast::Operation {
+        operation_kind: ast::OperationKind,
+    ) -> ast::ImportFunctionKind {
+        let operation = ast::Operation {
             is_static,
             kind: operation_kind,
         };
         let ty = ident_ty(rust_ident(camel_case_ident(&self_name).as_str()));
-        backend::ast::ImportFunctionKind::Method {
+        ast::ImportFunctionKind::Method {
             class: self_name.to_string(),
             ty,
-            kind: backend::ast::MethodKind::Operation(operation),
+            kind: ast::MethodKind::Operation(operation),
         }
     }
 
     pub fn create_imports(
         &self,
         container_attrs: Option<&ExtendedAttributeList<'src>>,
-        kind: backend::ast::ImportFunctionKind,
+        kind: ast::ImportFunctionKind,
         id: &OperationId<'src>,
         data: &OperationData<'src>,
-    ) -> Vec<backend::ast::ImportFunction> {
+    ) -> Vec<ast::ImportFunction> {
         // First up, prune all signatures that reference unsupported arguments.
         // We won't consider these until said arguments are implemented.
         //
@@ -434,7 +434,7 @@ impl<'src> FirstPassRecord<'src> {
                     signatures.push((signature, idl_args.clone()));
                 }
 
-                let mut idl_type = arg.ty.to_idl_type(self);
+                let idl_type = arg.ty.to_idl_type(self);
                 let idl_type = self.maybe_adjust(idl_type, id);
                 idl_args.push(idl_type);
             }
@@ -452,7 +452,7 @@ impl<'src> FirstPassRecord<'src> {
 
         let mut actual_signatures = Vec::new();
         for (signature, idl_args) in signatures.iter() {
-            let mut start = actual_signatures.len();
+            let start = actual_signatures.len();
 
             // Start off with an empty signature, this'll handle zero-argument
             // cases and otherwise the loop below will continue to add on to this.
@@ -504,7 +504,7 @@ impl<'src> FirstPassRecord<'src> {
             OperationId::Constructor(_) => ("new", false, true),
             OperationId::Operation(Some(s)) => (*s, false, false),
             OperationId::Operation(None) => {
-                warn!("unsupported unnamed operation");
+                log::warn!("unsupported unnamed operation");
                 return Vec::new();
             }
             OperationId::IndexingGetter => ("get", true, false),

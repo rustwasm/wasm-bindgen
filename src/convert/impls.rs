@@ -1,10 +1,10 @@
 use core::char;
 use core::mem::{self, ManuallyDrop};
 
-use convert::traits::WasmAbi;
-use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, Stack};
-use convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
-use {Clamped, JsValue};
+use crate::convert::traits::WasmAbi;
+use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, Stack};
+use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
+use crate::{Clamped, JsValue};
 
 unsafe impl WasmAbi for () {}
 
@@ -414,7 +414,7 @@ impl<T: IntoWasmAbi> ReturnWasmAbi for Result<T, JsValue> {
     fn return_abi(self, extra: &mut Stack) -> Self::Abi {
         match self {
             Ok(v) => v.into_abi(extra),
-            Err(e) => ::throw_val(e),
+            Err(e) => crate::throw_val(e),
         }
     }
 }

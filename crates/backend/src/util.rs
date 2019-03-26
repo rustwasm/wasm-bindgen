@@ -7,7 +7,7 @@ use std::sync::atomic::AtomicBool;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering::SeqCst;
 
-use ast;
+use crate::ast;
 use proc_macro2::{self, Ident};
 use syn;
 

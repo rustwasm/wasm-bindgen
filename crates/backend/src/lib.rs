@@ -2,21 +2,8 @@
 #![cfg_attr(feature = "extra-traits", deny(missing_debug_implementations))]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-backend/0.2")]
 
-extern crate bumpalo;
-#[macro_use]
-extern crate log;
-extern crate proc_macro2;
-#[macro_use]
-extern crate quote;
-extern crate syn;
-#[macro_use]
-extern crate lazy_static;
-
-#[macro_use]
-extern crate wasm_bindgen_shared as shared;
-
-pub use codegen::TryToTokens;
-pub use error::Diagnostic;
+pub use crate::codegen::TryToTokens;
+pub use crate::error::Diagnostic;
 
 #[macro_use]
 mod error;

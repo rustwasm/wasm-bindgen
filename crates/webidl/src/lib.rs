@@ -9,53 +9,39 @@ emitted for the types and methods described in the WebIDL.
 #![deny(missing_debug_implementations)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-webidl/0.2")]
 
-#[macro_use]
-extern crate failure;
-extern crate heck;
-#[macro_use]
-extern crate log;
-extern crate proc_macro2;
-#[macro_use]
-extern crate quote;
-#[macro_use]
-extern crate syn;
-extern crate wasm_bindgen_backend as backend;
-extern crate weedle;
-
 mod error;
 mod first_pass;
 mod idl_type;
 mod util;
 
+use crate::first_pass::{CallbackInterfaceData, OperationData};
+use crate::first_pass::{FirstPass, FirstPassRecord, InterfaceData, OperationId};
+use crate::idl_type::ToIdlType;
+use crate::util::{
+    camel_case_ident, mdn_doc, public, shouty_snake_case_ident, snake_case_ident,
+    webidl_const_v_to_backend_const_v, TypePosition,
+};
+use failure::format_err;
+use proc_macro2::{Ident, Span};
+use quote::{quote, ToTokens};
 use std::collections::{BTreeSet, HashSet};
 use std::env;
 use std::fs;
 use std::iter::FromIterator;
-
-use backend::ast;
-use backend::defined::ImportedTypeReferences;
-use backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
-use backend::util::{ident_ty, raw_ident, rust_ident, wrap_import_function};
-use backend::TryToTokens;
-use proc_macro2::{Ident, Span};
-use quote::ToTokens;
+use wasm_bindgen_backend::ast;
+use wasm_bindgen_backend::defined::ImportedTypeReferences;
+use wasm_bindgen_backend::defined::{ImportedTypeDefinitions, RemoveUndefinedImports};
+use wasm_bindgen_backend::util::{ident_ty, raw_ident, rust_ident, wrap_import_function};
+use wasm_bindgen_backend::TryToTokens;
 use weedle::attribute::ExtendedAttributeList;
 use weedle::dictionary::DictionaryMember;
 use weedle::interface::InterfaceMember;
 
-use first_pass::{CallbackInterfaceData, OperationData};
-use first_pass::{FirstPass, FirstPassRecord, InterfaceData, OperationId};
-use idl_type::ToIdlType;
-use util::{
-    camel_case_ident, mdn_doc, public, shouty_snake_case_ident, snake_case_ident,
-    webidl_const_v_to_backend_const_v, TypePosition,
-};
-
-pub use error::{Error, ErrorKind, Result};
+pub use crate::error::{Error, ErrorKind, Result};
 
 struct Program {
-    main: backend::ast::Program,
-    submodules: Vec<(String, backend::ast::Program)>,
+    main: ast::Program,
+    submodules: Vec<(String, ast::Program)>,
 }
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
@@ -132,7 +118,7 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
     // prevent the type from being usable entirely. They're just there for
     // `AsRef` and such implementations.
     for import in program.imports.iter_mut() {
-        if let backend::ast::ImportKind::Type(t) = &mut import.kind {
+        if let ast::ImportKind::Type(t) = &mut import.kind {
             t.extends.retain(|n| {
                 let ident = &n.segments.last().unwrap().value().ident;
                 first_pass_record.builtin_idents.contains(ident) || filter(&ident.to_string())
@@ -280,16 +266,12 @@ fn compile_ast(mut ast: Program) -> String {
 }
 
 impl<'src> FirstPassRecord<'src> {
-    fn append_enum(
-        &self,
-        program: &mut backend::ast::Program,
-        enum_: &'src weedle::EnumDefinition<'src>,
-    ) {
+    fn append_enum(&self, program: &mut ast::Program, enum_: &'src weedle::EnumDefinition<'src>) {
         let variants = &enum_.values.body.list;
-        program.imports.push(backend::ast::Import {
-            module: backend::ast::ImportModule::None,
+        program.imports.push(ast::Import {
+            module: ast::ImportModule::None,
             js_namespace: None,
-            kind: backend::ast::ImportKind::Enum(backend::ast::ImportEnum {
+            kind: ast::ImportKind::Enum(ast::ImportEnum {
                 vis: public(),
                 name: rust_ident(camel_case_ident(enum_.identifier.0).as_str()),
                 variants: variants
@@ -303,7 +285,7 @@ impl<'src> FirstPassRecord<'src> {
                     })
                     .collect(),
                 variant_values: variants.iter().map(|v| v.0.to_string()).collect(),
-                rust_attrs: vec![parse_quote!(#[derive(Copy, Clone, PartialEq, Debug)])],
+                rust_attrs: vec![syn::parse_quote!(#[derive(Copy, Clone, PartialEq, Debug)])],
             }),
         });
     }
@@ -312,7 +294,7 @@ impl<'src> FirstPassRecord<'src> {
     // https://www.w3.org/TR/WebIDL-1/#idl-dictionaries
     fn append_dictionary(
         &self,
-        program: &mut backend::ast::Program,
+        program: &mut ast::Program,
         data: &first_pass::DictionaryData<'src>,
     ) {
         let def = match data.definition {
@@ -358,7 +340,7 @@ impl<'src> FirstPassRecord<'src> {
             match self.dictionary_field(member) {
                 Some(f) => dst.push(f),
                 None => {
-                    warn!(
+                    log::warn!(
                         "unsupported dictionary field {:?}",
                         (dict, member.identifier.0),
                     );
@@ -435,7 +417,7 @@ impl<'src> FirstPassRecord<'src> {
         &'src self,
         name: &'src str,
         ns: &'src first_pass::NamespaceData<'src>,
-    ) -> backend::ast::Program {
+    ) -> ast::Program {
         let mut ret = Default::default();
 
         for (id, data) in ns.operations.iter() {
@@ -447,7 +429,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_ns_member(
         &self,
-        module: &mut backend::ast::Program,
+        module: &mut ast::Program,
         self_name: &'src str,
         id: &OperationId<'src>,
         data: &OperationData<'src>,
@@ -459,7 +441,7 @@ impl<'src> FirstPassRecord<'src> {
             | OperationId::IndexingGetter
             | OperationId::IndexingSetter
             | OperationId::IndexingDeleter => {
-                warn!("Unsupported unnamed operation: on {:?}", self_name);
+                log::warn!("Unsupported unnamed operation: on {:?}", self_name);
                 return;
             }
         };
@@ -470,24 +452,24 @@ impl<'src> FirstPassRecord<'src> {
             mdn_doc(self_name, Some(&name))
         );
 
-        let kind = backend::ast::ImportFunctionKind::Normal;
+        let kind = ast::ImportFunctionKind::Normal;
         let extra = snake_case_ident(self_name);
         let extra = &[&extra[..]];
         for mut import_function in self.create_imports(None, kind, id, data) {
             let mut doc = Some(doc_comment.clone());
             self.append_required_features_doc(&import_function, &mut doc, extra);
             import_function.doc_comment = doc;
-            module.imports.push(backend::ast::Import {
-                module: backend::ast::ImportModule::None,
+            module.imports.push(ast::Import {
+                module: ast::ImportModule::None,
                 js_namespace: Some(raw_ident(self_name)),
-                kind: backend::ast::ImportKind::Function(import_function),
+                kind: ast::ImportKind::Function(import_function),
             });
         }
     }
 
     fn append_const(
         &self,
-        program: &mut backend::ast::Program,
+        program: &mut ast::Program,
         self_name: &'src str,
         member: &'src weedle::interface::ConstMember<'src>,
     ) {
@@ -495,15 +477,17 @@ impl<'src> FirstPassRecord<'src> {
         let ty = match idl_type.to_syn_type(TypePosition::Return) {
             Some(ty) => ty,
             None => {
-                warn!(
+                log::warn!(
                     "Cannot convert const type to syn type: {:?} in {:?} on {:?}",
-                    idl_type, member, self_name
+                    idl_type,
+                    member,
+                    self_name
                 );
                 return;
             }
         };
 
-        program.consts.push(backend::ast::Const {
+        program.consts.push(ast::Const {
             vis: public(),
             name: rust_ident(shouty_snake_case_ident(member.identifier.0).as_str()),
             class: Some(rust_ident(camel_case_ident(&self_name).as_str())),
@@ -514,16 +498,16 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_interface(
         &self,
-        program: &mut backend::ast::Program,
+        program: &mut ast::Program,
         name: &'src str,
         data: &InterfaceData<'src>,
     ) {
         let mut doc_comment = Some(format!("The `{}` object\n\n{}", name, mdn_doc(name, None),));
 
         let mut attrs = Vec::new();
-        attrs.push(parse_quote!( #[derive(Debug, Clone)] ));
+        attrs.push(syn::parse_quote!( #[derive(Debug, Clone)] ));
         self.add_deprecated(data, &mut attrs);
-        let mut import_type = backend::ast::ImportType {
+        let mut import_type = ast::ImportType {
             vis: public(),
             rust_name: rust_ident(camel_case_ident(name).as_str()),
             js_name: name.to_string(),
@@ -553,10 +537,10 @@ impl<'src> FirstPassRecord<'src> {
             .collect();
         import_type.doc_comment = doc_comment;
 
-        program.imports.push(backend::ast::Import {
-            module: backend::ast::ImportModule::None,
+        program.imports.push(ast::Import {
+            module: ast::ImportModule::None,
             js_namespace: None,
-            kind: backend::ast::ImportKind::Type(import_type),
+            kind: ast::ImportKind::Type(import_type),
         });
 
         for (id, op_data) in data.operations.iter() {
@@ -608,7 +592,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn member_attribute(
         &self,
-        program: &mut backend::ast::Program,
+        program: &mut ast::Program,
         self_name: &'src str,
         data: &InterfaceData<'src>,
         modifier: Option<weedle::interface::StringifierOrInheritOrStatic>,
@@ -661,7 +645,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn member_operation(
         &self,
-        program: &mut backend::ast::Program,
+        program: &mut ast::Program,
         self_name: &str,
         data: &InterfaceData<'src>,
         id: &OperationId<'src>,
@@ -672,21 +656,17 @@ impl<'src> FirstPassRecord<'src> {
         let kind = match id {
             OperationId::Constructor(ctor_name) => {
                 let self_ty = ident_ty(rust_ident(&camel_case_ident(self_name)));
-                backend::ast::ImportFunctionKind::Method {
+                ast::ImportFunctionKind::Method {
                     class: ctor_name.0.to_string(),
                     ty: self_ty.clone(),
-                    kind: backend::ast::MethodKind::Constructor,
+                    kind: ast::MethodKind::Constructor,
                 }
             }
-            OperationId::Operation(_) => import_function_kind(backend::ast::OperationKind::Regular),
-            OperationId::IndexingGetter => {
-                import_function_kind(backend::ast::OperationKind::IndexingGetter)
-            }
-            OperationId::IndexingSetter => {
-                import_function_kind(backend::ast::OperationKind::IndexingSetter)
-            }
+            OperationId::Operation(_) => import_function_kind(ast::OperationKind::Regular),
+            OperationId::IndexingGetter => import_function_kind(ast::OperationKind::IndexingGetter),
+            OperationId::IndexingSetter => import_function_kind(ast::OperationKind::IndexingSetter),
             OperationId::IndexingDeleter => {
-                import_function_kind(backend::ast::OperationKind::IndexingDeleter)
+                import_function_kind(ast::OperationKind::IndexingDeleter)
             }
         };
         let doc = match id {
@@ -721,7 +701,7 @@ impl<'src> FirstPassRecord<'src> {
             Some(s) => s,
             None => return,
         };
-        dst.push(parse_quote!( #[deprecated(note = #msg)] ));
+        dst.push(syn::parse_quote!( #[deprecated(note = #msg)] ));
     }
 
     fn append_required_features_doc(
@@ -760,7 +740,7 @@ impl<'src> FirstPassRecord<'src> {
 
     fn append_callback_interface(
         &self,
-        program: &mut backend::ast::Program,
+        program: &mut ast::Program,
         item: &CallbackInterfaceData<'src>,
     ) {
         let mut fields = Vec::new();
@@ -780,7 +760,7 @@ impl<'src> FirstPassRecord<'src> {
                     });
                 }
                 _ => {
-                    warn!(
+                    log::warn!(
                         "skipping callback interface member on {}",
                         item.definition.identifier.0
                     );

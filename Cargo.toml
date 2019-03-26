@@ -11,6 +11,7 @@ documentation = "https://docs.rs/wasm-bindgen"
 description = """
 Easy support for interacting between JS and Rust.
 """
+edition = "2018"
 
 [package.metadata.docs.rs]
 features = ['serde-serialize']

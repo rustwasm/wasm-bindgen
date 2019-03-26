@@ -9,6 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen"
 description = """
 Definition of the `#[wasm_bindgen]` attribute, an internal dependency
 """
+edition = "2018"
 
 [lib]
 proc-macro = true
