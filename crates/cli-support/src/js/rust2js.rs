@@ -215,12 +215,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     return Ok(());
                 }
                 Descriptor::Char => {
-                    let value = self.shim_argument();
-                    self.js_arguments.push(format!(
-                        "{present} === 0 ? undefined : String.fromCodePoint({value})",
-                        value = value,
-                        present = abi,
-                    ));
+                    self.js_arguments
+                        .push(format!("{0} === 0xFFFFFF ? undefined : String.fromCodePoint({0})", abi));
                     return Ok(());
                 }
                 Descriptor::RustStruct(ref class) => {
@@ -468,13 +464,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     return Ok(());
                 }
                 Descriptor::Char => {
-                    self.cx.expose_is_like_none();
-                    self.cx.expose_uint32_memory();
-                    self.shim_arguments.insert(0, "ret".to_string());
                     self.ret_expr = "
                         const val = JS;
-                        getUint32Memory()[ret / 4] = !isLikeNone(val);
-                        getUint32Memory()[ret / 4 + 1] = isLikeNone(val) ? 0 : val.codePointAt(0);
+                        return isLikeNone(val) ? 0xFFFFFF : val.codePointAt(0);
                     "
                     .to_string();
                     return Ok(());
