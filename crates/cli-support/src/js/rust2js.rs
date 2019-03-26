@@ -225,7 +225,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 }
                 Descriptor::RustStruct(ref class) => {
                     self.cx.require_class_wrap(class);
-                    let assign = format!("let c{0} = {0} === 0 ? undefined : {1}.__wrap({0});", abi, class);
+                    let assign = format!(
+                        "let c{0} = {0} === 0 ? undefined : {1}.__wrap({0});",
+                        abi, class
+                    );
                     self.prelude(&assign);
                     self.js_arguments.push(format!("c{}", abi));
                     return Ok(());

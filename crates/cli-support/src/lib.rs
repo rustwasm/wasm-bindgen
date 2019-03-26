@@ -1,7 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
 use failure::{bail, Error, ResultExt};
-use std::collections::{BTreeSet, BTreeMap};
+use std::collections::{BTreeMap, BTreeSet};
 use std::env;
 use std::fs;
 use std::mem;

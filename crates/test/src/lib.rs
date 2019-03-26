@@ -4,15 +4,6 @@
 
 #![deny(missing_docs)]
 
-extern crate console_error_panic_hook;
-extern crate futures;
-extern crate js_sys;
-#[macro_use]
-extern crate scoped_tls;
-extern crate wasm_bindgen;
-extern crate wasm_bindgen_futures;
-extern crate wasm_bindgen_test_macro;
-
 pub use wasm_bindgen_test_macro::wasm_bindgen_test;
 
 /// Helper macro which acts like `println!` only routes to `console.log`

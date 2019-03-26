@@ -1,16 +1,14 @@
+use crate::ast;
+use crate::encode;
+use crate::util::ShortHash;
+use crate::Diagnostic;
+use proc_macro2::{Ident, Literal, Span, TokenStream};
+use quote::{quote, ToTokens};
 use std::collections::HashSet;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
-
-use proc_macro2::{Ident, Literal, Span, TokenStream};
-use quote::ToTokens;
-use shared;
 use syn;
-
-use ast;
-use encode;
-use util::ShortHash;
-use Diagnostic;
+use wasm_bindgen_shared as shared;
 
 pub trait TryToTokens {
     fn try_to_tokens(&self, tokens: &mut TokenStream) -> Result<(), Diagnostic>;
@@ -114,12 +112,10 @@ impl TryToTokens for ast::Program {
         // automatically rerun rustc which will rerun this macro. Other than
         // this we don't actually need the results of the `include_str!`, so
         // it's just shoved into an anonymous static.
-        let file_dependencies = encoded.included_files
-            .iter()
-            .map(|file| {
-                let file = file.to_str().unwrap();
-                quote! { include_str!(#file) }
-            });
+        let file_dependencies = encoded.included_files.iter().map(|file| {
+            let file = file.to_str().unwrap();
+            quote! { include_str!(#file) }
+        });
 
         (quote! {
             #[allow(non_upper_case_globals)]
@@ -1180,7 +1176,7 @@ impl ToTokens for ast::ImportStatic {
 
 impl ToTokens for ast::Const {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use ast::ConstValue::*;
+        use crate::ast::ConstValue::*;
 
         let vis = &self.vis;
         let name = &self.name;
@@ -1405,7 +1401,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         // It's up to the descriptors themselves to ensure they have unique
         // names for unique items imported, currently done via `ShortHash` and
         // hashing appropriate data into the symbol name.
-        lazy_static! {
+        lazy_static::lazy_static! {
             static ref DESCRIPTORS_EMITTED: Mutex<HashSet<String>> = Default::default();
         }
         if !DESCRIPTORS_EMITTED

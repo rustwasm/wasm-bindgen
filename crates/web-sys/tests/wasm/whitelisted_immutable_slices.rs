@@ -12,7 +12,7 @@
 
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
-use web_sys::{WebGlRenderingContext, WebGl2RenderingContext};
+use web_sys::{WebGl2RenderingContext, WebGlRenderingContext};
 
 #[wasm_bindgen(module = "/tests/wasm/element.js")]
 extern "C" {

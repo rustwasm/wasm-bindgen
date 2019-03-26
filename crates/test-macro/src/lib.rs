@@ -2,11 +2,9 @@
 //! going on here.
 
 extern crate proc_macro;
-extern crate proc_macro2;
-#[macro_use]
-extern crate quote;
 
 use proc_macro2::*;
+use quote::quote;
 use std::sync::atomic::*;
 
 static CNT: AtomicUsize = AtomicUsize::new(0);
@@ -17,10 +15,10 @@ pub fn wasm_bindgen_test(
     body: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
     let mut attr = attr.into_iter();
-    let mut async = false;
+    let mut r#async = false;
     while let Some(token) = attr.next() {
         match &token {
-            proc_macro::TokenTree::Ident(i) if i.to_string() == "async" => async = true,
+            proc_macro::TokenTree::Ident(i) if i.to_string() == "async" => r#async = true,
             _ => panic!("malformed `#[wasm_bindgen_test]` attribute"),
         }
         match &attr.next() {
@@ -49,7 +47,7 @@ pub fn wasm_bindgen_test(
 
     let mut tokens = Vec::<TokenTree>::new();
 
-    let test_body = if async {
+    let test_body = if r#async {
         quote! { cx.execute_async(test_name, #ident); }
     } else {
         quote! { cx.execute_sync(test_name, #ident); }

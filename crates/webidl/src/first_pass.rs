@@ -20,8 +20,8 @@ use weedle::CallbackInterfaceDefinition;
 use weedle::{DictionaryDefinition, PartialDictionaryDefinition};
 
 use super::Result;
-use util;
-use util::camel_case_ident;
+use crate::util;
+use crate::util::camel_case_ident;
 
 /// Collection of constructs that may use partial.
 #[derive(Default)]
@@ -191,7 +191,7 @@ impl<'src> FirstPass<'src, ()> for weedle::EnumDefinition<'src> {
         }
 
         if record.enums.insert(self.identifier.0, self).is_some() {
-            info!(
+            log::info!(
                 "Encountered multiple enum declarations: {}",
                 self.identifier.0
             );
@@ -304,7 +304,7 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
         }
 
         if util::is_no_interface_object(&self.attributes) {
-            info!(
+            log::info!(
                 "Skipping because of `NoInterfaceObject` attribute: {:?}",
                 self.identifier.0
             );
@@ -431,23 +431,23 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::InterfaceMember<'sr
                 Ok(())
             }
             InterfaceMember::Iterable(_iterable) => {
-                warn!("Unsupported WebIDL iterable interface member: {:?}", self);
+                log::warn!("Unsupported WebIDL iterable interface member: {:?}", self);
                 Ok(())
             }
             // TODO
             InterfaceMember::Maplike(_) => {
-                warn!("Unsupported WebIDL Maplike interface member: {:?}", self);
+                log::warn!("Unsupported WebIDL Maplike interface member: {:?}", self);
                 Ok(())
             }
             InterfaceMember::Stringifier(_) => {
-                warn!(
+                log::warn!(
                     "Unsupported WebIDL Stringifier interface member: {:?}",
                     self
                 );
                 Ok(())
             }
             InterfaceMember::Setlike(_) => {
-                warn!("Unsupported WebIDL Setlike interface member: {:?}", self);
+                log::warn!("Unsupported WebIDL Setlike interface member: {:?}", self);
                 Ok(())
             }
         }
@@ -462,7 +462,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::interface::OperationInterfaceM
     ) -> Result<()> {
         let is_static = match self.modifier {
             Some(StringifierOrStatic::Stringifier(_)) => {
-                warn!("Unsupported webidl stringifier: {:?}", self);
+                log::warn!("Unsupported webidl stringifier: {:?}", self);
                 return Ok(());
             }
             Some(StringifierOrStatic::Static(_)) => true,
@@ -571,7 +571,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::MixinMember<'src> {
                 Ok(())
             }
             MixinMember::Stringifier(_) => {
-                warn!("Unsupported WebIDL stringifier mixin member: {:?}", self);
+                log::warn!("Unsupported WebIDL stringifier mixin member: {:?}", self);
                 Ok(())
             }
         }
@@ -585,7 +585,7 @@ impl<'src> FirstPass<'src, &'src str> for weedle::mixin::OperationMixinMember<'s
         self_name: &'src str,
     ) -> Result<()> {
         if self.stringifier.is_some() {
-            warn!("Unsupported webidl stringifier: {:?}", self);
+            log::warn!("Unsupported webidl stringifier: {:?}", self);
             return Ok(());
         }
 
@@ -633,7 +633,7 @@ impl<'src> FirstPass<'src, ()> for weedle::TypedefDefinition<'src> {
             .insert(self.identifier.0, &self.type_.type_)
             .is_some()
         {
-            info!(
+            log::info!(
                 "Encountered multiple typedef declarations: {}",
                 self.identifier.0
             );
@@ -721,7 +721,7 @@ impl<'src> FirstPass<'src, ()> for weedle::CallbackInterfaceDefinition<'src> {
             return Ok(());
         }
         if self.inheritance.is_some() {
-            warn!(
+            log::warn!(
                 "skipping callback interface with inheritance: {}",
                 self.identifier.0
             );

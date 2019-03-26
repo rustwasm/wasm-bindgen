@@ -3,7 +3,7 @@
 
 #![doc(hidden)]
 
-use {Clamped, JsValue};
+use crate::{Clamped, JsValue};
 
 macro_rules! tys {
     ($($a:ident)*) => (tys! { @ ($($a)*) 0 });

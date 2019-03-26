@@ -103,10 +103,6 @@
 
 #![deny(missing_docs)]
 
-extern crate futures;
-extern crate js_sys;
-extern crate wasm_bindgen;
-
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use std::sync::Arc;

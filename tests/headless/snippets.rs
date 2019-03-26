@@ -2,14 +2,14 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "/tests/headless/snippets1.js")]
-extern {
+extern "C" {
     fn get_two() -> u32;
     #[wasm_bindgen(js_name = get_stateful)]
     fn get_stateful1() -> u32;
 }
 
 #[wasm_bindgen(module = "/tests/headless/snippets1.js")]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = get_stateful)]
     fn get_stateful2() -> u32;
 }
@@ -28,7 +28,7 @@ fn stateful_deduplicated() {
 }
 
 #[wasm_bindgen(inline_js = "export function get_three() { return 3; }")]
-extern {
+extern "C" {
     fn get_three() -> u32;
 }
 
@@ -38,13 +38,13 @@ fn test_get_three() {
 }
 
 #[wasm_bindgen(inline_js = "let a = 0; export function get() { a += 1; return a; }")]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = get)]
     fn duplicate1() -> u32;
 }
 
 #[wasm_bindgen(inline_js = "let a = 0; export function get() { a += 1; return a; }")]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = get)]
     fn duplicate2() -> u32;
 }

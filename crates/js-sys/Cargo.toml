@@ -12,6 +12,7 @@ Bindings for all JS global objects and functions in all JS environments like
 Node.js and browsers, built on `#[wasm_bindgen]` using the `wasm-bindgen` crate.
 """
 license = "MIT/Apache-2.0"
+edition = "2018"
 
 [lib]
 test = false

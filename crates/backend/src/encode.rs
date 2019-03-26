@@ -1,13 +1,13 @@
+use crate::util::ShortHash;
 use proc_macro2::{Ident, Span};
-use std::cell::{RefCell, Cell};
+use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
-use util::ShortHash;
 
-use ast;
-use Diagnostic;
+use crate::ast;
+use crate::Diagnostic;
 
 pub struct EncodeResult {
     pub custom_section: Vec<u8>,
@@ -19,8 +19,17 @@ pub fn encode(program: &ast::Program) -> Result<EncodeResult, Diagnostic> {
     let i = Interner::new();
     shared_program(program, &i)?.encode(&mut e);
     let custom_section = e.finish();
-    let included_files = i.files.borrow().values().map(|p| &p.path).cloned().collect();
-    Ok(EncodeResult { custom_section, included_files })
+    let included_files = i
+        .files
+        .borrow()
+        .values()
+        .map(|p| &p.path)
+        .cloned()
+        .collect();
+    Ok(EncodeResult {
+        custom_section,
+        included_files,
+    })
 }
 
 struct Interner {
@@ -67,16 +76,16 @@ impl Interner {
     fn resolve_import_module(&self, id: &str, span: Span) -> Result<&str, Diagnostic> {
         let mut files = self.files.borrow_mut();
         if let Some(file) = files.get(id) {
-            return Ok(self.intern_str(&file.new_identifier))
+            return Ok(self.intern_str(&file.new_identifier));
         }
         self.check_for_package_json();
         let path = if id.starts_with("/") {
             self.root.join(&id[1..])
         } else if id.starts_with("./") || id.starts_with("../") {
             let msg = "relative module paths aren't supported yet";
-            return Err(Diagnostic::span_error(span, msg))
+            return Err(Diagnostic::span_error(span, msg));
         } else {
-            return Ok(self.intern_str(&id))
+            return Ok(self.intern_str(&id));
         };
 
         // Generate a unique ID which is somewhat readable as well, so mix in
@@ -98,7 +107,7 @@ impl Interner {
 
     fn check_for_package_json(&self) {
         if self.has_package_json.get() {
-            return
+            return;
         }
         let path = self.root.join("package.json");
         if path.exists() {
@@ -139,11 +148,9 @@ fn shared_program<'a>(
             .values()
             .map(|file| {
                 fs::read_to_string(&file.path)
-                    .map(|s| {
-                        LocalModule {
-                            identifier: intern.intern_str(&file.new_identifier),
-                            contents: intern.intern_str(&s),
-                        }
+                    .map(|s| LocalModule {
+                        identifier: intern.intern_str(&file.new_identifier),
+                        contents: intern.intern_str(&s),
                     })
                     .map_err(|e| {
                         let msg = format!("failed to read file `{}`: {}", file.path.display(), e);
@@ -499,4 +506,4 @@ macro_rules! encode_api {
         encode_api!($($rest)*);
     );
 }
-shared_api!(encode_api);
+wasm_bindgen_shared::shared_api!(encode_api);

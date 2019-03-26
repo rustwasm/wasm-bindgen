@@ -9,6 +9,7 @@ documentation = "https://docs.rs/wasm-bindgen-backend"
 description = """
 Backend code generation of the wasm-bindgen tool
 """
+edition = "2018"
 
 [features]
 spans = []

@@ -9,11 +9,11 @@ use std::marker::Unsize;
 use std::mem::{self, ManuallyDrop};
 use std::prelude::v1::*;
 
-use convert::*;
-use describe::*;
-use throw_str;
-use JsValue;
-use UnwrapThrowExt;
+use crate::convert::*;
+use crate::describe::*;
+use crate::throw_str;
+use crate::JsValue;
+use crate::UnwrapThrowExt;
 
 /// A handle to both a closure in Rust as well as JS closure which will invoke
 /// the Rust closure.
@@ -642,7 +642,7 @@ macro_rules! doit {
 
             fn into_js_function(self) -> JsValue {
                 use std::rc::Rc;
-                use __rt::WasmRefCell;
+                use crate::__rt::WasmRefCell;
 
                 let mut me = Some(self);
 

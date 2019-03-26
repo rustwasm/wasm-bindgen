@@ -9,20 +9,13 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen/0.2")]
 #![cfg_attr(feature = "nightly", feature(unsize))]
 
-#[cfg(feature = "serde-serialize")]
-extern crate serde;
-#[cfg(feature = "serde-serialize")]
-extern crate serde_json;
-
-extern crate wasm_bindgen_macro;
-
 use core::fmt;
 use core::marker;
 use core::mem;
 use core::ops::{Deref, DerefMut};
 use core::ptr;
 
-use convert::FromWasmAbi;
+use crate::convert::FromWasmAbi;
 
 macro_rules! if_std {
     ($($i:item)*) => ($(
@@ -54,14 +47,14 @@ macro_rules! externs {
 /// use wasm_bindgen::prelude::*;
 /// ```
 pub mod prelude {
+    pub use crate::JsValue;
+    pub use crate::UnwrapThrowExt;
     #[doc(hidden)]
     pub use wasm_bindgen_macro::__wasm_bindgen_class_marker;
     pub use wasm_bindgen_macro::wasm_bindgen;
-    pub use JsValue;
-    pub use UnwrapThrowExt;
 
     if_std! {
-        pub use closure::Closure;
+        pub use crate::closure::Closure;
     }
 }
 
@@ -69,7 +62,7 @@ pub mod convert;
 pub mod describe;
 
 mod cast;
-pub use cast::JsCast;
+pub use crate::cast::JsCast;
 
 if_std! {
     extern crate std;
@@ -1002,7 +995,7 @@ pub mod __rt {
     ///
     /// Ideas for how to improve this are most welcome!
     pub fn link_mem_intrinsics() {
-        ::anyref::link_intrinsics();
+        crate::anyref::link_intrinsics();
     }
 }
 

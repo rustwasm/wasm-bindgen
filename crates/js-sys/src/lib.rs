@@ -18,8 +18,6 @@
 
 #![doc(html_root_url = "https://docs.rs/js-sys/0.2")]
 
-extern crate wasm_bindgen;
-
 use std::fmt;
 use std::mem;
 

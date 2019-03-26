@@ -4,12 +4,12 @@ use std::prelude::v1::*;
 use core::slice;
 use core::str;
 
-use convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
-use convert::{OptionIntoWasmAbi, Stack};
+use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
+use crate::convert::{OptionIntoWasmAbi, Stack};
 
 if_std! {
     use core::mem;
-    use convert::OptionFromWasmAbi;
+    use crate::convert::OptionFromWasmAbi;
 }
 
 #[repr(C)]
@@ -204,7 +204,7 @@ impl RefFromWasmAbi for str {
 }
 
 if_std! {
-    use JsValue;
+    use crate::JsValue;
 
     impl IntoWasmAbi for Box<[JsValue]> {
         type Abi = WasmSlice;

@@ -4,7 +4,7 @@ use std::ptr;
 use std::alloc::{self, Layout};
 use std::mem;
 
-use JsValue;
+use crate::JsValue;
 
 externs! {
     #[link(wasm_import_module = "__wbindgen_anyref_xform__")]

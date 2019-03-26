@@ -59,9 +59,14 @@ fn more_package_json_fields_rejected() {
         )
         .wasm_bindgen("");
     cmd.assert()
-        .stderr(str::is_match("\
+        .stderr(
+            str::is_match(
+                "\
 error: NPM manifest found at `.*` can currently only have one key, .*
-").unwrap())
+",
+            )
+            .unwrap(),
+        )
         .failure();
 }
 
@@ -70,7 +75,8 @@ fn npm_conflict_rejected() {
     let (mut cmd, _out_dir) = Project::new("npm_conflict_rejected")
         .file(
             "Cargo.toml",
-            &format!(r#"
+            &format!(
+                r#"
                 [package]
                 name = "npm_conflict_rejected"
                 authors = []
@@ -87,7 +93,7 @@ fn npm_conflict_rejected() {
                 [workspace]
             "#,
                 repo_root().display()
-            )
+            ),
         )
         .file(
             "src/lib.rs",
@@ -116,7 +122,8 @@ fn npm_conflict_rejected() {
         )
         .file(
             "bar/Cargo.toml",
-            &format!(r#"
+            &format!(
+                r#"
                 [package]
                 name = "bar"
                 authors = []
@@ -127,7 +134,7 @@ fn npm_conflict_rejected() {
                 wasm-bindgen = {{ path = '{}' }}
             "#,
                 repo_root().display()
-            )
+            ),
         )
         .file(
             "bar/src/lib.rs",

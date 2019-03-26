@@ -1,12 +1,12 @@
-use backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
 use proc_macro2::{Ident, Span};
 use syn;
+use wasm_bindgen_backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
 use weedle::common::Identifier;
 use weedle::term;
 use weedle::types::*;
 
-use first_pass::FirstPassRecord;
-use util::{array, camel_case_ident, option_ty, shared_ref, snake_case_ident, TypePosition};
+use crate::first_pass::FirstPassRecord;
+use crate::util::{array, camel_case_ident, option_ty, shared_ref, snake_case_ident, TypePosition};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]
 pub(crate) enum IdlType<'a> {
@@ -329,7 +329,7 @@ impl<'a> ToIdlType<'a> for Identifier<'a> {
             // let's translate it as such.
             IdlType::Interface("Window")
         } else {
-            warn!("Unrecognized type: {}", self.0);
+            log::warn!("Unrecognized type: {}", self.0);
             IdlType::UnknownInterface(self.0)
         }
     }

@@ -293,7 +293,7 @@ impl Context {
     }
 }
 
-scoped_thread_local!(static CURRENT_OUTPUT: RefCell<Output>);
+scoped_tls::scoped_thread_local!(static CURRENT_OUTPUT: RefCell<Output>);
 
 /// Handler for `console.log` invocations.
 ///

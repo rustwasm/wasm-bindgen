@@ -2,7 +2,7 @@ use crate::decode;
 use crate::descriptor::{Descriptor, VectorKind};
 use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
-use std::collections::{HashMap, HashSet, BTreeMap};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::env;
 use std::fs;
 use walrus::{MemoryId, Module};
@@ -2998,8 +2998,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
             return Ok(());
         }
         if !self.cx.config.mode.nodejs() && !self.cx.config.mode.bundler() {
-            bail!("NPM dependencies have been specified in `{}` but \
-                   this is only compatible with the `bundler` and `nodejs` targets");
+            bail!(
+                "NPM dependencies have been specified in `{}` but \
+                 this is only compatible with the `bundler` and `nodejs` targets"
+            );
         }
         let contents = fs::read_to_string(path).context(format!("failed to read `{}`", path))?;
         let json: serde_json::Value = serde_json::from_str(&contents)?;

@@ -1,4 +1,4 @@
-use JsValue;
+use crate::JsValue;
 
 /// A trait for checked and unchecked casting between JS types.
 ///
