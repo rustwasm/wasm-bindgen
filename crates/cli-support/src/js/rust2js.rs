@@ -389,8 +389,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             return Ok(());
         }
         if optional {
+            self.cx.expose_is_like_none();
+
             if ty.is_wasm_native() {
-                self.cx.expose_is_like_none();
                 self.cx.expose_uint32_memory();
                 match ty {
                     Descriptor::I32 => self.cx.expose_int32_memory(),
@@ -425,7 +426,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             }
 
             if ty.is_abi_as_u32() {
-                self.cx.expose_is_like_none();
                 self.ret_expr = "
                     const val = JS;
                     return isLikeNone(val) ? 0xFFFFFF : val;
@@ -435,7 +435,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             }
 
             if let Some(signed) = ty.get_64() {
-                self.cx.expose_is_like_none();
                 self.cx.expose_uint32_memory();
                 let f = if signed {
                     self.cx.expose_int64_memory();
@@ -458,13 +457,11 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
             match *ty {
                 Descriptor::Boolean => {
-                    self.cx.expose_is_like_none();
                     self.ret_expr = "
                         const val = JS;
                         return isLikeNone(val) ? 0xFFFFFF : val ? 1 : 0;
                     "
                     .to_string();
-                    return Ok(());
                 }
                 Descriptor::Char => {
                     self.ret_expr = "
@@ -472,10 +469,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         return isLikeNone(val) ? 0xFFFFFF : val.codePointAt(0);
                     "
                     .to_string();
-                    return Ok(());
                 }
                 Descriptor::Enum { hole } => {
-                    self.cx.expose_is_like_none();
                     self.ret_expr = format!(
                         "
                         const val = JS;
@@ -483,14 +478,13 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     ",
                         hole
                     );
-                    return Ok(());
                 }
                 Descriptor::RustStruct(ref class) => {
                     // Like below, assert the type
                     self.ret_expr = format!(
                         "\
                         const val = JS;
-                        if (val === undefined || val === null)
+                        if (isLikeNone(val))
                             return 0;
                         if (!(val instanceof {0})) {{
                             throw new Error('expected value of type {0}');
@@ -501,13 +495,14 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     ",
                         class
                     );
-                    return Ok(());
                 }
                 _ => bail!(
                     "unsupported optional return type for calling JS function from Rust: {:?}",
                     ty
                 ),
             };
+
+            return Ok(());
         }
         if ty.is_number() {
             self.ret_expr = "return JS;".to_string();
