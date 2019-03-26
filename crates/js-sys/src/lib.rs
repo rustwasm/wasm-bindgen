@@ -1101,6 +1101,14 @@ impl IterState {
 /// Create an iterator over `val` using the JS iteration protocol and
 /// `Symbol.iterator`.
 pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
+    #[wasm_bindgen]
+    extern "C" {
+        type MaybeIterator;
+
+        #[wasm_bindgen(method, getter)]
+        fn next(this: &MaybeIterator) -> JsValue;
+    }
+
     let iter_sym = Symbol::iterator();
     let iter_fn = Reflect::get(val, iter_sym.as_ref())?;
     if !iter_fn.is_function() {
@@ -1113,8 +1121,7 @@ pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
         return Ok(None);
     }
 
-    let next = JsValue::from("next");
-    let next = Reflect::get(&it, &next)?;
+    let next = it.unchecked_ref::<MaybeIterator>().next();
 
     Ok(if next.is_function() {
         let it: Iterator = it.unchecked_into();
