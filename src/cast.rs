@@ -30,14 +30,14 @@ where
     /// Performs a dynamic cast (checked at runtime) of this value into the
     /// target type `T`.
     ///
-    /// This method will return `Err(self)` if `self.is_instance_of::<T>()`
+    /// This method will return `Err(self)` if `T::is_type_of(self)`
     /// returns `false`, and otherwise it will return `Ok(T)` manufactured with
     /// an unchecked cast (verified correct via the `instanceof` operation).
     fn dyn_into<T>(self) -> Result<T, Self>
     where
         T: JsCast,
     {
-        if self.is_instance_of::<T>() {
+        if T::is_type_of(self.as_ref()) {
             Ok(self.unchecked_into())
         } else {
             Err(self)
@@ -47,14 +47,14 @@ where
     /// Performs a dynamic cast (checked at runtime) of this value into the
     /// target type `T`.
     ///
-    /// This method will return `None` if `self.is_instance_of::<T>()`
+    /// This method will return `None` if `T::is_type_of(self)`
     /// returns `false`, and otherwise it will return `Some(&T)` manufactured
     /// with an unchecked cast (verified correct via the `instanceof` operation).
     fn dyn_ref<T>(&self) -> Option<&T>
     where
         T: JsCast,
     {
-        if self.is_instance_of::<T>() {
+        if T::is_type_of(self.as_ref()) {
             Some(self.unchecked_ref())
         } else {
             None
@@ -99,6 +99,14 @@ where
     /// This is intended to be an internal implementation detail, you likely
     /// won't need to call this.
     fn instanceof(val: &JsValue) -> bool;
+
+    /// Performs a dynamic check to see whether the `JsValue` provided
+    /// is a value of this type.
+    ///
+    /// Unlike `instanceof`, this can be specialised to use a custom check.
+    fn is_type_of(val: &JsValue) -> bool {
+        Self::instanceof(val)
+    }
 
     /// Performs a zero-cost unchecked conversion from a `JsValue` into an
     /// instance of `Self`

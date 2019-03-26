@@ -588,6 +588,13 @@ impl ToTokens for ast::ImportType {
             }
         };
 
+        let is_type_of = self.is_type_of.as_ref().map(|is_type_of| quote! {
+            fn is_type_of(val: &JsValue) -> bool {
+                let is_type_of: fn(&JsValue) -> bool = #is_type_of;
+                is_type_of(val)
+            }
+        });
+
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
@@ -719,6 +726,8 @@ impl ToTokens for ast::ImportType {
                         drop(val);
                         panic!("cannot check instanceof on non-wasm targets");
                     }
+
+                    #is_type_of
 
                     #[inline]
                     fn unchecked_from_js(val: JsValue) -> Self {

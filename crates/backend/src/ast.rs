@@ -183,6 +183,7 @@ pub struct ImportType {
     pub attrs: Vec<syn::Attribute>,
     pub doc_comment: Option<String>,
     pub instanceof_shim: String,
+    pub is_type_of: Option<syn::Expr>,
     pub extends: Vec<syn::Path>,
     pub vendor_prefixes: Vec<Ident>,
 }
