@@ -343,9 +343,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     self.cx.expose_is_like_none();
                     self.js_arguments
                         .push((name.clone(), "string | undefined".to_string()));
-                    self.rust_arguments.push(format!("!isLikeNone({0})", name));
                     self.rust_arguments
-                        .push(format!("isLikeNone({0}) ? 0 : {0}.codePointAt(0)", name));
+                        .push(format!("isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0)", name));
                     return Ok(self);
                 }
                 Descriptor::Enum { hole } => {
@@ -633,17 +632,10 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 }
                 Descriptor::Char => {
                     self.ret_ty = "string | undefined".to_string();
-                    self.cx.expose_global_argument_ptr()?;
-                    self.cx.expose_uint32_memory();
-                    self.prelude("const retptr = globalArgumentPtr();");
-                    self.rust_arguments.insert(0, "retptr".to_string());
                     self.ret_expr = "
-                        RET;
-                        const present = getUint32Memory()[retptr / 4];
-                        const value = getUint32Memory()[retptr / 4 + 1];
-                        return present === 0 ? undefined : String.fromCodePoint(value);
-                    "
-                    .to_string();
+                        const ret = RET;
+                        return ret === 0xFFFFFF ? undefined : String.fromCodePoint(ret);
+                    ".to_string();
                     return Ok(self);
                 }
                 Descriptor::Enum { hole } => {
