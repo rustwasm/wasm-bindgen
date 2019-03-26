@@ -248,8 +248,9 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if optional {
+            self.cx.expose_is_like_none();
+
             if arg.is_wasm_native() {
-                self.cx.expose_is_like_none();
                 self.js_arguments
                     .push((name.clone(), "number | undefined".to_string()));
 
@@ -272,7 +273,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             }
 
             if arg.is_abi_as_u32() {
-                self.cx.expose_is_like_none();
                 self.js_arguments
                     .push((name.clone(), "number | undefined".to_string()));
 
@@ -321,7 +321,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
             match *arg {
                 Descriptor::Boolean => {
-                    self.cx.expose_is_like_none();
                     self.js_arguments
                         .push((name.clone(), "boolean | undefined".to_string()));
                     if self.cx.config.debug {
@@ -337,42 +336,38 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     }
                     self.rust_arguments
                         .push(format!("isLikeNone({0}) ? 0xFFFFFF : {0} ? 1 : 0", name));
-                    return Ok(self);
                 }
                 Descriptor::Char => {
-                    self.cx.expose_is_like_none();
                     self.js_arguments
                         .push((name.clone(), "string | undefined".to_string()));
                     self.rust_arguments
                         .push(format!("isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0)", name));
-                    return Ok(self);
                 }
                 Descriptor::Enum { hole } => {
-                    self.cx.expose_is_like_none();
                     self.js_arguments
                         .push((name.clone(), "number | undefined".to_string()));
                     self.rust_arguments
                         .push(format!("isLikeNone({0}) ? {1} : {0}", name, hole));
-                    return Ok(self);
                 }
                 Descriptor::RustStruct(ref s) => {
                     self.js_arguments
                         .push((name.clone(), format!("{} | undefined", s)));
                     self.prelude(&format!("let ptr{} = 0;", i));
-                    self.prelude(&format!("if ({0} !== null && {0} !== undefined) {{", name));
+                    self.prelude(&format!("if (!isLikeNone({0})) {{", name));
                     self.assert_class(&name, s);
                     self.assert_not_moved(&name);
                     self.prelude(&format!("ptr{} = {}.ptr;", i, name));
                     self.prelude(&format!("{}.ptr = 0;", name));
                     self.prelude("}");
                     self.rust_arguments.push(format!("ptr{}", i));
-                    return Ok(self);
                 }
                 _ => bail!(
                     "unsupported optional argument type for calling Rust function from JS: {:?}",
                     arg
                 ),
-            };
+            }
+
+            return Ok(self);
         }
 
         if let Some(s) = arg.rust_struct() {
