@@ -85,7 +85,7 @@ members = [
 exclude = ['crates/typescript']
 
 [patch.crates-io]
-wasm-bindgen = { path = '.' }
-wasm-bindgen-futures = { path = 'crates/futures' }
-js-sys = { path = 'crates/js-sys' }
-web-sys = { path = 'crates/web-sys' }
+wasm-bindgen = { path = '.', version = '0.2.40' }
+wasm-bindgen-futures = { path = 'crates/futures', version = '0.3.17' }
+js-sys = { path = 'crates/js-sys', version = '0.3.17' }
+web-sys = { path = 'crates/web-sys', version = '0.3.17' }
