@@ -149,7 +149,7 @@ fn unit_ty() -> syn::Type {
     })
 }
 
-/// From `T` create `Result<T, ::wasm_bindgen::JsValue>`.
+/// From `T` create `Result<T, wasm_bindgen::JsValue>`.
 fn result_ty(t: syn::Type) -> syn::Type {
     let js_value = leading_colon_path_ty(vec![rust_ident("wasm_bindgen"), rust_ident("JsValue")]);
 

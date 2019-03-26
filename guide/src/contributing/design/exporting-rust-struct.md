@@ -111,7 +111,7 @@ pub extern "C" fn __wasm_bindgen_generated_Foo_get(me: u32) -> i32 {
 #[export_name = "foo_set"]
 pub extern "C" fn __wasm_bindgen_generated_Foo_set(me: u32, arg1: i32) {
     let me = me as *mut WasmRefCell<Foo>;
-    ::wasm_bindgen::__rt::assert_not_null(me);
+    wasm_bindgen::__rt::assert_not_null(me);
     let me = unsafe { &*me };
     me.borrow_mut().set(arg1);
 }
