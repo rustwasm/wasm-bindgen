@@ -30,6 +30,26 @@ pub fn rust_ident(name: &str) -> Ident {
         panic!("tried to create empty Ident (from \"\")");
     } else if is_rust_keyword(name) {
         Ident::new(&format!("{}_", name), proc_macro2::Span::call_site())
+
+    // we didn't historically have `async` in the `is_rust_keyword` list above,
+    // so for backwards compatibility reasons we need to generate an `async`
+    // identifier as well, but we'll be sure to use a raw identifier to ease
+    // compatibility with the 2018 edition.
+    //
+    // Note, though, that `proc-macro` doesn't support a normal way to create a
+    // raw identifier. To get around that we do some wonky parsing to
+    // roundaboutly create one.
+    } else if name == "async" {
+        let ident = "r#async"
+            .parse::<proc_macro2::TokenStream>()
+            .unwrap()
+            .into_iter()
+            .next()
+            .unwrap();
+        match ident {
+            proc_macro2::TokenTree::Ident(i) => i,
+            _ => unreachable!(),
+        }
     } else if name.chars().next().unwrap().is_ascii_digit() {
         Ident::new(&format!("N{}", name), proc_macro2::Span::call_site())
     } else {

@@ -34,9 +34,9 @@ fn test_script_element() {
     element.set_charset("UTF-8");
     assert_eq!(element.charset(), "UTF-8", "Should have a charset");
 
-    assert!(element.async(), "Should be async");
+    assert!(element.r#async(), "Should be async");
     element.set_async(false);
-    assert!(!element.async(), "Shouldn't be a async");
+    assert!(!element.r#async(), "Shouldn't be a async");
 
     assert!(!element.defer(), "Shouldn't be a defer");
     element.set_defer(true);
