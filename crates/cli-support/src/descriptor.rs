@@ -99,6 +99,10 @@ pub enum VectorKind {
     Anyref,
 }
 
+pub struct Number {
+    u32: bool,
+}
+
 impl Descriptor {
     pub fn decode(mut data: &[u32]) -> Descriptor {
         let descriptor = Descriptor::_decode(&mut data);
@@ -149,18 +153,20 @@ impl Descriptor {
         }
     }
 
-    pub fn is_number(&self) -> bool {
+    /// Returns `Some` if this type is a number, and the returned `Number` type
+    /// can be accessed to learn more about what kind of number this is.
+    pub fn number(&self) -> Option<Number> {
         match *self {
             Descriptor::I8
             | Descriptor::U8
             | Descriptor::I16
             | Descriptor::U16
             | Descriptor::I32
-            | Descriptor::U32
             | Descriptor::F32
             | Descriptor::F64
-            | Descriptor::Enum { .. } => true,
-            _ => return false,
+            | Descriptor::Enum { .. } => Some(Number { u32: false }),
+            Descriptor::U32 => Some(Number { u32: true }),
+            _ => None,
         }
     }
 
@@ -358,5 +364,11 @@ impl VectorKind {
             VectorKind::F64 => 8,
             VectorKind::Anyref => 4,
         }
+    }
+}
+
+impl Number {
+    pub fn is_u32(&self) -> bool {
+        self.u32
     }
 }

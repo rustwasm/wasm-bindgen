@@ -309,8 +309,16 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             return Ok(());
         }
 
+        if let Some(num) = arg.number() {
+            if num.is_u32() {
+                self.js_arguments.push(format!("{} >>> 0", abi));
+            } else {
+                self.js_arguments.push(abi);
+            }
+            return Ok(());
+        }
+
         let invoc_arg = match *arg {
-            ref d if d.is_number() => abi,
             Descriptor::Boolean => format!("{} !== 0", abi),
             Descriptor::Char => format!("String.fromCodePoint({})", abi),
             _ => bail!(
@@ -504,7 +512,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
             return Ok(());
         }
-        if ty.is_number() {
+        if ty.number().is_some() {
             self.ret_expr = "return JS;".to_string();
             return Ok(());
         }
