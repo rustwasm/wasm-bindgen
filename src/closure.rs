@@ -121,7 +121,7 @@ use crate::UnwrapThrowExt;
 ///         // Note this method call, which uses `as_ref()` to get a `JsValue`
 ///         // from our `Closure` which is then converted to a `&Function`
 ///         // using the `JsCast::unchecked_ref` function.
-///         cb.as_ref().upnchecked_ref(),
+///         cb.as_ref().unchecked_ref(),
 ///         1_000,
 ///     )?;
 ///
