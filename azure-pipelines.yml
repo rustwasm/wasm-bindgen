@@ -231,6 +231,7 @@ jobs:
   - job: doc_book
     displayName: "Doc - build the book"
     steps:
+      - template: ci/azure-install-rust.yml
       - script: |
           which mdbook || cargo install mdbook
           which mdbook-linkcheck || cargo install mdbook-linkcheck
