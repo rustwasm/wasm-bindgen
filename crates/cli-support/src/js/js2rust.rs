@@ -384,7 +384,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             return Ok(self);
         }
 
-        if arg.is_number() {
+        if arg.number().is_some() {
             self.js_arguments.push((name.clone(), "number".to_string()));
 
             if self.cx.config.debug {
@@ -681,9 +681,13 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             return Ok(self);
         }
 
-        if ty.is_number() {
+        if let Some(num) = ty.number() {
             self.ret_ty = "number".to_string();
-            self.ret_expr = format!("return RET;");
+            if num.is_u32() {
+                self.ret_expr = format!("return RET >>> 0;");
+            } else {
+                self.ret_expr = format!("return RET;");
+            }
             return Ok(self);
         }
 
