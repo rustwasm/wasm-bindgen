@@ -1878,6 +1878,13 @@ extern "C" {
     pub fn assign3(target: &Object, source1: &Object, source2: &Object, source3: &Object)
         -> Object;
 
+    /// The constructor property returns a reference to the Object constructor
+    /// function that created the instance object.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
+    #[wasm_bindgen(method, getter)]
+    pub fn constructor(this: &Object) -> Function;
+
     /// The Object.create() method creates a new object, using an existing
     /// object to provide the newly created object's prototype.
     ///
