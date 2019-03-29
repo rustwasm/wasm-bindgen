@@ -4,6 +4,7 @@
 //! closures" from Rust to JS. Some more details can be found on the `Closure`
 //! type itself.
 
+use std::fmt;
 #[cfg(feature = "nightly")]
 use std::marker::Unsize;
 use std::mem::{self, ManuallyDrop};
@@ -487,6 +488,15 @@ fn _check() {
     _assert::<&Closure<FnMut()>>();
     _assert::<&Closure<FnMut(String)>>();
     _assert::<&Closure<FnMut() -> String>>();
+}
+
+impl<T> fmt::Debug for Closure<T>
+where
+    T: ?Sized,
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Closure {{ ... }}")
+    }
 }
 
 impl<T> Drop for Closure<T>

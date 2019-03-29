@@ -108,6 +108,12 @@ fn cannot_reuse() {
 }
 
 #[wasm_bindgen_test]
+fn debug() {
+    let closure = Closure::wrap(Box::new(|| {}) as Box<FnMut()>);
+    assert_eq!(&format!("{:?}", closure), "Closure { ... }");
+}
+
+#[wasm_bindgen_test]
 fn long_lived() {
     let hit = Rc::new(Cell::new(false));
     let hit2 = hit.clone();
