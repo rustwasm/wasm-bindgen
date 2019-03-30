@@ -50,6 +50,7 @@ macro_rules! attrgen {
             (variadic, Variadic(Span)),
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (start, Start(Span)),
+            (skip, Skip(Span)),
         }
     };
 }
@@ -289,7 +290,7 @@ trait ConvertToAst<Ctx> {
 impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
     type Target = ast::Struct;
 
-    fn convert(self, opts: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
+    fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         if self.generics.params.len() > 0 {
             bail_span!(
                 self.generics,
@@ -298,7 +299,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             );
         }
         let mut fields = Vec::new();
-        let js_name = opts
+        let js_name = attrs
             .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.to_string());
@@ -312,26 +313,33 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                     Some(n) => n,
                     None => continue,
                 };
+
+                let attrs = BindgenAttrs::find(&mut field.attrs)?;
+                assert_not_variadic(&attrs)?;
+                if attrs.skip().is_some() {
+                    attrs.check_used()?;
+                    continue
+                }
+
+                let comments = extract_doc_comments(&field.attrs);
                 let name_str = name.to_string();
                 let getter = shared::struct_field_get(&js_name, &name_str);
                 let setter = shared::struct_field_set(&js_name, &name_str);
-                let opts = BindgenAttrs::find(&mut field.attrs)?;
-                assert_not_variadic(&opts)?;
-                let comments = extract_doc_comments(&field.attrs);
+
                 fields.push(ast::StructField {
                     name: name.clone(),
                     struct_name: self.ident.clone(),
-                    readonly: opts.readonly().is_some(),
+                    readonly: attrs.readonly().is_some(),
                     ty: field.ty.clone(),
                     getter: Ident::new(&getter, Span::call_site()),
                     setter: Ident::new(&setter, Span::call_site()),
                     comments,
                 });
-                opts.check_used()?;
+                attrs.check_used()?;
             }
         }
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
-        opts.check_used()?;
+        attrs.check_used()?;
         Ok(ast::Struct {
             rust_name: self.ident.clone(),
             js_name,
