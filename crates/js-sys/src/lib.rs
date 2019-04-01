@@ -3522,6 +3522,37 @@ impl JsString {
             None
         }
     }
+
+    /// Returns whether this string is a valid UTF-16 string.
+    ///
+    /// This is useful for learning whether `String::from(..)` will return a
+    /// lossless representation of the JS string. If this string contains
+    /// unpaired surrogates then `String::from` will succeed but it will be a
+    /// lossy representation of the JS string because unpaired surrogates will
+    /// become replacement characters.
+    ///
+    /// If this function returns `false` then to get a lossless representation
+    /// of the string you'll need to manually use the `iter` method (or the
+    /// `char_code_at` accessor) to view the raw character codes.
+    ///
+    /// For more information, see the documentation on [JS strings vs Rust
+    /// strings][docs]
+    ///
+    /// [docs]: https://rustwasm.github.io/docs/wasm-bindgen/reference/types/str.html
+    pub fn is_valid_utf16(&self) -> bool {
+        std::char::decode_utf16(self.iter()).all(|i| i.is_ok())
+    }
+
+    /// Returns an iterator over the `u16` character codes that make up this JS
+    /// string.
+    ///
+    /// This method will call `char_code_at` for each code in this JS string,
+    /// returning an iterator of the codes in sequence.
+    pub fn iter<'a>(
+        &'a self,
+    ) -> impl ExactSizeIterator<Item = u16> + DoubleEndedIterator<Item = u16> + 'a {
+        (0..self.length()).map(move |i| self.char_code_at(i) as u16)
+    }
 }
 
 impl PartialEq<str> for JsString {
