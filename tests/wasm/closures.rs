@@ -90,6 +90,18 @@ extern "C" {
 
     #[wasm_bindgen(js_name = calling_it_throws)]
     fn call_val_throws(f: &JsValue) -> bool;
+
+    fn pass_reference_first_arg_twice(
+        a: RefFirstArgument,
+        b: &Closure<FnMut(&RefFirstArgument)>,
+        c: &Closure<FnMut(&RefFirstArgument)>,
+    );
+    #[wasm_bindgen(js_name = pass_reference_first_arg_twice)]
+    fn pass_reference_first_arg_twice2(
+        a: RefFirstArgument,
+        b: &mut FnMut(&RefFirstArgument),
+        c: &mut FnMut(&RefFirstArgument),
+    );
 }
 
 #[wasm_bindgen_test]
@@ -438,4 +450,75 @@ fn test_closure_returner() {
 
         Ok(o)
     }
+}
+
+#[wasm_bindgen]
+pub struct RefFirstArgument {
+    contents: u32,
+}
+
+#[wasm_bindgen_test]
+fn reference_as_first_argument_builds_at_all() {
+    #[wasm_bindgen]
+    extern "C" {
+        fn ref_first_arg1(a: &Fn(&JsValue));
+        fn ref_first_arg2(a: &mut FnMut(&JsValue));
+        fn ref_first_arg3(a: &Closure<Fn(&JsValue)>);
+        fn ref_first_arg4(a: &Closure<FnMut(&JsValue)>);
+        fn ref_first_custom1(a: &Fn(&RefFirstArgument));
+        fn ref_first_custom2(a: &mut FnMut(&RefFirstArgument));
+        fn ref_first_custom3(a: &Closure<Fn(&RefFirstArgument)>);
+        fn ref_first_custom4(a: &Closure<FnMut(&RefFirstArgument)>);
+    }
+
+    Closure::wrap(Box::new(|_: &JsValue| ()) as Box<Fn(&JsValue)>);
+    Closure::wrap(Box::new(|_: &JsValue| ()) as Box<FnMut(&JsValue)>);
+    Closure::once(|_: &JsValue| ());
+    Closure::once_into_js(|_: &JsValue| ());
+    Closure::wrap(Box::new(|_: &RefFirstArgument| ()) as Box<Fn(&RefFirstArgument)>);
+    Closure::wrap(Box::new(|_: &RefFirstArgument| ()) as Box<FnMut(&RefFirstArgument)>);
+    Closure::once(|_: &RefFirstArgument| ());
+    Closure::once_into_js(|_: &RefFirstArgument| ());
+}
+
+#[wasm_bindgen_test]
+fn reference_as_first_argument_works() {
+    let a = Rc::new(Cell::new(0));
+    let b = {
+        let a = a.clone();
+        Closure::once(move |x: &RefFirstArgument| {
+            assert_eq!(a.get(), 0);
+            assert_eq!(x.contents, 3);
+            a.set(a.get() + 1);
+        })
+    };
+    let c = {
+        let a = a.clone();
+        Closure::once(move |x: &RefFirstArgument| {
+            assert_eq!(a.get(), 1);
+            assert_eq!(x.contents, 3);
+            a.set(a.get() + 1);
+        })
+    };
+    pass_reference_first_arg_twice(RefFirstArgument { contents: 3 }, &b, &c);
+    assert_eq!(a.get(), 2);
+}
+
+#[wasm_bindgen_test]
+fn reference_as_first_argument_works2() {
+    let a = Cell::new(0);
+    pass_reference_first_arg_twice2(
+        RefFirstArgument { contents: 3 },
+        &mut |x: &RefFirstArgument| {
+            assert_eq!(a.get(), 0);
+            assert_eq!(x.contents, 3);
+            a.set(a.get() + 1);
+        },
+        &mut |x: &RefFirstArgument| {
+            assert_eq!(a.get(), 1);
+            assert_eq!(x.contents, 3);
+            a.set(a.get() + 1);
+        },
+    );
+    assert_eq!(a.get(), 2);
 }
