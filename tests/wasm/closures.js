@@ -113,3 +113,9 @@ exports.calling_it_throws = a => {
 };
 
 exports.call_val = f => f();
+
+exports.pass_reference_first_arg_twice = (a, b, c) => {
+  b(a);
+  c(a);
+  a.free();
+};

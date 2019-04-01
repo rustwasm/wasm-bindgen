@@ -519,7 +519,7 @@ where
 /// This trait is not stable and it's not recommended to use this in bounds or
 /// implement yourself.
 #[doc(hidden)]
-pub unsafe trait WasmClosure: 'static {
+pub unsafe trait WasmClosure {
     fn describe();
 }
 
@@ -541,7 +541,7 @@ macro_rules! doit {
     ($(
         ($($var:ident)*)
     )*) => ($(
-        unsafe impl<$($var,)* R> WasmClosure for Fn($($var),*) -> R
+        unsafe impl<$($var,)* R> WasmClosure for Fn($($var),*) -> R + 'static
             where $($var: FromWasmAbi + 'static,)*
                   R: ReturnWasmAbi + 'static,
         {
@@ -587,7 +587,7 @@ macro_rules! doit {
             }
         }
 
-        unsafe impl<$($var,)* R> WasmClosure for FnMut($($var),*) -> R
+        unsafe impl<$($var,)* R> WasmClosure for FnMut($($var),*) -> R + 'static
             where $($var: FromWasmAbi + 'static,)*
                   R: ReturnWasmAbi + 'static,
         {
@@ -695,4 +695,149 @@ doit! {
     (A B C D E)
     (A B C D E F)
     (A B C D E F G)
+}
+
+// Copy the above impls down here for where there's only one argument and it's a
+// reference. We could add more impls for more kinds of references, but it
+// becomes a combinatorial explosion quickly. Let's see how far we can get with
+// just this one! Maybe someone else can figure out voodoo so we don't have to
+// duplicate.
+
+unsafe impl<A, R> WasmClosure for Fn(&A) -> R
+    where A: RefFromWasmAbi,
+          R: ReturnWasmAbi + 'static,
+{
+    fn describe() {
+        #[allow(non_snake_case)]
+        unsafe extern "C" fn invoke<A: RefFromWasmAbi, R: ReturnWasmAbi>(
+            a: usize,
+            b: usize,
+            arg: <A as RefFromWasmAbi>::Abi,
+        ) -> <R as ReturnWasmAbi>::Abi {
+            if a == 0 {
+                throw_str("closure invoked recursively or destroyed already");
+            }
+            // Make sure all stack variables are converted before we
+            // convert `ret` as it may throw (for `Result`, for
+            // example)
+            let ret = {
+                let f: *const Fn(&A) -> R =
+                    FatPtr { fields: (a, b) }.ptr;
+                let mut _stack = GlobalStack::new();
+                let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
+                (*f)(&*arg)
+            };
+            ret.return_abi(&mut GlobalStack::new())
+        }
+
+        inform(invoke::<A, R> as u32);
+
+        unsafe extern fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(
+            a: usize,
+            b: usize,
+        ) {
+            debug_assert!(a != 0, "should never destroy a Fn whose pointer is 0");
+            drop(Box::from_raw(FatPtr::<Fn(&A) -> R> {
+                fields: (a, b)
+            }.ptr));
+        }
+        inform(destroy::<A, R> as u32);
+
+        <&Self>::describe();
+    }
+}
+
+unsafe impl<A, R> WasmClosure for FnMut(&A) -> R
+    where A: RefFromWasmAbi,
+          R: ReturnWasmAbi + 'static,
+{
+    fn describe() {
+        #[allow(non_snake_case)]
+        unsafe extern "C" fn invoke<A: RefFromWasmAbi, R: ReturnWasmAbi>(
+            a: usize,
+            b: usize,
+            arg: <A as RefFromWasmAbi>::Abi,
+        ) -> <R as ReturnWasmAbi>::Abi {
+            if a == 0 {
+                throw_str("closure invoked recursively or destroyed already");
+            }
+            // Make sure all stack variables are converted before we
+            // convert `ret` as it may throw (for `Result`, for
+            // example)
+            let ret = {
+                let f: *const FnMut(&A) -> R =
+                    FatPtr { fields: (a, b) }.ptr;
+                let f = f as *mut FnMut(&A) -> R;
+                let mut _stack = GlobalStack::new();
+                let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
+                (*f)(&*arg)
+            };
+            ret.return_abi(&mut GlobalStack::new())
+        }
+
+        inform(invoke::<A, R> as u32);
+
+        unsafe extern fn destroy<A: RefFromWasmAbi, R: ReturnWasmAbi>(
+            a: usize,
+            b: usize,
+        ) {
+            debug_assert!(a != 0, "should never destroy a FnMut whose pointer is 0");
+            drop(Box::from_raw(FatPtr::<FnMut(&A) -> R> {
+                fields: (a, b)
+            }.ptr));
+        }
+        inform(destroy::<A, R> as u32);
+
+        <&mut Self>::describe();
+    }
+}
+
+#[allow(non_snake_case)]
+impl<T, A, R> WasmClosureFnOnce<(&A,), R> for T
+    where T: 'static + FnOnce(&A) -> R,
+          A: RefFromWasmAbi + 'static,
+          R: ReturnWasmAbi + 'static
+{
+    type FnMut = FnMut(&A) -> R;
+
+    fn into_fn_mut(self) -> Box<Self::FnMut> {
+        let mut me = Some(self);
+        Box::new(move |arg| {
+            let me = me.take().expect_throw("FnOnce called more than once");
+            me(arg)
+        })
+    }
+
+    fn into_js_function(self) -> JsValue {
+        use std::rc::Rc;
+        use crate::__rt::WasmRefCell;
+
+        let mut me = Some(self);
+
+        let rc1 = Rc::new(WasmRefCell::new(None));
+        let rc2 = rc1.clone();
+
+        let closure = Closure::wrap(Box::new(move |arg: &A| {
+            // Invoke ourself and get the result.
+            let me = me.take().expect_throw("FnOnce called more than once");
+            let result = me(arg);
+
+            // And then drop the `Rc` holding this function's `Closure`
+            // alive.
+            debug_assert_eq!(Rc::strong_count(&rc2), 1);
+            let option_closure = rc2.borrow_mut().take();
+            debug_assert!(option_closure.is_some());
+            drop(option_closure);
+
+            result
+        }) as Box<FnMut(&A) -> R>);
+
+        let js_val = closure.as_ref().clone();
+
+        *rc1.borrow_mut() = Some(closure);
+        debug_assert_eq!(Rc::strong_count(&rc1), 2);
+        drop(rc1);
+
+        js_val
+    }
 }
