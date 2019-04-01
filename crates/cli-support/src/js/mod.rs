@@ -1306,13 +1306,12 @@ impl<'a> Context<'a> {
                 while (true) {{
                     const view = getUint8Memory().subarray(ptr + writeOffset, ptr + size);
                     const {{ read, written }} = cachedTextEncoder.encodeInto(arg, view);
-                    arg = arg.substring(read);
-                    writeOffset += written;
-                    if (arg.length === 0) {{
+                    if (read === arg.length) {{
                         break;
                     }}
-                    ptr = wasm.__wbindgen_realloc(ptr, size, size * 2);
-                    size *= 2;
+                    arg = arg.substring(read);
+                    writeOffset += written;
+                    ptr = wasm.__wbindgen_realloc(ptr, size, size += arg.length * 3);
                 }}
                 WASM_VECTOR_LEN = writeOffset;
                 return ptr;
