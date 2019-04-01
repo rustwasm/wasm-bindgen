@@ -341,9 +341,9 @@ jobs:
             chmod +x tmp/$name/wasm*
             tar czvf gh-release/$name.tar.gz -C tmp $name
           }
-          mk x86_64-unknown-linux-musl linux
-          mk x86_64-apple-darwin darwin
-          mk x86_64-pc-windows-msvc windows
+          mk x86_64-unknown-linux-musl linux/dist_linux
+          mk x86_64-apple-darwin darwin/dist_darwin
+          mk x86_64-pc-windows-msvc windows/dist_windows
         displayName: "prepare the github releases tarball artifacts"
       - task: PublishPipelineArtifact@0
         displayName: "publish gh_release artifact"
