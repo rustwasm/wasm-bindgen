@@ -311,6 +311,7 @@ impl<'a> Context<'a> {
     /// `--target no-modules`, `--target web`, or for bundlers. This is the very
     /// last step performed in `finalize`.
     fn finalize_js(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
+        let mut ts = self.typescript.clone();
         let mut js = String::new();
         if self.config.mode.no_modules() {
             js.push_str("(function() {\n");
@@ -318,7 +319,7 @@ impl<'a> Context<'a> {
 
         // Depending on the output mode, generate necessary glue to actually
         // import the wasm file in one way or another.
-        let mut init = String::new();
+        let mut init = (String::new(), String::new());
         match &self.config.mode {
             // In `--target no-modules` mode we need to both expose a name on
             // the global object as well as generate our own custom start
@@ -371,6 +372,10 @@ impl<'a> Context<'a> {
             }
         }
 
+        let (init_js, init_ts) = init;
+
+        ts.push_str(&init_ts);
+
         // Emit all the JS for importing all our functionality
         js.push_str(&self.imports);
         js.push_str("\n");
@@ -382,7 +387,7 @@ impl<'a> Context<'a> {
         js.push_str("\n");
 
         // Generate the initialization glue, if there was any
-        js.push_str(&init);
+        js.push_str(&init_js);
         js.push_str("\n");
         js.push_str(&self.footer);
         js.push_str("\n");
@@ -394,7 +399,7 @@ impl<'a> Context<'a> {
             js = js.replace("\n\n\n", "\n\n");
         }
 
-        (js, self.typescript.clone())
+        (js, ts)
     }
 
     fn wire_up_initial_intrinsics(&mut self) -> Result<(), Error> {
@@ -842,7 +847,34 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn gen_init(&mut self, module_name: &str, needs_manual_start: bool) -> String {
+    fn ts_for_init_fn(has_memory: bool) -> String {
+        let (memory_doc, memory_param) = if has_memory {
+            (
+                "* @param {WebAssembly.Memory} maybe_memory\n",
+                ", maybe_memory: WebAssembly.Memory",
+            )
+        } else {
+            ("", "")
+        };
+        format!(
+            "\n\
+            /**\n\
+            * If `module_or_path` is {{RequestInfo}}, makes a request and\n\
+            * for everything else, calls `WebAssembly.instantiate` directly.\n\
+            *\n\
+            * @param {{RequestInfo | BufferSource | WebAssembly.Module}} module_or_path\n\
+            {}\
+            *\n\
+            * @returns {{Promise<any>}}\n\
+            */\n\
+            export function init \
+                (module_or_path: RequestInfo | BufferSource | WebAssembly.Module{}): Promise<any>;
+        ",
+            memory_doc, memory_param
+        )
+    }
+
+    fn gen_init(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
         let mem = self.module.memories.get(self.memory);
         let (init_memory1, init_memory2) = if mem.import.is_some() {
             let mut memory = String::from("new WebAssembly.Memory({");
@@ -862,10 +894,16 @@ impl<'a> Context<'a> {
         } else {
             (String::new(), String::new())
         };
+        let init_memory_arg = if mem.import.is_some() {
+            ", maybe_memory"
+        } else {
+            ""
+        };
 
-        format!(
+        let ts = Self::ts_for_init_fn(mem.import.is_some());
+        let js = format!(
             "\
-                function init(module_or_path, maybe_memory) {{
+                function init(module_or_path{init_memory_arg}) {{
                     let result;
                     const imports = {{ './{module}': __exports }};
                     if (module_or_path instanceof URL || typeof module_or_path === 'string' || module_or_path instanceof Request) {{
@@ -903,6 +941,7 @@ impl<'a> Context<'a> {
                     }});
                 }}
             ",
+            init_memory_arg = init_memory_arg,
             module = module_name,
             init_memory1 = init_memory1,
             init_memory2 = init_memory2,
@@ -911,7 +950,9 @@ impl<'a> Context<'a> {
             } else {
                 ""
             },
-        )
+        );
+
+        (js, ts)
     }
 
     fn bind(
