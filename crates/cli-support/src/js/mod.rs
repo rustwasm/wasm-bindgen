@@ -903,12 +903,12 @@ impl<'a> Context<'a> {
         let ts = Self::ts_for_init_fn(mem.import.is_some());
         let js = format!(
             "\
-                function init(module_or_path{init_memory_arg}) {{
+                function init(module{init_memory_arg}) {{
                     let result;
                     const imports = {{ './{module}': __exports }};
-                    if (module_or_path instanceof URL || typeof module_or_path === 'string' || module_or_path instanceof Request) {{
+                    if (module instanceof URL || typeof module === 'string' || module instanceof Request) {{
                         {init_memory2}
-                        const response = fetch(module_or_path);
+                        const response = fetch(module);
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
                             result = WebAssembly.instantiateStreaming(response, imports)
                                 .catch(e => {{
@@ -928,9 +928,13 @@ impl<'a> Context<'a> {
                         }}
                     }} else {{
                         {init_memory1}
-                        result = WebAssembly.instantiate(module_or_path, imports)
-                            .then(instance => {{
-                                return {{ instance, module: module_or_path }};
+                        result = WebAssembly.instantiate(module, imports)
+                            .then(result => {{
+                                if (result instanceof WebAssembly.Instance) {{
+                                    return {{ instance: result, module }};
+                                }} else {{
+                                    return result;
+                                }}
                             }});
                     }}
                     return result.then(({{instance, module}}) => {{
