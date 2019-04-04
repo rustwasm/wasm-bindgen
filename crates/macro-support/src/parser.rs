@@ -896,7 +896,7 @@ fn prepare_for_impl_recursion(
             pound_token: Default::default(),
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
-            path: syn::Ident::new("__wasm_bindgen_class_marker", Span::call_site()).into(),
+            path: syn::parse_quote! { wasm_bindgen::prelude::__wasm_bindgen_class_marker },
             tts: quote::quote! { (#class = #js_class) }.into(),
         },
     );
