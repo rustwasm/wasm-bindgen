@@ -354,7 +354,8 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
-                js.push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
+                self.imports
+                    .push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
                 if needs_manual_start {
                     self.footer.push_str("wasm.__wbindgen_start();\n");
                 }
@@ -365,7 +366,7 @@ impl<'a> Context<'a> {
             // expose the same initialization function as `--target no-modules`
             // as the default export of the module.
             OutputMode::Web => {
-                js.push_str("const __exports = {};\n");
+                self.imports_post.push_str("const __exports = {};\n");
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(&module_name, needs_manual_start);
                 self.footer.push_str("export default init;\n");
@@ -377,6 +378,10 @@ impl<'a> Context<'a> {
         ts.push_str(&init_ts);
 
         // Emit all the JS for importing all our functionality
+        assert!(
+            !self.config.mode.uses_es_modules() || js.is_empty(),
+            "ES modules require imports to be at the start of the file"
+        );
         js.push_str(&self.imports);
         js.push_str("\n");
         js.push_str(&self.imports_post);
