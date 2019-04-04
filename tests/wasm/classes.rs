@@ -459,3 +459,21 @@ pub fn option_class_assert_none(x: Option<OptionClass>) {
 pub fn option_class_assert_some(x: Option<OptionClass>) {
     assert_eq!(x.unwrap().0, 3);
 }
+
+mod works_in_module {
+    use wasm_bindgen::prelude::wasm_bindgen;
+
+    #[wasm_bindgen]
+    pub struct WorksInModule(u32);
+
+    #[wasm_bindgen]
+    impl WorksInModule {
+        #[wasm_bindgen(constructor)]
+        pub fn new() -> WorksInModule {
+            WorksInModule(1)
+        }
+
+        pub fn foo(&self) {
+        }
+    }
+}
