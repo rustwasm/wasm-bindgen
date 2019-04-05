@@ -260,6 +260,16 @@ impl JsValue {
     ///
     /// If this JS value is not an instance of a string or if it's not valid
     /// utf-8 then this returns `None`.
+    ///
+    /// # UTF-16 vs UTF-8
+    ///
+    /// JavaScript strings in general are encoded as UTF-16, but Rust strings
+    /// are encoded as UTF-8. This can cause the Rust string to look a bit
+    /// different than the JS string sometimes. For more details see the
+    /// [documentation about the `str` type][caveats] which contains a few
+    /// caveats about the encodings.
+    ///
+    /// [caveats]: https://rustwasm.github.io/docs/wasm-bindgen/reference/types/str.html
     #[cfg(feature = "std")]
     pub fn as_string(&self) -> Option<String> {
         unsafe {

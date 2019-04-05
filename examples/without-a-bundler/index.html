@@ -25,7 +25,12 @@
         // Also note that the promise, when resolved, yields the wasm module's
         // exports which is the same as importing the `*_bg` module in other
         // modes
-        await init('./pkg/without_a_bundler_bg.wasm');
+        // await init('./pkg/without_a_bundler_bg.wasm');
+
+        const url = await fetch('http://localhost:8001/pkg/without_a_bundler_bg.wasm');
+        const body = await url.arrayBuffer();
+        const module = await WebAssembly.compile(body);
+        await init(module);
 
         // And afterwards we can use all the functionality defined in wasm.
         const result = add(1, 2);

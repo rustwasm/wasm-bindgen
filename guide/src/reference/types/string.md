@@ -8,6 +8,9 @@ Copies the string's contents back and forth between the JavaScript
 garbage-collected heap and the Wasm linear memory with `TextDecoder` and
 `TextEncoder`
 
+> **Note**: Be sure to check out the [documentation for `str`](str.html) to
+> learn about some caveats when working with strings between JS and Rust.
+
 ## Example Rust Usage
 
 ```rust
