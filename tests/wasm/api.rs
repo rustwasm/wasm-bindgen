@@ -9,6 +9,7 @@ extern "C" {
     fn js_eq_works();
     fn assert_null(v: JsValue);
     fn debug_values() -> JsValue;
+    fn assert_function_table(a: JsValue, b: usize);
 }
 
 #[wasm_bindgen_test]
@@ -171,3 +172,14 @@ fn debug_output() {
         assert_eq!(format!("{:?}", test.unwrap()), expected);
     }
 }
+
+#[wasm_bindgen_test]
+fn function_table_is() {
+    assert_function_table(
+        wasm_bindgen::function_table(),
+        function_table_lookup as usize,
+    );
+}
+
+#[no_mangle]
+pub extern "C" fn function_table_lookup() {}

@@ -55,3 +55,9 @@ exports.debug_values = () => ([
     () => (null),
     new Set(),
 ]);
+
+exports.assert_function_table = (x, i) => {
+  const rawWasm = require('wasm-bindgen-test_bg.js');
+  assert.ok(x instanceof WebAssembly.Table);
+  assert.strictEqual(x.get(i), rawWasm.function_table_lookup);
+};

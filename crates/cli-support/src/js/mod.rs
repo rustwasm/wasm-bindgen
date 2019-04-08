@@ -783,6 +783,14 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_function_table", &|me| {
+            me.function_table_needed = true;
+            Ok(format!(
+                "function() {{ return {}; }}",
+                me.add_heap_object("wasm.__wbg_function_table")
+            ))
+        })?;
+
         self.bind("__wbindgen_rethrow", &|me| {
             Ok(format!(
                 "function(idx) {{ throw {}; }}",

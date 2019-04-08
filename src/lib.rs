@@ -517,6 +517,7 @@ externs! {
 
         fn __wbindgen_memory() -> u32;
         fn __wbindgen_module() -> u32;
+        fn __wbindgen_function_table() -> u32;
     }
 }
 
@@ -734,6 +735,12 @@ pub fn module() -> JsValue {
 /// Returns a handle to this wasm instance's `WebAssembly.Memory`
 pub fn memory() -> JsValue {
     unsafe { JsValue::_new(__wbindgen_memory()) }
+}
+
+/// Returns a handle to this wasm instance's `WebAssembly.Table` which is the
+/// indirect function table used by Rust
+pub fn function_table() -> JsValue {
+    unsafe { JsValue::_new(__wbindgen_function_table()) }
 }
 
 #[doc(hidden)]
