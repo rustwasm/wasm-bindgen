@@ -291,11 +291,13 @@ impl ToTokens for ast::StructField {
         let ty = &self.ty;
         let getter = &self.getter;
         let setter = &self.setter;
+
+        let assert_copy = quote! { assert_copy::<#ty>() };
+        let assert_copy = respan(assert_copy, ty);
         (quote! {
-            #[no_mangle]
             #[doc(hidden)]
-            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[allow(clippy::all)]
+            #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
             pub unsafe extern "C" fn #getter(js: u32)
                 -> <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
             {
@@ -303,7 +305,7 @@ impl ToTokens for ast::StructField {
                 use wasm_bindgen::convert::{GlobalStack, IntoWasmAbi};
 
                 fn assert_copy<T: Copy>(){}
-                assert_copy::<#ty>();
+                #assert_copy;
 
                 let js = js as *mut WasmRefCell<#struct_name>;
                 assert_not_null(js);
@@ -714,7 +716,8 @@ impl ToTokens for ast::ImportType {
 
                 ()
             };
-        }).to_tokens(tokens);
+        })
+        .to_tokens(tokens);
 
         let deref_target = match self.extends.first() {
             Some(target) => quote! { #target },
@@ -1429,4 +1432,32 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         })
         .to_tokens(tokens);
     }
+}
+
+fn respan(
+    input: TokenStream,
+    span: &dyn ToTokens,
+) -> TokenStream {
+    let mut first_span = Span::call_site();
+    let mut last_span = Span::call_site();
+    let mut spans = TokenStream::new();
+    span.to_tokens(&mut spans);
+
+    for (i, token) in spans.into_iter().enumerate() {
+        if i == 0 {
+            first_span = token.span();
+        }
+        last_span = token.span();
+    }
+
+    let mut new_tokens = Vec::new();
+    for (i, mut token) in input.into_iter().enumerate() {
+        if i == 0 {
+            token.set_span(first_span);
+        } else {
+            token.set_span(last_span);
+        }
+        new_tokens.push(token);
+    }
+    new_tokens.into_iter().collect()
 }
