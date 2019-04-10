@@ -32,6 +32,66 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.41
+
+Released 2019-04-10.
+
+### Added
+
+* Initial support for transitive NPM dependencies has been added, although
+  support has not fully landed in `wasm-pack` yet so it's not 100% integrated.
+  [#1305](https://github.com/rustwasm/wasm-bindgen/pull/1305)
+
+* The `constructor` property of `Object` is now bound in `js-sys`.
+  [#1403](https://github.com/rustwasm/wasm-bindgen/pull/1403)
+
+* The `Closure` type now always implements `Debug`.
+  [#1408](https://github.com/rustwasm/wasm-bindgen/pull/1408)
+
+* Closures which take one `&T` argument are now supported. More implementations
+  may be added in the future, but for now it's just one argument closures.
+  [#1417](https://github.com/rustwasm/wasm-bindgen/pull/1417)
+
+* The TypeScript bindings for `--web` now expose the `init` function.
+  [#1412](https://github.com/rustwasm/wasm-bindgen/pull/1412)
+
+* A `js_sys::JsString::is_valid_utf16` method has been added to handle unpaired
+  surrogates in JS strings. Surrounding documentation has also been updated to
+  document this potential pitfall.
+  [#1416](https://github.com/rustwasm/wasm-bindgen/pull/1416)
+
+* A `wasm_bindgen::function_table()` function has been added to expose the
+  `WebAssembly.Table` and get access to it in wasm code.
+  [#1431](https://github.com/rustwasm/wasm-bindgen/pull/1431)
+
+### Fixed
+
+* Reexporting the `wasm_bindgen` macro in crates has been fixed.
+  [#1359](https://github.com/rustwasm/wasm-bindgen/pull/1359)
+
+* Returning `u32` to JS has been fixed where large `u32` values would show up in
+  JS as large negative numbers.
+  [#1401](https://github.com/rustwasm/wasm-bindgen/pull/1401)
+
+* Manual instantiation with `WebAssembly.Module` has been fixed.
+  [#1419](https://github.com/rustwasm/wasm-bindgen/pull/1419)
+
+* Error message for non-`Copy` public struct fields has been improved.
+  [#1430](https://github.com/rustwasm/wasm-bindgen/pull/1430)
+
+### Changed
+
+* Performance of passing strings to Rust in Node.js has been improved.
+  [#1391](https://github.com/rustwasm/wasm-bindgen/pull/1391)
+
+* Performance of `js_sys::try_iter` has been improved.
+  [#1393](https://github.com/rustwasm/wasm-bindgen/pull/1393)
+
+* Performance of using `TextEncoder#encodeInto` has been improved.
+  [#1414](https://github.com/rustwasm/wasm-bindgen/pull/1414)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.40
 
 Released 2019-03-21.
