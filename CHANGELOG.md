@@ -32,6 +32,18 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.42
+
+Released 2019-04-11.
+
+### Fixed
+
+* Fixed an issue in Firefox where using `encodeInto` accidentally caused empty
+  strings to keep getting passed to Rust.
+  [#1434](https://github.com/rustwasm/wasm-bindgen/pull/1434)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.41
 
 Released 2019-04-10.
