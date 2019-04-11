@@ -1364,11 +1364,11 @@ impl<'a> Context<'a> {
                 while (true) {{
                     const view = getUint8Memory().subarray(ptr + writeOffset, ptr + size);
                     const {{ read, written }} = cachedTextEncoder.encodeInto(arg, view);
+                    writeOffset += written;
                     if (read === arg.length) {{
                         break;
                     }}
                     arg = arg.substring(read);
-                    writeOffset += written;
                     ptr = wasm.__wbindgen_realloc(ptr, size, size += arg.length * 3);
                 }}
                 WASM_VECTOR_LEN = writeOffset;
