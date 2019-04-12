@@ -578,6 +578,16 @@ impl ToTokens for ast::ImportType {
         let const_name = format!("__wbg_generated_const_{}", rust_name);
         let const_name = Ident::new(&const_name, Span::call_site());
         let instanceof_shim = Ident::new(&self.instanceof_shim, Span::call_site());
+
+        let internal_obj = match self.extends.first() {
+            Some(target) => {
+                quote! { #target }
+            }
+            None => {
+                quote! { wasm_bindgen::JsValue }
+            }
+        };
+
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
@@ -585,7 +595,7 @@ impl ToTokens for ast::ImportType {
             #[repr(transparent)]
             #[allow(clippy::all)]
             #vis struct #rust_name {
-                obj: wasm_bindgen::JsValue,
+                obj: #internal_obj
             }
 
             #[allow(bad_style)]
@@ -601,6 +611,15 @@ impl ToTokens for ast::ImportType {
                 impl WasmDescribe for #rust_name {
                     fn describe() {
                         JsValue::describe();
+                    }
+                }
+
+                impl core::ops::Deref for #rust_name {
+                    type Target = #internal_obj;
+
+                    #[inline]
+                    fn deref(&self) -> &#internal_obj {
+                        &self.obj
                     }
                 }
 
@@ -629,7 +648,7 @@ impl ToTokens for ast::ImportType {
                     #[inline]
                     unsafe fn from_abi(js: Self::Abi, extra: &mut Stack) -> Self {
                         #rust_name {
-                            obj: JsValue::from_abi(js, extra),
+                            obj: JsValue::from_abi(js, extra).into(),
                         }
                     }
                 }
@@ -656,7 +675,7 @@ impl ToTokens for ast::ImportType {
                     unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor {
                         let tmp = <JsValue as RefFromWasmAbi>::ref_from_abi(js, extra);
                         core::mem::ManuallyDrop::new(#rust_name {
-                            obj: core::mem::ManuallyDrop::into_inner(tmp),
+                            obj: core::mem::ManuallyDrop::into_inner(tmp).into(),
                         })
                     }
                 }
@@ -665,20 +684,20 @@ impl ToTokens for ast::ImportType {
                 impl From<JsValue> for #rust_name {
                     #[inline]
                     fn from(obj: JsValue) -> #rust_name {
-                        #rust_name { obj }
+                        #rust_name { obj: obj.into() }
                     }
                 }
 
                 impl AsRef<JsValue> for #rust_name {
                     #[inline]
-                    fn as_ref(&self) -> &JsValue { &self.obj }
+                    fn as_ref(&self) -> &JsValue { self.obj.as_ref() }
                 }
 
 
                 impl From<#rust_name> for JsValue {
                     #[inline]
                     fn from(obj: #rust_name) -> JsValue {
-                        obj.obj
+                        obj.obj.into()
                     }
                 }
 
@@ -703,7 +722,7 @@ impl ToTokens for ast::ImportType {
 
                     #[inline]
                     fn unchecked_from_js(val: JsValue) -> Self {
-                        #rust_name { obj: val }
+                        #rust_name { obj: val.into() }
                     }
 
                     #[inline]
@@ -719,22 +738,6 @@ impl ToTokens for ast::ImportType {
         })
         .to_tokens(tokens);
 
-        let deref_target = match self.extends.first() {
-            Some(target) => quote! { #target },
-            None => quote! { JsValue },
-        };
-        (quote! {
-            #[allow(clippy::all)]
-            impl core::ops::Deref for #rust_name {
-                type Target = #deref_target;
-
-                #[inline]
-                fn deref(&self) -> &#deref_target {
-                    self.as_ref()
-                }
-            }
-        })
-        .to_tokens(tokens);
         for superclass in self.extends.iter() {
             (quote! {
                 #[allow(clippy::all)]
