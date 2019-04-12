@@ -467,7 +467,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone)]
+    #[derive(Clone, PartialEq)]
     pub type Boolean;
 
     /// The `Boolean()` constructor creates an object wrapper for a boolean value.
