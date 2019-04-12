@@ -24,10 +24,12 @@ exports.js_export = () => {
     i32[0] = 1;
     i32[1] = 2;
     assert.deepStrictEqual(wasm.export_i32(i32), i32);
+    assert.deepStrictEqual(wasm.export_isize(i32), i32);
     const u32 = new Uint32Array(2);
     u32[0] = 1;
     u32[1] = 2;
     assert.deepStrictEqual(wasm.export_u32(u32), u32);
+    assert.deepStrictEqual(wasm.export_usize(u32), u32);
 
     const f32 = new Float32Array(2);
     f32[0] = 1;
@@ -73,6 +75,7 @@ exports.import_js_i32 = a => {
     assert.strictEqual(a[1], 2);
     return a;
 };
+exports.import_js_isize = exports.import_js_i32;
 
 exports.import_js_u32 = a => {
     assert.strictEqual(a.length, 2);
@@ -80,6 +83,7 @@ exports.import_js_u32 = a => {
     assert.strictEqual(a[1], 2);
     return a;
 };
+exports.import_js_usize = exports.import_js_u32;
 
 exports.import_js_f32 = a => {
     assert.strictEqual(a.length, 2);
@@ -118,10 +122,12 @@ exports.js_import = () => {
     i32[0] = 1;
     i32[1] = 2;
     assert.deepStrictEqual(wasm.import_rust_i32(i32), i32);
+    assert.deepStrictEqual(wasm.import_rust_isize(i32), i32);
     const u32 = new Uint32Array(2);
     u32[0] = 1;
     u32[1] = 2;
     assert.deepStrictEqual(wasm.import_rust_u32(u32), u32);
+    assert.deepStrictEqual(wasm.import_rust_usize(u32), u32);
 
     const f32 = new Float32Array(2);
     f32[0] = 1;
@@ -140,6 +146,8 @@ exports.js_pass_array = () => {
     wasm.pass_array_rust_u16([1, 2]);
     wasm.pass_array_rust_i32([1, 2]);
     wasm.pass_array_rust_u32([1, 2]);
+    wasm.pass_array_rust_isize([1, 2]);
+    wasm.pass_array_rust_usize([1, 2]);
     wasm.pass_array_rust_f32([1, 2]);
     wasm.pass_array_rust_f64([1, 2]);
 };
@@ -158,6 +166,8 @@ exports.import_mut_js_i16 = import_mut_foo;
 exports.import_mut_js_u16 = import_mut_foo;
 exports.import_mut_js_i32 = import_mut_foo;
 exports.import_mut_js_u32 = import_mut_foo;
+exports.import_mut_js_isize = import_mut_foo;
+exports.import_mut_js_usize = import_mut_foo;
 exports.import_mut_js_f32 = import_mut_foo;
 exports.import_mut_js_f64 = import_mut_foo;
 
@@ -182,6 +192,8 @@ exports.js_export_mut = () => {
     export_mut_run(new Uint16Array(3), wasm.export_mut_u16);
     export_mut_run(new Int32Array(3), wasm.export_mut_i32);
     export_mut_run(new Uint32Array(3), wasm.export_mut_u32);
+    export_mut_run(new Int32Array(3), wasm.export_mut_isize);
+    export_mut_run(new Uint32Array(3), wasm.export_mut_usize);
     export_mut_run(new Float32Array(3), wasm.export_mut_f32);
     export_mut_run(new Float64Array(3), wasm.export_mut_f64);
 };
