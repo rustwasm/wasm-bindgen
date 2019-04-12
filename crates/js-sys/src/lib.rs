@@ -1025,6 +1025,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
     #[derive(Clone, Debug)]
+    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator)]
     pub type Iterator;
 
     /// The next method always has to return an object with appropriate
@@ -1033,6 +1034,26 @@ extern "C" {
     /// non-object value") will be thrown.
     #[wasm_bindgen(catch, method, structural)]
     pub fn next(this: &Iterator) -> Result<IteratorNext, JsValue>;
+}
+
+impl Iterator {
+    fn looks_like_iterator(it: &JsValue) -> bool {
+        #[wasm_bindgen]
+        extern "C" {
+            type MaybeIterator;
+
+            #[wasm_bindgen(method, getter)]
+            fn next(this: &MaybeIterator) -> JsValue;
+        }
+
+        if !it.is_object() {
+            return false;
+        }
+
+        let it = it.unchecked_ref::<MaybeIterator>();
+
+        it.next().is_function()
+    }
 }
 
 /// An iterator over the JS `Symbol.iterator` iteration protocol.
@@ -1123,37 +1144,20 @@ impl IterState {
 /// Create an iterator over `val` using the JS iteration protocol and
 /// `Symbol.iterator`.
 pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
-    #[wasm_bindgen]
-    extern "C" {
-        type MaybeIterator;
-
-        #[wasm_bindgen(method, getter)]
-        fn next(this: &MaybeIterator) -> JsValue;
-    }
-
     let iter_sym = Symbol::iterator();
     let iter_fn = Reflect::get(val, iter_sym.as_ref())?;
-    if !iter_fn.is_function() {
-        return Ok(None);
-    }
 
     let iter_fn: Function = match iter_fn.dyn_into() {
         Ok(iter_fn) => iter_fn,
-        Err(_) => return Ok(None)
+        Err(_) => return Ok(None),
     };
-    let it = iter_fn.call0(val)?;
-    if !it.is_object() {
-        return Ok(None);
-    }
 
-    let next = it.unchecked_ref::<MaybeIterator>().next();
+    let it: Iterator = match iter_fn.call0(val)?.dyn_into() {
+        Ok(it) => it,
+        Err(_) => return Ok(None),
+    };
 
-    Ok(if next.is_function() {
-        let it: Iterator = it.unchecked_into();
-        Some(it.into_iter())
-    } else {
-        None
-    })
+    Ok(Some(it.into_iter()))
 }
 
 // IteratorNext
