@@ -467,13 +467,14 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone)]
     pub type Boolean;
 
     /// The `Boolean()` constructor creates an object wrapper for a boolean value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
     #[wasm_bindgen(constructor)]
+    #[deprecated(note = "recommended to use `Boolean::from` instead")]
     pub fn new(value: &JsValue) -> Boolean;
 
     /// The `valueOf()` method returns the primitive value of a `Boolean` object.
@@ -481,6 +482,35 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean/valueOf)
     #[wasm_bindgen(method, js_name = valueOf)]
     pub fn value_of(this: &Boolean) -> bool;
+}
+
+impl From<bool> for Boolean {
+    #[inline]
+    fn from(b: bool) -> Boolean {
+        Boolean::unchecked_from_js(JsValue::from(b))
+    }
+}
+
+impl From<Boolean> for bool {
+    #[inline]
+    fn from(b: Boolean) -> bool {
+        b.value_of()
+    }
+}
+
+impl PartialEq<bool> for Boolean {
+    #[inline]
+    fn eq(&self, other: &bool) -> bool {
+        self.value_of() == *other
+    }
+}
+
+impl Eq for Boolean {}
+
+impl fmt::Debug for Boolean {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.value_of().fmt(f)
+    }
 }
 
 // DataView
@@ -1406,7 +1436,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone)]
     pub type Number;
 
     /// The Number.isFinite() method determines whether the passed value is a finite number.
@@ -1441,6 +1471,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)
     #[wasm_bindgen(constructor)]
+    #[deprecated(note = "recommended to use `Number::from` instead")]
     pub fn new(value: &JsValue) -> Number;
 
     /// The Number.parseInt() method parses a string argument and returns an
@@ -1498,6 +1529,38 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/valueOf)
     #[wasm_bindgen(method, js_name = valueOf)]
     pub fn value_of(this: &Number) -> f64;
+}
+
+macro_rules! number_from {
+    ($($x:ident)*) => ($(
+        impl From<$x> for Number {
+            #[inline]
+            fn from(x: $x) -> Number {
+                Number::unchecked_from_js(JsValue::from(x))
+            }
+        }
+
+        impl PartialEq<$x> for Number {
+            #[inline]
+            fn eq(&self, other: &$x) -> bool {
+                self.value_of() == f64::from(*other)
+            }
+        }
+    )*)
+}
+number_from!(i8 u8 i16 u16 i32 u32 f32 f64);
+
+impl From<Number> for f64 {
+    #[inline]
+    fn from(n: Number) -> f64 {
+        n.value_of()
+    }
+}
+
+impl fmt::Debug for Number {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.value_of().fmt(f)
+    }
 }
 
 // Date.
