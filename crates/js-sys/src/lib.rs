@@ -898,7 +898,7 @@ impl Function {
     /// `None`.
     pub fn try_from(val: &JsValue) -> Option<&Function> {
         if val.is_function() {
-            Some(unsafe { mem::transmute(val) })
+            Some(val.unchecked_ref())
         } else {
             None
         }
@@ -2153,7 +2153,7 @@ impl Object {
     /// `None`.
     pub fn try_from(val: &JsValue) -> Option<&Object> {
         if val.is_object() {
-            Some(unsafe { mem::transmute(val) })
+            Some(val.unchecked_ref())
         } else {
             None
         }
@@ -3588,7 +3588,7 @@ impl JsString {
     /// `None`.
     pub fn try_from(val: &JsValue) -> Option<&JsString> {
         if val.is_string() {
-            Some(unsafe { mem::transmute(val) })
+            Some(val.unchecked_ref())
         } else {
             None
         }
