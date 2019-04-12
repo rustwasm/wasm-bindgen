@@ -514,6 +514,7 @@ impl<'src> FirstPassRecord<'src> {
             attrs,
             doc_comment: None,
             instanceof_shim: format!("__widl_instanceof_{}", name),
+            is_type_of: None,
             extends: Vec::new(),
             vendor_prefixes: Vec::new(),
         };

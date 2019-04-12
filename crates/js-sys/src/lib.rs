@@ -126,7 +126,7 @@ extern "C" {
 // Array
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, is_type_of = Array::is_array)]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Array;
 
@@ -466,7 +466,7 @@ extern "C" {
 // Boolean
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_bool().is_some())]
     #[derive(Clone, PartialEq, Eq)]
     pub type Boolean;
 
@@ -801,7 +801,7 @@ extern "C" {
 // Function
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, is_type_of = JsValue::is_function)]
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Function;
 
@@ -897,11 +897,7 @@ impl Function {
     /// If this JS value is not an instance of a function then this returns
     /// `None`.
     pub fn try_from(val: &JsValue) -> Option<&Function> {
-        if val.is_function() {
-            Some(val.unchecked_ref())
-        } else {
-            None
-        }
+        val.dyn_ref()
     }
 }
 
@@ -1141,7 +1137,10 @@ pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
         return Ok(None);
     }
 
-    let iter_fn: Function = iter_fn.unchecked_into();
+    let iter_fn: Function = match iter_fn.dyn_into() {
+        Ok(iter_fn) => iter_fn,
+        Err(_) => return Ok(None)
+    };
     let it = iter_fn.call0(val)?;
     if !it.is_object() {
         return Ok(None);
@@ -1434,7 +1433,7 @@ extern "C" {
 // Number.
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
+    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_f64().is_some())]
     #[derive(Clone)]
     pub type Number;
 
@@ -3127,7 +3126,7 @@ extern "C" {
 // JsString
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = String, extends = Object)]
+    #[wasm_bindgen(js_name = String, extends = Object, is_type_of = JsValue::is_string)]
     #[derive(Clone, PartialEq, Eq)]
     pub type JsString;
 
@@ -3587,11 +3586,7 @@ impl JsString {
     /// If this JS value is not an instance of a string then this returns
     /// `None`.
     pub fn try_from(val: &JsValue) -> Option<&JsString> {
-        if val.is_string() {
-            Some(val.unchecked_ref())
-        } else {
-            None
-        }
+        val.dyn_ref()
     }
 
     /// Returns whether this string is a valid UTF-16 string.
@@ -3683,6 +3678,7 @@ impl fmt::Debug for JsString {
 // Symbol
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(is_type_of = JsValue::is_symbol)]
     #[derive(Clone, Debug)]
     pub type Symbol;
 
