@@ -589,6 +589,7 @@ impl ToTokens for ast::ImportType {
         };
 
         let is_type_of = self.is_type_of.as_ref().map(|is_type_of| quote! {
+            #[inline]
             fn is_type_of(val: &JsValue) -> bool {
                 let is_type_of: fn(&JsValue) -> bool = #is_type_of;
                 is_type_of(val)
