@@ -45,6 +45,7 @@ pub(crate) struct FirstPassRecord<'src> {
 pub(crate) struct InterfaceData<'src> {
     /// Whether only partial interfaces were encountered
     pub(crate) partial: bool,
+    pub(crate) has_interface: bool,
     pub(crate) deprecated: Option<String>,
     pub(crate) attributes: Vec<&'src AttributeInterfaceMember<'src>>,
     pub(crate) consts: Vec<&'src ConstMember<'src>>,
@@ -303,22 +304,14 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
             return Ok(());
         }
 
-        if util::is_no_interface_object(&self.attributes) {
-            log::info!(
-                "Skipping because of `NoInterfaceObject` attribute: {:?}",
-                self.identifier.0
-            );
-            return Ok(());
-        }
-
-        {
-            let interface_data = record.interfaces.entry(self.identifier.0).or_default();
-            interface_data.partial = false;
-            interface_data.superclass = self.inheritance.map(|s| s.identifier.0);
-            interface_data.definition_attributes = self.attributes.as_ref();
-            interface_data.deprecated =
-                util::get_rust_deprecated(&self.attributes).map(|s| s.to_string());
-        }
+        let interface_data = record.interfaces.entry(self.identifier.0).or_default();
+        interface_data.partial = false;
+        interface_data.superclass = self.inheritance.map(|s| s.identifier.0);
+        interface_data.definition_attributes = self.attributes.as_ref();
+        interface_data.deprecated =
+            util::get_rust_deprecated(&self.attributes).map(|s| s.to_string());
+        interface_data.has_interface =
+            !util::is_no_interface_object(&self.attributes);
         if let Some(attrs) = &self.attributes {
             for attr in attrs.body.list.iter() {
                 process_interface_attribute(record, self.identifier.0, attr);

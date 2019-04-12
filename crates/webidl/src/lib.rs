@@ -514,7 +514,11 @@ impl<'src> FirstPassRecord<'src> {
             attrs,
             doc_comment: None,
             instanceof_shim: format!("__widl_instanceof_{}", name),
-            is_type_of: None,
+            is_type_of: if data.has_interface {
+                None
+            } else {
+                Some(syn::parse_quote!{ |_| false })
+            },
             extends: Vec::new(),
             vendor_prefixes: Vec::new(),
         };
