@@ -198,15 +198,3 @@ fn stringify_with_replacer_and_space_error() {
     let err_msg: String = From::from(err.message());
     assert!(err_msg.contains("rust really rocks"));
 }
-
-#[wasm_bindgen_test]
-fn json_extends() {
-    #[wasm_bindgen]
-    extern "C" {
-        #[wasm_bindgen(js_name = JSON)]
-        static json: JSON;
-    }
-
-    assert!(json.is_instance_of::<Object>());
-    let _: &Object = json.as_ref();
-}
