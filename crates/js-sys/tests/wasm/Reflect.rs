@@ -230,18 +230,6 @@ fn set_prototype_of() {
 }
 
 #[wasm_bindgen_test]
-fn reflect_extends() {
-    #[wasm_bindgen]
-    extern "C" {
-        #[wasm_bindgen(js_name = Reflect)]
-        static reflect: Reflect;
-    }
-
-    assert!(reflect.is_instance_of::<Object>());
-    let _: &Object = reflect.as_ref();
-}
-
-#[wasm_bindgen_test]
 fn reflect_bindings_handle_proxies_that_just_throw_for_everything() {
     let p = throw_all_the_time();
 
