@@ -2176,6 +2176,13 @@ extern "C" {
     #[wasm_bindgen(static_method_of = Object)]
     pub fn freeze(value: &Object) -> Object;
 
+    /// The Object.fromEntries() method transforms a list of key-value pairs
+    /// into an object.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries)
+    #[wasm_bindgen(static_method_of = Object, catch, js_name = fromEntries)]
+    pub fn from_entries(iterable: &JsValue) -> Result<Object, JsValue>;
+
     /// The Object.getOwnPropertyDescriptor() method returns a
     /// property descriptor for an own property (that is, one directly
     /// present on an object and not in the object's prototype chain)

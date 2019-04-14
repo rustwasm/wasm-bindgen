@@ -124,6 +124,25 @@ fn entries() {
 }
 
 #[wasm_bindgen_test]
+fn from_entries() {
+    let array = Array::new();
+    let entry_one = Array::new();
+    let entry_two = Array::new();
+    entry_one.push(&"foo".into());
+    entry_one.push(&"bar".into());
+    entry_two.push(&"baz".into());
+    entry_two.push(&42.into());
+    let object = Object::from_entries(&array).unwrap();
+
+    assert_eq!(Reflect::get(object.as_ref(), &"foo".into()).unwrap(), "bar");
+    assert_eq!(Reflect::get(object.as_ref(), &"baz".into()).unwrap(), 42);
+
+    let not_iterable = Object::new();
+    let error = Object::from_entries(&not_iterable).unwrap_err();
+    assert!(error.is_instance_of::<TypeError>());
+}
+
+#[wasm_bindgen_test]
 fn get_own_property_descriptor() {
     let foo = foo_42();
     let desc = Object::get_own_property_descriptor(&foo, &"foo".into());
