@@ -42,6 +42,19 @@ enum OutputMode {
     Node { experimental_modules: bool },
 }
 
+impl OutputMode {
+    fn uses_es_modules(&self) -> bool {
+        match self {
+            OutputMode::Bundler { .. }
+            | OutputMode::Web
+            | OutputMode::Node {
+                experimental_modules: true,
+            } => true,
+            _ => false,
+        }
+    }
+}
+
 enum Input {
     Path(PathBuf),
     Module(Module, String),

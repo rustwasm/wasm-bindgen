@@ -126,8 +126,8 @@ extern "C" {
 // Array
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object, is_type_of = Array::is_array)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Array;
 
     /// Creates a new empty array
@@ -392,7 +392,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type ArrayBuffer;
 
     /// The `ArrayBuffer` object is used to represent a generic,
@@ -466,14 +466,15 @@ extern "C" {
 // Boolean
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_bool().is_some())]
+    #[derive(Clone, PartialEq, Eq)]
     pub type Boolean;
 
     /// The `Boolean()` constructor creates an object wrapper for a boolean value.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
     #[wasm_bindgen(constructor)]
+    #[deprecated(note = "recommended to use `Boolean::from` instead")]
     pub fn new(value: &JsValue) -> Boolean;
 
     /// The `valueOf()` method returns the primitive value of a `Boolean` object.
@@ -483,11 +484,38 @@ extern "C" {
     pub fn value_of(this: &Boolean) -> bool;
 }
 
+impl From<bool> for Boolean {
+    #[inline]
+    fn from(b: bool) -> Boolean {
+        Boolean::unchecked_from_js(JsValue::from(b))
+    }
+}
+
+impl From<Boolean> for bool {
+    #[inline]
+    fn from(b: Boolean) -> bool {
+        b.value_of()
+    }
+}
+
+impl PartialEq<bool> for Boolean {
+    #[inline]
+    fn eq(&self, other: &bool) -> bool {
+        self.value_of() == *other
+    }
+}
+
+impl fmt::Debug for Boolean {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.value_of().fmt(f)
+    }
+}
+
 // DataView
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type DataView;
 
     /// The `DataView` view provides a low-level interface for reading and
@@ -719,7 +747,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Error;
 
     /// The Error constructor creates an error object.
@@ -758,7 +786,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object, extends = Error)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type EvalError;
 
     /// The EvalError object indicates an error regarding the global eval() function. This
@@ -773,8 +801,8 @@ extern "C" {
 // Function
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object, is_type_of = JsValue::is_function)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Function;
 
     /// The `Function` constructor creates a new `Function` object. Calling the
@@ -869,11 +897,7 @@ impl Function {
     /// If this JS value is not an instance of a function then this returns
     /// `None`.
     pub fn try_from(val: &JsValue) -> Option<&Function> {
-        if val.is_function() {
-            Some(unsafe { mem::transmute(val) })
-        } else {
-            None
-        }
+        val.dyn_ref()
     }
 }
 
@@ -881,7 +905,7 @@ impl Function {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Generator;
 
     /// The next() method returns an object with two properties done and value.
@@ -909,7 +933,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Map;
 
     /// The clear() method removes all elements from a Map object.
@@ -1001,6 +1025,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
     #[derive(Clone, Debug)]
+    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator)]
     pub type Iterator;
 
     /// The next method always has to return an object with appropriate
@@ -1009,6 +1034,26 @@ extern "C" {
     /// non-object value") will be thrown.
     #[wasm_bindgen(catch, method, structural)]
     pub fn next(this: &Iterator) -> Result<IteratorNext, JsValue>;
+}
+
+impl Iterator {
+    fn looks_like_iterator(it: &JsValue) -> bool {
+        #[wasm_bindgen]
+        extern "C" {
+            type MaybeIterator;
+
+            #[wasm_bindgen(method, getter)]
+            fn next(this: &MaybeIterator) -> JsValue;
+        }
+
+        if !it.is_object() {
+            return false;
+        }
+
+        let it = it.unchecked_ref::<MaybeIterator>();
+
+        it.next().is_function()
+    }
 }
 
 /// An iterator over the JS `Symbol.iterator` iteration protocol.
@@ -1099,34 +1144,20 @@ impl IterState {
 /// Create an iterator over `val` using the JS iteration protocol and
 /// `Symbol.iterator`.
 pub fn try_iter(val: &JsValue) -> Result<Option<IntoIter>, JsValue> {
-    #[wasm_bindgen]
-    extern "C" {
-        type MaybeIterator;
-
-        #[wasm_bindgen(method, getter)]
-        fn next(this: &MaybeIterator) -> JsValue;
-    }
-
     let iter_sym = Symbol::iterator();
     let iter_fn = Reflect::get(val, iter_sym.as_ref())?;
-    if !iter_fn.is_function() {
-        return Ok(None);
-    }
 
-    let iter_fn: Function = iter_fn.unchecked_into();
-    let it = iter_fn.call0(val)?;
-    if !it.is_object() {
-        return Ok(None);
-    }
+    let iter_fn: Function = match iter_fn.dyn_into() {
+        Ok(iter_fn) => iter_fn,
+        Err(_) => return Ok(None),
+    };
 
-    let next = it.unchecked_ref::<MaybeIterator>().next();
+    let it: Iterator = match iter_fn.call0(val)?.dyn_into() {
+        Ok(it) => it,
+        Err(_) => return Ok(None),
+    };
 
-    Ok(if next.is_function() {
-        let it: Iterator = it.unchecked_into();
-        Some(it.into_iter())
-    } else {
-        None
-    })
+    Ok(Some(it.into_iter()))
 }
 
 // IteratorNext
@@ -1135,7 +1166,8 @@ extern "C" {
     /// The result of calling `next()` on a JS iterator.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols)
-    #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type IteratorNext;
 
     /// Has the value `true` if the iterator is past the end of the iterated
@@ -1157,8 +1189,8 @@ extern "C" {
 // Math
 #[wasm_bindgen]
 extern "C" {
-    #[derive(Clone, Debug)]
     #[wasm_bindgen(extends = Object)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Math;
 
     /// The Math.abs() function returns the absolute value of a number, that is
@@ -1405,8 +1437,8 @@ extern "C" {
 // Number.
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object, is_type_of = |v| v.as_f64().is_some())]
+    #[derive(Clone)]
     pub type Number;
 
     /// The Number.isFinite() method determines whether the passed value is a finite number.
@@ -1441,6 +1473,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)
     #[wasm_bindgen(constructor)]
+    #[deprecated(note = "recommended to use `Number::from` instead")]
     pub fn new(value: &JsValue) -> Number;
 
     /// The Number.parseInt() method parses a string argument and returns an
@@ -1500,11 +1533,43 @@ extern "C" {
     pub fn value_of(this: &Number) -> f64;
 }
 
+macro_rules! number_from {
+    ($($x:ident)*) => ($(
+        impl From<$x> for Number {
+            #[inline]
+            fn from(x: $x) -> Number {
+                Number::unchecked_from_js(JsValue::from(x))
+            }
+        }
+
+        impl PartialEq<$x> for Number {
+            #[inline]
+            fn eq(&self, other: &$x) -> bool {
+                self.value_of() == f64::from(*other)
+            }
+        }
+    )*)
+}
+number_from!(i8 u8 i16 u16 i32 u32 f32 f64);
+
+impl From<Number> for f64 {
+    #[inline]
+    fn from(n: Number) -> f64 {
+        n.value_of()
+    }
+}
+
+impl fmt::Debug for Number {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.value_of().fmt(f)
+    }
+}
+
 // Date.
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Date;
 
     /// The getDate() method returns the day of the month for the
@@ -2091,12 +2156,21 @@ impl Object {
     /// `None`.
     pub fn try_from(val: &JsValue) -> Option<&Object> {
         if val.is_object() {
-            Some(unsafe { mem::transmute(val) })
+            Some(val.unchecked_ref())
         } else {
             None
         }
     }
 }
+
+impl PartialEq for Object {
+    #[inline]
+    fn eq(&self, other: &Object) -> bool {
+        Object::is(self.as_ref(), other.as_ref())
+    }
+}
+
+impl Eq for Object {}
 
 // Proxy
 #[wasm_bindgen]
@@ -2128,7 +2202,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError)
     #[wasm_bindgen(extends = Error, extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type RangeError;
 
     /// The RangeError object indicates an error when a value is not in the set
@@ -2147,7 +2221,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError)
     #[wasm_bindgen(extends = Error, extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type ReferenceError;
 
     /// The ReferenceError object represents an error when a non-existent
@@ -2161,8 +2235,8 @@ extern "C" {
 // Reflect
 #[wasm_bindgen]
 extern "C" {
-    #[derive(Clone, Debug)]
     #[wasm_bindgen(extends = Object)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Reflect;
 
     /// The static `Reflect.apply()` method calls a target function with
@@ -2321,7 +2395,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type RegExp;
 
     /// The exec() method executes a search for a match in a specified
@@ -2498,7 +2572,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Set;
 
     /// The `add()` method appends a new element with a specified value to the
@@ -2588,7 +2662,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError)
     #[wasm_bindgen(extends = Error, extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type SyntaxError;
 
     /// A SyntaxError is thrown when the JavaScript engine encounters tokens or
@@ -2608,7 +2682,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError)
     #[wasm_bindgen(extends = Error, extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type TypeError;
 
     /// The TypeError object represents an error when a value is not of the
@@ -2627,7 +2701,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError)
     #[wasm_bindgen(extends = Error, extends = Object, js_name = URIError)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type UriError;
 
     /// The URIError object represents an error when a global URI handling
@@ -2642,7 +2716,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type WeakMap;
 
     /// The [`WeakMap`] object is a collection of key/value pairs in which the
@@ -2686,7 +2760,7 @@ extern "C" {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type WeakSet;
 
     /// The `WeakSet` object lets you store weakly held objects in a collection.
@@ -2773,7 +2847,7 @@ pub mod WebAssembly {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/CompileError)
         #[wasm_bindgen(extends = Error, js_namespace = WebAssembly)]
-        #[derive(Clone, Debug)]
+        #[derive(Clone, Debug, PartialEq, Eq)]
         pub type CompileError;
 
         /// The `WebAssembly.CompileError()` constructor creates a new
@@ -2795,7 +2869,7 @@ pub mod WebAssembly {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Instance)
         #[wasm_bindgen(extends = Object, js_namespace = WebAssembly)]
-        #[derive(Clone, Debug)]
+        #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Instance;
 
         /// The `WebAssembly.Instance()` constructor function can be called to
@@ -2826,7 +2900,7 @@ pub mod WebAssembly {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/LinkError)
         #[wasm_bindgen(extends = Error, js_namespace = WebAssembly)]
-        #[derive(Clone, Debug)]
+        #[derive(Clone, Debug, PartialEq, Eq)]
         pub type LinkError;
 
         /// The `WebAssembly.LinkError()` constructor creates a new WebAssembly
@@ -2847,7 +2921,7 @@ pub mod WebAssembly {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/RuntimeError)
         #[wasm_bindgen(extends = Error, js_namespace = WebAssembly)]
-        #[derive(Clone, Debug)]
+        #[derive(Clone, Debug, PartialEq, Eq)]
         pub type RuntimeError;
 
         /// The `WebAssembly.RuntimeError()` constructor creates a new WebAssembly
@@ -2868,7 +2942,7 @@ pub mod WebAssembly {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Module)
         #[wasm_bindgen(js_namespace = WebAssembly, extends = Object)]
-        #[derive(Clone, Debug)]
+        #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Module;
 
         /// A `WebAssembly.Module` object contains stateless WebAssembly code
@@ -2910,7 +2984,7 @@ pub mod WebAssembly {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Table)
         #[wasm_bindgen(js_namespace = WebAssembly, extends = Object)]
-        #[derive(Clone, Debug)]
+        #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Table;
 
         /// The `WebAssembly.Table()` constructor creates a new `Table` object
@@ -2956,7 +3030,7 @@ pub mod WebAssembly {
     extern "C" {
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/Memory)
         #[wasm_bindgen(js_namespace = WebAssembly, extends = Object)]
-        #[derive(Clone, Debug)]
+        #[derive(Clone, Debug, PartialEq, Eq)]
         pub type Memory;
 
         /// The `WebAssembly.Memory()` constructor creates a new `Memory` object
@@ -2997,8 +3071,8 @@ extern "C" {
     /// Notation (JSON)](https://json.org/) and converting values to JSON. It
     /// can't be called or constructed, and aside from its two method
     /// properties, it has no interesting functionality of its own.
-    #[derive(Clone, Debug)]
     #[wasm_bindgen(extends = Object)]
+    #[derive(Clone, Debug, PartialEq, Eq)]
     pub type JSON;
 
     /// The `JSON.parse()` method parses a JSON string, constructing the
@@ -3056,8 +3130,8 @@ extern "C" {
 // JsString
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(js_name = String, extends = Object)]
-    #[derive(Clone)]
+    #[wasm_bindgen(js_name = String, extends = Object, is_type_of = JsValue::is_string)]
+    #[derive(Clone, PartialEq, Eq)]
     pub type JsString;
 
     /// The length property of a String object indicates the length of a string,
@@ -3516,11 +3590,38 @@ impl JsString {
     /// If this JS value is not an instance of a string then this returns
     /// `None`.
     pub fn try_from(val: &JsValue) -> Option<&JsString> {
-        if val.is_string() {
-            Some(unsafe { mem::transmute(val) })
-        } else {
-            None
-        }
+        val.dyn_ref()
+    }
+
+    /// Returns whether this string is a valid UTF-16 string.
+    ///
+    /// This is useful for learning whether `String::from(..)` will return a
+    /// lossless representation of the JS string. If this string contains
+    /// unpaired surrogates then `String::from` will succeed but it will be a
+    /// lossy representation of the JS string because unpaired surrogates will
+    /// become replacement characters.
+    ///
+    /// If this function returns `false` then to get a lossless representation
+    /// of the string you'll need to manually use the `iter` method (or the
+    /// `char_code_at` accessor) to view the raw character codes.
+    ///
+    /// For more information, see the documentation on [JS strings vs Rust
+    /// strings][docs]
+    ///
+    /// [docs]: https://rustwasm.github.io/docs/wasm-bindgen/reference/types/str.html
+    pub fn is_valid_utf16(&self) -> bool {
+        std::char::decode_utf16(self.iter()).all(|i| i.is_ok())
+    }
+
+    /// Returns an iterator over the `u16` character codes that make up this JS
+    /// string.
+    ///
+    /// This method will call `char_code_at` for each code in this JS string,
+    /// returning an iterator of the codes in sequence.
+    pub fn iter<'a>(
+        &'a self,
+    ) -> impl ExactSizeIterator<Item = u16> + DoubleEndedIterator<Item = u16> + 'a {
+        (0..self.length()).map(move |i| self.char_code_at(i) as u16)
     }
 }
 
@@ -3550,9 +3651,7 @@ impl<'a> PartialEq<&'a String> for JsString {
 
 impl<'a> From<&'a str> for JsString {
     fn from(s: &'a str) -> Self {
-        JsString {
-            obj: JsValue::from_str(s),
-        }
+        JsString::unchecked_from_js(JsValue::from_str(s))
     }
 }
 
@@ -3583,6 +3682,7 @@ impl fmt::Debug for JsString {
 // Symbol
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(is_type_of = JsValue::is_symbol)]
     #[derive(Clone, Debug)]
     pub type Symbol;
 

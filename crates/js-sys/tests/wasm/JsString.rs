@@ -541,3 +541,15 @@ fn raw() {
     );
     assert!(JsString::raw_0(&JsValue::null().unchecked_into()).is_err());
 }
+
+#[wasm_bindgen_test]
+fn is_valid_utf16() {
+    assert!(JsString::from("a").is_valid_utf16());
+    assert!(JsString::from("").is_valid_utf16());
+    assert!(JsString::from("🥑").is_valid_utf16());
+    assert!(JsString::from("Why hello there this, 🥑, is 🥑 and is 🥑").is_valid_utf16());
+
+    assert!(JsString::from_char_code1(0x00).is_valid_utf16());
+    assert!(!JsString::from_char_code1(0xd800).is_valid_utf16());
+    assert!(!JsString::from_char_code1(0xdc00).is_valid_utf16());
+}

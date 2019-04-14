@@ -2,6 +2,7 @@ use core::mem;
 
 use crate::convert::slices::WasmSlice;
 use crate::convert::{FromWasmAbi, GlobalStack, IntoWasmAbi, ReturnWasmAbi, Stack};
+use crate::convert::RefFromWasmAbi;
 use crate::describe::{inform, WasmDescribe, FUNCTION};
 use crate::throw_str;
 
@@ -116,4 +117,98 @@ stack_closures! {
     (5 invoke5 invoke5_mut A B C D E)
     (6 invoke6 invoke6_mut A B C D E F)
     (7 invoke7 invoke7_mut A B C D E F G)
+}
+
+impl<'a, 'b, A, R> IntoWasmAbi for &'a (Fn(&A) -> R + 'b)
+    where A: RefFromWasmAbi,
+          R: ReturnWasmAbi
+{
+    type Abi = WasmSlice;
+
+    fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
+        unsafe {
+            let (a, b): (usize, usize) = mem::transmute(self);
+            WasmSlice { ptr: a as u32, len: b as u32 }
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+unsafe extern "C" fn invoke1_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
+    a: usize,
+    b: usize,
+    arg: <A as RefFromWasmAbi>::Abi,
+) -> <R as ReturnWasmAbi>::Abi {
+    if a == 0 {
+        throw_str("closure invoked recursively or destroyed already");
+    }
+    // Scope all local variables before we call `return_abi` to
+    // ensure they're all destroyed as `return_abi` may throw
+    let ret = {
+        let f: &Fn(&A) -> R = mem::transmute((a, b));
+        let mut _stack = GlobalStack::new();
+        let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
+        f(&*arg)
+    };
+    ret.return_abi(&mut GlobalStack::new())
+}
+
+impl<'a, A, R> WasmDescribe for Fn(&A) -> R + 'a
+    where A: RefFromWasmAbi,
+          R: ReturnWasmAbi,
+{
+    fn describe() {
+        inform(FUNCTION);
+        inform(invoke1_ref::<A, R> as u32);
+        inform(1);
+        <&A as WasmDescribe>::describe();
+        <R as WasmDescribe>::describe();
+    }
+}
+
+impl<'a, 'b, A, R> IntoWasmAbi for &'a mut (FnMut(&A) -> R + 'b)
+    where A: RefFromWasmAbi,
+          R: ReturnWasmAbi
+{
+    type Abi = WasmSlice;
+
+    fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
+        unsafe {
+            let (a, b): (usize, usize) = mem::transmute(self);
+            WasmSlice { ptr: a as u32, len: b as u32 }
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+unsafe extern "C" fn invoke1_mut_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
+    a: usize,
+    b: usize,
+    arg: <A as RefFromWasmAbi>::Abi,
+) -> <R as ReturnWasmAbi>::Abi {
+    if a == 0 {
+        throw_str("closure invoked recursively or destroyed already");
+    }
+    // Scope all local variables before we call `return_abi` to
+    // ensure they're all destroyed as `return_abi` may throw
+    let ret = {
+        let f: &mut FnMut(&A) -> R = mem::transmute((a, b));
+        let mut _stack = GlobalStack::new();
+        let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
+        f(&*arg)
+    };
+    ret.return_abi(&mut GlobalStack::new())
+}
+
+impl<'a, A, R> WasmDescribe for FnMut(&A) -> R + 'a
+    where A: RefFromWasmAbi,
+          R: ReturnWasmAbi
+{
+    fn describe() {
+        inform(FUNCTION);
+        inform(invoke1_mut_ref::<A, R> as u32);
+        inform(1);
+        <&A as WasmDescribe>::describe();
+        <R as WasmDescribe>::describe();
+    }
 }

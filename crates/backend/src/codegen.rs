@@ -291,11 +291,13 @@ impl ToTokens for ast::StructField {
         let ty = &self.ty;
         let getter = &self.getter;
         let setter = &self.setter;
+
+        let assert_copy = quote! { assert_copy::<#ty>() };
+        let assert_copy = respan(assert_copy, ty);
         (quote! {
-            #[no_mangle]
             #[doc(hidden)]
-            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
             #[allow(clippy::all)]
+            #[cfg_attr(all(target_arch = "wasm32", not(target_os = "emscripten")), no_mangle)]
             pub unsafe extern "C" fn #getter(js: u32)
                 -> <#ty as wasm_bindgen::convert::IntoWasmAbi>::Abi
             {
@@ -303,7 +305,7 @@ impl ToTokens for ast::StructField {
                 use wasm_bindgen::convert::{GlobalStack, IntoWasmAbi};
 
                 fn assert_copy<T: Copy>(){}
-                assert_copy::<#ty>();
+                #assert_copy;
 
                 let js = js as *mut WasmRefCell<#struct_name>;
                 assert_not_null(js);
@@ -576,6 +578,24 @@ impl ToTokens for ast::ImportType {
         let const_name = format!("__wbg_generated_const_{}", rust_name);
         let const_name = Ident::new(&const_name, Span::call_site());
         let instanceof_shim = Ident::new(&self.instanceof_shim, Span::call_site());
+
+        let internal_obj = match self.extends.first() {
+            Some(target) => {
+                quote! { #target }
+            }
+            None => {
+                quote! { wasm_bindgen::JsValue }
+            }
+        };
+
+        let is_type_of = self.is_type_of.as_ref().map(|is_type_of| quote! {
+            #[inline]
+            fn is_type_of(val: &JsValue) -> bool {
+                let is_type_of: fn(&JsValue) -> bool = #is_type_of;
+                is_type_of(val)
+            }
+        });
+
         (quote! {
             #[allow(bad_style)]
             #(#attrs)*
@@ -583,7 +603,7 @@ impl ToTokens for ast::ImportType {
             #[repr(transparent)]
             #[allow(clippy::all)]
             #vis struct #rust_name {
-                obj: wasm_bindgen::JsValue,
+                obj: #internal_obj
             }
 
             #[allow(bad_style)]
@@ -599,6 +619,15 @@ impl ToTokens for ast::ImportType {
                 impl WasmDescribe for #rust_name {
                     fn describe() {
                         JsValue::describe();
+                    }
+                }
+
+                impl core::ops::Deref for #rust_name {
+                    type Target = #internal_obj;
+
+                    #[inline]
+                    fn deref(&self) -> &#internal_obj {
+                        &self.obj
                     }
                 }
 
@@ -627,7 +656,7 @@ impl ToTokens for ast::ImportType {
                     #[inline]
                     unsafe fn from_abi(js: Self::Abi, extra: &mut Stack) -> Self {
                         #rust_name {
-                            obj: JsValue::from_abi(js, extra),
+                            obj: JsValue::from_abi(js, extra).into(),
                         }
                     }
                 }
@@ -654,7 +683,7 @@ impl ToTokens for ast::ImportType {
                     unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor {
                         let tmp = <JsValue as RefFromWasmAbi>::ref_from_abi(js, extra);
                         core::mem::ManuallyDrop::new(#rust_name {
-                            obj: core::mem::ManuallyDrop::into_inner(tmp),
+                            obj: core::mem::ManuallyDrop::into_inner(tmp).into(),
                         })
                     }
                 }
@@ -663,20 +692,20 @@ impl ToTokens for ast::ImportType {
                 impl From<JsValue> for #rust_name {
                     #[inline]
                     fn from(obj: JsValue) -> #rust_name {
-                        #rust_name { obj }
+                        #rust_name { obj: obj.into() }
                     }
                 }
 
                 impl AsRef<JsValue> for #rust_name {
                     #[inline]
-                    fn as_ref(&self) -> &JsValue { &self.obj }
+                    fn as_ref(&self) -> &JsValue { self.obj.as_ref() }
                 }
 
 
                 impl From<#rust_name> for JsValue {
                     #[inline]
                     fn from(obj: #rust_name) -> JsValue {
-                        obj.obj
+                        obj.obj.into()
                     }
                 }
 
@@ -699,9 +728,11 @@ impl ToTokens for ast::ImportType {
                         panic!("cannot check instanceof on non-wasm targets");
                     }
 
+                    #is_type_of
+
                     #[inline]
                     fn unchecked_from_js(val: JsValue) -> Self {
-                        #rust_name { obj: val }
+                        #rust_name { obj: val.into() }
                     }
 
                     #[inline]
@@ -714,24 +745,9 @@ impl ToTokens for ast::ImportType {
 
                 ()
             };
-        }).to_tokens(tokens);
-
-        let deref_target = match self.extends.first() {
-            Some(target) => quote! { #target },
-            None => quote! { JsValue },
-        };
-        (quote! {
-            #[allow(clippy::all)]
-            impl core::ops::Deref for #rust_name {
-                type Target = #deref_target;
-
-                #[inline]
-                fn deref(&self) -> &#deref_target {
-                    self.as_ref()
-                }
-            }
         })
         .to_tokens(tokens);
+
         for superclass in self.extends.iter() {
             (quote! {
                 #[allow(clippy::all)]
@@ -1429,4 +1445,32 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
         })
         .to_tokens(tokens);
     }
+}
+
+fn respan(
+    input: TokenStream,
+    span: &dyn ToTokens,
+) -> TokenStream {
+    let mut first_span = Span::call_site();
+    let mut last_span = Span::call_site();
+    let mut spans = TokenStream::new();
+    span.to_tokens(&mut spans);
+
+    for (i, token) in spans.into_iter().enumerate() {
+        if i == 0 {
+            first_span = token.span();
+        }
+        last_span = token.span();
+    }
+
+    let mut new_tokens = Vec::new();
+    for (i, mut token) in input.into_iter().enumerate() {
+        if i == 0 {
+            token.set_span(first_span);
+        } else {
+            token.set_span(last_span);
+        }
+        new_tokens.push(token);
+    }
+    new_tokens.into_iter().collect()
 }

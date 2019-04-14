@@ -40,6 +40,8 @@ export_macro! {
     (u16, export_u16)
     (i32, export_i32)
     (u32, export_u32)
+    (isize, export_isize)
+    (usize, export_usize)
     (f32, export_f32)
     (f64, export_f64)
 }
@@ -73,6 +75,8 @@ import_macro! {
     (import_rust_u16, import_js_u16, u16)
     (import_rust_i32, import_js_i32, i32)
     (import_rust_u32, import_js_u32, u32)
+    (import_rust_isize, import_js_isize, isize)
+    (import_rust_usize, import_js_usize, usize)
     (import_rust_f32, import_js_f32, f32)
     (import_rust_f64, import_js_f64, f64)
 }
@@ -100,6 +104,8 @@ pass_array_marco! {
     (pass_array_rust_u16, u16)
     (pass_array_rust_i32, i32)
     (pass_array_rust_u32, u32)
+    (pass_array_rust_isize, isize)
+    (pass_array_rust_usize, usize)
     (pass_array_rust_f32, f32)
     (pass_array_rust_f64, f64)
 }
@@ -169,6 +175,8 @@ export_mut_macro! {
     (u16, export_mut_u16)
     (i32, export_mut_i32)
     (u32, export_mut_u32)
+    (isize, export_mut_isize)
+    (usize, export_mut_usize)
     (f32, export_mut_f32)
     (f64, export_mut_f64)
 }

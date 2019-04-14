@@ -311,6 +311,7 @@ impl<'a> Context<'a> {
     /// `--target no-modules`, `--target web`, or for bundlers. This is the very
     /// last step performed in `finalize`.
     fn finalize_js(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
+        let mut ts = self.typescript.clone();
         let mut js = String::new();
         if self.config.mode.no_modules() {
             js.push_str("(function() {\n");
@@ -318,7 +319,7 @@ impl<'a> Context<'a> {
 
         // Depending on the output mode, generate necessary glue to actually
         // import the wasm file in one way or another.
-        let mut init = String::new();
+        let mut init = (String::new(), String::new());
         match &self.config.mode {
             // In `--target no-modules` mode we need to both expose a name on
             // the global object as well as generate our own custom start
@@ -353,7 +354,8 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
-                js.push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
+                self.imports
+                    .push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
                 if needs_manual_start {
                     self.footer.push_str("wasm.__wbindgen_start();\n");
                 }
@@ -364,14 +366,22 @@ impl<'a> Context<'a> {
             // expose the same initialization function as `--target no-modules`
             // as the default export of the module.
             OutputMode::Web => {
-                js.push_str("const __exports = {};\n");
+                self.imports_post.push_str("const __exports = {};\n");
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(&module_name, needs_manual_start);
                 self.footer.push_str("export default init;\n");
             }
         }
 
+        let (init_js, init_ts) = init;
+
+        ts.push_str(&init_ts);
+
         // Emit all the JS for importing all our functionality
+        assert!(
+            !self.config.mode.uses_es_modules() || js.is_empty(),
+            "ES modules require imports to be at the start of the file"
+        );
         js.push_str(&self.imports);
         js.push_str("\n");
         js.push_str(&self.imports_post);
@@ -382,7 +392,7 @@ impl<'a> Context<'a> {
         js.push_str("\n");
 
         // Generate the initialization glue, if there was any
-        js.push_str(&init);
+        js.push_str(&init_js);
         js.push_str("\n");
         js.push_str(&self.footer);
         js.push_str("\n");
@@ -394,7 +404,7 @@ impl<'a> Context<'a> {
             js = js.replace("\n\n\n", "\n\n");
         }
 
-        (js, self.typescript.clone())
+        (js, ts)
     }
 
     fn wire_up_initial_intrinsics(&mut self) -> Result<(), Error> {
@@ -773,6 +783,14 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_function_table", &|me| {
+            me.function_table_needed = true;
+            Ok(format!(
+                "function() {{ return {}; }}",
+                me.add_heap_object("wasm.__wbg_function_table")
+            ))
+        })?;
+
         self.bind("__wbindgen_rethrow", &|me| {
             Ok(format!(
                 "function(idx) {{ throw {}; }}",
@@ -842,7 +860,34 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn gen_init(&mut self, module_name: &str, needs_manual_start: bool) -> String {
+    fn ts_for_init_fn(has_memory: bool) -> String {
+        let (memory_doc, memory_param) = if has_memory {
+            (
+                "* @param {WebAssembly.Memory} maybe_memory\n",
+                ", maybe_memory: WebAssembly.Memory",
+            )
+        } else {
+            ("", "")
+        };
+        format!(
+            "\n\
+            /**\n\
+            * If `module_or_path` is {{RequestInfo}}, makes a request and\n\
+            * for everything else, calls `WebAssembly.instantiate` directly.\n\
+            *\n\
+            * @param {{RequestInfo | BufferSource | WebAssembly.Module}} module_or_path\n\
+            {}\
+            *\n\
+            * @returns {{Promise<any>}}\n\
+            */\n\
+            export function init \
+                (module_or_path: RequestInfo | BufferSource | WebAssembly.Module{}): Promise<any>;
+        ",
+            memory_doc, memory_param
+        )
+    }
+
+    fn gen_init(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
         let mem = self.module.memories.get(self.memory);
         let (init_memory1, init_memory2) = if mem.import.is_some() {
             let mut memory = String::from("new WebAssembly.Memory({");
@@ -862,15 +907,21 @@ impl<'a> Context<'a> {
         } else {
             (String::new(), String::new())
         };
+        let init_memory_arg = if mem.import.is_some() {
+            ", maybe_memory"
+        } else {
+            ""
+        };
 
-        format!(
+        let ts = Self::ts_for_init_fn(mem.import.is_some());
+        let js = format!(
             "\
-                function init(module_or_path, maybe_memory) {{
+                function init(module{init_memory_arg}) {{
                     let result;
                     const imports = {{ './{module}': __exports }};
-                    if (module_or_path instanceof URL || typeof module_or_path === 'string' || module_or_path instanceof Request) {{
+                    if (module instanceof URL || typeof module === 'string' || module instanceof Request) {{
                         {init_memory2}
-                        const response = fetch(module_or_path);
+                        const response = fetch(module);
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
                             result = WebAssembly.instantiateStreaming(response, imports)
                                 .catch(e => {{
@@ -890,9 +941,13 @@ impl<'a> Context<'a> {
                         }}
                     }} else {{
                         {init_memory1}
-                        result = WebAssembly.instantiate(module_or_path, imports)
-                            .then(instance => {{
-                                return {{ instance, module: module_or_path }};
+                        result = WebAssembly.instantiate(module, imports)
+                            .then(result => {{
+                                if (result instanceof WebAssembly.Instance) {{
+                                    return {{ instance: result, module }};
+                                }} else {{
+                                    return result;
+                                }}
                             }});
                     }}
                     return result.then(({{instance, module}}) => {{
@@ -903,6 +958,7 @@ impl<'a> Context<'a> {
                     }});
                 }}
             ",
+            init_memory_arg = init_memory_arg,
             module = module_name,
             init_memory1 = init_memory1,
             init_memory2 = init_memory2,
@@ -911,7 +967,9 @@ impl<'a> Context<'a> {
             } else {
                 ""
             },
-        )
+        );
+
+        (js, ts)
     }
 
     fn bind(
@@ -1306,13 +1364,12 @@ impl<'a> Context<'a> {
                 while (true) {{
                     const view = getUint8Memory().subarray(ptr + writeOffset, ptr + size);
                     const {{ read, written }} = cachedTextEncoder.encodeInto(arg, view);
-                    arg = arg.substring(read);
                     writeOffset += written;
-                    if (arg.length === 0) {{
+                    if (read === arg.length) {{
                         break;
                     }}
-                    ptr = wasm.__wbindgen_realloc(ptr, size, size * 2);
-                    size *= 2;
+                    arg = arg.substring(read);
+                    ptr = wasm.__wbindgen_realloc(ptr, size, size += arg.length * 3);
                 }}
                 WASM_VECTOR_LEN = writeOffset;
                 return ptr;

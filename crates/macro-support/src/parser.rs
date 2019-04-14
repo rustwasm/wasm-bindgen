@@ -45,6 +45,7 @@ macro_rules! attrgen {
             (readonly, Readonly(Span)),
             (js_name, JsName(Span, String, Span)),
             (js_class, JsClass(Span, String, Span)),
+            (is_type_of, IsTypeOf(Span, syn::Expr)),
             (extends, Extends(Span, syn::Path)),
             (vendor_prefix, VendorPrefix(Span, Ident)),
             (variadic, Variadic(Span)),
@@ -237,6 +238,11 @@ impl Parse for BindgenAttr {
             });
 
             (@parser $variant:ident(Span, syn::Path)) => ({
+                input.parse::<Token![=]>()?;
+                return Ok(BindgenAttr::$variant(attr_span, input.parse()?));
+            });
+
+            (@parser $variant:ident(Span, syn::Expr)) => ({
                 input.parse::<Token![=]>()?;
                 return Ok(BindgenAttr::$variant(attr_span, input.parse()?));
             });
@@ -523,6 +529,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             .js_name()
             .map(|s| s.0)
             .map_or_else(|| self.ident.to_string(), |s| s.to_string());
+        let is_type_of = attrs.is_type_of().cloned();
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         let mut extends = Vec::new();
         let mut vendor_prefixes = Vec::new();
@@ -545,6 +552,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
             attrs: self.attrs,
             doc_comment: None,
             instanceof_shim: shim,
+            is_type_of,
             rust_name: self.ident,
             js_name,
             extends,
@@ -904,7 +912,7 @@ fn prepare_for_impl_recursion(
             pound_token: Default::default(),
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
-            path: syn::Ident::new("__wasm_bindgen_class_marker", Span::call_site()).into(),
+            path: syn::parse_quote! { wasm_bindgen::prelude::__wasm_bindgen_class_marker },
             tts: quote::quote! { (#class = #js_class) }.into(),
         },
     );
