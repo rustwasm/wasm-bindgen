@@ -551,13 +551,7 @@ impl Drop for JsValue {
         unsafe {
             // We definitely should never drop anything in the stack area
             debug_assert!(self.idx >= JSIDX_OFFSET);
-
-            // Otherwise if we're not dropping one of our reserved values,
-            // actually call the intrinsic. See #1054 for eventually removing
-            // this branch.
-            if self.idx >= JSIDX_RESERVED {
-                __wbindgen_object_drop_ref(self.idx);
-            }
+            __wbindgen_object_drop_ref(self.idx);
         }
     }
 }

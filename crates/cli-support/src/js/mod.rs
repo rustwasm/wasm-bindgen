@@ -854,7 +854,7 @@ impl<'a> Context<'a> {
         // remove usages of this.
         self.bind("__wbindgen_object_drop_ref", &|me| {
             me.expose_drop_ref();
-            Ok(String::from("function(i) { dropObject(i); }"))
+            Ok(String::from("dropObject"))
         })?;
 
         Ok(())
