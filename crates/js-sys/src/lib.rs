@@ -1186,252 +1186,253 @@ extern "C" {
     pub fn value(this: &IteratorNext) -> JsValue;
 }
 
-// Math
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug, PartialEq, Eq)]
-    pub type Math;
+#[allow(non_snake_case)]
+pub mod Math {
+    use super::*;
 
-    /// The Math.abs() function returns the absolute value of a number, that is
-    /// Math.abs(x) = |x|
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/abs)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn abs(x: f64) -> f64;
+    // Math
+    #[wasm_bindgen]
+    extern "C" {
+        /// The Math.abs() function returns the absolute value of a number, that is
+        /// Math.abs(x) = |x|
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/abs)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn abs(x: f64) -> f64;
 
-    /// The Math.acos() function returns the arccosine (in radians) of a
-    /// number, that is ∀x∊[-1;1]
-    /// Math.acos(x) = arccos(x) = the unique y∊[0;π] such that cos(y)=x
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acos)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn acos(x: f64) -> f64;
+        /// The Math.acos() function returns the arccosine (in radians) of a
+        /// number, that is ∀x∊[-1;1]
+        /// Math.acos(x) = arccos(x) = the unique y∊[0;π] such that cos(y)=x
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acos)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn acos(x: f64) -> f64;
 
-    /// The Math.acosh() function returns the hyperbolic arc-cosine of a
-    /// number, that is ∀x ≥ 1
-    /// Math.acosh(x) = arcosh(x) = the unique y ≥ 0 such that cosh(y) = x
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acosh)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn acosh(x: f64) -> f64;
+        /// The Math.acosh() function returns the hyperbolic arc-cosine of a
+        /// number, that is ∀x ≥ 1
+        /// Math.acosh(x) = arcosh(x) = the unique y ≥ 0 such that cosh(y) = x
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/acosh)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn acosh(x: f64) -> f64;
 
-    /// The Math.asin() function returns the arcsine (in radians) of a
-    /// number, that is ∀x ∊ [-1;1]
-    /// Math.asin(x) = arcsin(x) = the unique y∊[-π2;π2] such that sin(y) = x
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asin)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn asin(x: f64) -> f64;
+        /// The Math.asin() function returns the arcsine (in radians) of a
+        /// number, that is ∀x ∊ [-1;1]
+        /// Math.asin(x) = arcsin(x) = the unique y∊[-π2;π2] such that sin(y) = x
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asin)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn asin(x: f64) -> f64;
 
-    /// The Math.asinh() function returns the hyperbolic arcsine of a
-    /// number, that is Math.asinh(x) = arsinh(x) = the unique y such that sinh(y) = x
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asinh)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn asinh(x: f64) -> f64;
+        /// The Math.asinh() function returns the hyperbolic arcsine of a
+        /// number, that is Math.asinh(x) = arsinh(x) = the unique y such that sinh(y) = x
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/asinh)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn asinh(x: f64) -> f64;
 
-    /// The Math.atan() function returns the arctangent (in radians) of a
-    /// number, that is Math.atan(x) = arctan(x) = the unique y ∊ [-π2;π2]such that
-    /// tan(y) = x
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn atan(x: f64) -> f64;
+        /// The Math.atan() function returns the arctangent (in radians) of a
+        /// number, that is Math.atan(x) = arctan(x) = the unique y ∊ [-π2;π2]such that
+        /// tan(y) = x
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn atan(x: f64) -> f64;
 
-    /// The Math.atan2() function returns the arctangent of the quotient of
-    /// its arguments.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn atan2(y: f64, x: f64) -> f64;
+        /// The Math.atan2() function returns the arctangent of the quotient of
+        /// its arguments.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn atan2(y: f64, x: f64) -> f64;
 
-    /// The Math.atanh() function returns the hyperbolic arctangent of a number,
-    /// that is ∀x ∊ (-1,1), Math.atanh(x) = arctanh(x) = the unique y such that
-    /// tanh(y) = x
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atanh)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn atanh(x: f64) -> f64;
+        /// The Math.atanh() function returns the hyperbolic arctangent of a number,
+        /// that is ∀x ∊ (-1,1), Math.atanh(x) = arctanh(x) = the unique y such that
+        /// tanh(y) = x
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atanh)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn atanh(x: f64) -> f64;
 
-    /// The Math.cbrt() function returns the cube root of a number, that is
-    /// Math.cbrt(x) = x^3 = the unique y such that y^3 = x
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cbrt)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn cbrt(x: f64) -> f64;
+        /// The Math.cbrt() function returns the cube root of a number, that is
+        /// Math.cbrt(x) = x^3 = the unique y such that y^3 = x
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cbrt)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn cbrt(x: f64) -> f64;
 
-    /// The Math.ceil() function returns the smallest integer greater than
-    /// or equal to a given number.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn ceil(x: f64) -> f64;
+        /// The Math.ceil() function returns the smallest integer greater than
+        /// or equal to a given number.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn ceil(x: f64) -> f64;
 
-    /// The Math.clz32() function returns the number of leading zero bits in
-    /// the 32-bit binary representation of a number.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/clz32)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn clz32(x: i32) -> u32;
+        /// The Math.clz32() function returns the number of leading zero bits in
+        /// the 32-bit binary representation of a number.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/clz32)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn clz32(x: i32) -> u32;
 
-    /// The Math.cos() static function returns the cosine of the specified angle,
-    /// which must be specified in radians. This value is length(adjacent)/length(hypotenuse).
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cos)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn cos(x: f64) -> f64;
+        /// The Math.cos() static function returns the cosine of the specified angle,
+        /// which must be specified in radians. This value is length(adjacent)/length(hypotenuse).
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cos)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn cos(x: f64) -> f64;
 
-    /// The Math.cosh() function returns the hyperbolic cosine of a number,
-    /// that can be expressed using the constant e.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cosh)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn cosh(x: f64) -> f64;
+        /// The Math.cosh() function returns the hyperbolic cosine of a number,
+        /// that can be expressed using the constant e.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/cosh)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn cosh(x: f64) -> f64;
 
-    /// The Math.exp() function returns e^x, where x is the argument, and e is Euler's number
-    /// (also known as Napier's constant), the base of the natural logarithms.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/exp)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn exp(x: f64) -> f64;
+        /// The Math.exp() function returns e^x, where x is the argument, and e is Euler's number
+        /// (also known as Napier's constant), the base of the natural logarithms.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/exp)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn exp(x: f64) -> f64;
 
-    /// The Math.expm1() function returns e^x - 1, where x is the argument, and e the base of the
-    /// natural logarithms.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn expm1(x: f64) -> f64;
+        /// The Math.expm1() function returns e^x - 1, where x is the argument, and e the base of the
+        /// natural logarithms.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/expm1)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn expm1(x: f64) -> f64;
 
-    /// The Math.floor() function returns the largest integer less than or
-    /// equal to a given number.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn floor(x: f64) -> f64;
+        /// The Math.floor() function returns the largest integer less than or
+        /// equal to a given number.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/floor)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn floor(x: f64) -> f64;
 
-    /// The Math.fround() function returns the nearest 32-bit single precision float representation
-    /// of a Number.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn fround(x: f64) -> f32;
+        /// The Math.fround() function returns the nearest 32-bit single precision float representation
+        /// of a Number.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn fround(x: f64) -> f32;
 
-    /// The Math.hypot() function returns the square root of the sum of squares of its arguments.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn hypot(x: f64, y: f64) -> f64;
+        /// The Math.hypot() function returns the square root of the sum of squares of its arguments.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn hypot(x: f64, y: f64) -> f64;
 
-    /// The Math.imul() function returns the result of the C-like 32-bit multiplication of the
-    /// two parameters.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/imul)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn imul(x: i32, y: i32) -> i32;
+        /// The Math.imul() function returns the result of the C-like 32-bit multiplication of the
+        /// two parameters.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/imul)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn imul(x: i32, y: i32) -> i32;
 
-    /// The Math.log() function returns the natural logarithm (base e) of a number.
-    /// The JavaScript Math.log() function is equivalent to ln(x) in mathematics.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn log(x: f64) -> f64;
+        /// The Math.log() function returns the natural logarithm (base e) of a number.
+        /// The JavaScript Math.log() function is equivalent to ln(x) in mathematics.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn log(x: f64) -> f64;
 
-    /// The Math.log10() function returns the base 10 logarithm of a number.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log10)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn log10(x: f64) -> f64;
+        /// The Math.log10() function returns the base 10 logarithm of a number.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log10)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn log10(x: f64) -> f64;
 
-    /// The Math.log1p() function returns the natural logarithm (base e) of 1 + a number.
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log1p)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn log1p(x: f64) -> f64;
+        /// The Math.log1p() function returns the natural logarithm (base e) of 1 + a number.
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log1p)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn log1p(x: f64) -> f64;
 
-    /// The Math.log2() function returns the base 2 logarithm of a number.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log2)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn log2(x: f64) -> f64;
+        /// The Math.log2() function returns the base 2 logarithm of a number.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log2)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn log2(x: f64) -> f64;
 
-    /// The Math.max() function returns the largest of two numbers.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn max(x: f64, y: f64) -> f64;
+        /// The Math.max() function returns the largest of two numbers.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn max(x: f64, y: f64) -> f64;
 
-    /// The static function Math.min() returns the lowest-valued number passed into it.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/min)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn min(x: f64, y: f64) -> f64;
+        /// The static function Math.min() returns the lowest-valued number passed into it.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/min)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn min(x: f64, y: f64) -> f64;
 
-    /// The Math.pow() function returns the base to the exponent power, that is, base^exponent.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn pow(base: f64, exponent: f64) -> f64;
+        /// The Math.pow() function returns the base to the exponent power, that is, base^exponent.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/pow)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn pow(base: f64, exponent: f64) -> f64;
 
-    /// The Math.random() function returns a floating-point, pseudo-random number
-    /// in the range 0–1 (inclusive of 0, but not 1) with approximately uniform distribution
-    /// over that range — which you can then scale to your desired range.
-    /// The implementation selects the initial seed to the random number generation algorithm;
-    /// it cannot be chosen or reset by the user.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn random() -> f64;
+        /// The Math.random() function returns a floating-point, pseudo-random number
+        /// in the range 0–1 (inclusive of 0, but not 1) with approximately uniform distribution
+        /// over that range — which you can then scale to your desired range.
+        /// The implementation selects the initial seed to the random number generation algorithm;
+        /// it cannot be chosen or reset by the user.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn random() -> f64;
 
-    /// The Math.round() function returns the value of a number rounded to the nearest integer.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn round(x: f64) -> f64;
+        /// The Math.round() function returns the value of a number rounded to the nearest integer.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn round(x: f64) -> f64;
 
-    /// The Math.sign() function returns the sign of a number, indicating whether the number is
-    /// positive, negative or zero.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn sign(x: f64) -> f64;
+        /// The Math.sign() function returns the sign of a number, indicating whether the number is
+        /// positive, negative or zero.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn sign(x: f64) -> f64;
 
-    /// The Math.sin() function returns the sine of a number.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sin)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn sin(x: f64) -> f64;
+        /// The Math.sin() function returns the sine of a number.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sin)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn sin(x: f64) -> f64;
 
-    /// The Math.sinh() function returns the hyperbolic sine of a number, that can be expressed
-    /// using the constant e: Math.sinh(x) = (e^x - e^-x)/2
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sinh)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn sinh(x: f64) -> f64;
+        /// The Math.sinh() function returns the hyperbolic sine of a number, that can be expressed
+        /// using the constant e: Math.sinh(x) = (e^x - e^-x)/2
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sinh)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn sinh(x: f64) -> f64;
 
-    /// The Math.sqrt() function returns the square root of a number, that is
-    /// ∀x ≥ 0, Math.sqrt(x) = √x = the unique y ≥ 0 such that y^2 = x
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sqrt)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn sqrt(x: f64) -> f64;
+        /// The Math.sqrt() function returns the square root of a number, that is
+        /// ∀x ≥ 0, Math.sqrt(x) = √x = the unique y ≥ 0 such that y^2 = x
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sqrt)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn sqrt(x: f64) -> f64;
 
-    /// The Math.tan() function returns the tangent of a number.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tan)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn tan(x: f64) -> f64;
+        /// The Math.tan() function returns the tangent of a number.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tan)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn tan(x: f64) -> f64;
 
-    /// The Math.tanh() function returns the hyperbolic tangent of a number, that is
-    /// tanh x = sinh x / cosh x = (e^x - e^-x)/(e^x + e^-x) = (e^2x - 1)/(e^2x + 1)
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tanh)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn tanh(x: f64) -> f64;
+        /// The Math.tanh() function returns the hyperbolic tangent of a number, that is
+        /// tanh x = sinh x / cosh x = (e^x - e^-x)/(e^x + e^-x) = (e^2x - 1)/(e^2x + 1)
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/tanh)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn tanh(x: f64) -> f64;
 
-    /// The Math.trunc() function returns the integer part of a number by removing any fractional
-    /// digits.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc)
-    #[wasm_bindgen(static_method_of = Math)]
-    pub fn trunc(x: f64) -> f64;
+        /// The Math.trunc() function returns the integer part of a number by removing any fractional
+        /// digits.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc)
+        #[wasm_bindgen(js_namespace = Math)]
+        pub fn trunc(x: f64) -> f64;
+    }
 }
 
 // Number.
@@ -2232,163 +2233,164 @@ extern "C" {
     pub fn new(message: &str) -> ReferenceError;
 }
 
-// Reflect
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug, PartialEq, Eq)]
-    pub type Reflect;
+#[allow(non_snake_case)]
+pub mod Reflect {
+    use super::*;
 
-    /// The static `Reflect.apply()` method calls a target function with
-    /// arguments as specified.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/apply)
-    #[wasm_bindgen(static_method_of = Reflect, catch)]
-    pub fn apply(
-        target: &Function,
-        this_argument: &JsValue,
-        arguments_list: &Array,
-    ) -> Result<JsValue, JsValue>;
+    // Reflect
+    #[wasm_bindgen]
+    extern "C" {
+        /// The static `Reflect.apply()` method calls a target function with
+        /// arguments as specified.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/apply)
+        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        pub fn apply(
+            target: &Function,
+            this_argument: &JsValue,
+            arguments_list: &Array,
+        ) -> Result<JsValue, JsValue>;
 
-    /// The static `Reflect.construct()` method acts like the new operator, but
-    /// as a function.  It is equivalent to calling `new target(...args)`. It
-    /// gives also the added option to specify a different prototype.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
-    #[wasm_bindgen(static_method_of = Reflect, catch)]
-    pub fn construct(target: &Function, arguments_list: &Array) -> Result<JsValue, JsValue>;
+        /// The static `Reflect.construct()` method acts like the new operator, but
+        /// as a function.  It is equivalent to calling `new target(...args)`. It
+        /// gives also the added option to specify a different prototype.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
+        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        pub fn construct(target: &Function, arguments_list: &Array) -> Result<JsValue, JsValue>;
 
-    /// The static `Reflect.construct()` method acts like the new operator, but
-    /// as a function.  It is equivalent to calling `new target(...args)`. It
-    /// gives also the added option to specify a different prototype.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = construct, catch)]
-    pub fn construct_with_new_target(
-        target: &Function,
-        arguments_list: &Array,
-        new_target: &Function,
-    ) -> Result<JsValue, JsValue>;
+        /// The static `Reflect.construct()` method acts like the new operator, but
+        /// as a function.  It is equivalent to calling `new target(...args)`. It
+        /// gives also the added option to specify a different prototype.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = construct, catch)]
+        pub fn construct_with_new_target(
+            target: &Function,
+            arguments_list: &Array,
+            new_target: &Function,
+        ) -> Result<JsValue, JsValue>;
 
-    /// The static `Reflect.defineProperty()` method is like
-    /// `Object.defineProperty()` but returns a `Boolean`.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/defineProperty)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = defineProperty, catch)]
-    pub fn define_property(
-        target: &Object,
-        property_key: &JsValue,
-        attributes: &Object,
-    ) -> Result<bool, JsValue>;
+        /// The static `Reflect.defineProperty()` method is like
+        /// `Object.defineProperty()` but returns a `Boolean`.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/defineProperty)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = defineProperty, catch)]
+        pub fn define_property(
+            target: &Object,
+            property_key: &JsValue,
+            attributes: &Object,
+        ) -> Result<bool, JsValue>;
 
-    /// The static `Reflect.deleteProperty()` method allows to delete
-    /// properties.  It is like the `delete` operator as a function.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/deleteProperty)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = deleteProperty, catch)]
-    pub fn delete_property(target: &Object, key: &JsValue) -> Result<bool, JsValue>;
+        /// The static `Reflect.deleteProperty()` method allows to delete
+        /// properties.  It is like the `delete` operator as a function.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/deleteProperty)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = deleteProperty, catch)]
+        pub fn delete_property(target: &Object, key: &JsValue) -> Result<bool, JsValue>;
 
-    /// The static `Reflect.get()` method works like getting a property from
-    /// an object (`target[propertyKey]`) as a function.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/get)
-    #[wasm_bindgen(static_method_of = Reflect, catch)]
-    pub fn get(target: &JsValue, key: &JsValue) -> Result<JsValue, JsValue>;
+        /// The static `Reflect.get()` method works like getting a property from
+        /// an object (`target[propertyKey]`) as a function.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/get)
+        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        pub fn get(target: &JsValue, key: &JsValue) -> Result<JsValue, JsValue>;
 
-    /// The same as [`Reflect::get`](#method.get) except the key is an `f64`, which is slightly faster.
-    #[wasm_bindgen(static_method_of = Reflect, js_name = "get", catch)]
-    pub fn get_f64(target: &JsValue, key: f64) -> Result<JsValue, JsValue>;
+        /// The same as [`Reflect::get`](#method.get) except the key is an `f64`, which is slightly faster.
+        #[wasm_bindgen(js_namespace = Reflect, js_name = "get", catch)]
+        pub fn get_f64(target: &JsValue, key: f64) -> Result<JsValue, JsValue>;
 
-    /// The same as [`Reflect::get`](#method.get) except the key is a `u32`, which is slightly faster.
-    #[wasm_bindgen(static_method_of = Reflect, js_name = "get", catch)]
-    pub fn get_u32(target: &JsValue, key: u32) -> Result<JsValue, JsValue>;
+        /// The same as [`Reflect::get`](#method.get) except the key is a `u32`, which is slightly faster.
+        #[wasm_bindgen(js_namespace = Reflect, js_name = "get", catch)]
+        pub fn get_u32(target: &JsValue, key: u32) -> Result<JsValue, JsValue>;
 
-    /// The static `Reflect.getOwnPropertyDescriptor()` method is similar to
-    /// `Object.getOwnPropertyDescriptor()`. It returns a property descriptor
-    /// of the given property if it exists on the object, `undefined` otherwise.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getOwnPropertyDescriptor)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = getOwnPropertyDescriptor, catch)]
-    pub fn get_own_property_descriptor(
-        target: &Object,
-        property_key: &JsValue,
-    ) -> Result<JsValue, JsValue>;
+        /// The static `Reflect.getOwnPropertyDescriptor()` method is similar to
+        /// `Object.getOwnPropertyDescriptor()`. It returns a property descriptor
+        /// of the given property if it exists on the object, `undefined` otherwise.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getOwnPropertyDescriptor)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = getOwnPropertyDescriptor, catch)]
+        pub fn get_own_property_descriptor(
+            target: &Object,
+            property_key: &JsValue,
+        ) -> Result<JsValue, JsValue>;
 
-    /// The static `Reflect.getPrototypeOf()` method is almost the same
-    /// method as `Object.getPrototypeOf()`. It returns the prototype
-    /// (i.e. the value of the internal `[[Prototype]]` property) of
-    /// the specified object.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getPrototypeOf)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = getPrototypeOf, catch)]
-    pub fn get_prototype_of(target: &JsValue) -> Result<Object, JsValue>;
+        /// The static `Reflect.getPrototypeOf()` method is almost the same
+        /// method as `Object.getPrototypeOf()`. It returns the prototype
+        /// (i.e. the value of the internal `[[Prototype]]` property) of
+        /// the specified object.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/getPrototypeOf)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = getPrototypeOf, catch)]
+        pub fn get_prototype_of(target: &JsValue) -> Result<Object, JsValue>;
 
-    /// The static `Reflect.has()` method works like the in operator as a
-    /// function.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/has)
-    #[wasm_bindgen(static_method_of = Reflect, catch)]
-    pub fn has(target: &JsValue, property_key: &JsValue) -> Result<bool, JsValue>;
+        /// The static `Reflect.has()` method works like the in operator as a
+        /// function.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/has)
+        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        pub fn has(target: &JsValue, property_key: &JsValue) -> Result<bool, JsValue>;
 
-    /// The static `Reflect.isExtensible()` method determines if an object is
-    /// extensible (whether it can have new properties added to it). It is
-    /// similar to `Object.isExtensible()`, but with some differences.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/isExtensible)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = isExtensible, catch)]
-    pub fn is_extensible(target: &Object) -> Result<bool, JsValue>;
+        /// The static `Reflect.isExtensible()` method determines if an object is
+        /// extensible (whether it can have new properties added to it). It is
+        /// similar to `Object.isExtensible()`, but with some differences.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/isExtensible)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = isExtensible, catch)]
+        pub fn is_extensible(target: &Object) -> Result<bool, JsValue>;
 
-    /// The static `Reflect.ownKeys()` method returns an array of the
-    /// target object's own property keys.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = ownKeys, catch)]
-    pub fn own_keys(target: &JsValue) -> Result<Array, JsValue>;
+        /// The static `Reflect.ownKeys()` method returns an array of the
+        /// target object's own property keys.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/ownKeys)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = ownKeys, catch)]
+        pub fn own_keys(target: &JsValue) -> Result<Array, JsValue>;
 
-    /// The static `Reflect.preventExtensions()` method prevents new
-    /// properties from ever being added to an object (i.e. prevents
-    /// future extensions to the object). It is similar to
-    /// `Object.preventExtensions()`, but with some differences.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/preventExtensions)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = preventExtensions, catch)]
-    pub fn prevent_extensions(target: &Object) -> Result<bool, JsValue>;
+        /// The static `Reflect.preventExtensions()` method prevents new
+        /// properties from ever being added to an object (i.e. prevents
+        /// future extensions to the object). It is similar to
+        /// `Object.preventExtensions()`, but with some differences.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/preventExtensions)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = preventExtensions, catch)]
+        pub fn prevent_extensions(target: &Object) -> Result<bool, JsValue>;
 
-    /// The static `Reflect.set()` method works like setting a
-    /// property on an object.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set)
-    #[wasm_bindgen(static_method_of = Reflect, catch)]
-    pub fn set(target: &JsValue, property_key: &JsValue, value: &JsValue) -> Result<bool, JsValue>;
+        /// The static `Reflect.set()` method works like setting a
+        /// property on an object.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set)
+        #[wasm_bindgen(js_namespace = Reflect, catch)]
+        pub fn set(target: &JsValue, property_key: &JsValue, value: &JsValue) -> Result<bool, JsValue>;
 
-    /// The same as [`Reflect::set`](#method.set) except the key is an `f64`, which is slightly faster.
-    #[wasm_bindgen(static_method_of = Reflect, js_name = "set", catch)]
-    pub fn set_f64(target: &JsValue, property_key: f64, value: &JsValue) -> Result<bool, JsValue>;
+        /// The same as [`Reflect::set`](#method.set) except the key is an `f64`, which is slightly faster.
+        #[wasm_bindgen(js_namespace = Reflect, js_name = "set", catch)]
+        pub fn set_f64(target: &JsValue, property_key: f64, value: &JsValue) -> Result<bool, JsValue>;
 
-    /// The same as [`Reflect::set`](#method.set) except the key is a `u32`, which is slightly faster.
-    #[wasm_bindgen(static_method_of = Reflect, js_name = "set", catch)]
-    pub fn set_u32(target: &JsValue, property_key: u32, value: &JsValue) -> Result<bool, JsValue>;
+        /// The same as [`Reflect::set`](#method.set) except the key is a `u32`, which is slightly faster.
+        #[wasm_bindgen(js_namespace = Reflect, js_name = "set", catch)]
+        pub fn set_u32(target: &JsValue, property_key: u32, value: &JsValue) -> Result<bool, JsValue>;
 
-    /// The static `Reflect.set()` method works like setting a
-    /// property on an object.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = set, catch)]
-    pub fn set_with_receiver(
-        target: &JsValue,
-        property_key: &JsValue,
-        value: &JsValue,
-        receiver: &JsValue,
-    ) -> Result<bool, JsValue>;
+        /// The static `Reflect.set()` method works like setting a
+        /// property on an object.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = set, catch)]
+        pub fn set_with_receiver(
+            target: &JsValue,
+            property_key: &JsValue,
+            value: &JsValue,
+            receiver: &JsValue,
+        ) -> Result<bool, JsValue>;
 
-    /// The static `Reflect.setPrototypeOf()` method is the same
-    /// method as `Object.setPrototypeOf()`. It sets the prototype
-    /// (i.e., the internal `[[Prototype]]` property) of a specified
-    /// object to another object or to null.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/setPrototypeOf)
-    #[wasm_bindgen(static_method_of = Reflect, js_name = setPrototypeOf, catch)]
-    pub fn set_prototype_of(target: &Object, prototype: &JsValue) -> Result<bool, JsValue>;
+        /// The static `Reflect.setPrototypeOf()` method is the same
+        /// method as `Object.setPrototypeOf()`. It sets the prototype
+        /// (i.e., the internal `[[Prototype]]` property) of a specified
+        /// object to another object or to null.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/setPrototypeOf)
+        #[wasm_bindgen(js_namespace = Reflect, js_name = setPrototypeOf, catch)]
+        pub fn set_prototype_of(target: &Object, prototype: &JsValue) -> Result<bool, JsValue>;
+    }
 }
 
 // RegExp
@@ -3064,67 +3066,68 @@ pub mod WebAssembly {
     }
 }
 
-// JSON
-#[wasm_bindgen]
-extern "C" {
-    /// The `JSON` object contains methods for parsing [JavaScript Object
-    /// Notation (JSON)](https://json.org/) and converting values to JSON. It
-    /// can't be called or constructed, and aside from its two method
-    /// properties, it has no interesting functionality of its own.
-    #[wasm_bindgen(extends = Object)]
-    #[derive(Clone, Debug, PartialEq, Eq)]
-    pub type JSON;
+/// The `JSON` object contains methods for parsing [JavaScript Object
+/// Notation (JSON)](https://json.org/) and converting values to JSON. It
+/// can't be called or constructed, and aside from its two method
+/// properties, it has no interesting functionality of its own.
+#[allow(non_snake_case)]
+pub mod JSON {
+    use super::*;
 
-    /// The `JSON.parse()` method parses a JSON string, constructing the
-    /// JavaScript value or object described by the string.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
-    #[wasm_bindgen(catch, static_method_of = JSON)]
-    pub fn parse(text: &str) -> Result<JsValue, JsValue>;
+    // JSON
+    #[wasm_bindgen]
+    extern "C" {
+        /// The `JSON.parse()` method parses a JSON string, constructing the
+        /// JavaScript value or object described by the string.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
+        #[wasm_bindgen(catch, js_namespace = JSON)]
+        pub fn parse(text: &str) -> Result<JsValue, JsValue>;
 
-    /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
-    #[wasm_bindgen(catch, static_method_of = JSON)]
-    pub fn stringify(obj: &JsValue) -> Result<JsString, JsValue>;
+        /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+        #[wasm_bindgen(catch, js_namespace = JSON)]
+        pub fn stringify(obj: &JsValue) -> Result<JsString, JsValue>;
 
-    /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
-    ///
-    /// The `replacer` argument is a function that alters the behavior of the stringification
-    /// process, or an array of String and Number objects that serve as a whitelist
-    /// for selecting/filtering the properties of the value object to be included
-    /// in the JSON string. If this value is null or not provided, all properties
-    /// of the object are included in the resulting JSON string.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
-    #[wasm_bindgen(catch, static_method_of = JSON, js_name = stringify)]
-    pub fn stringify_with_replacer(obj: &JsValue, replacer: &JsValue) -> Result<JsString, JsValue>;
+        /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
+        ///
+        /// The `replacer` argument is a function that alters the behavior of the stringification
+        /// process, or an array of String and Number objects that serve as a whitelist
+        /// for selecting/filtering the properties of the value object to be included
+        /// in the JSON string. If this value is null or not provided, all properties
+        /// of the object are included in the resulting JSON string.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+        #[wasm_bindgen(catch, js_namespace = JSON, js_name = stringify)]
+        pub fn stringify_with_replacer(obj: &JsValue, replacer: &JsValue) -> Result<JsString, JsValue>;
 
-    /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
-    ///
-    /// The `replacer` argument is a function that alters the behavior of the stringification
-    /// process, or an array of String and Number objects that serve as a whitelist
-    /// for selecting/filtering the properties of the value object to be included
-    /// in the JSON string. If this value is null or not provided, all properties
-    /// of the object are included in the resulting JSON string.
-    ///
-    /// The `space` argument is a String or Number object that's used to insert white space into
-    /// the output JSON string for readability purposes. If this is a Number, it
-    /// indicates the number of space characters to use as white space; this number
-    /// is capped at 10 (if it is greater, the value is just 10). Values less than
-    /// 1 indicate that no space should be used. If this is a String, the string
-    /// (or the first 10 characters of the string, if it's longer than that) is
-    /// used as white space. If this parameter is not provided (or is null), no
-    /// white space is used.
-    ///
-    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
-    #[wasm_bindgen(catch, static_method_of = JSON, js_name = stringify)]
-    pub fn stringify_with_replacer_and_space(
-        obj: &JsValue,
-        replacer: &JsValue,
-        space: &JsValue,
-    ) -> Result<JsString, JsValue>;
+        /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
+        ///
+        /// The `replacer` argument is a function that alters the behavior of the stringification
+        /// process, or an array of String and Number objects that serve as a whitelist
+        /// for selecting/filtering the properties of the value object to be included
+        /// in the JSON string. If this value is null or not provided, all properties
+        /// of the object are included in the resulting JSON string.
+        ///
+        /// The `space` argument is a String or Number object that's used to insert white space into
+        /// the output JSON string for readability purposes. If this is a Number, it
+        /// indicates the number of space characters to use as white space; this number
+        /// is capped at 10 (if it is greater, the value is just 10). Values less than
+        /// 1 indicate that no space should be used. If this is a String, the string
+        /// (or the first 10 characters of the string, if it's longer than that) is
+        /// used as white space. If this parameter is not provided (or is null), no
+        /// white space is used.
+        ///
+        /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+        #[wasm_bindgen(catch, js_namespace = JSON, js_name = stringify)]
+        pub fn stringify_with_replacer_and_space(
+            obj: &JsValue,
+            replacer: &JsValue,
+            space: &JsValue,
+        ) -> Result<JsString, JsValue>;
 
+    }
 }
 
 // JsString
