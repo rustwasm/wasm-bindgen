@@ -274,6 +274,8 @@ pub struct PublicFields {
     pub b: f32,
     pub c: f64,
     pub d: i32,
+    #[wasm_bindgen(skip)]
+    pub skipped: u32
 }
 
 #[wasm_bindgen]

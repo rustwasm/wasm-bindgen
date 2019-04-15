@@ -108,6 +108,8 @@ exports.js_public_fields = () => {
     assert.strictEqual(a.d, 0);
     a.d = 3.3;
     assert.strictEqual(a.d, 3);
+
+    assert.strictEqual(a.skipped, undefined);
 };
 
 exports.js_using_self = () => {
