@@ -438,6 +438,47 @@ extern "C" {
     pub fn slice_with_end(this: &ArrayBuffer, begin: u32, end: u32) -> ArrayBuffer;
 }
 
+
+// SharedArrayBuffer
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(extends = Object)]
+    #[derive(Clone, Debug)]
+    pub type SharedArrayBuffer;
+
+    /// The `SharedArrayBuffer` object is used to represent a generic,
+    /// fixed-length raw binary data buffer, similar to the `ArrayBuffer`
+    /// object, but in a way that they can be used to create views
+    /// on shared memory. Unlike an `ArrayBuffer`, a `SharedArrayBuffer`
+    /// cannot become detached.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer)
+    #[wasm_bindgen(constructor)]
+    pub fn new(length: u32) -> SharedArrayBuffer;
+
+    /// The byteLength accessor property represents the length of
+    /// an `SharedArrayBuffer` in bytes. This is established when
+    /// the `SharedArrayBuffer` is constructed and cannot be changed.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer/byteLength)
+    #[wasm_bindgen(method, getter, js_name = byteLength)]
+    pub fn byte_length(this: &SharedArrayBuffer) -> u32;
+
+    /// The `slice()` method returns a new `SharedArrayBuffer` whose contents
+    /// are a copy of this `SharedArrayBuffer`'s bytes from begin, inclusive,
+    /// up to end, exclusive.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer/slice)
+    #[wasm_bindgen(method)]
+    pub fn slice(this: &SharedArrayBuffer, begin: u32) -> SharedArrayBuffer;
+
+    /// Like `slice()` but with the `end` argument.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer/slice)
+    #[wasm_bindgen(method, js_name = slice)]
+    pub fn slice_with_end(this: &SharedArrayBuffer, begin: u32, end: u32) -> SharedArrayBuffer;
+}
+
 // Array Iterator
 #[wasm_bindgen]
 extern "C" {
@@ -461,6 +502,134 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values)
     #[wasm_bindgen(method)]
     pub fn values(this: &Array) -> Iterator;
+}
+
+// Atomics
+#[wasm_bindge]
+extern "C" {
+    #[derive(Clone, Debug)]
+    #[wasm_bindgen(extends = Object)]
+    pub type Atomics;
+
+    /// The static `Atomics.add()` method adds a given value at a given
+    /// position in the array and returns the old value at that position.
+    /// This atomic operation guarantees that no other write happens
+    /// until the modified value is written back.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/add)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn add(typed_array: &JsValue, index: u32, value: JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.and()` method computes a bitwise AND with a given
+    /// value at a given position in the array, and returns the old value
+    /// at that position.
+    /// This atomic operation guarantees that no other write happens
+    /// until the modified value is written back.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/and)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn and(typed_array: &JsValue, index: u32, value: JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.compareExchange()` method exchanges a given
+    /// replacement value at a given position in the array, if a given expected
+    /// value equals the old value. It returns the old value at that position
+    /// whether it was equal to the expected value or not.
+    /// This atomic operation guarantees that no other write happens
+    /// until the modified value is written back.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/compareExchange)
+    #[wasm_bindgen(static_method_of = Atomics, catch, js_name = compareExchange)]
+    pub fn compare_exchange(
+        typed_array: &JsValue,
+        index: u32,
+        expected_value: &JsValue,
+        replacement_value: &JsValue,
+    ) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.exchange()` method stores a given value at a given
+    /// position in the array and returns the old value at that position.
+    /// This atomic operation guarantees that no other write happens
+    /// until the modified value is written back.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/exchange)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn exchange(typed_array: &JsValue, index: u32, value: JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.isLockFree()` method is used to determine
+    /// whether to use locks or atomic operations. It returns true,
+    /// if the given size is one of the `BYTES_PER_ELEMENT` property
+    /// of integer `TypedArray` types.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/isLockFree)
+    #[wasm_bindgen(static_method_of = Atomics, js_name = isLockFree)]
+    pub fn is_lock_free(size: u32) -> bool;
+
+    /// The static `Atomics.load()` method returns a value at a given
+    /// position in the array.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/load)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn load(typed_array: &JsValue, index: u32) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.notify()` method notifies up some agents that
+    /// are sleeping in the wait queue.
+    /// Note: This operation works with a shared `Int32Array` only.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/notify)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn notify(typed_array: &JsValue, index: u32, count: u32) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.or()` method computes a bitwise OR with a given value
+    /// at a given position in the array, and returns the old value at that position.
+    /// This atomic operation guarantees that no other write happens
+    /// until the modified value is written back.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/or)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn or(typed_array: &JsValue, index: u32, value: JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.store()` method stores a given value at the given
+    /// position in the array and returns that value.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/store)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn store(typed_array: &JsValue, index: u32, value: JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.sub()` method substracts a given value at a
+    /// given position in the array and returns the old value at that position.
+    /// This atomic operation guarantees that no other write happens
+    /// until the modified value is written back.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/sub)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn sub(typed_array: &JsValue, index: u32, value: JsValue) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.wait()` method verifies that a given
+    /// position in an `Int32Array` still contains a given value
+    /// and if so sleeps, awaiting a wakeup or a timeout.
+    /// It returns a string which is either "ok", "not-equal", or "timed-out".
+    /// Note: This operation only works with a shared `Int32Array`
+    /// and may not be allowed on the main thread.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn wait(typed_array: &JsValue, index: u32, value: JsValue) -> Result<JsValue, JsValue>;
+
+    /// Like `wait()`, but with timeout
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn wait_with_timeout(typed_array: &JsValue, index: u32, value: JsValue, timeout: u32) -> Result<JsValue, JsValue>;
+
+    /// The static `Atomics.xor()` method computes a bitwise XOR
+    /// with a given value at a given position in the array,
+    /// and returns the old value at that position.
+    /// This atomic operation guarantees that no other write happens
+    /// until the modified value is written back.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/xor)
+    #[wasm_bindgen(static_method_of = Atomics, catch)]
+    pub fn xor(typed_array: &JsValue, index: u32, value: JsValue) -> Result<JsValue, JsValue>;
 }
 
 // Boolean
