@@ -560,56 +560,56 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getUint8)]
     pub fn get_uint8(this: &DataView, byte_offset: usize) -> u8;
 
-    /// The getInt16() method gets a signed 16-bit integer (byte) at the specified
+    /// The getInt16() method gets a signed 16-bit integer (short) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt16)
     #[wasm_bindgen(method, js_name = getInt16)]
     pub fn get_int16(this: &DataView, byte_offset: usize) -> i16;
 
-    /// The getInt16() method gets a signed 16-bit integer (byte) at the specified
+    /// The getInt16() method gets a signed 16-bit integer (short) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt16)
     #[wasm_bindgen(method, js_name = getInt16)]
     pub fn get_int16_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> i16;
 
-    /// The getUint16() an unsigned 16-bit integer (unsigned byte) at the specified
+    /// The getUint16() method gets an unsigned 16-bit integer (unsigned short) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint16)
     #[wasm_bindgen(method, js_name = getUint16)]
     pub fn get_uint16(this: &DataView, byte_offset: usize) -> u16;
 
-    /// The getUint16() an unsigned 16-bit integer (unsigned byte) at the specified
+    /// The getUint16() method gets an unsigned 16-bit integer (unsigned short) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint16)
     #[wasm_bindgen(method, js_name = getUint16)]
     pub fn get_uint16_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> u16;
 
-    /// The getInt32() method gets a signed 32-bit integer (byte) at the specified
+    /// The getInt32() method gets a signed 32-bit integer (long) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt32)
     #[wasm_bindgen(method, js_name = getInt32)]
     pub fn get_int32(this: &DataView, byte_offset: usize) -> i32;
 
-    /// The getInt32() method gets a signed 32-bit integer (byte) at the specified
+    /// The getInt32() method gets a signed 32-bit integer (long) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getInt32)
     #[wasm_bindgen(method, js_name = getInt32)]
     pub fn get_int32_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> i32;
 
-    /// The getUint32() an unsigned 32-bit integer (unsigned byte) at the specified
+    /// The getUint32() method gets an unsigned 32-bit integer (unsigned long) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32)
     #[wasm_bindgen(method, js_name = getUint32)]
     pub fn get_uint32(this: &DataView, byte_offset: usize) -> u32;
 
-    /// The getUint32() an unsigned 32-bit integer (unsigned byte) at the specified
+    /// The getUint32() method gets an unsigned 32-bit integer (unsigned long) at the specified
     /// byte offset from the start of the view.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getUint32)
@@ -630,14 +630,14 @@ extern "C" {
     #[wasm_bindgen(method, js_name = getFloat32)]
     pub fn get_float32_endian(this: &DataView, byte_offset: usize, little_endian: bool) -> f32;
 
-    /// The getFloat64() method gets a signed 64-bit float (float) at the specified
+    /// The getFloat64() method gets a signed 64-bit float (double) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat64)
     #[wasm_bindgen(method, js_name = getFloat64)]
     pub fn get_float64(this: &DataView, byte_offset: usize) -> f64;
 
-    /// The getFloat64() method gets a signed 64-bit float (float) at the specified
+    /// The getFloat64() method gets a signed 64-bit float (double) at the specified
     /// byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/getFloat64)
@@ -658,56 +658,56 @@ extern "C" {
     #[wasm_bindgen(method, js_name = setUint8)]
     pub fn set_uint8(this: &DataView, byte_offset: usize, value: u8);
 
-    /// The setInt16() method stores a signed 16-bit integer (byte) value at the
+    /// The setInt16() method stores a signed 16-bit integer (short) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt16)
     #[wasm_bindgen(method, js_name = setInt16)]
     pub fn set_int16(this: &DataView, byte_offset: usize, value: i16);
 
-    /// The setInt16() method stores a signed 16-bit integer (byte) value at the
+    /// The setInt16() method stores a signed 16-bit integer (short) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt16)
     #[wasm_bindgen(method, js_name = setInt16)]
     pub fn set_int16_endian(this: &DataView, byte_offset: usize, value: i16, little_endian: bool);
 
-    /// The setUint16() method stores an unsigned 16-bit integer (byte) value at the
+    /// The setUint16() method stores an unsigned 16-bit integer (unsigned short) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint16)
     #[wasm_bindgen(method, js_name = setUint16)]
     pub fn set_uint16(this: &DataView, byte_offset: usize, value: u16);
 
-    /// The setUint16() method stores an unsigned 16-bit integer (byte) value at the
+    /// The setUint16() method stores an unsigned 16-bit integer (unsigned short) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint16)
     #[wasm_bindgen(method, js_name = setUint16)]
     pub fn set_uint16_endian(this: &DataView, byte_offset: usize, value: u16, little_endian: bool);
 
-    /// The setInt32() method stores a signed 32-bit integer (byte) value at the
+    /// The setInt32() method stores a signed 32-bit integer (long) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt32)
     #[wasm_bindgen(method, js_name = setInt32)]
     pub fn set_int32(this: &DataView, byte_offset: usize, value: i32);
 
-    /// The setInt32() method stores a signed 32-bit integer (byte) value at the
+    /// The setInt32() method stores a signed 32-bit integer (long) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setInt32)
     #[wasm_bindgen(method, js_name = setInt32)]
     pub fn set_int32_endian(this: &DataView, byte_offset: usize, value: i32, little_endian: bool);
 
-    /// The setUint32() method stores an unsigned 32-bit integer (byte) value at the
+    /// The setUint32() method stores an unsigned 32-bit integer (unsigned long) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint32)
     #[wasm_bindgen(method, js_name = setUint32)]
     pub fn set_uint32(this: &DataView, byte_offset: usize, value: u32);
 
-    /// The setUint32() method stores an unsigned 32-bit integer (byte) value at the
+    /// The setUint32() method stores an unsigned 32-bit integer (unsigned long) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setUint32)
@@ -728,14 +728,14 @@ extern "C" {
     #[wasm_bindgen(method, js_name = setFloat32)]
     pub fn set_float32_endian(this: &DataView, byte_offset: usize, value: f32, little_endian: bool);
 
-    /// The setFloat64() method stores a signed 64-bit float (float) value at the
+    /// The setFloat64() method stores a signed 64-bit float (double) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat64)
     #[wasm_bindgen(method, js_name = setFloat64)]
     pub fn set_float64(this: &DataView, byte_offset: usize, value: f64);
 
-    /// The setFloat64() method stores a signed 64-bit float (float) value at the
+    /// The setFloat64() method stores a signed 64-bit float (double) value at the
     /// specified byte offset from the start of the DataView.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/setFloat64)
