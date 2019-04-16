@@ -309,40 +309,37 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.to_string());
-        if let syn::Fields::Named(names) = &mut self.fields {
-            for field in names.named.iter_mut() {
-                match field.vis {
-                    syn::Visibility::Public(..) => {}
-                    _ => continue,
-                }
-                let name = match &field.ident {
-                    Some(n) => n,
-                    None => continue,
-                };
-
-                let attrs = BindgenAttrs::find(&mut field.attrs)?;
-                assert_not_variadic(&attrs)?;
-                if attrs.skip().is_some() {
-                    attrs.check_used()?;
-                    continue;
-                }
-
-                let comments = extract_doc_comments(&field.attrs);
-                let name_str = name.to_string();
-                let getter = shared::struct_field_get(&js_name, &name_str);
-                let setter = shared::struct_field_set(&js_name, &name_str);
-
-                fields.push(ast::StructField {
-                    name: name.clone(),
-                    struct_name: self.ident.clone(),
-                    readonly: attrs.readonly().is_some(),
-                    ty: field.ty.clone(),
-                    getter: Ident::new(&getter, Span::call_site()),
-                    setter: Ident::new(&setter, Span::call_site()),
-                    comments,
-                });
-                attrs.check_used()?;
+        for (i, field) in self.fields.iter_mut().enumerate() {
+            match field.vis {
+                syn::Visibility::Public(..) => {}
+                _ => continue,
             }
+            let (name_str, member) = match &field.ident {
+                Some(ident) => (ident.to_string(), syn::Member::Named(ident.clone())),
+                None => (i.to_string(), syn::Member::Unnamed(i.into())),
+            };
+
+            let attrs = BindgenAttrs::find(&mut field.attrs)?;
+            assert_not_variadic(&attrs)?;
+            if attrs.skip().is_some() {
+                attrs.check_used()?;
+                continue;
+            }
+
+            let comments = extract_doc_comments(&field.attrs);
+            let getter = shared::struct_field_get(&js_name, &name_str);
+            let setter = shared::struct_field_set(&js_name, &name_str);
+
+            fields.push(ast::StructField {
+                name: member,
+                struct_name: self.ident.clone(),
+                readonly: attrs.readonly().is_some(),
+                ty: field.ty.clone(),
+                getter: Ident::new(&getter, Span::call_site()),
+                setter: Ident::new(&setter, Span::call_site()),
+                comments,
+            });
+            attrs.check_used()?;
         }
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
         attrs.check_used()?;

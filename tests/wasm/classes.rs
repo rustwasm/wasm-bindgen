@@ -370,6 +370,9 @@ pub struct AccessFieldFoo {
 }
 
 #[wasm_bindgen]
+pub struct AccessField0(pub AccessFieldBar);
+
+#[wasm_bindgen]
 #[derive(Copy, Clone)]
 pub struct AccessFieldBar {
     _value: u32,
@@ -382,6 +385,14 @@ impl AccessFieldFoo {
         AccessFieldFoo {
             bar: AccessFieldBar { _value: 2 },
         }
+    }
+}
+
+#[wasm_bindgen]
+impl AccessField0 {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> AccessField0 {
+        AccessField0(AccessFieldBar { _value: 2 })
     }
 }
 
