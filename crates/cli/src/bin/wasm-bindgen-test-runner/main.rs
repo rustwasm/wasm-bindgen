@@ -103,6 +103,30 @@ fn rmain() -> Result<(), Error> {
     let headless = env::var("NO_HEADLESS").is_err();
     let debug = env::var("WASM_BINDGEN_NO_DEBUG").is_err();
 
+    // Gracefully handle requests to execute only node or only web tests.
+    if env::var_os("WASM_BINDGEN_TEST_ONLY_NODE").is_some() {
+        if !node {
+            println!("this test suite is only configured to run in a browser, \
+                      but we're only testing node.js tests so skipping");
+            return Ok(());
+        }
+    }
+    if env::var_os("WASM_BINDGEN_TEST_ONLY_WEB").is_some() {
+        if node {
+            println!("\
+This test suite is only configured to run in node.js, but we're only running
+browser tests so skipping. If you'd like to run the tests in a browser
+include this in your crate when testing:
+
+    wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+
+You'll likely want to put that in a `#[cfg(test)]` module or at the top of an
+integration test.\
+");
+            return Ok(());
+        }
+    }
+
     // Make the generated bindings available for the tests to execute against.
     shell.status("Executing bindgen...");
     let mut b = Bindgen::new();
