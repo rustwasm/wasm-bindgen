@@ -257,6 +257,9 @@ jobs:
     displayName: "Doc - build the API documentation"
     steps:
       - template: ci/azure-install-rust.yml
+      # Install rustfmt so we can format the web-sys bindings
+      - script: rustup component add rustfmt
+        displayName: "Install rustfmt"
       - template: ci/azure-install-sccache.yml
       - script: cargo doc --no-deps --features 'nightly serde-serialize'
         displayName: "Document wasm-bindgen"
