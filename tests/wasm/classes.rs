@@ -275,7 +275,7 @@ pub struct PublicFields {
     pub c: f64,
     pub d: i32,
     #[wasm_bindgen(skip)]
-    pub skipped: u32
+    pub skipped: u32,
 }
 
 #[wasm_bindgen]
@@ -475,7 +475,6 @@ mod works_in_module {
             WorksInModule(1)
         }
 
-        pub fn foo(&self) {
-        }
+        pub fn foo(&self) {}
     }
 }

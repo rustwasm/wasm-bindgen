@@ -1,8 +1,8 @@
 use core::mem;
 
 use crate::convert::slices::WasmSlice;
-use crate::convert::{FromWasmAbi, GlobalStack, IntoWasmAbi, ReturnWasmAbi, Stack};
 use crate::convert::RefFromWasmAbi;
+use crate::convert::{FromWasmAbi, GlobalStack, IntoWasmAbi, ReturnWasmAbi, Stack};
 use crate::describe::{inform, WasmDescribe, FUNCTION};
 use crate::throw_str;
 
@@ -120,15 +120,19 @@ stack_closures! {
 }
 
 impl<'a, 'b, A, R> IntoWasmAbi for &'a (Fn(&A) -> R + 'b)
-    where A: RefFromWasmAbi,
-          R: ReturnWasmAbi
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi,
 {
     type Abi = WasmSlice;
 
     fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
         unsafe {
             let (a, b): (usize, usize) = mem::transmute(self);
-            WasmSlice { ptr: a as u32, len: b as u32 }
+            WasmSlice {
+                ptr: a as u32,
+                len: b as u32,
+            }
         }
     }
 }
@@ -154,8 +158,9 @@ unsafe extern "C" fn invoke1_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
 }
 
 impl<'a, A, R> WasmDescribe for Fn(&A) -> R + 'a
-    where A: RefFromWasmAbi,
-          R: ReturnWasmAbi,
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi,
 {
     fn describe() {
         inform(FUNCTION);
@@ -167,15 +172,19 @@ impl<'a, A, R> WasmDescribe for Fn(&A) -> R + 'a
 }
 
 impl<'a, 'b, A, R> IntoWasmAbi for &'a mut (FnMut(&A) -> R + 'b)
-    where A: RefFromWasmAbi,
-          R: ReturnWasmAbi
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi,
 {
     type Abi = WasmSlice;
 
     fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
         unsafe {
             let (a, b): (usize, usize) = mem::transmute(self);
-            WasmSlice { ptr: a as u32, len: b as u32 }
+            WasmSlice {
+                ptr: a as u32,
+                len: b as u32,
+            }
         }
     }
 }
@@ -201,8 +210,9 @@ unsafe extern "C" fn invoke1_mut_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
 }
 
 impl<'a, A, R> WasmDescribe for FnMut(&A) -> R + 'a
-    where A: RefFromWasmAbi,
-          R: ReturnWasmAbi
+where
+    A: RefFromWasmAbi,
+    R: ReturnWasmAbi,
 {
     fn describe() {
         inform(FUNCTION);

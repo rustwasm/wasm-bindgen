@@ -310,8 +310,7 @@ impl<'src> FirstPass<'src, ()> for weedle::InterfaceDefinition<'src> {
         interface_data.definition_attributes = self.attributes.as_ref();
         interface_data.deprecated =
             util::get_rust_deprecated(&self.attributes).map(|s| s.to_string());
-        interface_data.has_interface =
-            !util::is_no_interface_object(&self.attributes);
+        interface_data.has_interface = !util::is_no_interface_object(&self.attributes);
         if let Some(attrs) = &self.attributes {
             for attr in attrs.body.list.iter() {
                 process_interface_attribute(record, self.identifier.0, attr);

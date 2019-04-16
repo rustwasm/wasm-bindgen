@@ -517,7 +517,7 @@ impl<'src> FirstPassRecord<'src> {
             is_type_of: if data.has_interface {
                 None
             } else {
-                Some(syn::parse_quote!{ |_| false })
+                Some(syn::parse_quote! { |_| false })
             },
             extends: Vec::new(),
             vendor_prefixes: Vec::new(),

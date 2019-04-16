@@ -106,14 +106,17 @@ fn rmain() -> Result<(), Error> {
     // Gracefully handle requests to execute only node or only web tests.
     if env::var_os("WASM_BINDGEN_TEST_ONLY_NODE").is_some() {
         if !node {
-            println!("this test suite is only configured to run in a browser, \
-                      but we're only testing node.js tests so skipping");
+            println!(
+                "this test suite is only configured to run in a browser, \
+                 but we're only testing node.js tests so skipping"
+            );
             return Ok(());
         }
     }
     if env::var_os("WASM_BINDGEN_TEST_ONLY_WEB").is_some() {
         if node {
-            println!("\
+            println!(
+                "\
 This test suite is only configured to run in node.js, but we're only running
 browser tests so skipping. If you'd like to run the tests in a browser
 include this in your crate when testing:
@@ -122,7 +125,8 @@ include this in your crate when testing:
 
 You'll likely want to put that in a `#[cfg(test)]` module or at the top of an
 integration test.\
-");
+"
+            );
             return Ok(());
         }
     }

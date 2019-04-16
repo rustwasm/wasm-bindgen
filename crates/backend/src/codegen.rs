@@ -588,11 +588,13 @@ impl ToTokens for ast::ImportType {
             }
         };
 
-        let is_type_of = self.is_type_of.as_ref().map(|is_type_of| quote! {
-            #[inline]
-            fn is_type_of(val: &JsValue) -> bool {
-                let is_type_of: fn(&JsValue) -> bool = #is_type_of;
-                is_type_of(val)
+        let is_type_of = self.is_type_of.as_ref().map(|is_type_of| {
+            quote! {
+                #[inline]
+                fn is_type_of(val: &JsValue) -> bool {
+                    let is_type_of: fn(&JsValue) -> bool = #is_type_of;
+                    is_type_of(val)
+                }
             }
         });
 
@@ -1447,10 +1449,7 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
     }
 }
 
-fn respan(
-    input: TokenStream,
-    span: &dyn ToTokens,
-) -> TokenStream {
+fn respan(input: TokenStream, span: &dyn ToTokens) -> TokenStream {
     let mut first_span = Span::call_site();
     let mut last_span = Span::call_site();
     let mut spans = TokenStream::new();

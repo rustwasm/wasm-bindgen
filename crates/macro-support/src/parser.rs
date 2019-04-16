@@ -324,7 +324,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
                 assert_not_variadic(&attrs)?;
                 if attrs.skip().is_some() {
                     attrs.check_used()?;
-                    continue
+                    continue;
                 }
 
                 let comments = extract_doc_comments(&field.attrs);

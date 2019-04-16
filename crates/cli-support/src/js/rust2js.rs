@@ -215,8 +215,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     return Ok(());
                 }
                 Descriptor::Char => {
-                    self.js_arguments
-                        .push(format!("{0} === 0xFFFFFF ? undefined : String.fromCodePoint({0})", abi));
+                    self.js_arguments.push(format!(
+                        "{0} === 0xFFFFFF ? undefined : String.fromCodePoint({0})",
+                        abi
+                    ));
                     return Ok(());
                 }
                 Descriptor::RustStruct(ref class) => {

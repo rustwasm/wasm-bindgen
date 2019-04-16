@@ -340,8 +340,10 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 Descriptor::Char => {
                     self.js_arguments
                         .push((name.clone(), "string | undefined".to_string()));
-                    self.rust_arguments
-                        .push(format!("isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0)", name));
+                    self.rust_arguments.push(format!(
+                        "isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0)",
+                        name
+                    ));
                 }
                 Descriptor::Enum { hole } => {
                     self.js_arguments
@@ -630,7 +632,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     self.ret_expr = "
                         const ret = RET;
                         return ret === 0xFFFFFF ? undefined : String.fromCodePoint(ret);
-                    ".to_string();
+                    "
+                    .to_string();
                     return Ok(self);
                 }
                 Descriptor::Enum { hole } => {

@@ -87,7 +87,9 @@ fn auto_bind_math() {
 }
 
 macro_rules! t_roundtrip {
-    ($f:ident($e:expr)) => (assert_eq!($f($e), $e as f64))
+    ($f:ident($e:expr)) => {
+        assert_eq!($f($e), $e as f64)
+    };
 }
 
 #[wasm_bindgen_test]
@@ -114,15 +116,27 @@ fn limits_correct() {
     test_js_roundtrip();
 
     #[wasm_bindgen]
-    pub fn rust_roundtrip_i8(a: i8) -> i8 { a }
+    pub fn rust_roundtrip_i8(a: i8) -> i8 {
+        a
+    }
     #[wasm_bindgen]
-    pub fn rust_roundtrip_i16(a: i16) -> i16 { a }
+    pub fn rust_roundtrip_i16(a: i16) -> i16 {
+        a
+    }
     #[wasm_bindgen]
-    pub fn rust_roundtrip_i32(a: i32) -> i32 { a }
+    pub fn rust_roundtrip_i32(a: i32) -> i32 {
+        a
+    }
     #[wasm_bindgen]
-    pub fn rust_roundtrip_u8(a: u8) -> u8 { a }
+    pub fn rust_roundtrip_u8(a: u8) -> u8 {
+        a
+    }
     #[wasm_bindgen]
-    pub fn rust_roundtrip_u16(a: u16) -> u16 { a }
+    pub fn rust_roundtrip_u16(a: u16) -> u16 {
+        a
+    }
     #[wasm_bindgen]
-    pub fn rust_roundtrip_u32(a: u32) -> u32 { a }
+    pub fn rust_roundtrip_u32(a: u32) -> u32 {
+        a
+    }
 }

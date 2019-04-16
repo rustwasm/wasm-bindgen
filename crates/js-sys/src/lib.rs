@@ -2360,15 +2360,27 @@ pub mod Reflect {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/set)
         #[wasm_bindgen(js_namespace = Reflect, catch)]
-        pub fn set(target: &JsValue, property_key: &JsValue, value: &JsValue) -> Result<bool, JsValue>;
+        pub fn set(
+            target: &JsValue,
+            property_key: &JsValue,
+            value: &JsValue,
+        ) -> Result<bool, JsValue>;
 
         /// The same as [`Reflect::set`](#method.set) except the key is an `f64`, which is slightly faster.
         #[wasm_bindgen(js_namespace = Reflect, js_name = "set", catch)]
-        pub fn set_f64(target: &JsValue, property_key: f64, value: &JsValue) -> Result<bool, JsValue>;
+        pub fn set_f64(
+            target: &JsValue,
+            property_key: f64,
+            value: &JsValue,
+        ) -> Result<bool, JsValue>;
 
         /// The same as [`Reflect::set`](#method.set) except the key is a `u32`, which is slightly faster.
         #[wasm_bindgen(js_namespace = Reflect, js_name = "set", catch)]
-        pub fn set_u32(target: &JsValue, property_key: u32, value: &JsValue) -> Result<bool, JsValue>;
+        pub fn set_u32(
+            target: &JsValue,
+            property_key: u32,
+            value: &JsValue,
+        ) -> Result<bool, JsValue>;
 
         /// The static `Reflect.set()` method works like setting a
         /// property on an object.
@@ -3100,7 +3112,10 @@ pub mod JSON {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
         #[wasm_bindgen(catch, js_namespace = JSON, js_name = stringify)]
-        pub fn stringify_with_replacer(obj: &JsValue, replacer: &JsValue) -> Result<JsString, JsValue>;
+        pub fn stringify_with_replacer(
+            obj: &JsValue,
+            replacer: &JsValue,
+        ) -> Result<JsString, JsValue>;
 
         /// The `JSON.stringify()` method converts a JavaScript value to a JSON string.
         ///
