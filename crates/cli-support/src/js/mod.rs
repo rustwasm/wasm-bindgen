@@ -1445,18 +1445,51 @@ impl<'a> Context<'a> {
         self.expose_text_encoder();
         self.expose_uint8_memory();
 
+        // A fast path that directly writes char codes into WASM memory as long
+        // as it finds only ASCII characters.
+        //
+        // This is much faster for common ASCII strings because it can avoid
+        // calling out into C++ TextEncoder code.
+        //
+        // This might be not very intuitive, but such calls are usually more
+        // expensive in mainstream engines than staying in the JS, and
+        // charCodeAt on ASCII strings is usually optimised to raw bytes.
+        let start_encoding_as_ascii = format!(
+            "
+                {}
+                let size = arg.length;
+                let ptr = wasm.__wbindgen_malloc(size);
+                let offset = 0;
+                {{
+                    const mem = getUint8Memory();
+                    for (; offset < arg.length; offset++) {{
+                        const code = arg.charCodeAt(offset);
+                        if (code > 0x7F) {{
+                            arg = arg.slice(offset);
+                            break;
+                        }}
+                        mem[ptr + offset] = code;
+                    }}
+                }}
+            ",
+            debug
+        );
+
         // The first implementation we have for this is to use
         // `TextEncoder#encode` which has been around for quite some time.
         let use_encode = format!(
             "
                 {}
-                const buf = cachedTextEncoder.encode(arg);
-                const ptr = wasm.__wbindgen_malloc(buf.length);
-                getUint8Memory().set(buf, ptr);
-                WASM_VECTOR_LEN = buf.length;
+                if (offset !== arg.length) {{
+                    const buf = cachedTextEncoder.encode(arg);
+                    ptr = wasm.__wbindgen_realloc(ptr, size, size += buf.length);
+                    getUint8Memory().set(buf, ptr + offset);
+                    offset += buf.length;
+                }}
+                WASM_VECTOR_LEN = offset;
                 return ptr;
             ",
-            debug
+            start_encoding_as_ascii
         );
 
         // Another possibility is to use `TextEncoder#encodeInto` which is much
@@ -1465,23 +1498,15 @@ impl<'a> Context<'a> {
         let use_encode_into = format!(
             "
                 {}
-                let size = arg.length;
-                let ptr = wasm.__wbindgen_malloc(size);
-                let writeOffset = 0;
-                while (true) {{
-                    const view = getUint8Memory().subarray(ptr + writeOffset, ptr + size);
-                    const {{ read, written }} = cachedTextEncoder.encodeInto(arg, view);
-                    writeOffset += written;
-                    if (read === arg.length) {{
-                        break;
-                    }}
-                    arg = arg.substring(read);
+                if (offset !== arg.length) {{
                     ptr = wasm.__wbindgen_realloc(ptr, size, size += arg.length * 3);
+                    const view = getUint8Memory().subarray(ptr + offset, ptr + size);
+                    offset += cachedTextEncoder.encodeInto(arg, view).written;
                 }}
-                WASM_VECTOR_LEN = writeOffset;
+                WASM_VECTOR_LEN = offset;
                 return ptr;
             ",
-            debug
+            start_encoding_as_ascii
         );
 
         // Looks like `encodeInto` doesn't currently work when the memory passed
