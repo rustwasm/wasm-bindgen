@@ -2667,9 +2667,10 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .expect("classes already written")
             .entry(class_name.to_string())
             .or_insert(ExportedClass::default());
-        class
-            .contents
-            .push_str(&format_doc_comments(&export.comments, Some(js_doc)));
+        
+        let doc_comments = format_doc_comments(&export.comments, Some(js_doc));
+        class.contents.push_str(&doc_comments);
+        class.typescript.push_str(&doc_comments);
 
         class.typescript.push_str("  "); // Indentation
 
