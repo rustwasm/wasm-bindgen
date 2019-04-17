@@ -39,9 +39,7 @@ fn parse_object() {
     assert_eq!(y.as_bool(), Some(true));
 
     let x = values.pop();
-    assert!(Number::is_integer(&x));
-    let x_num = Number::new(&x);
-    assert_eq!(x_num.value_of(), 5.0);
+    assert_eq!(x.as_f64().unwrap(), 5.0);
 }
 
 #[wasm_bindgen_test]
