@@ -52,6 +52,7 @@ fn is_safe_integer() {
     assert_eq!(Number::is_safe_integer(&INFINITY.into()), false);
 }
 
+#[allow(deprecated)]
 #[wasm_bindgen_test]
 fn new() {
     let n = Number::new(&JsValue::from(42));
@@ -72,7 +73,7 @@ fn parse_int_float() {
 
 #[wasm_bindgen_test]
 fn to_locale_string() {
-    let number = Number::new(&1234.45.into());
+    let number = Number::from(1234.45);
     assert_eq!(number.to_locale_string("en-US"), "1,234.45");
     // TODO: these tests seems to be system dependent, disable for now
     // assert_eq!(wasm.to_locale_string(number, "de-DE"), "1,234.45");
@@ -81,37 +82,35 @@ fn to_locale_string() {
 
 #[wasm_bindgen_test]
 fn to_precision() {
-    assert_eq!(Number::new(&0.1.into()).to_precision(3).unwrap(), "0.100");
-    assert!(Number::new(&10.into()).to_precision(101).is_err());
+    assert_eq!(Number::from(0.1).to_precision(3).unwrap(), "0.100");
+    assert!(Number::from(10).to_precision(101).is_err());
 }
 
 #[wasm_bindgen_test]
 fn to_string() {
-    assert_eq!(Number::new(&42.into()).to_string(10).unwrap(), "42");
-    assert_eq!(Number::new(&233.into()).to_string(16).unwrap(), "e9");
-    assert!(Number::new(&100.into()).to_string(100).is_err());
+    assert_eq!(Number::from(42).to_string(10).unwrap(), "42");
+    assert_eq!(Number::from(233).to_string(16).unwrap(), "e9");
+    assert!(Number::from(100).to_string(100).is_err());
 }
 
 #[wasm_bindgen_test]
 fn value_of() {
-    assert_eq!(Number::new(&42.into()).value_of(), 42.);
+    assert_eq!(Number::from(42).value_of(), 42.);
 }
 
 #[wasm_bindgen_test]
 fn to_fixed() {
-    assert_eq!(Number::new(&123.456.into()).to_fixed(2).unwrap(), "123.46");
-    assert!(Number::new(&10.into()).to_fixed(101).is_err());
+    assert_eq!(Number::from(123.456).to_fixed(2).unwrap(), "123.46");
+    assert!(Number::from(10).to_fixed(101).is_err());
 }
 
 #[wasm_bindgen_test]
 fn to_exponential() {
-    assert_eq!(
-        Number::new(&123456.into()).to_exponential(2).unwrap(),
-        "1.23e+5"
-    );
-    assert!(Number::new(&10.into()).to_exponential(101).is_err());
+    assert_eq!(Number::from(123456).to_exponential(2).unwrap(), "1.23e+5");
+    assert!(Number::from(10).to_exponential(101).is_err());
 }
 
+#[allow(deprecated)]
 #[wasm_bindgen_test]
 fn number_inheritance() {
     let n = Number::new(&JsValue::from(42));

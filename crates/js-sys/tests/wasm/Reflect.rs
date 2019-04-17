@@ -1,5 +1,5 @@
 use js_sys::*;
-use wasm_bindgen::{prelude::*, JsCast};
+use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/Reflect.js")]
