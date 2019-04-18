@@ -3641,11 +3641,47 @@ impl JsString {
     ) -> impl ExactSizeIterator<Item = u16> + DoubleEndedIterator<Item = u16> + 'a {
         (0..self.length()).map(move |i| self.char_code_at(i) as u16)
     }
+
+    /// If this string consists of a single Unicode code point, then this method
+    /// converts it into a Rust `char` without doing any allocations.
+    ///
+    /// If this JS value is not a valid UTF-8 or consists of more than a single
+    /// codepoint, then this returns `None`.
+    ///
+    /// Note that a single Unicode code point might be represented as more than
+    /// one code unit on the JavaScript side. For example, a JavaScript string
+    /// `"\uD801\uDC37"` is actually a single Unicode code point U+10437 which
+    /// corresponds to a character '𐐷'.
+    pub fn as_char(&self) -> Option<char> {
+        let len = self.length();
+
+        if len == 0 || len > 2 {
+            return None;
+        }
+
+        // This will be simplified when definitions are fixed:
+        // https://github.com/rustwasm/wasm-bindgen/issues/1362
+        let cp = self.code_point_at(0).as_f64().unwrap_throw() as u32;
+
+        let c = std::char::from_u32(cp)?;
+
+        if c.len_utf16() as u32 == len {
+            Some(c)
+        } else {
+            None
+        }
+    }
 }
 
 impl PartialEq<str> for JsString {
     fn eq(&self, other: &str) -> bool {
         String::from(self) == other
+    }
+}
+
+impl PartialEq<char> for JsString {
+    fn eq(&self, other: &char) -> bool {
+        self.as_char() == Some(*other)
     }
 }
 
@@ -3676,6 +3712,13 @@ impl<'a> From<&'a str> for JsString {
 impl From<String> for JsString {
     fn from(s: String) -> Self {
         From::from(&*s)
+    }
+}
+
+impl From<char> for JsString {
+    #[inline]
+    fn from(c: char) -> Self {
+        JsString::from_code_point1(c as u32).unwrap_throw()
     }
 }
 
