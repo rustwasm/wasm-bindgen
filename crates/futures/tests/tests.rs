@@ -52,6 +52,13 @@ fn error_future_is_rejected_promise() -> impl Future<Item = (), Error = JsValue>
     })
 }
 
+#[wasm_bindgen_test]
+fn debug_jsfuture() {
+    let p = js_sys::Promise::resolve(&JsValue::from(42));
+    let f = JsFuture::from(p);
+    assert_eq!(&format!("{:?}", f), "JsFuture { ... }");
+}
+
 #[wasm_bindgen]
 extern "C" {
     fn setTimeout(c: &Closure<FnMut()>);

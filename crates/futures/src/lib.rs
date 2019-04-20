@@ -104,6 +104,7 @@
 #![deny(missing_docs)]
 
 use std::cell::{Cell, RefCell};
+use std::fmt;
 use std::rc::Rc;
 use std::sync::Arc;
 
@@ -126,6 +127,12 @@ pub struct JsFuture {
     resolved: oneshot::Receiver<JsValue>,
     rejected: oneshot::Receiver<JsValue>,
     callbacks: Option<(Closure<FnMut(JsValue)>, Closure<FnMut(JsValue)>)>,
+}
+
+impl fmt::Debug for JsFuture {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "JsFuture {{ ... }}")
+    }
 }
 
 impl From<Promise> for JsFuture {
