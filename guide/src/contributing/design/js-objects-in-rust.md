@@ -174,7 +174,7 @@ the stack which resides on the left half. This discipline mirrors the stack/heap
 in normal programs, roughly.
 
 Another curious aspect of this generated module is the
-`__wbindgen_object_drop_ref` function. This is one that's actually imported from
+`__wbindgen_object_drop_ref` function. This is one that's actually imported to
 wasm rather than used in this module! This function is used to signal the end of
 the lifetime of a `JsValue` in Rust, or in other words when it goes out of
 scope. Otherwise though this function is largely just a general "slab free"
