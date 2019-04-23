@@ -529,7 +529,7 @@ pub mod Atomics {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/add)
         #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn add(typed_array: &JsValue, index: u32, value: f32) -> Result<f32, JsValue>;
+        pub fn add(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
 
         /// The static `Atomics.and()` method computes a bitwise AND with a given
         /// value at a given position in the array, and returns the old value
@@ -539,7 +539,7 @@ pub mod Atomics {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/and)
         #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn and(typed_array: &JsValue, index: u32, value: f32) -> Result<f32, JsValue>;
+        pub fn and(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
 
         /// The static `Atomics.compareExchange()` method exchanges a given
         /// replacement value at a given position in the array, if a given expected
@@ -553,9 +553,9 @@ pub mod Atomics {
         pub fn compare_exchange(
             typed_array: &JsValue,
             index: u32,
-            expected_value: f32,
-            replacement_value: f32,
-        ) -> Result<f32, JsValue>;
+            expected_value: f64,
+            replacement_value: f64,
+        ) -> Result<f64, JsValue>;
 
         /// The static `Atomics.exchange()` method stores a given value at a given
         /// position in the array and returns the old value at that position.
@@ -564,7 +564,7 @@ pub mod Atomics {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/exchange)
         #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn exchange(typed_array: &JsValue, index: u32, value: f32) -> Result<f32, JsValue>;
+        pub fn exchange(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
 
         /// The static `Atomics.isLockFree()` method is used to determine
         /// whether to use locks or atomic operations. It returns true,
@@ -580,7 +580,7 @@ pub mod Atomics {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/load)
         #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn load(typed_array: &JsValue, index: u32) -> Result<f32, JsValue>;
+        pub fn load(typed_array: &JsValue, index: u32) -> Result<f64, JsValue>;
 
         /// The static `Atomics.notify()` method notifies up some agents that
         /// are sleeping in the wait queue.
@@ -597,14 +597,14 @@ pub mod Atomics {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/or)
         #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn or(typed_array: &JsValue, index: u32, value: f32) -> Result<f32, JsValue>;
+        pub fn or(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
 
         /// The static `Atomics.store()` method stores a given value at the given
         /// position in the array and returns that value.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/store)
         #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn store(typed_array: &JsValue, index: u32, value: f32) -> Result<f32, JsValue>;
+        pub fn store(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
 
         /// The static `Atomics.sub()` method substracts a given value at a
         /// given position in the array and returns the old value at that position.
@@ -613,7 +613,7 @@ pub mod Atomics {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/sub)
         #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn sub(typed_array: &JsValue, index: u32, value: f32) -> Result<f32, JsValue>;
+        pub fn sub(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
 
         /// The static `Atomics.wait()` method verifies that a given
         /// position in an `Int32Array` still contains a given value
@@ -634,7 +634,7 @@ pub mod Atomics {
             typed_array: &JsValue,
             index: u32,
             value: i32,
-            timeout: f32,
+            timeout: f64,
         ) -> Result<JsValue, JsValue>;
 
         /// The static `Atomics.xor()` method computes a bitwise XOR
@@ -645,7 +645,7 @@ pub mod Atomics {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/xor)
         #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn xor(typed_array: &JsValue, index: u32, value: f32) -> Result<f32, JsValue>;
+        pub fn xor(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
     }
 }
 
