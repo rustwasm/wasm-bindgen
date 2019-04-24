@@ -3679,12 +3679,6 @@ impl PartialEq<str> for JsString {
     }
 }
 
-impl PartialEq<char> for JsString {
-    fn eq(&self, other: &char) -> bool {
-        self.as_char() == Some(*other)
-    }
-}
-
 impl<'a> PartialEq<&'a str> for JsString {
     fn eq(&self, other: &&'a str) -> bool {
         <JsString as PartialEq<str>>::eq(self, other)
