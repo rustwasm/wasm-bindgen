@@ -553,3 +553,14 @@ fn is_valid_utf16() {
     assert!(!JsString::from_char_code1(0xd800).is_valid_utf16());
     assert!(!JsString::from_char_code1(0xdc00).is_valid_utf16());
 }
+
+#[wasm_bindgen_test]
+fn as_char() {
+    assert_eq!(JsString::from('a').as_char(), Some('a'));
+    assert_eq!(JsString::from('🥑').as_char(), Some('🥑'));
+    assert_eq!(JsString::from("").as_char(), None);
+    assert_eq!(JsString::from("ab").as_char(), None);
+    assert_eq!(JsString::from_char_code1(0xd800).as_char(), None);
+    assert_eq!(JsString::from_char_code1(0xdc00).as_char(), None);
+    assert_eq!(JsString::from_char_code1(0xdfff).as_char(), None);
+}
