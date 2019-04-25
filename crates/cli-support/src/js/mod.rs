@@ -2963,7 +2963,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                     "\n  {}{}: {};",
                     if field.readonly { "readonly " } else { "" },
                     field.name,
-                    &cx.js_arguments[0].1
+                    &cx.js_arguments[0].type_
                 ));
                 cx.finish("", &format!("wasm.{}", wasm_setter), setter).0
             };

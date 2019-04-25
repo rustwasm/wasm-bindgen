@@ -2,6 +2,22 @@ use crate::descriptor::{Descriptor, Function};
 use crate::js::Context;
 use failure::{bail, Error};
 
+pub struct JsArgument {
+    pub optional: bool,
+    pub name: String,
+    pub type_: String,
+}
+
+impl JsArgument {
+    fn required(name: String, type_: String) -> Self {
+        Self { optional: false, name, type_ }
+    }
+
+    fn optional(name: String, type_: String) -> Self {
+        Self { optional: true, name, type_ }
+    }
+}
+
 /// Helper struct for manufacturing a shim in JS used to translate JS types to
 /// Rust, aka pass from JS back into Rust
 pub struct Js2Rust<'a, 'b: 'a> {
@@ -12,7 +28,7 @@ pub struct Js2Rust<'a, 'b: 'a> {
     rust_arguments: Vec<String>,
 
     /// Arguments and their types to the JS shim.
-    pub js_arguments: Vec<(String, String)>,
+    pub js_arguments: Vec<JsArgument>,
 
     /// Conversions that happen before we invoke the wasm function, such as
     /// converting a string to a ptr/length pair.
@@ -173,7 +189,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
         if let Some(kind) = arg.vector_kind() {
             self.js_arguments
-                .push((name.clone(), kind.js_ty().to_string()));
+                .push(JsArgument::required(name.clone(), kind.js_ty().to_string()));
 
             let func = self.cx.pass_to_wasm_function(kind)?;
             let val = if optional {
@@ -221,7 +237,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if arg.is_anyref() {
-            self.js_arguments.push((name.clone(), "any".to_string()));
+            self.js_arguments.push(JsArgument::required(name.clone(), "any".to_string()));
             if self.cx.config.anyref {
                 if optional {
                     self.cx.expose_add_to_anyref_table()?;
@@ -250,7 +266,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
             if arg.is_wasm_native() {
                 self.js_arguments
-                    .push((name.clone(), "number | undefined".to_string()));
+                    .push(JsArgument::optional(name.clone(), "number".to_string()));
 
                 if self.cx.config.debug {
                     self.cx.expose_assert_num();
@@ -272,7 +288,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
             if arg.is_abi_as_u32() {
                 self.js_arguments
-                    .push((name.clone(), "number | undefined".to_string()));
+                    .push(JsArgument::optional(name.clone(), "number".to_string()));
 
                 if self.cx.config.debug {
                     self.cx.expose_assert_num();
@@ -299,7 +315,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 };
                 self.cx.expose_uint32_memory();
                 self.js_arguments
-                    .push((name.clone(), "BigInt | undefined".to_string()));
+                    .push(JsArgument::optional(name.clone(), "BigInt".to_string()));
                 self.prelude(&format!(
                     "
                         {f}[0] = isLikeNone({name}) ? BigInt(0) : {name};
@@ -320,7 +336,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             match *arg {
                 Descriptor::Boolean => {
                     self.js_arguments
-                        .push((name.clone(), "boolean | undefined".to_string()));
+                        .push(JsArgument::optional(name.clone(), "boolean".to_string()));
                     if self.cx.config.debug {
                         self.cx.expose_assert_bool();
                         self.prelude(&format!(
@@ -337,7 +353,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 }
                 Descriptor::Char => {
                     self.js_arguments
-                        .push((name.clone(), "string | undefined".to_string()));
+                        .push(JsArgument::optional(name.clone(), "string".to_string()));
                     self.rust_arguments.push(format!(
                         "isLikeNone({0}) ? 0xFFFFFF : {0}.codePointAt(0)",
                         name
@@ -345,13 +361,13 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 }
                 Descriptor::Enum { hole } => {
                     self.js_arguments
-                        .push((name.clone(), "number | undefined".to_string()));
+                        .push(JsArgument::optional(name.clone(), "number".to_string()));
                     self.rust_arguments
                         .push(format!("isLikeNone({0}) ? {1} : {0}", name, hole));
                 }
                 Descriptor::RustStruct(ref s) => {
                     self.js_arguments
-                        .push((name.clone(), format!("{} | undefined", s)));
+                        .push(JsArgument::optional(name.clone(), s.to_string()));
                     self.prelude(&format!("let ptr{} = 0;", i));
                     self.prelude(&format!("if (!isLikeNone({0})) {{", name));
                     self.assert_class(&name, s);
@@ -371,7 +387,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if let Some(s) = arg.rust_struct() {
-            self.js_arguments.push((name.clone(), s.to_string()));
+            self.js_arguments.push(JsArgument::required(name.clone(), s.to_string()));
             self.assert_class(&name, s);
             self.assert_not_moved(&name);
             if arg.is_by_ref() {
@@ -385,7 +401,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if arg.number().is_some() {
-            self.js_arguments.push((name.clone(), "number".to_string()));
+            self.js_arguments.push(JsArgument::required(name.clone(), "number".to_string()));
 
             if self.cx.config.debug {
                 self.cx.expose_assert_num();
@@ -403,7 +419,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.cx.expose_uint64_cvt_shim()
             };
             self.cx.expose_uint32_memory();
-            self.js_arguments.push((name.clone(), "BigInt".to_string()));
+            self.js_arguments.push(JsArgument::required(name.clone(), "BigInt".to_string()));
             self.prelude(&format!(
                 "
                  {f}[0] = {name};
@@ -420,7 +436,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if arg.is_ref_anyref() {
-            self.js_arguments.push((name.clone(), "any".to_string()));
+            self.js_arguments.push(JsArgument::required(name.clone(), "any".to_string()));
             if self.cx.config.anyref {
                 self.anyref_args.push((self.rust_arguments.len(), false));
                 self.rust_arguments.push(name);
@@ -440,7 +456,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         match *arg {
             Descriptor::Boolean => {
                 self.js_arguments
-                    .push((name.clone(), "boolean".to_string()));
+                    .push(JsArgument::required(name.clone(), "boolean".to_string()));
                 if self.cx.config.debug {
                     self.cx.expose_assert_bool();
                     self.prelude(&format!(
@@ -453,7 +469,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.rust_arguments.push(format!("{}", name));
             }
             Descriptor::Char => {
-                self.js_arguments.push((name.clone(), "string".to_string()));
+                self.js_arguments.push(JsArgument::required(name.clone(), "string".to_string()));
                 self.rust_arguments.push(format!("{}.codePointAt(0)", name))
             }
             _ => bail!(
@@ -735,7 +751,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         let mut ret: String = self
             .js_arguments
             .iter()
-            .map(|a| format!("@param {{{}}} {}\n", a.1, a.0))
+            .map(|a| if a.optional {
+                format!("@param {{{} | undefined}} {}\n", a.type_, a.name)
+            } else {
+                format!("@param {{{}}} {}\n", a.type_, a.name)
+            })
             .collect();
         ret.push_str(&format!("@returns {{{}}}", self.ret_ty));
         ret
@@ -759,7 +779,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         let js_args = self
             .js_arguments
             .iter()
-            .map(|s| &s.0[..])
+            .map(|s| &s.name[..])
             .collect::<Vec<_>>()
             .join(", ");
         let mut js = format!("{}({}) {{\n", prefix, js_args);
@@ -788,7 +808,11 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         let ts_args = self
             .js_arguments
             .iter()
-            .map(|s| format!("{}: {}", s.0, s.1))
+            .map(|s| if s.optional {
+                format!("{}?: {}", s.name, s.type_)
+            } else {
+                format!("{}: {}", s.name, s.type_)
+            })
             .collect::<Vec<_>>()
             .join(", ");
         let mut ts = if prefix.is_empty() {
