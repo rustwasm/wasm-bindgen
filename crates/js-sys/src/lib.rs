@@ -507,7 +507,7 @@ extern "C" {
 /// They are used with `SharedArrayBuffer` objects.
 ///
 /// The Atomic operations are installed on an `Atomics` module. Unlike
-/// the other global objects, Atomics is not a constructor. You cannot
+/// the other global objects, `Atomics` is not a constructor. You cannot
 /// use it with a new operator or invoke the `Atomics` object as a
 /// function. All properties and methods of `Atomics` are static
 /// (as is the case with the Math object, for example).
@@ -518,18 +518,14 @@ pub mod Atomics {
 
     #[wasm_bindgen]
     extern "C" {
-        #[derive(Clone, Debug)]
-        #[wasm_bindgen(extends = Object)]
-        pub type Atomics;
-
         /// The static `Atomics.add()` method adds a given value at a given
         /// position in the array and returns the old value at that position.
         /// This atomic operation guarantees that no other write happens
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/add)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn add(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn add(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.and()` method computes a bitwise AND with a given
         /// value at a given position in the array, and returns the old value
@@ -538,8 +534,8 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/and)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn and(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn and(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.compareExchange()` method exchanges a given
         /// replacement value at a given position in the array, if a given expected
@@ -549,13 +545,13 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/compareExchange)
-        #[wasm_bindgen(static_method_of = Atomics, catch, js_name = compareExchange)]
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = compareExchange)]
         pub fn compare_exchange(
             typed_array: &JsValue,
             index: u32,
-            expected_value: f64,
-            replacement_value: f64,
-        ) -> Result<f64, JsValue>;
+            expected_value: i32,
+            replacement_value: i32,
+        ) -> Result<i32, JsValue>;
 
         /// The static `Atomics.exchange()` method stores a given value at a given
         /// position in the array and returns the old value at that position.
@@ -563,8 +559,8 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/exchange)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn exchange(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn exchange(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.isLockFree()` method is used to determine
         /// whether to use locks or atomic operations. It returns true,
@@ -572,23 +568,23 @@ pub mod Atomics {
         /// of integer `TypedArray` types.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/isLockFree)
-        #[wasm_bindgen(static_method_of = Atomics, js_name = isLockFree)]
+        #[wasm_bindgen(js_namespace = Atomics, js_name = isLockFree)]
         pub fn is_lock_free(size: u32) -> bool;
 
         /// The static `Atomics.load()` method returns a value at a given
         /// position in the array.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/load)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn load(typed_array: &JsValue, index: u32) -> Result<f64, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn load(typed_array: &JsValue, index: u32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.notify()` method notifies up some agents that
         /// are sleeping in the wait queue.
         /// Note: This operation works with a shared `Int32Array` only.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/notify)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn notify(typed_array: &JsValue, index: u32, count: u32) -> Result<u32, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn notify(typed_array: &Int32Array, index: u32, count: u32) -> Result<u32, JsValue>;
 
         /// The static `Atomics.or()` method computes a bitwise OR with a given value
         /// at a given position in the array, and returns the old value at that position.
@@ -596,15 +592,15 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/or)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn or(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn or(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.store()` method stores a given value at the given
         /// position in the array and returns that value.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/store)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn store(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn store(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.sub()` method substracts a given value at a
         /// given position in the array and returns the old value at that position.
@@ -612,8 +608,8 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/sub)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn sub(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn sub(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
 
         /// The static `Atomics.wait()` method verifies that a given
         /// position in an `Int32Array` still contains a given value
@@ -623,15 +619,15 @@ pub mod Atomics {
         /// and may not be allowed on the main thread.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn wait(typed_array: &JsValue, index: u32, value: i32) -> Result<JsString, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn wait(typed_array: &Int32Array, index: u32, value: i32) -> Result<JsString, JsValue>;
 
         /// Like `wait()`, but with timeout
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
-        #[wasm_bindgen(static_method_of = Atomics, catch, js_name = wait)]
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = wait)]
         pub fn wait_with_timeout(
-            typed_array: &JsValue,
+            typed_array: &Int32Array,
             index: u32,
             value: i32,
             timeout: f64,
@@ -644,8 +640,8 @@ pub mod Atomics {
         /// until the modified value is written back.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/xor)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn xor(typed_array: &JsValue, index: u32, value: f64) -> Result<f64, JsValue>;
+        #[wasm_bindgen(js_namespace = Atomics, catch)]
+        pub fn xor(typed_array: &JsValue, index: u32, value: i32) -> Result<i32, JsValue>;
     }
 }
 
