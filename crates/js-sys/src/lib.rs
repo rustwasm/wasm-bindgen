@@ -624,18 +624,18 @@ pub mod Atomics {
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
         #[wasm_bindgen(static_method_of = Atomics, catch)]
-        pub fn wait(typed_array: &JsValue, index: u32, value: i32) -> Result<JsValue, JsValue>;
+        pub fn wait(typed_array: &JsValue, index: u32, value: i32) -> Result<String, JsValue>;
 
         /// Like `wait()`, but with timeout
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait)
-        #[wasm_bindgen(static_method_of = Atomics, catch)]
+        #[wasm_bindgen(static_method_of = Atomics, catch, js_name = wait)]
         pub fn wait_with_timeout(
             typed_array: &JsValue,
             index: u32,
             value: i32,
             timeout: f64,
-        ) -> Result<JsValue, JsValue>;
+        ) -> Result<String, JsValue>;
 
         /// The static `Atomics.xor()` method computes a bitwise XOR
         /// with a given value at a given position in the array,
