@@ -996,6 +996,17 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)
     #[wasm_bindgen(constructor)]
+    pub fn new_with_args(args: &str, body: &str) -> Function;
+
+    /// The `Function` constructor creates a new `Function` object. Calling the
+    /// constructor directly can create functions dynamically, but suffers from
+    /// security and similar (but far less significant) performance issues
+    /// similar to `eval`. However, unlike `eval`, the `Function` constructor
+    /// allows executing code in the global scope, prompting better programming
+    /// habits and allowing for more efficient code minification.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function)
+    #[wasm_bindgen(constructor)]
     pub fn new_no_args(body: &str) -> Function;
 
     /// The apply() method calls a function with a given this value, and arguments provided as an array
