@@ -1450,6 +1450,7 @@ impl<'a> Context<'a> {
         }
         self.require_internal_export("__wbindgen_malloc")?;
         self.expose_uint32_memory();
+        self.expose_wasm_vector_len();
         if self.config.anyref {
             // TODO: using `addToAnyrefTable` goes back and forth between wasm
             // and JS a lot, we should have a bulk operation for this.
@@ -2667,7 +2668,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .expect("classes already written")
             .entry(class_name.to_string())
             .or_insert(ExportedClass::default());
-        
+
         let doc_comments = format_doc_comments(&export.comments, Some(js_doc));
         class.contents.push_str(&doc_comments);
         class.typescript.push_str(&doc_comments);
