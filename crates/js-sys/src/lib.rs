@@ -1247,6 +1247,19 @@ impl Iterator {
 
         it.next().is_function()
     }
+
+    fn next_value(&self) -> Option<Result<JsValue, JsValue>> {
+        match self.next() {
+            Ok(next) => {
+                if next.done() {
+                    None
+                } else {
+                    Some(Ok(next.value()))
+                }
+            }
+            Err(e) => Some(Err(e)),
+        }
+    }
 }
 
 /// An iterator over the JS `Symbol.iterator` iteration protocol.
@@ -1254,7 +1267,6 @@ impl Iterator {
 /// Use the `IntoIterator for &js_sys::Iterator` implementation to create this.
 pub struct Iter<'a> {
     js: &'a Iterator,
-    state: IterState,
 }
 
 /// An iterator over the JS `Symbol.iterator` iteration protocol.
@@ -1262,11 +1274,6 @@ pub struct Iter<'a> {
 /// Use the `IntoIterator for js_sys::Iterator` implementation to create this.
 pub struct IntoIter {
     js: Iterator,
-    state: IterState,
-}
-
-struct IterState {
-    done: bool,
 }
 
 impl<'a> IntoIterator for &'a Iterator {
@@ -1274,10 +1281,7 @@ impl<'a> IntoIterator for &'a Iterator {
     type IntoIter = Iter<'a>;
 
     fn into_iter(self) -> Iter<'a> {
-        Iter {
-            js: self,
-            state: IterState::new(),
-        }
+        Iter { js: self }
     }
 }
 
@@ -1285,7 +1289,7 @@ impl<'a> std::iter::Iterator for Iter<'a> {
     type Item = Result<JsValue, JsValue>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.state.next(self.js)
+        self.js.next_value()
     }
 }
 
@@ -1294,10 +1298,7 @@ impl IntoIterator for Iterator {
     type IntoIter = IntoIter;
 
     fn into_iter(self) -> IntoIter {
-        IntoIter {
-            js: self,
-            state: IterState::new(),
-        }
+        IntoIter { js: self }
     }
 }
 
@@ -1305,32 +1306,7 @@ impl std::iter::Iterator for IntoIter {
     type Item = Result<JsValue, JsValue>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.state.next(&self.js)
-    }
-}
-
-impl IterState {
-    fn new() -> IterState {
-        IterState { done: false }
-    }
-
-    fn next(&mut self, js: &Iterator) -> Option<Result<JsValue, JsValue>> {
-        if self.done {
-            return None;
-        }
-        let next = match js.next() {
-            Ok(val) => val,
-            Err(e) => {
-                self.done = true;
-                return Some(Err(e));
-            }
-        };
-        if next.done() {
-            self.done = true;
-            None
-        } else {
-            Some(Ok(next.value()))
-        }
+        self.js.next_value()
     }
 }
 
