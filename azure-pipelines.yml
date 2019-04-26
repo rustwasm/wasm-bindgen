@@ -170,15 +170,17 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly
+          toolchain: nightly-2019-04-01
       - template: ci/azure-install-sccache.yml
       - script: rustup component add rust-src
         displayName: "install rust-src"
       - script: |
+          set -e
           curl -L https://github.com/japaric/xargo/releases/download/v0.3.13/xargo-v0.3.13-x86_64-unknown-linux-musl.tar.gz | tar xzf -
           echo "##vso[task.setvariable variable=PATH;]$PATH:$PWD"
         displayName: "install xargo"
       - script: |
+          set -e
           sed -i 's/python/#python/' examples/raytrace-parallel/build.sh
           (cd examples/raytrace-parallel && ./build.sh)
           cp examples/raytrace-parallel/*.{js,html,wasm} $BUILD_ARTIFACTSTAGINGDIRECTORY
