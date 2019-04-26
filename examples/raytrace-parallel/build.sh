@@ -11,7 +11,7 @@ set -ex
 # * Next we need to compile everything with the `atomics` feature enabled,
 #   ensuring that LLVM will generate atomic instructions and such.
 RUSTFLAGS='-C target-feature=+atomics' \
-  rustup run nightly xargo build --target wasm32-unknown-unknown --release
+  xargo build --target wasm32-unknown-unknown --release
 
 # Threading support is disabled by default in wasm-bindgen, so use an env var
 # here to turn it on for our bindings generation. Also note that webpack isn't
