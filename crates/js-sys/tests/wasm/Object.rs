@@ -132,6 +132,8 @@ fn from_entries() {
     entry_one.push(&"bar".into());
     entry_two.push(&"baz".into());
     entry_two.push(&42.into());
+    array.push(&entry_one);
+    array.push(&entry_two);
     let object = Object::from_entries(&array).unwrap();
 
     assert_eq!(Reflect::get(object.as_ref(), &"foo".into()).unwrap(), "bar");
