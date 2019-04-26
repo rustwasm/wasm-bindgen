@@ -22,14 +22,14 @@ fn is_view() {
     assert!(ArrayBuffer::is_view(&JsValue::from(x)));
 }
 
-#[test]
+#[wasm_bindgen_test]
 fn slice() {
     let buf = ArrayBuffer::new(4);
     let slice = buf.slice(2);
     assert!(JsValue::from(slice).is_object());
 }
 
-#[test]
+#[wasm_bindgen_test]
 fn slice_with_end() {
     let buf = ArrayBuffer::new(4);
     let slice = buf.slice_with_end(1, 2);

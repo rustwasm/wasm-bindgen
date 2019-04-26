@@ -34,6 +34,7 @@ pub mod Reflect;
 pub mod RegExp;
 pub mod Set;
 pub mod SetIterator;
+pub mod SharedArrayBuffer;
 pub mod Symbol;
 pub mod SyntaxError;
 pub mod TypeError;
