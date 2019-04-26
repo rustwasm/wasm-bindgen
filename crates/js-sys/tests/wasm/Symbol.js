@@ -21,7 +21,7 @@ exports.test_is_concat_spreadable = function(sym) {
   numeric[sym] = false;
   alphaNumeric = alpha.concat(numeric);
 
-  assert.deepEqual(alphaNumeric, ["a", "b", "c", [1, 2, 3]]);
+  assert.deepEqual(alphaNumeric, ["a", "b", "c", numeric]);
 };
 
 exports.test_iterator = function(sym) {
