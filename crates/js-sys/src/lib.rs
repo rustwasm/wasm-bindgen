@@ -3400,6 +3400,14 @@ extern "C" {
     ///
     /// There are a few bindings to `from_char_code` in `js-sys`: `from_char_code1`, `from_char_code2`, etc...
     /// with different arities.
+    ///
+    /// Additionally, this function accepts `u16` for character codes, but
+    /// fixing others requires a breaking change release
+    /// (see https://github.com/rustwasm/wasm-bindgen/issues/1460 for details).
+    #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode, variadic)]
+    pub fn from_char_code(char_codes: &[u16]) -> JsString;
+
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode)
     #[wasm_bindgen(static_method_of = JsString, js_class = "String", js_name = fromCharCode)]
     pub fn from_char_code1(a: u32) -> JsString;
 
@@ -3432,6 +3440,10 @@ extern "C" {
     ///
     /// There are a few bindings to `from_code_point` in `js-sys`: `from_code_point1`, `from_code_point2`, etc...
     /// with different arities.
+    #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint, variadic)]
+    pub fn from_code_point(code_points: &[u32]) -> Result<JsString, JsValue>;
+
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint)
     #[wasm_bindgen(catch, static_method_of = JsString, js_class = "String", js_name = fromCodePoint)]
     pub fn from_code_point1(a: u32) -> Result<JsString, JsValue>;
 
