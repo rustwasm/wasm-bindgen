@@ -49,14 +49,14 @@ greet("World!");
   import JavaScript modules. Future compatible with [WebAssembly modules and
   ECMAScript modules integration][wasm-es-modules].
 
-* **Designed with the ["host bindings" proposal][host-bindings] in mind.**
+* **Designed with the ["Web IDL bindings" proposal][webidl-bindings] in mind.**
   Eventually, there won't be any JavaScript shims between Rust-generated wasm
   functions and native DOM methods. Because the wasm functions are statically
   type checked, some of those native methods' dynamic type checks should become
   unnecessary, promising to unlock even-faster-than-JavaScript DOM access.
 
 [wasm-es-modules]: https://github.com/WebAssembly/esm-integration
-[host-bindings]: https://github.com/WebAssembly/host-bindings/blob/master/proposals/host-bindings/Overview.md
+[webidl-bindings]: https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md
 
 ## Guide
 
