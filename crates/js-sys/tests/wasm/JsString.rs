@@ -92,15 +92,15 @@ fn from_char_code() {
         "½+¾="
     );
 
-    let codes_u16: Vec<u16> = codes.into_iter().map(|code| {
-        assert!(code <= u32::from(u16::max_value()));
-        code as u16
-    }).collect();
+    let codes_u16: Vec<u16> = codes
+        .into_iter()
+        .map(|code| {
+            assert!(code <= u32::from(u16::max_value()));
+            code as u16
+        })
+        .collect();
 
-    assert_eq!(
-        JsString::from_char_code(&codes_u16),
-        "½+¾="
-    );
+    assert_eq!(JsString::from_char_code(&codes_u16), "½+¾=");
 }
 
 #[wasm_bindgen_test]
@@ -121,10 +121,7 @@ fn from_code_point() {
         JsString::from_code_point4(codes[0], codes[1], codes[2], codes[3]).unwrap(),
         "☃★♲你"
     );
-    assert_eq!(
-        JsString::from_code_point(&codes).unwrap(),
-        "☃★♲你"
-    );
+    assert_eq!(JsString::from_code_point(&codes).unwrap(), "☃★♲你");
 
     assert!(!JsString::from_code_point1(0x10FFFF).is_err());
     assert!(JsString::from_code_point1(0x110000).is_err());
