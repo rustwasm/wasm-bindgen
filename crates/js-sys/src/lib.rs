@@ -1089,6 +1089,7 @@ impl Function {
     ///
     /// If this JS value is not an instance of a function then this returns
     /// `None`.
+    #[deprecated(note = "recommended to use dyn_ref instead which is now equivalent")]
     pub fn try_from(val: &JsValue) -> Option<&Function> {
         val.dyn_ref()
     }
@@ -3819,6 +3820,7 @@ impl JsString {
     ///
     /// If this JS value is not an instance of a string then this returns
     /// `None`.
+    #[deprecated(note = "recommended to use dyn_ref instead which is now equivalent")]
     pub fn try_from(val: &JsValue) -> Option<&JsString> {
         val.dyn_ref()
     }
