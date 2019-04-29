@@ -32,6 +32,66 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.43
+
+Released 2019-04-29.
+
+### Added
+
+* Support for `isize` and `usize` arrays has been added.
+  [#1448](https://github.com/rustwasm/wasm-bindgen/pull/1448)
+
+* Support customizing `dyn_ref` and friends via a new `is_type_of` attribute.
+  [#1405](https://github.com/rustwasm/wasm-bindgen/pull/1405)
+
+* A new `skip` attribute to `#[wasm_bindgen]` has been added to skip fields and
+  methods when generating bindings.
+  [#1410](https://github.com/rustwasm/wasm-bindgen/pull/1410)
+
+* More bindings have been added to `web-sys` for interfaces tagged with
+  `[NoInterfaceObject]` in WebIDL. These types always fail `dyn_ref` and friends
+  and must be manually casted into.
+  [#1449](https://github.com/rustwasm/wasm-bindgen/pull/1449)
+
+* Added `Debug for JsFuture`.
+  [#1477](https://github.com/rustwasm/wasm-bindgen/pull/1477)
+
+* Initial bindings for `Atomics` and `SharedArrayBuffer` have been added to
+  `js_sys`.
+  [#1463](https://github.com/rustwasm/wasm-bindgen/pull/1463)
+
+* Bindings for `Object.fromEntries` has been added to `js_sys`.
+  [#1456](https://github.com/rustwasm/wasm-bindgen/pull/1456)
+
+* Tuple structs exported to JS now have indexed struct properties.
+  [#1467](https://github.com/rustwasm/wasm-bindgen/pull/1467)
+
+* Bindings for some variadic functions have been added to `js_sys`.
+  [#1492](https://github.com/rustwasm/wasm-bindgen/pull/1492)
+  [#1490](https://github.com/rustwasm/wasm-bindgen/pull/1490)
+
+### Changed
+
+* Many `js-sys` types have received various tweaks and improvements to ensure
+  they're consistent and work similarly to native Rust types.
+  [#1447](https://github.com/rustwasm/wasm-bindgen/pull/1447)
+  [#1444](https://github.com/rustwasm/wasm-bindgen/pull/1444)
+  [#1473](https://github.com/rustwasm/wasm-bindgen/pull/1473)
+
+* Dummy types in `js-sys` only used to namespace methods were removed and now
+  modules are used for namespacing instead.
+  [#1451](https://github.com/rustwasm/wasm-bindgen/pull/1451)
+
+* Bindings in `web-sys` are formatted by default for ease of usage in IDEs.
+  [#1461](https://github.com/rustwasm/wasm-bindgen/pull/1461)
+
+### Fixed
+
+* Documentation for Rust methods now show up in TypeScript as well.
+  [#1472](https://github.com/rustwasm/wasm-bindgen/pull/1472)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.42
 
 Released 2019-04-11.
