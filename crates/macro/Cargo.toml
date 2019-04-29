@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen-macro"
-version = "0.2.42"
+version = "0.2.43"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/macro"
@@ -20,5 +20,5 @@ xxx_debug_only_print_generated_code = []
 strict-macro = ["wasm-bindgen-macro-support/strict-macro"]
 
 [dependencies]
-wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.42" }
+wasm-bindgen-macro-support = { path = "../macro-support", version = "=0.2.43" }
 quote = "0.6"
