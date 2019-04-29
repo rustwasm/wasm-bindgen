@@ -269,6 +269,8 @@ jobs:
         displayName: "Document js-sys"
       - script: cargo doc --no-deps --manifest-path crates/web-sys/Cargo.toml --all-features
         displayName: "Document web-sys"
+        env:
+          WEBIDL_RUSTFMT_BINDINGS: 0
       - script: cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
         displayName: "Document wasm-bindgen-futures"
       - script: cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
