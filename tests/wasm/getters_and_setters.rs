@@ -1,3 +1,5 @@
+use std::rc::Rc;
+use std::cell::Cell;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
@@ -10,6 +12,9 @@ extern "C" {
     fn _5_js(rules: Rules) -> Rules;
     fn _6_js(rules: Rules) -> Rules;
     fn _7_js(rules: Rules) -> Rules;
+
+    fn test_getter_compute(x: GetterCompute);
+    fn test_setter_compute(x: SetterCompute);
 }
 
 // Each getter/setter combination is derived
@@ -20,6 +25,7 @@ pub struct Rules {
 }
 
 #[wasm_bindgen]
+#[allow(non_snake_case)]
 impl Rules {
     #[wasm_bindgen]
     pub fn no_js_name__no_getter_with_name__no_getter_without_name(&self) -> i32 {
@@ -122,4 +128,36 @@ fn _6_rust() {
 fn _7_rust() {
     let rules = _7_js(Rules { field: 7 });
     assert_eq!(rules.field, 14);
+}
+
+#[wasm_bindgen]
+struct GetterCompute;
+
+#[wasm_bindgen]
+impl GetterCompute {
+    #[wasm_bindgen(getter)]
+    pub fn foo(&self) -> u32 { 3 }
+}
+
+#[wasm_bindgen_test]
+fn getter_compute() {
+    test_getter_compute(GetterCompute);
+}
+
+#[wasm_bindgen]
+struct SetterCompute(Rc<Cell<u32>>);
+
+#[wasm_bindgen]
+impl SetterCompute {
+    #[wasm_bindgen(setter)]
+    pub fn set_foo(&self, x: u32) {
+        self.0.set(x + 3);
+    }
+}
+
+#[wasm_bindgen_test]
+fn setter_compute() {
+    let r = Rc::new(Cell::new(3));
+    test_setter_compute(SetterCompute(r.clone()));
+    assert_eq!(r.get(), 100);
 }

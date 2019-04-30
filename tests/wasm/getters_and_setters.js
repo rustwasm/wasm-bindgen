@@ -48,3 +48,11 @@ exports._7_js = (rules) => {
     rules.new_js_name__setter_with_name__no_setter_without_name_for_field = value * 2;
     return rules;
 }
+
+exports.test_getter_compute = x => {
+  assert.equal(x.foo, 3)
+};
+
+exports.test_setter_compute = x => {
+  x.foo = 97;
+};
