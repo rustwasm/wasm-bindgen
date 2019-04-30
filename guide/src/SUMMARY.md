@@ -78,6 +78,7 @@
       - [`skip`](./reference/attributes/on-rust-exports/skip.md)
       - [`start`](./reference/attributes/on-rust-exports/start.md)
       - [`typescript_custom_section`](./reference/attributes/on-rust-exports/typescript_custom_section.md)
+      - [`getter` and `setter`](./reference/attributes/on-rust-exports/getter-and-setter.md)
 
 - [`web-sys`](./web-sys/index.md)
   - [Using `web-sys`](./web-sys/using-web-sys.md)

@@ -1,18 +1,24 @@
-use crate::decode;
-use crate::descriptor::{Descriptor, VectorKind};
-use crate::{Bindgen, EncodeInto, OutputMode};
-use failure::{bail, Error, ResultExt};
-use std::collections::{BTreeMap, HashMap, HashSet};
-use std::env;
-use std::fs;
-use walrus::{MemoryId, Module};
-use wasm_bindgen_wasm_interpreter::Interpreter;
-
-mod js2rust;
-use self::js2rust::{ExportedShim, Js2Rust};
-mod rust2js;
-use self::rust2js::Rust2Js;
 mod closures;
+mod js2rust;
+mod rust2js;
+
+use self::{
+    js2rust::{ExportedShim, Js2Rust},
+    rust2js::Rust2Js,
+};
+use crate::{
+    decode,
+    descriptor::{Descriptor, VectorKind},
+    Bindgen, EncodeInto, OutputMode,
+};
+use failure::{bail, Error, ResultExt};
+use std::{
+    collections::{BTreeMap, HashMap, HashSet},
+    env, fs,
+};
+use walrus::{MemoryId, Module};
+use wasm_bindgen_shared::struct_function_export_name;
+use wasm_bindgen_wasm_interpreter::Interpreter;
 
 pub struct Context<'a> {
     pub globals: String,
@@ -2189,13 +2195,8 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn require_class_wrap(&mut self, class: &str) {
-        self.exported_classes
-            .as_mut()
-            .expect("classes already written")
-            .entry(class.to_string())
-            .or_insert_with(ExportedClass::default)
-            .wrap_needed = true;
+    fn require_class_wrap(&mut self, name: &str) {
+        require_class(&mut self.exported_classes, name).wrap_needed = true;
     }
 
     fn import_identifier(&mut self, import: Import<'a>) -> String {
@@ -2634,63 +2635,75 @@ impl<'a, 'b> SubContext<'a, 'b> {
         class_name: &'b str,
         export: &decode::Export,
     ) -> Result<(), Error> {
-        let wasm_name =
-            wasm_bindgen_shared::struct_function_export_name(class_name, &export.function.name);
-
+        let mut fn_name = export.function.name;
+        let wasm_name = struct_function_export_name(class_name, fn_name);
         let descriptor = match self.cx.describe(&wasm_name) {
             None => return Ok(()),
             Some(d) => d,
         };
-
-        let function_name = if export.is_constructor {
-            "constructor"
-        } else {
-            &export.function.name
+        let docs = |raw_docs| format_doc_comments(&export.comments, Some(raw_docs));
+        let method = |class: &mut ExportedClass, docs, fn_name, fn_prfx, js, ts| {
+            class.contents.push_str(docs);
+            class.contents.push_str(fn_prfx);
+            class.contents.push_str(fn_name);
+            class.contents.push_str(js);
+            class.contents.push_str("\n");
+            class.typescript.push_str(docs);
+            class.typescript.push_str("  "); // Indentation
+            class.typescript.push_str(fn_prfx);
+            class.typescript.push_str(ts);
+            class.typescript.push_str("\n");
         };
-        let (js, ts, js_doc) = Js2Rust::new(function_name, self.cx)
-            .method(export.method, export.consumed)
-            .constructor(if export.is_constructor {
-                Some(class_name)
-            } else {
-                None
-            })
-            .process(descriptor.unwrap_function(), &export.function.arg_names)?
-            .finish(
-                "",
-                &format!("wasm.{}", wasm_name),
-                ExportedShim::Named(&wasm_name),
-            );
-
-        let class = self
-            .cx
-            .exported_classes
-            .as_mut()
-            .expect("classes already written")
-            .entry(class_name.to_string())
-            .or_insert(ExportedClass::default());
-
-        let doc_comments = format_doc_comments(&export.comments, Some(js_doc));
-        class.contents.push_str(&doc_comments);
-        class.typescript.push_str(&doc_comments);
-
-        class.typescript.push_str("  "); // Indentation
-
-        if export.is_constructor {
-            if class.has_constructor {
-                bail!("found duplicate constructor `{}`", export.function.name);
+        let finish_j2r = |mut j2r: Js2Rust| -> Result<(_, _, _), Error> {
+            Ok(j2r
+                .process(descriptor.unwrap_function(), &export.function.arg_names)?
+                .finish(
+                    "",
+                    &format!("wasm.{}", wasm_name),
+                    ExportedShim::Named(&wasm_name),
+                ))
+        };
+        match &export.method_kind {
+            decode::MethodKind::Constructor => {
+                fn_name = "constructor";
+                let mut j2r = Js2Rust::new(fn_name, self.cx);
+                j2r.constructor(Some(class_name));
+                let (js, ts, raw_docs) = finish_j2r(j2r)?;
+                let class = require_class(&mut self.cx.exported_classes, class_name);
+                if class.has_constructor {
+                    bail!("found duplicate constructor `{}`", export.function.name);
+                }
+                class.has_constructor = true;
+                let docs = docs(raw_docs);
+                method(class, &docs, fn_name, "", &js, &ts);
+                Ok(())
             }
-            class.has_constructor = true;
-        } else if !export.method {
-            class.contents.push_str("static ");
-            class.typescript.push_str("static ");
+            decode::MethodKind::Operation(operation) => {
+                let mut j2r = Js2Rust::new(fn_name, self.cx);
+                let mut fn_prfx = "";
+                if operation.is_static {
+                    fn_prfx = "static ";
+                } else {
+                    j2r.method(export.consumed);
+                }
+                let (js, ts, raw_docs) = finish_j2r(j2r)?;
+                let class = require_class(&mut self.cx.exported_classes, class_name);
+                let docs = docs(raw_docs);
+                match operation.kind {
+                    decode::OperationKind::Getter(getter_name) => {
+                        fn_name = getter_name;
+                        fn_prfx = "get ";
+                    }
+                    decode::OperationKind::Setter(setter_name) => {
+                        fn_name = setter_name;
+                        fn_prfx = "set ";
+                    }
+                    _ => {}
+                }
+                method(class, &docs, fn_name, fn_prfx, &js, &ts);
+                Ok(())
+            }
         }
-
-        class.contents.push_str(function_name);
-        class.contents.push_str(&js);
-        class.contents.push_str("\n");
-        class.typescript.push_str(&ts);
-        class.typescript.push_str("\n");
-        Ok(())
     }
 
     fn generate_import(&mut self, import: &decode::Import<'b>) -> Result<(), Error> {
@@ -2764,7 +2777,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         // the class if there's a method call.
         let name = match &import.method {
             Some(data) => self.determine_import(info, &data.class)?,
-            None => self.determine_import(info, &import.function.name)?,
+            None => self.determine_import(info, import.function.name)?,
         };
 
         // Build up our shim's state, and we'll use that to guide whether we
@@ -2872,7 +2885,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             let set = {
                 let setter = ExportedShim::Named(&wasm_setter);
                 let mut cx = Js2Rust::new(&field.name, self.cx);
-                cx.method(true, false)
+                cx.method(false)
                     .argument(&descriptor, None)?
                     .ret(&Descriptor::Unit)?;
                 ts_dst.push_str(&format!(
@@ -2885,7 +2898,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             };
             let getter = ExportedShim::Named(&wasm_getter);
             let (get, _ts, js_doc) = Js2Rust::new(&field.name, self.cx)
-                .method(true, false)
+                .method(false)
                 .ret(&descriptor)?
                 .finish("", &format!("wasm.{}", wasm_getter), getter);
             if !dst.ends_with("\n") {
@@ -2903,13 +2916,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             }
         }
 
-        let class = self
-            .cx
-            .exported_classes
-            .as_mut()
-            .expect("classes already written")
-            .entry(struct_.name.to_string())
-            .or_insert_with(Default::default);
+        let class = require_class(&mut self.cx.exported_classes, struct_.name);
         class.comments = format_doc_comments(&struct_.comments, None);
         class.contents.push_str(&dst);
         class.contents.push_str("\n");
@@ -3181,6 +3188,17 @@ fn format_doc_comments(comments: &[&str], js_doc_comments: Option<String>) -> St
         String::new()
     };
     format!("/**\n{}{}*/\n", body, doc)
+}
+
+fn require_class<'a>(
+    exported_classes: &'a mut Option<BTreeMap<String, ExportedClass>>,
+    name: &str,
+) -> &'a mut ExportedClass {
+    exported_classes
+        .as_mut()
+        .expect("classes already written")
+        .entry(name.to_string())
+        .or_insert_with(ExportedClass::default)
 }
 
 #[test]

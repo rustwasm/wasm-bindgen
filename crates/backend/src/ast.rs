@@ -34,19 +34,18 @@ pub struct Program {
 #[cfg_attr(feature = "extra-traits", derive(Debug))]
 #[derive(Clone)]
 pub struct Export {
-    /// The struct name, in Rust, this is attached to
-    pub rust_class: Option<Ident>,
-    /// The class name in JS this is attached to
-    pub js_class: Option<String>,
-    /// The type of `self` (either `self`, `&self`, or `&mut self`)
-    pub method_self: Option<MethodSelf>,
-    /// Whether or not this export is flagged as a constructor, returning an
-    /// instance of the `impl` type
-    pub is_constructor: bool,
-    /// The rust function
-    pub function: Function,
     /// Comments extracted from the rust source.
     pub comments: Vec<String>,
+    /// The rust function
+    pub function: Function,
+    /// The class name in JS this is attached to
+    pub js_class: Option<String>,
+    /// The kind (static, named, regular)
+    pub method_kind: MethodKind,
+    /// The type of `self` (either `self`, `&self`, or `&mut self`)
+    pub method_self: Option<MethodSelf>,
+    /// The struct name, in Rust, this is attached to
+    pub rust_class: Option<Ident>,
     /// The name of the rust function/method on the rust side.
     pub rust_name: Ident,
     /// Whether or not this function should be flagged as the wasm start
@@ -342,28 +341,28 @@ impl ImportKind {
     }
 }
 
-impl ImportFunction {
+impl Function {
     /// If the rust object has a `fn xxx(&self) -> MyType` method, get the name for a getter in
     /// javascript (in this case `xxx`, so you can write `val = obj.xxx`)
     pub fn infer_getter_property(&self) -> &str {
-        &self.function.name
+        &self.name
     }
 
     /// If the rust object has a `fn set_xxx(&mut self, MyType)` style method, get the name
     /// for a setter in javascript (in this case `xxx`, so you can write `obj.xxx = val`)
     pub fn infer_setter_property(&self) -> Result<String, Diagnostic> {
-        let name = self.function.name.to_string();
+        let name = self.name.to_string();
 
         // if `#[wasm_bindgen(js_name = "...")]` is used then that explicitly
         // because it was hand-written anyway.
-        if self.function.renamed_via_js_name {
+        if self.renamed_via_js_name {
             return Ok(name);
         }
 
         // Otherwise we infer names based on the Rust function name.
         if !name.starts_with("set_") {
             bail_span!(
-                syn::token::Pub(self.function.name_span),
+                syn::token::Pub(self.name_span),
                 "setters must start with `set_`, found: {}",
                 name,
             );

@@ -125,7 +125,7 @@ fn shared_program<'a>(
             .exports
             .iter()
             .map(|a| shared_export(a, intern))
-            .collect(),
+            .collect::<Result<Vec<_>, _>>()?,
         structs: prog
             .structs
             .iter()
@@ -172,21 +172,23 @@ fn shared_program<'a>(
     })
 }
 
-fn shared_export<'a>(export: &'a ast::Export, intern: &'a Interner) -> Export<'a> {
-    let (method, consumed) = match export.method_self {
-        Some(ast::MethodSelf::ByValue) => (true, true),
-        Some(_) => (true, false),
-        None => (false, false),
+fn shared_export<'a>(
+    export: &'a ast::Export,
+    intern: &'a Interner,
+) -> Result<Export<'a>, Diagnostic> {
+    let consumed = match export.method_self {
+        Some(ast::MethodSelf::ByValue) => true,
+        _ => false,
     };
-    Export {
+    let method_kind = from_ast_method_kind(&export.function, intern, &export.method_kind)?;
+    Ok(Export {
         class: export.js_class.as_ref().map(|s| &**s),
-        method,
-        consumed,
-        is_constructor: export.is_constructor,
-        function: shared_function(&export.function, intern),
         comments: export.comments.iter().map(|s| &**s).collect(),
+        consumed,
+        function: shared_function(&export.function, intern),
+        method_kind,
         start: export.start,
-    }
+    })
 }
 
 fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Function<'a> {
@@ -203,8 +205,8 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         })
         .collect::<Vec<_>>();
     Function {
-        name: &func.name,
         arg_names,
+        name: &func.name,
     }
 }
 
@@ -260,30 +262,7 @@ fn shared_import_function<'a>(
 ) -> Result<ImportFunction<'a>, Diagnostic> {
     let method = match &i.kind {
         ast::ImportFunctionKind::Method { class, kind, .. } => {
-            let kind = match kind {
-                ast::MethodKind::Constructor => MethodKind::Constructor,
-                ast::MethodKind::Operation(ast::Operation { is_static, kind }) => {
-                    let is_static = *is_static;
-                    let kind = match kind {
-                        ast::OperationKind::Regular => OperationKind::Regular,
-                        ast::OperationKind::Getter(g) => {
-                            let g = g.as_ref().map(|g| intern.intern(g));
-                            OperationKind::Getter(g.unwrap_or_else(|| i.infer_getter_property()))
-                        }
-                        ast::OperationKind::Setter(s) => {
-                            let s = s.as_ref().map(|s| intern.intern(s));
-                            OperationKind::Setter(match s {
-                                Some(s) => s,
-                                None => intern.intern_str(&i.infer_setter_property()?),
-                            })
-                        }
-                        ast::OperationKind::IndexingGetter => OperationKind::IndexingGetter,
-                        ast::OperationKind::IndexingSetter => OperationKind::IndexingSetter,
-                        ast::OperationKind::IndexingDeleter => OperationKind::IndexingDeleter,
-                    };
-                    MethodKind::Operation(Operation { is_static, kind })
-                }
-            };
+            let kind = from_ast_method_kind(&i.function, intern, kind)?;
             Some(MethodData { class, kind })
         }
         ast::ImportFunctionKind::Normal => None,
@@ -510,3 +489,34 @@ macro_rules! encode_api {
     );
 }
 wasm_bindgen_shared::shared_api!(encode_api);
+
+fn from_ast_method_kind<'a>(
+    function: &'a ast::Function,
+    intern: &'a Interner,
+    method_kind: &'a ast::MethodKind,
+) -> Result<MethodKind<'a>, Diagnostic> {
+    Ok(match method_kind {
+        ast::MethodKind::Constructor => MethodKind::Constructor,
+        ast::MethodKind::Operation(ast::Operation { is_static, kind }) => {
+            let is_static = *is_static;
+            let kind = match kind {
+                ast::OperationKind::Getter(g) => {
+                    let g = g.as_ref().map(|g| intern.intern(g));
+                    OperationKind::Getter(g.unwrap_or_else(|| function.infer_getter_property()))
+                }
+                ast::OperationKind::Regular => OperationKind::Regular,
+                ast::OperationKind::Setter(s) => {
+                    let s = s.as_ref().map(|s| intern.intern(s));
+                    OperationKind::Setter(match s {
+                        Some(s) => s,
+                        None => intern.intern_str(&function.infer_setter_property()?),
+                    })
+                }
+                ast::OperationKind::IndexingGetter => OperationKind::IndexingGetter,
+                ast::OperationKind::IndexingSetter => OperationKind::IndexingSetter,
+                ast::OperationKind::IndexingDeleter => OperationKind::IndexingDeleter,
+            };
+            MethodKind::Operation(Operation { is_static, kind })
+        }
+    })
+}

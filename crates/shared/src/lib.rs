@@ -88,11 +88,10 @@ macro_rules! shared_api {
 
         struct Export<'a> {
             class: Option<&'a str>,
-            method: bool,
-            consumed: bool,
-            is_constructor: bool,
-            function: Function<'a>,
             comments: Vec<&'a str>,
+            consumed: bool,
+            function: Function<'a>,
+            method_kind: MethodKind<'a>,
             start: bool,
         }
 
