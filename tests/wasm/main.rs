@@ -23,6 +23,7 @@ pub mod duplicates;
 pub mod enums;
 #[path = "final.rs"]
 pub mod final_;
+pub mod getters_and_setters;
 pub mod import_class;
 pub mod imports;
 pub mod js_objects;

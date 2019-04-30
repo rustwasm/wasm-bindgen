@@ -384,22 +384,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             wasm.ret.clone()
         };
 
-        let mut operation_kind = ast::OperationKind::Regular;
-        if let Some(g) = opts.getter() {
-            operation_kind = ast::OperationKind::Getter(g.clone());
-        }
-        if let Some(s) = opts.setter() {
-            operation_kind = ast::OperationKind::Setter(s.clone());
-        }
-        if opts.indexing_getter().is_some() {
-            operation_kind = ast::OperationKind::IndexingGetter;
-        }
-        if opts.indexing_setter().is_some() {
-            operation_kind = ast::OperationKind::IndexingSetter;
-        }
-        if opts.indexing_deleter().is_some() {
-            operation_kind = ast::OperationKind::IndexingDeleter;
-        }
+        let operation_kind = operation_kind(&opts)?;
 
         let kind = if opts.method().is_some() {
             let class = wasm.arguments.get(0).ok_or_else(|| {
@@ -699,18 +684,21 @@ fn function_from_decl(
         syn::ReturnType::Type(_, ty) => Some(replace_self(*ty)),
     };
 
-    let js_name = opts.js_name();
+    let (name, name_span, renamed_via_js_name) =
+        if let Some((js_name, js_name_span)) = opts.js_name() {
+            (js_name.to_string(), js_name_span, true)
+        } else {
+            (decl_name.to_string(), decl_name.span(), false)
+        };
     Ok((
         ast::Function {
-            name: js_name
-                .map(|s| s.0.to_string())
-                .unwrap_or(decl_name.to_string()),
-            name_span: js_name.map(|s| s.1).unwrap_or(decl_name.span()),
-            renamed_via_js_name: js_name.is_some(),
             arguments,
+            name_span,
+            name,
+            renamed_via_js_name,
             ret,
-            rust_vis: vis,
             rust_attrs: attrs,
+            rust_vis: vis,
         },
         method_self,
     ))
@@ -755,15 +743,21 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                         bail_span!(&f.decl.inputs, "the start function cannot have arguments",);
                     }
                 }
+                let method_kind = ast::MethodKind::Operation(ast::Operation {
+                    is_static: true,
+                    kind: operation_kind(&opts)?,
+                });
+                let rust_name = f.ident.clone();
+                let start = opts.start().is_some();
                 program.exports.push(ast::Export {
-                    rust_class: None,
-                    js_class: None,
-                    method_self: None,
-                    is_constructor: false,
                     comments,
-                    rust_name: f.ident.clone(),
-                    start: opts.start().is_some(),
                     function: f.convert(opts)?,
+                    js_class: None,
+                    method_kind,
+                    method_self: None,
+                    rust_class: None,
+                    rust_name,
+                    start,
                 });
             }
             syn::Item::Struct(mut s) => {
@@ -942,7 +936,6 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
 
         let opts = BindgenAttrs::find(&mut self.attrs)?;
         let comments = extract_doc_comments(&self.attrs);
-        let is_constructor = opts.constructor().is_some();
         let (function, method_self) = function_from_decl(
             &self.sig.ident,
             &opts,
@@ -952,16 +945,22 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
             true,
             Some(class),
         )?;
-
+        let method_kind = if opts.constructor().is_some() {
+            ast::MethodKind::Constructor
+        } else {
+            let is_static = method_self.is_none();
+            let kind = operation_kind(&opts)?;
+            ast::MethodKind::Operation(ast::Operation { is_static, kind })
+        };
         program.exports.push(ast::Export {
-            rust_class: Some(class.clone()),
-            js_class: Some(js_class.to_string()),
-            method_self,
-            is_constructor,
-            function,
             comments,
-            start: false,
+            function,
+            js_class: Some(js_class.to_string()),
+            method_kind,
+            method_self,
+            rust_class: Some(class.clone()),
             rust_name: self.sig.ident.clone(),
+            start: false,
         });
         opts.check_used()?;
         Ok(())
@@ -1293,4 +1292,24 @@ pub fn assert_all_attrs_checked() {
     ATTRS.with(|state| {
         assert_eq!(state.parsed.get(), state.checks.get());
     })
+}
+
+fn operation_kind(opts: &BindgenAttrs) -> Result<ast::OperationKind, Diagnostic> {
+    let mut operation_kind = ast::OperationKind::Regular;
+    if let Some(g) = opts.getter() {
+        operation_kind = ast::OperationKind::Getter(g.clone());
+    }
+    if let Some(s) = opts.setter() {
+        operation_kind = ast::OperationKind::Setter(s.clone());
+    }
+    if opts.indexing_getter().is_some() {
+        operation_kind = ast::OperationKind::IndexingGetter;
+    }
+    if opts.indexing_setter().is_some() {
+        operation_kind = ast::OperationKind::IndexingSetter;
+    }
+    if opts.indexing_deleter().is_some() {
+        operation_kind = ast::OperationKind::IndexingDeleter;
+    }
+    Ok(operation_kind)
 }
