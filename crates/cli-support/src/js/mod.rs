@@ -13,7 +13,7 @@ use crate::{
 };
 use failure::{bail, Error, ResultExt};
 use std::{
-    collections::{BTreeMap, HashMap, HashSet},
+    collections::{BTreeMap, HashMap, HashSet, BTreeSet},
     env, fs,
 };
 use walrus::{MemoryId, Module};
@@ -918,13 +918,41 @@ impl<'a> Context<'a> {
         } else {
             ""
         };
-
         let ts = Self::ts_for_init_fn(mem.import.is_some());
+
+        // Generate extra initialization for the `imports` object if necessary
+        // based on the values in `direct_imports` we find. These functions are
+        // intended to be imported directly to the wasm module and we need to
+        // ensure that the modules are actually imported from and inserted into
+        // the object correctly.
+        let mut map = BTreeMap::new();
+        for &(module, name) in self.direct_imports.values() {
+            map.entry(module).or_insert(BTreeSet::new()).insert(name);
+        }
+        let mut imports_init = String::new();
+        for (module, names) in map {
+            imports_init.push_str("imports['");
+            imports_init.push_str(module);
+            imports_init.push_str("'] = { ");
+            for (i, name) in names.into_iter().enumerate() {
+                if i != 0 {
+                    imports_init.push_str(", ");
+                }
+                let import = Import::Module { module, name, field: None };
+                let identifier = self.import_identifier(import);
+                imports_init.push_str(name);
+                imports_init.push_str(": ");
+                imports_init.push_str(&identifier);
+            }
+            imports_init.push_str(" };\n");
+        }
+
         let js = format!(
             "\
                 function init(module{init_memory_arg}) {{
                     let result;
                     const imports = {{ './{module}': __exports }};
+                    {imports_init}
                     if (module instanceof URL || typeof module === 'string' || module instanceof Request) {{
                         {init_memory2}
                         const response = fetch(module);
@@ -973,6 +1001,7 @@ impl<'a> Context<'a> {
             } else {
                 ""
             },
+            imports_init = imports_init,
         );
 
         (js, ts)

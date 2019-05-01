@@ -39,3 +39,4 @@ fn can_log_html_strings() {
 }
 
 pub mod snippets;
+pub mod modules;
