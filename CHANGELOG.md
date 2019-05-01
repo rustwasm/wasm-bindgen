@@ -41,8 +41,11 @@ Released 2019-04-29.
 * Support for `isize` and `usize` arrays has been added.
   [#1448](https://github.com/rustwasm/wasm-bindgen/pull/1448)
 
-* Support customizing `dyn_ref` and friends via a new `is_type_of` attribute.
+* Support customizing `dyn_ref` and friends via a new `is_type_of` attribute and
+  apply it to some `js_sys` bindings.
   [#1405](https://github.com/rustwasm/wasm-bindgen/pull/1405)
+  [#1450](https://github.com/rustwasm/wasm-bindgen/pull/1450)
+  [#1490](https://github.com/rustwasm/wasm-bindgen/pull/1490)
 
 * A new `skip` attribute to `#[wasm_bindgen]` has been added to skip fields and
   methods when generating bindings.
@@ -66,9 +69,11 @@ Released 2019-04-29.
 * Tuple structs exported to JS now have indexed struct properties.
   [#1467](https://github.com/rustwasm/wasm-bindgen/pull/1467)
 
-* Bindings for some variadic functions have been added to `js_sys`.
+* Binding for `new Function(args, body)` has been added to `js_sys`.
   [#1492](https://github.com/rustwasm/wasm-bindgen/pull/1492)
-  [#1490](https://github.com/rustwasm/wasm-bindgen/pull/1490)
+
+* Bindings for some variadic functions have been added to `js_sys`.
+  [#1491](https://github.com/rustwasm/wasm-bindgen/pull/1491)
 
 ### Changed
 
