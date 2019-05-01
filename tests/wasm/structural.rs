@@ -8,18 +8,18 @@ extern "C" {
 
 #[wasm_bindgen]
 extern "C" {
-    pub type Foo;
+    pub type StructuralFoo;
 
     #[wasm_bindgen(method, structural)]
-    fn bar(this: &Foo);
+    fn bar(this: &StructuralFoo);
     #[wasm_bindgen(method, getter, structural)]
-    fn baz(this: &Foo) -> u32;
+    fn baz(this: &StructuralFoo) -> u32;
     #[wasm_bindgen(method, setter, structural)]
-    fn set_baz(this: &Foo, val: u32);
+    fn set_baz(this: &StructuralFoo, val: u32);
 }
 
 #[wasm_bindgen]
-pub fn run(a: &Foo) {
+pub fn run(a: &StructuralFoo) {
     a.bar();
     assert_eq!(a.baz(), 1);
     a.set_baz(2);

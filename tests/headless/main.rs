@@ -38,5 +38,14 @@ fn can_log_html_strings() {
     log("<script>alert('lol')</script>");
 }
 
+#[wasm_bindgen]
+pub fn import_export_same_name() {
+    #[wasm_bindgen(module = "/tests/headless/main.js")]
+    extern "C" {
+        fn import_export_same_name();
+    }
+    import_export_same_name();
+}
+
 pub mod snippets;
 pub mod modules;
