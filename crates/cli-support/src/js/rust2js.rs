@@ -716,13 +716,23 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 try {{\n\
                     {}
                 }} catch (e) {{\n\
-                    console.error(\"wasm-bindgen: imported JS function that \
+                    let error = (function () {{
+                        try {{
+                            return e instanceof Error
+                                ? `${{e.message}}\n\nStack:\n${{e.stack}}`
+                                : e.toString();
+                        }} catch(_) {{
+                            return \"<failed to stringify thrown value>\";
+                        }}
+                    }}());
+                    console.error(\"wasm-bindgen: imported JS function `{}` that \
                                     was not marked as `catch` threw an error:\", \
-                                    e);
+                                    error);
                     throw e;
                 }}\
                 ",
                 &invoc,
+                shim,
             );
         }
 
