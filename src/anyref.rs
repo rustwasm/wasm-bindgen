@@ -201,7 +201,7 @@ pub extern fn __wbindgen_anyref_table_dealloc(idx: usize) {
 #[no_mangle]
 pub unsafe extern fn __wbindgen_drop_anyref_slice(ptr: *mut JsValue, len: usize) {
     for slot in slice::from_raw_parts_mut(ptr, len) {
-        ptr::drop_in_place(slot);
+        __wbindgen_anyref_table_dealloc(slot.idx as usize);
     }
 }
 
