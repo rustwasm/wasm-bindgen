@@ -189,6 +189,7 @@ fn immutable_slice_whitelist() -> BTreeSet<&'static str> {
         "vertexAttrib3fv",
         "vertexAttrib4fv",
         "bufferData",
+        "bufferSubData",
         "texImage2D",
         "texSubImage2D",
         "compressedTexImage2D",
@@ -196,6 +197,9 @@ fn immutable_slice_whitelist() -> BTreeSet<&'static str> {
         "texImage3D",
         "texSubImage3D",
         "compressedTexImage3D",
+        "clearBufferfv",
+        "clearBufferiv",
+        "clearBufferuiv",
         // TODO: Add another type's functions here. Leave a comment header with the type name
     ])
 }
