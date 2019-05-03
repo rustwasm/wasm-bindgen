@@ -380,6 +380,7 @@ jobs:
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         env:
           GITHUB_DEPLOY_KEY: $(GITHUB_DEPLOY_KEY)
+      - script: find gh-pages
       - task: GithubRelease@0
         condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
         displayName: 'Create GitHub Release'
