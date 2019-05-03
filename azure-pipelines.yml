@@ -364,6 +364,7 @@ jobs:
           mk x86_64-unknown-linux-musl linux
           mk x86_64-apple-darwin darwin
           mk x86_64-pc-windows-msvc windows
+          rm .gitignore
         displayName: "prepare the github releases tarball artifacts"
       - task: PublishPipelineArtifact@0
         displayName: "publish gh_release artifact"
