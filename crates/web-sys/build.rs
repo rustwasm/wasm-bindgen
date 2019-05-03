@@ -112,15 +112,11 @@ fn try_main() -> Result<(), failure::Error> {
     println!("cargo:rustc-env=BINDINGS={}", out_file_path.display());
 
     // run rustfmt on the generated file - really handy for debugging
+    //
+    // This is opportunistic though so don't assert that it succeeds.
     println!("cargo:rerun-if-env-changed=WEBIDL_RUSTFMT_BINDINGS");
     if env::var("WEBIDL_RUSTFMT_BINDINGS").ok() != Some("0".to_string()) {
-        let status = Command::new("rustfmt")
-            .arg(&out_file_path)
-            .status()
-            .context("running rustfmt")?;
-        if !status.success() {
-            println!("cargo:warning=rustfmt failed: {}", status)
-        }
+        drop(Command::new("rustfmt").arg(&out_file_path).status());
     }
 
     Ok(())
