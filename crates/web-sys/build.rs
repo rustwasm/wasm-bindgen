@@ -1,9 +1,3 @@
-extern crate env_logger;
-#[macro_use]
-extern crate failure;
-extern crate sourcefile;
-extern crate wasm_bindgen_webidl;
-
 use failure::{Fail, ResultExt};
 use sourcefile::SourceFile;
 use std::collections::HashSet;
