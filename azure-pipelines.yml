@@ -144,15 +144,9 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
       - template: ci/azure-install-sccache.yml
+      - template: ci/azure-install-wasm-pack.yml
       - script: mv _package.json package.json && npm install && rm package.json
         displayName: "run npm install"
-      - script: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
-        displayName: "install wasm-pack"
-      - script: |
-          set -ex
-          cargo build -p wasm-bindgen-cli
-          ln -snf `pwd`/target/debug/wasm-bindgen $HOME/.cargo/bin/wasm-bindgen
-        displayName: "install wasm-bindgen for `wasm-pack` to use"
       - script: |
           for dir in `ls examples | grep -v README | grep -v asm.js | grep -v raytrace | grep -v without-a-bundler`; do
             (cd examples/$dir &&
@@ -189,6 +183,19 @@ jobs:
         inputs:
           artifactName: examples2
           targetPath: '$(Build.ArtifactStagingDirectory)'
+
+  - job: build_benchmarks
+    displayName: "Build benchmarks"
+    steps:
+      - template: ci/azure-install-rust.yml
+      - template: ci/azure-install-sccache.yml
+      - template: ci/azure-install-wasm-pack.yml
+      - script: wasm-pack build --target web benchmarks
+        displayName: "build benchmarks"
+      - task: PublishPipelineArtifact@0
+        inputs:
+          artifactName: benchmarks
+          targetPath: benchmarks
 
   - job: dist_linux
     displayName: "Dist Linux binary"
@@ -292,6 +299,7 @@ jobs:
       - dist_windows
       - build_examples
       - build_raytrace
+      - build_benchmarks
     displayName: "Deploy everything"
     steps:
       - template: ci/azure-install-rust.yml
@@ -315,6 +323,11 @@ jobs:
         inputs:
           artifactName: examples2
           targetPath: gh-pages/exbuild/raytrace-parallel
+      - task: DownloadPipelineArtifact@0
+        displayName: "Download benchmarks"
+        inputs:
+          artifactName: benchmarks
+          targetPath: gh-pages/benchmarks
       - task: DownloadPipelineArtifact@0
         displayName: "Download dist - windows"
         inputs:
