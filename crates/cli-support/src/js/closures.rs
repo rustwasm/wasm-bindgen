@@ -234,7 +234,7 @@ impl ClosureDescriptors {
                 js,
                 input.add_heap_object("real"),
             );
-            input.export(&import_name, &body, None);
+            input.export(&import_name, &body, None)?;
 
             let module = "__wbindgen_placeholder__";
             let id = input.module.add_import_func(module, &import_name, ty);

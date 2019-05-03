@@ -90,3 +90,5 @@ exports.test_rust_optional = function() {
 
 exports.RenamedInRust = class {};
 exports.new_renamed = () => new exports.RenamedInRust;
+
+exports.import_export_same_name = () => {};

@@ -111,15 +111,15 @@ fn another_vector_return() {
 #[wasm_bindgen_test]
 fn serde() {
     #[derive(Deserialize, Serialize)]
-    pub struct Foo {
+    pub struct SerdeFoo {
         a: u32,
         b: String,
-        c: Option<Bar>,
-        d: Bar,
+        c: Option<SerdeBar>,
+        d: SerdeBar,
     }
 
     #[derive(Deserialize, Serialize)]
-    pub struct Bar {
+    pub struct SerdeBar {
         a: u32,
     }
 
@@ -127,16 +127,16 @@ fn serde() {
     assert_eq!(js.as_string(), Some("foo".to_string()));
 
     let ret = verify_serde(
-        JsValue::from_serde(&Foo {
+        JsValue::from_serde(&SerdeFoo {
             a: 0,
             b: "foo".to_string(),
             c: None,
-            d: Bar { a: 1 },
+            d: SerdeBar { a: 1 },
         })
         .unwrap(),
     );
 
-    let foo = ret.into_serde::<Foo>().unwrap();
+    let foo = ret.into_serde::<SerdeFoo>().unwrap();
     assert_eq!(foo.a, 2);
     assert_eq!(foo.b, "bar");
     assert!(foo.c.is_some());

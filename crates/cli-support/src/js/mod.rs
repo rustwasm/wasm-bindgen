@@ -13,7 +13,7 @@ use crate::{
 };
 use failure::{bail, Error, ResultExt};
 use std::{
-    collections::{BTreeMap, HashMap, HashSet, BTreeSet},
+    collections::{BTreeMap, BTreeSet, HashMap, HashSet},
     env, fs,
 };
 use walrus::{MemoryId, Module};
@@ -43,9 +43,10 @@ pub struct Context<'a> {
     /// called locally.
     pub imported_names: HashMap<ImportModule<'a>, HashMap<&'a str, String>>,
 
-    /// A set of all imported identifiers to the number of times they've been
-    /// imported, used to generate new identifiers.
-    pub imported_identifiers: HashMap<String, usize>,
+    /// A set of all defined identifiers through either exports or imports to
+    /// the number of times they've been used, used to generate new
+    /// identifiers.
+    pub defined_identifiers: HashMap<String, usize>,
 
     /// A map of all imported shim functions which can actually be directly
     /// imported from the containing module. The mapping here maps to a tuple,
@@ -157,7 +158,17 @@ impl<'a> Context<'a> {
         self.exposed_globals.as_mut().unwrap().insert(name)
     }
 
-    fn export(&mut self, name: &str, contents: &str, comments: Option<String>) {
+    fn export(
+        &mut self,
+        export_name: &str,
+        contents: &str,
+        comments: Option<String>,
+    ) -> Result<(), Error> {
+        let definition_name = generate_identifier(export_name, &mut self.defined_identifiers);
+        if contents.starts_with("class") && definition_name != export_name {
+            bail!("cannot shadow already defined class `{}`", export_name);
+        }
+
         let contents = contents.trim();
         if let Some(ref c) = comments {
             self.globals.push_str(c);
@@ -168,16 +179,16 @@ impl<'a> Context<'a> {
                 experimental_modules: false,
             } => {
                 if contents.starts_with("class") {
-                    format!("{1}\nmodule.exports.{0} = {0};\n", name, contents)
+                    format!("{}\nmodule.exports.{1} = {1};\n", contents, export_name)
                 } else {
-                    format!("module.exports.{} = {};\n", name, contents)
+                    format!("module.exports.{} = {};\n", export_name, contents)
                 }
             }
             OutputMode::NoModules { .. } => {
                 if contents.starts_with("class") {
-                    format!("{1}\n__exports.{0} = {0};\n", name, contents)
+                    format!("{}\n__exports.{1} = {1};\n", contents, export_name)
                 } else {
-                    format!("__exports.{} = {};\n", name, contents)
+                    format!("__exports.{} = {};\n", export_name, contents)
                 }
             }
             OutputMode::Bundler { .. }
@@ -185,11 +196,21 @@ impl<'a> Context<'a> {
                 experimental_modules: true,
             } => {
                 if contents.starts_with("function") {
-                    format!("export function {}{}\n", name, &contents[8..])
+                    let body = &contents[8..];
+                    if export_name == definition_name {
+                        format!("export function {}{}\n", export_name, body)
+                    } else {
+                        format!(
+                            "function {}{}\nexport {{ {} as {} }};\n",
+                            definition_name, body, definition_name, export_name,
+                        )
+                    }
                 } else if contents.starts_with("class") {
+                    assert_eq!(export_name, definition_name);
                     format!("export {}\n", contents)
                 } else {
-                    format!("export const {} = {};\n", name, contents)
+                    assert_eq!(export_name, definition_name);
+                    format!("export const {} = {};\n", export_name, contents)
                 }
             }
             OutputMode::Web => {
@@ -197,28 +218,43 @@ impl<'a> Context<'a> {
                 // wasm-bindgen as we're not using the module itself as the
                 // import object but rather the `__exports` map we'll be
                 // initializing below.
-                let export = if name.starts_with("__wbindgen")
-                    || name.starts_with("__wbg_")
-                    || name.starts_with("__widl_")
+                let export = if export_name.starts_with("__wbindgen")
+                    || export_name.starts_with("__wbg_")
+                    || export_name.starts_with("__widl_")
                 {
                     ""
                 } else {
                     "export "
                 };
                 if contents.starts_with("function") {
-                    format!("{}function {}{}\n", export, name, &contents[8..])
+                    let body = &contents[8..];
+                    if export_name == definition_name {
+                        format!(
+                            "{}function {name}{}\n__exports.{name} = {name}",
+                            export,
+                            body,
+                            name = export_name,
+                        )
+                    } else {
+                        format!(
+                            "{}function {defname}{}\n__exports.{name} = {defname}",
+                            export,
+                            body,
+                            name = export_name,
+                            defname = definition_name,
+                        )
+                    }
                 } else if contents.starts_with("class") {
+                    assert_eq!(export_name, definition_name);
                     format!("{}{}\n", export, contents)
                 } else {
-                    format!("{}const {} = {};\n", export, name, contents)
+                    assert_eq!(export_name, definition_name);
+                    format!("{}const {} = {};\n", export, export_name, contents)
                 }
             }
         };
         self.global(&global);
-
-        if self.config.mode.web() {
-            self.global(&format!("__exports.{} = {0};", name));
-        }
+        Ok(())
     }
 
     fn require_internal_export(&mut self, name: &'static str) -> Result<(), Error> {
@@ -300,7 +336,7 @@ impl<'a> Context<'a> {
         // field of all imports in the wasm module. The field is currently
         // always `__wbindgen_placeholder__` coming out of rustc, but we need to
         // update that here to the shim file or an actual ES module.
-        self.rewrite_imports(module_name);
+        self.rewrite_imports(module_name)?;
 
         // We likely made a ton of modifications, so add ourselves to the
         // producers section!
@@ -938,7 +974,11 @@ impl<'a> Context<'a> {
                 if i != 0 {
                     imports_init.push_str(", ");
                 }
-                let import = Import::Module { module, name, field: None };
+                let import = Import::Module {
+                    module,
+                    name,
+                    field: None,
+                };
                 let identifier = self.import_identifier(import);
                 imports_init.push_str(name);
                 imports_init.push_str(": ");
@@ -1017,7 +1057,7 @@ impl<'a> Context<'a> {
         }
         let contents = f(self)
             .with_context(|_| format!("failed to generate internal JS function `{}`", name))?;
-        self.export(name, &contents, None);
+        self.export(name, &contents, None)?;
         Ok(())
     }
 
@@ -1080,7 +1120,7 @@ impl<'a> Context<'a> {
             let expr = format!("{}.__wrap(ptr)", name);
             let expr = self.add_heap_object(&expr);
             let body = format!("function(ptr) {{ return {}; }}", expr);
-            self.export(&new_name, &body, None);
+            self.export(&new_name, &body, None)?;
         }
 
         if wrap_needed {
@@ -1125,7 +1165,7 @@ impl<'a> Context<'a> {
         dst.push_str("}\n");
         ts_dst.push_str("}\n");
 
-        self.export(&name, &dst, Some(class.comments.clone()));
+        self.export(&name, &dst, Some(class.comments.clone()))?;
         self.typescript.push_str(&ts_dst);
 
         Ok(())
@@ -1143,10 +1183,11 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn rewrite_imports(&mut self, module_name: &str) {
+    fn rewrite_imports(&mut self, module_name: &str) -> Result<(), Error> {
         for (name, contents) in self._rewrite_imports(module_name) {
-            self.export(&name, &contents, None);
+            self.export(&name, &contents, None)?;
         }
+        Ok(())
     }
 
     fn _rewrite_imports(&mut self, module_name: &str) -> Vec<(String, String)> {
@@ -2241,7 +2282,7 @@ impl<'a> Context<'a> {
         // generate a new identifier and are sure to generate the appropriate JS
         // import for our new identifier.
         let use_node_require = self.use_node_require();
-        let imported_identifiers = &mut self.imported_identifiers;
+        let defined_identifiers = &mut self.defined_identifiers;
         let imports = &mut self.imports;
         let imports_post = &mut self.imports_post;
         let identifier = self
@@ -2250,7 +2291,7 @@ impl<'a> Context<'a> {
             .or_insert_with(Default::default)
             .entry(import.name())
             .or_insert_with(|| {
-                let name = generate_identifier(import.name(), imported_identifiers);
+                let name = generate_identifier(import.name(), defined_identifiers);
                 match &import {
                     Import::Module { .. }
                     | Import::LocalModule { .. }
@@ -2593,7 +2634,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             self.generate_import(f)?;
         }
         for e in self.program.enums.iter() {
-            self.generate_enum(e);
+            self.generate_enum(e)?;
         }
         for s in self.program.structs.iter() {
             self.generate_struct(s).with_context(|_| {
@@ -2638,7 +2679,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             &export.function.name,
             &js,
             Some(format_doc_comments(&export.comments, Some(js_doc))),
-        );
+        )?;
         self.cx.globals.push_str("\n");
         self.cx.typescript.push_str("export ");
         self.cx.typescript.push_str(&ts);
@@ -2777,7 +2818,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             .anyref
             .import_xform("__wbindgen_placeholder__", &import.shim, &[], true);
         let body = format!("function() {{ return {}; }}", self.cx.add_heap_object(&obj));
-        self.cx.export(&import.shim, &body, None);
+        self.cx.export(&import.shim, &body, None)?;
         Ok(())
     }
 
@@ -2849,7 +2890,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
         // shim as the wasm will be importing the shim.
         let target = shim.cx.generated_import_target(name, import)?;
         let js = shim.finish(&target, &import.shim)?;
-        shim.cx.export(&import.shim, &js, None);
+        shim.cx.export(&import.shim, &js, None)?;
         Ok(())
     }
 
@@ -2873,11 +2914,11 @@ impl<'a, 'b> SubContext<'a, 'b> {
             self.cx.get_object("idx"),
             name
         );
-        self.cx.export(&import.instanceof_shim, &body, None);
+        self.cx.export(&import.instanceof_shim, &body, None)?;
         Ok(())
     }
 
-    fn generate_enum(&mut self, enum_: &decode::Enum) {
+    fn generate_enum(&mut self, enum_: &decode::Enum) -> Result<(), Error> {
         let mut variants = String::new();
 
         for variant in enum_.variants.iter() {
@@ -2887,7 +2928,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
             &enum_.name,
             &format!("Object.freeze({{ {} }})", variants),
             Some(format_doc_comments(&enum_.comments, None)),
-        );
+        )?;
         self.cx
             .typescript
             .push_str(&format!("export enum {} {{", enum_.name));
@@ -2898,6 +2939,7 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 .push_str(&format!("\n  {},", variant.name));
         }
         self.cx.typescript.push_str("\n}\n");
+        Ok(())
     }
 
     fn generate_struct(&mut self, struct_: &decode::Struct) -> Result<(), Error> {
