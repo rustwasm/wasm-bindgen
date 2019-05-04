@@ -1,7 +1,7 @@
 use std::fmt;
 use std::pin::Pin;
-use std::sync::{Arc, Mutex};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::cell::{Cell, RefCell};
+use std::sync::Arc;
 use std::future::Future;
 use std::task::{Poll, Context};
 use std::collections::VecDeque;
@@ -138,36 +138,38 @@ where
     F: Future<Output = ()> + 'static,
 {
     struct Task {
-        future: Mutex<Option<Pin<Box<dyn Future<Output = ()> + 'static>>>>,
-        is_queued: AtomicBool,
+        // This is an Option so that the Future can be immediately dropped when it's finished
+        future: RefCell<Option<Pin<Box<dyn Future<Output = ()> + 'static>>>>,
+        is_queued: Cell<bool>,
     }
 
     impl Task {
         #[inline]
         fn new<F>(future: F) -> Arc<Self> where F: Future<Output = ()> + 'static {
             Arc::new(Self {
-                future: Mutex::new(Some(Box::pin(future))),
-                is_queued: AtomicBool::new(false),
+                future: RefCell::new(Some(Box::pin(future))),
+                is_queued: Cell::new(false),
             })
         }
     }
 
     impl ArcWake for Task {
         fn wake_by_ref(arc_self: &Arc<Self>) {
-            // TODO can this be more relaxed ?
-            if !arc_self.is_queued.swap(true, Ordering::SeqCst) {
-                let mut lock = EXECUTOR.tasks.lock().unwrap_throw();
-
-                lock.push_back(arc_self.clone());
-
-                EXECUTOR.next_tick.schedule();
+            if arc_self.is_queued.replace(true) {
+                return;
             }
+
+            let mut lock = EXECUTOR.tasks.borrow_mut();
+
+            lock.push_back(arc_self.clone());
+
+            EXECUTOR.next_tick.schedule();
         }
     }
 
 
     struct NextTick {
-        is_spinning: AtomicBool,
+        is_spinning: Cell<bool>,
         promise: Promise,
         closure: Closure<dyn FnMut(JsValue)>,
     }
@@ -175,7 +177,7 @@ where
     impl NextTick {
         fn new<F>(mut f: F) -> Self where F: FnMut() + 'static {
             Self {
-                is_spinning: AtomicBool::new(false),
+                is_spinning: Cell::new(false),
                 promise: Promise::resolve(&JsValue::null()),
                 closure: Closure::wrap(Box::new(move |_| {
                     f();
@@ -184,22 +186,22 @@ where
         }
 
         fn schedule(&self) {
-            // TODO can this be more relaxed ?
-            if !self.is_spinning.swap(true, Ordering::SeqCst) {
-                // TODO avoid creating a new Promise
-                self.promise.then(&self.closure);
+            if self.is_spinning.replace(true) {
+                return;
             }
+
+            // TODO avoid creating a new Promise
+            self.promise.then(&self.closure);
         }
 
         fn done(&self) {
-            // TODO can this be more relaxed ?
-            self.is_spinning.store(false, Ordering::SeqCst);
+            self.is_spinning.set(false);
         }
     }
 
 
     struct Executor {
-        tasks: Mutex<VecDeque<Arc<Task>>>,
+        tasks: RefCell<VecDeque<Arc<Task>>>,
         next_tick: NextTick,
     }
 
@@ -209,31 +211,33 @@ where
 
     lazy_static! {
         static ref EXECUTOR: Executor = Executor {
-            tasks: Mutex::new(VecDeque::new()),
+            tasks: RefCell::new(VecDeque::new()),
             next_tick: NextTick::new(|| {
                 let tasks = &EXECUTOR.tasks;
 
                 loop {
-                    let mut lock = tasks.lock().unwrap_throw();
+                    let mut lock = tasks.borrow_mut();
 
                     match lock.pop_front() {
                         Some(task) => {
                             // This is necessary because the polled task might queue more tasks
                             drop(lock);
 
-                            let mut future = task.future.lock().unwrap_throw();
+                            let mut future = task.future.borrow_mut();
 
-                            let poll = future.as_mut().map(|mut future| {
+                            let poll = {
+                                let mut future = future.as_mut().unwrap_throw();
+
                                 // Clear `is_queued` flag so that it will re-queue if poll calls waker.wake()
-                                task.is_queued.store(false, Ordering::SeqCst);
+                                task.is_queued.set(false);
 
                                 // TODO is there some way of saving these so they don't need to be recreated all the time ?
                                 let waker = ArcWake::into_waker(task.clone());
                                 let cx = &mut Context::from_waker(&waker);
                                 Pin::new(&mut future).poll(cx)
-                            });
+                            };
 
-                            if let Some(Poll::Ready(_)) = poll {
+                            if let Poll::Ready(_) = poll {
                                 *future = None;
                             }
                         },
