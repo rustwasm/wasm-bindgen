@@ -192,6 +192,8 @@ jobs:
       - template: ci/azure-install-wasm-pack.yml
       - script: wasm-pack build --target web benchmarks
         displayName: "build benchmarks"
+      - script: rm -f benchmarks/pkg/.gitignore
+        displayName: "remove stray gitignore"
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: benchmarks
@@ -364,7 +366,6 @@ jobs:
           mk x86_64-unknown-linux-musl linux
           mk x86_64-apple-darwin darwin
           mk x86_64-pc-windows-msvc windows
-          rm .gitignore
         displayName: "prepare the github releases tarball artifacts"
       - task: PublishPipelineArtifact@0
         displayName: "publish gh_release artifact"
@@ -380,7 +381,6 @@ jobs:
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         env:
           GITHUB_DEPLOY_KEY: $(GITHUB_DEPLOY_KEY)
-      - script: find gh-pages
       - task: GithubRelease@0
         condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
         displayName: 'Create GitHub Release'
