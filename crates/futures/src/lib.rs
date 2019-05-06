@@ -103,6 +103,10 @@
 
 #![deny(missing_docs)]
 
+#[cfg(feature = "futures_0_3")]
+/// Contains a Futures 0.3 implementation of this crate.
+pub mod futures_0_3;
+
 use std::cell::{Cell, RefCell};
 use std::fmt;
 use std::rc::Rc;
