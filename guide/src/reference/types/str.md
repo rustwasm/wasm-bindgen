@@ -25,7 +25,7 @@ with handles to JavaScript string values, use the `js_sys::JsString` type.
 
 Strings in JavaScript are encoded as UTF-16, but with one major exception: they
 can contain unpaired surrogates. For some Unicode characters UTF-16 uses two
-16-byte values.  These are called "surrogate pairs" because they always come in
+16-bit values.  These are called "surrogate pairs" because they always come in
 pairs. In JavaScript, it is possible for these surrogate pairs to be missing the
 other half, creating an "unpaired surrogate".
 
