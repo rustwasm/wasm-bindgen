@@ -805,16 +805,30 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         };
         js.push_str(&invoc);
         js.push_str("\n}");
-        let ts_args = self
-            .js_arguments
-            .iter()
-            .map(|s| if s.optional {
-                format!("{}?: {}", s.name, s.type_)
+
+        // Determine TS parameter list
+        let mut omittable = true;
+        let mut ts_args = Vec::with_capacity(self.js_arguments.len());
+        for arg in self.js_arguments.iter().rev() {
+            // In TypeScript, we can mark optional parameters as omittable
+            // using the `?` suffix, but only if they're not followed by
+            // non-omittable parameters. Therefore iterate the parameter list
+            // in reverse and stop using the `?` suffix for optional params as
+            // soon as a non-optional parameter is encountered.
+            if arg.optional {
+                if omittable {
+                    ts_args.push(format!("{}?: {}", arg.name, arg.type_));
+                } else {
+                    ts_args.push(format!("{}: {} | undefined", arg.name, arg.type_));
+                }
             } else {
-                format!("{}: {}", s.name, s.type_)
-            })
-            .collect::<Vec<_>>()
-            .join(", ");
+                omittable = false;
+                ts_args.push(format!("{}: {}", arg.name, arg.type_));
+            }
+        }
+        ts_args.reverse();
+        let ts_args = ts_args.join(", ");
+
         let mut ts = if prefix.is_empty() {
             format!("{}({})", self.js_name, ts_args)
         } else {
