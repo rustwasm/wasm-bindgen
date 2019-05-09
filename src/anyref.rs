@@ -107,6 +107,20 @@ impl Slab {
             None => internal_error("slot out of bounds"),
         }
     }
+
+    fn live_count(&self) -> u32 {
+        let mut free_count = 0;
+        let mut next = self.head;
+        while next < self.data.len() {
+            debug_assert!((free_count as usize) < self.data.len());
+            free_count += 1;
+            match self.data.get(next) {
+                Some(n) => next = *n,
+                None => internal_error("slot out of bounds"),
+            };
+        }
+        self.data.len() as u32 - free_count - super::JSIDX_RESERVED
+    }
 }
 
 fn internal_error(msg: &str) -> ! {
@@ -203,6 +217,20 @@ pub unsafe extern fn __wbindgen_drop_anyref_slice(ptr: *mut JsValue, len: usize)
     for slot in slice::from_raw_parts_mut(ptr, len) {
         __wbindgen_anyref_table_dealloc(slot.idx as usize);
     }
+}
+
+// Implementation of `__wbindgen_anyref_heap_live_count` for when we are using
+// `anyref` instead of the JS `heap`.
+#[no_mangle]
+pub unsafe extern "C" fn __wbindgen_anyref_heap_live_count_impl() -> u32 {
+    tl::HEAP_SLAB
+        .try_with(|slot| {
+            let slab = slot.replace(Slab::new());
+            let count = slab.live_count();
+            slot.replace(slab);
+            count
+        })
+        .unwrap_or_else(|_| internal_error("tls access failure"))
 }
 
 // see comment in module above this in `link_mem_intrinsics`

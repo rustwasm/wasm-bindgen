@@ -49,3 +49,4 @@ pub fn import_export_same_name() {
 
 pub mod snippets;
 pub mod modules;
+pub mod anyref_heap_live_count;

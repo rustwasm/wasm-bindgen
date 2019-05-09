@@ -494,6 +494,8 @@ externs! {
         fn __wbindgen_number_new(f: f64) -> u32;
         fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
 
+        fn __wbindgen_anyref_heap_live_count() -> u32;
+
         fn __wbindgen_is_null(idx: u32) -> u32;
         fn __wbindgen_is_undefined(idx: u32) -> u32;
         fn __wbindgen_is_symbol(idx: u32) -> u32;
@@ -652,6 +654,56 @@ pub fn throw_val(s: JsValue) -> ! {
         let idx = s.idx;
         mem::forget(s);
         __wbindgen_rethrow(idx);
+    }
+}
+
+/// Get the count of live `anyref`s / `JsValue`s in `wasm-bindgen`'s heap.
+///
+/// ## Usage
+///
+/// This is intended for debugging and writing tests.
+///
+/// To write a test that asserts against unnecessarily keeping `anref`s /
+/// `JsValue`s alive:
+///
+/// * get an initial live count,
+///
+/// * perform some series of operations or function calls that should clean up
+///   after themselves, and should not keep holding onto `anyref`s / `JsValue`s
+///   after completion,
+///
+/// * get the final live count,
+///
+/// * and assert that the initial and final counts are the same.
+///
+/// ## What is Counted
+///
+/// Note that this only counts the *owned* `anyref`s / `JsValue`s that end up in
+/// `wasm-bindgen`'s heap. It does not count borrowed `anyref`s / `JsValue`s
+/// that are on its stack.
+///
+/// For example, these `JsValue`s are accounted for:
+///
+/// ```ignore
+/// #[wasm_bindgen]
+/// pub fn my_function(this_is_counted: JsValue) {
+///     let also_counted = JsValue::from_str("hi");
+///     assert!(wasm_bindgen::anyref_heap_live_count() >= 2);
+/// }
+/// ```
+///
+/// While this borrowed `JsValue` ends up on the stack, not the heap, and
+/// therefore is not accounted for:
+///
+/// ```ignore
+/// #[wasm_bindgen]
+/// pub fn my_other_function(this_is_not_counted: &JsValue) {
+///     // ...
+/// }
+/// ```
+pub fn anyref_heap_live_count() -> u32 {
+    unsafe {
+        __wbindgen_anyref_heap_live_count()
     }
 }
 
