@@ -489,19 +489,24 @@ externs! {
     extern "C" {
         fn __wbindgen_object_clone_ref(idx: u32) -> u32;
         fn __wbindgen_object_drop_ref(idx: u32) -> ();
+
         fn __wbindgen_string_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_number_new(f: f64) -> u32;
-        fn __wbindgen_number_get(idx: u32, invalid: *mut u8) -> f64;
+        fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
+
         fn __wbindgen_is_null(idx: u32) -> u32;
         fn __wbindgen_is_undefined(idx: u32) -> u32;
-        fn __wbindgen_boolean_get(idx: u32) -> u32;
-        fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_is_symbol(idx: u32) -> u32;
         fn __wbindgen_is_object(idx: u32) -> u32;
         fn __wbindgen_is_function(idx: u32) -> u32;
         fn __wbindgen_is_string(idx: u32) -> u32;
+
+        fn __wbindgen_number_get(idx: u32, invalid: *mut u8) -> f64;
+        fn __wbindgen_boolean_get(idx: u32) -> u32;
         fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
+
         fn __wbindgen_debug_string(idx: u32, len: *mut usize) -> *mut u8;
+
         fn __wbindgen_throw(a: *const u8, b: usize) -> !;
         fn __wbindgen_rethrow(a: u32) -> !;
 
