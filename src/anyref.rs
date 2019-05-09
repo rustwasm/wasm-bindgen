@@ -1,8 +1,8 @@
-use std::slice;
-use std::vec::Vec;
-use std::ptr;
 use std::alloc::{self, Layout};
 use std::mem;
+use std::ptr;
+use std::slice;
+use std::vec::Vec;
 
 use crate::JsValue;
 
@@ -34,9 +34,7 @@ impl Slab {
         if ret == self.data.len() {
             if self.data.len() == self.data.capacity() {
                 let extra = 128;
-                let r = unsafe {
-                    __wbindgen_anyref_table_grow(extra)
-                };
+                let r = unsafe { __wbindgen_anyref_table_grow(extra) };
                 if r == -1 {
                     internal_error("table grow failure")
                 }
@@ -59,16 +57,8 @@ impl Slab {
                     if ptr.is_null() {
                         internal_error("allocation failure");
                     }
-                    ptr::copy_nonoverlapping(
-                        self.data.as_ptr(),
-                        ptr,
-                        self.data.len(),
-                    );
-                    let new_vec = Vec::from_raw_parts(
-                        ptr,
-                        self.data.len(),
-                        new_cap,
-                    );
+                    ptr::copy_nonoverlapping(self.data.as_ptr(), ptr, self.data.len());
+                    let new_vec = Vec::from_raw_parts(ptr, self.data.len(), new_cap);
                     let mut old = mem::replace(&mut self.data, new_vec);
                     old.set_len(0);
                 }
@@ -149,19 +139,19 @@ fn internal_error(msg: &str) -> ! {
 // implementation that will be replaced once #55518 lands on stable.
 #[cfg(target_feature = "atomics")]
 mod tl {
-    use std::*; // hack to get `thread_local!` to work
     use super::Slab;
     use std::cell::Cell;
+    use std::*; // hack to get `thread_local!` to work
 
     thread_local!(pub static HEAP_SLAB: Cell<Slab> = Cell::new(Slab::new()));
 }
 
 #[cfg(not(target_feature = "atomics"))]
 mod tl {
+    use super::Slab;
     use std::alloc::{self, Layout};
     use std::cell::Cell;
     use std::ptr;
-    use super::Slab;
 
     pub struct HeapSlab;
     pub static HEAP_SLAB: HeapSlab = HeapSlab;
@@ -186,34 +176,38 @@ mod tl {
 }
 
 #[no_mangle]
-pub extern fn __wbindgen_anyref_table_alloc() -> usize {
-    tl::HEAP_SLAB.try_with(|slot| {
-        let mut slab = slot.replace(Slab::new());
-        let ret = slab.alloc();
-        slot.replace(slab);
-        ret
-    }).unwrap_or_else(|_| internal_error("tls access failure"))
+pub extern "C" fn __wbindgen_anyref_table_alloc() -> usize {
+    tl::HEAP_SLAB
+        .try_with(|slot| {
+            let mut slab = slot.replace(Slab::new());
+            let ret = slab.alloc();
+            slot.replace(slab);
+            ret
+        })
+        .unwrap_or_else(|_| internal_error("tls access failure"))
 }
 
 #[no_mangle]
-pub extern fn __wbindgen_anyref_table_dealloc(idx: usize) {
+pub extern "C" fn __wbindgen_anyref_table_dealloc(idx: usize) {
     if idx < super::JSIDX_RESERVED as usize {
-        return
+        return;
     }
     // clear this value from the table so while the table slot is un-allocated
     // we don't keep around a strong reference to a potentially large object
     unsafe {
         __wbindgen_anyref_table_set_null(idx);
     }
-    tl::HEAP_SLAB.try_with(|slot| {
-        let mut slab = slot.replace(Slab::new());
-        slab.dealloc(idx);
-        slot.replace(slab);
-    }).unwrap_or_else(|_| internal_error("tls access failure"))
+    tl::HEAP_SLAB
+        .try_with(|slot| {
+            let mut slab = slot.replace(Slab::new());
+            slab.dealloc(idx);
+            slot.replace(slab);
+        })
+        .unwrap_or_else(|_| internal_error("tls access failure"))
 }
 
 #[no_mangle]
-pub unsafe extern fn __wbindgen_drop_anyref_slice(ptr: *mut JsValue, len: usize) {
+pub unsafe extern "C" fn __wbindgen_drop_anyref_slice(ptr: *mut JsValue, len: usize) {
     for slot in slice::from_raw_parts_mut(ptr, len) {
         __wbindgen_anyref_table_dealloc(slot.idx as usize);
     }
@@ -235,5 +229,4 @@ pub unsafe extern "C" fn __wbindgen_anyref_heap_live_count_impl() -> u32 {
 
 // see comment in module above this in `link_mem_intrinsics`
 #[inline(never)]
-pub fn link_intrinsics() {
-}
+pub fn link_intrinsics() {}
