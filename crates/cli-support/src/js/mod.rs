@@ -922,7 +922,7 @@ impl<'a> Context<'a> {
             *\n\
             * @returns {{Promise<any>}}\n\
             */\n\
-            export function init \
+            export default function init \
                 (module_or_path: RequestInfo | BufferSource | WebAssembly.Module{}): Promise<any>;
         ",
             memory_doc, memory_param
