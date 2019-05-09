@@ -636,6 +636,37 @@ impl<'a> Context<'a> {
             ))
         })?;
 
+        self.bind("__wbindgen_anyref_heap_live_count", &|me| {
+            if me.config.anyref {
+                // Eventually we should add support to the anyref-xform to
+                // re-write calls to the imported
+                // `__wbindgen_anyref_heap_live_count` function into calls to
+                // the exported `__wbindgen_anyref_heap_live_count_impl`
+                // function, and to un-export that function.
+                //
+                // But for now, we just bounce wasm -> js -> wasm because it is
+                // easy.
+                Ok("function() {{ return wasm.__wbindgen_anyref_heap_live_count_impl(); }}".into())
+            } else {
+                me.expose_global_heap();
+                Ok(format!(
+                    "
+                    function() {{
+                        let free_count = 0;
+                        let next = heap_next;
+                        while (next < heap.length) {{
+                            free_count += 1;
+                            next = heap[next];
+                        }}
+                        return heap.length - free_count - {} - {};
+                    }}
+                    ",
+                    INITIAL_HEAP_OFFSET,
+                    INITIAL_HEAP_VALUES.len(),
+                ))
+            }
+        })?;
+
         self.bind("__wbindgen_debug_string", &|me| {
             me.expose_pass_string_to_wasm()?;
             me.expose_uint32_memory();
