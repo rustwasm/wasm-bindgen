@@ -1464,10 +1464,7 @@ impl<'a> Context<'a> {
                     const mem = getUint8Memory();
                     for (; offset < arg.length; offset++) {{
                         const code = arg.charCodeAt(offset);
-                        if (code > 0x7F) {{
-                            arg = arg.slice(offset);
-                            break;
-                        }}
+                        if (code > 0x7F) break;
                         mem[ptr + offset] = code;
                     }}
                 }}
@@ -1481,7 +1478,7 @@ impl<'a> Context<'a> {
             "
                 {}
                 if (offset !== arg.length) {{
-                    const buf = cachedTextEncoder.encode(arg);
+                    const buf = cachedTextEncoder.encode(arg.slice(offset));
                     ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + buf.length);
                     getUint8Memory().set(buf, ptr + offset);
                     offset += buf.length;
@@ -1499,6 +1496,7 @@ impl<'a> Context<'a> {
             "
                 {}
                 if (offset !== arg.length) {{
+                    arg = arg.slice(offset);
                     ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + arg.length * 3);
                     const view = getUint8Memory().subarray(ptr + offset, ptr + size);
                     offset += cachedTextEncoder.encodeInto(arg, view).written;
