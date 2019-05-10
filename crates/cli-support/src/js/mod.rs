@@ -1482,7 +1482,7 @@ impl<'a> Context<'a> {
                 {}
                 if (offset !== arg.length) {{
                     const buf = cachedTextEncoder.encode(arg);
-                    ptr = wasm.__wbindgen_realloc(ptr, size, size += buf.length);
+                    ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + buf.length);
                     getUint8Memory().set(buf, ptr + offset);
                     offset += buf.length;
                 }}
@@ -1499,7 +1499,7 @@ impl<'a> Context<'a> {
             "
                 {}
                 if (offset !== arg.length) {{
-                    ptr = wasm.__wbindgen_realloc(ptr, size, size += arg.length * 3);
+                    ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + arg.length * 3);
                     const view = getUint8Memory().subarray(ptr + offset, ptr + size);
                     offset += cachedTextEncoder.encodeInto(arg, view).written;
                 }}
