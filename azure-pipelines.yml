@@ -282,8 +282,6 @@ jobs:
           WEBIDL_RUSTFMT_BINDINGS: 0
       - script: cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
         displayName: "Document wasm-bindgen-futures"
-      - script: cargo doc --no-deps --manifest-path crates/futures/Cargo.toml
-        displayName: "Document wasm-bindgen-futures"
       # Make a tarball even though a zip is uploaded, it looks like the tarball
       # makes the uploading step much speedier.
       - script: tar czvf $BUILD_ARTIFACTSTAGINGDIRECTORY/docs.tar.gz target/doc
