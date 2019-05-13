@@ -102,6 +102,7 @@ extern "C" {
         b: &mut FnMut(&RefFirstArgument),
         c: &mut FnMut(&RefFirstArgument),
     );
+    fn call_destroyed(a: &JsValue);
 }
 
 #[wasm_bindgen_test]
@@ -521,4 +522,38 @@ fn reference_as_first_argument_works2() {
         },
     );
     assert_eq!(a.get(), 2);
+}
+
+#[wasm_bindgen_test]
+fn call_destroyed_doesnt_segfault() {
+    struct A(i32, i32);
+    impl Drop for A {
+        fn drop(&mut self) {
+            assert_eq!(self.0, self.1);
+        }
+    }
+
+    let a = A(1, 1);
+    let a = Closure::wrap(Box::new(move || drop(&a)) as Box<Fn()>);
+    let b = a.as_ref().clone();
+    drop(a);
+    call_destroyed(&b);
+
+    let a = A(2, 2);
+    let a = Closure::wrap(Box::new(move || drop(&a)) as Box<FnMut()>);
+    let b = a.as_ref().clone();
+    drop(a);
+    call_destroyed(&b);
+
+    let a = A(1, 1);
+    let a = Closure::wrap(Box::new(move |_: &JsValue| drop(&a)) as Box<Fn(&JsValue)>);
+    let b = a.as_ref().clone();
+    drop(a);
+    call_destroyed(&b);
+
+    let a = A(2, 2);
+    let a = Closure::wrap(Box::new(move |_: &JsValue| drop(&a)) as Box<FnMut(&JsValue)>);
+    let b = a.as_ref().clone();
+    drop(a);
+    call_destroyed(&b);
 }

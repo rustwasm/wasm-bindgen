@@ -576,7 +576,14 @@ macro_rules! doit {
                     a: usize,
                     b: usize,
                 ) {
-                    debug_assert!(a != 0, "should never destroy a Fn whose pointer is 0");
+                    // This can be called by the JS glue in erroneous situations
+                    // such as when the closure has already been destroyed. If
+                    // that's the case let's not make things worse by
+                    // segfaulting and/or asserting, so just ignore null
+                    // pointers.
+                    if a == 0 {
+                        return;
+                    }
                     drop(Box::from_raw(FatPtr::<Fn($($var,)*) -> R> {
                         fields: (a, b)
                     }.ptr));
@@ -623,7 +630,10 @@ macro_rules! doit {
                     a: usize,
                     b: usize,
                 ) {
-                    debug_assert!(a != 0, "should never destroy a FnMut whose pointer is 0");
+                    // See `Fn()` above for why we simply return
+                    if a == 0 {
+                        return;
+                    }
                     drop(Box::from_raw(FatPtr::<FnMut($($var,)*) -> R> {
                         fields: (a, b)
                     }.ptr));
@@ -736,7 +746,10 @@ unsafe impl<A, R> WasmClosure for Fn(&A) -> R
             a: usize,
             b: usize,
         ) {
-            debug_assert!(a != 0, "should never destroy a Fn whose pointer is 0");
+            // See `Fn()` above for why we simply return
+            if a == 0 {
+                return;
+            }
             drop(Box::from_raw(FatPtr::<Fn(&A) -> R> {
                 fields: (a, b)
             }.ptr));
@@ -781,7 +794,10 @@ unsafe impl<A, R> WasmClosure for FnMut(&A) -> R
             a: usize,
             b: usize,
         ) {
-            debug_assert!(a != 0, "should never destroy a FnMut whose pointer is 0");
+            // See `Fn()` above for why we simply return
+            if a == 0 {
+                return;
+            }
             drop(Box::from_raw(FatPtr::<FnMut(&A) -> R> {
                 fields: (a, b)
             }.ptr));
