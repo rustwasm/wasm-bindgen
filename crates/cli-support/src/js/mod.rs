@@ -1499,12 +1499,19 @@ impl<'a> Context<'a> {
                     arg = arg.slice(offset);
                     ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + arg.length * 3);
                     const view = getUint8Memory().subarray(ptr + offset, ptr + size);
+                    const ret = cachedTextEncoder.encodeInto(arg, view);
+                    {}
                     offset += cachedTextEncoder.encodeInto(arg, view).written;
                 }}
                 WASM_VECTOR_LEN = offset;
                 return ptr;
             ",
-            start_encoding_as_ascii
+            start_encoding_as_ascii,
+            if self.config.debug {
+                "if (ret.read != arg.length) throw new Error('failed to pass whole string');"
+            } else {
+                ""
+            },
         );
 
         // Looks like `encodeInto` doesn't currently work when the memory passed
