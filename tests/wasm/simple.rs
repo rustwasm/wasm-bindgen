@@ -27,6 +27,8 @@ extern "C" {
     #[wasm_bindgen(js_name = RenamedInRust)]
     type Renamed;
     fn new_renamed() -> Renamed;
+
+    fn test_string_roundtrip();
 }
 
 #[wasm_bindgen_test]
@@ -200,4 +202,14 @@ fn renaming_imports_and_instanceof() {
 #[wasm_bindgen]
 pub fn import_export_same_name() {
     js_import_export_same_name();
+}
+
+#[wasm_bindgen_test]
+fn string_roundtrip() {
+    test_string_roundtrip();
+}
+
+#[wasm_bindgen]
+pub fn do_string_roundtrip(s: String) -> String {
+    s
 }

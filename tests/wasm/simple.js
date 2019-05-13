@@ -92,3 +92,16 @@ exports.RenamedInRust = class {};
 exports.new_renamed = () => new exports.RenamedInRust;
 
 exports.import_export_same_name = () => {};
+
+exports.test_string_roundtrip = () => {
+  const test = s => {
+    assert.strictEqual(wasm.do_string_roundtrip(s), s);
+  };
+
+  test('');
+  test('a');
+  test('💖');
+
+  test('a longer string');
+  test('a longer 💖 string');
+};
