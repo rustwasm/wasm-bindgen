@@ -3,7 +3,7 @@ use std::mem;
 use std::ptr;
 use std::slice;
 use std::vec::Vec;
-
+use std::cell::Cell;
 use crate::JsValue;
 
 externs! {
@@ -121,63 +121,13 @@ fn internal_error(msg: &str) -> ! {
     }
 }
 
-// Whoa, there's two `tl` modules here! That's currently intention, but for sort
-// of a weird reason. The table here is fundamentally thread local, so we want
-// to use the `thread_local!` macro. The implementation of thread locals (as of
-// the time of this writing) generates a lot of code as it pulls in panic paths
-// in libstd (even when using `try_with`). There's a patch to fix that
-// (rust-lang/rust#55518), but in the meantime the stable/beta channels produce
-// a lot of code.
-//
-// Matters are made worse here because this code is almost never used (it's only
-// here for an unstable feature). If we were to have panics here, though, then
-// we couldn't effectively gc away the panic infrastructure, meaning this unused
-// infrastructure would show up in binaries! That's a no-no for wasm-bindgen.
-//
-// In the meantime, if the atomics feature is turned on (which it never is by
-// default) then we use `thread_local!`, otherwise we use a home-grown
-// implementation that will be replaced once #55518 lands on stable.
-#[cfg(target_feature = "atomics")]
-mod tl {
-    use super::Slab;
-    use std::cell::Cell;
-    use std::*; // hack to get `thread_local!` to work
-
-    thread_local!(pub static HEAP_SLAB: Cell<Slab> = Cell::new(Slab::new()));
-}
-
-#[cfg(not(target_feature = "atomics"))]
-mod tl {
-    use super::Slab;
-    use std::alloc::{self, Layout};
-    use std::cell::Cell;
-    use std::ptr;
-
-    pub struct HeapSlab;
-    pub static HEAP_SLAB: HeapSlab = HeapSlab;
-    static mut SLOT: *mut Cell<Slab> = 0 as *mut Cell<Slab>;
-
-    impl HeapSlab {
-        pub fn try_with<R>(&self, f: impl FnOnce(&Cell<Slab>) -> R) -> Result<R, ()> {
-            unsafe {
-                if SLOT.is_null() {
-                    let ptr = alloc::alloc(Layout::new::<Cell<Slab>>());
-                    if ptr.is_null() {
-                        super::internal_error("allocation failure");
-                    }
-                    let ptr = ptr as *mut Cell<Slab>;
-                    ptr::write(ptr, Cell::new(Slab::new()));
-                    SLOT = ptr;
-                }
-                Ok(f(&*SLOT))
-            }
-        }
-    }
-}
+// Management of `anyref` is always thread local since an `anyref` value can't
+// cross threads in wasm. Indices as a result are always thread-local.
+std::thread_local!(pub static HEAP_SLAB: Cell<Slab> = Cell::new(Slab::new()));
 
 #[no_mangle]
 pub extern "C" fn __wbindgen_anyref_table_alloc() -> usize {
-    tl::HEAP_SLAB
+    HEAP_SLAB
         .try_with(|slot| {
             let mut slab = slot.replace(Slab::new());
             let ret = slab.alloc();
@@ -197,7 +147,7 @@ pub extern "C" fn __wbindgen_anyref_table_dealloc(idx: usize) {
     unsafe {
         __wbindgen_anyref_table_set_null(idx);
     }
-    tl::HEAP_SLAB
+    HEAP_SLAB
         .try_with(|slot| {
             let mut slab = slot.replace(Slab::new());
             slab.dealloc(idx);
@@ -217,7 +167,7 @@ pub unsafe extern "C" fn __wbindgen_drop_anyref_slice(ptr: *mut JsValue, len: us
 // `anyref` instead of the JS `heap`.
 #[no_mangle]
 pub unsafe extern "C" fn __wbindgen_anyref_heap_live_count_impl() -> u32 {
-    tl::HEAP_SLAB
+    HEAP_SLAB
         .try_with(|slot| {
             let slab = slot.replace(Slab::new());
             let count = slab.live_count();
