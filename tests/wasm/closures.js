@@ -119,3 +119,7 @@ exports.pass_reference_first_arg_twice = (a, b, c) => {
   c(a);
   a.free();
 };
+
+exports.call_destroyed = f => {
+  assert.throws(f, /invoked recursively or destroyed/);
+};
