@@ -64,12 +64,10 @@ interface HTMLTextAreaElement : HTMLElement {
   readonly attribute NodeList labels;
 
   void select();
-/* TODO Optional u32 not supported
   [Throws]
            attribute unsigned long? selectionStart;
   [Throws]
            attribute unsigned long? selectionEnd;
-*/
   [Throws]
            attribute DOMString? selectionDirection;
   [Throws]
