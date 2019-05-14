@@ -1501,7 +1501,7 @@ impl<'a> Context<'a> {
                     const view = getUint8Memory().subarray(ptr + offset, ptr + size);
                     const ret = cachedTextEncoder.encodeInto(arg, view);
                     {}
-                    offset += cachedTextEncoder.encodeInto(arg, view).written;
+                    offset += ret.written;
                 }}
                 WASM_VECTOR_LEN = offset;
                 return ptr;
