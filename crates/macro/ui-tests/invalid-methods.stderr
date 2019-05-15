@@ -1,62 +1,67 @@
 error: #[wasm_bindgen] default impls are not supported
-  --> $DIR/invalid-methods.rs:11:1
-   |
-11 | default impl A {
-   | ^^^^^^^
+ --> $DIR/invalid-methods.rs:7:1
+  |
+7 | default impl A {
+  | ^^^^^^^
 
 error: #[wasm_bindgen] unsafe impls are not supported
-  --> $DIR/invalid-methods.rs:15:1
+  --> $DIR/invalid-methods.rs:11:1
    |
-15 | unsafe impl A {
+11 | unsafe impl A {
    | ^^^^^^
 
 error: #[wasm_bindgen] trait impls are not supported
-  --> $DIR/invalid-methods.rs:19:6
+  --> $DIR/invalid-methods.rs:15:6
    |
-19 | impl Clone for A {
+15 | impl Clone for A {
    |      ^^^^^
 
 error: #[wasm_bindgen] generic impls aren't supported
-  --> $DIR/invalid-methods.rs:23:5
+  --> $DIR/invalid-methods.rs:19:5
    |
-23 | impl<T> A {
+19 | impl<T> A {
    |     ^^^
 
 error: unsupported self type in #[wasm_bindgen] impl
-  --> $DIR/invalid-methods.rs:27:6
+  --> $DIR/invalid-methods.rs:23:6
    |
-27 | impl &'static A {
+23 | impl &'static A {
    |      ^^^^^^^^^^
 
 error: const definitions aren't supported with #[wasm_bindgen]
-  --> $DIR/invalid-methods.rs:34:5
+  --> $DIR/invalid-methods.rs:30:5
    |
-34 |     const X: u32 = 3;
+30 |     const X: u32 = 3;
    |     ^^^^^^^^^^^^^^^^^
 
 error: type definitions in impls aren't supported with #[wasm_bindgen]
-  --> $DIR/invalid-methods.rs:35:5
+  --> $DIR/invalid-methods.rs:31:5
    |
-35 |     type Y = u32;
+31 |     type Y = u32;
    |     ^^^^^^^^^^^^^
 
 error: macros in impls aren't supported
-  --> $DIR/invalid-methods.rs:36:5
+  --> $DIR/invalid-methods.rs:32:5
    |
-36 |     x!();
+32 |     x!();
    |     ^^^^^
 
 error: can only #[wasm_bindgen] non-const functions
-  --> $DIR/invalid-methods.rs:43:9
+  --> $DIR/invalid-methods.rs:39:9
    |
-43 |     pub const fn foo() {}
+39 |     pub const fn foo() {}
    |         ^^^^^
 
 error: can only bindgen safe functions
-  --> $DIR/invalid-methods.rs:48:9
+  --> $DIR/invalid-methods.rs:44:9
    |
-48 |     pub unsafe fn foo() {}
+44 |     pub unsafe fn foo() {}
    |         ^^^^^^
 
-error: aborting due to 10 previous errors
-
+warning: unused macro definition
+  --> $DIR/invalid-methods.rs:26:1
+   |
+26 | macro_rules! x { () => () }
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: #[warn(unused_macros)] on by default

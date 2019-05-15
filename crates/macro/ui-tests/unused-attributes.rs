@@ -1,7 +1,3 @@
-#![crate_type = "rlib"]
-
-extern crate wasm_bindgen;
-
 use wasm_bindgen::prelude::*;
 
 struct A;
@@ -13,3 +9,5 @@ impl A {
     pub fn foo() {
     }
 }
+
+fn main() {}

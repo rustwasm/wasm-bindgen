@@ -1,7 +1,3 @@
-#![crate_type = "rlib"]
-
-extern crate wasm_bindgen;
-
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -41,3 +37,5 @@ extern "C" {
     #[wasm_bindgen(catch)]
     fn f() -> Result<'a>;
 }
+
+fn main() {}

@@ -1,7 +1,3 @@
-#![crate_type = "rlib"]
-
-extern crate wasm_bindgen;
-
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -36,3 +32,5 @@ pub fn foo6<'a, T>() {}
 
 #[wasm_bindgen]
 trait X {}
+
+fn main() {}

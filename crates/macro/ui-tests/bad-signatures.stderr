@@ -1,20 +1,17 @@
 error: cannot return a borrowed ref with #[wasm_bindgen]
- --> $DIR/bad-signatures.rs:8:17
+ --> $DIR/bad-signatures.rs:4:17
   |
-8 | pub fn foo() -> &u32 {}
+4 | pub fn foo() -> &u32 {}
   |                 ^^^^
 
 error: unsupported pattern in #[wasm_bindgen] imported function
-  --> $DIR/bad-signatures.rs:12:12
-   |
-12 |     fn foo(Foo(x): Foo);
-   |            ^^^^^^
+ --> $DIR/bad-signatures.rs:8:12
+  |
+8 |     fn foo(Foo(x): Foo);
+  |            ^^^^^^
 
 error: cannot return references in #[wasm_bindgen] imports yet
-  --> $DIR/bad-signatures.rs:14:17
+  --> $DIR/bad-signatures.rs:10:17
    |
-14 |     fn foo() -> &u32;
+10 |     fn foo() -> &u32;
    |                 ^^^^
-
-error: aborting due to 3 previous errors
-
