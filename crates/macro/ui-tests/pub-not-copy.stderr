@@ -1,15 +1,13 @@
 error[E0277]: the trait bound `std::string::String: std::marker::Copy` is not satisfied
- --> $DIR/pub-not-copy.rs:9:16
+ --> $DIR/pub-not-copy.rs:5:16
   |
-9 |     pub field: String,
+5 |     pub field: String,
   |                ^^^^^^ the trait `std::marker::Copy` is not implemented for `std::string::String`
   |
 note: required by `__wbg_get_a_field::assert_copy`
- --> $DIR/pub-not-copy.rs:7:1
+ --> $DIR/pub-not-copy.rs:3:1
   |
-7 | #[wasm_bindgen]
+3 | #[wasm_bindgen]
   | ^^^^^^^^^^^^^^^
-
-error: aborting due to previous error
 
 For more information about this error, try `rustc --explain E0277`.

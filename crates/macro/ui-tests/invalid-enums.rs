@@ -1,7 +1,3 @@
-#![crate_type = "rlib"]
-
-extern crate wasm_bindgen;
-
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -21,3 +17,5 @@ pub enum C {
 pub enum D {
     X = 4294967296,
 }
+
+fn main() {}

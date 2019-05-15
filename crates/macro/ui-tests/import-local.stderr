@@ -1,14 +1,11 @@
 error: relative module paths aren't supported yet
- --> $DIR/import-local.rs:5:25
+ --> $DIR/import-local.rs:3:25
   |
-5 | #[wasm_bindgen(module = "./foo.js")]
+3 | #[wasm_bindgen(module = "./foo.js")]
   |                         ^^^^^^^^^^
 
 error: relative module paths aren't supported yet
-  --> $DIR/import-local.rs:10:25
-   |
-10 | #[wasm_bindgen(module = "../foo.js")]
-   |                         ^^^^^^^^^^^
-
-error: aborting due to 2 previous errors
-
+ --> $DIR/import-local.rs:8:25
+  |
+8 | #[wasm_bindgen(module = "../foo.js")]
+  |                         ^^^^^^^^^^^

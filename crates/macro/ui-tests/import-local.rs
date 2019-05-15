@@ -1,5 +1,3 @@
-extern crate wasm_bindgen;
-
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(module = "./foo.js")]
@@ -9,7 +7,7 @@ extern {
 
 #[wasm_bindgen(module = "../foo.js")]
 extern {
-    fn wut();
+    fn wut2();
 }
 
 fn main() {}

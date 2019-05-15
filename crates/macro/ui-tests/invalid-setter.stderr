@@ -1,8 +1,5 @@
 error: setters must start with `set_`, found: a
-  --> $DIR/invalid-setter.rs:12:8
-   |
-12 |     fn a(this: &A, b: i32);
-   |        ^
-
-error: aborting due to previous error
-
+ --> $DIR/invalid-setter.rs:9:8
+  |
+9 |     fn a(this: &A, b: i32);
+  |        ^

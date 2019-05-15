@@ -51,7 +51,6 @@ members = [
   "benchmarks",
   "crates/cli",
   "crates/js-sys",
-  "crates/macro/ui-tests",
   "crates/test",
   "crates/test/sample",
   "crates/typescript-tests",

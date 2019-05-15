@@ -1,8 +1,5 @@
 error: unknown attribute
- --> $DIR/attribute-fails-to-parse.rs:7:16
+ --> $DIR/attribute-fails-to-parse.rs:3:16
   |
-7 | #[wasm_bindgen(nonsense)]
+3 | #[wasm_bindgen(nonsense)]
   |                ^^^^^^^^
-
-error: aborting due to previous error
-

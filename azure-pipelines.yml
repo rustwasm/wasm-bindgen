@@ -115,7 +115,7 @@ jobs:
           toolchain: beta
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-sccache.yml
-      - script: cargo test -p ui-tests
+      - script: cargo test -p wasm-bindgen-macro
 
   - job: test_wasm_interpreter
     displayName: "Run wasm-bindgen-wasm-interpreter tests"
