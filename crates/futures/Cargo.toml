@@ -7,19 +7,19 @@ license = "MIT/Apache-2.0"
 name = "wasm-bindgen-futures"
 repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/futures"
 readme = "./README.md"
-version = "0.3.20"
+version = "0.3.21"
 edition = "2018"
 
 [dependencies]
 futures = "0.1.20"
-js-sys = { path = "../js-sys", version = '0.3.20' }
-wasm-bindgen = { path = "../..", version = '0.2.43' }
+js-sys = { path = "../js-sys", version = '0.3.21' }
+wasm-bindgen = { path = "../..", version = '0.2.44' }
 futures-util-preview = { version = "0.3.0-alpha.15", optional = true }
 futures-channel-preview = { version = "0.3.0-alpha.15", optional = true }
 lazy_static = { version = "1.3.0", optional = true }
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-wasm-bindgen-test = { path = '../test', version = '0.2.43' }
+wasm-bindgen-test = { path = '../test', version = '0.2.44' }
 
 [features]
 futures_0_3 = ["futures-util-preview", "futures-channel-preview", "lazy_static"]
