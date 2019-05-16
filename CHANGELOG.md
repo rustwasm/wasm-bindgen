@@ -34,6 +34,64 @@ Released YYYY-MM-DD.
 
 ## 0.2.43
 
+Released 2019-05-16.
+
+### Added
+
+* Support for exporting "fields" on JS objects wrapping Rust structs which are
+  hooked up to getters/setters has been added. This is in addition to `pub`
+  struct fields and allows performing more complicated computations in
+  getters/setters.
+  [#1440](https://github.com/rustwasm/wasm-bindgen/pull/1440)
+
+* Support for futures 0.3 (and `async` / `await` syntax) has been added to the
+  `wasm-bindgen-futures` crate.
+  [#1507](https://github.com/rustwasm/wasm-bindgen/pull/1507)
+
+* Stacks of imported JS functions that throw and aren't marked `catch` are now
+  logged in debug mode.
+  [#1466](https://github.com/rustwasm/wasm-bindgen/pull/1466)
+
+* A utility for counting the size of the `anyref` heap has been added.
+  [#1521](https://github.com/rustwasm/wasm-bindgen/pull/1521)
+
+* Passing ASCII-only strings to WASM should now be significantly faster.
+  [#1470](https://github.com/rustwasm/wasm-bindgen/pull/1470)
+
+* The `selectionStart` and `selectionEnd` APIs of text areas have been enabled.
+  [#1533](https://github.com/rustwasm/wasm-bindgen/pull/1533)
+
+### Changed
+
+* Some more methods in `web-sys` now take immutable slices instead of mutable
+  ones.
+  [#1508](https://github.com/rustwasm/wasm-bindgen/pull/1508)
+
+* TypeScript bindings for `Option<T>` arguments now use `foo?` where possible.
+  [#1483](https://github.com/rustwasm/wasm-bindgen/pull/1483)
+
+### Fixed
+
+* Unnecessary bindings to `__wbindgen_object_drop_ref` have been fixed.
+  [#1504](https://github.com/rustwasm/wasm-bindgen/pull/1504)
+
+* Some direct imports have been fixed for `--target web`.
+  [#1503](https://github.com/rustwasm/wasm-bindgen/pull/1503)
+
+* Both importing and exporting the same name has been fixed.
+  [#1506](https://github.com/rustwasm/wasm-bindgen/pull/1506)
+
+* TypeScript typings for `init` in `--target web` have been fixed.
+  [#1520](https://github.com/rustwasm/wasm-bindgen/pull/1520)
+
+* Calling a dropped `Closure` should no longer "segfault" but produce a clear
+  error.
+  [#1530](https://github.com/rustwasm/wasm-bindgen/pull/1530)
+
+--------------------------------------------------------------------------------
+
+## 0.2.43
+
 Released 2019-04-29.
 
 ### Added
