@@ -300,6 +300,12 @@ impl<'a> ToIdlType<'a> for AttributedType<'a> {
     }
 }
 
+impl<'a> ToIdlType<'a> for AttributedNonAnyType<'a> {
+    fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
+        self.type_.to_idl_type(record)
+    }
+}
+
 impl<'a> ToIdlType<'a> for Identifier<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
         if self.0 == "DOMTimeStamp" {
