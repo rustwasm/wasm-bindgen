@@ -13,4 +13,4 @@ edition = "2018"
 
 [dependencies]
 failure = "0.1"
-walrus = "0.6"
+walrus = "0.7.0"

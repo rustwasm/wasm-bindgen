@@ -94,11 +94,11 @@ fn rmain() -> Result<(), Error> {
     // `wasm_bindgen_test_configure` macro, which emits a custom section for us
     // to read later on.
     let mut node = true;
-    for custom in wasm.custom.iter() {
-        if custom.name != "__wasm_bindgen_test_unstable" {
+    for (_id, custom) in wasm.customs.iter() {
+        if custom.name() != "__wasm_bindgen_test_unstable" {
             continue;
         }
-        node = !custom.value.contains(&0x01);
+        node = !custom.data().contains(&0x01);
     }
     let headless = env::var("NO_HEADLESS").is_err();
     let debug = env::var("WASM_BINDGEN_NO_DEBUG").is_err();
