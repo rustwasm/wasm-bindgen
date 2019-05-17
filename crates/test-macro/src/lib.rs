@@ -65,12 +65,9 @@ pub fn wasm_bindgen_test(
     tokens.extend(
         (quote! {
             #[no_mangle]
-            pub extern "C" fn #name(cx: *const ::wasm_bindgen_test::__rt::Context) {
-                unsafe {
-                    let cx = &*cx;
-                    let test_name = concat!(module_path!(), "::", stringify!(#ident));
-                    #test_body
-                }
+            pub extern "C" fn #name(cx: &::wasm_bindgen_test::__rt::Context) {
+                let test_name = concat!(module_path!(), "::", stringify!(#ident));
+                #test_body
             }
         })
         .into_iter(),
