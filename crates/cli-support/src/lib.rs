@@ -508,20 +508,14 @@ fn extract_programs<'a>(
     program_storage: &'a mut Vec<Vec<u8>>,
 ) -> Result<Vec<decode::Program<'a>>, Error> {
     let my_version = wasm_bindgen_shared::version();
-    let mut to_remove = Vec::new();
     assert!(program_storage.is_empty());
 
-    for (i, custom) in module.custom.iter_mut().enumerate() {
-        if custom.name != "__wasm_bindgen_unstable" {
-            continue;
-        }
-        to_remove.push(i);
-        log::debug!("custom section {} looks like a wasm bindgen section", i);
-        program_storage.push(mem::replace(&mut custom.value, Vec::new()));
-    }
-
-    for i in to_remove.into_iter().rev() {
-        module.custom.remove(i);
+    while let Some(raw) = module.customs.remove_raw("__wasm_bindgen_unstable") {
+        log::debug!(
+            "custom section '{}' looks like a wasm bindgen section",
+            raw.name
+        );
+        program_storage.push(raw.data);
     }
 
     let mut ret = Vec::new();
