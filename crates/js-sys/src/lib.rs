@@ -601,7 +601,7 @@ pub mod Atomics {
         /// The static `Atomics.notify()` method notifies up some agents that
         /// are sleeping in the wait queue.
         /// Note: This operation works with a shared `Int32Array` only.
-        /// If `count` is not provided, notifies all the agents int the queue.
+        /// If `count` is not provided, notifies all the agents in the queue.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/notify)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
