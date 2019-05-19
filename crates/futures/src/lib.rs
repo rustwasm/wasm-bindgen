@@ -110,14 +110,17 @@ pub mod futures_0_3;
 use std::cell::{Cell, RefCell};
 use std::fmt;
 use std::rc::Rc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
 use futures::executor::{self, Notify, Spawn};
 use futures::future;
 use futures::prelude::*;
 use futures::sync::oneshot;
-use js_sys::{Function, Promise};
+use js_sys::{Atomics, Function, Int32Array, Promise, SharedArrayBuffer};
 use wasm_bindgen::prelude::*;
+
+mod polyfill;
 
 /// A Rust `Future` backed by a JavaScript `Promise`.
 ///
@@ -252,6 +255,7 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
             resolve,
             reject,
             notified: Cell::new(State::Notified),
+            waker: Arc::new(Waker::new(SharedArrayBuffer::new(4), false)),
         }));
     });
 
@@ -270,6 +274,9 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
         // JavaScript.  We'll be invoking one of these at the end.
         resolve: Function,
         reject: Function,
+
+        // Struct to wake a future
+        waker: Arc<Waker>,
     }
 
     // The possible states our `Package` (future) can be in, tracked internally
@@ -300,10 +307,68 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
         Waiting(Arc<Package>),
     }
 
-    // No shared memory right now, wasm is single threaded, no need to worry
-    // about this!
-    unsafe impl Send for Package {}
-    unsafe impl Sync for Package {}
+    struct Waker {
+        buffer: SharedArrayBuffer,
+        notified: AtomicBool,
+    };
+
+    impl Waker {
+        fn new(buffer: SharedArrayBuffer, notified: bool) -> Self {
+            Self {
+                buffer,
+                notified: AtomicBool::new(notified),
+            }
+        }
+    }
+
+    impl Notify for Waker {
+        fn notify(&self, id: usize) {
+            if !self.notified.swap(true, Ordering::SeqCst) {
+                let array = Int32Array::new(&self.buffer);
+                let _ = Atomics::notify(&array, id as u32);
+            }
+        }
+    }
+
+    fn poll_again(package: Arc<Package>, id: usize) {
+        let me = match package.notified.replace(State::Notified) {
+            // we need to schedule polling to resume, so keep going
+            State::Waiting(me) => me,
+
+            // we were already notified, and were just notified again;
+            // having now coalesced the notifications we return as it's
+            // still someone else's job to process this
+            State::Notified => return,
+
+            // the future was previously being polled, and we've just
+            // switched it to the "you're notified" state. We don't have
+            // access to the future as it's being polled, so the future
+            // polling process later sees this notification and will
+            // continue polling. For us, though, there's nothing else to do,
+            // so we bail out.
+            // later see
+            State::Polling => return,
+        };
+
+        // Use `Promise.then` on a resolved promise to place our execution
+        // onto the next turn of the microtask queue, enqueueing our poll
+        // operation. We don't currently poll immediately as it turns out
+        // `futures` crate adapters aren't compatible with it and it also
+        // helps avoid blowing the stack by accident.
+        //
+        // Note that the `Rc`/`RefCell` trick here is basically to just
+        // ensure that our `Closure` gets cleaned up appropriately.
+        let promise = polyfill::wait_async(Int32Array::new(&package.waker.buffer), id as u32, 0);
+        let slot = Rc::new(RefCell::new(None));
+        let slot2 = slot.clone();
+        let closure = Closure::wrap(Box::new(move |_| {
+            let myself = slot2.borrow_mut().take();
+            debug_assert!(myself.is_some());
+            Package::poll(&me);
+        }) as Box<FnMut(JsValue)>);
+        promise.then(&closure);
+        *slot.borrow_mut() = Some(closure);
+    }
 
     impl Package {
         // Move the future contained in `me` as far forward as we can. This will
@@ -331,13 +396,14 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
                     // our `Waiting` state, and resume the polling process
                     State::Polling => {
                         me.notified.set(State::Waiting(me.clone()));
+                        poll_again(me.clone(), 0);
                         break;
                     }
 
                     State::Waiting(_) => panic!("shouldn't see waiting state!"),
                 }
 
-                let (val, f) = match me.spawn.borrow_mut().poll_future_notify(me, 0) {
+                let (val, f) = match me.spawn.borrow_mut().poll_future_notify(&me.waker, 0) {
                     // If the future is ready, immediately call the
                     // resolve/reject callback and then return as we're done.
                     Ok(Async::Ready(value)) => (value, &me.resolve),
@@ -351,48 +417,6 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
                 drop(f.call1(&JsValue::undefined(), &val));
                 break;
             }
-        }
-    }
-
-    impl Notify for Package {
-        fn notify(&self, _id: usize) {
-            let me = match self.notified.replace(State::Notified) {
-                // we need to schedule polling to resume, so keep going
-                State::Waiting(me) => me,
-
-                // we were already notified, and were just notified again;
-                // having now coalesced the notifications we return as it's
-                // still someone else's job to process this
-                State::Notified => return,
-
-                // the future was previously being polled, and we've just
-                // switched it to the "you're notified" state. We don't have
-                // access to the future as it's being polled, so the future
-                // polling process later sees this notification and will
-                // continue polling. For us, though, there's nothing else to do,
-                // so we bail out.
-                // later see
-                State::Polling => return,
-            };
-
-            // Use `Promise.then` on a resolved promise to place our execution
-            // onto the next turn of the microtask queue, enqueueing our poll
-            // operation. We don't currently poll immediately as it turns out
-            // `futures` crate adapters aren't compatible with it and it also
-            // helps avoid blowing the stack by accident.
-            //
-            // Note that the `Rc`/`RefCell` trick here is basically to just
-            // ensure that our `Closure` gets cleaned up appropriately.
-            let promise = Promise::resolve(&JsValue::undefined());
-            let slot = Rc::new(RefCell::new(None));
-            let slot2 = slot.clone();
-            let closure = Closure::wrap(Box::new(move |_| {
-                let myself = slot2.borrow_mut().take();
-                debug_assert!(myself.is_some());
-                Package::poll(&me);
-            }) as Box<dyn FnMut(JsValue)>);
-            promise.then(&closure);
-            *slot.borrow_mut() = Some(closure);
         }
     }
 }
