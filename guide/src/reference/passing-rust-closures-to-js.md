@@ -95,7 +95,7 @@ pub struct Interval {
 }
 
 impl Interval {
-    pub fn new<F>(millis: u32, f: F) -> Interval
+    pub fn new<F: 'static>(millis: u32, f: F) -> Interval
     where
         F: FnMut()
     {
@@ -119,6 +119,6 @@ impl Drop for Interval {
 // Keep logging "hello" every second until the resulting `Interval` is dropped.
 #[wasm_bindgen]
 pub fn hello() -> Interval {
-    Interval::new(1_000, || log("hello"));
+    Interval::new(1_000, || log("hello"))
 }
 ```
