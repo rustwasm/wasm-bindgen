@@ -249,7 +249,7 @@ impl<'a> Context<'a> {
                     format!("{}{}\n", export, contents)
                 } else {
                     assert_eq!(export_name, definition_name);
-                    format!("{}const {} = {};\n", export, export_name, contents)
+                    format!("{}const {name} = {};\n__exports.{name} = {name};", export, contents, name = export_name)
                 }
             }
         };
