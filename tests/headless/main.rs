@@ -51,3 +51,11 @@ pub mod snippets;
 pub mod modules;
 pub mod anyref_heap_live_count;
 pub mod strings;
+
+#[wasm_bindgen_test]
+fn closures_work() {
+    let x = Closure::wrap(Box::new(|| {}) as Box<FnMut()>);
+    drop(x);
+    let x = Closure::wrap(Box::new(|| {}) as Box<FnMut()>);
+    x.forget();
+}
