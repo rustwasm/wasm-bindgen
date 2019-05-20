@@ -32,6 +32,23 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.45
+
+Released 2019-05-20.
+
+### Fixed
+
+* Using `__wbindgen_cb_forget` on `--target web` has been fixed.
+  [#1544](https://github.com/rustwasm/wasm-bindgen/pull/1544)
+
+### Changed
+
+* More whitelists have been added for `web-sys` to use shared slices instead of
+  mutable slices.
+  [#1539](https://github.com/rustwasm/wasm-bindgen/pull/1539)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.44
 
 Released 2019-05-16.
