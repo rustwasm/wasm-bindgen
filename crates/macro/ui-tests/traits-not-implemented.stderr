@@ -1,0 +1,7 @@
+error[E0277]: the trait bound `A: wasm_bindgen::convert::traits::IntoWasmAbi` is not satisfied
+ --> $DIR/traits-not-implemented.rs:8:12
+  |
+8 |     pub fn foo(a: A);
+  |            ^^^ the trait `wasm_bindgen::convert::traits::IntoWasmAbi` is not implemented for `A`
+
+For more information about this error, try `rustc --explain E0277`.

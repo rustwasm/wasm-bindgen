@@ -1008,12 +1008,23 @@ impl TryToTokens for ast::ImportFunction {
             quote!()
         };
 
-        let invocation = quote! {
-            #(#attrs)*
-            #[allow(bad_style)]
-            #[doc = #doc_comment]
-            #[allow(clippy::all)]
-            #vis fn #rust_name(#me #(#arguments),*) #ret {
+        // Route any errors pointing to this imported function to the identifier
+        // of the function we're imported from so we at least know what function
+        // is causing issues.
+        //
+        // Note that this is where type errors like "doesn't implement
+        // FromWasmAbi" or "doesn't implement IntoWasmAbi" currently get routed.
+        // I suspect that's because they show up in the signature via trait
+        // projections as types of arguments, and all that needs to typecheck
+        // before the body can be typechecked. Due to rust-lang/rust#60980 (and
+        // probably related issues) we can't really get a precise span.
+        //
+        // Ideally what we want is to point errors for particular types back to
+        // the specific argument/type that generated the error, but it looks
+        // like rustc itself doesn't do great in that regard so let's just do
+        // the best we can in the meantime.
+        let extern_fn = respan(
+            quote! {
                 #[link(wasm_import_module = "__wbindgen_placeholder__")]
                 #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
                 extern "C" {
@@ -1024,6 +1035,17 @@ impl TryToTokens for ast::ImportFunction {
                     panic!("cannot call wasm-bindgen imported functions on \
                             non-wasm targets");
                 }
+            },
+            &self.rust_name,
+        );
+
+        let invocation = quote! {
+            #(#attrs)*
+            #[allow(bad_style)]
+            #[doc = #doc_comment]
+            #[allow(clippy::all)]
+            #vis fn #rust_name(#me #(#arguments),*) #ret {
+                #extern_fn
 
                 unsafe {
                     #exn_data
@@ -1444,6 +1466,8 @@ impl<'a, T: ToTokens> ToTokens for Descriptor<'a, T> {
     }
 }
 
+/// Converts `span` into a stream of tokens, and attempts to ensure that `input`
+/// has all the appropriate span information so errors in it point to `span`.
 fn respan(input: TokenStream, span: &dyn ToTokens) -> TokenStream {
     let mut first_span = Span::call_site();
     let mut last_span = Span::call_site();
