@@ -60,6 +60,7 @@ macro_rules! methods {
     ($(($name:ident $(($other:tt))*, $variant:ident($($contents:tt)*)),)*) => {
         $(methods!(@method $name, $variant($($contents)*));)*
 
+        #[cfg(feature = "strict-macro")]
         fn check_used(self) -> Result<(), Diagnostic> {
             // Account for the fact this method was called
             ATTRS.with(|state| state.checks.set(state.checks.get() + 1));
@@ -69,13 +70,29 @@ macro_rules! methods {
                 if used.get() {
                     continue
                 }
-                if !cfg!(feature = "strict-macro") {
+                // The check below causes rustc to crash on powerpc64 platforms
+                // with an LLVM error. To avoid this, we instead use #[cfg()]
+                // and duplicate the function below. See #58516 for details.
+                /*if !cfg!(feature = "strict-macro") {
                     continue
-                }
+                }*/
                 let span = match attr {
                     $(BindgenAttr::$variant(span, ..) => span,)*
                 };
                 errors.push(Diagnostic::span_error(*span, "unused #[wasm_bindgen] attribute"));
+            }
+            Diagnostic::from_vec(errors)
+        }
+
+        #[cfg(not(feature = "strict-macro"))]
+        fn check_used(self) -> Result<(), Diagnostic> {
+            // Account for the fact this method was called
+            ATTRS.with(|state| state.checks.set(state.checks.get() + 1));
+            let mut errors = Vec::new();
+            for (used, attr) in self.attrs.iter() {
+                if used.get() {
+                    continue
+                }
             }
             Diagnostic::from_vec(errors)
         }
