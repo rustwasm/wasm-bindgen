@@ -12,7 +12,6 @@
 Import JavaScript things into Rust and export Rust things to JavaScript.
 
 ```rust
-extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 // Import the `window.alert` function from the Web.
