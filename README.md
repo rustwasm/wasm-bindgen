@@ -1,13 +1,34 @@
-<meta charset="utf-8"/>
+<div align="center">
 
-# `wasm-bindgen`
+  <h1><code>wasm-bindgen</code></h1>
 
-**Facilitating high-level interactions between wasm modules and JavaScript.**
+  <p>
+    <strong>Facilitating high-level interactions between Wasm modules and JavaScript.</strong>
+  </p>
 
-[![Build Status](https://dev.azure.com/rustwasm/wasm-bindgen/_apis/build/status/rustwasm.wasm-bindgen?branchName=master)](https://dev.azure.com/rustwasm/wasm-bindgen/_build/latest?definitionId=1&branchName=master)
-[![](https://meritbadge.herokuapp.com/wasm-bindgen)](https://crates.io/crates/wasm-bindgen)
-[![](https://img.shields.io/crates/d/wasm-bindgen.svg)](https://crates.io/crates/wasm-bindgen)
-[![API Documentation on docs.rs](https://docs.rs/wasm-bindgen/badge.svg)](https://docs.rs/wasm-bindgen)
+  <!-- Build Status -->
+  <a href="https://dev.azure.com/rustwasm/wasm-bindgen/_build/latest?definitionId=1&branchName=master"><img src="https://img.shields.io/azure-devops/build/rustwasm/wasm-bindgen/1.svg?style=flat-square" alt="Build Status" /></a>
+  <!-- Crates version -->
+  <a href="https://crates.io/crates/wasm-bindgen"><img src="https://img.shields.io/crates/v/wasm-bindgen.svg?style=flat-square" alt="Crates.io version" /></a>
+  <!-- Downloads -->
+  <a href="https://crates.io/crates/wasm-bindgen"><img src="https://img.shields.io/crates/d/wasm-bindgen.svg?style=flat-square" alt="Download" /></a>
+  <!-- docs.rs docs -->
+  <a href="https://docs.rs/wasm-bindgen"><img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square" alt="docs.rs docs" /></a>
+
+  <h3>
+    <a href="https://rustwasm.github.io/docs/wasm-bindgen/">Guide</a>
+    <span> | </span>
+    <a href="https://docs.rs/wasm-bindgen">API Docs</a>
+    <span> | </span>
+    <a href="https://github.com/rustwasm/wasm-bindgen/blob/master/CONTRIBUTING.md">Contributing</a>
+    <span> | </span>
+    <a href="https://discordapp.com/channels/442252698964721669/443151097398296587">Chat</a>
+  </h3>
+
+  <sub>Built with 🦀🕸 by <a href="https://rustwasm.github.io/">The Rust and WebAssembly Working Group</a></sub>
+</div>
+
+## Example
 
 Import JavaScript things into Rust and export Rust things to JavaScript.
 
@@ -61,7 +82,7 @@ greet("World!");
 
 [**📚 Read the `wasm-bindgen` guide here! 📚**](https://rustwasm.github.io/docs/wasm-bindgen/)
 
-You can find general documentation about Rust and WebAssembly
+You can find general documentation about using Rust and WebAssembly together
 [here](https://rustwasm.github.io/docs).
 
 ## API Docs
