@@ -38,7 +38,7 @@ tys! {
     CLAMPED
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Descriptor {
     I8,
     U8,
@@ -67,14 +67,14 @@ pub enum Descriptor {
     Clamped(Box<Descriptor>),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Function {
     pub arguments: Vec<Descriptor>,
     pub shim_idx: u32,
     pub ret: Descriptor,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Closure {
     pub shim_idx: u32,
     pub dtor_idx: u32,
@@ -146,9 +146,9 @@ impl Descriptor {
         }
     }
 
-    pub fn unwrap_function(&self) -> &Function {
-        match *self {
-            Descriptor::Function(ref f) => f,
+    pub fn unwrap_function(self) -> Function {
+        match self {
+            Descriptor::Function(f) => *f,
             _ => panic!("not a function"),
         }
     }
@@ -199,10 +199,10 @@ impl Descriptor {
         }
     }
 
-    pub fn closure(&self) -> Option<&Closure> {
-        match *self {
-            Descriptor::Closure(ref s) => Some(s),
-            _ => None,
+    pub fn unwrap_closure(self) -> Closure {
+        match self {
+            Descriptor::Closure(s) => *s,
+            _ => panic!("not a closure"),
         }
     }
 

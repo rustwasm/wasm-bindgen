@@ -108,6 +108,9 @@ extern "C" {
         c: &mut FnMut(&RefFirstArgument),
     );
     fn call_destroyed(a: &JsValue);
+
+    fn js_store_forgotten_closure(closure: &Closure<Fn()>);
+    fn js_call_forgotten_closure();
 }
 
 #[wasm_bindgen_test]
@@ -572,4 +575,12 @@ fn call_destroyed_doesnt_segfault() {
     let b = a.as_ref().clone();
     drop(a);
     call_destroyed(&b);
+}
+
+#[wasm_bindgen_test]
+fn forget_works() {
+    let a = Closure::wrap(Box::new(|| {}) as Box<Fn()>);
+    js_store_forgotten_closure(&a);
+    a.forget();
+    js_call_forgotten_closure();
 }

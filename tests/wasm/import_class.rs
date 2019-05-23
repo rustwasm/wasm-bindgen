@@ -158,7 +158,7 @@ fn switch_methods() {
 
     assert!(!switch_methods_called());
     SwitchMethods::new().b();
-    assert!(switch_methods_called());
+    assert!(!switch_methods_called());
 }
 
 #[wasm_bindgen_test]

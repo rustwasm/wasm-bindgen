@@ -213,3 +213,12 @@ fn string_roundtrip() {
 pub fn do_string_roundtrip(s: String) -> String {
     s
 }
+
+#[wasm_bindgen_test]
+fn anyref_heap_live_count() {
+    let x = wasm_bindgen::anyref_heap_live_count();
+    let y = JsValue::null().clone();
+    assert!(wasm_bindgen::anyref_heap_live_count() > x);
+    drop(y);
+    assert_eq!(x, wasm_bindgen::anyref_heap_live_count());
+}

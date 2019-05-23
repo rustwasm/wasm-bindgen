@@ -99,15 +99,13 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
 
     /// Generates all bindings necessary for the signature in `Function`,
     /// creating necessary argument conversions and return value processing.
-    pub fn process<'c, I>(
+    pub fn process(
         &mut self,
         function: &Function,
-        opt_arg_names: I,
-    ) -> Result<&mut Self, Error>
-    where
-        I: Into<Option<&'c Vec<String>>>,
-    {
-        if let Some(arg_names) = opt_arg_names.into() {
+        opt_arg_names: &Option<Vec<String>>,
+    ) -> Result<&mut Self, Error> {
+        if let Some(arg_names) = opt_arg_names {
+            assert_eq!(arg_names.len(), function.arguments.len());
             for (arg, arg_name) in function.arguments.iter().zip(arg_names) {
                 self.argument(arg, arg_name.as_str())?;
             }

@@ -220,9 +220,9 @@ impl JsValue {
         T: for<'a> serde::de::Deserialize<'a>,
     {
         unsafe {
-            let mut ptr = ptr::null_mut();
-            let len = __wbindgen_json_serialize(self.idx, &mut ptr);
-            let s = Vec::from_raw_parts(ptr, len, len);
+            let mut ret = [0usize; 2];
+            __wbindgen_json_serialize(&mut ret, self.idx);
+            let s = Vec::from_raw_parts(ret[0] as *mut u8, ret[1], ret[1]);
             let s = String::from_utf8_unchecked(s);
             serde_json::from_str(&s)
         }
@@ -333,14 +333,10 @@ impl JsValue {
     #[cfg(feature = "std")]
     fn as_debug_string(&self) -> String {
         unsafe {
-            let mut len = 0;
-            let ptr = __wbindgen_debug_string(self.idx, &mut len);
-            if ptr.is_null() {
-                unreachable!("`__wbindgen_debug_string` must return a valid string")
-            } else {
-                let data = Vec::from_raw_parts(ptr, len, len);
-                String::from_utf8_unchecked(data)
-            }
+            let mut ret = [0; 2];
+            __wbindgen_debug_string(&mut ret, self.idx);
+            let data = Vec::from_raw_parts(ret[0] as *mut u8, ret[1], ret[1]);
+            String::from_utf8_unchecked(data)
         }
     }
 }
@@ -507,7 +503,7 @@ externs! {
         fn __wbindgen_boolean_get(idx: u32) -> u32;
         fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
 
-        fn __wbindgen_debug_string(idx: u32, len: *mut usize) -> *mut u8;
+        fn __wbindgen_debug_string(ret: *mut [usize; 2], idx: u32) -> ();
 
         fn __wbindgen_throw(a: *const u8, b: usize) -> !;
         fn __wbindgen_rethrow(a: u32) -> !;
@@ -519,7 +515,7 @@ externs! {
         fn __wbindgen_describe_closure(a: u32, b: u32, c: u32) -> u32;
 
         fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
-        fn __wbindgen_json_serialize(idx: u32, ptr: *mut *mut u8) -> usize;
+        fn __wbindgen_json_serialize(ret: *mut [usize; 2], idx: u32) -> ();
         fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
 
         fn __wbindgen_memory() -> u32;

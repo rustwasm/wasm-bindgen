@@ -71,7 +71,7 @@ fn rmain() -> Result<(), Error> {
     // that any exported function with the prefix `__wbg_test` is a test we need
     // to execute.
     let wasm = fs::read(&wasm_file_to_test).context("failed to read wasm file")?;
-    let wasm = walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
+    let mut wasm = walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
     let mut tests = Vec::new();
 
     for export in wasm.exports.iter() {
@@ -94,11 +94,8 @@ fn rmain() -> Result<(), Error> {
     // `wasm_bindgen_test_configure` macro, which emits a custom section for us
     // to read later on.
     let mut node = true;
-    for (_id, custom) in wasm.customs.iter() {
-        if custom.name() != "__wasm_bindgen_test_unstable" {
-            continue;
-        }
-        node = !custom.data().contains(&0x01);
+    if let Some(section) = wasm.customs.remove_raw("__wasm_bindgen_test_unstable") {
+        node = !section.data.contains(&0x01);
     }
     let headless = env::var("NO_HEADLESS").is_err();
     let debug = env::var("WASM_BINDGEN_NO_DEBUG").is_err();
