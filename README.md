@@ -6,14 +6,12 @@
     <strong>Facilitating high-level interactions between Wasm modules and JavaScript.</strong>
   </p>
 
-  <!-- Build Status -->
-  <a href="https://dev.azure.com/rustwasm/wasm-bindgen/_build/latest?definitionId=1&branchName=master"><img src="https://img.shields.io/azure-devops/build/rustwasm/wasm-bindgen/1.svg?style=flat-square" alt="Build Status" /></a>
-  <!-- Crates version -->
-  <a href="https://crates.io/crates/wasm-bindgen"><img src="https://img.shields.io/crates/v/wasm-bindgen.svg?style=flat-square" alt="Crates.io version" /></a>
-  <!-- Downloads -->
-  <a href="https://crates.io/crates/wasm-bindgen"><img src="https://img.shields.io/crates/d/wasm-bindgen.svg?style=flat-square" alt="Download" /></a>
-  <!-- docs.rs docs -->
-  <a href="https://docs.rs/wasm-bindgen"><img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square" alt="docs.rs docs" /></a>
+  <p>
+    <a href="https://dev.azure.com/rustwasm/wasm-bindgen/_build/latest?definitionId=1&branchName=master"><img src="https://img.shields.io/azure-devops/build/rustwasm/wasm-bindgen/1.svg?style=flat-square" alt="Build Status" /></a>
+    <a href="https://crates.io/crates/wasm-bindgen"><img src="https://img.shields.io/crates/v/wasm-bindgen.svg?style=flat-square" alt="Crates.io version" /></a>
+    <a href="https://crates.io/crates/wasm-bindgen"><img src="https://img.shields.io/crates/d/wasm-bindgen.svg?style=flat-square" alt="Download" /></a>
+    <a href="https://docs.rs/wasm-bindgen"><img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square" alt="docs.rs docs" /></a>
+  </p>
 
   <h3>
     <a href="https://rustwasm.github.io/docs/wasm-bindgen/">Guide</a>
