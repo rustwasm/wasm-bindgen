@@ -1,8 +1,8 @@
 # Serializing and Deserializing Arbitrary Data Into and From `JsValue` with Serde
 
 It's possible to pass arbirtrary data from Rust to JavaScript by serializing it
-with [Serde](https://github.com/serde-rs/serde). `wasm-bindgen` includes the
-`JsValue` type, which streamlines serializing and deserializing.
+to JSON with [Serde](https://github.com/serde-rs/serde). `wasm-bindgen` includes
+the `JsValue` type, which streamlines serializing and deserializing.
 
 ## Enable the `"serde-serialize"` Feature
 
@@ -105,3 +105,24 @@ example.field2.push([5,6]);
 // Send the example object back to wasm.
 receive_example_from_js(example);
 ```
+
+## An Alternative Approach: `serde-wasm-bindgen`
+
+[The `serde-wasm-bindgen`
+crate](https://github.com/cloudflare/serde-wasm-bindgen) serializes and
+deserializes Rust structures directly to `JsValue`s, without going through
+temporary JSON stringification. This approach has both advantages and
+disadvantages.
+
+The primary advantage is smaller code size: going through JSON entrenches code
+to stringify and parse floating point numbers, which is not a small amount of
+code. It also supports more types than JSON does, such as `Map`, `Set`, and
+array buffers.
+
+There are two primary disadvantages. The first is that it is not always
+compatible with the default JSON-based serialization. The second is that it
+performs more calls back and forth between JS and Wasm, which has not been fully
+optimized in all engines, meaning it can sometimes be a speed
+regression. However, in other cases, it is a speed up over the JSON-based
+stringification, so &mdash; as always &mdash; make sure to profile your own use
+cases as necessary.
