@@ -116,7 +116,8 @@ disadvantages.
 
 The primary advantage is smaller code size: going through JSON entrenches code
 to stringify and parse floating point numbers, which is not a small amount of
-code.
+code. It also supports more types than JSON does, such as `Map`, `Set`, and
+array buffers.
 
 There are two primary disadvantages. The first is that it is not always
 compatible with the default JSON-based serialization. The second is that it
