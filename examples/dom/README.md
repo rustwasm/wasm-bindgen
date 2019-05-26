@@ -4,7 +4,7 @@
 online][compiled]
 
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/dom/
-[dox]: https://rustwasm.github.io/wasm-bindgen/examples/dom.html
+[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/dom.html
 
 You can build the example locally with:
 

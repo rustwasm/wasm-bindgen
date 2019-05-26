@@ -4,7 +4,7 @@
 online][compiled]
 
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/char/
-[dox]: https://rustwasm.github.io/wasm-bindgen/examples/char.html
+[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/char.html
 
 You can build the example locally with:
 

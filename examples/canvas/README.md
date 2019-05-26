@@ -4,7 +4,7 @@
 online][compiled]
 
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/canvas/
-[dox]: https://rustwasm.github.io/wasm-bindgen/examples/2d-canvas.html
+[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/2d-canvas.html
 
 You can build the example locally with:
 

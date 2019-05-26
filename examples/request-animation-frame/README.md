@@ -4,7 +4,7 @@
 online][compiled]
 
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/request-animation-frame/
-[dox]: https://rustwasm.github.io/wasm-bindgen/examples/request-animation-frame.html
+[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/request-animation-frame.html
 
 You can build the example locally with:
 
