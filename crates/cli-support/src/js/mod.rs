@@ -1103,35 +1103,6 @@ impl<'a> Context<'a> {
         let mut dst = format!("class {} {{\n", name);
         let mut ts_dst = format!("export {}", dst);
 
-        let (mkweakref, freeref) = if self.config.weak_refs {
-            // When weak refs are enabled we use them to automatically free the
-            // contents of an exported rust class when it's gc'd. Note that a
-            // manual `free` function still exists for deterministic
-            // destruction.
-            //
-            // This is implemented by using a `WeakRefGroup` to run finalizers
-            // for all `WeakRef` objects that it creates. Upon construction of
-            // a new wasm object we use `makeRef` with "holdings" of a thunk to
-            // free the wasm instance.  Once the `this` (the instance we're
-            // creating) is gc'd then the finalizer will run with the
-            // `WeakRef`, and we'll pull out the `holdings`, our pointer.
-            //
-            // Note, though, that if manual finalization happens we want to
-            // cancel the `WeakRef`-generated finalization, so we retain the
-            // `WeakRef` in a global map. This global map is then used to
-            // `drop()` the `WeakRef` (cancel finalization) whenever it is
-            // finalized.
-            self.expose_cleanup_groups();
-            let mk = format!("addCleanup(this, this.ptr, free{});", name);
-            let free = "
-                CLEANUPS_MAP.get(ptr).drop();
-                CLEANUPS_MAP.delete(ptr);
-            ";
-            (mk, free)
-        } else {
-            (String::new(), "")
-        };
-
         if self.config.debug && !class.has_constructor {
             dst.push_str(
                 "
@@ -1165,29 +1136,52 @@ impl<'a> Context<'a> {
                 }}
                 ",
                 name,
-                mkweakref.replace("this", "obj"),
+                if self.config.weak_refs {
+                    format!("{}FinalizationGroup.register(obj, obj.ptr, obj.ptr);", name)
+                } else {
+                    String::new()
+                },
             ));
         }
 
         self.global(&format!(
             "
             function free{}(ptr) {{
-                {}
                 wasm.{}(ptr);
             }}
             ",
             name,
-            freeref,
             wasm_bindgen_shared::free_function(&name)
         ));
+
+        if self.config.weak_refs {
+            self.global(&format!(
+                "
+                const {}FinalizationGroup = new FinalizationGroup((items) => {{
+                    for (const ptr of items) {{
+                        free{}(ptr);
+                    }}
+                }});
+                ",
+                name,
+                name,
+            ));
+        }
+
         dst.push_str(&format!(
             "
             free() {{
                 const ptr = this.ptr;
                 this.ptr = 0;
+                {}
                 free{}(ptr);
             }}
             ",
+            if self.config.weak_refs {
+                format!("{}FinalizationGroup.unregister(ptr);", name)
+            } else {
+                String::new()
+            },
             name,
         ));
         ts_dst.push_str("  free(): void;");
@@ -2276,23 +2270,6 @@ impl<'a> Context<'a> {
                 return x === undefined || x === null;
             }
         ",
-        );
-    }
-
-    fn expose_cleanup_groups(&mut self) {
-        if !self.should_write_global("cleanup_groups") {
-            return;
-        }
-        self.global(
-            "
-                const CLEANUPS = new WeakRefGroup(x => x.holdings());
-                const CLEANUPS_MAP = new Map();
-
-                function addCleanup(obj, ptr, free) {
-                    const ref = CLEANUPS.makeRef(obj, () => free(ptr));
-                    CLEANUPS_MAP.set(ptr, ref);
-                }
-            ",
         );
     }
 

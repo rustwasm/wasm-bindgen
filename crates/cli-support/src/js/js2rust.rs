@@ -488,8 +488,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     if self.cx.config.weak_refs {
                         self.ret_expr.push_str(&format!(
                             "\
-                            addCleanup(this, this.ptr, free{});
-                        ",
+                             {}FinalizationGroup.register(this, this.ptr, this.ptr);
+                             ",
                             name
                         ));
                     }

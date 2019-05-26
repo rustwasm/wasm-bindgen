@@ -25,7 +25,7 @@ pub struct Bindgen {
     remove_name_section: bool,
     remove_producers_section: bool,
     emit_start: bool,
-    // Experimental support for `WeakRefGroup`, an upcoming ECMAScript feature.
+    // Experimental support for weakrefs, an upcoming ECMAScript feature.
     // Currently only enable-able through an env var.
     weak_refs: bool,
     // Experimental support for the wasm threads proposal, transforms the wasm
