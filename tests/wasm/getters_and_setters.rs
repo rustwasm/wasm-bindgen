@@ -1,5 +1,5 @@
-use std::rc::Rc;
 use std::cell::Cell;
+use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 
@@ -136,7 +136,9 @@ struct GetterCompute;
 #[wasm_bindgen]
 impl GetterCompute {
     #[wasm_bindgen(getter)]
-    pub fn foo(&self) -> u32 { 3 }
+    pub fn foo(&self) -> u32 {
+        3
+    }
 }
 
 #[wasm_bindgen_test]

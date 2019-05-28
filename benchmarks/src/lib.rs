@@ -6,7 +6,7 @@ use wasm_bindgen::JsCast;
 use web_sys::Node;
 
 #[wasm_bindgen(raw_module = "../globals.js")]
-extern {
+extern "C" {
     #[wasm_bindgen(js_name = jsthunk)]
     fn js_thunk();
     #[wasm_bindgen(js_name = add)]
@@ -57,8 +57,10 @@ pub fn fibonacci(n: i32) -> i32 {
         b += a;
         a = tmp;
     }
-    unsafe { FIB_HIGH = (a >> 32) as i32; }
-    return a as i32
+    unsafe {
+        FIB_HIGH = (a >> 32) as i32;
+    }
+    return a as i32;
 }
 
 #[wasm_bindgen]
@@ -97,7 +99,7 @@ pub fn call_doesnt_throw_with_catch_n_times(n: usize) {
 }
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     pub type Element;
 
     #[wasm_bindgen(method, js_name = firstChild, final, getter)]

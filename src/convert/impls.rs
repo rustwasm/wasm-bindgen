@@ -134,12 +134,12 @@ macro_rules! type_abi_as_u32 {
 
         impl OptionIntoWasmAbi for $t {
             #[inline]
-            fn none() -> u32 { 0xFFFFFFu32 }
+            fn none() -> u32 { 0x00FF_FFFFu32 }
         }
 
         impl OptionFromWasmAbi for $t {
             #[inline]
-            fn is_none(js: &u32) -> bool { *js == 0xFFFFFFu32 }
+            fn is_none(js: &u32) -> bool { *js == 0x00FF_FFFFu32 }
         }
     )*)
 }
@@ -165,7 +165,7 @@ macro_rules! type_64 {
 
             #[inline]
             unsafe fn from_abi(js: Wasm64, _extra: &mut Stack) -> $t {
-                (js.low as $t) | ((js.high as $t) << 32)
+                $t::from(js.low) | ($t::from(js.high) << 32)
             }
         }
 
@@ -199,7 +199,7 @@ macro_rules! type_64 {
                 if js.present == 0 {
                     None
                 } else {
-                    Some((js.low as $t) | ((js.high as $t) << 32))
+                    Some($t::from(js.low) | ($t::from(js.high) << 32))
                 }
             }
         }
@@ -229,14 +229,14 @@ impl FromWasmAbi for bool {
 impl OptionIntoWasmAbi for bool {
     #[inline]
     fn none() -> u32 {
-        0xFFFFFFu32
+        0x00FF_FFFFu32
     }
 }
 
 impl OptionFromWasmAbi for bool {
     #[inline]
     fn is_none(js: &u32) -> bool {
-        *js == 0xFFFFFFu32
+        *js == 0x00FF_FFFFu32
     }
 }
 
@@ -261,14 +261,14 @@ impl FromWasmAbi for char {
 impl OptionIntoWasmAbi for char {
     #[inline]
     fn none() -> u32 {
-        0xFFFFFFu32
+        0x00FF_FFFFu32
     }
 }
 
 impl OptionFromWasmAbi for char {
     #[inline]
     fn is_none(js: &u32) -> bool {
-        *js == 0xFFFFFFu32
+        *js == 0x00FF_FFFFu32
     }
 }
 
@@ -311,7 +311,7 @@ impl IntoWasmAbi for JsValue {
     fn into_abi(self, _extra: &mut Stack) -> u32 {
         let ret = self.idx;
         mem::forget(self);
-        return ret;
+        ret
     }
 }
 
@@ -386,7 +386,7 @@ impl IntoWasmAbi for () {
     type Abi = ();
 
     #[inline]
-    fn into_abi(self, _extra: &mut Stack) -> () {
+    fn into_abi(self, _extra: &mut Stack) {
         self
     }
 }

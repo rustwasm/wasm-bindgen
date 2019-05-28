@@ -1,14 +1,14 @@
-use std::fmt;
-use std::pin::Pin;
 use std::cell::{Cell, RefCell};
-use std::sync::Arc;
-use std::future::Future;
-use std::task::{Poll, Context};
 use std::collections::VecDeque;
+use std::fmt;
+use std::future::Future;
+use std::pin::Pin;
+use std::sync::Arc;
+use std::task::{Context, Poll};
 
-use futures_util::task::ArcWake;
-use futures_util::future::FutureExt;
 use futures_channel::oneshot;
+use futures_util::future::FutureExt;
+use futures_util::task::ArcWake;
 
 use lazy_static::lazy_static;
 
@@ -112,14 +112,12 @@ where
 
     Promise::new(&mut |resolve, reject| {
         // TODO change Promise::new to be FnOnce
-        spawn_local(future.take().unwrap_throw().map(move |val| {
-            match val {
-                Ok(val) => {
-                    resolve.call1(&JsValue::undefined(), &val).unwrap_throw();
-                },
-                Err(val) => {
-                    reject.call1(&JsValue::undefined(), &val).unwrap_throw();
-                },
+        spawn_local(future.take().unwrap_throw().map(move |val| match val {
+            Ok(val) => {
+                resolve.call1(&JsValue::undefined(), &val).unwrap_throw();
+            }
+            Err(val) => {
+                reject.call1(&JsValue::undefined(), &val).unwrap_throw();
             }
         }));
     })
@@ -147,7 +145,10 @@ where
 
     impl Task {
         #[inline]
-        fn new<F>(future: F) -> Arc<Self> where F: Future<Output = ()> + 'static {
+        fn new<F>(future: F) -> Arc<Self>
+        where
+            F: Future<Output = ()> + 'static,
+        {
             Arc::new(Self {
                 future: RefCell::new(Some(Box::pin(future))),
                 is_queued: Cell::new(false),
@@ -171,7 +172,6 @@ where
         }
     }
 
-
     struct NextTick {
         is_spinning: Cell<bool>,
         promise: Promise,
@@ -180,7 +180,10 @@ where
 
     impl NextTick {
         #[inline]
-        fn new<F>(mut f: F) -> Self where F: FnMut() + 'static {
+        fn new<F>(mut f: F) -> Self
+        where
+            F: FnMut() + 'static,
+        {
             Self {
                 is_spinning: Cell::new(false),
                 promise: Promise::resolve(&JsValue::null()),
@@ -204,7 +207,6 @@ where
             self.is_spinning.set(false);
         }
     }
-
 
     struct Executor {
         // This is a queue of Tasks which will be polled in order
@@ -264,7 +266,6 @@ where
             }),
         };
     }
-
 
     ArcWake::wake_by_ref(&Task::new(future));
 }
