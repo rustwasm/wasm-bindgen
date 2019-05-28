@@ -4,7 +4,7 @@
 online][compiled]
 
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/fetch/
-[dox]: https://rustwasm.github.io/wasm-bindgen/examples/fetch.html
+[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/fetch.html
 
 You can build the example locally with:
 

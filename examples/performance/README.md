@@ -4,7 +4,7 @@
 online][compiled]
 
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/performance/
-[dox]: https://rustwasm.github.io/wasm-bindgen/examples/performance.html
+[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/performance.html
 
 You can build the example locally with:
 

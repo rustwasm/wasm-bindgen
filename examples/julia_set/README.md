@@ -4,7 +4,7 @@
 online][compiled]
 
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/julia_set/
-[dox]: https://rustwasm.github.io/wasm-bindgen/examples/julia.html
+[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/julia.html
 
 You can build the example locally with:
 

@@ -3,7 +3,7 @@
 [View documentation for this example online][dox] or [View compiled example
 online][compiled]
 
-[dox]: https://rustwasm.github.io/wasm-bindgen/examples/add.html
+[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/add.html
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/add/
 
 You can build the example locally with:

@@ -4,7 +4,7 @@
 online][compiled]
 
 [compiled]: https://rustwasm.github.io/wasm-bindgen/exbuild/import_js/
-[dox]: https://rustwasm.github.io/wasm-bindgen/examples/import-js.html
+[dox]: https://rustwasm.github.io/docs/wasm-bindgen/examples/import-js.html
 
 You can build the example locally with:
 
