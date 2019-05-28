@@ -88,13 +88,7 @@ macro_rules! methods {
         fn check_used(self) -> Result<(), Diagnostic> {
             // Account for the fact this method was called
             ATTRS.with(|state| state.checks.set(state.checks.get() + 1));
-            let mut errors = Vec::new();
-            for (used, attr) in self.attrs.iter() {
-                if used.get() {
-                    continue
-                }
-            }
-            Diagnostic::from_vec(errors)
+            Ok(())
         }
     };
 
