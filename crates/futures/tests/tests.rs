@@ -79,11 +79,8 @@ fn oneshot_works() -> impl Future<Item = (), Error = JsValue> {
 #[wasm_bindgen_test(async)]
 fn spawn_local_runs() -> impl Future<Item = (), Error = JsValue> {
     let (tx, rx) = oneshot::channel::<u32>();
-    let fn_box = Box::new(move || {
-        tx.send(42).unwrap();
-    });
     spawn_local(futures::future::ok::<(), ()>(()).map(|_| {
-        fn_box();
+        tx.send(42).unwrap();
     }));
     rx.then(|val| {
         if val == Ok(42) {
@@ -98,13 +95,10 @@ fn spawn_local_runs() -> impl Future<Item = (), Error = JsValue> {
 #[wasm_bindgen_test(async)]
 fn spawn_local_err_no_exception() -> impl Future<Item = (), Error = JsValue> {
     let (tx, rx) = oneshot::channel::<u32>();
-    let fn_box = Box::new(move || {
-        tx.send(42).unwrap();
-    });
     // Promises should run in a deterministic order, so the `err` should be handled during the execution of this test.
     spawn_local(futures::future::err::<(), ()>(()));
-    spawn_local(futures::future::ok::<(), ()>(()).map(|_| {
-        fn_box();
+    spawn_local(futures::future::ok::<(), ()>(()).map(move |_| {
+        tx.send(42).unwrap();
     }));
     rx.then(|val| {
         if val == Ok(42) {
