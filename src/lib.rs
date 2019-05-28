@@ -702,9 +702,7 @@ pub fn throw_val(s: JsValue) -> ! {
 /// }
 /// ```
 pub fn anyref_heap_live_count() -> u32 {
-    unsafe {
-        __wbindgen_anyref_heap_live_count()
-    }
+    unsafe { __wbindgen_anyref_heap_live_count() }
 }
 
 /// An extension trait for `Option<T>` and `Result<T, E>` for unwraping the `T`
@@ -984,16 +982,14 @@ pub mod __rt {
         }
 
         #[no_mangle]
-        pub extern "C" fn __wbindgen_realloc(ptr: *mut u8, old_size: usize, new_size: usize) -> *mut u8 {
+        pub unsafe extern "C" fn __wbindgen_realloc(ptr: *mut u8, old_size: usize, new_size: usize) -> *mut u8 {
             let align = mem::align_of::<usize>();
             debug_assert!(old_size > 0);
             debug_assert!(new_size > 0);
             if let Ok(layout) = Layout::from_size_align(old_size, align) {
-                unsafe {
-                    let ptr = realloc(ptr, layout, new_size);
-                    if !ptr.is_null() {
-                        return ptr
-                    }
+                let ptr = realloc(ptr, layout, new_size);
+                if !ptr.is_null() {
+                    return ptr
                 }
             }
             malloc_failure();

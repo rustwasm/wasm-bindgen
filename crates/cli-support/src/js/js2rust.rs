@@ -10,11 +10,19 @@ pub struct JsArgument {
 
 impl JsArgument {
     fn required(name: String, type_: String) -> Self {
-        Self { optional: false, name, type_ }
+        Self {
+            optional: false,
+            name,
+            type_,
+        }
     }
 
     fn optional(name: String, type_: String) -> Self {
-        Self { optional: true, name, type_ }
+        Self {
+            optional: true,
+            name,
+            type_,
+        }
     }
 }
 
@@ -237,7 +245,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if arg.is_anyref() {
-            self.js_arguments.push(JsArgument::required(name.clone(), "any".to_string()));
+            self.js_arguments
+                .push(JsArgument::required(name.clone(), "any".to_string()));
             if self.cx.config.anyref {
                 if optional {
                     self.cx.expose_add_to_anyref_table()?;
@@ -387,7 +396,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if let Some(s) = arg.rust_struct() {
-            self.js_arguments.push(JsArgument::required(name.clone(), s.to_string()));
+            self.js_arguments
+                .push(JsArgument::required(name.clone(), s.to_string()));
             self.assert_class(&name, s);
             self.assert_not_moved(&name);
             if arg.is_by_ref() {
@@ -401,7 +411,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if arg.number().is_some() {
-            self.js_arguments.push(JsArgument::required(name.clone(), "number".to_string()));
+            self.js_arguments
+                .push(JsArgument::required(name.clone(), "number".to_string()));
 
             if self.cx.config.debug {
                 self.cx.expose_assert_num();
@@ -419,7 +430,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.cx.expose_uint64_cvt_shim()
             };
             self.cx.expose_uint32_memory();
-            self.js_arguments.push(JsArgument::required(name.clone(), "BigInt".to_string()));
+            self.js_arguments
+                .push(JsArgument::required(name.clone(), "BigInt".to_string()));
             self.prelude(&format!(
                 "
                  {f}[0] = {name};
@@ -436,7 +448,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         }
 
         if arg.is_ref_anyref() {
-            self.js_arguments.push(JsArgument::required(name.clone(), "any".to_string()));
+            self.js_arguments
+                .push(JsArgument::required(name.clone(), "any".to_string()));
             if self.cx.config.anyref {
                 self.anyref_args.push((self.rust_arguments.len(), false));
                 self.rust_arguments.push(name);
@@ -469,7 +482,8 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                 self.rust_arguments.push(format!("{}", name));
             }
             Descriptor::Char => {
-                self.js_arguments.push(JsArgument::required(name.clone(), "string".to_string()));
+                self.js_arguments
+                    .push(JsArgument::required(name.clone(), "string".to_string()));
                 self.rust_arguments.push(format!("{}.codePointAt(0)", name))
             }
             _ => bail!(
@@ -751,10 +765,12 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         let mut ret: String = self
             .js_arguments
             .iter()
-            .map(|a| if a.optional {
-                format!("@param {{{} | undefined}} {}\n", a.type_, a.name)
-            } else {
-                format!("@param {{{}}} {}\n", a.type_, a.name)
+            .map(|a| {
+                if a.optional {
+                    format!("@param {{{} | undefined}} {}\n", a.type_, a.name)
+                } else {
+                    format!("@param {{{}}} {}\n", a.type_, a.name)
+                }
             })
             .collect();
         ret.push_str(&format!("@returns {{{}}}", self.ret_ty));

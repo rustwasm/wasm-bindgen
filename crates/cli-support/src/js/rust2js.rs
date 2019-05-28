@@ -731,8 +731,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     throw e;
                 }}\
                 ",
-                &invoc,
-                shim,
+                &invoc, shim,
             );
         }
 
