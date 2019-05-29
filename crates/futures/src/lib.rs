@@ -358,7 +358,8 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
         //
         // Note that the `Rc`/`RefCell` trick here is basically to just
         // ensure that our `Closure` gets cleaned up appropriately.
-        let promise = polyfill::wait_async(Int32Array::new(&package.waker.buffer), id as u32, 0);
+        let promise = polyfill::wait_async(Int32Array::new(&package.waker.buffer), id as u32, 0)
+            .expect("Should create a Promise");
         let slot = Rc::new(RefCell::new(None));
         let slot2 = slot.clone();
         let closure = Closure::wrap(Box::new(move |_| {

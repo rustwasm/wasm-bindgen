@@ -18,6 +18,14 @@ futures-util-preview = { version = "0.3.0-alpha.15", optional = true }
 futures-channel-preview = { version = "0.3.0-alpha.15", optional = true }
 lazy_static = { version = "1.3.0", optional = true }
 
+[dependencies.web-sys]
+path = "../web-sys"
+version = "0.3.22"
+features = [
+    "MessageEvent",
+    "Worker",
+]
+
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = { path = '../test', version = '0.2.48' }
 
