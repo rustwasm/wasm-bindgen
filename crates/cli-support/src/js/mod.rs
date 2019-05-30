@@ -142,7 +142,8 @@ impl<'a> Context<'a> {
             OutputMode::Bundler { .. }
             | OutputMode::Node {
                 experimental_modules: true,
-            } => {
+            }
+            | OutputMode::Web => {
                 if contents.starts_with("function") {
                     let body = &contents[8..];
                     if export_name == definition_name {
@@ -159,50 +160,6 @@ impl<'a> Context<'a> {
                 } else {
                     assert_eq!(export_name, definition_name);
                     format!("export const {} = {};\n", export_name, contents)
-                }
-            }
-            OutputMode::Web => {
-                // In web mode there's no need to export the internals of
-                // wasm-bindgen as we're not using the module itself as the
-                // import object but rather the `__exports` map we'll be
-                // initializing below.
-                let export = if export_name.starts_with("__wbindgen")
-                    || export_name.starts_with("__wbg_")
-                    || export_name.starts_with("__widl_")
-                {
-                    ""
-                } else {
-                    "export "
-                };
-                if contents.starts_with("function") {
-                    let body = &contents[8..];
-                    if export_name == definition_name {
-                        format!(
-                            "{}function {name}{}\n__exports.{name} = {name}",
-                            export,
-                            body,
-                            name = export_name,
-                        )
-                    } else {
-                        format!(
-                            "{}function {defname}{}\n__exports.{name} = {defname}",
-                            export,
-                            body,
-                            name = export_name,
-                            defname = definition_name,
-                        )
-                    }
-                } else if contents.starts_with("class") {
-                    assert_eq!(export_name, definition_name);
-                    format!("{}{}\n", export, contents)
-                } else {
-                    assert_eq!(export_name, definition_name);
-                    format!(
-                        "{}const {name} = {};\n__exports.{name} = {name};",
-                        export,
-                        contents,
-                        name = export_name
-                    )
                 }
             }
         };
@@ -366,7 +323,6 @@ impl<'a> Context<'a> {
             // expose the same initialization function as `--target no-modules`
             // as the default export of the module.
             OutputMode::Web => {
-                self.imports_post.push_str("const __exports = {};\n");
                 self.imports_post.push_str("let wasm;\n");
                 init = self.gen_init(needs_manual_start);
                 footer.push_str("export default init;\n");
