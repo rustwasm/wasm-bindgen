@@ -58,6 +58,8 @@ pub struct ExportedClass {
     typescript: String,
     has_constructor: bool,
     wrap_needed: bool,
+    /// Map from field name to type as a string plus whether it has a setter
+    typescript_fields: HashMap<String, (String, bool)>,
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -638,6 +640,19 @@ impl<'a> Context<'a> {
         ts_dst.push_str("  free(): void;");
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
+
+        let mut fields = class.typescript_fields.keys().collect::<Vec<_>>();
+        fields.sort(); // make sure we have deterministic output
+        for name in fields {
+            let (ty, readonly) = &class.typescript_fields[name];
+            if *readonly {
+                ts_dst.push_str("readonly ");
+            }
+            ts_dst.push_str(name);
+            ts_dst.push_str(": ");
+            ts_dst.push_str(ty);
+            ts_dst.push_str(";\n");
+        }
         dst.push_str("}\n");
         ts_dst.push_str("}\n");
 
@@ -1913,14 +1928,15 @@ impl<'a> Context<'a> {
                     &format!("wasm.{}", wasm_name),
                     ExportedShim::Named(&wasm_name),
                 );
+                let ret_ty = j2r.ret_ty.clone();
                 let exported = require_class(&mut self.exported_classes, class);
                 let docs = format_doc_comments(&export.comments, Some(raw_docs));
                 match export.kind {
                     AuxExportKind::Getter { .. } => {
-                        exported.push(&docs, name, "get ", &js, &ts);
+                        exported.push_field(name, &js, Some(&ret_ty), true);
                     }
                     AuxExportKind::Setter { .. } => {
-                        exported.push(&docs, name, "set ", &js, &ts);
+                        exported.push_field(name, &js, None, false);
                     }
                     AuxExportKind::StaticFunction { .. } => {
                         exported.push(&docs, name, "static ", &js, &ts);
@@ -1983,7 +1999,7 @@ impl<'a> Context<'a> {
             bail!(
                 "NPM dependencies have been specified in `{}` but \
                  this is only compatible with the `bundler` and `nodejs` targets",
-                 path.display(),
+                path.display(),
             );
         }
 
@@ -2163,6 +2179,31 @@ impl ExportedClass {
         self.typescript.push_str(function_prefix);
         self.typescript.push_str(ts);
         self.typescript.push_str("\n");
+    }
+
+    /// Used for adding a field to a class, mainly to ensure that TypeScript
+    /// generation is handled specially.
+    ///
+    /// Note that the `ts` is optional and it's expected to just be the field
+    /// type, not the full signature. It's currently only available on getters,
+    /// but there currently has to always be at least a getter.
+    fn push_field(&mut self, field: &str, js: &str, ts: Option<&str>, getter: bool) {
+        if getter {
+            self.contents.push_str("get ");
+        } else {
+            self.contents.push_str("set ");
+        }
+        self.contents.push_str(field);
+        self.contents.push_str(js);
+        self.contents.push_str("\n");
+        let (ty, has_setter) = self
+            .typescript_fields
+            .entry(field.to_string())
+            .or_insert_with(Default::default);
+        if let Some(ts) = ts {
+            *ty = ts.to_string();
+        }
+        *has_setter = *has_setter || !getter;
     }
 }
 

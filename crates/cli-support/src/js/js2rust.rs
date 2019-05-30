@@ -51,7 +51,7 @@ pub struct Js2Rust<'a, 'b: 'a> {
 
     /// Typescript expression representing the type of the return value of this
     /// function.
-    ret_ty: String,
+    pub ret_ty: String,
 
     /// Expression used to generate the return value. The string "RET" in this
     /// expression is replaced with the actual wasm invocation eventually.
