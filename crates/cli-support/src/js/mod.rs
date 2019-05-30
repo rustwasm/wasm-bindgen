@@ -1933,10 +1933,10 @@ impl<'a> Context<'a> {
                 let docs = format_doc_comments(&export.comments, Some(raw_docs));
                 match export.kind {
                     AuxExportKind::Getter { .. } => {
-                        exported.push_field(name, &js, Some(&ret_ty), true);
+                        exported.push_field(&docs, name, &js, Some(&ret_ty), true);
                     }
                     AuxExportKind::Setter { .. } => {
-                        exported.push_field(name, &js, None, false);
+                        exported.push_field(&docs, name, &js, None, false);
                     }
                     AuxExportKind::StaticFunction { .. } => {
                         exported.push(&docs, name, "static ", &js, &ts);
@@ -2187,7 +2187,8 @@ impl ExportedClass {
     /// Note that the `ts` is optional and it's expected to just be the field
     /// type, not the full signature. It's currently only available on getters,
     /// but there currently has to always be at least a getter.
-    fn push_field(&mut self, field: &str, js: &str, ts: Option<&str>, getter: bool) {
+    fn push_field(&mut self, docs: &str, field: &str, js: &str, ts: Option<&str>, getter: bool) {
+        self.contents.push_str(docs);
         if getter {
             self.contents.push_str("get ");
         } else {
