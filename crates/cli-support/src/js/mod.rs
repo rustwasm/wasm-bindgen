@@ -1982,7 +1982,8 @@ impl<'a> Context<'a> {
         if !self.config.mode.nodejs() && !self.config.mode.bundler() {
             bail!(
                 "NPM dependencies have been specified in `{}` but \
-                 this is only compatible with the `bundler` and `nodejs` targets"
+                 this is only compatible with the `bundler` and `nodejs` targets",
+                 path.display(),
             );
         }
 
