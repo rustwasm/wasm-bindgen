@@ -934,8 +934,8 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 }} catch (e) {{\n\
                     let error = (function () {{
                         try {{
-                            return e instanceof Error
-                                ? `${{e.message}}\n\nStack:\n${{e.stack}}`
+                            return e instanceof Error \
+                                ? `${{e.message}}\\n\\nStack:\\n${{e.stack}}` \
                                 : e.toString();
                         }} catch(_) {{
                             return \"<failed to stringify thrown value>\";

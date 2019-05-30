@@ -309,7 +309,7 @@ impl<'a> Context<'a> {
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let wasm;\n");
-                init = self.gen_init(&module_name, needs_manual_start);
+                init = self.gen_init(needs_manual_start);
                 footer.push_str(&format!(
                     "self.{} = Object.assign(init, __exports);\n",
                     global
@@ -347,12 +347,17 @@ impl<'a> Context<'a> {
                 experimental_modules: true,
             } => {
                 imports.push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
-                if needs_manual_start {
-                    footer.push_str("wasm.__wbindgen_start();\n");
-                }
                 for (id, js) in self.wasm_import_definitions.iter() {
-                    drop((id, js));
-                    unimplemented!()
+                    let import = self.module.imports.get_mut(*id);
+                    import.module = format!("./{}.js", module_name);
+                    footer.push_str("\nexport const ");
+                    footer.push_str(&import.name);
+                    footer.push_str(" = ");
+                    footer.push_str(js.trim());
+                    footer.push_str(";\n");
+                }
+                if needs_manual_start {
+                    footer.push_str("\nwasm.__wbindgen_start();\n");
                 }
             }
 
@@ -363,7 +368,7 @@ impl<'a> Context<'a> {
             OutputMode::Web => {
                 self.imports_post.push_str("const __exports = {};\n");
                 self.imports_post.push_str("let wasm;\n");
-                init = self.gen_init(&module_name, needs_manual_start);
+                init = self.gen_init(needs_manual_start);
                 footer.push_str("export default init;\n");
             }
         }
@@ -488,11 +493,7 @@ impl<'a> Context<'a> {
         )
     }
 
-    fn gen_init(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
-        for (id, js) in self.wasm_import_definitions.iter() {
-            drop((id, js));
-            unimplemented!()
-        }
+    fn gen_init(&mut self, needs_manual_start: bool) -> (String, String) {
         let mem = self.module.memories.get(self.memory);
         let (init_memory1, init_memory2) = if mem.import.is_some() {
             let mut memory = String::from("new WebAssembly.Memory({");
@@ -519,44 +520,32 @@ impl<'a> Context<'a> {
         };
         let ts = Self::ts_for_init_fn(mem.import.is_some());
 
-        // Generate extra initialization for the `imports` object if necessary
-        // based on the values in `direct_imports` we find. These functions are
-        // intended to be imported directly to the wasm module and we need to
-        // ensure that the modules are actually imported from and inserted into
-        // the object correctly.
-        // let mut map = BTreeMap::new();
-        // for &(module, name) in self.direct_imports.values() {
-        //     map.entry(module).or_insert(BTreeSet::new()).insert(name);
-        // }
-        let imports_init = String::new();
-        // for (module, names) in map {
-        //     drop((module, names));
-        //     panic!()
-        //     // imports_init.push_str("imports['");
-        //     // imports_init.push_str(module);
-        //     // imports_init.push_str("'] = { ");
-        //     // for (i, name) in names.into_iter().enumerate() {
-        //     //     if i != 0 {
-        //     //         imports_init.push_str(", ");
-        //     //     }
-        //     //     let import = Import::Module {
-        //     //         module,
-        //     //         name,
-        //     //         field: None,
-        //     //     };
-        //     //     let identifier = self.import_identifier(import);
-        //     //     imports_init.push_str(name);
-        //     //     imports_init.push_str(": ");
-        //     //     imports_init.push_str(&identifier);
-        //     // }
-        //     // imports_init.push_str(" };\n");
-        // }
+        // Initialize the `imports` object for all import definitions that we're
+        // directed to wire up.
+        let mut imports_init = String::new();
+        let module_name = "wbg";
+        if self.wasm_import_definitions.len() > 0 {
+            imports_init.push_str("imports.");
+            imports_init.push_str(module_name);
+            imports_init.push_str(" = {};\n");
+        }
+        for (id, js) in self.wasm_import_definitions.iter() {
+            let import = self.module.imports.get_mut(*id);
+            import.module = module_name.to_string();
+            imports_init.push_str("imports.");
+            imports_init.push_str(module_name);
+            imports_init.push_str(".");
+            imports_init.push_str(&import.name);
+            imports_init.push_str(" = ");
+            imports_init.push_str(js.trim());
+            imports_init.push_str(";\n");
+        }
 
         let js = format!(
             "\
                 function init(module{init_memory_arg}) {{
                     let result;
-                    const imports = {{ './{module}': __exports }};
+                    const imports = {{}};
                     {imports_init}
                     if (module instanceof URL || typeof module === 'string' || module instanceof Request) {{
                         {init_memory2}
@@ -598,7 +587,6 @@ impl<'a> Context<'a> {
                 }}
             ",
             init_memory_arg = init_memory_arg,
-            module = module_name,
             init_memory1 = init_memory1,
             init_memory2 = init_memory2,
             start = if needs_manual_start {
@@ -2163,7 +2151,7 @@ impl<'a> Context<'a> {
                 }
                 // errors
                 if (val instanceof Error) {
-                    return `${val.name}: ${val.message}\n${val.stack}`;
+                    return `${val.name}: ${val.message}\\n${val.stack}`;
                 }
                 // TODO we could test for more things here, like `Set`s and `Map`s.
                 return className;
