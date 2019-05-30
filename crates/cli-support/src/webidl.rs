@@ -475,24 +475,22 @@ impl<'a> Context<'a> {
             }
         }
 
-        let mut descriptor_section = None;
-        for (id, section) in self.module.customs.iter_mut() {
-            let custom = match section
-                .as_any_mut()
-                .downcast_mut::<WasmBindgenDescriptorsSection>()
-            {
-                Some(s) => s,
-                None => continue,
-            };
-            descriptor_section = Some(id);
-
+        if let Some(custom) = self
+            .module
+            .customs
+            .delete_typed::<WasmBindgenDescriptorsSection>()
+        {
+            let WasmBindgenDescriptorsSection {
+                descriptors,
+                closure_imports,
+            } = *custom;
             // Store all the executed descriptors in our own field so we have
             // access to them while processing programs.
-            self.descriptors.extend(custom.descriptors.drain());
+            self.descriptors.extend(descriptors);
 
             // Register all the injected closure imports as that they're expected
             // to manufacture a particular type of closure.
-            for (id, descriptor) in custom.closure_imports.drain() {
+            for (id, descriptor) in closure_imports {
                 self.aux
                     .import_map
                     .insert(id, AuxImport::Closure(descriptor));
@@ -505,9 +503,6 @@ impl<'a> Context<'a> {
                     .imports
                     .insert(id, ImportBinding::Function(binding));
             }
-        }
-        if let Some(id) = descriptor_section {
-            self.module.customs.delete(id);
         }
     }
 
