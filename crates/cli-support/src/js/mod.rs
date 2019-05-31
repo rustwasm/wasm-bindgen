@@ -453,7 +453,8 @@ impl<'a> Context<'a> {
 
     fn gen_init(&mut self, needs_manual_start: bool) -> (String, String) {
         let mem = self.module.memories.get(self.memory);
-        let (init_memory1, init_memory2) = if mem.import.is_some() {
+        let (init_memory1, init_memory2) = if let Some(id) = mem.import {
+            self.module.imports.get_mut(id).module = "wbg".to_string();
             let mut memory = String::from("new WebAssembly.Memory({");
             memory.push_str(&format!("initial:{}", mem.initial));
             if let Some(max) = mem.maximum {
@@ -465,8 +466,8 @@ impl<'a> Context<'a> {
             memory.push_str("})");
             self.imports_post.push_str("let memory;\n");
             (
-                format!("memory = __exports.memory = maybe_memory;"),
-                format!("memory = __exports.memory = {};", memory),
+                format!("memory = imports.wbg.memory = maybe_memory;"),
+                format!("memory = imports.wbg.memory = {};", memory),
             )
         } else {
             (String::new(), String::new())
