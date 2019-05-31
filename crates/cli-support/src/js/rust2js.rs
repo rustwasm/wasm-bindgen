@@ -1,6 +1,5 @@
 use crate::descriptor::Descriptor;
 use crate::intrinsic::Intrinsic;
-use crate::js::js2rust::ExportedShim;
 use crate::js::{Context, Js2Rust};
 use crate::webidl::{AuxImport, AuxValue, ImportBinding};
 use failure::{bail, Error};
@@ -119,9 +118,19 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             }
         };
         for arg in function.arguments.iter() {
+            // Process the function argument and assert that the metadata about
+            // the number of arguments on the Rust side required is correct.
+            let before = self.shim_arguments.len();
             self.argument(arg)?;
+            arg.assert_abi_arg_correct(before, self.shim_arguments.len());
         }
+        // Process the return argument, and assert that the metadata returned
+        // about the descriptor is indeed correct.
+        let before = self.shim_arguments.len();
         self.ret(&function.ret)?;
+        function
+            .ret
+            .assert_abi_return_correct(before, self.shim_arguments.len());
         Ok(self)
     }
 
@@ -308,7 +317,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
         if let Some((f, mutable)) = arg.stack_closure() {
             let arg2 = self.shim_argument();
-            let mut shim = f.shim_idx;
             let (js, _ts, _js_doc) = {
                 let mut builder = Js2Rust::new("", self.cx);
                 if mutable {
@@ -320,11 +328,10 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 } else {
                     builder.rust_argument("this.a");
                 }
-                builder.rust_argument("this.b").process(f, &None)?.finish(
-                    "function",
-                    "this.f",
-                    ExportedShim::TableElement(&mut shim),
-                )
+                builder
+                    .rust_argument("this.b")
+                    .process(f, &None)?
+                    .finish("function", "this.f")
             };
             self.cx.function_table_needed = true;
             self.global_idx();
@@ -338,7 +345,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 abi,
                 arg2,
                 js = js,
-                idx = shim,
+                idx = f.shim_idx,
             ));
             self.finally(&format!("cb{0}.a = cb{0}.b = 0;", abi));
             self.js_arguments.push(format!("cb{0}.bind(cb{0})", abi));
@@ -676,7 +683,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     format!("new {}({})", js, variadic_args(&self.js_arguments)?)
                 }
                 Style::Method => {
-                    let descriptor = |anchor: &str, extra: &str, field: &str, which:&str| {
+                    let descriptor = |anchor: &str, extra: &str, field: &str, which: &str| {
                         format!(
                             "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').{}",
                             anchor, extra, field, which
@@ -741,7 +748,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 assert!(self.style == Style::Function);
                 assert!(!variadic);
                 assert_eq!(self.js_arguments.len(), 3);
-                let mut shim = closure.shim_idx;
                 let (js, _ts, _js_doc) = {
                     let mut builder = Js2Rust::new("", self.cx);
 
@@ -777,11 +783,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                             .finally("this.a = 0;")
                             .finally("}");
                     }
-                    builder.process(&closure.function, &None)?.finish(
-                        "function",
-                        "f",
-                        ExportedShim::TableElement(&mut shim),
-                    )
+                    builder
+                        .process(&closure.function, &None)?
+                        .finish("function", "f")
                 };
                 self.cx.function_table_needed = true;
                 let body = format!(
@@ -795,7 +799,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         let real = cb.bind(cb);
                         real.original = cb;
                     ",
-                    shim,
+                    closure.shim_idx,
                     closure.dtor_idx,
                     &self.js_arguments[1],
                     js,
@@ -977,32 +981,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
         ret.push_str(&invoc);
         ret.push_str("\n}\n");
-
-        // if self.ret_anyref || self.anyref_args.len() > 0 {
-        //     // Some return values go at the the beginning of the argument list
-        //     // (they force a return pointer). Handle that here by offsetting all
-        //     // our arg indices by one, but throw in some sanity checks for if
-        //     // this ever changes.
-        //     if let Some(start) = self.shim_arguments.get(0) {
-        //         if start == "ret" {
-        //             assert!(!self.ret_anyref);
-        //             if let Some(next) = self.shim_arguments.get(1) {
-        //                 assert_eq!(next, "arg0");
-        //             }
-        //             for (idx, _) in self.anyref_args.iter_mut() {
-        //                 *idx += 1;
-        //             }
-        //         } else {
-        //             assert_eq!(start, "arg0");
-        //         }
-        //     }
-        //     self.cx.anyref.import_xform(
-        //         "__wbindgen_placeholder__",
-        //         shim,
-        //         &self.anyref_args,
-        //         self.ret_anyref,
-        //     );
-        // }
 
         Ok(ret)
     }

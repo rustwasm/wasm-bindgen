@@ -9,6 +9,7 @@ use std::path::{Path, PathBuf};
 use std::str;
 use walrus::Module;
 
+mod anyref;
 mod decode;
 mod intrinsic;
 mod descriptor;
@@ -316,6 +317,10 @@ impl Bindgen {
         // supports that aren't covered by WebIDL bindings.
         webidl::process(&mut module)?;
 
+        if self.anyref {
+            anyref::process(&mut module)?;
+        }
+
         // If we're in a testing mode then remove the start function since we
         // shouldn't execute it.
         if !self.emit_start {
@@ -326,8 +331,6 @@ impl Bindgen {
         // shim generation which will actually generate JS for all this.
         let (js, ts) = {
             let mut cx = js::Context::new(&mut module, self)?;
-            cx.anyref.enabled = self.anyref;
-            cx.anyref.prepare(cx.module)?;
 
             let aux = cx.module.customs.delete_typed::<webidl::WasmBindgenAux>()
                 .expect("aux section should be present");

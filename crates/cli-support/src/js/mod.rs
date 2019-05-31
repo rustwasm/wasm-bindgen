@@ -2,7 +2,7 @@ mod js2rust;
 mod rust2js;
 
 use crate::descriptor::VectorKind;
-use crate::js::js2rust::{ExportedShim, Js2Rust};
+use crate::js::js2rust::Js2Rust;
 use crate::js::rust2js::Rust2Js;
 use crate::webidl::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::webidl::{JsImport, JsImportName, WasmBindgenAux, WebidlCustomSection};
@@ -47,8 +47,6 @@ pub struct Context<'a> {
     /// A map of the name of npm dependencies we've loaded so far to the path
     /// they're defined in as well as their version specification.
     pub npm_dependencies: HashMap<String, (PathBuf, String)>,
-
-    pub anyref: wasm_bindgen_anyref_xform::Context,
 }
 
 #[derive(Default)]
@@ -99,7 +97,6 @@ impl<'a> Context<'a> {
             module,
             function_table_needed: false,
             memory,
-            anyref: Default::default(),
             npm_dependencies: Default::default(),
         })
     }
@@ -191,13 +188,6 @@ impl<'a> Context<'a> {
         // glue for all classes as well as finish up a few final imports like
         // `__wrap` and such.
         self.write_classes()?;
-
-        // And now that we're almost ready, run the final "anyref" pass. This is
-        // where we transform a wasm module which doesn't actually use `anyref`
-        // anywhere to using the type internally. The transformation here is
-        // based off all the previous data we've collected so far for each
-        // import/export listed.
-        // self.anyref.run(self.module)?;
 
         // We're almost done here, so we can delete any internal exports (like
         // `__wbindgen_malloc`) if none of our JS glue actually needed it.
@@ -1794,9 +1784,17 @@ impl<'a> Context<'a> {
         if !self.should_write_global("anyref_table") {
             return;
         }
-        self.module
-            .exports
-            .add("__wbg_anyref_table", self.anyref.anyref_table_id());
+        let table = self
+            .module
+            .tables
+            .iter()
+            .find(|t| match t.kind {
+                walrus::TableKind::Anyref(_) => true,
+                _ => false,
+            })
+            .expect("failed to find anyref table in module")
+            .id();
+        self.module.exports.add("__wbg_anyref_table", table);
     }
 
     fn expose_add_to_anyref_table(&mut self) -> Result<(), Error> {
@@ -1878,11 +1876,7 @@ impl<'a> Context<'a> {
             AuxExportKind::Function(name) => {
                 let (js, ts, js_doc) = Js2Rust::new(&name, self)
                     .process(&descriptor, &export.arg_names)?
-                    .finish(
-                        "function",
-                        &format!("wasm.{}", wasm_name),
-                        ExportedShim::Named(&wasm_name),
-                    );
+                    .finish("function", &format!("wasm.{}", wasm_name));
                 self.export(
                     &name,
                     &js,
@@ -1897,11 +1891,7 @@ impl<'a> Context<'a> {
                 let (js, ts, raw_docs) = Js2Rust::new("constructor", self)
                     .constructor(Some(&class))
                     .process(&descriptor, &export.arg_names)?
-                    .finish(
-                        "",
-                        &format!("wasm.{}", wasm_name),
-                        ExportedShim::Named(&wasm_name),
-                    );
+                    .finish("", &format!("wasm.{}", wasm_name));
                 let exported = require_class(&mut self.exported_classes, class);
                 if exported.has_constructor {
                     bail!("found duplicate constructor for class `{}`", class);
@@ -1924,11 +1914,9 @@ impl<'a> Context<'a> {
                         j2r.method(false);
                     }
                 }
-                let (js, ts, raw_docs) = j2r.process(&descriptor, &export.arg_names)?.finish(
-                    "",
-                    &format!("wasm.{}", wasm_name),
-                    ExportedShim::Named(&wasm_name),
-                );
+                let (js, ts, raw_docs) = j2r
+                    .process(&descriptor, &export.arg_names)?
+                    .finish("", &format!("wasm.{}", wasm_name));
                 let ret_ty = j2r.ret_ty.clone();
                 let exported = require_class(&mut self.exported_classes, class);
                 let docs = format_doc_comments(&export.comments, Some(raw_docs));

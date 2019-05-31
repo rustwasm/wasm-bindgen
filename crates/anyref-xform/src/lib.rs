@@ -20,6 +20,7 @@ use std::cmp;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::mem;
 use walrus::ir::*;
+use walrus::{ExportId, ImportId};
 use walrus::{FunctionId, GlobalId, InitExpr, Module, TableId, ValType};
 
 // must be kept in sync with src/lib.rs and ANYREF_HEAP_START
@@ -32,8 +33,8 @@ pub struct Context {
     // Functions within the module that we're gonna be wrapping, organized by
     // type. The `Function` contains information about what arguments/return
     // values in the function signature should turn into anyref.
-    imports: HashMap<String, HashMap<String, Function>>,
-    exports: HashMap<String, Function>,
+    imports: HashMap<ImportId, Function>,
+    exports: HashMap<ExportId, Function>,
     elements: BTreeMap<u32, (u32, Function)>,
 
     // When wrapping closures with new shims, this is the index of the next
@@ -42,9 +43,6 @@ pub struct Context {
 
     // The anyref table we'll be using, injected after construction
     table: Option<TableId>,
-
-    // Whether or not the transformation will actually be run at the end
-    pub enabled: bool,
 }
 
 struct Transform<'a> {
@@ -68,7 +66,6 @@ struct Transform<'a> {
 }
 
 struct Function {
-    name: String,
     // A map of argument index to whether it's an owned or borrowed anyref
     // (owned = true)
     args: HashMap<usize, bool>,
@@ -87,10 +84,6 @@ impl Context {
     /// large the function table is so we know what indexes to hand out when
     /// we're appending entries.
     pub fn prepare(&mut self, module: &mut Module) -> Result<(), Error> {
-        if !self.enabled {
-            return Ok(());
-        }
-
         // Figure out what the maximum index of functions pointers are. We'll
         // be adding new entries to the function table later (maybe) so
         // precalculate this ahead of time.
@@ -118,19 +111,13 @@ impl Context {
     /// transformed. The actual transformation happens later during `run`.
     pub fn import_xform(
         &mut self,
-        module: &str,
-        name: &str,
+        id: ImportId,
         anyref: &[(usize, bool)],
         ret_anyref: bool,
     ) -> &mut Self {
-        if !self.enabled {
-            return self;
+        if let Some(f) = self.function(anyref, ret_anyref) {
+            self.imports.insert(id, f);
         }
-        let f = self.function(name, anyref, ret_anyref);
-        self.imports
-            .entry(module.to_string())
-            .or_insert_with(Default::default)
-            .insert(name.to_string(), f);
         self
     }
 
@@ -138,15 +125,13 @@ impl Context {
     /// transformed. The actual transformation happens later during `run`.
     pub fn export_xform(
         &mut self,
-        name: &str,
+        id: ExportId,
         anyref: &[(usize, bool)],
         ret_anyref: bool,
     ) -> &mut Self {
-        if !self.enabled {
-            return self;
+        if let Some(f) = self.function(anyref, ret_anyref) {
+            self.exports.insert(id, f);
         }
-        let f = self.function(name, anyref, ret_anyref);
-        self.exports.insert(name.to_string(), f);
         self
     }
 
@@ -158,34 +143,26 @@ impl Context {
         idx: u32,
         anyref: &[(usize, bool)],
         ret_anyref: bool,
-    ) -> u32 {
-        if !self.enabled {
-            return idx;
-        }
-        let name = format!("closure{}", idx);
-        let f = self.function(&name, anyref, ret_anyref);
-        let ret = self.next_element;
-        self.next_element += 1;
-        self.elements.insert(ret, (idx, f));
-        ret
+    ) -> Option<u32> {
+        self.function(anyref, ret_anyref).map(|f| {
+            let ret = self.next_element;
+            self.next_element += 1;
+            self.elements.insert(ret, (idx, f));
+            ret
+        })
     }
 
-    fn function(&self, name: &str, anyref: &[(usize, bool)], ret_anyref: bool) -> Function {
-        Function {
-            name: name.to_string(),
+    fn function(&self, anyref: &[(usize, bool)], ret_anyref: bool) -> Option<Function> {
+        if !ret_anyref && anyref.len() == 0 {
+            return None;
+        }
+        Some(Function {
             args: anyref.iter().cloned().collect(),
             ret_anyref,
-        }
-    }
-
-    pub fn anyref_table_id(&self) -> TableId {
-        self.table.unwrap()
+        })
     }
 
     pub fn run(&mut self, module: &mut Module) -> Result<(), Error> {
-        if !self.enabled {
-            return Ok(());
-        }
         let table = self.table.unwrap();
 
         // Inject a stack pointer global which will be used for managing the
@@ -261,9 +238,7 @@ impl Transform<'_> {
 
         // Perform transformations of imports, exports, and function pointers.
         self.process_imports(module);
-        for m in self.cx.imports.values() {
-            assert!(m.is_empty());
-        }
+        assert!(self.cx.imports.is_empty());
         self.process_exports(module);
         assert!(self.cx.exports.is_empty());
         self.process_elements(module)?;
@@ -333,20 +308,15 @@ impl Transform<'_> {
                 walrus::ImportKind::Function(f) => f,
                 _ => continue,
             };
-            let import = {
-                let entries = match self.cx.imports.get_mut(&import.module) {
-                    Some(s) => s,
-                    None => continue,
-                };
-                match entries.remove(&import.name) {
-                    Some(s) => s,
-                    None => continue,
-                }
+            let func = match self.cx.imports.remove(&import.id()) {
+                Some(s) => s,
+                None => continue,
             };
 
             let shim = self.append_shim(
                 f,
-                import,
+                &import.name,
+                func,
                 &mut module.types,
                 &mut module.funcs,
                 &mut module.locals,
@@ -356,29 +326,25 @@ impl Transform<'_> {
     }
 
     fn process_exports(&mut self, module: &mut Module) {
-        let mut new_exports = Vec::new();
-        for export in module.exports.iter() {
+        // let mut new_exports = Vec::new();
+        for export in module.exports.iter_mut() {
             let f = match export.item {
                 walrus::ExportItem::Function(f) => f,
                 _ => continue,
             };
-            let function = match self.cx.exports.remove(&export.name) {
+            let function = match self.cx.exports.remove(&export.id()) {
                 Some(s) => s,
                 None => continue,
             };
             let shim = self.append_shim(
                 f,
+                &export.name,
                 function,
                 &mut module.types,
                 &mut module.funcs,
                 &mut module.locals,
             );
-            new_exports.push((export.name.to_string(), shim, export.id()));
-        }
-
-        for (name, shim, old_id) in new_exports {
-            module.exports.add(&name, shim);
-            module.exports.delete(old_id);
+            export.item = shim.into();
         }
     }
 
@@ -402,6 +368,7 @@ impl Transform<'_> {
             let target = kind.elements[idx as usize].unwrap();
             let shim = self.append_shim(
                 target,
+                &format!("closure{}", idx),
                 function,
                 &mut module.types,
                 &mut module.funcs,
@@ -422,6 +389,7 @@ impl Transform<'_> {
     fn append_shim(
         &mut self,
         shim_target: FunctionId,
+        name: &str,
         mut func: Function,
         types: &mut walrus::ModuleTypes,
         funcs: &mut walrus::ModuleFunctions,
@@ -625,7 +593,7 @@ impl Transform<'_> {
         // nice name for debugging and then we're good to go!
         let expr = builder.with_side_effects(before, result, after);
         let id = builder.finish_parts(shim_ty, params, vec![expr], types, funcs);
-        let name = format!("{}_anyref_shim", func.name);
+        let name = format!("{}_anyref_shim", name);
         funcs.get_mut(id).name = Some(name);
         self.shims.insert(id);
         return id;
