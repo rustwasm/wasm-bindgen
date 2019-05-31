@@ -1033,7 +1033,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         let expr = match intrinsic {
             Intrinsic::JsvalEq => {
                 assert_eq!(self.js_arguments.len(), 2);
-                format!("{} == {}", self.js_arguments[0], self.js_arguments[1])
+                format!("{} === {}", self.js_arguments[0], self.js_arguments[1])
             }
 
             Intrinsic::IsFunction => {
