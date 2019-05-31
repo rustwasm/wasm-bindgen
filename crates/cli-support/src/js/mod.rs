@@ -1958,7 +1958,7 @@ impl<'a> Context<'a> {
         catch: bool,
     ) -> Result<(), Error> {
         let signature = self.bindings.imports[&id].clone();
-        let catch_and_rethrow = !self.config.debug;
+        let catch_and_rethrow = self.config.debug;
         let js = Rust2Js::new(self)
             .catch_and_rethrow(catch_and_rethrow)
             .catch(catch)
