@@ -21,5 +21,3 @@ http
 # or use python
 python -m SimpleHTTPServer
 ```
-
-Make sure that you have `WebSockets` server running

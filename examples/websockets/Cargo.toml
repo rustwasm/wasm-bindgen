@@ -8,10 +8,10 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = "0.2.44"
+wasm-bindgen = "0.2.45"
 
 [dependencies.web-sys]
-version = "0.3.21"
+version = "0.3.22"
 features = [
   "ErrorEvent",
   "MessageEvent",

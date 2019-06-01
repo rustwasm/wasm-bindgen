@@ -21,6 +21,7 @@
   - [web-sys: `canvas` Julia set](./examples/julia.md)
   - [web-sys: WebAudio](./examples/web-audio.md)
   - [web-sys: WebGL](./examples/webgl.md)
+  - [web-sys: WebSockets](./examples/websockets.md)
   - [web-sys: `requestAnimationFrame`](./examples/request-animation-frame.md)
   - [web-sys: A Simple Paint Program](./examples/paint.md)
   - [Parallel Raytracing](./examples/raytrace.md)
