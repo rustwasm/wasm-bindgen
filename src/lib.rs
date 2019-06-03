@@ -553,7 +553,7 @@ impl Drop for JsValue {
     fn drop(&mut self) {
         unsafe {
             // We definitely should never drop anything in the stack area
-            debug_assert!(self.idx >= JSIDX_OFFSET);
+            debug_assert!(self.idx >= JSIDX_OFFSET, "free of stack slot {}", self.idx);
 
             // Otherwise if we're not dropping one of our reserved values,
             // actually call the intrinsic. See #1054 for eventually removing

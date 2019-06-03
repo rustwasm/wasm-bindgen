@@ -1178,6 +1178,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     //
                     // But for now, we just bounce wasm -> js -> wasm because it is
                     // easy.
+                    self.cx.require_internal_export("__wbindgen_anyref_heap_live_count_impl")?;
                     "wasm.__wbindgen_anyref_heap_live_count_impl()".into()
                 } else {
                     self.cx.expose_global_heap();

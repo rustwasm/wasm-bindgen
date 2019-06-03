@@ -109,7 +109,7 @@ impl Slab {
                 None => internal_error("slot out of bounds"),
             };
         }
-        self.data.len() as u32 - free_count - super::JSIDX_RESERVED
+        self.data.len() as u32 - free_count
     }
 }
 
