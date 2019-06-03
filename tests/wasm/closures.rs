@@ -25,6 +25,7 @@ extern "C" {
     fn many_arity_call6(a: &Closure<Fn(u32, u32, u32, u32, u32)>);
     fn many_arity_call7(a: &Closure<Fn(u32, u32, u32, u32, u32, u32)>);
     fn many_arity_call8(a: &Closure<Fn(u32, u32, u32, u32, u32, u32, u32)>);
+    fn many_arity_call9(a: &Closure<Fn(u32, u32, u32, u32, u32, u32, u32, u32)>);
 
     #[wasm_bindgen(js_name = many_arity_call1)]
     fn many_arity_call_mut1(a: &Closure<FnMut()>);
@@ -42,6 +43,8 @@ extern "C" {
     fn many_arity_call_mut7(a: &Closure<FnMut(u32, u32, u32, u32, u32, u32)>);
     #[wasm_bindgen(js_name = many_arity_call8)]
     fn many_arity_call_mut8(a: &Closure<FnMut(u32, u32, u32, u32, u32, u32, u32)>);
+    #[wasm_bindgen(js_name = many_arity_call9)]
+    fn many_arity_call_mut9(a: &Closure<FnMut(u32, u32, u32, u32, u32, u32, u32, u32)>);
 
     #[wasm_bindgen(js_name = many_arity_call1)]
     fn many_arity_stack1(a: &Fn());
@@ -59,6 +62,8 @@ extern "C" {
     fn many_arity_stack7(a: &Fn(u32, u32, u32, u32, u32, u32));
     #[wasm_bindgen(js_name = many_arity_call8)]
     fn many_arity_stack8(a: &Fn(u32, u32, u32, u32, u32, u32, u32));
+    #[wasm_bindgen(js_name = many_arity_call9)]
+    fn many_arity_stack9(a: &Fn(u32, u32, u32, u32, u32, u32, u32, u32));
 
     fn long_lived_dropping_cache(a: &Closure<Fn()>);
     #[wasm_bindgen(catch)]
@@ -165,6 +170,9 @@ fn many_arity() {
     many_arity_call8(&Closure::new(|a, b, c, d, e, f, g| {
         assert_eq!((a, b, c, d, e, f, g), (1, 2, 3, 4, 5, 6, 7))
     }));
+    many_arity_call9(&Closure::new(|a, b, c, d, e, f, g, h| {
+        assert_eq!((a, b, c, d, e, f, g, h), (1, 2, 3, 4, 5, 6, 7, 8))
+    }));
 
     let s = String::new();
     many_arity_call_mut1(&Closure::once(move || drop(s)));
@@ -203,6 +211,11 @@ fn many_arity() {
         drop(s);
         assert_eq!((a, b, c, d, e, f, g), (1, 2, 3, 4, 5, 6, 7));
     }));
+    let s = String::new();
+    many_arity_call_mut9(&Closure::once(move |a, b, c, d, e, f, g, h| {
+        drop(s);
+        assert_eq!((a, b, c, d, e, f, g, h), (1, 2, 3, 4, 5, 6, 7, 8));
+    }));
 
     many_arity_stack1(&(|| {}));
     many_arity_stack2(&(|a| assert_eq!(a, 1)));
@@ -213,6 +226,9 @@ fn many_arity() {
     many_arity_stack7(&(|a, b, c, d, e, f| assert_eq!((a, b, c, d, e, f), (1, 2, 3, 4, 5, 6))));
     many_arity_stack8(
         &(|a, b, c, d, e, f, g| assert_eq!((a, b, c, d, e, f, g), (1, 2, 3, 4, 5, 6, 7))),
+    );
+    many_arity_stack9(
+        &(|a, b, c, d, e, f, g, h| assert_eq!((a, b, c, d, e, f, g, h), (1, 2, 3, 4, 5, 6, 7, 8))),
     );
 }
 
