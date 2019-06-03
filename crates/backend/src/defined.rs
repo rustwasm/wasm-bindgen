@@ -348,25 +348,20 @@ impl RemoveUndefinedImports for ast::Program {
         let mut changed = self.imports.remove_undefined_imports(is_defined);
         changed = self.consts.remove_undefined_imports(is_defined) || changed;
 
-        let mut dictionaries_to_remove = Vec::new();
-        for (i, dictionary) in self.dictionaries.iter_mut().enumerate() {
+        for dictionary in self.dictionaries.iter_mut() {
             let num_required =
                 |dict: &ast::Dictionary| dict.fields.iter().filter(|f| f.required).count();
             let before = num_required(dictionary);
             changed = dictionary.fields.remove_undefined_imports(is_defined) || changed;
+
+            // If a required field was removed we can no longer construct this
+            // dictionary so disable the constructor.
             if before != num_required(dictionary) {
-                log::warn!(
-                    "removing {} due to a required field being removed",
-                    dictionary.name
-                );
-                dictionaries_to_remove.push(i);
+                dictionary.ctor = false;
             }
         }
-        for i in dictionaries_to_remove.iter().rev() {
-            self.dictionaries.swap_remove(*i);
-        }
 
-        changed || dictionaries_to_remove.len() > 0
+        changed
     }
 }
 

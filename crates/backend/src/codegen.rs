@@ -1281,24 +1281,41 @@ impl ToTokens for ast::Dictionary {
             .collect::<Vec<_>>();
         let required_names2 = required_names;
         let required_names3 = required_names;
+        let doc_comment = match &self.doc_comment {
+            None => "",
+            Some(doc_string) => doc_string,
+        };
+
+        let ctor = if self.ctor {
+            let doc_comment = match &self.ctor_doc_comment {
+                None => "",
+                Some(doc_string) => doc_string,
+            };
+            quote! {
+                #[doc = #doc_comment]
+                pub fn new(#(#required_names: #required_types),*) -> #name {
+                    let mut _ret = #name { obj: ::js_sys::Object::new() };
+                    #(_ret.#required_names2(#required_names3);)*
+                    return _ret
+                }
+            }
+        } else {
+            quote! {}
+        };
 
         let const_name = Ident::new(&format!("_CONST_{}", name), Span::call_site());
         (quote! {
             #[derive(Clone, Debug)]
             #[repr(transparent)]
             #[allow(clippy::all)]
+            #[doc = #doc_comment]
             pub struct #name {
                 obj: ::js_sys::Object,
             }
 
             #[allow(clippy::all)]
             impl #name {
-                pub fn new(#(#required_names: #required_types),*) -> #name {
-                    let mut _ret = #name { obj: ::js_sys::Object::new() };
-                    #(_ret.#required_names2(#required_names3);)*
-                    return _ret
-                }
-
+                #ctor
                 #methods
             }
 
@@ -1407,8 +1424,13 @@ impl ToTokens for ast::DictionaryField {
         let rust_name = &self.rust_name;
         let js_name = &self.js_name;
         let ty = &self.ty;
+        let doc_comment = match &self.doc_comment {
+            None => "",
+            Some(doc_string) => doc_string,
+        };
         (quote! {
             #[allow(clippy::all)]
+            #[doc = #doc_comment]
             pub fn #rust_name(&mut self, val: #ty) -> &mut Self {
                 use wasm_bindgen::JsValue;
                 let r = ::js_sys::Reflect::set(
