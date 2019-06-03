@@ -158,7 +158,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every)
     #[wasm_bindgen(method)]
-    pub fn every(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> bool;
+    pub fn every(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> bool;
 
     /// The fill() method fills all the elements of an array from a start index
     /// to an end index with a static value. The end index is not included.
@@ -172,27 +172,27 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
     #[wasm_bindgen(method)]
-    pub fn filter(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> Array;
+    pub fn filter(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> Array;
 
     /// The `find()` method returns the value of the first element in the array that satisfies
     ///  the provided testing function. Otherwise `undefined` is returned.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find)
     #[wasm_bindgen(method)]
-    pub fn find(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> JsValue;
+    pub fn find(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> JsValue;
 
     /// The findIndex() method returns the index of the first element in the array that
     /// satisfies the provided testing function. Otherwise -1 is returned.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex)
     #[wasm_bindgen(method, js_name = findIndex)]
-    pub fn find_index(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> bool) -> i32;
+    pub fn find_index(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> i32;
 
     /// The `forEach()` method executes a provided function once for each array element.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
     #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Array, callback: &mut FnMut(JsValue, u32, Array));
+    pub fn for_each(this: &Array, callback: &mut dyn FnMut(JsValue, u32, Array));
 
     /// The includes() method determines whether an array includes a certain
     /// element, returning true or false as appropriate.
@@ -246,7 +246,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
     #[wasm_bindgen(method)]
-    pub fn map(this: &Array, predicate: &mut FnMut(JsValue, u32, Array) -> JsValue) -> Array;
+    pub fn map(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> JsValue) -> Array;
 
     /// The `Array.of()` method creates a new Array instance with a variable
     /// number of arguments, regardless of number or type of the arguments.
@@ -303,7 +303,7 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn reduce(
         this: &Array,
-        predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue,
+        predicate: &mut dyn FnMut(JsValue, JsValue, u32, Array) -> JsValue,
         initial_value: &JsValue,
     ) -> JsValue;
 
@@ -314,7 +314,7 @@ extern "C" {
     #[wasm_bindgen(method, js_name = reduceRight)]
     pub fn reduce_right(
         this: &Array,
-        predicate: &mut FnMut(JsValue, JsValue, u32, Array) -> JsValue,
+        predicate: &mut dyn FnMut(JsValue, JsValue, u32, Array) -> JsValue,
         initial_value: &JsValue,
     ) -> JsValue;
 
@@ -345,7 +345,7 @@ extern "C" {
     /// Note: This method returns false for any condition put on an empty array.
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some)
     #[wasm_bindgen(method)]
-    pub fn some(this: &Array, predicate: &mut FnMut(JsValue) -> bool) -> bool;
+    pub fn some(this: &Array, predicate: &mut dyn FnMut(JsValue) -> bool) -> bool;
 
     /// The sort() method sorts the elements of an array in place and returns
     /// the array. The sort is not necessarily stable. The default sort
@@ -1147,7 +1147,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach)
     #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Map, callback: &mut FnMut(JsValue, JsValue));
+    pub fn for_each(this: &Map, callback: &mut dyn FnMut(JsValue, JsValue));
 
     /// The get() method returns a specified element from a Map object.
     ///
@@ -2815,7 +2815,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set/forEach)
     #[wasm_bindgen(method, js_name = forEach)]
-    pub fn for_each(this: &Set, callback: &mut FnMut(JsValue, JsValue, Set));
+    pub fn for_each(this: &Set, callback: &mut dyn FnMut(JsValue, JsValue, Set));
 
     /// The `has()` method returns a boolean indicating whether an element with
     /// the specified value exists in a [`Set`] object or not.
@@ -4309,7 +4309,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
     #[wasm_bindgen(constructor)]
-    pub fn new(cb: &mut FnMut(Function, Function)) -> Promise;
+    pub fn new(cb: &mut dyn FnMut(Function, Function)) -> Promise;
 
     /// The `Promise.all(iterable)` method returns a single `Promise` that
     /// resolves when all of the promises in the iterable argument have resolved
@@ -4352,21 +4352,21 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/catch)
     #[wasm_bindgen(method)]
-    pub fn catch(this: &Promise, cb: &Closure<FnMut(JsValue)>) -> Promise;
+    pub fn catch(this: &Promise, cb: &Closure<dyn FnMut(JsValue)>) -> Promise;
 
     /// The `then()` method returns a `Promise`. It takes up to two arguments:
     /// callback functions for the success and failure cases of the `Promise`.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then)
     #[wasm_bindgen(method)]
-    pub fn then(this: &Promise, cb: &Closure<FnMut(JsValue)>) -> Promise;
+    pub fn then(this: &Promise, cb: &Closure<dyn FnMut(JsValue)>) -> Promise;
 
     /// Same as `then`, only with both arguments provided.
     #[wasm_bindgen(method, js_name = then)]
     pub fn then2(
         this: &Promise,
-        resolve: &Closure<FnMut(JsValue)>,
-        reject: &Closure<FnMut(JsValue)>,
+        resolve: &Closure<dyn FnMut(JsValue)>,
+        reject: &Closure<dyn FnMut(JsValue)>,
     ) -> Promise;
 
     /// The `finally()` method returns a `Promise`. When the promise is settled,
@@ -4380,7 +4380,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/finally)
     #[wasm_bindgen(method)]
-    pub fn finally(this: &Promise, cb: &Closure<FnMut()>) -> Promise;
+    pub fn finally(this: &Promise, cb: &Closure<dyn FnMut()>) -> Promise;
 }
 
 /// Returns a handle to the global scope object.
@@ -4499,7 +4499,7 @@ macro_rules! arrays {
             /// `Array.prototype.forEach()`. `TypedArray` is one of the typed array
             /// types here.
             #[wasm_bindgen(method, js_name = forEach)]
-            pub fn for_each(this: &$name, callback: &mut FnMut($ty, u32, $name));
+            pub fn for_each(this: &$name, callback: &mut dyn FnMut($ty, u32, $name));
 
             /// The `length` accessor property represents the length (in elements) of a
             /// typed array.

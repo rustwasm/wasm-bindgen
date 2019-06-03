@@ -166,7 +166,7 @@ impl ToTokens for ast::Struct {
             impl wasm_bindgen::convert::IntoWasmAbi for #name {
                 type Abi = u32;
 
-                fn into_abi(self, _extra: &mut wasm_bindgen::convert::Stack)
+                fn into_abi(self, _extra: &mut dyn wasm_bindgen::convert::Stack)
                     -> u32
                 {
                     use wasm_bindgen::__rt::std::boxed::Box;
@@ -179,7 +179,7 @@ impl ToTokens for ast::Struct {
             impl wasm_bindgen::convert::FromWasmAbi for #name {
                 type Abi = u32;
 
-                unsafe fn from_abi(js: u32, _extra: &mut wasm_bindgen::convert::Stack)
+                unsafe fn from_abi(js: u32, _extra: &mut dyn wasm_bindgen::convert::Stack)
                     -> Self
                 {
                     use wasm_bindgen::__rt::std::boxed::Box;
@@ -242,7 +242,7 @@ impl ToTokens for ast::Struct {
 
                 unsafe fn ref_from_abi(
                     js: Self::Abi,
-                    _extra: &mut wasm_bindgen::convert::Stack,
+                    _extra: &mut dyn wasm_bindgen::convert::Stack,
                 ) -> Self::Anchor {
                     let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
                     wasm_bindgen::__rt::assert_not_null(js);
@@ -257,7 +257,7 @@ impl ToTokens for ast::Struct {
 
                 unsafe fn ref_mut_from_abi(
                     js: Self::Abi,
-                    _extra: &mut wasm_bindgen::convert::Stack,
+                    _extra: &mut dyn wasm_bindgen::convert::Stack,
                 ) -> Self::Anchor {
                     let js = js as *mut wasm_bindgen::__rt::WasmRefCell<#name>;
                     wasm_bindgen::__rt::assert_not_null(js);
@@ -637,7 +637,7 @@ impl ToTokens for ast::ImportType {
                     type Abi = <JsValue as IntoWasmAbi>::Abi;
 
                     #[inline]
-                    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+                    fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
                         self.obj.into_abi(extra)
                     }
                 }
@@ -656,7 +656,7 @@ impl ToTokens for ast::ImportType {
                     type Abi = <JsValue as FromWasmAbi>::Abi;
 
                     #[inline]
-                    unsafe fn from_abi(js: Self::Abi, extra: &mut Stack) -> Self {
+                    unsafe fn from_abi(js: Self::Abi, extra: &mut dyn Stack) -> Self {
                         #rust_name {
                             obj: JsValue::from_abi(js, extra).into(),
                         }
@@ -672,7 +672,7 @@ impl ToTokens for ast::ImportType {
                     type Abi = <&'a JsValue as IntoWasmAbi>::Abi;
 
                     #[inline]
-                    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+                    fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
                         (&self.obj).into_abi(extra)
                     }
                 }
@@ -682,7 +682,7 @@ impl ToTokens for ast::ImportType {
                     type Anchor = core::mem::ManuallyDrop<#rust_name>;
 
                     #[inline]
-                    unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor {
+                    unsafe fn ref_from_abi(js: Self::Abi, extra: &mut dyn Stack) -> Self::Anchor {
                         let tmp = <JsValue as RefFromWasmAbi>::ref_from_abi(js, extra);
                         core::mem::ManuallyDrop::new(#rust_name {
                             obj: core::mem::ManuallyDrop::into_inner(tmp).into(),
@@ -838,7 +838,7 @@ impl ToTokens for ast::ImportEnum {
                     wasm_bindgen::convert::IntoWasmAbi>::Abi;
 
                 #[inline]
-                fn into_abi(self, extra: &mut wasm_bindgen::convert::Stack) -> Self::Abi {
+                fn into_abi(self, extra: &mut dyn wasm_bindgen::convert::Stack) -> Self::Abi {
                     wasm_bindgen::JsValue::from(self).into_abi(extra)
                 }
             }
@@ -850,7 +850,7 @@ impl ToTokens for ast::ImportEnum {
 
                 unsafe fn from_abi(
                     js: Self::Abi,
-                    extra: &mut wasm_bindgen::convert::Stack,
+                    extra: &mut dyn wasm_bindgen::convert::Stack,
                 ) -> Self {
                     #name::from_js_value(&wasm_bindgen::JsValue::from_abi(js, extra)).unwrap_or(#name::__Nonexhaustive)
                 }
@@ -1127,7 +1127,7 @@ impl ToTokens for ast::Enum {
                 type Abi = u32;
 
                 #[inline]
-                fn into_abi(self, _extra: &mut wasm_bindgen::convert::Stack) -> u32 {
+                fn into_abi(self, _extra: &mut dyn wasm_bindgen::convert::Stack) -> u32 {
                     self as u32
                 }
             }
@@ -1139,7 +1139,7 @@ impl ToTokens for ast::Enum {
                 #[inline]
                 unsafe fn from_abi(
                     js: u32,
-                    _extra: &mut wasm_bindgen::convert::Stack,
+                    _extra: &mut dyn wasm_bindgen::convert::Stack,
                 ) -> Self {
                     #(#cast_clauses else)* {
                         wasm_bindgen::throw_str("invalid enum value passed")
@@ -1333,7 +1333,7 @@ impl ToTokens for ast::Dictionary {
                 impl IntoWasmAbi for #name {
                     type Abi = <Object as IntoWasmAbi>::Abi;
                     #[inline]
-                    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+                    fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
                         self.obj.into_abi(extra)
                     }
                 }
@@ -1341,7 +1341,7 @@ impl ToTokens for ast::Dictionary {
                 impl<'a> IntoWasmAbi for &'a #name {
                     type Abi = <&'a Object as IntoWasmAbi>::Abi;
                     #[inline]
-                    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+                    fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
                         (&self.obj).into_abi(extra)
                     }
                 }
@@ -1349,7 +1349,7 @@ impl ToTokens for ast::Dictionary {
                 impl FromWasmAbi for #name {
                     type Abi = <Object as FromWasmAbi>::Abi;
                     #[inline]
-                    unsafe fn from_abi(abi: Self::Abi, extra: &mut Stack) -> Self {
+                    unsafe fn from_abi(abi: Self::Abi, extra: &mut dyn Stack) -> Self {
                         #name { obj: Object::from_abi(abi, extra) }
                     }
                 }
@@ -1372,7 +1372,7 @@ impl ToTokens for ast::Dictionary {
                     type Anchor = ManuallyDrop<#name>;
 
                     #[inline]
-                    unsafe fn ref_from_abi(js: Self::Abi, extra: &mut Stack) -> Self::Anchor {
+                    unsafe fn ref_from_abi(js: Self::Abi, extra: &mut dyn Stack) -> Self::Anchor {
                         let tmp = <Object as RefFromWasmAbi>::ref_from_abi(js, extra);
                         ManuallyDrop::new(#name {
                             obj: ManuallyDrop::into_inner(tmp),

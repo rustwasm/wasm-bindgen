@@ -196,16 +196,16 @@ fn callback() {
         static mut HIT: bool = false;
         let cb = Closure::wrap(Box::new(move || unsafe {
             HIT = true;
-        }) as Box<FnMut()>);
+        }) as Box<dyn FnMut()>);
         o.invoke(cb.as_ref().unchecked_ref());
         assert!(unsafe { HIT });
     }
 
-    let cb = Closure::wrap(Box::new(move |a, b| a + b) as Box<FnMut(u32, u32) -> u32>);
+    let cb = Closure::wrap(Box::new(move |a, b| a + b) as Box<dyn FnMut(u32, u32) -> u32>);
     assert_eq!(o.call_add(cb.as_ref().unchecked_ref()), 3);
 
     let cb = Closure::wrap(
-        Box::new(move |a: String, b| a.repeat(b)) as Box<FnMut(String, usize) -> String>
+        Box::new(move |a: String, b| a.repeat(b)) as Box<dyn FnMut(String, usize) -> String>
     );
     assert_eq!(o.call_repeat(cb.as_ref().unchecked_ref()), "abababab");
 }

@@ -130,7 +130,7 @@ use wasm_bindgen::prelude::*;
 pub struct JsFuture {
     resolved: oneshot::Receiver<JsValue>,
     rejected: oneshot::Receiver<JsValue>,
-    callbacks: Option<(Closure<FnMut(JsValue)>, Closure<FnMut(JsValue)>)>,
+    callbacks: Option<(Closure<dyn FnMut(JsValue)>, Closure<dyn FnMut(JsValue)>)>,
 }
 
 impl fmt::Debug for JsFuture {
@@ -152,11 +152,11 @@ impl From<Promise> for JsFuture {
         let mut tx1 = Some(tx1);
         let resolve = Closure::wrap(Box::new(move |val| {
             drop(tx1.take().unwrap().send(val));
-        }) as Box<FnMut(_)>);
+        }) as Box<dyn FnMut(_)>);
         let mut tx2 = Some(tx2);
         let reject = Closure::wrap(Box::new(move |val| {
             drop(tx2.take().unwrap().send(val));
-        }) as Box<FnMut(_)>);
+        }) as Box<dyn FnMut(_)>);
 
         js.then2(&resolve, &reject);
 
@@ -233,7 +233,7 @@ where
 //
 // This isn't necessarily the greatest future executor in the world, but it
 // should get the job done for now hopefully.
-fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> Promise {
+fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) -> Promise {
     let mut future = Some(executor::spawn(future));
     return Promise::new(&mut |resolve, reject| {
         Package::poll(&Arc::new(Package {
@@ -247,7 +247,7 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
     struct Package {
         // Our "spawned future". This'll have everything we need to poll the
         // future and continue to move it forward.
-        spawn: RefCell<Spawn<Box<Future<Item = JsValue, Error = JsValue>>>>,
+        spawn: RefCell<Spawn<Box<dyn Future<Item = JsValue, Error = JsValue>>>>,
 
         // The current state of this future, expressed in an enum below. This
         // indicates whether we're currently polling the future, received a
@@ -379,7 +379,7 @@ fn _future_to_promise(future: Box<Future<Item = JsValue, Error = JsValue>>) -> P
                 let myself = slot2.borrow_mut().take();
                 debug_assert!(myself.is_some());
                 Package::poll(&me);
-            }) as Box<FnMut(JsValue)>);
+            }) as Box<dyn FnMut(JsValue)>);
             promise.then(&closure);
             *slot.borrow_mut() = Some(closure);
         }
