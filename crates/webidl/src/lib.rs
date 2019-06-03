@@ -26,6 +26,7 @@ use proc_macro2::{Ident, Span};
 use quote::{quote, ToTokens};
 use std::collections::{BTreeSet, HashSet};
 use std::env;
+use std::fmt::Display;
 use std::fs;
 use std::iter::FromIterator;
 use wasm_bindgen_backend::ast;
@@ -313,12 +314,33 @@ impl<'src> FirstPassRecord<'src> {
         if !self.append_dictionary_members(def.identifier.0, &mut fields) {
             return;
         }
+        let name = rust_ident(&camel_case_ident(def.identifier.0));
+        let extra_feature = name.to_string();
+        for field in fields.iter_mut() {
+            let mut doc_comment = Some(format!(
+                "Configure the `{}` field of this object\n",
+                field.js_name,
+            ));
+            self.append_required_features_doc(&*field, &mut doc_comment, &[&extra_feature]);
+            field.doc_comment = doc_comment;
+        }
 
-        program.dictionaries.push(ast::Dictionary {
-            name: rust_ident(&camel_case_ident(def.identifier.0)),
+        let mut doc_comment = format!("The `{}` dictionary\n", def.identifier.0);
+        if let Some(s) = self.required_doc_string(vec![name.clone()]) {
+            doc_comment.push_str(&s);
+        }
+        let mut dict = ast::Dictionary {
+            name,
             fields,
             ctor: true,
-        });
+            doc_comment: Some(doc_comment),
+            ctor_doc_comment: None,
+        };
+        let mut ctor_doc_comment = Some(format!("Construct a new `{}`\n", def.identifier.0));
+        self.append_required_features_doc(&dict, &mut ctor_doc_comment, &[&extra_feature]);
+        dict.ctor_doc_comment = ctor_doc_comment;
+
+        program.dictionaries.push(dict);
     }
 
     fn append_dictionary_members(
@@ -419,6 +441,7 @@ impl<'src> FirstPassRecord<'src> {
             rust_name: rust_ident(&snake_case_ident(field.identifier.0)),
             js_name: field.identifier.0.to_string(),
             ty,
+            doc_comment: None,
         })
     }
 
@@ -740,16 +763,29 @@ impl<'src> FirstPassRecord<'src> {
         if required.len() == 0 {
             return;
         }
-        let list = required
+        if let Some(extra) = self.required_doc_string(required) {
+            doc.push_str(&extra);
+        }
+    }
+
+    fn required_doc_string<T: Display>(
+        &self,
+        features: impl IntoIterator<Item = T>,
+    ) -> Option<String> {
+        let features = features.into_iter().collect::<Vec<_>>();
+        if features.len() == 0 {
+            return None;
+        }
+        let list = features
             .iter()
             .map(|ident| format!("`{}`", ident))
             .collect::<Vec<_>>()
             .join(", ");
-        doc.push_str(&format!(
+        Some(format!(
             "\n\n*This API requires the following crate features \
              to be activated: {}*",
             list,
-        ));
+        ))
     }
 
     fn append_callback_interface(
@@ -771,6 +807,7 @@ impl<'src> FirstPassRecord<'src> {
                         rust_name: rust_ident(&snake_case_ident(identifier)),
                         js_name: identifier.to_string(),
                         ty: idl_type::IdlType::Callback.to_syn_type(pos).unwrap(),
+                        doc_comment: None,
                     });
                 }
                 _ => {
@@ -786,6 +823,8 @@ impl<'src> FirstPassRecord<'src> {
             name: rust_ident(&camel_case_ident(item.definition.identifier.0)),
             fields,
             ctor: true,
+            doc_comment: None,
+            ctor_doc_comment: None,
         });
     }
 }

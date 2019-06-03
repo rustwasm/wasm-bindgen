@@ -293,6 +293,8 @@ pub struct Dictionary {
     pub name: Ident,
     pub fields: Vec<DictionaryField>,
     pub ctor: bool,
+    pub doc_comment: Option<String>,
+    pub ctor_doc_comment: Option<String>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
@@ -302,6 +304,7 @@ pub struct DictionaryField {
     pub js_name: String,
     pub required: bool,
     pub ty: syn::Type,
+    pub doc_comment: Option<String>,
 }
 
 impl Export {
