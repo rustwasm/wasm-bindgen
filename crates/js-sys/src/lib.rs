@@ -188,6 +188,23 @@ extern "C" {
     #[wasm_bindgen(method, js_name = findIndex)]
     pub fn find_index(this: &Array, predicate: &mut dyn FnMut(JsValue, u32, Array) -> bool) -> i32;
 
+    /// The flat() method creates a new array with all sub-array elements concatenated into it
+    /// recursively up to the specified depth.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat)
+    #[wasm_bindgen(method)]
+    pub fn flat(this: &Array, depth: i32) -> Array;
+
+    /// The flatMap() method first maps each element using a mapping function, then flattens
+    /// the result into a new array.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap)
+    #[wasm_bindgen(method, js_name = flatMap)]
+    pub fn flat_map(
+        this: &Array,
+        callback: &mut dyn FnMut(JsValue, u32, Array) -> Vec<JsValue>,
+    ) -> Array;
+
     /// The `forEach()` method executes a provided function once for each array element.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
