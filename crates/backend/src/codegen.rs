@@ -210,7 +210,7 @@ impl ToTokens for ast::Struct {
                     }
 
                     #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-                    unsafe fn #new_fn(ptr: u32) -> u32 {
+                    unsafe fn #new_fn(_: u32) -> u32 {
                         panic!("cannot convert to JsValue outside of the wasm target")
                     }
 
@@ -719,7 +719,7 @@ impl ToTokens for ast::ImportType {
                             fn #instanceof_shim(val: u32) -> u32;
                         }
                         #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
-                        unsafe fn #instanceof_shim(val: u32) -> u32 {
+                        unsafe fn #instanceof_shim(_: u32) -> u32 {
                             panic!("cannot check instanceof on non-wasm targets");
                         }
                         unsafe {
@@ -997,6 +997,7 @@ impl TryToTokens for ast::ImportFunction {
         let attrs = &self.function.rust_attrs;
         let arguments = &arguments;
         let abi_arguments = &abi_arguments;
+        let abi_argument_names = &abi_argument_names;
 
         let doc_comment = match &self.doc_comment {
             None => "",
@@ -1032,6 +1033,7 @@ impl TryToTokens for ast::ImportFunction {
                 }
                 #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
                 unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
+                    drop((#(#abi_argument_names),*));
                     panic!("cannot call wasm-bindgen imported functions on \
                             non-wasm targets");
                 }
