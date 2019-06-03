@@ -1086,7 +1086,7 @@ impl<'a> Context<'a> {
     fn bind(
         &mut self,
         name: &str,
-        f: &Fn(&mut Self) -> Result<String, Error>,
+        f: &dyn Fn(&mut Self) -> Result<String, Error>,
     ) -> Result<(), Error> {
         if !self.wasm_import_needed(name) {
             return Ok(());

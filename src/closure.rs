@@ -378,7 +378,7 @@ where
 // NB: we use a specific `T` for this `Closure<T>` impl block to avoid every
 // call site having to provide an explicit, turbo-fished type like
 // `Closure::<FnOnce()>::once(...)`.
-impl Closure<FnOnce()> {
+impl Closure<dyn FnOnce()> {
     /// Create a `Closure` from a function that can only be called once.
     ///
     /// Since we have no way of enforcing that JS cannot attempt to call this
@@ -475,19 +475,19 @@ where
 {
     type Abi = u32;
 
-    fn into_abi(self, extra: &mut Stack) -> u32 {
+    fn into_abi(self, extra: &mut dyn Stack) -> u32 {
         (&*self.js).into_abi(extra)
     }
 }
 
 fn _check() {
     fn _assert<T: IntoWasmAbi>() {}
-    _assert::<&Closure<Fn()>>();
-    _assert::<&Closure<Fn(String)>>();
-    _assert::<&Closure<Fn() -> String>>();
-    _assert::<&Closure<FnMut()>>();
-    _assert::<&Closure<FnMut(String)>>();
-    _assert::<&Closure<FnMut() -> String>>();
+    _assert::<&Closure<dyn Fn()>>();
+    _assert::<&Closure<dyn Fn(String)>>();
+    _assert::<&Closure<dyn Fn() -> String>>();
+    _assert::<&Closure<dyn FnMut()>>();
+    _assert::<&Closure<dyn FnMut(String)>>();
+    _assert::<&Closure<dyn FnMut() -> String>>();
 }
 
 impl<T> fmt::Debug for Closure<T>
@@ -541,7 +541,7 @@ macro_rules! doit {
     ($(
         ($($var:ident)*)
     )*) => ($(
-        unsafe impl<$($var,)* R> WasmClosure for Fn($($var),*) -> R + 'static
+        unsafe impl<$($var,)* R> WasmClosure for dyn Fn($($var),*) -> R + 'static
             where $($var: FromWasmAbi + 'static,)*
                   R: ReturnWasmAbi + 'static,
         {
@@ -559,7 +559,7 @@ macro_rules! doit {
                     // convert `ret` as it may throw (for `Result`, for
                     // example)
                     let ret = {
-                        let f: *const Fn($($var),*) -> R =
+                        let f: *const dyn Fn($($var),*) -> R =
                             FatPtr { fields: (a, b) }.ptr;
                         let mut _stack = GlobalStack::new();
                         $(
@@ -584,7 +584,7 @@ macro_rules! doit {
                     if a == 0 {
                         return;
                     }
-                    drop(Box::from_raw(FatPtr::<Fn($($var,)*) -> R> {
+                    drop(Box::from_raw(FatPtr::<dyn Fn($($var,)*) -> R> {
                         fields: (a, b)
                     }.ptr));
                 }
@@ -594,7 +594,7 @@ macro_rules! doit {
             }
         }
 
-        unsafe impl<$($var,)* R> WasmClosure for FnMut($($var),*) -> R + 'static
+        unsafe impl<$($var,)* R> WasmClosure for dyn FnMut($($var),*) -> R + 'static
             where $($var: FromWasmAbi + 'static,)*
                   R: ReturnWasmAbi + 'static,
         {
@@ -612,9 +612,9 @@ macro_rules! doit {
                     // convert `ret` as it may throw (for `Result`, for
                     // example)
                     let ret = {
-                        let f: *const FnMut($($var),*) -> R =
+                        let f: *const dyn FnMut($($var),*) -> R =
                             FatPtr { fields: (a, b) }.ptr;
-                        let f = f as *mut FnMut($($var),*) -> R;
+                        let f = f as *mut dyn FnMut($($var),*) -> R;
                         let mut _stack = GlobalStack::new();
                         $(
                             let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
@@ -634,7 +634,7 @@ macro_rules! doit {
                     if a == 0 {
                         return;
                     }
-                    drop(Box::from_raw(FatPtr::<FnMut($($var,)*) -> R> {
+                    drop(Box::from_raw(FatPtr::<dyn FnMut($($var,)*) -> R> {
                         fields: (a, b)
                     }.ptr));
                 }
@@ -650,7 +650,7 @@ macro_rules! doit {
                   $($var: FromWasmAbi + 'static,)*
                   R: ReturnWasmAbi + 'static
         {
-            type FnMut = FnMut($($var),*) -> R;
+            type FnMut = dyn FnMut($($var),*) -> R;
 
             fn into_fn_mut(self) -> Box<Self::FnMut> {
                 let mut me = Some(self);
@@ -682,7 +682,7 @@ macro_rules! doit {
                     drop(option_closure);
 
                     result
-                }) as Box<FnMut($($var),*) -> R>);
+                }) as Box<dyn FnMut($($var),*) -> R>);
 
                 let js_val = closure.as_ref().clone();
 
@@ -714,7 +714,7 @@ doit! {
 // just this one! Maybe someone else can figure out voodoo so we don't have to
 // duplicate.
 
-unsafe impl<A, R> WasmClosure for Fn(&A) -> R
+unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
     where A: RefFromWasmAbi,
           R: ReturnWasmAbi + 'static,
 {
@@ -732,7 +732,7 @@ unsafe impl<A, R> WasmClosure for Fn(&A) -> R
             // convert `ret` as it may throw (for `Result`, for
             // example)
             let ret = {
-                let f: *const Fn(&A) -> R =
+                let f: *const dyn Fn(&A) -> R =
                     FatPtr { fields: (a, b) }.ptr;
                 let mut _stack = GlobalStack::new();
                 let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
@@ -751,7 +751,7 @@ unsafe impl<A, R> WasmClosure for Fn(&A) -> R
             if a == 0 {
                 return;
             }
-            drop(Box::from_raw(FatPtr::<Fn(&A) -> R> {
+            drop(Box::from_raw(FatPtr::<dyn Fn(&A) -> R> {
                 fields: (a, b)
             }.ptr));
         }
@@ -761,7 +761,7 @@ unsafe impl<A, R> WasmClosure for Fn(&A) -> R
     }
 }
 
-unsafe impl<A, R> WasmClosure for FnMut(&A) -> R
+unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
     where A: RefFromWasmAbi,
           R: ReturnWasmAbi + 'static,
 {
@@ -779,9 +779,9 @@ unsafe impl<A, R> WasmClosure for FnMut(&A) -> R
             // convert `ret` as it may throw (for `Result`, for
             // example)
             let ret = {
-                let f: *const FnMut(&A) -> R =
+                let f: *const dyn FnMut(&A) -> R =
                     FatPtr { fields: (a, b) }.ptr;
-                let f = f as *mut FnMut(&A) -> R;
+                let f = f as *mut dyn FnMut(&A) -> R;
                 let mut _stack = GlobalStack::new();
                 let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
                 (*f)(&*arg)
@@ -799,7 +799,7 @@ unsafe impl<A, R> WasmClosure for FnMut(&A) -> R
             if a == 0 {
                 return;
             }
-            drop(Box::from_raw(FatPtr::<FnMut(&A) -> R> {
+            drop(Box::from_raw(FatPtr::<dyn FnMut(&A) -> R> {
                 fields: (a, b)
             }.ptr));
         }
@@ -815,7 +815,7 @@ impl<T, A, R> WasmClosureFnOnce<(&A,), R> for T
           A: RefFromWasmAbi + 'static,
           R: ReturnWasmAbi + 'static
 {
-    type FnMut = FnMut(&A) -> R;
+    type FnMut = dyn FnMut(&A) -> R;
 
     fn into_fn_mut(self) -> Box<Self::FnMut> {
         let mut me = Some(self);
@@ -847,7 +847,7 @@ impl<T, A, R> WasmClosureFnOnce<(&A,), R> for T
             drop(option_closure);
 
             result
-        }) as Box<FnMut(&A) -> R>);
+        }) as Box<dyn FnMut(&A) -> R>);
 
         let js_val = closure.as_ref().clone();
 

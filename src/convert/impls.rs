@@ -64,21 +64,21 @@ macro_rules! type_wasm_native {
             type Abi = $c;
 
             #[inline]
-            fn into_abi(self, _extra: &mut Stack) -> $c { self as $c }
+            fn into_abi(self, _extra: &mut dyn Stack) -> $c { self as $c }
         }
 
         impl FromWasmAbi for $t {
             type Abi = $c;
 
             #[inline]
-            unsafe fn from_abi(js: $c, _extra: &mut Stack) -> Self { js as $t }
+            unsafe fn from_abi(js: $c, _extra: &mut dyn Stack) -> Self { js as $t }
         }
 
         impl IntoWasmAbi for Option<$t> {
             type Abi = $r;
 
             #[inline]
-            fn into_abi(self, _extra: &mut Stack) -> $r {
+            fn into_abi(self, _extra: &mut dyn Stack) -> $r {
                 match self {
                     None => $r {
                         present: 0,
@@ -96,7 +96,7 @@ macro_rules! type_wasm_native {
             type Abi = $r;
 
             #[inline]
-            unsafe fn from_abi(js: $r, _extra: &mut Stack) -> Self {
+            unsafe fn from_abi(js: $r, _extra: &mut dyn Stack) -> Self {
                 if js.present == 0 {
                     None
                 } else {
@@ -122,14 +122,14 @@ macro_rules! type_abi_as_u32 {
             type Abi = u32;
 
             #[inline]
-            fn into_abi(self, _extra: &mut Stack) -> u32 { self as u32 }
+            fn into_abi(self, _extra: &mut dyn Stack) -> u32 { self as u32 }
         }
 
         impl FromWasmAbi for $t {
             type Abi = u32;
 
             #[inline]
-            unsafe fn from_abi(js: u32, _extra: &mut Stack) -> Self { js as $t }
+            unsafe fn from_abi(js: u32, _extra: &mut dyn Stack) -> Self { js as $t }
         }
 
         impl OptionIntoWasmAbi for $t {
@@ -152,7 +152,7 @@ macro_rules! type_64 {
             type Abi = Wasm64;
 
             #[inline]
-            fn into_abi(self, _extra: &mut Stack) -> Wasm64 {
+            fn into_abi(self, _extra: &mut dyn Stack) -> Wasm64 {
                 Wasm64 {
                     low: self as u32,
                     high: (self >> 32) as u32,
@@ -164,7 +164,7 @@ macro_rules! type_64 {
             type Abi = Wasm64;
 
             #[inline]
-            unsafe fn from_abi(js: Wasm64, _extra: &mut Stack) -> $t {
+            unsafe fn from_abi(js: Wasm64, _extra: &mut dyn Stack) -> $t {
                 $t::from(js.low) | ($t::from(js.high) << 32)
             }
         }
@@ -173,7 +173,7 @@ macro_rules! type_64 {
             type Abi = WasmOptional64;
 
             #[inline]
-            fn into_abi(self, _extra: &mut Stack) -> WasmOptional64 {
+            fn into_abi(self, _extra: &mut dyn Stack) -> WasmOptional64 {
                 match self {
                     None => WasmOptional64 {
                         present: 0,
@@ -195,7 +195,7 @@ macro_rules! type_64 {
             type Abi = WasmOptional64;
 
             #[inline]
-            unsafe fn from_abi(js: WasmOptional64, _extra: &mut Stack) -> Self {
+            unsafe fn from_abi(js: WasmOptional64, _extra: &mut dyn Stack) -> Self {
                 if js.present == 0 {
                     None
                 } else {
@@ -212,7 +212,7 @@ impl IntoWasmAbi for bool {
     type Abi = u32;
 
     #[inline]
-    fn into_abi(self, _extra: &mut Stack) -> u32 {
+    fn into_abi(self, _extra: &mut dyn Stack) -> u32 {
         self as u32
     }
 }
@@ -221,7 +221,7 @@ impl FromWasmAbi for bool {
     type Abi = u32;
 
     #[inline]
-    unsafe fn from_abi(js: u32, _extra: &mut Stack) -> bool {
+    unsafe fn from_abi(js: u32, _extra: &mut dyn Stack) -> bool {
         js != 0
     }
 }
@@ -244,7 +244,7 @@ impl IntoWasmAbi for char {
     type Abi = u32;
 
     #[inline]
-    fn into_abi(self, _extra: &mut Stack) -> u32 {
+    fn into_abi(self, _extra: &mut dyn Stack) -> u32 {
         self as u32
     }
 }
@@ -253,7 +253,7 @@ impl FromWasmAbi for char {
     type Abi = u32;
 
     #[inline]
-    unsafe fn from_abi(js: u32, _extra: &mut Stack) -> char {
+    unsafe fn from_abi(js: u32, _extra: &mut dyn Stack) -> char {
         char::from_u32_unchecked(js)
     }
 }
@@ -275,7 +275,7 @@ impl OptionFromWasmAbi for char {
 impl<T> IntoWasmAbi for *const T {
     type Abi = u32;
 
-    fn into_abi(self, _extra: &mut Stack) -> u32 {
+    fn into_abi(self, _extra: &mut dyn Stack) -> u32 {
         self as u32
     }
 }
@@ -283,7 +283,7 @@ impl<T> IntoWasmAbi for *const T {
 impl<T> FromWasmAbi for *const T {
     type Abi = u32;
 
-    unsafe fn from_abi(js: u32, _extra: &mut Stack) -> *const T {
+    unsafe fn from_abi(js: u32, _extra: &mut dyn Stack) -> *const T {
         js as *const T
     }
 }
@@ -291,7 +291,7 @@ impl<T> FromWasmAbi for *const T {
 impl<T> IntoWasmAbi for *mut T {
     type Abi = u32;
 
-    fn into_abi(self, _extra: &mut Stack) -> u32 {
+    fn into_abi(self, _extra: &mut dyn Stack) -> u32 {
         self as u32
     }
 }
@@ -299,7 +299,7 @@ impl<T> IntoWasmAbi for *mut T {
 impl<T> FromWasmAbi for *mut T {
     type Abi = u32;
 
-    unsafe fn from_abi(js: u32, _extra: &mut Stack) -> *mut T {
+    unsafe fn from_abi(js: u32, _extra: &mut dyn Stack) -> *mut T {
         js as *mut T
     }
 }
@@ -308,7 +308,7 @@ impl IntoWasmAbi for JsValue {
     type Abi = u32;
 
     #[inline]
-    fn into_abi(self, _extra: &mut Stack) -> u32 {
+    fn into_abi(self, _extra: &mut dyn Stack) -> u32 {
         let ret = self.idx;
         mem::forget(self);
         ret
@@ -319,7 +319,7 @@ impl FromWasmAbi for JsValue {
     type Abi = u32;
 
     #[inline]
-    unsafe fn from_abi(js: u32, _extra: &mut Stack) -> JsValue {
+    unsafe fn from_abi(js: u32, _extra: &mut dyn Stack) -> JsValue {
         JsValue::_new(js)
     }
 }
@@ -328,7 +328,7 @@ impl<'a> IntoWasmAbi for &'a JsValue {
     type Abi = u32;
 
     #[inline]
-    fn into_abi(self, _extra: &mut Stack) -> u32 {
+    fn into_abi(self, _extra: &mut dyn Stack) -> u32 {
         self.idx
     }
 }
@@ -338,7 +338,7 @@ impl RefFromWasmAbi for JsValue {
     type Anchor = ManuallyDrop<JsValue>;
 
     #[inline]
-    unsafe fn ref_from_abi(js: u32, _extra: &mut Stack) -> Self::Anchor {
+    unsafe fn ref_from_abi(js: u32, _extra: &mut dyn Stack) -> Self::Anchor {
         ManuallyDrop::new(JsValue::_new(js))
     }
 }
@@ -346,7 +346,7 @@ impl RefFromWasmAbi for JsValue {
 impl<T: OptionIntoWasmAbi> IntoWasmAbi for Option<T> {
     type Abi = T::Abi;
 
-    fn into_abi(self, extra: &mut Stack) -> T::Abi {
+    fn into_abi(self, extra: &mut dyn Stack) -> T::Abi {
         match self {
             None => T::none(),
             Some(me) => me.into_abi(extra),
@@ -357,7 +357,7 @@ impl<T: OptionIntoWasmAbi> IntoWasmAbi for Option<T> {
 impl<T: OptionFromWasmAbi> FromWasmAbi for Option<T> {
     type Abi = T::Abi;
 
-    unsafe fn from_abi(js: T::Abi, extra: &mut Stack) -> Self {
+    unsafe fn from_abi(js: T::Abi, extra: &mut dyn Stack) -> Self {
         if T::is_none(&js) {
             None
         } else {
@@ -369,7 +369,7 @@ impl<T: OptionFromWasmAbi> FromWasmAbi for Option<T> {
 impl<T: IntoWasmAbi> IntoWasmAbi for Clamped<T> {
     type Abi = T::Abi;
 
-    fn into_abi(self, extra: &mut Stack) -> Self::Abi {
+    fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
         self.0.into_abi(extra)
     }
 }
@@ -377,7 +377,7 @@ impl<T: IntoWasmAbi> IntoWasmAbi for Clamped<T> {
 impl<T: FromWasmAbi> FromWasmAbi for Clamped<T> {
     type Abi = T::Abi;
 
-    unsafe fn from_abi(js: T::Abi, extra: &mut Stack) -> Self {
+    unsafe fn from_abi(js: T::Abi, extra: &mut dyn Stack) -> Self {
         Clamped(T::from_abi(js, extra))
     }
 }
@@ -386,7 +386,7 @@ impl IntoWasmAbi for () {
     type Abi = ();
 
     #[inline]
-    fn into_abi(self, _extra: &mut Stack) {
+    fn into_abi(self, _extra: &mut dyn Stack) {
         self
     }
 }
@@ -394,7 +394,7 @@ impl IntoWasmAbi for () {
 impl<T: IntoWasmAbi> ReturnWasmAbi for Result<T, JsValue> {
     type Abi = T::Abi;
 
-    fn return_abi(self, extra: &mut Stack) -> Self::Abi {
+    fn return_abi(self, extra: &mut dyn Stack) -> Self::Abi {
         match self {
             Ok(v) => v.into_abi(extra),
             Err(e) => crate::throw_val(e),

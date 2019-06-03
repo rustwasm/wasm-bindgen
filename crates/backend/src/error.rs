@@ -52,7 +52,7 @@ impl Diagnostic {
         }
     }
 
-    pub fn spanned_error<T: Into<String>>(node: &ToTokens, text: T) -> Diagnostic {
+    pub fn spanned_error<T: Into<String>>(node: &dyn ToTokens, text: T) -> Diagnostic {
         Diagnostic {
             inner: Repr::Single {
                 text: text.into(),
@@ -89,7 +89,7 @@ impl From<Error> for Diagnostic {
     }
 }
 
-fn extract_spans(node: &ToTokens) -> Option<(Span, Span)> {
+fn extract_spans(node: &dyn ToTokens) -> Option<(Span, Span)> {
     let mut t = TokenStream::new();
     node.to_tokens(&mut t);
     let mut tokens = t.into_iter();

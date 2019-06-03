@@ -114,7 +114,7 @@ impl WorkerPool {
     pub fn new(max: u32) -> Result<WorkerPool, JsValue> {
         let callback = Closure::wrap(Box::new(|event: Event| {
             console_log!("unhandled event: {}", event.type_());
-        }) as Box<FnMut(Event)>);
+        }) as Box<dyn FnMut(Event)>);
         let mut workers = Vec::new();
         for _ in 0..max {
             // TODO: what do do about `./worker.js`:

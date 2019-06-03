@@ -8,13 +8,13 @@ use crate::throw_str;
 
 macro_rules! stack_closures {
     ($( ($cnt:tt $invoke:ident $invoke_mut:ident $($var:ident)*) )*) => ($(
-        impl<'a, 'b, $($var,)* R> IntoWasmAbi for &'a (Fn($($var),*) -> R + 'b)
+        impl<'a, 'b, $($var,)* R> IntoWasmAbi for &'a (dyn Fn($($var),*) -> R + 'b)
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {
             type Abi = WasmSlice;
 
-            fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
+            fn into_abi(self, _extra: &mut dyn Stack) -> WasmSlice {
                 unsafe {
                     let (a, b): (usize, usize) = mem::transmute(self);
                     WasmSlice { ptr: a as u32, len: b as u32 }
@@ -34,7 +34,7 @@ macro_rules! stack_closures {
             // Scope all local variables before we call `return_abi` to
             // ensure they're all destroyed as `return_abi` may throw
             let ret = {
-                let f: &Fn($($var),*) -> R = mem::transmute((a, b));
+                let f: &dyn Fn($($var),*) -> R = mem::transmute((a, b));
                 let mut _stack = GlobalStack::new();
                 $(
                     let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
@@ -44,7 +44,7 @@ macro_rules! stack_closures {
             ret.return_abi(&mut GlobalStack::new())
         }
 
-        impl<'a, $($var,)* R> WasmDescribe for Fn($($var),*) -> R + 'a
+        impl<'a, $($var,)* R> WasmDescribe for dyn Fn($($var),*) -> R + 'a
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {
@@ -57,13 +57,13 @@ macro_rules! stack_closures {
             }
         }
 
-        impl<'a, 'b, $($var,)* R> IntoWasmAbi for &'a mut (FnMut($($var),*) -> R + 'b)
+        impl<'a, 'b, $($var,)* R> IntoWasmAbi for &'a mut (dyn FnMut($($var),*) -> R + 'b)
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {
             type Abi = WasmSlice;
 
-            fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
+            fn into_abi(self, _extra: &mut dyn Stack) -> WasmSlice {
                 unsafe {
                     let (a, b): (usize, usize) = mem::transmute(self);
                     WasmSlice { ptr: a as u32, len: b as u32 }
@@ -83,7 +83,7 @@ macro_rules! stack_closures {
             // Scope all local variables before we call `return_abi` to
             // ensure they're all destroyed as `return_abi` may throw
             let ret = {
-                let f: &mut FnMut($($var),*) -> R = mem::transmute((a, b));
+                let f: &mut dyn FnMut($($var),*) -> R = mem::transmute((a, b));
                 let mut _stack = GlobalStack::new();
                 $(
                     let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
@@ -93,7 +93,7 @@ macro_rules! stack_closures {
             ret.return_abi(&mut GlobalStack::new())
         }
 
-        impl<'a, $($var,)* R> WasmDescribe for FnMut($($var),*) -> R + 'a
+        impl<'a, $($var,)* R> WasmDescribe for dyn FnMut($($var),*) -> R + 'a
             where $($var: FromWasmAbi,)*
                   R: ReturnWasmAbi
         {
@@ -120,14 +120,14 @@ stack_closures! {
     (8 invoke8 invoke8_mut A B C D E F G H)
 }
 
-impl<'a, 'b, A, R> IntoWasmAbi for &'a (Fn(&A) -> R + 'b)
+impl<'a, 'b, A, R> IntoWasmAbi for &'a (dyn Fn(&A) -> R + 'b)
 where
     A: RefFromWasmAbi,
     R: ReturnWasmAbi,
 {
     type Abi = WasmSlice;
 
-    fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
+    fn into_abi(self, _extra: &mut dyn Stack) -> WasmSlice {
         unsafe {
             let (a, b): (usize, usize) = mem::transmute(self);
             WasmSlice {
@@ -150,7 +150,7 @@ unsafe extern "C" fn invoke1_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
     // Scope all local variables before we call `return_abi` to
     // ensure they're all destroyed as `return_abi` may throw
     let ret = {
-        let f: &Fn(&A) -> R = mem::transmute((a, b));
+        let f: &dyn Fn(&A) -> R = mem::transmute((a, b));
         let mut _stack = GlobalStack::new();
         let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
         f(&*arg)
@@ -158,7 +158,7 @@ unsafe extern "C" fn invoke1_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
     ret.return_abi(&mut GlobalStack::new())
 }
 
-impl<'a, A, R> WasmDescribe for Fn(&A) -> R + 'a
+impl<'a, A, R> WasmDescribe for dyn Fn(&A) -> R + 'a
 where
     A: RefFromWasmAbi,
     R: ReturnWasmAbi,
@@ -172,14 +172,14 @@ where
     }
 }
 
-impl<'a, 'b, A, R> IntoWasmAbi for &'a mut (FnMut(&A) -> R + 'b)
+impl<'a, 'b, A, R> IntoWasmAbi for &'a mut (dyn FnMut(&A) -> R + 'b)
 where
     A: RefFromWasmAbi,
     R: ReturnWasmAbi,
 {
     type Abi = WasmSlice;
 
-    fn into_abi(self, _extra: &mut Stack) -> WasmSlice {
+    fn into_abi(self, _extra: &mut dyn Stack) -> WasmSlice {
         unsafe {
             let (a, b): (usize, usize) = mem::transmute(self);
             WasmSlice {
@@ -202,7 +202,7 @@ unsafe extern "C" fn invoke1_mut_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
     // Scope all local variables before we call `return_abi` to
     // ensure they're all destroyed as `return_abi` may throw
     let ret = {
-        let f: &mut FnMut(&A) -> R = mem::transmute((a, b));
+        let f: &mut dyn FnMut(&A) -> R = mem::transmute((a, b));
         let mut _stack = GlobalStack::new();
         let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
         f(&*arg)
@@ -210,7 +210,7 @@ unsafe extern "C" fn invoke1_mut_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
     ret.return_abi(&mut GlobalStack::new())
 }
 
-impl<'a, A, R> WasmDescribe for FnMut(&A) -> R + 'a
+impl<'a, A, R> WasmDescribe for dyn FnMut(&A) -> R + 'a
 where
     A: RefFromWasmAbi,
     R: ReturnWasmAbi,

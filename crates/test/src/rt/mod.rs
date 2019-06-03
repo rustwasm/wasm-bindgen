@@ -148,7 +148,7 @@ struct State {
 
     /// How to actually format output, either node.js or browser-specific
     /// implementation.
-    formatter: Box<Formatter>,
+    formatter: Box<dyn Formatter>,
 }
 
 /// Representation of one test that needs to be executed.
@@ -157,7 +157,7 @@ struct State {
 /// future is polled.
 struct Test {
     name: String,
-    future: Box<Future<Item = (), Error = JsValue>>,
+    future: Box<dyn Future<Item = (), Error = JsValue>>,
     output: Rc<RefCell<Output>>,
 }
 
@@ -211,7 +211,7 @@ impl Context {
         console_error_panic_hook::set_once();
 
         let formatter = match node::Node::new() {
-            Some(node) => Box::new(node) as Box<Formatter>,
+            Some(node) => Box::new(node) as Box<dyn Formatter>,
             None => Box::new(browser::Browser::new()),
         };
         Context {
@@ -558,7 +558,7 @@ struct TestFuture<F> {
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(catch)]
-    fn __wbg_test_invoke(f: &mut FnMut()) -> Result<(), JsValue>;
+    fn __wbg_test_invoke(f: &mut dyn FnMut()) -> Result<(), JsValue>;
 }
 
 impl<F: Future<Error = JsValue>> Future for TestFuture<F> {
