@@ -317,6 +317,7 @@ impl<'src> FirstPassRecord<'src> {
         program.dictionaries.push(ast::Dictionary {
             name: rust_ident(&camel_case_ident(def.identifier.0)),
             fields,
+            ctor: true,
         });
     }
 
@@ -784,6 +785,7 @@ impl<'src> FirstPassRecord<'src> {
         program.dictionaries.push(ast::Dictionary {
             name: rust_ident(&camel_case_ident(item.definition.identifier.0)),
             fields,
+            ctor: true,
         });
     }
 }

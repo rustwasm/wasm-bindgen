@@ -292,6 +292,7 @@ pub enum ConstValue {
 pub struct Dictionary {
     pub name: Ident,
     pub fields: Vec<DictionaryField>,
+    pub ctor: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]

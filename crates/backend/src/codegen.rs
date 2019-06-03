@@ -1282,6 +1282,18 @@ impl ToTokens for ast::Dictionary {
         let required_names2 = required_names;
         let required_names3 = required_names;
 
+        let ctor = if self.ctor {
+            quote! {
+                pub fn new(#(#required_names: #required_types),*) -> #name {
+                    let mut _ret = #name { obj: ::js_sys::Object::new() };
+                    #(_ret.#required_names2(#required_names3);)*
+                    return _ret
+                }
+            }
+        } else {
+            quote! {}
+        };
+
         let const_name = Ident::new(&format!("_CONST_{}", name), Span::call_site());
         (quote! {
             #[derive(Clone, Debug)]
@@ -1293,12 +1305,7 @@ impl ToTokens for ast::Dictionary {
 
             #[allow(clippy::all)]
             impl #name {
-                pub fn new(#(#required_names: #required_types),*) -> #name {
-                    let mut _ret = #name { obj: ::js_sys::Object::new() };
-                    #(_ret.#required_names2(#required_names3);)*
-                    return _ret
-                }
-
+                #ctor
                 #methods
             }
 
