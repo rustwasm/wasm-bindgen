@@ -41,7 +41,6 @@ pub struct Context<'a> {
     defined_identifiers: HashMap<String, usize>,
 
     exported_classes: Option<BTreeMap<String, ExportedClass>>,
-    function_table_needed: bool,
     memory: MemoryId,
 
     /// A map of the name of npm dependencies we've loaded so far to the path
@@ -95,7 +94,6 @@ impl<'a> Context<'a> {
                 .delete_typed::<WebidlCustomSection>()
                 .unwrap(),
             module,
-            function_table_needed: false,
             memory,
             npm_dependencies: Default::default(),
         })
@@ -205,18 +203,6 @@ impl<'a> Context<'a> {
         let mut needs_manual_start = false;
         if self.config.emit_start {
             needs_manual_start = self.unstart_start_function();
-        }
-
-        // If our JS glue needs to access the function table, then do so here.
-        // JS closure shim generation may access the function table as an
-        // example, but if there's no closures in the module there's no need to
-        // export it!
-        if self.function_table_needed {
-            let id = match self.module.tables.main_function_table()? {
-                Some(id) => id,
-                None => bail!("no function table found in module"),
-            };
-            self.module.exports.add("__wbg_function_table", id);
         }
 
         // After all we've done, especially
@@ -2120,6 +2106,18 @@ impl<'a> Context<'a> {
             }
         ",
         );
+    }
+
+    fn export_function_table(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("wbg-function-table") {
+            return Ok(())
+        }
+        let id = match self.module.tables.main_function_table()? {
+            Some(id) => id,
+            None => bail!("no function table found in module"),
+        };
+        self.module.exports.add("__wbg_function_table", id);
+        Ok(())
     }
 }
 

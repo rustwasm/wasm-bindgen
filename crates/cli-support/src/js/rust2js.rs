@@ -333,7 +333,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                     .process(f, &None)?
                     .finish("function", "this.f")
             };
-            self.cx.function_table_needed = true;
+            self.cx.export_function_table()?;
             self.global_idx();
             self.prelude(&format!(
                 "\
@@ -787,7 +787,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                         .process(&closure.function, &None)?
                         .finish("function", "f")
                 };
-                self.cx.function_table_needed = true;
+                self.cx.export_function_table()?;
                 let body = format!(
                     "
                         const f = wasm.__wbg_function_table.get({});
@@ -1147,7 +1147,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
             Intrinsic::FunctionTable => {
                 assert_eq!(self.js_arguments.len(), 0);
-                self.cx.function_table_needed = true;
+                self.cx.export_function_table()?;
                 format!("wasm.__wbg_function_table")
             }
 
