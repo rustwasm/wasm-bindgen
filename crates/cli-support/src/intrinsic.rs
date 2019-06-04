@@ -103,9 +103,12 @@ intrinsics! {
         #[symbol = "__wbindgen_string_new"]
         #[signature = fn(ref_string()) -> Anyref]
         StringNew,
-        #[symbol = "__wbindgen_symbol_new"]
-        #[signature = fn(I32, I32) -> Anyref]
-        SymbolNew,
+        #[symbol = "__wbindgen_symbol_anonymous_new"]
+        #[signature = fn() -> Anyref]
+        SymbolAnonymousNew,
+        #[symbol = "__wbindgen_symbol_named_new"]
+        #[signature = fn(ref_string()) -> Anyref]
+        SymbolNamedNew,
         #[symbol = "__wbindgen_number_get"]
         #[signature = fn(ref_anyref(), F64) -> F64]
         NumberGet,

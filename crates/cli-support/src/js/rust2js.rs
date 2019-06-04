@@ -1080,15 +1080,14 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 self.js_arguments[0].clone()
             }
 
-            Intrinsic::SymbolNew => {
-                // FIXME: should probably have two intrinsics, one for a
-                // new anonymous symbol and one for a symbol with a string
-                assert_eq!(self.js_arguments.len(), 2);
-                self.cx.expose_get_string_from_wasm()?;
-                format!(
-                    "{} === 0 ? Symbol() : Symbol(getStringFromWasm({0}, {}))",
-                    self.js_arguments[0], self.js_arguments[1]
-                )
+            Intrinsic::SymbolNamedNew => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("Symbol({})", self.js_arguments[0])
+            }
+
+            Intrinsic::SymbolAnonymousNew => {
+                assert_eq!(self.js_arguments.len(), 0);
+                "Symbol()".to_string()
             }
 
             Intrinsic::NumberGet => {

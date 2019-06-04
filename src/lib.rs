@@ -13,7 +13,6 @@ use core::fmt;
 use core::marker;
 use core::mem;
 use core::ops::{Deref, DerefMut};
-use core::ptr;
 
 use crate::convert::FromWasmAbi;
 
@@ -171,9 +170,13 @@ impl JsValue {
     /// JS object corresponding to the symbol created.
     pub fn symbol(description: Option<&str>) -> JsValue {
         unsafe {
-            let ptr = description.map(|s| s.as_ptr()).unwrap_or(ptr::null());
-            let len = description.map(|s| s.len()).unwrap_or(0);
-            JsValue::_new(__wbindgen_symbol_new(ptr, len))
+            match description {
+                Some(description) => JsValue::_new(__wbindgen_symbol_named_new(
+                    description.as_ptr(),
+                    description.len(),
+                )),
+                None => JsValue::_new(__wbindgen_symbol_anonymous_new()),
+            }
         }
     }
 
@@ -488,7 +491,8 @@ externs! {
 
         fn __wbindgen_string_new(ptr: *const u8, len: usize) -> u32;
         fn __wbindgen_number_new(f: f64) -> u32;
-        fn __wbindgen_symbol_new(ptr: *const u8, len: usize) -> u32;
+        fn __wbindgen_symbol_named_new(ptr: *const u8, len: usize) -> u32;
+        fn __wbindgen_symbol_anonymous_new() -> u32;
 
         fn __wbindgen_anyref_heap_live_count() -> u32;
 
