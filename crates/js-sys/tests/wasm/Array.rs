@@ -44,6 +44,44 @@ fn filter() {
 }
 
 #[wasm_bindgen_test]
+fn flat() {
+    let array = js_array![
+        js_array!["a", "b", "c"],
+        "d",
+        js_array!["e", js_array!["f", "g"]]
+    ];
+
+    assert_eq!(
+        to_rust(&array.flat(1).slice(0, 5)),
+        vec!["a", "b", "c", "d", "e"]
+    );
+
+    assert_eq!(array.flat(1).length(), 6);
+
+    assert_eq!(
+        to_rust(&array.flat(2)),
+        vec!["a", "b", "c", "d", "e", "f", "g"]
+    );
+}
+
+#[wasm_bindgen_test]
+fn flat_map() {
+    let array = js_array![1, 2, 3, 1];
+
+    assert_eq!(
+        to_rust(
+            &array.flat_map(&mut |val, _, _| match val.as_f64().map(|v| v as i32) {
+                Some(1) => vec![JsString::from("x").into(), JsString::from("x").into()],
+                Some(2) => vec![],
+                Some(3) => vec![JsString::from("z").into()],
+                _ => panic!("Unexpected conversion"),
+            })
+        ),
+        vec!["x", "x", "z", "x", "x"]
+    );
+}
+
+#[wasm_bindgen_test]
 fn index_of() {
     let chars = js_array!["a", "c", "x", "n"];
     assert_eq!(chars.index_of(&"x".into(), 0), 2);
