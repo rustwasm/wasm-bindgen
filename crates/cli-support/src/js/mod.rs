@@ -81,7 +81,7 @@ impl<'a> Context<'a> {
         Ok(Context {
             globals: String::new(),
             imports_post: String::new(),
-            typescript: format!("/* tslint:disable */\n"),
+            typescript: "/* tslint:disable */\n".to_string(),
             exposed_globals: Some(Default::default()),
             required_internal_exports: Default::default(),
             imported_names: Default::default(),
