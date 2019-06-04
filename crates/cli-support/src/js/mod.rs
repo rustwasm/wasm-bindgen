@@ -258,7 +258,7 @@ impl<'a> Context<'a> {
             } => {
                 js.push_str("let wasm;\n");
 
-                for (id, js) in self.wasm_import_definitions.iter() {
+                for (id, js) in sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}.js", module_name);
                     footer.push_str("\nmodule.exports.");
@@ -282,7 +282,7 @@ impl<'a> Context<'a> {
                 experimental_modules: true,
             } => {
                 imports.push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
-                for (id, js) in self.wasm_import_definitions.iter() {
+                for (id, js) in sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}.js", module_name);
                     footer.push_str("\nexport const ");
@@ -356,7 +356,7 @@ impl<'a> Context<'a> {
             OutputMode::Node {
                 experimental_modules: false,
             } => {
-                for (module, items) in self.js_imports.iter() {
+                for (module, items) in sorted_iter(&self.js_imports) {
                     imports.push_str("const { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
                         if i > 0 {
@@ -379,7 +379,7 @@ impl<'a> Context<'a> {
                 experimental_modules: true,
             }
             | OutputMode::Web => {
-                for (module, items) in self.js_imports.iter() {
+                for (module, items) in sorted_iter(&self.js_imports) {
                     imports.push_str("import { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
                         if i > 0 {
@@ -464,7 +464,7 @@ impl<'a> Context<'a> {
             imports_init.push_str(module_name);
             imports_init.push_str(" = {};\n");
         }
-        for (id, js) in self.wasm_import_definitions.iter() {
+        for (id, js) in sorted_iter(&self.wasm_import_definitions) {
             let import = self.module.imports.get_mut(*id);
             import.module = module_name.to_string();
             imports_init.push_str("imports.");
@@ -1822,7 +1822,7 @@ impl<'a> Context<'a> {
     }
 
     pub fn generate(&mut self, aux: &WasmBindgenAux) -> Result<(), Error> {
-        for (id, export) in aux.export_map.iter() {
+        for (id, export) in sorted_iter(&aux.export_map) {
             self.generate_export(*id, export).with_context(|_| {
                 format!(
                     "failed to generate bindings for Rust export `{}`",
@@ -1830,7 +1830,7 @@ impl<'a> Context<'a> {
                 )
             })?;
         }
-        for (id, import) in aux.import_map.iter() {
+        for (id, import) in sorted_iter(&aux.import_map) {
             let variadic = aux.imports_with_variadic.contains(&id);
             let catch = aux.imports_with_catch.contains(&id);
             self.generate_import(*id, import, variadic, catch)
@@ -2193,6 +2193,20 @@ impl ExportedClass {
         }
         *has_setter = *has_setter || !getter;
     }
+}
+
+/// Returns a sorted iterator over a hash mpa, sorted based on key.
+///
+/// The intention of this API is to be used whenever the iteration order of a
+/// `HashMap` might affect the generated JS bindings. We want to ensure that the
+/// generated output is deterministic and we do so by ensuring that iteration of
+/// hash maps is consistently sorted.
+fn sorted_iter<K, V>(map: &HashMap<K, V>) -> impl Iterator<Item = (&K, &V)>
+    where K: Ord,
+{
+    let mut pairs = map.iter().collect::<Vec<_>>();
+    pairs.sort_by_key(|(k, _)| *k);
+    pairs.into_iter()
 }
 
 #[test]
