@@ -907,6 +907,9 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 assert!(!variadic);
                 assert_eq!(self.js_arguments.len(), 1);
                 self.cx.require_class_wrap(class);
+                if self.is_noop() {
+                    return Ok(format!("{}.__wrap", class));
+                }
                 format!("{}.__wrap({})", class, self.js_arguments[0])
             }
 
