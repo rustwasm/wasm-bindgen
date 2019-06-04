@@ -191,15 +191,11 @@ impl<'a> Context<'a> {
         // `__wbindgen_malloc`) if none of our JS glue actually needed it.
         self.unexport_unused_internal_exports();
 
-        // Handle the `start` function, if one was specified. If we're in a
-        // --test mode (such as wasm-bindgen-test-runner) then we skip this
-        // entirely. Otherwise we want to first add a start function to the
-        // `start` section if one is specified.
-        //
-        // Note that once a start function is added, if any, we immediately
-        // un-start it. This is done because we require that the JS glue
-        // initializes first, so we execute wasm startup manually once the JS
-        // glue is all in place.
+        // Initialization is just flat out tricky and not something we
+        // understand super well. To try to handle various issues that have come
+        // up we always remove the `start` function if one is present. The JS
+        // bindings glue then manually calls the start function (if it was
+        // previously present).
         let mut needs_manual_start = false;
         if self.config.emit_start {
             needs_manual_start = self.unstart_start_function();

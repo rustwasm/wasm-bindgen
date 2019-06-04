@@ -317,6 +317,11 @@ impl Bindgen {
         // supports that aren't covered by WebIDL bindings.
         webidl::process(&mut module)?;
 
+        // Now that we've got type information from the webidl processing pass,
+        // touch up the output of rustc to insert anyref shims where necessary.
+        // This is only done if the anyref pass is enabled, which it's
+        // currently off-by-default since `anyref` is still in development in
+        // engines.
         if self.anyref {
             anyref::process(&mut module)?;
         }
