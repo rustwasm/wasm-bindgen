@@ -148,13 +148,9 @@ impl WasmBindgenDescriptorsSection {
                 walrus::FunctionKind::Local(l) => l,
                 _ => unreachable!(),
             };
-            match local.get_mut(call_instr) {
-                Expr::Call(e) => {
-                    assert_eq!(e.func, wbindgen_describe_closure);
-                    e.func = id;
-                }
-                _ => unreachable!(),
-            }
+            let call = local.get_mut(call_instr).unwrap_call_mut();
+            assert_eq!(call.func, wbindgen_describe_closure);
+            call.func = id;
             self.closure_imports
                 .insert(import_id, descriptor.unwrap_closure());
         }
