@@ -571,26 +571,17 @@ impl<'a> Context<'a> {
             ));
         }
 
-        self.global(&format!(
-            "
-            function free{}(ptr) {{
-                wasm.{}(ptr);
-            }}
-            ",
-            name,
-            wasm_bindgen_shared::free_function(&name)
-        ));
-
         if self.config.weak_refs {
             self.global(&format!(
                 "
                 const {}FinalizationGroup = new FinalizationGroup((items) => {{
                     for (const ptr of items) {{
-                        free{}(ptr);
+                        wasm.{}(ptr);
                     }}
                 }});
                 ",
-                name, name,
+                name,
+                wasm_bindgen_shared::free_function(&name),
             ));
         }
 
@@ -600,7 +591,7 @@ impl<'a> Context<'a> {
                 const ptr = this.ptr;
                 this.ptr = 0;
                 {}
-                free{}(ptr);
+                wasm.{}(ptr);
             }}
             ",
             if self.config.weak_refs {
@@ -608,7 +599,7 @@ impl<'a> Context<'a> {
             } else {
                 String::new()
             },
-            name,
+            wasm_bindgen_shared::free_function(&name),
         ));
         ts_dst.push_str("  free(): void;");
         dst.push_str(&class.contents);
