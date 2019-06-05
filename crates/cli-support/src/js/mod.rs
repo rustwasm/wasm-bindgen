@@ -1,85 +1,51 @@
-mod closures;
 mod js2rust;
 mod rust2js;
 
-use self::{
-    js2rust::{ExportedShim, Js2Rust},
-    rust2js::Rust2Js,
-};
-use crate::{
-    decode,
-    descriptor::{Descriptor, VectorKind},
-    Bindgen, EncodeInto, OutputMode,
-};
+use crate::descriptor::VectorKind;
+use crate::js::js2rust::Js2Rust;
+use crate::js::rust2js::Rust2Js;
+use crate::webidl::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
+use crate::webidl::{JsImport, JsImportName, WasmBindgenAux, WebidlCustomSection};
+use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
-use std::{
-    collections::{BTreeMap, BTreeSet, HashMap, HashSet},
-    env, fs,
-};
-use walrus::{MemoryId, Module};
-use wasm_bindgen_shared::struct_function_export_name;
-use wasm_bindgen_wasm_interpreter::Interpreter;
+use std::collections::{BTreeMap, HashMap, HashSet};
+use std::fs;
+use std::path::{Path, PathBuf};
+use walrus::{ExportId, ImportId, MemoryId, Module};
 
 pub struct Context<'a> {
-    pub globals: String,
-    pub imports: String,
-    pub imports_post: String,
-    pub footer: String,
-    pub typescript: String,
-    pub exposed_globals: Option<HashSet<&'static str>>,
-    pub required_internal_exports: HashSet<&'static str>,
-    pub imported_functions: HashSet<&'a str>,
-    pub imported_statics: HashSet<&'a str>,
-    pub config: &'a Bindgen,
+    globals: String,
+    imports_post: String,
+    typescript: String,
+    exposed_globals: Option<HashSet<&'static str>>,
+    required_internal_exports: HashSet<&'static str>,
+    config: &'a Bindgen,
     pub module: &'a mut Module,
-    pub start: Option<String>,
+    bindings: WebidlCustomSection,
 
-    /// A map which maintains a list of what identifiers we've imported and what
-    /// they're named locally.
-    ///
-    /// The `Option<String>` key is the module that identifiers were imported
-    /// from, `None` being the global module. The second key is a map of
-    /// identifiers we've already imported from the module to what they're
-    /// called locally.
-    pub imported_names: HashMap<ImportModule<'a>, HashMap<&'a str, String>>,
+    /// A map representing the `import` statements we'll be generating in the JS
+    /// glue. The key is the module we're importing from and the value is the
+    /// list of identifier we're importing from the module, with optional
+    /// renames for each identifier.
+    js_imports: HashMap<String, Vec<(String, Option<String>)>>,
+
+    /// A map of each wasm import and what JS to hook up to it.
+    wasm_import_definitions: HashMap<ImportId, String>,
+
+    /// A map from an import to the name we've locally imported it as.
+    imported_names: HashMap<JsImportName, String>,
 
     /// A set of all defined identifiers through either exports or imports to
     /// the number of times they've been used, used to generate new
     /// identifiers.
-    pub defined_identifiers: HashMap<String, usize>,
+    defined_identifiers: HashMap<String, usize>,
 
-    /// A map of all imported shim functions which can actually be directly
-    /// imported from the containing module. The mapping here maps to a tuple,
-    /// where the first element is the module to import from and the second
-    /// element is the name to import from the module.
-    ///
-    /// Note that for `direct_imports` no shims are generated in JS that
-    /// wasm-bindgen emits.
-    pub direct_imports: HashMap<&'a str, (&'a str, &'a str)>,
-
-    pub exported_classes: Option<BTreeMap<String, ExportedClass>>,
-    pub function_table_needed: bool,
-    pub interpreter: &'a mut Interpreter,
-    pub memory: MemoryId,
-
-    /// A map of all local modules we've found, from the identifier they're
-    /// known as to their actual JS contents.
-    pub local_modules: HashMap<&'a str, &'a str>,
-
-    /// A map of how many snippets we've seen from each unique crate identifier,
-    /// used to number snippets correctly when writing them to the filesystem
-    /// when there's multiple snippets within one crate that aren't all part of
-    /// the same `Program`.
-    pub snippet_offsets: HashMap<&'a str, usize>,
-
-    /// All package.json dependencies we've learned about so far
-    pub package_json_read: HashSet<&'a str>,
+    exported_classes: Option<BTreeMap<String, ExportedClass>>,
+    memory: MemoryId,
 
     /// A map of the name of npm dependencies we've loaded so far to the path
     /// they're defined in as well as their version specification.
-    pub npm_dependencies: HashMap<String, (&'a str, String)>,
-
-    pub anyref: wasm_bindgen_anyref_xform::Context,
+    pub npm_dependencies: HashMap<String, (PathBuf, String)>,
 }
 
 #[derive(Default)]
@@ -89,64 +55,8 @@ pub struct ExportedClass {
     typescript: String,
     has_constructor: bool,
     wrap_needed: bool,
-}
-
-pub struct SubContext<'a, 'b: 'a> {
-    pub program: &'b decode::Program<'b>,
-    pub cx: &'a mut Context<'b>,
-    pub vendor_prefixes: HashMap<&'b str, Vec<&'b str>>,
-}
-
-pub enum ImportTarget {
-    Function(String),
-    Method(String),
-    Constructor(String),
-    StructuralMethod(String),
-    StructuralGetter(Option<String>, String),
-    StructuralSetter(Option<String>, String),
-    StructuralIndexingGetter(Option<String>),
-    StructuralIndexingSetter(Option<String>),
-    StructuralIndexingDeleter(Option<String>),
-}
-
-/// Return value of `determine_import` which is where we look at an imported
-/// function AST and figure out where it's actually being imported from
-/// (performing some validation checks and whatnot).
-enum Import<'a> {
-    /// An item is imported from the global scope. The `name` is what's imported
-    /// and the optional `field` is the field on that item we're importing.
-    Global {
-        name: &'a str,
-        field: Option<&'a str>,
-    },
-    /// Same as `Global`, except the `name` is imported via an ESM import from
-    /// the specified `module` path.
-    Module {
-        module: &'a str,
-        name: &'a str,
-        field: Option<&'a str>,
-    },
-    /// Same as `Module`, except we're importing from a local module defined in
-    /// a local JS snippet.
-    LocalModule {
-        module: &'a str,
-        name: &'a str,
-        field: Option<&'a str>,
-    },
-    /// Same as `Module`, except we're importing from an `inline_js` attribute
-    InlineJs {
-        unique_crate_identifier: &'a str,
-        snippet_idx_in_crate: usize,
-        name: &'a str,
-        field: Option<&'a str>,
-    },
-    /// A global import which may have a number of vendor prefixes associated
-    /// with it, like `webkitAudioPrefix`. The `name` is the name to test
-    /// whether it's prefixed.
-    VendorPrefixed {
-        name: &'a str,
-        prefixes: Vec<&'a str>,
-    },
+    /// Map from field name to type as a string plus whether it has a setter
+    typescript_fields: HashMap<String, (String, bool)>,
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -154,6 +64,41 @@ const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 const INITIAL_HEAP_OFFSET: usize = 32;
 
 impl<'a> Context<'a> {
+    pub fn new(module: &'a mut Module, config: &'a Bindgen) -> Result<Context<'a>, Error> {
+        // Find the single memory, if there is one, and for ease of use in our
+        // binding generation just inject one if there's not one already (and
+        // we'll clean it up later if we end up not using it).
+        let mut memories = module.memories.iter().map(|m| m.id());
+        let memory = memories.next();
+        if memories.next().is_some() {
+            bail!("multiple memories currently not supported");
+        }
+        drop(memories);
+        let memory = memory.unwrap_or_else(|| module.memories.add_local(false, 1, None));
+
+        // And then we're good to go!
+        Ok(Context {
+            globals: String::new(),
+            imports_post: String::new(),
+            typescript: "/* tslint:disable */\n".to_string(),
+            exposed_globals: Some(Default::default()),
+            required_internal_exports: Default::default(),
+            imported_names: Default::default(),
+            js_imports: Default::default(),
+            defined_identifiers: Default::default(),
+            wasm_import_definitions: Default::default(),
+            exported_classes: Some(Default::default()),
+            config,
+            bindings: *module
+                .customs
+                .delete_typed::<WebidlCustomSection>()
+                .unwrap(),
+            module,
+            memory,
+            npm_dependencies: Default::default(),
+        })
+    }
+
     fn should_write_global(&mut self, name: &'static str) -> bool {
         self.exposed_globals.as_mut().unwrap().insert(name)
     }
@@ -194,7 +139,8 @@ impl<'a> Context<'a> {
             OutputMode::Bundler { .. }
             | OutputMode::Node {
                 experimental_modules: true,
-            } => {
+            }
+            | OutputMode::Web => {
                 if contents.starts_with("function") {
                     let body = &contents[8..];
                     if export_name == definition_name {
@@ -211,50 +157,6 @@ impl<'a> Context<'a> {
                 } else {
                     assert_eq!(export_name, definition_name);
                     format!("export const {} = {};\n", export_name, contents)
-                }
-            }
-            OutputMode::Web => {
-                // In web mode there's no need to export the internals of
-                // wasm-bindgen as we're not using the module itself as the
-                // import object but rather the `__exports` map we'll be
-                // initializing below.
-                let export = if export_name.starts_with("__wbindgen")
-                    || export_name.starts_with("__wbg_")
-                    || export_name.starts_with("__widl_")
-                {
-                    ""
-                } else {
-                    "export "
-                };
-                if contents.starts_with("function") {
-                    let body = &contents[8..];
-                    if export_name == definition_name {
-                        format!(
-                            "{}function {name}{}\n__exports.{name} = {name}",
-                            export,
-                            body,
-                            name = export_name,
-                        )
-                    } else {
-                        format!(
-                            "{}function {defname}{}\n__exports.{name} = {defname}",
-                            export,
-                            body,
-                            name = export_name,
-                            defname = definition_name,
-                        )
-                    }
-                } else if contents.starts_with("class") {
-                    assert_eq!(export_name, definition_name);
-                    format!("{}{}\n", export, contents)
-                } else {
-                    assert_eq!(export_name, definition_name);
-                    format!(
-                        "{}const {name} = {};\n__exports.{name} = {name};",
-                        export,
-                        contents,
-                        name = export_name
-                    )
                 }
             }
         };
@@ -280,56 +182,24 @@ impl<'a> Context<'a> {
     }
 
     pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
-        // Wire up all default intrinsics, those which don't have any sort of
-        // dependency on the clsoure/anyref/etc passes. This is where almost all
-        // intrinsics are wired up.
-        self.wire_up_initial_intrinsics()?;
-
-        // Next up, perform our closure rewriting pass. This is where we'll
-        // update invocations of the closure intrinsics we have to instead call
-        // appropriate JS functions which actually create closures.
-        closures::rewrite(self).with_context(|_| "failed to generate internal closure shims")?;
-
         // Finalize all bindings for JS classes. This is where we'll generate JS
         // glue for all classes as well as finish up a few final imports like
         // `__wrap` and such.
         self.write_classes()?;
 
-        // And now that we're almost ready, run the final "anyref" pass. This is
-        // where we transform a wasm module which doesn't actually use `anyref`
-        // anywhere to using the type internally. The transformation here is
-        // based off all the previous data we've collected so far for each
-        // import/export listed.
-        self.anyref.run(self.module)?;
-
-        // With our transforms finished, we can now wire up the final list of
-        // intrinsics which may depend on the passes run above.
-        self.wire_up_late_intrinsics()?;
-
         // We're almost done here, so we can delete any internal exports (like
         // `__wbindgen_malloc`) if none of our JS glue actually needed it.
         self.unexport_unused_internal_exports();
 
-        // Handle the `start` function, if one was specified. If we're in a
-        // --test mode (such as wasm-bindgen-test-runner) then we skip this
-        // entirely. Otherwise we want to first add a start function to the
-        // `start` section if one is specified.
-        //
-        // Note that once a start function is added, if any, we immediately
-        // un-start it. This is done because we require that the JS glue
-        // initializes first, so we execute wasm startup manually once the JS
-        // glue is all in place.
+        // Initialization is just flat out tricky and not something we
+        // understand super well. To try to handle various issues that have come
+        // up we always remove the `start` function if one is present. The JS
+        // bindings glue then manually calls the start function (if it was
+        // previously present).
         let mut needs_manual_start = false;
         if self.config.emit_start {
-            self.add_start_function()?;
             needs_manual_start = self.unstart_start_function();
         }
-
-        // If our JS glue needs to access the function table, then do so here.
-        // JS closure shim generation may access the function table as an
-        // example, but if there's no closures in the module there's no need to
-        // export it!
-        self.export_table()?;
 
         // After all we've done, especially
         // `unexport_unused_internal_exports()`, we probably have a bunch of
@@ -337,27 +207,21 @@ impl<'a> Context<'a> {
         // everything that we don't actually need.
         walrus::passes::gc::run(self.module);
 
-        // Almost there, but before we're done make sure to rewrite the `module`
-        // field of all imports in the wasm module. The field is currently
-        // always `__wbindgen_placeholder__` coming out of rustc, but we need to
-        // update that here to the shim file or an actual ES module.
-        self.rewrite_imports(module_name)?;
-
-        // We likely made a ton of modifications, so add ourselves to the
-        // producers section!
-        self.update_producers_section();
-
         // Cause any future calls to `should_write_global` to panic, making sure
         // we don't ask for items which we can no longer emit.
         drop(self.exposed_globals.take().unwrap());
 
-        Ok(self.finalize_js(module_name, needs_manual_start))
+        self.finalize_js(module_name, needs_manual_start)
     }
 
     /// Performs the task of actually generating the final JS module, be it
     /// `--target no-modules`, `--target web`, or for bundlers. This is the very
     /// last step performed in `finalize`.
-    fn finalize_js(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
+    fn finalize_js(
+        &mut self,
+        module_name: &str,
+        needs_manual_start: bool,
+    ) -> Result<(String, String), Error> {
         let mut ts = self.typescript.clone();
         let mut js = String::new();
         if self.config.mode.no_modules() {
@@ -367,6 +231,8 @@ impl<'a> Context<'a> {
         // Depending on the output mode, generate necessary glue to actually
         // import the wasm file in one way or another.
         let mut init = (String::new(), String::new());
+        let mut footer = String::new();
+        let mut imports = self.js_import_header()?;
         match &self.config.mode {
             // In `--target no-modules` mode we need to both expose a name on
             // the global object as well as generate our own custom start
@@ -374,8 +240,8 @@ impl<'a> Context<'a> {
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let wasm;\n");
-                init = self.gen_init(&module_name, needs_manual_start);
-                self.footer.push_str(&format!(
+                init = self.gen_init(needs_manual_start);
+                footer.push_str(&format!(
                     "self.{} = Object.assign(init, __exports);\n",
                     global
                 ));
@@ -386,12 +252,22 @@ impl<'a> Context<'a> {
             OutputMode::Node {
                 experimental_modules: false,
             } => {
-                self.footer
-                    .push_str(&format!("wasm = require('./{}_bg');\n", module_name));
-                if needs_manual_start {
-                    self.footer.push_str("wasm.__wbindgen_start();\n");
+                js.push_str("let wasm;\n");
+
+                for (id, js) in sorted_iter(&self.wasm_import_definitions) {
+                    let import = self.module.imports.get_mut(*id);
+                    import.module = format!("./{}.js", module_name);
+                    footer.push_str("\nmodule.exports.");
+                    footer.push_str(&import.name);
+                    footer.push_str(" = ");
+                    footer.push_str(js.trim());
+                    footer.push_str(";\n");
                 }
-                js.push_str("var wasm;\n");
+
+                footer.push_str(&format!("wasm = require('./{}_bg');\n", module_name));
+                if needs_manual_start {
+                    footer.push_str("wasm.__wbindgen_start();\n");
+                }
             }
 
             // With Bundlers and modern ES6 support in Node we can simply import
@@ -401,10 +277,18 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
-                self.imports
-                    .push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
+                imports.push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
+                for (id, js) in sorted_iter(&self.wasm_import_definitions) {
+                    let import = self.module.imports.get_mut(*id);
+                    import.module = format!("./{}.js", module_name);
+                    footer.push_str("\nexport const ");
+                    footer.push_str(&import.name);
+                    footer.push_str(" = ");
+                    footer.push_str(js.trim());
+                    footer.push_str(";\n");
+                }
                 if needs_manual_start {
-                    self.footer.push_str("wasm.__wbindgen_start();\n");
+                    footer.push_str("\nwasm.__wbindgen_start();\n");
                 }
             }
 
@@ -413,10 +297,9 @@ impl<'a> Context<'a> {
             // expose the same initialization function as `--target no-modules`
             // as the default export of the module.
             OutputMode::Web => {
-                self.imports_post.push_str("const __exports = {};\n");
                 self.imports_post.push_str("let wasm;\n");
-                init = self.gen_init(&module_name, needs_manual_start);
-                self.footer.push_str("export default init;\n");
+                init = self.gen_init(needs_manual_start);
+                footer.push_str("export default init;\n");
             }
         }
 
@@ -429,7 +312,7 @@ impl<'a> Context<'a> {
             !self.config.mode.uses_es_modules() || js.is_empty(),
             "ES modules require imports to be at the start of the file"
         );
-        js.push_str(&self.imports);
+        js.push_str(&imports);
         js.push_str("\n");
         js.push_str(&self.imports_post);
         js.push_str("\n");
@@ -441,7 +324,7 @@ impl<'a> Context<'a> {
         // Generate the initialization glue, if there was any
         js.push_str(&init_js);
         js.push_str("\n");
-        js.push_str(&self.footer);
+        js.push_str(&footer);
         js.push_str("\n");
         if self.config.mode.no_modules() {
             js.push_str("})();\n");
@@ -451,491 +334,66 @@ impl<'a> Context<'a> {
             js = js.replace("\n\n\n", "\n\n");
         }
 
-        (js, ts)
+        Ok((js, ts))
     }
 
-    fn wire_up_initial_intrinsics(&mut self) -> Result<(), Error> {
-        self.bind("__wbindgen_string_new", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_string_new",
-                &[],
-                true,
-            );
-            me.expose_get_string_from_wasm();
-            Ok(format!(
-                "function(p, l) {{ return {}; }}",
-                me.add_heap_object("getStringFromWasm(p, l)")
-            ))
-        })?;
-
-        self.bind("__wbindgen_number_new", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_number_new",
-                &[],
-                true,
-            );
-            Ok(format!(
-                "function(i) {{ return {}; }}",
-                me.add_heap_object("i")
-            ))
-        })?;
-
-        self.bind("__wbindgen_number_get", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_number_get",
-                &[(0, false)],
-                false,
-            );
-            me.expose_uint8_memory();
-            Ok(format!(
-                "
-                function(n, invalid) {{
-                    let obj = {};
-                    if (typeof(obj) === 'number') return obj;
-                    getUint8Memory()[invalid] = 1;
-                    return 0;
-                }}
-                ",
-                me.get_object("n"),
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_null", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_is_null",
-                &[(0, false)],
-                false,
-            );
-            Ok(format!(
-                "function(i) {{ return {} === null ? 1 : 0; }}",
-                me.get_object("i")
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_undefined", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_is_undefined",
-                &[(0, false)],
-                false,
-            );
-            Ok(format!(
-                "function(i) {{ return {} === undefined ? 1 : 0; }}",
-                me.get_object("i")
-            ))
-        })?;
-
-        self.bind("__wbindgen_boolean_get", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_boolean_get",
-                &[(0, false)],
-                false,
-            );
-            Ok(format!(
-                "
-                function(i) {{
-                    let v = {};
-                    return typeof(v) === 'boolean' ? (v ? 1 : 0) : 2;
-                }}
-                ",
-                me.get_object("i"),
-            ))
-        })?;
-
-        self.bind("__wbindgen_symbol_new", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_symbol_new",
-                &[],
-                true,
-            );
-            me.expose_get_string_from_wasm();
-            let expr = "ptr === 0 ? Symbol() : Symbol(getStringFromWasm(ptr, len))";
-            Ok(format!(
-                "function(ptr, len) {{ return {}; }}",
-                me.add_heap_object(expr)
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_symbol", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_is_symbol",
-                &[(0, false)],
-                false,
-            );
-            Ok(format!(
-                "function(i) {{ return typeof({}) === 'symbol' ? 1 : 0; }}",
-                me.get_object("i")
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_object", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_is_object",
-                &[(0, false)],
-                false,
-            );
-            Ok(format!(
-                "
-                function(i) {{
-                    const val = {};
-                    return typeof(val) === 'object' && val !== null ? 1 : 0;
-                }}",
-                me.get_object("i"),
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_function", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_is_function",
-                &[(0, false)],
-                false,
-            );
-            Ok(format!(
-                "function(i) {{ return typeof({}) === 'function' ? 1 : 0; }}",
-                me.get_object("i")
-            ))
-        })?;
-
-        self.bind("__wbindgen_is_string", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_is_string",
-                &[(0, false)],
-                false,
-            );
-            Ok(format!(
-                "function(i) {{ return typeof({}) === 'string' ? 1 : 0; }}",
-                me.get_object("i")
-            ))
-        })?;
-
-        self.bind("__wbindgen_string_get", &|me| {
-            me.expose_pass_string_to_wasm()?;
-            me.expose_uint32_memory();
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_string_get",
-                &[(0, false)],
-                false,
-            );
-            Ok(format!(
-                "
-                function(i, len_ptr) {{
-                    let obj = {};
-                    if (typeof(obj) !== 'string') return 0;
-                    const ptr = passStringToWasm(obj);
-                    getUint32Memory()[len_ptr / 4] = WASM_VECTOR_LEN;
-                    return ptr;
-                }}
-                ",
-                me.get_object("i"),
-            ))
-        })?;
-
-        self.bind("__wbindgen_anyref_heap_live_count", &|me| {
-            if me.config.anyref {
-                // Eventually we should add support to the anyref-xform to
-                // re-write calls to the imported
-                // `__wbindgen_anyref_heap_live_count` function into calls to
-                // the exported `__wbindgen_anyref_heap_live_count_impl`
-                // function, and to un-export that function.
-                //
-                // But for now, we just bounce wasm -> js -> wasm because it is
-                // easy.
-                Ok("function() {{ return wasm.__wbindgen_anyref_heap_live_count_impl(); }}".into())
-            } else {
-                me.expose_global_heap();
-                Ok(format!(
-                    "
-                    function() {{
-                        let free_count = 0;
-                        let next = heap_next;
-                        while (next < heap.length) {{
-                            free_count += 1;
-                            next = heap[next];
-                        }}
-                        return heap.length - free_count - {} - {};
-                    }}
-                    ",
-                    INITIAL_HEAP_OFFSET,
-                    INITIAL_HEAP_VALUES.len(),
-                ))
+    fn js_import_header(&self) -> Result<String, Error> {
+        let mut imports = String::new();
+        match &self.config.mode {
+            OutputMode::NoModules { .. } => {
+                for (module, _items) in self.js_imports.iter() {
+                    bail!(
+                        "importing from `{}` isn't supported with `--target no-modules`",
+                        module
+                    );
+                }
             }
-        })?;
 
-        self.bind("__wbindgen_debug_string", &|me| {
-            me.expose_pass_string_to_wasm()?;
-            me.expose_uint32_memory();
-
-            let debug_str = "
-                val => {
-                    // primitive types
-                    const type = typeof val;
-                    if (type == 'number' || type == 'boolean' || val == null) {
-                        return  `${val}`;
-                    }
-                    if (type == 'string') {
-                        return `\"${val}\"`;
-                    }
-                    if (type == 'symbol') {
-                        const description = val.description;
-                        if (description == null) {
-                            return 'Symbol';
-                        } else {
-                            return `Symbol(${description})`;
+            OutputMode::Node {
+                experimental_modules: false,
+            } => {
+                for (module, items) in sorted_iter(&self.js_imports) {
+                    imports.push_str("const { ");
+                    for (i, (item, rename)) in items.iter().enumerate() {
+                        if i > 0 {
+                            imports.push_str(", ");
+                        }
+                        imports.push_str(item);
+                        if let Some(other) = rename {
+                            imports.push_str(": ");
+                            imports.push_str(other)
                         }
                     }
-                    if (type == 'function') {
-                        const name = val.name;
-                        if (typeof name == 'string' && name.length > 0) {
-                            return `Function(${name})`;
-                        } else {
-                            return 'Function';
-                        }
-                    }
-                    // objects
-                    if (Array.isArray(val)) {
-                        const length = val.length;
-                        let debug = '[';
-                        if (length > 0) {
-                            debug += debug_str(val[0]);
-                        }
-                        for(let i = 1; i < length; i++) {
-                            debug += ', ' + debug_str(val[i]);
-                        }
-                        debug += ']';
-                        return debug;
-                    }
-                    // Test for built-in
-                    const builtInMatches = /\\[object ([^\\]]+)\\]/.exec(toString.call(val));
-                    let className;
-                    if (builtInMatches.length > 1) {
-                        className = builtInMatches[1];
-                    } else {
-                        // Failed to match the standard '[object ClassName]'
-                        return toString.call(val);
-                    }
-                    if (className == 'Object') {
-                        // we're a user defined class or Object
-                        // JSON.stringify avoids problems with cycles, and is generally much
-                        // easier than looping through ownProperties of `val`.
-                        try {
-                            return 'Object(' + JSON.stringify(val) + ')';
-                        } catch (_) {
-                            return 'Object';
-                        }
-                    }
-                    // errors
-                    if (val instanceof Error) {
-                        return `${val.name}: ${val.message}\n${val.stack}`;
-                    }
-                    // TODO we could test for more things here, like `Set`s and `Map`s.
-                    return className;
+                    imports.push_str(" } = require(String.raw`");
+                    imports.push_str(module);
+                    imports.push_str("`);\n");
                 }
-            ";
-            Ok(format!(
-                "
-                function(i, len_ptr) {{
-                    const debug_str = {};
-                    const toString = Object.prototype.toString;
-                    const val = {};
-                    const debug = debug_str(val);
-                    const ptr = passStringToWasm(debug);
-                    getUint32Memory()[len_ptr / 4] = WASM_VECTOR_LEN;
-                    return ptr;
-                }}
-                ",
-                debug_str,
-                me.get_object("i"),
-            ))
-        })?;
-
-        self.bind("__wbindgen_cb_drop", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_cb_drop",
-                &[(0, true)],
-                false,
-            );
-            Ok(format!(
-                "
-                function(i) {{
-                    const obj = {}.original;
-                    if (obj.cnt-- == 1) {{
-                        obj.a = 0;
-                        return 1;
-                    }}
-                    return 0;
-                }}
-                ",
-                me.take_object("i"),
-            ))
-        })?;
-
-        self.bind("__wbindgen_cb_forget", &|me| {
-            Ok(if me.config.anyref {
-                // TODO: we should rewrite this in the anyref xform to not even
-                // call into JS
-                me.anyref.import_xform(
-                    "__wbindgen_placeholder__",
-                    "__wbindgen_cb_drop",
-                    &[(0, true)],
-                    false,
-                );
-                String::from("function(obj) {}")
-            } else {
-                me.expose_drop_ref();
-                "dropObject".to_string()
-            })
-        })?;
-
-        self.bind("__wbindgen_json_parse", &|me| {
-            me.expose_get_string_from_wasm();
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_json_parse",
-                &[],
-                true,
-            );
-            let expr = "JSON.parse(getStringFromWasm(ptr, len))";
-            let expr = me.add_heap_object(expr);
-            Ok(format!("function(ptr, len) {{ return {}; }}", expr))
-        })?;
-
-        self.bind("__wbindgen_json_serialize", &|me| {
-            me.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                "__wbindgen_json_serialize",
-                &[(0, false)],
-                false,
-            );
-            me.expose_pass_string_to_wasm()?;
-            me.expose_uint32_memory();
-            Ok(format!(
-                "
-                function(idx, ptrptr) {{
-                    const ptr = passStringToWasm(JSON.stringify({}));
-                    getUint32Memory()[ptrptr / 4] = ptr;
-                    return WASM_VECTOR_LEN;
-                }}
-                ",
-                me.get_object("idx"),
-            ))
-        })?;
-
-        self.bind("__wbindgen_jsval_eq", &|me| {
-            Ok(format!(
-                "function(a, b) {{ return {} === {} ? 1 : 0; }}",
-                me.get_object("a"),
-                me.get_object("b")
-            ))
-        })?;
-
-        self.bind("__wbindgen_memory", &|me| {
-            let mem = me.memory();
-            Ok(format!(
-                "function() {{ return {}; }}",
-                me.add_heap_object(mem)
-            ))
-        })?;
-
-        self.bind("__wbindgen_module", &|me| {
-            if !me.config.mode.no_modules() && !me.config.mode.web() {
-                bail!(
-                    "`wasm_bindgen::module` is currently only supported with \
-                     `--target no-modules` and `--target web`"
-                );
             }
-            Ok(format!(
-                "function() {{ return {}; }}",
-                me.add_heap_object("init.__wbindgen_wasm_module")
-            ))
-        })?;
 
-        self.bind("__wbindgen_function_table", &|me| {
-            me.function_table_needed = true;
-            Ok(format!(
-                "function() {{ return {}; }}",
-                me.add_heap_object("wasm.__wbg_function_table")
-            ))
-        })?;
-
-        self.bind("__wbindgen_rethrow", &|me| {
-            Ok(format!(
-                "function(idx) {{ throw {}; }}",
-                me.take_object("idx")
-            ))
-        })?;
-
-        self.bind("__wbindgen_throw", &|me| {
-            me.expose_get_string_from_wasm();
-            Ok(String::from(
-                "
-                function(ptr, len) {
-                    throw new Error(getStringFromWasm(ptr, len));
+            OutputMode::Bundler { .. }
+            | OutputMode::Node {
+                experimental_modules: true,
+            }
+            | OutputMode::Web => {
+                for (module, items) in sorted_iter(&self.js_imports) {
+                    imports.push_str("import { ");
+                    for (i, (item, rename)) in items.iter().enumerate() {
+                        if i > 0 {
+                            imports.push_str(", ");
+                        }
+                        imports.push_str(item);
+                        if let Some(other) = rename {
+                            imports.push_str(" as ");
+                            imports.push_str(other)
+                        }
+                    }
+                    imports.push_str(" } from '");
+                    imports.push_str(module);
+                    imports.push_str("';\n");
                 }
-                ",
-            ))
-        })?;
-
-        Ok(())
-    }
-
-    /// Provide implementations of remaining intrinsics after initial passes
-    /// have been run on the wasm module.
-    ///
-    /// The intrinsics implemented here are added very late in the process or
-    /// otherwise may be overwritten by passes (such as the anyref pass). As a
-    /// result they don't go into the initial list of intrinsics but go just at
-    /// the end.
-    fn wire_up_late_intrinsics(&mut self) -> Result<(), Error> {
-        // After the anyref pass has executed, if this intrinsic is needed then
-        // we expose a function which initializes it
-        self.bind("__wbindgen_init_anyref_table", &|me| {
-            me.expose_anyref_table();
-            Ok(String::from(
-                "function() {
-                const table = wasm.__wbg_anyref_table;
-                const offset = table.grow(4);
-                table.set(offset + 0, undefined);
-                table.set(offset + 1, null);
-                table.set(offset + 2, true);
-                table.set(offset + 3, false);
-            }",
-            ))
-        })?;
-
-        // make sure that the anyref pass runs before binding this as anyref may
-        // remove calls to this import and then gc would remove it
-        self.bind("__wbindgen_object_clone_ref", &|me| {
-            me.expose_get_object();
-            me.expose_add_heap_object();
-            Ok(String::from(
-                "
-                function(idx) {
-                    return addHeapObject(getObject(idx));
-                }
-                ",
-            ))
-        })?;
-
-        // like above, make sure anyref runs first and the anyref pass may
-        // remove usages of this.
-        self.bind("__wbindgen_object_drop_ref", &|me| {
-            me.expose_drop_ref();
-            Ok(String::from("function(i) { dropObject(i); }"))
-        })?;
-
-        Ok(())
+            }
+        }
+        Ok(imports)
     }
 
     fn ts_for_init_fn(has_memory: bool) -> String {
@@ -965,9 +423,11 @@ impl<'a> Context<'a> {
         )
     }
 
-    fn gen_init(&mut self, module_name: &str, needs_manual_start: bool) -> (String, String) {
+    fn gen_init(&mut self, needs_manual_start: bool) -> (String, String) {
+        let module_name = "wbg";
         let mem = self.module.memories.get(self.memory);
-        let (init_memory1, init_memory2) = if mem.import.is_some() {
+        let (init_memory1, init_memory2) = if let Some(id) = mem.import {
+            self.module.imports.get_mut(id).module = module_name.to_string();
             let mut memory = String::from("new WebAssembly.Memory({");
             memory.push_str(&format!("initial:{}", mem.initial));
             if let Some(max) = mem.maximum {
@@ -979,8 +439,8 @@ impl<'a> Context<'a> {
             memory.push_str("})");
             self.imports_post.push_str("let memory;\n");
             (
-                format!("memory = __exports.memory = maybe_memory;"),
-                format!("memory = __exports.memory = {};", memory),
+                format!("memory = imports.{}.memory = maybe_memory;", module_name),
+                format!("memory = imports.{}.memory = {};", module_name, memory),
             )
         } else {
             (String::new(), String::new())
@@ -992,42 +452,31 @@ impl<'a> Context<'a> {
         };
         let ts = Self::ts_for_init_fn(mem.import.is_some());
 
-        // Generate extra initialization for the `imports` object if necessary
-        // based on the values in `direct_imports` we find. These functions are
-        // intended to be imported directly to the wasm module and we need to
-        // ensure that the modules are actually imported from and inserted into
-        // the object correctly.
-        let mut map = BTreeMap::new();
-        for &(module, name) in self.direct_imports.values() {
-            map.entry(module).or_insert(BTreeSet::new()).insert(name);
-        }
+        // Initialize the `imports` object for all import definitions that we're
+        // directed to wire up.
         let mut imports_init = String::new();
-        for (module, names) in map {
-            imports_init.push_str("imports['");
-            imports_init.push_str(module);
-            imports_init.push_str("'] = { ");
-            for (i, name) in names.into_iter().enumerate() {
-                if i != 0 {
-                    imports_init.push_str(", ");
-                }
-                let import = Import::Module {
-                    module,
-                    name,
-                    field: None,
-                };
-                let identifier = self.import_identifier(import);
-                imports_init.push_str(name);
-                imports_init.push_str(": ");
-                imports_init.push_str(&identifier);
-            }
-            imports_init.push_str(" };\n");
+        if self.wasm_import_definitions.len() > 0 {
+            imports_init.push_str("imports.");
+            imports_init.push_str(module_name);
+            imports_init.push_str(" = {};\n");
+        }
+        for (id, js) in sorted_iter(&self.wasm_import_definitions) {
+            let import = self.module.imports.get_mut(*id);
+            import.module = module_name.to_string();
+            imports_init.push_str("imports.");
+            imports_init.push_str(module_name);
+            imports_init.push_str(".");
+            imports_init.push_str(&import.name);
+            imports_init.push_str(" = ");
+            imports_init.push_str(js.trim());
+            imports_init.push_str(";\n");
         }
 
         let js = format!(
             "\
                 function init(module{init_memory_arg}) {{
                     let result;
-                    const imports = {{ './{module}': __exports }};
+                    const imports = {{}};
                     {imports_init}
                     if (module instanceof URL || typeof module === 'string' || module instanceof Request) {{
                         {init_memory2}
@@ -1069,7 +518,6 @@ impl<'a> Context<'a> {
                 }}
             ",
             init_memory_arg = init_memory_arg,
-            module = module_name,
             init_memory1 = init_memory1,
             init_memory2 = init_memory2,
             start = if needs_manual_start {
@@ -1081,20 +529,6 @@ impl<'a> Context<'a> {
         );
 
         (js, ts)
-    }
-
-    fn bind(
-        &mut self,
-        name: &str,
-        f: &dyn Fn(&mut Self) -> Result<String, Error>,
-    ) -> Result<(), Error> {
-        if !self.wasm_import_needed(name) {
-            return Ok(());
-        }
-        let contents = f(self)
-            .with_context(|_| format!("failed to generate internal JS function `{}`", name))?;
-        self.export(name, &contents, None)?;
-        Ok(())
     }
 
     fn write_classes(&mut self) -> Result<(), Error> {
@@ -1118,19 +552,7 @@ impl<'a> Context<'a> {
             );
         }
 
-        let mut wrap_needed = class.wrap_needed;
-        let new_name = wasm_bindgen_shared::new_function(&name);
-        if self.wasm_import_needed(&new_name) {
-            wrap_needed = true;
-            self.anyref
-                .import_xform("__wbindgen_placeholder__", &new_name, &[], true);
-            let expr = format!("{}.__wrap(ptr)", name);
-            let expr = self.add_heap_object(&expr);
-            let body = format!("function(ptr) {{ return {}; }}", expr);
-            self.export(&new_name, &body, None)?;
-        }
-
-        if wrap_needed {
+        if class.wrap_needed {
             dst.push_str(&format!(
                 "
                 static __wrap(ptr) {{
@@ -1149,26 +571,17 @@ impl<'a> Context<'a> {
             ));
         }
 
-        self.global(&format!(
-            "
-            function free{}(ptr) {{
-                wasm.{}(ptr);
-            }}
-            ",
-            name,
-            wasm_bindgen_shared::free_function(&name)
-        ));
-
         if self.config.weak_refs {
             self.global(&format!(
                 "
                 const {}FinalizationGroup = new FinalizationGroup((items) => {{
                     for (const ptr of items) {{
-                        free{}(ptr);
+                        wasm.{}(ptr);
                     }}
                 }});
                 ",
-                name, name,
+                name,
+                wasm_bindgen_shared::free_function(&name),
             ));
         }
 
@@ -1178,7 +591,7 @@ impl<'a> Context<'a> {
                 const ptr = this.ptr;
                 this.ptr = 0;
                 {}
-                free{}(ptr);
+                wasm.{}(ptr);
             }}
             ",
             if self.config.weak_refs {
@@ -1186,11 +599,24 @@ impl<'a> Context<'a> {
             } else {
                 String::new()
             },
-            name,
+            wasm_bindgen_shared::free_function(&name),
         ));
         ts_dst.push_str("  free(): void;");
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
+
+        let mut fields = class.typescript_fields.keys().collect::<Vec<_>>();
+        fields.sort(); // make sure we have deterministic output
+        for name in fields {
+            let (ty, readonly) = &class.typescript_fields[name];
+            if *readonly {
+                ts_dst.push_str("readonly ");
+            }
+            ts_dst.push_str(name);
+            ts_dst.push_str(": ");
+            ts_dst.push_str(ty);
+            ts_dst.push_str(";\n");
+        }
         dst.push_str("}\n");
         ts_dst.push_str("}\n");
 
@@ -1200,102 +626,10 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn export_table(&mut self) -> Result<(), Error> {
-        if !self.function_table_needed {
-            return Ok(());
-        }
-        let id = match self.module.tables.main_function_table()? {
-            Some(id) => id,
-            None => bail!("no function table found in module"),
-        };
-        self.module.exports.add("__wbg_function_table", id);
-        Ok(())
-    }
-
-    fn rewrite_imports(&mut self, module_name: &str) -> Result<(), Error> {
-        for (name, contents) in self._rewrite_imports(module_name) {
-            self.export(&name, &contents, None)?;
-        }
-        Ok(())
-    }
-
-    fn _rewrite_imports(&mut self, module_name: &str) -> Vec<(String, String)> {
-        let mut math_imports = Vec::new();
-        for import in self.module.imports.iter_mut() {
-            if import.module == "__wbindgen_placeholder__" {
-                import.module.truncate(0);
-                if let Some((module, name)) = self.direct_imports.get(import.name.as_str()) {
-                    import.name.truncate(0);
-                    import.module.push_str(module);
-                    import.name.push_str(name);
-                } else {
-                    import.module.push_str("./");
-                    import.module.push_str(module_name);
-                }
-                continue;
-            }
-
-            if import.module != "env" {
-                continue;
-            }
-
-            // If memory is imported we'll have exported it from the shim module
-            // so let's import it from there.
-            //
-            // TODO: we should track this is in a more first-class fashion
-            // rather than just matching on strings.
-            if import.name == "memory" {
-                import.module.truncate(0);
-                import.module.push_str("./");
-                import.module.push_str(module_name);
-                continue;
-            }
-
-            let renamed_import = format!("__wbindgen_{}", import.name);
-            let mut bind_math = |expr: &str| {
-                math_imports.push((renamed_import.clone(), format!("function{}", expr)));
-            };
-
-            // Note that since Rust 1.32.0 this is no longer necessary. Imports
-            // of these functions were fixed in rust-lang/rust#54257 and we're
-            // just waiting until pre-1.32.0 compilers are basically no longer
-            // in use to remove this.
-            match import.name.as_str() {
-                "Math_acos" => bind_math("(x) { return Math.acos(x); }"),
-                "Math_asin" => bind_math("(x) { return Math.asin(x); }"),
-                "Math_atan" => bind_math("(x) { return Math.atan(x); }"),
-                "Math_atan2" => bind_math("(x, y) { return Math.atan2(x, y); }"),
-                "Math_cbrt" => bind_math("(x) { return Math.cbrt(x); }"),
-                "Math_cosh" => bind_math("(x) { return Math.cosh(x); }"),
-                "Math_expm1" => bind_math("(x) { return Math.expm1(x); }"),
-                "Math_hypot" => bind_math("(x, y) { return Math.hypot(x, y); }"),
-                "Math_log1p" => bind_math("(x) { return Math.log1p(x); }"),
-                "Math_sinh" => bind_math("(x) { return Math.sinh(x); }"),
-                "Math_tan" => bind_math("(x) { return Math.tan(x); }"),
-                "Math_tanh" => bind_math("(x) { return Math.tanh(x); }"),
-                _ => continue,
-            }
-
-            import.module.truncate(0);
-            import.module.push_str("./");
-            import.module.push_str(module_name);
-            import.name = renamed_import.clone();
-        }
-
-        math_imports
-    }
-
     fn unexport_unused_internal_exports(&mut self) {
         let mut to_remove = Vec::new();
         for export in self.module.exports.iter() {
             match export.name.as_str() {
-                // These are some internal imports set by LLD but currently
-                // we've got no use case for continuing to export them, so
-                // blacklist them.
-                "__heap_base" | "__data_end" | "__indirect_function_table" => {
-                    to_remove.push(export.id());
-                }
-
                 // Otherwise only consider our special exports, which all start
                 // with the same prefix which hopefully only we're using.
                 n if n.starts_with("__wbindgen") => {
@@ -1309,6 +643,19 @@ impl<'a> Context<'a> {
         for id in to_remove {
             self.module.exports.delete(id);
         }
+    }
+
+    fn expose_does_not_exist(&mut self) {
+        if !self.should_write_global("does_not_exist") {
+            return;
+        }
+        self.global(
+            "
+                function doesNotExist() {
+                    throw new Error('imported function or type does not exist');
+                }
+            ",
+        );
     }
 
     fn expose_drop_ref(&mut self) {
@@ -1440,7 +787,7 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        self.expose_text_encoder();
+        self.expose_text_encoder()?;
         self.expose_uint8_memory();
 
         // A fast path that directly writes char codes into WASM memory as long
@@ -1650,28 +997,31 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn expose_text_encoder(&mut self) {
+    fn expose_text_encoder(&mut self) -> Result<(), Error> {
         if !self.should_write_global("text_encoder") {
-            return;
+            return Ok(());
         }
-        self.expose_text_processor("TextEncoder");
+        self.expose_text_processor("TextEncoder")
     }
 
-    fn expose_text_decoder(&mut self) {
+    fn expose_text_decoder(&mut self) -> Result<(), Error> {
         if !self.should_write_global("text_decoder") {
-            return;
+            return Ok(());
         }
-        self.expose_text_processor("TextDecoder");
+        self.expose_text_processor("TextDecoder")?;
+        Ok(())
     }
 
-    fn expose_text_processor(&mut self, s: &str) {
-        if self.config.mode.nodejs_experimental_modules() {
-            self.imports
-                .push_str(&format!("import {{ {} }} from 'util';\n", s));
-            self.global(&format!("let cached{0} = new {0}('utf-8');", s));
-        } else if self.config.mode.nodejs() {
-            self.global(&format!("const {0} = require('util').{0};", s));
-            self.global(&format!("let cached{0} = new {0}('utf-8');", s));
+    fn expose_text_processor(&mut self, s: &str) -> Result<(), Error> {
+        if self.config.mode.nodejs() {
+            let name = self.import_name(&JsImport {
+                name: JsImportName::Module {
+                    module: "util".to_string(),
+                    name: s.to_string(),
+                },
+                fields: Vec::new(),
+            })?;
+            self.global(&format!("let cached{} = new {}('utf-8');", s, name));
         } else if !self.config.mode.always_run_in_browser() {
             self.global(&format!(
                 "
@@ -1684,13 +1034,14 @@ impl<'a> Context<'a> {
         } else {
             self.global(&format!("let cached{0} = new {0}('utf-8');", s));
         }
+        Ok(())
     }
 
-    fn expose_get_string_from_wasm(&mut self) {
+    fn expose_get_string_from_wasm(&mut self) -> Result<(), Error> {
         if !self.should_write_global("get_string_from_wasm") {
-            return;
+            return Ok(());
         }
-        self.expose_text_decoder();
+        self.expose_text_decoder()?;
         self.expose_uint8_memory();
 
         // Typically we try to give a raw view of memory out to `TextDecoder` to
@@ -1712,6 +1063,7 @@ impl<'a> Context<'a> {
         ",
             method
         ));
+        Ok(())
     }
 
     fn expose_get_array_js_value_from_wasm(&mut self) -> Result<(), Error> {
@@ -2081,13 +1433,6 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn wasm_import_needed(&self, name: &str) -> bool {
-        self.module
-            .imports
-            .iter()
-            .any(|i| i.module == "__wbindgen_placeholder__" && i.name == name)
-    }
-
     fn pass_to_wasm_function(&mut self, t: VectorKind) -> Result<&'static str, Error> {
         let s = match t {
             VectorKind::String => {
@@ -2129,7 +1474,7 @@ impl<'a> Context<'a> {
     fn expose_get_vector_from_wasm(&mut self, ty: VectorKind) -> Result<&'static str, Error> {
         Ok(match ty {
             VectorKind::String => {
-                self.expose_get_string_from_wasm();
+                self.expose_get_string_from_wasm()?;
                 "getStringFromWasm"
             }
             VectorKind::I8 => {
@@ -2277,12 +1622,6 @@ impl<'a> Context<'a> {
         );
     }
 
-    fn describe(&mut self, name: &str) -> Option<Descriptor> {
-        let name = format!("__wbindgen_describe_{}", name);
-        let descriptor = self.interpreter.interpret_descriptor(&name, self.module)?;
-        Some(Descriptor::decode(descriptor))
-    }
-
     fn global(&mut self, s: &str) {
         let s = s.trim();
 
@@ -2293,10 +1632,6 @@ impl<'a> Context<'a> {
         }
         self.globals.push_str(s);
         self.globals.push_str("\n");
-    }
-
-    fn use_node_require(&self) -> bool {
-        self.config.mode.nodejs() && !self.config.mode.nodejs_experimental_modules()
     }
 
     fn memory(&mut self) -> &'static str {
@@ -2311,272 +1646,98 @@ impl<'a> Context<'a> {
         require_class(&mut self.exported_classes, name).wrap_needed = true;
     }
 
-    fn import_identifier(&mut self, import: Import<'a>) -> String {
-        // Here's where it's a bit tricky. We need to make sure that importing
-        // the same identifier from two different modules works, and they're
-        // named uniquely below. Additionally if we've already imported the same
-        // identifier from the module in question then we'd like to reuse the
-        // one that was previously imported.
-        //
-        // Our `imported_names` map keeps track of all imported identifiers from
-        // modules, mapping the imported names onto names actually available for
-        // use in our own module. If our identifier isn't present then we
-        // generate a new identifier and are sure to generate the appropriate JS
-        // import for our new identifier.
-        let use_node_require = self.use_node_require();
-        let defined_identifiers = &mut self.defined_identifiers;
-        let imports = &mut self.imports;
-        let imports_post = &mut self.imports_post;
-        let identifier = self
-            .imported_names
-            .entry(import.module())
-            .or_insert_with(Default::default)
-            .entry(import.name())
-            .or_insert_with(|| {
-                let name = generate_identifier(import.name(), defined_identifiers);
-                match &import {
-                    Import::Module { .. }
-                    | Import::LocalModule { .. }
-                    | Import::InlineJs { .. } => {
-                        // When doing a modular import local snippets (either
-                        // inline or not) are routed to a local `./snippets`
-                        // directory which the rest of `wasm-bindgen` will fill
-                        // in.
-                        let path = match import {
-                            Import::Module { module, .. } => module.to_string(),
-                            Import::LocalModule { module, .. } => format!("./snippets/{}", module),
-                            Import::InlineJs {
-                                unique_crate_identifier,
-                                snippet_idx_in_crate,
-                                ..
-                            } => format!(
-                                "./snippets/{}/inline{}.js",
-                                unique_crate_identifier, snippet_idx_in_crate
-                            ),
-                            _ => unreachable!(),
-                        };
-                        if use_node_require {
-                            imports.push_str(&format!(
-                                "const {} = require(String.raw`{}`).{};\n",
-                                name,
-                                path,
-                                import.name()
-                            ));
-                        } else if import.name() == name {
-                            imports.push_str(&format!("import {{ {} }} from '{}';\n", name, path));
-                        } else {
-                            imports.push_str(&format!(
-                                "import {{ {} as {} }} from '{}';\n",
-                                import.name(),
-                                name,
-                                path
-                            ));
-                        }
-                        name
-                    }
-
-                    Import::VendorPrefixed { prefixes, .. } => {
-                        imports_post.push_str("const l");
-                        imports_post.push_str(&name);
-                        imports_post.push_str(" = ");
-                        switch(imports_post, &name, "", prefixes);
-                        imports_post.push_str(";\n");
-
-                        fn switch(dst: &mut String, name: &str, prefix: &str, left: &[&str]) {
-                            if left.len() == 0 {
-                                dst.push_str(prefix);
-                                return dst.push_str(name);
-                            }
-                            dst.push_str("(typeof ");
-                            dst.push_str(prefix);
-                            dst.push_str(name);
-                            dst.push_str(" == 'undefined' ? ");
-                            match left.len() {
-                                1 => {
-                                    dst.push_str(&left[0]);
-                                    dst.push_str(name);
-                                }
-                                _ => switch(dst, name, &left[0], &left[1..]),
-                            }
-                            dst.push_str(" : ");
-                            dst.push_str(prefix);
-                            dst.push_str(name);
-                            dst.push_str(")");
-                        }
-                        format!("l{}", name)
-                    }
-
-                    Import::Global { .. } => name,
-                }
-            });
-
-        // If there's a namespace we didn't actually import `item` but rather
-        // the namespace, so access through that.
-        match import.field() {
-            Some(field) => format!("{}.{}", identifier, field),
-            None => identifier.clone(),
+    fn import_name(&mut self, import: &JsImport) -> Result<String, Error> {
+        if let Some(name) = self.imported_names.get(&import.name) {
+            let mut name = name.clone();
+            for field in import.fields.iter() {
+                name.push_str(".");
+                name.push_str(field);
+            }
+            return Ok(name.clone());
         }
-    }
 
-    fn generated_import_target(
-        &mut self,
-        name: Import<'a>,
-        import: &decode::ImportFunction<'a>,
-    ) -> Result<ImportTarget, Error> {
-        let method_data = match &import.method {
-            Some(data) => data,
-            None => {
-                let name = self.import_identifier(name);
-                if import.structural || !name.contains(".") {
-                    return Ok(ImportTarget::Function(name));
-                }
-                self.global(&format!("const {}_target = {};", import.shim, name));
-                let target = format!("{}_target", import.shim);
-                return Ok(ImportTarget::Function(target));
-            }
-        };
-
-        let class = self.import_identifier(name);
-        let op = match &method_data.kind {
-            decode::MethodKind::Constructor => {
-                return Ok(ImportTarget::Constructor(class.to_string()));
-            }
-            decode::MethodKind::Operation(op) => op,
-        };
-        if import.structural {
-            let class = if op.is_static {
-                Some(class.clone())
-            } else {
+        let js_imports = &mut self.js_imports;
+        let mut add_module_import = |module: String, name: &str, actual: &str| {
+            let rename = if name == actual {
                 None
+            } else {
+                Some(actual.to_string())
             };
+            js_imports
+                .entry(module)
+                .or_insert(Vec::new())
+                .push((name.to_string(), rename));
+        };
 
-            return Ok(match &op.kind {
-                decode::OperationKind::Regular => {
-                    let name = import.function.name.to_string();
-                    match class {
-                        Some(c) => ImportTarget::Function(format!("{}.{}", c, name)),
-                        None => ImportTarget::StructuralMethod(name),
+        let mut name = match &import.name {
+            JsImportName::Module { module, name } => {
+                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
+                add_module_import(module.clone(), name, &unique_name);
+                unique_name
+            }
+
+            JsImportName::LocalModule { module, name } => {
+                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
+                add_module_import(format!("./snippets/{}", module), name, &unique_name);
+                unique_name
+            }
+
+            JsImportName::InlineJs {
+                unique_crate_identifier,
+                snippet_idx_in_crate,
+                name,
+            } => {
+                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
+                let module = format!(
+                    "./snippets/{}/inline{}.js",
+                    unique_crate_identifier, snippet_idx_in_crate,
+                );
+                add_module_import(module, name, &unique_name);
+                unique_name
+            }
+
+            JsImportName::VendorPrefixed { name, prefixes } => {
+                self.imports_post.push_str("const l");
+                self.imports_post.push_str(&name);
+                self.imports_post.push_str(" = ");
+                switch(&mut self.imports_post, name, "", prefixes);
+                self.imports_post.push_str(";\n");
+
+                fn switch(dst: &mut String, name: &str, prefix: &str, left: &[String]) {
+                    if left.len() == 0 {
+                        dst.push_str(prefix);
+                        return dst.push_str(name);
                     }
+                    dst.push_str("(typeof ");
+                    dst.push_str(prefix);
+                    dst.push_str(name);
+                    dst.push_str(" !== 'undefined' ? ");
+                    dst.push_str(prefix);
+                    dst.push_str(name);
+                    dst.push_str(" : ");
+                    switch(dst, name, &left[0], &left[1..]);
+                    dst.push_str(")");
                 }
-                decode::OperationKind::Getter(g) => {
-                    ImportTarget::StructuralGetter(class, g.to_string())
+                format!("l{}", name)
+            }
+
+            JsImportName::Global { name } => {
+                let unique_name = generate_identifier(name, &mut self.defined_identifiers);
+                if unique_name != *name {
+                    bail!("cannot import `{}` from two locations", name);
                 }
-                decode::OperationKind::Setter(s) => {
-                    ImportTarget::StructuralSetter(class, s.to_string())
-                }
-                decode::OperationKind::IndexingGetter => {
-                    ImportTarget::StructuralIndexingGetter(class)
-                }
-                decode::OperationKind::IndexingSetter => {
-                    ImportTarget::StructuralIndexingSetter(class)
-                }
-                decode::OperationKind::IndexingDeleter => {
-                    ImportTarget::StructuralIndexingDeleter(class)
-                }
-            });
+                unique_name
+            }
+        };
+        self.imported_names
+            .insert(import.name.clone(), name.clone());
+
+        // After we've got an actual name handle field projections
+        for field in import.fields.iter() {
+            name.push_str(".");
+            name.push_str(field);
         }
-
-        let target = format!(
-            "typeof {0} === 'undefined' ? null : {}{}",
-            class,
-            if op.is_static { "" } else { ".prototype" }
-        );
-        let (mut target, name) = match &op.kind {
-            decode::OperationKind::Regular => (
-                format!("{}.{}", target, import.function.name),
-                &import.function.name,
-            ),
-            decode::OperationKind::Getter(g) => {
-                self.expose_get_inherited_descriptor();
-                (
-                    format!(
-                        "GetOwnOrInheritedPropertyDescriptor({}, '{}').get",
-                        target, g,
-                    ),
-                    g,
-                )
-            }
-            decode::OperationKind::Setter(s) => {
-                self.expose_get_inherited_descriptor();
-                (
-                    format!(
-                        "GetOwnOrInheritedPropertyDescriptor({}, '{}').set",
-                        target, s,
-                    ),
-                    s,
-                )
-            }
-            decode::OperationKind::IndexingGetter => panic!("indexing getter should be structural"),
-            decode::OperationKind::IndexingSetter => panic!("indexing setter should be structural"),
-            decode::OperationKind::IndexingDeleter => {
-                panic!("indexing deleter should be structural")
-            }
-        };
-        target.push_str(&format!(
-            " || function() {{
-            throw new Error(`wasm-bindgen: {}.{} does not exist`);
-        }}",
-            class, name
-        ));
-        if op.is_static {
-            target.insert(0, '(');
-            target.push_str(").bind(");
-            target.push_str(&class);
-            target.push_str(")");
-        }
-
-        self.global(&format!("const {}_target = {};", import.shim, target));
-        Ok(if op.is_static {
-            ImportTarget::Function(format!("{}_target", import.shim))
-        } else {
-            ImportTarget::Method(format!("{}_target", import.shim))
-        })
-    }
-
-    /// Update the wasm file's `producers` section to include information about
-    /// the wasm-bindgen tool.
-    ///
-    /// Specified at:
-    /// https://github.com/WebAssembly/tool-conventions/blob/master/ProducersSection.md
-    fn update_producers_section(&mut self) {
-        self.module
-            .producers
-            .add_processed_by("wasm-bindgen", &wasm_bindgen_shared::version());
-    }
-
-    fn add_start_function(&mut self) -> Result<(), Error> {
-        let start = match &self.start {
-            Some(name) => name.clone(),
-            None => return Ok(()),
-        };
-        let export = match self.module.exports.iter().find(|e| e.name == start) {
-            Some(export) => export,
-            None => bail!("export `{}` not found", start),
-        };
-        let id = match export.item {
-            walrus::ExportItem::Function(i) => i,
-            _ => bail!("export `{}` wasn't a function", start),
-        };
-
-        let prev_start = match self.module.start {
-            Some(f) => f,
-            None => {
-                self.module.start = Some(id);
-                return Ok(());
-            }
-        };
-
-        // Note that we call the previous start function, if any, first. This is
-        // because the start function currently only shows up when it's injected
-        // through thread/anyref transforms. These injected start functions need
-        // to happen before user code, so we always schedule them first.
-        let mut builder = walrus::FunctionBuilder::new();
-        let call1 = builder.call(prev_start, Box::new([]));
-        let call2 = builder.call(id, Box::new([]));
-        let ty = self.module.funcs.get(id).ty();
-        let new_start = builder.finish(ty, Vec::new(), vec![call1, call2], self.module);
-        self.module.start = Some(new_start);
-        Ok(())
+        Ok(name)
     }
 
     /// If a start function is present, it removes it from the `start` section
@@ -2596,9 +1757,17 @@ impl<'a> Context<'a> {
         if !self.should_write_global("anyref_table") {
             return;
         }
-        self.module
-            .exports
-            .add("__wbg_anyref_table", self.anyref.anyref_table_id());
+        let table = self
+            .module
+            .tables
+            .iter()
+            .find(|t| match t.kind {
+                walrus::TableKind::Anyref(_) => true,
+                _ => false,
+            })
+            .expect("failed to find anyref table in module")
+            .id();
+        self.module.exports.add("__wbg_anyref_table", table);
     }
 
     fn expose_add_to_anyref_table(&mut self) -> Result<(), Error> {
@@ -2621,15 +1790,6 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn add_heap_object(&mut self, expr: &str) -> String {
-        if self.config.anyref {
-            expr.to_string()
-        } else {
-            self.expose_add_heap_object();
-            format!("addHeapObject({})", expr)
-        }
-    }
-
     fn take_object(&mut self, expr: &str) -> String {
         if self.config.anyref {
             expr.to_string()
@@ -2647,548 +1807,172 @@ impl<'a> Context<'a> {
             format!("getObject({})", expr)
         }
     }
-}
 
-impl<'a, 'b> SubContext<'a, 'b> {
-    pub fn generate(&mut self) -> Result<(), Error> {
-        for m in self.program.local_modules.iter() {
-            // All local modules we find should be unique, but the same module
-            // may have showed up in a few different blocks. If that's the case
-            // all the same identifiers should have the same contents.
-            if let Some(prev) = self.cx.local_modules.insert(m.identifier, m.contents) {
-                assert_eq!(prev, m.contents);
-            }
-        }
-        for f in self.program.exports.iter() {
-            self.generate_export(f).with_context(|_| {
+    pub fn generate(&mut self, aux: &WasmBindgenAux) -> Result<(), Error> {
+        for (id, export) in sorted_iter(&aux.export_map) {
+            self.generate_export(*id, export).with_context(|_| {
                 format!(
                     "failed to generate bindings for Rust export `{}`",
-                    f.function.name
+                    export.debug_name,
                 )
             })?;
         }
-        for f in self.program.imports.iter() {
-            if let decode::ImportKind::Type(ty) = &f.kind {
-                self.register_vendor_prefix(ty);
-            }
+        for (id, import) in sorted_iter(&aux.import_map) {
+            let variadic = aux.imports_with_variadic.contains(&id);
+            let catch = aux.imports_with_catch.contains(&id);
+            self.generate_import(*id, import, variadic, catch)
+                .with_context(|_| {
+                    format!("failed to generate bindings for import `{:?}`", import,)
+                })?;
         }
-        for f in self.program.imports.iter() {
-            self.generate_import(f)?;
-        }
-        for e in self.program.enums.iter() {
+        for e in aux.enums.iter() {
             self.generate_enum(e)?;
         }
-        for s in self.program.structs.iter() {
-            self.generate_struct(s).with_context(|_| {
-                format!("failed to generate bindings for Rust struct `{}`", s.name,)
-            })?;
-        }
-        for s in self.program.typescript_custom_sections.iter() {
-            self.cx.typescript.push_str(s);
-            self.cx.typescript.push_str("\n\n");
+
+        for s in aux.structs.iter() {
+            self.generate_struct(s)?;
         }
 
-        if let Some(path) = self.program.package_json {
-            self.add_package_json(path)?;
+        self.typescript.push_str(&aux.extra_typescript);
+
+        for path in aux.package_jsons.iter() {
+            self.process_package_json(path)?;
         }
 
         Ok(())
     }
 
-    fn generate_export(&mut self, export: &decode::Export<'b>) -> Result<(), Error> {
-        if let Some(ref class) = export.class {
-            assert!(!export.start);
-            return self.generate_export_for_class(class, export);
-        }
-
-        let descriptor = match self.cx.describe(&export.function.name) {
-            None => return Ok(()),
-            Some(d) => d,
-        };
-
-        if export.start {
-            self.set_start_function(export.function.name)?;
-        }
-
-        let (js, ts, js_doc) = Js2Rust::new(&export.function.name, self.cx)
-            .process(descriptor.unwrap_function(), &export.function.arg_names)?
-            .finish(
-                "function",
-                &format!("wasm.{}", export.function.name),
-                ExportedShim::Named(&export.function.name),
-            );
-        self.cx.export(
-            &export.function.name,
-            &js,
-            Some(format_doc_comments(&export.comments, Some(js_doc))),
-        )?;
-        self.cx.globals.push_str("\n");
-        self.cx.typescript.push_str("export ");
-        self.cx.typescript.push_str(&ts);
-        self.cx.typescript.push_str("\n");
-        Ok(())
-    }
-
-    fn set_start_function(&mut self, start: &str) -> Result<(), Error> {
-        if let Some(prev) = &self.cx.start {
-            bail!(
-                "cannot flag `{}` as start function as `{}` is \
-                 already the start function",
-                start,
-                prev
-            );
-        }
-        self.cx.start = Some(start.to_string());
-        Ok(())
-    }
-
-    fn generate_export_for_class(
-        &mut self,
-        class_name: &'b str,
-        export: &decode::Export,
-    ) -> Result<(), Error> {
-        let mut fn_name = export.function.name;
-        let wasm_name = struct_function_export_name(class_name, fn_name);
-        let descriptor = match self.cx.describe(&wasm_name) {
-            None => return Ok(()),
-            Some(d) => d,
-        };
-        let docs = |raw_docs| format_doc_comments(&export.comments, Some(raw_docs));
-        let method = |class: &mut ExportedClass, docs, fn_name, fn_prfx, js, ts| {
-            class.contents.push_str(docs);
-            class.contents.push_str(fn_prfx);
-            class.contents.push_str(fn_name);
-            class.contents.push_str(js);
-            class.contents.push_str("\n");
-            class.typescript.push_str(docs);
-            class.typescript.push_str("  "); // Indentation
-            class.typescript.push_str(fn_prfx);
-            class.typescript.push_str(ts);
-            class.typescript.push_str("\n");
-        };
-        let finish_j2r = |mut j2r: Js2Rust| -> Result<(_, _, _), Error> {
-            Ok(j2r
-                .process(descriptor.unwrap_function(), &export.function.arg_names)?
-                .finish(
-                    "",
-                    &format!("wasm.{}", wasm_name),
-                    ExportedShim::Named(&wasm_name),
-                ))
-        };
-        match &export.method_kind {
-            decode::MethodKind::Constructor => {
-                fn_name = "constructor";
-                let mut j2r = Js2Rust::new(fn_name, self.cx);
-                j2r.constructor(Some(class_name));
-                let (js, ts, raw_docs) = finish_j2r(j2r)?;
-                let class = require_class(&mut self.cx.exported_classes, class_name);
-                if class.has_constructor {
-                    bail!("found duplicate constructor `{}`", export.function.name);
-                }
-                class.has_constructor = true;
-                let docs = docs(raw_docs);
-                method(class, &docs, fn_name, "", &js, &ts);
-                Ok(())
+    fn generate_export(&mut self, id: ExportId, export: &AuxExport) -> Result<(), Error> {
+        let wasm_name = self.module.exports.get(id).name.clone();
+        let descriptor = self.bindings.exports[&id].clone();
+        match &export.kind {
+            AuxExportKind::Function(name) => {
+                let (js, ts, js_doc) = Js2Rust::new(&name, self)
+                    .process(&descriptor, &export.arg_names)?
+                    .finish("function", &format!("wasm.{}", wasm_name));
+                self.export(
+                    &name,
+                    &js,
+                    Some(format_doc_comments(&export.comments, Some(js_doc))),
+                )?;
+                self.globals.push_str("\n");
+                self.typescript.push_str("export ");
+                self.typescript.push_str(&ts);
+                self.typescript.push_str("\n");
             }
-            decode::MethodKind::Operation(operation) => {
-                let mut j2r = Js2Rust::new(fn_name, self.cx);
-                let mut fn_prfx = "";
-                if operation.is_static {
-                    fn_prfx = "static ";
-                } else {
-                    j2r.method(export.consumed);
+            AuxExportKind::Constructor(class) => {
+                let (js, ts, raw_docs) = Js2Rust::new("constructor", self)
+                    .constructor(Some(&class))
+                    .process(&descriptor, &export.arg_names)?
+                    .finish("", &format!("wasm.{}", wasm_name));
+                let exported = require_class(&mut self.exported_classes, class);
+                if exported.has_constructor {
+                    bail!("found duplicate constructor for class `{}`", class);
                 }
-                let (js, ts, raw_docs) = finish_j2r(j2r)?;
-                let class = require_class(&mut self.cx.exported_classes, class_name);
-                let docs = docs(raw_docs);
-                match operation.kind {
-                    decode::OperationKind::Getter(getter_name) => {
-                        fn_name = getter_name;
-                        fn_prfx = "get ";
+                exported.has_constructor = true;
+                let docs = format_doc_comments(&export.comments, Some(raw_docs));
+                exported.push(&docs, "constructor", "", &js, &ts);
+            }
+            AuxExportKind::Getter { class, field: name }
+            | AuxExportKind::Setter { class, field: name }
+            | AuxExportKind::StaticFunction { class, name }
+            | AuxExportKind::Method { class, name, .. } => {
+                let mut j2r = Js2Rust::new(name, self);
+                match export.kind {
+                    AuxExportKind::StaticFunction { .. } => {}
+                    AuxExportKind::Method { consumed: true, .. } => {
+                        j2r.method(true);
                     }
-                    decode::OperationKind::Setter(setter_name) => {
-                        fn_name = setter_name;
-                        fn_prfx = "set ";
+                    _ => {
+                        j2r.method(false);
                     }
-                    _ => {}
                 }
-                method(class, &docs, fn_name, fn_prfx, &js, &ts);
-                Ok(())
-            }
-        }
-    }
-
-    fn generate_import(&mut self, import: &decode::Import<'b>) -> Result<(), Error> {
-        match import.kind {
-            decode::ImportKind::Function(ref f) => {
-                self.generate_import_function(import, f).with_context(|_| {
-                    format!(
-                        "failed to generate bindings for JS import `{}`",
-                        f.function.name
-                    )
-                })?;
-            }
-            decode::ImportKind::Static(ref s) => {
-                self.generate_import_static(import, s).with_context(|_| {
-                    format!("failed to generate bindings for JS import `{}`", s.name)
-                })?;
-            }
-            decode::ImportKind::Type(ref ty) => {
-                self.generate_import_type(import, ty).with_context(|_| {
-                    format!("failed to generate bindings for JS import `{}`", ty.name,)
-                })?;
-            }
-            decode::ImportKind::Enum(_) => {}
-        }
-        Ok(())
-    }
-
-    fn generate_import_static(
-        &mut self,
-        info: &decode::Import<'b>,
-        import: &decode::ImportStatic<'b>,
-    ) -> Result<(), Error> {
-        // The same static can be imported in multiple locations, so only
-        // generate bindings once for it.
-        if !self.cx.imported_statics.insert(import.shim) {
-            return Ok(());
-        }
-
-        // TODO: should support more types to import here
-        let obj = self.import_name(info, &import.name)?;
-        self.cx
-            .anyref
-            .import_xform("__wbindgen_placeholder__", &import.shim, &[], true);
-        let body = format!("function() {{ return {}; }}", self.cx.add_heap_object(&obj));
-        self.cx.export(&import.shim, &body, None)?;
-        Ok(())
-    }
-
-    fn generate_import_function(
-        &mut self,
-        info: &decode::Import<'b>,
-        import: &decode::ImportFunction<'b>,
-    ) -> Result<(), Error> {
-        if !self.cx.wasm_import_needed(&import.shim) {
-            return Ok(());
-        }
-
-        // It's possible for the same function to be imported in two locations,
-        // but we only want to generate one.
-        if !self.cx.imported_functions.insert(import.shim) {
-            return Ok(());
-        }
-
-        let descriptor = match self.cx.describe(&import.shim) {
-            None => return Ok(()),
-            Some(d) => d,
-        };
-
-        // Figure out the name that we're importing to dangle further references
-        // off of. This is the function name if there's no method all here, or
-        // the class if there's a method call.
-        let name = match &import.method {
-            Some(data) => self.determine_import(info, &data.class)?,
-            None => self.determine_import(info, import.function.name)?,
-        };
-
-        // Build up our shim's state, and we'll use that to guide whether we
-        // actually emit an import here or not.
-        let mut shim = Rust2Js::new(self.cx);
-        if shim.cx.config.debug {
-            shim.catch_and_rethrow(true);
-        }
-        shim.catch(import.catch)
-            .variadic(import.variadic)
-            .process(descriptor.unwrap_function())?;
-
-        // If this is a bare function import and the shim doesn't actually do
-        // anything (all argument/return conversions are noops) then we can wire
-        // up the wasm import directly to the destination. We don't actually
-        // wire up anything here, but we record it to get wired up later.
-        if import.method.is_none() && shim.is_noop() {
-            if let Import::Module {
-                module,
-                name,
-                field: None,
-            } = name
-            {
-                shim.cx.direct_imports.insert(import.shim, (module, name));
-
-                if shim.ret_anyref || shim.anyref_args.len() > 0 {
-                    shim.cx.anyref.import_xform(
-                        "__wbindgen_placeholder__",
-                        &import.shim,
-                        &shim.anyref_args,
-                        shim.ret_anyref,
-                    );
+                let (js, ts, raw_docs) = j2r
+                    .process(&descriptor, &export.arg_names)?
+                    .finish("", &format!("wasm.{}", wasm_name));
+                let ret_ty = j2r.ret_ty.clone();
+                let exported = require_class(&mut self.exported_classes, class);
+                let docs = format_doc_comments(&export.comments, Some(raw_docs));
+                match export.kind {
+                    AuxExportKind::Getter { .. } => {
+                        exported.push_field(&docs, name, &js, Some(&ret_ty), true);
+                    }
+                    AuxExportKind::Setter { .. } => {
+                        exported.push_field(&docs, name, &js, None, false);
+                    }
+                    AuxExportKind::StaticFunction { .. } => {
+                        exported.push(&docs, name, "static ", &js, &ts);
+                    }
+                    _ => {
+                        exported.push(&docs, name, "", &js, &ts);
+                    }
                 }
-                return Ok(());
             }
         }
-
-        // If the above optimization fails then we actually generate the import
-        // here (possibly emitting some glue in our JS module) and then emit the
-        // shim as the wasm will be importing the shim.
-        let target = shim.cx.generated_import_target(name, import)?;
-        let js = shim.finish(&target, &import.shim)?;
-        shim.cx.export(&import.shim, &js, None)?;
         Ok(())
     }
 
-    fn generate_import_type(
+    fn generate_import(
         &mut self,
-        info: &decode::Import<'b>,
-        import: &decode::ImportType<'b>,
+        id: ImportId,
+        import: &AuxImport,
+        variadic: bool,
+        catch: bool,
     ) -> Result<(), Error> {
-        if !self.cx.wasm_import_needed(&import.instanceof_shim) {
-            return Ok(());
-        }
-        let name = self.import_name(info, &import.name)?;
-        self.cx.anyref.import_xform(
-            "__wbindgen_placeholder__",
-            &import.instanceof_shim,
-            &[(0, false)],
-            false,
-        );
-        let body = format!(
-            "function(idx) {{ return {} instanceof {} ? 1 : 0; }}",
-            self.cx.get_object("idx"),
-            name
-        );
-        self.cx.export(&import.instanceof_shim, &body, None)?;
+        let signature = self.bindings.imports[&id].clone();
+        let catch_and_rethrow = self.config.debug;
+        let js = Rust2Js::new(self)
+            .catch_and_rethrow(catch_and_rethrow)
+            .catch(catch)
+            .variadic(variadic)
+            .process(&signature)?
+            .finish(import)?;
+        self.wasm_import_definitions.insert(id, js);
         Ok(())
     }
 
-    fn generate_enum(&mut self, enum_: &decode::Enum) -> Result<(), Error> {
+    fn generate_enum(&mut self, enum_: &AuxEnum) -> Result<(), Error> {
         let mut variants = String::new();
 
-        for variant in enum_.variants.iter() {
-            variants.push_str(&format!("{}:{},", variant.name, variant.value));
+        self.typescript
+            .push_str(&format!("export enum {} {{", enum_.name));
+        for (name, value) in enum_.variants.iter() {
+            variants.push_str(&format!("{}:{},", name, value));
+            self.typescript.push_str(&format!("\n  {},", name));
         }
-        self.cx.export(
+        self.typescript.push_str("\n}\n");
+        self.export(
             &enum_.name,
             &format!("Object.freeze({{ {} }})", variants),
             Some(format_doc_comments(&enum_.comments, None)),
         )?;
-        self.cx
-            .typescript
-            .push_str(&format!("export enum {} {{", enum_.name));
 
-        for variant in enum_.variants.iter() {
-            self.cx
-                .typescript
-                .push_str(&format!("\n  {},", variant.name));
-        }
-        self.cx.typescript.push_str("\n}\n");
         Ok(())
     }
 
-    fn generate_struct(&mut self, struct_: &decode::Struct) -> Result<(), Error> {
-        let mut dst = String::new();
-        let mut ts_dst = String::new();
-        for field in struct_.fields.iter() {
-            let wasm_getter = wasm_bindgen_shared::struct_field_get(&struct_.name, &field.name);
-            let wasm_setter = wasm_bindgen_shared::struct_field_set(&struct_.name, &field.name);
-            let descriptor = match self.cx.describe(&wasm_getter) {
-                None => continue,
-                Some(d) => d,
-            };
-
-            let set = {
-                let setter = ExportedShim::Named(&wasm_setter);
-                let mut cx = Js2Rust::new(&field.name, self.cx);
-                cx.method(false)
-                    .argument(&descriptor, None)?
-                    .ret(&Descriptor::Unit)?;
-                ts_dst.push_str(&format!(
-                    "\n  {}{}: {};",
-                    if field.readonly { "readonly " } else { "" },
-                    field.name,
-                    &cx.js_arguments[0].type_
-                ));
-                cx.finish("", &format!("wasm.{}", wasm_setter), setter).0
-            };
-            let getter = ExportedShim::Named(&wasm_getter);
-            let (get, _ts, js_doc) = Js2Rust::new(&field.name, self.cx)
-                .method(false)
-                .ret(&descriptor)?
-                .finish("", &format!("wasm.{}", wasm_getter), getter);
-            if !dst.ends_with("\n") {
-                dst.push_str("\n");
-            }
-            dst.push_str(&format_doc_comments(&field.comments, Some(js_doc)));
-            dst.push_str("get ");
-            dst.push_str(&field.name);
-            dst.push_str(&get);
-            dst.push_str("\n");
-            if !field.readonly {
-                dst.push_str("set ");
-                dst.push_str(&field.name);
-                dst.push_str(&set);
-            }
-        }
-
-        let class = require_class(&mut self.cx.exported_classes, struct_.name);
+    fn generate_struct(&mut self, struct_: &AuxStruct) -> Result<(), Error> {
+        let class = require_class(&mut self.exported_classes, &struct_.name);
         class.comments = format_doc_comments(&struct_.comments, None);
-        class.contents.push_str(&dst);
-        class.contents.push_str("\n");
-        class.typescript.push_str(&ts_dst);
-        class.typescript.push_str("\n");
         Ok(())
     }
 
-    fn register_vendor_prefix(&mut self, info: &decode::ImportType<'b>) {
-        if info.vendor_prefixes.len() == 0 {
-            return;
-        }
-        self.vendor_prefixes
-            .entry(info.name)
-            .or_insert(Vec::new())
-            .extend(info.vendor_prefixes.iter().cloned());
-    }
-
-    fn determine_import(
-        &self,
-        import: &decode::Import<'b>,
-        item: &'b str,
-    ) -> Result<Import<'b>, Error> {
-        // First up, imports don't work at all in `--target no-modules` mode as
-        // we're not sure how to import them.
-        let is_local_snippet = match import.module {
-            decode::ImportModule::Named(s) => self.cx.local_modules.contains_key(s),
-            decode::ImportModule::RawNamed(_) => false,
-            decode::ImportModule::Inline(_) => true,
-            decode::ImportModule::None => false,
-        };
-        if self.cx.config.mode.no_modules() {
-            if is_local_snippet {
-                bail!(
-                    "local JS snippets are not supported with `--target no-modules`; \
-                     use `--target web` or no flag instead",
-                );
-            }
-            if let decode::ImportModule::Named(module) = &import.module {
-                bail!(
-                    "import from `{}` module not allowed with `--target no-modules`; \
-                     use `nodejs`, `web`, or `bundler` target instead",
-                    module
-                );
-            }
-        }
-
-        // FIXME: currently we require that local JS snippets are written in ES
-        // module syntax for imports/exports, but nodejs uses CommonJS to handle
-        // this meaning that local JS snippets are basically guaranteed to be
-        // incompatible. We need to implement a pass that translates the ES
-        // module syntax in the snippet to a CommonJS module, which is in theory
-        // not that hard but is a chunk of work to do.
-        if is_local_snippet && self.cx.config.mode.nodejs() {
-            // have a small unergonomic escape hatch for our webidl-tests tests
-            if env::var("WBINDGEN_I_PROMISE_JS_SYNTAX_WORKS_IN_NODE").is_err() {
-                bail!(
-                    "local JS snippets are not supported with `--target nodejs`; \
-                     see rustwasm/rfcs#6 for more details, but this restriction \
-                     will be lifted in the future"
-                );
-            }
-        }
-
-        // Similar to `--target no-modules`, only allow vendor prefixes
-        // basically for web apis, shouldn't be necessary for things like npm
-        // packages or other imported items.
-        let vendor_prefixes = self.vendor_prefixes.get(item);
-        if let Some(vendor_prefixes) = vendor_prefixes {
-            assert!(vendor_prefixes.len() > 0);
-
-            if is_local_snippet {
-                bail!(
-                    "local JS snippets do not support vendor prefixes for \
-                     the import of `{}` with a polyfill of `{}`",
-                    item,
-                    &vendor_prefixes[0]
-                );
-            }
-            if let decode::ImportModule::Named(module) = &import.module {
-                bail!(
-                    "import of `{}` from `{}` has a polyfill of `{}` listed, but
-                     vendor prefixes aren't supported when importing from modules",
-                    item,
-                    module,
-                    &vendor_prefixes[0],
-                );
-            }
-            if let Some(ns) = &import.js_namespace {
-                bail!(
-                    "import of `{}` through js namespace `{}` isn't supported \
-                     right now when it lists a polyfill",
-                    item,
-                    ns
-                );
-            }
-            return Ok(Import::VendorPrefixed {
-                name: item,
-                prefixes: vendor_prefixes.clone(),
-            });
-        }
-
-        let (name, field) = match import.js_namespace {
-            Some(ns) => (ns, Some(item)),
-            None => (item, None),
-        };
-
-        Ok(match import.module {
-            decode::ImportModule::Named(module) if is_local_snippet => Import::LocalModule {
-                module,
-                name,
-                field,
-            },
-            decode::ImportModule::Named(module) | decode::ImportModule::RawNamed(module) => {
-                Import::Module {
-                    module,
-                    name,
-                    field,
-                }
-            }
-            decode::ImportModule::Inline(idx) => {
-                let offset = *self
-                    .cx
-                    .snippet_offsets
-                    .get(self.program.unique_crate_identifier)
-                    .unwrap_or(&0);
-                Import::InlineJs {
-                    unique_crate_identifier: self.program.unique_crate_identifier,
-                    snippet_idx_in_crate: idx as usize + offset,
-                    name,
-                    field,
-                }
-            }
-            decode::ImportModule::None => Import::Global { name, field },
-        })
-    }
-
-    fn import_name(&mut self, import: &decode::Import<'b>, item: &'b str) -> Result<String, Error> {
-        let import = self.determine_import(import, item)?;
-        Ok(self.cx.import_identifier(import))
-    }
-
-    fn add_package_json(&mut self, path: &'b str) -> Result<(), Error> {
-        if !self.cx.package_json_read.insert(path) {
-            return Ok(());
-        }
-        if !self.cx.config.mode.nodejs() && !self.cx.config.mode.bundler() {
+    fn process_package_json(&mut self, path: &Path) -> Result<(), Error> {
+        if !self.config.mode.nodejs() && !self.config.mode.bundler() {
             bail!(
                 "NPM dependencies have been specified in `{}` but \
-                 this is only compatible with the `bundler` and `nodejs` targets"
+                 this is only compatible with the `bundler` and `nodejs` targets",
+                path.display(),
             );
         }
-        let contents = fs::read_to_string(path).context(format!("failed to read `{}`", path))?;
+
+        let contents =
+            fs::read_to_string(path).context(format!("failed to read `{}`", path.display()))?;
         let json: serde_json::Value = serde_json::from_str(&contents)?;
         let object = match json.as_object() {
             Some(s) => s,
             None => bail!(
                 "expected `package.json` to have an JSON object in `{}`",
-                path
+                path.display()
             ),
         };
         let mut iter = object.iter();
@@ -3200,12 +1984,15 @@ impl<'a, 'b> SubContext<'a, 'b> {
             bail!(
                 "NPM manifest found at `{}` can currently only have one key, \
                  `dependencies`, and no other fields",
-                path
+                path.display()
             );
         }
         let value = match value.as_object() {
             Some(s) => s,
-            None => bail!("expected `dependencies` to be a JSON object in `{}`", path),
+            None => bail!(
+                "expected `dependencies` to be a JSON object in `{}`",
+                path.display()
+            ),
         };
 
         for (name, value) in value.iter() {
@@ -3213,68 +2000,111 @@ impl<'a, 'b> SubContext<'a, 'b> {
                 Some(s) => s,
                 None => bail!(
                     "keys in `dependencies` are expected to be strings in `{}`",
-                    path
+                    path.display()
                 ),
             };
-            if let Some((prev, _prev_version)) = self.cx.npm_dependencies.get(name) {
+            if let Some((prev, _prev_version)) = self.npm_dependencies.get(name) {
                 bail!(
                     "dependency on NPM package `{}` specified in two `package.json` files, \
                      which at the time is not allowed:\n  * {}\n  * {}",
                     name,
-                    path,
-                    prev
+                    path.display(),
+                    prev.display(),
                 )
             }
 
-            self.cx
-                .npm_dependencies
-                .insert(name.to_string(), (path, value.to_string()));
+            self.npm_dependencies
+                .insert(name.to_string(), (path.to_path_buf(), value.to_string()));
         }
 
         Ok(())
     }
-}
 
-#[derive(Hash, Eq, PartialEq)]
-pub enum ImportModule<'a> {
-    Named(&'a str),
-    Inline(&'a str, usize),
-    None,
-}
+    fn expose_debug_string(&mut self) {
+        if !self.should_write_global("debug_string") {
+            return;
+        }
 
-impl<'a> Import<'a> {
-    fn module(&self) -> ImportModule<'a> {
-        match self {
-            Import::Module { module, .. } | Import::LocalModule { module, .. } => {
-                ImportModule::Named(module)
+        self.global(
+            "
+           function debugString(val) {
+                // primitive types
+                const type = typeof val;
+                if (type == 'number' || type == 'boolean' || val == null) {
+                    return  `${val}`;
+                }
+                if (type == 'string') {
+                    return `\"${val}\"`;
+                }
+                if (type == 'symbol') {
+                    const description = val.description;
+                    if (description == null) {
+                        return 'Symbol';
+                    } else {
+                        return `Symbol(${description})`;
+                    }
+                }
+                if (type == 'function') {
+                    const name = val.name;
+                    if (typeof name == 'string' && name.length > 0) {
+                        return `Function(${name})`;
+                    } else {
+                        return 'Function';
+                    }
+                }
+                // objects
+                if (Array.isArray(val)) {
+                    const length = val.length;
+                    let debug = '[';
+                    if (length > 0) {
+                        debug += debugString(val[0]);
+                    }
+                    for(let i = 1; i < length; i++) {
+                        debug += ', ' + debugString(val[i]);
+                    }
+                    debug += ']';
+                    return debug;
+                }
+                // Test for built-in
+                const builtInMatches = /\\[object ([^\\]]+)\\]/.exec(toString.call(val));
+                let className;
+                if (builtInMatches.length > 1) {
+                    className = builtInMatches[1];
+                } else {
+                    // Failed to match the standard '[object ClassName]'
+                    return toString.call(val);
+                }
+                if (className == 'Object') {
+                    // we're a user defined class or Object
+                    // JSON.stringify avoids problems with cycles, and is generally much
+                    // easier than looping through ownProperties of `val`.
+                    try {
+                        return 'Object(' + JSON.stringify(val) + ')';
+                    } catch (_) {
+                        return 'Object';
+                    }
+                }
+                // errors
+                if (val instanceof Error) {
+                    return `${val.name}: ${val.message}\\n${val.stack}`;
+                }
+                // TODO we could test for more things here, like `Set`s and `Map`s.
+                return className;
             }
-            Import::InlineJs {
-                unique_crate_identifier,
-                snippet_idx_in_crate,
-                ..
-            } => ImportModule::Inline(unique_crate_identifier, *snippet_idx_in_crate),
-            Import::Global { .. } | Import::VendorPrefixed { .. } => ImportModule::None,
-        }
+        ",
+        );
     }
 
-    fn field(&self) -> Option<&'a str> {
-        match self {
-            Import::Module { field, .. }
-            | Import::LocalModule { field, .. }
-            | Import::InlineJs { field, .. }
-            | Import::Global { field, .. } => *field,
-            Import::VendorPrefixed { .. } => None,
+    fn export_function_table(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("wbg-function-table") {
+            return Ok(())
         }
-    }
-
-    fn name(&self) -> &'a str {
-        match self {
-            Import::Module { name, .. }
-            | Import::LocalModule { name, .. }
-            | Import::InlineJs { name, .. }
-            | Import::Global { name, .. }
-            | Import::VendorPrefixed { name, .. } => *name,
-        }
+        let id = match self.module.tables.main_function_table()? {
+            Some(id) => id,
+            None => bail!("no function table found in module"),
+        };
+        self.module.exports.add("__wbg_function_table", id);
+        Ok(())
     }
 }
 
@@ -3290,11 +2120,8 @@ fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> S
     }
 }
 
-fn format_doc_comments(comments: &[&str], js_doc_comments: Option<String>) -> String {
-    let body: String = comments
-        .iter()
-        .map(|c| format!("*{}\n", c.trim_matches('"')))
-        .collect();
+fn format_doc_comments(comments: &str, js_doc_comments: Option<String>) -> String {
+    let body: String = comments.lines().map(|c| format!("*{}\n", c)).collect();
     let doc = if let Some(docs) = js_doc_comments {
         docs.lines().map(|l| format!("* {} \n", l)).collect()
     } else {
@@ -3312,6 +2139,61 @@ fn require_class<'a>(
         .expect("classes already written")
         .entry(name.to_string())
         .or_insert_with(ExportedClass::default)
+}
+
+impl ExportedClass {
+    fn push(&mut self, docs: &str, function_name: &str, function_prefix: &str, js: &str, ts: &str) {
+        self.contents.push_str(docs);
+        self.contents.push_str(function_prefix);
+        self.contents.push_str(function_name);
+        self.contents.push_str(js);
+        self.contents.push_str("\n");
+        self.typescript.push_str(docs);
+        self.typescript.push_str("  ");
+        self.typescript.push_str(function_prefix);
+        self.typescript.push_str(ts);
+        self.typescript.push_str("\n");
+    }
+
+    /// Used for adding a field to a class, mainly to ensure that TypeScript
+    /// generation is handled specially.
+    ///
+    /// Note that the `ts` is optional and it's expected to just be the field
+    /// type, not the full signature. It's currently only available on getters,
+    /// but there currently has to always be at least a getter.
+    fn push_field(&mut self, docs: &str, field: &str, js: &str, ts: Option<&str>, getter: bool) {
+        self.contents.push_str(docs);
+        if getter {
+            self.contents.push_str("get ");
+        } else {
+            self.contents.push_str("set ");
+        }
+        self.contents.push_str(field);
+        self.contents.push_str(js);
+        self.contents.push_str("\n");
+        let (ty, has_setter) = self
+            .typescript_fields
+            .entry(field.to_string())
+            .or_insert_with(Default::default);
+        if let Some(ts) = ts {
+            *ty = ts.to_string();
+        }
+        *has_setter = *has_setter || !getter;
+    }
+}
+
+/// Returns a sorted iterator over a hash mpa, sorted based on key.
+///
+/// The intention of this API is to be used whenever the iteration order of a
+/// `HashMap` might affect the generated JS bindings. We want to ensure that the
+/// generated output is deterministic and we do so by ensuring that iteration of
+/// hash maps is consistently sorted.
+fn sorted_iter<K, V>(map: &HashMap<K, V>) -> impl Iterator<Item = (&K, &V)>
+    where K: Ord,
+{
+    let mut pairs = map.iter().collect::<Vec<_>>();
+    pairs.sort_by_key(|(k, _)| *k);
+    pairs.into_iter()
 }
 
 #[test]

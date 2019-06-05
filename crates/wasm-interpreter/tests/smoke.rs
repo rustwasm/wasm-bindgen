@@ -17,7 +17,17 @@ fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
     assert!(status.success());
     let module = walrus::Module::from_file(output.path()).unwrap();
     let mut i = Interpreter::new(&module).unwrap();
-    assert_eq!(i.interpret_descriptor(name, &module), result);
+    let id = module
+        .exports
+        .iter()
+        .filter(|e| e.name == name)
+        .filter_map(|e| match e.item {
+            walrus::ExportItem::Function(f) => Some(f),
+            _ => None,
+        })
+        .next()
+        .unwrap();
+    assert_eq!(i.interpret_descriptor(id, &module), result);
 }
 
 #[test]
@@ -30,7 +40,6 @@ fn smoke() {
         )
     "#;
     interpret(wat, "foo", Some(&[]));
-    interpret(wat, "bar", None);
 
     let wat = r#"
         (module

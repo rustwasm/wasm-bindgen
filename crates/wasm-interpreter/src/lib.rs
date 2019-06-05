@@ -127,12 +127,7 @@ impl Interpreter {
     ///
     /// Returns `Some` if `func` was found in the `module` and `None` if it was
     /// not found in the `module`.
-    pub fn interpret_descriptor(&mut self, func: &str, module: &Module) -> Option<&[u32]> {
-        let id = *self.name_map.get(func)?;
-        self.interpret_descriptor_id(id, module)
-    }
-
-    fn interpret_descriptor_id(&mut self, id: FunctionId, module: &Module) -> Option<&[u32]> {
+    pub fn interpret_descriptor(&mut self, id: FunctionId, module: &Module) -> Option<&[u32]> {
         self.descriptor.truncate(0);
 
         // We should have a blank wasm and LLVM stack at both the start and end
@@ -212,7 +207,7 @@ impl Interpreter {
         entry_removal_list.insert(descriptor_table_idx);
 
         // And now execute the descriptor!
-        self.interpret_descriptor_id(descriptor_id, module)
+        self.interpret_descriptor(descriptor_id, module)
     }
 
     /// Returns the function id of the `__wbindgen_describe_closure`

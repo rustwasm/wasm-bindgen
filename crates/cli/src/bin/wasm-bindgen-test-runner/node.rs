@@ -22,10 +22,10 @@ pub fn execute(
             const og = console[method];
             const on_method = `on_console_${{method}}`;
             console[method] = function (...args) {{
+                og.apply(this, args);
                 if (handlers[on_method]) {{
                     handlers[on_method](args);
                 }}
-                og.apply(this, args);
             }};
         }};
 

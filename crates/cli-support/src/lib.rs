@@ -9,10 +9,14 @@ use std::path::{Path, PathBuf};
 use std::str;
 use walrus::Module;
 
+mod anyref;
 mod decode;
+mod intrinsic;
 mod descriptor;
+mod descriptors;
 mod js;
 pub mod wasm2es6js;
+mod webidl;
 
 pub struct Bindgen {
     input: Input,
@@ -282,99 +286,76 @@ impl Bindgen {
             );
         }
 
-        let mut program_storage = Vec::new();
-        let programs = extract_programs(&mut module, &mut program_storage)
-            .with_context(|_| "failed to extract wasm-bindgen custom sections")?;
-
         if let Some(cfg) = &self.threads {
             cfg.run(&mut module)
                 .with_context(|_| "failed to prepare module for threading")?;
         }
 
+        // If requested, turn all mangled symbols into prettier unmangled
+        // symbols with the help of `rustc-demangle`.
         if self.demangle {
             demangle(&mut module);
         }
+        unexported_unused_lld_things(&mut module);
 
-        // Here we're actually instantiating the module we've parsed above for
-        // execution. Why, you might be asking, are we executing wasm code? A
-        // good question!
-        //
-        // Transmitting information from `#[wasm_bindgen]` here to the CLI tool
-        // is pretty tricky. Specifically information about the types involved
-        // with a function signature (especially generic ones) can be hefty to
-        // translate over. As a result, the macro emits a bunch of shims which,
-        // when executed, will describe to us what the types look like.
-        //
-        // This means that whenever we encounter an import or export we'll
-        // execute a shim function which informs us about its type so we can
-        // then generate the appropriate bindings.
-        let mut instance = wasm_bindgen_wasm_interpreter::Interpreter::new(&module)?;
+        // We're making quite a few changes, list ourselves as a producer.
+        module
+            .producers
+            .add_processed_by("wasm-bindgen", &wasm_bindgen_shared::version());
 
-        let mut memories = module.memories.iter().map(|m| m.id());
-        let memory = memories.next();
-        if memories.next().is_some() {
-            bail!("multiple memories currently not supported");
+        // Learn about the type signatures of all wasm-bindgen imports and
+        // exports by executing `__wbindgen_describe_*` functions. This'll
+        // effectively move all the descriptor functions to their own custom
+        // sections.
+        descriptors::execute(&mut module)?;
+
+        // Process and remove our raw custom sections emitted by the
+        // #[wasm_bindgen] macro and the compiler. In their stead insert a
+        // forward-compatible WebIDL bindings section (forward-compatible with
+        // the webidl bindings proposal) as well as an auxiliary section for all
+        // sorts of miscellaneous information and features #[wasm_bindgen]
+        // supports that aren't covered by WebIDL bindings.
+        webidl::process(&mut module)?;
+
+        // Now that we've got type information from the webidl processing pass,
+        // touch up the output of rustc to insert anyref shims where necessary.
+        // This is only done if the anyref pass is enabled, which it's
+        // currently off-by-default since `anyref` is still in development in
+        // engines.
+        if self.anyref {
+            anyref::process(&mut module)?;
         }
-        drop(memories);
-        let memory = memory.unwrap_or_else(|| module.memories.add_local(false, 1, None));
 
+        // If we're in a testing mode then remove the start function since we
+        // shouldn't execute it.
+        if !self.emit_start {
+            module.start = None;
+        }
+
+        // Now that our module is massaged and good to go, feed it into the JS
+        // shim generation which will actually generate JS for all this.
         let (js, ts) = {
-            let mut cx = js::Context {
-                globals: String::new(),
-                imports: String::new(),
-                imports_post: String::new(),
-                footer: String::new(),
-                typescript: format!("/* tslint:disable */\n"),
-                exposed_globals: Some(Default::default()),
-                required_internal_exports: Default::default(),
-                imported_names: Default::default(),
-                defined_identifiers: Default::default(),
-                exported_classes: Some(Default::default()),
-                config: &self,
-                module: &mut module,
-                function_table_needed: false,
-                interpreter: &mut instance,
-                memory,
-                imported_functions: Default::default(),
-                imported_statics: Default::default(),
-                direct_imports: Default::default(),
-                local_modules: Default::default(),
-                start: None,
-                anyref: Default::default(),
-                snippet_offsets: Default::default(),
-                npm_dependencies: Default::default(),
-                package_json_read: Default::default(),
-            };
-            cx.anyref.enabled = self.anyref;
-            cx.anyref.prepare(cx.module)?;
-            for program in programs.iter() {
-                js::SubContext {
-                    program,
-                    cx: &mut cx,
-                    vendor_prefixes: Default::default(),
-                }
-                .generate()?;
+            let mut cx = js::Context::new(&mut module, self)?;
 
-                let offset = cx
-                    .snippet_offsets
-                    .entry(program.unique_crate_identifier)
-                    .or_insert(0);
-                for js in program.inline_js.iter() {
-                    let name = format!("inline{}.js", *offset);
-                    *offset += 1;
+            let aux = cx.module.customs.delete_typed::<webidl::WasmBindgenAux>()
+                .expect("aux section should be present");
+            cx.generate(&aux)?;
+
+            // Write out all local JS snippets to the final destination now that
+            // we've collected them from all the programs.
+            for (identifier, list) in aux.snippets.iter() {
+                for (i, js) in list.iter().enumerate() {
+                    let name = format!("inline{}.js", i);
                     let path = out_dir
                         .join("snippets")
-                        .join(program.unique_crate_identifier)
+                        .join(identifier)
                         .join(name);
                     fs::create_dir_all(path.parent().unwrap())?;
                     fs::write(&path, js)
                         .with_context(|_| format!("failed to write `{}`", path.display()))?;
                 }
             }
-
-            // Write out all local JS snippets to the final destination now that
-            // we've collected them from all the programs.
-            for (path, contents) in cx.local_modules.iter() {
+            for (path, contents) in aux.local_modules.iter() {
                 let path = out_dir.join("snippets").join(path);
                 fs::create_dir_all(path.parent().unwrap())?;
                 fs::write(&path, contents)
@@ -394,6 +375,8 @@ impl Bindgen {
             cx.finalize(stem)?
         };
 
+        // And now that we've got all our JS and TypeScript, actually write it
+        // out to the filesystem.
         let extension = if self.mode.nodejs_experimental_modules() {
             "mjs"
         } else {
@@ -503,127 +486,6 @@ impl Bindgen {
     }
 }
 
-fn extract_programs<'a>(
-    module: &mut Module,
-    program_storage: &'a mut Vec<Vec<u8>>,
-) -> Result<Vec<decode::Program<'a>>, Error> {
-    let my_version = wasm_bindgen_shared::version();
-    assert!(program_storage.is_empty());
-
-    while let Some(raw) = module.customs.remove_raw("__wasm_bindgen_unstable") {
-        log::debug!(
-            "custom section '{}' looks like a wasm bindgen section",
-            raw.name
-        );
-        program_storage.push(raw.data);
-    }
-
-    let mut ret = Vec::new();
-    for program in program_storage.iter() {
-        let mut payload = &program[..];
-        while let Some(data) = get_remaining(&mut payload) {
-            // Historical versions of wasm-bindgen have used JSON as the custom
-            // data section format. Newer versions, however, are using a custom
-            // serialization protocol that looks much more like the wasm spec.
-            //
-            // We, however, want a sanity check to ensure that if we're running
-            // against the wrong wasm-bindgen we get a nicer error than an
-            // internal decode error. To that end we continue to verify a tiny
-            // bit of json at the beginning of each blob before moving to the
-            // next blob. This should keep us compatible with older wasm-bindgen
-            // instances as well as forward-compatible for now.
-            //
-            // Note, though, that as `wasm-pack` picks up steam it's hoped we
-            // can just delete this entirely. The `wasm-pack` project already
-            // manages versions for us, so we in theory should need this check
-            // less and less over time.
-            if let Some(their_version) = verify_schema_matches(data)? {
-                bail!(
-                    "
-
-it looks like the Rust project used to create this wasm file was linked against
-a different version of wasm-bindgen than this binary:
-
-  rust wasm file: {}
-     this binary: {}
-
-Currently the bindgen format is unstable enough that these two version must
-exactly match, so it's required that these two version are kept in sync by
-either updating the wasm-bindgen dependency or this binary. You should be able
-to update the wasm-bindgen dependency with:
-
-    cargo update -p wasm-bindgen
-
-or you can update the binary with
-
-    cargo install -f wasm-bindgen-cli
-
-if this warning fails to go away though and you're not sure what to do feel free
-to open an issue at https://github.com/rustwasm/wasm-bindgen/issues!
-",
-                    their_version,
-                    my_version,
-                );
-            }
-            let next = get_remaining(&mut payload).unwrap();
-            log::debug!("found a program of length {}", next.len());
-            ret.push(<decode::Program as decode::Decode>::decode_all(next));
-        }
-    }
-    Ok(ret)
-}
-
-fn get_remaining<'a>(data: &mut &'a [u8]) -> Option<&'a [u8]> {
-    if data.len() == 0 {
-        return None;
-    }
-    let len = ((data[0] as usize) << 0)
-        | ((data[1] as usize) << 8)
-        | ((data[2] as usize) << 16)
-        | ((data[3] as usize) << 24);
-    let (a, b) = data[4..].split_at(len);
-    *data = b;
-    Some(a)
-}
-
-fn verify_schema_matches<'a>(data: &'a [u8]) -> Result<Option<&'a str>, Error> {
-    macro_rules! bad {
-        () => {
-            bail!("failed to decode what looked like wasm-bindgen data")
-        };
-    }
-    let data = match str::from_utf8(data) {
-        Ok(s) => s,
-        Err(_) => bad!(),
-    };
-    log::debug!("found version specifier {}", data);
-    if !data.starts_with("{") || !data.ends_with("}") {
-        bad!()
-    }
-    let needle = "\"schema_version\":\"";
-    let rest = match data.find(needle) {
-        Some(i) => &data[i + needle.len()..],
-        None => bad!(),
-    };
-    let their_schema_version = match rest.find("\"") {
-        Some(i) => &rest[..i],
-        None => bad!(),
-    };
-    if their_schema_version == wasm_bindgen_shared::SCHEMA_VERSION {
-        return Ok(None);
-    }
-    let needle = "\"version\":\"";
-    let rest = match data.find(needle) {
-        Some(i) => &data[i + needle.len()..],
-        None => bad!(),
-    };
-    let their_version = match rest.find("\"") {
-        Some(i) => &rest[..i],
-        None => bad!(),
-    };
-    Ok(Some(their_version))
-}
-
 fn reset_indentation(s: &str) -> String {
     let mut indent: u32 = 0;
     let mut dst = String::new();
@@ -726,5 +588,23 @@ impl OutputMode {
             OutputMode::Bundler { .. } => true,
             _ => false,
         }
+    }
+}
+
+/// Remove a number of internal exports that are synthesized by Rust's linker,
+/// LLD. These exports aren't typically ever needed and just add extra space to
+/// the binary.
+fn unexported_unused_lld_things(module: &mut Module) {
+    let mut to_remove = Vec::new();
+    for export in module.exports.iter() {
+        match export.name.as_str() {
+            "__heap_base" | "__data_end" | "__indirect_function_table" => {
+                to_remove.push(export.id());
+            }
+            _ => {}
+        }
+    }
+    for id in to_remove {
+        module.exports.delete(id);
     }
 }

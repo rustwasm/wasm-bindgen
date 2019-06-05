@@ -101,7 +101,7 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
       - template: ci/azure-install-node.yml
-      - template: ci/azure-install-sccache.yml
+        #- template: ci/azure-install-sccache.yml
       - script: cargo test -p wasm-bindgen-webidl
       - script: cargo test -p webidl-tests --target wasm32-unknown-unknown
         env:
@@ -128,7 +128,7 @@ jobs:
           cd wabt/build
           cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=off -DCMAKE_CXX_COMPILER_LAUNCHER=$RUSTC_WRAPPER
           cmake --build . -- -j$(nproc)
-          echo "##vso[task.setvariable variable=PATH;]$PATH:$PWD"
+          echo "##vso[task.prependpath]$PWD"
       - script: cargo test -p wasm-bindgen-wasm-interpreter
 
   - job: test_typescript_output
@@ -171,7 +171,7 @@ jobs:
       - script: |
           set -e
           curl -L https://github.com/japaric/xargo/releases/download/v0.3.13/xargo-v0.3.13-x86_64-unknown-linux-musl.tar.gz | tar xzf -
-          echo "##vso[task.setvariable variable=PATH;]$PATH:$PWD"
+          echo "##vso[task.prependpath]$PWD"
         displayName: "install xargo"
       - script: |
           set -e

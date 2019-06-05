@@ -51,7 +51,7 @@ pub struct Js2Rust<'a, 'b: 'a> {
 
     /// Typescript expression representing the type of the return value of this
     /// function.
-    ret_ty: String,
+    pub ret_ty: String,
 
     /// Expression used to generate the return value. The string "RET" in this
     /// expression is replaced with the actual wasm invocation eventually.
@@ -68,15 +68,6 @@ pub struct Js2Rust<'a, 'b: 'a> {
     /// The string value here is the class that this should be a constructor
     /// for.
     constructor: Option<String>,
-
-    /// metadata for anyref transformations
-    anyref_args: Vec<(usize, bool)>,
-    ret_anyref: bool,
-}
-
-pub enum ExportedShim<'a> {
-    Named(&'a str),
-    TableElement(&'a mut u32),
 }
 
 impl<'a, 'b> Js2Rust<'a, 'b> {
@@ -92,31 +83,36 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             ret_ty: String::new(),
             ret_expr: String::new(),
             constructor: None,
-            anyref_args: Vec::new(),
-            ret_anyref: false,
         }
     }
 
     /// Generates all bindings necessary for the signature in `Function`,
     /// creating necessary argument conversions and return value processing.
-    pub fn process<'c, I>(
+    pub fn process(
         &mut self,
         function: &Function,
-        opt_arg_names: I,
-    ) -> Result<&mut Self, Error>
-    where
-        I: Into<Option<&'c Vec<String>>>,
-    {
-        if let Some(arg_names) = opt_arg_names.into() {
-            for (arg, arg_name) in function.arguments.iter().zip(arg_names) {
-                self.argument(arg, arg_name.as_str())?;
-            }
-        } else {
-            for arg in function.arguments.iter() {
-                self.argument(arg, None)?;
-            }
+        opt_arg_names: &Option<Vec<String>>,
+    ) -> Result<&mut Self, Error> {
+        let arg_names = match opt_arg_names {
+            Some(arg_names) => arg_names.iter().map(|s| Some(s.as_str())).collect(),
+            None => vec![None; function.arguments.len()],
+        };
+        assert_eq!(arg_names.len(), function.arguments.len());
+        for (arg, arg_name) in function.arguments.iter().zip(arg_names) {
+            // Process the function argument and assert that the metadata about
+            // the number of arguments on the Rust side required is correct.
+            let before = self.rust_arguments.len();
+            self.argument(arg, arg_name)?;
+            arg.assert_abi_arg_correct(before, self.rust_arguments.len());
         }
+
+        // Process the return argument, and assert that the metadata returned
+        // about the descriptor is indeed correct.
+        let before = self.rust_arguments.len();
         self.ret(&function.ret)?;
+        function
+            .ret
+            .assert_abi_return_correct(before, self.rust_arguments.len());
         Ok(self)
     }
 
@@ -183,12 +179,9 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         ret
     }
 
-    pub fn argument<'c, I>(&mut self, arg: &Descriptor, opt_arg_name: I) -> Result<&mut Self, Error>
-    where
-        I: Into<Option<&'c str>>,
-    {
+    fn argument(&mut self, arg: &Descriptor, arg_name: Option<&str>) -> Result<&mut Self, Error> {
         let i = self.arg_idx;
-        let name = self.abi_arg(opt_arg_name.into());
+        let name = self.abi_arg(arg_name);
 
         let (arg, optional) = match arg {
             Descriptor::Option(t) => (&**t, true),
@@ -254,7 +247,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
                     self.rust_arguments
                         .push(format!("isLikeNone({0}) ? 0 : addToAnyrefTable({0})", name));
                 } else {
-                    self.anyref_args.push((self.rust_arguments.len(), true));
                     self.rust_arguments.push(name);
                 }
             } else {
@@ -451,7 +443,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             self.js_arguments
                 .push(JsArgument::required(name.clone(), "any".to_string()));
             if self.cx.config.anyref {
-                self.anyref_args.push((self.rust_arguments.len(), false));
                 self.rust_arguments.push(name);
             } else {
                 // the "stack-ful" nature means that we're always popping from the
@@ -494,7 +485,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         Ok(self)
     }
 
-    pub fn ret(&mut self, ty: &Descriptor) -> Result<&mut Self, Error> {
+    fn ret(&mut self, ty: &Descriptor) -> Result<&mut Self, Error> {
         if let Some(name) = ty.rust_struct() {
             match &self.constructor {
                 Some(class) if class == name => {
@@ -568,7 +559,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         if ty.is_anyref() {
             self.ret_ty = "any".to_string();
             self.ret_expr = format!("return {};", self.cx.take_object("RET"));
-            self.ret_anyref = true;
             return Ok(self);
         }
 
@@ -786,12 +776,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     /// Returns two strings, the first of which is the JS expression for the
     /// generated function shim and the second is a TypeScript signature of the
     /// JS expression.
-    pub fn finish(
-        &mut self,
-        prefix: &str,
-        invoc: &str,
-        exported_shim: ExportedShim,
-    ) -> (String, String, String) {
+    pub fn finish(&mut self, prefix: &str, invoc: &str) -> (String, String, String) {
         let js_args = self
             .js_arguments
             .iter()
@@ -855,23 +840,6 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             ts.push_str(&self.ret_ty);
         }
         ts.push(';');
-
-        if self.ret_anyref || self.anyref_args.len() > 0 {
-            match exported_shim {
-                ExportedShim::Named(name) => {
-                    self.cx
-                        .anyref
-                        .export_xform(name, &self.anyref_args, self.ret_anyref);
-                }
-                ExportedShim::TableElement(idx) => {
-                    *idx = self.cx.anyref.table_element_xform(
-                        *idx,
-                        &self.anyref_args,
-                        self.ret_anyref,
-                    );
-                }
-            }
-        }
 
         (js, ts, self.js_doc_comments())
     }

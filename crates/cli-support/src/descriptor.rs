@@ -38,7 +38,7 @@ tys! {
     CLAMPED
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Descriptor {
     I8,
     U8,
@@ -67,14 +67,14 @@ pub enum Descriptor {
     Clamped(Box<Descriptor>),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Function {
     pub arguments: Vec<Descriptor>,
     pub shim_idx: u32,
     pub ret: Descriptor,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Closure {
     pub shim_idx: u32,
     pub dtor_idx: u32,
@@ -146,9 +146,9 @@ impl Descriptor {
         }
     }
 
-    pub fn unwrap_function(&self) -> &Function {
-        match *self {
-            Descriptor::Function(ref f) => f,
+    pub fn unwrap_function(self) -> Function {
+        match self {
+            Descriptor::Function(f) => *f,
             _ => panic!("not a function"),
         }
     }
@@ -199,10 +199,10 @@ impl Descriptor {
         }
     }
 
-    pub fn closure(&self) -> Option<&Closure> {
-        match *self {
-            Descriptor::Closure(ref s) => Some(s),
-            _ => None,
+    pub fn unwrap_closure(self) -> Closure {
+        match self {
+            Descriptor::Closure(s) => *s,
+            _ => panic!("not a closure"),
         }
     }
 
@@ -291,6 +291,83 @@ impl Descriptor {
             Descriptor::RefMut(_) => true,
             _ => false,
         }
+    }
+
+    pub fn abi_returned_through_pointer(&self) -> bool {
+        if self.vector_kind().is_some() {
+            return true;
+        }
+        if self.get_64().is_some() {
+            return true;
+        }
+        match self {
+            Descriptor::Option(inner) => match &**inner {
+                Descriptor::Anyref
+                | Descriptor::RustStruct(_)
+                | Descriptor::Enum { .. }
+                | Descriptor::Char
+                | Descriptor::Boolean
+                | Descriptor::I8
+                | Descriptor::U8
+                | Descriptor::I16
+                | Descriptor::U16 => false,
+                _ => true,
+            },
+            _ => false,
+        }
+    }
+
+    pub fn abi_arg_count(&self) -> usize {
+        if let Descriptor::Option(inner) = self {
+            if inner.get_64().is_some() {
+                return 4;
+            }
+            if let Descriptor::Ref(inner) = &**inner {
+                match &**inner {
+                    Descriptor::Anyref => return 1,
+                    _ => {}
+                }
+            }
+        }
+        if self.stack_closure().is_some() {
+            return 2;
+        }
+        if self.abi_returned_through_pointer() {
+            2
+        } else {
+            1
+        }
+    }
+
+    pub fn assert_abi_return_correct(&self, before: usize, after: usize) {
+        if before != after {
+            assert_eq!(
+                before + 1,
+                after,
+                "abi_returned_through_pointer wrong for {:?}",
+                self,
+            );
+            assert!(
+                self.abi_returned_through_pointer(),
+                "abi_returned_through_pointer wrong for {:?}",
+                self,
+            );
+        } else {
+            assert!(
+                !self.abi_returned_through_pointer(),
+                "abi_returned_through_pointer wrong for {:?}",
+                self,
+            );
+        }
+    }
+
+    pub fn assert_abi_arg_correct(&self, before: usize, after: usize) {
+        assert_eq!(
+            before + self.abi_arg_count(),
+            after,
+            "abi_arg_count wrong for {:?}",
+            self,
+        );
     }
 }
 

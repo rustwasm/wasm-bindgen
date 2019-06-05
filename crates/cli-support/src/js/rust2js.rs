@@ -1,12 +1,13 @@
-use crate::descriptor::{Descriptor, Function};
-use crate::js::js2rust::ExportedShim;
-use crate::js::{Context, ImportTarget, Js2Rust};
+use crate::descriptor::Descriptor;
+use crate::intrinsic::Intrinsic;
+use crate::js::{Context, Js2Rust};
+use crate::webidl::{AuxImport, AuxValue, ImportBinding};
 use failure::{bail, Error};
 
 /// Helper struct for manufacturing a shim in JS used to translate Rust types to
 /// JS, then invoking an imported JS function.
 pub struct Rust2Js<'a, 'b: 'a> {
-    pub cx: &'a mut Context<'b>,
+    cx: &'a mut Context<'b>,
 
     /// Arguments of the JS shim that we're generating, aka the variables passed
     /// from Rust which are only numbers.
@@ -41,10 +42,27 @@ pub struct Rust2Js<'a, 'b: 'a> {
     /// Whether or not the last argument is a slice representing variadic arguments.
     variadic: bool,
 
+    /// What sort of style this invocation will be like, see the variants of
+    /// this enum for more information.
+    style: Style,
+
     /// list of arguments that are anyref, and whether they're an owned anyref
     /// or not.
-    pub anyref_args: Vec<(usize, bool)>,
-    pub ret_anyref: bool,
+    anyref_args: Vec<(usize, bool)>,
+    ret_anyref: bool,
+}
+
+#[derive(PartialEq)]
+enum Style {
+    /// The imported function is expected to be invoked with `new` to create a
+    /// JS object.
+    Constructor,
+    /// The imported function is expected to be invoked where the first
+    /// parameter is the `this` and the rest of the arguments are the
+    /// function's arguments.
+    Method,
+    /// Just a normal function call.
+    Function,
 }
 
 impl<'a, 'b> Rust2Js<'a, 'b> {
@@ -63,6 +81,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             variadic: false,
             anyref_args: Vec::new(),
             ret_anyref: false,
+            style: Style::Function,
         }
     }
 
@@ -83,11 +102,35 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
     /// Generates all bindings necessary for the signature in `Function`,
     /// creating necessary argument conversions and return value processing.
-    pub fn process(&mut self, function: &Function) -> Result<&mut Self, Error> {
+    pub fn process(&mut self, binding: &ImportBinding) -> Result<&mut Self, Error> {
+        let function = match binding {
+            ImportBinding::Constructor(f) => {
+                self.style = Style::Constructor;
+                f
+            }
+            ImportBinding::Method(f) => {
+                self.style = Style::Method;
+                f
+            }
+            ImportBinding::Function(f) => {
+                self.style = Style::Function;
+                f
+            }
+        };
         for arg in function.arguments.iter() {
+            // Process the function argument and assert that the metadata about
+            // the number of arguments on the Rust side required is correct.
+            let before = self.shim_arguments.len();
             self.argument(arg)?;
+            arg.assert_abi_arg_correct(before, self.shim_arguments.len());
         }
+        // Process the return argument, and assert that the metadata returned
+        // about the descriptor is indeed correct.
+        let before = self.shim_arguments.len();
         self.ret(&function.ret)?;
+        function
+            .ret
+            .assert_abi_return_correct(before, self.shim_arguments.len());
         Ok(self)
     }
 
@@ -274,7 +317,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
 
         if let Some((f, mutable)) = arg.stack_closure() {
             let arg2 = self.shim_argument();
-            let mut shim = f.shim_idx;
             let (js, _ts, _js_doc) = {
                 let mut builder = Js2Rust::new("", self.cx);
                 if mutable {
@@ -286,13 +328,12 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 } else {
                     builder.rust_argument("this.a");
                 }
-                builder.rust_argument("this.b").process(f, None)?.finish(
-                    "function",
-                    "this.f",
-                    ExportedShim::TableElement(&mut shim),
-                )
+                builder
+                    .rust_argument("this.b")
+                    .process(f, &None)?
+                    .finish("function", "this.f")
             };
-            self.cx.function_table_needed = true;
+            self.cx.export_function_table()?;
             self.global_idx();
             self.prelude(&format!(
                 "\
@@ -304,7 +345,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 abi,
                 arg2,
                 js = js,
-                idx = shim,
+                idx = f.shim_idx,
             ));
             self.finally(&format!("cb{0}.a = cb{0}.b = 0;", abi));
             self.js_arguments.push(format!("cb{0}.bind(cb{0})", abi));
@@ -575,7 +616,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
     ///
     /// This is used as an optimization to wire up imports directly where
     /// possible and avoid a shim in some circumstances.
-    pub fn is_noop(&self) -> bool {
+    fn is_noop(&self) -> bool {
         let Rust2Js {
             // fields which may affect whether we do nontrivial work
             catch,
@@ -594,6 +635,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             global_idx: _,
             anyref_args: _,
             ret_anyref: _,
+            style,
         } = self;
 
         !catch &&
@@ -607,96 +649,277 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             // similarly we want to make sure that all the arguments are simply
             // forwarded from the shim we would generate to the import,
             // requiring no transformations
-            js_arguments == shim_arguments
+            js_arguments == shim_arguments &&
+            // method/constructor invocations require some JS shimming right
+            // now, so only normal function-style invocations may get wired up
+            *style == Style::Function
     }
 
-    pub fn finish(&mut self, invoc: &ImportTarget, shim: &str) -> Result<String, Error> {
-        let mut ret = String::new();
-        ret.push_str("function(");
-        ret.push_str(&self.shim_arguments.join(", "));
-        if self.catch {
-            if self.shim_arguments.len() > 0 {
-                ret.push_str(", ")
-            }
-            ret.push_str("exnptr");
-        }
-        ret.push_str(") {\n");
-        ret.push_str(&self.prelude);
-
+    pub fn finish(&mut self, target: &AuxImport) -> Result<String, Error> {
         let variadic = self.variadic;
-        let ret_expr = &self.ret_expr;
-        let handle_variadic = |invoc: &str, js_arguments: &[String]| {
-            let ret = if variadic {
+        let variadic_args = |js_arguments: &[String]| {
+            Ok(if !variadic {
+                format!("{}", js_arguments.join(", "))
+            } else {
                 let (last_arg, args) = match js_arguments.split_last() {
                     Some(pair) => pair,
                     None => bail!("a function with no arguments cannot be variadic"),
                 };
                 if args.len() > 0 {
-                    ret_expr.replace(
-                        "JS",
-                        &format!("{}({}, ...{})", invoc, args.join(", "), last_arg),
-                    )
+                    format!("{}, ...{}", args.join(", "), last_arg)
                 } else {
-                    ret_expr.replace("JS", &format!("{}(...{})", invoc, last_arg))
+                    format!("...{}", last_arg)
                 }
-            } else {
-                ret_expr.replace("JS", &format!("{}({})", invoc, js_arguments.join(", ")))
-            };
-            Ok(ret)
+            })
         };
 
-        let js_arguments = &self.js_arguments;
-        let fixed = |desc: &str, class: &Option<String>, amt: usize| {
-            if variadic {
-                bail!("{} cannot be variadic", desc);
-            }
-            match (class, js_arguments.len()) {
-                (None, n) if n == amt + 1 => Ok((js_arguments[0].clone(), &js_arguments[1..])),
-                (None, _) => bail!("setters must have {} arguments", amt + 1),
-                (Some(class), n) if n == amt => Ok((class.clone(), &js_arguments[..])),
-                (Some(_), _) => bail!("static setters must have {} arguments", amt),
-            }
-        };
+        let invoc = match target {
+            AuxImport::Value(val) => match self.style {
+                Style::Constructor => {
+                    let js = match val {
+                        AuxValue::Bare(js) => self.cx.import_name(js)?,
+                        _ => bail!("invalid import set for constructor"),
+                    };
+                    format!("new {}({})", js, variadic_args(&self.js_arguments)?)
+                }
+                Style::Method => {
+                    let descriptor = |anchor: &str, extra: &str, field: &str, which: &str| {
+                        format!(
+                            "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').{}",
+                            anchor, extra, field, which
+                        )
+                    };
+                    let js = match val {
+                        AuxValue::Bare(js) => self.cx.import_name(js)?,
+                        AuxValue::Getter(class, field) => {
+                            self.cx.expose_get_inherited_descriptor();
+                            let class = self.cx.import_name(class)?;
+                            descriptor(&class, ".prototype", field, "get")
+                        }
+                        AuxValue::ClassGetter(class, field) => {
+                            self.cx.expose_get_inherited_descriptor();
+                            let class = self.cx.import_name(class)?;
+                            descriptor(&class, "", field, "get")
+                        }
+                        AuxValue::Setter(class, field) => {
+                            self.cx.expose_get_inherited_descriptor();
+                            let class = self.cx.import_name(class)?;
+                            descriptor(&class, ".prototype", field, "set")
+                        }
+                        AuxValue::ClassSetter(class, field) => {
+                            self.cx.expose_get_inherited_descriptor();
+                            let class = self.cx.import_name(class)?;
+                            descriptor(&class, "", field, "set")
+                        }
+                    };
+                    format!("{}.call({})", js, variadic_args(&self.js_arguments)?)
+                }
+                Style::Function => {
+                    let js = match val {
+                        AuxValue::Bare(js) => self.cx.import_name(js)?,
+                        _ => bail!("invalid import set for constructor"),
+                    };
+                    if self.is_noop() {
+                        self.cx.expose_does_not_exist();
+                        // TODO: comment this
+                        let js = format!("typeof {} === 'undefined' ? doesNotExist : {0}", js);
+                        return Ok(js);
+                    }
+                    format!("{}({})", js, variadic_args(&self.js_arguments)?)
+                }
+            },
 
-        let mut invoc = match invoc {
-            ImportTarget::Function(f) => handle_variadic(&f, &self.js_arguments)?,
-            ImportTarget::Constructor(c) => {
-                handle_variadic(&format!("new {}", c), &self.js_arguments)?
+            AuxImport::Instanceof(js) => {
+                let js = self.cx.import_name(js)?;
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("{} instanceof {}", self.js_arguments[0], js)
             }
-            ImportTarget::Method(f) => handle_variadic(&format!("{}.call", f), &self.js_arguments)?,
-            ImportTarget::StructuralMethod(f) => {
+
+            AuxImport::Static(js) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 0);
+                self.cx.import_name(js)?
+            }
+
+            AuxImport::Closure(closure) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 3);
+                let (js, _ts, _js_doc) = {
+                    let mut builder = Js2Rust::new("", self.cx);
+
+                    // First up with a closure we increment the internal reference
+                    // count. This ensures that the Rust closure environment won't
+                    // be deallocated while we're invoking it.
+                    builder.prelude("this.cnt++;");
+
+                    if closure.mutable {
+                        // For mutable closures they can't be invoked recursively.
+                        // To handle that we swap out the `this.a` pointer with zero
+                        // while we invoke it. If we finish and the closure wasn't
+                        // destroyed, then we put back the pointer so a future
+                        // invocation can succeed.
+                        builder
+                            .prelude("let a = this.a;")
+                            .prelude("this.a = 0;")
+                            .rust_argument("a")
+                            .rust_argument("b")
+                            .finally("if (--this.cnt === 0) d(a, b);")
+                            .finally("else this.a = a;");
+                    } else {
+                        // For shared closures they can be invoked recursively so we
+                        // just immediately pass through `this.a`. If we end up
+                        // executing the destructor, however, we clear out the
+                        // `this.a` pointer to prevent it being used again the
+                        // future.
+                        builder
+                            .rust_argument("this.a")
+                            .rust_argument("b")
+                            .finally("if (--this.cnt === 0) {")
+                            .finally("d(this.a, b);")
+                            .finally("this.a = 0;")
+                            .finally("}");
+                    }
+                    builder
+                        .process(&closure.function, &None)?
+                        .finish("function", "f")
+                };
+                self.cx.export_function_table()?;
+                let body = format!(
+                    "
+                        const f = wasm.__wbg_function_table.get({});
+                        const d = wasm.__wbg_function_table.get({});
+                        const b = {};
+                        const cb = {};
+                        cb.a = {};
+                        cb.cnt = 1;
+                        let real = cb.bind(cb);
+                        real.original = cb;
+                    ",
+                    closure.shim_idx,
+                    closure.dtor_idx,
+                    &self.js_arguments[1],
+                    js,
+                    &self.js_arguments[0],
+                );
+                self.prelude(&body);
+                "real".to_string()
+            }
+
+            AuxImport::StructuralMethod(name) => {
+                assert!(self.style == Style::Function);
                 let (receiver, args) = match self.js_arguments.split_first() {
                     Some(pair) => pair,
-                    None => bail!("methods must have at least one argument"),
+                    None => bail!("structural method calls must have at least one argument"),
                 };
-                handle_variadic(&format!("{}.{}", receiver, f), args)?
+                format!("{}.{}({})", receiver, name, variadic_args(args)?)
             }
-            ImportTarget::StructuralGetter(class, field) => {
-                let (receiver, _) = fixed("getter", class, 0)?;
-                let expr = format!("{}.{}", receiver, field);
-                self.ret_expr.replace("JS", &expr)
+
+            AuxImport::StructuralGetter(field) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("{}.{}", self.js_arguments[0], field)
             }
-            ImportTarget::StructuralSetter(class, field) => {
-                let (receiver, val) = fixed("setter", class, 1)?;
-                let expr = format!("{}.{} = {}", receiver, field, val[0]);
-                self.ret_expr.replace("JS", &expr)
+
+            AuxImport::StructuralClassGetter(class, field) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 0);
+                let class = self.cx.import_name(class)?;
+                format!("{}.{}", class, field)
             }
-            ImportTarget::StructuralIndexingGetter(class) => {
-                let (receiver, field) = fixed("indexing getter", class, 1)?;
-                let expr = format!("{}[{}]", receiver, field[0]);
-                self.ret_expr.replace("JS", &expr)
+
+            AuxImport::StructuralSetter(field) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 2);
+                format!(
+                    "{}.{} = {}",
+                    self.js_arguments[0], field, self.js_arguments[1]
+                )
             }
-            ImportTarget::StructuralIndexingSetter(class) => {
-                let (receiver, field) = fixed("indexing setter", class, 2)?;
-                let expr = format!("{}[{}] = {}", receiver, field[0], field[1]);
-                self.ret_expr.replace("JS", &expr)
+
+            AuxImport::StructuralClassSetter(class, field) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 1);
+                let class = self.cx.import_name(class)?;
+                format!("{}.{} = {}", class, field, self.js_arguments[0])
             }
-            ImportTarget::StructuralIndexingDeleter(class) => {
-                let (receiver, field) = fixed("indexing deleter", class, 1)?;
-                let expr = format!("delete {}[{}]", receiver, field[0]);
-                self.ret_expr.replace("JS", &expr)
+
+            AuxImport::IndexingGetterOfClass(class) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 1);
+                let class = self.cx.import_name(class)?;
+                format!("{}[{}]", class, self.js_arguments[0])
+            }
+
+            AuxImport::IndexingGetterOfObject => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 2);
+                format!("{}[{}]", self.js_arguments[0], self.js_arguments[1])
+            }
+
+            AuxImport::IndexingSetterOfClass(class) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 2);
+                let class = self.cx.import_name(class)?;
+                format!(
+                    "{}[{}] = {}",
+                    class, self.js_arguments[0], self.js_arguments[1]
+                )
+            }
+
+            AuxImport::IndexingSetterOfObject => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 3);
+                format!(
+                    "{}[{}] = {}",
+                    self.js_arguments[0], self.js_arguments[1], self.js_arguments[2]
+                )
+            }
+
+            AuxImport::IndexingDeleterOfClass(class) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 1);
+                let class = self.cx.import_name(class)?;
+                format!("delete {}[{}]", class, self.js_arguments[0])
+            }
+
+            AuxImport::IndexingDeleterOfObject => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 2);
+                format!("delete {}[{}]", self.js_arguments[0], self.js_arguments[1])
+            }
+
+            AuxImport::WrapInExportedClass(class) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                assert_eq!(self.js_arguments.len(), 1);
+                self.cx.require_class_wrap(class);
+                if self.is_noop() {
+                    return Ok(format!("{}.__wrap", class));
+                }
+                format!("{}.__wrap({})", class, self.js_arguments[0])
+            }
+
+            AuxImport::Intrinsic(intrinsic) => {
+                assert!(self.style == Style::Function);
+                assert!(!variadic);
+                self.intrinsic_expr(intrinsic)?
             }
         };
+        let mut invoc = self.ret_expr.replace("JS", &invoc);
 
         if self.catch {
             self.cx.expose_handle_error()?;
@@ -718,20 +941,20 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 }} catch (e) {{\n\
                     let error = (function () {{
                         try {{
-                            return e instanceof Error
-                                ? `${{e.message}}\n\nStack:\n${{e.stack}}`
+                            return e instanceof Error \
+                                ? `${{e.message}}\\n\\nStack:\\n${{e.stack}}` \
                                 : e.toString();
                         }} catch(_) {{
                             return \"<failed to stringify thrown value>\";
                         }}
                     }}());
-                    console.error(\"wasm-bindgen: imported JS function `{}` that \
+                    console.error(\"wasm-bindgen: imported JS function that \
                                     was not marked as `catch` threw an error:\", \
                                     error);
                     throw e;
                 }}\
                 ",
-                &invoc, shim,
+                &invoc,
             );
         }
 
@@ -747,35 +970,20 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 &invoc, &self.finally
             );
         }
-        ret.push_str(&invoc);
-
-        ret.push_str("\n}\n");
-
-        if self.ret_anyref || self.anyref_args.len() > 0 {
-            // Some return values go at the the beginning of the argument list
-            // (they force a return pointer). Handle that here by offsetting all
-            // our arg indices by one, but throw in some sanity checks for if
-            // this ever changes.
-            if let Some(start) = self.shim_arguments.get(0) {
-                if start == "ret" {
-                    assert!(!self.ret_anyref);
-                    if let Some(next) = self.shim_arguments.get(1) {
-                        assert_eq!(next, "arg0");
-                    }
-                    for (idx, _) in self.anyref_args.iter_mut() {
-                        *idx += 1;
-                    }
-                } else {
-                    assert_eq!(start, "arg0");
-                }
+        let mut ret = String::new();
+        ret.push_str("function(");
+        ret.push_str(&self.shim_arguments.join(", "));
+        if self.catch {
+            if self.shim_arguments.len() > 0 {
+                ret.push_str(", ")
             }
-            self.cx.anyref.import_xform(
-                "__wbindgen_placeholder__",
-                shim,
-                &self.anyref_args,
-                self.ret_anyref,
-            );
+            ret.push_str("exnptr");
         }
+        ret.push_str(") {\n");
+        ret.push_str(&self.prelude);
+
+        ret.push_str(&invoc);
+        ret.push_str("\n}\n");
 
         Ok(ret)
     }
@@ -800,5 +1008,214 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
             self.finally.push_str("\n");
         }
         self
+    }
+
+    fn intrinsic_expr(&mut self, intrinsic: &Intrinsic) -> Result<String, Error> {
+        let expr = match intrinsic {
+            Intrinsic::JsvalEq => {
+                assert_eq!(self.js_arguments.len(), 2);
+                format!("{} === {}", self.js_arguments[0], self.js_arguments[1])
+            }
+
+            Intrinsic::IsFunction => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("typeof({}) === 'function'", self.js_arguments[0])
+            }
+
+            Intrinsic::IsUndefined => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("{} === undefined", self.js_arguments[0])
+            }
+
+            Intrinsic::IsNull => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("{} === null", self.js_arguments[0])
+            }
+
+            Intrinsic::IsObject => {
+                assert_eq!(self.js_arguments.len(), 1);
+                self.prelude(&format!("const val = {};", self.js_arguments[0]));
+                format!("typeof(val) === 'object' && val !== null ? 1 : 0")
+            }
+
+            Intrinsic::IsSymbol => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("typeof({}) === 'symbol'", self.js_arguments[0])
+            }
+
+            Intrinsic::IsString => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("typeof({}) === 'string'", self.js_arguments[0])
+            }
+
+            Intrinsic::ObjectCloneRef => {
+                assert_eq!(self.js_arguments.len(), 1);
+                self.js_arguments[0].clone()
+            }
+
+            Intrinsic::ObjectDropRef => {
+                assert_eq!(self.js_arguments.len(), 1);
+                self.js_arguments[0].clone()
+            }
+
+            Intrinsic::CallbackDrop => {
+                assert_eq!(self.js_arguments.len(), 1);
+                self.prelude(&format!("const obj = {}.original;", self.js_arguments[0]));
+                self.prelude("if (obj.cnt-- == 1) {");
+                self.prelude("obj.a = 0;");
+                self.prelude("return true;");
+                self.prelude("}");
+                "false".to_string()
+            }
+
+            Intrinsic::CallbackForget => {
+                assert_eq!(self.js_arguments.len(), 1);
+                self.js_arguments[0].clone()
+            }
+
+            Intrinsic::NumberNew => {
+                assert_eq!(self.js_arguments.len(), 1);
+                self.js_arguments[0].clone()
+            }
+
+            Intrinsic::StringNew => {
+                assert_eq!(self.js_arguments.len(), 1);
+                self.js_arguments[0].clone()
+            }
+
+            Intrinsic::SymbolNamedNew => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("Symbol({})", self.js_arguments[0])
+            }
+
+            Intrinsic::SymbolAnonymousNew => {
+                assert_eq!(self.js_arguments.len(), 0);
+                "Symbol()".to_string()
+            }
+
+            Intrinsic::NumberGet => {
+                assert_eq!(self.js_arguments.len(), 2);
+                self.cx.expose_uint8_memory();
+                self.prelude(&format!("const obj = {};", self.js_arguments[0]));
+                self.prelude("if (typeof(obj) === 'number') return obj;");
+                self.prelude(&format!("getUint8Memory()[{}] = 1;", self.js_arguments[1]));
+                "0".to_string()
+            }
+
+            Intrinsic::StringGet => {
+                self.cx.expose_pass_string_to_wasm()?;
+                self.cx.expose_uint32_memory();
+                assert_eq!(self.js_arguments.len(), 2);
+                self.prelude(&format!("const obj = {};", self.js_arguments[0]));
+                self.prelude("if (typeof(obj) !== 'string') return 0;");
+                self.prelude("const ptr = passStringToWasm(obj);");
+                self.prelude(&format!(
+                    "getUint32Memory()[{} / 4] = WASM_VECTOR_LEN;",
+                    self.js_arguments[1],
+                ));
+                "ptr".to_string()
+            }
+
+            Intrinsic::BooleanGet => {
+                assert_eq!(self.js_arguments.len(), 1);
+                self.prelude(&format!("const v = {};", self.js_arguments[0]));
+                format!("typeof(v) === 'boolean' ? (v ? 1 : 0) : 2")
+            }
+            Intrinsic::Throw => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("throw new Error({})", self.js_arguments[0])
+            }
+
+            Intrinsic::Rethrow => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("throw {}", self.js_arguments[0])
+            }
+
+            Intrinsic::Module => {
+                assert_eq!(self.js_arguments.len(), 0);
+                if !self.cx.config.mode.no_modules() && !self.cx.config.mode.web() {
+                    bail!(
+                        "`wasm_bindgen::module` is currently only supported with \
+                         `--target no-modules` and `--target web`"
+                    );
+                }
+                format!("init.__wbindgen_wasm_module")
+            }
+
+            Intrinsic::Memory => {
+                assert_eq!(self.js_arguments.len(), 0);
+                self.cx.memory().to_string()
+            }
+
+            Intrinsic::FunctionTable => {
+                assert_eq!(self.js_arguments.len(), 0);
+                self.cx.export_function_table()?;
+                format!("wasm.__wbg_function_table")
+            }
+
+            Intrinsic::DebugString => {
+                assert_eq!(self.js_arguments.len(), 1);
+                self.cx.expose_debug_string();
+                format!("debugString({})", self.js_arguments[0])
+            }
+
+            Intrinsic::JsonParse => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("JSON.parse({})", self.js_arguments[0])
+            }
+
+            Intrinsic::JsonSerialize => {
+                assert_eq!(self.js_arguments.len(), 1);
+                format!("JSON.stringify({})", self.js_arguments[0])
+            }
+
+            Intrinsic::AnyrefHeapLiveCount => {
+                assert_eq!(self.js_arguments.len(), 0);
+                if self.cx.config.anyref {
+                    // Eventually we should add support to the anyref-xform to
+                    // re-write calls to the imported
+                    // `__wbindgen_anyref_heap_live_count` function into calls to
+                    // the exported `__wbindgen_anyref_heap_live_count_impl`
+                    // function, and to un-export that function.
+                    //
+                    // But for now, we just bounce wasm -> js -> wasm because it is
+                    // easy.
+                    self.cx.require_internal_export("__wbindgen_anyref_heap_live_count_impl")?;
+                    "wasm.__wbindgen_anyref_heap_live_count_impl()".into()
+                } else {
+                    self.cx.expose_global_heap();
+                    self.prelude(
+                        "
+                            let free_count = 0;
+                            let next = heap_next;
+                            while (next < heap.length) {
+                                free_count += 1;
+                                next = heap[next];
+                            }
+                        ",
+                    );
+                    format!(
+                        "heap.length - free_count - {} - {}",
+                        super::INITIAL_HEAP_OFFSET,
+                        super::INITIAL_HEAP_VALUES.len(),
+                    )
+                }
+            }
+
+            Intrinsic::InitAnyrefTable => {
+                self.cx.expose_anyref_table();
+                String::from(
+                    "
+                      const table = wasm.__wbg_anyref_table;
+                      const offset = table.grow(4);
+                      table.set(offset + 0, undefined);
+                      table.set(offset + 1, null);
+                      table.set(offset + 2, true);
+                      table.set(offset + 3, false);
+                    ",
+                )
+            }
+        };
+        Ok(expr)
     }
 }

@@ -22,10 +22,15 @@ fn no_modules_rejects_npm() {
         .file("package.json", "")
         .wasm_bindgen("--no-modules");
     cmd.assert()
-        .stderr("\
-error: failed to generate bindings for JS import `foo`
-    caused by: import from `foo` module not allowed with `--target no-modules`; use `nodejs`, `web`, or `bundler` target instead
-")
+        .stderr(
+            str::is_match(
+                "\
+error: NPM dependencies have been specified in `.*` but this is only \
+compatible with the `bundler` and `nodejs` targets
+",
+            )
+            .unwrap(),
+        )
         .failure();
 }
 

@@ -116,6 +116,6 @@ function render(scene) {
     rendering.stop();
     rendering = null;
   }
-  rendering = new State(scene.render(concurrency.value, pool, ctx));
+  rendering = new State(scene.render(parseInt(concurrency.value), pool, ctx));
   pool = null; // previous call took ownership of `pool`, zero it out here too
 }

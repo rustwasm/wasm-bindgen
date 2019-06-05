@@ -126,3 +126,13 @@ exports.pass_reference_first_arg_twice = (a, b, c) => {
 exports.call_destroyed = f => {
   assert.throws(f, /invoked recursively or destroyed/);
 };
+
+let FORGOTTEN_CLOSURE = null;
+
+exports.js_store_forgotten_closure = f => {
+  FORGOTTEN_CLOSURE = f;
+};
+
+exports.js_call_forgotten_closure = () => {
+  FORGOTTEN_CLOSURE();
+};
