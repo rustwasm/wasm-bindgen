@@ -601,15 +601,16 @@ impl<'a> Context<'a> {
             },
             wasm_bindgen_shared::free_function(&name),
         ));
-        ts_dst.push_str("  free(): void;");
+        ts_dst.push_str("  free(): void;\n");
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
 
         let mut fields = class.typescript_fields.keys().collect::<Vec<_>>();
         fields.sort(); // make sure we have deterministic output
         for name in fields {
-            let (ty, readonly) = &class.typescript_fields[name];
-            if *readonly {
+            let (ty, has_setter) = &class.typescript_fields[name];
+            ts_dst.push_str("  ");
+            if !has_setter {
                 ts_dst.push_str("readonly ");
             }
             ts_dst.push_str(name);
@@ -1890,20 +1891,24 @@ impl<'a> Context<'a> {
                 let (js, ts, raw_docs) = j2r
                     .process(&descriptor, &export.arg_names)?
                     .finish("", &format!("wasm.{}", wasm_name));
-                let ret_ty = j2r.ret_ty.clone();
-                let exported = require_class(&mut self.exported_classes, class);
                 let docs = format_doc_comments(&export.comments, Some(raw_docs));
                 match export.kind {
                     AuxExportKind::Getter { .. } => {
-                        exported.push_field(&docs, name, &js, Some(&ret_ty), true);
+                        let ret_ty = j2r.ret_ty.clone();
+                        let exported = require_class(&mut self.exported_classes, class);
+                        exported.push_getter(&docs, name, &js, &ret_ty);
                     }
                     AuxExportKind::Setter { .. } => {
-                        exported.push_field(&docs, name, &js, None, false);
+                        let arg_ty = &j2r.js_arguments[0].type_.clone();
+                        let exported = require_class(&mut self.exported_classes, class);
+                        exported.push_setter(&docs, name, &js, &arg_ty);
                     }
                     AuxExportKind::StaticFunction { .. } => {
+                        let exported = require_class(&mut self.exported_classes, class);
                         exported.push(&docs, name, "static ", &js, &ts);
                     }
                     _ => {
+                        let exported = require_class(&mut self.exported_classes, class);
                         exported.push(&docs, name, "", &js, &ts);
                     }
                 }
@@ -2155,19 +2160,29 @@ impl ExportedClass {
         self.typescript.push_str("\n");
     }
 
-    /// Used for adding a field to a class, mainly to ensure that TypeScript
+    /// Used for adding a getter to a class, mainly to ensure that TypeScript
     /// generation is handled specially.
-    ///
-    /// Note that the `ts` is optional and it's expected to just be the field
-    /// type, not the full signature. It's currently only available on getters,
-    /// but there currently has to always be at least a getter.
-    fn push_field(&mut self, docs: &str, field: &str, js: &str, ts: Option<&str>, getter: bool) {
+    fn push_getter(&mut self, docs: &str, field: &str, js: &str, ret_ty: &str) {
+        self.push_accessor(docs, field, js, "get ", ret_ty);
+    }
+
+    /// Used for adding a setter to a class, mainly to ensure that TypeScript
+    /// generation is handled specially.
+    fn push_setter(&mut self, docs: &str, field: &str, js: &str, ret_ty: &str) {
+        let has_setter = self.push_accessor(docs, field, js, "set ", ret_ty);
+        *has_setter = true;
+    }
+
+    fn push_accessor(
+        &mut self,
+        docs: &str,
+        field: &str,
+        js: &str,
+        prefix: &str,
+        ret_ty: &str
+    ) -> &mut bool {
         self.contents.push_str(docs);
-        if getter {
-            self.contents.push_str("get ");
-        } else {
-            self.contents.push_str("set ");
-        }
+        self.contents.push_str(prefix);
         self.contents.push_str(field);
         self.contents.push_str(js);
         self.contents.push_str("\n");
@@ -2175,10 +2190,8 @@ impl ExportedClass {
             .typescript_fields
             .entry(field.to_string())
             .or_insert_with(Default::default);
-        if let Some(ts) = ts {
-            *ty = ts.to_string();
-        }
-        *has_setter = *has_setter || !getter;
+        *ty = ret_ty.to_string();
+        has_setter
     }
 }
 
