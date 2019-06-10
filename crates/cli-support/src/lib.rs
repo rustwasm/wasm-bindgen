@@ -342,7 +342,12 @@ impl Bindgen {
                 .customs
                 .delete_typed::<webidl::WasmBindgenAux>()
                 .expect("aux section should be present");
-            cx.generate(&aux)?;
+            let bindings = cx
+                .module
+                .customs
+                .delete_typed::<webidl::NonstandardWebidlSection>()
+                .unwrap();
+            cx.generate(&aux, &bindings)?;
 
             // Write out all local JS snippets to the final destination now that
             // we've collected them from all the programs.

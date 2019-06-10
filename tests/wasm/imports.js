@@ -90,7 +90,7 @@ exports.touch_custom_type = function() {
 };
 
 exports.interpret_2_as_custom_type = function() {
-  assert.throws(wasm.interpret_2_as_custom_type, /expected value of type CustomType/);
+  assert.throws(wasm.interpret_2_as_custom_type, /expected instance of CustomType/);
 };
 
 exports.baz$ = function() {};

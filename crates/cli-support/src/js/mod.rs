@@ -1,17 +1,19 @@
-mod js2rust;
-mod rust2js;
-
 use crate::descriptor::VectorKind;
-use crate::js::js2rust::Js2Rust;
-use crate::js::rust2js::Rust2Js;
+use crate::intrinsic::Intrinsic;
 use crate::webidl::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
-use crate::webidl::{JsImport, JsImportName, WasmBindgenAux, WebidlCustomSection};
+use crate::webidl::{AuxValue, Binding};
+use crate::webidl::{JsImport, JsImportName, NonstandardWebidlSection, WasmBindgenAux};
 use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use walrus::{ExportId, ImportId, MemoryId, Module};
+use wasm_webidl_bindings::ast;
+
+mod binding;
+mod incoming;
+mod outgoing;
 
 pub struct Context<'a> {
     globals: String,
@@ -21,7 +23,6 @@ pub struct Context<'a> {
     required_internal_exports: HashSet<&'static str>,
     config: &'a Bindgen,
     pub module: &'a mut Module,
-    bindings: WebidlCustomSection,
 
     /// A map representing the `import` statements we'll be generating in the JS
     /// glue. The key is the module we're importing from and the value is the
@@ -89,10 +90,6 @@ impl<'a> Context<'a> {
             wasm_import_definitions: Default::default(),
             exported_classes: Some(Default::default()),
             config,
-            bindings: *module
-                .customs
-                .delete_typed::<WebidlCustomSection>()
-                .unwrap(),
             module,
             memory,
             npm_dependencies: Default::default(),
@@ -658,19 +655,6 @@ impl<'a> Context<'a> {
         for id in to_remove {
             self.module.exports.delete(id);
         }
-    }
-
-    fn expose_does_not_exist(&mut self) {
-        if !self.should_write_global("does_not_exist") {
-            return;
-        }
-        self.global(
-            "
-                function doesNotExist() {
-                    throw new Error('imported function or type does not exist');
-                }
-            ",
-        );
     }
 
     fn expose_drop_ref(&mut self) {
@@ -1444,6 +1428,31 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
+    fn expose_log_error(&mut self) {
+        if !self.should_write_global("log_error") {
+            return;
+        }
+        self.global(
+            "\
+            function logError(e) {
+                let error = (function () {
+                    try {
+                        return e instanceof Error \
+                            ? `${e.message}\\n\\nStack:\\n${e.stack}` \
+                            : e.toString();
+                    } catch(_) {
+                        return \"<failed to stringify thrown value>\";
+                    }
+                }());
+                console.error(\"wasm-bindgen: imported JS function that \
+                                was not marked as `catch` threw an error:\", \
+                                error);
+                throw e;
+            }
+            ",
+        );
+    }
+
     fn pass_to_wasm_function(&mut self, t: VectorKind) -> Result<&'static str, Error> {
         let s = match t {
             VectorKind::String => {
@@ -1579,7 +1588,7 @@ impl<'a> Context<'a> {
                 if (desc) return desc;
                 obj = Object.getPrototypeOf(obj);
               }
-              return {}
+              return {};
             }
             ",
         );
@@ -1801,40 +1810,32 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn take_object(&mut self, expr: &str) -> String {
-        if self.config.anyref {
-            expr.to_string()
-        } else {
-            self.expose_take_object();
-            format!("takeObject({})", expr)
+    pub fn generate(
+        &mut self,
+        aux: &WasmBindgenAux,
+        bindings: &NonstandardWebidlSection,
+    ) -> Result<(), Error> {
+        for (i, (idx, binding)) in bindings.elems.iter().enumerate() {
+            self.generate_elem_binding(i, *idx, binding, bindings)?;
         }
-    }
 
-    fn get_object(&mut self, expr: &str) -> String {
-        if self.config.anyref {
-            expr.to_string()
-        } else {
-            self.expose_get_object();
-            format!("getObject({})", expr)
-        }
-    }
-
-    pub fn generate(&mut self, aux: &WasmBindgenAux) -> Result<(), Error> {
         let mut pairs = aux.export_map.iter().collect::<Vec<_>>();
         pairs.sort_by_key(|(k, _)| *k);
         check_duplicated_getter_and_setter_names(&pairs)?;
         for (id, export) in pairs {
-            self.generate_export(*id, export).with_context(|_| {
-                format!(
-                    "failed to generate bindings for Rust export `{}`",
-                    export.debug_name,
-                )
-            })?;
+            self.generate_export(*id, export, bindings)
+                .with_context(|_| {
+                    format!(
+                        "failed to generate bindings for Rust export `{}`",
+                        export.debug_name,
+                    )
+                })?;
         }
+
         for (id, import) in sorted_iter(&aux.import_map) {
             let variadic = aux.imports_with_variadic.contains(&id);
             let catch = aux.imports_with_catch.contains(&id);
-            self.generate_import(*id, import, variadic, catch)
+            self.generate_import(*id, import, bindings, variadic, catch)
                 .with_context(|_| {
                     format!("failed to generate bindings for import `{:?}`", import,)
                 })?;
@@ -1856,75 +1857,111 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn generate_export(&mut self, id: ExportId, export: &AuxExport) -> Result<(), Error> {
+    /// Generates a wrapper function for each bound element of the function
+    /// table. These wrapper functions have the expected WebIDL signature we'd
+    /// like them to have. This currently isn't part of the WebIDL bindings
+    /// proposal, but the thinking is that it'd look something like this if
+    /// added.
+    ///
+    /// Note that this is just an internal function shim used by closures and
+    /// such, so we're not actually exporting anything here.
+    fn generate_elem_binding(
+        &mut self,
+        idx: usize,
+        elem_idx: u32,
+        binding: &Binding,
+        bindings: &NonstandardWebidlSection,
+    ) -> Result<(), Error> {
+        let webidl = bindings
+            .types
+            .get::<ast::WebidlFunction>(binding.webidl_ty)
+            .unwrap();
+        self.export_function_table()?;
+        let mut builder = binding::Builder::new(self);
+        let js = builder.process(&binding, &webidl, true, &None, &mut |_, _, args| {
+            Ok(format!(
+                "wasm.__wbg_function_table.get({})({})",
+                elem_idx,
+                args.join(", ")
+            ))
+        })?;
+        self.globals
+            .push_str(&format!("function __wbg_elem_binding{}{}\n", idx, js));
+        Ok(())
+    }
+
+    fn generate_export(
+        &mut self,
+        id: ExportId,
+        export: &AuxExport,
+        bindings: &NonstandardWebidlSection,
+    ) -> Result<(), Error> {
         let wasm_name = self.module.exports.get(id).name.clone();
-        let descriptor = self.bindings.exports[&id].clone();
+        let binding = &bindings.exports[&id];
+        let webidl = bindings
+            .types
+            .get::<ast::WebidlFunction>(binding.webidl_ty)
+            .unwrap();
+
+        // Construct a JS shim builder, and configure it based on the kind of
+        // export that we're generating.
+        let mut builder = binding::Builder::new(self);
+        match &export.kind {
+            AuxExportKind::Function(_) => {}
+            AuxExportKind::StaticFunction { .. } => {}
+            AuxExportKind::Constructor(class) => builder.constructor(class),
+            AuxExportKind::Getter { .. } | AuxExportKind::Setter { .. } => builder.method(false),
+            AuxExportKind::Method { consumed, .. } => builder.method(*consumed),
+        }
+
+        // Process the `binding` and generate a bunch of JS/TypeScript/etc.
+        let js = builder.process(
+            &binding,
+            &webidl,
+            true,
+            &export.arg_names,
+            &mut |_, _, args| Ok(format!("wasm.{}({})", wasm_name, args.join(", "))),
+        )?;
+        let ts = builder.typescript_signature();
+        let js_doc = builder.js_doc_comments();
+        let docs = format_doc_comments(&export.comments, Some(js_doc));
+
+        // Once we've got all the JS then put it in the right location dependin
+        // on what's being exported.
         match &export.kind {
             AuxExportKind::Function(name) => {
-                let (js, ts, js_doc) = Js2Rust::new(&name, self)
-                    .process(&descriptor, &export.arg_names)?
-                    .finish("function", &format!("wasm.{}", wasm_name));
-                self.export(
-                    &name,
-                    &js,
-                    Some(format_doc_comments(&export.comments, Some(js_doc))),
-                )?;
+                self.export(&name, &format!("function{}", js), Some(docs))?;
                 self.globals.push_str("\n");
-                self.typescript.push_str("export ");
+                self.typescript.push_str("export function ");
+                self.typescript.push_str(&name);
                 self.typescript.push_str(&ts);
-                self.typescript.push_str("\n");
+                self.typescript.push_str(";\n");
             }
             AuxExportKind::Constructor(class) => {
-                let (js, ts, raw_docs) = Js2Rust::new("constructor", self)
-                    .constructor(Some(&class))
-                    .process(&descriptor, &export.arg_names)?
-                    .finish("", &format!("wasm.{}", wasm_name));
                 let exported = require_class(&mut self.exported_classes, class);
                 if exported.has_constructor {
                     bail!("found duplicate constructor for class `{}`", class);
                 }
                 exported.has_constructor = true;
-                let docs = format_doc_comments(&export.comments, Some(raw_docs));
                 exported.push(&docs, "constructor", "", &js, &ts);
             }
-            AuxExportKind::Getter { class, field: name }
-            | AuxExportKind::Setter { class, field: name }
-            | AuxExportKind::StaticFunction { class, name }
-            | AuxExportKind::Method { class, name, .. } => {
-                let mut j2r = Js2Rust::new(name, self);
-                match export.kind {
-                    AuxExportKind::StaticFunction { .. } => {}
-                    AuxExportKind::Method { consumed: true, .. } => {
-                        j2r.method(true);
-                    }
-                    _ => {
-                        j2r.method(false);
-                    }
-                }
-                let (js, ts, raw_docs) = j2r
-                    .process(&descriptor, &export.arg_names)?
-                    .finish("", &format!("wasm.{}", wasm_name));
-                let docs = format_doc_comments(&export.comments, Some(raw_docs));
-                match export.kind {
-                    AuxExportKind::Getter { .. } => {
-                        let ret_ty = j2r.ret_ty.clone();
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_getter(&docs, name, &js, &ret_ty);
-                    }
-                    AuxExportKind::Setter { .. } => {
-                        let arg_ty = &j2r.js_arguments[0].type_.clone();
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push_setter(&docs, name, &js, &arg_ty);
-                    }
-                    AuxExportKind::StaticFunction { .. } => {
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "static ", &js, &ts);
-                    }
-                    _ => {
-                        let exported = require_class(&mut self.exported_classes, class);
-                        exported.push(&docs, name, "", &js, &ts);
-                    }
-                }
+            AuxExportKind::Getter { class, field } => {
+                let ret_ty = builder.ts_ret.as_ref().unwrap().ty.clone();
+                let exported = require_class(&mut self.exported_classes, class);
+                exported.push_getter(&docs, field, &js, &ret_ty);
+            }
+            AuxExportKind::Setter { class, field } => {
+                let arg_ty = builder.ts_args[0].ty.clone();
+                let exported = require_class(&mut self.exported_classes, class);
+                exported.push_setter(&docs, field, &js, &arg_ty);
+            }
+            AuxExportKind::StaticFunction { class, name } => {
+                let exported = require_class(&mut self.exported_classes, class);
+                exported.push(&docs, name, "static ", &js, &ts);
+            }
+            AuxExportKind::Method { class, name, .. } => {
+                let exported = require_class(&mut self.exported_classes, class);
+                exported.push(&docs, name, "", &js, &ts);
             }
         }
         Ok(())
@@ -1934,19 +1971,513 @@ impl<'a> Context<'a> {
         &mut self,
         id: ImportId,
         import: &AuxImport,
+        bindings: &NonstandardWebidlSection,
         variadic: bool,
         catch: bool,
     ) -> Result<(), Error> {
-        let signature = self.bindings.imports[&id].clone();
-        let catch_and_rethrow = self.config.debug;
-        let js = Rust2Js::new(self)
-            .catch_and_rethrow(catch_and_rethrow)
-            .catch(catch)
-            .variadic(variadic)
-            .process(&signature)?
-            .finish(import)?;
+        let binding = &bindings.imports[&id];
+        let webidl = bindings
+            .types
+            .get::<ast::WebidlFunction>(binding.webidl_ty)
+            .unwrap();
+        let mut builder = binding::Builder::new(self);
+        builder.catch(catch)?;
+        let js = builder.process(&binding, &webidl, false, &None, &mut |cx, prelude, args| {
+            cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
+        })?;
+        let js = format!("function{}", js);
         self.wasm_import_definitions.insert(id, js);
         Ok(())
+    }
+
+    /// Generates a JS snippet appropriate for invoking `import`.
+    ///
+    /// This is generating code for `binding` where `bindings` has more type
+    /// infomation. The `args` array is the list of JS expressions representing
+    /// the arguments to pass to JS. Finally `variadic` indicates whether the
+    /// last argument is a list to be splatted in a variadic way, and `prelude`
+    /// is a location to push some more initialization JS if necessary.
+    ///
+    /// The returned value here is a JS expression which evaluates to the
+    /// purpose of `AuxImport`, which depends on the kind of import.
+    fn invoke_import(
+        &mut self,
+        binding: &Binding,
+        import: &AuxImport,
+        bindings: &NonstandardWebidlSection,
+        args: &[String],
+        variadic: bool,
+        prelude: &mut String,
+    ) -> Result<String, Error> {
+        let webidl_ty: &ast::WebidlFunction = bindings.types.get(binding.webidl_ty).unwrap();
+        let variadic_args = |js_arguments: &[String]| {
+            Ok(if !variadic {
+                format!("{}", js_arguments.join(", "))
+            } else {
+                let (last_arg, args) = match js_arguments.split_last() {
+                    Some(pair) => pair,
+                    None => bail!("a function with no arguments cannot be variadic"),
+                };
+                if args.len() > 0 {
+                    format!("{}, ...{}", args.join(", "), last_arg)
+                } else {
+                    format!("...{}", last_arg)
+                }
+            })
+        };
+        match import {
+            AuxImport::Value(val) => match webidl_ty.kind {
+                ast::WebidlFunctionKind::Constructor => {
+                    let js = match val {
+                        AuxValue::Bare(js) => self.import_name(js)?,
+                        _ => bail!("invalid import set for constructor"),
+                    };
+                    Ok(format!("new {}({})", js, variadic_args(&args)?))
+                }
+                ast::WebidlFunctionKind::Method(_) => {
+                    let descriptor = |anchor: &str, extra: &str, field: &str, which: &str| {
+                        format!(
+                            "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').{}",
+                            anchor, extra, field, which
+                        )
+                    };
+                    let js = match val {
+                        AuxValue::Bare(js) => self.import_name(js)?,
+                        AuxValue::Getter(class, field) => {
+                            self.expose_get_inherited_descriptor();
+                            let class = self.import_name(class)?;
+                            descriptor(&class, ".prototype", field, "get")
+                        }
+                        AuxValue::ClassGetter(class, field) => {
+                            self.expose_get_inherited_descriptor();
+                            let class = self.import_name(class)?;
+                            descriptor(&class, "", field, "get")
+                        }
+                        AuxValue::Setter(class, field) => {
+                            self.expose_get_inherited_descriptor();
+                            let class = self.import_name(class)?;
+                            descriptor(&class, ".prototype", field, "set")
+                        }
+                        AuxValue::ClassSetter(class, field) => {
+                            self.expose_get_inherited_descriptor();
+                            let class = self.import_name(class)?;
+                            descriptor(&class, "", field, "set")
+                        }
+                    };
+                    Ok(format!("{}.call({})", js, variadic_args(&args)?))
+                }
+                ast::WebidlFunctionKind::Static => {
+                    let js = match val {
+                        AuxValue::Bare(js) => self.import_name(js)?,
+                        _ => bail!("invalid import set for constructor"),
+                    };
+                    Ok(format!("{}({})", js, variadic_args(&args)?))
+                }
+            },
+
+            AuxImport::Instanceof(js) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 1);
+                let js = self.import_name(js)?;
+                Ok(format!("{} instanceof {}", args[0], js))
+            }
+
+            AuxImport::Static(js) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 0);
+                self.import_name(js)
+            }
+
+            AuxImport::Closure {
+                dtor,
+                mutable,
+                binding_idx,
+                nargs,
+            } => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 3);
+                let arg_names = (0..*nargs)
+                    .map(|i| format!("arg{}", i))
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                let mut js = format!("({}) => {{\n", arg_names);
+                // First up with a closure we increment the internal reference
+                // count. This ensures that the Rust closure environment won't
+                // be deallocated while we're invoking it.
+                js.push_str("state.cnt++;\n");
+
+                self.export_function_table()?;
+                let dtor = format!("wasm.__wbg_function_table.get({})", dtor);
+                let call = format!("__wbg_elem_binding{}", binding_idx);
+
+                if *mutable {
+                    // For mutable closures they can't be invoked recursively.
+                    // To handle that we swap out the `this.a` pointer with zero
+                    // while we invoke it. If we finish and the closure wasn't
+                    // destroyed, then we put back the pointer so a future
+                    // invocation can succeed.
+                    js.push_str("const a = state.a;\n");
+                    js.push_str("state.a = 0;\n");
+                    js.push_str("try {\n");
+                    js.push_str(&format!("return {}(a, state.b, {});\n", call, arg_names));
+                    js.push_str("} finally {\n");
+                    js.push_str("if (--state.cnt === 0) ");
+                    js.push_str(&dtor);
+                    js.push_str("(a, state.b);\n");
+                    js.push_str("else state.a = a;\n");
+                    js.push_str("}\n");
+                } else {
+                    // For shared closures they can be invoked recursively so we
+                    // just immediately pass through `this.a`. If we end up
+                    // executing the destructor, however, we clear out the
+                    // `this.a` pointer to prevent it being used again the
+                    // future.
+                    js.push_str("try {\n");
+                    js.push_str(&format!(
+                        "return {}(state.a, state.b, {});\n",
+                        call, arg_names
+                    ));
+                    js.push_str("} finally {\n");
+                    js.push_str("if (--state.cnt === 0) {\n");
+                    js.push_str(&dtor);
+                    js.push_str("(state.a, state.b);\n");
+                    js.push_str("state.a = 0;\n");
+                    js.push_str("}\n");
+                    js.push_str("}\n");
+                }
+                js.push_str("}\n");
+
+                prelude.push_str(&format!(
+                    "
+                        const state = {{ a: {arg0}, b: {arg1}, cnt: 1 }};
+                        const real = {body};
+                        real.original = state;
+                    ",
+                    body = js,
+                    arg0 = &args[0],
+                    arg1 = &args[1],
+                ));
+                Ok("real".to_string())
+            }
+
+            AuxImport::StructuralMethod(name) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                let (receiver, args) = match args.split_first() {
+                    Some(pair) => pair,
+                    None => bail!("structural method calls must have at least one argument"),
+                };
+                Ok(format!("{}.{}({})", receiver, name, variadic_args(args)?))
+            }
+
+            AuxImport::StructuralGetter(field) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 1);
+                Ok(format!("{}.{}", args[0], field))
+            }
+
+            AuxImport::StructuralClassGetter(class, field) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 0);
+                let class = self.import_name(class)?;
+                Ok(format!("{}.{}", class, field))
+            }
+
+            AuxImport::StructuralSetter(field) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 2);
+                Ok(format!("{}.{} = {}", args[0], field, args[1]))
+            }
+
+            AuxImport::StructuralClassSetter(class, field) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 1);
+                let class = self.import_name(class)?;
+                Ok(format!("{}.{} = {}", class, field, args[0]))
+            }
+
+            AuxImport::IndexingGetterOfClass(class) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 1);
+                let class = self.import_name(class)?;
+                Ok(format!("{}[{}]", class, args[0]))
+            }
+
+            AuxImport::IndexingGetterOfObject => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 2);
+                Ok(format!("{}[{}]", args[0], args[1]))
+            }
+
+            AuxImport::IndexingSetterOfClass(class) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 2);
+                let class = self.import_name(class)?;
+                Ok(format!("{}[{}] = {}", class, args[0], args[1]))
+            }
+
+            AuxImport::IndexingSetterOfObject => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 3);
+                Ok(format!("{}[{}] = {}", args[0], args[1], args[2]))
+            }
+
+            AuxImport::IndexingDeleterOfClass(class) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 1);
+                let class = self.import_name(class)?;
+                Ok(format!("delete {}[{}]", class, args[0]))
+            }
+
+            AuxImport::IndexingDeleterOfObject => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 2);
+                Ok(format!("delete {}[{}]", args[0], args[1]))
+            }
+
+            AuxImport::WrapInExportedClass(class) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                assert_eq!(args.len(), 1);
+                self.require_class_wrap(class);
+                Ok(format!("{}.__wrap({})", class, args[0]))
+            }
+
+            AuxImport::Intrinsic(intrinsic) => {
+                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(!variadic);
+                self.invoke_intrinsic(intrinsic, args, prelude)
+            }
+        }
+    }
+
+    /// Same as `invoke_import` above, except more specialized and only used for
+    /// generating the JS expression needed to implement a particular intrinsic.
+    fn invoke_intrinsic(
+        &mut self,
+        intrinsic: &Intrinsic,
+        args: &[String],
+        prelude: &mut String,
+    ) -> Result<String, Error> {
+        let expr = match intrinsic {
+            Intrinsic::JsvalEq => {
+                assert_eq!(args.len(), 2);
+                format!("{} === {}", args[0], args[1])
+            }
+
+            Intrinsic::IsFunction => {
+                assert_eq!(args.len(), 1);
+                format!("typeof({}) === 'function'", args[0])
+            }
+
+            Intrinsic::IsUndefined => {
+                assert_eq!(args.len(), 1);
+                format!("{} === undefined", args[0])
+            }
+
+            Intrinsic::IsNull => {
+                assert_eq!(args.len(), 1);
+                format!("{} === null", args[0])
+            }
+
+            Intrinsic::IsObject => {
+                assert_eq!(args.len(), 1);
+                prelude.push_str(&format!("const val = {};\n", args[0]));
+                format!("typeof(val) === 'object' && val !== null")
+            }
+
+            Intrinsic::IsSymbol => {
+                assert_eq!(args.len(), 1);
+                format!("typeof({}) === 'symbol'", args[0])
+            }
+
+            Intrinsic::IsString => {
+                assert_eq!(args.len(), 1);
+                format!("typeof({}) === 'string'", args[0])
+            }
+
+            Intrinsic::ObjectCloneRef => {
+                assert_eq!(args.len(), 1);
+                args[0].clone()
+            }
+
+            Intrinsic::ObjectDropRef => {
+                assert_eq!(args.len(), 1);
+                args[0].clone()
+            }
+
+            Intrinsic::CallbackDrop => {
+                assert_eq!(args.len(), 1);
+                prelude.push_str(&format!("const obj = {}.original;\n", args[0]));
+                prelude.push_str("if (obj.cnt-- == 1) {\n");
+                prelude.push_str("obj.a = 0;\n");
+                prelude.push_str("return true;\n");
+                prelude.push_str("}\n");
+                "false".to_string()
+            }
+
+            Intrinsic::CallbackForget => {
+                assert_eq!(args.len(), 1);
+                args[0].clone()
+            }
+
+            Intrinsic::NumberNew => {
+                assert_eq!(args.len(), 1);
+                args[0].clone()
+            }
+
+            Intrinsic::StringNew => {
+                assert_eq!(args.len(), 1);
+                args[0].clone()
+            }
+
+            Intrinsic::SymbolNamedNew => {
+                assert_eq!(args.len(), 1);
+                format!("Symbol({})", args[0])
+            }
+
+            Intrinsic::SymbolAnonymousNew => {
+                assert_eq!(args.len(), 0);
+                "Symbol()".to_string()
+            }
+
+            Intrinsic::NumberGet => {
+                assert_eq!(args.len(), 2);
+                self.expose_uint8_memory();
+                prelude.push_str(&format!("const obj = {};\n", args[0]));
+                prelude.push_str("if (typeof(obj) === 'number') return obj;\n");
+                prelude.push_str(&format!("getUint8Memory()[{}] = 1;\n", args[1]));
+                "0".to_string()
+            }
+
+            Intrinsic::StringGet => {
+                self.expose_pass_string_to_wasm()?;
+                self.expose_uint32_memory();
+                assert_eq!(args.len(), 2);
+                prelude.push_str(&format!("const obj = {};\n", args[0]));
+                prelude.push_str("if (typeof(obj) !== 'string') return 0;\n");
+                prelude.push_str("const ptr = passStringToWasm(obj);\n");
+                prelude.push_str(&format!(
+                    "getUint32Memory()[{} / 4] = WASM_VECTOR_LEN;\n",
+                    args[1],
+                ));
+                "ptr".to_string()
+            }
+
+            Intrinsic::BooleanGet => {
+                assert_eq!(args.len(), 1);
+                prelude.push_str(&format!("const v = {};\n", args[0]));
+                format!("typeof(v) === 'boolean' ? (v ? 1 : 0) : 2")
+            }
+
+            Intrinsic::Throw => {
+                assert_eq!(args.len(), 1);
+                format!("throw new Error({})", args[0])
+            }
+
+            Intrinsic::Rethrow => {
+                assert_eq!(args.len(), 1);
+                format!("throw {}", args[0])
+            }
+
+            Intrinsic::Module => {
+                assert_eq!(args.len(), 0);
+                if !self.config.mode.no_modules() && !self.config.mode.web() {
+                    bail!(
+                        "`wasm_bindgen::module` is currently only supported with \
+                         `--target no-modules` and `--target web`"
+                    );
+                }
+                format!("init.__wbindgen_wasm_module")
+            }
+
+            Intrinsic::Memory => {
+                assert_eq!(args.len(), 0);
+                self.memory().to_string()
+            }
+
+            Intrinsic::FunctionTable => {
+                assert_eq!(args.len(), 0);
+                self.export_function_table()?;
+                format!("wasm.__wbg_function_table")
+            }
+
+            Intrinsic::DebugString => {
+                assert_eq!(args.len(), 1);
+                self.expose_debug_string();
+                format!("debugString({})", args[0])
+            }
+
+            Intrinsic::JsonParse => {
+                assert_eq!(args.len(), 1);
+                format!("JSON.parse({})", args[0])
+            }
+
+            Intrinsic::JsonSerialize => {
+                assert_eq!(args.len(), 1);
+                format!("JSON.stringify({})", args[0])
+            }
+
+            Intrinsic::AnyrefHeapLiveCount => {
+                assert_eq!(args.len(), 0);
+                if self.config.anyref {
+                    // Eventually we should add support to the anyref-xform to
+                    // re-write calls to the imported
+                    // `__wbindgen_anyref_heap_live_count` function into calls to
+                    // the exported `__wbindgen_anyref_heap_live_count_impl`
+                    // function, and to un-export that function.
+                    //
+                    // But for now, we just bounce wasm -> js -> wasm because it is
+                    // easy.
+                    self.require_internal_export("__wbindgen_anyref_heap_live_count_impl")?;
+                    "wasm.__wbindgen_anyref_heap_live_count_impl()".into()
+                } else {
+                    self.expose_global_heap();
+                    prelude.push_str(
+                        "
+                            let free_count = 0;
+                            let next = heap_next;
+                            while (next < heap.length) {
+                                free_count += 1;
+                                next = heap[next];
+                            }
+                        ",
+                    );
+                    format!(
+                        "heap.length - free_count - {} - {}",
+                        INITIAL_HEAP_OFFSET,
+                        INITIAL_HEAP_VALUES.len(),
+                    )
+                }
+            }
+
+            Intrinsic::InitAnyrefTable => {
+                self.expose_anyref_table();
+                String::from(
+                    "
+                      const table = wasm.__wbg_anyref_table;
+                      const offset = table.grow(4);
+                      table.set(offset + 0, undefined);
+                      table.set(offset + 1, null);
+                      table.set(offset + 2, true);
+                      table.set(offset + 3, false);
+                    ",
+                )
+            }
+        };
+        Ok(expr)
     }
 
     fn generate_enum(&mut self, enum_: &AuxEnum) -> Result<(), Error> {
@@ -2214,8 +2745,9 @@ impl ExportedClass {
         self.typescript.push_str(docs);
         self.typescript.push_str("  ");
         self.typescript.push_str(function_prefix);
+        self.typescript.push_str(function_name);
         self.typescript.push_str(ts);
-        self.typescript.push_str("\n");
+        self.typescript.push_str(";\n");
     }
 
     /// Used for adding a getter to a class, mainly to ensure that TypeScript
