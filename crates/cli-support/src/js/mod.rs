@@ -450,6 +450,17 @@ impl<'a> Context<'a> {
         } else {
             ""
         };
+
+        let default_module_path = match self.config.mode {
+            OutputMode::Web => {
+                "\
+                    if (typeof module === 'undefined') {
+                        module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
+                    }"
+            }
+            _ => "",
+        };
+
         let ts = Self::ts_for_init_fn(mem.import.is_some());
 
         // Initialize the `imports` object for all import definitions that we're
@@ -475,6 +486,7 @@ impl<'a> Context<'a> {
         let js = format!(
             "\
                 function init(module{init_memory_arg}) {{
+                    {default_module_path}
                     let result;
                     const imports = {{}};
                     {imports_init}
@@ -518,6 +530,7 @@ impl<'a> Context<'a> {
                 }}
             ",
             init_memory_arg = init_memory_arg,
+            default_module_path = default_module_path,
             init_memory1 = init_memory1,
             init_memory2 = init_memory2,
             start = if needs_manual_start {
