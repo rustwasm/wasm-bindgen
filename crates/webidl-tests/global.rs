@@ -1,4 +1,3 @@
-use js_sys::Object;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
 

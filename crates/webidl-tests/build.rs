@@ -19,6 +19,15 @@ fn main() {
         println!("processing {:?}", path);
         let mut generated_rust = wasm_bindgen_webidl::compile(&idl, None).unwrap();
 
+        generated_rust.insert_str(
+            0,
+            "
+                mod generated_code {
+                    #[allow(unused_imports)]
+                    use js_sys::Object;
+            ",
+        );
+
         let out_file = out_dir.join(path.file_name().unwrap()).with_extension("rs");
 
         generated_rust.push_str(&format!(
@@ -43,6 +52,8 @@ fn main() {
             path.file_stem().unwrap().to_str().unwrap(),
             i
         ));
+
+        generated_rust.push_str("}\nuse self::generated_code::*;");
 
         fs::write(&out_file, generated_rust).unwrap();
 
