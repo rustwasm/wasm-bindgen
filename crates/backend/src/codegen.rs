@@ -703,6 +703,11 @@ impl ToTokens for ast::ImportType {
                     fn as_ref(&self) -> &JsValue { self.obj.as_ref() }
                 }
 
+                impl AsRef<#rust_name> for #rust_name {
+                    #[inline]
+                    fn as_ref(&self) -> &#rust_name { self }
+                }
+
 
                 impl From<#rust_name> for JsValue {
                     #[inline]
