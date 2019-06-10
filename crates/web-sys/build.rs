@@ -8,6 +8,7 @@ use std::path::{self, PathBuf};
 use std::process::{self, Command};
 
 fn main() {
+    #[cfg(feature = "env_logger")]
     env_logger::init();
 
     if let Err(e) = try_main() {
