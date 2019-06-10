@@ -47,12 +47,23 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{MessageEvent, Worker};
 
+macro_rules! console_log {
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
+
 const HELPER_CODE: &'static str = "
 onmessage = function (ev) {
     try {
         switch (ev.data[0]) {
             case 'wait': {
                 let [_, ia, index, value, timeout] = ev.data;
+                console.log('wait event inside a worker');
                 let result = Atomics.wait(ia, index, value, timeout);
                 postMessage(['ok', result]);
                 break;
@@ -115,15 +126,19 @@ pub fn wait_async_with_timeout(
     timeout: f64,
 ) -> Result<Promise, JsValue> {
     if !indexed_array.buffer().has_type::<SharedArrayBuffer>() {
+        console_log!("polyfill, not a SharedArrayBuffer");
         return Err(Error::new("Indexed array must be created from SharedArrayBuffer").into());
     }
 
     // Optimization, avoid the helper thread in this common case.
     if Atomics::load(&indexed_array, index)? != value {
+        console_log!("polyfill, not-equal");
         return Ok(Promise::resolve(&JsString::from("not-equal")));
     }
 
     // General case, we must wait.
+
+    console_log!("polyfill, general case");
 
     Ok(Promise::new(
         &mut Box::new(move |resolve: Function, reject: Function| {
@@ -160,6 +175,8 @@ pub fn wait_async_with_timeout(
             helper
                 .borrow()
                 .set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
+
+            onmessage_callback.forget();
 
             // It's possible to do better here if the ia is already known to the
             // helper.  In that case we can communicate the other data through
