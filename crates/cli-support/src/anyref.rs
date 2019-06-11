@@ -82,7 +82,6 @@ fn process_closure_arguments(cfg: &mut Context, function: &mut Function) {
             | Descriptor::RefMut(d)
             | Descriptor::Option(d)
             | Descriptor::Slice(d)
-            | Descriptor::Clamped(d)
             | Descriptor::Vector(d) => process_descriptor(cfg, d),
             Descriptor::Closure(c) => process_closure(cfg, c),
             Descriptor::Function(c) => process_function(cfg, c),

@@ -42,6 +42,7 @@ tys! {
 pub enum Descriptor {
     I8,
     U8,
+    ClampedU8,
     I16,
     U16,
     I32,
@@ -64,7 +65,6 @@ pub enum Descriptor {
     Char,
     Option(Box<Descriptor>),
     Unit,
-    Clamped(Box<Descriptor>),
 }
 
 #[derive(Debug, Clone)]
@@ -105,17 +105,18 @@ pub struct Number {
 
 impl Descriptor {
     pub fn decode(mut data: &[u32]) -> Descriptor {
-        let descriptor = Descriptor::_decode(&mut data);
+        let descriptor = Descriptor::_decode(&mut data, false);
         assert!(data.is_empty(), "remaining data {:?}", data);
         descriptor
     }
 
-    fn _decode(data: &mut &[u32]) -> Descriptor {
+    fn _decode(data: &mut &[u32], clamped: bool) -> Descriptor {
         match get(data) {
             I8 => Descriptor::I8,
             I16 => Descriptor::I16,
             I32 => Descriptor::I32,
             I64 => Descriptor::I64,
+            U8 if clamped => Descriptor::ClampedU8,
             U8 => Descriptor::U8,
             U16 => Descriptor::U16,
             U32 => Descriptor::U32,
@@ -125,11 +126,11 @@ impl Descriptor {
             BOOLEAN => Descriptor::Boolean,
             FUNCTION => Descriptor::Function(Box::new(Function::decode(data))),
             CLOSURE => Descriptor::Closure(Box::new(Closure::decode(data))),
-            REF => Descriptor::Ref(Box::new(Descriptor::_decode(data))),
-            REFMUT => Descriptor::RefMut(Box::new(Descriptor::_decode(data))),
-            SLICE => Descriptor::Slice(Box::new(Descriptor::_decode(data))),
-            VECTOR => Descriptor::Vector(Box::new(Descriptor::_decode(data))),
-            OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data))),
+            REF => Descriptor::Ref(Box::new(Descriptor::_decode(data, clamped))),
+            REFMUT => Descriptor::RefMut(Box::new(Descriptor::_decode(data, clamped))),
+            SLICE => Descriptor::Slice(Box::new(Descriptor::_decode(data, clamped))),
+            VECTOR => Descriptor::Vector(Box::new(Descriptor::_decode(data, clamped))),
+            OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data, clamped))),
             STRING => Descriptor::String,
             ANYREF => Descriptor::Anyref,
             ENUM => Descriptor::Enum { hole: get(data) },
@@ -141,7 +142,7 @@ impl Descriptor {
             }
             CHAR => Descriptor::Char,
             UNIT => Descriptor::Unit,
-            CLAMPED => Descriptor::Clamped(Box::new(Descriptor::_decode(data))),
+            CLAMPED => Descriptor::_decode(data, true),
             other => panic!("unknown descriptor: {}", other),
         }
     }
@@ -217,6 +218,7 @@ impl Descriptor {
         let inner = match *self {
             Descriptor::String => return Some(VectorKind::String),
             Descriptor::Vector(ref d) => &**d,
+            Descriptor::Slice(ref d) => &**d,
             Descriptor::Ref(ref d) => match **d {
                 Descriptor::Slice(ref d) => &**d,
                 Descriptor::String => return Some(VectorKind::String),
@@ -224,10 +226,6 @@ impl Descriptor {
             },
             Descriptor::RefMut(ref d) => match **d {
                 Descriptor::Slice(ref d) => &**d,
-                _ => return None,
-            },
-            Descriptor::Clamped(ref d) => match d.vector_kind()? {
-                VectorKind::U8 => return Some(VectorKind::ClampedU8),
                 _ => return None,
             },
             _ => return None,
@@ -238,6 +236,7 @@ impl Descriptor {
             Descriptor::I32 => Some(VectorKind::I32),
             Descriptor::I64 => Some(VectorKind::I64),
             Descriptor::U8 => Some(VectorKind::U8),
+            Descriptor::ClampedU8 => Some(VectorKind::ClampedU8),
             Descriptor::U16 => Some(VectorKind::U16),
             Descriptor::U32 => Some(VectorKind::U32),
             Descriptor::U64 => Some(VectorKind::U64),
@@ -275,13 +274,6 @@ impl Descriptor {
     pub fn is_by_ref(&self) -> bool {
         match *self {
             Descriptor::Ref(_) | Descriptor::RefMut(_) => true,
-            _ => false,
-        }
-    }
-
-    pub fn is_clamped_by_ref(&self) -> bool {
-        match self {
-            Descriptor::Clamped(d) => d.is_by_ref(),
             _ => false,
         }
     }
@@ -396,12 +388,12 @@ impl Function {
     fn decode(data: &mut &[u32]) -> Function {
         let shim_idx = get(data);
         let arguments = (0..get(data))
-            .map(|_| Descriptor::_decode(data))
+            .map(|_| Descriptor::_decode(data, false))
             .collect::<Vec<_>>();
         Function {
             arguments,
             shim_idx,
-            ret: Descriptor::_decode(data),
+            ret: Descriptor::_decode(data, false),
         }
     }
 }
