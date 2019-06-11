@@ -974,28 +974,12 @@ impl TryToTokens for ast::ImportFunction {
         }
 
         let mut exceptional_ret = quote!();
-        let exn_data = if self.catch {
-            let exn_data = Ident::new("exn_data", Span::call_site());
-            let exn_data_ptr = Ident::new("exn_data_ptr", Span::call_site());
-            abi_argument_names.push(exn_data_ptr.clone());
-            abi_arguments.push(quote! { #exn_data_ptr: *mut u32 });
+        if self.catch {
             convert_ret = quote! { Ok(#convert_ret) };
             exceptional_ret = quote! {
-                if #exn_data[0] == 1 {
-                    return Err(
-                        <
-                            wasm_bindgen::JsValue as wasm_bindgen::convert::FromWasmAbi
-                        >::from_abi(#exn_data[1], &mut wasm_bindgen::convert::GlobalStack::new())
-                    )
-                }
+                wasm_bindgen::__rt::take_last_exception()?;
             };
-            quote! {
-                let mut #exn_data = [0; 2];
-                let #exn_data_ptr = #exn_data.as_mut_ptr();
-            }
-        } else {
-            quote!()
-        };
+        }
 
         let rust_name = &self.rust_name;
         let import_name = &self.shim;
@@ -1055,7 +1039,6 @@ impl TryToTokens for ast::ImportFunction {
                 #extern_fn
 
                 unsafe {
-                    #exn_data
                     let #ret_ident = {
                         let mut __stack = wasm_bindgen::convert::GlobalStack::new();
                         #(#arg_conversions)*

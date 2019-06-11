@@ -1067,6 +1067,28 @@ pub mod __rt {
     pub fn link_mem_intrinsics() {
         crate::anyref::link_intrinsics();
     }
+
+    static mut GLOBAL_EXNDATA: [u32; 2] = [0; 2];
+
+    #[no_mangle]
+    pub unsafe extern "C" fn __wbindgen_exn_store(idx: u32) {
+        assert_eq!(GLOBAL_EXNDATA[0], 0);
+        GLOBAL_EXNDATA[0] = 1;
+        GLOBAL_EXNDATA[1] = idx;
+    }
+
+    pub fn take_last_exception() -> Result<(), super::JsValue> {
+        unsafe {
+            let ret = if GLOBAL_EXNDATA[0] == 1 {
+                Err(super::JsValue:: _new(GLOBAL_EXNDATA[1]))
+            } else {
+                Ok(())
+            };
+            GLOBAL_EXNDATA[0] = 0;
+            GLOBAL_EXNDATA[1] = 0;
+            return ret;
+        }
+    }
 }
 
 /// A wrapper type around slices and vectors for binding the `Uint8ClampedArray`

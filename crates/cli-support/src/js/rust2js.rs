@@ -928,7 +928,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 try {{\n\
                     {}
                 }} catch (e) {{\n\
-                    handleError(exnptr, e);\n\
+                    handleError(e);\n\
                 }}\
                 ",
                 &invoc
@@ -973,12 +973,6 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
         let mut ret = String::new();
         ret.push_str("function(");
         ret.push_str(&self.shim_arguments.join(", "));
-        if self.catch {
-            if self.shim_arguments.len() > 0 {
-                ret.push_str(", ")
-            }
-            ret.push_str("exnptr");
-        }
         ret.push_str(") {\n");
         ret.push_str(&self.prelude);
 
