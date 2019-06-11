@@ -1419,16 +1419,14 @@ impl<'a> Context<'a> {
         if !self.should_write_global("handle_error") {
             return Ok(());
         }
-        self.expose_uint32_memory();
+        self.require_internal_export("__wbindgen_exn_store")?;
         if self.config.anyref {
             self.expose_add_to_anyref_table()?;
             self.global(
                 "
-                function handleError(exnptr, e) {
+                function handleError(e) {
                     const idx = addToAnyrefTable(e);
-                    const view = getUint32Memory();
-                    view[exnptr / 4] = 1;
-                    view[exnptr / 4 + 1] = idx;
+                    wasm.__wbindgen_exn_store(idx);
                 }
                 ",
             );
@@ -1436,10 +1434,8 @@ impl<'a> Context<'a> {
             self.expose_add_heap_object();
             self.global(
                 "
-                function handleError(exnptr, e) {
-                    const view = getUint32Memory();
-                    view[exnptr / 4] = 1;
-                    view[exnptr / 4 + 1] = addHeapObject(e);
+                function handleError(e) {
+                    wasm.__wbindgen_exn_store(addHeapObject(e));
                 }
                 ",
             );
@@ -2115,7 +2111,7 @@ impl<'a> Context<'a> {
 
     fn export_function_table(&mut self) -> Result<(), Error> {
         if !self.should_write_global("wbg-function-table") {
-            return Ok(())
+            return Ok(());
         }
         let id = match self.module.tables.main_function_table()? {
             Some(id) => id,
@@ -2192,7 +2188,7 @@ impl ExportedClass {
         field: &str,
         js: &str,
         prefix: &str,
-        ret_ty: &str
+        ret_ty: &str,
     ) -> &mut bool {
         self.contents.push_str(docs);
         self.contents.push_str(prefix);
@@ -2215,7 +2211,8 @@ impl ExportedClass {
 /// generated output is deterministic and we do so by ensuring that iteration of
 /// hash maps is consistently sorted.
 fn sorted_iter<K, V>(map: &HashMap<K, V>) -> impl Iterator<Item = (&K, &V)>
-    where K: Ord,
+where
+    K: Ord,
 {
     let mut pairs = map.iter().collect::<Vec<_>>();
     pairs.sort_by_key(|(k, _)| *k);
