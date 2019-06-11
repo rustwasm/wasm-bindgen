@@ -580,7 +580,7 @@ impl<'a> Context<'a> {
             Some(class) => struct_function_export_name(class, export.function.name),
             None => export.function.name.to_string(),
         };
-        let descriptor = match self.descriptors.remove(&wasm_name) {
+        let mut descriptor = match self.descriptors.remove(&wasm_name) {
             None => return Ok(()),
             Some(d) => d.unwrap_function(),
         };
@@ -595,23 +595,32 @@ impl<'a> Context<'a> {
                 match export.method_kind {
                     decode::MethodKind::Constructor => AuxExportKind::Constructor(class),
                     decode::MethodKind::Operation(op) => match op.kind {
-                        decode::OperationKind::Getter(f) => AuxExportKind::Getter {
-                            class,
-                            field: f.to_string(),
-                        },
-                        decode::OperationKind::Setter(f) => AuxExportKind::Setter {
-                            class,
-                            field: f.to_string(),
-                        },
+                        decode::OperationKind::Getter(f) => {
+                            descriptor.arguments.insert(0, Descriptor::I32);
+                            AuxExportKind::Getter {
+                                class,
+                                field: f.to_string(),
+                            }
+                        }
+                        decode::OperationKind::Setter(f) => {
+                            descriptor.arguments.insert(0, Descriptor::I32);
+                            AuxExportKind::Setter {
+                                class,
+                                field: f.to_string(),
+                            }
+                        }
                         _ if op.is_static => AuxExportKind::StaticFunction {
                             class,
                             name: export.function.name.to_string(),
                         },
-                        _ => AuxExportKind::Method {
-                            class,
-                            name: export.function.name.to_string(),
-                            consumed: export.consumed,
-                        },
+                        _ => {
+                            descriptor.arguments.insert(0, Descriptor::I32);
+                            AuxExportKind::Method {
+                                class,
+                                name: export.function.name.to_string(),
+                                consumed: export.consumed,
+                            }
+                        }
                     },
                 }
             }
@@ -931,7 +940,7 @@ impl<'a> Context<'a> {
             // Register a webidl transformation for the getter
             let (getter_id, _) = self.function_exports[&getter];
             let getter_descriptor = Function {
-                arguments: Vec::new(),
+                arguments: vec![Descriptor::I32],
                 shim_idx: 0,
                 ret: descriptor.clone(),
             };
@@ -956,7 +965,7 @@ impl<'a> Context<'a> {
 
             let (setter_id, _) = self.function_exports[&setter];
             let setter_descriptor = Function {
-                arguments: vec![descriptor],
+                arguments: vec![Descriptor::I32, descriptor],
                 shim_idx: 0,
                 ret: Descriptor::Unit,
             };
