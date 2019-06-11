@@ -68,6 +68,9 @@ pub struct Js2Rust<'a, 'b: 'a> {
     /// The string value here is the class that this should be a constructor
     /// for.
     constructor: Option<String>,
+
+    /// whether or not we're generating a method
+    method: bool,
 }
 
 impl<'a, 'b> Js2Rust<'a, 'b> {
@@ -83,6 +86,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
             ret_ty: String::new(),
             ret_expr: String::new(),
             constructor: None,
+            method: false,
         }
     }
 
@@ -93,12 +97,19 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
         function: &Function,
         opt_arg_names: &Option<Vec<String>>,
     ) -> Result<&mut Self, Error> {
+        // Chop off the implicit i32 first argument if we're a method since it
+        // was already handled by `method` below.
+        let arguments = if self.method {
+            &function.arguments[1..]
+        } else {
+            &function.arguments[..]
+        };
         let arg_names = match opt_arg_names {
             Some(arg_names) => arg_names.iter().map(|s| Some(s.as_str())).collect(),
-            None => vec![None; function.arguments.len()],
+            None => vec![None; arguments.len()],
         };
-        assert_eq!(arg_names.len(), function.arguments.len());
-        for (arg, arg_name) in function.arguments.iter().zip(arg_names) {
+        assert_eq!(arg_names.len(), arguments.len());
+        for (arg, arg_name) in arguments.iter().zip(arg_names) {
             // Process the function argument and assert that the metadata about
             // the number of arguments on the Rust side required is correct.
             let before = self.rust_arguments.len();
@@ -124,6 +135,7 @@ impl<'a, 'b> Js2Rust<'a, 'b> {
     /// Flag this shim as a method call into Rust, so the first Rust argument
     /// passed should be `this.ptr`.
     pub fn method(&mut self, consumed: bool) -> &mut Self {
+        self.method = true;
         if self.cx.config.debug {
             self.prelude(
                 "if (this.ptr === 0) {
