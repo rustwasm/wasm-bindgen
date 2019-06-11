@@ -165,7 +165,7 @@ impl<'a, 'b> Rust2Js<'a, 'b> {
                 },
             ));
 
-            if !arg.is_by_ref() && !arg.is_clamped_by_ref() {
+            if !arg.is_by_ref() {
                 self.prelude(&format!(
                     "\
                      {start}
