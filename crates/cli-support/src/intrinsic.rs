@@ -110,13 +110,13 @@ intrinsics! {
         #[signature = fn(ref_string()) -> Anyref]
         SymbolNamedNew,
         #[symbol = "__wbindgen_number_get"]
-        #[signature = fn(ref_anyref(), F64) -> F64]
+        #[signature = fn(ref_anyref(), I32) -> F64]
         NumberGet,
         #[symbol = "__wbindgen_string_get"]
         #[signature = fn(ref_anyref(), I32) -> I32]
         StringGet,
         #[symbol = "__wbindgen_boolean_get"]
-        #[signature = fn(ref_anyref()) -> F64]
+        #[signature = fn(ref_anyref()) -> I32]
         BooleanGet,
         #[symbol = "__wbindgen_throw"]
         #[signature = fn(ref_string()) -> Unit]
@@ -143,7 +143,7 @@ intrinsics! {
         #[signature = fn(ref_anyref()) -> String]
         JsonSerialize,
         #[symbol = "__wbindgen_anyref_heap_live_count"]
-        #[signature = fn() -> F64]
+        #[signature = fn() -> I32]
         AnyrefHeapLiveCount,
         #[symbol = "__wbindgen_init_nyref_table"]
         #[signature = fn() -> Unit]
