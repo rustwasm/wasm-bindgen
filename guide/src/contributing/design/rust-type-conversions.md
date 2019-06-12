@@ -97,7 +97,7 @@ data for a function call.
 
 The global stack is a fixed-sized static allocation in the wasm module. This
 stack is temporary scratch space for any one function call from either JS to
-Rust or Rust ot JS. Both Rust and the JS shim generated have pointers to this
+Rust or Rust to JS. Both Rust and the JS shim generated have pointers to this
 global stack and will read/write information from it.
 
 Using this scheme whenever we want to pass `&str` from JS to Rust we can pass
