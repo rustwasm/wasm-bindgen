@@ -1080,7 +1080,7 @@ pub mod __rt {
     pub fn take_last_exception() -> Result<(), super::JsValue> {
         unsafe {
             let ret = if GLOBAL_EXNDATA[0] == 1 {
-                Err(super::JsValue:: _new(GLOBAL_EXNDATA[1]))
+                Err(super::JsValue::_new(GLOBAL_EXNDATA[1]))
             } else {
                 Ok(())
             };

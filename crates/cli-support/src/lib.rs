@@ -11,9 +11,9 @@ use walrus::Module;
 
 mod anyref;
 mod decode;
-mod intrinsic;
 mod descriptor;
 mod descriptors;
+mod intrinsic;
 mod js;
 pub mod wasm2es6js;
 mod webidl;
@@ -337,7 +337,10 @@ impl Bindgen {
         let (js, ts) = {
             let mut cx = js::Context::new(&mut module, self)?;
 
-            let aux = cx.module.customs.delete_typed::<webidl::WasmBindgenAux>()
+            let aux = cx
+                .module
+                .customs
+                .delete_typed::<webidl::WasmBindgenAux>()
                 .expect("aux section should be present");
             cx.generate(&aux)?;
 
@@ -346,10 +349,7 @@ impl Bindgen {
             for (identifier, list) in aux.snippets.iter() {
                 for (i, js) in list.iter().enumerate() {
                     let name = format!("inline{}.js", i);
-                    let path = out_dir
-                        .join("snippets")
-                        .join(identifier)
-                        .join(name);
+                    let path = out_dir.join("snippets").join(identifier).join(name);
                     fs::create_dir_all(path.parent().unwrap())?;
                     fs::write(&path, js)
                         .with_context(|_| format!("failed to write `{}`", path.display()))?;

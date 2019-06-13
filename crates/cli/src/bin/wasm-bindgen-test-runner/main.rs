@@ -71,7 +71,8 @@ fn rmain() -> Result<(), Error> {
     // that any exported function with the prefix `__wbg_test` is a test we need
     // to execute.
     let wasm = fs::read(&wasm_file_to_test).context("failed to read wasm file")?;
-    let mut wasm = walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
+    let mut wasm =
+        walrus::Module::from_buffer(&wasm).context("failed to deserialize wasm module")?;
     let mut tests = Vec::new();
 
     for export in wasm.exports.iter() {
