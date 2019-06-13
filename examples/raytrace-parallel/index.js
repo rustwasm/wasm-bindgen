@@ -44,6 +44,7 @@ function run() {
 
   // Configure various buttons and such.
   button.onclick = function() {
+    button.disabled = true;
     console.time('render');
     let json;
     try {
@@ -82,22 +83,28 @@ class State {
     this.running = true;
     this.counter = 1;
 
-    this.interval = setInterval(() => this.updateTimer(), 100);
+    this.interval = setInterval(() => this.updateTimer(true), 100);
 
     wasm.promise()
-      .then(() => {
-        this.updateTimer();
+      .then(data => {
+        this.updateTimer(false);
+        this.updateImage(data);
         this.stop();
       })
       .catch(console.error);
   }
 
-  updateTimer() {
+  updateTimer(updateImage) {
     const dur = performance.now() - this.start;
     timingVal.innerText = `${dur}ms`;
     this.counter += 1;
-    if (this.wasm && this.counter % 3 == 0)
-      this.wasm.requestUpdate();
+
+    if (updateImage && this.wasm && this.counter % 3 == 0)
+      this.updateImage(this.wasm.imageSoFar());
+  }
+
+  updateImage(data) {
+    ctx.putImageData(data, 0, 0);
   }
 
   stop() {
@@ -105,9 +112,9 @@ class State {
       return;
     console.timeEnd('render');
     this.running = false;
-    pool = this.wasm.cancel(); // this frees `wasm`, returning the worker pool
     this.wasm = null;
     clearInterval(this.interval);
+    button.disabled = false;
   }
 }
 
@@ -116,6 +123,5 @@ function render(scene) {
     rendering.stop();
     rendering = null;
   }
-  rendering = new State(scene.render(parseInt(concurrency.value), pool, ctx));
-  pool = null; // previous call took ownership of `pool`, zero it out here too
+  rendering = new State(scene.render(parseInt(concurrency.value), pool));
 }
