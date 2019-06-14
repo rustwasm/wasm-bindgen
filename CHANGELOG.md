@@ -32,6 +32,42 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.46
+
+Released 2019-06-14.
+
+### Added
+
+* Bindings for `Array#flat` and `Array#flatMap` have been added.
+  [#1573](https://github.com/rustwasm/wasm-bindgen/pull/1573)
+
+* All `#[wasm_bindgen]` types now `AsRef` to themslves.
+  [#1583](https://github.com/rustwasm/wasm-bindgen/pull/1583)
+
+* When using `--target web` the path passed to `init` is no longer required.
+  [#1579](https://github.com/rustwasm/wasm-bindgen/pull/1579)
+
+### Fixed
+
+* Some diagnostics related to compiler errors in `#[wasm_bindgen]` have been
+  improved.
+  [#1550](https://github.com/rustwasm/wasm-bindgen/pull/1550)
+
+* The support for weak references has been updated to the current JS proposal.
+  [#1557](https://github.com/rustwasm/wasm-bindgen/pull/1557)
+
+* Documentation and feature gating for web-sys dictionaries has improved.
+  [#1572](https://github.com/rustwasm/wasm-bindgen/pull/1572)
+
+* Getter and setter TypeScript has been fixed.
+  [#1577](https://github.com/rustwasm/wasm-bindgen/pull/1577)
+
+* The `env_logger` crate and its tree of dependencies is no longer required to
+  build `web-sys`.
+  [#1586](https://github.com/rustwasm/wasm-bindgen/pull/1586)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.45
 
 Released 2019-05-20.
