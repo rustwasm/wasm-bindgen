@@ -495,9 +495,6 @@ extern "C" {
     pub fn slice_with_end(this: &SharedArrayBuffer, begin: u32, end: u32) -> SharedArrayBuffer;
 }
 
-unsafe impl Send for SharedArrayBuffer {}
-unsafe impl Sync for SharedArrayBuffer {}
-
 // Array Iterator
 #[wasm_bindgen]
 extern "C" {

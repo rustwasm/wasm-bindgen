@@ -80,10 +80,10 @@ onmessage = function (ev) {
 ";
 
 thread_local! {
-    static HELPERS: RefCell<Vec<Rc<RefCell<Worker>>>> = RefCell::new(vec![]);
+    static HELPERS: RefCell<Vec<Rc<Worker>>> = RefCell::new(vec![]);
 }
 
-fn alloc_helper() -> Rc<RefCell<Worker>> {
+fn alloc_helper() -> Rc<Worker> {
     HELPERS.with(|helpers| {
         if let Some(helper) = helpers.borrow_mut().pop() {
             return helper;
@@ -93,20 +93,18 @@ fn alloc_helper() -> Rc<RefCell<Worker>> {
         let encoded: String = encode_uri_component(HELPER_CODE).into();
         initialization_string.push_str(&encoded);
 
-        return Rc::new(RefCell::new(
-            Worker::new(&initialization_string).expect("Should create a Worker"),
-        ));
+        return Rc::new(Worker::new(&initialization_string).expect("Should create a Worker"));
     })
 }
 
-fn free_helper(helper: &Rc<RefCell<Worker>>) {
+fn free_helper(helper: &Rc<Worker>) {
     HELPERS.with(move |helpers| {
         helpers.borrow_mut().push(helper.clone());
     });
 }
 
 pub fn wait_async(indexed_array: Int32Array, index: u32, value: i32) -> Result<Promise, JsValue> {
-    let timeout = 0.0;
+    let timeout = 0.1;
     wait_async_with_timeout(indexed_array, index, value, timeout)
 }
 
@@ -141,11 +139,11 @@ pub fn wait_async_with_timeout(
     console_log!("polyfill, general case");
 
     Ok(Promise::new(
-        &mut Box::new(move |resolve: Function, reject: Function| {
+        &mut move |resolve: Function, reject: Function| {
             let helper = alloc_helper();
             let helper_ref = helper.clone();
 
-            let onmessage_callback = Closure::wrap(Box::new(move |e: MessageEvent| {
+            let onmessage_callback = Closure::once_into_js(Box::new(move |e: MessageEvent| {
                 // Free the helper early so that it can be reused if the resolution
                 // needs a helper.
                 free_helper(&helper_ref);
@@ -171,12 +169,11 @@ pub fn wait_async_with_timeout(
                     // it's not specified in the proposal yet
                     _ => (),
                 }
-            }) as Box<dyn FnMut(MessageEvent)>);
-            helper
-                .borrow()
-                .set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
+            })
+                as Box<dyn FnMut(MessageEvent)>);
+            helper.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
 
-            onmessage_callback.forget();
+            // onmessage_callback.forget();
 
             // It's possible to do better here if the ia is already known to the
             // helper.  In that case we can communicate the other data through
@@ -201,9 +198,8 @@ pub fn wait_async_with_timeout(
             );
 
             helper
-                .borrow()
                 .post_message(&data)
                 .expect("Should successfully post data to a Worker");
-        }) as &mut dyn FnMut(Function, Function),
+        },
     ))
 }
