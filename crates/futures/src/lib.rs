@@ -102,7 +102,6 @@
 //! ```
 
 #![feature(stdsimd)]
-
 #![deny(missing_docs)]
 
 #[cfg(feature = "futures_0_3")]
@@ -341,13 +340,10 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
                     // our `Waiting` state, and resume the polling process
                     State::Polling => {
                         me.notified.set(State::Waiting(me.clone()));
-
                         break;
                     }
 
-                    State::Waiting(_) => {
-                        panic!("shouldn't see waiting state!")
-                    }
+                    State::Waiting(_) => panic!("shouldn't see waiting state!"),
                 }
 
                 let (val, f) = match me.spawn.borrow_mut().poll_future_notify(me, 0) {

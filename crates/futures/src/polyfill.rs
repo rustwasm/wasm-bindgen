@@ -41,7 +41,7 @@ use std::rc::Rc;
 
 use js_sys::{
     encode_uri_component, Array, Atomics, Error, Function, Int32Array, JsString, Promise, Reflect,
-    SharedArrayBuffer,
+    SharedArrayBuffer, WebAssembly,
 };
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -56,6 +56,8 @@ extern "C" {
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
 }
+
+const DEFAULT_TIMEOUT: f64 = 10.0;
 
 const HELPER_CODE: &'static str = "
 onmessage = function (ev) {
@@ -103,9 +105,8 @@ fn free_helper(helper: &Rc<Worker>) {
     });
 }
 
-pub fn wait_async(indexed_array: Int32Array, index: u32, value: i32) -> Result<Promise, JsValue> {
-    let timeout = 0.1;
-    wait_async_with_timeout(indexed_array, index, value, timeout)
+pub fn wait_async(index: u32, value: i32) -> Result<Promise, JsValue> {
+    wait_async_with_timeout(index, value, DEFAULT_TIMEOUT)
 }
 
 fn get_array_item(array: &JsValue, index: u32) -> JsValue {
@@ -117,12 +118,14 @@ fn get_array_item(array: &JsValue, index: u32) -> JsValue {
 // for parameter validation.  The promise is resolved with a string as from
 // Atomics.wait, or, in the case something went completely wrong, it is
 // rejected with an error string.
-pub fn wait_async_with_timeout(
-    indexed_array: Int32Array,
-    index: u32,
-    value: i32,
-    timeout: f64,
-) -> Result<Promise, JsValue> {
+pub fn wait_async_with_timeout(index: u32, value: i32, timeout: f64) -> Result<Promise, JsValue> {
+    let memory_buffer = wasm_bindgen::memory()
+        .dyn_into::<WebAssembly::Memory>()
+        .expect("Should cast a memory to WebAssembly::Memory")
+        .buffer();
+
+    let indexed_array = Int32Array::new(&memory_buffer);
+
     if !indexed_array.buffer().has_type::<SharedArrayBuffer>() {
         console_log!("polyfill, not a SharedArrayBuffer");
         return Err(Error::new("Indexed array must be created from SharedArrayBuffer").into());

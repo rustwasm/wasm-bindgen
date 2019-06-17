@@ -7,9 +7,8 @@ use futures::executor::{self, Notify, Spawn};
 use futures::future;
 use futures::prelude::*;
 use futures::sync::oneshot;
-use js_sys::{Atomics, Int32Array, WebAssembly, Function, Promise};
+use js_sys::{Function, Promise};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 
 macro_rules! console_log {
     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
@@ -112,8 +111,8 @@ impl Future for JsFuture {
 /// resolve**. Instead it will be a leaked promise. This is an unfortunate
 /// limitation of wasm currently that's hoped to be fixed one day!
 pub fn future_to_promise<F>(future: F) -> Promise
-    where
-        F: Future<Item = JsValue, Error = JsValue> + 'static,
+where
+    F: Future<Item = JsValue, Error = JsValue> + 'static,
 {
     _future_to_promise(Box::new(future))
 }
@@ -210,11 +209,16 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
     }
 
     impl Notify for Waker {
-        fn notify(&self, id: usize) {
+        fn notify(&self, _id: usize) {
             console_log!("Waker notify");
             if !self.notified.swap(true, Ordering::SeqCst) {
                 console_log!("Waker, inside if");
-                let _ = unsafe { core::arch::wasm32::atomic_notify(&self.value as *const AtomicI32 as *mut i32, 0) };
+                let _ = unsafe {
+                    core::arch::wasm32::atomic_notify(
+                        &self.value as *const AtomicI32 as *mut i32,
+                        0,
+                    )
+                };
             }
         }
     }
@@ -249,20 +253,15 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
             }
         };
 
-        let memory_buffer = wasm_bindgen::memory()
-            .dyn_into::<WebAssembly::Memory>()
-            .expect("Should cast a memory to WebAssembly::Memory")
-            .buffer();
-
         let value_location = &package.waker.value as *const AtomicI32 as u32 / 4;
-        let array = Int32Array::new(&memory_buffer);
 
         // Use `Promise.then` on a resolved promise to place our execution
         // onto the next turn of the microtask queue, enqueueing our poll
         // operation. We don't currently poll immediately as it turns out
         // `futures` crate adapters aren't compatible with it and it also
         // helps avoid blowing the stack by accident.
-        let promise = crate::polyfill::wait_async(array, value_location, 0).expect("Should create a Promise");
+        let promise =
+            crate::polyfill::wait_async(value_location, 0).expect("Should create a Promise");
         let closure = Closure::once(Box::new(move |_| {
             Package::poll(&me);
         }) as Box<dyn FnMut(JsValue)>);
@@ -340,8 +339,8 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
 ///
 /// This function has the same panic behavior as `future_to_promise`.
 pub fn spawn_local<F>(future: F)
-    where
-        F: Future<Item = (), Error = ()> + 'static,
+where
+    F: Future<Item = (), Error = ()> + 'static,
 {
     future_to_promise(
         future
