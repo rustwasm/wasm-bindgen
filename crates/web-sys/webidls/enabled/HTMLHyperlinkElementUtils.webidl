@@ -10,8 +10,7 @@
  * and create derivative works of this document.
  */
 
-[NoInterfaceObject]
-interface HTMLHyperlinkElementUtils {
+interface mixin HTMLHyperlinkElementUtils {
   // Bug 824857: no support for stringifier attributes yet.
   //  stringifier attribute USVString href;
 
