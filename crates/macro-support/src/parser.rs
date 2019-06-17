@@ -395,7 +395,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             wasm.ret.clone()
         };
 
-        let operation_kind = operation_kind(&opts)?;
+        let operation_kind = operation_kind(&opts);
 
         let kind = if opts.method().is_some() {
             let class = wasm.arguments.get(0).ok_or_else(|| {
@@ -756,7 +756,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                 }
                 let method_kind = ast::MethodKind::Operation(ast::Operation {
                     is_static: true,
-                    kind: operation_kind(&opts)?,
+                    kind: operation_kind(&opts),
                 });
                 let rust_name = f.ident.clone();
                 let start = opts.start().is_some();
@@ -960,7 +960,7 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
             ast::MethodKind::Constructor
         } else {
             let is_static = method_self.is_none();
-            let kind = operation_kind(&opts)?;
+            let kind = operation_kind(&opts);
             ast::MethodKind::Operation(ast::Operation { is_static, kind })
         };
         program.exports.push(ast::Export {
@@ -1305,7 +1305,7 @@ pub fn assert_all_attrs_checked() {
     })
 }
 
-fn operation_kind(opts: &BindgenAttrs) -> Result<ast::OperationKind, Diagnostic> {
+fn operation_kind(opts: &BindgenAttrs) -> ast::OperationKind {
     let mut operation_kind = ast::OperationKind::Regular;
     if let Some(g) = opts.getter() {
         operation_kind = ast::OperationKind::Getter(g.clone());
@@ -1322,5 +1322,5 @@ fn operation_kind(opts: &BindgenAttrs) -> Result<ast::OperationKind, Diagnostic>
     if opts.indexing_deleter().is_some() {
         operation_kind = ast::OperationKind::IndexingDeleter;
     }
-    Ok(operation_kind)
+    operation_kind
 }
