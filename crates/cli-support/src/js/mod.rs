@@ -396,7 +396,7 @@ impl<'a> Context<'a> {
         Ok(imports)
     }
 
-    fn ts_for_init_fn(has_memory: bool) -> String {
+    fn ts_for_init_fn(has_memory: bool, has_module_or_path_optional: bool) -> String {
         let (memory_doc, memory_param) = if has_memory {
             (
                 "* @param {WebAssembly.Memory} maybe_memory\n",
@@ -405,6 +405,7 @@ impl<'a> Context<'a> {
         } else {
             ("", "")
         };
+        let arg_optional = if has_module_or_path_optional { "?" } else { "" };
         format!(
             "\n\
             /**\n\
@@ -417,9 +418,9 @@ impl<'a> Context<'a> {
             * @returns {{Promise<any>}}\n\
             */\n\
             export default function init \
-                (module_or_path: RequestInfo | BufferSource | WebAssembly.Module{}): Promise<any>;
+                (module_or_path{}: RequestInfo | BufferSource | WebAssembly.Module{}): Promise<any>;
         ",
-            memory_doc, memory_param
+            memory_doc, arg_optional, memory_param
         )
     }
 
@@ -461,7 +462,7 @@ impl<'a> Context<'a> {
             _ => "",
         };
 
-        let ts = Self::ts_for_init_fn(mem.import.is_some());
+        let ts = Self::ts_for_init_fn(mem.import.is_some(), !default_module_path.is_empty());
 
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
