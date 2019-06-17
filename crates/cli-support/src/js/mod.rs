@@ -2204,7 +2204,7 @@ impl ExportedClass {
     }
 }
 
-/// Returns a sorted iterator over a hash mpa, sorted based on key.
+/// Returns a sorted iterator over a hash map, sorted based on key.
 ///
 /// The intention of this API is to be used whenever the iteration order of a
 /// `HashMap` might affect the generated JS bindings. We want to ensure that the
