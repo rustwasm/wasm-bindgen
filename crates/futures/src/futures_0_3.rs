@@ -233,27 +233,27 @@ where
 
                     match lock.pop_front() {
                         Some(task) => {
-                            let mut future = task.future.borrow_mut();
+                            let mut borrow = task.future.borrow_mut();
 
-                            let poll = {
-                                // This will only panic if the Future wakes up the Waker after returning Poll::Ready
-                                let mut future = future.as_mut().unwrap_throw();
+                            // This will only be None if the Future wakes up the Waker after returning Poll::Ready
+                            if let Some(future) = borrow.as_mut() {
+                                let poll = {
+                                    // Clear `is_queued` flag so that it will re-queue if poll calls waker.wake()
+                                    task.is_queued.set(false);
 
-                                // Clear `is_queued` flag so that it will re-queue if poll calls waker.wake()
-                                task.is_queued.set(false);
+                                    // This is necessary because the polled task might queue more tasks
+                                    drop(lock);
 
-                                // This is necessary because the polled task might queue more tasks
-                                drop(lock);
+                                    // TODO is there some way of saving these so they don't need to be recreated all the time ?
+                                    let waker = ArcWake::into_waker(task.clone());
+                                    let cx = &mut Context::from_waker(&waker);
+                                    Pin::new(future).poll(cx)
+                                };
 
-                                // TODO is there some way of saving these so they don't need to be recreated all the time ?
-                                let waker = ArcWake::into_waker(task.clone());
-                                let cx = &mut Context::from_waker(&waker);
-                                Pin::new(&mut future).poll(cx)
-                            };
-
-                            if let Poll::Ready(_) = poll {
-                                // Cleanup the Future immediately
-                                *future = None;
+                                if let Poll::Ready(_) = poll {
+                                    // Cleanup the Future immediately
+                                    *borrow = None;
+                                }
                             }
                         },
                         None => {
