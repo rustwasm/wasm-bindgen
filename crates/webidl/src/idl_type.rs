@@ -33,27 +33,37 @@ pub(crate) enum IdlType<'a> {
 
     ArrayBuffer,
     DataView,
-    Int8Array,
+    Int8Array {
+        immutable: bool,
+    },
     Uint8Array {
-        /// Whether or not the generated web-sys function should use an immutable slice
         immutable: bool,
     },
-    Uint8ClampedArray,
-    Int16Array,
-    Uint16Array,
-    Int32Array,
-    Uint32Array,
+    Uint8ClampedArray {
+        immutable: bool,
+    },
+    Int16Array {
+        immutable: bool,
+    },
+    Uint16Array {
+        immutable: bool,
+    },
+    Int32Array {
+        immutable: bool,
+    },
+    Uint32Array {
+        immutable: bool,
+    },
     Float32Array {
-        /// Whether or not the generated web-sys function should use an immutable slice
         immutable: bool,
     },
-    Float64Array,
+    Float64Array {
+        immutable: bool,
+    },
     ArrayBufferView {
-        /// Whether or not the generated web-sys function should use an immutable slice
         immutable: bool,
     },
     BufferSource {
-        /// Whether or not the generated web-sys function should use an immutable slice
         immutable: bool,
     },
 
@@ -381,21 +391,21 @@ terms_to_idl_type! {
     Void => Void
     ArrayBuffer => ArrayBuffer
     DataView => DataView
-    Int8Array => Int8Array
-    Int16Array => Int16Array
-    Int32Array => Int32Array
-    Uint16Array => Uint16Array
-    Uint32Array => Uint32Array
-    Uint8ClampedArray => Uint8ClampedArray
-    Float64Array => Float64Array
     Error => Error
 }
 
 terms_to_idl_type_maybe_immutable! {
-    Uint8Array => Uint8Array
-    Float32Array => Float32Array
     ArrayBufferView => ArrayBufferView
     BufferSource => BufferSource
+    Float32Array => Float32Array
+    Float64Array => Float64Array
+    Int16Array => Int16Array
+    Int32Array => Int32Array
+    Int8Array => Int8Array
+    Uint16Array => Uint16Array
+    Uint32Array => Uint32Array
+    Uint8Array => Uint8Array
+    Uint8ClampedArray => Uint8ClampedArray
 }
 
 impl<'a> IdlType<'a> {
@@ -421,15 +431,15 @@ impl<'a> IdlType<'a> {
 
             IdlType::ArrayBuffer => dst.push_str("array_buffer"),
             IdlType::DataView => dst.push_str("data_view"),
-            IdlType::Int8Array => dst.push_str("i8_array"),
+            IdlType::Int8Array { .. } => dst.push_str("i8_array"),
             IdlType::Uint8Array { .. } => dst.push_str("u8_array"),
-            IdlType::Uint8ClampedArray => dst.push_str("u8_clamped_array"),
-            IdlType::Int16Array => dst.push_str("i16_array"),
-            IdlType::Uint16Array => dst.push_str("u16_array"),
-            IdlType::Int32Array => dst.push_str("i32_array"),
-            IdlType::Uint32Array => dst.push_str("u32_array"),
+            IdlType::Uint8ClampedArray { .. } => dst.push_str("u8_clamped_array"),
+            IdlType::Int16Array { .. } => dst.push_str("i16_array"),
+            IdlType::Uint16Array { .. } => dst.push_str("u16_array"),
+            IdlType::Int32Array { .. } => dst.push_str("i32_array"),
+            IdlType::Uint32Array { .. } => dst.push_str("u32_array"),
             IdlType::Float32Array { .. } => dst.push_str("f32_array"),
-            IdlType::Float64Array => dst.push_str("f64_array"),
+            IdlType::Float64Array { .. } => dst.push_str("f64_array"),
             IdlType::ArrayBufferView { .. } => dst.push_str("array_buffer_view"),
             IdlType::BufferSource { .. } => dst.push_str("buffer_source"),
 
@@ -533,15 +543,15 @@ impl<'a> IdlType<'a> {
 
             IdlType::ArrayBuffer => js_sys("ArrayBuffer"),
             IdlType::DataView => None,
-            IdlType::Int8Array => Some(array("i8", pos, false)),
+            IdlType::Int8Array { immutable } => Some(array("i8", pos, *immutable)),
             IdlType::Uint8Array { immutable } => Some(array("u8", pos, *immutable)),
-            IdlType::Uint8ClampedArray => Some(clamped(array("u8", pos, false))),
-            IdlType::Int16Array => Some(array("i16", pos, false)),
-            IdlType::Uint16Array => Some(array("u16", pos, false)),
-            IdlType::Int32Array => Some(array("i32", pos, false)),
-            IdlType::Uint32Array => Some(array("u32", pos, false)),
+            IdlType::Uint8ClampedArray { immutable } => Some(clamped(array("u8", pos, *immutable))),
+            IdlType::Int16Array { immutable } => Some(array("i16", pos, *immutable)),
+            IdlType::Uint16Array { immutable } => Some(array("u16", pos, *immutable)),
+            IdlType::Int32Array { immutable } => Some(array("i32", pos, *immutable)),
+            IdlType::Uint32Array { immutable } => Some(array("u32", pos, *immutable)),
             IdlType::Float32Array { immutable } => Some(array("f32", pos, *immutable)),
-            IdlType::Float64Array => Some(array("f64", pos, false)),
+            IdlType::Float64Array { immutable } => Some(array("f64", pos, *immutable)),
 
             IdlType::ArrayBufferView { .. } | IdlType::BufferSource { .. } => js_sys("Object"),
             IdlType::Interface(name)

@@ -735,10 +735,17 @@ pub fn public() -> syn::Visibility {
 
 fn flag_slices_immutable(ty: &mut IdlType) {
     match ty {
-        IdlType::Uint8Array { immutable } => *immutable = true,
-        IdlType::Float32Array { immutable } => *immutable = true,
-        IdlType::ArrayBufferView { immutable } => *immutable = true,
-        IdlType::BufferSource { immutable } => *immutable = true,
+        IdlType::Int8Array { immutable }
+        | IdlType::Uint8Array { immutable }
+        | IdlType::Uint8ClampedArray { immutable }
+        | IdlType::Int16Array { immutable }
+        | IdlType::Uint16Array { immutable }
+        | IdlType::Int32Array { immutable }
+        | IdlType::Uint32Array { immutable }
+        | IdlType::Float32Array { immutable }
+        | IdlType::Float64Array { immutable }
+        | IdlType::ArrayBufferView { immutable }
+        | IdlType::BufferSource { immutable } => *immutable = true,
         IdlType::Nullable(item) => flag_slices_immutable(item),
         IdlType::FrozenArray(item) => flag_slices_immutable(item),
         IdlType::Sequence(item) => flag_slices_immutable(item),
