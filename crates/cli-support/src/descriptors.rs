@@ -40,7 +40,24 @@ pub fn execute(module: &mut Module) -> Result<WasmBindgenDescriptorsSectionId, E
 
     // Delete all descriptor functions and imports from the module now that
     // we've executed all of them.
+    //
+    // Note though that during this GC pass it's a bit aggressive in that it can
+    // delete the function table entirely. We don't actually know at this point
+    // whether we need the function table or not. The bindings generation may
+    // need to export the table so the JS glue can call functions in it, and
+    // that's only discovered during binding selection. For now we just add
+    // synthetic root exports for all tables in the module, and then we delete
+    // the exports just after GC. This should keep tables like the function
+    // table alive during GC all the way through to the bindings generation
+    // where we can either actually export it or gc it out since it's not used.
+    let mut exported_tables = Vec::new();
+    for table in module.tables.iter() {
+        exported_tables.push(module.exports.add("foo", table.id()));
+    }
     walrus::passes::gc::run(module);
+    for export in exported_tables {
+        module.exports.delete(export);
+    }
 
     Ok(module.customs.add(section))
 }
