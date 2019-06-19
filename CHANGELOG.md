@@ -32,6 +32,37 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.47
+
+Released 2019-06-19.
+
+### Changed
+
+* The `HtmlHyperlinkElement` should now include more native methods after a
+  small edit to the WebIDL.
+  [#1604](https://github.com/rustwasm/wasm-bindgen/pull/1604)
+
+* Duplicate names for getters/setters now have a first-class `wasm-bindgen`
+  error.
+  [#1605](https://github.com/rustwasm/wasm-bindgen/pull/1605)
+
+### Fixed
+
+* TypeScript definition of `init` with `--target web` now reflects that the
+  first argument is optional.
+  [#1599](https://github.com/rustwasm/wasm-bindgen/pull/1599)
+
+* A panic with the futures 0.3 support has been fixed.
+  [#1598](https://github.com/rustwasm/wasm-bindgen/pull/1598)
+
+* More slice types are recognized as becoming immutable in some WebIDL methods.
+  [#1602](https://github.com/rustwasm/wasm-bindgen/pull/1602)
+
+* The function table is now no longer too aggressively removed.
+  [#1606](https://github.com/rustwasm/wasm-bindgen/pull/1606)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.46
 
 Released 2019-06-14.

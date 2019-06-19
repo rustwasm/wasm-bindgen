@@ -4,5 +4,7 @@ multilingual = false
 src = "src"
 title = "The `wasm-bindgen` Guide"
 
+[build]
+build-dir = "book/html"
+
 [output.html]
-[output.linkcheck]

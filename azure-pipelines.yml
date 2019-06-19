@@ -252,8 +252,9 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
       - script: |
-          which mdbook || cargo install mdbook
-          which mdbook-linkcheck || cargo install mdbook-linkcheck
+          set -e
+          curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.3.0/mdbook-v0.3.0-x86_64-unknown-linux-gnu.tar.gz | tar xzf -
+          echo "##vso[task.prependpath]$PWD"
         displayName: "Install mdbook"
       - script: (cd guide && mv _theme theme && mdbook build)
       - task: PublishPipelineArtifact@0
