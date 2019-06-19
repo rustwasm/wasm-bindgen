@@ -1820,7 +1820,10 @@ impl<'a> Context<'a> {
     }
 
     pub fn generate(&mut self, aux: &WasmBindgenAux) -> Result<(), Error> {
-        for (id, export) in sorted_iter(&aux.export_map) {
+        let mut pairs = aux.export_map.iter().collect::<Vec<_>>();
+        pairs.sort_by_key(|(k, _)| *k);
+        check_duplicated_getter_and_setter_names(&pairs)?;
+        for (id, export) in pairs {
             self.generate_export(*id, export).with_context(|_| {
                 format!(
                     "failed to generate bindings for Rust export `{}`",
@@ -2123,6 +2126,51 @@ impl<'a> Context<'a> {
     }
 }
 
+fn check_duplicated_getter_and_setter_names(
+    exports: &[(&ExportId, &AuxExport)],
+) -> Result<(), Error> {
+    let verify_exports =
+        |first_class, first_field, second_class, second_field| -> Result<(), Error> {
+            let both_are_in_the_same_class = first_class == second_class;
+            let both_are_referencing_the_same_field = first_field == second_field;
+            if both_are_in_the_same_class && both_are_referencing_the_same_field {
+                bail!(format!(
+                    "There can be only one getter/setter definition for `{}` in `{}`",
+                    first_field, first_class
+                ));
+            }
+            Ok(())
+        };
+    for (idx, (_, first_export)) in exports.iter().enumerate() {
+        for (_, second_export) in exports.iter().skip(idx + 1) {
+            match (&first_export.kind, &second_export.kind) {
+                (
+                    AuxExportKind::Getter {
+                        class: first_class,
+                        field: first_field,
+                    },
+                    AuxExportKind::Getter {
+                        class: second_class,
+                        field: second_field,
+                    },
+                ) => verify_exports(first_class, first_field, second_class, second_field)?,
+                (
+                    AuxExportKind::Setter {
+                        class: first_class,
+                        field: first_field,
+                    },
+                    AuxExportKind::Setter {
+                        class: second_class,
+                        field: second_field,
+                    },
+                ) => verify_exports(first_class, first_field, second_class, second_field)?,
+                _ => {}
+            }
+        }
+    }
+    Ok(())
+}
+
 fn generate_identifier(name: &str, used_names: &mut HashMap<String, usize>) -> String {
     let cnt = used_names.entry(name.to_string()).or_insert(0);
     *cnt += 1;
@@ -2205,7 +2253,7 @@ impl ExportedClass {
     }
 }
 
-/// Returns a sorted iterator over a hash mpa, sorted based on key.
+/// Returns a sorted iterator over a hash map, sorted based on key.
 ///
 /// The intention of this API is to be used whenever the iteration order of a
 /// `HashMap` might affect the generated JS bindings. We want to ensure that the
