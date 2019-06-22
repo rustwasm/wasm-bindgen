@@ -1,0 +1,21 @@
+[package]
+authors = ["The wasm-bindgen Developers"]
+description = "Utilities for caching JS objects to avoid expensive copying"
+documentation = "https://docs.rs/wasm-bindgen-cache"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
+license = "MIT/Apache-2.0"
+name = "wasm-bindgen-cache"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/cache"
+readme = "./README.md"
+version = "0.1.0"
+edition = "2018"
+
+[features]
+disabled = []
+
+[dependencies]
+js-sys = { path = "../js-sys", version = '0.3.24' }
+uluru = "0.3.0"
+
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+wasm-bindgen-test = { path = '../test', version = '0.2.47' }

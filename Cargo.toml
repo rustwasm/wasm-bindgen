@@ -49,6 +49,7 @@ wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }
 [workspace]
 members = [
   "benchmarks",
+  "crates/cache",
   "crates/cli",
   "crates/js-sys",
   "crates/test",
@@ -88,5 +89,6 @@ exclude = ['crates/typescript']
 [patch.crates-io]
 wasm-bindgen = { path = '.' }
 wasm-bindgen-futures = { path = 'crates/futures' }
+wasm-bindgen-cache = { path = 'crates/cache' }
 js-sys = { path = 'crates/js-sys' }
 web-sys = { path = 'crates/web-sys' }
