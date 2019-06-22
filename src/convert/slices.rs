@@ -4,6 +4,7 @@ use std::prelude::v1::*;
 use core::slice;
 use core::str;
 
+use cfg_if::cfg_if;
 use crate::convert::OptionIntoWasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
 
@@ -148,17 +149,39 @@ if_std! {
         fn is_none(abi: &WasmSlice) -> bool { abi.ptr == 0 }
     }
 
-    impl IntoWasmAbi for String {
-        type Abi = <Vec<u8> as IntoWasmAbi>::Abi;
+    cfg_if! {
+        if #[cfg(feature = "disable-interning")] {
+            impl IntoWasmAbi for String {
+                type Abi = <Vec<u8> as IntoWasmAbi>::Abi;
 
-        #[inline]
-        fn into_abi(self) -> Self::Abi {
-            self.into_bytes().into_abi()
+                #[inline]
+                fn into_abi(self) -> Self::Abi {
+                    self.into_bytes().into_abi()
+                }
+            }
+
+            impl OptionIntoWasmAbi for String {
+                #[inline]
+                fn none() -> Self::Abi { null_slice() }
+            }
+
+        } else {
+            impl IntoWasmAbi for String {
+                type Abi = <JsValue as IntoWasmAbi>::Abi;
+
+                #[inline]
+                fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
+                    crate::cache::intern::str(&self).into_abi(extra)
+                }
+            }
+
+            impl OptionIntoWasmAbi for String {
+                #[inline]
+                fn none() -> Self::Abi {
+                    <JsValue as OptionIntoWasmAbi>::none()
+                }
+            }
         }
-    }
-
-    impl OptionIntoWasmAbi for String {
-        fn none() -> WasmSlice { null_slice() }
     }
 
     impl FromWasmAbi for String {
@@ -175,18 +198,38 @@ if_std! {
     }
 }
 
-impl<'a> IntoWasmAbi for &'a str {
-    type Abi = <&'a [u8] as IntoWasmAbi>::Abi;
 
-    #[inline]
-    fn into_abi(self) -> Self::Abi {
-        self.as_bytes().into_abi()
-    }
-}
+cfg_if! {
+    if #[cfg(feature = "disable-interning")] {
+        impl<'a> IntoWasmAbi for &'a str {
+            type Abi = <&'a [u8] as IntoWasmAbi>::Abi;
 
-impl<'a> OptionIntoWasmAbi for &'a str {
-    fn none() -> WasmSlice {
-        null_slice()
+            #[inline]
+            fn into_abi(self) -> Self::Abi {
+                self.as_bytes().into_abi()
+            }
+        }
+
+        impl<'a> OptionIntoWasmAbi for &'a str {
+            fn none() -> Self::Abi { null_slice() }
+        }
+
+    } else {
+        impl<'a> IntoWasmAbi for &'a str {
+            type Abi = <JsValue as IntoWasmAbi>::Abi;
+
+            #[inline]
+            fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
+                crate::cache::intern::str(self).into_abi(extra)
+            }
+        }
+
+        impl<'a> OptionIntoWasmAbi for &'a str {
+            #[inline]
+            fn none() -> Self::Abi {
+                <JsValue as OptionIntoWasmAbi>::none()
+            }
+        }
     }
 }
 

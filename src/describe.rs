@@ -53,7 +53,7 @@ pub trait WasmDescribe {
 }
 
 macro_rules! simple {
-    ($($t:ident => $d:ident)*) => ($(
+    ($($t:ident => $d:expr)*) => ($(
         impl WasmDescribe for $t {
             fn describe() { inform($d) }
         }
@@ -75,7 +75,7 @@ simple! {
     f64 => F64
     bool => BOOLEAN
     char => CHAR
-    str => STRING
+    str => if cfg!(feature = "disable-interning") { STRING } else { ANYREF }
     JsValue => ANYREF
 }
 
@@ -116,7 +116,7 @@ if_std! {
     use std::prelude::v1::*;
 
     impl WasmDescribe for String {
-        fn describe() { inform(STRING) }
+        fn describe() { inform(if cfg!(feature = "disable-interning") { STRING } else { ANYREF }) }
     }
 
     impl<T: WasmDescribe> WasmDescribe for Box<[T]> {

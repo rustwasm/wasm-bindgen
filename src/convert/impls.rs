@@ -315,6 +315,13 @@ impl IntoWasmAbi for JsValue {
     }
 }
 
+impl OptionIntoWasmAbi for JsValue {
+    #[inline]
+    fn none() -> u32 {
+        std::u32::MAX
+    }
+}
+
 impl FromWasmAbi for JsValue {
     type Abi = u32;
 
