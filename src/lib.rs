@@ -62,6 +62,8 @@ mod cache;
 pub mod convert;
 pub mod describe;
 
+pub use cache::intern::intern;
+
 mod cast;
 pub use crate::cast::JsCast;
 

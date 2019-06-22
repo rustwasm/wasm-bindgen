@@ -15,44 +15,33 @@ struct Pair {
 type Entries = LRUCache::<[Entry<Pair>; 1_024]>;
 
 struct Cache {
-    enabled: Cell<bool>,
-    max_str_len: Cell<usize>,
     entries: RefCell<Entries>,
 }
 
 // TODO figure out a good max_str_len
 thread_local! {
     static CACHE: Cache = Cache {
-        enabled: Cell::new(true),
-        max_str_len: Cell::new(128),
         entries: RefCell::new(LRUCache::default()),
     };
 }
 
-fn get_js_string(cache: &mut Entries, key: &str) -> JsValue {
-    if let Some(p) = cache.find(|p| p.key == key) {
-        p.value.clone()
-
-    } else {
-        let value = JsValue::from(key);
-
-        cache.insert(Pair {
-            key: key.to_owned(),
-            value: value.clone(),
-        });
-
-        value
-    }
+fn get_js_string<'a>(cache: &'a mut Entries, key: &str) -> Option<&'a JsValue> {
+    cache.find(|p| p.key == key).map(|x| &x.value)
 }
 
-fn cache_str(s: &str) -> JsValue {
-    CACHE.with(|cache| {
-        let should_cache =
-            cache.enabled.get() &&
-            s.len() <= cache.max_str_len.get();
+fn insert_js_string(cache: &mut Entries, key: &str, value: JsValue) {
+    cache.insert(Pair {
+        key: key.to_owned(),
+        value,
+    });
+}
 
-        if should_cache {
-            get_js_string(&mut cache.entries.borrow_mut(), s)
+fn get_str(s: &str) -> JsValue {
+    CACHE.with(|cache| {
+        let mut cache = cache.entries.borrow_mut();
+
+        if let Some(value) = get_js_string(&mut cache, s) {
+            value.clone()
 
         } else {
             JsValue::from(s)
@@ -60,33 +49,31 @@ fn cache_str(s: &str) -> JsValue {
     })
 }
 
+fn intern_str(s: &str) {
+    CACHE.with(|cache| {
+        let mut cache = cache.entries.borrow_mut();
+
+        if get_js_string(&mut cache, s).is_none() {
+            insert_js_string(&mut cache, s, JsValue::from(s));
+        }
+    })
+}
+
 #[inline]
-pub fn str(s: &str) -> JsValue {
+pub(crate) fn str(s: &str) -> JsValue {
     if cfg!(feature = "disable-interning") {
         JsValue::from(s)
 
     } else {
-        cache_str(s)
+        get_str(s)
     }
 }
 
 #[inline]
-pub fn set_max_str_len(len: usize) {
+pub fn intern(s: &str) -> &str {
     if !cfg!(feature = "disable-interning") {
-        CACHE.with(|cache| cache.max_str_len.set(len));
+        intern_str(s);
     }
-}
 
-#[inline]
-pub fn enable() {
-    if !cfg!(feature = "disable-interning") {
-        CACHE.with(|cache| cache.enabled.set(true));
-    }
-}
-
-#[inline]
-pub fn disable() {
-    if !cfg!(feature = "disable-interning") {
-        CACHE.with(|cache| cache.enabled.set(false));
-    }
+    s
 }
