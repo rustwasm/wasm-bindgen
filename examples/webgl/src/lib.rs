@@ -1,4 +1,3 @@
-use js_sys::WebAssembly;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{WebGlProgram, WebGlRenderingContext, WebGlShader};
@@ -37,15 +36,10 @@ pub fn start() -> Result<(), JsValue> {
     context.use_program(Some(&program));
 
     let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
-    let memory_buffer = wasm_bindgen::memory()
-        .dyn_into::<WebAssembly::Memory>()?
-        .buffer();
-    let vertices_location = vertices.as_ptr() as u32 / 4;
-    let vert_array = js_sys::Float32Array::new(&memory_buffer)
-        .subarray(vertices_location, vertices_location + vertices.len() as u32);
 
     let buffer = context.create_buffer().ok_or("failed to create buffer")?;
     context.bind_buffer(WebGlRenderingContext::ARRAY_BUFFER, Some(&buffer));
+    let vert_array = unsafe { js_sys::Float32Array::view(&vertices) };
     context.buffer_data_with_array_buffer_view(
         WebGlRenderingContext::ARRAY_BUFFER,
         &vert_array,
