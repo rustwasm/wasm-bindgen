@@ -204,8 +204,18 @@ impl<'a> Context<'a> {
         // After all we've done, especially
         // `unexport_unused_internal_exports()`, we probably have a bunch of
         // garbage in the module that's no longer necessary, so delete
-        // everything that we don't actually need.
+        // everything that we don't actually need. Afterwards make sure we don't
+        // try to emit bindings for now-nonexistent imports by pruning our
+        // `wasm_import_definitions` set.
         walrus::passes::gc::run(self.module);
+        let remaining_imports = self
+            .module
+            .imports
+            .iter()
+            .map(|i| i.id())
+            .collect::<HashSet<_>>();
+        self.wasm_import_definitions
+            .retain(|id, _| remaining_imports.contains(id));
 
         // Cause any future calls to `should_write_global` to panic, making sure
         // we don't ask for items which we can no longer emit.

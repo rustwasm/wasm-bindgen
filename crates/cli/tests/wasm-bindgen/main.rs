@@ -136,3 +136,18 @@ fn works_on_empty_project() {
 }
 
 mod npm;
+
+#[test]
+fn one_export_works() {
+    let (mut cmd, _out_dir) = Project::new("one_export_works")
+        .file(
+            "src/lib.rs",
+            r#"
+                use wasm_bindgen::prelude::*;
+                #[wasm_bindgen]
+                pub fn foo() {}
+            "#,
+        )
+        .wasm_bindgen("");
+    cmd.assert().success();
+}
