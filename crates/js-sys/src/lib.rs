@@ -4596,6 +4596,8 @@ macro_rules! arrays {
                 // TODO if this was written in JS it could avoid passing the `view` TypedArray to Rust,
                 //      which would be more efficient
 
+                // TODO measure if it's faster to use `slice` instead of `new`
+
                 // This is safe because the `new` function makes a copy if its argument is a TypedArray
                 unsafe { $name::new(&$name::view(slice)) }
             }
