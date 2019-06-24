@@ -318,7 +318,7 @@ impl IntoWasmAbi for JsValue {
 impl OptionIntoWasmAbi for JsValue {
     #[inline]
     fn none() -> u32 {
-        std::u32::MAX
+        32
     }
 }
 
