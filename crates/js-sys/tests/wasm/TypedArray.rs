@@ -112,6 +112,16 @@ fn view() {
 }
 
 #[wasm_bindgen_test]
+fn from() {
+    let x: Vec<i32> = vec![1, 2, 3];
+    let array = Int32Array::from(x.as_slice());
+    assert_eq!(array.length(), 3);
+    array.for_each(&mut |x, i, _| {
+        assert_eq!(x, (i + 1) as i32);
+    });
+}
+
+#[wasm_bindgen_test]
 fn copy_to() {
     let mut x = [0; 10];
     let array = Int32Array::new(&10.into());
