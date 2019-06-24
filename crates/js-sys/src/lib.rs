@@ -4589,6 +4589,17 @@ macro_rules! arrays {
                 all_wasm_memory.set(self, offset as u32);
             }
         }
+
+        impl<'a> From<&'a [$ty]> for $name {
+            #[inline]
+            fn from(slice: &'a [$ty]) -> $name {
+                // TODO if this was written in JS it could avoid passing the `view` TypedArray to Rust,
+                //      which would be more efficient
+
+                // This is safe because the `new` function makes a copy if its argument is a TypedArray
+                unsafe { $name::new(&$name::view(slice)) }
+            }
+        }
     )*);
 }
 
