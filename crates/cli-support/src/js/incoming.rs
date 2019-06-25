@@ -153,7 +153,7 @@ impl<'a, 'b> Incoming<'a, 'b> {
 
             // Similar to `AllocCopy`, except that we deallocate in a finally
             // block.
-            NonstandardIncoming::Slice { kind, val, mutable } => {
+            NonstandardIncoming::MutableSlice { kind, val } => {
                 let (expr, ty) = self.standard_typed(val)?;
                 assert_eq!(ty, ast::WebidlScalarType::Any.into());
                 let func = self.cx.pass_to_wasm_function(*kind)?;
@@ -162,7 +162,7 @@ impl<'a, 'b> Incoming<'a, 'b> {
                     .prelude(&format!("const ptr{} = {}({});", i, func, expr));
                 self.js
                     .prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
-                self.finally_free_slice(&expr, i, *kind, *mutable)?;
+                self.finally_free_slice(&expr, i, *kind, true)?;
                 self.js.typescript_required(kind.js_ty());
                 return Ok(vec![format!("ptr{}", i), format!("len{}", i)]);
             }

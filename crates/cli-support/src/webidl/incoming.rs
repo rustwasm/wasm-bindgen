@@ -47,15 +47,11 @@ pub enum NonstandardIncoming {
         expr: Box<ast::IncomingBindingExpression>,
     },
 
-    /// JS is passing a typed slice of data into Rust. Currently this is
-    /// implemented with a deallocation in the JS shim, hence a custom binding.
-    ///
-    /// TODO: we should move deallocation into Rust so we can use a vanilla and
-    /// standard webidl binding here.
-    Slice {
+    /// A mutable slice of values going from JS to Rust, and after Rust finishes
+    /// the JS slice is updated with the current value of the slice.
+    MutableSlice {
         kind: VectorKind,
         val: ast::IncomingBindingExpression,
-        mutable: bool,
     },
 
     /// This is either a slice or `undefined` being passed into Rust.
@@ -216,52 +212,11 @@ impl IncomingBuilder {
             Descriptor::Option(d) => self.process_option(d)?,
 
             Descriptor::String | Descriptor::Vector(_) => {
-                use wasm_webidl_bindings::ast::WebidlScalarType::*;
-
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!("unsupported argument type for calling Rust function from JS {:?}", arg)
                 })? ;
                 self.wasm.extend(&[ValType::I32; 2]);
-                match kind {
-                    VectorKind::I8 => self.alloc_copy(Int8Array),
-                    VectorKind::U8 => self.alloc_copy(Uint8Array),
-                    VectorKind::ClampedU8 => self.alloc_copy(Uint8ClampedArray),
-                    VectorKind::I16 => self.alloc_copy(Int16Array),
-                    VectorKind::U16 => self.alloc_copy(Uint16Array),
-                    VectorKind::I32 => self.alloc_copy(Int32Array),
-                    VectorKind::U32 => self.alloc_copy(Uint32Array),
-                    VectorKind::F32 => self.alloc_copy(Float32Array),
-                    VectorKind::F64 => self.alloc_copy(Float64Array),
-                    VectorKind::String => {
-                        let expr = ast::IncomingBindingExpressionAllocUtf8Str {
-                            alloc_func_name: self.alloc_func_name(),
-                            expr: Box::new(self.expr_get()),
-                        };
-                        self.webidl.push(DomString);
-                        self.bindings
-                            .push(NonstandardIncoming::Standard(expr.into()));
-                    }
-                    VectorKind::I64 | VectorKind::U64 => {
-                        let signed = match kind {
-                            VectorKind::I64 => true,
-                            _ => false,
-                        };
-                        self.bindings.push(NonstandardIncoming::AllocCopyInt64 {
-                            alloc_func_name: self.alloc_func_name(),
-                            expr: Box::new(self.expr_get()),
-                            signed,
-                        });
-                        self.webidl.push(Any);
-                    }
-                    VectorKind::Anyref => {
-                        self.bindings
-                            .push(NonstandardIncoming::AllocCopyAnyrefArray {
-                                alloc_func_name: self.alloc_func_name(),
-                                expr: Box::new(self.expr_get()),
-                            });
-                        self.webidl.push(Any);
-                    }
-                }
+                self.alloc_copy_kind(kind)
             }
 
             // Can't be passed from JS to Rust yet
@@ -309,12 +264,15 @@ impl IncomingBuilder {
                     )
                 })?;
                 self.wasm.extend(&[ValType::I32; 2]);
-                self.bindings.push(NonstandardIncoming::Slice {
-                    kind,
-                    val: self.expr_get(),
-                    mutable,
-                });
-                self.webidl.push(ast::WebidlScalarType::Any);
+                if mutable {
+                    self.bindings.push(NonstandardIncoming::MutableSlice {
+                        kind,
+                        val: self.expr_get(),
+                    });
+                    self.webidl.push(ast::WebidlScalarType::Any);
+                } else {
+                    self.alloc_copy_kind(kind)
+                }
             }
             _ => bail!(
                 "unsupported reference argument type for calling Rust function from JS: {:?}",
@@ -443,6 +401,51 @@ impl IncomingBuilder {
 
     fn alloc_func_name(&self) -> String {
         "__wbindgen_malloc".to_string()
+    }
+
+    fn alloc_copy_kind(&mut self, kind: VectorKind) {
+        use wasm_webidl_bindings::ast::WebidlScalarType::*;
+
+        match kind {
+            VectorKind::I8 => self.alloc_copy(Int8Array),
+            VectorKind::U8 => self.alloc_copy(Uint8Array),
+            VectorKind::ClampedU8 => self.alloc_copy(Uint8ClampedArray),
+            VectorKind::I16 => self.alloc_copy(Int16Array),
+            VectorKind::U16 => self.alloc_copy(Uint16Array),
+            VectorKind::I32 => self.alloc_copy(Int32Array),
+            VectorKind::U32 => self.alloc_copy(Uint32Array),
+            VectorKind::F32 => self.alloc_copy(Float32Array),
+            VectorKind::F64 => self.alloc_copy(Float64Array),
+            VectorKind::String => {
+                let expr = ast::IncomingBindingExpressionAllocUtf8Str {
+                    alloc_func_name: self.alloc_func_name(),
+                    expr: Box::new(self.expr_get()),
+                };
+                self.webidl.push(DomString);
+                self.bindings
+                    .push(NonstandardIncoming::Standard(expr.into()));
+            }
+            VectorKind::I64 | VectorKind::U64 => {
+                let signed = match kind {
+                    VectorKind::I64 => true,
+                    _ => false,
+                };
+                self.bindings.push(NonstandardIncoming::AllocCopyInt64 {
+                    alloc_func_name: self.alloc_func_name(),
+                    expr: Box::new(self.expr_get()),
+                    signed,
+                });
+                self.webidl.push(Any);
+            }
+            VectorKind::Anyref => {
+                self.bindings
+                    .push(NonstandardIncoming::AllocCopyAnyrefArray {
+                        alloc_func_name: self.alloc_func_name(),
+                        expr: Box::new(self.expr_get()),
+                    });
+                self.webidl.push(Any);
+            }
+        }
     }
 
     fn alloc_copy(&mut self, webidl: ast::WebidlScalarType) {
