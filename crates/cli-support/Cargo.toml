@@ -23,4 +23,4 @@ wasm-bindgen-anyref-xform = { path = '../anyref-xform', version = '=0.2.47' }
 wasm-bindgen-shared = { path = "../shared", version = '=0.2.47' }
 wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.47' }
 wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.47' }
-wasm-webidl-bindings = { git = 'https://github.com/alexcrichton/wasm-webidl-bindings', branch = 'optional-text' }
+wasm-webidl-bindings = { git = 'https://github.com/rustwasm/wasm-webidl-bindings' }
