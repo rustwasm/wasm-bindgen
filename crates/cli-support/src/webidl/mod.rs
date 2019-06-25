@@ -24,7 +24,7 @@
 //! aggressively as possible!
 
 use crate::decode;
-use crate::descriptor::{Closure, Descriptor, Function};
+use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
 use failure::{bail, Error};
@@ -34,48 +34,90 @@ use std::path::PathBuf;
 use std::str;
 use walrus::{ExportId, FunctionId, ImportId, Module, TypedCustomSectionId};
 use wasm_bindgen_shared::struct_function_export_name;
+use wasm_webidl_bindings::ast;
 
 const PLACEHOLDER_MODULE: &str = "__wbindgen_placeholder__";
 
-/// A "dummy" WebIDL custom section. This should be replaced with a true
-/// polyfill for the WebIDL bindings proposal.
-#[derive(Default, Debug)]
-pub struct WebidlCustomSection {
-    /// A map from exported function id to the expected signature of the
-    /// interface.
-    ///
-    /// The expected signature will contain rich types like strings/js
-    /// values/etc. A WebIDL binding will be needed to ensure the JS export of
-    /// the wasm mdoule either has this expected signature or a shim will need
-    /// to get generated to ensure the right signature in JS is respected.
-    pub exports: HashMap<ExportId, Function>,
+mod bindings;
+mod incoming;
+mod outgoing;
 
-    /// A map from imported function id to the expected binding of the
-    /// interface.
+pub use self::incoming::NonstandardIncoming;
+pub use self::outgoing::NonstandardOutgoing;
+
+/// A nonstandard wasm-bindgen-specific WebIDL custom section.
+///
+/// This nonstandard section is intended to convey all information that
+/// wasm-bindgen itself needs to know about binding functions. This means that
+/// it basically uses `NonstandardIncoming` instead of
+/// `IncomingBindingExpression` and such. It's also in a bit easier to work with
+/// format than the official WebIDL bindings custom section.
+///
+/// Note that this is intended to be consumed during generation of JS shims and
+/// bindings. There it can be transformed, however, into an actual WebIDL
+/// binding section using all of the values it has internally.
+#[derive(Default, Debug)]
+pub struct NonstandardWebidlSection {
+    /// Store of all WebIDL types. Used currently to store all function types
+    /// specified in `Bindings`. This is intended to be passed through verbatim
+    /// to a final WebIDL bindings section.
+    pub types: ast::WebidlTypes,
+
+    /// A mapping from all bound exported functions to the binding that we have
+    /// listed for them. This is the master list of every binding that will be
+    /// bound and have a shim generated for it in the wasm module.
+    pub exports: HashMap<ExportId, Binding>,
+
+    /// Similar to `exports` above, except for imports. This will describe all
+    /// imports from the wasm module to indicate what the JS shim is expected to
+    /// do.
+    pub imports: HashMap<ImportId, Binding>,
+
+    /// For closures and such we'll be calling entries in the function table
+    /// with rich arguments (just like we call exports) so to do that we
+    /// describe all the elem indices that we need to modify here as well.
     ///
-    /// This will directly translate to WebIDL bindings and how it's expected
-    /// that each import is invoked. Note that this also affects the polyfill
-    /// glue generated.
-    pub imports: HashMap<ImportId, ImportBinding>,
+    /// This is a list of pairs where the first element in the list is the
+    /// element index in the function table being described and the `Binding`
+    /// describes the signature that it's supposed to have.
+    ///
+    /// The index within this table itself is then used to call actually
+    /// transformed functions.
+    pub elems: Vec<(u32, Binding)>,
 }
 
-pub type WebidlCustomSectionId = TypedCustomSectionId<WebidlCustomSection>;
+pub type NonstandardWebidlSectionId = TypedCustomSectionId<NonstandardWebidlSection>;
 
-/// The types of functionality that can be imported and listed for each import
-/// in a wasm module.
+/// A non-standard wasm-bindgen-specifi WebIDL binding. This is meant to vaguely
+/// resemble a `FuctionBinding` in the official WebIDL bindings proposal, or at
+/// least make it very easy to manufacture an official value from this one.
 #[derive(Debug, Clone)]
-pub enum ImportBinding {
-    /// The imported function is considered to be a constructor, and will be
-    /// invoked as if it has `new` in JS. The returned value is expected
-    /// to be `anyref`.
-    Constructor(Function),
-    /// The imported function is considered to be a function that's called like
-    /// a method in JS where the first argument should be `anyref` and it is
-    /// passed as the `this` of the call.
-    Method(Function),
-    /// Just a bland normal import which represents some sort of function to
-    /// call, not much fancy going on here.
-    Function(Function),
+pub struct Binding {
+    /// The WebAssembly type that the function is expected to have. Note that
+    /// this may not match the actual bound function's type! That's because this
+    /// type includes `anyref` but the Rust compiler never emits anyref. This
+    /// is, however, used for the `anyref` pass to know what to transform to
+    /// `anyref`.
+    pub wasm_ty: walrus::TypeId,
+
+    /// The WebIDL type of this binding, which is an index into the webidl
+    /// binding section's `types` field.
+    pub webidl_ty: ast::WebidlFunctionId,
+
+    /// A list of incoming bindings. For exports this is the list of arguments,
+    /// and for imports this is the return value.
+    pub incoming: Vec<NonstandardIncoming>,
+
+    /// A list of outgoing bindings. For exports this is the return value and
+    /// for imports this is the list of arguments.
+    pub outgoing: Vec<NonstandardOutgoing>,
+
+    /// An unfortunate necessity of today's implementation. Ideally WebIDL
+    /// bindings are used with multi-value support in wasm everywhere, but today
+    /// few engines support multi-value and LLVM certainly doesn't. Aggregates
+    /// are then always returned through an out-ptr, so this indicates that if
+    /// an out-ptr is present what wasm types are being transmitted through it.
+    pub return_via_outptr: Option<Vec<walrus::ValType>>,
 }
 
 /// A synthetic custom section which is not standardized, never will be, and
@@ -237,7 +279,12 @@ pub enum AuxImport {
 
     /// This import is intended to manufacture a JS closure with the given
     /// signature and then return that back to Rust.
-    Closure(Closure),
+    Closure {
+        mutable: bool, // whether or not this was a `FnMut` closure
+        dtor: u32,     // table element index of the destructor function
+        binding_idx: u32,
+        nargs: usize,
+    },
 
     /// This import is expected to be a shim that simply calls the `foo` method
     /// on the first object, passing along all other parameters and returning
@@ -407,7 +454,7 @@ pub enum JsImportName {
 struct Context<'a> {
     start_found: bool,
     module: &'a mut Module,
-    bindings: WebidlCustomSection,
+    bindings: NonstandardWebidlSection,
     aux: WasmBindgenAux,
     function_exports: HashMap<String, (ExportId, FunctionId)>,
     function_imports: HashMap<String, (ImportId, FunctionId)>,
@@ -416,7 +463,9 @@ struct Context<'a> {
     descriptors: HashMap<String, Descriptor>,
 }
 
-pub fn process(module: &mut Module) -> Result<(WebidlCustomSectionId, WasmBindgenAuxId), Error> {
+pub fn process(
+    module: &mut Module,
+) -> Result<(NonstandardWebidlSectionId, WasmBindgenAuxId), Error> {
     let mut storage = Vec::new();
     let programs = extract_programs(module, &mut storage)?;
 
@@ -431,7 +480,7 @@ pub fn process(module: &mut Module) -> Result<(WebidlCustomSectionId, WasmBindge
         module,
         start_found: false,
     };
-    cx.init();
+    cx.init()?;
 
     for program in programs {
         cx.program(program)?;
@@ -445,7 +494,7 @@ pub fn process(module: &mut Module) -> Result<(WebidlCustomSectionId, WasmBindge
 }
 
 impl<'a> Context<'a> {
-    fn init(&mut self) {
+    fn init(&mut self) -> Result<(), Error> {
         // Make a map from string name to ids of all exports
         for export in self.module.exports.iter() {
             if let walrus::ExportItem::Function(f) = export.item {
@@ -457,6 +506,7 @@ impl<'a> Context<'a> {
         // Make a map from string name to ids of all imports from our
         // placeholder module name which we'll want to be sure that we've got a
         // location listed of what to import there for each item.
+        let mut intrinsics = Vec::new();
         for import in self.module.imports.iter() {
             if import.module != PLACEHOLDER_MODULE {
                 continue;
@@ -465,14 +515,21 @@ impl<'a> Context<'a> {
                 self.function_imports
                     .insert(import.name.clone(), (import.id(), f));
                 if let Some(intrinsic) = Intrinsic::from_symbol(&import.name) {
-                    self.bindings
-                        .imports
-                        .insert(import.id(), ImportBinding::Function(intrinsic.binding()));
-                    self.aux
-                        .import_map
-                        .insert(import.id(), AuxImport::Intrinsic(intrinsic));
+                    intrinsics.push((import.id(), intrinsic));
                 }
             }
+        }
+        for (id, intrinsic) in intrinsics {
+            bindings::register_import(
+                self.module,
+                &mut self.bindings,
+                id,
+                intrinsic.binding(),
+                ast::WebidlFunctionKind::Static,
+            )?;
+            self.aux
+                .import_map
+                .insert(id, AuxImport::Intrinsic(intrinsic));
         }
 
         if let Some(custom) = self
@@ -490,20 +547,57 @@ impl<'a> Context<'a> {
 
             // Register all the injected closure imports as that they're expected
             // to manufacture a particular type of closure.
+            //
+            // First we register the imported function shim which returns a
+            // `JsValue` for the closure. We manufacture this signature's
+            // binding since it's not listed anywhere.
+            //
+            // Next we register the corresponding table element's binding in
+            // the webidl bindings section. This binding will later be used to
+            // generate a shim (if necessary) for the table element.
+            //
+            // Finally we store all this metadata in the import map which we've
+            // learned so when a binding for the import is generated we can
+            // generate all the appropriate shims.
             for (id, descriptor) in closure_imports {
-                self.aux
-                    .import_map
-                    .insert(id, AuxImport::Closure(descriptor));
                 let binding = Function {
                     shim_idx: 0,
                     arguments: vec![Descriptor::I32; 3],
                     ret: Descriptor::Anyref,
                 };
-                self.bindings
-                    .imports
-                    .insert(id, ImportBinding::Function(binding));
+                bindings::register_import(
+                    self.module,
+                    &mut self.bindings,
+                    id,
+                    binding,
+                    ast::WebidlFunctionKind::Static,
+                )?;
+                // Synthesize the two integer pointers we pass through which
+                // aren't present in the signature but are present in the wasm
+                // signature.
+                let mut function = descriptor.function.clone();
+                let nargs = function.arguments.len();
+                function.arguments.insert(0, Descriptor::I32);
+                function.arguments.insert(0, Descriptor::I32);
+                let binding_idx = bindings::register_table_element(
+                    self.module,
+                    &mut self.bindings,
+                    descriptor.shim_idx,
+                    function,
+                )?;
+                self.aux.import_map.insert(
+                    id,
+                    AuxImport::Closure {
+                        dtor: descriptor.dtor_idx,
+                        mutable: descriptor.mutable,
+                        binding_idx,
+                        nargs,
+                    },
+                );
             }
         }
+
+        Ok(())
     }
 
     fn program(&mut self, program: decode::Program<'a>) -> Result<(), Error> {
@@ -636,7 +730,7 @@ impl<'a> Context<'a> {
                 kind,
             },
         );
-        self.bindings.exports.insert(export_id, descriptor);
+        bindings::register_export(self.module, &mut self.bindings, export_id, descriptor)?;
         Ok(())
     }
 
@@ -720,20 +814,34 @@ impl<'a> Context<'a> {
                     // NB: `structural` is ignored for constructors since the
                     // js type isn't expected to change anyway.
                     decode::MethodKind::Constructor => {
-                        self.bindings
-                            .imports
-                            .insert(import_id, ImportBinding::Constructor(descriptor));
+                        bindings::register_import(
+                            self.module,
+                            &mut self.bindings,
+                            import_id,
+                            descriptor,
+                            ast::WebidlFunctionKind::Constructor,
+                        )?;
                         AuxImport::Value(AuxValue::Bare(class))
                     }
                     decode::MethodKind::Operation(op) => {
                         let (import, method) =
                             self.determine_import_op(class, function, *structural, op)?;
-                        let binding = if method {
-                            ImportBinding::Method(descriptor)
+                        let kind = if method {
+                            let kind = ast::WebidlFunctionKindMethod {
+                                // TODO: what should this actually be?
+                                ty: ast::WebidlScalarType::Any.into(),
+                            };
+                            ast::WebidlFunctionKind::Method(kind)
                         } else {
-                            ImportBinding::Function(descriptor)
+                            ast::WebidlFunctionKind::Static
                         };
-                        self.bindings.imports.insert(import_id, binding);
+                        bindings::register_import(
+                            self.module,
+                            &mut self.bindings,
+                            import_id,
+                            descriptor,
+                            kind,
+                        )?;
                         import
                     }
                 }
@@ -742,9 +850,13 @@ impl<'a> Context<'a> {
             // NB: `structural` is ignored for free functions since it's
             // expected that the binding isn't changing anyway.
             None => {
-                self.bindings
-                    .imports
-                    .insert(import_id, ImportBinding::Function(descriptor));
+                bindings::register_import(
+                    self.module,
+                    &mut self.bindings,
+                    import_id,
+                    descriptor,
+                    ast::WebidlFunctionKind::Static,
+                )?;
                 let name = self.determine_import(import, function.name)?;
                 AuxImport::Value(AuxValue::Bare(name))
             }
@@ -867,14 +979,17 @@ impl<'a> Context<'a> {
         };
 
         // Register the signature of this imported shim
-        self.bindings.imports.insert(
+        bindings::register_import(
+            self.module,
+            &mut self.bindings,
             import_id,
-            ImportBinding::Function(Function {
+            Function {
                 arguments: Vec::new(),
                 shim_idx: 0,
                 ret: Descriptor::Anyref,
-            }),
-        );
+            },
+            ast::WebidlFunctionKind::Static,
+        )?;
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
@@ -896,14 +1011,17 @@ impl<'a> Context<'a> {
         };
 
         // Register the signature of this imported shim
-        self.bindings.imports.insert(
+        bindings::register_import(
+            self.module,
+            &mut self.bindings,
             import_id,
-            ImportBinding::Function(Function {
+            Function {
                 arguments: vec![Descriptor::Ref(Box::new(Descriptor::Anyref))],
                 shim_idx: 0,
-                ret: Descriptor::I32,
-            }),
-        );
+                ret: Descriptor::Boolean,
+            },
+            ast::WebidlFunctionKind::Static,
+        )?;
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
@@ -944,7 +1062,12 @@ impl<'a> Context<'a> {
                 shim_idx: 0,
                 ret: descriptor.clone(),
             };
-            self.bindings.exports.insert(getter_id, getter_descriptor);
+            bindings::register_export(
+                self.module,
+                &mut self.bindings,
+                getter_id,
+                getter_descriptor,
+            )?;
             self.aux.export_map.insert(
                 getter_id,
                 AuxExport {
@@ -969,7 +1092,12 @@ impl<'a> Context<'a> {
                 shim_idx: 0,
                 ret: Descriptor::Unit,
             };
-            self.bindings.exports.insert(setter_id, setter_descriptor);
+            bindings::register_export(
+                self.module,
+                &mut self.bindings,
+                setter_id,
+                setter_descriptor,
+            )?;
             self.aux.export_map.insert(
                 setter_id,
                 AuxExport {
@@ -1000,9 +1128,13 @@ impl<'a> Context<'a> {
                 arguments: vec![Descriptor::I32],
                 ret: Descriptor::Anyref,
             };
-            self.bindings
-                .imports
-                .insert(*import_id, ImportBinding::Function(binding));
+            bindings::register_import(
+                self.module,
+                &mut self.bindings,
+                *import_id,
+                binding,
+                ast::WebidlFunctionKind::Static,
+            )?;
         }
 
         Ok(())
@@ -1148,7 +1280,7 @@ impl<'a> Context<'a> {
     }
 }
 
-impl walrus::CustomSection for WebidlCustomSection {
+impl walrus::CustomSection for NonstandardWebidlSection {
     fn name(&self) -> &str {
         "webidl custom section"
     }

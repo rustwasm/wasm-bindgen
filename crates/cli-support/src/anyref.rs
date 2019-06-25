@@ -1,43 +1,45 @@
-use crate::descriptor::{Closure, Descriptor, Function};
-use crate::webidl::{AuxImport, ImportBinding, WasmBindgenAux, WebidlCustomSection};
+use crate::webidl::{NonstandardIncoming, NonstandardOutgoing};
+use crate::webidl::{NonstandardWebidlSection, WasmBindgenAux};
 use failure::Error;
 use std::collections::HashSet;
 use walrus::Module;
 use wasm_bindgen_anyref_xform::Context;
+use wasm_webidl_bindings::ast;
 
 pub fn process(module: &mut Module) -> Result<(), Error> {
     let mut cfg = Context::default();
     cfg.prepare(module)?;
     let bindings = module
         .customs
-        .get_typed_mut::<WebidlCustomSection>()
+        .get_typed_mut::<NonstandardWebidlSection>()
         .expect("webidl custom section should exist");
 
+    // Transform all exported functions in the module, using the bindings listed
+    // for each exported function.
     for (export, binding) in bindings.exports.iter_mut() {
-        let (args, ret) = extract_anyrefs(binding, 0);
+        let ty = module.types.get(binding.wasm_ty);
+        let args = Arguments::Incoming(&mut binding.incoming);
+        let (args, ret) = extract_anyrefs(ty, args);
         cfg.export_xform(*export, &args, ret);
-        process_closure_arguments(&mut cfg, binding);
     }
 
-    for (import, kind) in bindings.imports.iter_mut() {
-        let binding = match kind {
-            ImportBinding::Function(f) => f,
-            ImportBinding::Constructor(f) => f,
-            ImportBinding::Method(f) => f,
-        };
-        let (args, ret) = extract_anyrefs(binding, 0);
+    // Transform all imported functions in the module, using the bindings listed
+    // for each imported function.
+    for (import, binding) in bindings.imports.iter_mut() {
+        let ty = module.types.get(binding.wasm_ty);
+        let args = Arguments::Outgoing(&mut binding.outgoing);
+        let (args, ret) = extract_anyrefs(ty, args);
         cfg.import_xform(*import, &args, ret);
-        process_closure_arguments(&mut cfg, binding);
     }
 
-    let aux = module
-        .customs
-        .get_typed_mut::<WasmBindgenAux>()
-        .expect("webidl custom section should exist");
-    for import in aux.import_map.values_mut() {
-        match import {
-            AuxImport::Closure(f) => process_closure(&mut cfg, f),
-            _ => {}
+    // And finally transform all table elements that are used as function
+    // pointers for closures and such.
+    for (idx, binding) in bindings.elems.iter_mut() {
+        let ty = module.types.get(binding.wasm_ty);
+        let args = Arguments::Incoming(&mut binding.incoming);
+        let (args, ret) = extract_anyrefs(ty, args);
+        if let Some(new) = cfg.table_element_xform(*idx, &args, ret) {
+            *idx = new;
         }
     }
 
@@ -55,7 +57,7 @@ pub fn process(module: &mut Module) -> Result<(), Error> {
         .collect::<HashSet<_>>();
     module
         .customs
-        .get_typed_mut::<WebidlCustomSection>()
+        .get_typed_mut::<NonstandardWebidlSection>()
         .expect("webidl custom section should exist")
         .imports
         .retain(|id, _| remaining_imports.contains(id));
@@ -68,44 +70,9 @@ pub fn process(module: &mut Module) -> Result<(), Error> {
     Ok(())
 }
 
-/// Process the `function` provided to ensure that all references to `Closure`
-/// descriptors are processed below.
-fn process_closure_arguments(cfg: &mut Context, function: &mut Function) {
-    for arg in function.arguments.iter_mut() {
-        process_descriptor(cfg, arg);
-    }
-    process_descriptor(cfg, &mut function.ret);
-
-    fn process_descriptor(cfg: &mut Context, descriptor: &mut Descriptor) {
-        match descriptor {
-            Descriptor::Ref(d)
-            | Descriptor::RefMut(d)
-            | Descriptor::Option(d)
-            | Descriptor::Slice(d)
-            | Descriptor::Vector(d) => process_descriptor(cfg, d),
-            Descriptor::Closure(c) => process_closure(cfg, c),
-            Descriptor::Function(c) => process_function(cfg, c),
-            _ => {}
-        }
-    }
-
-    fn process_function(cfg: &mut Context, function: &mut Function) {
-        let (args, ret) = extract_anyrefs(&function, 2);
-        if let Some(new) = cfg.table_element_xform(function.shim_idx, &args, ret) {
-            function.shim_idx = new;
-        }
-        process_closure_arguments(cfg, function);
-    }
-}
-
-/// Ensure that the `Closure` is processed in case any of its arguments
-/// recursively contain `anyref` and such.
-fn process_closure(cfg: &mut Context, closure: &mut Closure) {
-    let (args, ret) = extract_anyrefs(&closure.function, 2);
-    if let Some(new) = cfg.table_element_xform(closure.shim_idx, &args, ret) {
-        closure.shim_idx = new;
-    }
-    process_closure_arguments(cfg, &mut closure.function);
+enum Arguments<'a> {
+    Incoming(&'a mut [NonstandardIncoming]),
+    Outgoing(&'a mut [NonstandardOutgoing]),
 }
 
 /// Extract a description of the anyref arguments from the function signature
@@ -120,19 +87,53 @@ fn process_closure(cfg: &mut Context, closure: &mut Closure) {
 /// the wasm abi arguments described by `f` start at. For closures this is 2
 /// because two synthetic arguments are injected into the wasm signature which
 /// aren't present in the `Function` signature.
-fn extract_anyrefs(f: &Function, offset: usize) -> (Vec<(usize, bool)>, bool) {
-    let mut args = Vec::new();
-    let mut cur = offset;
-    if f.ret.abi_returned_through_pointer() {
-        cur += 1;
-    }
-    for arg in f.arguments.iter() {
-        if arg.is_anyref() {
-            args.push((cur, true));
-        } else if arg.is_ref_anyref() {
-            args.push((cur, false));
+fn extract_anyrefs(ty: &walrus::Type, args: Arguments<'_>) -> (Vec<(usize, bool)>, bool) {
+    let mut ret = Vec::new();
+
+    // First find all the `anyref` arguments in the input type, and we'll
+    // assume that they're owned anyref arguments for now (the `true`)
+    for (i, arg) in ty.params().iter().enumerate() {
+        if *arg == walrus::ValType::Anyref {
+            ret.push((i, true));
         }
-        cur += arg.abi_arg_count();
     }
-    (args, f.ret.is_anyref())
+
+    // Afterwards look through the argument list (specified with various
+    // bindings) to find any borrowed anyref values and update our
+    // transformation metadata accordingly. if we find one then the binding no
+    // longer needs to remember its borrowed but rather it's just a simple cast
+    // from wasm anyref to JS any.
+    match args {
+        Arguments::Incoming(incoming) => {
+            for binding in incoming {
+                let expr = match binding {
+                    NonstandardIncoming::BorrowedAnyref {
+                        val: ast::IncomingBindingExpression::Get(expr),
+                    } => expr.clone(),
+                    _ => continue,
+                };
+                ret.iter_mut().find(|p| p.0 == expr.idx as usize).unwrap().1 = false;
+                let new_binding = ast::IncomingBindingExpressionAs {
+                    ty: walrus::ValType::Anyref,
+                    expr: Box::new(expr.into()),
+                };
+                *binding = NonstandardIncoming::Standard(new_binding.into());
+            }
+        }
+        Arguments::Outgoing(outgoing) => {
+            for binding in outgoing {
+                let idx = match binding {
+                    NonstandardOutgoing::BorrowedAnyref { idx } => *idx,
+                    _ => continue,
+                };
+                ret.iter_mut().find(|p| p.0 == idx as usize).unwrap().1 = false;
+                let new_binding = ast::OutgoingBindingExpressionAs {
+                    idx,
+                    ty: ast::WebidlScalarType::Any.into(),
+                };
+                *binding = NonstandardOutgoing::Standard(new_binding.into());
+            }
+        }
+    }
+    (ret, ty.results() == &[walrus::ValType::Anyref])
 }

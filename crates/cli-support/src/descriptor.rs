@@ -82,7 +82,7 @@ pub struct Closure {
     pub mutable: bool,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum VectorKind {
     I8,
     U8,
@@ -97,10 +97,6 @@ pub enum VectorKind {
     F64,
     String,
     Anyref,
-}
-
-pub struct Number {
-    u32: bool,
 }
 
 impl Descriptor {
@@ -154,63 +150,10 @@ impl Descriptor {
         }
     }
 
-    /// Returns `Some` if this type is a number, and the returned `Number` type
-    /// can be accessed to learn more about what kind of number this is.
-    pub fn number(&self) -> Option<Number> {
-        match *self {
-            Descriptor::I8
-            | Descriptor::U8
-            | Descriptor::I16
-            | Descriptor::U16
-            | Descriptor::I32
-            | Descriptor::F32
-            | Descriptor::F64
-            | Descriptor::Enum { .. } => Some(Number { u32: false }),
-            Descriptor::U32 => Some(Number { u32: true }),
-            _ => None,
-        }
-    }
-
-    pub fn is_wasm_native(&self) -> bool {
-        match *self {
-            Descriptor::I32 | Descriptor::U32 | Descriptor::F32 | Descriptor::F64 => true,
-            _ => return false,
-        }
-    }
-
-    pub fn is_abi_as_u32(&self) -> bool {
-        match *self {
-            Descriptor::I8 | Descriptor::U8 | Descriptor::I16 | Descriptor::U16 => true,
-            _ => return false,
-        }
-    }
-
-    pub fn get_64(&self) -> Option<bool> {
-        match *self {
-            Descriptor::I64 => Some(true),
-            Descriptor::U64 => Some(false),
-            _ => None,
-        }
-    }
-
-    pub fn is_ref_anyref(&self) -> bool {
-        match *self {
-            Descriptor::Ref(ref s) => s.is_anyref(),
-            _ => return false,
-        }
-    }
-
     pub fn unwrap_closure(self) -> Closure {
         match self {
             Descriptor::Closure(s) => *s,
             _ => panic!("not a closure"),
-        }
-    }
-
-    pub fn is_anyref(&self) -> bool {
-        match *self {
-            Descriptor::Anyref => true,
-            _ => false,
         }
     }
 
@@ -245,121 +188,6 @@ impl Descriptor {
             Descriptor::Anyref => Some(VectorKind::Anyref),
             _ => None,
         }
-    }
-
-    pub fn rust_struct(&self) -> Option<&str> {
-        let inner = match *self {
-            Descriptor::Ref(ref d) => &**d,
-            Descriptor::RefMut(ref d) => &**d,
-            ref d => d,
-        };
-        match *inner {
-            Descriptor::RustStruct(ref s) => Some(s),
-            _ => None,
-        }
-    }
-
-    pub fn stack_closure(&self) -> Option<(&Function, bool)> {
-        let (inner, mutable) = match *self {
-            Descriptor::Ref(ref d) => (&**d, false),
-            Descriptor::RefMut(ref d) => (&**d, true),
-            _ => return None,
-        };
-        match *inner {
-            Descriptor::Function(ref f) => Some((f, mutable)),
-            _ => None,
-        }
-    }
-
-    pub fn is_by_ref(&self) -> bool {
-        match *self {
-            Descriptor::Ref(_) | Descriptor::RefMut(_) => true,
-            _ => false,
-        }
-    }
-
-    pub fn is_mut_ref(&self) -> bool {
-        match *self {
-            Descriptor::RefMut(_) => true,
-            _ => false,
-        }
-    }
-
-    pub fn abi_returned_through_pointer(&self) -> bool {
-        if self.vector_kind().is_some() {
-            return true;
-        }
-        if self.get_64().is_some() {
-            return true;
-        }
-        match self {
-            Descriptor::Option(inner) => match &**inner {
-                Descriptor::Anyref
-                | Descriptor::RustStruct(_)
-                | Descriptor::Enum { .. }
-                | Descriptor::Char
-                | Descriptor::Boolean
-                | Descriptor::I8
-                | Descriptor::U8
-                | Descriptor::I16
-                | Descriptor::U16 => false,
-                _ => true,
-            },
-            _ => false,
-        }
-    }
-
-    pub fn abi_arg_count(&self) -> usize {
-        if let Descriptor::Option(inner) = self {
-            if inner.get_64().is_some() {
-                return 4;
-            }
-            if let Descriptor::Ref(inner) = &**inner {
-                match &**inner {
-                    Descriptor::Anyref => return 1,
-                    _ => {}
-                }
-            }
-        }
-        if self.stack_closure().is_some() {
-            return 2;
-        }
-        if self.abi_returned_through_pointer() {
-            2
-        } else {
-            1
-        }
-    }
-
-    pub fn assert_abi_return_correct(&self, before: usize, after: usize) {
-        if before != after {
-            assert_eq!(
-                before + 1,
-                after,
-                "abi_returned_through_pointer wrong for {:?}",
-                self,
-            );
-            assert!(
-                self.abi_returned_through_pointer(),
-                "abi_returned_through_pointer wrong for {:?}",
-                self,
-            );
-        } else {
-            assert!(
-                !self.abi_returned_through_pointer(),
-                "abi_returned_through_pointer wrong for {:?}",
-                self,
-            );
-        }
-    }
-
-    pub fn assert_abi_arg_correct(&self, before: usize, after: usize) {
-        assert_eq!(
-            before + self.abi_arg_count(),
-            after,
-            "abi_arg_count wrong for {:?}",
-            self,
-        );
     }
 }
 
@@ -433,11 +261,5 @@ impl VectorKind {
             VectorKind::F64 => 8,
             VectorKind::Anyref => 4,
         }
-    }
-}
-
-impl Number {
-    pub fn is_u32(&self) -> bool {
-        self.u32
     }
 }
