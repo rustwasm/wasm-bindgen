@@ -41,6 +41,7 @@ const PLACEHOLDER_MODULE: &str = "__wbindgen_placeholder__";
 mod bindings;
 mod incoming;
 mod outgoing;
+pub mod standard;
 
 pub use self::incoming::NonstandardIncoming;
 pub use self::outgoing::NonstandardOutgoing;
@@ -474,12 +475,14 @@ struct Context<'a> {
     unique_crate_identifier: &'a str,
     descriptors: HashMap<String, Descriptor>,
     anyref_enabled: bool,
+    wasm_interface_types: bool,
     support_start: bool,
 }
 
 pub fn process(
     module: &mut Module,
     anyref_enabled: bool,
+    wasm_interface_types: bool,
     support_start: bool,
 ) -> Result<(NonstandardWebidlSectionId, WasmBindgenAuxId), Error> {
     let mut storage = Vec::new();
@@ -496,6 +499,7 @@ pub fn process(
         module,
         start_found: false,
         anyref_enabled,
+        wasm_interface_types,
         support_start,
     };
     cx.init()?;
@@ -619,8 +623,12 @@ impl<'a> Context<'a> {
     // `__wbindgen_init_anyref_table` function. This'll ensure that all
     // instances of this module have the initial slots of the anyref table
     // initialized correctly.
+    //
+    // Note that this is disabled if WebAssembly interface types are enabled
+    // since that's a slightly different environment for now which doesn't have
+    // quite the same initialization.
     fn inject_anyref_initialization(&mut self) -> Result<(), Error> {
-        if !self.anyref_enabled {
+        if !self.anyref_enabled || self.wasm_interface_types {
             return Ok(());
         }
 
@@ -1345,26 +1353,49 @@ impl<'a> Context<'a> {
             .bindings
             .get(bind.binding)
             .ok_or_else(|| format_err!("bad binding id"))?;
+        let mut return_via_outptr = None;
         let (wasm_ty, webidl_ty, incoming, outgoing) = match binding {
-            ast::FunctionBinding::Export(e) => (
-                e.wasm_ty,
-                e.webidl_ty,
-                e.params.bindings.as_slice(),
-                e.result.bindings.as_slice(),
-            ),
-            ast::FunctionBinding::Import(e) => (
-                e.wasm_ty,
-                e.webidl_ty,
-                e.result.bindings.as_slice(),
-                e.params.bindings.as_slice(),
-            ),
+            ast::FunctionBinding::Export(e) => {
+                // This `match` is weird, see the comment at the top of
+                // `standard.rs` for what it's doing.
+                let outgoing = match e.result.bindings.get(0) {
+                    Some(ast::OutgoingBindingExpression::As(a)) if a.idx == u32::max_value() => {
+                        return_via_outptr = Some(vec![walrus::ValType::I32, walrus::ValType::I32]);
+                        &e.result.bindings[1..]
+                    }
+                    _ => &e.result.bindings[..],
+                };
+                (
+                    e.wasm_ty,
+                    e.webidl_ty,
+                    e.params.bindings.as_slice(),
+                    outgoing,
+                )
+            }
+            ast::FunctionBinding::Import(e) => {
+                // This `match` is weird, see the comment at the top of
+                // `standard.rs` for what it's doing.
+                let incoming = match e.result.bindings.get(0) {
+                    Some(ast::IncomingBindingExpression::Get(g)) if g.idx == u32::max_value() => {
+                        return_via_outptr = Some(vec![walrus::ValType::I32, walrus::ValType::I32]);
+                        &e.result.bindings[1..]
+                    }
+                    _ => &e.result.bindings[..],
+                };
+                (
+                    e.wasm_ty,
+                    e.webidl_ty,
+                    incoming,
+                    e.params.bindings.as_slice(),
+                )
+            }
         };
-        let webidl_ty = copy_ty(&mut self.bindings.types, webidl_ty, &std.types);
+        let webidl_ty = standard::copy_ty(&mut self.bindings.types, webidl_ty, &std.types);
         let webidl_ty = match webidl_ty {
             ast::WebidlTypeRef::Id(id) => <ast::WebidlFunction as ast::WebidlTypeId>::wrap(id),
             _ => bail!("invalid webidl type listed"),
         };
-        return Ok(Binding {
+        Ok(Binding {
             wasm_ty,
             webidl_ty,
             incoming: incoming
@@ -1377,40 +1408,8 @@ impl<'a> Context<'a> {
                 .cloned()
                 .map(NonstandardOutgoing::Standard)
                 .collect(),
-            return_via_outptr: None,
-        });
-
-        /// Recursively clones `ty` into` dst` where it originally indexes
-        /// values in `src`, returning a new type ref which indexes inside of
-        /// `dst`.
-        fn copy_ty(
-            dst: &mut ast::WebidlTypes,
-            ty: ast::WebidlTypeRef,
-            src: &ast::WebidlTypes,
-        ) -> ast::WebidlTypeRef {
-            let id = match ty {
-                ast::WebidlTypeRef::Id(id) => id,
-                ast::WebidlTypeRef::Scalar(_) => return ty,
-            };
-            let ty: &ast::WebidlCompoundType = src.get(id).unwrap();
-            match ty {
-                ast::WebidlCompoundType::Function(f) => {
-                    let params = f
-                        .params
-                        .iter()
-                        .map(|param| copy_ty(dst, *param, src))
-                        .collect();
-                    let result = f.result.map(|ty| copy_ty(dst, ty, src));
-                    dst.insert(ast::WebidlFunction {
-                        kind: f.kind.clone(),
-                        params,
-                        result,
-                    })
-                    .into()
-                }
-                _ => unimplemented!(),
-            }
-        }
+            return_via_outptr,
+        })
     }
 
     /// Registers that `id` has a `binding` which was read from a standard
@@ -1662,7 +1661,23 @@ pub fn incoming_do_not_require_glue(
     exprs: &[NonstandardIncoming],
     from_webidl_tys: &[ast::WebidlTypeRef],
     to_wasm_tys: &[walrus::ValType],
+    standard_webidl_enabled: bool,
 ) -> bool {
+    // If anything is nonstandard, then we're unconditionally going to need a JS
+    // shim because, well, it's not standard.
+    if exprs.iter().any(|e| match e {
+        NonstandardIncoming::Standard(_) => false,
+        _ => true,
+    }) {
+        return false;
+    }
+
+    // If everything is `Standard` and we've actually got WebIDL bindings fully
+    // enabled, then we don't require any glue at all!
+    if standard_webidl_enabled {
+        return true;
+    }
+
     exprs.len() == from_webidl_tys.len()
         && exprs.len() == to_wasm_tys.len()
         && exprs
@@ -1685,7 +1700,19 @@ pub fn outgoing_do_not_require_glue(
     exprs: &[NonstandardOutgoing],
     from_wasm_tys: &[walrus::ValType],
     to_webidl_tys: &[ast::WebidlTypeRef],
+    standard_webidl_enabled: bool,
 ) -> bool {
+    // Same short-circuits as above.
+    if exprs.iter().any(|e| match e {
+        NonstandardOutgoing::Standard(_) => false,
+        _ => true,
+    }) {
+        return false;
+    }
+    if standard_webidl_enabled {
+        return true;
+    }
+
     exprs.len() == from_wasm_tys.len()
         && exprs.len() == to_webidl_tys.len()
         && exprs
