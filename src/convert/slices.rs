@@ -5,7 +5,7 @@ use core::slice;
 use core::str;
 
 use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
-use crate::convert::{OptionIntoWasmAbi, Stack};
+use crate::convert::OptionIntoWasmAbi;
 
 if_std! {
     use core::mem;
@@ -32,12 +32,12 @@ macro_rules! vectors {
                 type Abi = WasmSlice;
 
                 #[inline]
-                fn into_abi(self, extra: &mut dyn Stack) -> WasmSlice {
+                fn into_abi(self) -> WasmSlice {
                     let ptr = self.as_ptr();
                     let len = self.len();
                     mem::forget(self);
                     WasmSlice {
-                        ptr: ptr.into_abi(extra),
+                        ptr: ptr.into_abi(),
                         len: len as u32,
                     }
                 }
@@ -51,8 +51,8 @@ macro_rules! vectors {
                 type Abi = WasmSlice;
 
                 #[inline]
-                unsafe fn from_abi(js: WasmSlice, extra: &mut dyn Stack) -> Self {
-                    let ptr = <*mut $t>::from_abi(js.ptr, extra);
+                unsafe fn from_abi(js: WasmSlice) -> Self {
+                    let ptr = <*mut $t>::from_abi(js.ptr);
                     let len = js.len as usize;
                     Vec::from_raw_parts(ptr, len, len).into_boxed_slice()
                 }
@@ -67,9 +67,9 @@ macro_rules! vectors {
             type Abi = WasmSlice;
 
             #[inline]
-            fn into_abi(self, extra: &mut dyn Stack) -> WasmSlice {
+            fn into_abi(self) -> WasmSlice {
                 WasmSlice {
-                    ptr: self.as_ptr().into_abi(extra),
+                    ptr: self.as_ptr().into_abi(),
                     len: self.len() as u32,
                 }
             }
@@ -83,8 +83,8 @@ macro_rules! vectors {
             type Abi = WasmSlice;
 
             #[inline]
-            fn into_abi(self, extra: &mut dyn Stack) -> WasmSlice {
-                (&*self).into_abi(extra)
+            fn into_abi(self) -> WasmSlice {
+                (&*self).into_abi()
             }
         }
 
@@ -97,9 +97,9 @@ macro_rules! vectors {
             type Anchor = &'static [$t];
 
             #[inline]
-            unsafe fn ref_from_abi(js: WasmSlice, extra: &mut dyn Stack) -> &'static [$t] {
+            unsafe fn ref_from_abi(js: WasmSlice) -> &'static [$t] {
                 slice::from_raw_parts(
-                    <*const $t>::from_abi(js.ptr, extra),
+                    <*const $t>::from_abi(js.ptr),
                     js.len as usize,
                 )
             }
@@ -110,11 +110,11 @@ macro_rules! vectors {
             type Anchor = &'static mut [$t];
 
             #[inline]
-            unsafe fn ref_mut_from_abi(js: WasmSlice, extra: &mut dyn Stack)
+            unsafe fn ref_mut_from_abi(js: WasmSlice)
                 -> &'static mut [$t]
             {
                 slice::from_raw_parts_mut(
-                    <*mut $t>::from_abi(js.ptr, extra),
+                    <*mut $t>::from_abi(js.ptr),
                     js.len as usize,
                 )
             }
@@ -130,8 +130,8 @@ if_std! {
     impl<T> IntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {
         type Abi = <Box<[T]> as IntoWasmAbi>::Abi;
 
-        fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
-            self.into_boxed_slice().into_abi(extra)
+        fn into_abi(self) -> Self::Abi {
+            self.into_boxed_slice().into_abi()
         }
     }
 
@@ -142,8 +142,8 @@ if_std! {
     impl<T> FromWasmAbi for Vec<T> where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
         type Abi = <Box<[T]> as FromWasmAbi>::Abi;
 
-        unsafe fn from_abi(js: Self::Abi, extra: &mut dyn Stack) -> Self {
-            <Box<[T]>>::from_abi(js, extra).into()
+        unsafe fn from_abi(js: Self::Abi) -> Self {
+            <Box<[T]>>::from_abi(js).into()
         }
     }
 
@@ -155,8 +155,8 @@ if_std! {
         type Abi = <Vec<u8> as IntoWasmAbi>::Abi;
 
         #[inline]
-        fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
-            self.into_bytes().into_abi(extra)
+        fn into_abi(self) -> Self::Abi {
+            self.into_bytes().into_abi()
         }
     }
 
@@ -168,8 +168,8 @@ if_std! {
         type Abi = <Vec<u8> as FromWasmAbi>::Abi;
 
         #[inline]
-        unsafe fn from_abi(js: Self::Abi, extra: &mut dyn Stack) -> Self {
-            String::from_utf8_unchecked(<Vec<u8>>::from_abi(js, extra))
+        unsafe fn from_abi(js: Self::Abi) -> Self {
+            String::from_utf8_unchecked(<Vec<u8>>::from_abi(js))
         }
     }
 
@@ -182,8 +182,8 @@ impl<'a> IntoWasmAbi for &'a str {
     type Abi = <&'a [u8] as IntoWasmAbi>::Abi;
 
     #[inline]
-    fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
-        self.as_bytes().into_abi(extra)
+    fn into_abi(self) -> Self::Abi {
+        self.as_bytes().into_abi()
     }
 }
 
@@ -198,8 +198,8 @@ impl RefFromWasmAbi for str {
     type Anchor = &'static str;
 
     #[inline]
-    unsafe fn ref_from_abi(js: Self::Abi, extra: &mut dyn Stack) -> Self::Anchor {
-        str::from_utf8_unchecked(<[u8]>::ref_from_abi(js, extra))
+    unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
+        str::from_utf8_unchecked(<[u8]>::ref_from_abi(js))
     }
 }
 
@@ -210,12 +210,12 @@ if_std! {
         type Abi = WasmSlice;
 
         #[inline]
-        fn into_abi(self, extra: &mut dyn Stack) -> WasmSlice {
+        fn into_abi(self) -> WasmSlice {
             let ptr = self.as_ptr();
             let len = self.len();
             mem::forget(self);
             WasmSlice {
-                ptr: ptr.into_abi(extra),
+                ptr: ptr.into_abi(),
                 len: len as u32,
             }
         }
@@ -229,8 +229,8 @@ if_std! {
         type Abi = WasmSlice;
 
         #[inline]
-        unsafe fn from_abi(js: WasmSlice, extra: &mut dyn Stack) -> Self {
-            let ptr = <*mut JsValue>::from_abi(js.ptr, extra);
+        unsafe fn from_abi(js: WasmSlice) -> Self {
+            let ptr = <*mut JsValue>::from_abi(js.ptr);
             let len = js.len as usize;
             Vec::from_raw_parts(ptr, len, len).into_boxed_slice()
         }

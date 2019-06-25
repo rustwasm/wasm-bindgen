@@ -475,8 +475,8 @@ where
 {
     type Abi = u32;
 
-    fn into_abi(self, extra: &mut dyn Stack) -> u32 {
-        (&*self.js).into_abi(extra)
+    fn into_abi(self) -> u32 {
+        (&*self.js).into_abi()
     }
 }
 
@@ -561,13 +561,12 @@ macro_rules! doit {
                     let ret = {
                         let f: *const dyn Fn($($var),*) -> R =
                             FatPtr { fields: (a, b) }.ptr;
-                        let mut _stack = GlobalStack::new();
                         $(
-                            let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                            let $var = <$var as FromWasmAbi>::from_abi($var);
                         )*
                         (*f)($($var),*)
                     };
-                    ret.return_abi(&mut GlobalStack::new())
+                    ret.return_abi()
                 }
 
                 inform(invoke::<$($var,)* R> as u32);
@@ -615,13 +614,12 @@ macro_rules! doit {
                         let f: *const dyn FnMut($($var),*) -> R =
                             FatPtr { fields: (a, b) }.ptr;
                         let f = f as *mut dyn FnMut($($var),*) -> R;
-                        let mut _stack = GlobalStack::new();
                         $(
-                            let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                            let $var = <$var as FromWasmAbi>::from_abi($var);
                         )*
                         (*f)($($var),*)
                     };
-                    ret.return_abi(&mut GlobalStack::new())
+                    ret.return_abi()
                 }
 
                 inform(invoke::<$($var,)* R> as u32);
@@ -734,11 +732,10 @@ unsafe impl<A, R> WasmClosure for dyn Fn(&A) -> R
             let ret = {
                 let f: *const dyn Fn(&A) -> R =
                     FatPtr { fields: (a, b) }.ptr;
-                let mut _stack = GlobalStack::new();
-                let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
+                let arg = <A as RefFromWasmAbi>::ref_from_abi(arg);
                 (*f)(&*arg)
             };
-            ret.return_abi(&mut GlobalStack::new())
+            ret.return_abi()
         }
 
         inform(invoke::<A, R> as u32);
@@ -782,11 +779,10 @@ unsafe impl<A, R> WasmClosure for dyn FnMut(&A) -> R
                 let f: *const dyn FnMut(&A) -> R =
                     FatPtr { fields: (a, b) }.ptr;
                 let f = f as *mut dyn FnMut(&A) -> R;
-                let mut _stack = GlobalStack::new();
-                let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
+                let arg = <A as RefFromWasmAbi>::ref_from_abi(arg);
                 (*f)(&*arg)
             };
-            ret.return_abi(&mut GlobalStack::new())
+            ret.return_abi()
         }
 
         inform(invoke::<A, R> as u32);
