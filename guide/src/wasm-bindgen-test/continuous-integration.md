@@ -10,37 +10,23 @@ request!](https://github.com/rustwasm/wasm-bindgen)
 
 ```yaml
 language: rust
-rust: nightly
+rust    : nightly
 
 addons:
   firefox: latest
-  chrome: stable
+  chrome : stable
 
 install:
-  - rustup target add wasm32-unknown-unknown
-  # Downloads a `wasm-bindgen` release binary from https://github.com/rustwasm/wasm-bindgen/releases.
-  # Alternatively, use `wasm-pack` to manage `wasm-bindgen` binaries for you
-  - curl -OL https://github.com/rustwasm/wasm-bindgen/releases/download/0.2.21/wasm-bindgen-0.2.21-x86_64-unknown-linux-musl.tar.gz
-  - tar xf wasm-bindgen-0.2.21-x86_64-unknown-linux-musl.tar.gz
-  - chmod +x wasm-bindgen-0.2.21-x86_64-unknown-linux-musl/wasm-bindgen
-  # Moves the binaries to a directory that is in your PATH
-  - mv wasm-bindgen-0.2.21-x86_64-unknown-linux-musl/wasm-bindgen* ~/.cargo/bin 
-  # Install node.js with nvm.
-  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
-  - source ~/.nvm/nvm.sh
-  - nvm install v10.5
-  # Install chromedriver.
-  - curl --retry 5 -LO https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
-  - unzip chromedriver_linux64.zip
-  # Install geckodriver.
-  - curl --retry 5 -LO https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
-  - tar xf geckodriver-v0.21.0-linux64.tar.gz
+  - curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
 script:
-  # Test in Chrome.
-  - CHROMEDRIVER=$(pwd)/chromedriver cargo test --target wasm32-unknown-unknown
-  # Test in Firefox.
-  - GECKODRIVER=$(pwd)/geckodriver cargo test --target wasm32-unknown-unknown
+
+  # this will test the non wasm targets if your crate has those, otherwise remove this line.
+  #
+  - cargo test
+
+  - wasm-pack test --firefox --headless
+  - wasm-pack test --chrome  --headless
 ```
 
 ## AppVeyor
