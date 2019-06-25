@@ -29,22 +29,6 @@ script:
   - wasm-pack test --chrome  --headless
 ```
 
-Note that the wasm-pack installer will ask for confirmation before overwriting the wasm-pack binary. So if you use caching you can make sure it's not caching wasm-pack by adding this to your `travis.yml`:
-```yml
-# Need to cache the whole `.cargo` directory to keep .crates.toml for cargo-update to work
-#
-cache:
-  directories:
-    - /home/travis/.cargo
-
-# But don't cache the cargo registry
-# and remove wasm-pack binary to avoid the installer asking confirmation for overwriting it.
-#
-before_cache:
-  - rm -rf /home/travis/.cargo/registry
-  - rm -rf /home/travis/.cargo/bin/wasm-pack
-```
-
 ## AppVeyor
 
 ```yaml
