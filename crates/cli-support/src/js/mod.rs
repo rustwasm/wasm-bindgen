@@ -1558,25 +1558,6 @@ impl<'a> Context<'a> {
         })
     }
 
-    fn expose_global_argument_ptr(&mut self) -> Result<(), Error> {
-        if !self.should_write_global("global_argument_ptr") {
-            return Ok(());
-        }
-        self.require_internal_export("__wbindgen_global_argument_ptr")?;
-        self.global(
-            "
-            let cachedGlobalArgumentPtr = null;
-            function globalArgumentPtr() {
-                if (cachedGlobalArgumentPtr === null) {
-                    cachedGlobalArgumentPtr = wasm.__wbindgen_global_argument_ptr();
-                }
-                return cachedGlobalArgumentPtr;
-            }
-            ",
-        );
-        Ok(())
-    }
-
     fn expose_get_inherited_descriptor(&mut self) {
         if !self.should_write_global("get_inherited_descriptor") {
             return;
