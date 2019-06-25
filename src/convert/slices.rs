@@ -94,14 +94,11 @@ macro_rules! vectors {
 
         impl RefFromWasmAbi for [$t] {
             type Abi = WasmSlice;
-            type Anchor = &'static [$t];
+            type Anchor = Box<[$t]>;
 
             #[inline]
-            unsafe fn ref_from_abi(js: WasmSlice) -> &'static [$t] {
-                slice::from_raw_parts(
-                    <*const $t>::from_abi(js.ptr),
-                    js.len as usize,
-                )
+            unsafe fn ref_from_abi(js: WasmSlice) -> Box<[$t]> {
+                <Box<[$t]>>::from_abi(js)
             }
         }
 
@@ -195,11 +192,11 @@ impl<'a> OptionIntoWasmAbi for &'a str {
 
 impl RefFromWasmAbi for str {
     type Abi = <[u8] as RefFromWasmAbi>::Abi;
-    type Anchor = &'static str;
+    type Anchor = Box<str>;
 
     #[inline]
     unsafe fn ref_from_abi(js: Self::Abi) -> Self::Anchor {
-        str::from_utf8_unchecked(<[u8]>::ref_from_abi(js))
+        mem::transmute::<Box<[u8]>, Box<str>>(<Box<[u8]>>::from_abi(js))
     }
 }
 
