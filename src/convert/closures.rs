@@ -2,7 +2,7 @@ use core::mem;
 
 use crate::convert::slices::WasmSlice;
 use crate::convert::RefFromWasmAbi;
-use crate::convert::{FromWasmAbi, GlobalStack, IntoWasmAbi, ReturnWasmAbi, Stack};
+use crate::convert::{FromWasmAbi, IntoWasmAbi, ReturnWasmAbi};
 use crate::describe::{inform, WasmDescribe, FUNCTION};
 use crate::throw_str;
 
@@ -14,7 +14,7 @@ macro_rules! stack_closures {
         {
             type Abi = WasmSlice;
 
-            fn into_abi(self, _extra: &mut dyn Stack) -> WasmSlice {
+            fn into_abi(self) -> WasmSlice {
                 unsafe {
                     let (a, b): (usize, usize) = mem::transmute(self);
                     WasmSlice { ptr: a as u32, len: b as u32 }
@@ -35,13 +35,12 @@ macro_rules! stack_closures {
             // ensure they're all destroyed as `return_abi` may throw
             let ret = {
                 let f: &dyn Fn($($var),*) -> R = mem::transmute((a, b));
-                let mut _stack = GlobalStack::new();
                 $(
-                    let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    let $var = <$var as FromWasmAbi>::from_abi($var);
                 )*
                 f($($var),*)
             };
-            ret.return_abi(&mut GlobalStack::new())
+            ret.return_abi()
         }
 
         impl<'a, $($var,)* R> WasmDescribe for dyn Fn($($var),*) -> R + 'a
@@ -63,7 +62,7 @@ macro_rules! stack_closures {
         {
             type Abi = WasmSlice;
 
-            fn into_abi(self, _extra: &mut dyn Stack) -> WasmSlice {
+            fn into_abi(self) -> WasmSlice {
                 unsafe {
                     let (a, b): (usize, usize) = mem::transmute(self);
                     WasmSlice { ptr: a as u32, len: b as u32 }
@@ -84,13 +83,12 @@ macro_rules! stack_closures {
             // ensure they're all destroyed as `return_abi` may throw
             let ret = {
                 let f: &mut dyn FnMut($($var),*) -> R = mem::transmute((a, b));
-                let mut _stack = GlobalStack::new();
                 $(
-                    let $var = <$var as FromWasmAbi>::from_abi($var, &mut _stack);
+                    let $var = <$var as FromWasmAbi>::from_abi($var);
                 )*
                 f($($var),*)
             };
-            ret.return_abi(&mut GlobalStack::new())
+            ret.return_abi()
         }
 
         impl<'a, $($var,)* R> WasmDescribe for dyn FnMut($($var),*) -> R + 'a
@@ -127,7 +125,7 @@ where
 {
     type Abi = WasmSlice;
 
-    fn into_abi(self, _extra: &mut dyn Stack) -> WasmSlice {
+    fn into_abi(self) -> WasmSlice {
         unsafe {
             let (a, b): (usize, usize) = mem::transmute(self);
             WasmSlice {
@@ -151,11 +149,10 @@ unsafe extern "C" fn invoke1_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
     // ensure they're all destroyed as `return_abi` may throw
     let ret = {
         let f: &dyn Fn(&A) -> R = mem::transmute((a, b));
-        let mut _stack = GlobalStack::new();
-        let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
+        let arg = <A as RefFromWasmAbi>::ref_from_abi(arg);
         f(&*arg)
     };
-    ret.return_abi(&mut GlobalStack::new())
+    ret.return_abi()
 }
 
 impl<'a, A, R> WasmDescribe for dyn Fn(&A) -> R + 'a
@@ -179,7 +176,7 @@ where
 {
     type Abi = WasmSlice;
 
-    fn into_abi(self, _extra: &mut dyn Stack) -> WasmSlice {
+    fn into_abi(self) -> WasmSlice {
         unsafe {
             let (a, b): (usize, usize) = mem::transmute(self);
             WasmSlice {
@@ -203,11 +200,10 @@ unsafe extern "C" fn invoke1_mut_ref<A: RefFromWasmAbi, R: ReturnWasmAbi>(
     // ensure they're all destroyed as `return_abi` may throw
     let ret = {
         let f: &mut dyn FnMut(&A) -> R = mem::transmute((a, b));
-        let mut _stack = GlobalStack::new();
-        let arg = <A as RefFromWasmAbi>::ref_from_abi(arg, &mut _stack);
+        let arg = <A as RefFromWasmAbi>::ref_from_abi(arg);
         f(&*arg)
     };
-    ret.return_abi(&mut GlobalStack::new())
+    ret.return_abi()
 }
 
 impl<'a, A, R> WasmDescribe for dyn FnMut(&A) -> R + 'a
