@@ -1,6 +1,6 @@
 use std::cell::{Cell, RefCell};
 use std::fmt;
-use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
+use std::rc::Rc;
 use std::sync::Arc;
 
 use futures::executor::{self, Notify, Spawn};
@@ -19,9 +19,7 @@ use wasm_bindgen::prelude::*;
 ///
 /// Currently this type is constructed with `JsFuture::from`.
 pub struct JsFuture {
-    resolved: oneshot::Receiver<JsValue>,
-    rejected: oneshot::Receiver<JsValue>,
-    callbacks: Option<(Closure<dyn FnMut(JsValue)>, Closure<dyn FnMut(JsValue)>)>,
+    rx: oneshot::Receiver<Result<JsValue, JsValue>>,
 }
 
 impl fmt::Debug for JsFuture {
@@ -33,28 +31,49 @@ impl fmt::Debug for JsFuture {
 impl From<Promise> for JsFuture {
     fn from(js: Promise) -> JsFuture {
         // Use the `then` method to schedule two callbacks, one for the
-        // resolved value and one for the rejected value. These two callbacks
-        // will be connected to oneshot channels which feed back into our
-        // future.
+        // resolved value and one for the rejected value. We're currently
+        // assuming that JS engines will unconditionally invoke precisely one of
+        // these callbacks, no matter what.
         //
-        // This may not be the speediest option today but it should work!
-        let (tx1, rx1) = oneshot::channel();
-        let (tx2, rx2) = oneshot::channel();
-        let mut tx1 = Some(tx1);
-        let resolve = Closure::wrap(Box::new(move |val| {
-            drop(tx1.take().unwrap().send(val));
-        }) as Box<dyn FnMut(_)>);
-        let mut tx2 = Some(tx2);
-        let reject = Closure::wrap(Box::new(move |val| {
-            drop(tx2.take().unwrap().send(val));
-        }) as Box<dyn FnMut(_)>);
+        // Ideally we'd have a way to cancel the callbacks getting invoked and
+        // free up state ourselves when this `JsFuture` is dropped. We don't
+        // have that, though, and one of the callbacks is likely always going to
+        // be invoked.
+        //
+        // As a result we need to make sure that no matter when the callbacks
+        // are invoked they are valid to be called at any time, which means they
+        // have to be self-contained. Through the `Closure::once` and some
+        // `Rc`-trickery we can arrange for both instances of `Closure`, and the
+        // `Rc`, to all be destroyed once the first one is called.
+        let (tx, rx) = oneshot::channel();
+        let state = Rc::new(RefCell::new(None));
+        let state2 = state.clone();
+        let resolve = Closure::once(move |val| finish(&state2, Ok(val)));
+        let state2 = state.clone();
+        let reject = Closure::once(move |val| finish(&state2, Err(val)));
 
         js.then2(&resolve, &reject);
+        *state.borrow_mut() = Some((tx, resolve, reject));
 
-        JsFuture {
-            resolved: rx1,
-            rejected: rx2,
-            callbacks: Some((resolve, reject)),
+        return JsFuture { rx };
+
+        fn finish(
+            state: &RefCell<
+                Option<(
+                    oneshot::Sender<Result<JsValue, JsValue>>,
+                    Closure<dyn FnMut(JsValue)>,
+                    Closure<dyn FnMut(JsValue)>,
+                )>,
+            >,
+            val: Result<JsValue, JsValue>,
+        ) {
+            match state.borrow_mut().take() {
+                // We don't have any guarantee that anyone's still listening at this
+                // point (the Rust `JsFuture` could have been dropped) so simply
+                // ignore any errors here.
+                Some((tx, _, _)) => drop(tx.send(val)),
+                None => wasm_bindgen::throw_str("cannot finish twice"),
+            }
         }
     }
 }
@@ -64,19 +83,11 @@ impl Future for JsFuture {
     type Error = JsValue;
 
     fn poll(&mut self) -> Poll<JsValue, JsValue> {
-        // Test if either our resolved or rejected side is finished yet. Note
-        // that they will return errors if they're disconnected which can't
-        // happen until we drop the `callbacks` field, which doesn't happen
-        // till we're done, so we dont need to handle that.
-        if let Ok(Async::Ready(val)) = self.resolved.poll() {
-            drop(self.callbacks.take());
-            return Ok(val.into());
+        match self.rx.poll() {
+            Ok(Async::Ready(val)) => val.map(Async::Ready),
+            Ok(Async::NotReady) => Ok(Async::NotReady),
+            Err(_) => wasm_bindgen::throw_str("cannot cancel"),
         }
-        if let Ok(Async::Ready(val)) = self.rejected.poll() {
-            drop(self.callbacks.take());
-            return Err(val);
-        }
-        Ok(Async::NotReady)
     }
 }
 
@@ -101,8 +112,8 @@ impl Future for JsFuture {
 /// resolve**. Instead it will be a leaked promise. This is an unfortunate
 /// limitation of wasm currently that's hoped to be fixed one day!
 pub fn future_to_promise<F>(future: F) -> Promise
-where
-    F: Future<Item = JsValue, Error = JsValue> + 'static,
+    where
+        F: Future<Item = JsValue, Error = JsValue> + 'static,
 {
     _future_to_promise(Box::new(future))
 }
@@ -132,7 +143,6 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
             resolve,
             reject,
             notified: Cell::new(State::Notified),
-            waker: Arc::new(Waker::default()),
         }));
     });
 
@@ -151,9 +161,6 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
         // JavaScript.  We'll be invoking one of these at the end.
         resolve: Function,
         reject: Function,
-
-        // Struct to wake a future
-        waker: Arc<Waker>,
     }
 
     // The possible states our `Package` (future) can be in, tracked internally
@@ -184,72 +191,10 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
         Waiting(Arc<Package>),
     }
 
-    struct Waker {
-        value: AtomicI32,
-        notified: AtomicBool,
-    };
-
-    impl Default for Waker {
-        fn default() -> Self {
-            Waker {
-                value: AtomicI32::new(0),
-                notified: AtomicBool::new(false),
-            }
-        }
-    }
-
-    impl Notify for Waker {
-        fn notify(&self, _id: usize) {
-            if !self.notified.swap(true, Ordering::SeqCst) {
-                let _ = unsafe {
-                    core::arch::wasm32::atomic_notify(
-                        &self.value as *const AtomicI32 as *mut i32,
-                        std::u32::MAX, // number of threads to notify
-                    )
-                };
-            }
-        }
-    }
-
-    fn poll_again(package: Arc<Package>) {
-        let me = match package.notified.replace(State::Notified) {
-            // we need to schedule polling to resume, so keep going
-            State::Waiting(me) => {
-                me
-            }
-
-            // we were already notified, and were just notified again;
-            // having now coalesced the notifications we return as it's
-            // still someone else's job to process this
-            State::Notified => {
-                return;
-            }
-
-            // the future was previously being polled, and we've just
-            // switched it to the "you're notified" state. We don't have
-            // access to the future as it's being polled, so the future
-            // polling process later sees this notification and will
-            // continue polling. For us, though, there's nothing else to do,
-            // so we bail out.
-            // later see
-            State::Polling => {
-                return;
-            }
-        };
-
-        // Use `Promise.then` on a resolved promise to place our execution
-        // onto the next turn of the microtask queue, enqueueing our poll
-        // operation. We don't currently poll immediately as it turns out
-        // `futures` crate adapters aren't compatible with it and it also
-        // helps avoid blowing the stack by accident.
-        let promise =
-            crate::polyfill::wait_async(&package.waker.value).expect("Should create a Promise");
-        let closure = Closure::once(Box::new(move |_| {
-            Package::poll(&me);
-        }) as Box<dyn FnMut(JsValue)>);
-        promise.then(&closure);
-        closure.forget();
-    }
+    // No shared memory right now, wasm is single threaded, no need to worry
+    // about this!
+    unsafe impl Send for Package {}
+    unsafe impl Sync for Package {}
 
     impl Package {
         // Move the future contained in `me` as far forward as we can. This will
@@ -277,18 +222,13 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
                     // our `Waiting` state, and resume the polling process
                     State::Polling => {
                         me.notified.set(State::Waiting(me.clone()));
-
-                        poll_again(me.clone());
-
                         break;
                     }
 
-                    State::Waiting(_) => {
-                        panic!("shouldn't see waiting state!")
-                    }
+                    State::Waiting(_) => panic!("shouldn't see waiting state!"),
                 }
 
-                let (val, f) = match me.spawn.borrow_mut().poll_future_notify(&me.waker, 0) {
+                let (val, f) = match me.spawn.borrow_mut().poll_future_notify(me, 0) {
                     // If the future is ready, immediately call the
                     // resolve/reject callback and then return as we're done.
                     Ok(Async::Ready(value)) => (value, &me.resolve),
@@ -304,6 +244,48 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
             }
         }
     }
+
+    impl Notify for Package {
+        fn notify(&self, _id: usize) {
+            let me = match self.notified.replace(State::Notified) {
+                // we need to schedule polling to resume, so keep going
+                State::Waiting(me) => me,
+
+                // we were already notified, and were just notified again;
+                // having now coalesced the notifications we return as it's
+                // still someone else's job to process this
+                State::Notified => return,
+
+                // the future was previously being polled, and we've just
+                // switched it to the "you're notified" state. We don't have
+                // access to the future as it's being polled, so the future
+                // polling process later sees this notification and will
+                // continue polling. For us, though, there's nothing else to do,
+                // so we bail out.
+                // later see
+                State::Polling => return,
+            };
+
+            // Use `Promise.then` on a resolved promise to place our execution
+            // onto the next turn of the microtask queue, enqueueing our poll
+            // operation. We don't currently poll immediately as it turns out
+            // `futures` crate adapters aren't compatible with it and it also
+            // helps avoid blowing the stack by accident.
+            //
+            // Note that the `Rc`/`RefCell` trick here is basically to just
+            // ensure that our `Closure` gets cleaned up appropriately.
+            let promise = Promise::resolve(&JsValue::undefined());
+            let slot = Rc::new(RefCell::new(None));
+            let slot2 = slot.clone();
+            let closure = Closure::wrap(Box::new(move |_| {
+                let myself = slot2.borrow_mut().take();
+                debug_assert!(myself.is_some());
+                Package::poll(&me);
+            }) as Box<dyn FnMut(JsValue)>);
+            promise.then(&closure);
+            *slot.borrow_mut() = Some(closure);
+        }
+    }
 }
 
 /// Converts a Rust `Future` on a local task queue.
@@ -315,8 +297,8 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
 ///
 /// This function has the same panic behavior as `future_to_promise`.
 pub fn spawn_local<F>(future: F)
-where
-    F: Future<Item = (), Error = ()> + 'static,
+    where
+        F: Future<Item = (), Error = ()> + 'static,
 {
     future_to_promise(
         future

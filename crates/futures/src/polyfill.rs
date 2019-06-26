@@ -37,27 +37,17 @@
  */
 
 use std::cell::RefCell;
-use std::rc::Rc;
+use std::sync::atomic::{AtomicI32, Ordering};
 
 use js_sys::{
-    encode_uri_component, Array, Atomics, Error, Function, Int32Array, JsString, Promise, Reflect,
-    SharedArrayBuffer, WebAssembly,
+    encode_uri_component, Array, Function, Int32Array, JsString, Promise, Reflect,
+    WebAssembly,
 };
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{MessageEvent, Worker};
 
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-}
-
-const DEFAULT_TIMEOUT: f64 = 10.0;
+const DEFAULT_TIMEOUT: f64 = std::f64::INFINITY;
 
 const HELPER_CODE: &'static str = "
 onmessage = function (ev) {
@@ -65,7 +55,6 @@ onmessage = function (ev) {
         switch (ev.data[0]) {
             case 'wait': {
                 let [_, ia, index, value, timeout] = ev.data;
-                console.log('wait event inside a worker');
                 let result = Atomics.wait(ia, index, value, timeout);
                 postMessage(['ok', result]);
                 break;
@@ -75,17 +64,17 @@ onmessage = function (ev) {
             }
         }
     } catch (e) {
-        console.log('Exception in wait helper');
+        console.log('Exception in wait helper', e);
         postMessage(['error', 'Exception']);
     }
 }
 ";
 
 thread_local! {
-    static HELPERS: RefCell<Vec<Rc<Worker>>> = RefCell::new(vec![]);
+    static HELPERS: RefCell<Vec<Worker>> = RefCell::new(vec![]);
 }
 
-fn alloc_helper() -> Rc<Worker> {
+fn alloc_helper() -> Worker {
     HELPERS.with(|helpers| {
         if let Some(helper) = helpers.borrow_mut().pop() {
             return helper;
@@ -95,18 +84,18 @@ fn alloc_helper() -> Rc<Worker> {
         let encoded: String = encode_uri_component(HELPER_CODE).into();
         initialization_string.push_str(&encoded);
 
-        return Rc::new(Worker::new(&initialization_string).expect("Should create a Worker"));
+        Worker::new(&initialization_string).expect("Should create a Worker")
     })
 }
 
-fn free_helper(helper: &Rc<Worker>) {
+fn free_helper(helper: Worker) {
     HELPERS.with(move |helpers| {
         helpers.borrow_mut().push(helper.clone());
     });
 }
 
-pub fn wait_async(index: u32, value: i32) -> Result<Promise, JsValue> {
-    wait_async_with_timeout(index, value, DEFAULT_TIMEOUT)
+pub fn wait_async(value: &AtomicI32) -> Result<Promise, JsValue> {
+    wait_async_with_timeout(value, DEFAULT_TIMEOUT)
 }
 
 fn get_array_item(array: &JsValue, index: u32) -> JsValue {
@@ -118,7 +107,7 @@ fn get_array_item(array: &JsValue, index: u32) -> JsValue {
 // for parameter validation.  The promise is resolved with a string as from
 // Atomics.wait, or, in the case something went completely wrong, it is
 // rejected with an error string.
-pub fn wait_async_with_timeout(index: u32, value: i32, timeout: f64) -> Result<Promise, JsValue> {
+pub fn wait_async_with_timeout(value: &AtomicI32, timeout: f64) -> Result<Promise, JsValue> {
     let memory_buffer = wasm_bindgen::memory()
         .dyn_into::<WebAssembly::Memory>()
         .expect("Should cast a memory to WebAssembly::Memory")
@@ -126,30 +115,20 @@ pub fn wait_async_with_timeout(index: u32, value: i32, timeout: f64) -> Result<P
 
     let indexed_array = Int32Array::new(&memory_buffer);
 
-    if !indexed_array.buffer().has_type::<SharedArrayBuffer>() {
-        console_log!("polyfill, not a SharedArrayBuffer");
-        return Err(Error::new("Indexed array must be created from SharedArrayBuffer").into());
-    }
-
-    // Optimization, avoid the helper thread in this common case.
-    if Atomics::load(&indexed_array, index)? != value {
-        console_log!("polyfill, not-equal");
-        return Ok(Promise::resolve(&JsString::from("not-equal")));
-    }
+    let index = value as *const AtomicI32 as u32 / 4;
+    let value_i32 = value.load(Ordering::SeqCst);
 
     // General case, we must wait.
-
-    console_log!("polyfill, general case");
 
     Ok(Promise::new(
         &mut move |resolve: Function, reject: Function| {
             let helper = alloc_helper();
             let helper_ref = helper.clone();
 
-            let onmessage_callback = Closure::once_into_js(Box::new(move |e: MessageEvent| {
+            let onmessage_callback = Closure::once_into_js(move |e: MessageEvent| {
                 // Free the helper early so that it can be reused if the resolution
                 // needs a helper.
-                free_helper(&helper_ref);
+                free_helper(helper_ref);
                 match String::from(
                     get_array_item(&e.data(), 0)
                         .as_string()
@@ -172,8 +151,7 @@ pub fn wait_async_with_timeout(index: u32, value: i32, timeout: f64) -> Result<P
                     // it's not specified in the proposal yet
                     _ => (),
                 }
-            })
-                as Box<dyn FnMut(MessageEvent)>);
+            });
             helper.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
 
             // onmessage_callback.forget();
@@ -196,7 +174,7 @@ pub fn wait_async_with_timeout(index: u32, value: i32, timeout: f64) -> Result<P
                 &JsString::from("wait"),
                 &indexed_array,
                 &JsValue::from(index),
-                &JsValue::from(value),
+                &JsValue::from(value_i32),
                 &JsValue::from(timeout),
             );
 

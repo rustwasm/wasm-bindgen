@@ -92,7 +92,7 @@ impl Scene {
             .map(move |_data| image_data(base, len, width, height).into());
 
         Ok(RenderingScene {
-            promise: wasm_bindgen_futures::atomics::future_to_promise(done),
+            promise: wasm_bindgen_futures::future_to_promise(done),
             base,
             len,
             height,
