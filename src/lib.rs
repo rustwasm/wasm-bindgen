@@ -1017,20 +1017,6 @@ pub mod __rt {
         }
     }
 
-    pub const GLOBAL_STACK_CAP: usize = 16;
-
-    // Increase the alignment to 8 here because this can be used as a
-    // BigUint64Array pointer base which requires alignment 8
-    #[repr(align(8))]
-    struct GlobalData([u32; GLOBAL_STACK_CAP]);
-
-    static mut GLOBAL_STACK: GlobalData = GlobalData([0; GLOBAL_STACK_CAP]);
-
-    #[no_mangle]
-    pub unsafe extern "C" fn __wbindgen_global_argument_ptr() -> *mut u32 {
-        GLOBAL_STACK.0.as_mut_ptr()
-    }
-
     /// This is a curious function necessary to get wasm-bindgen working today,
     /// and it's a bit of an unfortunate hack.
     ///

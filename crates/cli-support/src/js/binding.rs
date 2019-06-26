@@ -118,14 +118,20 @@ impl<'a, 'b> Builder<'a, 'b> {
         if incoming_args {
             let mut webidl_params = webidl.params.iter();
 
-            // If we're returning via an out pointer then it's guaranteed to be the
-            // first argument. This isn't an argument of the function shim we're
-            // generating so synthesize the parameter and its value.
+            // If we're returning via an out pointer then it's guaranteed to be
+            // the first argument. This isn't an argument of the function shim
+            // we're generating so synthesize the parameter and its value.
+            //
+            // For the actual value of the return pointer we just pick the first
+            // properly aligned nonzero address. We use the address for a
+            // BigInt64Array sometimes which means it needs to be 8-byte
+            // aligned. Otherwise valid code is unlikely to ever be working
+            // around address 8, so this should be a safe address to use for
+            // returning data through.
             if binding.return_via_outptr.is_some() {
                 drop(webidl_params.next());
-                self.cx.expose_global_argument_ptr()?;
                 self.args_prelude
-                    .push_str("const retptr = globalArgumentPtr();\n");
+                    .push_str("const retptr = 8;\n");
                 arg_names.push("retptr".to_string());
             }
 
