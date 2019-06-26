@@ -19,18 +19,19 @@ const WASM: &[u8] = include_bytes!("add.wasm");
 pub fn run() -> Result<(), JsValue> {
     console_log!("instantiating a new wasm module directly");
 
-    // Note that `Uint8Array::view` this is somewhat dangerous (hence the
+    // Note that `Uint8Array::view` is somewhat dangerous (hence the
     // `unsafe`!). This is creating a raw view into our module's
     // `WebAssembly.Memory` buffer, but if we allocate more pages for ourself
     // (aka do a memory allocation in Rust) it'll cause the buffer to change,
     // causing the `Uint8Array` to be invalid.
     //
     // As a result, after `Uint8Array::view` we have to be very careful not to
-    // do any memory allocations before it's next used.
+    // do any memory allocations before it's dropped.
     let a = unsafe {
         let array = Uint8Array::view(WASM);
         WebAssembly::Module::new(array.as_ref())?
     };
+
     let b = WebAssembly::Instance::new(&a, &Object::new())?;
     let c = b.exports();
 

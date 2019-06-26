@@ -4589,6 +4589,14 @@ macro_rules! arrays {
                 all_wasm_memory.set(self, offset as u32);
             }
         }
+
+        impl<'a> From<&'a [$ty]> for $name {
+            #[inline]
+            fn from(slice: &'a [$ty]) -> $name {
+                // This is safe because the `new` function makes a copy if its argument is a TypedArray
+                unsafe { $name::new(&$name::view(slice)) }
+            }
+        }
     )*);
 }
 
