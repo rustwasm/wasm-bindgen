@@ -40,7 +40,7 @@ extern "C" {
 #[wasm_bindgen_test]
 fn bind() {
     let f = get_function_to_bind();
-    let new_f = f.bind(&get_value_to_bind_to());
+    let new_f = f.bind0(&get_value_to_bind_to());
     assert_eq!(call_function(f), 1);
     assert_eq!(call_function(new_f), 2);
 }
