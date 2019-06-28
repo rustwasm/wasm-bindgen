@@ -1,7 +1,7 @@
-/*
- * The polyfill was kindly borrowed from https://github.com/tc39/proposal-atomics-wait-async
- * and ported to Rust
- */
+//!
+//! The polyfill was kindly borrowed from https://github.com/tc39/proposal-atomics-wait-async
+//! and ported to Rust
+//!
 
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this

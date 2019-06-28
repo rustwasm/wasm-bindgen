@@ -119,9 +119,11 @@ cfg_if! {
         /// Contains a Futures 0.3 implementation of this crate.
         pub mod futures_0_3;
 
+        /// Contains stable version of the crate
         pub mod stable;
         pub use stable::*;
      } else {
+        /// Contains stable version of the crate
         pub mod stable;
         pub use stable::*;
      }
