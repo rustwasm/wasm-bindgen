@@ -6,7 +6,7 @@ exports.get_value_to_bind_to = function() {
   return { x: 2 };
 };
 exports.list = function() {
-  return Array.prototype.slice.call(arguments);
+  return function() {return Array.prototype.slice.call(arguments);}
 };
 exports.add_arguments = function() {
     return function(arg1, arg2) {return arg1 + arg2}
