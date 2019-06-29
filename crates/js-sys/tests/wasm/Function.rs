@@ -34,15 +34,74 @@ fn apply() {
 extern "C" {
     fn get_function_to_bind() -> Function;
     fn get_value_to_bind_to() -> JsValue;
-    fn call_function(f: Function) -> JsValue;
+    fn list() -> Function;
+    fn add_arguments() -> Function;
+    fn call_function(f: &Function) -> JsValue;
+    fn call_function_arg(f: &Function, arg0: JsValue) -> JsValue;
+
 }
 
 #[wasm_bindgen_test]
 fn bind() {
     let f = get_function_to_bind();
     let new_f = f.bind(&get_value_to_bind_to());
-    assert_eq!(call_function(f), 1);
-    assert_eq!(call_function(new_f), 2);
+    assert_eq!(call_function(&f), 1);
+    assert_eq!(call_function(&new_f), 2);
+}
+
+#[wasm_bindgen_test]
+fn bind0() {
+    let f = get_function_to_bind();
+    let new_f = f.bind0(&get_value_to_bind_to());
+    assert_eq!(call_function(&f), 1);
+    assert_eq!(call_function(&new_f), 2);
+}
+
+#[wasm_bindgen_test]
+fn bind1() {
+    let a_list = list();
+    let prepended_list = a_list.bind1(&JsValue::NULL, &JsValue::from(2));
+
+    assert_eq!(Array::from(&call_function(&prepended_list)).pop(), 2);
+
+    let adder = add_arguments();
+    let add_42 = adder.bind1(&JsValue::NULL, &JsValue::from(42));
+
+    assert_eq!(call_function_arg(&add_42, JsValue::from(1)), 43);
+    assert_eq!(call_function_arg(&add_42, JsValue::from(378)), 420);
+}
+
+#[wasm_bindgen_test]
+fn bind2() {
+    let a_list = list();
+    let prepended_list = a_list.bind2(&JsValue::NULL, &JsValue::from(2), &JsValue::from(3));
+
+    let arr = Array::from(&call_function(&prepended_list));
+
+    assert_eq!(arr.pop(), 3);
+    assert_eq!(arr.pop(), 2);
+
+    let adder = add_arguments();
+    let always_69 = adder.bind2(&JsValue::NULL, &JsValue::from(66), &JsValue::from(3));
+
+    assert_eq!(call_function(&always_69), 69);
+}
+
+#[wasm_bindgen_test]
+fn bind3() {
+    let a_list = list();
+    let prepended_list = a_list.bind3(&JsValue::NULL, &JsValue::from(2), &JsValue::from(3), &JsValue::from(4));
+
+    let arr = Array::from(&call_function(&prepended_list));
+
+    assert_eq!(arr.pop(), 4);
+    assert_eq!(arr.pop(), 3);
+    assert_eq!(arr.pop(), 2);
+
+    let adder = add_arguments();
+    let always_69 = adder.bind2(&JsValue::NULL, &JsValue::from(66), &JsValue::from(3));
+
+    assert_eq!(call_function(&always_69), 69);
 }
 
 #[wasm_bindgen_test]
