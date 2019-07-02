@@ -85,9 +85,6 @@ intrinsics! {
         #[symbol = "__wbindgen_is_string"]
         #[signature = fn(ref_anyref()) -> Boolean]
         IsString,
-        #[symbol = "__wbindgen_is_truthy"]
-        #[signature = fn(ref_anyref()) -> Boolean]
-        IsTruthy,
         #[symbol = "__wbindgen_is_falsy"]
         #[signature = fn(ref_anyref()) -> Boolean]
         IsFalsy,

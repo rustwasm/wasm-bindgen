@@ -333,15 +333,15 @@ impl JsValue {
     }
 
     /// Tests whether the value is ["truthy"].
-    /// 
+    ///
     /// ["truthy"]: https://developer.mozilla.org/en-US/docs/Glossary/Truthy
     #[inline]
     pub fn is_truthy(&self) -> bool {
-        unsafe { __wbindgen_is_truthy(self.idx) == 1 }
+        !self.is_falsy()
     }
 
     /// Tests whether the value is ["falsy"].
-    /// 
+    ///
     /// ["falsy"]: https://developer.mozilla.org/en-US/docs/Glossary/Falsy
     #[inline]
     pub fn is_falsy(&self) -> bool {
@@ -518,7 +518,6 @@ externs! {
         fn __wbindgen_is_object(idx: u32) -> u32;
         fn __wbindgen_is_function(idx: u32) -> u32;
         fn __wbindgen_is_string(idx: u32) -> u32;
-        fn __wbindgen_is_truthy(idx: u32) -> u32;
         fn __wbindgen_is_falsy(idx: u32) -> u32;
 
         fn __wbindgen_number_get(idx: u32, invalid: *mut u8) -> f64;

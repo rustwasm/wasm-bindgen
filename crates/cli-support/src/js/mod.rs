@@ -2299,11 +2299,6 @@ impl<'a> Context<'a> {
                 format!("typeof({}) === 'string'", args[0])
             }
 
-            Intrinsic::IsTruthy => {
-                assert_eq!(args.len(), 1);
-                format!("!!{}", args[0])
-            }
-
             Intrinsic::IsFalsy => {
                 assert_eq!(args.len(), 1);
                 format!("!{}", args[0])
