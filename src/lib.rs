@@ -57,12 +57,9 @@ pub mod prelude {
     }
 }
 
-#[allow(unused)]
-mod cache;
+
 pub mod convert;
 pub mod describe;
-
-pub use cache::intern::intern;
 
 mod cast;
 pub use crate::cast::JsCast;
@@ -72,6 +69,9 @@ if_std! {
     use std::prelude::v1::*;
     pub mod closure;
     mod anyref;
+
+    mod cache;
+    pub use cache::intern::intern;
 }
 
 /// Representation of an object owned by JS.

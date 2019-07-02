@@ -25,7 +25,7 @@ spans = ["wasm-bindgen-macro/spans"]
 std = []
 serde-serialize = ["serde", "serde_json", "std"]
 nightly = []
-disable-interning = []
+enable-interning = ["std"]
 
 # Whether or not the `#[wasm_bindgen]` macro is strict and generates an error on
 # all unused attributes
@@ -52,7 +52,6 @@ wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }
 [workspace]
 members = [
   "benchmarks",
-  "crates/cache",
   "crates/cli",
   "crates/js-sys",
   "crates/test",

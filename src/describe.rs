@@ -75,7 +75,7 @@ simple! {
     f64 => F64
     bool => BOOLEAN
     char => CHAR
-    str => if cfg!(feature = "disable-interning") { STRING } else { ANYREF }
+    str => if cfg!(feature = "enable-interning") { ANYREF } else { STRING }
     JsValue => ANYREF
 }
 
@@ -116,7 +116,7 @@ if_std! {
     use std::prelude::v1::*;
 
     impl WasmDescribe for String {
-        fn describe() { inform(if cfg!(feature = "disable-interning") { STRING } else { ANYREF }) }
+        fn describe() { inform(if cfg!(feature = "enable-interning") { ANYREF } else { STRING }) }
     }
 
     impl<T: WasmDescribe> WasmDescribe for Box<[T]> {

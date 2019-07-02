@@ -315,13 +315,6 @@ impl IntoWasmAbi for JsValue {
     }
 }
 
-impl OptionIntoWasmAbi for JsValue {
-    #[inline]
-    fn none() -> u32 {
-        32
-    }
-}
-
 impl FromWasmAbi for JsValue {
     type Abi = u32;
 
