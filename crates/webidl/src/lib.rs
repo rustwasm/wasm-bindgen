@@ -199,6 +199,10 @@ fn immutable_slice_whitelist() -> BTreeSet<&'static str> {
         "texSubImage2D",
         "compressedTexImage2D",
         // WebGl2RenderingContext
+        "uniform1uiv",
+        "uniform2uiv",
+        "uniform3uiv",
+        "uniform4uiv",
         "texImage3D",
         "texSubImage3D",
         "compressedTexImage3D",
