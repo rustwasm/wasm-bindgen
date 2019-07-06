@@ -26,8 +26,8 @@ use wasm_bindgen::prelude::*;
 pub struct JsFuture {
     resolved: oneshot::Receiver<JsValue>,
     rejected: oneshot::Receiver<JsValue>,
-    _cb_resolve: Closure<FnMut(JsValue)>,
-    _cb_reject: Closure<FnMut(JsValue)>,
+    _cb_resolve: Closure<dyn FnMut(JsValue)>,
+    _cb_reject: Closure<dyn FnMut(JsValue)>,
 }
 
 impl fmt::Debug for JsFuture {
@@ -142,6 +142,10 @@ where
         // This is used to ensure that the Task will only be queued once
         is_queued: Cell<bool>,
     }
+
+    // TODO This is only safe because JS is currently single-threaded
+    unsafe impl Send for Task {}
+    unsafe impl Sync for Task {}
 
     impl Task {
         #[inline]

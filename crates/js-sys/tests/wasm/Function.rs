@@ -90,7 +90,12 @@ fn bind2() {
 #[wasm_bindgen_test]
 fn bind3() {
     let a_list = list();
-    let prepended_list = a_list.bind3(&JsValue::NULL, &JsValue::from(2), &JsValue::from(3), &JsValue::from(4));
+    let prepended_list = a_list.bind3(
+        &JsValue::NULL,
+        &JsValue::from(2),
+        &JsValue::from(3),
+        &JsValue::from(4),
+    );
 
     let arr = Array::from(&call_function(&prepended_list));
 

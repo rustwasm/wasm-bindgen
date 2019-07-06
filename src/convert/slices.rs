@@ -4,8 +4,8 @@ use std::prelude::v1::*;
 use core::slice;
 use core::str;
 
-use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
 use crate::convert::OptionIntoWasmAbi;
+use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
 
 if_std! {
     use core::mem;
