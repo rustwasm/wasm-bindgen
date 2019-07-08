@@ -284,7 +284,7 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
-                imports.push_str(&format!("import * as wasm from './{}_bg';\n", module_name));
+                imports.push_str(&format!("import * as wasm from './{}_bg.wasm';\n", module_name));
                 for (id, js) in sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}.js", module_name);
