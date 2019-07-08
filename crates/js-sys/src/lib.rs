@@ -1079,7 +1079,6 @@ extern "C" {
     #[wasm_bindgen(method, js_name = bind)]
     pub fn bind(this: &Function, context: &JsValue) -> Function;
 
-
     /// The bind() method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.
     ///
@@ -1092,23 +1091,14 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
     #[wasm_bindgen(method, js_name = bind)]
-    pub fn bind1(
-        this: &Function,
-        context: &JsValue,
-        arg1: &JsValue,
-    ) -> Function;
+    pub fn bind1(this: &Function, context: &JsValue, arg1: &JsValue) -> Function;
 
     /// The bind() method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
     #[wasm_bindgen(method, js_name = bind)]
-    pub fn bind2(
-        this: &Function,
-        context: &JsValue,
-        arg1: &JsValue,
-        arg2: &JsValue,
-    ) -> Function;
+    pub fn bind2(this: &Function, context: &JsValue, arg1: &JsValue, arg2: &JsValue) -> Function;
 
     /// The bind() method creates a new function that, when called, has its this keyword set to the provided value,
     /// with a given sequence of arguments preceding any provided when the new function is called.

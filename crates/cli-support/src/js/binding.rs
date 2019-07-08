@@ -130,8 +130,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             // returning data through.
             if binding.return_via_outptr.is_some() {
                 drop(webidl_params.next());
-                self.args_prelude
-                    .push_str("const retptr = 8;\n");
+                self.args_prelude.push_str("const retptr = 8;\n");
                 arg_names.push("retptr".to_string());
             }
 
