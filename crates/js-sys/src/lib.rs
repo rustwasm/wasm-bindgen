@@ -4449,7 +4449,55 @@ extern "C" {
 /// This allows access to the global properties and global names by accessing
 /// the `Object` returned.
 pub fn global() -> Object {
-    thread_local!(static GLOBAL: Object = {
+    thread_local!(static GLOBAL: Object = get_global_object());
+
+    return GLOBAL.with(|g| g.clone());
+
+    fn get_global_object() -> Object {
+        // This is a bit wonky, but we're basically using `#[wasm_bindgen]`
+        // attributes to synthesize imports so we can access properties of the
+        // form:
+        //
+        // * `globalThis.globalThis`
+        // * `self.self`
+        // * ... (etc)
+        //
+        // Accessing the global object is not an easy thing to do, and what we
+        // basically want is `globalThis` but we can't rely on that existing
+        // everywhere. In the meantime we've got the fallbacks mentioned in:
+        //
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis
+        //
+        // Note that this is pretty heavy code-size wise but it at least gets
+        // the job largely done for now and avoids the `Function` constructor at
+        // the end which triggers CSP errors.
+        #[wasm_bindgen]
+        extern "C" {
+            type Global;
+
+            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = globalThis, js_name = globalThis)]
+            fn get_global_this() -> Result<Object, JsValue>;
+
+            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = self, js_name = self)]
+            fn get_self() -> Result<Object, JsValue>;
+
+            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = window, js_name = window)]
+            fn get_window() -> Result<Object, JsValue>;
+
+            #[wasm_bindgen(getter, catch, static_method_of = Global, js_class = global, js_name = global)]
+            fn get_global() -> Result<Object, JsValue>;
+        }
+
+        let static_object = Global::get_global_this()
+            .or_else(|_| Global::get_self())
+            .or_else(|_| Global::get_window())
+            .or_else(|_| Global::get_global());
+        if let Ok(obj) = static_object {
+            if !obj.is_undefined() {
+                return obj;
+            }
+        }
+
         // According to StackOverflow you can access the global object via:
         //
         //      const global = Function('return this')();
@@ -4472,9 +4520,7 @@ pub fn global() -> Object {
             Some(this) => this.unchecked_into(),
             None => JsValue::undefined().unchecked_into(),
         }
-    });
-
-    GLOBAL.with(|g| g.clone())
+    }
 }
 
 macro_rules! arrays {

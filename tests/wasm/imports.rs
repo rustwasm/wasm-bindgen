@@ -30,7 +30,7 @@ extern "C" {
 
     fn underscore(_: u8);
 
-    #[wasm_bindgen(js_name = self)]
+    #[wasm_bindgen(js_name = pub)]
     fn js_function_named_rust_keyword() -> u32;
 
     type bar;
