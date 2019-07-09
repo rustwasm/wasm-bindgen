@@ -977,7 +977,9 @@ impl TryToTokens for ast::ImportFunction {
                 }
                 #[cfg(not(all(target_arch = "wasm32", not(target_os = "emscripten"))))]
                 unsafe fn #import_name(#(#abi_arguments),*) -> #abi_ret {
-                    drop((#(#abi_argument_names),*));
+                    #(
+                        drop(#abi_argument_names);
+                    )*
                     panic!("cannot call wasm-bindgen imported functions on \
                             non-wasm targets");
                 }
