@@ -1,5 +1,6 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
+use crate::webidl;
 use crate::webidl::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::webidl::{AuxValue, Binding};
 use crate::webidl::{JsImport, JsImportName, NonstandardWebidlSection, WasmBindgenAux};
@@ -721,6 +722,15 @@ impl<'a> Context<'a> {
         // Accessing a heap object is just a simple index operation due to how
         // the stack/heap are laid out.
         self.global("function getObject(idx) { return heap[idx]; }");
+    }
+
+    fn expose_not_defined(&mut self) {
+        if !self.should_write_global("not_defined") {
+            return;
+        }
+        self.global(
+            "function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }"
+        );
     }
 
     fn expose_assert_num(&mut self) {
@@ -1971,14 +1981,57 @@ impl<'a> Context<'a> {
             .types
             .get::<ast::WebidlFunction>(binding.webidl_ty)
             .unwrap();
-        let mut builder = binding::Builder::new(self);
-        builder.catch(catch)?;
-        let js = builder.process(&binding, &webidl, false, &None, &mut |cx, prelude, args| {
-            cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
-        })?;
-        let js = format!("function{}", js);
+        let js = match import {
+            AuxImport::Value(AuxValue::Bare(js))
+                if !variadic && !catch && self.import_does_not_require_glue(binding, webidl) =>
+            {
+                self.expose_not_defined();
+                let name = self.import_name(js)?;
+                format!(
+                    "typeof {name} == 'function' ? {name} : notDefined('{name}')",
+                    name = name,
+                )
+            }
+            _ => {
+                let mut builder = binding::Builder::new(self);
+                builder.catch(catch)?;
+                let js = builder.process(
+                    &binding,
+                    &webidl,
+                    false,
+                    &None,
+                    &mut |cx, prelude, args| {
+                        cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
+                    },
+                )?;
+                format!("function{}", js)
+            }
+        };
         self.wasm_import_definitions.insert(id, js);
         Ok(())
+    }
+
+    fn import_does_not_require_glue(
+        &self,
+        binding: &Binding,
+        webidl: &ast::WebidlFunction,
+    ) -> bool {
+        if !self.config.anyref && binding.contains_anyref(self.module) {
+            return false;
+        }
+
+        let wasm_ty = self.module.types.get(binding.wasm_ty);
+        webidl.kind == ast::WebidlFunctionKind::Static
+            && webidl::outgoing_do_not_require_glue(
+                &binding.outgoing,
+                wasm_ty.params(),
+                &webidl.params,
+            )
+            && webidl::incoming_do_not_require_glue(
+                &binding.incoming,
+                &webidl.result.into_iter().collect::<Vec<_>>(),
+                wasm_ty.results(),
+            )
     }
 
     /// Generates a JS snippet appropriate for invoking `import`.

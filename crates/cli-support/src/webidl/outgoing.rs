@@ -200,8 +200,12 @@ impl OutgoingBuilder<'_> {
             Descriptor::U16 => self.standard_as(ValType::I32, ast::WebidlScalarType::UnsignedShort),
             Descriptor::I32 => self.standard_as(ValType::I32, ast::WebidlScalarType::Long),
             Descriptor::U32 => self.standard_as(ValType::I32, ast::WebidlScalarType::UnsignedLong),
-            Descriptor::F32 => self.standard_as(ValType::F32, ast::WebidlScalarType::Float),
-            Descriptor::F64 => self.standard_as(ValType::F64, ast::WebidlScalarType::Double),
+            Descriptor::F32 => {
+                self.standard_as(ValType::F32, ast::WebidlScalarType::UnrestrictedFloat)
+            }
+            Descriptor::F64 => {
+                self.standard_as(ValType::F64, ast::WebidlScalarType::UnrestrictedDouble)
+            }
             Descriptor::Enum { .. } => self.standard_as(ValType::I32, ast::WebidlScalarType::Long),
 
             Descriptor::Char => {

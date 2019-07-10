@@ -120,6 +120,17 @@ pub struct Binding {
     pub return_via_outptr: Option<Vec<walrus::ValType>>,
 }
 
+impl Binding {
+    /// Does this binding's wasm function signature have any `anyref`s?
+    pub fn contains_anyref(&self, module: &walrus::Module) -> bool {
+        let ty = module.types.get(self.wasm_ty);
+        ty.params()
+            .iter()
+            .chain(ty.results())
+            .any(|ty| *ty == walrus::ValType::Anyref)
+    }
+}
+
 /// A synthetic custom section which is not standardized, never will be, and
 /// cannot be serialized or parsed. This is synthesized from all of the
 /// compiler-emitted wasm-bindgen sections and then immediately removed to be
@@ -1427,4 +1438,50 @@ fn concatenate_comments(comments: &[&str]) -> String {
         .map(|s| s.trim_matches('"'))
         .collect::<Vec<_>>()
         .join("\n")
+}
+
+/// Do we need to generate JS glue shims for these incoming bindings?
+pub fn incoming_do_not_require_glue(
+    exprs: &[NonstandardIncoming],
+    from_webidl_tys: &[ast::WebidlTypeRef],
+    to_wasm_tys: &[walrus::ValType],
+) -> bool {
+    exprs.len() == from_webidl_tys.len()
+        && exprs.len() == to_wasm_tys.len()
+        && exprs
+            .iter()
+            .zip(from_webidl_tys)
+            .zip(to_wasm_tys)
+            .enumerate()
+            .all(|(i, ((expr, from_webidl_ty), to_wasm_ty))| match expr {
+                NonstandardIncoming::Standard(e) => e.is_expressible_in_js_without_webidl_bindings(
+                    *from_webidl_ty,
+                    *to_wasm_ty,
+                    i as u32,
+                ),
+                _ => false,
+            })
+}
+
+/// Do we need to generate JS glue shims for these outgoing bindings?
+pub fn outgoing_do_not_require_glue(
+    exprs: &[NonstandardOutgoing],
+    from_wasm_tys: &[walrus::ValType],
+    to_webidl_tys: &[ast::WebidlTypeRef],
+) -> bool {
+    exprs.len() == from_wasm_tys.len()
+        && exprs.len() == to_webidl_tys.len()
+        && exprs
+            .iter()
+            .zip(from_wasm_tys)
+            .zip(to_webidl_tys)
+            .enumerate()
+            .all(|(i, ((expr, from_wasm_ty), to_webidl_ty))| match expr {
+                NonstandardOutgoing::Standard(e) => e.is_expressible_in_js_without_webidl_bindings(
+                    *from_wasm_ty,
+                    *to_webidl_ty,
+                    i as u32,
+                ),
+                _ => false,
+            })
 }
