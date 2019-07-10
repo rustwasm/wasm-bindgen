@@ -2060,7 +2060,7 @@ impl<'a> Context<'a> {
                 ast::WebidlFunctionKind::Static => {
                     let js = match val {
                         AuxValue::Bare(js) => self.import_name(js)?,
-                        _ => bail!("invalid import set for constructor"),
+                        _ => bail!("invalid import set for free function"),
                     };
                     Ok(format!("{}({})", js, variadic_args(&args)?))
                 }
