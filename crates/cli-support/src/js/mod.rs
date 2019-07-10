@@ -1917,7 +1917,7 @@ impl<'a> Context<'a> {
         let js_doc = builder.js_doc_comments();
         let docs = format_doc_comments(&export.comments, Some(js_doc));
 
-        // Once we've got all the JS then put it in the right location dependin
+        // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
         match &export.kind {
             AuxExportKind::Function(name) => {
