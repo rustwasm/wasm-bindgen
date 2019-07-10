@@ -69,7 +69,7 @@ exports.return_three = function() { return 3; };
 
 exports.underscore = function(x) {};
 
-exports.self = function() { return 2; };
+exports.pub = function() { return 2; };
 
 exports.bar = { foo: 3 };
 
