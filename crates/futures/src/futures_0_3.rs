@@ -3,6 +3,7 @@ use std::collections::VecDeque;
 use std::fmt;
 use std::future::Future;
 use std::pin::Pin;
+use std::rc::Rc;
 use std::sync::Arc;
 use std::task::{Context, Poll};
 
@@ -24,10 +25,7 @@ use wasm_bindgen::prelude::*;
 ///
 /// Currently this type is constructed with `JsFuture::from`.
 pub struct JsFuture {
-    resolved: oneshot::Receiver<JsValue>,
-    rejected: oneshot::Receiver<JsValue>,
-    _cb_resolve: Closure<dyn FnMut(JsValue)>,
-    _cb_reject: Closure<dyn FnMut(JsValue)>,
+    rx: oneshot::Receiver<Result<JsValue, JsValue>>,
 }
 
 impl fmt::Debug for JsFuture {
@@ -38,31 +36,37 @@ impl fmt::Debug for JsFuture {
 
 impl From<Promise> for JsFuture {
     fn from(js: Promise) -> JsFuture {
-        // Use the `then` method to schedule two callbacks, one for the
-        // resolved value and one for the rejected value. These two callbacks
-        // will be connected to oneshot channels which feed back into our
-        // future.
-        //
-        // This may not be the speediest option today but it should work!
-        let (tx1, rx1) = oneshot::channel();
+        // See comments in `src/lib.rs` for why we're using one self-contained
+        // callback here.
+        let (tx, rx) = oneshot::channel();
+        let state = Rc::new(RefCell::new(None));
+        let state2 = state.clone();
+        let resolve = Closure::once(move |val| finish(&state2, Ok(val)));
+        let state2 = state.clone();
+        let reject = Closure::once(move |val| finish(&state2, Err(val)));
 
-        let cb_resolve = Closure::once(move |val| {
-            tx1.send(val).unwrap_throw();
-        });
+        js.then2(&resolve, &reject);
+        *state.borrow_mut() = Some((tx, resolve, reject));
 
-        let (tx2, rx2) = oneshot::channel();
+        return JsFuture { rx };
 
-        let cb_reject = Closure::once(move |val| {
-            tx2.send(val).unwrap_throw();
-        });
-
-        js.then2(&cb_resolve, &cb_reject);
-
-        JsFuture {
-            resolved: rx1,
-            rejected: rx2,
-            _cb_resolve: cb_resolve,
-            _cb_reject: cb_reject,
+        fn finish(
+            state: &RefCell<
+                Option<(
+                    oneshot::Sender<Result<JsValue, JsValue>>,
+                    Closure<dyn FnMut(JsValue)>,
+                    Closure<dyn FnMut(JsValue)>,
+                )>,
+            >,
+            val: Result<JsValue, JsValue>,
+        ) {
+            match state.borrow_mut().take() {
+                // We don't have any guarantee that anyone's still listening at this
+                // point (the Rust `JsFuture` could have been dropped) so simply
+                // ignore any errors here.
+                Some((tx, _, _)) => drop(tx.send(val)),
+                None => wasm_bindgen::throw_str("cannot finish twice"),
+            }
         }
     }
 }
@@ -71,16 +75,11 @@ impl Future for JsFuture {
     type Output = Result<JsValue, JsValue>;
 
     fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
-        // Test if either our resolved or rejected side is finished yet.
-        if let Poll::Ready(val) = self.resolved.poll_unpin(cx) {
-            return Poll::Ready(Ok(val.unwrap_throw()));
+        match self.rx.poll_unpin(cx) {
+            Poll::Pending => Poll::Pending,
+            Poll::Ready(Ok(val)) => Poll::Ready(val),
+            Poll::Ready(Err(_)) => wasm_bindgen::throw_str("cannot cancel"),
         }
-
-        if let Poll::Ready(val) = self.rejected.poll_unpin(cx) {
-            return Poll::Ready(Err(val.unwrap_throw()));
-        }
-
-        Poll::Pending
     }
 }
 
