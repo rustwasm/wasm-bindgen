@@ -52,6 +52,9 @@ macro_rules! attrgen {
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (start, Start(Span)),
             (skip, Skip(Span)),
+
+            // For testing purposes only.
+            (assert_no_shim, AssertNoShim(Span)),
         }
     };
 }
@@ -496,8 +499,10 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 return Err(Diagnostic::span_error(*span, msg));
             }
         }
+        let assert_no_shim = opts.assert_no_shim().is_some();
         let ret = ast::ImportKind::Function(ast::ImportFunction {
             function: wasm,
+            assert_no_shim,
             kind,
             js_ret,
             catch,

@@ -122,6 +122,7 @@ pub struct ImportFunction {
     pub catch: bool,
     pub variadic: bool,
     pub structural: bool,
+    pub assert_no_shim: bool,
     pub kind: ImportFunctionKind,
     pub shim: Ident,
     pub doc_comment: Option<String>,

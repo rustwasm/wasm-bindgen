@@ -1839,7 +1839,8 @@ impl<'a> Context<'a> {
         for (id, import) in sorted_iter(&aux.import_map) {
             let variadic = aux.imports_with_variadic.contains(&id);
             let catch = aux.imports_with_catch.contains(&id);
-            self.generate_import(*id, import, bindings, variadic, catch)
+            let assert_no_shim = aux.imports_with_assert_no_shim.contains(&id);
+            self.generate_import(*id, import, bindings, variadic, catch, assert_no_shim)
                 .with_context(|_| {
                     format!("failed to generate bindings for import `{:?}`", import,)
                 })?;
@@ -1978,6 +1979,7 @@ impl<'a> Context<'a> {
         bindings: &NonstandardWebidlSection,
         variadic: bool,
         catch: bool,
+        assert_no_shim: bool,
     ) -> Result<(), Error> {
         let binding = &bindings.imports[&id];
         let webidl = bindings
@@ -1996,6 +1998,13 @@ impl<'a> Context<'a> {
                 )
             }
             _ => {
+                if assert_no_shim {
+                    panic!(
+                        "imported function was annotated with `#[wasm_bindgen(assert_no_shim)]` \
+                         but we need to generate a JS shim for it"
+                    );
+                }
+
                 let mut builder = binding::Builder::new(self);
                 builder.catch(catch)?;
                 let js = builder.process(

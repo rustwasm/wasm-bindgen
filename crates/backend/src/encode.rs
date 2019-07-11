@@ -272,6 +272,7 @@ fn shared_import_function<'a>(
         shim: intern.intern(&i.shim),
         catch: i.catch,
         method,
+        assert_no_shim: i.assert_no_shim,
         structural: i.structural,
         function: shared_function(&i.function, intern),
         variadic: i.variadic,

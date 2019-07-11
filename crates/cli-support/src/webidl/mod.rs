@@ -163,6 +163,7 @@ pub struct WasmBindgenAux {
     /// Small bits of metadata about imports.
     pub imports_with_catch: HashSet<ImportId>,
     pub imports_with_variadic: HashSet<ImportId>,
+    pub imports_with_assert_no_shim: HashSet<ImportId>,
 
     /// Auxiliary information to go into JS/TypeScript bindings describing the
     /// exported enums from Rust.
@@ -793,6 +794,7 @@ impl<'a> Context<'a> {
             method,
             structural,
             function,
+            assert_no_shim,
         } = function;
         let (import_id, _id) = match self.function_imports.get(*shim) {
             Some(pair) => *pair,
@@ -810,6 +812,9 @@ impl<'a> Context<'a> {
         }
         if *catch {
             self.aux.imports_with_catch.insert(import_id);
+        }
+        if *assert_no_shim {
+            self.aux.imports_with_assert_no_shim.insert(import_id);
         }
 
         // Perform two functions here. First we're saving off our WebIDL

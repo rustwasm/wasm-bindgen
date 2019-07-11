@@ -35,20 +35,30 @@ use wasm_bindgen_test::*;
     };
 ")]
 extern "C" {
+    #[wasm_bindgen(assert_no_shim)]
     fn trivial();
 
+    #[wasm_bindgen(assert_no_shim)]
     fn incoming_i32() -> i32;
+    #[wasm_bindgen(assert_no_shim)]
     fn incoming_f32() -> f32;
+    #[wasm_bindgen(assert_no_shim)]
     fn incoming_f64() -> f64;
 
+    #[wasm_bindgen(assert_no_shim)]
     fn outgoing_i32(x: i32);
+    #[wasm_bindgen(assert_no_shim)]
     fn outgoing_f32(y: f32);
+    #[wasm_bindgen(assert_no_shim)]
     fn outgoing_f64(z: f64);
 
+    #[wasm_bindgen(assert_no_shim)]
     fn many(x: i32, y: f32, z: f64) -> i32;
 
     // Note that this should only skip the JS shim if we have anyref support
     // enabled.
+    //
+    // #[wasm_bindgen(assert_no_shim)]
     fn works_when_anyref_support_is_enabled(v: JsValue) -> JsValue;
 }
 
