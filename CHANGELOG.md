@@ -32,6 +32,47 @@ Released YYYY-MM-DD.
 
 --------------------------------------------------------------------------------
 
+## 0.2.48
+
+Released 2019-07-11.
+
+### Added
+
+* All typed arrays now implement `From` for the corresponding Rust slice type,
+  providing a safe way to create an instance which copies the data.
+  [#1620](https://github.com/rustwasm/wasm-bindgen/pull/1620)
+
+* `Function::bind{2,3,4}` are now available in `js-sys`.
+  [#1633](https://github.com/rustwasm/wasm-bindgen/pull/1633)
+
+### Changed
+
+* More WebGL methods have been updated to use shared slices instead of mutable
+  slices.
+  [#1639](https://github.com/rustwasm/wasm-bindgen/pull/1639)
+
+* When using the `bundler` target the import of the wasm file now uses the
+  `.wasm` extension to ensure a wasm file is loaded.
+  [#1646](https://github.com/rustwasm/wasm-bindgen/pull/1646)
+
+* The old internal `Stack` trait has been removed since it is no longer used.
+  [#1624](https://github.com/rustwasm/wasm-bindgen/pull/1624)
+
+### Fixed
+
+* The `js_sys::global()` accessor now attempts other strategies before falling
+  back to a `Function` constructor which can violate some strict CSP settings.
+  [#1650](https://github.com/rustwasm/wasm-bindgen/pull/1649)
+
+* Dropping a `JsFuture` no longer logs a benign error to the console.
+  [#1649](https://github.com/rustwasm/wasm-bindgen/pull/1649)
+
+* Fixed an assertion which could happen in some modules when generating
+  bindings.
+  [#1617](https://github.com/rustwasm/wasm-bindgen/pull/1617)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.47
 
 Released 2019-06-19.
