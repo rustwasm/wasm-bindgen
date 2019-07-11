@@ -2001,7 +2001,11 @@ impl<'a> Context<'a> {
                 if assert_no_shim {
                     panic!(
                         "imported function was annotated with `#[wasm_bindgen(assert_no_shim)]` \
-                         but we need to generate a JS shim for it"
+                         but we need to generate a JS shim for it:\n\n\
+                         \timport = {:?}\n\n\
+                         \tbinding = {:?}\n\n\
+                         \twebidl = {:?}",
+                        import, binding, webidl,
                     );
                 }
 

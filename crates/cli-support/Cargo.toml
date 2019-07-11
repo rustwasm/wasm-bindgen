@@ -23,4 +23,4 @@ wasm-bindgen-anyref-xform = { path = '../anyref-xform', version = '=0.2.48' }
 wasm-bindgen-shared = { path = "../shared", version = '=0.2.48' }
 wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.48' }
 wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.48' }
-wasm-webidl-bindings = "0.1.0"
+wasm-webidl-bindings = "0.1.1"
