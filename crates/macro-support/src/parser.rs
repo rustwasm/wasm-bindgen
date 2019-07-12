@@ -41,7 +41,7 @@ macro_rules! attrgen {
             (indexing_setter, IndexingSetter(Span)),
             (indexing_deleter, IndexingDeleter(Span)),
             (structural, Structural(Span)),
-            (final_("final"), Final(Span)),
+            (r#final, Final(Span)),
             (readonly, Readonly(Span)),
             (js_name, JsName(Span, String, Span)),
             (js_class, JsClass(Span, String, Span)),
@@ -57,7 +57,7 @@ macro_rules! attrgen {
 }
 
 macro_rules! methods {
-    ($(($name:ident $(($other:tt))*, $variant:ident($($contents:tt)*)),)*) => {
+    ($(($name:ident, $variant:ident($($contents:tt)*)),)*) => {
         $(methods!(@method $name, $variant($($contents)*));)*
 
         #[cfg(feature = "strict-macro")]
@@ -200,7 +200,7 @@ impl Parse for BindgenAttrs {
 }
 
 macro_rules! gen_bindgen_attr {
-    ($(($method:ident $(($other:tt))*, $($variants:tt)*),)*) => {
+    ($(($method:ident, $($variants:tt)*),)*) => {
         /// The possible attributes in the `#[wasm_bindgen]`.
         #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
         pub enum BindgenAttr {
@@ -216,11 +216,13 @@ impl Parse for BindgenAttr {
         let attr: AnyIdent = input.parse()?;
         let attr = attr.0;
         let attr_span = attr.span();
+        let attr_string = attr.to_string();
+        let raw_attr_string = format!("r#{}", attr_string);
 
         macro_rules! parsers {
-            ($(($name:ident $(($other:tt))*, $($contents:tt)*),)*) => {
+            ($(($name:ident, $($contents:tt)*),)*) => {
                 $(
-                    if attr == parsers!(@attrname $name $($other)*) {
+                    if attr_string == stringify!($name) || raw_attr_string == stringify!($name) {
                         parsers!(
                             @parser
                             $($contents)*
@@ -269,9 +271,6 @@ impl Parse for BindgenAttr {
                 };
                 return Ok(BindgenAttr::$variant(attr_span, val, span))
             });
-
-            (@attrname $a:ident $b:tt) => ($b);
-            (@attrname $a:ident) => (stringify!($a));
         }
 
         attrgen!(parsers);
@@ -490,7 +489,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 ShortHash(data)
             )
         };
-        if let Some(span) = opts.final_() {
+        if let Some(span) = opts.r#final() {
             if opts.structural().is_some() {
                 let msg = "cannot specify both `structural` and `final`";
                 return Err(Diagnostic::span_error(*span, msg));
@@ -502,7 +501,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             js_ret,
             catch,
             variadic,
-            structural: opts.structural().is_some() || opts.final_().is_none(),
+            structural: opts.structural().is_some() || opts.r#final().is_none(),
             rust_name: self.ident.clone(),
             shim: Ident::new(&shim, Span::call_site()),
             doc_comment: None,
