@@ -196,4 +196,29 @@ fn element() {
       request_fullscreen
       request_pointer_lock
     */
+
+    let child = new_div();
+    assert_eq!(
+        element.get_elements_by_tag_name("div").length(),
+        0,
+        "Element should not contain any div child"
+    );
+    element.append_child(&child).unwrap();
+    assert_eq!(
+        element.get_elements_by_tag_name("div").length(),
+        1,
+        "Element should contain one div child"
+    );
+    assert_eq!(
+        element.get_elements_by_class_name("foo").length(),
+        0,
+        "Element should not have childs with class foo"
+    );
+    child.class_list().add_1("foo").unwrap();
+    assert_eq!(
+        element.get_elements_by_class_name("foo").length(),
+        1,
+        "Element should have one child with class foo"
+    );
+    element.remove_child(&child).unwrap();
 }
