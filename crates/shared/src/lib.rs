@@ -44,6 +44,7 @@ macro_rules! shared_api {
             shim: &'a str,
             catch: bool,
             variadic: bool,
+            assert_no_shim: bool,
             method: Option<MethodData<'a>>,
             structural: bool,
             function: Function<'a>,

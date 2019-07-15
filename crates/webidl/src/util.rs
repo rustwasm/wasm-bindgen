@@ -314,6 +314,7 @@ impl<'src> FirstPassRecord<'src> {
             variadic,
             catch,
             structural,
+            assert_no_shim: false,
             shim: {
                 let ns = match kind {
                     ast::ImportFunctionKind::Normal => "",

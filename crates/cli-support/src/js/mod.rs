@@ -1,5 +1,6 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
+use crate::webidl;
 use crate::webidl::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::webidl::{AuxValue, Binding};
 use crate::webidl::{JsImport, JsImportName, NonstandardWebidlSection, WasmBindgenAux};
@@ -284,7 +285,10 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
-                imports.push_str(&format!("import * as wasm from './{}_bg.wasm';\n", module_name));
+                imports.push_str(&format!(
+                    "import * as wasm from './{}_bg.wasm';\n",
+                    module_name
+                ));
                 for (id, js) in sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}.js", module_name);
@@ -721,6 +725,15 @@ impl<'a> Context<'a> {
         // Accessing a heap object is just a simple index operation due to how
         // the stack/heap are laid out.
         self.global("function getObject(idx) { return heap[idx]; }");
+    }
+
+    fn expose_not_defined(&mut self) {
+        if !self.should_write_global("not_defined") {
+            return;
+        }
+        self.global(
+            "function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }"
+        );
     }
 
     fn expose_assert_num(&mut self) {
@@ -1826,7 +1839,8 @@ impl<'a> Context<'a> {
         for (id, import) in sorted_iter(&aux.import_map) {
             let variadic = aux.imports_with_variadic.contains(&id);
             let catch = aux.imports_with_catch.contains(&id);
-            self.generate_import(*id, import, bindings, variadic, catch)
+            let assert_no_shim = aux.imports_with_assert_no_shim.contains(&id);
+            self.generate_import(*id, import, bindings, variadic, catch, assert_no_shim)
                 .with_context(|_| {
                     format!("failed to generate bindings for import `{:?}`", import,)
                 })?;
@@ -1917,7 +1931,7 @@ impl<'a> Context<'a> {
         let js_doc = builder.js_doc_comments();
         let docs = format_doc_comments(&export.comments, Some(js_doc));
 
-        // Once we've got all the JS then put it in the right location dependin
+        // Once we've got all the JS then put it in the right location depending
         // on what's being exported.
         match &export.kind {
             AuxExportKind::Function(name) => {
@@ -1965,20 +1979,75 @@ impl<'a> Context<'a> {
         bindings: &NonstandardWebidlSection,
         variadic: bool,
         catch: bool,
+        assert_no_shim: bool,
     ) -> Result<(), Error> {
         let binding = &bindings.imports[&id];
         let webidl = bindings
             .types
             .get::<ast::WebidlFunction>(binding.webidl_ty)
             .unwrap();
-        let mut builder = binding::Builder::new(self);
-        builder.catch(catch)?;
-        let js = builder.process(&binding, &webidl, false, &None, &mut |cx, prelude, args| {
-            cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
-        })?;
-        let js = format!("function{}", js);
+        let js = match import {
+            AuxImport::Value(AuxValue::Bare(js))
+                if !variadic && !catch && self.import_does_not_require_glue(binding, webidl) =>
+            {
+                self.expose_not_defined();
+                let name = self.import_name(js)?;
+                format!(
+                    "typeof {name} == 'function' ? {name} : notDefined('{name}')",
+                    name = name,
+                )
+            }
+            _ => {
+                if assert_no_shim {
+                    panic!(
+                        "imported function was annotated with `#[wasm_bindgen(assert_no_shim)]` \
+                         but we need to generate a JS shim for it:\n\n\
+                         \timport = {:?}\n\n\
+                         \tbinding = {:?}\n\n\
+                         \twebidl = {:?}",
+                        import, binding, webidl,
+                    );
+                }
+
+                let mut builder = binding::Builder::new(self);
+                builder.catch(catch)?;
+                let js = builder.process(
+                    &binding,
+                    &webidl,
+                    false,
+                    &None,
+                    &mut |cx, prelude, args| {
+                        cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
+                    },
+                )?;
+                format!("function{}", js)
+            }
+        };
         self.wasm_import_definitions.insert(id, js);
         Ok(())
+    }
+
+    fn import_does_not_require_glue(
+        &self,
+        binding: &Binding,
+        webidl: &ast::WebidlFunction,
+    ) -> bool {
+        if !self.config.anyref && binding.contains_anyref(self.module) {
+            return false;
+        }
+
+        let wasm_ty = self.module.types.get(binding.wasm_ty);
+        webidl.kind == ast::WebidlFunctionKind::Static
+            && webidl::outgoing_do_not_require_glue(
+                &binding.outgoing,
+                wasm_ty.params(),
+                &webidl.params,
+            )
+            && webidl::incoming_do_not_require_glue(
+                &binding.incoming,
+                &webidl.result.into_iter().collect::<Vec<_>>(),
+                wasm_ty.results(),
+            )
     }
 
     /// Generates a JS snippet appropriate for invoking `import`.
@@ -2060,7 +2129,7 @@ impl<'a> Context<'a> {
                 ast::WebidlFunctionKind::Static => {
                     let js = match val {
                         AuxValue::Bare(js) => self.import_name(js)?,
-                        _ => bail!("invalid import set for constructor"),
+                        _ => bail!("invalid import set for free function"),
                     };
                     Ok(format!("{}({})", js, variadic_args(&args)?))
                 }
