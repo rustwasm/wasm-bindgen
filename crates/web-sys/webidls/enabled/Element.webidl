@@ -65,14 +65,12 @@ interface Element : Node {
   [Throws, Pure, BinaryName="matches"]
   boolean webkitMatchesSelector(DOMString selector);
 
-/*TODO
   [Pure]
   HTMLCollection getElementsByTagName(DOMString localName);
   [Throws, Pure]
   HTMLCollection getElementsByTagNameNS(DOMString? namespace, DOMString localName);
   [Pure]
   HTMLCollection getElementsByClassName(DOMString classNames);
-*/
   [ChromeOnly, Pure]
   sequence<Element> getElementsWithGrid();
 
