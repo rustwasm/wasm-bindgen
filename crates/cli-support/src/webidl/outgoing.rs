@@ -88,13 +88,6 @@ pub enum NonstandardOutgoing {
         kind: VectorKind,
     },
 
-    ///
-    OptionCachedString {
-        offset: u32,
-        length: u32,
-        owned: bool,
-    },
-
     /// An optional slice of data is being passed into JS.
     ///
     /// TODO: with some cleverness this could probably use `AllocCopy`.
@@ -462,7 +455,7 @@ impl OutgoingBuilder<'_> {
                 let offset = self.push_wasm(ValType::I32);
                 let length = self.push_wasm(ValType::I32);
                 self.webidl.push(ast::WebidlScalarType::DomString);
-                self.bindings.push(NonstandardOutgoing::OptionCachedString {
+                self.bindings.push(NonstandardOutgoing::CachedString {
                     offset,
                     length,
                     owned: true,
@@ -506,7 +499,7 @@ impl OutgoingBuilder<'_> {
                 let offset = self.push_wasm(ValType::I32);
                 let length = self.push_wasm(ValType::I32);
                 self.webidl.push(ast::WebidlScalarType::DomString);
-                self.bindings.push(NonstandardOutgoing::OptionCachedString {
+                self.bindings.push(NonstandardOutgoing::CachedString {
                     offset,
                     length,
                     owned: false,

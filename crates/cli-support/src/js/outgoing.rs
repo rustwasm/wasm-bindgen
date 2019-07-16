@@ -139,16 +139,10 @@ impl<'a, 'b> Outgoing<'a, 'b> {
                 let len = self.arg(*length);
                 let tmp = self.js.tmp();
 
-                self.js.typescript_required("string");
-                self.cx.expose_get_object();
-                self.cx.expose_get_string_from_wasm()?;
+                self.js.typescript_optional("string");
+                self.cx.expose_get_cached_string_from_wasm()?;
 
-                self.js.prelude(&format!(
-                    "const v{tmp} = {ptr} === 0 ? getObject({len}) : getStringFromWasm({ptr}, {len});",
-                    tmp = tmp,
-                    ptr = ptr,
-                    len = len,
-                ));
+                self.js.prelude(&format!("const v{} = getCachedStringFromWasm({}, {});", tmp, ptr, len));
 
                 if *owned {
                     self.prelude_free_cached_string(&ptr, &len)?;
@@ -331,35 +325,6 @@ impl<'a, 'b> Outgoing<'a, 'b> {
                 self.prelude_free_vector(*offset, *length, *kind)?;
                 self.js.prelude("}");
                 Ok(format!("v{}", i))
-            }
-
-            NonstandardOutgoing::OptionCachedString {
-                offset,
-                length,
-                owned,
-            } => {
-                let ptr = self.arg(*offset);
-                let len = self.arg(*length);
-                let tmp = self.js.tmp();
-
-                self.js.typescript_optional("string");
-                self.cx.expose_get_object();
-                self.cx.expose_get_string_from_wasm()?;
-
-                self.js.prelude(&format!("let v{};", tmp));
-
-                self.js.prelude(&format!(
-                    "if ({ptr} === 0) {{ if ({len} !== 0) {{ v{tmp} = getObject({len}); }} }} else {{ v{tmp} = getStringFromWasm({ptr}, {len}); }}",
-                    tmp = tmp,
-                    ptr = ptr,
-                    len = len,
-                ));
-
-                if *owned {
-                    self.prelude_free_cached_string(&ptr, &len)?;
-                }
-
-                Ok(format!("v{}", tmp))
             }
         }
     }

@@ -1088,6 +1088,28 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
+    fn expose_get_cached_string_from_wasm(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("get_cached_string_from_wasm") {
+            return Ok(());
+        }
+
+        self.expose_get_object();
+        self.expose_get_string_from_wasm()?;
+
+        self.global("
+            function getCachedStringFromWasm(ptr, len) {
+                if (ptr === 0) {
+                    if (len !== 0) {
+                        return getObject(len);
+                    }
+                } else {
+                    return getStringFromWasm(ptr, len);
+                }
+            }
+        ");
+        Ok(())
+    }
+
     fn expose_get_array_js_value_from_wasm(&mut self) -> Result<(), Error> {
         if !self.should_write_global("get_array_js_value_from_wasm") {
             return Ok(());
