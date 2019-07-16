@@ -60,7 +60,7 @@ pub enum NonstandardOutgoing {
         kind: VectorKind,
     },
 
-    /// A Rust String (or &str) which might be cached, and might be `None`.
+    /// A Rust String (or &str) which might be cached, or might be `None`.
     ///
     /// If `offset` is 0 then it is cached, and the cached JsValue's index is in `length`.
     ///

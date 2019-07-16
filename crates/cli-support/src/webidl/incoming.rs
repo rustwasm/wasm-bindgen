@@ -211,7 +211,7 @@ impl IncomingBuilder {
             Descriptor::RefMut(d) => self.process_ref(true, d)?,
             Descriptor::Option(d) => self.process_option(d)?,
 
-            Descriptor::String | Descriptor::Vector(_) => {
+            Descriptor::String | Descriptor::CachedString | Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!("unsupported argument type for calling Rust function from JS {:?}", arg)
                 })? ;
@@ -256,7 +256,7 @@ impl IncomingBuilder {
                 self.bindings
                     .push(NonstandardIncoming::BorrowedAnyref { val: expr });
             }
-            Descriptor::String | Descriptor::Slice(_) => {
+            Descriptor::String | Descriptor::CachedString | Descriptor::Slice(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
                         "unsupported slice type for calling Rust function from JS {:?}",
@@ -363,7 +363,7 @@ impl IncomingBuilder {
                 self.webidl.push(ast::WebidlScalarType::Any);
             }
 
-            Descriptor::String | Descriptor::Vector(_) => {
+            Descriptor::String | Descriptor::CachedString | Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
                         "unsupported optional slice type for calling Rust function from JS {:?}",
