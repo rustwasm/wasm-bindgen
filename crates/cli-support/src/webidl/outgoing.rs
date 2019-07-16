@@ -60,7 +60,11 @@ pub enum NonstandardOutgoing {
         kind: VectorKind,
     },
 
+    /// A Rust String (or &str) which might be cached, and might be `None`.
     ///
+    /// If `offset` is 0 then it is cached, and the cached JsValue's index is in `length`.
+    ///
+    /// If `offset` and `length` are both 0, then it is `None`.
     CachedString {
         offset: u32,
         length: u32,
@@ -247,16 +251,7 @@ impl OutgoingBuilder<'_> {
             Descriptor::Ref(d) => self.process_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_ref(true, d)?,
 
-            Descriptor::CachedString => {
-                let offset = self.push_wasm(ValType::I32);
-                let length = self.push_wasm(ValType::I32);
-                self.webidl.push(ast::WebidlScalarType::Any);
-                self.bindings.push(NonstandardOutgoing::CachedString {
-                    offset,
-                    length,
-                    owned: true,
-                })
-            }
+            Descriptor::CachedString => self.cached_string(true),
 
             Descriptor::Vector(_) | Descriptor::String => {
                 let kind = arg.vector_kind().ok_or_else(|| {
@@ -299,16 +294,7 @@ impl OutgoingBuilder<'_> {
                 self.bindings
                     .push(NonstandardOutgoing::BorrowedAnyref { idx });
             }
-            Descriptor::CachedString => {
-                let offset = self.push_wasm(ValType::I32);
-                let length = self.push_wasm(ValType::I32);
-                self.webidl.push(ast::WebidlScalarType::DomString);
-                self.bindings.push(NonstandardOutgoing::CachedString {
-                    offset,
-                    length,
-                    owned: false,
-                })
-            }
+            Descriptor::CachedString => self.cached_string(false),
             Descriptor::Slice(_) | Descriptor::String => {
                 use wasm_webidl_bindings::ast::WebidlScalarType::*;
 
@@ -451,16 +437,7 @@ impl OutgoingBuilder<'_> {
             Descriptor::Ref(d) => self.process_option_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_option_ref(true, d)?,
 
-            Descriptor::CachedString => {
-                let offset = self.push_wasm(ValType::I32);
-                let length = self.push_wasm(ValType::I32);
-                self.webidl.push(ast::WebidlScalarType::DomString);
-                self.bindings.push(NonstandardOutgoing::CachedString {
-                    offset,
-                    length,
-                    owned: true,
-                })
-            }
+            Descriptor::CachedString => self.cached_string(true),
 
             Descriptor::String | Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
@@ -495,16 +472,7 @@ impl OutgoingBuilder<'_> {
                 self.bindings
                     .push(NonstandardOutgoing::BorrowedAnyref { idx });
             }
-            Descriptor::CachedString => {
-                let offset = self.push_wasm(ValType::I32);
-                let length = self.push_wasm(ValType::I32);
-                self.webidl.push(ast::WebidlScalarType::DomString);
-                self.bindings.push(NonstandardOutgoing::CachedString {
-                    offset,
-                    length,
-                    owned: false,
-                })
-            }
+            Descriptor::CachedString => self.cached_string(false),
             Descriptor::String | Descriptor::Slice(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -553,6 +521,17 @@ impl OutgoingBuilder<'_> {
         self.webidl.push(ty);
         self.bindings
             .push(NonstandardOutgoing::Standard(binding.into()));
+    }
+
+    fn cached_string(&mut self, owned: bool) {
+        let offset = self.push_wasm(ValType::I32);
+        let length = self.push_wasm(ValType::I32);
+        self.webidl.push(ast::WebidlScalarType::DomString);
+        self.bindings.push(NonstandardOutgoing::CachedString {
+            offset,
+            length,
+            owned,
+        })
     }
 
     fn option_native(&mut self, signed: bool, ty: ValType) {
