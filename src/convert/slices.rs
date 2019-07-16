@@ -124,6 +124,29 @@ vectors! {
     u8 i8 u16 i16 u32 i32 u64 i64 usize isize f32 f64
 }
 
+
+cfg_if! {
+    if #[cfg(feature = "enable-interning")] {
+        #[inline]
+        fn get_cached_str(x: &str) -> WasmSlice {
+            if let Some(x) = crate::cache::intern::get_str(x) {
+                // This uses 0 for the ptr as an indication that it is a JsValue and not a str
+                WasmSlice { ptr: 0, len: x.into_abi() }
+
+            } else {
+                x.into_bytes().into_abi()
+            }
+        }
+
+    } else {
+        #[inline]
+        fn get_cached_str(x: &str) -> WasmSlice {
+            x.into_bytes().into_abi()
+        }
+    }
+}
+
+
 if_std! {
     impl<T> IntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {
         type Abi = <Box<[T]> as IntoWasmAbi>::Abi;
@@ -149,39 +172,18 @@ if_std! {
         fn is_none(abi: &WasmSlice) -> bool { abi.ptr == 0 }
     }
 
-    cfg_if! {
-        if #[cfg(feature = "enable-interning")] {
-            impl IntoWasmAbi for String {
-                type Abi = <JsValue as IntoWasmAbi>::Abi;
+    impl IntoWasmAbi for String {
+        type Abi = <Vec<u8> as IntoWasmAbi>::Abi;
 
-                #[inline]
-                fn into_abi(self) -> Self::Abi {
-                    crate::cache::intern::get_str(&self).into_abi()
-                }
-            }
-
-            impl OptionIntoWasmAbi for String {
-                #[inline]
-                fn none() -> Self::Abi {
-                    JsValue::UNDEFINED.into_abi()
-                }
-            }
-
-        } else {
-            impl IntoWasmAbi for String {
-                type Abi = <Vec<u8> as IntoWasmAbi>::Abi;
-
-                #[inline]
-                fn into_abi(self) -> Self::Abi {
-                    self.into_bytes().into_abi()
-                }
-            }
-
-            impl OptionIntoWasmAbi for String {
-                #[inline]
-                fn none() -> Self::Abi { null_slice() }
-            }
+        #[inline]
+        fn into_abi(self) -> Self::Abi {
+            get_cached_str(&self)
         }
+    }
+
+    impl OptionIntoWasmAbi for String {
+        #[inline]
+        fn none() -> Self::Abi { null_slice() }
     }
 
     impl FromWasmAbi for String {
@@ -198,39 +200,17 @@ if_std! {
     }
 }
 
+impl<'a> IntoWasmAbi for &'a str {
+    type Abi = <&'a [u8] as IntoWasmAbi>::Abi;
 
-cfg_if! {
-    if #[cfg(feature = "enable-interning")] {
-        impl<'a> IntoWasmAbi for &'a str {
-            type Abi = <JsValue as IntoWasmAbi>::Abi;
-
-            #[inline]
-            fn into_abi(self) -> Self::Abi {
-                crate::cache::intern::get_str(self).into_abi()
-            }
-        }
-
-        impl<'a> OptionIntoWasmAbi for &'a str {
-            #[inline]
-            fn none() -> Self::Abi {
-                JsValue::UNDEFINED.into_abi()
-            }
-        }
-
-    } else {
-        impl<'a> IntoWasmAbi for &'a str {
-            type Abi = <&'a [u8] as IntoWasmAbi>::Abi;
-
-            #[inline]
-            fn into_abi(self) -> Self::Abi {
-                self.as_bytes().into_abi()
-            }
-        }
-
-        impl<'a> OptionIntoWasmAbi for &'a str {
-            fn none() -> Self::Abi { null_slice() }
-        }
+    #[inline]
+    fn into_abi(self) -> Self::Abi {
+        get_cached_str(self)
     }
+}
+
+impl<'a> OptionIntoWasmAbi for &'a str {
+    fn none() -> Self::Abi { null_slice() }
 }
 
 impl RefFromWasmAbi for str {

@@ -130,6 +130,33 @@ impl<'a, 'b> Outgoing<'a, 'b> {
                 Ok(format!("v{}", i))
             }
 
+            NonstandardOutgoing::CachedString {
+                offset,
+                length,
+                owned,
+            } => {
+                let ptr = self.arg(*offset);
+                let len = self.arg(*length);
+                let tmp = self.js.tmp();
+
+                self.js.typescript_required("string");
+                self.cx.expose_get_object();
+                self.cx.expose_get_string_from_wasm()?;
+
+                self.js.prelude(&format!(
+                    "const v{tmp} = {ptr} === 0 ? getObject({len}) : getStringFromWasm({ptr}, {len});",
+                    tmp = tmp,
+                    ptr = ptr,
+                    len = len,
+                ));
+
+                if *owned {
+                    self.prelude_free_cached_string(&ptr, &len)?;
+                }
+
+                Ok(format!("v{}", tmp))
+            }
+
             NonstandardOutgoing::StackClosure {
                 a,
                 b,
@@ -305,6 +332,35 @@ impl<'a, 'b> Outgoing<'a, 'b> {
                 self.js.prelude("}");
                 Ok(format!("v{}", i))
             }
+
+            NonstandardOutgoing::OptionCachedString {
+                offset,
+                length,
+                owned,
+            } => {
+                let ptr = self.arg(*offset);
+                let len = self.arg(*length);
+                let tmp = self.js.tmp();
+
+                self.js.typescript_optional("string");
+                self.cx.expose_get_object();
+                self.cx.expose_get_string_from_wasm()?;
+
+                self.js.prelude(&format!("let v{};", tmp));
+
+                self.js.prelude(&format!(
+                    "if ({ptr} === 0) {{ if ({len} !== 0) {{ v{tmp} = getObject({len}); }} }} else {{ v{tmp} = getStringFromWasm({ptr}, {len}); }}",
+                    tmp = tmp,
+                    ptr = ptr,
+                    len = len,
+                ));
+
+                if *owned {
+                    self.prelude_free_cached_string(&ptr, &len)?;
+                }
+
+                Ok(format!("v{}", tmp))
+            }
         }
     }
 
@@ -406,6 +462,17 @@ impl<'a, 'b> Outgoing<'a, 'b> {
             self.arg(length),
             size = kind.size(),
         ));
+        self.cx.require_internal_export("__wbindgen_free")
+    }
+
+    fn prelude_free_cached_string(&mut self, ptr: &str, len: &str) -> Result<(), Error> {
+        self.js.prelude(&format!(
+            "if ({ptr} !== 0) {{ wasm.__wbindgen_free({ptr}, {len} * {size}); }}",
+            ptr = ptr,
+            len = len,
+            size = VectorKind::String.size(),
+        ));
+
         self.cx.require_internal_export("__wbindgen_free")
     }
 }

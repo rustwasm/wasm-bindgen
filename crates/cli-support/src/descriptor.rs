@@ -24,6 +24,7 @@ tys! {
     BOOLEAN
     FUNCTION
     CLOSURE
+    CACHED_STRING
     STRING
     REF
     REFMUT
@@ -58,6 +59,7 @@ pub enum Descriptor {
     RefMut(Box<Descriptor>),
     Slice(Box<Descriptor>),
     Vector(Box<Descriptor>),
+    CachedString,
     String,
     Anyref,
     Enum { hole: u32 },
@@ -127,6 +129,7 @@ impl Descriptor {
             SLICE => Descriptor::Slice(Box::new(Descriptor::_decode(data, clamped))),
             VECTOR => Descriptor::Vector(Box::new(Descriptor::_decode(data, clamped))),
             OPTIONAL => Descriptor::Option(Box::new(Descriptor::_decode(data, clamped))),
+            CACHED_STRING => Descriptor::CachedString,
             STRING => Descriptor::String,
             ANYREF => Descriptor::Anyref,
             ENUM => Descriptor::Enum { hole: get(data) },

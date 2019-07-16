@@ -60,6 +60,13 @@ pub enum NonstandardOutgoing {
         kind: VectorKind,
     },
 
+    ///
+    CachedString {
+        offset: u32,
+        length: u32,
+        owned: bool,
+    },
+
     /// A `&[u64]` or `&[i64]` is being passed to JS, and the 64-bit sizes here
     /// aren't supported by WebIDL bindings yet.
     View64 {
@@ -79,6 +86,13 @@ pub enum NonstandardOutgoing {
         offset: u32,
         length: u32,
         kind: VectorKind,
+    },
+
+    ///
+    OptionCachedString {
+        offset: u32,
+        length: u32,
+        owned: bool,
     },
 
     /// An optional slice of data is being passed into JS.
@@ -240,6 +254,17 @@ impl OutgoingBuilder<'_> {
             Descriptor::Ref(d) => self.process_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_ref(true, d)?,
 
+            Descriptor::CachedString => {
+                let offset = self.push_wasm(ValType::I32);
+                let length = self.push_wasm(ValType::I32);
+                self.webidl.push(ast::WebidlScalarType::Any);
+                self.bindings.push(NonstandardOutgoing::CachedString {
+                    offset,
+                    length,
+                    owned: true,
+                })
+            }
+
             Descriptor::Vector(_) | Descriptor::String => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -280,6 +305,16 @@ impl OutgoingBuilder<'_> {
                 self.webidl.push(ast::WebidlScalarType::Any);
                 self.bindings
                     .push(NonstandardOutgoing::BorrowedAnyref { idx });
+            }
+            Descriptor::CachedString => {
+                let offset = self.push_wasm(ValType::I32);
+                let length = self.push_wasm(ValType::I32);
+                self.webidl.push(ast::WebidlScalarType::DomString);
+                self.bindings.push(NonstandardOutgoing::CachedString {
+                    offset,
+                    length,
+                    owned: false,
+                })
             }
             Descriptor::Slice(_) | Descriptor::String => {
                 use wasm_webidl_bindings::ast::WebidlScalarType::*;
@@ -422,6 +457,18 @@ impl OutgoingBuilder<'_> {
             }
             Descriptor::Ref(d) => self.process_option_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_option_ref(true, d)?,
+
+            Descriptor::CachedString => {
+                let offset = self.push_wasm(ValType::I32);
+                let length = self.push_wasm(ValType::I32);
+                self.webidl.push(ast::WebidlScalarType::DomString);
+                self.bindings.push(NonstandardOutgoing::OptionCachedString {
+                    offset,
+                    length,
+                    owned: true,
+                })
+            }
+
             Descriptor::String | Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -454,6 +501,16 @@ impl OutgoingBuilder<'_> {
                 self.webidl.push(ast::WebidlScalarType::Any);
                 self.bindings
                     .push(NonstandardOutgoing::BorrowedAnyref { idx });
+            }
+            Descriptor::CachedString => {
+                let offset = self.push_wasm(ValType::I32);
+                let length = self.push_wasm(ValType::I32);
+                self.webidl.push(ast::WebidlScalarType::DomString);
+                self.bindings.push(NonstandardOutgoing::OptionCachedString {
+                    offset,
+                    length,
+                    owned: false,
+                })
             }
             Descriptor::String | Descriptor::Slice(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {

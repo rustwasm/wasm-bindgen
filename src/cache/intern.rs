@@ -33,15 +33,16 @@ cfg_if! {
             cache.find(|p| p.key == key).map(|x| &x.value)
         }
 
-        pub(crate) fn get_str(s: &str) -> JsValue {
+        pub(crate) fn get_str(s: &str) -> Option<JsValue> {
             CACHE.with(|cache| {
                 let mut cache = cache.entries.borrow_mut();
 
                 if let Some(value) = get_js_string(&mut cache, s) {
-                    value.clone()
+                    // This is safe because the cache values are never removed
+                    Some(value._unsafe_clone())
 
                 } else {
-                    JsValue::from(s)
+                    None
                 }
             })
         }

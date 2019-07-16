@@ -29,6 +29,7 @@ tys! {
     BOOLEAN
     FUNCTION
     CLOSURE
+    CACHED_STRING
     STRING
     REF
     REFMUT
@@ -75,7 +76,7 @@ simple! {
     f64 => F64
     bool => BOOLEAN
     char => CHAR
-    str => if cfg!(feature = "enable-interning") { ANYREF } else { STRING }
+    str => if cfg!(feature = "enable-interning") { CACHED_STRING } else { STRING }
     JsValue => ANYREF
 }
 
@@ -116,7 +117,7 @@ if_std! {
     use std::prelude::v1::*;
 
     impl WasmDescribe for String {
-        fn describe() { inform(if cfg!(feature = "enable-interning") { ANYREF } else { STRING }) }
+        fn describe() { inform(if cfg!(feature = "enable-interning") { CACHED_STRING } else { STRING }) }
     }
 
     impl<T: WasmDescribe> WasmDescribe for Box<[T]> {
