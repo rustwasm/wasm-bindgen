@@ -163,7 +163,7 @@ if_std! {
             impl OptionIntoWasmAbi for String {
                 #[inline]
                 fn none() -> Self::Abi {
-                    <JsValue as OptionIntoWasmAbi>::none()
+                    JsValue::UNDEFINED.into_abi()
                 }
             }
 
@@ -172,8 +172,8 @@ if_std! {
                 type Abi = <Vec<u8> as IntoWasmAbi>::Abi;
 
                 #[inline]
-                fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
-                    self.into_bytes().into_abi(extra)
+                fn into_abi(self) -> Self::Abi {
+                    self.into_bytes().into_abi()
                 }
             }
 
@@ -213,7 +213,7 @@ cfg_if! {
         impl<'a> OptionIntoWasmAbi for &'a str {
             #[inline]
             fn none() -> Self::Abi {
-                <JsValue as OptionIntoWasmAbi>::none()
+                JsValue::UNDEFINED.into_abi()
             }
         }
 
@@ -222,8 +222,8 @@ cfg_if! {
             type Abi = <&'a [u8] as IntoWasmAbi>::Abi;
 
             #[inline]
-            fn into_abi(self, extra: &mut dyn Stack) -> Self::Abi {
-                self.as_bytes().into_abi(extra)
+            fn into_abi(self) -> Self::Abi {
+                self.as_bytes().into_abi()
             }
         }
 
