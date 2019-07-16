@@ -1,7 +1,7 @@
 use std::cell::{Cell, RefCell};
 use std::fmt;
 use std::rc::Rc;
-use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
+use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::Arc;
 
 use futures::executor::{self, Notify, Spawn};
@@ -196,23 +196,18 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
         Waiting(Arc<Package>),
     }
 
+    #[derive(Default)]
     struct Waker {
+        // worker will be waiting on this value
+        // 0 by default, which means not notified
         value: AtomicI32,
-        notified: AtomicBool,
     };
-
-    impl Default for Waker {
-        fn default() -> Self {
-            Waker {
-                value: AtomicI32::new(0),
-                notified: AtomicBool::new(false),
-            }
-        }
-    }
 
     impl Notify for Waker {
         fn notify(&self, _id: usize) {
-            if !self.notified.swap(true, Ordering::SeqCst) {
+            // since we have only value field here
+            // let it be 1 if notified, 0 if not
+            if self.value.swap(1, Ordering::SeqCst) == 0 {
                 let _ = unsafe {
                     core::arch::wasm32::atomic_notify(
                         &self.value as *const AtomicI32 as *mut i32,
@@ -256,9 +251,9 @@ fn _future_to_promise(future: Box<dyn Future<Item = JsValue, Error = JsValue>>) 
         // helps avoid blowing the stack by accident.
         let promise =
             crate::polyfill::wait_async(&package.waker.value).expect("Should create a Promise");
-        let closure = Closure::once(Box::new(move |_| {
+        let closure = Closure::once(move |_| {
             Package::poll(&me);
-        }) as Box<dyn FnMut(JsValue)>);
+        });
         promise.then(&closure);
         closure.forget();
     }
