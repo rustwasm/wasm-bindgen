@@ -177,7 +177,6 @@ if_std! {
     }
 
     impl OptionIntoWasmAbi for String {
-        #[inline]
         fn none() -> Self::Abi { null_slice() }
     }
 
@@ -205,7 +204,9 @@ impl<'a> IntoWasmAbi for &'a str {
 }
 
 impl<'a> OptionIntoWasmAbi for &'a str {
-    fn none() -> Self::Abi { null_slice() }
+    fn none() -> Self::Abi {
+        null_slice()
+    }
 }
 
 impl RefFromWasmAbi for str {
