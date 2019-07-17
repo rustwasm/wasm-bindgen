@@ -21,6 +21,10 @@ impl Fruit {
     pub fn new(name: String) -> Self {
         Fruit { name }
     }
+
+    pub fn rot(self) {
+        drop(self);
+    }
 }
 
 #[wasm_bindgen]

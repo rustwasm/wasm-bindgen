@@ -138,15 +138,20 @@ impl<'a, 'b> Builder<'a, 'b> {
             // method, so the leading parameter is the this pointer stored on
             // the JS object, so synthesize that here.
             match self.method {
-                Some(true) => {
+                Some(consumes_self) => {
                     drop(webidl_params.next());
-                    self.args_prelude.push_str("const ptr = this.ptr;\n");
-                    self.args_prelude.push_str("this.ptr = 0;\n");
-                    arg_names.push("ptr".to_string());
-                }
-                Some(false) => {
-                    drop(webidl_params.next());
-                    arg_names.push("this.ptr".to_string());
+                    if self.cx.config.debug {
+                        self.args_prelude.push_str(
+                            "if (this.ptr == 0) throw new Error('Attempt to use a moved value');\n",
+                        );
+                    }
+                    if consumes_self {
+                        self.args_prelude.push_str("const ptr = this.ptr;\n");
+                        self.args_prelude.push_str("this.ptr = 0;\n");
+                        arg_names.push("ptr".to_string());
+                    } else {
+                        arg_names.push("this.ptr".to_string());
+                    }
                 }
                 None => {}
             }
