@@ -432,10 +432,9 @@ impl<'a, 'b> Outgoing<'a, 'b> {
 
     fn prelude_free_cached_string(&mut self, ptr: &str, len: &str) -> Result<(), Error> {
         self.js.prelude(&format!(
-            "if ({ptr} !== 0) {{ wasm.__wbindgen_free({ptr}, {len} * {size}); }}",
+            "if ({ptr} !== 0) {{ wasm.__wbindgen_free({ptr}, {len}); }}",
             ptr = ptr,
             len = len,
-            size = VectorKind::String.size(),
         ));
 
         self.cx.require_internal_export("__wbindgen_free")
