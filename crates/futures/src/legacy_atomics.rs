@@ -1,10 +1,8 @@
-use std::sync::atomic::{AtomicI32, Ordering};
-use std::sync::Arc;
-
 use futures::executor::{self, Notify, Spawn};
-use futures::future;
 use futures::prelude::*;
 use js_sys::Function;
+use std::sync::atomic::{AtomicI32, Ordering};
+use std::sync::Arc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -165,24 +163,4 @@ fn wait_async(ptr: &AtomicI32, val: i32) -> js_sys::Promise {
         let mem = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
         Atomics::wait_async(&mem.buffer(), ptr as *const AtomicI32 as i32 / 4, val)
     }
-
-}
-
-/// Converts a Rust `Future` on a local task queue.
-///
-/// The `future` provided must adhere to `'static` because it'll be scheduled
-/// to run in the background and cannot contain any stack references.
-///
-/// # Panics
-///
-/// This function has the same panic behavior as `future_to_promise`.
-pub fn spawn_local<F>(future: F)
-where
-    F: Future<Item = (), Error = ()> + 'static,
-{
-    future_to_promise(
-        future
-            .map(|()| JsValue::undefined())
-            .or_else(|()| future::ok::<JsValue, JsValue>(JsValue::undefined())),
-    );
 }

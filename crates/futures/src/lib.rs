@@ -106,18 +106,17 @@
 
 use cfg_if::cfg_if;
 
-mod legacy_js2rust;
-pub use legacy_js2rust::*;
+mod legacy_shared;
+pub use legacy_shared::*;
 
 cfg_if! {
     if #[cfg(target_feature = "atomics")] {
         /// Contains a thread-safe version of this crate, with Futures 0.1
         mod legacy_atomics;
+        pub use legacy_atomics::*;
 
         /// Polyfill for `Atomics.waitAsync` function
         mod wait_async_polyfill;
-
-        pub use legacy_atomics::*;
     } else {
         mod legacy;
         pub use legacy::*;

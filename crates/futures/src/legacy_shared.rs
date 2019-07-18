@@ -1,7 +1,7 @@
 use std::cell::RefCell;
+use futures::future;
 use std::fmt;
 use std::rc::Rc;
-
 use futures::prelude::*;
 use futures::sync::oneshot;
 use js_sys::Promise;
@@ -86,4 +86,23 @@ impl Future for JsFuture {
             Err(_) => wasm_bindgen::throw_str("cannot cancel"),
         }
     }
+}
+
+/// Converts a Rust `Future` on a local task queue.
+///
+/// The `future` provided must adhere to `'static` because it'll be scheduled
+/// to run in the background and cannot contain any stack references.
+///
+/// # Panics
+///
+/// This function has the same panic behavior as `future_to_promise`.
+pub fn spawn_local<F>(future: F)
+where
+    F: Future<Item = (), Error = ()> + 'static,
+{
+    crate::future_to_promise(
+        future
+            .map(|()| JsValue::undefined())
+            .or_else(|()| future::ok::<JsValue, JsValue>(JsValue::undefined())),
+    );
 }
