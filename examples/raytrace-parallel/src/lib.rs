@@ -1,3 +1,4 @@
+use futures::sync::oneshot;
 use futures::Future;
 use js_sys::{Promise, Uint8ClampedArray, WebAssembly};
 use rayon::prelude::*;
@@ -69,27 +70,28 @@ impl Scene {
         // threads so we don't lock up the main thread, so we ship off a thread
         // which actually does the whole rayon business. When our returned
         // future is resolved we can pull out the final version of the image.
-        let done = pool
-            .run_notify(move || {
-                thread_pool.install(|| {
-                    rgb_data
-                        .par_chunks_mut(4)
-                        .enumerate()
-                        .for_each(|(i, chunk)| {
-                            let i = i as u32;
-                            let x = i % width;
-                            let y = i / width;
-                            let ray = raytracer::Ray::create_prime(x, y, &scene);
-                            let result = raytracer::cast_ray(&scene, &ray, 0).to_rgba();
-                            chunk[0] = result.data[0];
-                            chunk[1] = result.data[1];
-                            chunk[2] = result.data[2];
-                            chunk[3] = result.data[3];
-                        });
-                });
+        let (tx, rx) = oneshot::channel();
+        pool.run(move || {
+            thread_pool.install(|| {
                 rgb_data
-            })?
-            .map(move |_data| image_data(base, len, width, height).into());
+                    .par_chunks_mut(4)
+                    .enumerate()
+                    .for_each(|(i, chunk)| {
+                        let i = i as u32;
+                        let x = i % width;
+                        let y = i / width;
+                        let ray = raytracer::Ray::create_prime(x, y, &scene);
+                        let result = raytracer::cast_ray(&scene, &ray, 0).to_rgba();
+                        chunk[0] = result.data[0];
+                        chunk[1] = result.data[1];
+                        chunk[2] = result.data[2];
+                        chunk[3] = result.data[3];
+                    });
+            });
+            drop(tx.send(rgb_data));
+        })?;
+        let done = rx.map(move |_data| image_data(base, len, width, height).into())
+            .map_err(|_| JsValue::undefined());
 
         Ok(RenderingScene {
             promise: wasm_bindgen_futures::future_to_promise(done),
