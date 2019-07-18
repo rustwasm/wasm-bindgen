@@ -128,17 +128,14 @@ vectors! {
 cfg_if! {
     if #[cfg(feature = "enable-interning")] {
         #[inline]
-        fn get_cached_str(x: &str) -> Option<WasmSlice> {
-            // This is safe because the JsValue is immediately looked up in the heap and
-            // then returned, so use-after-free cannot occur.
-            //
+        fn unsafe_get_cached_str(x: &str) -> Option<WasmSlice> {
             // This uses 0 for the ptr as an indication that it is a JsValue and not a str.
             crate::cache::intern::unsafe_get_str(x).map(|x| WasmSlice { ptr: 0, len: x })
         }
 
     } else {
         #[inline]
-        fn get_cached_str(_x: &str) -> Option<WasmSlice> {
+        fn unsafe_get_cached_str(_x: &str) -> Option<WasmSlice> {
             None
         }
     }
@@ -175,7 +172,9 @@ if_std! {
 
         #[inline]
         fn into_abi(self) -> Self::Abi {
-            get_cached_str(&self).unwrap_or_else(|| self.into_bytes().into_abi())
+            // This is safe because the JsValue is immediately looked up in the heap and
+            // then returned, so use-after-free cannot occur.
+            unsafe_get_cached_str(&self).unwrap_or_else(|| self.into_bytes().into_abi())
         }
     }
 
@@ -202,7 +201,9 @@ impl<'a> IntoWasmAbi for &'a str {
 
     #[inline]
     fn into_abi(self) -> Self::Abi {
-        get_cached_str(self).unwrap_or_else(|| self.as_bytes().into_abi())
+        // This is safe because the JsValue is immediately looked up in the heap and
+        // then returned, so use-after-free cannot occur.
+        unsafe_get_cached_str(self).unwrap_or_else(|| self.as_bytes().into_abi())
     }
 }
 
