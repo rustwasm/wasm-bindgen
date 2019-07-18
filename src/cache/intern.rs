@@ -7,45 +7,27 @@ cfg_if! {
         use std::string::String;
         use std::borrow::ToOwned;
         use std::cell::RefCell;
+        use std::collections::HashMap;
         use crate::JsValue;
         use crate::convert::IntoWasmAbi;
-        use uluru::{LRUCache, Entry};
-
-
-        struct Pair {
-            key: String,
-            value: JsValue,
-        }
-
-        // TODO figure out a good default capacity
-        type Entries = LRUCache::<[Entry<Pair>; 1_024]>;
 
         struct Cache {
-            entries: RefCell<Entries>,
+            entries: RefCell<HashMap<String, JsValue>>,
         }
 
         thread_local! {
             static CACHE: Cache = Cache {
-                entries: RefCell::new(LRUCache::default()),
+                entries: RefCell::new(HashMap::new()),
             };
-        }
-
-        fn get_js_string<'a>(cache: &'a mut Entries, key: &str) -> Option<&'a JsValue> {
-            cache.find(|p| p.key == key).map(|x| &x.value)
         }
 
         /// This returns the raw index of the cached JsValue, so you must take care
         /// so that you don't use it after it is freed.
         pub(crate) fn unsafe_get_str(s: &str) -> Option<<JsValue as IntoWasmAbi>::Abi> {
             CACHE.with(|cache| {
-                let mut cache = cache.entries.borrow_mut();
+                let cache = cache.entries.borrow();
 
-                if let Some(value) = get_js_string(&mut cache, s) {
-                    Some(value.into_abi())
-
-                } else {
-                    None
-                }
+                cache.get(s).map(|x| x.into_abi())
             })
         }
 
@@ -53,11 +35,9 @@ cfg_if! {
             CACHE.with(|cache| {
                 let mut cache = cache.entries.borrow_mut();
 
-                if get_js_string(&mut cache, key).is_none() {
-                    cache.insert(Pair {
-                        key: key.to_owned(),
-                        value: JsValue::from(key),
-                    });
+                // Can't use `entry` because `entry` requires a `String`
+                if !cache.contains_key(key) {
+                    cache.insert(key.to_owned(), JsValue::from(key));
                 }
             })
         }
