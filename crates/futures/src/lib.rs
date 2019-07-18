@@ -109,22 +109,24 @@ use cfg_if::cfg_if;
 cfg_if! {
     if #[cfg(target_feature = "atomics")] {
         /// Contains a thread-safe version of this crate, with Futures 0.1
-        pub mod atomics;
+        mod atomics;
 
         /// Polyfill for `Atomics.waitAsync` function
         mod polyfill;
 
         pub use atomics::*;
-    } else if #[cfg(feature = "futures_0_3")] {
+    } else {
+        mod stable;
+        pub use stable::*;
+     }
+}
+
+#[cfg(feature = "futures_0_3")]
+cfg_if! {
+    if #[cfg(target_feature = "atomics")] {
+        compile_error!("futures 0.3 support is not implemented with atomics yet");
+    } else {
         /// Contains a Futures 0.3 implementation of this crate.
         pub mod futures_0_3;
-
-        /// Contains stable version of the crate
-        pub mod stable;
-        pub use stable::*;
-     } else {
-        /// Contains stable version of the crate
-        pub mod stable;
-        pub use stable::*;
      }
 }
