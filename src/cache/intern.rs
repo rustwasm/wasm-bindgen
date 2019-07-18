@@ -45,6 +45,29 @@ cfg_if! {
 }
 
 
+/// Interns Rust strings so that it's much faster to send them to JS.
+///
+/// Sending strings from Rust to JS is slow, because it has to do a full `O(n)`
+/// copy and *also* encode from UTF-8 to UTF-16. This must be done every single
+/// time a string is sent to JS.
+///
+/// If you are sending the same string multiple times, you can call this `intern`
+/// function, which simply returns its argument unchanged:
+///
+/// ```rust
+/// intern("foo") // returns "foo"
+/// ```
+///
+/// However, if you enable the `"enable-interning"` feature for wasm-bindgen,
+/// then it will add the string into an internal cache.
+///
+/// When you send that cached string to JS, it will look it up in the cache,
+/// which completely avoids the `O(n)` copy and encoding. This has a significant
+/// speed boost (as high as 783%)!
+///
+/// However, there is a small cost to this caching, so you shouldn't cache every
+/// string. Only cache strings which have a high likelihood of being sent
+/// to JS multiple times.
 #[inline]
 pub fn intern(s: &str) -> &str {
     #[cfg(feature = "enable-interning")]
