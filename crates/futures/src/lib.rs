@@ -106,6 +106,9 @@
 
 use cfg_if::cfg_if;
 
+mod legacy_js2rust;
+pub use legacy_js2rust::*;
+
 cfg_if! {
     if #[cfg(target_feature = "atomics")] {
         /// Contains a thread-safe version of this crate, with Futures 0.1
