@@ -55,6 +55,7 @@ cfg_if! {
 /// function, which simply returns its argument unchanged:
 ///
 /// ```rust
+/// # use wasm_bindgen::intern;
 /// intern("foo") // returns "foo"
 /// ```
 ///
