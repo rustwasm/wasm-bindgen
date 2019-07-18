@@ -129,8 +129,8 @@ cfg_if! {
     if #[cfg(feature = "enable-interning")] {
         #[inline]
         fn get_cached_str(x: &str) -> Option<WasmSlice> {
-            // This is safe because the JsValue is immediately converted into a JS string,
-            // so use-after-free cannot occur.
+            // This is safe because the JsValue is immediately looked up in the heap and
+            // then returned, so use-after-free cannot occur.
             //
             // This uses 0 for the ptr as an indication that it is a JsValue and not a str.
             crate::cache::intern::unsafe_get_str(x).map(|x| WasmSlice { ptr: 0, len: x })
