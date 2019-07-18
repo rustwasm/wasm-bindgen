@@ -125,11 +125,6 @@ impl JsValue {
         }
     }
 
-    #[inline]
-    fn _unsafe_clone(&self) -> JsValue {
-        Self::_new(self.idx)
-    }
-
     /// Creates a new JS value which is a string.
     ///
     /// The utf-8 string provided is copied to the JS heap and the string will

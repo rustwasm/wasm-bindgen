@@ -8,6 +8,7 @@ cfg_if! {
         use std::borrow::ToOwned;
         use std::cell::RefCell;
         use crate::JsValue;
+        use crate::convert::IntoWasmAbi;
         use uluru::{LRUCache, Entry};
 
 
@@ -33,13 +34,14 @@ cfg_if! {
             cache.find(|p| p.key == key).map(|x| &x.value)
         }
 
-        pub(crate) fn get_str(s: &str) -> Option<JsValue> {
+        /// This returns the raw index of the cached JsValue, so you must take care
+        /// so that you don't use it after it is freed.
+        pub(crate) fn unsafe_get_str(s: &str) -> Option<<JsValue as IntoWasmAbi>::Abi> {
             CACHE.with(|cache| {
                 let mut cache = cache.entries.borrow_mut();
 
                 if let Some(value) = get_js_string(&mut cache, s) {
-                    // This is safe because the cache values are never removed
-                    Some(value._unsafe_clone())
+                    Some(value.into_abi())
 
                 } else {
                     None
