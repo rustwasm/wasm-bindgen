@@ -160,7 +160,7 @@ fn wait_async(ptr: &AtomicI32, val: i32) -> js_sys::Promise {
     // If `Atomics.waitAsync` isn't defined (as it isn't defined anywhere today)
     // then we use our fallback, otherwise we use the native function.
     if Atomics::get_wait_async().is_undefined() {
-        crate::polyfill::wait_async(ptr, val)
+        crate::wait_async_polyfill::wait_async(ptr, val)
     } else {
         let mem = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
         Atomics::wait_async(&mem.buffer(), ptr as *const AtomicI32 as i32 / 4, val)
