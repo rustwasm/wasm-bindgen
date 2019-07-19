@@ -134,12 +134,18 @@ impl<'a, 'b> Outgoing<'a, 'b> {
                 offset,
                 length,
                 owned,
+                optional,
             } => {
                 let ptr = self.arg(*offset);
                 let len = self.arg(*length);
                 let tmp = self.js.tmp();
 
-                self.js.typescript_optional("string");
+                if *optional {
+                    self.js.typescript_optional("string");
+                } else {
+                    self.js.typescript_required("string");
+                }
+
                 self.cx.expose_get_cached_string_from_wasm()?;
 
                 self.js.prelude(&format!("const v{} = getCachedStringFromWasm({}, {});", tmp, ptr, len));

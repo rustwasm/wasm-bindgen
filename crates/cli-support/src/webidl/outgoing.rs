@@ -69,6 +69,7 @@ pub enum NonstandardOutgoing {
         offset: u32,
         length: u32,
         owned: bool,
+        optional: bool,
     },
 
     /// A `&[u64]` or `&[i64]` is being passed to JS, and the 64-bit sizes here
@@ -251,7 +252,7 @@ impl OutgoingBuilder<'_> {
             Descriptor::Ref(d) => self.process_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_ref(true, d)?,
 
-            Descriptor::CachedString => self.cached_string(true),
+            Descriptor::CachedString => self.cached_string(false, true),
 
             Descriptor::Vector(_) | Descriptor::String => {
                 let kind = arg.vector_kind().ok_or_else(|| {
@@ -294,7 +295,7 @@ impl OutgoingBuilder<'_> {
                 self.bindings
                     .push(NonstandardOutgoing::BorrowedAnyref { idx });
             }
-            Descriptor::CachedString => self.cached_string(false),
+            Descriptor::CachedString => self.cached_string(false, false),
             Descriptor::Slice(_) | Descriptor::String => {
                 use wasm_webidl_bindings::ast::WebidlScalarType::*;
 
@@ -437,7 +438,7 @@ impl OutgoingBuilder<'_> {
             Descriptor::Ref(d) => self.process_option_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_option_ref(true, d)?,
 
-            Descriptor::CachedString => self.cached_string(true),
+            Descriptor::CachedString => self.cached_string(true, true),
 
             Descriptor::String | Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
@@ -472,7 +473,7 @@ impl OutgoingBuilder<'_> {
                 self.bindings
                     .push(NonstandardOutgoing::BorrowedAnyref { idx });
             }
-            Descriptor::CachedString => self.cached_string(false),
+            Descriptor::CachedString => self.cached_string(true, false),
             Descriptor::String | Descriptor::Slice(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -523,7 +524,7 @@ impl OutgoingBuilder<'_> {
             .push(NonstandardOutgoing::Standard(binding.into()));
     }
 
-    fn cached_string(&mut self, owned: bool) {
+    fn cached_string(&mut self, optional: bool, owned: bool) {
         let offset = self.push_wasm(ValType::I32);
         let length = self.push_wasm(ValType::I32);
         self.webidl.push(ast::WebidlScalarType::DomString);
@@ -531,6 +532,7 @@ impl OutgoingBuilder<'_> {
             offset,
             length,
             owned,
+            optional,
         })
     }
 
