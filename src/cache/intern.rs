@@ -56,6 +56,7 @@ cfg_if! {
 /// ```rust
 /// # use wasm_bindgen::intern;
 /// intern("foo") // returns "foo"
+/// # ;
 /// ```
 ///
 /// However, if you enable the `"enable-interning"` feature for wasm-bindgen,
