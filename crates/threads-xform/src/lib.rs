@@ -78,25 +78,57 @@ impl Config {
     ///
     /// More and/or less may happen here over time, stay tuned!
     pub fn run(&self, module: &mut Module) -> Result<(), Error> {
-        let memory = update_memory(module, self.maximum_memory)?;
-        let segments = switch_data_segments_to_passive(module, memory)?;
         let stack_pointer = find_stack_pointer(module)?;
-
+        let memory = find_memory(module)?;
+        let addr = inject_thread_id_counter(module, memory)?;
         let zero = InitExpr::Value(Value::I32(0));
         let globals = Globals {
             thread_id: module.globals.add_local(ValType::I32, true, zero),
             thread_tcb: module.globals.add_local(ValType::I32, true, zero),
         };
-        let addr = inject_thread_id_counter(module, memory)?;
-        start_with_init_memory(
+
+        // There was an "inflection point" at the LLVM 9 release where LLD
+        // started having better support for producing binaries capable of being
+        // used with multi-threading. Prior to LLVM 9 (e.g. nightly releases
+        // before July 2019 basically) we had to sort of paper over a lot of
+        // support that hadn't been added to LLD. With LLVM 9 and onwards though
+        // we expect Rust binaries to be pretty well formed if prepared for
+        // threading when they come out of LLD. This `if` statement basically
+        // switches on these two cases, figuring out if we're "old style" or
+        // "new style".
+        let mem = module.memories.get_mut(memory);
+        let memory_init = if mem.shared {
+            let prev_max = mem.maximum.unwrap();
+            assert!(mem.import.is_some());
+            mem.maximum = Some(cmp::max(self.maximum_memory / PAGE_SIZE, prev_max));
+            assert!(mem.data.is_empty());
+
+            let init_memory = module
+                .exports
+                .iter()
+                .find(|e| e.name == "__wasm_init_memory")
+                .ok_or_else(|| format_err!("failed to find `__wasm_init_memory`"))?;
+            let init_memory_id = match init_memory.item {
+                walrus::ExportItem::Function(f) => f,
+                _ => bail!("`__wasm_init_memory` must be a function"),
+            };
+            let export_id = init_memory.id();
+            module.exports.delete(export_id);
+            InitMemory::Call(init_memory_id)
+        } else {
+            update_memory(module, memory, self.maximum_memory)?;
+            InitMemory::Segments(switch_data_segments_to_passive(module, memory)?)
+        };
+        inject_start(
             module,
-            &segments,
+            memory_init,
             &globals,
             addr,
             stack_pointer,
             self.thread_stack_size,
             memory,
         );
+
         implement_thread_intrinsics(module, &globals)?;
         Ok(())
     }
@@ -124,15 +156,20 @@ fn switch_data_segments_to_passive(
     Ok(ret)
 }
 
-fn update_memory(module: &mut Module, max: u32) -> Result<MemoryId, Error> {
-    assert!(max % PAGE_SIZE == 0);
-    let mut memories = module.memories.iter_mut();
+fn find_memory(module: &mut Module) -> Result<MemoryId, Error> {
+    let mut memories = module.memories.iter();
     let memory = memories
         .next()
         .ok_or_else(|| format_err!("currently incompatible with no memory modules"))?;
     if memories.next().is_some() {
         bail!("only one memory is currently supported");
     }
+    Ok(memory.id())
+}
+
+fn update_memory(module: &mut Module, memory: MemoryId, max: u32) -> Result<MemoryId, Error> {
+    assert!(max % PAGE_SIZE == 0);
+    let memory = module.memories.get_mut(memory);
 
     // For multithreading if we want to use the exact same module on all
     // threads we'll need to be sure to import memory, so switch it to an
@@ -245,9 +282,14 @@ fn find_stack_pointer(module: &mut Module) -> Result<Option<GlobalId>, Error> {
     }
 }
 
-fn start_with_init_memory(
+enum InitMemory {
+    Segments(Vec<PassiveSegment>),
+    Call(walrus::FunctionId),
+}
+
+fn inject_start(
     module: &mut Module,
-    segments: &[PassiveSegment],
+    memory_init: InitMemory,
     globals: &Globals,
     addr: u32,
     stack_pointer: Option<GlobalId>,
@@ -321,6 +363,15 @@ fn start_with_init_memory(
         let sp = block.binop(BinaryOp::I32Add, sp_base, stack_size);
         let set_stack_pointer = block.global_set(stack_pointer, sp);
         block.expr(set_stack_pointer);
+
+        // FIXME(WebAssembly/tool-conventions#117) we probably don't want to
+        // duplicate drop with `if_zero_block` or otherwise just infer to drop
+        // all these data segments, this seems like something to synthesize in
+        // the linker...
+        for segment in module.data.iter() {
+            let drop = block.data_drop(segment.id());
+            block.expr(drop);
+        }
     }
     let if_nonzero_block = block.id();
     drop(block);
@@ -330,26 +381,31 @@ fn start_with_init_memory(
     // memory, however, so do that here.
     let if_zero_block = {
         let mut block = builder.if_else_block(Box::new([]), Box::new([]));
-        for segment in segments {
-            let zero = block.i32_const(0);
-            let offset = match segment.offset {
-                InitExpr::Global(id) => block.global_get(id),
-                InitExpr::Value(v) => block.const_(v),
-            };
-            let len = block.i32_const(segment.len as i32);
-            let init = block.memory_init(memory, segment.id, offset, zero, len);
-            block.expr(init);
+        match memory_init {
+            InitMemory::Segments(segments) => {
+                for segment in segments {
+                    let zero = block.i32_const(0);
+                    let offset = match segment.offset {
+                        InitExpr::Global(id) => block.global_get(id),
+                        InitExpr::Value(v) => block.const_(v),
+                    };
+                    let len = block.i32_const(segment.len as i32);
+                    let init = block.memory_init(memory, segment.id, offset, zero, len);
+                    block.expr(init);
+                    let drop = block.data_drop(segment.id);
+                    block.expr(drop);
+                }
+            }
+            InitMemory::Call(wasm_init_memory) => {
+                let call = block.call(wasm_init_memory, Box::new([]));
+                block.expr(call);
+            }
         }
         block.id()
     };
 
     let block = builder.if_else(thread_id_is_nonzero, if_nonzero_block, if_zero_block);
     exprs.push(block);
-
-    // On all threads now memory segments are no longer needed
-    for segment in segments {
-        exprs.push(builder.data_drop(segment.id));
-    }
 
     // If a start function previously existed we're done with our own
     // initialization so delegate to them now.
