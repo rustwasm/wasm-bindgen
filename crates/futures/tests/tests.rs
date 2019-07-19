@@ -6,6 +6,8 @@ extern crate wasm_bindgen;
 extern crate wasm_bindgen_futures;
 extern crate wasm_bindgen_test;
 
+wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+
 use futures::unsync::oneshot;
 use futures::Future;
 use wasm_bindgen::prelude::*;

@@ -598,10 +598,19 @@ pub mod Atomics {
         /// The static `Atomics.notify()` method notifies up some agents that
         /// are sleeping in the wait queue.
         /// Note: This operation works with a shared `Int32Array` only.
+        /// If `count` is not provided, notifies all the agents in the queue.
         ///
         /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/notify)
         #[wasm_bindgen(js_namespace = Atomics, catch)]
-        pub fn notify(typed_array: &Int32Array, index: u32, count: u32) -> Result<u32, JsValue>;
+        pub fn notify(typed_array: &Int32Array, index: u32) -> Result<u32, JsValue>;
+
+        /// Notifies up to `count` agents in the wait queue.
+        #[wasm_bindgen(js_namespace = Atomics, catch, js_name = notify)]
+        pub fn notify_with_count(
+            typed_array: &Int32Array,
+            index: u32,
+            count: u32,
+        ) -> Result<u32, JsValue>;
 
         /// The static `Atomics.or()` method computes a bitwise OR with a given value
         /// at a given position in the array, and returns the old value at that position.
