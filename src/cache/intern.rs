@@ -68,6 +68,10 @@ cfg_if! {
 /// However, there is a small cost to this caching, so you shouldn't cache every
 /// string. Only cache strings which have a high likelihood of being sent
 /// to JS multiple times.
+///
+/// Also, keep in mind that this function is a *performance hint*: it's not
+/// *guaranteed* that the string will be cached, and the caching strategy
+/// might change at any time, so don't rely upon it.
 #[inline]
 pub fn intern(s: &str) -> &str {
     #[cfg(feature = "enable-interning")]
