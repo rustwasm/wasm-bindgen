@@ -3,6 +3,7 @@
 
 #![doc(hidden)]
 
+use cfg_if::cfg_if;
 use crate::{Clamped, JsValue};
 
 macro_rules! tys {
@@ -54,7 +55,7 @@ pub trait WasmDescribe {
 }
 
 macro_rules! simple {
-    ($($t:ident => $d:expr)*) => ($(
+    ($($t:ident => $d:ident)*) => ($(
         impl WasmDescribe for $t {
             fn describe() { inform($d) }
         }
@@ -76,8 +77,20 @@ simple! {
     f64 => F64
     bool => BOOLEAN
     char => CHAR
-    str => if cfg!(feature = "enable-interning") { CACHED_STRING } else { STRING }
     JsValue => ANYREF
+}
+
+cfg_if! {
+    if #[cfg(feature = "enable-interning")] {
+        simple! {
+            str => CACHED_STRING
+        }
+
+    } else {
+        simple! {
+            str => STRING
+        }
+    }
 }
 
 impl<T> WasmDescribe for *const T {
@@ -116,8 +129,17 @@ impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a mut T {
 if_std! {
     use std::prelude::v1::*;
 
-    impl WasmDescribe for String {
-        fn describe() { inform(if cfg!(feature = "enable-interning") { CACHED_STRING } else { STRING }) }
+    cfg_if! {
+        if #[cfg(feature = "enable-interning")] {
+            simple! {
+                String => CACHED_STRING
+            }
+
+        } else {
+            simple! {
+                String => STRING
+            }
+        }
     }
 
     impl<T: WasmDescribe> WasmDescribe for Box<[T]> {
