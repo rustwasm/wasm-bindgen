@@ -9,7 +9,6 @@ cfg_if! {
         use std::cell::RefCell;
         use std::collections::HashMap;
         use crate::JsValue;
-        use crate::convert::IntoWasmAbi;
 
         struct Cache {
             entries: RefCell<HashMap<String, JsValue>>,
@@ -23,11 +22,11 @@ cfg_if! {
 
         /// This returns the raw index of the cached JsValue, so you must take care
         /// so that you don't use it after it is freed.
-        pub(crate) fn unsafe_get_str(s: &str) -> Option<<JsValue as IntoWasmAbi>::Abi> {
+        pub(crate) fn unsafe_get_str(s: &str) -> Option<u32> {
             CACHE.with(|cache| {
                 let cache = cache.entries.borrow();
 
-                cache.get(s).map(|x| x.into_abi())
+                cache.get(s).map(|x| x.idx)
             })
         }
 
