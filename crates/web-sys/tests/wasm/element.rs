@@ -14,6 +14,8 @@ fn element() {
     */
     let element = new_div();
 
+    assert_eq!(element, element);
+
     assert_eq!(element.prefix(), None, "Shouldn't have a prefix");
     assert_eq!(element.local_name(), "div", "Should have a div local name");
     assert_eq!(element.tag_name(), "DIV", "Should be a div tag");

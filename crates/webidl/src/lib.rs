@@ -541,7 +541,7 @@ impl<'src> FirstPassRecord<'src> {
         let mut doc_comment = Some(format!("The `{}` object\n\n{}", name, mdn_doc(name, None),));
 
         let mut attrs = Vec::new();
-        attrs.push(syn::parse_quote!( #[derive(Debug, Clone)] ));
+        attrs.push(syn::parse_quote!( #[derive(Debug, Clone, PartialEq, Eq)] ));
         self.add_deprecated(data, &mut attrs);
         let mut import_type = ast::ImportType {
             vis: public(),
