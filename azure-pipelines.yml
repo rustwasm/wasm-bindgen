@@ -22,6 +22,8 @@ jobs:
         displayName: "Anyref test suite builds"
       - script: cargo test --target wasm32-unknown-unknown --features serde-serialize
         displayName: "Crate test suite (with serde)"
+      - script: cargo test --target wasm32-unknown-unknown --features enable-interning
+        displayName: "Crate test suite (with enable-interning)"
       - script: cargo test --target wasm32-unknown-unknown -p no-std
         displayName: "Crate test suite (no_std)"
       - script: cargo test -p wasm-bindgen-futures

@@ -57,6 +57,7 @@ pub mod prelude {
     }
 }
 
+
 pub mod convert;
 pub mod describe;
 
@@ -68,6 +69,9 @@ if_std! {
     use std::prelude::v1::*;
     pub mod closure;
     mod anyref;
+
+    mod cache;
+    pub use cache::intern::intern;
 }
 
 /// Representation of an object owned by JS.

@@ -4,6 +4,7 @@ use std::prelude::v1::*;
 use core::slice;
 use core::str;
 
+use cfg_if::cfg_if;
 use crate::convert::OptionIntoWasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
 
@@ -123,6 +124,24 @@ vectors! {
     u8 i8 u16 i16 u32 i32 u64 i64 usize isize f32 f64
 }
 
+
+cfg_if! {
+    if #[cfg(feature = "enable-interning")] {
+        #[inline]
+        fn unsafe_get_cached_str(x: &str) -> Option<WasmSlice> {
+            // This uses 0 for the ptr as an indication that it is a JsValue and not a str.
+            crate::cache::intern::unsafe_get_str(x).map(|x| WasmSlice { ptr: 0, len: x })
+        }
+
+    } else {
+        #[inline]
+        fn unsafe_get_cached_str(_x: &str) -> Option<WasmSlice> {
+            None
+        }
+    }
+}
+
+
 if_std! {
     impl<T> IntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {
         type Abi = <Box<[T]> as IntoWasmAbi>::Abi;
@@ -153,12 +172,14 @@ if_std! {
 
         #[inline]
         fn into_abi(self) -> Self::Abi {
-            self.into_bytes().into_abi()
+            // This is safe because the JsValue is immediately looked up in the heap and
+            // then returned, so use-after-free cannot occur.
+            unsafe_get_cached_str(&self).unwrap_or_else(|| self.into_bytes().into_abi())
         }
     }
 
     impl OptionIntoWasmAbi for String {
-        fn none() -> WasmSlice { null_slice() }
+        fn none() -> Self::Abi { null_slice() }
     }
 
     impl FromWasmAbi for String {
@@ -180,12 +201,14 @@ impl<'a> IntoWasmAbi for &'a str {
 
     #[inline]
     fn into_abi(self) -> Self::Abi {
-        self.as_bytes().into_abi()
+        // This is safe because the JsValue is immediately looked up in the heap and
+        // then returned, so use-after-free cannot occur.
+        unsafe_get_cached_str(self).unwrap_or_else(|| self.as_bytes().into_abi())
     }
 }
 
 impl<'a> OptionIntoWasmAbi for &'a str {
-    fn none() -> WasmSlice {
+    fn none() -> Self::Abi {
         null_slice()
     }
 }

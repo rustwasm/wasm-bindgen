@@ -3,6 +3,7 @@
 
 #![doc(hidden)]
 
+use cfg_if::cfg_if;
 use crate::{Clamped, JsValue};
 
 macro_rules! tys {
@@ -29,6 +30,7 @@ tys! {
     BOOLEAN
     FUNCTION
     CLOSURE
+    CACHED_STRING
     STRING
     REF
     REFMUT
@@ -75,8 +77,20 @@ simple! {
     f64 => F64
     bool => BOOLEAN
     char => CHAR
-    str => STRING
     JsValue => ANYREF
+}
+
+cfg_if! {
+    if #[cfg(feature = "enable-interning")] {
+        simple! {
+            str => CACHED_STRING
+        }
+
+    } else {
+        simple! {
+            str => STRING
+        }
+    }
 }
 
 impl<T> WasmDescribe for *const T {
@@ -115,8 +129,17 @@ impl<'a, T: WasmDescribe + ?Sized> WasmDescribe for &'a mut T {
 if_std! {
     use std::prelude::v1::*;
 
-    impl WasmDescribe for String {
-        fn describe() { inform(STRING) }
+    cfg_if! {
+        if #[cfg(feature = "enable-interning")] {
+            simple! {
+                String => CACHED_STRING
+            }
+
+        } else {
+            simple! {
+                String => STRING
+            }
+        }
     }
 
     impl<T: WasmDescribe> WasmDescribe for Box<[T]> {

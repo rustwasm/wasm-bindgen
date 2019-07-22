@@ -1088,6 +1088,34 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
+    fn expose_get_cached_string_from_wasm(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("get_cached_string_from_wasm") {
+            return Ok(());
+        }
+
+        self.expose_get_object();
+        self.expose_get_string_from_wasm()?;
+
+        // This has support for both `&str` and `Option<&str>`.
+        //
+        // If `ptr` is not `0` then we know that it's a `&str` or `Some(&str)`, so we just decode it.
+        //
+        // If `ptr` is `0` then the `len` is a pointer to the cached `JsValue`, so we return that.
+        //
+        // If `ptr` and `len` are both `0` then that means it's `None`, in that case we rely upon
+        // the fact that `getObject(0)` is guaranteed to be `undefined`.
+        self.global("
+            function getCachedStringFromWasm(ptr, len) {
+                if (ptr === 0) {
+                    return getObject(len);
+                } else {
+                    return getStringFromWasm(ptr, len);
+                }
+            }
+        ");
+        Ok(())
+    }
+
     fn expose_get_array_js_value_from_wasm(&mut self) -> Result<(), Error> {
         if !self.should_write_global("get_array_js_value_from_wasm") {
             return Ok(());

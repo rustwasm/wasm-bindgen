@@ -60,6 +60,18 @@ pub enum NonstandardOutgoing {
         kind: VectorKind,
     },
 
+    /// A Rust String (or &str) which might be cached, or might be `None`.
+    ///
+    /// If `offset` is 0 then it is cached, and the cached JsValue's index is in `length`.
+    ///
+    /// If `offset` and `length` are both 0, then it is `None`.
+    CachedString {
+        offset: u32,
+        length: u32,
+        owned: bool,
+        optional: bool,
+    },
+
     /// A `&[u64]` or `&[i64]` is being passed to JS, and the 64-bit sizes here
     /// aren't supported by WebIDL bindings yet.
     View64 {
@@ -240,6 +252,8 @@ impl OutgoingBuilder<'_> {
             Descriptor::Ref(d) => self.process_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_ref(true, d)?,
 
+            Descriptor::CachedString => self.cached_string(false, true),
+
             Descriptor::Vector(_) | Descriptor::String => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -281,6 +295,7 @@ impl OutgoingBuilder<'_> {
                 self.bindings
                     .push(NonstandardOutgoing::BorrowedAnyref { idx });
             }
+            Descriptor::CachedString => self.cached_string(false, false),
             Descriptor::Slice(_) | Descriptor::String => {
                 use wasm_webidl_bindings::ast::WebidlScalarType::*;
 
@@ -422,6 +437,9 @@ impl OutgoingBuilder<'_> {
             }
             Descriptor::Ref(d) => self.process_option_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_option_ref(true, d)?,
+
+            Descriptor::CachedString => self.cached_string(true, true),
+
             Descriptor::String | Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -455,6 +473,7 @@ impl OutgoingBuilder<'_> {
                 self.bindings
                     .push(NonstandardOutgoing::BorrowedAnyref { idx });
             }
+            Descriptor::CachedString => self.cached_string(true, false),
             Descriptor::String | Descriptor::Slice(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -503,6 +522,18 @@ impl OutgoingBuilder<'_> {
         self.webidl.push(ty);
         self.bindings
             .push(NonstandardOutgoing::Standard(binding.into()));
+    }
+
+    fn cached_string(&mut self, optional: bool, owned: bool) {
+        let offset = self.push_wasm(ValType::I32);
+        let length = self.push_wasm(ValType::I32);
+        self.webidl.push(ast::WebidlScalarType::DomString);
+        self.bindings.push(NonstandardOutgoing::CachedString {
+            offset,
+            length,
+            owned,
+            optional,
+        })
     }
 
     fn option_native(&mut self, signed: bool, ty: ValType) {
