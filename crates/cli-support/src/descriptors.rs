@@ -152,13 +152,8 @@ impl WasmBindgenDescriptorsSection {
         let ty = module.funcs.get(wbindgen_describe_closure).ty();
         for (func, (call_instr, descriptor)) in func_to_descriptor {
             let import_name = format!("__wbindgen_closure_wrapper{}", func.index());
-            let id = module.add_import_func("__wbindgen_placeholder__", &import_name, ty);
-            let import_id = module
-                .imports
-                .iter()
-                .find(|i| i.name == import_name)
-                .unwrap()
-                .id();
+            let (id, import_id) =
+                module.add_import_func("__wbindgen_placeholder__", &import_name, ty);
             module.funcs.get_mut(id).name = Some(import_name);
 
             let local = match &mut module.funcs.get_mut(func).kind {

@@ -101,7 +101,7 @@ impl Config {
             let prev_max = mem.maximum.unwrap();
             assert!(mem.import.is_some());
             mem.maximum = Some(cmp::max(self.maximum_memory / PAGE_SIZE, prev_max));
-            assert!(mem.data.is_empty());
+            assert!(mem.data_segments.is_empty());
 
             let init_memory = module
                 .exports
@@ -146,11 +146,24 @@ fn switch_data_segments_to_passive(
 ) -> Result<Vec<PassiveSegment>, Error> {
     let mut ret = Vec::new();
     let memory = module.memories.get_mut(memory);
-    let data = mem::replace(&mut memory.data, Default::default());
-    for (offset, value) in data.into_iter() {
-        let len = value.len() as u32;
-        let id = module.data.add(value);
-        ret.push(PassiveSegment { id, offset, len });
+    for id in mem::replace(&mut memory.data_segments, Default::default()) {
+        let data = module.data.get_mut(id);
+        let kind = match &data.kind {
+            walrus::DataKind::Active(kind) => kind,
+            walrus::DataKind::Passive => continue,
+        };
+        let offset = match kind.location {
+            walrus::ActiveDataLocation::Absolute(n) => {
+                walrus::InitExpr::Value(walrus::ir::Value::I32(n as i32))
+            }
+            walrus::ActiveDataLocation::Relative(global) => walrus::InitExpr::Global(global),
+        };
+        data.kind = walrus::DataKind::Passive;
+        ret.push(PassiveSegment {
+            id,
+            offset,
+            len: data.value.len() as u32,
+        });
     }
 
     Ok(ret)
