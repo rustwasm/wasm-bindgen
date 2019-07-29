@@ -502,7 +502,7 @@ impl<'a> Context<'a> {
                     let result;
                     const imports = {{}};
                     {imports_init}
-                    if (module instanceof URL || typeof module === 'string' || module instanceof Request) {{
+                    if ((typeof URL === 'function' && module instanceof URL) || typeof module === 'string' || (typeof Request === 'function' && module instanceof Request)) {{
                         {init_memory2}
                         const response = fetch(module);
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
