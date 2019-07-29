@@ -1,7 +1,7 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
 use failure::{bail, Error, ResultExt};
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::env;
 use std::fs;
 use std::mem;
@@ -39,24 +39,24 @@ pub struct Bindgen {
     encode_into: EncodeInto,
 }
 
+pub struct Output {
+    module: walrus::Module,
+    stem: String,
+    js: String,
+    ts: String,
+    mode: OutputMode,
+    typescript: bool,
+    snippets: HashMap<String, Vec<String>>,
+    local_modules: HashMap<String, String>,
+    npm_dependencies: HashMap<String, (PathBuf, String)>,
+}
+
+#[derive(Clone)]
 enum OutputMode {
     Bundler { browser_only: bool },
     Web,
     NoModules { global: String },
     Node { experimental_modules: bool },
-}
-
-impl OutputMode {
-    fn uses_es_modules(&self) -> bool {
-        match self {
-            OutputMode::Bundler { .. }
-            | OutputMode::Web
-            | OutputMode::Node {
-                experimental_modules: true,
-            } => true,
-            _ => false,
-        }
-    }
 }
 
 enum Input {
@@ -235,10 +235,10 @@ impl Bindgen {
     }
 
     pub fn generate<P: AsRef<Path>>(&mut self, path: P) -> Result<(), Error> {
-        self._generate(path.as_ref())
+        self.generate_output()?.emit(path.as_ref())
     }
 
-    fn _generate(&mut self, out_dir: &Path) -> Result<(), Error> {
+    pub fn generate_output(&mut self) -> Result<Output, Error> {
         let (mut module, stem) = match self.input {
             Input::None => bail!("must have an input by now"),
             Input::Module(ref mut m, ref name) => {
@@ -332,53 +332,214 @@ impl Bindgen {
             module.start = None;
         }
 
+        let aux = module
+            .customs
+            .delete_typed::<webidl::WasmBindgenAux>()
+            .expect("aux section should be present");
+        let bindings = module
+            .customs
+            .delete_typed::<webidl::NonstandardWebidlSection>()
+            .unwrap();
+
         // Now that our module is massaged and good to go, feed it into the JS
         // shim generation which will actually generate JS for all this.
-        let (js, ts) = {
+        let (npm_dependencies, (js, ts)) = {
             let mut cx = js::Context::new(&mut module, self)?;
-
-            let aux = cx
-                .module
-                .customs
-                .delete_typed::<webidl::WasmBindgenAux>()
-                .expect("aux section should be present");
-            let bindings = cx
-                .module
-                .customs
-                .delete_typed::<webidl::NonstandardWebidlSection>()
-                .unwrap();
             cx.generate(&aux, &bindings)?;
+            let npm_dependencies = cx.npm_dependencies.clone();
+            (npm_dependencies, cx.finalize(stem)?)
+        };
 
-            // Write out all local JS snippets to the final destination now that
-            // we've collected them from all the programs.
-            for (identifier, list) in aux.snippets.iter() {
-                for (i, js) in list.iter().enumerate() {
-                    let name = format!("inline{}.js", i);
-                    let path = out_dir.join("snippets").join(identifier).join(name);
-                    fs::create_dir_all(path.parent().unwrap())?;
-                    fs::write(&path, js)
-                        .with_context(|_| format!("failed to write `{}`", path.display()))?;
-                }
+        Ok(Output {
+            module,
+            stem: stem.to_string(),
+            snippets: aux.snippets.clone(),
+            local_modules: aux.local_modules.clone(),
+            npm_dependencies,
+            js,
+            ts,
+            mode: self.mode.clone(),
+            typescript: self.typescript,
+        })
+    }
+}
+
+fn reset_indentation(s: &str) -> String {
+    let mut indent: u32 = 0;
+    let mut dst = String::new();
+
+    for line in s.lines() {
+        let line = line.trim();
+        if line.starts_with('}') || (line.ends_with('}') && !line.starts_with('*')) {
+            indent = indent.saturating_sub(1);
+        }
+        let extra = if line.starts_with(':') || line.starts_with('?') {
+            1
+        } else {
+            0
+        };
+        if !line.is_empty() {
+            for _ in 0..indent + extra {
+                dst.push_str("    ");
             }
-            for (path, contents) in aux.local_modules.iter() {
-                let path = out_dir.join("snippets").join(path);
+            dst.push_str(line);
+        }
+        dst.push_str("\n");
+        if line.ends_with('{') {
+            indent += 1;
+        }
+    }
+    return dst;
+}
+
+// Eventually these will all be CLI options, but while they're unstable features
+// they're left as environment variables. We don't guarantee anything about
+// backwards-compatibility with these options.
+fn threads_config() -> Option<wasm_bindgen_threads_xform::Config> {
+    if env::var("WASM_BINDGEN_THREADS").is_err() {
+        return None;
+    }
+    let mut cfg = wasm_bindgen_threads_xform::Config::new();
+    if let Ok(s) = env::var("WASM_BINDGEN_THREADS_MAX_MEMORY") {
+        cfg.maximum_memory(s.parse().unwrap());
+    }
+    if let Ok(s) = env::var("WASM_BINDGEN_THREADS_STACK_SIZE") {
+        cfg.thread_stack_size(s.parse().unwrap());
+    }
+    Some(cfg)
+}
+
+fn demangle(module: &mut Module) {
+    for func in module.funcs.iter_mut() {
+        let name = match &func.name {
+            Some(name) => name,
+            None => continue,
+        };
+        if let Ok(sym) = rustc_demangle::try_demangle(name) {
+            func.name = Some(sym.to_string());
+        }
+    }
+}
+
+impl OutputMode {
+    fn uses_es_modules(&self) -> bool {
+        match self {
+            OutputMode::Bundler { .. }
+            | OutputMode::Web
+            | OutputMode::Node {
+                experimental_modules: true,
+            } => true,
+            _ => false,
+        }
+    }
+
+    fn nodejs_experimental_modules(&self) -> bool {
+        match self {
+            OutputMode::Node {
+                experimental_modules,
+            } => *experimental_modules,
+            _ => false,
+        }
+    }
+
+    fn nodejs(&self) -> bool {
+        match self {
+            OutputMode::Node { .. } => true,
+            _ => false,
+        }
+    }
+
+    fn no_modules(&self) -> bool {
+        match self {
+            OutputMode::NoModules { .. } => true,
+            _ => false,
+        }
+    }
+
+    fn always_run_in_browser(&self) -> bool {
+        match self {
+            OutputMode::Web => true,
+            OutputMode::NoModules { .. } => true,
+            OutputMode::Bundler { browser_only } => *browser_only,
+            _ => false,
+        }
+    }
+
+    fn web(&self) -> bool {
+        match self {
+            OutputMode::Web => true,
+            _ => false,
+        }
+    }
+
+    fn bundler(&self) -> bool {
+        match self {
+            OutputMode::Bundler { .. } => true,
+            _ => false,
+        }
+    }
+}
+
+/// Remove a number of internal exports that are synthesized by Rust's linker,
+/// LLD. These exports aren't typically ever needed and just add extra space to
+/// the binary.
+fn unexported_unused_lld_things(module: &mut Module) {
+    let mut to_remove = Vec::new();
+    for export in module.exports.iter() {
+        match export.name.as_str() {
+            "__heap_base" | "__data_end" | "__indirect_function_table" => {
+                to_remove.push(export.id());
+            }
+            _ => {}
+        }
+    }
+    for id in to_remove {
+        module.exports.delete(id);
+    }
+}
+
+impl Output {
+    pub fn js(&self) -> &str {
+        &self.js
+    }
+
+    pub fn wasm(&self) -> &walrus::Module {
+        &self.module
+    }
+
+    pub fn emit(&self, out_dir: impl AsRef<Path>) -> Result<(), Error> {
+        self._emit(out_dir.as_ref())
+    }
+
+    fn _emit(&self, out_dir: &Path) -> Result<(), Error> {
+        // Write out all local JS snippets to the final destination now that
+        // we've collected them from all the programs.
+        for (identifier, list) in self.snippets.iter() {
+            for (i, js) in list.iter().enumerate() {
+                let name = format!("inline{}.js", i);
+                let path = out_dir.join("snippets").join(identifier).join(name);
                 fs::create_dir_all(path.parent().unwrap())?;
-                fs::write(&path, contents)
+                fs::write(&path, js)
                     .with_context(|_| format!("failed to write `{}`", path.display()))?;
             }
+        }
 
-            if cx.npm_dependencies.len() > 0 {
-                let map = cx
-                    .npm_dependencies
-                    .iter()
-                    .map(|(k, v)| (k, &v.1))
-                    .collect::<BTreeMap<_, _>>();
-                let json = serde_json::to_string_pretty(&map)?;
-                fs::write(out_dir.join("package.json"), json)?;
-            }
+        for (path, contents) in self.local_modules.iter() {
+            let path = out_dir.join("snippets").join(path);
+            fs::create_dir_all(path.parent().unwrap())?;
+            fs::write(&path, contents)
+                .with_context(|_| format!("failed to write `{}`", path.display()))?;
+        }
 
-            cx.finalize(stem)?
-        };
+        if self.npm_dependencies.len() > 0 {
+            let map = self
+                .npm_dependencies
+                .iter()
+                .map(|(k, v)| (k, &v.1))
+                .collect::<BTreeMap<_, _>>();
+            let json = serde_json::to_string_pretty(&map)?;
+            fs::write(out_dir.join("package.json"), json)?;
+        }
 
         // And now that we've got all our JS and TypeScript, actually write it
         // out to the filesystem.
@@ -388,36 +549,37 @@ impl Bindgen {
             "js"
         };
         fs::create_dir_all(out_dir)?;
-        let js_path = out_dir.join(stem).with_extension(extension);
-        fs::write(&js_path, reset_indentation(&js))
+        let js_path = out_dir.join(&self.stem).with_extension(extension);
+        fs::write(&js_path, reset_indentation(&self.js))
             .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
 
         if self.typescript {
             let ts_path = js_path.with_extension("d.ts");
-            fs::write(&ts_path, ts)
+            fs::write(&ts_path, &self.ts)
                 .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
         }
 
-        let wasm_path = out_dir.join(format!("{}_bg", stem)).with_extension("wasm");
+        let wasm_path = out_dir
+            .join(format!("{}_bg", self.stem))
+            .with_extension("wasm");
 
         if self.mode.nodejs() {
             let js_path = wasm_path.with_extension(extension);
-            let shim = self.generate_node_wasm_import(&module, &wasm_path);
+            let shim = self.generate_node_wasm_import(&self.module, &wasm_path);
             fs::write(&js_path, shim)
                 .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
         }
 
         if self.typescript {
             let ts_path = wasm_path.with_extension("d.ts");
-            let ts = wasm2es6js::typescript(&module)?;
+            let ts = wasm2es6js::typescript(&self.module)?;
             fs::write(&ts_path, ts)
                 .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
         }
 
-        let wasm_bytes = module.emit_wasm()?;
+        let wasm_bytes = self.module.emit_wasm()?;
         fs::write(&wasm_path, wasm_bytes)
             .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
-
         Ok(())
     }
 
@@ -488,128 +650,5 @@ impl Bindgen {
         }
 
         reset_indentation(&shim)
-    }
-}
-
-fn reset_indentation(s: &str) -> String {
-    let mut indent: u32 = 0;
-    let mut dst = String::new();
-
-    for line in s.lines() {
-        let line = line.trim();
-        if line.starts_with('}') || (line.ends_with('}') && !line.starts_with('*')) {
-            indent = indent.saturating_sub(1);
-        }
-        let extra = if line.starts_with(':') || line.starts_with('?') {
-            1
-        } else {
-            0
-        };
-        if !line.is_empty() {
-            for _ in 0..indent + extra {
-                dst.push_str("    ");
-            }
-            dst.push_str(line);
-        }
-        dst.push_str("\n");
-        if line.ends_with('{') {
-            indent += 1;
-        }
-    }
-    return dst;
-}
-
-// Eventually these will all be CLI options, but while they're unstable features
-// they're left as environment variables. We don't guarantee anything about
-// backwards-compatibility with these options.
-fn threads_config() -> Option<wasm_bindgen_threads_xform::Config> {
-    if env::var("WASM_BINDGEN_THREADS").is_err() {
-        return None;
-    }
-    let mut cfg = wasm_bindgen_threads_xform::Config::new();
-    if let Ok(s) = env::var("WASM_BINDGEN_THREADS_MAX_MEMORY") {
-        cfg.maximum_memory(s.parse().unwrap());
-    }
-    if let Ok(s) = env::var("WASM_BINDGEN_THREADS_STACK_SIZE") {
-        cfg.thread_stack_size(s.parse().unwrap());
-    }
-    Some(cfg)
-}
-
-fn demangle(module: &mut Module) {
-    for func in module.funcs.iter_mut() {
-        let name = match &func.name {
-            Some(name) => name,
-            None => continue,
-        };
-        if let Ok(sym) = rustc_demangle::try_demangle(name) {
-            func.name = Some(sym.to_string());
-        }
-    }
-}
-
-impl OutputMode {
-    fn nodejs_experimental_modules(&self) -> bool {
-        match self {
-            OutputMode::Node {
-                experimental_modules,
-            } => *experimental_modules,
-            _ => false,
-        }
-    }
-
-    fn nodejs(&self) -> bool {
-        match self {
-            OutputMode::Node { .. } => true,
-            _ => false,
-        }
-    }
-
-    fn no_modules(&self) -> bool {
-        match self {
-            OutputMode::NoModules { .. } => true,
-            _ => false,
-        }
-    }
-
-    fn always_run_in_browser(&self) -> bool {
-        match self {
-            OutputMode::Web => true,
-            OutputMode::NoModules { .. } => true,
-            OutputMode::Bundler { browser_only } => *browser_only,
-            _ => false,
-        }
-    }
-
-    fn web(&self) -> bool {
-        match self {
-            OutputMode::Web => true,
-            _ => false,
-        }
-    }
-
-    fn bundler(&self) -> bool {
-        match self {
-            OutputMode::Bundler { .. } => true,
-            _ => false,
-        }
-    }
-}
-
-/// Remove a number of internal exports that are synthesized by Rust's linker,
-/// LLD. These exports aren't typically ever needed and just add extra space to
-/// the binary.
-fn unexported_unused_lld_things(module: &mut Module) {
-    let mut to_remove = Vec::new();
-    for export in module.exports.iter() {
-        match export.name.as_str() {
-            "__heap_base" | "__data_end" | "__indirect_function_table" => {
-                to_remove.push(export.id());
-            }
-            _ => {}
-        }
-    }
-    for id in to_remove {
-        module.exports.delete(id);
     }
 }
