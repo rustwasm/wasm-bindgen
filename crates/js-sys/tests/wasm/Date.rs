@@ -161,7 +161,7 @@ fn parse() {
 fn set_date() {
     let event1 = Date::new(&"August 19, 1975 23:15:30".into());
     let event2 = Date::new(&"August 24, 1975 23:15:30".into());
-    let event3 = Date::new(&"August 23, 1975 23:15:30".into());
+    let event3 = Date::new(&"August 22, 1975 23:15:30".into());
 
     let ms = event1.set_date(24);
 
@@ -169,8 +169,8 @@ fn set_date() {
     assert_eq!(event1.get_time(), event2.get_time());
     assert_eq!(event1.get_date(), 24);
 
-    event1.set_date(-1);
-    assert_eq!(event3.get_date(), 23);
+    event3.set_date(-1);
+    assert_eq!(event3.get_date(), 30);
 }
 
 #[wasm_bindgen_test]
