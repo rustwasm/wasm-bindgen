@@ -676,7 +676,7 @@ impl Transform<'_> {
     // initialized correctly.
     fn inject_initialization(&mut self, module: &mut Module) {
         let ty = module.types.add(&[], &[]);
-        let import = module.add_import_func(
+        let (import, _) = module.add_import_func(
             "__wbindgen_placeholder__",
             "__wbindgen_init_anyref_table",
             ty,
