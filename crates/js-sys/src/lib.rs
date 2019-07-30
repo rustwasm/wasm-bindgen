@@ -1978,7 +1978,7 @@ extern "C" {
     ///
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setDate)
     #[wasm_bindgen(method, js_name = setDate)]
-    pub fn set_date(this: &Date, day: u32) -> f64;
+    pub fn set_date(this: &Date, day: i32) -> f64;
 
     /// The setFullYear() method sets the full year for a specified date according to local time.
     /// Returns new timestamp.
