@@ -32,9 +32,9 @@ pub struct Bindgen {
     // Experimental support for weakrefs, an upcoming ECMAScript feature.
     // Currently only enable-able through an env var.
     weak_refs: bool,
-    // Experimental support for the wasm threads proposal, transforms the wasm
-    // module to be "ready to be instantiated on any thread"
-    threads: Option<wasm_bindgen_threads_xform::Config>,
+    // Support for the wasm threads proposal, transforms the wasm module to be
+    // "ready to be instantiated on any thread"
+    threads: wasm_bindgen_threads_xform::Config,
     anyref: bool,
     encode_into: EncodeInto,
 }
@@ -286,10 +286,8 @@ impl Bindgen {
             );
         }
 
-        if let Some(cfg) = &self.threads {
-            cfg.run(&mut module)
-                .with_context(|_| "failed to prepare module for threading")?;
-        }
+        self.threads.run(&mut module)
+            .with_context(|_| "failed to prepare module for threading")?;
 
         // If requested, turn all mangled symbols into prettier unmangled
         // symbols with the help of `rustc-demangle`.
@@ -395,10 +393,7 @@ fn reset_indentation(s: &str) -> String {
 // Eventually these will all be CLI options, but while they're unstable features
 // they're left as environment variables. We don't guarantee anything about
 // backwards-compatibility with these options.
-fn threads_config() -> Option<wasm_bindgen_threads_xform::Config> {
-    if env::var("WASM_BINDGEN_THREADS").is_err() {
-        return None;
-    }
+fn threads_config() -> wasm_bindgen_threads_xform::Config {
     let mut cfg = wasm_bindgen_threads_xform::Config::new();
     if let Ok(s) = env::var("WASM_BINDGEN_THREADS_MAX_MEMORY") {
         cfg.maximum_memory(s.parse().unwrap());
@@ -406,7 +401,7 @@ fn threads_config() -> Option<wasm_bindgen_threads_xform::Config> {
     if let Ok(s) = env::var("WASM_BINDGEN_THREADS_STACK_SIZE") {
         cfg.thread_stack_size(s.parse().unwrap());
     }
-    Some(cfg)
+    cfg
 }
 
 fn demangle(module: &mut Module) {
