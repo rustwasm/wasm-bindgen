@@ -6,7 +6,7 @@ use crate::webidl::{AuxValue, Binding};
 use crate::webidl::{JsImport, JsImportName, NonstandardWebidlSection, WasmBindgenAux};
 use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use walrus::{ExportId, ImportId, MemoryId, Module};
@@ -248,7 +248,7 @@ impl<'a> Context<'a> {
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let wasm;\n");
-                init = self.gen_init(needs_manual_start);
+                init = self.gen_init(needs_manual_start, None)?;
                 footer.push_str(&format!(
                     "self.{} = Object.assign(init, __exports);\n",
                     global
@@ -309,7 +309,7 @@ impl<'a> Context<'a> {
             // as the default export of the module.
             OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
-                init = self.gen_init(needs_manual_start);
+                init = self.gen_init(needs_manual_start, Some(&mut imports))?;
                 footer.push_str("export default init;\n");
             }
         }
@@ -435,7 +435,11 @@ impl<'a> Context<'a> {
         )
     }
 
-    fn gen_init(&mut self, needs_manual_start: bool) -> (String, String) {
+    fn gen_init(
+        &mut self,
+        needs_manual_start: bool,
+        mut imports: Option<&mut String>,
+    ) -> Result<(String, String), Error> {
         let module_name = "wbg";
         let mem = self.module.memories.get(self.memory);
         let (init_memory1, init_memory2) = if let Some(id) = mem.import {
@@ -493,6 +497,30 @@ impl<'a> Context<'a> {
             imports_init.push_str(" = ");
             imports_init.push_str(js.trim());
             imports_init.push_str(";\n");
+        }
+
+        let extra_modules = self
+            .module
+            .imports
+            .iter()
+            .filter(|i| !self.wasm_import_definitions.contains_key(&i.id()))
+            .filter(|i| {
+                // Importing memory is handled specially in this area, so don't
+                // consider this a candidate for importing from extra modules.
+                match i.kind {
+                    walrus::ImportKind::Memory(_) => false,
+                    _ => true,
+                }
+            })
+            .map(|i| &i.module)
+            .collect::<BTreeSet<_>>();
+        for (i, extra) in extra_modules.iter().enumerate() {
+            let imports = match &mut imports {
+                Some(list) => list,
+                None => bail!("cannot import from modules (`{}`) with `--no-modules`", extra),
+            };
+            imports.push_str(&format!("import * as __wbg_star{} from '{}';\n", i, extra));
+            imports_init.push_str(&format!("imports['{}'] = __wbg_star{};\n", extra, i));
         }
 
         let js = format!(
@@ -553,7 +581,7 @@ impl<'a> Context<'a> {
             imports_init = imports_init,
         );
 
-        (js, ts)
+        Ok((js, ts))
     }
 
     fn write_classes(&mut self) -> Result<(), Error> {
@@ -1104,7 +1132,8 @@ impl<'a> Context<'a> {
         //
         // If `ptr` and `len` are both `0` then that means it's `None`, in that case we rely upon
         // the fact that `getObject(0)` is guaranteed to be `undefined`.
-        self.global("
+        self.global(
+            "
             function getCachedStringFromWasm(ptr, len) {
                 if (ptr === 0) {
                     return getObject(len);
@@ -1112,7 +1141,8 @@ impl<'a> Context<'a> {
                     return getStringFromWasm(ptr, len);
                 }
             }
-        ");
+        ",
+        );
         Ok(())
     }
 
@@ -1730,7 +1760,8 @@ impl<'a> Context<'a> {
 
             JsImportName::LocalModule { module, name } => {
                 let unique_name = generate_identifier(name, &mut self.defined_identifiers);
-                add_module_import(format!("./snippets/{}", module), name, &unique_name);
+                let module = self.config.local_module_name(module);
+                add_module_import(module, name, &unique_name);
                 unique_name
             }
 
@@ -1739,11 +1770,10 @@ impl<'a> Context<'a> {
                 snippet_idx_in_crate,
                 name,
             } => {
+                let module = self
+                    .config
+                    .inline_js_module_name(unique_crate_identifier, *snippet_idx_in_crate);
                 let unique_name = generate_identifier(name, &mut self.defined_identifiers);
-                let module = format!(
-                    "./snippets/{}/inline{}.js",
-                    unique_crate_identifier, snippet_idx_in_crate,
-                );
                 add_module_import(module, name, &unique_name);
                 unique_name
             }
@@ -2014,16 +2044,11 @@ impl<'a> Context<'a> {
             .types
             .get::<ast::WebidlFunction>(binding.webidl_ty)
             .unwrap();
-        let js = match import {
+        match import {
             AuxImport::Value(AuxValue::Bare(js))
                 if !variadic && !catch && self.import_does_not_require_glue(binding, webidl) =>
             {
-                self.expose_not_defined();
-                let name = self.import_name(js)?;
-                format!(
-                    "typeof {name} == 'function' ? {name} : notDefined('{name}')",
-                    name = name,
-                )
+                self.direct_import(id, js)
             }
             _ => {
                 if assert_no_shim {
@@ -2048,11 +2073,11 @@ impl<'a> Context<'a> {
                         cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
                     },
                 )?;
-                format!("function{}", js)
+                self.wasm_import_definitions
+                    .insert(id, format!("function{}", js));
+                Ok(())
             }
-        };
-        self.wasm_import_definitions.insert(id, js);
-        Ok(())
+        }
     }
 
     fn import_does_not_require_glue(
@@ -2076,6 +2101,69 @@ impl<'a> Context<'a> {
                 &webidl.result.into_iter().collect::<Vec<_>>(),
                 wasm_ty.results(),
             )
+    }
+
+    /// Emit a direct import directive that hooks up the `js` value specified to
+    /// the wasm import `id`.
+    fn direct_import(&mut self, id: ImportId, js: &JsImport) -> Result<(), Error> {
+        // If there's no field projection happening here and this is a direct
+        // import from an ES-looking module, then we can actually just hook this
+        // up directly in the wasm file itself. Note that this is covered in the
+        // various output formats as well:
+        //
+        // * `bundler` - they think wasm is an ES module anyway
+        // * `web` - we're sure to emit more `import` directives during
+        //   `gen_init` and we update the import object accordingly.
+        // * `nodejs` - the polyfill we have for requiring a wasm file as a node
+        //   module will naturally emit `require` directives for the module
+        //   listed on each wasm import.
+        // * `no-modules` - imports aren't allowed here anyway from other
+        //   modules and an error is generated.
+        if js.fields.len() == 0 {
+            match &js.name {
+                JsImportName::Module { module, name } => {
+                    let import = self.module.imports.get_mut(id);
+                    import.module = module.clone();
+                    import.name = name.clone();
+                    return Ok(());
+                }
+                JsImportName::LocalModule { module, name } => {
+                    let module = self.config.local_module_name(module);
+                    let import = self.module.imports.get_mut(id);
+                    import.module = module;
+                    import.name = name.clone();
+                    return Ok(());
+                }
+                JsImportName::InlineJs {
+                    unique_crate_identifier,
+                    snippet_idx_in_crate,
+                    name,
+                } => {
+                    let module = self
+                        .config
+                        .inline_js_module_name(unique_crate_identifier, *snippet_idx_in_crate);
+                    let import = self.module.imports.get_mut(id);
+                    import.module = module;
+                    import.name = name.clone();
+                    return Ok(());
+                }
+
+                // Fall through below to requiring a JS shim to create an item
+                // that we can import. These are plucked from the global
+                // environment so there's no way right now to describe these
+                // imports in an ES module-like fashion.
+                JsImportName::Global { .. } | JsImportName::VendorPrefixed { .. } => {}
+            }
+        }
+
+        self.expose_not_defined();
+        let name = self.import_name(js)?;
+        let js = format!(
+            "typeof {name} == 'function' ? {name} : notDefined('{name}')",
+            name = name,
+        );
+        self.wasm_import_definitions.insert(id, js);
+        Ok(())
     }
 
     /// Generates a JS snippet appropriate for invoking `import`.

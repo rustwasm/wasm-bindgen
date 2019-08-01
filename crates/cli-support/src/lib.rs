@@ -360,6 +360,21 @@ impl Bindgen {
             typescript: self.typescript,
         })
     }
+
+    fn local_module_name(&self, module: &str) -> String {
+        format!("./snippets/{}", module)
+    }
+
+    fn inline_js_module_name(
+        &self,
+        unique_crate_identifier: &str,
+        snippet_idx_in_crate: usize,
+    ) -> String {
+        format!(
+            "./snippets/{}/inline{}.js",
+            unique_crate_identifier, snippet_idx_in_crate,
+        )
+    }
 }
 
 fn reset_indentation(s: &str) -> String {
