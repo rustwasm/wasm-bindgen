@@ -2641,16 +2641,23 @@ impl<'a> Context<'a> {
 
             Intrinsic::InitAnyrefTable => {
                 self.expose_anyref_table();
-                String::from(
+
+                // Grow the table to insert our initial values, and then also
+                // set the 0th slot to `undefined` since that's what we've
+                // historically used for our ABI which is that the index of 0
+                // returns `undefined` for types like `None` going out.
+                let mut base = format!(
                     "
                       const table = wasm.__wbg_anyref_table;
-                      const offset = table.grow(4);
-                      table.set(offset + 0, undefined);
-                      table.set(offset + 1, null);
-                      table.set(offset + 2, true);
-                      table.set(offset + 3, false);
+                      const offset = table.grow({});
+                      table.set(0, undefined);
                     ",
-                )
+                    INITIAL_HEAP_VALUES.len(),
+                );
+                for (i, value) in INITIAL_HEAP_VALUES.iter().enumerate() {
+                    base.push_str(&format!("table.set(offset + {}, {});\n", i, value));
+                }
+                base
             }
         };
         Ok(expr)
