@@ -194,10 +194,7 @@ impl<'a> Context<'a> {
         // up we always remove the `start` function if one is present. The JS
         // bindings glue then manually calls the start function (if it was
         // previously present).
-        let mut needs_manual_start = false;
-        if self.config.emit_start {
-            needs_manual_start = self.unstart_start_function();
-        }
+        let needs_manual_start = self.unstart_start_function();
 
         // After all we've done, especially
         // `unexport_unused_internal_exports()`, we probably have a bunch of
@@ -517,7 +514,10 @@ impl<'a> Context<'a> {
         for (i, extra) in extra_modules.iter().enumerate() {
             let imports = match &mut imports {
                 Some(list) => list,
-                None => bail!("cannot import from modules (`{}`) with `--no-modules`", extra),
+                None => bail!(
+                    "cannot import from modules (`{}`) with `--no-modules`",
+                    extra
+                ),
             };
             imports.push_str(&format!("import * as __wbg_star{} from '{}';\n", i, extra));
             imports_init.push_str(&format!("imports['{}'] = __wbg_star{};\n", extra, i));

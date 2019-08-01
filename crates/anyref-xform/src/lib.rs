@@ -254,10 +254,6 @@ impl Transform<'_> {
         // functions and make sure everything is still hooked up right.
         self.rewrite_calls(module);
 
-        // Inject initialization routine to set up default slots in the table
-        // (things like null/undefined/true/false)
-        self.inject_initialization(module);
-
         Ok(())
     }
 
@@ -668,32 +664,5 @@ impl Transform<'_> {
                 }
             }
         }
-    }
-
-    // Ensure that the `start` function for this module calls the
-    // `__wbindgen_init_anyref_table` function. This'll ensure that all
-    // instances of this module have the initial slots of the anyref table
-    // initialized correctly.
-    fn inject_initialization(&mut self, module: &mut Module) {
-        let ty = module.types.add(&[], &[]);
-        let (import, _) = module.add_import_func(
-            "__wbindgen_placeholder__",
-            "__wbindgen_init_anyref_table",
-            ty,
-        );
-
-        let prev_start = match module.start {
-            Some(f) => f,
-            None => {
-                module.start = Some(import);
-                return;
-            }
-        };
-
-        let mut builder = walrus::FunctionBuilder::new();
-        let call_init = builder.call(import, Box::new([]));
-        let call_prev = builder.call(prev_start, Box::new([]));
-        let new_start = builder.finish(ty, Vec::new(), vec![call_init, call_prev], module);
-        module.start = Some(new_start);
     }
 }

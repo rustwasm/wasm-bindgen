@@ -473,10 +473,14 @@ struct Context<'a> {
     vendor_prefixes: HashMap<String, Vec<String>>,
     unique_crate_identifier: &'a str,
     descriptors: HashMap<String, Descriptor>,
+    anyref_enabled: bool,
+    support_start: bool,
 }
 
 pub fn process(
     module: &mut Module,
+    anyref_enabled: bool,
+    support_start: bool,
 ) -> Result<(NonstandardWebidlSectionId, WasmBindgenAuxId), Error> {
     let mut storage = Vec::new();
     let programs = extract_programs(module, &mut storage)?;
@@ -491,6 +495,8 @@ pub fn process(
         unique_crate_identifier: "",
         module,
         start_found: false,
+        anyref_enabled,
+        support_start,
     };
     cx.init()?;
 
@@ -532,17 +538,10 @@ impl<'a> Context<'a> {
             }
         }
         for (id, intrinsic) in intrinsics {
-            bindings::register_import(
-                self.module,
-                &mut self.bindings,
-                id,
-                intrinsic.binding(),
-                ast::WebidlFunctionKind::Static,
-            )?;
-            self.aux
-                .import_map
-                .insert(id, AuxImport::Intrinsic(intrinsic));
+            self.bind_intrinsic(id, intrinsic)?;
         }
+
+        self.inject_anyref_initialization()?;
 
         if let Some(custom) = self
             .module
@@ -609,6 +608,48 @@ impl<'a> Context<'a> {
             }
         }
 
+        Ok(())
+    }
+
+    // Ensure that the `start` function for this module calls the
+    // `__wbindgen_init_anyref_table` function. This'll ensure that all
+    // instances of this module have the initial slots of the anyref table
+    // initialized correctly.
+    fn inject_anyref_initialization(&mut self) -> Result<(), Error> {
+        if !self.anyref_enabled {
+            return Ok(());
+        }
+        let ty = self.module.types.add(&[], &[]);
+        let (import, import_id) = self.module.add_import_func(
+            PLACEHOLDER_MODULE,
+            "__wbindgen_init_anyref_table",
+            ty,
+        );
+
+        self.module.start = Some(match self.module.start {
+            Some(prev_start) => {
+                let mut builder = walrus::FunctionBuilder::new();
+                let call_init = builder.call(import, Box::new([]));
+                let call_prev = builder.call(prev_start, Box::new([]));
+                builder.finish(ty, Vec::new(), vec![call_init, call_prev], self.module)
+            }
+            None => import,
+        });
+        self.bind_intrinsic(import_id, Intrinsic::InitAnyrefTable)?;
+        Ok(())
+    }
+
+    fn bind_intrinsic(&mut self, id: ImportId, intrinsic: Intrinsic) -> Result<(), Error> {
+        bindings::register_import(
+            self.module,
+            &mut self.bindings,
+            id,
+            intrinsic.binding(),
+            ast::WebidlFunctionKind::Static,
+        )?;
+        self.aux
+            .import_map
+            .insert(id, AuxImport::Intrinsic(intrinsic));
         Ok(())
     }
 
@@ -751,6 +792,11 @@ impl<'a> Context<'a> {
             bail!("cannot specify two `start` functions");
         }
         self.start_found = true;
+
+        // Skip this when we're generating tests
+        if !self.support_start {
+            return Ok(());
+        }
 
         let prev_start = match self.module.start {
             Some(f) => f,
