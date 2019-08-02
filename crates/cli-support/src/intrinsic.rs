@@ -145,7 +145,7 @@ intrinsics! {
         #[symbol = "__wbindgen_anyref_heap_live_count"]
         #[signature = fn() -> I32]
         AnyrefHeapLiveCount,
-        #[symbol = "__wbindgen_init_nyref_table"]
+        #[symbol = "__wbindgen_init_anyref_table"]
         #[signature = fn() -> Unit]
         InitAnyrefTable,
     }

@@ -313,7 +313,7 @@ impl Bindgen {
         // the webidl bindings proposal) as well as an auxiliary section for all
         // sorts of miscellaneous information and features #[wasm_bindgen]
         // supports that aren't covered by WebIDL bindings.
-        webidl::process(&mut module)?;
+        webidl::process(&mut module, self.anyref, self.emit_start)?;
 
         // Now that we've got type information from the webidl processing pass,
         // touch up the output of rustc to insert anyref shims where necessary.
@@ -322,12 +322,6 @@ impl Bindgen {
         // engines.
         if self.anyref {
             anyref::process(&mut module)?;
-        }
-
-        // If we're in a testing mode then remove the start function since we
-        // shouldn't execute it.
-        if !self.emit_start {
-            module.start = None;
         }
 
         let aux = module

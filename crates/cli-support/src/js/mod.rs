@@ -194,10 +194,7 @@ impl<'a> Context<'a> {
         // up we always remove the `start` function if one is present. The JS
         // bindings glue then manually calls the start function (if it was
         // previously present).
-        let mut needs_manual_start = false;
-        if self.config.emit_start {
-            needs_manual_start = self.unstart_start_function();
-        }
+        let needs_manual_start = self.unstart_start_function();
 
         // After all we've done, especially
         // `unexport_unused_internal_exports()`, we probably have a bunch of
@@ -517,7 +514,10 @@ impl<'a> Context<'a> {
         for (i, extra) in extra_modules.iter().enumerate() {
             let imports = match &mut imports {
                 Some(list) => list,
-                None => bail!("cannot import from modules (`{}`) with `--no-modules`", extra),
+                None => bail!(
+                    "cannot import from modules (`{}`) with `--no-modules`",
+                    extra
+                ),
             };
             imports.push_str(&format!("import * as __wbg_star{} from '{}';\n", i, extra));
             imports_init.push_str(&format!("imports['{}'] = __wbg_star{};\n", extra, i));
@@ -2641,16 +2641,23 @@ impl<'a> Context<'a> {
 
             Intrinsic::InitAnyrefTable => {
                 self.expose_anyref_table();
-                String::from(
+
+                // Grow the table to insert our initial values, and then also
+                // set the 0th slot to `undefined` since that's what we've
+                // historically used for our ABI which is that the index of 0
+                // returns `undefined` for types like `None` going out.
+                let mut base = format!(
                     "
                       const table = wasm.__wbg_anyref_table;
-                      const offset = table.grow(4);
-                      table.set(offset + 0, undefined);
-                      table.set(offset + 1, null);
-                      table.set(offset + 2, true);
-                      table.set(offset + 3, false);
+                      const offset = table.grow({});
+                      table.set(0, undefined);
                     ",
-                )
+                    INITIAL_HEAP_VALUES.len(),
+                );
+                for (i, value) in INITIAL_HEAP_VALUES.iter().enumerate() {
+                    base.push_str(&format!("table.set(offset + {}, {});\n", i, value));
+                }
+                base
             }
         };
         Ok(expr)
