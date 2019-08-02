@@ -259,6 +259,7 @@ impl Bindgen {
                     .generate_dwarf(self.keep_debug)
                     .generate_name_section(!self.remove_name_section)
                     .generate_producers_section(!self.remove_producers_section)
+                    .on_parse(wasm_webidl_bindings::binary::on_parse)
                     .parse(&contents)
                     .context("failed to parse input file as wasm")?;
                 let stem = match &self.out_name {

@@ -27,7 +27,7 @@ use crate::decode;
 use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
-use failure::{bail, Error};
+use failure::{bail, format_err, Error};
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
@@ -502,6 +502,10 @@ pub fn process(
 
     for program in programs {
         cx.program(program)?;
+    }
+
+    if let Some(standard) = cx.module.customs.delete_typed::<ast::WebidlBindings>() {
+        cx.standard(&standard)?;
     }
 
     cx.verify()?;
@@ -1285,6 +1289,171 @@ impl<'a> Context<'a> {
             },
         };
         Ok(JsImport { name, fields })
+    }
+
+    /// Processes bindings from a standard WebIDL bindings custom section.
+    ///
+    /// No module coming out of the Rust compiler will have one of these, but
+    /// eventually there's going to be other producers of the WebIDL bindings
+    /// custom section as well. This functionality is intended to allow
+    /// `wasm-bindgen`-the-CLI-tool to act as a polyfill for those modules as
+    /// well as Rust modules.
+    ///
+    /// Here a standard `WebidlBindings` custom section is taken and we process
+    /// that into our own internal data structures to ensure that we have a
+    /// binding listed for all the described bindings.
+    ///
+    /// In other words, this is a glorified conversion from the "official"
+    /// WebIDL bindings custom section into the wasm-bindgen internal
+    /// representation.
+    fn standard(&mut self, std: &ast::WebidlBindings) -> Result<(), Error> {
+        for (_id, bind) in std.binds.iter() {
+            let binding = self.standard_binding(std, bind)?;
+            let func = self.module.funcs.get(bind.func);
+            match &func.kind {
+                walrus::FunctionKind::Import(i) => {
+                    let id = i.import;
+                    self.standard_import(binding, id)?;
+                }
+                walrus::FunctionKind::Local(_) => {
+                    let export = self
+                        .module
+                        .exports
+                        .iter()
+                        .find(|e| match e.item {
+                            walrus::ExportItem::Function(f) => f == bind.func,
+                            _ => false,
+                        })
+                        .ok_or_else(|| format_err!("missing export function for webidl binding"))?;
+                    let id = export.id();
+                    self.standard_export(binding, id)?;
+                }
+                walrus::FunctionKind::Uninitialized(_) => unreachable!(),
+            }
+        }
+        Ok(())
+    }
+
+    /// Creates a wasm-bindgen-internal `Binding` from an official `Bind`
+    /// structure specified in the upstream binary format.
+    ///
+    /// This will largely just copy some things into our own arenas but also
+    /// processes the list of binding expressions into our own representations.
+    fn standard_binding(
+        &mut self,
+        std: &ast::WebidlBindings,
+        bind: &ast::Bind,
+    ) -> Result<Binding, Error> {
+        let binding: &ast::FunctionBinding = std
+            .bindings
+            .get(bind.binding)
+            .ok_or_else(|| format_err!("bad binding id"))?;
+        let (wasm_ty, webidl_ty, incoming, outgoing) = match binding {
+            ast::FunctionBinding::Export(e) => (
+                e.wasm_ty,
+                e.webidl_ty,
+                e.params.bindings.as_slice(),
+                e.result.bindings.as_slice(),
+            ),
+            ast::FunctionBinding::Import(e) => (
+                e.wasm_ty,
+                e.webidl_ty,
+                e.result.bindings.as_slice(),
+                e.params.bindings.as_slice(),
+            ),
+        };
+        let webidl_ty = copy_ty(&mut self.bindings.types, webidl_ty, &std.types);
+        let webidl_ty = match webidl_ty {
+            ast::WebidlTypeRef::Id(id) => <ast::WebidlFunction as ast::WebidlTypeId>::wrap(id),
+            _ => bail!("invalid webidl type listed"),
+        };
+        return Ok(Binding {
+            wasm_ty,
+            webidl_ty,
+            incoming: incoming
+                .iter()
+                .cloned()
+                .map(NonstandardIncoming::Standard)
+                .collect(),
+            outgoing: outgoing
+                .iter()
+                .cloned()
+                .map(NonstandardOutgoing::Standard)
+                .collect(),
+            return_via_outptr: None,
+        });
+
+        /// Recursively clones `ty` into` dst` where it originally indexes
+        /// values in `src`, returning a new type ref which indexes inside of
+        /// `dst`.
+        fn copy_ty(
+            dst: &mut ast::WebidlTypes,
+            ty: ast::WebidlTypeRef,
+            src: &ast::WebidlTypes,
+        ) -> ast::WebidlTypeRef {
+            let id = match ty {
+                ast::WebidlTypeRef::Id(id) => id,
+                ast::WebidlTypeRef::Scalar(_) => return ty,
+            };
+            let ty: &ast::WebidlCompoundType = src.get(id).unwrap();
+            match ty {
+                ast::WebidlCompoundType::Function(f) => {
+                    let params = f
+                        .params
+                        .iter()
+                        .map(|param| copy_ty(dst, *param, src))
+                        .collect();
+                    let result = f.result.map(|ty| copy_ty(dst, ty, src));
+                    dst.insert(ast::WebidlFunction {
+                        kind: f.kind.clone(),
+                        params,
+                        result,
+                    })
+                    .into()
+                }
+                _ => unimplemented!(),
+            }
+        }
+    }
+
+    /// Registers that `id` has a `binding` which was read from a standard
+    /// webidl bindings section, so the source of `id` is its actual module/name
+    /// listed in the wasm module.
+    fn standard_import(&mut self, binding: Binding, id: walrus::ImportId) -> Result<(), Error> {
+        let import = self.module.imports.get(id);
+        let js = JsImport {
+            name: JsImportName::Module {
+                module: import.module.clone(),
+                name: import.name.clone(),
+            },
+            fields: Vec::new(),
+        };
+        let value = AuxValue::Bare(js);
+        assert!(self
+            .aux
+            .import_map
+            .insert(id, AuxImport::Value(value))
+            .is_none());
+        assert!(self.bindings.imports.insert(id, binding).is_none());
+
+        Ok(())
+    }
+
+    /// Registers that `id` has a `binding` and comes from a standard webidl
+    /// bindings section so it doesn't have any documentation or debug names we
+    /// can work with.
+    fn standard_export(&mut self, binding: Binding, id: walrus::ExportId) -> Result<(), Error> {
+        let export = self.module.exports.get(id);
+        let kind = AuxExportKind::Function(export.name.clone());
+        let export = AuxExport {
+            debug_name: format!("standard export {:?}", id),
+            comments: String::new(),
+            arg_names: None,
+            kind,
+        };
+        assert!(self.aux.export_map.insert(id, export).is_none());
+        assert!(self.bindings.exports.insert(id, binding).is_none());
+        Ok(())
     }
 
     /// Perform a small verification pass over the module to perform some
