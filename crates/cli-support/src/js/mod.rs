@@ -541,7 +541,7 @@ impl<'a> Context<'a> {
                                                     `application/wasm` MIME type. Falling back to \
                                                     `WebAssembly.instantiate` which is slower. Original \
                                                     error:\\n\", e);
-                                    return response
+                                    return fetch(module)
                                         .then(r => r.arrayBuffer())
                                         .then(bytes => WebAssembly.instantiate(bytes, imports));
                                 }});
