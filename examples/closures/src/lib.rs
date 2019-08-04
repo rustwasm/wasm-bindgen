@@ -74,7 +74,7 @@ fn setup_clock(window: &Window, document: &Document) -> Result<(), JsValue> {
 
     // The instances of `Closure` that we created will invalidate their
     // corresponding JS callback whenever they're dropped, so if we were to
-    // normally return from `run` then both of our registered closures will
+    // normally return from `setup_clock` then both of our registered closures will
     // raise exceptions when invoked.
     //
     // Normally we'd store these handles to later get dropped at an appropriate
