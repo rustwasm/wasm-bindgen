@@ -20,7 +20,7 @@ use std::time::{Duration, Instant};
 /// etc. It will return `Ok` if all tests finish successfully, and otherwise it
 /// will return an error if some tests failed.
 pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
-    let (driver, args) = Driver::find()?;
+    let (driver, args, mut client_args) = Driver::find()?;
     println!(
         "Running headless tests in {} with `{}`",
         driver.browser(),
@@ -64,7 +64,7 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
     shell.status("Starting new webdriver session...");
     // Allocate a new session with the webdriver protocol, and once we've done
     // so schedule the browser to get closed with a call to `close_window`.
-    let id = client.new_session(&driver)?;
+    let id = client.new_session(&driver, &mut client_args)?;
     client.session = Some(id.clone());
 
     // Visit our local server to open up the page that runs tests, and then get
@@ -149,17 +149,20 @@ impl Driver {
     /// * Env vars like `GECKODRIVER` point to the path to a binary to execute.
     /// * Otherwise, `PATH` is searched for an appropriate binary.
     ///
-    /// In both cases a list of auxiliary arguments is also returned which is
-    /// configured through env vars like `GECKODRIVER_ARGS` to support extra
-    /// arguments to the driver's invocation.
-    fn find() -> Result<(Driver, Vec<String>), Error> {
-        let env_args = |name: &str| {
-            env::var(format!("{}_ARGS", name.to_uppercase()))
+    /// In both cases a lists of auxiliary arguments is also returned which is
+    /// configured through env vars like `GECKODRIVER_ARGS` and
+    /// `GECKODRIVER_CLIENT_ARGS` to support extra arguments to invocation the
+    /// driver and a browser respectively.
+    fn find() -> Result<(Driver, Vec<String>, Vec<String>), Error> {
+        let env_vars = |name: String| {
+            env::var(name)
                 .unwrap_or_default()
                 .split_whitespace()
                 .map(|s| s.to_string())
                 .collect::<Vec<_>>()
         };
+        let env_args = |name: &str| env_vars(format!("{}_ARGS", name.to_uppercase()));
+        let env_client_args = |name: &str| env_vars(format!("{}_CLIENT_ARGS", name.to_uppercase()));
 
         let drivers = [
             ("geckodriver", Driver::Gecko as fn(PathBuf) -> Driver),
@@ -175,7 +178,7 @@ impl Driver {
                 Some(path) => path,
                 None => continue,
             };
-            return Ok((ctor(path.into()), env_args(driver)));
+            return Ok((ctor(path.into()), env_args(driver), env_client_args(driver)));
         }
 
         // Next, check PATH. If we can find any supported driver, use that by
@@ -190,7 +193,7 @@ impl Driver {
                 Some(p) => p,
                 None => continue,
             };
-            return Ok((ctor(name.into()), env_args(name)));
+            return Ok((ctor(name.into()), env_args(name), env_client_args(name)));
         }
 
         // TODO: download an appropriate driver? How to know which one to
@@ -255,7 +258,7 @@ enum Method<'a> {
 // copied the `webdriver-client` crate when writing the below bindings.
 
 impl Client {
-    fn new_session(&mut self, driver: &Driver) -> Result<String, Error> {
+    fn new_session(&mut self, driver: &Driver, args: &mut Vec<String>) -> Result<String, Error> {
         match driver {
             Driver::Gecko(_) => {
                 #[derive(Deserialize)]
@@ -268,11 +271,12 @@ impl Client {
                     #[serde(rename = "sessionId")]
                     session_id: String,
                 }
+                args.push("-headless".to_string());
                 let request = json!({
                     "capabilities": {
                         "alwaysMatch": {
                             "moz:firefoxOptions": {
-                                "args": ["-headless"],
+                                "args": args,
                             }
                         }
                     }
@@ -316,17 +320,16 @@ impl Client {
                     #[serde(rename = "sessionId")]
                     session_id: String,
                 }
+                args.push("headless".to_string());
+                // See https://stackoverflow.com/questions/50642308/
+                // for what this funky `disable-dev-shm-usage`
+                // option is
+                args.push("disable-dev-shm-usage".to_string());
+                args.push("no-sandbox".to_string());
                 let request = json!({
                     "desiredCapabilities": {
                         "goog:chromeOptions": {
-                            "args": [
-                                "headless",
-                                // See https://stackoverflow.com/questions/50642308/
-                                // for what this funky `disable-dev-shm-usage`
-                                // option is
-                                "disable-dev-shm-usage",
-                                "no-sandbox",
-                            ],
+                            "args": args,
                         },
                     }
                 });
