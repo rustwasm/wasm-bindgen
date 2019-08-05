@@ -1152,7 +1152,6 @@ impl<'a> Context<'a> {
         }
         self.expose_uint32_memory();
         if self.config.anyref {
-            self.expose_anyref_table();
             self.global(
                 "
                 function getArrayJsValueFromWasm(ptr, len) {
@@ -1834,30 +1833,11 @@ impl<'a> Context<'a> {
         true
     }
 
-    fn expose_anyref_table(&mut self) {
-        assert!(self.config.anyref);
-        if !self.should_write_global("anyref_table") {
-            return;
-        }
-        let table = self
-            .module
-            .tables
-            .iter()
-            .find(|t| match t.kind {
-                walrus::TableKind::Anyref(_) => true,
-                _ => false,
-            })
-            .expect("failed to find anyref table in module")
-            .id();
-        self.module.exports.add("__wbg_anyref_table", table);
-    }
-
     fn expose_add_to_anyref_table(&mut self) -> Result<(), Error> {
         assert!(self.config.anyref);
         if !self.should_write_global("add_to_anyref_table") {
             return Ok(());
         }
-        self.expose_anyref_table();
         self.require_internal_export("__wbindgen_anyref_table_alloc")?;
         self.global(
             "
@@ -2640,8 +2620,6 @@ impl<'a> Context<'a> {
             }
 
             Intrinsic::InitAnyrefTable => {
-                self.expose_anyref_table();
-
                 // Grow the table to insert our initial values, and then also
                 // set the 0th slot to `undefined` since that's what we've
                 // historically used for our ABI which is that the index of 0
