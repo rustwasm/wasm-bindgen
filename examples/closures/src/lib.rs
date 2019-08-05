@@ -72,14 +72,14 @@ fn setup_clock(window: &Window, document: &Document) -> Result<(), JsValue> {
         ));
     }
 
-    // The instances of `Closure` that we created will invalidate their
-    // corresponding JS callback whenever they're dropped, so if we were to
-    // normally return from `run` then both of our registered closures will
-    // raise exceptions when invoked.
+    // The instance of `Closure` that we created will invalidate its
+    // corresponding JS callback whenever it is dropped, so if we were to
+    // normally return from `setup_clock` then our registered closure will
+    // raise an exception when invoked.
     //
-    // Normally we'd store these handles to later get dropped at an appropriate
-    // time but for now we want these to be global handlers so we use the
-    // `forget` method to drop them without invalidating the closure. Note that
+    // Normally we'd store the handle to later get dropped at an appropriate
+    // time but for now we want it to be a global handler so we use the
+    // `forget` method to drop it without invalidating the closure. Note that
     // this is leaking memory in Rust, so this should be done judiciously!
     a.forget();
 
@@ -106,5 +106,7 @@ fn setup_clicker(document: &Document) {
         .dyn_ref::<HtmlElement>()
         .expect("#green-square be an `HtmlElement`")
         .set_onclick(Some(a.as_ref().unchecked_ref()));
+    
+    // See comments in `setup_clock` above for why we use `a.forget()`.
     a.forget();
 }
