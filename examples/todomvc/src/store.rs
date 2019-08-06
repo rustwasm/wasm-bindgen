@@ -62,7 +62,7 @@ impl Store {
             let child = js_sys::Array::new();
             child.push(&JsValue::from(&item.title));
             child.push(&JsValue::from(item.completed));
-            child.push(&JsValue::from(item.id.to_string()));
+            child.push(&JsValue::from(&item.id));
 
             array.push(&JsValue::from(child));
         }
