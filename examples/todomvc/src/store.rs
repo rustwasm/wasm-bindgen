@@ -67,9 +67,9 @@ impl Store {
             array.push(&JsValue::from(child));
         }
         if let Ok(storage_string) = JSON::stringify(&JsValue::from(array)) {
-            let storage_string: String = storage_string.to_string().into();
+            let storage_string: String = storage_string.into();
             self.local_storage
-                .set_item(&self.name, storage_string.as_str())
+                .set_item(&self.name, &storage_string)
                 .unwrap();
         }
     }
