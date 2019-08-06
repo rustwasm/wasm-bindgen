@@ -60,8 +60,7 @@ impl Store {
         let array = js_sys::Array::new();
         for item in self.data.iter() {
             let child = js_sys::Array::new();
-            let s = item.title.clone();
-            child.push(&JsValue::from(&s));
+            child.push(&JsValue::from(&item.title));
             child.push(&JsValue::from(item.completed));
             child.push(&JsValue::from(item.id.to_string()));
 
