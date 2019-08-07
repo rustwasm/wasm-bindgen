@@ -85,7 +85,7 @@ impl Store {
         Some(
             self.data
                 .iter()
-                .filter(|todo| query.matches(*todo))
+                .filter(|todo| query.matches(todo))
                 .collect(),
         )
     }
