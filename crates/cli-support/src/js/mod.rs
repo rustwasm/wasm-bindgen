@@ -2464,6 +2464,11 @@ impl<'a> Context<'a> {
                 format!("typeof({}) === 'string'", args[0])
             }
 
+            Intrinsic::IsFalsy => {
+                assert_eq!(args.len(), 1);
+                format!("!{}", args[0])
+            }
+
             Intrinsic::ObjectCloneRef => {
                 assert_eq!(args.len(), 1);
                 args[0].clone()

@@ -85,6 +85,9 @@ intrinsics! {
         #[symbol = "__wbindgen_is_string"]
         #[signature = fn(ref_anyref()) -> Boolean]
         IsString,
+        #[symbol = "__wbindgen_is_falsy"]
+        #[signature = fn(ref_anyref()) -> Boolean]
+        IsFalsy,
         #[symbol = "__wbindgen_object_clone_ref"]
         #[signature = fn(ref_anyref()) -> Anyref]
         ObjectCloneRef,
