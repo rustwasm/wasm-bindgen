@@ -1,3 +1,6 @@
+use wasm_bindgen::prelude::*;
+use wasm_bindgen_test::*;
+
 #[wasm_bindgen_test]
 fn test_is_truthy() {
     assert_eq!(JsValue::from(0).is_truthy(), false);
