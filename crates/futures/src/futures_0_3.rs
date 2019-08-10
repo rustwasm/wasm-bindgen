@@ -248,7 +248,7 @@ where
                                     drop(lock);
 
                                     // TODO is there some way of saving these so they don't need to be recreated all the time ?
-                                    let waker = ArcWake::into_waker(task.clone());
+                                    let waker = futures_util::task::waker(task.clone());
                                     let cx = &mut Context::from_waker(&waker);
                                     Pin::new(future).poll(cx)
                                 };
