@@ -624,19 +624,6 @@ impl<'a> Context<'a> {
             return Ok(());
         }
 
-        // Make sure to export the `anyref` table for the JS bindings since it
-        // will need to be initialized. If it doesn't exist though then the
-        // module must not use it, so we skip it.
-        let table = self.module.tables.iter().find(|t| match t.kind {
-            walrus::TableKind::Anyref(_) => true,
-            _ => false,
-        });
-        let table = match table {
-            Some(t) => t.id(),
-            None => return Ok(()),
-        };
-        self.module.exports.add("__wbg_anyref_table", table);
-
         let ty = self.module.types.add(&[], &[]);
         let (import, import_id) =
             self.module
