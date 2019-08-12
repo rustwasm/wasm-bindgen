@@ -1,10 +1,10 @@
-use std::cell::RefCell;
 use futures::future;
-use std::fmt;
-use std::rc::Rc;
 use futures::prelude::*;
 use futures::sync::oneshot;
 use js_sys::Promise;
+use std::cell::RefCell;
+use std::fmt;
+use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
 /// A Rust `Future` backed by a JavaScript `Promise`.

@@ -287,7 +287,8 @@ impl Bindgen {
             );
         }
 
-        self.threads.run(&mut module)
+        self.threads
+            .run(&mut module)
             .with_context(|_| "failed to prepare module for threading")?;
 
         // If requested, turn all mangled symbols into prettier unmangled

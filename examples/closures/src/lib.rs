@@ -106,7 +106,7 @@ fn setup_clicker(document: &Document) {
         .dyn_ref::<HtmlElement>()
         .expect("#green-square be an `HtmlElement`")
         .set_onclick(Some(a.as_ref().unchecked_ref()));
-    
+
     // See comments in `setup_clock` above for why we use `a.forget()`.
     a.forget();
 }

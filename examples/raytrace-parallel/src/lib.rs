@@ -90,7 +90,8 @@ impl Scene {
             });
             drop(tx.send(rgb_data));
         })?;
-        let done = rx.map(move |_data| image_data(base, len, width, height).into())
+        let done = rx
+            .map(move |_data| image_data(base, len, width, height).into())
             .map_err(|_| JsValue::undefined());
 
         Ok(RenderingScene {

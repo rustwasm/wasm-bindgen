@@ -148,7 +148,10 @@ impl<'a, 'b> Outgoing<'a, 'b> {
 
                 self.cx.expose_get_cached_string_from_wasm()?;
 
-                self.js.prelude(&format!("const v{} = getCachedStringFromWasm({}, {});", tmp, ptr, len));
+                self.js.prelude(&format!(
+                    "const v{} = getCachedStringFromWasm({}, {});",
+                    tmp, ptr, len
+                ));
 
                 if *owned {
                     self.prelude_free_cached_string(&ptr, &len)?;

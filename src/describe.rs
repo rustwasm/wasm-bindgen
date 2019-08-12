@@ -3,8 +3,8 @@
 
 #![doc(hidden)]
 
-use cfg_if::cfg_if;
 use crate::{Clamped, JsValue};
+use cfg_if::cfg_if;
 
 macro_rules! tys {
     ($($a:ident)*) => (tys! { @ ($($a)*) 0 });
