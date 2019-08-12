@@ -644,10 +644,9 @@ impl<'a> Context<'a> {
 
         self.module.start = Some(match self.module.start {
             Some(prev_start) => {
-                let mut builder = walrus::FunctionBuilder::new();
-                let call_init = builder.call(import, Box::new([]));
-                let call_prev = builder.call(prev_start, Box::new([]));
-                builder.finish(ty, Vec::new(), vec![call_init, call_prev], self.module)
+                let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
+                builder.func_body().call(import).call(prev_start);
+                builder.finish(Vec::new(), &mut self.module.funcs)
             }
             None => import,
         });
@@ -827,11 +826,9 @@ impl<'a> Context<'a> {
         // because the start function currently only shows up when it's injected
         // through thread/anyref transforms. These injected start functions need
         // to happen before user code, so we always schedule them first.
-        let mut builder = walrus::FunctionBuilder::new();
-        let call1 = builder.call(prev_start, Box::new([]));
-        let call2 = builder.call(id, Box::new([]));
-        let ty = self.module.funcs.get(id).ty();
-        let new_start = builder.finish(ty, Vec::new(), vec![call1, call2], self.module);
+        let mut builder = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
+        builder.func_body().call(prev_start).call(id);
+        let new_start = builder.finish(Vec::new(), &mut self.module.funcs);
         self.module.start = Some(new_start);
         Ok(())
     }

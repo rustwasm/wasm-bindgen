@@ -14,9 +14,8 @@ use crate::descriptor::{Closure, Descriptor};
 use failure::Error;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
-use std::mem;
 use walrus::ImportId;
-use walrus::{CustomSection, FunctionId, LocalFunction, Module, TypedCustomSectionId};
+use walrus::{CustomSection, FunctionId, Module, TypedCustomSectionId};
 use wasm_bindgen_wasm_interpreter::Interpreter;
 
 #[derive(Default, Debug)]
@@ -112,19 +111,16 @@ impl WasmBindgenDescriptorsSection {
         let mut element_removal_list = HashSet::new();
         let mut func_to_descriptor = HashMap::new();
         for (id, local) in module.funcs.iter_local() {
-            let entry = local.entry_block();
             let mut find = FindDescribeClosure {
-                func: local,
                 wbindgen_describe_closure,
-                cur: entry.into(),
-                call: None,
+                found: false,
             };
-            find.visit_block_id(&entry);
-            if let Some(call) = find.call {
+            dfs_in_order(&mut find, local, local.entry_block());
+            if find.found {
                 let descriptor = interpreter
                     .interpret_closure_descriptor(id, module, &mut element_removal_list)
                     .unwrap();
-                func_to_descriptor.insert(id, (call, Descriptor::decode(descriptor)));
+                func_to_descriptor.insert(id, Descriptor::decode(descriptor));
             }
         }
 
@@ -150,7 +146,7 @@ impl WasmBindgenDescriptorsSection {
         // freshly manufactured import. Save off the type of this import in
         // ourselves, and then we're good to go.
         let ty = module.funcs.get(wbindgen_describe_closure).ty();
-        for (func, (call_instr, descriptor)) in func_to_descriptor {
+        for (func, descriptor) in func_to_descriptor {
             let import_name = format!("__wbindgen_closure_wrapper{}", func.index());
             let (id, import_id) =
                 module.add_import_func("__wbindgen_placeholder__", &import_name, ty);
@@ -160,37 +156,42 @@ impl WasmBindgenDescriptorsSection {
                 walrus::FunctionKind::Local(l) => l,
                 _ => unreachable!(),
             };
-            let call = local.get_mut(call_instr).unwrap_call_mut();
-            assert_eq!(call.func, wbindgen_describe_closure);
-            call.func = id;
+            let entry = local.entry_block();
+            dfs_pre_order_mut(
+                &mut UpdateDescribeClosure {
+                    wbindgen_describe_closure,
+                    replacement: id,
+                },
+                local,
+                entry,
+            );
             self.closure_imports
                 .insert(import_id, descriptor.unwrap_closure());
         }
         return Ok(());
 
-        struct FindDescribeClosure<'a> {
-            func: &'a LocalFunction,
+        struct FindDescribeClosure {
             wbindgen_describe_closure: FunctionId,
-            cur: ExprId,
-            call: Option<ExprId>,
+            found: bool,
         }
 
-        impl<'a> Visitor<'a> for FindDescribeClosure<'a> {
-            fn local_function(&self) -> &'a LocalFunction {
-                self.func
-            }
-
-            fn visit_expr_id(&mut self, id: &ExprId) {
-                let prev = mem::replace(&mut self.cur, *id);
-                id.visit(self);
-                self.cur = prev;
-            }
-
+        impl<'a> Visitor<'a> for FindDescribeClosure {
             fn visit_call(&mut self, call: &Call) {
-                call.visit(self);
                 if call.func == self.wbindgen_describe_closure {
-                    assert!(self.call.is_none());
-                    self.call = Some(self.cur);
+                    self.found = true;
+                }
+            }
+        }
+
+        struct UpdateDescribeClosure {
+            wbindgen_describe_closure: FunctionId,
+            replacement: FunctionId,
+        }
+
+        impl<'a> VisitorMut for UpdateDescribeClosure {
+            fn visit_call_mut(&mut self, call: &mut Call) {
+                if call.func == self.wbindgen_describe_closure {
+                    call.func = self.replacement;
                 }
             }
         }
