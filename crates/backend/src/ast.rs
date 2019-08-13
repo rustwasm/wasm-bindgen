@@ -209,7 +209,7 @@ pub struct Function {
     pub name: String,
     pub name_span: Span,
     pub renamed_via_js_name: bool,
-    pub arguments: Vec<syn::ArgCaptured>,
+    pub arguments: Vec<syn::PatType>,
     pub ret: Option<syn::Type>,
     pub rust_attrs: Vec<syn::Attribute>,
     pub rust_vis: syn::Visibility,

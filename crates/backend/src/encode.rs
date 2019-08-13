@@ -197,11 +197,10 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         .iter()
         .enumerate()
         .map(|(idx, arg)| {
-            if let syn::Pat::Ident(ref x) = arg.pat {
-                x.ident.to_string()
-            } else {
-                format!("arg{}", idx)
+            if let syn::Pat::Ident(x) = &*arg.pat {
+                return x.ident.to_string()
             }
+            format!("arg{}", idx)
         })
         .collect::<Vec<_>>();
     Function {

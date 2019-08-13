@@ -17,8 +17,8 @@ extra-traits = ["syn/extra-traits"]
 strict-macro = []
 
 [dependencies]
-syn = { version = '0.15.0', features = ['visit'] }
-quote = '0.6'
-proc-macro2 = "0.4.9"
+syn = { version = '1.0', features = ['visit'] }
+quote = '1.0'
+proc-macro2 = "1.0"
 wasm-bindgen-backend = { path = "../backend", version = "=0.2.48" }
 wasm-bindgen-shared = { path = "../shared", version = "=0.2.48" }
