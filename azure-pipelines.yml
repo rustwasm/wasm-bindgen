@@ -18,8 +18,6 @@ jobs:
         displayName: "Crate test suite"
       - script: WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown
         displayName: "Crate test suite (no debug)"
-      - script: NODE_ARGS=/dev/null WASM_BINDGEN_ANYREF=1 cargo test --target wasm32-unknown-unknown --test wasm
-        displayName: "Anyref test suite builds"
       - script: cargo test --target wasm32-unknown-unknown --features serde-serialize
         displayName: "Crate test suite (with serde)"
       - script: cargo test --target wasm32-unknown-unknown --features enable-interning
@@ -30,6 +28,19 @@ jobs:
         displayName: "Futures test suite on native"
       - script: cargo test -p wasm-bindgen-futures --target wasm32-unknown-unknown
         displayName: "Futures test suite on wasm"
+      - script: |
+          set -e
+          curl https://nodejs.org/download/nightly/v13.0.0-nightly2019081215b2d13310/node-v13.0.0-nightly2019081215b2d13310-linux-x64.tar.xz | tar xJf -
+          echo "##vso[task.prependpath]$PWD/node-v13.0.0-nightly2019081215b2d13310-linux-x64/bin"
+          echo "##vso[task.setvariable variable=NODE_ARGS]--experimental-wasm-anyref,--experimental-wasm-bulk_memory"
+          echo "##vso[task.setvariable variable=WASM_BINDGEN_ANYREF]1"
+        displayName: "Install a custom node.js and configure anyref"
+      - script: cargo test --target wasm32-unknown-unknown --test wasm
+        displayName: "(anyref) Crate test suite"
+      - script: WASM_BINDGEN_NO_DEBUG=1 cargo test --target wasm32-unknown-unknown --test wasm
+        displayName: "(anyref) Crate test suite (no debug)"
+      - script: cargo test --target wasm32-unknown-unknown --features serde-serialize --test wasm
+        displayName: "(anyref) Crate test suite (with serde)"
 
   - job: test_wasm_bindgen_windows
     displayName: "Run wasm-bindgen crate tests (Windows)"
