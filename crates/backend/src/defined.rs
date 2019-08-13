@@ -193,7 +193,7 @@ impl ImportedTypes for syn::Path {
             seg.arguments.imported_types(f);
         }
         f(
-            &self.segments.last().unwrap().value().ident,
+            &self.segments.last().unwrap().ident,
             ImportedTypeKind::Reference,
         );
     }
@@ -272,12 +272,24 @@ impl ImportedTypes for ast::Function {
     }
 }
 
-impl ImportedTypes for syn::ArgCaptured {
+impl ImportedTypes for syn::FnArg {
     fn imported_types<F>(&self, f: &mut F)
     where
         F: FnMut(&Ident, ImportedTypeKind),
     {
-        self.ty.imported_types(f);
+        match self {
+            syn::FnArg::Receiver(_) => {}
+            syn::FnArg::Typed(p) => p.imported_types(f),
+        }
+    }
+}
+
+impl ImportedTypes for syn::PatType {
+    fn imported_types<F>(&self, f: &mut F)
+    where
+        F: FnMut(&Ident, ImportedTypeKind),
+    {
+        self.ty.imported_types(f)
     }
 }
 

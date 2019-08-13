@@ -127,16 +127,18 @@ pub fn webidl_const_v_to_backend_const_v(v: &ConstValue) -> ast::ConstValue {
 }
 
 /// From `ident` and `Ty`, create `ident: Ty` for use in e.g. `fn(ident: Ty)`.
-fn simple_fn_arg(ident: Ident, ty: syn::Type) -> syn::ArgCaptured {
-    syn::ArgCaptured {
-        pat: syn::Pat::Ident(syn::PatIdent {
+fn simple_fn_arg(ident: Ident, ty: syn::Type) -> syn::PatType {
+    syn::PatType {
+        pat: Box::new(syn::Pat::Ident(syn::PatIdent {
+            attrs: Vec::new(),
             by_ref: None,
-            mutability: None,
             ident,
+            mutability: None,
             subpat: None,
-        }),
+        })),
         colon_token: Default::default(),
-        ty,
+        ty: Box::new(ty),
+        attrs: Vec::new(),
     }
 }
 
