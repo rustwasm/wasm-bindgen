@@ -64,4 +64,4 @@ warning: unused macro definition
 26 | macro_rules! x { () => () }
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: #[warn(unused_macros)] on by default
+   = note: `#[warn(unused_macros)]` on by default
