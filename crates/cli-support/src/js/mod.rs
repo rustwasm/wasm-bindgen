@@ -536,13 +536,19 @@ impl<'a> Context<'a> {
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
                             result = WebAssembly.instantiateStreaming(response, imports)
                                 .catch(e => {{
-                                    console.warn(\"`WebAssembly.instantiateStreaming` failed. Assuming this is \
-                                                    because your server does not serve wasm with \
-                                                    `application/wasm` MIME type. Falling back to \
-                                                    `WebAssembly.instantiate` which is slower. Original \
-                                                    error:\\n\", e);
                                     return response
-                                        .then(r => r.arrayBuffer())
+                                        .then(r => {{
+                                            if (r.headers.get('Content-Type') != 'application/wasm') {{
+                                                console.warn(\"`WebAssembly.instantiateStreaming` failed \
+                                                                because your server does not serve wasm with \
+                                                                `application/wasm` MIME type. Falling back to \
+                                                                `WebAssembly.instantiate` which is slower. Original \
+                                                                error:\\n\", e);
+                                                return r.arrayBuffer();
+                                            }} else {{
+                                                throw e;
+                                            }}
+                                        }})
                                         .then(bytes => WebAssembly.instantiate(bytes, imports));
                                 }});
                         }} else {{
