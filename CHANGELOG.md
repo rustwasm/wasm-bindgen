@@ -2,6 +2,25 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.50
+
+Released 2019-08-19.
+
+### Added
+
+* Experimental support with a `WASM_INTERFACE_TYPES=1` environment variable has
+  been added to emit a Wasm Interface Types custom section, making the output of
+  `wasm-bindgen` a single standalone WebAssembly file.
+  [#1725](https://github.com/rustwasm/wasm-bindgen/pull/1725)
+
+### Fixed
+
+* Unrelated errors are now no longer accidentally swallowed by the
+  `instantiateStreaming` fallback.
+  [#1723](https://github.com/rustwasm/wasm-bindgen/pull/1723)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.49
 
 Released 2019-08-14.
