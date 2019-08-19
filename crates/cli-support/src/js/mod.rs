@@ -2081,11 +2081,13 @@ impl<'a> Context<'a> {
                 &binding.outgoing,
                 wasm_ty.params(),
                 &webidl.params,
+                self.config.wasm_interface_types,
             )
             && webidl::incoming_do_not_require_glue(
                 &binding.incoming,
                 &webidl.result.into_iter().collect::<Vec<_>>(),
                 wasm_ty.results(),
+                self.config.wasm_interface_types,
             )
     }
 

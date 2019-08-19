@@ -36,6 +36,7 @@ pub struct Bindgen {
     // "ready to be instantiated on any thread"
     threads: wasm_bindgen_threads_xform::Config,
     anyref: bool,
+    wasm_interface_types: bool,
     encode_into: EncodeInto,
 }
 
@@ -49,6 +50,7 @@ pub struct Output {
     snippets: HashMap<String, Vec<String>>,
     local_modules: HashMap<String, String>,
     npm_dependencies: HashMap<String, (PathBuf, String)>,
+    wasm_interface_types: bool,
 }
 
 #[derive(Clone)]
@@ -73,6 +75,8 @@ pub enum EncodeInto {
 
 impl Bindgen {
     pub fn new() -> Bindgen {
+        let anyref = env::var("WASM_BINDGEN_ANYREF").is_ok();
+        let wasm_interface_types = env::var("WASM_INTERFACE_TYPES").is_ok();
         Bindgen {
             input: Input::None,
             out_name: None,
@@ -88,7 +92,8 @@ impl Bindgen {
             emit_start: true,
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
-            anyref: env::var("WASM_BINDGEN_ANYREF").is_ok(),
+            anyref: anyref || wasm_interface_types,
+            wasm_interface_types,
             encode_into: EncodeInto::Test,
         }
     }
@@ -315,7 +320,7 @@ impl Bindgen {
         // the webidl bindings proposal) as well as an auxiliary section for all
         // sorts of miscellaneous information and features #[wasm_bindgen]
         // supports that aren't covered by WebIDL bindings.
-        webidl::process(&mut module, self.anyref, self.emit_start)?;
+        webidl::process(&mut module, self.anyref, self.wasm_interface_types, self.emit_start)?;
 
         // Now that we've got type information from the webidl processing pass,
         // touch up the output of rustc to insert anyref shims where necessary.
@@ -323,7 +328,7 @@ impl Bindgen {
         // currently off-by-default since `anyref` is still in development in
         // engines.
         if self.anyref {
-            anyref::process(&mut module)?;
+            anyref::process(&mut module, self.wasm_interface_types)?;
         }
 
         let aux = module
@@ -344,6 +349,11 @@ impl Bindgen {
             (npm_dependencies, cx.finalize(stem)?)
         };
 
+        if self.wasm_interface_types {
+            webidl::standard::add_section(&mut module, &aux, &bindings)
+                .with_context(|_| "failed to generate a standard wasm bindings custom section")?;
+        }
+
         Ok(Output {
             module,
             stem: stem.to_string(),
@@ -354,6 +364,7 @@ impl Bindgen {
             ts,
             mode: self.mode.clone(),
             typescript: self.typescript,
+            wasm_interface_types: self.wasm_interface_types,
         })
     }
 
@@ -506,6 +517,7 @@ fn unexported_unused_lld_things(module: &mut Module) {
 
 impl Output {
     pub fn js(&self) -> &str {
+        assert!(!self.wasm_interface_types);
         &self.js
     }
 
@@ -518,6 +530,23 @@ impl Output {
     }
 
     fn _emit(&self, out_dir: &Path) -> Result<(), Error> {
+        let wasm_name = if self.wasm_interface_types {
+            self.stem.clone()
+        } else {
+            format!("{}_bg", self.stem)
+        };
+        let wasm_path = out_dir
+            .join(wasm_name)
+            .with_extension("wasm");
+        fs::create_dir_all(out_dir)?;
+        let wasm_bytes = self.module.emit_wasm()?;
+        fs::write(&wasm_path, wasm_bytes)
+            .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
+
+        if self.wasm_interface_types {
+            return Ok(())
+        }
+
         // Write out all local JS snippets to the final destination now that
         // we've collected them from all the programs.
         for (identifier, list) in self.snippets.iter() {
@@ -554,7 +583,6 @@ impl Output {
         } else {
             "js"
         };
-        fs::create_dir_all(out_dir)?;
         let js_path = out_dir.join(&self.stem).with_extension(extension);
         fs::write(&js_path, reset_indentation(&self.js))
             .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
@@ -564,10 +592,6 @@ impl Output {
             fs::write(&ts_path, &self.ts)
                 .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
         }
-
-        let wasm_path = out_dir
-            .join(format!("{}_bg", self.stem))
-            .with_extension("wasm");
 
         if self.mode.nodejs() {
             let js_path = wasm_path.with_extension(extension);
@@ -583,9 +607,6 @@ impl Output {
                 .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
         }
 
-        let wasm_bytes = self.module.emit_wasm()?;
-        fs::write(&wasm_path, wasm_bytes)
-            .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
         Ok(())
     }
 
