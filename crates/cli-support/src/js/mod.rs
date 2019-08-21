@@ -1087,10 +1087,10 @@ impl<'a> Context<'a> {
                 ",
                 s
             ));
-            self.global(&format!("let cached{0} = new l{0}{};", s, args));
+            self.global(&format!("let cached{0} = new l{0}{1};", s, args));
 
         } else {
-            self.global(&format!("let cached{0} = new {0}{};", s, args));
+            self.global(&format!("let cached{0} = new {0}{1};", s, args));
         }
 
         Ok(())
