@@ -12,7 +12,7 @@ export function test_string_roundtrip(f) {
 
   test('a longer string');
   test('a longer 💖 string');
-  test('\u{feff}bar');
+  test('\uFEFFbar');
 }
 
 export function identity(s) {
