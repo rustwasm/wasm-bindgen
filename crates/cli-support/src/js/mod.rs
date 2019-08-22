@@ -805,6 +805,30 @@ impl<'a> Context<'a> {
         self.global("let WASM_VECTOR_LEN = 0;");
     }
 
+    fn expose_encode_as_ascii(&mut self) {
+        if !self.should_write_global("encode_as_ascii") {
+            return;
+        }
+
+        self.expose_uint8_memory();
+
+        self.global("
+            function encodeAsAscii(arg, ptr, len) {
+                let offset = 0;
+
+                const mem = getUint8Memory();
+
+                for (; offset < len; offset++) {
+                    const code = arg.charCodeAt(offset);
+                    if (code > 0x7F) break;
+                    mem[ptr + offset] = code;
+                }
+
+                return offset;
+            }
+        ");
+    }
+
     fn expose_pass_string_to_wasm(&mut self) -> Result<(), Error> {
         if !self.should_write_global("pass_string_to_wasm") {
             return Ok(());
@@ -846,6 +870,8 @@ impl<'a> Context<'a> {
         self.expose_text_encoder()?;
         self.expose_uint8_memory();
 
+        self.expose_encode_as_ascii();
+
         // A fast path that directly writes char codes into WASM memory as long
         // as it finds only ASCII characters.
         //
@@ -856,19 +882,11 @@ impl<'a> Context<'a> {
         // expensive in mainstream engines than staying in the JS, and
         // charCodeAt on ASCII strings is usually optimised to raw bytes.
         let start_encoding_as_ascii = format!(
-            "
+            "\
                 {}
-                let size = arg.length;
-                let ptr = wasm.__wbindgen_malloc(size);
-                let offset = 0;
-                {{
-                    const mem = getUint8Memory();
-                    for (; offset < arg.length; offset++) {{
-                        const code = arg.charCodeAt(offset);
-                        if (code > 0x7F) break;
-                        mem[ptr + offset] = code;
-                    }}
-                }}
+                const len = arg.length;
+                let ptr = wasm.__wbindgen_malloc(len);
+                const offset = encodeAsAscii(arg, ptr, len);
             ",
             debug
         );
@@ -876,10 +894,13 @@ impl<'a> Context<'a> {
         // The first implementation we have for this is to use
         // `TextEncoder#encode` which has been around for quite some time.
         let use_encode = format!(
-            "
+            "\
                 {}
-                if (offset !== arg.length) {{
-                    const buf = cachedTextEncoder.encode(arg.slice(offset));
+                if (offset !== len) {{
+                    if (offset !== 0) {{
+                        arg = arg.slice(offset);
+                    }}
+                    const buf = cachedTextEncoder.encode(arg);
                     ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + buf.length);
                     getUint8Memory().set(buf, ptr + offset);
                     offset += buf.length;
@@ -894,11 +915,13 @@ impl<'a> Context<'a> {
         // newer and isn't implemented everywhere yet. It's more efficient,
         // however, becaues it allows us to elide an intermediate allocation.
         let use_encode_into = format!(
-            "
+            "\
                 {}
-                if (offset !== arg.length) {{
-                    arg = arg.slice(offset);
-                    ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + arg.length * 3);
+                if (offset !== len) {{
+                    if (offset !== 0) {{
+                        arg = arg.slice(offset);
+                    }}
+                    ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + len * 3);
                     const view = getUint8Memory().subarray(ptr + offset, ptr + size);
                     const ret = cachedTextEncoder.encodeInto(arg, view);
                     {}
@@ -909,7 +932,7 @@ impl<'a> Context<'a> {
             ",
             start_encoding_as_ascii,
             if self.config.debug {
-                "if (ret.read != arg.length) throw new Error('failed to pass whole string');"
+                "if (ret.read != len) throw new Error('failed to pass whole string');"
             } else {
                 ""
             },
@@ -932,12 +955,9 @@ impl<'a> Context<'a> {
                 self.require_internal_export("__wbindgen_realloc")?;
                 self.global(&format!(
                     "
-                        let passStringToWasm;
-                        if (typeof cachedTextEncoder.encodeInto === 'function') {{
-                            passStringToWasm = function(arg) {{ {} }};
-                        }} else {{
-                            passStringToWasm = function(arg) {{ {} }};
-                        }}
+                        const passStringToWasm = (typeof cachedTextEncoder.encodeInto === 'function'
+                            ? function (arg) {{ {} }}
+                            : function (arg) {{ {} }});
                     ",
                     use_encode_into, use_encode,
                 ));
