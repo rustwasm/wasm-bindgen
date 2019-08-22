@@ -1064,6 +1064,8 @@ impl<'a> Context<'a> {
         if !self.should_write_global("text_decoder") {
             return Ok(());
         }
+        // `ignoreBOM` is needed so that the BOM will be preserved when sending a string from Rust to JS
+        // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
         self.expose_text_processor("TextDecoder", "('utf-8', { ignoreBOM: true, fatal: true })")?;
         Ok(())
     }
