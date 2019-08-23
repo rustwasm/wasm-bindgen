@@ -1057,18 +1057,20 @@ impl<'a> Context<'a> {
         if !self.should_write_global("text_encoder") {
             return Ok(());
         }
-        self.expose_text_processor("TextEncoder")
+        self.expose_text_processor("TextEncoder", "('utf-8')")
     }
 
     fn expose_text_decoder(&mut self) -> Result<(), Error> {
         if !self.should_write_global("text_decoder") {
             return Ok(());
         }
-        self.expose_text_processor("TextDecoder")?;
+        // `ignoreBOM` is needed so that the BOM will be preserved when sending a string from Rust to JS
+        // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
+        self.expose_text_processor("TextDecoder", "('utf-8', { ignoreBOM: true, fatal: true })")?;
         Ok(())
     }
 
-    fn expose_text_processor(&mut self, s: &str) -> Result<(), Error> {
+    fn expose_text_processor(&mut self, s: &str, args: &str) -> Result<(), Error> {
         if self.config.mode.nodejs() {
             let name = self.import_name(&JsImport {
                 name: JsImportName::Module {
@@ -1077,7 +1079,8 @@ impl<'a> Context<'a> {
                 },
                 fields: Vec::new(),
             })?;
-            self.global(&format!("let cached{} = new {}('utf-8');", s, name));
+            self.global(&format!("let cached{} = new {}{};", s, name, args));
+
         } else if !self.config.mode.always_run_in_browser() {
             self.global(&format!(
                 "
@@ -1086,10 +1089,12 @@ impl<'a> Context<'a> {
                 ",
                 s
             ));
-            self.global(&format!("let cached{0} = new l{0}('utf-8');", s));
+            self.global(&format!("let cached{0} = new l{0}{1};", s, args));
+
         } else {
-            self.global(&format!("let cached{0} = new {0}('utf-8');", s));
+            self.global(&format!("let cached{0} = new {0}{1};", s, args));
         }
+
         Ok(())
     }
 
