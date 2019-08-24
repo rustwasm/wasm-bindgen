@@ -805,36 +805,14 @@ impl<'a> Context<'a> {
         self.global("let WASM_VECTOR_LEN = 0;");
     }
 
-    fn expose_encode_as_ascii(&mut self) {
-        if !self.should_write_global("encode_as_ascii") {
-            return;
-        }
-
-        self.expose_uint8_memory();
-
-        self.global("
-            function encodeAsAscii(arg, ptr, len) {
-                let offset = 0;
-
-                const mem = getUint8Memory();
-
-                for (; offset < len; offset++) {
-                    const code = arg.charCodeAt(offset);
-                    if (code > 0x7F) break;
-                    mem[ptr + offset] = code;
-                }
-
-                return offset;
-            }
-        ");
-    }
-
     fn expose_pass_string_to_wasm(&mut self) -> Result<(), Error> {
         if !self.should_write_global("pass_string_to_wasm") {
             return Ok(());
         }
+
         self.require_internal_export("__wbindgen_malloc")?;
         self.expose_wasm_vector_len();
+
         let debug = if self.config.debug {
             "
                 if (typeof(arg) !== 'string') throw new Error('expected a string argument');
@@ -854,10 +832,10 @@ impl<'a> Context<'a> {
                 "
                     function passStringToWasm(arg) {{
                         {}
-                        const size = Buffer.byteLength(arg);
-                        const ptr = wasm.__wbindgen_malloc(size);
-                        getNodeBufferMemory().write(arg, ptr, size);
-                        WASM_VECTOR_LEN = size;
+                        const len = Buffer.byteLength(arg);
+                        const ptr = wasm.__wbindgen_malloc(len);
+                        getNodeBufferMemory().write(arg, ptr, len);
+                        WASM_VECTOR_LEN = len;
                         return ptr;
                     }}
                 ",
@@ -868,9 +846,52 @@ impl<'a> Context<'a> {
         }
 
         self.expose_text_encoder()?;
-        self.expose_uint8_memory();
 
-        self.expose_encode_as_ascii();
+        // The first implementation we have for this is to use
+        // `TextEncoder#encode` which has been around for quite some time.
+        let encode = "function (arg, view) {
+            const buf = cachedTextEncoder.encode(arg);
+            view.set(buf);
+            return {
+                read: arg.length,
+                written: buf.length
+            };
+        }";
+
+        // Another possibility is to use `TextEncoder#encodeInto` which is much
+        // newer and isn't implemented everywhere yet. It's more efficient,
+        // however, becaues it allows us to elide an intermediate allocation.]
+        let encode_into = "function (arg, view) {
+            return cachedTextEncoder.encodeInto(arg, view);
+        }";
+
+        // Looks like `encodeInto` doesn't currently work when the memory passed
+        // in is backed by a `SharedArrayBuffer`, so force usage of `encode` if
+        // a `SharedArrayBuffer` is in use.
+        let shared = self.module.memories.get(self.memory).shared;
+
+        match self.config.encode_into {
+            EncodeInto::Always if !shared => {
+                self.global(&format!("
+                    const encodeString = {};
+                ", encode_into));
+            }
+            EncodeInto::Test if !shared => {
+                self.global(&format!("
+                    const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
+                        ? {}
+                        : {});
+                ", encode_into, encode));
+            }
+            _ => {
+                self.global(&format!("
+                    const encodeString = {};
+                ", encode));
+            }
+        }
+
+        self.expose_uint8_memory();
+        self.require_internal_export("__wbindgen_realloc")?;
 
         // A fast path that directly writes char codes into WASM memory as long
         // as it finds only ASCII characters.
@@ -881,94 +902,53 @@ impl<'a> Context<'a> {
         // This might be not very intuitive, but such calls are usually more
         // expensive in mainstream engines than staying in the JS, and
         // charCodeAt on ASCII strings is usually optimised to raw bytes.
-        let start_encoding_as_ascii = format!(
-            "\
-                {}
-                const len = arg.length;
-                let ptr = wasm.__wbindgen_malloc(len);
-                const offset = encodeAsAscii(arg, ptr, len);
-            ",
-            debug
-        );
+        let encode_as_ascii = "\
+            let len = arg.length;
+            let ptr = wasm.__wbindgen_malloc(len);
 
-        // The first implementation we have for this is to use
-        // `TextEncoder#encode` which has been around for quite some time.
-        let use_encode = format!(
-            "\
+            const mem = getUint8Memory();
+
+            let offset = 0;
+
+            for (; offset < len; offset++) {
+                const code = arg.charCodeAt(offset);
+                if (code > 0x7F) break;
+                mem[ptr + offset] = code;
+            }
+        ";
+
+        // TODO:
+        // When converting a JS string to UTF-8, the maximum size is `arg.length * 3`,
+        // so we just allocate that. This wastes memory, so we should investigate
+        // looping over the string to calculate the precise size, or perhaps using
+        // `shrink_to_fit` on the Rust side.
+        self.global(&format!(
+            "function passStringToWasm(arg) {{
+                {}
                 {}
                 if (offset !== len) {{
                     if (offset !== 0) {{
                         arg = arg.slice(offset);
                     }}
-                    const buf = cachedTextEncoder.encode(arg);
-                    ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + buf.length);
-                    getUint8Memory().set(buf, ptr + offset);
-                    offset += buf.length;
-                }}
-                WASM_VECTOR_LEN = offset;
-                return ptr;
-            ",
-            start_encoding_as_ascii
-        );
-
-        // Another possibility is to use `TextEncoder#encodeInto` which is much
-        // newer and isn't implemented everywhere yet. It's more efficient,
-        // however, becaues it allows us to elide an intermediate allocation.
-        let use_encode_into = format!(
-            "\
-                {}
-                if (offset !== len) {{
-                    if (offset !== 0) {{
-                        arg = arg.slice(offset);
-                    }}
-                    ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + len * 3);
-                    const view = getUint8Memory().subarray(ptr + offset, ptr + size);
-                    const ret = cachedTextEncoder.encodeInto(arg, view);
+                    ptr = wasm.__wbindgen_realloc(ptr, len, len = offset + arg.length * 3);
+                    const view = getUint8Memory().subarray(ptr + offset, ptr + len);
+                    const ret = encodeString(arg, view);
                     {}
                     offset += ret.written;
                 }}
+
                 WASM_VECTOR_LEN = offset;
                 return ptr;
-            ",
-            start_encoding_as_ascii,
+            }}",
+            debug,
+            encode_as_ascii,
             if self.config.debug {
-                "if (ret.read != len) throw new Error('failed to pass whole string');"
+                "if (ret.read != arg.length) throw new Error('failed to pass whole string');"
             } else {
                 ""
             },
-        );
+        ));
 
-        // Looks like `encodeInto` doesn't currently work when the memory passed
-        // in is backed by a `SharedArrayBuffer`, so force usage of `encode` if
-        // a `SharedArrayBuffer` is in use.
-        let shared = self.module.memories.get(self.memory).shared;
-
-        match self.config.encode_into {
-            EncodeInto::Always if !shared => {
-                self.require_internal_export("__wbindgen_realloc")?;
-                self.global(&format!(
-                    "function passStringToWasm(arg) {{ {} }}",
-                    use_encode_into,
-                ));
-            }
-            EncodeInto::Test if !shared => {
-                self.require_internal_export("__wbindgen_realloc")?;
-                self.global(&format!(
-                    "
-                        const passStringToWasm = (typeof cachedTextEncoder.encodeInto === 'function'
-                            ? function (arg) {{ {} }}
-                            : function (arg) {{ {} }});
-                    ",
-                    use_encode_into, use_encode,
-                ));
-            }
-            _ => {
-                self.global(&format!(
-                    "function passStringToWasm(arg) {{ {} }}",
-                    use_encode,
-                ));
-            }
-        }
         Ok(())
     }
 
