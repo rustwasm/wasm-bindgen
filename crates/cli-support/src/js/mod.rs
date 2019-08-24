@@ -860,7 +860,7 @@ impl<'a> Context<'a> {
 
         // Another possibility is to use `TextEncoder#encodeInto` which is much
         // newer and isn't implemented everywhere yet. It's more efficient,
-        // however, becaues it allows us to elide an intermediate allocation.]
+        // however, becaues it allows us to elide an intermediate allocation.
         let encode_into = "function (arg, view) {
             return cachedTextEncoder.encodeInto(arg, view);
         }";
