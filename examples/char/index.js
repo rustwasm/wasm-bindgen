@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { chars } from './chars-list.js';
-let imp = import('./pkg/char');
+let imp = import('./pkg');
 let mod;
 
 let counters = [];
