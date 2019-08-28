@@ -2,11 +2,6 @@ use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::JsFuture;
 use wasm_bindgen_test::*;
 
-use futures::{
-    future::{ok, IntoFuture},
-    Future,
-};
-
 use web_sys::{
     RtcPeerConnection, RtcRtpTransceiver, RtcRtpTransceiverDirection, RtcRtpTransceiverInit,
     RtcSessionDescriptionInit,
@@ -20,10 +15,10 @@ extern "C" {
     fn is_unified_avail() -> bool;
 }
 
-#[wasm_bindgen_test(async)]
-fn rtc_rtp_transceiver_direction() -> Box<dyn Future<Item = (), Error = JsValue>> {
+#[wasm_bindgen_test]
+async fn rtc_rtp_transceiver_direction() {
     if !is_unified_avail() {
-        return Box::new(Ok(()).into_future());
+        return;
     }
 
     let mut tr_init: RtcRtpTransceiverInit = RtcRtpTransceiverInit::new();
@@ -39,54 +34,39 @@ fn rtc_rtp_transceiver_direction() -> Box<dyn Future<Item = (), Error = JsValue>
 
     let pc2: RtcPeerConnection = RtcPeerConnection::new().unwrap();
 
-    let r = exchange_sdps(pc1, pc2).and_then(move |(_, p2)| {
-        assert_eq!(tr1.direction(), RtcRtpTransceiverDirection::Sendonly);
-        assert_eq!(
-            tr1.current_direction(),
-            Some(RtcRtpTransceiverDirection::Sendonly)
-        );
+    let (_, p2) = exchange_sdps(pc1, pc2).await;
+    assert_eq!(tr1.direction(), RtcRtpTransceiverDirection::Sendonly);
+    assert_eq!(
+        tr1.current_direction(),
+        Some(RtcRtpTransceiverDirection::Sendonly)
+    );
 
-        let tr2: RtcRtpTransceiver = js_sys::try_iter(&p2.get_transceivers())
-            .unwrap()
-            .unwrap()
-            .next()
-            .unwrap()
-            .unwrap()
-            .unchecked_into();
+    let tr2: RtcRtpTransceiver = js_sys::try_iter(&p2.get_transceivers())
+        .unwrap()
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap()
+        .unchecked_into();
 
-        assert_eq!(tr2.direction(), RtcRtpTransceiverDirection::Recvonly);
-        assert_eq!(
-            tr2.current_direction(),
-            Some(RtcRtpTransceiverDirection::Recvonly)
-        );
-
-        Ok(())
-    });
-
-    Box::new(r)
+    assert_eq!(tr2.direction(), RtcRtpTransceiverDirection::Recvonly);
+    assert_eq!(
+        tr2.current_direction(),
+        Some(RtcRtpTransceiverDirection::Recvonly)
+    );
 }
 
-fn exchange_sdps(
+async fn exchange_sdps(
     p1: RtcPeerConnection,
     p2: RtcPeerConnection,
-) -> impl Future<Item = (RtcPeerConnection, RtcPeerConnection), Error = JsValue> {
-    JsFuture::from(p1.create_offer())
-        .and_then(move |offer| {
-            let offer = offer.unchecked_into::<RtcSessionDescriptionInit>();
-            JsFuture::from(p1.set_local_description(&offer)).join4(
-                JsFuture::from(p2.set_remote_description(&offer)),
-                Ok(p1),
-                Ok(p2),
-            )
-        })
-        .and_then(|(_, _, p1, p2)| JsFuture::from(p2.create_answer()).join3(Ok(p1), Ok(p2)))
-        .and_then(|(answer, p1, p2)| {
-            let answer = answer.unchecked_into::<RtcSessionDescriptionInit>();
-            JsFuture::from(p2.set_local_description(&answer)).join4(
-                JsFuture::from(p1.set_remote_description(&answer)),
-                Ok(p1),
-                Ok(p2),
-            )
-        })
-        .and_then(|(_, _, p1, p2)| Ok((p1, p2)))
+) -> (RtcPeerConnection, RtcPeerConnection) {
+    let offer = JsFuture::from(p1.create_offer()).await.unwrap();
+    let offer = offer.unchecked_into::<RtcSessionDescriptionInit>();
+    JsFuture::from(p1.set_local_description(&offer)).await.unwrap();
+    JsFuture::from(p2.set_remote_description(&offer)).await.unwrap();
+    let answer = JsFuture::from(p2.create_answer()).await.unwrap();
+    let answer = answer.unchecked_into::<RtcSessionDescriptionInit>();
+    JsFuture::from(p2.set_local_description(&answer)).await.unwrap();
+    JsFuture::from(p1.set_remote_description(&answer)).await.unwrap();
+    (p1, p2)
 }

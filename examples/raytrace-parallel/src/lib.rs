@@ -1,5 +1,4 @@
-use futures::sync::oneshot;
-use futures::Future;
+use futures_channel::oneshot;
 use js_sys::{Promise, Uint8ClampedArray, WebAssembly};
 use rayon::prelude::*;
 use wasm_bindgen::prelude::*;
@@ -90,9 +89,13 @@ impl Scene {
             });
             drop(tx.send(rgb_data));
         })?;
-        let done = rx
-            .map(move |_data| image_data(base, len, width, height).into())
-            .map_err(|_| JsValue::undefined());
+
+        let done = async move {
+            match rx.await {
+                Ok(_data) => Ok(image_data(base, len, width, height).into()),
+                Err(_) => Err(JsValue::undefined()),
+            }
+        };
 
         Ok(RenderingScene {
             promise: wasm_bindgen_futures::future_to_promise(done),

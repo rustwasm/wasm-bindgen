@@ -31,104 +31,22 @@
 //! running tasks on the next tick of the micro task queue. The futures built on
 //! top of it can be scheduled for execution by conversion into a JavaScript
 //! `Promise`.
-//!
-//! ```rust,no_run
-//! extern crate futures;
-//! extern crate js_sys;
-//! extern crate wasm_bindgen;
-//! extern crate wasm_bindgen_futures;
-//!
-//! use futures::{Async, Future, Poll};
-//! use wasm_bindgen::prelude::*;
-//! use wasm_bindgen_futures::{JsFuture, future_to_promise};
-//!
-//! /// A future that becomes ready after a tick of the micro task queue.
-//! pub struct NextTick {
-//!     inner: JsFuture,
-//! }
-//!
-//! impl NextTick {
-//!     /// Construct a new `NextTick` future.
-//!     pub fn new() -> NextTick {
-//!         // Create a resolved promise that will run its callbacks on the next
-//!         // tick of the micro task queue.
-//!         let promise = js_sys::Promise::resolve(&JsValue::NULL);
-//!         // Convert the promise into a `JsFuture`.
-//!         let inner = JsFuture::from(promise);
-//!         NextTick { inner }
-//!     }
-//! }
-//!
-//! impl Future for NextTick {
-//!     type Item = ();
-//!     type Error = ();
-//!
-//!     fn poll(&mut self) -> Poll<(), ()> {
-//!         // Polling a `NextTick` just forwards to polling if the inner promise is
-//!         // ready.
-//!         match self.inner.poll() {
-//!             Ok(Async::Ready(_)) => Ok(Async::Ready(())),
-//!             Ok(Async::NotReady) => Ok(Async::NotReady),
-//!             Err(_) => unreachable!(
-//!                 "We only create NextTick with a resolved inner promise, never \
-//!                  a rejected one, so we can't get an error here"
-//!             ),
-//!         }
-//!     }
-//! }
-//!
-//! /// Export a function to JavaScript that does some work in the next tick of the
-//! /// micro task queue!
-//! #[wasm_bindgen]
-//! pub fn schedule_some_work_for_next_tick() -> js_sys::Promise {
-//!     let future = NextTick::new()
-//!         // Do some work...
-//!         .and_then(|_| {
-//!             Ok(42)
-//!         })
-//!         // And then convert the `Item` and `Error` into `JsValue`.
-//!         .map(|result| {
-//!             JsValue::from(result)
-//!         })
-//!         .map_err(|error| {
-//!             let js_error = js_sys::Error::new(&format!("uh oh! {:?}", error));
-//!             JsValue::from(js_error)
-//!         });
-//!
-//!     // Convert the `Future<Item = JsValue, Error = JsValue>` into a JavaScript
-//!     // `Promise`!
-//!     future_to_promise(future)
-//! }
-//! ```
 
 #![cfg_attr(target_feature = "atomics", feature(stdsimd))]
 #![deny(missing_docs)]
 
 use cfg_if::cfg_if;
 
-mod legacy_shared;
-pub use legacy_shared::*;
+mod shared;
+pub use shared::*;
 
 cfg_if! {
     if #[cfg(target_feature = "atomics")] {
-        /// Contains a thread-safe version of this crate, with Futures 0.1
-        mod legacy_atomics;
-        pub use legacy_atomics::*;
-
-        /// Polyfill for `Atomics.waitAsync` function
         mod wait_async_polyfill;
+        mod multithread;
+        pub use multithread::*;
     } else {
-        mod legacy;
-        pub use legacy::*;
-     }
-}
-
-#[cfg(feature = "futures_0_3")]
-cfg_if! {
-    if #[cfg(target_feature = "atomics")] {
-        compile_error!("futures 0.3 support is not implemented with atomics yet");
-    } else {
-        /// Contains a Futures 0.3 implementation of this crate.
-        pub mod futures_0_3;
+        mod singlethread;
+        pub use singlethread::*;
      }
 }

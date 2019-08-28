@@ -1,4 +1,3 @@
-use futures::future::Future;
 use js_sys::{Object, Promise};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -11,22 +10,22 @@ extern "C" {
     fn new_event() -> Promise;
 }
 
-#[wasm_bindgen_test(async)]
-fn event() -> impl Future<Item = (), Error = JsValue> {
-    JsFuture::from(new_event()).map(Event::from).map(|event| {
-        // All DOM interfaces should inherit from `Object`.
-        assert!(event.is_instance_of::<Object>());
-        let _: &Object = event.as_ref();
+#[wasm_bindgen_test]
+async fn event() {
+    let result = JsFuture::from(new_event()).await.unwrap();
+    let event = Event::from(result);
+    // All DOM interfaces should inherit from `Object`.
+    assert!(event.is_instance_of::<Object>());
+    let _: &Object = event.as_ref();
 
-        // These should match `new Event`.
-        assert!(event.bubbles());
-        assert!(event.cancelable());
-        assert!(event.composed());
+    // These should match `new Event`.
+    assert!(event.bubbles());
+    assert!(event.cancelable());
+    assert!(event.composed());
 
-        // The default behavior not initially prevented, but after
-        // we call `prevent_default` it better be.
-        assert!(!event.default_prevented());
-        event.prevent_default();
-        assert!(event.default_prevented());
-    })
+    // The default behavior not initially prevented, but after
+    // we call `prevent_default` it better be.
+    assert!(!event.default_prevented());
+    event.prevent_default();
+    assert!(event.default_prevented());
 }
