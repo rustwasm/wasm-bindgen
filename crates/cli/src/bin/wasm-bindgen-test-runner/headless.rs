@@ -4,15 +4,16 @@ use failure::{bail, format_err, Error, ResultExt};
 use log::{debug, warn};
 use rouille::url::Url;
 use serde::{Deserialize, Serialize};
-use serde_json::{self, json};
+use serde_json::{self, json, Value as Json};
 use std::env;
-use std::ffi::OsStr;
+use std::fs::File;
 use std::io::{self, Read};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
+use webdriver::capabilities::{Capabilities, LegacyNewSessionParameters, SpecNewSessionParameters};
 
 /// Execute a headless browser tests against a server running on `server`
 /// address.
@@ -22,7 +23,7 @@ use std::time::{Duration, Instant};
 /// etc. It will return `Ok` if all tests finish successfully, and otherwise it
 /// will return an error if some tests failed.
 pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
-    let (driver, client_args) = Driver::find()?;
+    let driver = Driver::find()?;
     let mut drop_log: Box<dyn FnMut()> = Box::new(|| ());
     let driver_url = match driver.location() {
         Locate::Remote(url) => Ok(url.clone()),
@@ -38,7 +39,7 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
             let mut cmd = Command::new(path);
             cmd.args(args)
                 .arg(format!("--port={}", driver_addr.port().to_string()));
-            let mut child = BackgroundChild::spawn(path, &mut cmd, shell)?;
+            let mut child = BackgroundChild::spawn(&path, &mut cmd, shell)?;
             drop_log = Box::new(move || child.print_stdio_on_drop = false);
 
             // Wait for the driver to come online and bind its port before we try to
@@ -59,8 +60,6 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
             Url::parse(&format!("http://{}", driver_addr)).map_err(Error::from)
         }
     }?;
-    let path = env::current_dir()?;
-    println!("The current directory is {}", path.display());
     println!(
         "Running headless tests in {} on `{}`",
         driver.browser(),
@@ -72,10 +71,21 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
         driver_url,
         session: None,
     };
+    println!("Try find `webdriver.json` for configure browser's capabilities:");
+    let capabilities: Capabilities = match File::open("webdriver.json") {
+        Ok(file) => {
+            println!("Ok");
+            serde_json::from_reader(file)
+        }
+        Err(_) => {
+            println!("Not found");
+            Ok(Capabilities::new())
+        }
+    }?;
     shell.status("Starting new webdriver session...");
     // Allocate a new session with the webdriver protocol, and once we've done
     // so schedule the browser to get closed with a call to `close_window`.
-    let id = client.new_session(&driver, client_args)?;
+    let id = client.new_session(&driver, capabilities)?;
     client.session = Some(id.clone());
 
     // Visit our local server to open up the page that runs tests, and then get
@@ -158,30 +168,26 @@ enum Locate {
     Remote(Url),
 }
 
-fn env_vars<K: AsRef<OsStr>>(name: K) -> Vec<String> {
-    env::var(name)
-        .unwrap_or_default()
-        .split_whitespace()
-        .map(|s| s.to_string())
-        .collect()
-}
-
 impl Driver {
-    /// Attempts to find an appropriate WebDriver server binary or remote
-    /// running webdriver to execute tests with.
+    /// Attempts to find an appropriate remote WebDriver server or server binary
+    /// to execute tests with.
     /// Performs a number of heuristics to find one available, including:
     ///
     /// * Env vars like `GECKODRIVER_REMOTE` address of remote webdriver.
     /// * Env vars like `GECKODRIVER` point to the path to a binary to execute.
     /// * Otherwise, `PATH` is searched for an appropriate binary.
     ///
-    /// In all cases a lists of auxiliary arguments is also returned which is
-    /// configured through env vars like `GECKODRIVER_ARGS` to support extra
-    /// arguments to invocation the local driver and `GECKODRIVER_CLIENT_ARGS`
-    /// to support command-line arguments for browser.
-    fn find() -> Result<(Driver, Vec<String>), Error> {
-        let env_args = |name: &str| env_vars(format!("{}_ARGS", name.to_uppercase()));
-        let env_client_args = |name: &str| env_vars(format!("{}_CLIENT_ARGS", name.to_uppercase()));
+    /// In the last two cases a list of auxiliary arguments is also returned
+    /// which is configured through env vars like `GECKODRIVER_ARGS` to support
+    /// extra arguments to the driver's invocation.
+    fn find() -> Result<Driver, Error> {
+        let env_args = |name: &str| {
+            env::var(format!("{}_ARGS", name.to_uppercase()))
+                .unwrap_or_default()
+                .split_whitespace()
+                .map(|s| s.to_string())
+                .collect::<Vec<_>>()
+        };
 
         let drivers = [
             ("geckodriver", Driver::Gecko as fn(Locate) -> Driver),
@@ -193,14 +199,14 @@ impl Driver {
         // to allow forcing usage of a particular remote driver.
         for (driver, ctor) in drivers.iter() {
             let env = format!("{}_REMOTE", driver.to_uppercase());
-            let locate = match env::var(&env) {
+            let url = match env::var(&env) {
                 Ok(var) => match Url::parse(&var) {
-                    Ok(url) => Locate::Remote(url),
+                    Ok(url) => url,
                     Err(_) => continue,
                 },
                 Err(_) => continue,
             };
-            return Ok((ctor(locate), env_client_args(driver)));
+            return Ok(ctor(Locate::Remote(url)));
         }
 
         // Next, if env vars like GECKODRIVER are present, use those to
@@ -211,10 +217,7 @@ impl Driver {
                 Some(path) => path,
                 None => continue,
             };
-            return Ok((
-                ctor(Locate::Local((path.into(), env_args(driver)))),
-                env_client_args(driver),
-            ));
+            return Ok(ctor(Locate::Local((path.into(), env_args(driver)))));
         }
 
         // Next, check PATH. If we can find any supported driver, use that by
@@ -229,10 +232,7 @@ impl Driver {
                 Some(p) => p,
                 None => continue,
             };
-            return Ok((
-                ctor(Locate::Local((path.into(), env_args(driver)))),
-                env_client_args(driver),
-            ));
+            return Ok(ctor(Locate::Local((path.into(), env_args(driver)))));
         }
 
         // TODO: download an appropriate driver? How to know which one to
@@ -298,7 +298,7 @@ enum Method<'a> {
 // copied the `webdriver-client` crate when writing the below bindings.
 
 impl Client {
-    fn new_session(&mut self, driver: &Driver, mut args: Vec<String>) -> Result<String, Error> {
+    fn new_session(&mut self, driver: &Driver, mut cap: Capabilities) -> Result<String, Error> {
         match driver {
             Driver::Gecko(_) => {
                 #[derive(Deserialize)]
@@ -311,15 +311,21 @@ impl Client {
                     #[serde(rename = "sessionId")]
                     session_id: String,
                 }
-                args.push("-headless".to_string());
+                cap.entry("moz:firefoxOptions".to_string())
+                    .or_insert_with(|| Json::Object(serde_json::Map::new()))
+                    .as_object_mut()
+                    .expect("moz:firefoxOptions wasn't a JSON object")
+                    .entry("args".to_string())
+                    .or_insert_with(|| Json::Array(vec![]))
+                    .as_array_mut()
+                    .expect("args wasn't a JSON array")
+                    .extend(vec![Json::String("-headless".to_string())]);
+                let session_config = SpecNewSessionParameters {
+                    alwaysMatch: cap,
+                    firstMatch: vec![Capabilities::new()],
+                };
                 let request = json!({
-                    "capabilities": {
-                        "alwaysMatch": {
-                            "moz:firefoxOptions": {
-                                "args": args,
-                            }
-                        }
-                    }
+                    "capabilities": session_config,
                 });
                 let x: Response = self.post("/session", &request)?;
                 Ok(x.value.session_id)
@@ -360,19 +366,26 @@ impl Client {
                     #[serde(rename = "sessionId")]
                     session_id: String,
                 }
-                args.push("headless".to_string());
-                // See https://stackoverflow.com/questions/50642308/
-                // for what this funky `disable-dev-shm-usage`
-                // option is
-                args.push("disable-dev-shm-usage".to_string());
-                args.push("no-sandbox".to_string());
-                let request = json!({
-                    "desiredCapabilities": {
-                        "goog:chromeOptions": {
-                            "args": args,
-                        },
-                    }
-                });
+                cap.entry("goog:chromeOptions".to_string())
+                    .or_insert_with(|| Json::Object(serde_json::Map::new()))
+                    .as_object_mut()
+                    .expect("goog:chromeOptions wasn't a JSON object")
+                    .entry("args".to_string())
+                    .or_insert_with(|| Json::Array(vec![]))
+                    .as_array_mut()
+                    .expect("args wasn't a JSON array")
+                    .extend(vec![
+                        Json::String("headless".to_string()),
+                        // See https://stackoverflow.com/questions/50642308/
+                        // for what this funky `disable-dev-shm-usage`
+                        // option is
+                        Json::String("disable-dev-shm-usage".to_string()),
+                        Json::String("no-sandbox".to_string()),
+                    ]);
+                let request = LegacyNewSessionParameters {
+                    desired: cap,
+                    required: Capabilities::new(),
+                };
                 let x: Response = self.post("/session", &request)?;
                 Ok(x.session_id)
             }
