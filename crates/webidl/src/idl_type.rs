@@ -5,7 +5,7 @@ use weedle::common::Identifier;
 use weedle::term;
 use weedle::types::*;
 
-use crate::first_pass::FirstPassRecord;
+use crate::first_pass::{FirstPassRecord, SelfName};
 use crate::util::{array, camel_case_ident, option_ty, shared_ref, snake_case_ident, TypePosition};
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Debug)]
@@ -318,20 +318,23 @@ impl<'a> ToIdlType<'a> for AttributedNonAnyType<'a> {
 
 impl<'a> ToIdlType<'a> for Identifier<'a> {
     fn to_idl_type(&self, record: &FirstPassRecord<'a>) -> IdlType<'a> {
-        if self.0 == "DOMTimeStamp" {
+        // FIXME
+        let name = &SelfName(self.0);
+
+        if name.0 == "DOMTimeStamp" {
             // https://heycam.github.io/webidl/#DOMTimeStamp
             IdlType::UnsignedLongLong
-        } else if let Some(idl_type) = record.typedefs.get(&self.0) {
+        } else if let Some(idl_type) = record.typedefs.get(&name) {
             idl_type.to_idl_type(record)
-        } else if record.interfaces.contains_key(self.0) {
+        } else if record.interfaces.contains_key(name) {
             IdlType::Interface(self.0)
-        } else if record.dictionaries.contains_key(self.0) {
+        } else if record.dictionaries.contains_key(name) {
             IdlType::Dictionary(self.0)
-        } else if record.enums.contains_key(self.0) {
+        } else if record.enums.contains_key(name) {
             IdlType::Enum(self.0)
-        } else if record.callbacks.contains(self.0) {
+        } else if record.callbacks.contains(name) {
             IdlType::Callback
-        } else if let Some(data) = record.callback_interfaces.get(self.0) {
+        } else if let Some(data) = record.callback_interfaces.get(name) {
             IdlType::CallbackInterface {
                 name: self.0,
                 single_function: data.single_function,

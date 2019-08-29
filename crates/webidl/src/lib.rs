@@ -15,7 +15,7 @@ mod idl_type;
 mod util;
 
 use crate::first_pass::{CallbackInterfaceData, OperationData};
-use crate::first_pass::{FirstPass, FirstPassRecord, InterfaceData, OperationId};
+use crate::first_pass::{FirstPass, FirstPassRecord, InterfaceData, OperationId, SelfName};
 use crate::idl_type::ToIdlType;
 use crate::util::{
     camel_case_ident, mdn_doc, public, shouty_snake_case_ident, snake_case_ident,
@@ -89,28 +89,28 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
     };
 
     for (name, e) in first_pass_record.enums.iter() {
-        if filter(&camel_case_ident(name)) {
+        if filter(&camel_case_ident(name.0)) {
             first_pass_record.append_enum(&mut program, e);
         }
     }
     for (name, d) in first_pass_record.dictionaries.iter() {
-        if filter(&camel_case_ident(name)) {
+        if filter(&camel_case_ident(name.0)) {
             first_pass_record.append_dictionary(&mut program, d);
         }
     }
     for (name, n) in first_pass_record.namespaces.iter() {
-        if filter(&snake_case_ident(name)) {
-            let prog = first_pass_record.append_ns(name, n);
-            submodules.push((snake_case_ident(name).to_string(), prog));
+        if filter(&snake_case_ident(name.0)) {
+            let prog = first_pass_record.append_ns(name.0, n);
+            submodules.push((snake_case_ident(name.0).to_string(), prog));
         }
     }
     for (name, d) in first_pass_record.interfaces.iter() {
-        if filter(&camel_case_ident(name)) {
-            first_pass_record.append_interface(&mut program, name, d);
+        if filter(&camel_case_ident(name.0)) {
+            first_pass_record.append_interface(&mut program, name.0, d);
         }
     }
     for (name, d) in first_pass_record.callback_interfaces.iter() {
-        if filter(&camel_case_ident(name)) {
+        if filter(&camel_case_ident(name.0)) {
             first_pass_record.append_callback_interface(&mut program, d);
         }
     }
@@ -352,6 +352,9 @@ impl<'src> FirstPassRecord<'src> {
         dict: &'src str,
         dst: &mut Vec<ast::DictionaryField>,
     ) -> bool {
+        // FIXME
+        let dict = SelfName(dict);
+
         let dict_data = &self.dictionaries[&dict];
         let definition = dict_data.definition.unwrap();
 
