@@ -20,4 +20,7 @@ proc-macro2 = "1.0"
 quote = '1.0'
 syn = { version = '1.0', features = ['full'] }
 wasm-bindgen-backend = { version = "=0.2.50", path = "../backend" }
-weedle = "0.10"
+
+[dependencies.weedle]
+git = "https://github.com/freebroccolo/weedle"
+branch = "webidl-modules"
