@@ -139,20 +139,21 @@ impl<'src> FirstPass<'src, ()> for weedle::Definition<'src> {
         use weedle::Definition::*;
 
         match self {
-            Dictionary(dictionary) => dictionary.first_pass(record, ()),
-            PartialDictionary(dictionary) => dictionary.first_pass(record, ()),
-            Enum(enum_) => enum_.first_pass(record, ()),
-            IncludesStatement(includes) => includes.first_pass(record, ()),
-            Interface(interface) => interface.first_pass(record, ()),
-            PartialInterface(interface) => interface.first_pass(record, ()),
-            InterfaceMixin(mixin) => mixin.first_pass(record, ()),
-            PartialInterfaceMixin(mixin) => mixin.first_pass(record, ()),
-            Namespace(namespace) => namespace.first_pass(record, ()),
-            PartialNamespace(namespace) => namespace.first_pass(record, ()),
-            Typedef(typedef) => typedef.first_pass(record, ()),
             Callback(callback) => callback.first_pass(record, ()),
             CallbackInterface(iface) => iface.first_pass(record, ()),
+            Dictionary(dictionary) => dictionary.first_pass(record, ()),
+            Enum(enum_) => enum_.first_pass(record, ()),
             Implements(_) => Ok(()),
+            IncludesStatement(includes) => includes.first_pass(record, ()),
+            Interface(interface) => interface.first_pass(record, ()),
+            InterfaceMixin(mixin) => mixin.first_pass(record, ()),
+            Module(_) => unimplemented!(),
+            Namespace(namespace) => namespace.first_pass(record, ()),
+            PartialDictionary(dictionary) => dictionary.first_pass(record, ()),
+            PartialInterface(interface) => interface.first_pass(record, ()),
+            PartialInterfaceMixin(mixin) => mixin.first_pass(record, ()),
+            PartialNamespace(namespace) => namespace.first_pass(record, ()),
+            Typedef(typedef) => typedef.first_pass(record, ()),
         }
     }
 }
