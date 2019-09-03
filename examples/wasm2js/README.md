@@ -14,4 +14,4 @@ $ ./build.sh
 
 (or running the commands on Windows manually)
 
-and then visiting http://localhost:8080 in a browser should run the example!
+and then visiting http://localhost:8000 in a browser should run the example!
