@@ -130,9 +130,29 @@ extern "C" {
     #[derive(Clone, Debug, PartialEq, Eq)]
     pub type Array;
 
-    /// Creates a new empty array
+    /// Creates a new empty array.
     #[wasm_bindgen(constructor)]
     pub fn new() -> Array;
+
+    /// Creates a new array with the specified length (elements are initialized to `undefined`).
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_length(len: u32) -> Array;
+
+    /// Retrieves the element at the index (returns `undefined` if the index is out of range).
+    #[wasm_bindgen(method, structural, indexing_getter)]
+    pub fn get(this: &Array, index: u32) -> JsValue;
+
+    /// Sets the element at the index (auto-enlarges the array if the index is out of range).
+    #[wasm_bindgen(method, structural, indexing_setter)]
+    pub fn set(this: &Array, index: u32, value: JsValue);
+
+    /// Deletes the element at the index (does nothing if the index is out of range).
+    ///
+    /// The element at the index is set to `undefined`.
+    ///
+    /// This does not resize the array, the array will still be the same length.
+    #[wasm_bindgen(method, structural, indexing_deleter)]
+    pub fn delete(this: &Array, index: u32);
 
     /// The `Array.from()` method creates a new, shallow-copied `Array` instance
     /// from an array-like or iterable object.
@@ -403,6 +423,19 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift)
     #[wasm_bindgen(method)]
     pub fn unshift(this: &Array, value: &JsValue) -> u32;
+}
+
+// TODO pre-initialize the Array with the correct length using TrustedLen
+impl<A> std::iter::FromIterator<A> for Array where A: AsRef<JsValue> {
+    fn from_iter<T>(iter: T) -> Array where T: IntoIterator<Item = A> {
+        let out = Array::new();
+
+        for value in iter {
+            out.push(value.as_ref());
+        }
+
+        out
+    }
 }
 
 // ArrayBuffer
