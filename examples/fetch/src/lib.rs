@@ -1,8 +1,6 @@
-use js_sys::Promise;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use wasm_bindgen_futures::future_to_promise;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
@@ -35,11 +33,7 @@ pub struct Signature {
 }
 
 #[wasm_bindgen]
-pub fn run() -> Promise {
-    future_to_promise(run_())
-}
-
-async fn run_() -> Result<JsValue, JsValue> {
+pub async fn run() -> Result<JsValue, JsValue> {
     let mut opts = RequestInit::new();
     opts.method("GET");
     opts.mode(RequestMode::Cors);

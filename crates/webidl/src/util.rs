@@ -310,6 +310,7 @@ impl<'src> FirstPassRecord<'src> {
                 ret: ret.clone(),
                 rust_attrs: vec![],
                 rust_vis: public(),
+                r#async: false,
             },
             rust_name: rust_ident(rust_name),
             js_ret: js_ret.clone(),
