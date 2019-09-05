@@ -2,13 +2,14 @@
 
 ### Add `wasm-bindgen-test` to Your `Cargo.toml`'s `[dev-dependencies]`
 
-Make sure to replace "X.Y.Z" with the same version of `wasm-bindgen` that you
-have in the `[dependencies]` section!
-
 ```toml
 [dev-dependencies]
-wasm-bindgen-test = "X.Y.Z"
+wasm-bindgen-test = "0.3.0"
 ```
+
+Note that the `0.3.0` track of `wasm-bindgen-test` supports Rust 1.39.0+, which
+is currently the nightly channel (as of 2019-09-05). If you want support for
+older compilers use the `0.2.*` track of `wasm-bindgen-test`.
 
 ## Write Some Tests
 
