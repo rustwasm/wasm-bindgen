@@ -577,7 +577,7 @@ impl<'a> IdlType<'a> {
                             .path
                             .segments
                             .last()
-                            .map(|p| p.value().ident == "JsValue")
+                            .map(|p| p.ident == "JsValue")
                             .unwrap_or(false)
                     {
                         return Some(inner.clone());

@@ -4,9 +4,9 @@ use std::prelude::v1::*;
 use core::slice;
 use core::str;
 
-use cfg_if::cfg_if;
 use crate::convert::OptionIntoWasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi, RefMutFromWasmAbi, WasmAbi};
+use cfg_if::cfg_if;
 
 if_std! {
     use core::mem;
@@ -124,7 +124,6 @@ vectors! {
     u8 i8 u16 i16 u32 i32 u64 i64 usize isize f32 f64
 }
 
-
 cfg_if! {
     if #[cfg(feature = "enable-interning")] {
         #[inline]
@@ -140,7 +139,6 @@ cfg_if! {
         }
     }
 }
-
 
 if_std! {
     impl<T> IntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {

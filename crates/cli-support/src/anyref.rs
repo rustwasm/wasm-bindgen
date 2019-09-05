@@ -6,7 +6,7 @@ use walrus::Module;
 use wasm_bindgen_anyref_xform::Context;
 use wasm_webidl_bindings::ast;
 
-pub fn process(module: &mut Module) -> Result<(), Error> {
+pub fn process(module: &mut Module, wasm_interface_types: bool) -> Result<(), Error> {
     let mut cfg = Context::default();
     cfg.prepare(module)?;
     let bindings = module
@@ -44,6 +44,27 @@ pub fn process(module: &mut Module) -> Result<(), Error> {
     }
 
     cfg.run(module)?;
+
+    // If our output is using WebAssembly interface types then our bindings will
+    // never use this table, so no need to export it. Otherwise it's highly
+    // likely in web/JS embeddings this will be used, so make sure we export it
+    // to avoid it getting gc'd accidentally.
+    if !wasm_interface_types {
+        // Make sure to export the `anyref` table for the JS bindings since it
+        // will need to be initialized. If it doesn't exist though then the
+        // module must not use it, so we skip it.
+        let table = module.tables.iter().find(|t| match t.kind {
+            walrus::TableKind::Anyref(_) => true,
+            _ => false,
+        });
+        let table = match table {
+            Some(t) => t.id(),
+            None => return Ok(()),
+        };
+        module.exports.add("__wbg_anyref_table", table);
+    }
+
+    // Clean up now-unused intrinsics and shims and such
     walrus::passes::gc::run(module);
 
     // The GC pass above may end up removing some imported intrinsics. For

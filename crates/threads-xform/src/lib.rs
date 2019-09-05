@@ -1,10 +1,11 @@
 use std::cmp;
 use std::collections::HashMap;
+use std::env;
 use std::mem;
 
 use failure::{bail, format_err, Error};
 use walrus::ir::Value;
-use walrus::{DataId, FunctionId, InitExpr, LocalFunction, ValType};
+use walrus::{DataId, FunctionId, InitExpr, ValType};
 use walrus::{ExportItem, GlobalId, GlobalKind, ImportKind, MemoryId, Module};
 
 const PAGE_SIZE: u32 = 1 << 16;
@@ -78,9 +79,19 @@ impl Config {
     ///
     /// More and/or less may happen here over time, stay tuned!
     pub fn run(&self, module: &mut Module) -> Result<(), Error> {
-        let stack_pointer = find_stack_pointer(module)?;
+        // Compatibility with older LLVM outputs. Newer LLVM outputs, when
+        // atomics are enabled, emit a shared memory. That's a good indicator
+        // that we have work to do. If shared memory isn't enabled, though then
+        // this isn't an atomic module so there's nothing to do. We still allow,
+        // though, an environment variable to force us to go down this path to
+        // remain compatibile with older LLVM outputs.
         let memory = find_memory(module)?;
-        let addr = inject_thread_id_counter(module, memory)?;
+        if !module.memories.get(memory).shared && env::var("WASM_BINDGEN_THREADS").is_err() {
+            return Ok(());
+        }
+
+        let stack_pointer = find_stack_pointer(module)?;
+        let addr = allocate_static_data(module, memory, 4, 4)?;
         let zero = InitExpr::Value(Value::I32(0));
         let globals = Globals {
             thread_id: module.globals.add_local(ValType::I32, true, zero),
@@ -101,20 +112,13 @@ impl Config {
             let prev_max = mem.maximum.unwrap();
             assert!(mem.import.is_some());
             mem.maximum = Some(cmp::max(self.maximum_memory / PAGE_SIZE, prev_max));
-            assert!(mem.data.is_empty());
+            assert!(mem.data_segments.is_empty());
 
-            let init_memory = module
-                .exports
-                .iter()
-                .find(|e| e.name == "__wasm_init_memory")
-                .ok_or_else(|| format_err!("failed to find `__wasm_init_memory`"))?;
-            let init_memory_id = match init_memory.item {
-                walrus::ExportItem::Function(f) => f,
-                _ => bail!("`__wasm_init_memory` must be a function"),
-            };
-            let export_id = init_memory.id();
-            module.exports.delete(export_id);
-            InitMemory::Call(init_memory_id)
+            InitMemory::Call {
+                wasm_init_memory: delete_synthetic_func(module, "__wasm_init_memory")?,
+                wasm_init_tls: delete_synthetic_func(module, "__wasm_init_tls")?,
+                tls_size: delete_synthetic_global(module, "__tls_size")?,
+            }
         } else {
             update_memory(module, memory, self.maximum_memory)?;
             InitMemory::Segments(switch_data_segments_to_passive(module, memory)?)
@@ -127,11 +131,45 @@ impl Config {
             stack_pointer,
             self.thread_stack_size,
             memory,
-        );
+        )?;
 
         implement_thread_intrinsics(module, &globals)?;
         Ok(())
     }
+}
+
+fn delete_synthetic_func(module: &mut Module, name: &str) -> Result<FunctionId, Error> {
+    match delete_synthetic_export(module, name)? {
+        walrus::ExportItem::Function(f) => Ok(f),
+        _ => bail!("`{}` must be a function", name),
+    }
+}
+
+fn delete_synthetic_global(module: &mut Module, name: &str) -> Result<u32, Error> {
+    let id = match delete_synthetic_export(module, name)? {
+        walrus::ExportItem::Global(g) => g,
+        _ => bail!("`{}` must be a global", name),
+    };
+    let g = match module.globals.get(id).kind {
+        walrus::GlobalKind::Local(g) => g,
+        walrus::GlobalKind::Import(_) => bail!("`{}` must not be an imported global", name),
+    };
+    match g {
+        InitExpr::Value(Value::I32(v)) => Ok(v as u32),
+        _ => bail!("`{}` was not an `i32` constant", name),
+    }
+}
+
+fn delete_synthetic_export(module: &mut Module, name: &str) -> Result<ExportItem, Error> {
+    let item = module
+        .exports
+        .iter()
+        .find(|e| e.name == name)
+        .ok_or_else(|| format_err!("failed to find `{}`", name))?;
+    let ret = item.item;
+    let id = item.id();
+    module.exports.delete(id);
+    Ok(ret)
 }
 
 struct PassiveSegment {
@@ -146,11 +184,24 @@ fn switch_data_segments_to_passive(
 ) -> Result<Vec<PassiveSegment>, Error> {
     let mut ret = Vec::new();
     let memory = module.memories.get_mut(memory);
-    let data = mem::replace(&mut memory.data, Default::default());
-    for (offset, value) in data.into_iter() {
-        let len = value.len() as u32;
-        let id = module.data.add(value);
-        ret.push(PassiveSegment { id, offset, len });
+    for id in mem::replace(&mut memory.data_segments, Default::default()) {
+        let data = module.data.get_mut(id);
+        let kind = match &data.kind {
+            walrus::DataKind::Active(kind) => kind,
+            walrus::DataKind::Passive => continue,
+        };
+        let offset = match kind.location {
+            walrus::ActiveDataLocation::Absolute(n) => {
+                walrus::InitExpr::Value(walrus::ir::Value::I32(n as i32))
+            }
+            walrus::ActiveDataLocation::Relative(global) => walrus::InitExpr::Global(global),
+        };
+        data.kind = walrus::DataKind::Passive;
+        ret.push(PassiveSegment {
+            id,
+            offset,
+            len: data.value.len() as u32,
+        });
     }
 
     Ok(ret)
@@ -198,7 +249,12 @@ struct Globals {
     thread_tcb: GlobalId,
 }
 
-fn inject_thread_id_counter(module: &mut Module, memory: MemoryId) -> Result<u32, Error> {
+fn allocate_static_data(
+    module: &mut Module,
+    memory: MemoryId,
+    size: u32,
+    align: u32,
+) -> Result<u32, Error> {
     // First up, look for a `__heap_base` export which is injected by LLD as
     // part of the linking process. Note that `__heap_base` should in theory be
     // *after* the stack and data, which means it's at the very end of the
@@ -243,9 +299,9 @@ fn inject_thread_id_counter(module: &mut Module, memory: MemoryId) -> Result<u32
             GlobalKind::Local(InitExpr::Value(Value::I32(n))) => n,
             _ => bail!("`__heap_base` not a locally defined `i32`"),
         };
-        let address = (*offset as u32 + 3) & !3; // align up
-        let add_a_page = (address + 4) / PAGE_SIZE != address / PAGE_SIZE;
-        *offset = (address + 4) as i32;
+        let address = (*offset as u32 + (align - 1)) & !(align - 1); // align up
+        let add_a_page = (address + size) / PAGE_SIZE != address / PAGE_SIZE;
+        *offset = (address + size) as i32;
         (address, add_a_page)
     };
 
@@ -269,22 +325,32 @@ fn find_stack_pointer(module: &mut Module) -> Result<Option<GlobalId>, Error> {
         })
         .collect::<Vec<_>>();
 
-    match candidates.len() {
-        // If there are no mutable i32 globals, assume this module doesn't even
-        // need a stack pointer!
-        0 => Ok(None),
-
-        // If there's more than one global give up for now. Eventually we can
-        // probably do better by pattern matching on functions, but this should
-        // be sufficient for LLVM's output for now.
-        1 => Ok(Some(candidates[0].id())),
-        _ => bail!("too many mutable globals to infer the stack pointer"),
+    if candidates.len() == 0 {
+        return Ok(None);
     }
+    if candidates.len() > 2 {
+        bail!("too many mutable globals to infer the stack pointer");
+    }
+    if candidates.len() == 1 {
+        return Ok(Some(candidates[0].id()));
+    }
+
+    // If we've got two mutable globals then we're in a pretty standard
+    // situation for threaded code where one is the stack pointer and one is the
+    // TLS base offset. We need to figure out which is which, and we basically
+    // assume LLVM's current codegen where the first is the stack pointer.
+    //
+    // TODO: have an actual check here.
+    Ok(Some(candidates[0].id()))
 }
 
 enum InitMemory {
     Segments(Vec<PassiveSegment>),
-    Call(walrus::FunctionId),
+    Call {
+        wasm_init_memory: walrus::FunctionId,
+        wasm_init_tls: walrus::FunctionId,
+        tls_size: u32,
+    },
 }
 
 fn inject_start(
@@ -295,130 +361,132 @@ fn inject_start(
     stack_pointer: Option<GlobalId>,
     stack_size: u32,
     memory: MemoryId,
-) {
+) -> Result<(), Error> {
     use walrus::ir::*;
 
     assert!(stack_size % PAGE_SIZE == 0);
-    let mut builder = walrus::FunctionBuilder::new();
-    let mut exprs = Vec::new();
+    let mut builder = walrus::FunctionBuilder::new(&mut module.types, &[], &[]);
     let local = module.locals.add(ValType::I32);
+    let mut body = builder.func_body();
 
-    let addr = builder.i32_const(addr as i32);
-    let one = builder.i32_const(1);
-    let thread_id = builder.atomic_rmw(
-        memory,
-        AtomicOp::Add,
-        AtomicWidth::I32,
-        MemArg {
-            align: 4,
-            offset: 0,
-        },
-        addr,
-        one,
-    );
-    let thread_id = builder.local_tee(local, thread_id);
-    let global_set = builder.global_set(globals.thread_id, thread_id);
-    exprs.push(global_set);
+    body.i32_const(addr as i32)
+        .i32_const(1)
+        .atomic_rmw(
+            memory,
+            AtomicOp::Add,
+            AtomicWidth::I32,
+            MemArg {
+                align: 4,
+                offset: 0,
+            },
+        )
+        .local_tee(local)
+        .global_set(globals.thread_id);
 
     // Perform an if/else based on whether we're the first thread or not. Our
     // thread ID will be zero if we're the first thread, otherwise it'll be
     // nonzero (assuming we don't overflow...)
-    //
-    let thread_id_is_nonzero = builder.local_get(local);
+    body.local_get(local);
+    body.if_else(
+        Box::new([]),
+        Box::new([]),
+        // If our thread id is nonzero then we're the second or greater thread, so
+        // we give ourselves a stack via memory.grow and we update our stack
+        // pointer as the default stack pointer is surely wrong for us.
+        |body| {
+            if let Some(stack_pointer) = stack_pointer {
+                // local0 = grow_memory(stack_size);
+                body.i32_const((stack_size / PAGE_SIZE) as i32)
+                    .memory_grow(memory)
+                    .local_set(local);
 
-    // If our thread id is nonzero then we're the second or greater thread, so
-    // we give ourselves a stack via memory.grow and we update our stack
-    // pointer as the default stack pointer is surely wrong for us.
-    let mut block = builder.if_else_block(Box::new([]), Box::new([]));
-    if let Some(stack_pointer) = stack_pointer {
-        // local0 = grow_memory(stack_size);
-        let grow_amount = block.i32_const((stack_size / PAGE_SIZE) as i32);
-        let memory_growth = block.memory_grow(memory, grow_amount);
-        let set_local = block.local_set(local, memory_growth);
-        block.expr(set_local);
+                // if local0 == -1 then trap
+                body.block(Box::new([]), Box::new([]), |body| {
+                    let target = body.id();
+                    body.local_get(local)
+                        .i32_const(-1)
+                        .binop(BinaryOp::I32Ne)
+                        .br_if(target)
+                        .unreachable();
+                });
 
-        // if local0 == -1 then trap
-        let if_negative_trap = {
-            let mut block = block.block(Box::new([]), Box::new([]));
-
-            let lhs = block.local_get(local);
-            let rhs = block.i32_const(-1);
-            let condition = block.binop(BinaryOp::I32Ne, lhs, rhs);
-            let id = block.id();
-            let br_if = block.br_if(condition, id, Box::new([]));
-            block.expr(br_if);
-
-            let unreachable = block.unreachable();
-            block.expr(unreachable);
-
-            id
-        };
-        block.expr(if_negative_trap.into());
-
-        // stack_pointer = local0 + stack_size
-        let get_local = block.local_get(local);
-        let page_size = block.i32_const(PAGE_SIZE as i32);
-        let sp_base = block.binop(BinaryOp::I32Mul, get_local, page_size);
-        let stack_size = block.i32_const(stack_size as i32);
-        let sp = block.binop(BinaryOp::I32Add, sp_base, stack_size);
-        let set_stack_pointer = block.global_set(stack_pointer, sp);
-        block.expr(set_stack_pointer);
-
-        // FIXME(WebAssembly/tool-conventions#117) we probably don't want to
-        // duplicate drop with `if_zero_block` or otherwise just infer to drop
-        // all these data segments, this seems like something to synthesize in
-        // the linker...
-        for segment in module.data.iter() {
-            let drop = block.data_drop(segment.id());
-            block.expr(drop);
-        }
-    }
-    let if_nonzero_block = block.id();
-    drop(block);
-
-    // If the thread ID is zero then we can skip the update of the stack
-    // pointer as we know our stack pointer is valid. We need to initialize
-    // memory, however, so do that here.
-    let if_zero_block = {
-        let mut block = builder.if_else_block(Box::new([]), Box::new([]));
-        match memory_init {
-            InitMemory::Segments(segments) => {
-                for segment in segments {
-                    let zero = block.i32_const(0);
-                    let offset = match segment.offset {
-                        InitExpr::Global(id) => block.global_get(id),
-                        InitExpr::Value(v) => block.const_(v),
-                    };
-                    let len = block.i32_const(segment.len as i32);
-                    let init = block.memory_init(memory, segment.id, offset, zero, len);
-                    block.expr(init);
-                    let drop = block.data_drop(segment.id);
-                    block.expr(drop);
+                // stack_pointer = local0 + stack_size
+                body.local_get(local)
+                    .i32_const(PAGE_SIZE as i32)
+                    .binop(BinaryOp::I32Mul)
+                    .i32_const(stack_size as i32)
+                    .binop(BinaryOp::I32Add)
+                    .global_set(stack_pointer);
+            }
+        },
+        // If the thread ID is zero then we can skip the update of the stack
+        // pointer as we know our stack pointer is valid. We need to initialize
+        // memory, however, so do that here.
+        |body| {
+            match &memory_init {
+                InitMemory::Segments(segments) => {
+                    for segment in segments {
+                        // let zero = block.i32_const(0);
+                        match segment.offset {
+                            InitExpr::Global(id) => body.global_get(id),
+                            InitExpr::Value(v) => body.const_(v),
+                        };
+                        body.i32_const(0)
+                            .i32_const(segment.len as i32)
+                            .memory_init(memory, segment.id)
+                            .data_drop(segment.id);
+                    }
+                }
+                InitMemory::Call {
+                    wasm_init_memory, ..
+                } => {
+                    body.call(*wasm_init_memory);
                 }
             }
-            InitMemory::Call(wasm_init_memory) => {
-                let call = block.call(wasm_init_memory, Box::new([]));
-                block.expr(call);
-            }
-        }
-        block.id()
-    };
+        },
+    );
 
-    let block = builder.if_else(thread_id_is_nonzero, if_nonzero_block, if_zero_block);
-    exprs.push(block);
+    // If we have these globals then we're using the new thread local system
+    // implemented in LLVM, which means that `__wasm_init_tls` needs to be
+    // called with a chunk of memory `tls_size` bytes big to set as the threads
+    // thread-local data block.
+    if let InitMemory::Call {
+        wasm_init_tls,
+        tls_size,
+        ..
+    } = memory_init
+    {
+        let malloc = find_wbindgen_malloc(module)?;
+        body.i32_const(tls_size as i32)
+            .call(malloc)
+            .call(wasm_init_tls);
+    }
 
     // If a start function previously existed we're done with our own
     // initialization so delegate to them now.
     if let Some(id) = module.start.take() {
-        exprs.push(builder.call(id, Box::new([])));
+        body.call(id);
     }
 
     // Finish off our newly generated function.
-    let ty = module.types.add(&[], &[]);
-    let id = builder.finish(ty, Vec::new(), exprs, module);
+    let id = builder.finish(Vec::new(), &mut module.funcs);
 
     // ... and finally flag it as the new start function
     module.start = Some(id);
+
+    Ok(())
+}
+
+fn find_wbindgen_malloc(module: &Module) -> Result<FunctionId, Error> {
+    let e = module
+        .exports
+        .iter()
+        .find(|e| e.name == "__wbindgen_malloc")
+        .ok_or_else(|| format_err!("failed to find `__wbindgen_malloc`"))?;
+    match e.item {
+        walrus::ExportItem::Function(f) => Ok(f),
+        _ => bail!("`__wbindgen_malloc` wasn't a funtion"),
+    }
 }
 
 fn implement_thread_intrinsics(module: &mut Module, globals: &Globals) -> Result<(), Error> {
@@ -469,54 +537,39 @@ fn implement_thread_intrinsics(module: &mut Module, globals: &Globals) -> Result
     struct Visitor<'a> {
         map: &'a HashMap<FunctionId, Intrinsic>,
         globals: &'a Globals,
-        func: &'a mut LocalFunction,
     }
 
     module.funcs.iter_local_mut().for_each(|(_id, func)| {
-        let mut entry = func.entry_block();
-        Visitor {
-            map: &map,
-            globals,
-            func,
-        }
-        .visit_block_id_mut(&mut entry);
+        let entry = func.entry_block();
+        dfs_pre_order_mut(&mut Visitor { map: &map, globals }, func, entry);
     });
 
     impl VisitorMut for Visitor<'_> {
-        fn local_function_mut(&mut self) -> &mut LocalFunction {
-            self.func
-        }
-
-        fn visit_expr_mut(&mut self, expr: &mut Expr) {
-            let call = match expr {
-                Expr::Call(e) => e,
-                other => return other.visit_mut(self),
+        fn visit_instr_mut(&mut self, instr: &mut Instr) {
+            let call = match instr {
+                Instr::Call(e) => e,
+                _ => return,
             };
             match self.map.get(&call.func) {
                 Some(Intrinsic::GetThreadId) => {
-                    assert!(call.args.is_empty());
-                    *expr = GlobalGet {
+                    *instr = GlobalGet {
                         global: self.globals.thread_id,
                     }
                     .into();
                 }
                 Some(Intrinsic::GetTcb) => {
-                    assert!(call.args.is_empty());
-                    *expr = GlobalGet {
+                    *instr = GlobalGet {
                         global: self.globals.thread_tcb,
                     }
                     .into();
                 }
                 Some(Intrinsic::SetTcb) => {
-                    assert_eq!(call.args.len(), 1);
-                    call.args[0].visit_mut(self);
-                    *expr = GlobalSet {
+                    *instr = GlobalSet {
                         global: self.globals.thread_tcb,
-                        value: call.args[0],
                     }
                     .into();
                 }
-                None => call.visit_mut(self),
+                None => {}
             }
         }
     }

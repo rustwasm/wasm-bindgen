@@ -45,7 +45,7 @@ fn app(name: &str) {
         None => return,
     };
     let controller = Controller::new(store, Rc::downgrade(&sched));
-    if let Some(mut view) = View::new(sched.clone()) {
+    if let Some(mut view) = View::new(Rc::clone(&sched)) {
         let sch: &Rc<Scheduler> = &sched;
         view.init();
         sch.set_view(view);

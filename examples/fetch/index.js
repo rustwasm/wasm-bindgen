@@ -1,4 +1,4 @@
-const rust = import('./pkg/fetch');
+const rust = import('./pkg');
 
 rust
   .then(m => {

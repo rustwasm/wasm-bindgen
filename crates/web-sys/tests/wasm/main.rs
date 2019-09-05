@@ -1,12 +1,5 @@
 #![cfg(target_arch = "wasm32")]
 
-extern crate futures;
-extern crate js_sys;
-extern crate wasm_bindgen;
-extern crate wasm_bindgen_futures;
-extern crate wasm_bindgen_test;
-extern crate web_sys;
-
 use wasm_bindgen_test::*;
 
 wasm_bindgen_test_configure!(run_in_browser);

@@ -50,6 +50,15 @@ macro_rules! intrinsics {
                     )*
                 }
             }
+
+            /// Returns the symbol name of this intrinsic
+            pub fn name(&self) -> &'static str {
+                match self {
+                    $(
+                        Intrinsic::$name => $sym,
+                    )*
+                }
+            }
         }
     };
 }
@@ -85,6 +94,9 @@ intrinsics! {
         #[symbol = "__wbindgen_is_string"]
         #[signature = fn(ref_anyref()) -> Boolean]
         IsString,
+        #[symbol = "__wbindgen_is_falsy"]
+        #[signature = fn(ref_anyref()) -> Boolean]
+        IsFalsy,
         #[symbol = "__wbindgen_object_clone_ref"]
         #[signature = fn(ref_anyref()) -> Anyref]
         ObjectCloneRef,
@@ -145,7 +157,7 @@ intrinsics! {
         #[symbol = "__wbindgen_anyref_heap_live_count"]
         #[signature = fn() -> I32]
         AnyrefHeapLiveCount,
-        #[symbol = "__wbindgen_init_nyref_table"]
+        #[symbol = "__wbindgen_init_anyref_table"]
         #[signature = fn() -> Unit]
         InitAnyrefTable,
     }

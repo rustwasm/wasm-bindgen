@@ -385,13 +385,16 @@ impl TryToTokens for ast::Export {
             },
         };
 
-        for (i, syn::ArgCaptured { ty, .. }) in self.function.arguments.iter().enumerate() {
+        let mut argtys = Vec::new();
+        for (i, arg) in self.function.arguments.iter().enumerate() {
+            argtys.push(&arg.ty);
             let i = i + offset;
             let ident = Ident::new(&format!("arg{}", i), Span::call_site());
-            match *ty {
+            let ty = &arg.ty;
+            match &*arg.ty {
                 syn::Type::Reference(syn::TypeReference {
                     mutability: Some(_),
-                    ref elem,
+                    elem,
                     ..
                 }) => {
                     args.push(quote! {
@@ -405,7 +408,7 @@ impl TryToTokens for ast::Export {
                         let #ident = &mut *#ident;
                     });
                 }
-                syn::Type::Reference(syn::TypeReference { ref elem, .. }) => {
+                syn::Type::Reference(syn::TypeReference { elem, .. }) => {
                     args.push(quote! {
                         #ident: <#elem as wasm_bindgen::convert::RefFromWasmAbi>::Abi
                     });
@@ -450,7 +453,6 @@ impl TryToTokens for ast::Export {
             <#syn_ret as WasmDescribe>::describe();
         };
         let nargs = self.function.arguments.len() as u32;
-        let argtys = self.function.arguments.iter().map(|arg| &arg.ty);
         let attrs = &self.function.rust_attrs;
 
         let start_check = if self.start {
@@ -874,8 +876,9 @@ impl TryToTokens for ast::ImportFunction {
         let mut arguments = Vec::new();
         let ret_ident = Ident::new("_ret", Span::call_site());
 
-        for (i, syn::ArgCaptured { pat, ty, .. }) in self.function.arguments.iter().enumerate() {
-            let name = match pat {
+        for (i, arg) in self.function.arguments.iter().enumerate() {
+            let ty = &arg.ty;
+            let name = match &*arg.pat {
                 syn::Pat::Ident(syn::PatIdent {
                     by_ref: None,
                     ident,
@@ -884,7 +887,7 @@ impl TryToTokens for ast::ImportFunction {
                 }) => ident.clone(),
                 syn::Pat::Wild(_) => syn::Ident::new(&format!("__genarg_{}", i), Span::call_site()),
                 _ => bail_span!(
-                    pat,
+                    arg.pat,
                     "unsupported pattern in #[wasm_bindgen] imported function",
                 ),
             };

@@ -2,33 +2,81 @@
 
 --------------------------------------------------------------------------------
 
-## Unreleased
+## 0.2.50
 
-Released YYYY-MM-DD.
+Released 2019-08-19.
 
 ### Added
 
-* TODO (or remove section if none)
-
-### Changed
-
-* TODO (or remove section if none)
-
-### Deprecated
-
-* TODO (or remove section if none)
-
-### Removed
-
-* TODO (or remove section if none)
+* Experimental support with a `WASM_INTERFACE_TYPES=1` environment variable has
+  been added to emit a Wasm Interface Types custom section, making the output of
+  `wasm-bindgen` a single standalone WebAssembly file.
+  [#1725](https://github.com/rustwasm/wasm-bindgen/pull/1725)
 
 ### Fixed
 
-* TODO (or remove section if none)
+* Unrelated errors are now no longer accidentally swallowed by the
+  `instantiateStreaming` fallback.
+  [#1723](https://github.com/rustwasm/wasm-bindgen/pull/1723)
 
-### Security
+--------------------------------------------------------------------------------
 
-* TODO (or remove section if none)
+## 0.2.49
+
+Released 2019-08-14.
+
+### Added
+
+* Add binding for `Element.getElementsByClassName`.
+  [#1665](https://github.com/rustwasm/wasm-bindgen/pull/1665)
+
+* `PartialEq` and `Eq` are now implementd for all `web-sys` types.
+  [#1673](https://github.com/rustwasm/wasm-bindgen/pull/1673)
+
+* The `wasm-bindgen-futures` crate now has support for futures when the
+  experimental WebAssembly threading feature is enabled.
+  [#1514](https://github.com/rustwasm/wasm-bindgen/pull/1514)
+
+* A new `enable-interning` feature is available to intern strings and reduce the
+  cost of transferring strings across the JS/Rust boundary.
+  [#1612](https://github.com/rustwasm/wasm-bindgen/pull/1612)
+
+* The `wasm-bindgen` CLI has experimental support for reading native
+  `webidl-bindings` custom sections and generating JS glue. This support is in
+  addition to Rust's own custom sections and allows using `wasm-bindgen` with
+  binaries produced by other than rustc possibly.
+  [#1690](https://github.com/rustwasm/wasm-bindgen/pull/1690)
+
+* New environment variables have been added to configure webdriver startup
+  arguments.
+  [#1703](https://github.com/rustwasm/wasm-bindgen/pull/1703)
+
+* New `JsValue::{is_truthy,is_falsy}` methods are now available.
+  [#1638](https://github.com/rustwasm/wasm-bindgen/pull/1638)
+
+### Changed
+
+* JS import shims are now skipped again when they are unnecessary.
+  [#1654](https://github.com/rustwasm/wasm-bindgen/pull/1654)
+
+* WebAssembly output files now directly embed the module/name for imports if
+  supported for the target and the import, reducing JS shims even further.
+  [#1689](https://github.com/rustwasm/wasm-bindgen/pull/1689)
+
+### Fixed
+
+* Support for threads have been updated for LLVM 9 and nightly Rust.
+  [#1675](https://github.com/rustwasm/wasm-bindgen/pull/1675)
+  [#1688](https://github.com/rustwasm/wasm-bindgen/pull/1688)
+
+* The `anyref` passes in `wasm-bindgen` have seen a number of fixes to improve
+  their correctness and get the full test suite running.
+  [#1692](https://github.com/rustwasm/wasm-bindgen/pull/1692)
+  [#1704](https://github.com/rustwasm/wasm-bindgen/pull/1704)
+
+* Support for `futures-preview 0.3.0-alpha.18` has been added to
+  `wasm-bindgen-futures`.
+  [#1716](https://github.com/rustwasm/wasm-bindgen/pull/1716)
 
 --------------------------------------------------------------------------------
 

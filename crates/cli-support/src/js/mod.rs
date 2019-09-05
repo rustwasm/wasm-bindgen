@@ -6,7 +6,7 @@ use crate::webidl::{AuxValue, Binding};
 use crate::webidl::{JsImport, JsImportName, NonstandardWebidlSection, WasmBindgenAux};
 use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use walrus::{ExportId, ImportId, MemoryId, Module};
@@ -194,10 +194,7 @@ impl<'a> Context<'a> {
         // up we always remove the `start` function if one is present. The JS
         // bindings glue then manually calls the start function (if it was
         // previously present).
-        let mut needs_manual_start = false;
-        if self.config.emit_start {
-            needs_manual_start = self.unstart_start_function();
-        }
+        let needs_manual_start = self.unstart_start_function();
 
         // After all we've done, especially
         // `unexport_unused_internal_exports()`, we probably have a bunch of
@@ -248,7 +245,7 @@ impl<'a> Context<'a> {
             OutputMode::NoModules { global } => {
                 js.push_str("const __exports = {};\n");
                 js.push_str("let wasm;\n");
-                init = self.gen_init(needs_manual_start);
+                init = self.gen_init(needs_manual_start, None)?;
                 footer.push_str(&format!(
                     "self.{} = Object.assign(init, __exports);\n",
                     global
@@ -309,7 +306,7 @@ impl<'a> Context<'a> {
             // as the default export of the module.
             OutputMode::Web => {
                 self.imports_post.push_str("let wasm;\n");
-                init = self.gen_init(needs_manual_start);
+                init = self.gen_init(needs_manual_start, Some(&mut imports))?;
                 footer.push_str("export default init;\n");
             }
         }
@@ -435,7 +432,11 @@ impl<'a> Context<'a> {
         )
     }
 
-    fn gen_init(&mut self, needs_manual_start: bool) -> (String, String) {
+    fn gen_init(
+        &mut self,
+        needs_manual_start: bool,
+        mut imports: Option<&mut String>,
+    ) -> Result<(String, String), Error> {
         let module_name = "wbg";
         let mem = self.module.memories.get(self.memory);
         let (init_memory1, init_memory2) = if let Some(id) = mem.import {
@@ -495,6 +496,33 @@ impl<'a> Context<'a> {
             imports_init.push_str(";\n");
         }
 
+        let extra_modules = self
+            .module
+            .imports
+            .iter()
+            .filter(|i| !self.wasm_import_definitions.contains_key(&i.id()))
+            .filter(|i| {
+                // Importing memory is handled specially in this area, so don't
+                // consider this a candidate for importing from extra modules.
+                match i.kind {
+                    walrus::ImportKind::Memory(_) => false,
+                    _ => true,
+                }
+            })
+            .map(|i| &i.module)
+            .collect::<BTreeSet<_>>();
+        for (i, extra) in extra_modules.iter().enumerate() {
+            let imports = match &mut imports {
+                Some(list) => list,
+                None => bail!(
+                    "cannot import from modules (`{}`) with `--no-modules`",
+                    extra
+                ),
+            };
+            imports.push_str(&format!("import * as __wbg_star{} from '{}';\n", i, extra));
+            imports_init.push_str(&format!("imports['{}'] = __wbg_star{};\n", extra, i));
+        }
+
         let js = format!(
             "\
                 function init(module{init_memory_arg}) {{
@@ -502,19 +530,25 @@ impl<'a> Context<'a> {
                     let result;
                     const imports = {{}};
                     {imports_init}
-                    if (module instanceof URL || typeof module === 'string' || module instanceof Request) {{
+                    if ((typeof URL === 'function' && module instanceof URL) || typeof module === 'string' || (typeof Request === 'function' && module instanceof Request)) {{
                         {init_memory2}
                         const response = fetch(module);
                         if (typeof WebAssembly.instantiateStreaming === 'function') {{
                             result = WebAssembly.instantiateStreaming(response, imports)
                                 .catch(e => {{
-                                    console.warn(\"`WebAssembly.instantiateStreaming` failed. Assuming this is \
-                                                    because your server does not serve wasm with \
-                                                    `application/wasm` MIME type. Falling back to \
-                                                    `WebAssembly.instantiate` which is slower. Original \
-                                                    error:\\n\", e);
                                     return response
-                                        .then(r => r.arrayBuffer())
+                                        .then(r => {{
+                                            if (r.headers.get('Content-Type') != 'application/wasm') {{
+                                                console.warn(\"`WebAssembly.instantiateStreaming` failed \
+                                                                because your server does not serve wasm with \
+                                                                `application/wasm` MIME type. Falling back to \
+                                                                `WebAssembly.instantiate` which is slower. Original \
+                                                                error:\\n\", e);
+                                                return r.arrayBuffer();
+                                            }} else {{
+                                                throw e;
+                                            }}
+                                        }})
                                         .then(bytes => WebAssembly.instantiate(bytes, imports));
                                 }});
                         }} else {{
@@ -553,7 +587,7 @@ impl<'a> Context<'a> {
             imports_init = imports_init,
         );
 
-        (js, ts)
+        Ok((js, ts))
     }
 
     fn write_classes(&mut self) -> Result<(), Error> {
@@ -775,8 +809,10 @@ impl<'a> Context<'a> {
         if !self.should_write_global("pass_string_to_wasm") {
             return Ok(());
         }
+
         self.require_internal_export("__wbindgen_malloc")?;
         self.expose_wasm_vector_len();
+
         let debug = if self.config.debug {
             "
                 if (typeof(arg) !== 'string') throw new Error('expected a string argument');
@@ -796,10 +832,10 @@ impl<'a> Context<'a> {
                 "
                     function passStringToWasm(arg) {{
                         {}
-                        const size = Buffer.byteLength(arg);
-                        const ptr = wasm.__wbindgen_malloc(size);
-                        getNodeBufferMemory().write(arg, ptr, size);
-                        WASM_VECTOR_LEN = size;
+                        const len = Buffer.byteLength(arg);
+                        const ptr = wasm.__wbindgen_malloc(len);
+                        getNodeBufferMemory().write(arg, ptr, len);
+                        WASM_VECTOR_LEN = len;
                         return ptr;
                     }}
                 ",
@@ -810,7 +846,52 @@ impl<'a> Context<'a> {
         }
 
         self.expose_text_encoder()?;
+
+        // The first implementation we have for this is to use
+        // `TextEncoder#encode` which has been around for quite some time.
+        let encode = "function (arg, view) {
+            const buf = cachedTextEncoder.encode(arg);
+            view.set(buf);
+            return {
+                read: arg.length,
+                written: buf.length
+            };
+        }";
+
+        // Another possibility is to use `TextEncoder#encodeInto` which is much
+        // newer and isn't implemented everywhere yet. It's more efficient,
+        // however, becaues it allows us to elide an intermediate allocation.
+        let encode_into = "function (arg, view) {
+            return cachedTextEncoder.encodeInto(arg, view);
+        }";
+
+        // Looks like `encodeInto` doesn't currently work when the memory passed
+        // in is backed by a `SharedArrayBuffer`, so force usage of `encode` if
+        // a `SharedArrayBuffer` is in use.
+        let shared = self.module.memories.get(self.memory).shared;
+
+        match self.config.encode_into {
+            EncodeInto::Always if !shared => {
+                self.global(&format!("
+                    const encodeString = {};
+                ", encode_into));
+            }
+            EncodeInto::Test if !shared => {
+                self.global(&format!("
+                    const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
+                        ? {}
+                        : {});
+                ", encode_into, encode));
+            }
+            _ => {
+                self.global(&format!("
+                    const encodeString = {};
+                ", encode));
+            }
+        }
+
         self.expose_uint8_memory();
+        self.require_internal_export("__wbindgen_realloc")?;
 
         // A fast path that directly writes char codes into WASM memory as long
         // as it finds only ASCII characters.
@@ -821,100 +902,53 @@ impl<'a> Context<'a> {
         // This might be not very intuitive, but such calls are usually more
         // expensive in mainstream engines than staying in the JS, and
         // charCodeAt on ASCII strings is usually optimised to raw bytes.
-        let start_encoding_as_ascii = format!(
-            "
+        let encode_as_ascii = "\
+            let len = arg.length;
+            let ptr = wasm.__wbindgen_malloc(len);
+
+            const mem = getUint8Memory();
+
+            let offset = 0;
+
+            for (; offset < len; offset++) {
+                const code = arg.charCodeAt(offset);
+                if (code > 0x7F) break;
+                mem[ptr + offset] = code;
+            }
+        ";
+
+        // TODO:
+        // When converting a JS string to UTF-8, the maximum size is `arg.length * 3`,
+        // so we just allocate that. This wastes memory, so we should investigate
+        // looping over the string to calculate the precise size, or perhaps using
+        // `shrink_to_fit` on the Rust side.
+        self.global(&format!(
+            "function passStringToWasm(arg) {{
                 {}
-                let size = arg.length;
-                let ptr = wasm.__wbindgen_malloc(size);
-                let offset = 0;
-                {{
-                    const mem = getUint8Memory();
-                    for (; offset < arg.length; offset++) {{
-                        const code = arg.charCodeAt(offset);
-                        if (code > 0x7F) break;
-                        mem[ptr + offset] = code;
+                {}
+                if (offset !== len) {{
+                    if (offset !== 0) {{
+                        arg = arg.slice(offset);
                     }}
-                }}
-            ",
-            debug
-        );
-
-        // The first implementation we have for this is to use
-        // `TextEncoder#encode` which has been around for quite some time.
-        let use_encode = format!(
-            "
-                {}
-                if (offset !== arg.length) {{
-                    const buf = cachedTextEncoder.encode(arg.slice(offset));
-                    ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + buf.length);
-                    getUint8Memory().set(buf, ptr + offset);
-                    offset += buf.length;
-                }}
-                WASM_VECTOR_LEN = offset;
-                return ptr;
-            ",
-            start_encoding_as_ascii
-        );
-
-        // Another possibility is to use `TextEncoder#encodeInto` which is much
-        // newer and isn't implemented everywhere yet. It's more efficient,
-        // however, becaues it allows us to elide an intermediate allocation.
-        let use_encode_into = format!(
-            "
-                {}
-                if (offset !== arg.length) {{
-                    arg = arg.slice(offset);
-                    ptr = wasm.__wbindgen_realloc(ptr, size, size = offset + arg.length * 3);
-                    const view = getUint8Memory().subarray(ptr + offset, ptr + size);
-                    const ret = cachedTextEncoder.encodeInto(arg, view);
+                    ptr = wasm.__wbindgen_realloc(ptr, len, len = offset + arg.length * 3);
+                    const view = getUint8Memory().subarray(ptr + offset, ptr + len);
+                    const ret = encodeString(arg, view);
                     {}
                     offset += ret.written;
                 }}
+
                 WASM_VECTOR_LEN = offset;
                 return ptr;
-            ",
-            start_encoding_as_ascii,
+            }}",
+            debug,
+            encode_as_ascii,
             if self.config.debug {
                 "if (ret.read != arg.length) throw new Error('failed to pass whole string');"
             } else {
                 ""
             },
-        );
+        ));
 
-        // Looks like `encodeInto` doesn't currently work when the memory passed
-        // in is backed by a `SharedArrayBuffer`, so force usage of `encode` if
-        // a `SharedArrayBuffer` is in use.
-        let shared = self.module.memories.get(self.memory).shared;
-
-        match self.config.encode_into {
-            EncodeInto::Always if !shared => {
-                self.require_internal_export("__wbindgen_realloc")?;
-                self.global(&format!(
-                    "function passStringToWasm(arg) {{ {} }}",
-                    use_encode_into,
-                ));
-            }
-            EncodeInto::Test if !shared => {
-                self.require_internal_export("__wbindgen_realloc")?;
-                self.global(&format!(
-                    "
-                        let passStringToWasm;
-                        if (typeof cachedTextEncoder.encodeInto === 'function') {{
-                            passStringToWasm = function(arg) {{ {} }};
-                        }} else {{
-                            passStringToWasm = function(arg) {{ {} }};
-                        }}
-                    ",
-                    use_encode_into, use_encode,
-                ));
-            }
-            _ => {
-                self.global(&format!(
-                    "function passStringToWasm(arg) {{ {} }}",
-                    use_encode,
-                ));
-            }
-        }
         Ok(())
     }
 
@@ -1023,18 +1057,20 @@ impl<'a> Context<'a> {
         if !self.should_write_global("text_encoder") {
             return Ok(());
         }
-        self.expose_text_processor("TextEncoder")
+        self.expose_text_processor("TextEncoder", "('utf-8')")
     }
 
     fn expose_text_decoder(&mut self) -> Result<(), Error> {
         if !self.should_write_global("text_decoder") {
             return Ok(());
         }
-        self.expose_text_processor("TextDecoder")?;
+        // `ignoreBOM` is needed so that the BOM will be preserved when sending a string from Rust to JS
+        // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
+        self.expose_text_processor("TextDecoder", "('utf-8', { ignoreBOM: true, fatal: true })")?;
         Ok(())
     }
 
-    fn expose_text_processor(&mut self, s: &str) -> Result<(), Error> {
+    fn expose_text_processor(&mut self, s: &str, args: &str) -> Result<(), Error> {
         if self.config.mode.nodejs() {
             let name = self.import_name(&JsImport {
                 name: JsImportName::Module {
@@ -1043,7 +1079,8 @@ impl<'a> Context<'a> {
                 },
                 fields: Vec::new(),
             })?;
-            self.global(&format!("let cached{} = new {}('utf-8');", s, name));
+            self.global(&format!("let cached{} = new {}{};", s, name, args));
+
         } else if !self.config.mode.always_run_in_browser() {
             self.global(&format!(
                 "
@@ -1052,10 +1089,12 @@ impl<'a> Context<'a> {
                 ",
                 s
             ));
-            self.global(&format!("let cached{0} = new l{0}('utf-8');", s));
+            self.global(&format!("let cached{0} = new l{0}{1};", s, args));
+
         } else {
-            self.global(&format!("let cached{0} = new {0}('utf-8');", s));
+            self.global(&format!("let cached{0} = new {0}{1};", s, args));
         }
+
         Ok(())
     }
 
@@ -1104,7 +1143,8 @@ impl<'a> Context<'a> {
         //
         // If `ptr` and `len` are both `0` then that means it's `None`, in that case we rely upon
         // the fact that `getObject(0)` is guaranteed to be `undefined`.
-        self.global("
+        self.global(
+            "
             function getCachedStringFromWasm(ptr, len) {
                 if (ptr === 0) {
                     return getObject(len);
@@ -1112,7 +1152,8 @@ impl<'a> Context<'a> {
                     return getStringFromWasm(ptr, len);
                 }
             }
-        ");
+        ",
+        );
         Ok(())
     }
 
@@ -1122,7 +1163,6 @@ impl<'a> Context<'a> {
         }
         self.expose_uint32_memory();
         if self.config.anyref {
-            self.expose_anyref_table();
             self.global(
                 "
                 function getArrayJsValueFromWasm(ptr, len) {
@@ -1730,7 +1770,8 @@ impl<'a> Context<'a> {
 
             JsImportName::LocalModule { module, name } => {
                 let unique_name = generate_identifier(name, &mut self.defined_identifiers);
-                add_module_import(format!("./snippets/{}", module), name, &unique_name);
+                let module = self.config.local_module_name(module);
+                add_module_import(module, name, &unique_name);
                 unique_name
             }
 
@@ -1739,11 +1780,10 @@ impl<'a> Context<'a> {
                 snippet_idx_in_crate,
                 name,
             } => {
+                let module = self
+                    .config
+                    .inline_js_module_name(unique_crate_identifier, *snippet_idx_in_crate);
                 let unique_name = generate_identifier(name, &mut self.defined_identifiers);
-                let module = format!(
-                    "./snippets/{}/inline{}.js",
-                    unique_crate_identifier, snippet_idx_in_crate,
-                );
                 add_module_import(module, name, &unique_name);
                 unique_name
             }
@@ -1804,30 +1844,11 @@ impl<'a> Context<'a> {
         true
     }
 
-    fn expose_anyref_table(&mut self) {
-        assert!(self.config.anyref);
-        if !self.should_write_global("anyref_table") {
-            return;
-        }
-        let table = self
-            .module
-            .tables
-            .iter()
-            .find(|t| match t.kind {
-                walrus::TableKind::Anyref(_) => true,
-                _ => false,
-            })
-            .expect("failed to find anyref table in module")
-            .id();
-        self.module.exports.add("__wbg_anyref_table", table);
-    }
-
     fn expose_add_to_anyref_table(&mut self) -> Result<(), Error> {
         assert!(self.config.anyref);
         if !self.should_write_global("add_to_anyref_table") {
             return Ok(());
         }
-        self.expose_anyref_table();
         self.require_internal_export("__wbindgen_anyref_table_alloc")?;
         self.global(
             "
@@ -2014,16 +2035,11 @@ impl<'a> Context<'a> {
             .types
             .get::<ast::WebidlFunction>(binding.webidl_ty)
             .unwrap();
-        let js = match import {
+        match import {
             AuxImport::Value(AuxValue::Bare(js))
                 if !variadic && !catch && self.import_does_not_require_glue(binding, webidl) =>
             {
-                self.expose_not_defined();
-                let name = self.import_name(js)?;
-                format!(
-                    "typeof {name} == 'function' ? {name} : notDefined('{name}')",
-                    name = name,
-                )
+                self.direct_import(id, js)
             }
             _ => {
                 if assert_no_shim {
@@ -2048,11 +2064,11 @@ impl<'a> Context<'a> {
                         cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
                     },
                 )?;
-                format!("function{}", js)
+                self.wasm_import_definitions
+                    .insert(id, format!("function{}", js));
+                Ok(())
             }
-        };
-        self.wasm_import_definitions.insert(id, js);
-        Ok(())
+        }
     }
 
     fn import_does_not_require_glue(
@@ -2070,12 +2086,77 @@ impl<'a> Context<'a> {
                 &binding.outgoing,
                 wasm_ty.params(),
                 &webidl.params,
+                self.config.wasm_interface_types,
             )
             && webidl::incoming_do_not_require_glue(
                 &binding.incoming,
                 &webidl.result.into_iter().collect::<Vec<_>>(),
                 wasm_ty.results(),
+                self.config.wasm_interface_types,
             )
+    }
+
+    /// Emit a direct import directive that hooks up the `js` value specified to
+    /// the wasm import `id`.
+    fn direct_import(&mut self, id: ImportId, js: &JsImport) -> Result<(), Error> {
+        // If there's no field projection happening here and this is a direct
+        // import from an ES-looking module, then we can actually just hook this
+        // up directly in the wasm file itself. Note that this is covered in the
+        // various output formats as well:
+        //
+        // * `bundler` - they think wasm is an ES module anyway
+        // * `web` - we're sure to emit more `import` directives during
+        //   `gen_init` and we update the import object accordingly.
+        // * `nodejs` - the polyfill we have for requiring a wasm file as a node
+        //   module will naturally emit `require` directives for the module
+        //   listed on each wasm import.
+        // * `no-modules` - imports aren't allowed here anyway from other
+        //   modules and an error is generated.
+        if js.fields.len() == 0 {
+            match &js.name {
+                JsImportName::Module { module, name } => {
+                    let import = self.module.imports.get_mut(id);
+                    import.module = module.clone();
+                    import.name = name.clone();
+                    return Ok(());
+                }
+                JsImportName::LocalModule { module, name } => {
+                    let module = self.config.local_module_name(module);
+                    let import = self.module.imports.get_mut(id);
+                    import.module = module;
+                    import.name = name.clone();
+                    return Ok(());
+                }
+                JsImportName::InlineJs {
+                    unique_crate_identifier,
+                    snippet_idx_in_crate,
+                    name,
+                } => {
+                    let module = self
+                        .config
+                        .inline_js_module_name(unique_crate_identifier, *snippet_idx_in_crate);
+                    let import = self.module.imports.get_mut(id);
+                    import.module = module;
+                    import.name = name.clone();
+                    return Ok(());
+                }
+
+                // Fall through below to requiring a JS shim to create an item
+                // that we can import. These are plucked from the global
+                // environment so there's no way right now to describe these
+                // imports in an ES module-like fashion.
+                JsImportName::Global { .. } | JsImportName::VendorPrefixed { .. } => {}
+            }
+        }
+
+        self.expose_not_defined();
+        let name = self.import_name(js)?;
+        let js = format!(
+            "typeof {name} == 'function' ? {name} : notDefined('{name}')",
+            name = name,
+        );
+        self.wasm_import_definitions.insert(id, js);
+        Ok(())
     }
 
     /// Generates a JS snippet appropriate for invoking `import`.
@@ -2396,6 +2477,11 @@ impl<'a> Context<'a> {
                 format!("typeof({}) === 'string'", args[0])
             }
 
+            Intrinsic::IsFalsy => {
+                assert_eq!(args.len(), 1);
+                format!("!{}", args[0])
+            }
+
             Intrinsic::ObjectCloneRef => {
                 assert_eq!(args.len(), 1);
                 args[0].clone()
@@ -2552,17 +2638,22 @@ impl<'a> Context<'a> {
             }
 
             Intrinsic::InitAnyrefTable => {
-                self.expose_anyref_table();
-                String::from(
+                // Grow the table to insert our initial values, and then also
+                // set the 0th slot to `undefined` since that's what we've
+                // historically used for our ABI which is that the index of 0
+                // returns `undefined` for types like `None` going out.
+                let mut base = format!(
                     "
                       const table = wasm.__wbg_anyref_table;
-                      const offset = table.grow(4);
-                      table.set(offset + 0, undefined);
-                      table.set(offset + 1, null);
-                      table.set(offset + 2, true);
-                      table.set(offset + 3, false);
+                      const offset = table.grow({});
+                      table.set(0, undefined);
                     ",
-                )
+                    INITIAL_HEAP_VALUES.len(),
+                );
+                for (i, value) in INITIAL_HEAP_VALUES.iter().enumerate() {
+                    base.push_str(&format!("table.set(offset + {}, {});\n", i, value));
+                }
+                base
             }
         };
         Ok(expr)

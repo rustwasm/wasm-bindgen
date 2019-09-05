@@ -19,8 +19,8 @@
 #![deny(missing_docs)]
 
 use std::collections::{BTreeMap, HashMap, HashSet};
-use walrus::ir::ExprId;
-use walrus::{FunctionId, LocalFunction, LocalId, Module, TableId};
+use walrus::ir::Instr;
+use walrus::{FunctionId, LocalId, Module, TableId};
 
 /// A ready-to-go interpreter of a wasm module.
 ///
@@ -46,6 +46,7 @@ pub struct Interpreter {
     // used in a limited capacity.
     sp: i32,
     mem: Vec<i32>,
+    scratch: Vec<i32>,
 
     // The descriptor which we're assembling, a list of `u32` entries. This is
     // very specific to wasm-bindgen and is the purpose for the existence of
@@ -235,7 +236,6 @@ impl Interpreter {
 
         let mut frame = Frame {
             module,
-            local,
             interp: self,
             locals: BTreeMap::new(),
             done: false,
@@ -246,121 +246,96 @@ impl Interpreter {
             frame.locals.insert(*arg, *val);
         }
 
-        if block.exprs.len() > 0 {
-            for expr in block.exprs[..block.exprs.len() - 1].iter() {
-                let ret = frame.eval(*expr);
-                if frame.done {
-                    return ret;
-                }
+        for instr in block.instrs.iter() {
+            frame.eval(instr);
+            if frame.done {
+                break;
             }
         }
-        block.exprs.last().and_then(|e| frame.eval(*e))
+        self.scratch.last().cloned()
     }
 }
 
 struct Frame<'a> {
     module: &'a Module,
-    local: &'a LocalFunction,
     interp: &'a mut Interpreter,
     locals: BTreeMap<LocalId, i32>,
     done: bool,
 }
 
 impl Frame<'_> {
-    fn local(&self, id: LocalId) -> i32 {
-        self.locals.get(&id).cloned().unwrap_or(0)
-    }
-
-    fn eval(&mut self, expr: ExprId) -> Option<i32> {
+    fn eval(&mut self, instr: &Instr) {
         use walrus::ir::*;
 
-        match self.local.get(expr) {
-            Expr::Const(c) => match c.value {
-                Value::I32(n) => Some(n),
+        let stack = &mut self.interp.scratch;
+
+        match instr {
+            Instr::Const(c) => match c.value {
+                Value::I32(n) => stack.push(n),
                 _ => panic!("non-i32 constant"),
             },
-            Expr::LocalGet(e) => Some(self.local(e.local)),
-            Expr::LocalSet(e) => {
-                let val = self.eval(e.value).expect("must eval to i32");
+            Instr::LocalGet(e) => stack.push(self.locals.get(&e.local).cloned().unwrap_or(0)),
+            Instr::LocalSet(e) => {
+                let val = stack.pop().unwrap();
                 self.locals.insert(e.local, val);
-                None
             }
 
             // Blindly assume all globals are the stack pointer
-            Expr::GlobalGet(_) => Some(self.interp.sp),
-            Expr::GlobalSet(e) => {
-                let val = self.eval(e.value).expect("must eval to i32");
+            Instr::GlobalGet(_) => stack.push(self.interp.sp),
+            Instr::GlobalSet(_) => {
+                let val = stack.pop().unwrap();
                 self.interp.sp = val;
-                None
             }
 
             // Support simple arithmetic, mainly for the stack pointer
             // manipulation
-            Expr::Binop(e) => {
-                let lhs = self.eval(e.lhs).expect("must eval to i32");
-                let rhs = self.eval(e.rhs).expect("must eval to i32");
-                match e.op {
-                    BinaryOp::I32Sub => Some(lhs - rhs),
-                    BinaryOp::I32Add => Some(lhs + rhs),
+            Instr::Binop(e) => {
+                let rhs = stack.pop().unwrap();
+                let lhs = stack.pop().unwrap();
+                stack.push(match e.op {
+                    BinaryOp::I32Sub => lhs - rhs,
+                    BinaryOp::I32Add => lhs + rhs,
                     op => panic!("invalid binary op {:?}", op),
-                }
+                });
             }
 
             // Support small loads/stores to the stack. These show up in debug
             // mode where there's some traffic on the linear stack even when in
             // theory there doesn't need to be.
-            Expr::Load(e) => {
-                let address = self.eval(e.address).expect("must eval to i32");
+            Instr::Load(e) => {
+                let address = stack.pop().unwrap();
                 let address = address as u32 + e.arg.offset;
                 assert!(address % 4 == 0);
-                Some(self.interp.mem[address as usize / 4])
+                stack.push(self.interp.mem[address as usize / 4])
             }
-            Expr::Store(e) => {
-                let address = self.eval(e.address).expect("must eval to i32");
-                let value = self.eval(e.value).expect("must eval to i32");
+            Instr::Store(e) => {
+                let value = stack.pop().unwrap();
+                let address = stack.pop().unwrap();
                 let address = address as u32 + e.arg.offset;
                 assert!(address % 4 == 0);
                 self.interp.mem[address as usize / 4] = value;
-                None
             }
 
-            Expr::Return(e) => {
+            Instr::Return(_) => {
                 log::debug!("return");
                 self.done = true;
-                assert!(e.values.len() <= 1);
-                e.values.get(0).and_then(|id| self.eval(*id))
             }
 
-            Expr::Drop(e) => {
+            Instr::Drop(_) => {
                 log::debug!("drop");
-                self.eval(e.expr);
-                None
+                stack.pop().unwrap();
             }
 
-            Expr::WithSideEffects(e) => {
-                log::debug!("side effects");
-                for x in e.before.iter() {
-                    self.eval(*x);
-                }
-                let ret = self.eval(e.value);
-                for x in e.after.iter() {
-                    self.eval(*x);
-                }
-                return ret;
-            }
-
-            Expr::Call(e) => {
+            Instr::Call(e) => {
                 // If this function is calling the `__wbindgen_describe`
                 // function, which we've precomputed the id for, then
                 // it's telling us about the next `u32` element in the
                 // descriptor to return. We "call" the imported function
                 // here by directly inlining it.
                 if Some(e.func) == self.interp.describe_id {
-                    assert_eq!(e.args.len(), 1);
-                    let val = self.eval(e.args[0]).expect("must eval to i32");
+                    let val = stack.pop().unwrap();
                     log::debug!("__wbindgen_describe({})", val);
                     self.interp.descriptor.push(val as u32);
-                    None
 
                 // If this function is calling the `__wbindgen_describe_closure`
                 // function then it's similar to the above, except there's a
@@ -368,21 +343,20 @@ impl Frame<'_> {
                 // previous arguments because they shouldn't have any side
                 // effects we're interested in.
                 } else if Some(e.func) == self.interp.describe_closure_id {
-                    assert_eq!(e.args.len(), 3);
-                    let val = self.eval(e.args[2]).expect("must eval to i32");
+                    let val = stack.pop().unwrap();
+                    drop(stack.pop());
+                    drop(stack.pop());
                     log::debug!("__wbindgen_describe_closure({})", val);
                     self.interp.descriptor_table_idx = Some(val as u32);
-                    Some(0)
+                    stack.push(0)
 
                 // ... otherwise this is a normal call so we recurse.
                 } else {
-                    let args = e
-                        .args
-                        .iter()
-                        .map(|e| self.eval(*e).expect("must eval to i32"))
+                    let ty = self.module.types.get(self.module.funcs.get(e.func).ty());
+                    let args = (0..ty.params().len())
+                        .map(|_| stack.pop().unwrap())
                         .collect::<Vec<_>>();
                     self.interp.call(e.func, self.module, &args);
-                    None
                 }
             }
 

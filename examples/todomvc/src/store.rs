@@ -60,17 +60,16 @@ impl Store {
         let array = js_sys::Array::new();
         for item in self.data.iter() {
             let child = js_sys::Array::new();
-            let s = item.title.clone();
-            child.push(&JsValue::from(&s));
+            child.push(&JsValue::from(&item.title));
             child.push(&JsValue::from(item.completed));
-            child.push(&JsValue::from(item.id.to_string()));
+            child.push(&JsValue::from(&item.id));
 
             array.push(&JsValue::from(child));
         }
         if let Ok(storage_string) = JSON::stringify(&JsValue::from(array)) {
-            let storage_string: String = storage_string.to_string().into();
+            let storage_string: String = storage_string.into();
             self.local_storage
-                .set_item(&self.name, storage_string.as_str())
+                .set_item(&self.name, &storage_string)
                 .unwrap();
         }
     }
@@ -86,7 +85,7 @@ impl Store {
         Some(
             self.data
                 .iter()
-                .filter(|todo| query.matches(*todo))
+                .filter(|todo| query.matches(todo))
                 .collect(),
         )
     }

@@ -5,37 +5,34 @@ like fetching resources and/or other bits and pieces. To accommodate this
 asynchronous tests are also supported through the `futures` and
 `wasm-bindgen-futures` crates.
 
-To write an asynchronous test:
-
-1. Change `#[wasm_bindgen_test]` into `#[wasm_bindgen_test(async)]`
-
-2. Change the return type of the test function to `impl Future<Item = (), Error
-   = JsValue>`
-
-The test will pass if the future resolves without panicking or returning an
-error, and otherwise the test will fail.
-
-## Example
+Writing an asynchronous test is pretty simple, just use an `async` function!
+You'll also likely want to use the `wasm-bindgen-futures` crate to convert JS
+promises to Rust futures.
 
 ```rust
-extern crate futures;
-extern crate js_sys;
-extern crate wasm_bindgen_futures;
-
-use futures::Future;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
-#[wasm_bindgen_test(async)]
-fn my_async_test() -> impl Future<Item = (), Error = JsValue> {
+#[wasm_bindgen_test]
+async fn my_async_test() {
     // Create a promise that is ready on the next tick of the micro task queue.
     let promise = js_sys::Promise::resolve(&JsValue::from(42));
 
     // Convert that promise into a future and make the test wait on it.
-    JsFuture::from(promise)
-        .map(|x| {
-            assert_eq!(x, 42);
-        })
-        .map_err(|_| unreachable!())
+    let x = JsFuture::from(promise).await.unwrap();:
+    assert_eq!(x, 42);
 }
 ```
+
+## Rust compiler compatibility
+
+Note that `async` functions are only supported in stable from Rust 1.39.0 and
+beyond. As of the time of this writing (2019-09-05) this is the Nightly channel
+of Rust.
+
+If you're using the `futures` crate from crates.io in its 0.1 version then
+you'll want to use the `0.3.*` version of `wasm-bindgen-futures` and the `0.2.8`
+version of `wasm-bindgen-test`. In those modes you'll also need to use
+`#[wasm_bindgen_test(async)]` instead of using an `async` function. In general
+we'd recommend using the nightly version with `async` since the user experience
+is much improved!

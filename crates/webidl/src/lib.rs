@@ -121,7 +121,7 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
     for import in program.imports.iter_mut() {
         if let ast::ImportKind::Type(t) = &mut import.kind {
             t.extends.retain(|n| {
-                let ident = &n.segments.last().unwrap().value().ident;
+                let ident = &n.segments.last().unwrap().ident;
                 first_pass_record.builtin_idents.contains(ident) || filter(&ident.to_string())
             });
         }

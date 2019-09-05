@@ -18,9 +18,8 @@
 use failure::{bail, format_err, Error};
 use std::cmp;
 use std::collections::{BTreeMap, HashMap, HashSet};
-use std::mem;
 use walrus::ir::*;
-use walrus::{ExportId, ImportId};
+use walrus::{ExportId, ImportId, TypeId};
 use walrus::{FunctionId, GlobalId, InitExpr, Module, TableId, ValType};
 
 // must be kept in sync with src/lib.rs and ANYREF_HEAP_START
@@ -198,19 +197,20 @@ impl Context {
         //          (tee_local 1 (call $heap_alloc))
         //          (table.get (local.get 0)))
         //      (local.get 1))
-        let mut builder = walrus::FunctionBuilder::new();
+        let mut builder =
+            walrus::FunctionBuilder::new(&mut module.types, &[ValType::I32], &[ValType::I32]);
         let arg = module.locals.add(ValType::I32);
         let local = module.locals.add(ValType::I32);
 
-        let alloc = builder.call(heap_alloc, Box::new([]));
-        let tee = builder.local_tee(local, alloc);
-        let get_arg = builder.local_get(arg);
-        let get_table = builder.table_get(table, get_arg);
-        let set_table = builder.table_set(table, tee, get_table);
-        let get_local = builder.local_get(local);
+        let mut body = builder.func_body();
+        body.call(heap_alloc)
+            .local_tee(local)
+            .local_get(arg)
+            .table_get(table)
+            .table_set(table)
+            .local_get(local);
 
-        let ty = module.types.add(&[ValType::I32], &[ValType::I32]);
-        let clone_ref = builder.finish(ty, vec![arg], vec![set_table, get_local], module);
+        let clone_ref = builder.finish(vec![arg], &mut module.funcs);
         let name = "__wbindgen_object_clone_ref".to_string();
         module.funcs.get_mut(clone_ref).name = Some(name);
 
@@ -253,10 +253,6 @@ impl Transform<'_> {
         // Perform all instruction transformations to rewrite calls between
         // functions and make sure everything is still hooked up right.
         self.rewrite_calls(module);
-
-        // Inject initialization routine to set up default slots in the table
-        // (things like null/undefined/true/false)
-        self.inject_initialization(module);
 
         Ok(())
     }
@@ -313,7 +309,7 @@ impl Transform<'_> {
                 None => continue,
             };
 
-            let shim = self.append_shim(
+            let (shim, anyref_ty) = self.append_shim(
                 f,
                 &import.name,
                 func,
@@ -322,6 +318,10 @@ impl Transform<'_> {
                 &mut module.locals,
             );
             self.import_map.insert(f, shim);
+            match &mut module.funcs.get_mut(f).kind {
+                walrus::FunctionKind::Import(f) => f.ty = anyref_ty,
+                _ => unreachable!(),
+            }
         }
     }
 
@@ -336,7 +336,7 @@ impl Transform<'_> {
                 Some(s) => s,
                 None => continue,
             };
-            let shim = self.append_shim(
+            let (shim, _anyref_ty) = self.append_shim(
                 f,
                 &export.name,
                 function,
@@ -366,7 +366,7 @@ impl Transform<'_> {
         // which places elements at the end.
         while let Some((idx, function)) = self.cx.elements.remove(&(kind.elements.len() as u32)) {
             let target = kind.elements[idx as usize].unwrap();
-            let shim = self.append_shim(
+            let (shim, _anyref_ty) = self.append_shim(
                 target,
                 &format!("closure{}", idx),
                 function,
@@ -394,15 +394,17 @@ impl Transform<'_> {
         types: &mut walrus::ModuleTypes,
         funcs: &mut walrus::ModuleFunctions,
         locals: &mut walrus::ModuleLocals,
-    ) -> FunctionId {
+    ) -> (FunctionId, TypeId) {
         let target = funcs.get_mut(shim_target);
-        let (is_export, ty) = match &mut target.kind {
-            walrus::FunctionKind::Import(f) => (false, &mut f.ty),
-            walrus::FunctionKind::Local(f) => (true, &mut f.ty),
+        let (is_export, ty) = match &target.kind {
+            walrus::FunctionKind::Import(f) => (false, f.ty),
+            walrus::FunctionKind::Local(f) => (true, f.ty()),
             _ => unreachable!(),
         };
 
-        let target_ty = types.get(*ty);
+        let target_ty = types.get(ty);
+        let target_ty_params = target_ty.params().to_vec();
+        let target_ty_results = target_ty.results().to_vec();
 
         // Learn about the various operations we're doing up front. Afterwards
         // we'll have a better idea bout what sort of code we're gonna be
@@ -456,14 +458,22 @@ impl Transform<'_> {
         // If we're an import, then our shim is what the Rust code calls, which
         // means it'll have the original signature. The existing import's
         // signature, however, is transformed to be an anyref signature.
-        let shim_ty = if is_export {
-            anyref_ty
-        } else {
-            mem::replace(ty, anyref_ty)
-        };
+        let shim_ty = if is_export { anyref_ty } else { ty };
 
-        let mut builder = walrus::FunctionBuilder::new();
-        let mut before = Vec::new();
+        let mut builder = walrus::FunctionBuilder::new(
+            types,
+            if is_export {
+                &param_tys
+            } else {
+                &target_ty_params
+            },
+            if is_export {
+                &new_ret
+            } else {
+                &target_ty_results
+            },
+        );
+        let mut body = builder.func_body();
         let params = types
             .get(shim_ty)
             .params()
@@ -480,60 +490,63 @@ impl Transform<'_> {
 
         // Update our stack pointer if there's any borrowed anyref objects.
         if anyref_stack > 0 {
-            let sp = builder.global_get(self.stack_pointer);
-            let size = builder.const_(Value::I32(anyref_stack));
-            let new_sp = builder.binop(BinaryOp::I32Sub, sp, size);
-            let tee = builder.local_tee(fp, new_sp);
-            before.push(builder.global_set(self.stack_pointer, tee));
+            body.global_get(self.stack_pointer)
+                .const_(Value::I32(anyref_stack))
+                .binop(BinaryOp::I32Sub)
+                .local_tee(fp)
+                .global_set(self.stack_pointer);
         }
         let mut next_stack_offset = 0;
 
-        let mut args = Vec::new();
         for (i, convert) in param_convert.iter().enumerate() {
-            let local = builder.local_get(params[i]);
-            args.push(match *convert {
-                Convert::None => local,
+            match *convert {
+                Convert::None => {
+                    body.local_get(params[i]);
+                }
                 Convert::Load { owned: true } => {
                     // load the anyref onto the stack, then afterwards
                     // deallocate our index, leaving the anyref on the stack.
-                    let get = builder.table_get(self.table, local);
-                    let free = builder.call(self.heap_dealloc, Box::new([local]));
-                    builder.with_side_effects(Vec::new(), get, vec![free])
+                    body.local_get(params[i])
+                        .table_get(self.table)
+                        .local_get(params[i])
+                        .call(self.heap_dealloc);
                 }
-                Convert::Load { owned: false } => builder.table_get(self.table, local),
+                Convert::Load { owned: false } => {
+                    body.local_get(params[i]).table_get(self.table);
+                }
                 Convert::Store { owned: true } => {
                     // Allocate space for the anyref, store it, and then leave
                     // the index of the allocated anyref on the stack.
-                    let alloc = builder.call(self.heap_alloc, Box::new([]));
-                    let tee = builder.local_tee(scratch_i32, alloc);
-                    let store = builder.table_set(self.table, tee, local);
-                    let get = builder.local_get(scratch_i32);
-                    builder.with_side_effects(vec![store], get, Vec::new())
+                    body.call(self.heap_alloc)
+                        .local_tee(scratch_i32)
+                        .local_get(params[i])
+                        .table_set(self.table)
+                        .local_get(scratch_i32);
                 }
                 Convert::Store { owned: false } => {
                     // Store an anyref at an offset from our function's stack
                     // pointer frame.
-                    let get_fp = builder.local_get(fp);
-                    next_stack_offset += 1;
-                    let (index, idx_local) = if next_stack_offset == 1 {
-                        (get_fp, fp)
+                    body.local_get(fp);
+                    let idx_local = if next_stack_offset == 0 {
+                        fp
                     } else {
-                        let rhs = builder.i32_const(next_stack_offset);
-                        let add = builder.binop(BinaryOp::I32Add, get_fp, rhs);
-                        (builder.local_tee(scratch_i32, add), scratch_i32)
+                        body.i32_const(next_stack_offset)
+                            .binop(BinaryOp::I32Add)
+                            .local_tee(scratch_i32);
+                        scratch_i32
                     };
-                    let store = builder.table_set(self.table, index, local);
-                    let get = builder.local_get(idx_local);
-                    builder.with_side_effects(vec![store], get, Vec::new())
+                    next_stack_offset += 1;
+                    body.local_get(params[i])
+                        .table_set(self.table)
+                        .local_get(idx_local);
                 }
-            });
+            }
         }
 
         // Now that we've converted all the arguments, call the original
         // function. This may be either an import or an export which we're
         // wrapping.
-        let mut result = builder.call(shim_target, args.into_boxed_slice());
-        let mut after = Vec::new();
+        body.call(shim_target);
 
         // If an anyref value is returned, then we need to be sure to apply
         // special treatment to convert it to an i32 as well. Note that only
@@ -544,20 +557,20 @@ impl Transform<'_> {
                 // We're an export so we have an i32 on the stack and need to
                 // convert it to an anyref, basically by doing the same as an
                 // owned load above: get the value then deallocate our slot.
-                let tee = builder.local_tee(scratch_i32, result);
-                result = builder.table_get(self.table, tee);
-                let get_local = builder.local_get(scratch_i32);
-                after.push(builder.call(self.heap_dealloc, Box::new([get_local])));
+                body.local_tee(scratch_i32)
+                    .table_get(self.table)
+                    .local_get(scratch_i32)
+                    .call(self.heap_dealloc);
             } else {
                 // Imports are the opposite, we have any anyref on the stack
                 // and convert it to an i32 by allocating space for it and
                 // storing it there.
-                before.push(builder.local_set(scratch_anyref, result));
-                let alloc = builder.call(self.heap_alloc, Box::new([]));
-                let tee = builder.local_tee(scratch_i32, alloc);
-                let get = builder.local_get(scratch_anyref);
-                before.push(builder.table_set(self.table, tee, get));
-                result = builder.local_get(scratch_i32);
+                body.local_set(scratch_anyref)
+                    .call(self.heap_alloc)
+                    .local_tee(scratch_i32)
+                    .local_get(scratch_anyref)
+                    .table_set(self.table)
+                    .local_get(scratch_i32);
             }
         }
 
@@ -571,32 +584,28 @@ impl Transform<'_> {
         // TODO: use `table.fill` once that's spec'd
         if anyref_stack > 0 {
             for i in 0..anyref_stack {
-                let get_fp = builder.local_get(fp);
-                let index = if i > 0 {
-                    let offset = builder.i32_const(i);
-                    builder.binop(BinaryOp::I32Add, get_fp, offset)
-                } else {
-                    get_fp
-                };
-                let null = builder.ref_null();
-                after.push(builder.table_set(self.table, index, null));
+                body.local_get(fp);
+                if i > 0 {
+                    body.i32_const(i).binop(BinaryOp::I32Add);
+                }
+                body.ref_null();
+                body.table_set(self.table);
             }
 
-            let get_fp = builder.local_get(fp);
-            let size = builder.i32_const(anyref_stack);
-            let new_sp = builder.binop(BinaryOp::I32Add, get_fp, size);
-            after.push(builder.global_set(self.stack_pointer, new_sp));
+            body.local_get(fp)
+                .i32_const(anyref_stack)
+                .binop(BinaryOp::I32Add)
+                .global_set(self.stack_pointer);
         }
 
         // Create the final expression node and then finish the function builder
         // with a fresh type we've been calculating so far. Give the function a
         // nice name for debugging and then we're good to go!
-        let expr = builder.with_side_effects(before, result, after);
-        let id = builder.finish_parts(shim_ty, params, vec![expr], types, funcs);
+        let id = builder.finish(params, funcs);
         let name = format!("{}_anyref_shim", name);
         funcs.get_mut(id).name = Some(name);
         self.shims.insert(id);
-        return id;
+        (id, anyref_ty)
     }
 
     fn rewrite_calls(&mut self, module: &mut Module) {
@@ -604,96 +613,61 @@ impl Transform<'_> {
             if self.shims.contains(&id) {
                 continue;
             }
-            let mut entry = func.entry_block();
-            Rewrite {
-                func,
-                xform: self,
-                replace: None,
-            }
-            .visit_block_id_mut(&mut entry);
+            let entry = func.entry_block();
+            dfs_pre_order_mut(&mut Rewrite { xform: self }, func, entry);
         }
 
         struct Rewrite<'a, 'b> {
-            func: &'a mut walrus::LocalFunction,
             xform: &'a Transform<'b>,
-            replace: Option<ExprId>,
         }
 
         impl VisitorMut for Rewrite<'_, '_> {
-            fn local_function_mut(&mut self) -> &mut walrus::LocalFunction {
-                self.func
-            }
-
-            fn visit_expr_id_mut(&mut self, expr: &mut ExprId) {
-                expr.visit_mut(self);
-                if let Some(id) = self.replace.take() {
-                    *expr = id;
-                }
-            }
-
-            fn visit_call_mut(&mut self, e: &mut Call) {
-                e.visit_mut(self);
-                let intrinsic = match self.xform.intrinsic_map.get(&e.func) {
-                    Some(f) => f,
-                    None => {
-                        // If this wasn't a call of an intrinsic, but it was a
-                        // call of one of our old import functions then we
-                        // switch the functions we're calling here.
-                        if let Some(f) = self.xform.import_map.get(&e.func) {
-                            e.func = *f;
+            fn start_instr_seq_mut(&mut self, seq: &mut InstrSeq) {
+                for i in (0..seq.instrs.len()).rev() {
+                    let call = match &mut seq.instrs[i] {
+                        Instr::Call(call) => call,
+                        _ => continue,
+                    };
+                    let intrinsic = match self.xform.intrinsic_map.get(&call.func) {
+                        Some(f) => f,
+                        None => {
+                            // If this wasn't a call of an intrinsic, but it was a
+                            // call of one of our old import functions then we
+                            // switch the functions we're calling here.
+                            if let Some(f) = self.xform.import_map.get(&call.func) {
+                                call.func = *f;
+                            }
+                            continue;
                         }
-                        return;
-                    }
-                };
+                    };
 
-                let builder = self.func.builder_mut();
-
-                match intrinsic {
-                    Intrinsic::TableGrow => {
-                        assert_eq!(e.args.len(), 1);
-                        let delta = e.args[0];
-                        let null = builder.ref_null();
-                        let grow = builder.table_grow(self.xform.table, delta, null);
-                        self.replace = Some(grow);
+                    match intrinsic {
+                        Intrinsic::TableGrow => {
+                            // Switch this to a `table.grow` instruction...
+                            seq.instrs[i] = TableGrow {
+                                table: self.xform.table,
+                            }
+                            .into();
+                            // ... and then insert a `ref.null` before the
+                            // preceding instruction as the value to grow the
+                            // table with.
+                            seq.instrs.insert(i - 1, RefNull {}.into());
+                        }
+                        Intrinsic::TableSetNull => {
+                            // Switch this to a `table.set` instruction...
+                            seq.instrs[i] = TableSet {
+                                table: self.xform.table,
+                            }
+                            .into();
+                            // ... and then insert a `ref.null` as the
+                            // preceding instruction
+                            seq.instrs.insert(i, RefNull {}.into());
+                        }
+                        Intrinsic::DropRef => call.func = self.xform.heap_dealloc,
+                        Intrinsic::CloneRef => call.func = self.xform.clone_ref,
                     }
-                    Intrinsic::TableSetNull => {
-                        assert_eq!(e.args.len(), 1);
-                        let index = e.args[0];
-                        let null = builder.ref_null();
-                        let set = builder.table_set(self.xform.table, index, null);
-                        self.replace = Some(set);
-                    }
-                    Intrinsic::DropRef => e.func = self.xform.heap_dealloc,
-                    Intrinsic::CloneRef => e.func = self.xform.clone_ref,
                 }
             }
         }
-    }
-
-    // Ensure that the `start` function for this module calls the
-    // `__wbindgen_init_anyref_table` function. This'll ensure that all
-    // instances of this module have the initial slots of the anyref table
-    // initialized correctly.
-    fn inject_initialization(&mut self, module: &mut Module) {
-        let ty = module.types.add(&[], &[]);
-        let import = module.add_import_func(
-            "__wbindgen_placeholder__",
-            "__wbindgen_init_anyref_table",
-            ty,
-        );
-
-        let prev_start = match module.start {
-            Some(f) => f,
-            None => {
-                module.start = Some(import);
-                return;
-            }
-        };
-
-        let mut builder = walrus::FunctionBuilder::new();
-        let call_init = builder.call(import, Box::new([]));
-        let call_prev = builder.call(prev_start, Box::new([]));
-        let new_start = builder.finish(ty, Vec::new(), vec![call_init, call_prev], module);
-        module.start = Some(new_start);
     }
 }

@@ -87,14 +87,14 @@
 // Overall this is all somewhat in flux as it's pretty new, and feedback is
 // always of course welcome!
 
+use console_error_panic_hook;
+use js_sys::{Array, Function, Promise};
 use std::cell::{Cell, RefCell};
 use std::fmt;
+use std::future::Future;
+use std::pin::Pin;
 use std::rc::Rc;
-
-use console_error_panic_hook;
-use futures::future;
-use futures::prelude::*;
-use js_sys::{Array, Function, Promise};
+use std::task::{self, Poll};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::future_to_promise;
 
@@ -157,7 +157,7 @@ struct State {
 /// future is polled.
 struct Test {
     name: String,
-    future: Box<dyn Future<Item = (), Error = JsValue>>,
+    future: Pin<Box<dyn Future<Output = Result<(), JsValue>>>>,
     output: Rc<RefCell<Output>>,
 }
 
@@ -286,10 +286,11 @@ impl Context {
         // Now that we've collected all our tests we wrap everything up in a
         // future to actually do all the processing, and pass it out to JS as a
         // `Promise`.
-        let future = ExecuteTests(self.state.clone())
-            .map(JsValue::from)
-            .map_err(|e| match e {});
-        future_to_promise(future)
+        let state = self.state.clone();
+        future_to_promise(async {
+            let passed = ExecuteTests(state).await;
+            Ok(JsValue::from(passed))
+        })
     }
 }
 
@@ -358,7 +359,7 @@ impl Context {
     /// Entry point for a synchronous test in wasm. The `#[wasm_bindgen_test]`
     /// macro generates invocations of this method.
     pub fn execute_sync(&self, name: &str, f: impl FnOnce() + 'static) {
-        self.execute(name, future::lazy(|| Ok(f())));
+        self.execute(name, async { f() });
     }
 
     /// Entry point for an asynchronous in wasm. The
@@ -366,12 +367,12 @@ impl Context {
     /// method.
     pub fn execute_async<F>(&self, name: &str, f: impl FnOnce() -> F + 'static)
     where
-        F: Future<Item = (), Error = JsValue> + 'static,
+        F: Future<Output = ()> + 'static,
     {
-        self.execute(name, future::lazy(f))
+        self.execute(name, async { f().await })
     }
 
-    fn execute(&self, name: &str, test: impl Future<Item = (), Error = JsValue> + 'static) {
+    fn execute(&self, name: &str, test: impl Future<Output = ()> + 'static) {
         // If our test is filtered out, record that it was filtered and move
         // on, nothing to do here.
         let filter = self.state.filter.borrow();
@@ -392,7 +393,7 @@ impl Context {
         };
         self.state.remaining.borrow_mut().push(Test {
             name: name.to_string(),
-            future: Box::new(future),
+            future: Pin::from(Box::new(future)),
             output,
         });
     }
@@ -400,23 +401,19 @@ impl Context {
 
 struct ExecuteTests(Rc<State>);
 
-enum Never {}
-
 impl Future for ExecuteTests {
-    type Item = bool;
-    type Error = Never;
+    type Output = bool;
 
-    fn poll(&mut self) -> Poll<bool, Never> {
+    fn poll(self: Pin<&mut Self>, cx: &mut task::Context) -> Poll<bool> {
         let mut running = self.0.running.borrow_mut();
         let mut remaining = self.0.remaining.borrow_mut();
 
         // First up, try to make progress on all active tests. Remove any
         // finished tests.
         for i in (0..running.len()).rev() {
-            let result = match running[i].future.poll() {
-                Ok(Async::Ready(_jsavl)) => Ok(()),
-                Ok(Async::NotReady) => continue,
-                Err(e) => Err(e),
+            let result = match running[i].future.as_mut().poll(cx) {
+                Poll::Ready(result) => result,
+                Poll::Pending => continue,
             };
             let test = running.remove(i);
             self.0.log_test_result(test, result);
@@ -431,13 +428,12 @@ impl Future for ExecuteTests {
                 Some(test) => test,
                 None => break,
             };
-            let result = match test.future.poll() {
-                Ok(Async::Ready(())) => Ok(()),
-                Ok(Async::NotReady) => {
+            let result = match test.future.as_mut().poll(cx) {
+                Poll::Ready(result) => result,
+                Poll::Pending => {
                     running.push(test);
                     continue;
                 }
-                Err(e) => Err(e),
             };
             self.0.log_test_result(test, result);
         }
@@ -445,7 +441,7 @@ impl Future for ExecuteTests {
         // Tests are still executing, we're registered to get a notification,
         // keep going.
         if running.len() != 0 {
-            return Ok(Async::NotReady);
+            return Poll::Pending;
         }
 
         // If there are no tests running then we must have finished everything,
@@ -454,7 +450,7 @@ impl Future for ExecuteTests {
 
         self.0.print_results();
         let all_passed = self.0.failures.borrow().len() == 0;
-        Ok(Async::Ready(all_passed))
+        Poll::Ready(all_passed)
     }
 }
 
@@ -561,17 +557,28 @@ extern "C" {
     fn __wbg_test_invoke(f: &mut dyn FnMut()) -> Result<(), JsValue>;
 }
 
-impl<F: Future<Error = JsValue>> Future for TestFuture<F> {
-    type Item = F::Item;
-    type Error = F::Error;
+impl<F: Future> Future for TestFuture<F> {
+    type Output = Result<F::Output, JsValue>;
 
-    fn poll(&mut self) -> Poll<F::Item, F::Error> {
-        let test = &mut self.test;
+    fn poll(self: Pin<&mut Self>, cx: &mut task::Context) -> Poll<Self::Output> {
+        let output = self.output.clone();
+        // Use `new_unchecked` here to project our own pin, and we never
+        // move `test` so this should be safe
+        let test = unsafe { Pin::map_unchecked_mut(self, |me| &mut me.test) };
         let mut future_output = None;
-        CURRENT_OUTPUT.set(&self.output, || {
-            __wbg_test_invoke(&mut || future_output = Some(test.poll()))
-        })?;
-        future_output.unwrap()
+        let result = CURRENT_OUTPUT.set(&output, || {
+            let mut test = Some(test);
+            __wbg_test_invoke(&mut || {
+                let test = test.take().unwrap_throw();
+                future_output = Some(test.poll(cx))
+            })
+        });
+        match (result, future_output) {
+            (_, Some(Poll::Ready(e))) => Poll::Ready(Ok(e)),
+            (_, Some(Poll::Pending)) => Poll::Pending,
+            (Err(e), _) => Poll::Ready(Err(e)),
+            (Ok(_), None) => wasm_bindgen::throw_str("invalid poll state"),
+        }
     }
 }
 
