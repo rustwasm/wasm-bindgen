@@ -1,4 +1,3 @@
-use futures::Future;
 use js_sys::*;
 use wasm_bindgen::{prelude::*, JsCast};
 use wasm_bindgen_futures::JsFuture;
@@ -38,32 +37,25 @@ fn validate() {
     assert!(WebAssembly::validate(&get_bad_type_wasm()).is_err());
 }
 
-#[wasm_bindgen_test(async)]
-fn compile_compile_error() -> impl Future<Item = (), Error = JsValue> {
+#[wasm_bindgen_test]
+async fn compile_compile_error() {
     let p = WebAssembly::compile(&get_invalid_wasm());
-    JsFuture::from(p).map(|_| unreachable!()).or_else(|e| {
-        assert!(e.is_instance_of::<WebAssembly::CompileError>());
-        Ok(())
-    })
+    let e = JsFuture::from(p).await.unwrap_err();
+    assert!(e.is_instance_of::<WebAssembly::CompileError>());
 }
 
-#[wasm_bindgen_test(async)]
-fn compile_type_error() -> impl Future<Item = (), Error = JsValue> {
+#[wasm_bindgen_test]
+async fn compile_type_error() {
     let p = WebAssembly::compile(&get_bad_type_wasm());
-    JsFuture::from(p).map(|_| unreachable!()).or_else(|e| {
-        assert!(e.is_instance_of::<TypeError>());
-        Ok(())
-    })
+    let e = JsFuture::from(p).await.unwrap_err();
+    assert!(e.is_instance_of::<TypeError>());
 }
 
-#[wasm_bindgen_test(async)]
-fn compile_valid() -> impl Future<Item = (), Error = JsValue> {
+#[wasm_bindgen_test]
+async fn compile_valid() {
     let p = WebAssembly::compile(&get_valid_wasm());
-    JsFuture::from(p)
-        .map(|module| {
-            assert!(module.is_instance_of::<WebAssembly::Module>());
-        })
-        .map_err(|_| unreachable!())
+    let module = JsFuture::from(p).await.unwrap();
+    assert!(module.is_instance_of::<WebAssembly::Module>());
 }
 
 #[wasm_bindgen_test]
@@ -182,26 +174,24 @@ fn webassembly_instance() {
     assert!(Reflect::has(exports.as_ref(), &"exported_func".into()).unwrap());
 }
 
-#[wasm_bindgen_test(async)]
-fn instantiate_module() -> impl Future<Item = (), Error = JsValue> {
+#[wasm_bindgen_test]
+async fn instantiate_module() {
     let module = WebAssembly::Module::new(&get_valid_wasm()).unwrap();
     let imports = get_imports();
     let p = WebAssembly::instantiate_module(&module, &imports);
-    JsFuture::from(p).map(|inst| {
-        assert!(inst.is_instance_of::<WebAssembly::Instance>());
-    })
+    let inst = JsFuture::from(p).await.unwrap();
+    assert!(inst.is_instance_of::<WebAssembly::Instance>());
 }
 
-#[wasm_bindgen_test(async)]
-fn instantiate_streaming() -> impl Future<Item = (), Error = JsValue> {
+#[wasm_bindgen_test]
+async fn instantiate_streaming() {
     let response = Promise::resolve(&get_valid_wasm());
     let imports = get_imports();
     let p = WebAssembly::instantiate_streaming(&response, &imports);
-    JsFuture::from(p).map(|obj| {
-        assert!(Reflect::get(obj.as_ref(), &"instance".into())
-            .unwrap()
-            .is_instance_of::<WebAssembly::Instance>());
-    })
+    let obj = JsFuture::from(p).await.unwrap();
+    assert!(Reflect::get(obj.as_ref(), &"instance".into())
+        .unwrap()
+        .is_instance_of::<WebAssembly::Instance>());
 }
 
 #[wasm_bindgen_test]

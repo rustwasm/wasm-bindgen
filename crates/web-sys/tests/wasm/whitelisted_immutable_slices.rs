@@ -11,7 +11,6 @@
 //! @see https://github.com/rustwasm/wasm-bindgen/issues/1005
 
 use wasm_bindgen::prelude::*;
-use wasm_bindgen_test::*;
 use web_sys::{WebGl2RenderingContext, WebGlRenderingContext};
 
 #[wasm_bindgen(module = "/tests/wasm/element.js")]

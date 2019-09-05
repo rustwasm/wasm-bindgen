@@ -9,6 +9,9 @@ jobs:
     displayName: "Run wasm-bindgen crate tests (unix)"
     steps:
       - template: ci/azure-install-rust.yml
+        # TODO: switch this back to `stable` when async/await is stable
+        parameters:
+          toolchain: nightly
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-geckodriver.yml
       - template: ci/azure-install-sccache.yml
@@ -48,6 +51,9 @@ jobs:
       vmImage: vs2017-win2016
     steps:
       - template: ci/azure-install-rust.yml
+        # TODO: switch this back to `stable` when async/await is stable
+        parameters:
+          toolchain: nightly
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-geckodriver.yml
       - template: ci/azure-install-sccache.yml
@@ -91,6 +97,9 @@ jobs:
     displayName: "Run web-sys crate tests"
     steps:
       - template: ci/azure-install-rust.yml
+        # TODO: switch this back to `stable` when async/await is stable
+        parameters:
+          toolchain: nightly
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-geckodriver.yml
       - template: ci/azure-install-sccache.yml
@@ -104,6 +113,9 @@ jobs:
     displayName: "Run js-sys crate tests"
     steps:
       - template: ci/azure-install-rust.yml
+        # TODO: switch this back to `stable` when async/await is stable
+        parameters:
+          toolchain: nightly
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-geckodriver.yml
       - template: ci/azure-install-sccache.yml
@@ -113,6 +125,9 @@ jobs:
     displayName: "Run wasm-bindgen-webidl crate tests"
     steps:
       - template: ci/azure-install-rust.yml
+        # TODO: switch this back to `stable` when async/await is stable
+        parameters:
+          toolchain: nightly
       - template: ci/azure-install-node.yml
         #- template: ci/azure-install-sccache.yml
       - script: cargo test -p wasm-bindgen-webidl
@@ -124,8 +139,9 @@ jobs:
     displayName: "Run UI tests"
     steps:
       - template: ci/azure-install-rust.yml
+        # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: beta
+          toolchain: nightly
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-sccache.yml
       - script: cargo test -p wasm-bindgen-macro
@@ -156,6 +172,9 @@ jobs:
     displayName: "Build almost all examples"
     steps:
       - template: ci/azure-install-rust.yml
+        # TODO: switch this back to `stable` when async/await is stable
+        parameters:
+          toolchain: nightly
       - template: ci/azure-install-sccache.yml
       - template: ci/azure-install-wasm-pack.yml
       - script: mv _package.json package.json && npm install && rm package.json
@@ -177,7 +196,7 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2019-07-30
+          toolchain: nightly-2019-08-27
       - template: ci/azure-install-sccache.yml
       - script: rustup component add rust-src
         displayName: "install rust-src"
@@ -198,6 +217,9 @@ jobs:
     displayName: "Build benchmarks"
     steps:
       - template: ci/azure-install-rust.yml
+        # TODO: switch this back to `stable` when async/await is stable
+        parameters:
+          toolchain: nightly
       - template: ci/azure-install-sccache.yml
       - template: ci/azure-install-wasm-pack.yml
       - script: wasm-pack build --target web benchmarks
@@ -263,7 +285,6 @@ jobs:
   - job: doc_book
     displayName: "Doc - build the book"
     steps:
-      - template: ci/azure-install-rust.yml
       - script: |
           set -e
           curl -L https://github.com/rust-lang-nursery/mdBook/releases/download/v0.3.0/mdbook-v0.3.0-x86_64-unknown-linux-gnu.tar.gz | tar xzf -
@@ -279,6 +300,9 @@ jobs:
     displayName: "Doc - build the API documentation"
     steps:
       - template: ci/azure-install-rust.yml
+        # TODO: switch this back to `stable` when async/await is stable
+        parameters:
+          toolchain: nightly
       # Install rustfmt so we can format the web-sys bindings
       - script: rustup component add rustfmt
         displayName: "Install rustfmt"
