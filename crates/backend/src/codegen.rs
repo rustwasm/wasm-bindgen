@@ -442,13 +442,30 @@ impl TryToTokens for ast::Export {
         if let syn::Type::Reference(_) = syn_ret {
             bail_span!(syn_ret, "cannot return a borrowed ref with #[wasm_bindgen]",)
         }
-        let ret_ty = quote! {
-            -> <#syn_ret as wasm_bindgen::convert::ReturnWasmAbi>::Abi
+
+        // For an `async` function we always run it through `future_to_promise`
+        // since we're returning a promise to JS, and this will implicitly
+        // require that the function returns a `Future<Output = Result<...>>`
+        let (ret_expr, projection) = if self.function.r#async {
+            (
+                quote! {
+                    wasm_bindgen_futures::future_to_promise(async {
+                        wasm_bindgen::__rt::IntoJsResult::into_js_result(#ret.await)
+                    }).into()
+                },
+                quote! {
+                    <wasm_bindgen::JsValue as wasm_bindgen::convert::ReturnWasmAbi>
+                },
+            )
+        } else {
+            (
+                quote! { #ret },
+                quote! {
+                    <#syn_ret as wasm_bindgen::convert::ReturnWasmAbi>
+                },
+            )
         };
-        let convert_ret = quote! {
-            <#syn_ret as wasm_bindgen::convert::ReturnWasmAbi>
-                ::return_abi(#ret)
-        };
+        let convert_ret = quote! { #projection::return_abi(#ret_expr) };
         let describe_ret = quote! {
             <#syn_ret as WasmDescribe>::describe();
         };
@@ -457,7 +474,7 @@ impl TryToTokens for ast::Export {
 
         let start_check = if self.start {
             quote! {
-                const _ASSERT: fn() = || #ret_ty { loop {} };
+                const _ASSERT: fn() = || -> #projection::Abi { loop {} };
             }
         } else {
             quote! {}
@@ -465,11 +482,13 @@ impl TryToTokens for ast::Export {
 
         (quote! {
             #(#attrs)*
-            #[export_name = #export_name]
             #[allow(non_snake_case)]
-            #[cfg(all(target_arch = "wasm32", not(target_os = "emscripten")))]
+            #[cfg_attr(
+                all(target_arch = "wasm32", not(target_os = "emscripten")),
+                export_name = #export_name,
+            )]
             #[allow(clippy::all)]
-            pub extern "C" fn #generated_name(#(#args),*) #ret_ty {
+            pub extern "C" fn #generated_name(#(#args),*) -> #projection::Abi {
                 #start_check
                 // Scope all local variables to be destroyed after we call the
                 // function to ensure that `#convert_ret`, if it panics, doesn't

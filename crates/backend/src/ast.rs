@@ -213,6 +213,7 @@ pub struct Function {
     pub ret: Option<syn::Type>,
     pub rust_attrs: Vec<syn::Attribute>,
     pub rust_vis: syn::Visibility,
+    pub r#async: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
