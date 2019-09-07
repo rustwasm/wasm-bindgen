@@ -245,8 +245,7 @@ fn set_full_year() {
 }
 
 #[wasm_bindgen_test]
-fn set_full_year_with_month () {
-
+fn set_full_year_with_month() {
     let event1 = Date::new(&"August 19, 1976 23:15:30".into());
 
     event1.set_full_year_with_month(1979, 4);
@@ -256,8 +255,7 @@ fn set_full_year_with_month () {
 }
 
 #[wasm_bindgen_test]
-fn set_full_year_with_month_date () {
-
+fn set_full_year_with_month_date() {
     let event1 = Date::new(&"August 19, 1976 23:15:30".into());
 
     event1.set_full_year_with_month_date(1979, -1, 25);
