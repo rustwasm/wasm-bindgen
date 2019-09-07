@@ -144,6 +144,69 @@ fn new() {
 }
 
 #[wasm_bindgen_test]
+fn new_with_year_month() {
+    let date1 = Date::new_with_year_month(1975, 7);
+
+    assert_eq!(date1.get_full_year(), 1975);
+    assert_eq!(date1.get_month(), 7);
+}
+
+#[wasm_bindgen_test]
+fn new_with_year_month_day() {
+    let date1 = Date::new_with_year_month_day(1975, 7, 8);
+
+    assert_eq!(date1.get_full_year(), 1975);
+    assert_eq!(date1.get_month(), 7);
+    assert_eq!(date1.get_date(), 8);
+}
+
+#[wasm_bindgen_test]
+fn new_with_year_month_day_hr() {
+    let date1 = Date::new_with_year_month_day_hr(1975, 7, 8, 4);
+
+    assert_eq!(date1.get_full_year(), 1975);
+    assert_eq!(date1.get_month(), 7);
+    assert_eq!(date1.get_date(), 8);
+    assert_eq!(date1.get_hours(), 4);
+}
+
+#[wasm_bindgen_test]
+fn new_with_year_month_day_hr_min() {
+    let date1 = Date::new_with_year_month_day_hr_min(1975, 7, 8, 4, 35);
+
+    assert_eq!(date1.get_full_year(), 1975);
+    assert_eq!(date1.get_month(), 7);
+    assert_eq!(date1.get_date(), 8);
+    assert_eq!(date1.get_hours(), 4);
+    assert_eq!(date1.get_minutes(), 35);
+}
+
+#[wasm_bindgen_test]
+fn new_with_year_month_day_hr_min_sec() {
+    let date1 = Date::new_with_year_month_day_hr_min_sec(1975, 7, 8, 4, 35, 25);
+
+    assert_eq!(date1.get_full_year(), 1975);
+    assert_eq!(date1.get_month(), 7);
+    assert_eq!(date1.get_date(), 8);
+    assert_eq!(date1.get_hours(), 4);
+    assert_eq!(date1.get_minutes(), 35);
+    assert_eq!(date1.get_seconds(), 25);
+}
+
+#[wasm_bindgen_test]
+fn new_with_year_month_day_hr_min_sec_milli() {
+    let date1 = Date::new_with_year_month_day_hr_min_sec_milli(1975, 7, 8, 4, 35, 25, 300);
+
+    assert_eq!(date1.get_full_year(), 1975);
+    assert_eq!(date1.get_month(), 7);
+    assert_eq!(date1.get_date(), 8);
+    assert_eq!(date1.get_hours(), 4);
+    assert_eq!(date1.get_minutes(), 35);
+    assert_eq!(date1.get_seconds(), 25);
+    assert_eq!(date1.get_milliseconds(), 300);
+}
+
+#[wasm_bindgen_test]
 fn now() {
     assert!(Date::now() > 0.);
 }
@@ -179,6 +242,29 @@ fn set_full_year() {
     assert_eq!(ms, event2.get_time());
     assert_eq!(event1.get_time(), event2.get_time());
     assert_eq!(event1.get_full_year(), 1976);
+}
+
+#[wasm_bindgen_test]
+fn set_full_year_with_month () {
+
+    let event1 = Date::new(&"August 19, 1976 23:15:30".into());
+
+    event1.set_full_year_with_month(1979, 4);
+
+    assert_eq!(event1.get_full_year(), 1979);
+    assert_eq!(event1.get_month(), 4);
+}
+
+#[wasm_bindgen_test]
+fn set_full_year_with_month_date () {
+
+    let event1 = Date::new(&"August 19, 1976 23:15:30".into());
+
+    event1.set_full_year_with_month_date(1979, -1, 25);
+
+    assert_eq!(event1.get_full_year(), 1978);
+    assert_eq!(event1.get_month(), 11);
+    assert_eq!(event1.get_date(), 25);
 }
 
 #[wasm_bindgen_test]
@@ -272,6 +358,27 @@ fn set_utc_full_year() {
     assert_eq!(ms, event2.get_time());
     assert_eq!(event1.get_time(), event2.get_time());
     assert_eq!(event1.get_utc_full_year(), 1975);
+}
+
+#[wasm_bindgen_test]
+fn set_utc_full_year_with_month() {
+    let event1 = Date::new(&"December 31, 1975 23:15:30 GMT-3:00".into());
+
+    event1.set_utc_full_year_with_month(1975, 6);
+
+    assert_eq!(event1.get_utc_full_year(), 1975);
+    assert_eq!(event1.get_utc_month(), 6);
+}
+
+#[wasm_bindgen_test]
+fn set_utc_full_year_with_month_date() {
+    let event1 = Date::new(&"December 31, 1975 23:15:30 GMT-3:00".into());
+
+    event1.set_utc_full_year_with_month_date(1975, -2, 21);
+
+    assert_eq!(event1.get_utc_full_year(), 1974);
+    assert_eq!(event1.get_utc_month(), 10);
+    assert_eq!(event1.get_utc_date(), 21);
 }
 
 #[wasm_bindgen_test]
