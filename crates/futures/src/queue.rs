@@ -4,11 +4,9 @@ use std::collections::VecDeque;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
-
 pub(crate) trait Task {
     fn run(self);
 }
-
 
 struct QueueState<A> {
     // This is used to ensure that it's only scheduled once
@@ -18,7 +16,10 @@ struct QueueState<A> {
     tasks: RefCell<VecDeque<A>>,
 }
 
-impl<A> QueueState<A> where A: Task {
+impl<A> QueueState<A>
+where
+    A: Task,
+{
     fn run_all(&self) {
         loop {
             // We immediately drop the borrow_mut because `run` might queue more tasks
@@ -27,17 +28,16 @@ impl<A> QueueState<A> where A: Task {
             match task {
                 Some(task) => {
                     task.run();
-                },
+                }
                 None => {
                     // All of the Tasks have been run, so it's now possible to schedule the next tick again
                     self.is_spinning.set(false);
                     break;
-                },
+                }
             }
         }
     }
 }
-
 
 pub(crate) struct Queue<A> {
     state: Rc<QueueState<A>>,
@@ -62,7 +62,10 @@ impl<A> Queue<A> {
     }
 }
 
-impl<A> Queue<A> where A: Task + 'static {
+impl<A> Queue<A>
+where
+    A: Task + 'static,
+{
     pub(crate) fn new() -> Self {
         let state = Rc::new(QueueState {
             is_spinning: Cell::new(false),

@@ -71,7 +71,7 @@ async fn spawn_local_runs() {
 #[wasm_bindgen_test]
 async fn spawn_local_err_no_exception() {
     let (tx, rx) = oneshot::channel::<u32>();
-    spawn_local(async { });
+    spawn_local(async {});
     spawn_local(async {
         tx.send(42).unwrap();
     });

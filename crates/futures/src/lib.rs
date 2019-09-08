@@ -33,15 +33,14 @@
 #![cfg_attr(target_feature = "atomics", feature(stdsimd))]
 #![deny(missing_docs)]
 
+use js_sys::Promise;
+use std::cell::RefCell;
 use std::fmt;
 use std::future::Future;
 use std::pin::Pin;
-use std::task::{Context, Poll, Waker};
-use std::cell::RefCell;
 use std::rc::Rc;
-use js_sys::Promise;
+use std::task::{Context, Poll, Waker};
 use wasm_bindgen::prelude::*;
-
 
 mod queue;
 
@@ -61,7 +60,6 @@ mod task {
     }
 }
 
-
 /// Runs a Rust `Future` on the current thread.
 ///
 /// The `future` must be `'static` because it will be scheduled
@@ -80,7 +78,6 @@ where
 {
     task::Task::spawn(Box::pin(future));
 }
-
 
 struct Inner {
     result: Option<Result<JsValue, JsValue>>,
@@ -186,7 +183,6 @@ impl Future for JsFuture {
         Poll::Pending
     }
 }
-
 
 /// Converts a Rust `Future` into a JavaScript `Promise`.
 ///
