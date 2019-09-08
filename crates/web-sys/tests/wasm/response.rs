@@ -34,3 +34,13 @@ async fn test_response_from_bytes() {
         assert_eq!(&data_view.get_uint8(i), byte);
     }
 }
+
+#[wasm_bindgen_test]
+async fn test_response_from_other_body() {
+    let input = "Hello, world!";
+    let response_a = Response::new_with_opt_str(Some(input)).unwrap();
+    let body = response_a.body();
+    let response_b = Response::new_with_opt_readable_stream(body.as_ref()).unwrap();
+    let output = JsFuture::from(response_b.text().unwrap()).await.unwrap();
+    assert_eq!(JsValue::from_str(input), output);
+}
