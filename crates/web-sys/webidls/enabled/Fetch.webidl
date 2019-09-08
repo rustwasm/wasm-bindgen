@@ -8,7 +8,7 @@
  */
 
 typedef object JSON;
-typedef (Blob or BufferSource or FormData or URLSearchParams or USVString) BodyInit;
+typedef (Blob or BufferSource or FormData or URLSearchParams or USVString or ReadableStream) BodyInit;
 
 [Exposed=(Window,Worker)]
 interface mixin Body {
@@ -23,6 +23,7 @@ interface mixin Body {
   Promise<JSON> json();
   [Throws]
   Promise<USVString> text();
+  readonly attribute ReadableStream? body;
 };
 
 // These are helper dictionaries for the parsing of a
