@@ -73,7 +73,7 @@ where
         });
 
         Self {
-            promise: Promise::resolve(&JsValue::null()),
+            promise: Promise::resolve(&JsValue::undefined()),
 
             closure: {
                 let state = Rc::clone(&state);
