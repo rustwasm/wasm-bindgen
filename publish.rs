@@ -27,6 +27,7 @@ const CRATES_TO_PUBLISH: &[&str] = &[
     "wasm-bindgen-wasm-interpreter",
     "wasm-bindgen-webidl",
     "wasm-bindgen-threads-xform",
+    "wasm-bindgen-multi-value-xform",
     "wasm-bindgen-anyref-xform",
     "wasm-bindgen-cli-support",
     "wasm-bindgen-cli",
