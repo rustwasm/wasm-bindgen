@@ -426,8 +426,14 @@ extern "C" {
 }
 
 // TODO pre-initialize the Array with the correct length using TrustedLen
-impl<A> std::iter::FromIterator<A> for Array where A: AsRef<JsValue> {
-    fn from_iter<T>(iter: T) -> Array where T: IntoIterator<Item = A> {
+impl<A> std::iter::FromIterator<A> for Array
+where
+    A: AsRef<JsValue>,
+{
+    fn from_iter<T>(iter: T) -> Array
+    where
+        T: IntoIterator<Item = A>,
+    {
         let out = Array::new();
 
         for value in iter {
@@ -1992,6 +1998,75 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new_0() -> Date;
 
+    /// Creates a JavaScript Date instance that represents
+    /// a single moment in time. Date objects are based on a time value that is
+    /// the number of milliseconds since 1 January 1970 UTC.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_year_month(year: u32, month: i32) -> Date;
+
+    /// Creates a JavaScript Date instance that represents
+    /// a single moment in time. Date objects are based on a time value that is
+    /// the number of milliseconds since 1 January 1970 UTC.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_year_month_day(year: u32, month: i32, day: i32) -> Date;
+
+    /// Creates a JavaScript Date instance that represents
+    /// a single moment in time. Date objects are based on a time value that is
+    /// the number of milliseconds since 1 January 1970 UTC.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_year_month_day_hr(year: u32, month: i32, day: i32, hr: i32) -> Date;
+
+    /// Creates a JavaScript Date instance that represents
+    /// a single moment in time. Date objects are based on a time value that is
+    /// the number of milliseconds since 1 January 1970 UTC.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_year_month_day_hr_min(
+        year: u32,
+        month: i32,
+        day: i32,
+        hr: i32,
+        min: i32,
+    ) -> Date;
+
+    /// Creates a JavaScript Date instance that represents
+    /// a single moment in time. Date objects are based on a time value that is
+    /// the number of milliseconds since 1 January 1970 UTC.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_year_month_day_hr_min_sec(
+        year: u32,
+        month: i32,
+        day: i32,
+        hr: i32,
+        min: i32,
+        sec: i32,
+    ) -> Date;
+
+    /// Creates a JavaScript Date instance that represents
+    /// a single moment in time. Date objects are based on a time value that is
+    /// the number of milliseconds since 1 January 1970 UTC.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+    #[wasm_bindgen(constructor)]
+    pub fn new_with_year_month_day_hr_min_sec_milli(
+        year: u32,
+        month: i32,
+        day: i32,
+        hr: i32,
+        min: i32,
+        sec: i32,
+        milli: i32,
+    ) -> Date;
+
     /// The `Date.now()` method returns the number of milliseconds
     /// elapsed since January 1, 1970 00:00:00 UTC.
     ///
@@ -2019,6 +2094,20 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear)
     #[wasm_bindgen(method, js_name = setFullYear)]
     pub fn set_full_year(this: &Date, year: u32) -> f64;
+
+    /// The setFullYear() method sets the full year for a specified date according to local time.
+    /// Returns new timestamp.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear)
+    #[wasm_bindgen(method, js_name = setFullYear)]
+    pub fn set_full_year_with_month(this: &Date, year: u32, month: i32) -> f64;
+
+    /// The setFullYear() method sets the full year for a specified date according to local time.
+    /// Returns new timestamp.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setFullYear)
+    #[wasm_bindgen(method, js_name = setFullYear)]
+    pub fn set_full_year_with_month_date(this: &Date, year: u32, month: i32, date: i32) -> f64;
 
     /// The setHours() method sets the hours for a specified date according to local time,
     /// and returns the number of milliseconds since January 1, 1970 00:00:00 UTC until the time represented
@@ -2071,6 +2160,18 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear)
     #[wasm_bindgen(method, js_name = setUTCFullYear)]
     pub fn set_utc_full_year(this: &Date, year: u32) -> f64;
+
+    /// The setUTCFullYear() method sets the full year for a specified date according to universal time.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear)
+    #[wasm_bindgen(method, js_name = setUTCFullYear)]
+    pub fn set_utc_full_year_with_month(this: &Date, year: u32, month: i32) -> f64;
+
+    /// The setUTCFullYear() method sets the full year for a specified date according to universal time.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setUTCFullYear)
+    #[wasm_bindgen(method, js_name = setUTCFullYear)]
+    pub fn set_utc_full_year_with_month_date(this: &Date, year: u32, month: i32, date: i32) -> f64;
 
     /// The setUTCHours() method sets the hour for a specified date according to universal time,
     /// and returns the number of milliseconds since  January 1, 1970 00:00:00 UTC until the time
