@@ -9,7 +9,6 @@ use std::sync::atomic::Ordering::SeqCst;
 use std::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
-use crate::queue::Queue;
 
 
 #[wasm_bindgen]
@@ -60,24 +59,6 @@ impl AtomicWaker {
         })
     }
 
-    fn done(&self) {
-        self.state.store(AWAKE, SeqCst);
-    }
-
-    fn sleep(&self) {
-        // Flag ourselves as ready to receive another notification. We should
-        // never enter this method unless our `value` is set to `AWAKE`, so assert
-        // that as well.
-        let prev = self.state.swap(SLEEPING, SeqCst);
-        debug_assert_eq!(prev, AWAKE);
-    }
-
-    fn wait_for_awake(&self) -> js_sys::Promise {
-        // If `self.state` is `SLEEPING` then it will wait until it is notified
-        // If `self.state` is `AWAKE` then it immediately resolves the Promise
-        wait_async(&self.state, SLEEPING)
-    }
-
     // If we're already AWAKE then we previously notified and there's nothing to do.
     // Otherwise we execute the native `notify` instruction to wake up the corresponding
     // `waitAsync` that was waiting for the transition from SLEEPING to AWAKE.
@@ -122,11 +103,6 @@ impl AtomicWaker {
 }
 
 
-thread_local! {
-    static QUEUE: Queue<Rc<Task>> = Queue::new();
-}
-
-
 struct Inner {
     future: Pin<Box<dyn Future<Output = ()> + 'static>>,
     closure: Closure<dyn FnMut(JsValue)>,
@@ -159,43 +135,41 @@ impl Task {
 
         *this.inner.borrow_mut() = Some(Inner { future, closure });
 
-        QUEUE.with(move |queue| {
+        crate::queue::QUEUE.with(move |queue| {
             // This will cause it to call crate::queue::Task::run on the next microtask tick
             queue.push_task(this);
         });
     }
 
-    fn run(&self) {
+    pub(crate) fn run(&self) {
         let mut borrow = self.inner.borrow_mut();
 
         // This will only be None if the Future wakes up the Waker after returning Poll::Ready
         if let Some(inner) = borrow.as_mut() {
-            // This is so that it will re-queue if poll calls waker.wake()
-            self.atomic.sleep();
+            // Flag ourselves as ready to receive another notification.
+            // This has to be at the top so that it will re-queue if poll calls waker.wake()
+            let prev = self.atomic.state.swap(SLEEPING, SeqCst);
+
+            // We should never enter this method unless our `value` is set to `AWAKE`, so assert
+            // that as well.
+            debug_assert_eq!(prev, AWAKE);
 
             let poll = {
                 let cx = &mut Context::from_waker(&self.waker);
                 inner.future.as_mut().poll(cx)
             };
 
-            if let Poll::Ready(_) = poll {
-                // This prevents it from notifying again
-                self.atomic.done();
-
-                // Cleanup the Future and Closure immediately
-                *borrow = None;
-
-            } else {
-                // TODO this creates 2 Promises, figure out a way to avoid that
-                self.atomic.wait_for_awake().then(&inner.closure);
+            match poll {
+                Poll::Ready(()) => {
+                    // Cleanup the Future and Closure immediately
+                    *borrow = None;
+                },
+                Poll::Pending => {
+                    // If `self.state` is `SLEEPING` then it will wait until it is notified
+                    // If `self.state` is `AWAKE` then it immediately resolves the Promise
+                    wait_async(&self.atomic.state, SLEEPING).then(&inner.closure);
+                },
             }
         }
-    }
-}
-
-impl crate::queue::Task for Rc<Task> {
-    #[inline]
-    fn run(self) {
-        Task::run(&self);
     }
 }

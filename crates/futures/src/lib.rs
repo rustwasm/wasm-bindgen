@@ -213,7 +213,6 @@ where
     Promise::new(&mut |resolve, reject| {
         let future = future.take().unwrap_throw();
 
-        // TODO change Promise::new to be FnOnce
         spawn_local(async move {
             match future.await {
                 Ok(val) => {

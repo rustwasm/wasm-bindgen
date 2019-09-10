@@ -4,22 +4,16 @@ use std::collections::VecDeque;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
-pub(crate) trait Task {
-    fn run(self);
-}
 
-struct QueueState<A> {
+struct QueueState {
     // This is used to ensure that it's only scheduled once
     is_spinning: Cell<bool>,
 
     // This is a queue of Tasks which will be run in order
-    tasks: RefCell<VecDeque<A>>,
+    tasks: RefCell<VecDeque<Rc<crate::task::Task>>>,
 }
 
-impl<A> QueueState<A>
-where
-    A: Task,
-{
+impl QueueState {
     fn run_all(&self) {
         loop {
             // We immediately drop the borrow_mut because `run` might queue more tasks
@@ -39,14 +33,14 @@ where
     }
 }
 
-pub(crate) struct Queue<A> {
-    state: Rc<QueueState<A>>,
+pub(crate) struct Queue {
+    state: Rc<QueueState>,
     promise: Promise,
     closure: Closure<dyn FnMut(JsValue)>,
 }
 
-impl<A> Queue<A> {
-    pub(crate) fn push_task(&self, task: A) {
+impl Queue {
+    pub(crate) fn push_task(&self, task: Rc<crate::task::Task>) {
         let mut lock = self.state.tasks.borrow_mut();
 
         lock.push_back(task);
@@ -62,11 +56,8 @@ impl<A> Queue<A> {
     }
 }
 
-impl<A> Queue<A>
-where
-    A: Task + 'static,
-{
-    pub(crate) fn new() -> Self {
+impl Queue {
+    fn new() -> Self {
         let state = Rc::new(QueueState {
             is_spinning: Cell::new(false),
             tasks: RefCell::new(VecDeque::new()),
@@ -87,4 +78,9 @@ where
             state,
         }
     }
+}
+
+
+thread_local! {
+    pub(crate) static QUEUE: Queue = Queue::new();
 }

@@ -4,12 +4,6 @@ use std::mem::ManuallyDrop;
 use std::pin::Pin;
 use std::rc::Rc;
 use std::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
-use crate::queue::Queue;
-
-
-thread_local! {
-    static QUEUE: Queue<Rc<Task>> = Queue::new();
-}
 
 
 struct Inner {
@@ -48,7 +42,7 @@ impl Task {
             return;
         }
 
-        QUEUE.with(|queue| {
+        crate::queue::QUEUE.with(|queue| {
             queue.push_task(Rc::clone(this));
         });
     }
@@ -79,10 +73,8 @@ impl Task {
 
         RawWaker::new(Rc::into_raw(this) as *const (), &VTABLE)
     }
-}
 
-impl crate::queue::Task for Rc<Task> {
-    fn run(self) {
+    pub(crate) fn run(&self) {
         let mut borrow = self.inner.borrow_mut();
 
         // This will only be None if the Future wakes up the Waker after returning Poll::Ready
