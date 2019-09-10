@@ -53,9 +53,152 @@ use crate::descriptor::VectorKind;
 use crate::webidl::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
 use crate::webidl::{NonstandardIncoming, NonstandardOutgoing};
 use crate::webidl::{NonstandardWebidlSection, WasmBindgenAux};
-use failure::{bail, Error, ResultExt};
-use walrus::Module;
+use failure::{bail, format_err, Error, ResultExt};
+use walrus::{GlobalId, MemoryId, Module};
+use wasm_bindgen_multi_value_xform as multi_value_xform;
 use wasm_webidl_bindings::ast;
+
+pub fn add_multi_value(
+    module: &mut Module,
+    bindings: &mut NonstandardWebidlSection,
+) -> Result<(), Error> {
+    let mut to_xform = vec![];
+    for (id, binding) in &bindings.exports {
+        if let Some(ref results) = binding.return_via_outptr {
+            // LLVM currently always uses the first parameter for the return
+            // pointer. We hard code that here, since we have no better option.
+            let return_pointer_index = 0;
+            to_xform.push((*id, return_pointer_index, &results[..]));
+        }
+    }
+
+    if to_xform.is_empty() {
+        // Early exit to avoid failing if we don't have a memory or shadow stack
+        // pointer because this is a minimal module that doesn't use linear
+        // memory.
+        return Ok(());
+    }
+
+    let memory = get_memory(module)?;
+    let shadow_stack_pointer = get_shadow_stack_pointer(module)?;
+    multi_value_xform::run(module, memory, shadow_stack_pointer, &to_xform)?;
+
+    // Finally, unset `return_via_outptr`, fix up its incoming bindings'
+    // argument numberings, and update its function type.
+    for (id, binding) in &mut bindings.exports {
+        if binding.return_via_outptr.take().is_some() {
+            if binding.incoming.is_empty() {
+                bail!("missing incoming binding expression for return pointer parameter");
+            }
+            if !is_ret_ptr_bindings(binding.incoming.remove(0)) {
+                bail!("unexpected incoming binding expression for return pointer parameter");
+            }
+
+            fixup_binding_argument_gets(&mut binding.incoming)?;
+
+            let func = match module.exports.get(*id).item {
+                walrus::ExportItem::Function(f) => f,
+                _ => unreachable!(),
+            };
+            binding.wasm_ty = module.funcs.get(func).ty();
+        }
+    }
+
+    Ok(())
+}
+
+fn is_ret_ptr_bindings(b: NonstandardIncoming) -> bool {
+    match b {
+        NonstandardIncoming::Standard(ast::IncomingBindingExpression::As(
+            ast::IncomingBindingExpressionAs {
+                ty: walrus::ValType::I32,
+                expr,
+            },
+        )) => match *expr {
+            ast::IncomingBindingExpression::Get(ast::IncomingBindingExpressionGet { idx: 0 }) => {
+                true
+            }
+            _ => false,
+        },
+        _ => false,
+    }
+}
+
+// Since we removed the first parameter (which was the return pointer) now all
+// of the `Get` binding expression's are off by one. This function fixes these
+// `Get`s.
+fn fixup_binding_argument_gets(incoming: &mut [NonstandardIncoming]) -> Result<(), Error> {
+    for inc in incoming {
+        fixup_nonstandard_incoming(inc)?;
+    }
+    return Ok(());
+
+    fn fixup_nonstandard_incoming(inc: &mut NonstandardIncoming) -> Result<(), Error> {
+        match inc {
+            NonstandardIncoming::Standard(s) => fixup_standard_incoming(s),
+            _ => bail!("found usage of non-standard bindings when in standard-bindings-only mode"),
+        }
+    }
+
+    fn fixup_standard_incoming(s: &mut ast::IncomingBindingExpression) -> Result<(), Error> {
+        match s {
+            ast::IncomingBindingExpression::Get(e) => {
+                if e.idx == 0 {
+                    bail!(
+                        "found usage of removed return pointer parameter in \
+                         non-return pointer bindings"
+                    );
+                } else {
+                    e.idx -= 1;
+                    Ok(())
+                }
+            }
+            ast::IncomingBindingExpression::As(e) => fixup_standard_incoming(&mut e.expr),
+            ast::IncomingBindingExpression::AllocUtf8Str(e) => fixup_standard_incoming(&mut e.expr),
+            ast::IncomingBindingExpression::AllocCopy(e) => fixup_standard_incoming(&mut e.expr),
+            ast::IncomingBindingExpression::EnumToI32(e) => fixup_standard_incoming(&mut e.expr),
+            ast::IncomingBindingExpression::Field(e) => fixup_standard_incoming(&mut e.expr),
+            ast::IncomingBindingExpression::BindImport(e) => fixup_standard_incoming(&mut e.expr),
+        }
+    }
+}
+
+fn get_memory(module: &Module) -> Result<MemoryId, Error> {
+    let mut memories = module.memories.iter().map(|m| m.id());
+    let memory = memories.next();
+    if memories.next().is_some() {
+        bail!(
+            "expected a single memory, found multiple; multiple memories \
+             currently not supported"
+        );
+    }
+    memory.ok_or_else(|| {
+        format_err!(
+            "module does not have a memory; must have a memory \
+             to transform return pointers into Wasm multi-value"
+        )
+    })
+}
+
+// Get the `__shadow_stack_pointer` global that we stashed in an export early on
+// in the pipeline.
+fn get_shadow_stack_pointer(module: &mut Module) -> Result<GlobalId, Error> {
+    let (g, e) = module
+        .exports
+        .iter()
+        .find(|e| e.name == "__shadow_stack_pointer")
+        .map(|e| {
+            let g = match e.item {
+                walrus::ExportItem::Global(g) => g,
+                _ => unreachable!(),
+            };
+            (g, e.id())
+        })
+        .ok_or_else(|| format_err!("module does not have a shadow stack pointer"))?;
+
+    module.exports.delete(e);
+    Ok(g)
+}
 
 pub fn add_section(
     module: &mut Module,

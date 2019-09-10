@@ -36,6 +36,7 @@ pub struct Bindgen {
     // "ready to be instantiated on any thread"
     threads: wasm_bindgen_threads_xform::Config,
     anyref: bool,
+    multi_value: bool,
     wasm_interface_types: bool,
     encode_into: EncodeInto,
 }
@@ -77,6 +78,7 @@ impl Bindgen {
     pub fn new() -> Bindgen {
         let anyref = env::var("WASM_BINDGEN_ANYREF").is_ok();
         let wasm_interface_types = env::var("WASM_INTERFACE_TYPES").is_ok();
+        let multi_value = env::var("WASM_BINDGEN_MULTI_VALUE").is_ok();
         Bindgen {
             input: Input::None,
             out_name: None,
@@ -93,6 +95,7 @@ impl Bindgen {
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
             anyref: anyref || wasm_interface_types,
+            multi_value,
             wasm_interface_types,
             encode_into: EncodeInto::Test,
         }
@@ -275,6 +278,20 @@ impl Bindgen {
             }
         };
 
+        // Our multi-value xform relies on the presence of the stack pointer, so
+        // temporarily export it so that our many GC's don't remove it before
+        // the xform runs.
+        if self.multi_value {
+            // Assume that the first global is the shadow stack pointer, since that is
+            // what LLVM codegens.
+            match module.globals.iter().next() {
+                Some(g) if g.ty == walrus::ValType::I32 => {
+                    module.exports.add("__shadow_stack_pointer", g.id());
+                }
+                _ => {}
+            }
+        }
+
         // This isn't the hardest thing in the world too support but we
         // basically don't know how to rationalize #[wasm_bindgen(start)] and
         // the actual `start` function if present. Figure this out later if it
@@ -335,7 +352,7 @@ impl Bindgen {
             .customs
             .delete_typed::<webidl::WasmBindgenAux>()
             .expect("aux section should be present");
-        let bindings = module
+        let mut bindings = module
             .customs
             .delete_typed::<webidl::NonstandardWebidlSection>()
             .unwrap();
@@ -350,8 +367,19 @@ impl Bindgen {
         };
 
         if self.wasm_interface_types {
+            if self.multi_value {
+                webidl::standard::add_multi_value(&mut module, &mut bindings)
+                    .context("failed to transform return pointers into multi-value Wasm")?;
+            }
             webidl::standard::add_section(&mut module, &aux, &bindings)
                 .with_context(|_| "failed to generate a standard wasm bindings custom section")?;
+        } else {
+            if self.multi_value {
+                failure::bail!(
+                    "Wasm multi-value is currently only available when \
+                     Wasm interface types is also enabled"
+                );
+            }
         }
 
         Ok(Output {
