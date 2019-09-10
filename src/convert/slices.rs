@@ -45,6 +45,7 @@ macro_rules! vectors {
             }
 
             impl OptionIntoWasmAbi for Box<[$t]> {
+                #[inline]
                 fn none() -> WasmSlice { null_slice() }
             }
 
@@ -60,6 +61,7 @@ macro_rules! vectors {
             }
 
             impl OptionFromWasmAbi for Box<[$t]> {
+                #[inline]
                 fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
             }
         }
@@ -77,6 +79,7 @@ macro_rules! vectors {
         }
 
         impl<'a> OptionIntoWasmAbi for &'a [$t] {
+            #[inline]
             fn none() -> WasmSlice { null_slice() }
         }
 
@@ -90,6 +93,7 @@ macro_rules! vectors {
         }
 
         impl<'a> OptionIntoWasmAbi for &'a mut [$t] {
+            #[inline]
             fn none() -> WasmSlice { null_slice() }
         }
 
@@ -144,24 +148,28 @@ if_std! {
     impl<T> IntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {
         type Abi = <Box<[T]> as IntoWasmAbi>::Abi;
 
+        #[inline]
         fn into_abi(self) -> Self::Abi {
             self.into_boxed_slice().into_abi()
         }
     }
 
     impl<T> OptionIntoWasmAbi for Vec<T> where Box<[T]>: IntoWasmAbi<Abi = WasmSlice> {
+        #[inline]
         fn none() -> WasmSlice { null_slice() }
     }
 
     impl<T> FromWasmAbi for Vec<T> where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
         type Abi = <Box<[T]> as FromWasmAbi>::Abi;
 
+        #[inline]
         unsafe fn from_abi(js: Self::Abi) -> Self {
             <Box<[T]>>::from_abi(js).into()
         }
     }
 
     impl<T> OptionFromWasmAbi for Vec<T> where Box<[T]>: FromWasmAbi<Abi = WasmSlice> {
+        #[inline]
         fn is_none(abi: &WasmSlice) -> bool { abi.ptr == 0 }
     }
 
@@ -177,6 +185,7 @@ if_std! {
     }
 
     impl OptionIntoWasmAbi for String {
+        #[inline]
         fn none() -> Self::Abi { null_slice() }
     }
 
@@ -190,6 +199,7 @@ if_std! {
     }
 
     impl OptionFromWasmAbi for String {
+        #[inline]
         fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
     }
 }
@@ -206,6 +216,7 @@ impl<'a> IntoWasmAbi for &'a str {
 }
 
 impl<'a> OptionIntoWasmAbi for &'a str {
+    #[inline]
     fn none() -> Self::Abi {
         null_slice()
     }
@@ -240,6 +251,7 @@ if_std! {
     }
 
     impl OptionIntoWasmAbi for Box<[JsValue]> {
+        #[inline]
         fn none() -> WasmSlice { null_slice() }
     }
 
@@ -255,6 +267,7 @@ if_std! {
     }
 
     impl OptionFromWasmAbi for Box<[JsValue]> {
+        #[inline]
         fn is_none(slice: &WasmSlice) -> bool { slice.ptr == 0 }
     }
 }
