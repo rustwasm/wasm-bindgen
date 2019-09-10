@@ -465,12 +465,10 @@ impl<'a> Context<'a> {
         };
 
         let default_module_path = match self.config.mode {
-            OutputMode::Web => {
-                "\
+            OutputMode::Web => "\
                     if (typeof module === 'undefined') {
                         module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
-                    }"
-            }
+                    }",
             _ => "",
         };
 
@@ -872,21 +870,30 @@ impl<'a> Context<'a> {
 
         match self.config.encode_into {
             EncodeInto::Always if !shared => {
-                self.global(&format!("
+                self.global(&format!(
+                    "
                     const encodeString = {};
-                ", encode_into));
+                ",
+                    encode_into
+                ));
             }
             EncodeInto::Test if !shared => {
-                self.global(&format!("
+                self.global(&format!(
+                    "
                     const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
                         ? {}
                         : {});
-                ", encode_into, encode));
+                ",
+                    encode_into, encode
+                ));
             }
             _ => {
-                self.global(&format!("
+                self.global(&format!(
+                    "
                     const encodeString = {};
-                ", encode));
+                ",
+                    encode
+                ));
             }
         }
 
@@ -1080,7 +1087,6 @@ impl<'a> Context<'a> {
                 fields: Vec::new(),
             })?;
             self.global(&format!("let cached{} = new {}{};", s, name, args));
-
         } else if !self.config.mode.always_run_in_browser() {
             self.global(&format!(
                 "
@@ -1090,7 +1096,6 @@ impl<'a> Context<'a> {
                 s
             ));
             self.global(&format!("let cached{0} = new l{0}{1};", s, args));
-
         } else {
             self.global(&format!("let cached{0} = new {0}{1};", s, args));
         }

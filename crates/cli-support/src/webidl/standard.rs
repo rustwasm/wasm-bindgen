@@ -453,7 +453,7 @@ fn extract_incoming(
                 exprs.push(e.clone());
                 continue;
             }
-            NonstandardIncoming::Int64 { ..  } => "64-bit integer",
+            NonstandardIncoming::Int64 { .. } => "64-bit integer",
             NonstandardIncoming::AllocCopyInt64 { .. } => "64-bit integer array",
             NonstandardIncoming::AllocCopyAnyrefArray { .. } => "array of JsValue",
             NonstandardIncoming::MutableSlice { .. } => "mutable slice",
@@ -472,7 +472,10 @@ fn extract_incoming(
             NonstandardIncoming::Char { .. } => "character",
             NonstandardIncoming::BorrowedAnyref { .. } => "borrowed anyref",
         };
-        bail!("cannot represent {} with a standard bindings expression", desc);
+        bail!(
+            "cannot represent {} with a standard bindings expression",
+            desc
+        );
     }
     Ok(exprs)
 }
@@ -525,7 +528,10 @@ fn extract_outgoing(
             NonstandardOutgoing::OptionRustType { .. } => "optional rust type",
             NonstandardOutgoing::StackClosure { .. } => "closures",
         };
-        bail!("cannot represent {} with a standard bindings expression", desc);
+        bail!(
+            "cannot represent {} with a standard bindings expression",
+            desc
+        );
     }
     Ok(exprs)
 }

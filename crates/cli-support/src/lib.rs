@@ -337,7 +337,12 @@ impl Bindgen {
         // the webidl bindings proposal) as well as an auxiliary section for all
         // sorts of miscellaneous information and features #[wasm_bindgen]
         // supports that aren't covered by WebIDL bindings.
-        webidl::process(&mut module, self.anyref, self.wasm_interface_types, self.emit_start)?;
+        webidl::process(
+            &mut module,
+            self.anyref,
+            self.wasm_interface_types,
+            self.emit_start,
+        )?;
 
         // Now that we've got type information from the webidl processing pass,
         // touch up the output of rustc to insert anyref shims where necessary.
@@ -563,16 +568,14 @@ impl Output {
         } else {
             format!("{}_bg", self.stem)
         };
-        let wasm_path = out_dir
-            .join(wasm_name)
-            .with_extension("wasm");
+        let wasm_path = out_dir.join(wasm_name).with_extension("wasm");
         fs::create_dir_all(out_dir)?;
         let wasm_bytes = self.module.emit_wasm();
         fs::write(&wasm_path, wasm_bytes)
             .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
 
         if self.wasm_interface_types {
-            return Ok(())
+            return Ok(());
         }
 
         // Write out all local JS snippets to the final destination now that
