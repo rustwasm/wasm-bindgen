@@ -539,7 +539,7 @@ impl Output {
             .join(wasm_name)
             .with_extension("wasm");
         fs::create_dir_all(out_dir)?;
-        let wasm_bytes = self.module.emit_wasm()?;
+        let wasm_bytes = self.module.emit_wasm();
         fs::write(&wasm_path, wasm_bytes)
             .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
 

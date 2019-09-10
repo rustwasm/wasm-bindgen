@@ -388,8 +388,7 @@ fn inject_start(
     // nonzero (assuming we don't overflow...)
     body.local_get(local);
     body.if_else(
-        Box::new([]),
-        Box::new([]),
+        None,
         // If our thread id is nonzero then we're the second or greater thread, so
         // we give ourselves a stack via memory.grow and we update our stack
         // pointer as the default stack pointer is surely wrong for us.
@@ -401,7 +400,7 @@ fn inject_start(
                     .local_set(local);
 
                 // if local0 == -1 then trap
-                body.block(Box::new([]), Box::new([]), |body| {
+                body.block(None, |body| {
                     let target = body.id();
                     body.local_get(local)
                         .i32_const(-1)
