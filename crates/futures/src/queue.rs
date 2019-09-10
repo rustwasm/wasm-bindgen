@@ -4,7 +4,6 @@ use std::collections::VecDeque;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
-
 struct QueueState {
     // This is used to ensure that it's only scheduled once
     is_spinning: Cell<bool>,
@@ -79,7 +78,6 @@ impl Queue {
         }
     }
 }
-
 
 thread_local! {
     pub(crate) static QUEUE: Queue = Queue::new();
