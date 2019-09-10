@@ -31,6 +31,8 @@ jobs:
         displayName: "Futures test suite on native"
       - script: cargo test -p wasm-bindgen-futures --target wasm32-unknown-unknown
         displayName: "Futures test suite on wasm"
+      - script: cargo test -p wasm-bindgen-multi-value-xform
+        displayName: "multi-value xform tests on native"
       - script: |
           set -e
           curl https://nodejs.org/download/nightly/v13.0.0-nightly2019081215b2d13310/node-v13.0.0-nightly2019081215b2d13310-linux-x64.tar.xz | tar xJf -
