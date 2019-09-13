@@ -37,7 +37,6 @@ fn wait_async(ptr: &AtomicI32, current_value: i32) -> js_sys::Promise {
 fn notify(atomic: &AtomicI32, wakeup: u32) {
     unsafe {
         core::arch::wasm32::atomic_notify(
-            // TODO verify the safety of this
             atomic as *const AtomicI32 as *mut i32,
             wakeup, // Number of threads to notify
         );

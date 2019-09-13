@@ -13,6 +13,8 @@ struct QueueState {
 }
 
 impl QueueState {
+    // Runs all Tasks until empty. This blocks the event loop if a Future
+    // is stuck in an infinite loop. We might want to adjust this behavior later.
     fn run_all(&self) {
         loop {
             // We immediately drop the borrow_mut because `run` might queue more tasks
