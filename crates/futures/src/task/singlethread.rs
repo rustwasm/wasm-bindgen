@@ -11,7 +11,7 @@ struct Inner {
 }
 
 pub(crate) struct Task {
-    // The actual future that we're executing as part of this task.
+    // The actual Future that we're executing as part of this task.
     //
     // This is an Option so that the Future can be immediately dropped when it's
     // finished
@@ -48,10 +48,10 @@ impl Task {
         });
     }
 
-    /// Creates a stanard library `RawWaker` from an `Rc` of ourselves.
+    /// Creates a standard library `RawWaker` from an `Rc` of ourselves.
     ///
     /// Note that in general this is wildly unsafe because everything with
-    /// futures requires `Sync` + `Send` when you get to wakers. For wasm,
+    /// Futures requires `Sync` + `Send` with regard to Wakers. For wasm,
     /// however, everything is guaranteed to be singlethreaded (since we're
     /// compiled without the `atomics` feature) so we "safely lie" and say our
     /// `Rc` pointer is good enough.
@@ -84,7 +84,7 @@ impl Task {
     pub(crate) fn run(&self) {
         let mut borrow = self.inner.borrow_mut();
 
-        // Wakeups can come in after a future has finished and been destroyed,
+        // Wakeups can come in after a Future has finished and been destroyed,
         // so handle this gracefully by just ignoring the request to run.
         let inner = match borrow.as_mut() {
             Some(inner) => inner,

@@ -101,7 +101,7 @@ impl Task {
         };
         *this.inner.borrow_mut() = Some(Inner { future, closure });
 
-        // Queue up the future's work to happen on the next microtask tick.
+        // Queue up the Future's work to happen on the next microtask tick.
         crate::queue::QUEUE.with(move |queue| queue.push_task(this));
     }
 
@@ -115,7 +115,7 @@ impl Task {
             None => return,
         };
 
-        // Also the same as `singlethread.rs`, flag ourselves as aready to
+        // Also the same as `singlethread.rs`, flag ourselves as ready to
         // receive a notification.
         let prev = self.atomic.state.swap(SLEEPING, SeqCst);
         debug_assert_eq!(prev, AWAKE);
@@ -128,24 +128,25 @@ impl Task {
         match poll {
             // Same as `singlethread.rs` (noticing a pattern?) clean up
             // resources associated with the future ASAP.
-            Poll::Ready(()) => *borrow = None,
+            Poll::Ready(()) => {
+                *borrow = None;
+            },
 
             // Unlike `singlethread.rs` we are responsible for ensuring there's
-            // a closure to handle the notification that a future is ready. In
+            // a closure to handle the notification that a Future is ready. In
             // the single-threaded case the notification itself enqueues work,
             // but in the multithreaded case we don't know what thread a
-            // notification comes from so we need to ensure this current running
+            // notification comes from so we need to ensure the current running
             // thread is the one that enqueues the work. To do that we execute
-            // `Atomics.waitAsync`, creating a local future on our own thread
-            // which will resolve once `Atomics.wait` would otherwise resolve
-            // (just in a nonblocking fashion).
+            // `Atomics.waitAsync`, creating a local Promise on our own thread
+            // which will resolve once `Atomics.notify` is called.
             //
             // We could be in one of two states as we execute this:
             //
-            // * `SLEEPING` - we'll get notified via `atomic.notify` above
-            //   eventually this new promise will resolve.
+            // * `SLEEPING` - we'll get notified via `Atomics.notify`
+            //   and then this Promise will resolve.
             //
-            // * `AWAKE` - the promise return will immediately be resolved and
+            // * `AWAKE` - the Promise will immediately be resolved and
             //   we'll execute the work on the next microtask queue.
             Poll::Pending => {
                 wait_async(&self.atomic.state, SLEEPING).then(&inner.closure);
@@ -157,8 +158,9 @@ impl Task {
 fn wait_async(ptr: &AtomicI32, current_value: i32) -> js_sys::Promise {
     // If `Atomics.waitAsync` isn't defined (as it isn't defined anywhere today)
     // then we use our fallback, otherwise we use the native function.
-    return if Atomics::get_wait_async().is_undefined() {
+    if Atomics::get_wait_async().is_undefined() {
         crate::task::wait_async_polyfill::wait_async(ptr, current_value)
+
     } else {
         let mem = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
         Atomics::wait_async(
@@ -166,7 +168,7 @@ fn wait_async(ptr: &AtomicI32, current_value: i32) -> js_sys::Promise {
             ptr as *const AtomicI32 as i32 / 4,
             current_value,
         )
-    };
+    }
 
     #[wasm_bindgen]
     extern "C" {

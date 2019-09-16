@@ -11,7 +11,7 @@ struct QueueState {
     tasks: RefCell<VecDeque<Rc<crate::task::Task>>>,
 
     // This flag indicates whether we're currently executing inside of
-    // `run_all` or have requested an execution inside of `run_all`, and it's
+    // `run_all` or have scheduled `run_all` to run in the future. This is
     // used to ensure that it's only scheduled once.
     is_spinning: Cell<bool>,
 }
@@ -49,7 +49,7 @@ impl Queue {
         self.state.tasks.borrow_mut().push_back(task);
 
         // If we're already inside the `run_all` loop then that'll pick up the
-        // task we jut enqueued. If we're not in `run_all`, though, then we need
+        // task we just enqueued. If we're not in `run_all`, though, then we need
         // to schedule a microtask.
         //
         // Note that we currently use a promise and a closure to do this, but
