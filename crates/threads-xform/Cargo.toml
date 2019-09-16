@@ -13,4 +13,5 @@ edition = "2018"
 
 [dependencies]
 failure = "0.1"
-walrus = "0.11.0"
+walrus = "0.12.0"
+wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "=0.2.50" }

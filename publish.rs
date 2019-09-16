@@ -26,7 +26,9 @@ const CRATES_TO_PUBLISH: &[&str] = &[
     "wasm-bindgen-test",
     "wasm-bindgen-wasm-interpreter",
     "wasm-bindgen-webidl",
+    "wasm-bindgen-wasm-conventions",
     "wasm-bindgen-threads-xform",
+    "wasm-bindgen-multi-value-xform",
     "wasm-bindgen-anyref-xform",
     "wasm-bindgen-cli-support",
     "wasm-bindgen-cli",
@@ -39,7 +41,6 @@ const CRATES_TO_PUBLISH: &[&str] = &[
 const CRATES_TO_AVOID_PUBLISH: &[&str] = &[
     // We'll publish these when they're ready one day
     "wasm-bindgen-typescript",
-
     // These are internal crates, unlikely to ever be published
     "ui-tests",
     "sample",
@@ -60,7 +61,8 @@ fn main() {
     find_crates("crates".as_ref(), &mut crates);
     find_crates("examples".as_ref(), &mut crates);
 
-    let pos = CRATES_TO_PUBLISH.iter()
+    let pos = CRATES_TO_PUBLISH
+        .iter()
         .chain(CRATES_TO_AVOID_PUBLISH)
         .enumerate()
         .map(|(i, c)| (*c, i))
@@ -87,7 +89,8 @@ fn main() {
 fn find_crates(dir: &Path, dst: &mut Vec<Crate>) {
     if dir.join("Cargo.toml").exists() {
         let krate = read_crate(&dir.join("Cargo.toml"));
-        if CRATES_TO_PUBLISH.iter()
+        if CRATES_TO_PUBLISH
+            .iter()
             .chain(CRATES_TO_AVOID_PUBLISH)
             .any(|c| krate.name == *c)
         {
@@ -112,16 +115,20 @@ fn read_crate(manifest: &Path) -> Crate {
     let mut version = None;
     for line in fs::read_to_string(manifest).unwrap().lines() {
         if name.is_none() && line.starts_with("name = \"") {
-            name = Some(line.replace("name = \"", "")
-                .replace("\"", "")
-                .trim()
-                .to_string());
+            name = Some(
+                line.replace("name = \"", "")
+                    .replace("\"", "")
+                    .trim()
+                    .to_string(),
+            );
         }
         if version.is_none() && line.starts_with("version = \"") {
-            version = Some(line.replace("version = \"", "")
-                .replace("\"", "")
-                .trim()
-                .to_string());
+            version = Some(
+                line.replace("version = \"", "")
+                    .replace("\"", "")
+                    .trim()
+                    .to_string(),
+            );
         }
     }
     let name = name.unwrap();
@@ -148,10 +155,10 @@ fn bump_version(krate: &Crate, crates: &[Crate]) {
         let mut rewritten = false;
         if line.starts_with("version =") {
             if CRATES_TO_PUBLISH.contains(&&krate.name[..]) {
-                println!("bump `{}` {} => {}",
-                         krate.name,
-                         krate.version,
-                         krate.next_version);
+                println!(
+                    "bump `{}` {} => {}",
+                    krate.name, krate.version, krate.next_version
+                );
                 new_manifest.push_str(&line.replace(&krate.version, &krate.next_version));
                 rewritten = true;
             }
@@ -165,20 +172,20 @@ fn bump_version(krate: &Crate, crates: &[Crate]) {
 
         for other in crates {
             if !is_deps || !line.starts_with(&format!("{} ", other.name)) {
-                continue
+                continue;
             }
             if !line.contains(&other.version) {
                 if !line.contains("version =") {
-                    continue
+                    continue;
                 }
-                panic!("{:?} has a dep on {} but doesn't list version {}",
-                       krate.manifest,
-                       other.name,
-                       other.version);
+                panic!(
+                    "{:?} has a dep on {} but doesn't list version {}",
+                    krate.manifest, other.name, other.version
+                );
             }
             rewritten = true;
             new_manifest.push_str(&line.replace(&other.version, &other.next_version));
-            break
+            break;
         }
         if !rewritten {
             new_manifest.push_str(line);
@@ -198,7 +205,7 @@ fn bump(version: &str) -> String {
 
 fn publish(krate: &Crate) {
     if !CRATES_TO_PUBLISH.iter().any(|s| *s == krate.name) {
-        return
+        return;
     }
     if krate.name == "wasm-bindgen" {
         println!("ABOUT TO PUBLISH wasm-bindgen");
