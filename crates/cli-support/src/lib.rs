@@ -8,6 +8,7 @@ use std::mem;
 use std::path::{Path, PathBuf};
 use std::str;
 use walrus::Module;
+use wasm_bindgen_wasm_conventions as wasm_conventions;
 
 mod anyref;
 mod decode;
@@ -278,18 +279,13 @@ impl Bindgen {
             }
         };
 
-        // Our multi-value xform relies on the presence of the stack pointer, so
-        // temporarily export it so that our many GC's don't remove it before
-        // the xform runs.
-        if self.multi_value {
-            // Assume that the first global is the shadow stack pointer, since that is
-            // what LLVM codegens.
-            match module.globals.iter().next() {
-                Some(g) if g.ty == walrus::ValType::I32 => {
-                    module.exports.add("__shadow_stack_pointer", g.id());
-                }
-                _ => {}
-            }
+        // Our threads and multi-value xforms rely on the presence of the stack
+        // pointer, so temporarily export it so that our many GC's don't remove
+        // it before the xform runs.
+        let mut exported_shadow_stack_pointer = false;
+        if self.multi_value || self.threads.is_enabled() {
+            wasm_conventions::export_shadow_stack_pointer(&mut module)?;
+            exported_shadow_stack_pointer = true;
         }
 
         // This isn't the hardest thing in the world too support but we
@@ -385,6 +381,17 @@ impl Bindgen {
                      Wasm interface types is also enabled"
                 );
             }
+        }
+
+        // If we exported the shadow stack pointer earlier, remove it from the
+        // export set now.
+        if exported_shadow_stack_pointer {
+            wasm_conventions::unexport_shadow_stack_pointer(&mut module)?;
+            // The shadow stack pointer is potentially unused now, but since it
+            // most likely _is_ in use, we don't pay the cost of a full GC here
+            // just to remove one potentially unnecessary global.
+            //
+            // walrus::passes::gc::run(&mut module);
         }
 
         Ok(Output {

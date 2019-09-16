@@ -53,9 +53,10 @@ use crate::descriptor::VectorKind;
 use crate::webidl::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
 use crate::webidl::{NonstandardIncoming, NonstandardOutgoing};
 use crate::webidl::{NonstandardWebidlSection, WasmBindgenAux};
-use failure::{bail, format_err, Error, ResultExt};
-use walrus::{GlobalId, MemoryId, Module};
+use failure::{bail, Error, ResultExt};
+use walrus::Module;
 use wasm_bindgen_multi_value_xform as multi_value_xform;
+use wasm_bindgen_wasm_conventions as wasm_conventions;
 use wasm_webidl_bindings::ast;
 
 pub fn add_multi_value(
@@ -79,8 +80,8 @@ pub fn add_multi_value(
         return Ok(());
     }
 
-    let memory = get_memory(module)?;
-    let shadow_stack_pointer = get_shadow_stack_pointer(module)?;
+    let shadow_stack_pointer = wasm_conventions::get_shadow_stack_pointer(module)?;
+    let memory = wasm_conventions::get_memory(module)?;
     multi_value_xform::run(module, memory, shadow_stack_pointer, &to_xform)?;
 
     // Finally, unset `return_via_outptr`, fix up its incoming bindings'
@@ -161,43 +162,6 @@ fn fixup_binding_argument_gets(incoming: &mut [NonstandardIncoming]) -> Result<(
             ast::IncomingBindingExpression::BindImport(e) => fixup_standard_incoming(&mut e.expr),
         }
     }
-}
-
-fn get_memory(module: &Module) -> Result<MemoryId, Error> {
-    let mut memories = module.memories.iter().map(|m| m.id());
-    let memory = memories.next();
-    if memories.next().is_some() {
-        bail!(
-            "expected a single memory, found multiple; multiple memories \
-             currently not supported"
-        );
-    }
-    memory.ok_or_else(|| {
-        format_err!(
-            "module does not have a memory; must have a memory \
-             to transform return pointers into Wasm multi-value"
-        )
-    })
-}
-
-// Get the `__shadow_stack_pointer` global that we stashed in an export early on
-// in the pipeline.
-fn get_shadow_stack_pointer(module: &mut Module) -> Result<GlobalId, Error> {
-    let (g, e) = module
-        .exports
-        .iter()
-        .find(|e| e.name == "__shadow_stack_pointer")
-        .map(|e| {
-            let g = match e.item {
-                walrus::ExportItem::Global(g) => g,
-                _ => unreachable!(),
-            };
-            (g, e.id())
-        })
-        .ok_or_else(|| format_err!("module does not have a shadow stack pointer"))?;
-
-    module.exports.delete(e);
-    Ok(g)
 }
 
 pub fn add_section(

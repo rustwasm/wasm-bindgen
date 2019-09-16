@@ -23,5 +23,6 @@ wasm-bindgen-anyref-xform = { path = '../anyref-xform', version = '=0.2.50' }
 wasm-bindgen-shared = { path = "../shared", version = '=0.2.50' }
 wasm-bindgen-multi-value-xform = { path = '../multi-value-xform', version = '=0.2.50' }
 wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.50' }
+wasm-bindgen-wasm-conventions = { path = '../wasm-conventions', version = '=0.2.50' }
 wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.50' }
 wasm-webidl-bindings = "0.5.0"

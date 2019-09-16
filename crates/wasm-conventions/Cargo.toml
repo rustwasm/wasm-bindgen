@@ -1,0 +1,16 @@
+[package]
+name = "wasm-bindgen-wasm-conventions"
+version = "0.2.50"
+authors = ["The wasm-bindgen developers"]
+license = "MIT/Apache-2.0"
+repository = "https://github.com/rustwasm/wasm-bindgen/tree/master/crates/wasm-conventions"
+homepage = "https://rustwasm.github.io/wasm-bindgen/"
+documentation = "https://docs.rs/wasm-bindgen-wasm-conventions"
+description = "Utilities for working with Wasm codegen conventions (usually established by LLVM/lld)"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+walrus = "0.12.0"
+failure = "0.1.5"
