@@ -1,48 +1,14 @@
+use std::cell::RefCell;
 use std::future::Future;
 use std::mem::ManuallyDrop;
 use std::pin::Pin;
 use std::rc::Rc;
-use std::cell::RefCell;
-use std::sync::Arc;
 use std::sync::atomic::AtomicI32;
 use std::sync::atomic::Ordering::SeqCst;
+use std::sync::Arc;
 use std::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
-use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
-
-
-#[wasm_bindgen]
-extern "C" {
-    type Atomics;
-
-    #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync)]
-    fn wait_async(buf: &JsValue, index: i32, value: i32) -> js_sys::Promise;
-
-    #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync, getter)]
-    fn get_wait_async() -> JsValue;
-}
-
-fn wait_async(ptr: &AtomicI32, current_value: i32) -> js_sys::Promise {
-    // If `Atomics.waitAsync` isn't defined (as it isn't defined anywhere today)
-    // then we use our fallback, otherwise we use the native function.
-    if Atomics::get_wait_async().is_undefined() {
-        crate::task::wait_async_polyfill::wait_async(ptr, current_value)
-
-    } else {
-        let mem = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
-        Atomics::wait_async(&mem.buffer(), ptr as *const AtomicI32 as i32 / 4, current_value)
-    }
-}
-
-fn notify(atomic: &AtomicI32, wakeup: u32) {
-    unsafe {
-        core::arch::wasm32::atomic_notify(
-            atomic as *const AtomicI32 as *mut i32,
-            wakeup, // Number of threads to notify
-        );
-    }
-}
-
+use wasm_bindgen::JsCast;
 
 const SLEEPING: i32 = 0;
 const AWAKE: i32 = 1;
@@ -58,22 +24,28 @@ impl AtomicWaker {
         })
     }
 
-    // If we're already AWAKE then we previously notified and there's nothing to do.
-    // Otherwise we execute the native `notify` instruction to wake up the corresponding
-    // `waitAsync` that was waiting for the transition from SLEEPING to AWAKE.
-    fn wake_by_ref(this: &Arc<Self>) {
-        let prev = this.state.swap(AWAKE, SeqCst);
-
-        if prev == AWAKE {
-            return;
+    fn wake_by_ref(&self) {
+        // If we're already AWAKE then we previously notified and there's
+        // nothing to do...
+        match self.state.swap(AWAKE, SeqCst) {
+            AWAKE => return,
+            other => debug_assert_eq!(other, SLEEPING),
         }
 
-        debug_assert_eq!(prev, SLEEPING);
-
-        notify(&this.state, 1);
+        // ... otherwise we execute the native `notify` instruction to wake up
+        // the corresponding `waitAsync` that was waiting for the transition
+        // from SLEEPING to AWAKE.
+        unsafe {
+            core::arch::wasm32::atomic_notify(
+                &self.state as *const AtomicI32 as *mut i32,
+                1, // Number of threads to notify
+            );
+        }
     }
 
-    // This is to avoid a dependency on futures_util::task::ArcWake
+    /// Same as the singlethread module, this creates a standard library
+    /// `RawWaker`. We could use `futures_util::task::ArcWake` but it's small
+    /// enough that we just inline it for now.
     unsafe fn into_raw_waker(this: Arc<Self>) -> RawWaker {
         unsafe fn raw_clone(ptr: *const ()) -> RawWaker {
             let ptr = ManuallyDrop::new(Arc::from_raw(ptr as *const AtomicWaker));
@@ -101,7 +73,6 @@ impl AtomicWaker {
     }
 }
 
-
 struct Inner {
     future: Pin<Box<dyn Future<Output = ()> + 'static>>,
     closure: Closure<dyn FnMut(JsValue)>,
@@ -110,16 +81,14 @@ struct Inner {
 pub(crate) struct Task {
     atomic: Arc<AtomicWaker>,
     waker: Waker,
-    // This is an Option so that the Future and Closure can be immediately dropped when it's finished
+    // See `singlethread.rs` for why this is an internal `Option`.
     inner: RefCell<Option<Inner>>,
 }
 
 impl Task {
     pub(crate) fn spawn(future: Pin<Box<dyn Future<Output = ()> + 'static>>) {
         let atomic = AtomicWaker::new();
-
-        let waker = unsafe { Waker::from_raw(AtomicWaker::into_raw_waker(Arc::clone(&atomic))) };
-
+        let waker = unsafe { Waker::from_raw(AtomicWaker::into_raw_waker(atomic.clone())) };
         let this = Rc::new(Task {
             atomic,
             waker,
@@ -128,47 +97,85 @@ impl Task {
 
         let closure = {
             let this = Rc::clone(&this);
-
-            Closure::wrap(Box::new(move |_| Task::run(&this)) as Box<dyn FnMut(JsValue)>)
+            Closure::wrap(Box::new(move |_| this.run()) as Box<dyn FnMut(JsValue)>)
         };
-
         *this.inner.borrow_mut() = Some(Inner { future, closure });
 
-        crate::queue::QUEUE.with(move |queue| {
-            // This will cause it to call crate::queue::Task::run on the next microtask tick
-            queue.push_task(this);
-        });
+        // Queue up the future's work to happen on the next microtask tick.
+        crate::queue::QUEUE.with(move |queue| queue.push_task(this));
     }
 
     pub(crate) fn run(&self) {
         let mut borrow = self.inner.borrow_mut();
 
-        // This will only be None if the Future wakes up the Waker after returning Poll::Ready
-        if let Some(inner) = borrow.as_mut() {
-            // Flag ourselves as ready to receive another notification.
-            // This has to be at the top so that it will re-queue if poll calls waker.wake()
-            let prev = self.atomic.state.swap(SLEEPING, SeqCst);
+        // Same as `singlethread.rs`, handle spurious wakeups happening after we
+        // finished.
+        let inner = match borrow.as_mut() {
+            Some(inner) => inner,
+            None => return,
+        };
 
-            // We should never enter this method unless our `value` is set to `AWAKE`, so assert
-            // that as well.
-            debug_assert_eq!(prev, AWAKE);
+        // Also the same as `singlethread.rs`, flag ourselves as aready to
+        // receive a notification.
+        let prev = self.atomic.state.swap(SLEEPING, SeqCst);
+        debug_assert_eq!(prev, AWAKE);
 
-            let poll = {
-                let cx = &mut Context::from_waker(&self.waker);
-                inner.future.as_mut().poll(cx)
-            };
+        let poll = {
+            let mut cx = Context::from_waker(&self.waker);
+            inner.future.as_mut().poll(&mut cx)
+        };
 
-            match poll {
-                Poll::Ready(()) => {
-                    // Cleanup the Future and Closure immediately
-                    *borrow = None;
-                },
-                Poll::Pending => {
-                    // If `self.state` is `SLEEPING` then it will wait until it is notified
-                    // If `self.state` is `AWAKE` then it immediately resolves the Promise
-                    wait_async(&self.atomic.state, SLEEPING).then(&inner.closure);
-                },
+        match poll {
+            // Same as `singlethread.rs` (noticing a pattern?) clean up
+            // resources associated with the future ASAP.
+            Poll::Ready(()) => *borrow = None,
+
+            // Unlike `singlethread.rs` we are responsible for ensuring there's
+            // a closure to handle the notification that a future is ready. In
+            // the single-threaded case the notification itself enqueues work,
+            // but in the multithreaded case we don't know what thread a
+            // notification comes from so we need to ensure this current running
+            // thread is the one that enqueues the work. To do that we execute
+            // `Atomics.waitAsync`, creating a local future on our own thread
+            // which will resolve once `Atomics.wait` would otherwise resolve
+            // (just in a nonblocking fashion).
+            //
+            // We could be in one of two states as we execute this:
+            //
+            // * `SLEEPING` - we'll get notified via `atomic.notify` above
+            //   eventually this new promise will resolve.
+            //
+            // * `AWAKE` - the promise return will immediately be resolved and
+            //   we'll execute the work on the next microtask queue.
+            Poll::Pending => {
+                wait_async(&self.atomic.state, SLEEPING).then(&inner.closure);
             }
         }
+    }
+}
+
+fn wait_async(ptr: &AtomicI32, current_value: i32) -> js_sys::Promise {
+    // If `Atomics.waitAsync` isn't defined (as it isn't defined anywhere today)
+    // then we use our fallback, otherwise we use the native function.
+    return if Atomics::get_wait_async().is_undefined() {
+        crate::task::wait_async_polyfill::wait_async(ptr, current_value)
+    } else {
+        let mem = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
+        Atomics::wait_async(
+            &mem.buffer(),
+            ptr as *const AtomicI32 as i32 / 4,
+            current_value,
+        )
+    };
+
+    #[wasm_bindgen]
+    extern "C" {
+        type Atomics;
+
+        #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync)]
+        fn wait_async(buf: &JsValue, index: i32, value: i32) -> js_sys::Promise;
+
+        #[wasm_bindgen(static_method_of = Atomics, js_name = waitAsync, getter)]
+        fn get_wait_async() -> JsValue;
     }
 }

@@ -5,32 +5,36 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
 struct QueueState {
-    // This is used to ensure that it's only scheduled once
-    is_spinning: Cell<bool>,
-
-    // This is a queue of Tasks which will be run in order
+    // The queue of Tasks which will be run in order. In practice this is all the
+    // synchronous work of futures, and each `Task` represents calling `poll` on
+    // a future "at the right time"
     tasks: RefCell<VecDeque<Rc<crate::task::Task>>>,
+
+    // This flag indicates whether we're currently executing inside of
+    // `run_all` or have requested an execution inside of `run_all`, and it's
+    // used to ensure that it's only scheduled once.
+    is_spinning: Cell<bool>,
 }
 
 impl QueueState {
-    // Runs all Tasks until empty. This blocks the event loop if a Future
-    // is stuck in an infinite loop. We might want to adjust this behavior later.
     fn run_all(&self) {
-        loop {
-            // We immediately drop the borrow_mut because `run` might queue more tasks
-            let task = self.tasks.borrow_mut().pop_front();
+        debug_assert!(self.is_spinning.get());
 
-            match task {
-                Some(task) => {
-                    task.run();
-                }
-                None => {
-                    // All of the Tasks have been run, so it's now possible to schedule the next tick again
-                    self.is_spinning.set(false);
-                    break;
-                }
-            }
+        // Runs all Tasks until empty. This blocks the event loop if a Future is
+        // stuck in an infinite loop, so we may want to yield back to the main
+        // event loop occasionally. For now though greedy execution should get
+        // the job done.
+        loop {
+            let task = match self.tasks.borrow_mut().pop_front() {
+                Some(task) => task,
+                None => break,
+            };
+            task.run();
         }
+
+        // All of the Tasks have been run, so it's now possible to schedule the
+        // next tick again
+        self.is_spinning.set(false);
     }
 }
 
@@ -42,18 +46,18 @@ pub(crate) struct Queue {
 
 impl Queue {
     pub(crate) fn push_task(&self, task: Rc<crate::task::Task>) {
-        let mut lock = self.state.tasks.borrow_mut();
+        self.state.tasks.borrow_mut().push_back(task);
 
-        lock.push_back(task);
-
-        // If we already scheduled the next tick then do nothing
-        if self.state.is_spinning.replace(true) {
-            return;
+        // If we're already inside the `run_all` loop then that'll pick up the
+        // task we jut enqueued. If we're not in `run_all`, though, then we need
+        // to schedule a microtask.
+        //
+        // Note that we currently use a promise and a closure to do this, but
+        // eventually we should probably use something like `queueMicrotask`:
+        // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/queueMicrotask
+        if !self.state.is_spinning.replace(true) {
+            self.promise.then(&self.closure);
         }
-
-        // The Task will be run on the next microtask event tick
-        // TODO replace with https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/queueMicrotask
-        self.promise.then(&self.closure);
     }
 }
 
@@ -70,10 +74,9 @@ impl Queue {
             closure: {
                 let state = Rc::clone(&state);
 
-                // This closure will only be called on the next microtask event tick
-                Closure::wrap(Box::new(move |_| {
-                    state.run_all();
-                }))
+                // This closure will only be called on the next microtask event
+                // tick
+                Closure::wrap(Box::new(move |_| state.run_all()))
             },
 
             state,

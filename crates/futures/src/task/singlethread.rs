@@ -5,14 +5,16 @@ use std::pin::Pin;
 use std::rc::Rc;
 use std::task::{Context, Poll, RawWaker, RawWakerVTable, Waker};
 
-
 struct Inner {
     future: Pin<Box<dyn Future<Output = ()> + 'static>>,
     waker: Waker,
 }
 
 pub(crate) struct Task {
-    // This is an Option so that the Future can be immediately dropped when it's finished
+    // The actual future that we're executing as part of this task.
+    //
+    // This is an Option so that the Future can be immediately dropped when it's
+    // finished
     inner: RefCell<Option<Inner>>,
 
     // This is used to ensure that the Task will only be queued once
@@ -28,16 +30,15 @@ impl Task {
 
         let waker = unsafe { Waker::from_raw(Task::into_raw_waker(Rc::clone(&this))) };
 
-        *this.inner.borrow_mut() = Some(Inner {
-            future,
-            waker,
-        });
+        *this.inner.borrow_mut() = Some(Inner { future, waker });
 
         Task::wake_by_ref(&this);
     }
 
     fn wake_by_ref(this: &Rc<Self>) {
-        // This ensures that it's only queued once
+        // If we've already been placed on the run queue then there's no need to
+        // requeue ourselves since we're going to run at some point in the
+        // future anyway.
         if this.is_queued.replace(true) {
             return;
         }
@@ -47,7 +48,13 @@ impl Task {
         });
     }
 
-    // This is to avoid a dependency on futures_util::task::ArcWake
+    /// Creates a stanard library `RawWaker` from an `Rc` of ourselves.
+    ///
+    /// Note that in general this is wildly unsafe because everything with
+    /// futures requires `Sync` + `Send` when you get to wakers. For wasm,
+    /// however, everything is guaranteed to be singlethreaded (since we're
+    /// compiled without the `atomics` feature) so we "safely lie" and say our
+    /// `Rc` pointer is good enough.
     unsafe fn into_raw_waker(this: Rc<Self>) -> RawWaker {
         unsafe fn raw_clone(ptr: *const ()) -> RawWaker {
             let ptr = ManuallyDrop::new(Rc::from_raw(ptr as *const Task));
@@ -77,20 +84,30 @@ impl Task {
     pub(crate) fn run(&self) {
         let mut borrow = self.inner.borrow_mut();
 
-        // This will only be None if the Future wakes up the Waker after returning Poll::Ready
-        if let Some(inner) = borrow.as_mut() {
-            // Clear `is_queued` flag so that it will re-queue if poll calls waker.wake()
-            self.is_queued.set(false);
+        // Wakeups can come in after a future has finished and been destroyed,
+        // so handle this gracefully by just ignoring the request to run.
+        let inner = match borrow.as_mut() {
+            Some(inner) => inner,
+            None => return,
+        };
 
-            let poll = {
-                let cx = &mut Context::from_waker(&inner.waker);
-                inner.future.as_mut().poll(cx)
-            };
+        // Ensure that if poll calls `waker.wake()` we can get enqueued back on
+        // the run queue.
+        self.is_queued.set(false);
 
-            if let Poll::Ready(_) = poll {
-                // Cleanup the Future immediately
-                *borrow = None;
-            }
+        let poll = {
+            let mut cx = Context::from_waker(&inner.waker);
+            inner.future.as_mut().poll(&mut cx)
+        };
+
+        // If a future has finished (`Ready`) then clean up resources associated
+        // with the future ASAP. This ensures that we don't keep anything extra
+        // alive in-memory by accident. Our own struct, `Rc<Task>` won't
+        // actually go away until all wakers referencing us go away, which may
+        // take quite some time, so ensure that the heaviest of resources are
+        // released early.
+        if let Poll::Ready(_) = poll {
+            *borrow = None;
         }
     }
 }
