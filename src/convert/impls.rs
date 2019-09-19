@@ -275,6 +275,7 @@ impl OptionFromWasmAbi for char {
 impl<T> IntoWasmAbi for *const T {
     type Abi = u32;
 
+    #[inline]
     fn into_abi(self) -> u32 {
         self as u32
     }
@@ -283,6 +284,7 @@ impl<T> IntoWasmAbi for *const T {
 impl<T> FromWasmAbi for *const T {
     type Abi = u32;
 
+    #[inline]
     unsafe fn from_abi(js: u32) -> *const T {
         js as *const T
     }
@@ -291,6 +293,7 @@ impl<T> FromWasmAbi for *const T {
 impl<T> IntoWasmAbi for *mut T {
     type Abi = u32;
 
+    #[inline]
     fn into_abi(self) -> u32 {
         self as u32
     }
@@ -299,6 +302,7 @@ impl<T> IntoWasmAbi for *mut T {
 impl<T> FromWasmAbi for *mut T {
     type Abi = u32;
 
+    #[inline]
     unsafe fn from_abi(js: u32) -> *mut T {
         js as *mut T
     }
@@ -346,6 +350,7 @@ impl RefFromWasmAbi for JsValue {
 impl<T: OptionIntoWasmAbi> IntoWasmAbi for Option<T> {
     type Abi = T::Abi;
 
+    #[inline]
     fn into_abi(self) -> T::Abi {
         match self {
             None => T::none(),
@@ -357,6 +362,7 @@ impl<T: OptionIntoWasmAbi> IntoWasmAbi for Option<T> {
 impl<T: OptionFromWasmAbi> FromWasmAbi for Option<T> {
     type Abi = T::Abi;
 
+    #[inline]
     unsafe fn from_abi(js: T::Abi) -> Self {
         if T::is_none(&js) {
             None
@@ -369,6 +375,7 @@ impl<T: OptionFromWasmAbi> FromWasmAbi for Option<T> {
 impl<T: IntoWasmAbi> IntoWasmAbi for Clamped<T> {
     type Abi = T::Abi;
 
+    #[inline]
     fn into_abi(self) -> Self::Abi {
         self.0.into_abi()
     }
@@ -377,6 +384,7 @@ impl<T: IntoWasmAbi> IntoWasmAbi for Clamped<T> {
 impl<T: FromWasmAbi> FromWasmAbi for Clamped<T> {
     type Abi = T::Abi;
 
+    #[inline]
     unsafe fn from_abi(js: T::Abi) -> Self {
         Clamped(T::from_abi(js))
     }
@@ -394,6 +402,7 @@ impl IntoWasmAbi for () {
 impl<T: IntoWasmAbi> ReturnWasmAbi for Result<T, JsValue> {
     type Abi = T::Abi;
 
+    #[inline]
     fn return_abi(self) -> Self::Abi {
         match self {
             Ok(v) => v.into_abi(),

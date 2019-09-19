@@ -12,4 +12,11 @@ export function test_string_roundtrip(f) {
 
   test('a longer string');
   test('a longer 💖 string');
+
+  // TODO re-enable this when Firefox 70 is released
+  //test('\uFEFFbar');
+}
+
+export function identity(s) {
+  return s;
 }

@@ -8,6 +8,7 @@ use std::mem;
 use std::path::{Path, PathBuf};
 use std::str;
 use walrus::Module;
+use wasm_bindgen_wasm_conventions as wasm_conventions;
 
 mod anyref;
 mod decode;
@@ -36,6 +37,7 @@ pub struct Bindgen {
     // "ready to be instantiated on any thread"
     threads: wasm_bindgen_threads_xform::Config,
     anyref: bool,
+    multi_value: bool,
     wasm_interface_types: bool,
     encode_into: EncodeInto,
 }
@@ -77,6 +79,7 @@ impl Bindgen {
     pub fn new() -> Bindgen {
         let anyref = env::var("WASM_BINDGEN_ANYREF").is_ok();
         let wasm_interface_types = env::var("WASM_INTERFACE_TYPES").is_ok();
+        let multi_value = env::var("WASM_BINDGEN_MULTI_VALUE").is_ok();
         Bindgen {
             input: Input::None,
             out_name: None,
@@ -93,6 +96,7 @@ impl Bindgen {
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
             anyref: anyref || wasm_interface_types,
+            multi_value,
             wasm_interface_types,
             encode_into: EncodeInto::Test,
         }
@@ -275,6 +279,15 @@ impl Bindgen {
             }
         };
 
+        // Our threads and multi-value xforms rely on the presence of the stack
+        // pointer, so temporarily export it so that our many GC's don't remove
+        // it before the xform runs.
+        let mut exported_shadow_stack_pointer = false;
+        if self.multi_value || self.threads.is_enabled() {
+            wasm_conventions::export_shadow_stack_pointer(&mut module)?;
+            exported_shadow_stack_pointer = true;
+        }
+
         // This isn't the hardest thing in the world too support but we
         // basically don't know how to rationalize #[wasm_bindgen(start)] and
         // the actual `start` function if present. Figure this out later if it
@@ -320,7 +333,12 @@ impl Bindgen {
         // the webidl bindings proposal) as well as an auxiliary section for all
         // sorts of miscellaneous information and features #[wasm_bindgen]
         // supports that aren't covered by WebIDL bindings.
-        webidl::process(&mut module, self.anyref, self.wasm_interface_types, self.emit_start)?;
+        webidl::process(
+            &mut module,
+            self.anyref,
+            self.wasm_interface_types,
+            self.emit_start,
+        )?;
 
         // Now that we've got type information from the webidl processing pass,
         // touch up the output of rustc to insert anyref shims where necessary.
@@ -335,7 +353,7 @@ impl Bindgen {
             .customs
             .delete_typed::<webidl::WasmBindgenAux>()
             .expect("aux section should be present");
-        let bindings = module
+        let mut bindings = module
             .customs
             .delete_typed::<webidl::NonstandardWebidlSection>()
             .unwrap();
@@ -350,8 +368,30 @@ impl Bindgen {
         };
 
         if self.wasm_interface_types {
+            if self.multi_value {
+                webidl::standard::add_multi_value(&mut module, &mut bindings)
+                    .context("failed to transform return pointers into multi-value Wasm")?;
+            }
             webidl::standard::add_section(&mut module, &aux, &bindings)
                 .with_context(|_| "failed to generate a standard wasm bindings custom section")?;
+        } else {
+            if self.multi_value {
+                failure::bail!(
+                    "Wasm multi-value is currently only available when \
+                     Wasm interface types is also enabled"
+                );
+            }
+        }
+
+        // If we exported the shadow stack pointer earlier, remove it from the
+        // export set now.
+        if exported_shadow_stack_pointer {
+            wasm_conventions::unexport_shadow_stack_pointer(&mut module)?;
+            // The shadow stack pointer is potentially unused now, but since it
+            // most likely _is_ in use, we don't pay the cost of a full GC here
+            // just to remove one potentially unnecessary global.
+            //
+            // walrus::passes::gc::run(&mut module);
         }
 
         Ok(Output {
@@ -535,16 +575,14 @@ impl Output {
         } else {
             format!("{}_bg", self.stem)
         };
-        let wasm_path = out_dir
-            .join(wasm_name)
-            .with_extension("wasm");
+        let wasm_path = out_dir.join(wasm_name).with_extension("wasm");
         fs::create_dir_all(out_dir)?;
-        let wasm_bytes = self.module.emit_wasm()?;
+        let wasm_bytes = self.module.emit_wasm();
         fs::write(&wasm_path, wasm_bytes)
             .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
 
         if self.wasm_interface_types {
-            return Ok(())
+            return Ok(());
         }
 
         // Write out all local JS snippets to the final destination now that

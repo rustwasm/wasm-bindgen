@@ -1,28 +1,23 @@
-#[macro_use]
-extern crate futures;
-extern crate js_sys;
-extern crate wasm_bindgen;
-extern crate wasm_bindgen_futures;
-
-use std::time::Duration;
-
-use futures::prelude::*;
 use js_sys::Promise;
+use std::task::{Poll, Context};
+use std::pin::Pin;
+use std::time::Duration;
 use wasm_bindgen::prelude::*;
+use std::future::Future;
 use wasm_bindgen_futures::JsFuture;
 
 pub struct Timeout {
-    id: u32,
+    id: JsValue,
     inner: JsFuture,
 }
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_name = setTimeout)]
-    fn set_timeout(closure: JsValue, millis: f64) -> u32;
+    fn set_timeout(closure: JsValue, millis: f64) -> JsValue;
 
     #[wasm_bindgen(js_name = clearTimeout)]
-    fn clear_timeout(id: u32);
+    fn clear_timeout(id: &JsValue);
 }
 
 impl Timeout {
@@ -47,17 +42,15 @@ impl Timeout {
 }
 
 impl Future for Timeout {
-    type Item = ();
-    type Error = JsValue;
+    type Output = ();
 
-    fn poll(&mut self) -> Poll<(), JsValue> {
-        let _obj = try_ready!(self.inner.poll());
-        Ok(().into())
+    fn poll(mut self: Pin<&mut Self>, cx: &mut Context) -> Poll<()> {
+        Pin::new(&mut self.inner).poll(cx).map(|_| ())
     }
 }
 
 impl Drop for Timeout {
     fn drop(&mut self) {
-        clear_timeout(self.id);
+        clear_timeout(&self.id);
     }
 }

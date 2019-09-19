@@ -26,3 +26,4 @@ quote = "1.0"
 [dev-dependencies]
 trybuild = "1.0"
 wasm-bindgen = { path = "../..", version = "0.2.50", features = ['strict-macro'] }
+wasm-bindgen-futures = { path = "../futures", version = "0.4.0" }

@@ -713,6 +713,7 @@ fn function_from_decl(
             ret,
             rust_attrs: attrs,
             rust_vis: vis,
+            r#async: sig.asyncness.is_some(),
         },
         method_self,
     ))

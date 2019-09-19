@@ -1,4 +1,4 @@
-// Note that since we're not using `WebAssembly` we can do a synchronous import
-// here!
-import { run } from './pkg/wasm2js';
-run();
+// Import our JS shim and initialize it, executing the start function when it's
+// ready.
+import init from './pkg/wasm2js.js';
+init();
