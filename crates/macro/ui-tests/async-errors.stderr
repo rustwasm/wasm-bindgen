@@ -1,7 +1,7 @@
 error[E0277]: the trait bound `std::result::Result<(), ()>: wasm_bindgen::__rt::IntoJsResult` is not satisfied
-  --> $DIR/async-errors.rs:29:1
+  --> $DIR/async-errors.rs:30:1
    |
-29 | #[wasm_bindgen]
+30 | #[wasm_bindgen]
    | ^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::IntoJsResult` is not implemented for `std::result::Result<(), ()>`
    |
    = help: the following implementations were found:
@@ -10,9 +10,9 @@ error[E0277]: the trait bound `std::result::Result<(), ()>: wasm_bindgen::__rt::
    = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
 
 error[E0277]: the trait bound `std::result::Result<(), BadType>: wasm_bindgen::__rt::IntoJsResult` is not satisfied
-  --> $DIR/async-errors.rs:31:1
+  --> $DIR/async-errors.rs:32:1
    |
-31 | #[wasm_bindgen]
+32 | #[wasm_bindgen]
    | ^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::IntoJsResult` is not implemented for `std::result::Result<(), BadType>`
    |
    = help: the following implementations were found:
@@ -21,9 +21,9 @@ error[E0277]: the trait bound `std::result::Result<(), BadType>: wasm_bindgen::_
    = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
 
 error[E0277]: the trait bound `wasm_bindgen::JsValue: std::convert::From<BadType>` is not satisfied
-  --> $DIR/async-errors.rs:33:1
+  --> $DIR/async-errors.rs:34:1
    |
-33 | #[wasm_bindgen]
+34 | #[wasm_bindgen]
    | ^^^^^^^^^^^^^^^ the trait `std::convert::From<BadType>` is not implemented for `wasm_bindgen::JsValue`
    |
    = help: the following implementations were found:
@@ -37,9 +37,9 @@ error[E0277]: the trait bound `wasm_bindgen::JsValue: std::convert::From<BadType
    = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
 
 error[E0277]: the trait bound `std::result::Result<BadType, wasm_bindgen::JsValue>: wasm_bindgen::__rt::IntoJsResult` is not satisfied
-  --> $DIR/async-errors.rs:35:1
+  --> $DIR/async-errors.rs:36:1
    |
-35 | #[wasm_bindgen]
+36 | #[wasm_bindgen]
    | ^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::IntoJsResult` is not implemented for `std::result::Result<BadType, wasm_bindgen::JsValue>`
    |
    = help: the following implementations were found:
