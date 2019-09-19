@@ -822,6 +822,8 @@ pub fn function_table() -> JsValue {
 pub mod __rt {
     use core::cell::{Cell, UnsafeCell};
     use core::ops::{Deref, DerefMut};
+    use crate::JsValue;
+
     pub extern crate core;
     #[cfg(feature = "std")]
     pub extern crate std;
@@ -1093,6 +1095,44 @@ pub mod __rt {
             GLOBAL_EXNDATA[0] = 0;
             GLOBAL_EXNDATA[1] = 0;
             return ret;
+        }
+    }
+
+    /// An internal helper trait for usage in `#[wasm_bindgen]` on `async`
+    /// functions to convert the return value of the function to
+    /// `Result<JsValue, JsValue>` which is what we'll return to JS (where an
+    /// error is a failed future).
+    pub trait IntoJsResult {
+        fn into_js_result(self) -> Result<JsValue, JsValue>;
+    }
+
+    impl IntoJsResult for () {
+        fn into_js_result(self) -> Result<JsValue, JsValue> {
+            Ok(JsValue::undefined())
+        }
+    }
+
+    impl<T: Into<JsValue>> IntoJsResult for T {
+        fn into_js_result(self) -> Result<JsValue, JsValue> {
+            Ok(self.into())
+        }
+    }
+
+    impl<T: Into<JsValue>, E: Into<JsValue>> IntoJsResult for Result<T, E> {
+        fn into_js_result(self) -> Result<JsValue, JsValue> {
+            match self {
+                Ok(e) => Ok(e.into()),
+                Err(e) => Err(e.into()),
+            }
+        }
+    }
+
+    impl<E: Into<JsValue>> IntoJsResult for Result<(), E> {
+        fn into_js_result(self) -> Result<JsValue, JsValue> {
+            match self {
+                Ok(()) => Ok(JsValue::undefined()),
+                Err(e) => Err(e.into()),
+            }
         }
     }
 }

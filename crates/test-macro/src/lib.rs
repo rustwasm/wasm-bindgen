@@ -35,6 +35,9 @@ pub fn wasm_bindgen_test(
     while let Some(token) = body.next() {
         leading_tokens.push(token.clone());
         if let TokenTree::Ident(token) = token {
+            if token == "async" {
+                r#async = true;
+            }
             if token == "fn" {
                 break;
             }

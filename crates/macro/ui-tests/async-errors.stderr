@@ -1,0 +1,50 @@
+error[E0277]: the trait bound `std::result::Result<(), ()>: wasm_bindgen::__rt::IntoJsResult` is not satisfied
+  --> $DIR/async-errors.rs:29:1
+   |
+29 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::IntoJsResult` is not implemented for `std::result::Result<(), ()>`
+   |
+   = help: the following implementations were found:
+             <std::result::Result<(), E> as wasm_bindgen::__rt::IntoJsResult>
+             <std::result::Result<T, E> as wasm_bindgen::__rt::IntoJsResult>
+   = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
+
+error[E0277]: the trait bound `std::result::Result<(), BadType>: wasm_bindgen::__rt::IntoJsResult` is not satisfied
+  --> $DIR/async-errors.rs:31:1
+   |
+31 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::IntoJsResult` is not implemented for `std::result::Result<(), BadType>`
+   |
+   = help: the following implementations were found:
+             <std::result::Result<(), E> as wasm_bindgen::__rt::IntoJsResult>
+             <std::result::Result<T, E> as wasm_bindgen::__rt::IntoJsResult>
+   = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
+
+error[E0277]: the trait bound `wasm_bindgen::JsValue: std::convert::From<BadType>` is not satisfied
+  --> $DIR/async-errors.rs:33:1
+   |
+33 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ the trait `std::convert::From<BadType>` is not implemented for `wasm_bindgen::JsValue`
+   |
+   = help: the following implementations were found:
+             <wasm_bindgen::JsValue as std::convert::From<&'a T>>
+             <wasm_bindgen::JsValue as std::convert::From<&'a std::string::String>>
+             <wasm_bindgen::JsValue as std::convert::From<&'a str>>
+             <wasm_bindgen::JsValue as std::convert::From<MyType>>
+           and 62 others
+   = note: required because of the requirements on the impl of `std::convert::Into<wasm_bindgen::JsValue>` for `BadType`
+   = note: required because of the requirements on the impl of `wasm_bindgen::__rt::IntoJsResult` for `BadType`
+   = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
+
+error[E0277]: the trait bound `std::result::Result<BadType, wasm_bindgen::JsValue>: wasm_bindgen::__rt::IntoJsResult` is not satisfied
+  --> $DIR/async-errors.rs:35:1
+   |
+35 | #[wasm_bindgen]
+   | ^^^^^^^^^^^^^^^ the trait `wasm_bindgen::__rt::IntoJsResult` is not implemented for `std::result::Result<BadType, wasm_bindgen::JsValue>`
+   |
+   = help: the following implementations were found:
+             <std::result::Result<(), E> as wasm_bindgen::__rt::IntoJsResult>
+             <std::result::Result<T, E> as wasm_bindgen::__rt::IntoJsResult>
+   = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
+
+For more information about this error, try `rustc --explain E0277`.

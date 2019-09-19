@@ -121,6 +121,8 @@ pub trait ReturnWasmAbi: WasmDescribe {
 
 impl<T: IntoWasmAbi> ReturnWasmAbi for T {
     type Abi = T::Abi;
+
+    #[inline]
     fn return_abi(self) -> Self::Abi {
         self.into_abi()
     }

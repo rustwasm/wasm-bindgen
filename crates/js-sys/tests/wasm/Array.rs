@@ -1,4 +1,5 @@
 use js_sys::*;
+use std::iter::FromIterator;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
@@ -23,6 +24,122 @@ fn to_rust(arr: &Array) -> Vec<JsValue> {
     let mut result = Vec::with_capacity(arr.length() as usize);
     arr.for_each(&mut |x, _, _| result.push(x));
     result
+}
+
+#[wasm_bindgen_test]
+fn from_iter() {
+    assert_eq!(
+        to_rust(&vec![
+            JsValue::from("a"),
+            JsValue::from("b"),
+            JsValue::from("c"),
+        ].into_iter().collect()),
+        vec!["a", "b", "c"],
+    );
+
+    assert_eq!(
+        to_rust(&vec![
+            JsValue::from("a"),
+            JsValue::from("b"),
+            JsValue::from("c"),
+        ].iter().collect()),
+        vec!["a", "b", "c"],
+    );
+
+    let array = js_array![1u32, 2u32, 3u32];
+
+    assert_eq!(
+        to_rust(&vec![
+            array.clone(),
+        ].into_iter().collect()),
+        vec![JsValue::from(array.clone())],
+    );
+
+    assert_eq!(
+        to_rust(&vec![
+            array.clone(),
+        ].iter().collect()),
+        vec![JsValue::from(array)],
+    );
+
+    assert_eq!(
+        to_rust(&vec![
+            5,
+            10,
+            20,
+        ].into_iter().map(JsValue::from).collect()),
+        vec![5, 10, 20],
+    );
+
+    assert_eq!(
+        to_rust(&Array::from_iter(&[
+            JsValue::from("a"),
+            JsValue::from("b"),
+            JsValue::from("c"),
+        ])),
+        vec!["a", "b", "c"],
+    );
+
+    let v = vec![
+        "a",
+        "b",
+        "c",
+    ];
+
+    assert_eq!(
+        to_rust(&Array::from_iter(v.into_iter().map(|s| JsValue::from(s)))),
+        vec!["a", "b", "c"],
+    );
+}
+
+#[wasm_bindgen_test]
+fn new_with_length() {
+    let array = Array::new_with_length(5);
+    assert_eq!(array.length(), 5);
+    assert_eq!(array.get(4), JsValue::undefined());
+    array.set(4, JsValue::from("a"));
+    assert_eq!(array.get(4), "a");
+    assert_eq!(array.length(), 5);
+}
+
+#[wasm_bindgen_test]
+fn get() {
+    let array = js_array!["a", "c", "x", "n"];
+    assert_eq!(array.length(), 4);
+    assert_eq!(array.get(0), "a");
+    assert_eq!(array.get(3), "n");
+    assert_eq!(array.get(4), JsValue::undefined());
+}
+
+#[wasm_bindgen_test]
+fn set() {
+    let array = js_array!["a", "c", "x", "n"];
+    assert_eq!(array.length(), 4);
+    assert_eq!(array.get(0), "a");
+    array.set(0, JsValue::from("b"));
+    assert_eq!(array.get(0), "b");
+
+    assert_eq!(array.get(4), JsValue::undefined());
+    assert_eq!(array.length(), 4);
+    array.set(4, JsValue::from("d"));
+    assert_eq!(array.length(), 5);
+    assert_eq!(array.get(4), "d");
+
+    assert_eq!(array.get(10), JsValue::undefined());
+    assert_eq!(array.length(), 5);
+    array.set(10, JsValue::from("z"));
+    assert_eq!(array.length(), 11);
+    assert_eq!(array.get(10), "z");
+    assert_eq!(array.get(9), JsValue::undefined());
+}
+
+#[wasm_bindgen_test]
+fn delete() {
+    let array = js_array!["a", "c", "x", "n"];
+    assert_eq!(array.length(), 4);
+    assert_eq!(array.get(0), "a");
+    array.delete(0);
+    assert_eq!(array.get(0), JsValue::undefined());
 }
 
 #[wasm_bindgen_test]

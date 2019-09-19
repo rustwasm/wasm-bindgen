@@ -1,10 +1,10 @@
-use futures::future;
-use futures::prelude::*;
-use futures::sync::oneshot;
 use js_sys::Promise;
 use std::cell::RefCell;
 use std::fmt;
+use std::future::Future;
+use std::pin::Pin;
 use std::rc::Rc;
+use std::task::{Context, Poll, Waker};
 use wasm_bindgen::prelude::*;
 
 /// A Rust `Future` backed by a JavaScript `Promise`.
@@ -16,7 +16,13 @@ use wasm_bindgen::prelude::*;
 ///
 /// Currently this type is constructed with `JsFuture::from`.
 pub struct JsFuture {
-    rx: oneshot::Receiver<Result<JsValue, JsValue>>,
+    inner: Rc<RefCell<Inner>>,
+}
+
+struct Inner {
+    result: Option<Result<JsValue, JsValue>>,
+    task: Option<Waker>,
+    callbacks: Option<(Closure<dyn FnMut(JsValue)>, Closure<dyn FnMut(JsValue)>)>,
 }
 
 impl fmt::Debug for JsFuture {
@@ -42,49 +48,54 @@ impl From<Promise> for JsFuture {
         // have to be self-contained. Through the `Closure::once` and some
         // `Rc`-trickery we can arrange for both instances of `Closure`, and the
         // `Rc`, to all be destroyed once the first one is called.
-        let (tx, rx) = oneshot::channel();
-        let state = Rc::new(RefCell::new(None));
+        let state = Rc::new(RefCell::new(Inner {
+            result: None,
+            task: None,
+            callbacks: None,
+        }));
         let state2 = state.clone();
         let resolve = Closure::once(move |val| finish(&state2, Ok(val)));
         let state2 = state.clone();
         let reject = Closure::once(move |val| finish(&state2, Err(val)));
 
         js.then2(&resolve, &reject);
-        *state.borrow_mut() = Some((tx, resolve, reject));
+        state.borrow_mut().callbacks = Some((resolve, reject));
 
-        return JsFuture { rx };
+        return JsFuture { inner: state };
 
-        fn finish(
-            state: &RefCell<
-                Option<(
-                    oneshot::Sender<Result<JsValue, JsValue>>,
-                    Closure<dyn FnMut(JsValue)>,
-                    Closure<dyn FnMut(JsValue)>,
-                )>,
-            >,
-            val: Result<JsValue, JsValue>,
-        ) {
-            match state.borrow_mut().take() {
-                // We don't have any guarantee that anyone's still listening at this
-                // point (the Rust `JsFuture` could have been dropped) so simply
-                // ignore any errors here.
-                Some((tx, _, _)) => drop(tx.send(val)),
-                None => wasm_bindgen::throw_str("cannot finish twice"),
+        fn finish(state: &RefCell<Inner>, val: Result<JsValue, JsValue>) {
+            // First up drop our closures as they'll never be invoked again and
+            // this is our chance to clean up their state. Next store the value
+            // into the internal state, and then finally if any task was waiting
+            // on the value wake it up and let them know it's there.
+            let task = {
+                let mut state = state.borrow_mut();
+                debug_assert!(state.callbacks.is_some());
+                debug_assert!(state.result.is_none());
+                drop(state.callbacks.take());
+                state.result = Some(val);
+                state.task.take()
+            };
+            if let Some(task) = task {
+                task.wake()
             }
         }
     }
 }
 
 impl Future for JsFuture {
-    type Item = JsValue;
-    type Error = JsValue;
+    type Output = Result<JsValue, JsValue>;
 
-    fn poll(&mut self) -> Poll<JsValue, JsValue> {
-        match self.rx.poll() {
-            Ok(Async::Ready(val)) => val.map(Async::Ready),
-            Ok(Async::NotReady) => Ok(Async::NotReady),
-            Err(_) => wasm_bindgen::throw_str("cannot cancel"),
+    fn poll(self: Pin<&mut Self>, cx: &mut Context) -> Poll<Self::Output> {
+        let mut inner = self.inner.borrow_mut();
+        // If our value has come in then we return it...
+        if let Some(val) = inner.result.take() {
+            return Poll::Ready(val)
         }
+        // ... otherwise we arrange ourselves to get woken up once the value
+        // does come in
+        inner.task = Some(cx.waker().clone());
+        Poll::Pending
     }
 }
 
@@ -98,11 +109,10 @@ impl Future for JsFuture {
 /// This function has the same panic behavior as `future_to_promise`.
 pub fn spawn_local<F>(future: F)
 where
-    F: Future<Item = (), Error = ()> + 'static,
+    F: Future<Output = ()> + 'static,
 {
-    crate::future_to_promise(
-        future
-            .map(|()| JsValue::undefined())
-            .or_else(|()| future::ok::<JsValue, JsValue>(JsValue::undefined())),
-    );
+    crate::future_to_promise(async {
+        future.await;
+        Ok(JsValue::undefined())
+    });
 }
