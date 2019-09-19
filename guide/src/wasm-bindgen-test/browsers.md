@@ -46,6 +46,35 @@ test` with the appropriate browser flags and `--headless`:
 wasm-pack test --headless --chrome --firefox --safari
 ```
 
+## Configuring Headless Browser capabilities
+
+Add the file `webdriver.json` to the root of your crate. Each browser has own 
+section for capabilities. For example:
+
+```json
+{
+  "moz:firefoxOptions": {
+    "prefs": {
+      "media.navigator.streams.fake": true,
+      "media.navigator.permission.disabled": true
+    },
+    "args": []
+  },
+  "goog:chromeOptions": {
+    "args": [
+      "--use-fake-device-for-media-stream",
+      "--use-fake-ui-for-media-stream"
+    ]
+  }
+}
+```
+Full list supported capabilities can be found:
+
+* for Chrome - [here](https://peter.sh/experiments/chromium-command-line-switches/)
+* for Firefox - [here](https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions)
+
+Note that the `headless` argument is always enabled for both browsers.
+
 ### Debugging Headless Browser Tests
 
 Omitting the `--headless` flag will disable headless mode, and allow you to
@@ -91,6 +120,15 @@ WebDriver.
 
 This is installed by default on Mac OS. It should be able to find your Safari
 installation by default.
+
+### Running the Tests in the Remote Headless Browser
+
+Tests can be run on a remote webdriver. To do this, the above environment 
+variables must be set as URL to the remote webdriver. For example:
+
+```
+CHROMEDRIVER=http://remote.host/
+```
 
 ### Running the Tests in the Headless Browser
 
