@@ -4,7 +4,7 @@ use failure::{bail, format_err, Error, ResultExt};
 use log::{debug, warn};
 use rouille::url::Url;
 use serde::{Deserialize, Serialize};
-use serde_json::{self, json, Value as Json};
+use serde_json::{self, json, Map, Value as Json};
 use std::env;
 use std::fs::File;
 use std::io::{self, Read};
@@ -13,7 +13,40 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
-use webdriver::capabilities::{Capabilities, LegacyNewSessionParameters, SpecNewSessionParameters};
+
+/// Options that can use to customize and configure a WebDriver session.
+type Capabilities = Map<String, Json>;
+
+/// Wrapper for [`Capabilities`] used in `--w3c` mode.
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct SpecNewSessionParameters {
+    #[serde(rename = "alwaysMatch", default = "Capabilities::default")]
+    pub always_match: Capabilities,
+    #[serde(rename = "firstMatch", default = "first_match_default")]
+    pub first_match: Vec<Capabilities>,
+}
+
+impl Default for SpecNewSessionParameters {
+    fn default() -> Self {
+        Self {
+            always_match: Capabilities::new(),
+            first_match: vec![Capabilities::new()],
+        }
+    }
+}
+
+fn first_match_default() -> Vec<Capabilities> {
+    vec![Capabilities::default()]
+}
+
+/// Wrapper for [`Capabilities`] used in `--legacy` mode.
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct LegacyNewSessionParameters {
+    #[serde(rename = "desiredCapabilities", default = "Capabilities::default")]
+    pub desired: Capabilities,
+    #[serde(rename = "requiredCapabilities", default = "Capabilities::default")]
+    pub required: Capabilities,
+}
 
 /// Execute a headless browser tests against a server running on `server`
 /// address.
@@ -320,8 +353,8 @@ impl Client {
                     .expect("args wasn't a JSON array")
                     .extend(vec![Json::String("-headless".to_string())]);
                 let session_config = SpecNewSessionParameters {
-                    alwaysMatch: cap,
-                    firstMatch: vec![Capabilities::new()],
+                    always_match: cap,
+                    first_match: vec![Capabilities::new()],
                 };
                 let request = json!({
                     "capabilities": session_config,
