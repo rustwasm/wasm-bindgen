@@ -87,3 +87,5 @@ error: it is currently not sound to use lifetimes in function signatures
    |
 38 |     fn f() -> Result<'a>;
    |                      ^^
+
+error: could not compile `wasm-bindgen-macro-tests`.

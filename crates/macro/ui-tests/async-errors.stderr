@@ -48,3 +48,4 @@ error[E0277]: the trait bound `std::result::Result<BadType, wasm_bindgen::JsValu
    = note: required by `wasm_bindgen::__rt::IntoJsResult::into_js_result`
 
 For more information about this error, try `rustc --explain E0277`.
+error: could not compile `wasm-bindgen-macro-tests`.

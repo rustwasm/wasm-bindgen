@@ -5,3 +5,4 @@ error[E0412]: cannot find type `A` in this scope
   |                   ^ not found in this scope
 
 For more information about this error, try `rustc --explain E0412`.
+error: could not compile `wasm-bindgen-macro-tests`.

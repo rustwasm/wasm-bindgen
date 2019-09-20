@@ -9,3 +9,5 @@ error: unused #[wasm_bindgen] attribute
   |
 8 |     #[wasm_bindgen(method)]
   |                    ^^^^^^
+
+error: could not compile `wasm-bindgen-macro-tests`.
