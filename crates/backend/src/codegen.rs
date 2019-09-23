@@ -1162,6 +1162,14 @@ impl ToTokens for ast::ImportStatic {
             };
         })
         .to_tokens(into);
+
+        Descriptor(
+            &shim_name,
+            quote! {
+                <#ty as WasmDescribe>::describe();
+            },
+        )
+        .to_tokens(into);
     }
 }
 

@@ -1049,6 +1049,11 @@ impl<'a> Context<'a> {
             None => return Ok(()),
         };
 
+        let descriptor = match self.descriptors.remove(static_.shim) {
+            None => return Ok(()),
+            Some(d) => d,
+        };
+
         // Register the signature of this imported shim
         bindings::register_import(
             self.module,
@@ -1057,7 +1062,7 @@ impl<'a> Context<'a> {
             Function {
                 arguments: Vec::new(),
                 shim_idx: 0,
-                ret: Descriptor::Anyref,
+                ret: descriptor,
             },
             ast::WebidlFunctionKind::Static,
         )?;
