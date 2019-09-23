@@ -144,4 +144,5 @@ fn serde() {
     assert_eq!(foo.d.a, 4);
 
     assert_eq!(JsValue::from("bar").into_serde::<String>().unwrap(), "bar");
+    assert_eq!(JsValue::undefined().into_serde::<i32>().ok(), None);
 }
