@@ -2606,7 +2606,11 @@ impl<'a> Context<'a> {
 
             Intrinsic::JsonSerialize => {
                 assert_eq!(args.len(), 1);
-                format!("JSON.stringify({})", args[0])
+                // Turns out `JSON.stringify(undefined) === undefined`, so if
+                // we're passed `undefined` reinterpret it as `null` for JSON
+                // purposes.
+                prelude.push_str(&format!("const obj = {};\n", args[0]));
+                "JSON.stringify(obj === undefined ? null : obj)".to_string()
             }
 
             Intrinsic::AnyrefHeapLiveCount => {
