@@ -16,7 +16,7 @@ edition = '2018'
 [dependencies]
 curl = "0.4.13"
 docopt = "1.0"
-env_logger = "0.6"
+env_logger = "0.7"
 failure = "0.1.2"
 log = "0.4"
 openssl = { version = '0.10.11', optional = true }

@@ -11,7 +11,7 @@ path = 'lib.rs'
 
 [build-dependencies]
 wasm-bindgen-webidl = { path = '../webidl' }
-env_logger = "0.6"
+env_logger = "0.7"
 
 [dev-dependencies]
 js-sys = { path = '../js-sys' }
