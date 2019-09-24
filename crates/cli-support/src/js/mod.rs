@@ -1937,6 +1937,7 @@ impl<'a> Context<'a> {
             .unwrap();
         self.export_function_table()?;
         let mut builder = binding::Builder::new(self);
+        builder.disable_log_error(true);
         let js = builder.process(&binding, &webidl, true, &None, &mut |_, _, args| {
             Ok(format!(
                 "wasm.__wbg_function_table.get({})({})",
@@ -1965,6 +1966,7 @@ impl<'a> Context<'a> {
         // Construct a JS shim builder, and configure it based on the kind of
         // export that we're generating.
         let mut builder = binding::Builder::new(self);
+        builder.disable_log_error(true);
         match &export.kind {
             AuxExportKind::Function(_) => {}
             AuxExportKind::StaticFunction { .. } => {}
@@ -2058,8 +2060,10 @@ impl<'a> Context<'a> {
                     );
                 }
 
+                let disable_log_error = self.import_never_log_error(import);
                 let mut builder = binding::Builder::new(self);
                 builder.catch(catch)?;
+                builder.disable_log_error(disable_log_error);
                 let js = builder.process(
                     &binding,
                     &webidl,
@@ -2073,6 +2077,22 @@ impl<'a> Context<'a> {
                     .insert(id, format!("function{}", js));
                 Ok(())
             }
+        }
+    }
+
+    /// Returns whether we should disable the logic, in debug mode, to catch an
+    /// error, log it, and rethrow it. This is only intended for user-defined
+    /// imports, not all imports of everything.
+    fn import_never_log_error(&self, import: &AuxImport) -> bool {
+        match import {
+            // Some intrinsics are intended to exactly throw errors, and in
+            // general we shouldn't have exceptions in our intrinsics to debug,
+            // so skip these.
+            AuxImport::Intrinsic(_) => true,
+
+            // Otherwise assume everything else gets a debug log of errors
+            // thrown in debug mode.
+            _ => false,
         }
     }
 

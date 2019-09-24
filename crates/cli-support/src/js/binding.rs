@@ -46,6 +46,8 @@ pub struct Builder<'a, 'b> {
     /// Whether or not we're catching exceptions from the main function
     /// invocation. Currently only used for imports.
     catch: bool,
+    /// Whether or not we're logging the error coming out of this intrinsic
+    log_error: bool,
 }
 
 /// Helper struct used in incoming/outgoing to generate JS.
@@ -66,6 +68,7 @@ pub struct TypescriptArg {
 impl<'a, 'b> Builder<'a, 'b> {
     pub fn new(cx: &'a mut Context<'b>) -> Builder<'a, 'b> {
         Builder {
+            log_error: cx.config.debug,
             cx,
             args_prelude: String::new(),
             finally: String::new(),
@@ -98,6 +101,12 @@ impl<'a, 'b> Builder<'a, 'b> {
         Ok(())
     }
 
+    pub fn disable_log_error(&mut self, disable: bool) {
+        if disable {
+            self.log_error = false;
+        }
+    }
+
     pub fn process(
         &mut self,
         binding: &Binding,
@@ -107,7 +116,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         invoke: &mut dyn FnMut(&mut Context, &mut String, &[String]) -> Result<String, Error>,
     ) -> Result<String, Error> {
         // used in `finalize` below
-        if self.cx.config.debug {
+        if self.log_error {
             self.cx.expose_log_error();
         }
 
@@ -378,7 +387,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         // unhandled exceptions, typically used on imports. This currently just
         // logs what happened, but keeps the exception being thrown to propagate
         // elsewhere.
-        if self.cx.config.debug {
+        if self.log_error {
             call = format!("try {{\n{}}} catch (e) {{\n logError(e)\n}}\n", call);
         }
 
