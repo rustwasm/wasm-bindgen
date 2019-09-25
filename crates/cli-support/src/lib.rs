@@ -283,7 +283,7 @@ impl Bindgen {
         // pointer, so temporarily export it so that our many GC's don't remove
         // it before the xform runs.
         let mut exported_shadow_stack_pointer = false;
-        if self.multi_value || self.threads.is_enabled() {
+        if self.multi_value || self.threads.is_enabled(&module) {
             wasm_conventions::export_shadow_stack_pointer(&mut module)?;
             exported_shadow_stack_pointer = true;
         }
