@@ -278,6 +278,10 @@ pub enum AuxImport {
     /// imported
     Value(AuxValue),
 
+    /// A static method on a class is being imported, and the `this` of the
+    /// function call is expected to always be the class.
+    ValueWithThis(JsImport, String),
+
     /// This import is expected to be a function that takes an `anyref` and
     /// returns a `bool`. It's expected that it tests if the argument is an
     /// instance of (using `instanceof`) the name specified.
@@ -950,8 +954,7 @@ impl<'a> Context<'a> {
         match op.kind {
             decode::OperationKind::Regular => {
                 if op.is_static {
-                    class.fields.push(function.name.to_string());
-                    Ok((AuxImport::Value(AuxValue::Bare(class)), false))
+                    Ok((AuxImport::ValueWithThis(class, function.name.to_string()), false))
                 } else if structural {
                     Ok((
                         AuxImport::StructuralMethod(function.name.to_string()),

@@ -107,3 +107,11 @@ exports.import_inside_private_module = function() {};
 exports.should_call_undefined_functions = () => false;
 
 exports.STATIC_STRING = 'x';
+
+class StaticMethodCheck {
+  static static_method_of_right_this() {
+    assert.ok(this === StaticMethodCheck);
+  }
+}
+
+exports.StaticMethodCheck = StaticMethodCheck;
