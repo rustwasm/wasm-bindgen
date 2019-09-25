@@ -31,8 +31,21 @@ impl Config {
     }
 
     /// Is threaded Wasm enabled?
-    pub fn is_enabled(&self) -> bool {
-        self.enabled
+    pub fn is_enabled(&self, module: &Module) -> bool {
+        if self.enabled {
+            return true;
+        }
+
+        // Compatibility with older LLVM outputs. Newer LLVM outputs, when
+        // atomics are enabled, emit a shared memory. That's a good indicator
+        // that we have work to do. If shared memory isn't enabled, though then
+        // this isn't an atomic module so there's nothing to do. We still allow,
+        // though, an environment variable to force us to go down this path to
+        // remain compatibile with older LLVM outputs.
+        match wasm_conventions::get_memory(module) {
+            Ok(memory) => module.memories.get(memory).shared,
+            Err(_) => false,
+        }
     }
 
     /// Specify the maximum amount of memory the wasm module can ever have.
@@ -87,21 +100,11 @@ impl Config {
     ///
     /// More and/or less may happen here over time, stay tuned!
     pub fn run(&self, module: &mut Module) -> Result<(), Error> {
-        if !self.enabled {
+        if !self.is_enabled(module) {
             return Ok(());
         }
 
-        // Compatibility with older LLVM outputs. Newer LLVM outputs, when
-        // atomics are enabled, emit a shared memory. That's a good indicator
-        // that we have work to do. If shared memory isn't enabled, though then
-        // this isn't an atomic module so there's nothing to do. We still allow,
-        // though, an environment variable to force us to go down this path to
-        // remain compatibile with older LLVM outputs.
         let memory = wasm_conventions::get_memory(module)?;
-        if !module.memories.get(memory).shared {
-            return Ok(());
-        }
-
         let stack_pointer = wasm_conventions::get_shadow_stack_pointer(module)?;
         let addr = allocate_static_data(module, memory, 4, 4)?;
         let zero = InitExpr::Value(Value::I32(0));
