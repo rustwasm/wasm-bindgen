@@ -298,7 +298,7 @@ impl<'src> FirstPassRecord<'src> {
         };
 
         let is_indexing_getter_to_fix = is_indexing_getter && // exclude non index getters.
-            !catch && // exclude indexing getters that return `Result<T>`.
+            !catch && // exclude indexing getters that return `Result<T, JsValue>`.
             if let Some(ref ty) = ret { // exclude indexing getters that return `Option<T>`.
                 !format!("{}", quote! { #ty })
                     .replace(" ", "")
