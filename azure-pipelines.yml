@@ -11,7 +11,7 @@ jobs:
       - template: ci/azure-install-rust.yml
         # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: nightly
+          toolchain: beta
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-geckodriver.yml
       # Temporarily disable sccache because it is failing on CI.
@@ -56,7 +56,7 @@ jobs:
       - template: ci/azure-install-rust.yml
         # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: nightly
+          toolchain: beta
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-geckodriver.yml
       # Temporarily disable sccache because it is failing on CI.
@@ -105,7 +105,7 @@ jobs:
       - template: ci/azure-install-rust.yml
         # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: nightly
+          toolchain: beta
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-geckodriver.yml
       # Temporarily disable sccache because it is failing on CI.
@@ -122,7 +122,7 @@ jobs:
       - template: ci/azure-install-rust.yml
         # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: nightly
+          toolchain: beta
       - template: ci/azure-install-node.yml
       - template: ci/azure-install-geckodriver.yml
       # Temporarily disable sccache because it is failing on CI.
@@ -135,7 +135,7 @@ jobs:
       - template: ci/azure-install-rust.yml
         # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: nightly
+          toolchain: beta
       - template: ci/azure-install-node.yml
       # Temporarily disable sccache because it is failing on CI.
       # - template: ci/azure-install-sccache.yml
@@ -150,7 +150,7 @@ jobs:
       - template: ci/azure-install-rust.yml
         # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: nightly
+          toolchain: beta
       - template: ci/azure-install-node.yml
       # Temporarily disable sccache because it is failing on CI.
       # - template: ci/azure-install-sccache.yml
@@ -188,7 +188,7 @@ jobs:
       - template: ci/azure-install-rust.yml
         # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: nightly
+          toolchain: beta
       # Temporarily disable sccache because it is failing on CI.
       # - template: ci/azure-install-sccache.yml
       - template: ci/azure-install-wasm-pack.yml
@@ -235,7 +235,7 @@ jobs:
       - template: ci/azure-install-rust.yml
         # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: nightly
+          toolchain: beta
       # Temporarily disable sccache because it is failing on CI.
       # - template: ci/azure-install-sccache.yml
       - template: ci/azure-install-wasm-pack.yml
@@ -323,7 +323,7 @@ jobs:
       - template: ci/azure-install-rust.yml
         # TODO: switch this back to `stable` when async/await is stable
         parameters:
-          toolchain: nightly
+          toolchain: beta
       # Install rustfmt so we can format the web-sys bindings
       - script: rustup component add rustfmt
         displayName: "Install rustfmt"
