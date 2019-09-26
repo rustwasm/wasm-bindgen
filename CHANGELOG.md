@@ -4,7 +4,7 @@
 
 ## 0.2.51
 
-Not released yet
+Released 2019-09-26.
 
 ### Added
 
