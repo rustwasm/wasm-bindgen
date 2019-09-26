@@ -44,6 +44,7 @@ cfg-if = "0.1.9"
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 js-sys = { path = 'crates/js-sys', version = '0.3.27' }
 wasm-bindgen-test = { path = 'crates/test', version = '=0.3.0' }
+wasm-bindgen-futures = { path = 'crates/futures', version = '=0.4.0' }
 serde_derive = "1.0"
 wasm-bindgen-test-crate-a = { path = 'tests/crates/a', version = '0.1' }
 wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }

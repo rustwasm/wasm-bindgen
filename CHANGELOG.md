@@ -2,6 +2,56 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.51
+
+Not released yet
+
+### Added
+
+* The `wasm-bindgen-futures` and `wasm-bindgen-test` crates now require Nightly
+  Rust and have a new major version published as a result. These crates now
+  support `async`/`await` by default, and they will be supported in the stable
+  Rust 1.39.0 release. The previous versions of crates will continue to work on
+  stable today.
+  [#1741](https://github.com/rustwasm/wasm-bindgen/pull/1741)
+
+* Using `#[wasm_bindgen]` on an `async` function will now work and return a
+  `Promise` on the JS side of things.
+  [#1754](https://github.com/rustwasm/wasm-bindgen/pull/1754)
+
+* More helper methods for `js_sys::Array` have been added.
+  [#1749](https://github.com/rustwasm/wasm-bindgen/pull/1749)
+
+* Initial support for the WebAssembly multi-value proposal has been added.
+  [#1764](https://github.com/rustwasm/wasm-bindgen/pull/1764)
+
+* Constructors for `js_sys::Date` with optional parameters has been added.
+  [#1759](https://github.com/rustwasm/wasm-bindgen/pull/1759)
+
+* Headless tests can now be run against a remote webdriver client
+  [#1744](https://github.com/rustwasm/wasm-bindgen/pull/1744)
+
+### Changed
+
+* The `passStringToWasm` function has been optimized for size.
+  [#1736](https://github.com/rustwasm/wasm-bindgen/pull/1736)
+
+### Fixed
+
+* BOM markers will not be preserved when passing strings to/from wasm.
+  [#1730](https://github.com/rustwasm/wasm-bindgen/pull/1730)
+
+* Importing a `static` value which isn't a `JsValue` has been fixed.
+  [#1784](https://github.com/rustwasm/wasm-bindgen/pull/1784)
+
+* Converting `undefined` to a Rust value via `into_serde` has been fixed.
+  [#1783](https://github.com/rustwasm/wasm-bindgen/pull/1783)
+
+* Routine errors are no longer erroneously logged in debug mode.
+  [#1788](https://github.com/rustwasm/wasm-bindgen/pull/1788)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.50
 
 Released 2019-08-19.

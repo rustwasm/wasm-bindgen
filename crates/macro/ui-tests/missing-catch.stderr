@@ -5,3 +5,4 @@ error[E0277]: the trait bound `std::result::Result<wasm_bindgen::JsValue, wasm_b
   |            ^^^ the trait `wasm_bindgen::convert::traits::FromWasmAbi` is not implemented for `std::result::Result<wasm_bindgen::JsValue, wasm_bindgen::JsValue>`
 
 For more information about this error, try `rustc --explain E0277`.
+error: could not compile `wasm-bindgen-macro-tests`.

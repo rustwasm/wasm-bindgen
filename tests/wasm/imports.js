@@ -105,3 +105,13 @@ exports.assert_dead_import_not_generated = function() {
 exports.import_inside_function_works = function() {};
 exports.import_inside_private_module = function() {};
 exports.should_call_undefined_functions = () => false;
+
+exports.STATIC_STRING = 'x';
+
+class StaticMethodCheck {
+  static static_method_of_right_this() {
+    assert.ok(this === StaticMethodCheck);
+  }
+}
+
+exports.StaticMethodCheck = StaticMethodCheck;

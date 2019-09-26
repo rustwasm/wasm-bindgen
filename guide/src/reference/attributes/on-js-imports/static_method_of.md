@@ -23,3 +23,6 @@ let instant = Date::now();
 
 This is similar to the `js_namespace` attribute, but the usage from within Rust
 is different since the method also becomes a static method of the imported type.
+Additionally this attribute also specifies that the `this` parameter when
+invoking the method is expected to be the JS class, e.g. always invoked as
+`Date.now()` instead of `const x = Date.now; x()`.

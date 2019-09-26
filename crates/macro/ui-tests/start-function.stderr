@@ -9,3 +9,5 @@ error: the start function cannot have generics
    |
 10 | pub fn foo3<T>() {}
    |            ^^^
+
+error: could not compile `wasm-bindgen-macro-tests`.

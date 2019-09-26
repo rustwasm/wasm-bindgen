@@ -465,12 +465,10 @@ impl<'a> Context<'a> {
         };
 
         let default_module_path = match self.config.mode {
-            OutputMode::Web => {
-                "\
+            OutputMode::Web => "\
                     if (typeof module === 'undefined') {
                         module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
-                    }"
-            }
+                    }",
             _ => "",
         };
 
@@ -872,21 +870,30 @@ impl<'a> Context<'a> {
 
         match self.config.encode_into {
             EncodeInto::Always if !shared => {
-                self.global(&format!("
+                self.global(&format!(
+                    "
                     const encodeString = {};
-                ", encode_into));
+                ",
+                    encode_into
+                ));
             }
             EncodeInto::Test if !shared => {
-                self.global(&format!("
+                self.global(&format!(
+                    "
                     const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
                         ? {}
                         : {});
-                ", encode_into, encode));
+                ",
+                    encode_into, encode
+                ));
             }
             _ => {
-                self.global(&format!("
+                self.global(&format!(
+                    "
                     const encodeString = {};
-                ", encode));
+                ",
+                    encode
+                ));
             }
         }
 
@@ -1080,7 +1087,6 @@ impl<'a> Context<'a> {
                 fields: Vec::new(),
             })?;
             self.global(&format!("let cached{} = new {}{};", s, name, args));
-
         } else if !self.config.mode.always_run_in_browser() {
             self.global(&format!(
                 "
@@ -1090,7 +1096,6 @@ impl<'a> Context<'a> {
                 s
             ));
             self.global(&format!("let cached{0} = new l{0}{1};", s, args));
-
         } else {
             self.global(&format!("let cached{0} = new {0}{1};", s, args));
         }
@@ -1932,6 +1937,7 @@ impl<'a> Context<'a> {
             .unwrap();
         self.export_function_table()?;
         let mut builder = binding::Builder::new(self);
+        builder.disable_log_error(true);
         let js = builder.process(&binding, &webidl, true, &None, &mut |_, _, args| {
             Ok(format!(
                 "wasm.__wbg_function_table.get({})({})",
@@ -1960,6 +1966,7 @@ impl<'a> Context<'a> {
         // Construct a JS shim builder, and configure it based on the kind of
         // export that we're generating.
         let mut builder = binding::Builder::new(self);
+        builder.disable_log_error(true);
         match &export.kind {
             AuxExportKind::Function(_) => {}
             AuxExportKind::StaticFunction { .. } => {}
@@ -2053,8 +2060,10 @@ impl<'a> Context<'a> {
                     );
                 }
 
+                let disable_log_error = self.import_never_log_error(import);
                 let mut builder = binding::Builder::new(self);
                 builder.catch(catch)?;
+                builder.disable_log_error(disable_log_error);
                 let js = builder.process(
                     &binding,
                     &webidl,
@@ -2068,6 +2077,22 @@ impl<'a> Context<'a> {
                     .insert(id, format!("function{}", js));
                 Ok(())
             }
+        }
+    }
+
+    /// Returns whether we should disable the logic, in debug mode, to catch an
+    /// error, log it, and rethrow it. This is only intended for user-defined
+    /// imports, not all imports of everything.
+    fn import_never_log_error(&self, import: &AuxImport) -> bool {
+        match import {
+            // Some intrinsics are intended to exactly throw errors, and in
+            // general we shouldn't have exceptions in our intrinsics to debug,
+            // so skip these.
+            AuxImport::Intrinsic(_) => true,
+
+            // Otherwise assume everything else gets a debug log of errors
+            // thrown in debug mode.
+            _ => false,
         }
     }
 
@@ -2243,6 +2268,11 @@ impl<'a> Context<'a> {
                     Ok(format!("{}({})", js, variadic_args(&args)?))
                 }
             },
+
+            AuxImport::ValueWithThis(class, name) => {
+                let class = self.import_name(class)?;
+                Ok(format!("{}.{}({})", class, name, variadic_args(&args)?))
+            }
 
             AuxImport::Instanceof(js) => {
                 assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
@@ -2601,7 +2631,11 @@ impl<'a> Context<'a> {
 
             Intrinsic::JsonSerialize => {
                 assert_eq!(args.len(), 1);
-                format!("JSON.stringify({})", args[0])
+                // Turns out `JSON.stringify(undefined) === undefined`, so if
+                // we're passed `undefined` reinterpret it as `null` for JSON
+                // purposes.
+                prelude.push_str(&format!("const obj = {};\n", args[0]));
+                "JSON.stringify(obj === undefined ? null : obj)".to_string()
             }
 
             Intrinsic::AnyrefHeapLiveCount => {

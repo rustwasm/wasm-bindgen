@@ -3,3 +3,5 @@ error: unknown attribute
   |
 3 | #[wasm_bindgen(nonsense)]
   |                ^^^^^^^^
+
+error: could not compile `wasm-bindgen-macro-tests`.

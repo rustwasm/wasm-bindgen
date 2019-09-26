@@ -65,3 +65,5 @@ warning: unused macro definition
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: `#[warn(unused_macros)]` on by default
+
+error: could not compile `wasm-bindgen-macro-tests`.

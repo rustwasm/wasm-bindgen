@@ -446,36 +446,31 @@ impl TryToTokens for ast::Export {
         // For an `async` function we always run it through `future_to_promise`
         // since we're returning a promise to JS, and this will implicitly
         // require that the function returns a `Future<Output = Result<...>>`
-        let (ret_expr, projection) = if self.function.r#async {
+        let (ret_ty, ret_expr) = if self.function.r#async {
             (
+                quote! { wasm_bindgen::JsValue },
                 quote! {
                     wasm_bindgen_futures::future_to_promise(async {
                         wasm_bindgen::__rt::IntoJsResult::into_js_result(#ret.await)
                     }).into()
                 },
-                quote! {
-                    <wasm_bindgen::JsValue as wasm_bindgen::convert::ReturnWasmAbi>
-                },
             )
         } else {
             (
+                quote! { #syn_ret },
                 quote! { #ret },
-                quote! {
-                    <#syn_ret as wasm_bindgen::convert::ReturnWasmAbi>
-                },
             )
         };
+        let projection = quote! { <#ret_ty as wasm_bindgen::convert::ReturnWasmAbi> };
         let convert_ret = quote! { #projection::return_abi(#ret_expr) };
         let describe_ret = quote! {
-            <#syn_ret as WasmDescribe>::describe();
+            <#ret_ty as WasmDescribe>::describe();
         };
         let nargs = self.function.arguments.len() as u32;
         let attrs = &self.function.rust_attrs;
 
         let start_check = if self.start {
-            quote! {
-                const _ASSERT: fn() = || -> #projection::Abi { loop {} };
-            }
+            quote! { const _ASSERT: fn() = || -> #projection::Abi { loop {} }; }
         } else {
             quote! {}
         };
@@ -1166,6 +1161,14 @@ impl ToTokens for ast::ImportStatic {
                 }
             };
         })
+        .to_tokens(into);
+
+        Descriptor(
+            &shim_name,
+            quote! {
+                <#ty as WasmDescribe>::describe();
+            },
+        )
         .to_tokens(into);
     }
 }

@@ -7,6 +7,7 @@ use failure::{bail, format_err, Error};
 use walrus::ir::Value;
 use walrus::{DataId, FunctionId, InitExpr, ValType};
 use walrus::{ExportItem, GlobalId, GlobalKind, ImportKind, MemoryId, Module};
+use wasm_bindgen_wasm_conventions as wasm_conventions;
 
 const PAGE_SIZE: u32 = 1 << 16;
 
@@ -16,6 +17,7 @@ const PAGE_SIZE: u32 = 1 << 16;
 pub struct Config {
     maximum_memory: u32,
     thread_stack_size: u32,
+    enabled: bool,
 }
 
 impl Config {
@@ -24,6 +26,25 @@ impl Config {
         Config {
             maximum_memory: 1 << 30,    // 1GB
             thread_stack_size: 1 << 20, // 1MB
+            enabled: env::var("WASM_BINDGEN_THREADS").is_ok(),
+        }
+    }
+
+    /// Is threaded Wasm enabled?
+    pub fn is_enabled(&self, module: &Module) -> bool {
+        if self.enabled {
+            return true;
+        }
+
+        // Compatibility with older LLVM outputs. Newer LLVM outputs, when
+        // atomics are enabled, emit a shared memory. That's a good indicator
+        // that we have work to do. If shared memory isn't enabled, though then
+        // this isn't an atomic module so there's nothing to do. We still allow,
+        // though, an environment variable to force us to go down this path to
+        // remain compatibile with older LLVM outputs.
+        match wasm_conventions::get_memory(module) {
+            Ok(memory) => module.memories.get(memory).shared,
+            Err(_) => false,
         }
     }
 
@@ -79,18 +100,12 @@ impl Config {
     ///
     /// More and/or less may happen here over time, stay tuned!
     pub fn run(&self, module: &mut Module) -> Result<(), Error> {
-        // Compatibility with older LLVM outputs. Newer LLVM outputs, when
-        // atomics are enabled, emit a shared memory. That's a good indicator
-        // that we have work to do. If shared memory isn't enabled, though then
-        // this isn't an atomic module so there's nothing to do. We still allow,
-        // though, an environment variable to force us to go down this path to
-        // remain compatibile with older LLVM outputs.
-        let memory = find_memory(module)?;
-        if !module.memories.get(memory).shared && env::var("WASM_BINDGEN_THREADS").is_err() {
+        if !self.is_enabled(module) {
             return Ok(());
         }
 
-        let stack_pointer = find_stack_pointer(module)?;
+        let memory = wasm_conventions::get_memory(module)?;
+        let stack_pointer = wasm_conventions::get_shadow_stack_pointer(module)?;
         let addr = allocate_static_data(module, memory, 4, 4)?;
         let zero = InitExpr::Value(Value::I32(0));
         let globals = Globals {
@@ -207,17 +222,6 @@ fn switch_data_segments_to_passive(
     Ok(ret)
 }
 
-fn find_memory(module: &mut Module) -> Result<MemoryId, Error> {
-    let mut memories = module.memories.iter();
-    let memory = memories
-        .next()
-        .ok_or_else(|| format_err!("currently incompatible with no memory modules"))?;
-    if memories.next().is_some() {
-        bail!("only one memory is currently supported");
-    }
-    Ok(memory.id())
-}
-
 fn update_memory(module: &mut Module, memory: MemoryId, max: u32) -> Result<MemoryId, Error> {
     assert!(max % PAGE_SIZE == 0);
     let memory = module.memories.get_mut(memory);
@@ -313,37 +317,6 @@ fn allocate_static_data(
     Ok(address)
 }
 
-fn find_stack_pointer(module: &mut Module) -> Result<Option<GlobalId>, Error> {
-    let candidates = module
-        .globals
-        .iter()
-        .filter(|g| g.ty == ValType::I32)
-        .filter(|g| g.mutable)
-        .filter(|g| match g.kind {
-            GlobalKind::Local(_) => true,
-            GlobalKind::Import(_) => false,
-        })
-        .collect::<Vec<_>>();
-
-    if candidates.len() == 0 {
-        return Ok(None);
-    }
-    if candidates.len() > 2 {
-        bail!("too many mutable globals to infer the stack pointer");
-    }
-    if candidates.len() == 1 {
-        return Ok(Some(candidates[0].id()));
-    }
-
-    // If we've got two mutable globals then we're in a pretty standard
-    // situation for threaded code where one is the stack pointer and one is the
-    // TLS base offset. We need to figure out which is which, and we basically
-    // assume LLVM's current codegen where the first is the stack pointer.
-    //
-    // TODO: have an actual check here.
-    Ok(Some(candidates[0].id()))
-}
-
 enum InitMemory {
     Segments(Vec<PassiveSegment>),
     Call {
@@ -358,7 +331,7 @@ fn inject_start(
     memory_init: InitMemory,
     globals: &Globals,
     addr: u32,
-    stack_pointer: Option<GlobalId>,
+    stack_pointer: GlobalId,
     stack_size: u32,
     memory: MemoryId,
 ) -> Result<(), Error> {
@@ -388,36 +361,33 @@ fn inject_start(
     // nonzero (assuming we don't overflow...)
     body.local_get(local);
     body.if_else(
-        Box::new([]),
-        Box::new([]),
+        None,
         // If our thread id is nonzero then we're the second or greater thread, so
         // we give ourselves a stack via memory.grow and we update our stack
         // pointer as the default stack pointer is surely wrong for us.
         |body| {
-            if let Some(stack_pointer) = stack_pointer {
-                // local0 = grow_memory(stack_size);
-                body.i32_const((stack_size / PAGE_SIZE) as i32)
-                    .memory_grow(memory)
-                    .local_set(local);
+            // local0 = grow_memory(stack_size);
+            body.i32_const((stack_size / PAGE_SIZE) as i32)
+                .memory_grow(memory)
+                .local_set(local);
 
-                // if local0 == -1 then trap
-                body.block(Box::new([]), Box::new([]), |body| {
-                    let target = body.id();
-                    body.local_get(local)
-                        .i32_const(-1)
-                        .binop(BinaryOp::I32Ne)
-                        .br_if(target)
-                        .unreachable();
-                });
-
-                // stack_pointer = local0 + stack_size
+            // if local0 == -1 then trap
+            body.block(None, |body| {
+                let target = body.id();
                 body.local_get(local)
-                    .i32_const(PAGE_SIZE as i32)
-                    .binop(BinaryOp::I32Mul)
-                    .i32_const(stack_size as i32)
-                    .binop(BinaryOp::I32Add)
-                    .global_set(stack_pointer);
-            }
+                    .i32_const(-1)
+                    .binop(BinaryOp::I32Ne)
+                    .br_if(target)
+                    .unreachable();
+            });
+
+            // stack_pointer = local0 + stack_size
+            body.local_get(local)
+                .i32_const(PAGE_SIZE as i32)
+                .binop(BinaryOp::I32Mul)
+                .i32_const(stack_size as i32)
+                .binop(BinaryOp::I32Add)
+                .global_set(stack_pointer);
         },
         // If the thread ID is zero then we can skip the update of the stack
         // pointer as we know our stack pointer is valid. We need to initialize

@@ -165,7 +165,7 @@ impl Output {
             imports = imports,
             set_exports = set_exports,
         );
-        let wasm = self.module.emit_wasm().expect("failed to serialize");
+        let wasm = self.module.emit_wasm();
         let (bytes, booted) = if self.base64 {
             (
                 format!(
