@@ -158,9 +158,8 @@ impl Task {
 fn wait_async(ptr: &AtomicI32, current_value: i32) -> js_sys::Promise {
     // If `Atomics.waitAsync` isn't defined (as it isn't defined anywhere today)
     // then we use our fallback, otherwise we use the native function.
-    if Atomics::get_wait_async().is_undefined() {
+    return if Atomics::get_wait_async().is_undefined() {
         crate::task::wait_async_polyfill::wait_async(ptr, current_value)
-
     } else {
         let mem = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
         Atomics::wait_async(
@@ -168,7 +167,7 @@ fn wait_async(ptr: &AtomicI32, current_value: i32) -> js_sys::Promise {
             ptr as *const AtomicI32 as i32 / 4,
             current_value,
         )
-    }
+    };
 
     #[wasm_bindgen]
     extern "C" {
