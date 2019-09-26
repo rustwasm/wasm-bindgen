@@ -2269,6 +2269,11 @@ impl<'a> Context<'a> {
                 }
             },
 
+            AuxImport::ValueWithThis(class, name) => {
+                let class = self.import_name(class)?;
+                Ok(format!("{}.{}({})", class, name, variadic_args(&args)?))
+            }
+
             AuxImport::Instanceof(js) => {
                 assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
                 assert!(!variadic);

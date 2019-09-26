@@ -52,6 +52,9 @@ extern "C" {
     fn assert_dead_import_not_generated();
     fn should_call_undefined_functions() -> bool;
 
+    type StaticMethodCheck;
+    #[wasm_bindgen(static_method_of = StaticMethodCheck)]
+    fn static_method_of_right_this();
 
     static STATIC_STRING: String;
 }
@@ -239,4 +242,9 @@ fn undefined_function_is_ok() {
 #[wasm_bindgen_test]
 fn static_string_ok() {
     assert_eq!(*STATIC_STRING, "x");
+}
+
+#[wasm_bindgen_test]
+fn static_method_of_has_right_this() {
+    StaticMethodCheck::static_method_of_right_this();
 }
