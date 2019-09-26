@@ -211,13 +211,11 @@ jobs:
     steps:
       - template: ci/azure-install-rust.yml
         parameters:
-          toolchain: nightly-2019-08-27
+          toolchain: nightly-2019-09-26
       # Temporarily disable sccache because it is failing on CI.
       # - template: ci/azure-install-sccache.yml
       - script: rustup component add rust-src
         displayName: "install rust-src"
-      - script: cargo install xargo
-        displayName: "install xargo"
       - script: |
           set -e
           sed -i 's/python/#python/' examples/raytrace-parallel/build.sh
