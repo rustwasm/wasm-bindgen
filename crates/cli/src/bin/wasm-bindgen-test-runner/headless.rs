@@ -264,7 +264,7 @@ impl Driver {
                 Some(p) => p,
                 None => continue,
             };
-            return Ok(ctor(Locate::Local((path.into(), env_args(driver)))));
+            return Ok(ctor(Locate::Local((driver.into(), env_args(driver)))));
         }
 
         // TODO: download an appropriate driver? How to know which one to
