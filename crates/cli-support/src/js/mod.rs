@@ -289,9 +289,7 @@ impl<'a> Context<'a> {
                 for (id, js) in sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}.js", module_name);
-                    footer.push_str("\nexport const ");
-                    footer.push_str(&import.name);
-                    footer.push_str(" = ");
+                    footer.push_str("\nexport ");
                     footer.push_str(js.trim());
                     footer.push_str(";\n");
                 }
@@ -2074,7 +2072,7 @@ impl<'a> Context<'a> {
                     },
                 )?;
                 self.wasm_import_definitions
-                    .insert(id, format!("function{}", js));
+                    .insert(id, format!("function {} {}", &self.module.imports.get(id).name, js));
                 Ok(())
             }
         }
