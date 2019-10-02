@@ -37,9 +37,9 @@ extern "C" {
     #[wasm_bindgen(js_namespace = bar, js_name = foo)]
     static FOO: JsValue;
 
-    fn take_custom_type(f: CustomType) -> CustomType;
+    fn take_custom_type(f: WasmType<CustomType>) -> WasmType<CustomType>;
     fn touch_custom_type();
-    fn custom_type_return_2() -> CustomType;
+    fn custom_type_return_2() -> WasmType<CustomType>;
     #[wasm_bindgen(js_name = interpret_2_as_custom_type)]
     fn js_interpret_2_as_custom_type();
 
@@ -148,7 +148,7 @@ fn rust_keyword2() {
 
 #[wasm_bindgen_test]
 fn custom_type() {
-    take_custom_type(CustomType(()));
+    take_custom_type(CustomType::new());
     touch_custom_type();
     js_interpret_2_as_custom_type();
 }
@@ -163,6 +163,11 @@ pub struct CustomType(());
 
 #[wasm_bindgen]
 impl CustomType {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<CustomType> {
+        instantiate! { CustomType(()) }
+    }
+
     pub fn touch(&self) {
         panic!()
     }

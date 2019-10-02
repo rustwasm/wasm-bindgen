@@ -4,6 +4,7 @@
 #![doc(hidden)]
 
 use crate::{Clamped, JsValue};
+use crate::{ThisCallback, ImportedSuperconstructorCallback, ExportedSuperconstructorCallback, WasmType};
 use cfg_if::cfg_if;
 
 macro_rules! tys {
@@ -43,6 +44,8 @@ tys! {
     OPTIONAL
     UNIT
     CLAMPED
+    SUPERCONSTRUCTOR_CALLBACK
+    THIS_CALLBACK
 }
 
 #[inline(always)] // see `interpret.rs` in the the cli-support crate
@@ -78,6 +81,9 @@ simple! {
     bool => BOOLEAN
     char => CHAR
     JsValue => ANYREF
+    ThisCallback => THIS_CALLBACK
+    ImportedSuperconstructorCallback => SUPERCONSTRUCTOR_CALLBACK
+    ExportedSuperconstructorCallback => SUPERCONSTRUCTOR_CALLBACK
 }
 
 cfg_if! {
@@ -182,4 +188,8 @@ impl<T: WasmDescribe> WasmDescribe for Clamped<T> {
         inform(CLAMPED);
         T::describe();
     }
+}
+
+impl<T: WasmDescribe> WasmDescribe for WasmType<T> {
+    fn describe() { T::describe() }
 }

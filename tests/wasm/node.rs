@@ -22,11 +22,12 @@ pub struct Foo {
 
 #[wasm_bindgen]
 impl Foo {
-    pub fn new() -> Foo {
+    pub fn new() -> WasmType<Foo> {
         Foo::with_contents(0)
     }
-    pub fn with_contents(a: u32) -> Foo {
-        Foo { contents: a }
+    #[wasm_bindgen(constructor)]
+    pub fn with_contents(a: u32) -> WasmType<Foo> {
+        instantiate! { Foo { contents: a } }
     }
     pub fn add(&mut self, amt: u32) -> u32 {
         self.contents += amt;

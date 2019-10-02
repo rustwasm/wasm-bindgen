@@ -2,7 +2,9 @@
 
 | `T` parameter | `&T` parameter | `&mut T` parameter | `T` return value | `Option<T>` parameter | `Option<T>` return value | JavaScript representation |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Yes | Yes | Yes | Yes | No | No | Instances of a `wasm-bindgen`-generated JavaScript `class Whatever { ... }` |
+| No | Yes | Yes | No | No | No | Inner instances of a `wasm-bindgen`-generated JavaScript `class Whatever { ... }` |
+
+See also [`WasmType<T>`](wrapped-rust-types.html).
 
 ## Example Rust Usage
 

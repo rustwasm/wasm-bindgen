@@ -16,10 +16,13 @@ pub struct Foo {
 
 #[wasm_bindgen]
 impl Foo {
-    pub fn new() -> Self {
-        Foo {
-            bar: 1,
-            baz: 2
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<Foo> {
+        instantiate! {
+            Foo {
+                bar: 1,
+                baz: 2
+            }
         }
     }
 }
@@ -30,7 +33,7 @@ Here the `bar` field will be both readable and writable from JS, but the
 
 ```js
 import('./pkg/').then(rust => {
-    let foo = rust.Foo.new();
+    let foo = new rust.Foo();
     
     // bar is accessible by getter
     console.log(foo.bar);

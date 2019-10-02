@@ -11,7 +11,7 @@ pub async fn good2() -> JsValue { loop {} }
 #[wasm_bindgen]
 pub async fn good3() -> u32 { loop {} }
 #[wasm_bindgen]
-pub async fn good4() -> MyType { loop {} }
+pub async fn good4() -> WasmType<MyType> { loop {} }
 #[wasm_bindgen]
 pub async fn good5() -> Result<(), JsValue> { loop {} }
 #[wasm_bindgen]
@@ -19,11 +19,11 @@ pub async fn good6() -> Result<JsValue, JsValue> { loop {} }
 #[wasm_bindgen]
 pub async fn good7() -> Result<u32, JsValue> { loop {} }
 #[wasm_bindgen]
-pub async fn good8() -> Result<MyType, JsValue> { loop {} }
+pub async fn good8() -> Result<WasmType<MyType>, JsValue> { loop {} }
 #[wasm_bindgen]
-pub async fn good9() -> Result<MyType, u32> { loop {} }
+pub async fn good9() -> Result<WasmType<MyType>, u32> { loop {} }
 #[wasm_bindgen]
-pub async fn good10() -> Result<MyType, MyType> { loop {} }
+pub async fn good10() -> Result<WasmType<MyType>, WasmType<MyType>> { loop {} }
 
 pub struct BadType;
 

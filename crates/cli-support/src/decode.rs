@@ -155,3 +155,30 @@ macro_rules! decode_api {
 }
 
 wasm_bindgen_shared::shared_api!(decode_api);
+
+fn get_u64(data: &mut &[u8]) -> u64 {
+    u64::from_be_bytes([
+        get(data),
+        get(data),
+        get(data),
+        get(data),
+        get(data),
+        get(data),
+        get(data),
+        get(data),
+    ])
+}
+
+#[derive(Debug,Eq,PartialEq,Hash,Copy,Clone)]
+pub struct TypeReference(pub u64);
+
+impl TypeReference {
+    #[inline]
+    pub fn is_null(&self) -> bool { self.0 == 0 }
+}
+
+impl<'a> Decode<'a> for TypeReference {
+    fn decode(data: &mut &'a [u8]) -> Self {
+        TypeReference(get_u64(data))
+    }
+}

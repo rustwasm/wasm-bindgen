@@ -18,17 +18,17 @@ impl Fruit {
     }
 
     #[wasm_bindgen(constructor)]
-    pub fn new(name: String) -> Self {
-        Fruit { name }
+    pub fn new(name: String) -> WasmType<Self> {
+        instantiate! { Fruit { name } }
     }
 
-    pub fn rot(self) {
-        drop(self);
+    pub fn rot(_self: WasmType<Fruit>) {
+        drop(_self);
     }
 }
 
 #[wasm_bindgen]
-pub fn eat(_: Fruit) {}
+pub fn eat(_: WasmType<Fruit>) {}
 
 #[wasm_bindgen_test]
 fn works() {

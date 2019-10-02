@@ -192,7 +192,7 @@ pub fn return_vec_broken_vec() -> Vec<u32> {
 }
 
 #[wasm_bindgen]
-pub fn return_vec_web_main() -> ReturnVecApplication {
+pub fn return_vec_web_main() -> WasmType<ReturnVecApplication> {
     ReturnVecApplication::new()
 }
 
@@ -203,7 +203,8 @@ pub struct ReturnVecApplication {
 
 #[wasm_bindgen]
 impl ReturnVecApplication {
-    pub fn new() -> ReturnVecApplication {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<ReturnVecApplication> {
         let mut thing = vec![];
         thing.push(0);
         thing.push(0);
@@ -211,7 +212,7 @@ impl ReturnVecApplication {
         thing.push(0);
         thing.push(0);
 
-        ReturnVecApplication { thing }
+        instantiate! { ReturnVecApplication { thing } }
     }
 
     pub fn tick(&mut self) {

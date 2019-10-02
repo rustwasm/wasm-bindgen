@@ -17,15 +17,15 @@ impl ConsumeRetString {
     //
     // This used to cause two `const ptr = ...` declarations, which is invalid
     // JS.
-    pub fn consume(self) -> String {
-        String::new()
-    }
+    // pub fn consume(self) -> String {
+    //     String::new()
+    // }
 }
 
-#[wasm_bindgen_test]
-fn works() {
-    ConsumeRetString.consume();
-}
+// #[wasm_bindgen_test]
+// fn works() {
+//     ConsumeRetString.consume();
+// }
 
 #[wasm_bindgen]
 extern "C" {

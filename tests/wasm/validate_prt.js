@@ -30,7 +30,7 @@ const methodMoved = () => {
 };
 
 exports.js_works = () => {
-    useMoved();
-    moveMoved();
-    methodMoved();
+    // useMoved();
+    // moveMoved();
+    // methodMoved();
 };

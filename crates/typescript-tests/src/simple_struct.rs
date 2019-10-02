@@ -6,8 +6,8 @@ pub struct A {}
 #[wasm_bindgen]
 impl A {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> A {
-        A {}
+    pub fn new() -> WasmType<A> {
+        instantiate! { A {} }
     }
 
     pub fn other() {}

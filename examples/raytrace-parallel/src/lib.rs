@@ -28,13 +28,13 @@ impl Scene {
     /// Creates a new scene from the JSON description in `object`, which we
     /// deserialize here into an actual scene.
     #[wasm_bindgen(constructor)]
-    pub fn new(object: &JsValue) -> Result<Scene, JsValue> {
+    pub fn new(object: &JsValue) -> WasmType<Scene> {
         console_error_panic_hook::set_once();
-        Ok(Scene {
+        instantiate! { Scene {
             inner: object
                 .into_serde()
-                .map_err(|e| JsValue::from(e.to_string()))?,
-        })
+                .map_err(|e| JsValue::from(e.to_string())).unwrap(),
+        }}
     }
 
     /// Renders this scene with the provided concurrency and worker pool.
@@ -43,11 +43,12 @@ impl Scene {
     /// spawned into `pool`. The `RenderingScene` state contains information to
     /// get notifications when the render has completed.
     pub fn render(
-        self,
+        me: WasmType<Scene>,
         concurrency: usize,
         pool: &pool::WorkerPool,
-    ) -> Result<RenderingScene, JsValue> {
-        let scene = self.inner;
+    ) -> Result<WasmType<RenderingScene>, JsValue> {
+        let me = std::rc::Rc::try_unwrap(me)?.into_inner();
+        let scene = me.inner;
         let height = scene.height;
         let width = scene.width;
 
@@ -97,13 +98,13 @@ impl Scene {
             }
         };
 
-        Ok(RenderingScene {
-            promise: wasm_bindgen_futures::future_to_promise(done),
-            base,
-            len,
+        Ok(RenderingScene::new(
+            wasm_bindgen_futures::future_to_promise(done),
+            base as u32,
+            len as u32,
             height,
             width,
-        })
+        ))
     }
 }
 
@@ -128,6 +129,11 @@ extern "C" {
 
 #[wasm_bindgen]
 impl RenderingScene {
+    #[wasm_bindgen(constructor)]
+    pub fn new(promise: Promise, base: u32, len: u32, height: u32, width: u32) -> WasmType<RenderingScene> {
+        instantiate! { RenderingScene { base: base as usize, len: len as usize, promise, width, height } }
+    }
+
     /// Returns the JS promise object which resolves when the render is complete
     pub fn promise(&self) -> Promise {
         self.promise.clone()

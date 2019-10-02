@@ -80,6 +80,7 @@ macro_rules! shared_api {
         }
 
         struct ImportType<'a> {
+            id: TypeReference,
             name: &'a str,
             instanceof_shim: &'a str,
             vendor_prefixes: Vec<&'a str>,
@@ -90,7 +91,7 @@ macro_rules! shared_api {
         struct Export<'a> {
             class: Option<&'a str>,
             comments: Vec<&'a str>,
-            consumed: bool,
+            mutable: bool,
             function: Function<'a>,
             method_kind: MethodKind<'a>,
             start: bool,
@@ -113,9 +114,11 @@ macro_rules! shared_api {
         }
 
         struct Struct<'a> {
+            id: TypeReference,
             name: &'a str,
             fields: Vec<StructField<'a>>,
             comments: Vec<&'a str>,
+            prototype: TypeReference,
         }
 
         struct StructField<'a> {
@@ -132,10 +135,10 @@ macro_rules! shared_api {
     }; // end of mac case
 } // end of mac definition
 
-pub fn new_function(struct_name: &str) -> String {
+pub fn borrow_from_prototype_function(struct_name: &str) -> String {
     let mut name = format!("__wbg_");
     name.extend(struct_name.chars().flat_map(|s| s.to_lowercase()));
-    name.push_str("_new");
+    name.push_str("_borrow");
     return name;
 }
 

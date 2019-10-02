@@ -52,6 +52,10 @@ macro_rules! attrgen {
             (typescript_custom_section, TypescriptCustomSection(Span)),
             (start, Start(Span)),
             (skip, Skip(Span)),
+            (prototype, Prototype(Span, syn::Type)),
+
+            // Added internally
+            (__wasm_target, WasmTarget(Span, bool)),
 
             // For testing purposes only.
             (assert_no_shim, AssertNoShim(Span)),
@@ -176,6 +180,10 @@ impl BindgenAttrs {
         }
     }
 
+    pub fn has_wasm_target(&self) -> bool {
+        self.__wasm_target().is_some()
+    }
+
     attrgen!(methods);
 }
 
@@ -258,9 +266,19 @@ impl Parse for BindgenAttr {
                 return Ok(BindgenAttr::$variant(attr_span, input.parse()?));
             });
 
+            (@parser $variant:ident(Span, syn::Type)) => ({
+                input.parse::<Token![=]>()?;
+                return Ok(BindgenAttr::$variant(attr_span, input.parse()?));
+            });
+
             (@parser $variant:ident(Span, syn::Expr)) => ({
                 input.parse::<Token![=]>()?;
                 return Ok(BindgenAttr::$variant(attr_span, input.parse()?));
+            });
+
+            (@parser $variant:ident(Span, bool)) => ({
+                input.parse::<Token![=]>()?;
+                return Ok(BindgenAttr::$variant(attr_span, input.parse::<syn::LitBool>()?.value));
             });
 
             (@parser $variant:ident(Span, String, Span)) => ({
@@ -354,6 +372,34 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             });
             attrs.check_used()?;
         }
+        let prototype = attrs.prototype().cloned().unwrap_or(parse_quote!{ ::wasm_bindgen::JsValue });
+        let prototype_field = if *attrs.__wasm_target().unwrap() {
+            use syn::parse::Parser;
+            use quote::quote;
+            
+            let span  = Span::call_site();
+            let ident = Ident::new("__proto__", span.clone());
+            
+            Some(match &mut self.fields {
+                syn::Fields::Unnamed(fields) => {
+                    let index = fields.unnamed.len() as u32;
+                    fields.unnamed.push(syn::Field::parse_unnamed.parse2(quote!{ #prototype }).unwrap());
+                    syn::Member::Unnamed(syn::Index { index, span })
+                }
+                
+                syn::Fields::Named(fields) => {
+                    fields.named.push(syn::Field::parse_named.parse2(quote!{ #ident: #prototype }).unwrap());
+                    syn::Member::Named(ident)
+                }
+                
+                syn::Fields::Unit => {
+                    self.fields = syn::Fields::Named(parse_quote!{{ #ident: #prototype }});
+                    syn::Member::Named(ident)
+                }
+            })
+        } else {
+            None
+        };
         let comments: Vec<String> = extract_doc_comments(&self.attrs);
         attrs.check_used()?;
         Ok(ast::Struct {
@@ -361,6 +407,8 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             js_name,
             fields,
             comments,
+            prototype,
+            prototype_field,
         })
     }
 }
@@ -682,7 +730,7 @@ fn function_from_decl(
                 }
                 assert!(method_self.is_none());
                 if r.reference.is_none() {
-                    method_self = Some(ast::MethodSelf::ByValue);
+                    panic!("exported method cannot consume self")
                 } else if r.mutability.is_some() {
                     method_self = Some(ast::MethodSelf::RefMutable);
                 } else {
@@ -770,6 +818,7 @@ impl<'a> MacroParse<(Option<BindgenAttrs>, &'a mut TokenStream)> for syn::Item {
                     js_class: None,
                     method_kind,
                     method_self: None,
+                    method_body: None,
                     rust_class: None,
                     rust_name,
                     start,
@@ -909,6 +958,7 @@ fn prepare_for_impl_recursion(
         .map(|s| s.0.to_string())
         .unwrap_or(class.to_string());
 
+    let wasm_target = impl_opts.__wasm_target().unwrap();
     method.attrs.insert(
         0,
         syn::Attribute {
@@ -916,18 +966,18 @@ fn prepare_for_impl_recursion(
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
             path: syn::parse_quote! { wasm_bindgen::prelude::__wasm_bindgen_class_marker },
-            tokens: quote::quote! { (#class = #js_class) }.into(),
+            tokens: quote::quote! { (#class = #js_class, #wasm_target) }.into(),
         },
     );
 
     Ok(())
 }
 
-impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
+impl<'a, 'b> MacroParse<(&'a Ident, &'a str, bool)> for &'b mut syn::ImplItemMethod {
     fn macro_parse(
         self,
         program: &mut ast::Program,
-        (class, js_class): (&'a Ident, &'a str),
+        (class, js_class, wasm_target): (&'a Ident, &'a str, bool),
     ) -> Result<(), Diagnostic> {
         match self.vis {
             syn::Visibility::Public(_) => {}
@@ -948,10 +998,46 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
 
         let opts = BindgenAttrs::find(&mut self.attrs)?;
         let comments = extract_doc_comments(&self.attrs);
+
+        let mut extern_sig = self.sig.clone();
+        if opts.constructor().is_some() {
+            self.block.stmts.insert(0, parse_quote!{ use ::wasm_bindgen::instantiate; });
+        }
+        let method_body = if wasm_target && opts.constructor().is_some() {
+            // Arguments with which to invoke the constructor of the JavaScript shim class
+            let js_args = self.sig.inputs.iter().filter_map(|input| match input {
+                syn::FnArg::Receiver(_) => panic!("A constructor cannot be an instance method!"),
+                syn::FnArg::Typed(syn::PatType { pat , .. }) => match pat.as_ref() {
+                    syn::Pat::Ident(i) => Some(i.ident.clone()),
+                    syn::Pat::Wild(_) => Some(syn::parse_quote!{ ::wasm_bindgen::JsValue::NULL }),
+                    _ => None,
+                }
+            }).collect::<Vec<_>>();
+
+            // The constructor of the JavaScript shim class will forward to our generated `extern` fn
+            // adding a callback argument through which either the super-constructor can be invoked
+            // (derived types), or the `this` object can be obtained (base types).
+            // Here we inject a parameter for receiving that callback.
+            extern_sig.inputs.push(syn::FnArg::Typed(syn::PatType {
+                attrs: Default::default(),
+                colon_token: Default::default(),
+                pat: parse_quote! { __wbg_callback },
+                ty: parse_quote! { <<#class as ::wasm_bindgen::WasmBindgenDerived>::Prototype as ::wasm_bindgen::WasmBase>::Callback },
+            }));
+
+            // Rust function should invoke JS constructor; the user-provided function body appears
+            // instead in the generated `extern` fn.
+            Some(std::mem::replace(&mut self.block, parse_quote! {{
+                ::wasm_bindgen::instantiate_via_js(Box::new([ #(#js_args.into(),)* ]))
+            }}))
+        } else {
+            None
+        };
+
         let (function, method_self) = function_from_decl(
             &self.sig.ident,
             &opts,
-            self.sig.clone(),
+            extern_sig,
             self.attrs.clone(),
             self.vis.clone(),
             true,
@@ -970,6 +1056,7 @@ impl<'a, 'b> MacroParse<(&'a Ident, &'a str)> for &'b mut syn::ImplItemMethod {
             js_class: Some(js_class.to_string()),
             method_kind,
             method_self,
+            method_body,
             rust_class: Some(class.clone()),
             rust_name: self.sig.ident.clone(),
             start: false,

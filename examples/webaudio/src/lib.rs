@@ -40,7 +40,29 @@ impl Drop for FmOsc {
 #[wasm_bindgen]
 impl FmOsc {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Result<FmOsc, JsValue> {
+    pub fn construct(
+        ctx: AudioContext,
+        primary: web_sys::OscillatorNode,
+        gain: web_sys::GainNode,
+        fm_gain: web_sys::GainNode,
+        fm_osc: web_sys::OscillatorNode,
+        fm_freq_ratio: f32,
+        fm_gain_ratio: f32,
+    ) -> WasmType<FmOsc> {
+        instantiate! {
+            FmOsc {
+                ctx,
+                primary,
+                gain,
+                fm_gain,
+                fm_osc,
+                fm_freq_ratio,
+                fm_gain_ratio,                
+            }
+        }
+    }
+    
+    pub fn new() -> Result<WasmType<FmOsc>, JsValue> {
         let ctx = web_sys::AudioContext::new()?;
 
         // Create our web audio objects.
@@ -79,15 +101,15 @@ impl FmOsc {
         primary.start()?;
         fm_osc.start()?;
 
-        Ok(FmOsc {
+        Ok(FmOsc::construct(
             ctx,
             primary,
             gain,
             fm_gain,
             fm_osc,
-            fm_freq_ratio: 0.0,
-            fm_gain_ratio: 0.0,
-        })
+            0.0,
+            0.0,
+        ))
     }
 
     /// Sets the gain for this oscillator, between 0.0 and 1.0.

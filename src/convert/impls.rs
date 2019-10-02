@@ -5,6 +5,8 @@ use crate::convert::traits::WasmAbi;
 use crate::convert::{FromWasmAbi, IntoWasmAbi, RefFromWasmAbi};
 use crate::convert::{OptionFromWasmAbi, OptionIntoWasmAbi, ReturnWasmAbi};
 use crate::{Clamped, JsValue};
+use crate::describe::WasmDescribe;
+use crate::{ThisCallback, ImportedSuperconstructorCallback, ExportedSuperconstructorCallback, WasmType};
 
 unsafe impl WasmAbi for () {}
 
@@ -409,4 +411,50 @@ impl<T: IntoWasmAbi> ReturnWasmAbi for Result<T, JsValue> {
             Err(e) => crate::throw_val(e),
         }
     }
+}
+
+macro_rules! callback {
+    ($($t:ident)*) => ($(
+        impl IntoWasmAbi for $t {
+            type Abi = <JsValue as FromWasmAbi>::Abi;
+            #[inline] fn into_abi(self) -> Self::Abi { self.0.into_abi() }
+        }
+
+        impl FromWasmAbi for $t {
+            type Abi = <JsValue as FromWasmAbi>::Abi;
+            #[inline] unsafe fn from_abi(js: Self::Abi) -> Self { $t(JsValue::from_abi(js)) }
+        }
+    )*)
+}
+callback! {
+    ThisCallback
+    ImportedSuperconstructorCallback
+    ExportedSuperconstructorCallback
+}
+
+impl<T: WasmDescribe + AsRef<JsValue>> IntoWasmAbi for WasmType<T> {
+    type Abi = <JsValue as IntoWasmAbi>::Abi;
+    #[inline] fn into_abi(self) -> Self::Abi { JsValue::from(self).into_abi() }
+}
+
+impl<T: WasmDescribe> FromWasmAbi for WasmType<T> {
+    type Abi = <*mut WasmType<T> as FromWasmAbi>::Abi;
+
+    #[inline]
+    unsafe fn from_abi(abi: Self::Abi) -> Self {
+        let ptr = <*mut WasmType<T> as FromWasmAbi>::from_abi(abi);
+        crate::__rt::assert_not_null(ptr);
+        Self::clone(&*ptr)
+    }
+}
+
+// TODO (ae): conflicts with maximum stack slot: need to reserve slot 0 for this purpose?
+//            or else ensure only the reference allocated on heap during construction is used
+//            since heap allocations are guaranteed to be non-zero
+impl<T: WasmDescribe + AsRef<JsValue>> OptionIntoWasmAbi for WasmType<T> {
+    #[inline] fn none() -> Self::Abi { 0 }
+}
+
+impl<T: WasmDescribe> OptionFromWasmAbi for WasmType<T> {
+    #[inline] fn is_none(abi: &Self::Abi) -> bool { *abi == 0 }
 }

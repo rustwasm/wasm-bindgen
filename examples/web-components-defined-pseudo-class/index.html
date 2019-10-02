@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>:defined demo</title>
+    <script src="main.js" defer></script>
+    <style>
+      p {
+        background: yellow;
+      }
+
+      simple-custom {
+        background: cyan;
+      }
+
+      :defined {
+        font-style: italic;
+      }
+
+      simple-custom:not(:defined) {
+        display: none;
+      }
+
+      simple-custom:defined {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><code>:defined</code> demo</h1>
+
+    <simple-custom text="Custom element example text"></simple-custom>
+
+    <p>Standard paragraph example text</p>
+
+  </body>
+</html>

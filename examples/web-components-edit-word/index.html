@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>edit-word demo</title>
+    <script src="main.js" defer></script>
+  </head>
+  <body>
+    <h1><code>edit-word</code> demo</h1>
+
+<template id="person-template">
+  <div>
+    <h2>Personal ID Card</h2>
+    <slot name="person-name">NAME MISSING</slot>
+    <ul>
+      <li><slot name="person-age">AGE MISSING</slot></li>
+      <li><slot name="person-occupation">OCCUPATION MISSING</slot></li>
+    </ul>
+  </div>
+</template>
+
+    <person-details>
+      <p slot="person-name"><edit-word>Morgan</edit-word> Stanley</p>
+      <span slot="person-age">36</span>
+      <span slot="person-occupation">Accountant</span>
+    </person-details>
+
+    <p>My name is <edit-word>Chris</edit-word>, the man said.</p>
+  </body>
+</html>

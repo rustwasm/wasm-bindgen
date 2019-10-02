@@ -97,13 +97,13 @@ extern "C" {
     fn call_val_throws(f: &JsValue) -> bool;
 
     fn pass_reference_first_arg_twice(
-        a: RefFirstArgument,
+        a: WasmType<RefFirstArgument>,
         b: &Closure<FnMut(&RefFirstArgument)>,
         c: &Closure<FnMut(&RefFirstArgument)>,
     );
     #[wasm_bindgen(js_name = pass_reference_first_arg_twice)]
     fn pass_reference_first_arg_twice2(
-        a: RefFirstArgument,
+        a: WasmType<RefFirstArgument>,
         b: &mut FnMut(&RefFirstArgument),
         c: &mut FnMut(&RefFirstArgument),
     );
@@ -437,7 +437,7 @@ fn drop_during_call_ok() {
 
 #[wasm_bindgen_test]
 fn test_closure_returner() {
-    type ClosureType = FnMut() -> BadStruct;
+    type ClosureType = FnMut() -> WasmType<BadStruct>;
 
     use js_sys::{Object, Reflect};
     use wasm_bindgen::JsCast;
@@ -448,13 +448,33 @@ fn test_closure_returner() {
     pub struct ClosureHandle(Closure<ClosureType>);
 
     #[wasm_bindgen]
+    impl ClosureHandle {
+        #[wasm_bindgen(constructor)]
+        pub fn new(ptr: u32) -> WasmType<ClosureHandle> {
+            let ptr = ptr as *mut Closure<ClosureType>;
+            assert!(!ptr.is_null());
+            
+            let closure = unsafe { Box::from_raw(ptr) };
+            instantiate! { ClosureHandle(*closure) }
+        }
+    }
+
+    #[wasm_bindgen]
     pub struct BadStruct {}
+
+    #[wasm_bindgen]
+    impl BadStruct {
+        #[wasm_bindgen(constructor)]
+        pub fn new() -> WasmType<BadStruct> {
+            instantiate! { BadStruct{} }
+        }
+    }
 
     #[wasm_bindgen]
     pub fn closure_returner() -> Result<Object, JsValue> {
         let o = Object::new();
 
-        let some_fn = Closure::wrap(Box::new(move || BadStruct {}) as Box<ClosureType>);
+        let some_fn = Closure::wrap(Box::new(move || BadStruct::new()) as Box<ClosureType>);
         Reflect::set(
             &o,
             &JsValue::from("someKey"),
@@ -464,7 +484,7 @@ fn test_closure_returner() {
         Reflect::set(
             &o,
             &JsValue::from("handle"),
-            &JsValue::from(ClosureHandle(some_fn)),
+            &JsValue::from(ClosureHandle::new(Box::into_raw(Box::new(some_fn)) as u32)),
         )
         .unwrap();
 
@@ -475,6 +495,16 @@ fn test_closure_returner() {
 #[wasm_bindgen]
 pub struct RefFirstArgument {
     contents: u32,
+}
+
+#[wasm_bindgen]
+impl RefFirstArgument {
+    #[wasm_bindgen(constructor)]
+    pub fn new(contents: u32) -> WasmType<RefFirstArgument> {
+        instantiate! {
+            RefFirstArgument { contents }
+        }
+    }
 }
 
 #[wasm_bindgen_test]
@@ -520,7 +550,7 @@ fn reference_as_first_argument_works() {
             a.set(a.get() + 1);
         })
     };
-    pass_reference_first_arg_twice(RefFirstArgument { contents: 3 }, &b, &c);
+    pass_reference_first_arg_twice(RefFirstArgument::new(3), &b, &c);
     assert_eq!(a.get(), 2);
 }
 
@@ -528,7 +558,7 @@ fn reference_as_first_argument_works() {
 fn reference_as_first_argument_works2() {
     let a = Cell::new(0);
     pass_reference_first_arg_twice2(
-        RefFirstArgument { contents: 3 },
+        RefFirstArgument::new(3),
         &mut |x: &RefFirstArgument| {
             assert_eq!(a.get(), 0);
             assert_eq!(x.contents, 3);

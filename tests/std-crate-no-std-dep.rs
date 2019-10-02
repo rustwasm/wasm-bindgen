@@ -19,11 +19,13 @@ extern "C" {
     fn init(this: &Js);
 }
 
-#[wasm_bindgen]
-pub struct A {}
+// TODO(ae): exported types currently require Box, Rc, Any
 
-#[wasm_bindgen]
-impl A {
-    pub fn foo(&self) {}
-    pub fn bar(&mut self) {}
-}
+// #[wasm_bindgen]
+// pub struct A {}
+
+// #[wasm_bindgen]
+// impl A {
+//     pub fn foo(&self) {}
+//     pub fn bar(&mut self) {}
+// }

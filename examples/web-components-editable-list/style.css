@@ -1,0 +1,11 @@
+html {
+    font-size: 90%;
+}
+
+body {
+    color: #2b2b2b;
+    font-family: sans-serif;
+    margin: 0 auto;
+    max-width: 350px;
+    padding-top: 5rem;
+}

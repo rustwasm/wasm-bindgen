@@ -1,7 +1,6 @@
 extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
-
 #[wasm_bindgen]
 pub struct A {
     x: u32,
@@ -9,8 +8,11 @@ pub struct A {
 
 #[wasm_bindgen]
 impl A {
-    pub fn new() -> A {
-        A { x: 3 }
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<A> {
+        instantiate! {
+            A { x: 3 }
+        }
     }
 
     pub fn foo(&self) {
@@ -20,7 +22,7 @@ impl A {
 
 #[wasm_bindgen]
 pub fn foo(x: bool) {
-    A::new().foo();
+    A::new().borrow().foo();
 
     if x {
         bar("test");
@@ -46,5 +48,5 @@ pub fn baz(_: JsValue) {}
 #[test]
 fn test_foo() {
     foo(false);
-    A::new().foo();
+    A::new().borrow().foo();
 }

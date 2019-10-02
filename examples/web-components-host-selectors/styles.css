@@ -1,0 +1,25 @@
+html {
+  font-family: sans-serif;
+  background-color: #a60000;
+}
+
+body {
+  margin: 0 auto;
+  width: 80%;
+  max-width: 800px;
+}
+
+header, article, aside, footer {
+  background-color: white;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+header, footer {
+  background-color: #ddd;
+}
+
+li, p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}

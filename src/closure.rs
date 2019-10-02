@@ -60,6 +60,32 @@ use crate::UnwrapThrowExt;
 ///     interval_id: i32,
 ///     _closure: Closure<FnMut()>,
 /// }
+/// 
+/// #[wasm_bindgen]
+/// impl IntervalHandle {
+///     #[wasm_bindgen(constructor)]
+///     pub fn new() -> WasmType<IntervalHandle> {
+///         // First up we use `Closure::wrap` to wrap up a Rust closure and create
+///         // a JS closure.
+///         let cb = Closure::wrap(Box::new(|| {
+///             log("interval elapsed!");
+///         }) as Box<FnMut()>);
+///
+///         // Next we pass this via reference to the `setInterval` function, and
+///         // `setInterval` gets a handle to the corresponding JS closure.
+///         let interval_id = setInterval(&cb, 1_000);
+///
+///         // If we were to drop `cb` here it would cause an exception to be raised
+///         // whenever the interval elapses. Instead we *return* our handle back to JS
+///         // so JS can decide when to cancel the interval and deallocate the closure.
+///         instantiate! {
+///             IntervalHandle {
+///                 interval_id,
+///                 _closure: cb,
+///             }
+///         }
+///     }
+/// }
 ///
 /// impl Drop for IntervalHandle {
 ///     fn drop(&mut self) {
@@ -68,24 +94,8 @@ use crate::UnwrapThrowExt;
 /// }
 ///
 /// #[wasm_bindgen]
-/// pub fn run() -> IntervalHandle {
-///     // First up we use `Closure::wrap` to wrap up a Rust closure and create
-///     // a JS closure.
-///     let cb = Closure::wrap(Box::new(|| {
-///         log("interval elapsed!");
-///     }) as Box<FnMut()>);
-///
-///     // Next we pass this via reference to the `setInterval` function, and
-///     // `setInterval` gets a handle to the corresponding JS closure.
-///     let interval_id = setInterval(&cb, 1_000);
-///
-///     // If we were to drop `cb` here it would cause an exception to be raised
-///     // whenever the interval elapses. Instead we *return* our handle back to JS
-///     // so JS can decide when to cancel the interval and deallocate the closure.
-///     IntervalHandle {
-///         interval_id,
-///         _closure: cb,
-///     }
+/// pub fn run() -> WasmType<IntervalHandle> {
+///     IntervalHandle::new()
 /// }
 /// ```
 ///
@@ -156,6 +166,29 @@ use crate::UnwrapThrowExt;
 ///     animation_id: u32,
 ///     _closure: Closure<FnMut()>,
 /// }
+/// 
+/// #[wasm_bindgen]
+/// impl AnimationFrameHandle {
+///     #[wasm_bindgen(constructor)]
+///     pub fn new() -> WasmType<AnimationFrameHandle> {
+///         // We are using `Closure::once` which takes a `FnOnce`, so the function
+///         // can drop and/or move things that it closes over.
+///         let fired = LogOnDrop("animation frame fired or canceled");
+///         let cb = Closure::once(move || drop(fired));
+///
+///         // Schedule the animation frame!
+///         let animation_id = requestAnimationFrame(&cb);
+///
+///         // Again, return a handle to JS, so that the closure is not dropped
+///         // immediately and JS can decide whether to cancel the animation frame.
+///         instantiate! {
+///             AnimationFrameHandle {
+///                 animation_id,
+///                 _closure: cb,
+///             }
+///         }
+///     }
+/// }
 ///
 /// impl Drop for AnimationFrameHandle {
 ///     fn drop(&mut self) {
@@ -172,21 +205,8 @@ use crate::UnwrapThrowExt;
 /// }
 ///
 /// #[wasm_bindgen]
-/// pub fn run() -> AnimationFrameHandle {
-///     // We are using `Closure::once` which takes a `FnOnce`, so the function
-///     // can drop and/or move things that it closes over.
-///     let fired = LogOnDrop("animation frame fired or canceled");
-///     let cb = Closure::once(move || drop(fired));
-///
-///     // Schedule the animation frame!
-///     let animation_id = requestAnimationFrame(&cb);
-///
-///     // Again, return a handle to JS, so that the closure is not dropped
-///     // immediately and JS can decide whether to cancel the animation frame.
-///     AnimationFrameHandle {
-///         animation_id,
-///         _closure: cb,
-///     }
+/// pub fn run() -> WasmType<AnimationFrameHandle> {
+///     AnimationFrameHandle::new()
 /// }
 /// ```
 ///

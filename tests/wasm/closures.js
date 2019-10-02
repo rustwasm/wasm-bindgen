@@ -120,7 +120,7 @@ exports.call_val = f => f();
 exports.pass_reference_first_arg_twice = (a, b, c) => {
   b(a);
   c(a);
-  a.free();
+  a[wasm.__wbg_free]();
 };
 
 exports.call_destroyed = f => {

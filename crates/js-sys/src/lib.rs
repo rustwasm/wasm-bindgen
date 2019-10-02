@@ -1192,6 +1192,10 @@ impl Function {
     pub fn try_from(val: &JsValue) -> Option<&Function> {
         val.dyn_ref()
     }
+
+    pub fn of<T: wasm_bindgen::WasmBindgenDerived>() -> Function {
+        JsValue::from_type::<T>().unchecked_into::<Function>()
+    }
 }
 
 // Generator

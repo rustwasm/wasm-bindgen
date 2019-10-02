@@ -221,6 +221,24 @@ pub fn add_section(
                     name
                 );
             }
+            AuxExportKind::StaticGetter { class, field } => {
+                bail!(
+                    "cannot export `{}::{}` static getter function when \
+                     generating a standalone WebAssembly module with no \
+                     JS glue",
+                    class,
+                    field,
+                );
+            }
+            AuxExportKind::StaticSetter { class, field } => {
+                bail!(
+                    "cannot export `{}::{}` static setter function when \
+                     generating a standalone WebAssembly module with no \
+                     JS glue",
+                    class,
+                    field,
+                );
+            }
             AuxExportKind::Method { class, name, .. } => {
                 bail!(
                     "cannot export `{}::{}` method when \
@@ -435,6 +453,8 @@ fn extract_incoming(
             NonstandardIncoming::OptionRustType { .. } => "optional Rust type",
             NonstandardIncoming::Char { .. } => "character",
             NonstandardIncoming::BorrowedAnyref { .. } => "borrowed anyref",
+            NonstandardIncoming::SuperconstructorCallback => "superconstructor callback",
+            NonstandardIncoming::ThisCallback => "this callback",
         };
         bail!(
             "cannot represent {} with a standard bindings expression",
@@ -473,7 +493,6 @@ fn extract_outgoing(
                 continue;
             }
 
-            NonstandardOutgoing::RustType { .. } => "rust type",
             NonstandardOutgoing::Char { .. } => "character",
             NonstandardOutgoing::Number64 { .. } => "64-bit integer",
             NonstandardOutgoing::BorrowedAnyref { .. } => "borrowed anyref",
@@ -489,7 +508,6 @@ fn extract_outgoing(
             NonstandardOutgoing::OptionChar { .. } => "optional character",
             NonstandardOutgoing::OptionIntegerEnum { .. } => "optional enum",
             NonstandardOutgoing::OptionInt64 { .. } => "optional 64-bit integer",
-            NonstandardOutgoing::OptionRustType { .. } => "optional rust type",
             NonstandardOutgoing::StackClosure { .. } => "closures",
         };
         bail!(
@@ -592,9 +610,6 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
         | AuxImport::IndexingGetterOfObject
         | AuxImport::IndexingSetterOfClass(_)
         | AuxImport::IndexingSetterOfObject => format!("indexing getters/setters/deleters"),
-        AuxImport::WrapInExportedClass(name) => {
-            format!("wrapping a pointer in a `{}` js class wrapper", name)
-        }
         AuxImport::Intrinsic(intrinsic) => {
             format!("wasm-bindgen specific intrinsic `{}`", intrinsic.name())
         }

@@ -71,6 +71,10 @@ fn ref_string() -> Descriptor {
     Descriptor::Ref(Box::new(Descriptor::String))
 }
 
+fn ref_slice_anyref() -> Descriptor {
+    Descriptor::Ref(Box::new(Descriptor::Slice(Box::new(Descriptor::Anyref))))
+}
+
 intrinsics! {
     pub enum Intrinsic {
         #[symbol = "__wbindgen_jsval_eq"]
@@ -160,5 +164,23 @@ intrinsics! {
         #[symbol = "__wbindgen_init_anyref_table"]
         #[signature = fn() -> Unit]
         InitAnyrefTable,
+        #[symbol = "__wbindgen_export_get"]
+        #[signature = fn(U64) -> Anyref]
+        ExportGet,
+        #[symbol = "__wbindgen_instantiate"]
+        #[signature = fn(ref_anyref(), ref_slice_anyref()) -> U32]
+        Instantiate,
+        #[symbol = "__wbindgen_invoke"]
+        #[signature = fn(ref_anyref(), ref_slice_anyref()) -> U32]
+        Invoke,
+        #[symbol = "__wbindgen_wasm_pointer_get"]
+        #[signature = fn(ref_anyref()) -> U32]
+        WasmPointerGet,
+        #[symbol = "__wbindgen_wasm_pointer_set"]
+        #[signature = fn(ref_anyref(), U32) -> Unit]
+        WasmPointerSet,
+        #[symbol = "__wbindgen_set_heapref_state"]
+        #[signature = fn(U32, Boolean) -> Unit]
+        SetHeaprefState,
     }
 }

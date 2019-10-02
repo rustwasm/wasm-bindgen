@@ -16,15 +16,18 @@ pub struct Counter {
 
 #[wasm_bindgen]
 impl Counter {
-    pub fn default() -> Counter {
+    pub fn default() -> WasmType<Counter> {
         log("Counter::default");
-        Self::new('a', 0)
+        Self::new("a", 0)
     }
-    pub fn new(key: char, count: i32) -> Counter {
+    #[wasm_bindgen(constructor)]
+    pub fn new(key: &str, count: i32) -> WasmType<Counter> {
         log(&format!("Counter::new({}, {})", key, count));
-        Counter {
-            key: key,
-            count: count,
+        instantiate! {
+            Counter {
+                key: key.chars().next().unwrap(),
+                count: count,
+            }
         }
     }
 

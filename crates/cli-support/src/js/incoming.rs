@@ -27,13 +27,6 @@ impl<'a, 'b> Incoming<'a, 'b> {
     }
 
     pub fn process(&mut self, incoming: &NonstandardIncoming) -> Result<Vec<String>, Error> {
-        let before = self.js.typescript_len();
-        let ret = self.nonstandard(incoming)?;
-        assert_eq!(before + 1, self.js.typescript_len());
-        Ok(ret)
-    }
-
-    fn nonstandard(&mut self, incoming: &NonstandardIncoming) -> Result<Vec<String>, Error> {
         let single = match incoming {
             NonstandardIncoming::Standard(val) => return self.standard(val),
 
@@ -112,30 +105,24 @@ impl<'a, 'b> Incoming<'a, 'b> {
                 format!("{}.codePointAt(0)", expr)
             }
 
-            // When moving a type back into Rust we need to clear out the
-            // internal pointer in JS to prevent it from being reused again in
-            // the future.
+            // Send the pointer to Rust, where the Rc that it represents will be cloned
             NonstandardIncoming::RustType { class, val } => {
                 let (expr, ty) = self.standard_typed(val)?;
                 assert_eq!(ty, ast::WebidlScalarType::Any.into());
                 self.assert_class(&expr, &class);
                 self.assert_not_moved(&expr);
-                let i = self.js.tmp();
-                self.js.prelude(&format!("const ptr{} = {}.ptr;", i, expr));
-                self.js.prelude(&format!("{}.ptr = 0;", expr));
                 self.js.typescript_required(class);
-                format!("ptr{}", i)
+                format!("{}[WASM_PTR]", expr)
             }
 
-            // Here we can simply pass along the pointer with no extra fluff
-            // needed.
-            NonstandardIncoming::RustTypeRef { class, val } => {
+            // Borrow the relevant object from the leaf's prototype chain
+            NonstandardIncoming::RustTypeRef { class, val, mutable } => {
                 let (expr, ty) = self.standard_typed(val)?;
                 assert_eq!(ty, ast::WebidlScalarType::Any.into());
                 self.assert_class(&expr, &class);
                 self.assert_not_moved(&expr);
                 self.js.typescript_required(class);
-                format!("{}.ptr", expr)
+                format!("{}[BORROW]({}, {})", expr, class, mutable)
             }
 
             // the "stack-ful" nature means that we're always popping from the
@@ -208,20 +195,19 @@ impl<'a, 'b> Incoming<'a, 'b> {
                 format!("isLikeNone({0}) ? {1} : {0}", expr, hole)
             }
 
-            // `None` here is zero, but if `Some` then we need to clear out the
-            // internal pointer because the value is being moved.
+            // `None` here is zero, but if `Some` then we need to send the internal
+            // pointer to Rust where the `Rc` it represents will be cloned.
             NonstandardIncoming::OptionRustType { class, val } => {
                 let (expr, ty) = self.standard_typed(val)?;
                 assert_eq!(ty, ast::WebidlScalarType::Any.into());
                 self.cx.expose_is_like_none();
                 let i = self.js.tmp();
                 self.js.prelude(&format!("let ptr{} = 0;", i));
-                self.js.prelude(&format!("if (!isLikeNone({0})) {{", expr));
+                self.js.assertion(&format!("if (!isLikeNone({0})) {{", expr));
                 self.assert_class(&expr, class);
                 self.assert_not_moved(&expr);
-                self.js.prelude(&format!("ptr{} = {}.ptr;", i, expr));
-                self.js.prelude(&format!("{}.ptr = 0;", expr));
-                self.js.prelude("}");
+                self.js.assertion(&format!("ptr{} = {}[WASM_PTR];", i, expr));
+                self.js.assertion("}");
                 self.js.typescript_optional(class);
                 format!("ptr{}", i)
             }
@@ -331,6 +317,31 @@ impl<'a, 'b> Incoming<'a, 'b> {
                 self.js.finally("}");
                 self.js.typescript_optional(kind.js_ty());
                 return Ok(vec![format!("ptr{}", i), format!("len{}", i)]);
+            }
+
+            NonstandardIncoming::SuperconstructorCallback => {
+                let expr = "_super";
+                self.js.prelude(&format!("const {} = (...args) => {{ super(...args); return _this(); }}", expr));
+                if self.cx.config.anyref {
+                    expr.to_string()
+                } else {
+                    self.cx.expose_borrowed_objects();
+                    self.cx.expose_global_stack_pointer();
+                    self.js.finally("heap[stack_pointer++] = undefined;");
+                    format!("addBorrowedObject({})", expr)
+                }
+            }
+
+            NonstandardIncoming::ThisCallback => {
+                let expr = "_this";
+                if self.cx.config.anyref {
+                    expr.to_string()
+                } else {
+                    self.cx.expose_borrowed_objects();
+                    self.cx.expose_global_stack_pointer();
+                    self.js.finally("heap[stack_pointer++] = undefined;");
+                    format!("addBorrowedObject({})", expr)
+                }
             }
         };
         Ok(vec![single])
@@ -468,7 +479,7 @@ impl<'a, 'b> Incoming<'a, 'b> {
     fn assert_class(&mut self, arg: &str, class: &str) {
         self.cx.expose_assert_class();
         self.js
-            .prelude(&format!("_assertClass({}, {});", arg, class));
+            .assertion(&format!("_assertClass({}, {});", arg, class));
     }
 
     fn assert_number(&mut self, arg: &str) {
@@ -476,7 +487,7 @@ impl<'a, 'b> Incoming<'a, 'b> {
             return;
         }
         self.cx.expose_assert_num();
-        self.js.prelude(&format!("_assertNum({});", arg));
+        self.js.assertion(&format!("_assertNum({});", arg));
     }
 
     fn assert_bool(&mut self, arg: &str) {
@@ -484,7 +495,7 @@ impl<'a, 'b> Incoming<'a, 'b> {
             return;
         }
         self.cx.expose_assert_bool();
-        self.js.prelude(&format!("_assertBoolean({});", arg));
+        self.js.assertion(&format!("_assertBoolean({});", arg));
     }
 
     fn assert_optional_number(&mut self, arg: &str) {
@@ -492,9 +503,9 @@ impl<'a, 'b> Incoming<'a, 'b> {
             return;
         }
         self.cx.expose_is_like_none();
-        self.js.prelude(&format!("if (!isLikeNone({})) {{", arg));
+        self.js.assertion(&format!("if (!isLikeNone({})) {{", arg));
         self.assert_number(arg);
-        self.js.prelude("}");
+        self.js.assertion("}");
     }
 
     fn assert_optional_bool(&mut self, arg: &str) {
@@ -502,18 +513,18 @@ impl<'a, 'b> Incoming<'a, 'b> {
             return;
         }
         self.cx.expose_is_like_none();
-        self.js.prelude(&format!("if (!isLikeNone({})) {{", arg));
+        self.js.assertion(&format!("if (!isLikeNone({})) {{", arg));
         self.assert_bool(arg);
-        self.js.prelude("}");
+        self.js.assertion("}");
     }
 
     fn assert_not_moved(&mut self, arg: &str) {
         if !self.cx.config.debug {
             return;
         }
-        self.js.prelude(&format!(
+        self.js.assertion(&format!(
             "\
-                if ({0}.ptr === 0) {{
+                if ({}[WASM_PTR] === 0) {{
                     throw new Error('Attempt to use a moved value');
                 }}
             ",

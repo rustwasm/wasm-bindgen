@@ -36,14 +36,6 @@ impl<'a, 'b> Outgoing<'a, 'b> {
                 Ok(format!("String.fromCodePoint({})", self.arg(*idx)))
             }
 
-            // Just need to wrap up the pointer we get from Rust into a JS type
-            // and then we can pass that along
-            NonstandardOutgoing::RustType { class, idx } => {
-                self.js.typescript_required(class);
-                self.cx.require_class_wrap(class);
-                Ok(format!("{}.__wrap({})", class, self.arg(*idx)))
-            }
-
             // Just a small wrapper around `getObject`
             NonstandardOutgoing::BorrowedAnyref { idx } => {
                 self.js.typescript_required("any");
@@ -236,16 +228,6 @@ impl<'a, 'b> Outgoing<'a, 'b> {
                     "{0} === {1} ? undefined : {0}",
                     self.arg(*idx),
                     hole
-                ))
-            }
-
-            NonstandardOutgoing::OptionRustType { class, idx } => {
-                self.cx.require_class_wrap(class);
-                self.js.typescript_optional(class);
-                Ok(format!(
-                    "{0} === 0 ? undefined : {1}.__wrap({0})",
-                    self.arg(*idx),
-                    class,
                 ))
             }
 

@@ -7,7 +7,7 @@
 use crate::js::incoming;
 use crate::js::outgoing;
 use crate::js::Context;
-use crate::webidl::Binding;
+use crate::webidl::{Binding, NonstandardIncoming};
 use failure::{bail, Error};
 use std::collections::HashSet;
 use wasm_webidl_bindings::ast;
@@ -20,6 +20,12 @@ pub struct Builder<'a, 'b> {
     /// Prelude JS which is present before the main invocation to prepare
     /// arguments.
     args_prelude: String,
+    /// Prelude JS which is present before the main invocation but within a
+    /// try/finally block, to hold assertions that may require cleanup.
+    assertions: String,
+    /// Finally block to be executed only in the event that the main
+    /// invocation is reached, used for cleanups like releasing state.
+    cleanup: String,
     /// Finally block to be executed regardless of the call's status, mostly
     /// used for cleanups like free'ing.
     finally: String,
@@ -41,8 +47,8 @@ pub struct Builder<'a, 'b> {
     /// so what class it's constructing.
     constructor: Option<String>,
     /// Whether or not this is building a method of a Rust class instance, and
-    /// whether or not the method consumes `self` or not.
-    method: Option<bool>,
+    /// if so of what class and whether reference to self is mutable.
+    method: Option<(String, bool)>,
     /// Whether or not we're catching exceptions from the main function
     /// invocation. Currently only used for imports.
     catch: bool,
@@ -54,6 +60,7 @@ pub struct Builder<'a, 'b> {
 pub struct JsBuilder {
     typescript: Vec<TypescriptArg>,
     prelude: String,
+    assertions: String,
     finally: String,
     tmp: usize,
     args: Vec<String>,
@@ -71,6 +78,8 @@ impl<'a, 'b> Builder<'a, 'b> {
             log_error: cx.config.debug,
             cx,
             args_prelude: String::new(),
+            assertions: String::new(),
+            cleanup: String::new(),
             finally: String::new(),
             ret_finally: String::new(),
             function_args: Vec::new(),
@@ -85,8 +94,8 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
     }
 
-    pub fn method(&mut self, consumed: bool) {
-        self.method = Some(consumed);
+    pub fn method(&mut self, class: &str, mutable: bool) {
+        self.method = Some((class.to_string(), mutable));
     }
 
     pub fn constructor(&mut self, class: &str) {
@@ -125,7 +134,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         let mut arg_names = Vec::new();
         let mut js;
         if incoming_args {
-            let mut webidl_params = webidl.params.iter();
+            let mut binding_args = binding.incoming.iter();
 
             // If we're returning via an out pointer then it's guaranteed to be
             // the first argument. This isn't an argument of the function shim
@@ -138,7 +147,7 @@ impl<'a, 'b> Builder<'a, 'b> {
             // around address 8, so this should be a safe address to use for
             // returning data through.
             if binding.return_via_outptr.is_some() {
-                drop(webidl_params.next());
+                drop(binding_args.next());
                 self.args_prelude.push_str("const retptr = 8;\n");
                 arg_names.push("retptr".to_string());
             }
@@ -146,35 +155,48 @@ impl<'a, 'b> Builder<'a, 'b> {
             // If this is a method then we're generating this as part of a class
             // method, so the leading parameter is the this pointer stored on
             // the JS object, so synthesize that here.
-            match self.method {
-                Some(consumes_self) => {
-                    drop(webidl_params.next());
-                    if self.cx.config.debug {
-                        self.args_prelude.push_str(
-                            "if (this.ptr == 0) throw new Error('Attempt to use a moved value');\n",
-                        );
-                    }
-                    if consumes_self {
-                        self.args_prelude.push_str("const ptr = this.ptr;\n");
-                        self.args_prelude.push_str("this.ptr = 0;\n");
-                        arg_names.push("ptr".to_string());
-                    } else {
-                        arg_names.push("this.ptr".to_string());
-                    }
+            if let Some((class, mutable)) = &self.method {
+                drop(binding_args.next());
+                if self.cx.config.debug {
+                    self.args_prelude.push_str("
+                        if (this[WASM_PTR] == 0) {
+                            throw new Error('Attempt to use a moved value');
+                        }
+                    ");
                 }
-                None => {}
+                self.cx.require_internal_export("__wbindgen_release")?;
+                self.args_prelude.push_str(&format!("let me = this[BORROW]({}, {});\n", class, mutable));
+                self.cleanup.push_str("me = undefined;\n");
+                self.finally.push_str(&format!("if (typeof me === 'number') wasm.__wbindgen_release(me, {});\n", mutable));
+                arg_names.push("me".to_string());
             }
 
             // And now take the rest of the parameters and generate a name for them.
-            for (i, _) in webidl_params.enumerate() {
+            for (i, argument) in binding_args.enumerate() {
                 let arg = match explicit_arg_names {
                     Some(list) => list[i].clone(),
                     None => format!("arg{}", i),
                 };
-                self.function_args.push(arg.clone());
-                arg_names.push(arg);
+                // Strip synthesised callback argument from exported function signature
+                match argument {
+                    NonstandardIncoming::SuperconstructorCallback
+                    | NonstandardIncoming::ThisCallback => (),
+                    _ => {
+                        self.function_args.push(arg.clone());
+                        arg_names.push(arg);
+                    }
+                }
             }
             js = JsBuilder::new(arg_names);
+            if let Some(class) = &self.constructor {
+                js.prelude(&format!(
+                    "const _this = () => HOST_PTR in this ? this[HOST_PTR] : this[HOST_PTR] = {}(this);\n",
+                    if self.cx.config.anyref { "addToAnyrefTable" } else { "addHeapObject" },
+                ));
+                if self.cx.config.weak_refs {
+                    js.finally(&format!("{}FinalizationGroup.register(this, ret, ret);", class));
+                }
+            }
             let mut args = incoming::Incoming::new(self.cx, &webidl.params, &mut js);
             for argument in binding.incoming.iter() {
                 self.invoc_args.extend(args.process(argument)?);
@@ -205,6 +227,7 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         // Save off the results of JS generation for the arguments.
         self.args_prelude.push_str(&js.prelude);
+        self.assertions.push_str(&js.assertions);
         self.finally.push_str(&js.finally);
         self.ts_args.extend(js.typescript);
 
@@ -219,7 +242,6 @@ impl<'a, 'b> Builder<'a, 'b> {
         if incoming_args {
             if binding.outgoing.len() == 0 {
                 assert!(binding.return_via_outptr.is_none());
-                assert!(self.constructor.is_none());
                 let invoc = invoke(self.cx, &mut self.args_prelude, &self.invoc_args)?;
                 return Ok(self.finalize(&invoc));
             }
@@ -338,6 +360,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         }
         self.ret_finally.push_str(&js.finally);
         self.ret_prelude.push_str(&js.prelude);
+        self.ret_prelude.push_str(&js.assertions);
         self.ts_ret = Some(js.typescript.remove(0));
         let invoc = invoke(self.cx, &mut self.args_prelude, &self.invoc_args)?;
         Ok(self.finalize(&invoc))
@@ -379,6 +402,11 @@ impl<'a, 'b> Builder<'a, 'b> {
             call.push_str("\n");
         }
 
+        let cleanup = self.cleanup.trim();
+        if self.cleanup.len() != 0 {
+            call = format!("try {{\n{}}} finally {{\n{}\n}}\n", call, cleanup);
+        }
+
         if self.catch {
             call = format!("try {{\n{}}} catch (e) {{\n handleError(e)\n}}\n", call);
         }
@@ -389,6 +417,10 @@ impl<'a, 'b> Builder<'a, 'b> {
         // elsewhere.
         if self.log_error {
             call = format!("try {{\n{}}} catch (e) {{\n logError(e)\n}}\n", call);
+        }
+
+        if self.assertions.len() > 0 {
+            call = format!("{}\n{}", self.assertions.trim(), call);
         }
 
         let finally = self.finally.trim();
@@ -461,7 +493,9 @@ impl<'a, 'b> Builder<'a, 'b> {
             })
             .collect();
         if let Some(ts) = &self.ts_ret {
-            ret.push_str(&format!("@returns {{{}}}", ts.ty));
+            if self.constructor.is_none() {
+                ret.push_str(&format!("@returns {{{}}}", ts.ty));
+            }
         }
         ret
     }
@@ -473,6 +507,7 @@ impl JsBuilder {
             args,
             tmp: 0,
             finally: String::new(),
+            assertions: String::new(),
             prelude: String::new(),
             typescript: Vec::new(),
         }
@@ -508,6 +543,13 @@ impl JsBuilder {
         for line in prelude.trim().lines() {
             self.prelude.push_str(line);
             self.prelude.push_str("\n");
+        }
+    }
+
+    pub fn assertion(&mut self, assertion: &str) {
+        for line in assertion.trim().lines() {
+            self.assertions.push_str(line);
+            self.assertions.push_str("\n");
         }
     }
 

@@ -4,6 +4,7 @@ use crate::webidl;
 use crate::webidl::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::webidl::{AuxValue, Binding};
 use crate::webidl::{JsImport, JsImportName, NonstandardWebidlSection, WasmBindgenAux};
+use crate::webidl::AuxTypeRef;
 use crate::{Bindgen, EncodeInto, OutputMode};
 use failure::{bail, Error, ResultExt};
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
@@ -48,17 +49,28 @@ pub struct Context<'a> {
     /// A map of the name of npm dependencies we've loaded so far to the path
     /// they're defined in as well as their version specification.
     pub npm_dependencies: HashMap<String, (PathBuf, String)>,
+
+    /// Strings in `"x": Y` form, that form the members of output `DEFINITION_MAP`
+    /// used by `__wbindgen_export_get` intrinsic function to resolve Rust IDs ("x")
+    /// to their JavaScript type (Y).
+    definitions: Vec<String>,
 }
 
 #[derive(Default)]
 pub struct ExportedClass {
+    rust_id: u64,
     comments: String,
     contents: String,
     typescript: String,
     has_constructor: bool,
-    wrap_needed: bool,
     /// Map from field name to type as a string plus whether it has a setter
     typescript_fields: HashMap<String, (String, bool)>,
+    prototype: Option<ExportedPrototype>,
+}
+
+pub struct ExportedPrototype {
+    prototype_name: String,
+    is_export: bool,
 }
 
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
@@ -94,6 +106,7 @@ impl<'a> Context<'a> {
             module,
             memory,
             npm_dependencies: Default::default(),
+            definitions: Default::default(),
         })
     }
 
@@ -103,6 +116,7 @@ impl<'a> Context<'a> {
 
     fn export(
         &mut self,
+        rust_id: Option<u64>,
         export_name: &str,
         contents: &str,
         comments: Option<String>,
@@ -117,28 +131,30 @@ impl<'a> Context<'a> {
             self.globals.push_str(c);
             self.typescript.push_str(c);
         }
-        let global = match self.config.mode {
+        let (global, definition_name) = match self.config.mode {
             OutputMode::Node {
                 experimental_modules: false,
-            } => {
+            } => (
                 if contents.starts_with("class") {
                     format!("{}\nmodule.exports.{1} = {1};\n", contents, export_name)
                 } else {
                     format!("module.exports.{} = {};\n", export_name, contents)
-                }
-            }
-            OutputMode::NoModules { .. } => {
+                },
+                format!("module.exports.{}", export_name)
+            ),
+            OutputMode::NoModules { .. } => (
                 if contents.starts_with("class") {
                     format!("{}\n__exports.{1} = {1};\n", contents, export_name)
                 } else {
                     format!("__exports.{} = {};\n", export_name, contents)
-                }
-            }
+                },
+                format!("__exports.{}", export_name),
+            ),
             OutputMode::Bundler { .. }
             | OutputMode::Node {
                 experimental_modules: true,
             }
-            | OutputMode::Web => {
+            | OutputMode::Web => (
                 if contents.starts_with("function") {
                     let body = &contents[8..];
                     if export_name == definition_name {
@@ -155,10 +171,12 @@ impl<'a> Context<'a> {
                 } else {
                     assert_eq!(export_name, definition_name);
                     format!("export const {} = {};\n", export_name, contents)
-                }
-            }
+                },
+                definition_name,
+            )
         };
         self.global(&global);
+        self.expose_definition(rust_id, &definition_name);
         Ok(())
     }
 
@@ -214,7 +232,11 @@ impl<'a> Context<'a> {
 
         // Cause any future calls to `should_write_global` to panic, making sure
         // we don't ask for items which we can no longer emit.
-        drop(self.exposed_globals.take().unwrap());
+        let exposed_globals = self.exposed_globals.take().unwrap();
+        if exposed_globals.contains("definition_map") {
+            self.global(&format!("const DEFINITION_MAP = {{\n{}\n}};", self.definitions.join(",\n")));
+        }
+        drop(exposed_globals);
 
         self.finalize_js(module_name, needs_manual_start)
     }
@@ -589,44 +611,55 @@ impl<'a> Context<'a> {
     }
 
     fn write_classes(&mut self) -> Result<(), Error> {
-        for (class, exports) in self.exported_classes.take().unwrap() {
-            self.write_class(&class, &exports)?;
+        let classes = &mut self.exported_classes.take().unwrap();
+
+        // Class definitions are not hoisted, so derived classes cannot be output
+        // before their respective base classes.
+        if !classes.is_empty() {
+            use std::collections::VecDeque;
+
+            self.expose_global_ptr_symbols()?;
+
+            let mut todo = classes.iter().collect::<VecDeque<_>>();
+            let mut done = HashSet::new();
+
+            while let Some((name, exports)) = todo.pop_front() {
+                match &exports.prototype {
+                    // If this class extends another exported type
+                    // that has not yet been written out, push it to the back of the queue
+                    Some(ExportedPrototype { prototype_name, is_export: true })
+                        if !done.contains(prototype_name) => todo.push_back((name, exports)),
+                    
+                    // Otherwise, write it out and mark it done
+                    _ => {
+                        self.write_class(name, exports)?;
+                        done.insert(name);
+                    }
+                }
+            }
         }
+
         Ok(())
     }
 
     fn write_class(&mut self, name: &str, class: &ExportedClass) -> Result<(), Error> {
-        let mut dst = format!("class {} {{\n", name);
+        let mut dst = match &class.prototype {
+            Some(ExportedPrototype { prototype_name, .. }) => format!("class {} extends {} {{\n", name, prototype_name),
+            None => format!("class {} {{\n", name),
+        };
         let mut ts_dst = format!("export {}", dst);
 
-        if self.config.debug && !class.has_constructor {
-            dst.push_str(
-                "
-                    constructor() {
-                        throw new Error('cannot invoke `new` directly');
-                    }
-                ",
-            );
-        }
-
-        if class.wrap_needed {
-            dst.push_str(&format!(
-                "
-                static __wrap(ptr) {{
-                    const obj = Object.create({}.prototype);
-                    obj.ptr = ptr;
-                    {}
-                    return obj;
-                }}
-                ",
-                name,
-                if self.config.weak_refs {
-                    format!("{}FinalizationGroup.register(obj, obj.ptr, obj.ptr);", name)
-                } else {
-                    String::new()
-                },
-            ));
-        }
+        self.expose_uint32_memory();
+        dst.push_str(&format!(
+            "
+            [BORROW](klass, mutable) {{
+                {}[0] = klass[RUST_ID];
+                return wasm.{}(this[WASM_PTR], u32CvtShim[0], u32CvtShim[1], mutable);
+            }}
+            ",
+            self.expose_uint64_cvt_shim(),
+            wasm_bindgen_shared::borrow_from_prototype_function(name),
+        ));
 
         if self.config.weak_refs {
             self.global(&format!(
@@ -644,9 +677,9 @@ impl<'a> Context<'a> {
 
         dst.push_str(&format!(
             "
-            free() {{
-                const ptr = this.ptr;
-                this.ptr = 0;
+            [FREE]() {{
+                const ptr = this[WASM_PTR];
+                this[WASM_PTR] = 0;
                 {}
                 wasm.{}(ptr);
             }}
@@ -658,7 +691,7 @@ impl<'a> Context<'a> {
             },
             wasm_bindgen_shared::free_function(&name),
         ));
-        ts_dst.push_str("  free(): void;\n");
+        ts_dst.push_str("  [__wbg_free](): void;\n");
         dst.push_str(&class.contents);
         ts_dst.push_str(&class.typescript);
 
@@ -678,7 +711,8 @@ impl<'a> Context<'a> {
         dst.push_str("}\n");
         ts_dst.push_str("}\n");
 
-        self.export(&name, &dst, Some(class.comments.clone()))?;
+        self.export(Some(class.rust_id), &name, &dst, Some(class.comments.clone()))?;
+        self.global(&format!("{}[RUST_ID] = BigInt('{}');", name, class.rust_id));
         self.typescript.push_str(&ts_dst);
 
         Ok(())
@@ -700,6 +734,12 @@ impl<'a> Context<'a> {
         }
         for id in to_remove {
             self.module.exports.delete(id);
+        }
+    }
+
+    fn expose_definition(&mut self, rust_id: Option<u64>, name: &str) {
+        if let Some(rust_id) = rust_id {
+            self.definitions.push(format!("'{}': {}", rust_id, name));
         }
     }
 
@@ -730,6 +770,21 @@ impl<'a> Context<'a> {
         ));
     }
 
+    fn expose_global_ptr_symbols(&mut self) -> Result<(), Error> {
+        if !self.should_write_global("ptr") {
+            return Ok(());
+        }
+        self.global("
+            const RUST_ID = Symbol('RUST_ID');
+            const WASM_PTR = Symbol('WASM_PTR');
+            const HOST_PTR = Symbol('HOST_PTR');
+            const BORROW = Symbol('BORROW');
+            const FREE = Symbol('FREE');
+        ");
+        self.typescript.push_str("export const __wbg_free: unique symbol;\n");
+        self.export(None, "__wbg_free", "FREE", None)
+    }
+
     fn expose_global_heap(&mut self) {
         if !self.should_write_global("heap") {
             return;
@@ -756,7 +811,12 @@ impl<'a> Context<'a> {
 
         // Accessing a heap object is just a simple index operation due to how
         // the stack/heap are laid out.
-        self.global("function getObject(idx) { return heap[idx]; }");
+        self.global(&format!("function getObject(idx) {{ {} }}", if self.config.weak_refs {"
+            const current = heap[idx];
+            return Object.getPrototypeOf(current) === WeakRef.prototype
+                ? current.deref()
+                : current;
+        "} else { "return heap[idx]" }));
     }
 
     fn expose_not_defined(&mut self) {
@@ -1409,7 +1469,7 @@ impl<'a> Context<'a> {
                 if (!(instance instanceof klass)) {
                     throw new Error(`expected instance of ${klass.name}`);
                 }
-                return instance.ptr;
+                return instance[WASM_PTR];
             }
             ",
         );
@@ -1739,10 +1799,6 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn require_class_wrap(&mut self, name: &str) {
-        require_class(&mut self.exported_classes, name).wrap_needed = true;
-    }
-
     fn import_name(&mut self, import: &JsImport) -> Result<String, Error> {
         if let Some(name) = self.imported_names.get(&import.name) {
             let mut name = name.clone();
@@ -1904,7 +1960,7 @@ impl<'a> Context<'a> {
         }
 
         for s in aux.structs.iter() {
-            self.generate_struct(s)?;
+            self.generate_struct(s, &aux.structs)?;
         }
 
         self.typescript.push_str(&aux.extra_typescript);
@@ -1969,10 +2025,11 @@ impl<'a> Context<'a> {
         builder.disable_log_error(true);
         match &export.kind {
             AuxExportKind::Function(_) => {}
-            AuxExportKind::StaticFunction { .. } => {}
+            AuxExportKind::StaticFunction { .. } | AuxExportKind::StaticGetter { .. } | AuxExportKind::StaticSetter { .. } => {}
             AuxExportKind::Constructor(class) => builder.constructor(class),
-            AuxExportKind::Getter { .. } | AuxExportKind::Setter { .. } => builder.method(false),
-            AuxExportKind::Method { consumed, .. } => builder.method(*consumed),
+            AuxExportKind::Method { class, mutable, .. } => builder.method(class, *mutable),
+            AuxExportKind::Getter { class, .. } => builder.method(class, false),
+            AuxExportKind::Setter { class, .. } => builder.method(class, true),
         }
 
         // Process the `binding` and generate a bunch of JS/TypeScript/etc.
@@ -1991,7 +2048,7 @@ impl<'a> Context<'a> {
         // on what's being exported.
         match &export.kind {
             AuxExportKind::Function(name) => {
-                self.export(&name, &format!("function{}", js), Some(docs))?;
+                self.export(None, &name, &format!("function{}", js), Some(docs))?;
                 self.globals.push_str("\n");
                 self.typescript.push_str("export function ");
                 self.typescript.push_str(&name);
@@ -2019,6 +2076,15 @@ impl<'a> Context<'a> {
             AuxExportKind::StaticFunction { class, name } => {
                 let exported = require_class(&mut self.exported_classes, class);
                 exported.push(&docs, name, "static ", &js, &ts);
+            }
+            AuxExportKind::StaticGetter { class, field } => {
+                let exported = require_class(&mut self.exported_classes, class);
+                exported.push(&docs, field, "static get ", &js, &ts);
+            }
+            AuxExportKind::StaticSetter { class, field } => {
+                let arg_ty = builder.ts_args[0].ty.clone();
+                let exported = require_class(&mut self.exported_classes, class);
+                exported.push(&docs, field, "static set ", &js, &arg_ty);
             }
             AuxExportKind::Method { class, name, .. } => {
                 let exported = require_class(&mut self.exported_classes, class);
@@ -2446,13 +2512,6 @@ impl<'a> Context<'a> {
                 Ok(format!("delete {}[{}]", args[0], args[1]))
             }
 
-            AuxImport::WrapInExportedClass(class) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
-                assert!(!variadic);
-                assert_eq!(args.len(), 1);
-                self.require_class_wrap(class);
-                Ok(format!("{}.__wrap({})", class, args[0]))
-            }
 
             AuxImport::Intrinsic(intrinsic) => {
                 assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
@@ -2689,6 +2748,63 @@ impl<'a> Context<'a> {
                 }
                 base
             }
+
+            Intrinsic::ExportGet => {
+                assert_eq!(args.len(), 1);
+                self.should_write_global("definition_map");
+                format!("DEFINITION_MAP[{}]", args[0])
+            }
+
+            Intrinsic::Instantiate => {
+                assert_eq!(args.len(), 2);
+                prelude.push_str(&format!("const instance = new ({})(...{});", args[0], args[1]));
+                prelude.push_str(if self.config.anyref {
+                    "wasm.__wbg_anyref_table.set(instance[HOST_PTR], instance);"
+                } else {
+                    "heap[instance[HOST_PTR]] = instance;"
+                });
+                "instance[WASM_PTR]".to_string()
+            }
+
+            Intrinsic::Invoke => {
+                assert_eq!(args.len(), 2);
+                format!("{}(...{})", args[0], args[1])
+            }
+
+            Intrinsic::WasmPointerGet => {
+                assert_eq!(args.len(), 1);
+                format!("{}[WASM_PTR]", args[0])
+            }
+
+            Intrinsic::WasmPointerSet => {
+                assert_eq!(args.len(), 2);
+                format!("{}[WASM_PTR] = {}", args[0], args[1])
+            }
+
+            Intrinsic::SetHeaprefState => {
+                if self.config.weak_refs{
+                    assert_eq!(args.len(), 2);
+                    prelude.push_str(&format!("
+                        const idx = {};
+                        const makeWeak = {};
+                        const current = {};
+                    ", args[0], args[1], if self.config.anyref {
+                        "wasm.__wbg_anyref_table.get(idx)"
+                    } else {
+                        "heap[idx]"
+                    }));
+                    format!(
+                        "if ((Object.getPrototypeOf(current) === WeakRef.prototype) !== makeWeak) {{ {} }}",
+                        if self.config.anyref {
+                            "wasm.__wbg_anyref_table.set(idx, makeWeak ? new WeakRef(current) : current.deref());"
+                        } else {
+                            "heap[idx] = makeWeak ? new WeakRef(current) : current.deref();"
+                        }
+                    )
+                } else {
+                    Default::default()
+                }
+            }
         };
         Ok(expr)
     }
@@ -2704,6 +2820,7 @@ impl<'a> Context<'a> {
         }
         self.typescript.push_str("\n}\n");
         self.export(
+            None,
             &enum_.name,
             &format!("Object.freeze({{ {} }})", variants),
             Some(format_doc_comments(&enum_.comments, None)),
@@ -2712,9 +2829,15 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn generate_struct(&mut self, struct_: &AuxStruct) -> Result<(), Error> {
+    fn generate_struct(&mut self, struct_: &AuxStruct, structs: &Vec<AuxStruct>) -> Result<(), Error> {
+        let prototype = struct_.prototype.as_ref().map(|p| match p {
+            AuxTypeRef::Import(js_import) => ExportedPrototype { prototype_name: self.import_name(js_import).unwrap(), is_export: false },
+            AuxTypeRef::Export(n) => ExportedPrototype { prototype_name: structs[*n].name.clone(), is_export: true },
+        });
         let class = require_class(&mut self.exported_classes, &struct_.name);
         class.comments = format_doc_comments(&struct_.comments, None);
+        class.rust_id = struct_.rust_id;
+        class.prototype = prototype;
         Ok(())
     }
 

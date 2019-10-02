@@ -12,8 +12,8 @@ pub struct Baz {
 #[wasm_bindgen]
 impl Baz {
     #[wasm_bindgen(constructor)]
-    pub fn new(field: i32) -> Baz {
-        Baz { field }
+    pub fn new(field: i32) -> WasmType<Baz> {
+        instantiate! { Baz { field } }
     }
 
     #[wasm_bindgen(getter)]
@@ -57,6 +57,8 @@ impl Baz {
 Getters are expected to take no arguments other than `&self` and return the
 field's type. Setters are expected to take one argument other than `&mut self`
 (or `&self`) and return no values.
+
+Static getters and setters respectively take no arguments and just the field's type.
 
 The name for a `getter` is by default inferred from the function name it's
 attached to. The default name for a `setter` is the function's name minus the

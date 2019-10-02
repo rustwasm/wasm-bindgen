@@ -37,6 +37,8 @@ tys! {
     OPTIONAL
     UNIT
     CLAMPED
+    SUPERCONSTRUCTOR_CALLBACK
+    THIS_CALLBACK
 }
 
 #[derive(Debug, Clone)]
@@ -67,6 +69,8 @@ pub enum Descriptor {
     Char,
     Option(Box<Descriptor>),
     Unit,
+    SuperconstructorCallback,
+    ThisCallback,
 }
 
 #[derive(Debug, Clone)]
@@ -142,6 +146,8 @@ impl Descriptor {
             CHAR => Descriptor::Char,
             UNIT => Descriptor::Unit,
             CLAMPED => Descriptor::_decode(data, true),
+            SUPERCONSTRUCTOR_CALLBACK => Descriptor::SuperconstructorCallback,
+            THIS_CALLBACK => Descriptor::ThisCallback,
             other => panic!("unknown descriptor: {}", other),
         }
     }

@@ -45,9 +45,9 @@ fn app(name: &str) {
         None => return,
     };
     let controller = Controller::new(store, Rc::downgrade(&sched));
-    if let Some(mut view) = View::new(Rc::clone(&sched)) {
+    if let Some(view) = View::new(Rc::clone(&sched)) {
         let sch: &Rc<Scheduler> = &sched;
-        view.init();
+        view.borrow_mut().init();
         sch.set_view(view);
         sch.set_controller(controller);
         sched.add_message(Message::Controller(ControllerMessage::SetPage(

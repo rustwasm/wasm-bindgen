@@ -229,14 +229,19 @@ pub enum AuxExportKind {
     /// This is a free function (ish) but scoped inside of a class name.
     StaticFunction { class: String, name: String },
 
+    /// This is a getter scoped inside of a class name.
+    StaticGetter { class: String, field: String },
+
+    /// This is a setter scoped inside of a class name.
+    StaticSetter { class: String, field: String },
+
     /// This is a member function of a class where the first parameter is the
     /// implicit integer stored in the class instance.
     Method {
         class: String,
         name: String,
-        /// Whether or not this is calling a by-value method in Rust and should
-        /// clear the internal pointer in JS automatically.
-        consumed: bool,
+        /// Whether or not this requires a mutable reference in Rust
+        mutable: bool,
     },
 }
 
@@ -252,10 +257,14 @@ pub struct AuxEnum {
 
 #[derive(Debug)]
 pub struct AuxStruct {
+    /// Internal identifier used by Rust to reference this struct
+    pub rust_id: u64,
     /// The name of this struct
     pub name: String,
     /// The copied Rust comments to forward to JS
     pub comments: String,
+    /// The (optional) superclass to forward to JS
+    pub prototype: Option<AuxTypeRef>,
 }
 
 /// All possible types of imports that can be imported by a wasm module.
@@ -392,15 +401,6 @@ pub enum AuxImport {
     /// of import here?
     IndexingDeleterOfObject,
 
-    /// This import is a generated shim which will wrap the provided pointer in
-    /// a JS object corresponding to the Class name given here. The class name
-    /// is one that is exported from the Rust/wasm.
-    ///
-    /// TODO: sort of like the export map below we should ideally create the
-    /// `anyref` from within Rust itself and then return it directly rather than
-    /// requiring an intrinsic here to do so.
-    WrapInExportedClass(String),
-
     /// This is an intrinsic function expected to be implemented with a JS glue
     /// shim. Each intrinsic has its own expected signature and implementation.
     Intrinsic(Intrinsic),
@@ -468,6 +468,17 @@ pub enum JsImportName {
     VendorPrefixed { name: String, prefixes: Vec<String> },
 }
 
+/// Resolved references to types either imported into or exported from WASM.
+/// Used to indicate a Struct's prototype.
+#[derive(Clone,Debug)]
+pub enum AuxTypeRef {
+    /// Imported classes are resolved to their JsImport (for their name)
+    Import(JsImport),
+
+    /// Exported structs are resolved to their index in the WasmBindgenAux::structs vector
+    Export(usize),
+}
+
 struct Context<'a> {
     start_found: bool,
     module: &'a mut Module,
@@ -481,6 +492,8 @@ struct Context<'a> {
     anyref_enabled: bool,
     wasm_interface_types: bool,
     support_start: bool,
+    type_refs: HashMap<decode::TypeReference, AuxTypeRef>,
+    struct_prototype_refs: Vec<(usize, decode::TypeReference)>,
 }
 
 pub fn process(
@@ -505,6 +518,8 @@ pub fn process(
         anyref_enabled,
         wasm_interface_types,
         support_start,
+        type_refs: Default::default(),
+        struct_prototype_refs: Default::default(),
     };
     cx.init()?;
 
@@ -516,6 +531,7 @@ pub fn process(
         cx.standard(&standard)?;
     }
 
+    cx.resolve_prototype_refs();
     cx.verify()?;
 
     let bindings = cx.module.customs.add(cx.bindings);
@@ -758,17 +774,31 @@ impl<'a> Context<'a> {
                     decode::MethodKind::Constructor => AuxExportKind::Constructor(class),
                     decode::MethodKind::Operation(op) => match op.kind {
                         decode::OperationKind::Getter(f) => {
-                            descriptor.arguments.insert(0, Descriptor::I32);
-                            AuxExportKind::Getter {
-                                class,
-                                field: f.to_string(),
+                            if op.is_static {
+                                AuxExportKind::StaticGetter {
+                                    class,
+                                    field: f.to_string(),
+                                }
+                            } else {
+                                descriptor.arguments.insert(0, Descriptor::I32);
+                                AuxExportKind::Getter {
+                                    class,
+                                    field: f.to_string(),
+                                }
                             }
                         }
                         decode::OperationKind::Setter(f) => {
-                            descriptor.arguments.insert(0, Descriptor::I32);
-                            AuxExportKind::Setter {
-                                class,
-                                field: f.to_string(),
+                            if op.is_static {
+                                AuxExportKind::StaticSetter {
+                                    class,
+                                    field: f.to_string(),
+                                }
+                            } else {
+                                descriptor.arguments.insert(0, Descriptor::I32);
+                                AuxExportKind::Setter {
+                                    class,
+                                    field: f.to_string(),
+                                }
                             }
                         }
                         _ if op.is_static => AuxExportKind::StaticFunction {
@@ -780,7 +810,7 @@ impl<'a> Context<'a> {
                             AuxExportKind::Method {
                                 class,
                                 name: export.function.name.to_string(),
-                                consumed: export.consumed,
+                                mutable: export.mutable,
                             }
                         }
                     },
@@ -1084,6 +1114,8 @@ impl<'a> Context<'a> {
         import: &decode::Import<'_>,
         type_: &decode::ImportType<'_>,
     ) -> Result<(), Error> {
+        let import = self.determine_import(import, &type_.name)?;
+        assert!(self.type_refs.insert(type_.id, AuxTypeRef::Import(import.clone())).is_none());
         let (import_id, _id) = match self.function_imports.get(type_.instanceof_shim) {
             Some(pair) => *pair,
             None => return Ok(()),
@@ -1104,7 +1136,6 @@ impl<'a> Context<'a> {
 
         // And then save off that this function is is an instanceof shim for an
         // imported item.
-        let import = self.determine_import(import, &type_.name)?;
         self.aux
             .import_map
             .insert(import_id, AuxImport::Instanceof(import));
@@ -1191,30 +1222,18 @@ impl<'a> Context<'a> {
             );
         }
         let aux = AuxStruct {
+            rust_id: struct_.id.0,
             name: struct_.name.to_string(),
             comments: concatenate_comments(&struct_.comments),
+            prototype: None,  // Will be set, if appropriate, upon later call to resolve_prototype_refs()
         };
-        self.aux.structs.push(aux);
-
-        let wrap_constructor = wasm_bindgen_shared::new_function(struct_.name);
-        if let Some((import_id, _id)) = self.function_imports.get(&wrap_constructor) {
-            self.aux.import_map.insert(
-                *import_id,
-                AuxImport::WrapInExportedClass(struct_.name.to_string()),
-            );
-            let binding = Function {
-                shim_idx: 0,
-                arguments: vec![Descriptor::I32],
-                ret: Descriptor::Anyref,
-            };
-            bindings::register_import(
-                self.module,
-                &mut self.bindings,
-                *import_id,
-                binding,
-                ast::WebidlFunctionKind::Static,
-            )?;
+        let struct_id = self.aux.structs.len();
+        assert!(self.type_refs.insert(struct_.id, AuxTypeRef::Export(struct_id)).is_none());
+        
+        if !struct_.prototype.is_null() {
+            self.struct_prototype_refs.push((struct_id, struct_.prototype));
         }
+        self.aux.structs.push(aux);
 
         Ok(())
     }
@@ -1458,6 +1477,12 @@ impl<'a> Context<'a> {
         assert!(self.aux.export_map.insert(id, export).is_none());
         assert!(self.bindings.exports.insert(id, binding).is_none());
         Ok(())
+    }
+
+    fn resolve_prototype_refs(&mut self) {
+        while let Some((struct_id, prototype_ref)) = self.struct_prototype_refs.pop() {
+            self.aux.structs[struct_id].prototype = Some(self.type_refs[&prototype_ref].clone());
+        }
     }
 
     /// Perform a small verification pass over the module to perform some

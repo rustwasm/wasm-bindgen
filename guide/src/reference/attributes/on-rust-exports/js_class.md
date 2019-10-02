@@ -12,7 +12,7 @@ pub struct JsFoo { /* ... */ }
 #[wasm_bindgen(js_class = Foo)]
 impl JsFoo {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> JsFoo { /* ... */ }
+    pub fn new() -> WasmType<JsFoo> { /* ... */ }
 
     pub fn foo(&self) { /* ... */ }
 }

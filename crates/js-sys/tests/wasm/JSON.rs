@@ -5,7 +5,7 @@ use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]
 fn parse_array() {
-    let js_array = JSON::parse("[1, 2, 3]").unwrap();;
+    let js_array = JSON::parse("[1, 2, 3]").unwrap();
     assert!(Array::is_array(&js_array));
 
     let array = Array::from(&js_array);

@@ -207,23 +207,25 @@ impl Context {
     /// coordinated, and this will collect output and results for all executed
     /// tests.
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Context {
+    pub fn new() -> WasmType<Context> {
         console_error_panic_hook::set_once();
 
         let formatter = match node::Node::new() {
             Some(node) => Box::new(node) as Box<dyn Formatter>,
             None => Box::new(browser::Browser::new()),
         };
-        Context {
-            state: Rc::new(State {
-                filter: Default::default(),
-                failures: Default::default(),
-                ignored: Default::default(),
-                remaining: Default::default(),
-                running: Default::default(),
-                succeeded: Default::default(),
-                formatter,
-            }),
+        instantiate! {
+            Context {
+                state: Rc::new(State {
+                    filter: Default::default(),
+                    failures: Default::default(),
+                    ignored: Default::default(),
+                    remaining: Default::default(),
+                    running: Default::default(),
+                    succeeded: Default::default(),
+                    formatter,
+                }),
+            }
         }
     }
 

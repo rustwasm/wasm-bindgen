@@ -1,7 +1,7 @@
 use crate::util::ShortHash;
 use proc_macro2::{Ident, Span};
 use std::cell::{Cell, RefCell};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -9,27 +9,16 @@ use std::path::PathBuf;
 use crate::ast;
 use crate::Diagnostic;
 
-pub struct EncodeResult {
-    pub custom_section: Vec<u8>,
-    pub included_files: Vec<PathBuf>,
-}
-
-pub fn encode(program: &ast::Program) -> Result<EncodeResult, Diagnostic> {
-    let mut e = Encoder::new();
+pub fn encode<E: Encoder>(program: &ast::Program, e: &mut E) -> Result<(), Diagnostic> {
     let i = Interner::new();
-    shared_program(program, &i)?.encode(&mut e);
-    let custom_section = e.finish();
-    let included_files = i
-        .files
+    shared_program(program, &i)?.encode(e);
+    e.files(i.files
         .borrow()
         .values()
         .map(|p| &p.path)
         .cloned()
-        .collect();
-    Ok(EncodeResult {
-        custom_section,
-        included_files,
-    })
+    );
+    Ok(())
 }
 
 struct Interner {
@@ -120,6 +109,12 @@ fn shared_program<'a>(
     prog: &'a ast::Program,
     intern: &'a Interner,
 ) -> Result<Program<'a>, Diagnostic> {
+    let mut types = HashSet::new();
+    for i in prog.imports.iter() {
+        if let ast::ImportKind::Type(t) = &i.kind {
+            types.insert(t.rust_name.clone());
+        }
+    }
     Ok(Program {
         exports: prog
             .exports
@@ -135,7 +130,7 @@ fn shared_program<'a>(
         imports: prog
             .imports
             .iter()
-            .map(|a| shared_import(a, intern))
+            .map(|a| shared_import(a, intern, &types))
             .collect::<Result<Vec<_>, _>>()?,
         typescript_custom_sections: prog
             .typescript_custom_sections
@@ -176,15 +171,20 @@ fn shared_export<'a>(
     export: &'a ast::Export,
     intern: &'a Interner,
 ) -> Result<Export<'a>, Diagnostic> {
-    let consumed = match export.method_self {
-        Some(ast::MethodSelf::ByValue) => true,
+    let mutable = match export.method_self {
+        Some(ast::MethodSelf::RefMutable) => true,
         _ => false,
     };
     let method_kind = from_ast_method_kind(&export.function, intern, &export.method_kind)?;
+    let mut path = export.rust_class.as_ref().cloned().map_or(syn::Path {
+        leading_colon: Default::default(),
+        segments: Default::default(),
+    }, Into::into);
+    path.segments.push(export.rust_name.clone().into());
     Ok(Export {
         class: export.js_class.as_ref().map(|s| &**s),
         comments: export.comments.iter().map(|s| &**s).collect(),
-        consumed,
+        mutable,
         function: shared_function(&export.function, intern),
         method_kind,
         start: export.start,
@@ -228,7 +228,7 @@ fn shared_variant<'a>(v: &'a ast::Variant, intern: &'a Interner) -> EnumVariant<
     }
 }
 
-fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<'a>, Diagnostic> {
+fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner, types: &HashSet<Ident>) -> Result<Import<'a>, Diagnostic> {
     Ok(Import {
         module: match &i.module {
             ast::ImportModule::Named(m, span) => {
@@ -239,16 +239,17 @@ fn shared_import<'a>(i: &'a ast::Import, intern: &'a Interner) -> Result<Import<
             ast::ImportModule::None => ImportModule::None,
         },
         js_namespace: i.js_namespace.as_ref().map(|s| intern.intern(s)),
-        kind: shared_import_kind(&i.kind, intern)?,
+        kind: shared_import_kind(&i.kind, intern, i.js_namespace.as_ref().filter(|ns| types.contains(ns)))?,
     })
 }
 
 fn shared_import_kind<'a>(
     i: &'a ast::ImportKind,
     intern: &'a Interner,
+    js_namespace: Option<&Ident>,
 ) -> Result<ImportKind<'a>, Diagnostic> {
     Ok(match i {
-        ast::ImportKind::Function(f) => ImportKind::Function(shared_import_function(f, intern)?),
+        ast::ImportKind::Function(f) => ImportKind::Function(shared_import_function(f, intern, js_namespace.filter(|_| i.fits_on_impl()))?),
         ast::ImportKind::Static(f) => ImportKind::Static(shared_import_static(f, intern)),
         ast::ImportKind::Type(f) => ImportKind::Type(shared_import_type(f, intern)),
         ast::ImportKind::Enum(f) => ImportKind::Enum(shared_import_enum(f, intern)),
@@ -258,14 +259,27 @@ fn shared_import_kind<'a>(
 fn shared_import_function<'a>(
     i: &'a ast::ImportFunction,
     intern: &'a Interner,
+    js_namespace: Option<&Ident>,
 ) -> Result<ImportFunction<'a>, Diagnostic> {
+    let mut ref_path = js_namespace.cloned().map_or(syn::Path {
+        leading_colon: Default::default(),
+        segments: Default::default(),
+    }, Into::into);
+
     let method = match &i.kind {
-        ast::ImportFunctionKind::Method { class, kind, .. } => {
+        ast::ImportFunctionKind::Method { class, kind, ref ty } => {
             let kind = from_ast_method_kind(&i.function, intern, kind)?;
+            if js_namespace.is_none() {
+                if let syn::Type::Path(syn::TypePath { qself: None, ref path }) = ty {
+                    ref_path = path.clone();
+                }
+            }
             Some(MethodData { class, kind })
         }
         ast::ImportFunctionKind::Normal => None,
     };
+
+    ref_path.segments.push(i.rust_name.clone().into());
 
     Ok(ImportFunction {
         shim: intern.intern(&i.shim),
@@ -287,6 +301,7 @@ fn shared_import_static<'a>(i: &'a ast::ImportStatic, intern: &'a Interner) -> I
 
 fn shared_import_type<'a>(i: &'a ast::ImportType, intern: &'a Interner) -> ImportType<'a> {
     ImportType {
+        id: TypeReference::new(&i.rust_name),
         name: &i.js_name,
         instanceof_shim: &i.instanceof_shim,
         vendor_prefixes: i.vendor_prefixes.iter().map(|x| intern.intern(x)).collect(),
@@ -299,6 +314,7 @@ fn shared_import_enum<'a>(_i: &'a ast::ImportEnum, _intern: &'a Interner) -> Imp
 
 fn shared_struct<'a>(s: &'a ast::Struct, intern: &'a Interner) -> Struct<'a> {
     Struct {
+        id: TypeReference::new(&s.rust_name),
         name: &s.js_name,
         fields: s
             .fields
@@ -306,6 +322,7 @@ fn shared_struct<'a>(s: &'a ast::Struct, intern: &'a Interner) -> Struct<'a> {
             .map(|s| shared_struct_field(s, intern))
             .collect(),
         comments: s.comments.iter().map(|s| &**s).collect(),
+        prototype: TypeReference(s.prototype.clone()),
     }
 }
 
@@ -320,43 +337,25 @@ fn shared_struct_field<'a>(s: &'a ast::StructField, intern: &'a Interner) -> Str
     }
 }
 
-trait Encode {
-    fn encode(&self, dst: &mut Encoder);
+trait Encode<E: Encoder> {
+    fn encode(&self, dst: &mut E);
 }
 
-struct Encoder {
-    dst: Vec<u8>,
+pub trait Encoder {
+    fn byte(&mut self, byte: u8);
+    fn bytes(&mut self, bytes: &[u8]);
+    fn type_reference(&mut self, reference: &TypeReference);
+    fn files<F: IntoIterator<Item=std::path::PathBuf>>(&mut self, files: F);
 }
 
-impl Encoder {
-    fn new() -> Encoder {
-        Encoder {
-            dst: vec![0, 0, 0, 0],
-        }
-    }
-
-    fn finish(mut self) -> Vec<u8> {
-        let len = self.dst.len() - 4;
-        self.dst[0] = (len >> 0) as u8;
-        self.dst[1] = (len >> 8) as u8;
-        self.dst[2] = (len >> 16) as u8;
-        self.dst[3] = (len >> 24) as u8;
-        self.dst
-    }
-
-    fn byte(&mut self, byte: u8) {
-        self.dst.push(byte);
-    }
-}
-
-impl Encode for bool {
-    fn encode(&self, dst: &mut Encoder) {
+impl<E: Encoder> Encode<E> for bool {
+    fn encode(&self, dst: &mut E) {
         dst.byte(*self as u8);
     }
 }
 
-impl Encode for u32 {
-    fn encode(&self, dst: &mut Encoder) {
+impl<E: Encoder> Encode<E> for u32 {
+    fn encode(&self, dst: &mut E) {
         let mut val = *self;
         while (val >> 7) != 0 {
             dst.byte((val as u8) | 0x80);
@@ -367,34 +366,34 @@ impl Encode for u32 {
     }
 }
 
-impl Encode for usize {
-    fn encode(&self, dst: &mut Encoder) {
+impl<E: Encoder> Encode<E> for usize {
+    fn encode(&self, dst: &mut E) {
         assert!(*self <= u32::max_value() as usize);
         (*self as u32).encode(dst);
     }
 }
 
-impl<'a> Encode for &'a [u8] {
-    fn encode(&self, dst: &mut Encoder) {
+impl<'a, E: Encoder> Encode<E> for &'a [u8] {
+    fn encode(&self, dst: &mut E) {
         self.len().encode(dst);
-        dst.dst.extend_from_slice(*self);
+        dst.bytes(self);
     }
 }
 
-impl<'a> Encode for &'a str {
-    fn encode(&self, dst: &mut Encoder) {
+impl<'a, E: Encoder> Encode<E> for &'a str {
+    fn encode(&self, dst: &mut E) {
         self.as_bytes().encode(dst);
     }
 }
 
-impl<'a> Encode for String {
-    fn encode(&self, dst: &mut Encoder) {
+impl<'a, E: Encoder> Encode<E> for String {
+    fn encode(&self, dst: &mut E) {
         self.as_bytes().encode(dst);
     }
 }
 
-impl<T: Encode> Encode for Vec<T> {
-    fn encode(&self, dst: &mut Encoder) {
+impl<T: Encode<E>, E: Encoder> Encode<E> for Vec<T> {
+    fn encode(&self, dst: &mut E) {
         self.len().encode(dst);
         for item in self {
             item.encode(dst);
@@ -402,8 +401,8 @@ impl<T: Encode> Encode for Vec<T> {
     }
 }
 
-impl<T: Encode> Encode for Option<T> {
-    fn encode(&self, dst: &mut Encoder) {
+impl<T: Encode<E>, E: Encoder> Encode<E> for Option<T> {
+    fn encode(&self, dst: &mut E) {
         match self {
             None => dst.byte(0),
             Some(val) => {
@@ -416,12 +415,12 @@ impl<T: Encode> Encode for Option<T> {
 
 macro_rules! encode_struct {
     ($name:ident ($($lt:tt)*) $($field:ident: $ty:ty,)*) => {
-        struct $name $($lt)* {
+        struct $name $(<$lt>)* {
             $($field: $ty,)*
         }
 
-        impl $($lt)* Encode for $name $($lt)* {
-            fn encode(&self, _dst: &mut Encoder) {
+        impl<$($lt, )*E:Encoder> Encode<E> for $name $(<$lt>)* {
+            fn encode(&self, _dst: &mut E) {
                 $(self.$field.encode(_dst);)*
             }
         }
@@ -430,10 +429,10 @@ macro_rules! encode_struct {
 
 macro_rules! encode_enum {
     ($name:ident ($($lt:tt)*) $($fields:tt)*) => (
-        enum $name $($lt)* { $($fields)* }
+        enum $name $(<$lt>)* { $($fields)* }
 
-        impl$($lt)* Encode for $name $($lt)* {
-            fn encode(&self, dst: &mut Encoder) {
+        impl<$($lt, )*E: Encoder> Encode<E> for $name $(<$lt>)* {
+            fn encode(&self, dst: &mut E) {
                 use self::$name::*;
                 encode_enum!(@arms self dst (0) () $($fields)*)
             }
@@ -471,24 +470,29 @@ macro_rules! encode_enum {
 
 macro_rules! encode_api {
     () => ();
-    (struct $name:ident<'a> { $($fields:tt)* } $($rest:tt)*) => (
-        encode_struct!($name (<'a>) $($fields)*);
+    (struct $name:ident$(<$lt:tt>)* { $($fields:tt)* } $($rest:tt)*) => (
+        encode_struct!($name ($($lt)*) $($fields)*);
         encode_api!($($rest)*);
     );
-    (struct $name:ident { $($fields:tt)* } $($rest:tt)*) => (
-        encode_struct!($name () $($fields)*);
-        encode_api!($($rest)*);
-    );
-    (enum $name:ident<'a> { $($variants:tt)* } $($rest:tt)*) => (
-        encode_enum!($name (<'a>) $($variants)*);
-        encode_api!($($rest)*);
-    );
-    (enum $name:ident { $($variants:tt)* } $($rest:tt)*) => (
-        encode_enum!($name () $($variants)*);
+    (enum $name:ident$(<$lt:tt>)* { $($variants:tt)* } $($rest:tt)*) => (
+        encode_enum!($name ($($lt)*) $($variants)*);
         encode_api!($($rest)*);
     );
 }
 wasm_bindgen_shared::shared_api!(encode_api);
+
+pub struct TypeReference(pub syn::Type);
+impl TypeReference {
+    fn new(id: &Ident) -> TypeReference {
+        TypeReference(syn::parse_quote! { #id })
+    }
+}
+
+impl<E: Encoder> Encode<E> for TypeReference {
+    fn encode(&self, dst: &mut E) {
+        dst.type_reference(&self);
+    }
+}
 
 fn from_ast_method_kind<'a>(
     function: &'a ast::Function,

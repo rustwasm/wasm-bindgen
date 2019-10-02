@@ -44,6 +44,8 @@ pub struct Export {
     pub method_kind: MethodKind,
     /// The type of `self` (either `self`, `&self`, or `&mut self`)
     pub method_self: Option<MethodSelf>,
+    /// The body of the method
+    pub method_body: Option<syn::Block>,
     /// The struct name, in Rust, this is attached to
     pub rust_class: Option<Ident>,
     /// The name of the rust function/method on the rust side.
@@ -57,8 +59,6 @@ pub struct Export {
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]
 #[derive(Clone)]
 pub enum MethodSelf {
-    /// `self`
-    ByValue,
     /// `&mut self`
     RefMutable,
     /// `&self`
@@ -223,6 +223,8 @@ pub struct Struct {
     pub js_name: String,
     pub fields: Vec<StructField>,
     pub comments: Vec<String>,
+    pub prototype: syn::Type,
+    pub prototype_field: Option<syn::Member>,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]

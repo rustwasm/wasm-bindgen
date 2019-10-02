@@ -1,0 +1,29 @@
+[package]
+name = "web-components-element-details"
+version = "0.1.0"
+authors = ["The wasm-bindgen Developers"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+js-sys = "0.3.29"
+wasm-bindgen = "0.2.52"
+console_error_panic_hook = "0.1.6"
+
+[dependencies.web-sys]
+version = "0.3.28"
+features = [
+    'Window',
+    'Document',
+    'DocumentFragment',
+    'Node',
+    'Element',
+    'HtmlElement',
+    'HtmlTemplateElement',
+    'CustomElementRegistry',
+    'ShadowRoot',
+    'ShadowRootInit',
+    'ShadowRootMode',
+]

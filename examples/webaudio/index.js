@@ -11,7 +11,7 @@ import('./pkg')
         fm.set_fm_amount(0);
         fm.set_gain(0.8);
       } else {
-        fm.free();
+        fm[rust_module.__wbg_free]();
         fm = null;
       }
     });

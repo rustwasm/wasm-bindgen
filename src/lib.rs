@@ -13,8 +13,12 @@ use core::fmt;
 use core::marker;
 use core::mem;
 use core::ops::{Deref, DerefMut};
+use proc_macro_hack::proc_macro_hack;
 
-use crate::convert::FromWasmAbi;
+#[proc_macro_hack(fake_call_site)]
+pub use wasm_bindgen_macro::instantiate;
+
+use crate::convert::{IntoWasmAbi, FromWasmAbi};
 
 macro_rules! if_std {
     ($($i:item)*) => ($(
@@ -48,6 +52,7 @@ macro_rules! externs {
 pub mod prelude {
     pub use crate::JsValue;
     pub use crate::UnwrapThrowExt;
+    pub use crate::WasmType;
     #[doc(hidden)]
     pub use wasm_bindgen_macro::__wasm_bindgen_class_marker;
     pub use wasm_bindgen_macro::wasm_bindgen;
@@ -122,6 +127,34 @@ impl JsValue {
             idx,
             _marker: marker::PhantomData,
         }
+    }
+
+    #[inline]
+    pub fn from_type<T: WasmBindgenDerived>() -> JsValue {
+        let id = u64::from_be_bytes(T::ID).into_abi();
+        JsValue::_new(unsafe { __wbindgen_export_get(id) })
+    }
+
+    #[inline]
+    fn into_wasm_pointer<T>(self) -> *mut WasmType<T> {
+        let abi = self.into_abi();
+        unsafe { <*mut WasmType<T> as FromWasmAbi>::from_abi(__wbindgen_wasm_pointer_get(abi)) }
+    }
+
+    #[inline]
+    pub fn set_wasm_pointer<T>(&self, ptr: *mut WasmType<T>) {
+        let abi = ptr.into_abi();
+        unsafe { __wbindgen_wasm_pointer_set(self.idx, abi) };
+    }
+
+    #[inline]
+    pub fn set_ref_hard(self) {
+        unsafe { __wbindgen_set_heapref_state(self.into_abi(), false) };
+    }
+
+    #[inline]
+    fn set_ref_soft(&self) {
+        unsafe { __wbindgen_set_heapref_state(self.idx, true) };
     }
 
     /// Creates a new JS value which is a string.
@@ -438,7 +471,7 @@ impl From<bool> for JsValue {
 
 impl<'a, T> From<&'a T> for JsValue
 where
-    T: JsCast,
+    T: AsRef<JsValue>,
 {
     #[inline]
     fn from(s: &'a T) -> JsValue {
@@ -545,6 +578,13 @@ externs! {
         fn __wbindgen_memory() -> u32;
         fn __wbindgen_module() -> u32;
         fn __wbindgen_function_table() -> u32;
+        
+        fn __wbindgen_export_get(id: <u64 as IntoWasmAbi>::Abi) -> u32;
+        fn __wbindgen_instantiate(constructor: u32, arguments: convert::WasmSlice) -> u32;
+        fn __wbindgen_invoke(function: u32, arguments: convert::WasmSlice) -> u32;
+        fn __wbindgen_wasm_pointer_get(idx: u32) -> u32;
+        fn __wbindgen_wasm_pointer_set(idx: u32, ptr: u32) -> ();
+        fn __wbindgen_set_heapref_state(idx: u32, soft: bool) -> ();
     }
 }
 
@@ -900,7 +940,7 @@ pub mod __rt {
                 self.borrow.set(self.borrow.get() + 1);
                 Ref {
                     value: &*self.value.get(),
-                    borrow: &self.borrow,
+                    borrow: BorrowRef { borrow: &self.borrow },
                 }
             }
         }
@@ -913,7 +953,7 @@ pub mod __rt {
                 self.borrow.set(usize::max_value());
                 RefMut {
                     value: &mut *self.value.get(),
-                    borrow: &self.borrow,
+                    borrow: BorrowRefMut { borrow: &self.borrow },
                 }
             }
         }
@@ -926,9 +966,25 @@ pub mod __rt {
         }
     }
 
+    struct BorrowRef<'b> {
+        borrow: &'b Cell<usize>,
+    }
+
     pub struct Ref<'b, T: ?Sized + 'b> {
         value: &'b T,
-        borrow: &'b Cell<usize>,
+        borrow: BorrowRef<'b>,
+    }
+
+    impl<'b, T: ?Sized> Ref<'b, T> {
+        #[inline]
+        pub fn map<U: ?Sized, F>(orig: Ref<'b, T>, f: F) -> Ref<'b, U>
+            where F: FnOnce(&T) -> &U
+        {
+            Ref {
+                value: f(orig.value),
+                borrow: orig.borrow,
+            }
+        }
     }
 
     impl<'b, T: ?Sized> Deref for Ref<'b, T> {
@@ -940,15 +996,33 @@ pub mod __rt {
         }
     }
 
-    impl<'b, T: ?Sized> Drop for Ref<'b, T> {
+    impl Drop for BorrowRef<'_> {
         fn drop(&mut self) {
             self.borrow.set(self.borrow.get() - 1);
         }
     }
 
+    struct BorrowRefMut<'b> {
+        borrow: &'b Cell<usize>,
+    }
+
     pub struct RefMut<'b, T: ?Sized + 'b> {
         value: &'b mut T,
-        borrow: &'b Cell<usize>,
+        borrow: BorrowRefMut<'b>,
+    }
+
+    impl<'b, T: ?Sized> RefMut<'b, T> {
+        #[inline]
+        pub fn map<U: ?Sized, F>(orig: RefMut<'b, T>, f: F) -> RefMut<'b, U>
+            where F: FnOnce(&mut T) -> &mut U
+        {
+            // FIXME(nll-rfc#40): fix borrow-check
+            let RefMut { value, borrow } = orig;
+            RefMut {
+                value: f(value),
+                borrow,
+            }
+        }
     }
 
     impl<'b, T: ?Sized> Deref for RefMut<'b, T> {
@@ -967,10 +1041,18 @@ pub mod __rt {
         }
     }
 
-    impl<'b, T: ?Sized> Drop for RefMut<'b, T> {
+    impl Drop for BorrowRefMut<'_> {
         fn drop(&mut self) {
             self.borrow.set(0);
         }
+    }
+
+    impl<T: AsRef<JsValue>> From<&Ref<'_, T>> for JsValue {
+        #[inline] fn from(value: &Ref<'_, T>) -> JsValue { (&**value).into() }
+    }
+
+    impl<T: AsRef<JsValue>> From<&RefMut<'_, T>> for JsValue {
+        #[inline] fn from(value: &RefMut<'_, T>) -> JsValue { (&**value).into() }
     }
 
     fn borrow_fail() -> ! {
@@ -1037,14 +1119,34 @@ pub mod __rt {
             let layout = Layout::from_size_align_unchecked(size, align);
             dealloc(ptr, layout);
         }
+
+        #[no_mangle]
+        pub unsafe extern "C" fn __wbindgen_release(
+            ptr: <*mut () as crate::convert::FromWasmAbi>::Abi,
+            mutable: <bool as crate::convert::FromWasmAbi>::Abi,
+        ) {
+            use core::any::Any;
+            use std::boxed::Box;
+            use crate::convert::FromWasmAbi;
+
+            if bool::from_abi(mutable) {
+                let ptr = <*mut RefMut<'static, dyn Any>>::from_abi(ptr);
+                assert_not_null(ptr);
+                Box::from_raw(ptr);
+            } else {
+                let ptr = <*mut Ref<'static, dyn Any>>::from_abi(ptr);
+                assert_not_null(ptr);
+                Box::from_raw(ptr);
+            }
+        }
     }
 
     /// This is a curious function necessary to get wasm-bindgen working today,
     /// and it's a bit of an unfortunate hack.
     ///
-    /// The general problem is that somehow we need the above two symbols to
-    /// exist in the final output binary (__wbindgen_malloc and
-    /// __wbindgen_free). These symbols may be called by JS for various
+    /// The general problem is that somehow we need the above three symbols to
+    /// exist in the final output binary (__wbindgen_malloc, __wbindgen_free and
+    /// __wbindgen_release). These symbols may be called by JS for various
     /// bindings, so we for sure need to make sure they're exported.
     ///
     /// The problem arises, though, when what if no Rust code uses the symbols?
@@ -1053,21 +1155,21 @@ pub mod __rt {
     ///
     /// Specifically what happens is this:
     ///
-    /// * The above two symbols are generated into some object file inside of
+    /// * The above three symbols are generated into some object file inside of
     ///   libwasm_bindgen.rlib
     /// * The linker, LLD, will not load this object file unless *some* symbol
     ///   is loaded from the object. In this case, if the Rust code never calls
-    ///   __wbindgen_malloc or __wbindgen_free then the symbols never get linked
-    ///   in.
+    ///   __wbindgen_malloc, __wbindgen_free or __wbindgen_release then the
+    ///   symbols never get linked in.
     /// * Later when `wasm-bindgen` attempts to use the symbols they don't
     ///   exist, causing an error.
     ///
     /// This function is a weird hack for this problem. We inject a call to this
     /// function in all generated code. Usage of this function should then
-    /// ensure that the above two intrinsics are translated.
+    /// ensure that the above three intrinsics are translated.
     ///
     /// Due to how rustc creates object files this function (and anything inside
-    /// it) will be placed into the same object file as the two intrinsics
+    /// it) will be placed into the same object file as the three intrinsics
     /// above. That means if this function is called and referenced we'll pull
     /// in the object file and link the intrinsics.
     ///
@@ -1164,4 +1266,174 @@ impl<T> DerefMut for Clamped<T> {
     fn deref_mut(&mut self) -> &mut T {
         &mut self.0
     }
+}
+
+// A marker trait for callbacks that are passed from JavaScript shim constructors to Rust.
+// They all return the canonical JS heap ref of the instantiated object.
+pub trait WasmBindgenCallback: IntoWasmAbi<Abi=<JsValue as FromWasmAbi>::Abi> {}
+
+// One such callback, for base types, merely returns the JS heap ref of the instantiated object.
+pub struct ThisCallback(JsValue);
+impl WasmBindgenCallback for ThisCallback {}
+impl ThisCallback {
+    // Base types have no prototype, but merely need their JsValue.
+    #[inline]
+    pub fn get(self) -> JsValue {
+        let me = self.into_abi();
+        let args: Box<[JsValue]> = Box::new([]);
+        let args = args.into_abi();
+        unsafe { JsValue::from_abi(__wbindgen_invoke(me, args)) }
+    }
+}
+
+// Other callbacks, for derived types, invoke the super-constructor.
+pub trait SuperconstructorCallback<T>: Sized + WasmBindgenCallback {
+    // Derived types have a prototype, and need the relevant instance of that type.
+    #[inline]
+    fn invoke(self, args: __rt::std::boxed::Box<[JsValue]>) -> T {
+        let me   = self.into_abi();
+        let args = args.into_abi();
+
+        unsafe { Self::convert(__wbindgen_invoke(me, args)) }
+    }
+
+    // Convert from JS heap ref of instantiated object to Rust instance of prototype.
+    #[inline]
+    unsafe fn convert(abi: u32) -> T;
+}
+
+// Super-constructor callback for prototypes that are themselves exported types.
+pub struct ExportedSuperconstructorCallback(JsValue);
+impl WasmBindgenCallback for ExportedSuperconstructorCallback {}
+impl<T: WasmBindgenDerived> SuperconstructorCallback<T> for ExportedSuperconstructorCallback {
+    // Convert JS heap ref to exported type by fetching [WASM_PTR] and unwrapping WasmType.
+    #[inline]
+    unsafe fn convert(abi: u32) -> T {
+        let ptr = <JsValue as FromWasmAbi>::from_abi(abi).into_wasm_pointer::<T>();
+        __rt::assert_not_null(ptr);
+        let wasm = *Box::from_raw(ptr);
+        let underlying = WasmType::try_unwrap(wasm).ok().unwrap().into_inner();
+
+        // Set canonical JS heap ref to weak so that it can be GC'd if not required elsewhere.
+        underlying.as_ref().set_ref_soft();
+
+        underlying
+    }
+}
+
+// Super-constructor callback for prototypes that are themselves imported types.
+pub struct ImportedSuperconstructorCallback(JsValue);
+impl WasmBindgenCallback for ImportedSuperconstructorCallback {}
+impl<T: FromWasmAbi<Abi=u32>> SuperconstructorCallback<T> for ImportedSuperconstructorCallback {
+    // Convert JS heap ref to imported type.
+    #[inline]
+    unsafe fn convert(abi: u32) -> T {
+        T::from_abi(abi)
+    }
+}
+
+// Both imported and exported types are "referenceable" through an 8-octet identifier.
+pub trait WasmBindgenReferenceable {
+    // The implementing type's unique identifier.
+    // Mostly handled as a u64, but must currently be referenced by-byte when
+    // generating `__wasm_bindgen_unstable` section; stabilisation of const fn
+    // could change this in future.
+    const ID: [u8; 8];
+}
+
+// Trait implemented by all Wasm types, whether base or derived and whether imported or exported.
+pub trait WasmBase: 'static + Sized + WasmBindgenReferenceable {
+    // The callback that classes derived from this will use to instantiate it.
+    type Callback: WasmBindgenCallback;
+
+    // Get immutable ref to object from prototype chain that is of the type specified by given id.
+    fn get_underlying_ref(&self, id: u64) -> &dyn __rt::core::any::Any {
+        if u64::from_be_bytes(<Self as WasmBindgenReferenceable>::ID) == id { self }
+        else { self.get_parent_ref(id) }
+    }
+
+    // Get mutable ref to object from prototype chain that is of the type specified by given id.
+    fn get_underlying_mut(&mut self, id: u64) -> &mut dyn __rt::core::any::Any {
+        if u64::from_be_bytes(<Self as WasmBindgenReferenceable>::ID) == id { self }
+        else { self.get_parent_mut(id) }
+    }
+
+    // Recurse immutable lookup to prototype (if any).
+    #[inline]
+    fn get_parent_ref(&self, id: u64) -> &dyn __rt::core::any::Any {
+        panic!("Cannot find type with id {} in prototype chain", id);
+    }
+
+    // Recurse mutable lookup to prototype (if any).
+    #[inline]
+    fn get_parent_mut(&mut self, id: u64) -> &mut dyn __rt::core::any::Any {
+        panic!("Cannot find type with id {} in prototype chain", id);
+    }
+}
+
+// Trait implemented by all derived types, whether imported or exported.
+pub trait WasmBindgenDerived
+    where Self: WasmBase
+              + Deref<Target=<Self as WasmBindgenDerived>::Prototype>
+              + DerefMut
+              + AsRef<JsValue>
+{
+    // The prototype of this derived type
+    type Prototype: WasmBase;
+
+    // The callback that classes derived from this will use to instantiate it.
+    // Convenient wrapper for setting WasmBase::Callback (through blanket impl).
+    type Callback: SuperconstructorCallback<Self>;
+}
+
+// JsValue is type root, with ID == 0
+impl WasmBindgenReferenceable for JsValue {
+    const ID: [u8; 8] = [0,0,0,0,0,0,0,0];
+}
+
+impl WasmBase for JsValue {
+    type Callback = ThisCallback;
+}
+
+// Blanket implementation for all derived types
+impl<T: WasmBindgenDerived> WasmBase for T {
+    // Forward specified callback
+    type Callback = <T as WasmBindgenDerived>::Callback;
+
+    #[inline]
+    fn get_parent_ref(&self, id: u64) -> &dyn __rt::core::any::Any {
+        (**self).get_underlying_ref(id)
+    }
+
+    #[inline]
+    fn get_parent_mut(&mut self, id: u64) -> &mut dyn __rt::core::any::Any {
+        (**self).get_underlying_mut(id)
+    }
+}
+
+// Invoke JavaScript constructor with provided arguments, and return new reference to resulting WasmType.
+#[inline]
+pub fn instantiate_via_js<T: WasmBindgenDerived>(
+    arguments: __rt::std::boxed::Box<[JsValue]>
+) -> WasmType<T> {
+    let constructor = JsValue::from_type::<T>().into_abi();
+    let arguments   = arguments.into_abi();
+    
+    let ptr = unsafe { 
+        <*mut WasmType<T> as FromWasmAbi>
+            ::from_abi( __wbindgen_instantiate(constructor, arguments) )
+    };
+
+    __rt::assert_not_null(ptr);
+
+    WasmType::clone(unsafe { &*ptr })
+}
+
+// All types exported to JavaScript are wrapped as a vendored Rc<RefCell>.
+// This type definition provides a convenient shorthand.
+pub type WasmType<T> = __rt::std::rc::Rc<__rt::WasmRefCell<T>>;
+
+// Convert WasmType to JsValue by traversing prototype chain to root, then cloning the found JS heap ref.
+impl<T: AsRef<JsValue>> From<WasmType<T>> for JsValue {
+    #[inline] fn from(value: WasmType<T>) -> JsValue { JsValue::from(&*value.borrow()) }
 }

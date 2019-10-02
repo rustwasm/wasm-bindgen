@@ -99,8 +99,9 @@ pub enum NonstandardIncoming {
         signed: bool,
     },
 
-    /// An optional Rust-based type which internally has a pointer that's
-    /// wrapped up in a JS class. This transfers ownership from JS to Rust.
+    /// A Rc'd Rust-based type which internally has a pointer that's
+    /// wrapped up in a JS class. This sends that pointer to Rust, so that
+    /// it can be cloned.
     RustType {
         class: String,
         val: ast::IncomingBindingExpression,
@@ -111,9 +112,10 @@ pub enum NonstandardIncoming {
     RustTypeRef {
         class: String,
         val: ast::IncomingBindingExpression,
+        mutable: bool,
     },
 
-    /// An optional owned Rust type being transferred from JS to Rust.
+    /// An optional Rc'd Rust type being cloned from JS to Rust.
     OptionRustType {
         class: String,
         val: ast::IncomingBindingExpression,
@@ -125,6 +127,12 @@ pub enum NonstandardIncoming {
     /// An arbitrary `anyref` being passed into Rust, but explicitly one that's
     /// borrowed and doesn't need to be persisted in a heap table.
     BorrowedAnyref { val: ast::IncomingBindingExpression },
+
+    // A callback that invokes `super()` being passed into Rust.
+    SuperconstructorCallback,
+
+    // A callback that returns `this` being passed into Rust.
+    ThisCallback,
 }
 
 /// Builder used to create a incomig binding from a `Descriptor`.
@@ -187,6 +195,16 @@ impl IncomingBuilder {
                 self.webidl.push(ast::WebidlScalarType::Any);
                 self.bindings.push(NonstandardIncoming::Standard(expr));
             }
+            Descriptor::SuperconstructorCallback => {
+                self.wasm.push(ValType::Anyref);
+                self.webidl.push(ast::WebidlScalarType::Object);
+                self.bindings.push(NonstandardIncoming::SuperconstructorCallback);
+            }
+            Descriptor::ThisCallback => {
+                self.wasm.push(ValType::Anyref);
+                self.webidl.push(ast::WebidlScalarType::Object);
+                self.bindings.push(NonstandardIncoming::ThisCallback);
+            }
             Descriptor::RustStruct(class) => {
                 let expr = self.expr_get();
                 self.wasm.push(ValType::I32);
@@ -247,6 +265,7 @@ impl IncomingBuilder {
                 self.bindings.push(NonstandardIncoming::RustTypeRef {
                     val: expr,
                     class: class.to_string(),
+                    mutable,
                 });
             }
             Descriptor::Anyref => {

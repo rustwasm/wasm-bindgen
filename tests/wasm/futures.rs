@@ -45,23 +45,33 @@ pub struct AsyncCustomReturn {
 }
 
 #[wasm_bindgen]
-pub async fn async_return_5() -> AsyncCustomReturn {
-    AsyncCustomReturn { val: 5 }
+impl AsyncCustomReturn {
+    #[wasm_bindgen(constructor)]
+    pub fn new(val: u32) -> WasmType<AsyncCustomReturn> {
+        instantiate! {
+            AsyncCustomReturn { val }
+        }
+    }
 }
 
 #[wasm_bindgen]
-pub async fn async_return_6() -> Result<AsyncCustomReturn, JsValue> {
-    Ok(AsyncCustomReturn { val: 6 })
+pub async fn async_return_5() -> WasmType<AsyncCustomReturn> {
+    AsyncCustomReturn::new(5)
 }
 
 #[wasm_bindgen]
-pub async fn async_return_7() -> Result<AsyncCustomReturn, u32> {
-    Ok(AsyncCustomReturn { val: 7 })
+pub async fn async_return_6() -> Result<WasmType<AsyncCustomReturn>, JsValue> {
+    Ok(AsyncCustomReturn::new(6))
 }
 
 #[wasm_bindgen]
-pub async fn async_return_8() -> Result<AsyncCustomReturn, AsyncCustomReturn> {
-    Ok(AsyncCustomReturn { val: 8 })
+pub async fn async_return_7() -> Result<WasmType<AsyncCustomReturn>, u32> {
+    Ok(AsyncCustomReturn::new(7))
+}
+
+#[wasm_bindgen]
+pub async fn async_return_8() -> Result<WasmType<AsyncCustomReturn>, WasmType<AsyncCustomReturn>> {
+    Ok(AsyncCustomReturn::new(8))
 }
 
 #[wasm_bindgen]

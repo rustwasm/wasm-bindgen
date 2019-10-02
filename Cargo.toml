@@ -1,6 +1,6 @@
 [package]
 name = "wasm-bindgen"
-version = "0.2.51"
+version = "0.2.52"
 authors = ["The wasm-bindgen Developers"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
@@ -36,15 +36,16 @@ strict-macro = ["wasm-bindgen-macro/strict-macro"]
 xxx_debug_only_print_generated_code = ["wasm-bindgen-macro/xxx_debug_only_print_generated_code"]
 
 [dependencies]
-wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.51" }
+wasm-bindgen-macro = { path = "crates/macro", version = "=0.2.52" }
 serde = { version = "1.0", optional = true }
 serde_json = { version = "1.0", optional = true }
 cfg-if = "0.1.9"
+proc-macro-hack = "0.5"
 
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
-js-sys = { path = 'crates/js-sys', version = '0.3.28' }
-wasm-bindgen-test = { path = 'crates/test', version = '=0.3.1' }
-wasm-bindgen-futures = { path = 'crates/futures', version = '=0.4.1' }
+js-sys = { path = 'crates/js-sys', version = '0.3.29' }
+wasm-bindgen-test = { path = 'crates/test', version = '=0.3.2' }
+wasm-bindgen-futures = { path = 'crates/futures', version = '=0.4.2' }
 serde_derive = "1.0"
 wasm-bindgen-test-crate-a = { path = 'tests/crates/a', version = '0.1' }
 wasm-bindgen-test-crate-b = { path = 'tests/crates/b', version = '0.1' }
@@ -79,6 +80,20 @@ members = [
   "examples/todomvc",
   "examples/wasm-in-wasm",
   "examples/wasm2js",
+  "examples/web-components-composed-composed-path",
+  "examples/web-components-defined-pseudo-class",
+  "examples/web-components-edit-word",
+  "examples/web-components-editable-list",
+  "examples/web-components-element-details",
+  "examples/web-components-expanding-list-web-component",
+  "examples/web-components-host-selectors",
+  "examples/web-components-life-cycle-callbacks",
+  "examples/web-components-popup-info-box-external-stylesheet",
+  "examples/web-components-popup-info-box-web-component",
+  "examples/web-components-simple-template",
+  "examples/web-components-slotchange",
+  "examples/web-components-slotted-pseudo-element",
+  "examples/web-components-word-count-web-component",
   "examples/webaudio",
   "examples/webgl",
   "examples/websockets",

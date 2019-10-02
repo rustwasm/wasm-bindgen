@@ -16,13 +16,13 @@ exports.test_works = function() {
   assert.strictEqual(r.add(0), 0);
   assert.strictEqual(r.add(1), 1);
   assert.strictEqual(r.add(2), 3);
-  r.free();
+  r[wasm.__wbg_free]();
 
-  var r2 = wasm.Foo.with_contents(10);
+  var r2 = new wasm.Foo(10);
   assert.strictEqual(r2.add(0), 10);
   assert.strictEqual(r2.add(1), 11);
   assert.strictEqual(r2.add(2), 13);
-  r2.free();
+  r2[wasm.__wbg_free]();
 
   assert.strictEqual(wasm.Color.Green, 0);
   assert.strictEqual(wasm.Color.Yellow, 1);

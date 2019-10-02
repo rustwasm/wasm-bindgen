@@ -5,10 +5,12 @@ use crate::Message;
 use std::cell::RefCell;
 use std::rc::Rc;
 
+use wasm_bindgen::WasmType;
+
 /// Creates an event loop that starts each time a message is added
 pub struct Scheduler {
     controller: Rc<RefCell<Option<Controller>>>,
-    view: Rc<RefCell<Option<View>>>,
+    view: Rc<RefCell<Option<WasmType<View>>>>,
     events: RefCell<Vec<Message>>,
     running: RefCell<bool>,
 }
@@ -32,7 +34,7 @@ impl Scheduler {
         }
     }
 
-    pub fn set_view(&self, view: View) {
+    pub fn set_view(&self, view: WasmType<View>) {
         if let Ok(mut view_data) = self.view.try_borrow_mut() {
             *view_data = Some(view);
         } else {
@@ -115,7 +117,7 @@ impl Scheduler {
                 Message::View(e) => {
                     if let Ok(mut view) = self.view.try_borrow_mut() {
                         if let Some(ref mut ag) = *view {
-                            ag.call(e);
+                            ag.borrow_mut().call(e);
                         }
                     } else {
                         exit("This might be a deadlock");

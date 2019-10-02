@@ -29,10 +29,6 @@ pub enum NonstandardOutgoing {
     /// less JS shim code.
     Standard(ast::OutgoingBindingExpression),
 
-    /// We're returning a pointer from Rust to JS to get wrapped in a JS class
-    /// which has memory management around it.
-    RustType { class: String, idx: u32 },
-
     /// A single rust `char` value which is converted to a `string` in JS.
     Char { idx: u32 },
 
@@ -132,9 +128,6 @@ pub enum NonstandardOutgoing {
         hi: u32,
         signed: bool,
     },
-
-    /// An optional owned Rust type being transferred from Rust to JS.
-    OptionRustType { class: String, idx: u32 },
 
     /// A temporary stack closure being passed from Rust to JS. A JS function is
     /// manufactured and then neutered just before the call returns.
@@ -241,14 +234,7 @@ impl OutgoingBuilder<'_> {
                 });
             }
 
-            Descriptor::RustStruct(class) => {
-                let idx = self.push_wasm(ValType::I32);
-                self.webidl.push(ast::WebidlScalarType::Any);
-                self.bindings.push(NonstandardOutgoing::RustType {
-                    idx,
-                    class: class.to_string(),
-                });
-            }
+            Descriptor::RustStruct(_) => self.standard_as(ValType::Anyref, ast::WebidlScalarType::Any),
             Descriptor::Ref(d) => self.process_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_ref(true, d)?,
 
@@ -273,7 +259,8 @@ impl OutgoingBuilder<'_> {
 
             Descriptor::Option(d) => self.process_option(d)?,
 
-            Descriptor::Function(_) | Descriptor::Closure(_) | Descriptor::Slice(_) => bail!(
+            Descriptor::Function(_) | Descriptor::Closure(_) | Descriptor::Slice(_) |
+            Descriptor::SuperconstructorCallback | Descriptor::ThisCallback => bail!(
                 "unsupported argument type for calling JS function from Rust: {:?}",
                 arg
             ),
@@ -377,6 +364,14 @@ impl OutgoingBuilder<'_> {
                 });
             }
 
+            // Move borrow to JS from Rust
+            // Actually we just need the JsValue, which is what Rust sends anyway!
+            Descriptor::RustStruct(_) => {
+                let idx = self.push_wasm(ValType::Anyref);
+                self.webidl.push(ast::WebidlScalarType::Any);
+                self.bindings.push(NonstandardOutgoing::BorrowedAnyref { idx });
+            }
+            
             _ => bail!(
                 "unsupported reference argument type for calling JS function from Rust: {:?}",
                 arg
@@ -427,14 +422,7 @@ impl OutgoingBuilder<'_> {
                 self.bindings
                     .push(NonstandardOutgoing::OptionIntegerEnum { idx, hole: *hole });
             }
-            Descriptor::RustStruct(name) => {
-                let idx = self.push_wasm(ValType::I32);
-                self.webidl.push(ast::WebidlScalarType::Any);
-                self.bindings.push(NonstandardOutgoing::OptionRustType {
-                    idx,
-                    class: name.to_string(),
-                });
-            }
+            Descriptor::RustStruct(_) => self.standard_as(ValType::Anyref, ast::WebidlScalarType::Any),
             Descriptor::Ref(d) => self.process_option_ref(false, d)?,
             Descriptor::RefMut(d) => self.process_option_ref(true, d)?,
 

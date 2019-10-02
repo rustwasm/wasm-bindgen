@@ -5,19 +5,24 @@ JavaScript, and a setter will not be generated and exported to JavaScript.
 
 ```rust
 #[wasm_bindgen]
-pub fn make_foo() -> Foo {
-    Foo {
-        first: 10,
-        second: 20,
-    }
-}
-
-#[wasm_bindgen]
 pub struct Foo {
     pub first: u32,
 
     #[wasm_bindgen(readonly)]
     pub second: u32,
+}
+
+#[wasm_bindgen]
+impl Foo {
+    #[wasm_bindgen(constructor)]
+    pub fn make_foo() -> WasmType<Foo> {
+        instantiate! {
+            Foo {
+                first: 10,
+                second: 20,
+            }
+        }
+    }
 }
 ```
 
@@ -28,7 +33,7 @@ implemented and attempting to set it will throw an exception.
 ```js
 import { make_foo } from "./my_module";
 
-const foo = make_foo();
+const foo = new Foo();
 
 // Can both get and set `first`.
 foo.first = 99;

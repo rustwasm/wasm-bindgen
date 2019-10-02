@@ -10,7 +10,7 @@ extern "C" {
     fn js_strings();
     fn js_exceptions();
     fn js_pass_one_to_another();
-    fn take_class(foo: ClassesIntoJs);
+    fn take_class(foo: WasmType<ClassesIntoJs>);
     #[wasm_bindgen(js_name = take_class)]
     fn take_class_as_jsvalue(foo: JsValue);
     fn js_constructors();
@@ -24,12 +24,16 @@ extern "C" {
     fn js_renamed_export();
     fn js_conditional_bindings();
 
-    fn js_assert_none(a: Option<OptionClass>);
-    fn js_assert_some(a: Option<OptionClass>);
-    fn js_return_none1() -> Option<OptionClass>;
-    fn js_return_none2() -> Option<OptionClass>;
-    fn js_return_some(a: OptionClass) -> Option<OptionClass>;
+    fn js_assert_none(a: Option<WasmType<OptionClass>>);
+    fn js_assert_some(a: Option<WasmType<OptionClass>>);
+    fn js_return_none1() -> Option<WasmType<OptionClass>>;
+    fn js_return_none2() -> Option<WasmType<OptionClass>>;
+    fn js_return_some(a: WasmType<OptionClass>) -> Option<WasmType<OptionClass>>;
     fn js_test_option_classes();
+
+    pub type ExportedClass;
+    fn js_exported_class_inheritance();
+    fn js_exported_super_constructors();
 }
 
 #[wasm_bindgen_test]
@@ -44,13 +48,13 @@ pub struct ClassesSimple {
 
 #[wasm_bindgen]
 impl ClassesSimple {
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> ClassesSimple {
+    pub fn new() -> WasmType<ClassesSimple> {
         ClassesSimple::with_contents(0)
     }
 
-    pub fn with_contents(a: u32) -> ClassesSimple {
-        ClassesSimple { contents: a }
+    #[wasm_bindgen(constructor)]
+    pub fn with_contents(a: u32) -> WasmType<ClassesSimple> {
+        instantiate! { ClassesSimple { contents: a } }
     }
 
     pub fn add(&mut self, amt: u32) -> u32 {
@@ -58,8 +62,8 @@ impl ClassesSimple {
         self.contents
     }
 
-    pub fn consume(self) -> u32 {
-        self.contents
+    pub fn consume(_self: WasmType<ClassesSimple>) -> u32 {
+        _self.borrow().contents
     }
 }
 
@@ -80,23 +84,27 @@ pub struct ClassesStrings2 {
 
 #[wasm_bindgen]
 impl ClassesStrings1 {
-    pub fn new() -> ClassesStrings1 {
-        ClassesStrings1 { name: 0 }
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<ClassesStrings1> {
+        instantiate! { ClassesStrings1 { name: 0 } }
     }
 
     pub fn set(&mut self, amt: u32) {
         self.name = amt;
     }
 
-    pub fn bar(&self, mix: &str) -> ClassesStrings2 {
-        ClassesStrings2 {
-            contents: format!("foo-{}-{}", mix, self.name),
-        }
+    pub fn bar(&self, mix: &str) -> WasmType<ClassesStrings2> {
+        ClassesStrings2::new(format!("foo-{}-{}", mix, self.name))
     }
 }
 
 #[wasm_bindgen]
 impl ClassesStrings2 {
+    #[wasm_bindgen(constructor)]
+    pub fn new(contents: String) -> WasmType<ClassesStrings2> {
+        instantiate! { ClassesStrings2 { contents } }
+    }
+
     pub fn name(&self) -> String {
         self.contents.clone()
     }
@@ -112,8 +120,9 @@ pub struct ClassesExceptions1 {}
 
 #[wasm_bindgen]
 impl ClassesExceptions1 {
-    pub fn new() -> ClassesExceptions1 {
-        ClassesExceptions1 {}
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<ClassesExceptions1> {
+        instantiate! { ClassesExceptions1 {} }
     }
 
     pub fn foo(&self, _: &ClassesExceptions1) {}
@@ -126,8 +135,9 @@ pub struct ClassesExceptions2 {}
 
 #[wasm_bindgen]
 impl ClassesExceptions2 {
-    pub fn new() -> ClassesExceptions2 {
-        ClassesExceptions2 {}
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<ClassesExceptions2> {
+        instantiate! { ClassesExceptions2 {} }
     }
 }
 
@@ -141,13 +151,14 @@ pub struct ClassesPassA {}
 
 #[wasm_bindgen]
 impl ClassesPassA {
-    pub fn new() -> ClassesPassA {
-        ClassesPassA {}
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<ClassesPassA> {
+        instantiate! { ClassesPassA {} }
     }
 
     pub fn foo(&self, _other: &ClassesPassB) {}
 
-    pub fn bar(&self, _other: ClassesPassB) {}
+    pub fn bar(&self, _other: WasmType<ClassesPassB>) {}
 }
 
 #[wasm_bindgen]
@@ -155,14 +166,15 @@ pub struct ClassesPassB {}
 
 #[wasm_bindgen]
 impl ClassesPassB {
-    pub fn new() -> ClassesPassB {
-        ClassesPassB {}
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<ClassesPassB> {
+        instantiate! { ClassesPassB {} }
     }
 }
 
 #[wasm_bindgen_test]
 fn pass_into_js() {
-    take_class(ClassesIntoJs(13));
+    take_class(ClassesIntoJs::new(13));
 }
 
 #[wasm_bindgen]
@@ -170,6 +182,11 @@ pub struct ClassesIntoJs(i32);
 
 #[wasm_bindgen]
 impl ClassesIntoJs {
+    #[wasm_bindgen(constructor)]
+    pub fn new(val: i32) -> WasmType<ClassesIntoJs> {
+        instantiate! { ClassesIntoJs(val) }
+    }
+
     pub fn inner(&self) -> i32 {
         self.0
     }
@@ -180,7 +197,7 @@ pub struct Issue27Context {}
 
 #[wasm_bindgen]
 impl Issue27Context {
-    pub fn parse(&self, _expr: &str) -> Issue27Expr {
+    pub fn parse(&self, _expr: &str) -> WasmType<Issue27Expr> {
         panic!()
     }
     pub fn eval(&self, _expr: &Issue27Expr) -> f64 {
@@ -196,7 +213,7 @@ pub struct Issue27Expr {}
 
 #[wasm_bindgen_test]
 fn pass_into_js_as_js_class() {
-    take_class_as_jsvalue(ClassesIntoJs(13).into());
+    take_class_as_jsvalue((&*ClassesIntoJs::new(13).borrow()).into());
 }
 
 #[wasm_bindgen_test]
@@ -205,7 +222,7 @@ fn constructors() {
 }
 
 #[wasm_bindgen]
-pub fn cross_item_construction() -> ConstructorsBar {
+pub fn cross_item_construction() -> WasmType<ConstructorsBar> {
     ConstructorsBar::other_name(7, 8)
 }
 
@@ -217,8 +234,8 @@ pub struct ConstructorsFoo {
 #[wasm_bindgen]
 impl ConstructorsFoo {
     #[wasm_bindgen(constructor)]
-    pub fn new(number: u32) -> ConstructorsFoo {
-        ConstructorsFoo { number }
+    pub fn new(number: u32) -> WasmType<ConstructorsFoo> {
+        instantiate! { ConstructorsFoo { number } }
     }
 
     pub fn get_number(&self) -> u32 {
@@ -235,8 +252,8 @@ pub struct ConstructorsBar {
 #[wasm_bindgen]
 impl ConstructorsBar {
     #[wasm_bindgen(constructor)]
-    pub fn other_name(number: u32, number2: u32) -> ConstructorsBar {
-        ConstructorsBar { number, number2 }
+    pub fn other_name(number: u32, number2: u32) -> WasmType<ConstructorsBar> {
+        instantiate! { ConstructorsBar { number, number2 } }
     }
 
     pub fn get_sum(&self) -> u32 {
@@ -253,12 +270,20 @@ fn empty_structs() {
 pub struct MissingClass {}
 
 #[wasm_bindgen]
+impl MissingClass {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<MissingClass> {
+        instantiate! { MissingClass {} }
+    }
+}
+
+#[wasm_bindgen]
 pub struct OtherEmpty {}
 
 #[wasm_bindgen]
 impl OtherEmpty {
-    pub fn return_a_value() -> MissingClass {
-        MissingClass {}
+    pub fn return_a_value() -> WasmType<MissingClass> {
+        MissingClass::new()
     }
 }
 
@@ -268,7 +293,7 @@ fn public_fields() {
 }
 
 #[wasm_bindgen]
-#[derive(Default)]
+// #[derive(Default)] TODO (ae)
 pub struct PublicFields {
     pub a: u32,
     pub b: f32,
@@ -280,8 +305,17 @@ pub struct PublicFields {
 
 #[wasm_bindgen]
 impl PublicFields {
-    pub fn new() -> PublicFields {
-        PublicFields::default()
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<PublicFields> {
+        instantiate! {
+            PublicFields {
+                a: Default::default(),
+                b: Default::default(),
+                c: Default::default(),
+                d: Default::default(),
+                skipped: Default::default(),
+            }
+        }
     }
 }
 
@@ -295,8 +329,9 @@ pub struct UseSelf {}
 
 #[wasm_bindgen]
 impl UseSelf {
-    pub fn new() -> Self {
-        UseSelf {}
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<Self> {
+        instantiate! { UseSelf {} }
     }
 }
 
@@ -306,7 +341,7 @@ fn readonly_fields() {
 }
 
 #[wasm_bindgen]
-#[derive(Default)]
+// #[derive(Default)] TODO (ae)
 pub struct Readonly {
     #[wasm_bindgen(readonly)]
     pub a: u32,
@@ -314,8 +349,13 @@ pub struct Readonly {
 
 #[wasm_bindgen]
 impl Readonly {
-    pub fn new() -> Readonly {
-        Readonly::default()
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<Readonly> {
+        instantiate! {
+            Readonly {
+                a: Default::default(),
+            }
+        }
     }
 }
 
@@ -330,11 +370,11 @@ pub struct DoubleConsume {}
 #[wasm_bindgen]
 impl DoubleConsume {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> DoubleConsume {
-        DoubleConsume {}
+    pub fn new() -> WasmType<DoubleConsume> {
+        instantiate! { DoubleConsume {} }
     }
 
-    pub fn consume(self, other: DoubleConsume) {
+    pub fn consume(_self: WasmType<DoubleConsume>, other: WasmType<DoubleConsume>) {
         drop(other);
     }
 }
@@ -351,9 +391,9 @@ pub struct JsRename {}
 #[wasm_bindgen]
 impl JsRename {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> JsRename {
-        let f = JsRename {};
-        f.foo();
+    pub fn new() -> WasmType<JsRename> {
+        let f = instantiate! { JsRename {} };
+        f.borrow().foo();
         f
     }
 
@@ -366,24 +406,34 @@ pub fn foo() {}
 
 #[wasm_bindgen]
 pub struct AccessFieldFoo {
-    pub bar: AccessFieldBar,
+    pub bar: WasmType<AccessFieldBar>,
 }
 
 #[wasm_bindgen]
-pub struct AccessField0(pub AccessFieldBar);
+pub struct AccessField0(pub WasmType<AccessFieldBar>);
 
 #[wasm_bindgen]
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct AccessFieldBar {
     _value: u32,
 }
 
 #[wasm_bindgen]
+impl AccessFieldBar {
+    #[wasm_bindgen(constructor)]
+    pub fn new(_value: u32) -> WasmType<AccessFieldBar> {
+        instantiate! { AccessFieldBar { _value } }
+    }
+}
+
+#[wasm_bindgen]
 impl AccessFieldFoo {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> AccessFieldFoo {
-        AccessFieldFoo {
-            bar: AccessFieldBar { _value: 2 },
+    pub fn new() -> WasmType<AccessFieldFoo> {
+        instantiate! {
+            AccessFieldFoo {
+                bar: AccessFieldBar::new(2),
+            }
         }
     }
 }
@@ -391,8 +441,8 @@ impl AccessFieldFoo {
 #[wasm_bindgen]
 impl AccessField0 {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> AccessField0 {
-        AccessField0(AccessFieldBar { _value: 2 })
+    pub fn new() -> WasmType<AccessField0> {
+        instantiate! { AccessField0(AccessFieldBar::new(2)) }
     }
 }
 
@@ -409,8 +459,8 @@ pub struct RenamedExport {
 #[wasm_bindgen(js_class = JsRenamedExport)]
 impl RenamedExport {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> RenamedExport {
-        RenamedExport { x: 3 }
+    pub fn new() -> WasmType<RenamedExport> {
+        instantiate! { RenamedExport { x: 3 } }
     }
     pub fn foo(&self) {}
 
@@ -430,8 +480,8 @@ pub struct ConditionalBindings {}
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl ConditionalBindings {
     #[cfg_attr(target_arch = "wasm32", wasm_bindgen(constructor))]
-    pub fn new() -> ConditionalBindings {
-        ConditionalBindings {}
+    pub fn new() -> WasmType<ConditionalBindings> {
+        instantiate! { ConditionalBindings {} }
     }
 }
 
@@ -443,49 +493,133 @@ fn conditional_bindings() {
 #[wasm_bindgen]
 pub struct OptionClass(u32);
 
+#[wasm_bindgen]
+impl OptionClass {
+    #[wasm_bindgen(constructor)]
+    pub fn new(value: u32) -> WasmType<OptionClass> {
+        instantiate! { OptionClass(value) }
+    }
+}
+
 #[wasm_bindgen_test]
 fn option_class() {
     js_assert_none(None);
-    js_assert_some(Some(OptionClass(1)));
+    js_assert_some(Some(OptionClass::new(1)));
     assert!(js_return_none1().is_none());
     assert!(js_return_none2().is_none());
-    assert_eq!(js_return_some(OptionClass(2)).unwrap().0, 2);
+    assert_eq!(js_return_some(OptionClass::new(2)).unwrap().borrow().0, 2);
     js_test_option_classes();
 }
 
 #[wasm_bindgen]
-pub fn option_class_none() -> Option<OptionClass> {
+pub fn option_class_none() -> Option<WasmType<OptionClass>> {
     None
 }
 
 #[wasm_bindgen]
-pub fn option_class_some() -> Option<OptionClass> {
-    Some(OptionClass(3))
+pub fn option_class_some() -> Option<WasmType<OptionClass>> {
+    Some(OptionClass::new(3))
 }
 
 #[wasm_bindgen]
-pub fn option_class_assert_none(x: Option<OptionClass>) {
+pub fn option_class_assert_none(x: Option<WasmType<OptionClass>>) {
     assert!(x.is_none());
 }
 
 #[wasm_bindgen]
-pub fn option_class_assert_some(x: Option<OptionClass>) {
-    assert_eq!(x.unwrap().0, 3);
+pub fn option_class_assert_some(x: Option<WasmType<OptionClass>>) {
+    assert_eq!(x.unwrap().borrow().0, 3);
 }
 
 mod works_in_module {
     use wasm_bindgen::prelude::wasm_bindgen;
-
+    use wasm_bindgen::prelude::WasmType;
     #[wasm_bindgen]
     pub struct WorksInModule(u32);
 
     #[wasm_bindgen]
     impl WorksInModule {
         #[wasm_bindgen(constructor)]
-        pub fn new() -> WorksInModule {
-            WorksInModule(1)
+        pub fn new() -> WasmType<WorksInModule> {
+            instantiate! { WorksInModule(1) }
         }
 
         pub fn foo(&self) {}
     }
+}
+
+#[wasm_bindgen]
+pub struct Parent(u32);
+
+#[wasm_bindgen]
+impl Parent {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<Parent> {
+        instantiate! { Parent(123) }
+    }
+
+    pub fn get_value(&self) -> u32 {
+        self.0
+    }
+}
+
+#[wasm_bindgen(prototype=Parent)]
+pub struct Child {}
+
+#[wasm_bindgen]
+impl Child
+{
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<Child> {
+        instantiate! {
+            super();
+            Child {}
+        }
+    }
+}
+
+#[wasm_bindgen(prototype=ExportedClass)]
+pub struct CustomImport {}
+
+#[wasm_bindgen]
+impl CustomImport {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> WasmType<CustomImport> {
+        instantiate! {
+            super("abc", 123, 3.141, JsValue::NULL, true);
+            CustomImport {}
+        }
+    }
+}
+
+#[wasm_bindgen(prototype=js_sys::Date)]
+pub struct CustomDate {}
+
+#[wasm_bindgen]
+impl CustomDate {
+    #[wasm_bindgen(constructor)]
+    pub fn new(date_string: &str) -> WasmType<CustomDate> {
+        assert_eq!(date_string, "hello".to_string());
+
+        instantiate! {
+            super(2000, 0);
+            CustomDate {}
+        }
+    }
+}
+
+
+#[wasm_bindgen_test]
+fn instantiation() {
+    // wasm_bindgen::WasmWrappedType::<Child>::new(JsValue::NULL);
+}
+
+#[wasm_bindgen_test]
+fn inheritance() {
+    js_exported_class_inheritance();
+}
+
+#[wasm_bindgen_test]
+fn super_constructors() {
+    js_exported_super_constructors();
 }

@@ -13,7 +13,6 @@ const ENTER_KEY: u32 = 13;
 const ESCAPE_KEY: u32 = 27;
 
 use wasm_bindgen::prelude::*;
-
 /// Messages that represent the methods to be called on the View
 pub enum ViewMessage {
     UpdateFilterButtons(String),
@@ -55,25 +54,61 @@ pub struct View {
     callbacks: Vec<(web_sys::EventTarget, String, Closure<dyn FnMut()>)>,
 }
 
+#[wasm_bindgen]
+impl View {
+    #[wasm_bindgen(constructor)]
+    pub fn construct(
+        sched: u32,
+        todo_list: u32,
+        todo_item_counter: u32,
+        clear_completed: u32,
+        main: u32,
+        toggle_all: u32,
+        new_todo: u32,
+    ) -> WasmType<View> {
+        let sched = sched as *const Scheduler;
+        let todo_list = todo_list as *mut Element;
+        let todo_item_counter = todo_item_counter as *mut Element;
+        let clear_completed = clear_completed as *mut Element;
+        let main = main as *mut Element;
+        let toggle_all = toggle_all as *mut Element;
+        let new_todo = new_todo as *mut Element;
+        
+        assert!(!sched.is_null());
+        assert!(!todo_list.is_null());
+        assert!(!todo_item_counter.is_null());
+        assert!(!clear_completed.is_null());
+        assert!(!main.is_null());
+        assert!(!toggle_all.is_null());
+        assert!(!new_todo.is_null());
+        
+        instantiate! {
+            View {
+                sched: RefCell::new(unsafe { Rc::from_raw(sched) }),
+                todo_list: unsafe { *Box::from_raw(todo_list) },
+                todo_item_counter: unsafe { *Box::from_raw(todo_item_counter) },
+                clear_completed: unsafe { *Box::from_raw(clear_completed) },
+                main: unsafe { *Box::from_raw(main) },
+                toggle_all: unsafe { *Box::from_raw(toggle_all) },
+                new_todo: unsafe { *Box::from_raw(new_todo) },
+                callbacks: Vec::new(),
+            }
+        }
+    }
+}
+
 impl View {
     /// Construct a new view
-    pub fn new(sched: Rc<Scheduler>) -> Option<View> {
-        let todo_list = Element::qs(".todo-list")?;
-        let todo_item_counter = Element::qs(".todo-count")?;
-        let clear_completed = Element::qs(".clear-completed")?;
-        let main = Element::qs(".main")?;
-        let toggle_all = Element::qs(".toggle-all")?;
-        let new_todo = Element::qs(".new-todo")?;
-        Some(View {
-            sched: RefCell::new(sched),
-            todo_list,
-            todo_item_counter,
-            clear_completed,
-            main,
-            toggle_all,
-            new_todo,
-            callbacks: Vec::new(),
-        })
+    pub fn new(sched: Rc<Scheduler>) -> Option<WasmType<View>> {
+        Some(View::construct(
+            Rc::into_raw(sched) as u32,
+            Box::into_raw(Box::new(Element::qs(".todo-list")?)) as u32,
+            Box::into_raw(Box::new(Element::qs(".todo-count")?)) as u32,
+            Box::into_raw(Box::new(Element::qs(".clear-completed")?)) as u32,
+            Box::into_raw(Box::new(Element::qs(".main")?)) as u32,
+            Box::into_raw(Box::new(Element::qs(".toggle-all")?)) as u32,
+            Box::into_raw(Box::new(Element::qs(".new-todo")?)) as u32,
+        ))
     }
 
     pub fn init(&mut self) {
