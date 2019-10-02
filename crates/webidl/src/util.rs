@@ -3,7 +3,6 @@ use std::ptr;
 
 use heck::{CamelCase, ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span};
-use quote::quote;
 use syn;
 use wasm_bindgen_backend::ast;
 use wasm_bindgen_backend::util::{ident_ty, leading_colon_path_ty, raw_ident, rust_ident};
@@ -228,7 +227,6 @@ impl<'src> FirstPassRecord<'src> {
         idl_arguments: impl Iterator<Item = (&'a str, &'a IdlType<'src>)>,
         ret: &IdlType<'src>,
         kind: ast::ImportFunctionKind,
-        is_indexing_getter: bool,
         structural: bool,
         catch: bool,
         variadic: bool,
@@ -296,24 +294,9 @@ impl<'src> FirstPassRecord<'src> {
                 }
             },
         };
-
-        let is_indexing_getter_to_fix = is_indexing_getter && // exclude non index getters.
-            !catch && // exclude indexing getters that return `Result<T>`.
-            if let Some(ref ty) = ret { // exclude indexing getters that return `Option<T>`.
-                !format!("{}", quote! { #ty })
-                    .replace(" ", "")
-                    .starts_with("Option<")
-            } else {
-                false
-            };
-
-        let mut js_ret = ret.clone();
+        let js_ret = ret.clone();
         let ret = if catch {
             Some(ret.map_or_else(|| result_ty(unit_ty()), result_ty))
-        } else if is_indexing_getter_to_fix {
-            let ret = Some(ret.map_or_else(|| option_ty(unit_ty()), option_ty));
-            js_ret = ret.clone();
-            ret
         } else {
             ret
         };
@@ -366,7 +349,6 @@ impl<'src> FirstPassRecord<'src> {
             None.into_iter(),
             &ret,
             kind,
-            false,
             is_structural(attrs.as_ref(), container_attrs),
             throws(attrs),
             false,
@@ -397,7 +379,6 @@ impl<'src> FirstPassRecord<'src> {
             Some((name, &field_ty)).into_iter(),
             &IdlType::Void,
             kind,
-            false,
             is_structural(attrs.as_ref(), container_attrs),
             throws(attrs),
             false,
@@ -535,8 +516,6 @@ impl<'src> FirstPassRecord<'src> {
             OperationId::IndexingDeleter => ("delete", true, false),
         };
 
-        let is_indexing_getter = id == &OperationId::IndexingGetter;
-
         let mut ret = Vec::new();
         for signature in actual_signatures.iter() {
             // Ignore signatures with invalid return types
@@ -619,7 +598,6 @@ impl<'src> FirstPassRecord<'src> {
                         .map(|(idl_type, orig_arg)| (orig_arg.name, idl_type)),
                     &ret_ty,
                     kind.clone(),
-                    is_indexing_getter,
                     structural,
                     catch,
                     variadic,
@@ -646,7 +624,6 @@ impl<'src> FirstPassRecord<'src> {
                             .map(|(name, idl_type)| (&name[..], idl_type.clone())),
                         &ret_ty,
                         kind.clone(),
-                        is_indexing_getter,
                         structural,
                         catch,
                         false,
