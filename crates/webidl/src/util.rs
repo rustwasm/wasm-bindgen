@@ -580,6 +580,20 @@ impl<'src> FirstPassRecord<'src> {
             let structural =
                 force_structural || is_structural(signature.orig.attrs.as_ref(), container_attrs);
             let catch = force_throws || throws(&signature.orig.attrs);
+            let ret_ty = if id == &OperationId::IndexingGetter {
+                // All indexing getters should return optional values (or
+                // otherwise be marked with catch).
+                match ret_ty {
+                    IdlType::Nullable(_) => ret_ty,
+                    ref ty @ _ => if catch {
+                        ret_ty
+                    } else {
+                        IdlType::Nullable(Box::new(ty.clone()))
+                    },
+                }
+            } else {
+                ret_ty
+            };
             let variadic = signature.args.len() == signature.orig.args.len()
                 && signature
                     .orig
