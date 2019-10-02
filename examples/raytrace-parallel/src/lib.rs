@@ -60,7 +60,7 @@ impl Scene {
         // Configure a rayon thread pool which will pull web workers from
         // `pool`.
         let thread_pool = rayon::ThreadPoolBuilder::new()
-            .num_threads(concurrency - 1)
+            .num_threads(concurrency)
             .spawn_handler(|thread| Ok(pool.run(|| thread.run()).unwrap()))
             .build()
             .unwrap();
