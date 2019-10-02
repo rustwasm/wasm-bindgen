@@ -297,23 +297,9 @@ impl<'src> FirstPassRecord<'src> {
             },
         };
 
-        // Some WebIDL indexing getters (e.g. __widl_f_get_DOMStringMap) return
-        // `undefined` although the WebIDL specification does not explicitly
-        // state so, which causes uncaught runtime exceptions
-        // (rustwasm/wasm-bindgen#1756). To fix this, we check the return
-        // types of the generated Rust bindings for indexing getters, and
-        // ensure that they are wrapped as either `Result<T, JsValue>` or
-        // `Option<T>`. For indexing getters with an unwrapped return type, we
-        // convert their return types to `Option<T>`.
-        //
-        // Here we compute the `is_indexing_getter_to_fix` flag that tells us
-        // whether the binding function we are generating is for an indexing
-        // getter and its return type is not originally wrapped (i.e. neither
-        // `Result<T, JsValue>` nor `Option<T>`) thus needing the conversion
-        // to `Option<T>`.
-        let is_indexing_getter_to_fix = is_indexing_getter && // exclude non indexing getters
-            !catch && // exclude indexing getters that return `Result<T, JsValue>`
-            if let Some(ref ty) = ret { // exclude indexing getters that return `Option<T>`
+        let is_indexing_getter_to_fix = is_indexing_getter && // exclude non index getters.
+            !catch && // exclude indexing getters that return `Result<T, JsValue>`.
+            if let Some(ref ty) = ret { // exclude indexing getters that return `Option<T>`.
                 !format!("{}", quote! { #ty })
                     .replace(" ", "")
                     .starts_with("Option<")
