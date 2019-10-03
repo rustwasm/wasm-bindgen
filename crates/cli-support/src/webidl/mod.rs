@@ -954,7 +954,10 @@ impl<'a> Context<'a> {
         match op.kind {
             decode::OperationKind::Regular => {
                 if op.is_static {
-                    Ok((AuxImport::ValueWithThis(class, function.name.to_string()), false))
+                    Ok((
+                        AuxImport::ValueWithThis(class, function.name.to_string()),
+                        false,
+                    ))
                 } else if structural {
                     Ok((
                         AuxImport::StructuralMethod(function.name.to_string()),
@@ -1361,48 +1364,26 @@ impl<'a> Context<'a> {
             .bindings
             .get(bind.binding)
             .ok_or_else(|| format_err!("bad binding id"))?;
-        let mut return_via_outptr = None;
         let (wasm_ty, webidl_ty, incoming, outgoing) = match binding {
-            ast::FunctionBinding::Export(e) => {
-                // This `match` is weird, see the comment at the top of
-                // `standard.rs` for what it's doing.
-                let outgoing = match e.result.bindings.get(0) {
-                    Some(ast::OutgoingBindingExpression::As(a)) if a.idx == u32::max_value() => {
-                        return_via_outptr = Some(vec![walrus::ValType::I32, walrus::ValType::I32]);
-                        &e.result.bindings[1..]
-                    }
-                    _ => &e.result.bindings[..],
-                };
-                (
-                    e.wasm_ty,
-                    e.webidl_ty,
-                    e.params.bindings.as_slice(),
-                    outgoing,
-                )
-            }
-            ast::FunctionBinding::Import(e) => {
-                // This `match` is weird, see the comment at the top of
-                // `standard.rs` for what it's doing.
-                let incoming = match e.result.bindings.get(0) {
-                    Some(ast::IncomingBindingExpression::Get(g)) if g.idx == u32::max_value() => {
-                        return_via_outptr = Some(vec![walrus::ValType::I32, walrus::ValType::I32]);
-                        &e.result.bindings[1..]
-                    }
-                    _ => &e.result.bindings[..],
-                };
-                (
-                    e.wasm_ty,
-                    e.webidl_ty,
-                    incoming,
-                    e.params.bindings.as_slice(),
-                )
-            }
+            ast::FunctionBinding::Export(e) => (
+                e.wasm_ty,
+                e.webidl_ty,
+                e.params.bindings.as_slice(),
+                &e.result.bindings[..],
+            ),
+            ast::FunctionBinding::Import(e) => (
+                e.wasm_ty,
+                e.webidl_ty,
+                &e.result.bindings[..],
+                e.params.bindings.as_slice(),
+            ),
         };
         let webidl_ty = standard::copy_ty(&mut self.bindings.types, webidl_ty, &std.types);
         let webidl_ty = match webidl_ty {
             ast::WebidlTypeRef::Id(id) => <ast::WebidlFunction as ast::WebidlTypeId>::wrap(id),
             _ => bail!("invalid webidl type listed"),
         };
+
         Ok(Binding {
             wasm_ty,
             webidl_ty,
@@ -1416,7 +1397,7 @@ impl<'a> Context<'a> {
                 .cloned()
                 .map(NonstandardOutgoing::Standard)
                 .collect(),
-            return_via_outptr,
+            return_via_outptr: None,
         })
     }
 
