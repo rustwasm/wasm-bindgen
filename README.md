@@ -74,7 +74,7 @@ greet("World!");
   unnecessary, promising to unlock even-faster-than-JavaScript DOM access.
 
 [wasm-es-modules]: https://github.com/WebAssembly/esm-integration
-[webidl-bindings]: https://github.com/WebAssembly/webidl-bindings/blob/master/proposals/webidl-bindings/Explainer.md
+[webidl-bindings]: https://github.com/WebAssembly/proposals/issues/8
 
 ## Guide
 
