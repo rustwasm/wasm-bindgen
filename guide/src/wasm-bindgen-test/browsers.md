@@ -127,7 +127,7 @@ Tests can be run on a remote webdriver. To do this, the above environment
 variables must be set as URL to the remote webdriver. For example:
 
 ```
-CHROMEDRIVER=http://remote.host/
+CHROMEDRIVER_REMOTE=http://remote.host/
 ```
 
 ### Running the Tests in the Headless Browser
