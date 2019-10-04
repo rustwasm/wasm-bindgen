@@ -294,7 +294,9 @@ impl Element {
         if let Some(el) = self.el.take() {
             {
                 if let Some(el) = wasm_bindgen::JsCast::dyn_ref::<web_sys::HtmlElement>(&el) {
-                    text = el.dataset().get(key);
+                    if let Some(value) = el.dataset().get(key) {
+                        text = value;
+                    }
                 }
             }
             self.el = Some(el);
