@@ -451,7 +451,7 @@ impl TryToTokens for ast::Export {
                 quote! { wasm_bindgen::JsValue },
                 quote! {
                     wasm_bindgen_futures::future_to_promise(async {
-                        wasm_bindgen::__rt::IntoJsResult::into_js_result(#ret.await)
+                        wasm_bindgen::__rt::IntoJsResult::into_js_result(#ret.r#await)
                     }).into()
                 },
             )
