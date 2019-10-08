@@ -120,12 +120,10 @@ interface HTMLInputElement : HTMLElement {
 
   void select();
 
-/* TODO optional u32 not supported
   [Throws]
            attribute unsigned long? selectionStart;
   [Throws]
            attribute unsigned long? selectionEnd;
-*/
   [Throws]
            attribute DOMString? selectionDirection;
   [Throws]
