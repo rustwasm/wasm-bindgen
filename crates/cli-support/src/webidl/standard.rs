@@ -16,39 +16,6 @@
 //! generating any JS glue. Any JS glue currently generated is also invalid if
 //! the module contains the wasm bindings section and it's actually respected.
 
-// NB: Returning strings is weird
-//
-// This module has what is currently a pretty gross hack for dealing with
-// returning strings. One of the banner features of WebIDL bindings is not
-// requiring any language-specific glue to use wasm files and you get all sorts
-// of types like integers and strings by default. Note that strings are a huge
-// thing here.
-//
-// Dealing with *incoming* strings is easy enough in that the binding expression
-// has an allocator function to call and it's filled in and passed as two
-// pointers. Outgoing strings are a little harder, however, for two reasons:
-//
-// * One is that we need to return two values, which requires multi-value
-// * Another is that someone's got to free the string at some point
-//
-// Rust/wasm-bindgen don't support multi-value, and WebIDL bindings as literally
-// spec'd right this red hot second don't support freeing strings that we pass
-// out. These both have obvious fixes (supporting multi-value and extending the
-// bindings spec to support freeing) but we also want something working right
-// this red-hot second.
-//
-// To get things working we employ a terrible hack where the first bindign
-// expression of the result a function may indicate "use a thing that's way off
-// in the ether" and that's actually a sentinel for "oh ignore everything else
-// and the string is returned through an out-ptr as the first argument". This
-// manifests in all sorts of special hacks all over the place to handle this,
-// and it's a real bummer.
-//
-// This is in general just an explainer for the current state of things and
-// also a preemptive apology for writing the code to handle this in so many
-// places. I, like you, look forward to actually fixing this for real as the
-// spec continues to evolve and we implement more in wasm-bindgen.
-
 use crate::descriptor::VectorKind;
 use crate::webidl::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
 use crate::webidl::{NonstandardIncoming, NonstandardOutgoing};
@@ -240,7 +207,7 @@ pub fn add_section(
                 name
             )
         })?;
-        let mut result = extract_outgoing(&binding.outgoing).with_context(|_| {
+        let result = extract_outgoing(&binding.outgoing).with_context(|_| {
             format!(
                 "failed to map return value for export `{}` to standard \
                  binding expressions",
@@ -248,18 +215,7 @@ pub fn add_section(
             )
         })?;
 
-        // see comment at top of this module about returning strings for what
-        // this is doing and why it's weird
-        if binding.return_via_outptr.is_some() {
-            result.insert(
-                0,
-                ast::OutgoingBindingExpressionAs {
-                    idx: u32::max_value(),
-                    ty: ast::WebidlScalarType::Long.into(),
-                }
-                .into(),
-            );
-        }
+        assert!(binding.return_via_outptr.is_none());
         let binding = section.bindings.insert(ast::ExportBinding {
             wasm_ty: binding.wasm_ty,
             webidl_ty: copy_ty(
@@ -293,24 +249,14 @@ pub fn add_section(
                 module_name, name,
             )
         })?;
-        let mut result = extract_incoming(&binding.incoming).with_context(|_| {
+        let result = extract_incoming(&binding.incoming).with_context(|_| {
             format!(
                 "failed to map return value of import `{}::{}` to standard \
                  binding expressions",
                 module_name, name,
             )
         })?;
-        // see comment at top of this module about returning strings for what
-        // this is doing and why it's weird
-        if binding.return_via_outptr.is_some() {
-            result.insert(
-                0,
-                ast::IncomingBindingExpressionGet {
-                    idx: u32::max_value(),
-                }
-                .into(),
-            );
-        }
+        assert!(binding.return_via_outptr.is_none());
         let binding = section.bindings.insert(ast::ImportBinding {
             wasm_ty: binding.wasm_ty,
             webidl_ty: copy_ty(

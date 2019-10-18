@@ -96,7 +96,7 @@ impl Bindgen {
             weak_refs: env::var("WASM_BINDGEN_WEAKREF").is_ok(),
             threads: threads_config(),
             anyref: anyref || wasm_interface_types,
-            multi_value,
+            multi_value: multi_value || wasm_interface_types,
             wasm_interface_types,
             encode_into: EncodeInto::Test,
         }
