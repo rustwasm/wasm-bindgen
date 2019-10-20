@@ -45,6 +45,7 @@ macro_rules! attrgen {
             (readonly, Readonly(Span)),
             (js_name, JsName(Span, String, Span)),
             (js_class, JsClass(Span, String, Span)),
+            (js_case, JsCase(Span)),
             (is_type_of, IsTypeOf(Span, syn::Expr)),
             (extends, Extends(Span, syn::Path)),
             (vendor_prefix, VendorPrefix(Span, Ident)),
@@ -318,10 +319,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             );
         }
         let mut fields = Vec::new();
-        let js_name = attrs
-            .js_name()
-            .map(|s| s.0.to_string())
-            .unwrap_or(self.ident.to_string());
+        let js_name = extract_js_name(&attrs, self.ident.to_string());
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
                 syn::Visibility::Public(..) => {}
@@ -421,11 +419,8 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 }) => path,
                 _ => bail_span!(class, "first argument of method must be a path"),
             };
-            let class_name = extract_path_ident(class_name)?;
-            let class_name = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| class_name.to_string());
+            let class_ident = extract_path_ident(class_name)?;
+            let class_name = extract_js_class(&opts, class_ident.to_string());
 
             let kind = ast::MethodKind::Operation(ast::Operation {
                 is_static: false,
@@ -438,10 +433,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 kind,
             }
         } else if let Some(cls) = opts.static_method_of() {
-            let class = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| cls.to_string());
+            let class = extract_js_class(&opts, cls.to_string());
             let ty = ident_ty(cls.clone());
 
             let kind = ast::MethodKind::Operation(ast::Operation {
@@ -463,10 +455,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
                 _ => bail_span!(self, "return value of constructor must be a bare path"),
             };
             let class_name = extract_path_ident(class_name)?;
-            let class_name = opts
-                .js_class()
-                .map(|p| p.0.into())
-                .unwrap_or_else(|| class_name.to_string());
+            let class_name = extract_js_class(&opts, class_name.to_string());
 
             ast::ImportFunctionKind::Method {
                 class: class_name.to_string(),
@@ -522,10 +511,7 @@ impl ConvertToAst<BindgenAttrs> for syn::ForeignItemType {
 
     fn convert(self, attrs: BindgenAttrs) -> Result<Self::Target, Diagnostic> {
         assert_not_variadic(&attrs)?;
-        let js_name = attrs
-            .js_name()
-            .map(|s| s.0)
-            .map_or_else(|| self.ident.to_string(), |s| s.to_string());
+        let js_name = extract_js_name(&attrs, self.ident.to_string());
         let is_type_of = attrs.is_type_of().cloned();
         let shim = format!("__wbg_instanceof_{}_{}", self.ident, ShortHash(&self.ident));
         let mut extends = Vec::new();
@@ -569,12 +555,7 @@ impl<'a> ConvertToAst<(BindgenAttrs, &'a ast::ImportModule)> for syn::ForeignIte
             bail_span!(self.mutability, "cannot import mutable globals yet")
         }
         assert_not_variadic(&opts)?;
-        let default_name = self.ident.to_string();
-        let js_name = opts
-            .js_name()
-            .map(|p| p.0)
-            .unwrap_or(&default_name)
-            .to_string();
+        let js_name = extract_js_name(&opts, self.ident.to_string());
         let shim = format!(
             "__wbg_static_accessor_{}_{}",
             self.ident,
@@ -701,6 +682,8 @@ fn function_from_decl(
     let (name, name_span, renamed_via_js_name) =
         if let Some((js_name, js_name_span)) = opts.js_name() {
             (js_name.to_string(), js_name_span, true)
+        } else if let Some(_) = opts.js_case() {
+            (to_js_case(decl_name.to_string()), decl_name.span(), true)
         } else {
             (decl_name.to_string(), decl_name.span(), false)
         };
@@ -904,10 +887,7 @@ fn prepare_for_impl_recursion(
         other => bail_span!(other, "failed to parse this item as a known item"),
     };
 
-    let js_class = impl_opts
-        .js_class()
-        .map(|s| s.0.to_string())
-        .unwrap_or(class.to_string());
+    let js_class = extract_js_class(impl_opts, class.to_string());
 
     method.attrs.insert(
         0,
@@ -1324,4 +1304,48 @@ fn operation_kind(opts: &BindgenAttrs) -> ast::OperationKind {
         operation_kind = ast::OperationKind::IndexingDeleter;
     }
     operation_kind
+}
+
+fn extract_js_name(attrs: &BindgenAttrs, ident: String) -> String {
+    let default_js_name = match attrs.js_case() {
+        Some(_) => to_js_case(ident),
+        None => ident,
+    };
+    attrs
+        .js_name()
+        .map(|s| s.0.to_string())
+        .unwrap_or(default_js_name)
+}
+
+fn extract_js_class(attrs: &BindgenAttrs, ident: String) -> String {
+    let default_js_class = match attrs.js_case() {
+        Some(_) => to_js_case(ident),
+        None => ident,
+    };
+    attrs
+        .js_class()
+        .map(|s| s.0.to_string())
+        .unwrap_or(default_js_class)
+}
+
+fn to_js_case(ident: String) -> String {
+    let mut words_iter = ident
+        .split('_')
+        .filter(|s| s.len() > 0);
+
+    match words_iter.next() {
+        Some(first) => {
+            let rest: String = words_iter
+                .map(capitalize_non_empty_str)
+                .collect();
+            format!("{}{}", first, rest)
+        }
+        None => String::from(""),
+    }
+}
+
+fn capitalize_non_empty_str(s: &str) -> String {
+    let mut v: Vec<char> = s.chars().collect();
+    v[0] = v[0].to_uppercase().nth(0).unwrap();
+    v.into_iter().collect()
 }
