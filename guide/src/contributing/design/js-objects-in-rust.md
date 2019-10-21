@@ -37,7 +37,7 @@ notably means that it can't persist the object past the lifetime of this
 function call.
 
 Now what we actually want to generate is a JS module that looks like (in
-Typescript parlance)
+TypeScript parlance)
 
 ```ts
 // foo.d.ts
