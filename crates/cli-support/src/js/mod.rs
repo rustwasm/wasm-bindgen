@@ -1071,9 +1071,15 @@ impl<'a> Context<'a> {
         if !self.should_write_global("text_decoder") {
             return Ok(());
         }
+
         // `ignoreBOM` is needed so that the BOM will be preserved when sending a string from Rust to JS
         // `fatal` is needed to catch any weird encoding bugs when sending a string from Rust to JS
         self.expose_text_processor("TextDecoder", "('utf-8', { ignoreBOM: true, fatal: true })")?;
+
+        // This is needed to workaround a bug in Safari
+        // See: https://github.com/rustwasm/wasm-bindgen/issues/1825
+        self.global("cachedTextDecoder.decode();");
+
         Ok(())
     }
 
