@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
+use wasm_bindgen::{JsCast, intern, unintern};
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen(module = "tests/wasm/simple.js")]
@@ -156,6 +156,9 @@ fn binding_to_unimplemented_apis_doesnt_break_everything() {
 #[wasm_bindgen_test]
 fn optional_slices() {
     optional_str_none(None);
+    optional_str_some(Some("x"));
+    optional_str_some(Some(intern("x")));
+    unintern("x");
     optional_str_some(Some("x"));
     optional_slice_none(None);
     optional_slice_some(Some(&[1, 2, 3]));

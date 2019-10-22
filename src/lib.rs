@@ -70,7 +70,7 @@ if_std! {
     mod anyref;
 
     mod cache;
-    pub use cache::intern::intern;
+    pub use cache::intern::{intern, unintern};
 }
 
 /// Representation of an object owned by JS.

@@ -40,6 +40,14 @@ cfg_if! {
                 }
             })
         }
+
+        fn unintern_str(key: &str) {
+            CACHE.with(|cache| {
+                let mut cache = cache.entries.borrow_mut();
+
+                cache.remove(key);
+            })
+        }
     }
 }
 
@@ -79,4 +87,17 @@ pub fn intern(s: &str) -> &str {
     intern_str(s);
 
     s
+}
+
+
+/// Removes a Rust string from the intern cache.
+///
+/// This does the opposite of the [`intern`](fn.intern.html) function.
+///
+/// If the [`intern`](fn.intern.html) function is called again then it will re-intern the string.
+#[allow(unused_variables)]
+#[inline]
+pub fn unintern(s: &str) {
+    #[cfg(feature = "enable-interning")]
+    unintern_str(s);
 }
