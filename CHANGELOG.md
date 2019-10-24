@@ -2,6 +2,38 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.52
+
+Released 2019-10-24.
+
+### Added
+
+* The support for wasm-interface-types now uses multi-value by default.
+  [#1805](https://github.com/rustwasm/wasm-bindgen/pull/1805)
+
+* The Worklet IDL has been updated.
+  [#1817](https://github.com/rustwasm/wasm-bindgen/pull/1817)
+
+* The HTMLInputElement type has selectionStart and selectionEnd properties now.
+  [#1811](https://github.com/rustwasm/wasm-bindgen/pull/1811)
+
+* An `unintern` function has been added to remove an interned string from the
+  cache.
+  [#1828](https://github.com/rustwasm/wasm-bindgen/pull/1828)
+
+### Changed
+
+* Some WebIDL indexing getters have been corrected to reflect that they can
+  throw and/or return `undefined`
+  [#1789](https://github.com/rustwasm/wasm-bindgen/pull/1789)
+
+### Fixed
+
+* A bug with `TextDecoder` and Safari has been fxied
+  [#1789](https://github.com/rustwasm/wasm-bindgen/pull/1789)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.51
 
 Released 2019-09-26.
