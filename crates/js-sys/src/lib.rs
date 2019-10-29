@@ -4792,6 +4792,14 @@ macro_rules! arrays {
                 )
             }
 
+            fn raw_copy_to(&self, dst: &mut [$ty]) {
+                let buf = wasm_bindgen::memory();
+                let mem = buf.unchecked_ref::<WebAssembly::Memory>();
+                let all_wasm_memory = $name::new(&mem.buffer());
+                let offset = dst.as_ptr() as usize / mem::size_of::<$ty>();
+                all_wasm_memory.set(self, offset as u32);
+            }
+
             /// Copy the contents of this JS typed array into the destination
             /// Rust slice.
             ///
@@ -4805,11 +4813,14 @@ macro_rules! arrays {
             /// different than the length of the provided `dst` array.
             pub fn copy_to(&self, dst: &mut [$ty]) {
                 assert_eq!(self.length() as usize, dst.len());
-                let buf = wasm_bindgen::memory();
-                let mem = buf.unchecked_ref::<WebAssembly::Memory>();
-                let all_wasm_memory = $name::new(&mem.buffer());
-                let offset = dst.as_ptr() as usize / mem::size_of::<$ty>();
-                all_wasm_memory.set(self, offset as u32);
+                self.raw_copy_to(dst);
+            }
+
+            /// Efficiently copies the contents of this JS typed array into a new Vec.
+            pub fn to_vec(&self) -> Vec<$ty> {
+                let mut output = vec![0; self.length() as usize];
+                self.raw_copy_to(&mut output);
+                output
             }
         }
 

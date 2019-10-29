@@ -131,3 +131,10 @@ fn copy_to() {
         assert_eq!(*i, 5);
     }
 }
+
+#[wasm_bindgen_test]
+fn to_vec() {
+    let array = Int32Array::new(&10.into());
+    array.fill(5, 0, 10);
+    assert_eq!(array.to_vec(), vec![5, 5, 5, 5, 5, 5, 5, 5, 5, 5]);
+}
