@@ -4657,7 +4657,7 @@ pub fn global() -> Object {
 }
 
 macro_rules! arrays {
-    ($(#[doc = $ctor:literal] #[doc = $mdn:literal] $name:ident: $ty:ident,)*) => ($(
+    ($(#[doc = $ctor:literal] #[doc = $mdn:literal] $name:ident: $ty:ident => $zero:literal,)*) => ($(
         #[wasm_bindgen]
         extern "C" {
             #[wasm_bindgen(extends = Object)]
@@ -4818,7 +4818,7 @@ macro_rules! arrays {
 
             /// Efficiently copies the contents of this JS typed array into a new Vec.
             pub fn to_vec(&self) -> Vec<$ty> {
-                let mut output = vec![0; self.length() as usize];
+                let mut output = vec![$zero; self.length() as usize];
                 self.raw_copy_to(&mut output);
                 output
             }
@@ -4837,37 +4837,37 @@ macro_rules! arrays {
 arrays! {
     /// `Int8Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array
-    Int8Array: i8,
+    Int8Array: i8 => 0,
 
     /// `Int16Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array
-    Int16Array: i16,
+    Int16Array: i16 => 0,
 
     /// `Int32Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array
-    Int32Array: i32,
+    Int32Array: i32 => 0,
 
     /// `Uint8Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
-    Uint8Array: u8,
+    Uint8Array: u8 => 0,
 
     /// `Uint8ClampedArray()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray
-    Uint8ClampedArray: u8,
+    Uint8ClampedArray: u8 => 0,
 
     /// `Uint16Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array
-    Uint16Array: u16,
+    Uint16Array: u16 => 0,
 
     /// `Uint32Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array
-    Uint32Array: u32,
+    Uint32Array: u32 => 0,
 
     /// `Float32Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array
-    Float32Array: f32,
+    Float32Array: f32 => 0.0,
 
     /// `Float64Array()`
     /// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array
-    Float64Array: f64,
+    Float64Array: f64 => 0.0,
 }
