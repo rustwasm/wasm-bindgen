@@ -20,7 +20,7 @@
     <span> | </span>
     <a href="https://github.com/rustwasm/wasm-bindgen/blob/master/CONTRIBUTING.md">Contributing</a>
     <span> | </span>
-    <a href="https://discordapp.com/channels/442252698964721669/443151097398296587">Chat</a>
+    <a href="https://discord.gg/xMZ7CCY">Chat</a>
   </h3>
 
   <sub>Built with 🦀🕸 by <a href="https://rustwasm.github.io/">The Rust and WebAssembly Working Group</a></sub>
