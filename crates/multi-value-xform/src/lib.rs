@@ -298,6 +298,9 @@ fn xform_one(
         .global_set(shadow_stack_pointer);
 
     let wrapper = wrapper.finish(params, &mut module.funcs);
+    if let Some(name) = &module.funcs.get(func).name {
+        module.funcs.get_mut(wrapper).name = Some(format!("{} multivalue shim", name));
+    }
 
     // Replace the old export with our new multi-value wrapper for it!
     match module.exports.get_mut(export).item {
