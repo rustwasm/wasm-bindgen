@@ -512,6 +512,10 @@ pub fn process(
         cx.program(program)?;
     }
 
+    if !cx.start_found {
+        cx.discover_main()?;
+    }
+
     if let Some(standard) = cx.module.customs.delete_typed::<ast::WebidlBindings>() {
         cx.standard(&standard)?;
     }
@@ -618,6 +622,58 @@ impl<'a> Context<'a> {
                     },
                 );
             }
+        }
+
+        Ok(())
+    }
+
+    fn discover_main(&mut self) -> Result<(), Error> {
+        let main = self
+            .module
+            .functions()
+            .find(|x| x.name.as_ref().map_or(false, |x| x == "main"));
+        if let Some(main) = main {
+            // an entry point `main` has signature (i32, i32) -> i32
+            let type_matches = {
+                use walrus::ValType::I32;
+                let ty = main.ty();
+                let ty = self.module.types.get(ty);
+                ty.params() == [I32, I32] && ty.results() == [I32]
+            };
+            if !type_matches {
+                return Ok(());
+            }
+            let descriptor = Descriptor::Function(Box::new(Function {
+                arguments: vec![Descriptor::I32, Descriptor::I32],
+                shim_idx: 0, // TODO is this bad
+                ret: Descriptor::I32,
+            }));
+            self.descriptors.insert("main".to_string(), descriptor);
+            let program = decode::Program {
+                exports: vec![decode::Export {
+                    class: None,
+                    comments: vec![],
+                    consumed: false,
+                    function: decode::Function {
+                        arg_names: vec!["argc".to_string(), "argv".to_string()], // TODO is that even what that is
+                        name: "main",
+                    },
+                    method_kind: decode::MethodKind::Operation(decode::Operation {
+                        is_static: true,
+                        kind: decode::OperationKind::Regular,
+                    }),
+                    start: true,
+                }],
+                enums: vec![],
+                imports: vec![],
+                structs: vec![],
+                typescript_custom_sections: vec![],
+                local_modules: vec![],
+                inline_js: vec![],
+                unique_crate_identifier: "wasm-bindgen-autodiscoveredmain",
+                package_json: None,
+            };
+            self.program(program)?;
         }
 
         Ok(())
