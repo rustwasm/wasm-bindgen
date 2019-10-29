@@ -71,6 +71,15 @@ pub fn add_multi_value(
             _ => unreachable!(),
         };
         binding.wasm_ty = module.funcs.get(func).ty();
+
+        // Be sure to delete the out-param pointer from the WebIDL type as well.
+        let webidl_ty = bindings
+            .types
+            .get::<ast::WebidlFunction>(binding.webidl_ty)
+            .unwrap();
+        let mut new_ty = webidl_ty.clone();
+        new_ty.params.remove(0);
+        binding.webidl_ty = bindings.types.insert(new_ty);
     }
 
     Ok(())
