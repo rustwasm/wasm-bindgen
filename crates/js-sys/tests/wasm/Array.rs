@@ -29,45 +29,37 @@ fn to_rust(arr: &Array) -> Vec<JsValue> {
 #[wasm_bindgen_test]
 fn from_iter() {
     assert_eq!(
-        to_rust(&vec![
-            JsValue::from("a"),
-            JsValue::from("b"),
-            JsValue::from("c"),
-        ].into_iter().collect()),
+        to_rust(
+            &vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c"),]
+                .into_iter()
+                .collect()
+        ),
         vec!["a", "b", "c"],
     );
 
     assert_eq!(
-        to_rust(&vec![
-            JsValue::from("a"),
-            JsValue::from("b"),
-            JsValue::from("c"),
-        ].iter().collect()),
+        to_rust(
+            &vec![JsValue::from("a"), JsValue::from("b"), JsValue::from("c"),]
+                .iter()
+                .collect()
+        ),
         vec!["a", "b", "c"],
     );
 
     let array = js_array![1u32, 2u32, 3u32];
 
     assert_eq!(
-        to_rust(&vec![
-            array.clone(),
-        ].into_iter().collect()),
+        to_rust(&vec![array.clone(),].into_iter().collect()),
         vec![JsValue::from(array.clone())],
     );
 
     assert_eq!(
-        to_rust(&vec![
-            array.clone(),
-        ].iter().collect()),
+        to_rust(&vec![array.clone(),].iter().collect()),
         vec![JsValue::from(array)],
     );
 
     assert_eq!(
-        to_rust(&vec![
-            5,
-            10,
-            20,
-        ].into_iter().map(JsValue::from).collect()),
+        to_rust(&vec![5, 10, 20,].into_iter().map(JsValue::from).collect()),
         vec![5, 10, 20],
     );
 
@@ -80,11 +72,7 @@ fn from_iter() {
         vec!["a", "b", "c"],
     );
 
-    let v = vec![
-        "a",
-        "b",
-        "c",
-    ];
+    let v = vec!["a", "b", "c"];
 
     assert_eq!(
         to_rust(&Array::from_iter(v.into_iter().map(|s| JsValue::from(s)))),

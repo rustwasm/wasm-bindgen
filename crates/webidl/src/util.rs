@@ -585,11 +585,13 @@ impl<'src> FirstPassRecord<'src> {
                 // otherwise be marked with catch).
                 match ret_ty {
                     IdlType::Nullable(_) => ret_ty,
-                    ref ty @ _ => if catch {
-                        ret_ty
-                    } else {
-                        IdlType::Nullable(Box::new(ty.clone()))
-                    },
+                    ref ty @ _ => {
+                        if catch {
+                            ret_ty
+                        } else {
+                            IdlType::Nullable(Box::new(ty.clone()))
+                        }
+                    }
                 }
             } else {
                 ret_ty

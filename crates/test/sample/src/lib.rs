@@ -1,9 +1,9 @@
 use js_sys::Promise;
-use std::task::{Poll, Context};
+use std::future::Future;
 use std::pin::Pin;
+use std::task::{Context, Poll};
 use std::time::Duration;
 use wasm_bindgen::prelude::*;
-use std::future::Future;
 use wasm_bindgen_futures::JsFuture;
 
 pub struct Timeout {

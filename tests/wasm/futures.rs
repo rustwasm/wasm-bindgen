@@ -8,7 +8,9 @@ extern "C" {
 
 #[wasm_bindgen_test]
 async fn smoke() {
-    wasm_bindgen_futures::JsFuture::from(call_exports()).await.unwrap();
+    wasm_bindgen_futures::JsFuture::from(call_exports())
+        .await
+        .unwrap();
 }
 
 #[wasm_bindgen]

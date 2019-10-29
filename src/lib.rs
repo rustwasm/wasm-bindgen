@@ -820,9 +820,9 @@ pub fn function_table() -> JsValue {
 
 #[doc(hidden)]
 pub mod __rt {
+    use crate::JsValue;
     use core::cell::{Cell, UnsafeCell};
     use core::ops::{Deref, DerefMut};
-    use crate::JsValue;
 
     pub extern crate core;
     #[cfg(feature = "std")]

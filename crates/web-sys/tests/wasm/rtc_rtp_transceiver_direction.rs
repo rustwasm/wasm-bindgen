@@ -62,11 +62,19 @@ async fn exchange_sdps(
 ) -> (RtcPeerConnection, RtcPeerConnection) {
     let offer = JsFuture::from(p1.create_offer()).await.unwrap();
     let offer = offer.unchecked_into::<RtcSessionDescriptionInit>();
-    JsFuture::from(p1.set_local_description(&offer)).await.unwrap();
-    JsFuture::from(p2.set_remote_description(&offer)).await.unwrap();
+    JsFuture::from(p1.set_local_description(&offer))
+        .await
+        .unwrap();
+    JsFuture::from(p2.set_remote_description(&offer))
+        .await
+        .unwrap();
     let answer = JsFuture::from(p2.create_answer()).await.unwrap();
     let answer = answer.unchecked_into::<RtcSessionDescriptionInit>();
-    JsFuture::from(p2.set_local_description(&answer)).await.unwrap();
-    JsFuture::from(p1.set_remote_description(&answer)).await.unwrap();
+    JsFuture::from(p2.set_local_description(&answer))
+        .await
+        .unwrap();
+    JsFuture::from(p1.set_remote_description(&answer))
+        .await
+        .unwrap();
     (p1, p2)
 }

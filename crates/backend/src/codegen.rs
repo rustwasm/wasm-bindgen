@@ -456,10 +456,7 @@ impl TryToTokens for ast::Export {
                 },
             )
         } else {
-            (
-                quote! { #syn_ret },
-                quote! { #ret },
-            )
+            (quote! { #syn_ret }, quote! { #ret })
         };
         let projection = quote! { <#ret_ty as wasm_bindgen::convert::ReturnWasmAbi> };
         let convert_ret = quote! { #projection::return_abi(#ret_expr) };

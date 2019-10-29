@@ -33,20 +33,58 @@ fn test_html_element() {
     element.set_hidden(true);
     assert!(element.hidden(), "Should be hidden");
 
-    assert_eq!(element.class_list().get(0), None, "Shouldn't have class at index 0");
+    assert_eq!(
+        element.class_list().get(0),
+        None,
+        "Shouldn't have class at index 0"
+    );
     element.class_list().add_2("a", "b").unwrap();
-    assert_eq!(element.class_list().get(0).unwrap(), "a", "Should have class at index 0");
-    assert_eq!(element.class_list().get(1).unwrap(), "b", "Should have class at index 1");
-    assert_eq!(element.class_list().get(2), None, "Shouldn't have class at index 2");
+    assert_eq!(
+        element.class_list().get(0).unwrap(),
+        "a",
+        "Should have class at index 0"
+    );
+    assert_eq!(
+        element.class_list().get(1).unwrap(),
+        "b",
+        "Should have class at index 1"
+    );
+    assert_eq!(
+        element.class_list().get(2),
+        None,
+        "Shouldn't have class at index 2"
+    );
 
     assert_eq!(element.dataset().get("id"), None, "Shouldn't have data-id");
     element.dataset().set("id", "123").unwrap();
-    assert_eq!(element.dataset().get("id").unwrap(), "123", "Should have data-id");
+    assert_eq!(
+        element.dataset().get("id").unwrap(),
+        "123",
+        "Should have data-id"
+    );
 
-    assert_eq!(element.style().get(0), None, "Shouldn't have style property name at index 0");
-    element.style().set_property("background-color", "red").unwrap();
-    assert_eq!(element.style().get(0).unwrap(), "background-color", "Should have style property at index 0");
-    assert_eq!(element.style().get_property_value("background-color").unwrap(), "red", "Should have style property");
+    assert_eq!(
+        element.style().get(0),
+        None,
+        "Shouldn't have style property name at index 0"
+    );
+    element
+        .style()
+        .set_property("background-color", "red")
+        .unwrap();
+    assert_eq!(
+        element.style().get(0).unwrap(),
+        "background-color",
+        "Should have style property at index 0"
+    );
+    assert_eq!(
+        element
+            .style()
+            .get_property_value("background-color")
+            .unwrap(),
+        "red",
+        "Should have style property"
+    );
 
     // TODO add a click handler here
     element.click();

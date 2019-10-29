@@ -198,7 +198,7 @@ fn shared_function<'a>(func: &'a ast::Function, _intern: &'a Interner) -> Functi
         .enumerate()
         .map(|(idx, arg)| {
             if let syn::Pat::Ident(x) = &*arg.pat {
-                return x.ident.to_string()
+                return x.ident.to_string();
             }
             format!("arg{}", idx)
         })

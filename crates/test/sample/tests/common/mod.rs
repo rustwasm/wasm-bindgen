@@ -1,5 +1,5 @@
-use std::time::Duration;
 use sample::Timeout;
+use std::time::Duration;
 use wasm_bindgen_test::*;
 
 #[wasm_bindgen_test]

@@ -520,9 +520,7 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
         | AuxImport::Value(AuxValue::ClassSetter(js, name)) => {
             format!("field access of `{}` for {}", name, desc_js(js))
         }
-        AuxImport::ValueWithThis(js, method) => {
-            format!("method `{}.{}`", desc_js(js), method)
-        }
+        AuxImport::ValueWithThis(js, method) => format!("method `{}.{}`", desc_js(js), method),
         AuxImport::Instanceof(js) => format!("instance of check of {}", desc_js(js)),
         AuxImport::Static(js) => format!("static js value {}", desc_js(js)),
         AuxImport::StructuralMethod(name) => format!("structural method `{}`", name),

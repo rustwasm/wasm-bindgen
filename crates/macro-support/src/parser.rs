@@ -1019,18 +1019,16 @@ impl MacroParse<()> for syn::ItemEnum {
                             attrs: _,
                             lit: syn::Lit::Int(int_lit),
                         }),
-                    )) => {
-                        match int_lit.base10_digits().parse::<u32>() {
-                            Ok(v) => v,
-                            Err(_) => {
-                                bail_span!(
-                                    int_lit,
-                                    "enums with #[wasm_bindgen] can only support \
-                                     numbers that can be represented as u32"
-                                );
-                            }
+                    )) => match int_lit.base10_digits().parse::<u32>() {
+                        Ok(v) => v,
+                        Err(_) => {
+                            bail_span!(
+                                int_lit,
+                                "enums with #[wasm_bindgen] can only support \
+                                 numbers that can be represented as u32"
+                            );
                         }
-                    }
+                    },
                     None => i as u32,
                     Some((_, expr)) => bail_span!(
                         expr,
