@@ -2,6 +2,18 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.53
+
+Released 2019-10-29.
+
+### Fixed
+
+* A bug with the experimental support for multi-value interface types has been
+  fixed.
+  [#1839](https://github.com/rustwasm/wasm-bindgen/pull/1839)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.52
 
 Released 2019-10-24.
