@@ -54,22 +54,23 @@ pub fn add_multi_value(
     // Finally, unset `return_via_outptr`, fix up its incoming bindings'
     // argument numberings, and update its function type.
     for (id, binding) in &mut bindings.exports {
-        if binding.return_via_outptr.take().is_some() {
-            if binding.incoming.is_empty() {
-                bail!("missing incoming binding expression for return pointer parameter");
-            }
-            if !is_ret_ptr_bindings(binding.incoming.remove(0)) {
-                bail!("unexpected incoming binding expression for return pointer parameter");
-            }
-
-            fixup_binding_argument_gets(&mut binding.incoming)?;
-
-            let func = match module.exports.get(*id).item {
-                walrus::ExportItem::Function(f) => f,
-                _ => unreachable!(),
-            };
-            binding.wasm_ty = module.funcs.get(func).ty();
+        if binding.return_via_outptr.take().is_none() {
+            continue;
         }
+        if binding.incoming.is_empty() {
+            bail!("missing incoming binding expression for return pointer parameter");
+        }
+        if !is_ret_ptr_bindings(binding.incoming.remove(0)) {
+            bail!("unexpected incoming binding expression for return pointer parameter");
+        }
+
+        fixup_binding_argument_gets(&mut binding.incoming)?;
+
+        let func = match module.exports.get(*id).item {
+            walrus::ExportItem::Function(f) => f,
+            _ => unreachable!(),
+        };
+        binding.wasm_ty = module.funcs.get(func).ty();
     }
 
     Ok(())
