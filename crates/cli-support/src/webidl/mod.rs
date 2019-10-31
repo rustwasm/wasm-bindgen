@@ -628,35 +628,46 @@ impl<'a> Context<'a> {
     }
 
     fn discover_main(&mut self) -> Result<(), Error> {
-        let main = self
+        let main_info = self
             .module
             .functions()
-            .find(|x| x.name.as_ref().map_or(false, |x| x == "main"));
-        if let Some(main) = main {
+            .find(|x| x.name.as_ref().map_or(false, |x| x == "main"))
+            .map(|x| (x.ty(), x.id()));
+        if let Some((main_type, main_id)) = main_info {
+            use walrus::ValType::I32;
             // an entry point `main` has signature (i32, i32) -> i32
             let type_matches = {
-                use walrus::ValType::I32;
-                let ty = main.ty();
-                let ty = self.module.types.get(ty);
+                let ty = self.module.types.get(main_type);
                 ty.params() == [I32, I32] && ty.results() == [I32]
             };
             if !type_matches {
                 return Ok(());
             }
+            let mut wrapper = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
+            const NAME: &str = "__wasm_bindgen_autodiscoveredmain_wrapper";
+            wrapper.func_body()
+                .i32_const(0)
+                .i32_const(0)
+                .call(main_id)
+                .drop()
+                .return_();
+            let wrapper = wrapper.finish(vec![], &mut self.module.funcs);
+            let export = self.module.exports.add(NAME, wrapper);
+            self.function_exports.insert(NAME.to_string(), (export, wrapper));
             let descriptor = Descriptor::Function(Box::new(Function {
-                arguments: vec![Descriptor::I32, Descriptor::I32],
+                arguments: vec![],
                 shim_idx: 0, // TODO is this bad
-                ret: Descriptor::I32,
+                ret: Descriptor::Unit,
             }));
-            self.descriptors.insert("main".to_string(), descriptor);
+            self.descriptors.insert(NAME.to_string(), descriptor);
             let program = decode::Program {
                 exports: vec![decode::Export {
                     class: None,
                     comments: vec![],
                     consumed: false,
                     function: decode::Function {
-                        arg_names: vec!["argc".to_string(), "argv".to_string()], // TODO is that even what that is
-                        name: "main",
+                        arg_names: vec![],
+                        name: NAME,
                     },
                     method_kind: decode::MethodKind::Operation(decode::Operation {
                         is_static: true,
@@ -670,7 +681,7 @@ impl<'a> Context<'a> {
                 typescript_custom_sections: vec![],
                 local_modules: vec![],
                 inline_js: vec![],
-                unique_crate_identifier: "wasm-bindgen-autodiscoveredmain",
+                unique_crate_identifier: NAME,
                 package_json: None,
             };
             self.program(program)?;
