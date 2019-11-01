@@ -645,7 +645,8 @@ impl<'a> Context<'a> {
             }
             let mut wrapper = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
             const NAME: &str = "__wasm_bindgen_autodiscoveredmain_wrapper";
-            wrapper.func_body()
+            wrapper
+                .func_body()
                 .i32_const(0)
                 .i32_const(0)
                 .call(main_id)
@@ -653,38 +654,31 @@ impl<'a> Context<'a> {
                 .return_();
             let wrapper = wrapper.finish(vec![], &mut self.module.funcs);
             let export = self.module.exports.add(NAME, wrapper);
-            self.function_exports.insert(NAME.to_string(), (export, wrapper));
+            self.function_exports
+                .insert(NAME.to_string(), (export, wrapper));
             let descriptor = Descriptor::Function(Box::new(Function {
                 arguments: vec![],
                 shim_idx: 0, // TODO is this bad
                 ret: Descriptor::Unit,
             }));
             self.descriptors.insert(NAME.to_string(), descriptor);
-            let program = decode::Program {
-                exports: vec![decode::Export {
-                    class: None,
-                    comments: vec![],
-                    consumed: false,
-                    function: decode::Function {
-                        arg_names: vec![],
-                        name: NAME,
-                    },
-                    method_kind: decode::MethodKind::Operation(decode::Operation {
-                        is_static: true,
-                        kind: decode::OperationKind::Regular,
-                    }),
-                    start: true,
-                }],
-                enums: vec![],
-                imports: vec![],
-                structs: vec![],
-                typescript_custom_sections: vec![],
-                local_modules: vec![],
-                inline_js: vec![],
-                unique_crate_identifier: NAME,
-                package_json: None,
+
+            let export = decode::Export {
+                class: None,
+                comments: vec![],
+                consumed: false,
+                function: decode::Function {
+                    arg_names: vec![],
+                    name: NAME,
+                },
+                method_kind: decode::MethodKind::Operation(decode::Operation {
+                    is_static: true,
+                    kind: decode::OperationKind::Regular,
+                }),
+                start: true,
             };
-            self.program(program)?;
+
+            self.export(export)?;
         }
 
         Ok(())
