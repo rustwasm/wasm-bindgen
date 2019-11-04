@@ -5,7 +5,7 @@ use std::mem;
 
 use anyhow::{anyhow, bail, Error};
 use walrus::ir::Value;
-use walrus::{DataId, FunctionId, InitExpr, InstrLocId, ValType};
+use walrus::{DataId, FunctionId, InitExpr, ValType};
 use walrus::{ExportItem, GlobalId, GlobalKind, ImportKind, MemoryId, Module};
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 
