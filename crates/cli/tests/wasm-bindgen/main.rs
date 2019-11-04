@@ -151,3 +151,49 @@ fn one_export_works() {
         .wasm_bindgen("");
     cmd.assert().success();
 }
+
+#[test]
+fn bin_crate_works() {
+    let (mut cmd, out_dir) = Project::new("bin_crate_works")
+        .file(
+            "src/main.rs",
+            r#"
+                use wasm_bindgen::prelude::*;
+                #[wasm_bindgen]
+                extern "C" {
+                    #[wasm_bindgen(js_namespace = console)]
+                    fn log(data: &str);
+                }
+
+                fn main() {
+                    log("hello, world");
+                }
+            "#,
+        )
+        .file(
+            "Cargo.toml",
+            &format!(
+                "
+                    [package]
+                    name = \"bin_crate_works\"
+                    authors = []
+                    version = \"1.0.0\"
+                    edition = '2018'
+
+                    [dependencies]
+                    wasm-bindgen = {{ path = '{}' }}
+
+                    [workspace]
+                ",
+                repo_root().display(),
+            ),
+        )
+        .wasm_bindgen("--target nodejs");
+    cmd.assert().success();
+    Command::new("node")
+        .arg("bin_crate_works.js")
+        .current_dir(out_dir)
+        .assert()
+        .success()
+        .stdout("hello, world\n");
+}

@@ -512,6 +512,10 @@ pub fn process(
         cx.program(program)?;
     }
 
+    if !cx.start_found {
+        cx.discover_main()?;
+    }
+
     if let Some(standard) = cx.module.customs.delete_typed::<ast::WebidlBindings>() {
         cx.standard(&standard)?;
     }
@@ -619,6 +623,44 @@ impl<'a> Context<'a> {
                 );
             }
         }
+
+        Ok(())
+    }
+
+    // Discover a function `main(i32, i32) -> i32` and, if it exists, make that function run at module start.
+    fn discover_main(&mut self) -> Result<(), Error> {
+        // find a `main(i32, i32) -> i32`
+        let main_id = self
+            .module
+            .functions()
+            .find(|x| {
+                use walrus::ValType::I32;
+                // name has to be `main`
+                let name_matches = x.name.as_ref().map_or(false, |x| x == "main");
+                // type has to be `(i32, i32) -> i32`
+                let ty = self.module.types.get(x.ty());
+                let type_matches = ty.params() == [I32, I32] && ty.results() == [I32];
+                name_matches && type_matches
+            })
+            .map(|x| x.id());
+        let main_id = match main_id {
+            Some(x) => x,
+            None => return Ok(()),
+        };
+
+        // build a wrapper to zero out the arguments and ignore the return value
+        let mut wrapper = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
+        wrapper
+            .func_body()
+            .i32_const(0)
+            .i32_const(0)
+            .call(main_id)
+            .drop()
+            .return_();
+        let wrapper = wrapper.finish(vec![], &mut self.module.funcs);
+
+        // call that wrapper when the module starts
+        self.add_start_function(wrapper)?;
 
         Ok(())
     }
