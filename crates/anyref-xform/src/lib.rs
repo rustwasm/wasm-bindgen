@@ -15,11 +15,11 @@
 //! goal at least is to have valid wasm modules coming in that don't use
 //! `anyref` and valid wasm modules going out which use `anyref` at the fringes.
 
-use failure::{bail, format_err, Error};
+use anyhow::{anyhow, bail, Error};
 use std::cmp;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use walrus::ir::*;
-use walrus::{ExportId, ImportId, TypeId};
+use walrus::{ExportId, ImportId, InstrLocId, TypeId};
 use walrus::{FunctionId, GlobalId, InitExpr, Module, TableId, ValType};
 
 // must be kept in sync with src/lib.rs and ANYREF_HEAP_START
@@ -185,9 +185,8 @@ impl Context {
                 _ => {}
             }
         }
-        let heap_alloc = heap_alloc.ok_or_else(|| format_err!("failed to find heap alloc"))?;
-        let heap_dealloc =
-            heap_dealloc.ok_or_else(|| format_err!("failed to find heap dealloc"))?;
+        let heap_alloc = heap_alloc.ok_or_else(|| anyhow!("failed to find heap alloc"))?;
+        let heap_dealloc = heap_dealloc.ok_or_else(|| anyhow!("failed to find heap dealloc"))?;
 
         // Create a shim function that looks like:
         //
@@ -624,7 +623,7 @@ impl Transform<'_> {
         impl VisitorMut for Rewrite<'_, '_> {
             fn start_instr_seq_mut(&mut self, seq: &mut InstrSeq) {
                 for i in (0..seq.instrs.len()).rev() {
-                    let call = match &mut seq.instrs[i] {
+                    let call = match &mut seq.instrs[i].0 {
                         Instr::Call(call) => call,
                         _ => continue,
                     };
@@ -644,24 +643,26 @@ impl Transform<'_> {
                     match intrinsic {
                         Intrinsic::TableGrow => {
                             // Switch this to a `table.grow` instruction...
-                            seq.instrs[i] = TableGrow {
+                            seq.instrs[i].0 = TableGrow {
                                 table: self.xform.table,
                             }
                             .into();
                             // ... and then insert a `ref.null` before the
                             // preceding instruction as the value to grow the
                             // table with.
-                            seq.instrs.insert(i - 1, RefNull {}.into());
+                            seq.instrs
+                                .insert(i - 1, (RefNull {}.into(), InstrLocId::default()));
                         }
                         Intrinsic::TableSetNull => {
                             // Switch this to a `table.set` instruction...
-                            seq.instrs[i] = TableSet {
+                            seq.instrs[i].0 = TableSet {
                                 table: self.xform.table,
                             }
                             .into();
                             // ... and then insert a `ref.null` as the
                             // preceding instruction
-                            seq.instrs.insert(i, RefNull {}.into());
+                            seq.instrs
+                                .insert(i, (RefNull {}.into(), InstrLocId::default()));
                         }
                         Intrinsic::DropRef => call.func = self.xform.heap_dealloc,
                         Intrinsic::CloneRef => call.func = self.xform.clone_ref,

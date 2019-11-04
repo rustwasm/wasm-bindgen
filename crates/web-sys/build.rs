@@ -1,26 +1,15 @@
-use failure::{Fail, ResultExt};
+use anyhow::{Context, Result};
 use sourcefile::SourceFile;
 use std::collections::HashSet;
 use std::env;
 use std::ffi::OsStr;
 use std::fs;
 use std::path::{self, PathBuf};
-use std::process::{self, Command};
+use std::process::Command;
 
-fn main() {
+fn main() -> Result<()> {
     #[cfg(feature = "env_logger")]
     env_logger::init();
-
-    if let Err(e) = try_main() {
-        eprintln!("Error: {}", e);
-        for c in e.iter_causes() {
-            eprintln!("  caused by {}", c);
-        }
-        process::exit(1);
-    }
-}
-
-fn try_main() -> Result<(), failure::Error> {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=webidls/enabled");
 
@@ -35,7 +24,7 @@ fn try_main() -> Result<(), failure::Error> {
         println!("cargo:rerun-if-changed={}", path.display());
         source = source
             .add_file(&path)
-            .with_context(|_| format!("reading contents of file \"{}\"", path.display()))?;
+            .with_context(|| format!("reading contents of file \"{}\"", path.display()))?;
     }
 
     // Read our manifest, learn all `[feature]` directives with "toml parsing".
@@ -76,9 +65,9 @@ fn try_main() -> Result<(), failure::Error> {
 
     let bindings = match wasm_bindgen_webidl::compile(&source.contents, allowed) {
         Ok(bindings) => bindings,
-        Err(e) => match e.kind() {
-            wasm_bindgen_webidl::ErrorKind::ParsingWebIDLSourcePos(pos) => {
-                if let Some(pos) = source.resolve_offset(pos) {
+        Err(e) => {
+            if let Some(err) = e.downcast_ref::<wasm_bindgen_webidl::WebIDLParseError>() {
+                if let Some(pos) = source.resolve_offset(err.0) {
                     let ctx = format!(
                         "compiling WebIDL into wasm-bindgen bindings in file \
                          \"{}\", line {} column {}",
@@ -86,19 +75,13 @@ fn try_main() -> Result<(), failure::Error> {
                         pos.line + 1,
                         pos.col + 1
                     );
-                    return Err(e.context(ctx).into());
+                    return Err(e.context(ctx));
                 } else {
-                    return Err(e
-                        .context("compiling WebIDL into wasm-bindgen bindings")
-                        .into());
+                    return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
                 }
             }
-            _ => {
-                return Err(e
-                    .context("compiling WebIDL into wasm-bindgen bindings")
-                    .into());
-            }
-        },
+            return Err(e.context("compiling WebIDL into wasm-bindgen bindings"));
+        }
     };
 
     let out_dir = env::var("OUT_DIR").context("reading OUT_DIR environment variable")?;

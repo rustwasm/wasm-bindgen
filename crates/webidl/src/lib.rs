@@ -9,7 +9,6 @@ emitted for the types and methods described in the WebIDL.
 #![deny(missing_debug_implementations)]
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-webidl/0.2")]
 
-mod error;
 mod first_pass;
 mod idl_type;
 mod util;
@@ -21,11 +20,12 @@ use crate::util::{
     camel_case_ident, mdn_doc, public, shouty_snake_case_ident, snake_case_ident,
     webidl_const_v_to_backend_const_v, TypePosition,
 };
-use failure::format_err;
+use anyhow::{bail, Result};
 use proc_macro2::{Ident, Span};
 use quote::{quote, ToTokens};
 use std::collections::{BTreeSet, HashSet};
 use std::env;
+use std::fmt;
 use std::fmt::Display;
 use std::fs;
 use std::iter::FromIterator;
@@ -38,22 +38,30 @@ use weedle::attribute::ExtendedAttributeList;
 use weedle::dictionary::DictionaryMember;
 use weedle::interface::InterfaceMember;
 
-pub use crate::error::{Error, ErrorKind, Result};
-
 struct Program {
     main: ast::Program,
     submodules: Vec<(String, ast::Program)>,
 }
+
+/// A parse error indicating where parsing failed
+#[derive(Debug)]
+pub struct WebIDLParseError(pub usize);
+
+impl fmt::Display for WebIDLParseError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "failed to parse webidl at byte position {}", self.0)
+    }
+}
+
+impl std::error::Error for WebIDLParseError {}
 
 /// Parse a string of WebIDL source text into a wasm-bindgen AST.
 fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program> {
     let definitions = match weedle::parse(webidl_source) {
         Ok(def) => def,
         Err(e) => {
-            return Err(match &e {
-                weedle::Err::Incomplete(needed) => format_err!("needed {:?} more bytes", needed)
-                    .context(ErrorKind::ParsingWebIDLSource)
-                    .into(),
+            match &e {
+                weedle::Err::Incomplete(needed) => bail!("needed {:?} more bytes", needed),
                 weedle::Err::Error(cx) | weedle::Err::Failure(cx) => {
                     // Note that #[allow] here is a workaround for Geal/nom#843
                     // because the `Context` type here comes from `nom` and if
@@ -66,11 +74,10 @@ fn parse(webidl_source: &str, allowed_types: Option<&[&str]>) -> Result<Program>
                         _ => 0,
                     };
                     let pos = webidl_source.len() - remaining;
-                    format_err!("failed to parse WebIDL")
-                        .context(ErrorKind::ParsingWebIDLSourcePos(pos))
-                        .into()
+
+                    bail!(WebIDLParseError(pos))
                 }
-            });
+            }
         }
     };
 

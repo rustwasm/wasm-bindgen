@@ -11,7 +11,7 @@
 //! functions.
 
 use crate::descriptor::{Closure, Descriptor};
-use failure::Error;
+use anyhow::Error;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use walrus::ImportId;

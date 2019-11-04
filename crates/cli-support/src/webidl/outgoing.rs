@@ -15,7 +15,7 @@
 
 use crate::descriptor::{Descriptor, VectorKind};
 use crate::webidl::NonstandardWebidlSection;
-use failure::{bail, format_err, Error};
+use anyhow::{bail, format_err, Error};
 use walrus::{Module, ValType};
 use wasm_webidl_bindings::ast;
 

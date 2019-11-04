@@ -6,7 +6,7 @@ use crate::descriptor::VectorKind;
 use crate::js::binding::JsBuilder;
 use crate::js::Context;
 use crate::webidl::NonstandardOutgoing;
-use failure::{bail, Error};
+use anyhow::{bail, Error};
 use wasm_webidl_bindings::ast;
 
 pub struct Outgoing<'a, 'b> {

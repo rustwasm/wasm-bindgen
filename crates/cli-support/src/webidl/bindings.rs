@@ -14,7 +14,7 @@ use crate::descriptor::Function;
 use crate::webidl::incoming::IncomingBuilder;
 use crate::webidl::outgoing::OutgoingBuilder;
 use crate::webidl::{Binding, NonstandardWebidlSection};
-use failure::{format_err, Error};
+use anyhow::{format_err, Error};
 use walrus::{FunctionId, Module, ValType};
 use wasm_webidl_bindings::ast;
 

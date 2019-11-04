@@ -4,7 +4,7 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
-use failure::{Error, ResultExt};
+use anyhow::{Context, Error};
 
 pub fn execute(
     module: &str,

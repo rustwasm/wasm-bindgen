@@ -113,7 +113,7 @@ pub fn run(
     memory: walrus::MemoryId,
     shadow_stack_pointer: walrus::GlobalId,
     to_xform: &[(walrus::ExportId, usize, &[walrus::ValType])],
-) -> Result<(), failure::Error> {
+) -> Result<(), anyhow::Error> {
     for &(export, return_pointer_index, results) in to_xform {
         xform_one(
             module,
@@ -140,16 +140,14 @@ fn xform_one(
     export: walrus::ExportId,
     return_pointer_index: usize,
     results: &[walrus::ValType],
-) -> Result<(), failure::Error> {
+) -> Result<(), anyhow::Error> {
     if module.globals.get(shadow_stack_pointer).ty != walrus::ValType::I32 {
-        failure::bail!("shadow stack pointer global does not have type `i32`");
+        anyhow::bail!("shadow stack pointer global does not have type `i32`");
     }
 
     let func = match module.exports.get(export).item {
         walrus::ExportItem::Function(f) => f,
-        _ => {
-            failure::bail!("can only multi-value transform exported functions, found non-function")
-        }
+        _ => anyhow::bail!("can only multi-value transform exported functions, found non-function"),
     };
 
     // Compute the total size of all results, potentially with padding to ensure
@@ -165,7 +163,7 @@ fn xform_one(
                 round_up_to_alignment(results_size, 8) + 8
             }
             walrus::ValType::V128 => round_up_to_alignment(results_size, 16) + 16,
-            walrus::ValType::Anyref => failure::bail!(
+            walrus::ValType::Anyref => anyhow::bail!(
                 "cannot multi-value transform functions that return \
                  anyref, since they can't go into linear memory"
             ),
@@ -179,7 +177,7 @@ fn xform_one(
     let (ty_params, ty_results) = module.types.params_results(ty);
 
     if !ty_results.is_empty() {
-        failure::bail!(
+        anyhow::bail!(
             "can only multi-value transform functions that don't return any \
              results (since they should be returned on the stack via a pointer)"
         );
@@ -187,8 +185,8 @@ fn xform_one(
 
     match ty_params.get(return_pointer_index) {
         Some(walrus::ValType::I32) => {}
-        None => failure::bail!("the return pointer parameter doesn't exist"),
-        Some(_) => failure::bail!("the return pointer parameter is not `i32`"),
+        None => anyhow::bail!("the return pointer parameter doesn't exist"),
+        Some(_) => anyhow::bail!("the return pointer parameter is not `i32`"),
     }
 
     let new_params: Vec<_> = ty_params

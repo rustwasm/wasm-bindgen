@@ -13,7 +13,7 @@ Support for parsing WebIDL specific to wasm-bindgen
 edition = "2018"
 
 [dependencies]
-failure = "0.1.2"
+anyhow = "1.0"
 heck = "0.3"
 log = "0.4.1"
 proc-macro2 = "1.0"
