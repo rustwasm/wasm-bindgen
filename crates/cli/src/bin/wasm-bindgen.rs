@@ -1,5 +1,5 @@
+use anyhow::{bail, Error};
 use docopt::Docopt;
-use failure::{bail, Error};
 use serde::Deserialize;
 use std::path::PathBuf;
 use std::process;
@@ -77,10 +77,7 @@ fn main() {
         Ok(()) => return,
         Err(e) => e,
     };
-    eprintln!("error: {}", err);
-    for cause in err.iter_causes() {
-        eprintln!("    caused by: {}", cause);
-    }
+    eprintln!("error: {:?}", err);
     process::exit(1);
 }
 

@@ -11,11 +11,10 @@
 //! For more documentation about this see the `wasm-bindgen-test` crate README
 //! and source code.
 
-use failure::{bail, format_err, Error, ResultExt};
+use anyhow::{anyhow, bail, Context};
 use std::env;
 use std::fs;
 use std::path::PathBuf;
-use std::process;
 use std::thread;
 use wasm_bindgen_cli_support::Bindgen;
 
@@ -28,20 +27,8 @@ mod node;
 mod server;
 mod shell;
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     env_logger::init();
-    let err = match rmain() {
-        Ok(()) => return,
-        Err(e) => e,
-    };
-    eprintln!("error: {}", err);
-    for cause in err.iter_causes() {
-        eprintln!("\tcaused by: {}", cause);
-    }
-    process::exit(1);
-}
-
-fn rmain() -> Result<(), Error> {
     let mut args = env::args_os().skip(1);
     let shell = shell::Shell::new();
 
@@ -59,7 +46,7 @@ fn rmain() -> Result<(), Error> {
         .and_then(|p| p.parent()) // chop off `deps`
         .and_then(|p| p.parent()) // chop off `debug`
         .map(|p| p.join("wbg-tmp"))
-        .ok_or_else(|| format_err!("file to test doesn't follow the expected Cargo conventions"))?;
+        .ok_or_else(|| anyhow!("file to test doesn't follow the expected Cargo conventions"))?;
 
     // Make sure there's no stale state from before
     drop(fs::remove_dir_all(&tmpdir));

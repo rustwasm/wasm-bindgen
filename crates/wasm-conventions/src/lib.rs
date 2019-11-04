@@ -8,7 +8,7 @@
 
 #![deny(missing_docs, missing_debug_implementations)]
 
-use failure::{bail, format_err, Error};
+use anyhow::{anyhow, bail, Error};
 use walrus::{GlobalId, GlobalKind, MemoryId, Module, ValType};
 
 /// Get a Wasm module's canonical linear memory.
@@ -22,7 +22,7 @@ pub fn get_memory(module: &Module) -> Result<MemoryId, Error> {
         );
     }
     memory.ok_or_else(|| {
-        format_err!(
+        anyhow!(
             "module does not have a memory; must have a memory \
              to transform return pointers into Wasm multi-value"
         )
@@ -69,9 +69,7 @@ pub fn unexport_shadow_stack_pointer(module: &mut Module) -> Result<(), Error> {
         .iter()
         .find(|e| e.name == "__shadow_stack_pointer")
         .map(|e| e.id())
-        .ok_or_else(|| {
-            format_err!("did not find the `__shadow_stack_pointer` export in the module")
-        })?;
+        .ok_or_else(|| anyhow!("did not find the `__shadow_stack_pointer` export in the module"))?;
     module.exports.delete(e);
     Ok(())
 }
@@ -85,9 +83,7 @@ pub fn get_shadow_stack_pointer(module: &Module) -> Result<GlobalId, Error> {
         .exports
         .iter()
         .find(|e| e.name == "__shadow_stack_pointer")
-        .ok_or_else(|| {
-            format_err!("did not find the `__shadow_stack_pointer` export in the module")
-        })
+        .ok_or_else(|| anyhow!("did not find the `__shadow_stack_pointer` export in the module"))
         .and_then(|e| match e.item {
             walrus::ExportItem::Global(g) => Ok(g),
             _ => bail!("`__shadow_stack_pointer` export is wrong kind"),

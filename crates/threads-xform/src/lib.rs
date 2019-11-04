@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use std::env;
 use std::mem;
 
-use failure::{bail, format_err, Error};
+use anyhow::{anyhow, bail, Error};
 use walrus::ir::Value;
-use walrus::{DataId, FunctionId, InitExpr, ValType};
+use walrus::{DataId, FunctionId, InitExpr, InstrLocId, ValType};
 use walrus::{ExportItem, GlobalId, GlobalKind, ImportKind, MemoryId, Module};
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 
@@ -180,7 +180,7 @@ fn delete_synthetic_export(module: &mut Module, name: &str) -> Result<ExportItem
         .exports
         .iter()
         .find(|e| e.name == name)
-        .ok_or_else(|| format_err!("failed to find `{}`", name))?;
+        .ok_or_else(|| anyhow!("failed to find `{}`", name))?;
     let ret = item.item;
     let id = item.id();
     module.exports.delete(id);
@@ -452,7 +452,7 @@ fn find_wbindgen_malloc(module: &Module) -> Result<FunctionId, Error> {
         .exports
         .iter()
         .find(|e| e.name == "__wbindgen_malloc")
-        .ok_or_else(|| format_err!("failed to find `__wbindgen_malloc`"))?;
+        .ok_or_else(|| anyhow!("failed to find `__wbindgen_malloc`"))?;
     match e.item {
         walrus::ExportItem::Function(f) => Ok(f),
         _ => bail!("`__wbindgen_malloc` wasn't a funtion"),
@@ -515,7 +515,7 @@ fn implement_thread_intrinsics(module: &mut Module, globals: &Globals) -> Result
     });
 
     impl VisitorMut for Visitor<'_> {
-        fn visit_instr_mut(&mut self, instr: &mut Instr) {
+        fn visit_instr_mut(&mut self, instr: &mut Instr, _loc: &mut InstrLocId) {
             let call = match instr {
                 Instr::Call(e) => e,
                 _ => return,

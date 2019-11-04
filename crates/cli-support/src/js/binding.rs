@@ -8,7 +8,7 @@ use crate::js::incoming;
 use crate::js::outgoing;
 use crate::js::Context;
 use crate::webidl::Binding;
-use failure::{bail, Error};
+use anyhow::{bail, Error};
 use std::collections::HashSet;
 use wasm_webidl_bindings::ast;
 

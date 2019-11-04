@@ -12,6 +12,6 @@ Support for threading-related transformations in wasm-bindgen
 edition = "2018"
 
 [dependencies]
-failure = "0.1"
-walrus = "0.12.0"
+anyhow = "1.0"
+walrus = "0.13.0"
 wasm-bindgen-wasm-conventions = { path = "../wasm-conventions", version = "=0.2.53" }

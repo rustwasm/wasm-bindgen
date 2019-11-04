@@ -27,7 +27,7 @@ use crate::decode;
 use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
-use failure::{bail, format_err, Error};
+use anyhow::{anyhow, bail, Error};
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
@@ -1340,7 +1340,7 @@ impl<'a> Context<'a> {
                             walrus::ExportItem::Function(f) => f == bind.func,
                             _ => false,
                         })
-                        .ok_or_else(|| format_err!("missing export function for webidl binding"))?;
+                        .ok_or_else(|| anyhow!("missing export function for webidl binding"))?;
                     let id = export.id();
                     self.standard_export(binding, id)?;
                 }
@@ -1363,7 +1363,7 @@ impl<'a> Context<'a> {
         let binding: &ast::FunctionBinding = std
             .bindings
             .get(bind.binding)
-            .ok_or_else(|| format_err!("bad binding id"))?;
+            .ok_or_else(|| anyhow!("bad binding id"))?;
         let (wasm_ty, webidl_ty, incoming, outgoing) = match binding {
             ast::FunctionBinding::Export(e) => (
                 e.wasm_ty,

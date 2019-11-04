@@ -11,7 +11,7 @@
 //! the `outgoing.rs` module.
 
 use crate::descriptor::{Descriptor, VectorKind};
-use failure::{bail, format_err, Error};
+use anyhow::{bail, format_err, Error};
 use walrus::ValType;
 use wasm_webidl_bindings::ast;
 

@@ -1,9 +1,8 @@
+use anyhow::{Context, Error};
 use docopt::Docopt;
-use failure::{Error, ResultExt};
 use serde::Deserialize;
 use std::fs;
 use std::path::PathBuf;
-use std::process;
 
 // no need for jemalloc bloat in this binary (and we don't need speed)
 #[global_allocator]
@@ -39,24 +38,12 @@ struct Args {
     arg_input: PathBuf,
 }
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let args: Args = Docopt::new(USAGE)
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
-    let err = match rmain(&args) {
-        Ok(()) => return,
-        Err(e) => e,
-    };
-    eprintln!("error: {}", err);
-    for cause in err.iter_causes() {
-        eprintln!("\tcaused by: {}", cause);
-    }
-    process::exit(1);
-}
-
-fn rmain(args: &Args) -> Result<(), Error> {
     let wasm = fs::read(&args.arg_input)
-        .with_context(|_| format!("failed to read `{}`", args.arg_input.display()))?;
+        .with_context(|| format!("failed to read `{}`", args.arg_input.display()))?;
 
     let object = wasm_bindgen_cli_support::wasm2es6js::Config::new()
         .base64(args.flag_base64)
@@ -70,9 +57,9 @@ fn rmain(args: &Args) -> Result<(), Error> {
 
     let (js, wasm) = object.js_and_wasm()?;
 
-    write(args, "js", js.as_bytes(), false)?;
+    write(&args, "js", js.as_bytes(), false)?;
     if let Some(wasm) = wasm {
-        write(args, "wasm", &wasm, false)?;
+        write(&args, "wasm", &wasm, false)?;
     }
     Ok(())
 }
@@ -81,12 +68,12 @@ fn write(args: &Args, extension: &str, contents: &[u8], print_fallback: bool) ->
     if let Some(p) = &args.flag_output {
         let dst = p.with_extension(extension);
         fs::write(&dst, contents)
-            .with_context(|_| format!("failed to write `{}`", dst.display()))?;
+            .with_context(|| format!("failed to write `{}`", dst.display()))?;
     } else if let Some(p) = &args.flag_out_dir {
         let filename = args.arg_input.file_name().unwrap();
         let dst = p.join(filename).with_extension(extension);
         fs::write(&dst, contents)
-            .with_context(|_| format!("failed to write `{}`", dst.display()))?;
+            .with_context(|| format!("failed to write `{}`", dst.display()))?;
     } else if print_fallback {
         println!("{}", String::from_utf8_lossy(contents))
     }

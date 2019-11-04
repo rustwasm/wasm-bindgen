@@ -21,7 +21,7 @@ test = false
 
 [build-dependencies]
 env_logger = { version = "0.7.0", optional = true }
-failure = "0.1.2"
+anyhow = "1.0"
 wasm-bindgen-webidl = { path = "../webidl", version = "=0.2.53" }
 sourcefile = "0.1"
 

@@ -3,7 +3,7 @@ use std::fs;
 use std::net::SocketAddr;
 use std::path::Path;
 
-use failure::{format_err, Error, ResultExt};
+use anyhow::{anyhow, Context, Error};
 use rouille::{Request, Response, Server};
 
 pub fn spawn(
@@ -90,7 +90,7 @@ pub fn spawn(
         response.headers.retain(|(k, _)| k != "Cache-Control");
         return response;
     })
-    .map_err(|e| format_err!("{}", e))?;
+    .map_err(|e| anyhow!("{}", e))?;
     return Ok(srv);
 
     fn try_asset(request: &Request, dir: &Path) -> Response {

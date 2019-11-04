@@ -1,6 +1,6 @@
 use crate::webidl::{NonstandardIncoming, NonstandardOutgoing};
 use crate::webidl::{NonstandardWebidlSection, WasmBindgenAux};
-use failure::Error;
+use anyhow::Error;
 use std::collections::HashSet;
 use walrus::Module;
 use wasm_bindgen_anyref_xform::Context;

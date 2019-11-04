@@ -1,6 +1,6 @@
 use crate::shell::Shell;
+use anyhow::{bail, format_err, Context, Error};
 use curl::easy::Easy;
-use failure::{bail, format_err, Error, ResultExt};
 use log::{debug, warn};
 use rouille::url::Url;
 use serde::{Deserialize, Serialize};
@@ -138,8 +138,8 @@ pub fn run(server: &SocketAddr, shell: &Shell) -> Result<(), Error> {
     // We periodically check the page to see if the output contains a known
     // string to only be printed when tests have finished running.
     //
-    // TODO: harness failures aren't well handled here, they always force a
-    //       timeout. These sorts of failures could be "you typo'd the path to a
+    // TODO: harness anyhows aren't well handled here, they always force a
+    //       timeout. These sorts of anyhows could be "you typo'd the path to a
     //       local script" which is pretty bad to time out for, we should detect
     //       this on the page and look for such output here, printing diagnostic
     //       information.

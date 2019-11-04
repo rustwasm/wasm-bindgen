@@ -1,6 +1,6 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
-use failure::{bail, Error, ResultExt};
+use anyhow::{bail, Context, Error};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::env;
 use std::fs;
@@ -256,7 +256,7 @@ impl Bindgen {
             }
             Input::Path(ref path) => {
                 let contents = fs::read(&path)
-                    .with_context(|_| format!("failed to read `{}`", path.display()))?;
+                    .with_context(|| format!("failed to read `{}`", path.display()))?;
                 let module = walrus::ModuleConfig::new()
                     // Skip validation of the module as LLVM's output is
                     // generally already well-formed and so we won't gain much
@@ -307,7 +307,7 @@ impl Bindgen {
 
         self.threads
             .run(&mut module)
-            .with_context(|_| "failed to prepare module for threading")?;
+            .with_context(|| "failed to prepare module for threading")?;
 
         // If requested, turn all mangled symbols into prettier unmangled
         // symbols with the help of `rustc-demangle`.
@@ -373,10 +373,10 @@ impl Bindgen {
                     .context("failed to transform return pointers into multi-value Wasm")?;
             }
             webidl::standard::add_section(&mut module, &aux, &bindings)
-                .with_context(|_| "failed to generate a standard wasm bindings custom section")?;
+                .with_context(|| "failed to generate a standard wasm bindings custom section")?;
         } else {
             if self.multi_value {
-                failure::bail!(
+                anyhow::bail!(
                     "Wasm multi-value is currently only available when \
                      Wasm interface types is also enabled"
                 );
@@ -565,11 +565,11 @@ impl Output {
         &self.module
     }
 
-    pub fn emit(&self, out_dir: impl AsRef<Path>) -> Result<(), Error> {
+    pub fn emit(&mut self, out_dir: impl AsRef<Path>) -> Result<(), Error> {
         self._emit(out_dir.as_ref())
     }
 
-    fn _emit(&self, out_dir: &Path) -> Result<(), Error> {
+    fn _emit(&mut self, out_dir: &Path) -> Result<(), Error> {
         let wasm_name = if self.wasm_interface_types {
             self.stem.clone()
         } else {
@@ -579,7 +579,7 @@ impl Output {
         fs::create_dir_all(out_dir)?;
         let wasm_bytes = self.module.emit_wasm();
         fs::write(&wasm_path, wasm_bytes)
-            .with_context(|_| format!("failed to write `{}`", wasm_path.display()))?;
+            .with_context(|| format!("failed to write `{}`", wasm_path.display()))?;
 
         if self.wasm_interface_types {
             return Ok(());
@@ -593,7 +593,7 @@ impl Output {
                 let path = out_dir.join("snippets").join(identifier).join(name);
                 fs::create_dir_all(path.parent().unwrap())?;
                 fs::write(&path, js)
-                    .with_context(|_| format!("failed to write `{}`", path.display()))?;
+                    .with_context(|| format!("failed to write `{}`", path.display()))?;
             }
         }
 
@@ -601,7 +601,7 @@ impl Output {
             let path = out_dir.join("snippets").join(path);
             fs::create_dir_all(path.parent().unwrap())?;
             fs::write(&path, contents)
-                .with_context(|_| format!("failed to write `{}`", path.display()))?;
+                .with_context(|| format!("failed to write `{}`", path.display()))?;
         }
 
         if self.npm_dependencies.len() > 0 {
@@ -623,26 +623,26 @@ impl Output {
         };
         let js_path = out_dir.join(&self.stem).with_extension(extension);
         fs::write(&js_path, reset_indentation(&self.js))
-            .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
+            .with_context(|| format!("failed to write `{}`", js_path.display()))?;
 
         if self.typescript {
             let ts_path = js_path.with_extension("d.ts");
             fs::write(&ts_path, &self.ts)
-                .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
+                .with_context(|| format!("failed to write `{}`", ts_path.display()))?;
         }
 
         if self.mode.nodejs() {
             let js_path = wasm_path.with_extension(extension);
             let shim = self.generate_node_wasm_import(&self.module, &wasm_path);
             fs::write(&js_path, shim)
-                .with_context(|_| format!("failed to write `{}`", js_path.display()))?;
+                .with_context(|| format!("failed to write `{}`", js_path.display()))?;
         }
 
         if self.typescript {
             let ts_path = wasm_path.with_extension("d.ts");
             let ts = wasm2es6js::typescript(&self.module)?;
             fs::write(&ts_path, ts)
-                .with_context(|_| format!("failed to write `{}`", ts_path.display()))?;
+                .with_context(|| format!("failed to write `{}`", ts_path.display()))?;
         }
 
         Ok(())

@@ -20,7 +20,7 @@ use crate::descriptor::VectorKind;
 use crate::webidl::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
 use crate::webidl::{NonstandardIncoming, NonstandardOutgoing};
 use crate::webidl::{NonstandardWebidlSection, WasmBindgenAux};
-use failure::{bail, Error, ResultExt};
+use anyhow::{bail, Context, Error};
 use walrus::Module;
 use wasm_bindgen_multi_value_xform as multi_value_xform;
 use wasm_bindgen_wasm_conventions as wasm_conventions;
@@ -210,14 +210,14 @@ pub fn add_section(
         }
 
         let name = &module.exports.get(*export).name;
-        let params = extract_incoming(&binding.incoming).with_context(|_| {
+        let params = extract_incoming(&binding.incoming).with_context(|| {
             format!(
                 "failed to map arguments for export `{}` to standard \
                  binding expressions",
                 name
             )
         })?;
-        let result = extract_outgoing(&binding.outgoing).with_context(|_| {
+        let result = extract_outgoing(&binding.outgoing).with_context(|| {
             format!(
                 "failed to map return value for export `{}` to standard \
                  binding expressions",
@@ -252,14 +252,14 @@ pub fn add_section(
             let import = module.imports.get(*import);
             (&import.module, &import.name)
         };
-        let params = extract_outgoing(&binding.outgoing).with_context(|_| {
+        let params = extract_outgoing(&binding.outgoing).with_context(|| {
             format!(
                 "failed to map arguments of import `{}::{}` to standard \
                  binding expressions",
                 module_name, name,
             )
         })?;
-        let result = extract_incoming(&binding.incoming).with_context(|_| {
+        let result = extract_incoming(&binding.incoming).with_context(|| {
             format!(
                 "failed to map return value of import `{}::{}` to standard \
                  binding expressions",

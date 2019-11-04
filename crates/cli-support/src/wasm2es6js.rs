@@ -1,4 +1,4 @@
-use failure::{bail, Error};
+use anyhow::{bail, Error};
 use std::collections::HashSet;
 use walrus::Module;
 

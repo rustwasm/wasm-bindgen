@@ -65,7 +65,7 @@ impl Interpreter {
     ///
     /// Note that the `module` passed in to this function must be the same as
     /// the `module` passed to `interpret` below.
-    pub fn new(module: &Module) -> Result<Interpreter, failure::Error> {
+    pub fn new(module: &Module) -> Result<Interpreter, anyhow::Error> {
         let mut ret = Interpreter::default();
 
         // The descriptor functions shouldn't really use all that much memory
@@ -246,7 +246,7 @@ impl Interpreter {
             frame.locals.insert(*arg, *val);
         }
 
-        for instr in block.instrs.iter() {
+        for (instr, _) in block.instrs.iter() {
             frame.eval(instr);
             if frame.done {
                 break;

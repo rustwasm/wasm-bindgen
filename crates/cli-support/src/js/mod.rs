@@ -5,7 +5,7 @@ use crate::webidl::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::webidl::{AuxValue, Binding};
 use crate::webidl::{JsImport, JsImportName, NonstandardWebidlSection, WasmBindgenAux};
 use crate::{Bindgen, EncodeInto, OutputMode};
-use failure::{bail, Error, ResultExt};
+use anyhow::{bail, Context as _, Error};
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -1888,7 +1888,7 @@ impl<'a> Context<'a> {
         check_duplicated_getter_and_setter_names(&pairs)?;
         for (id, export) in pairs {
             self.generate_export(*id, export, bindings)
-                .with_context(|_| {
+                .with_context(|| {
                     format!(
                         "failed to generate bindings for Rust export `{}`",
                         export.debug_name,
@@ -1901,7 +1901,7 @@ impl<'a> Context<'a> {
             let catch = aux.imports_with_catch.contains(&id);
             let assert_no_shim = aux.imports_with_assert_no_shim.contains(&id);
             self.generate_import(*id, import, bindings, variadic, catch, assert_no_shim)
-                .with_context(|_| {
+                .with_context(|| {
                     format!("failed to generate bindings for import `{:?}`", import,)
                 })?;
         }
