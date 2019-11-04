@@ -4792,6 +4792,16 @@ macro_rules! arrays {
                 )
             }
 
+            pub unsafe fn view_mut_raw(ptr: *mut $ty, length: usize) -> $name {
+                let buf = wasm_bindgen::memory();
+                let mem = buf.unchecked_ref::<WebAssembly::Memory>();
+                $name::new_with_byte_offset_and_length(
+                    &mem.buffer(),
+                    ptr as u32,
+                    length as u32
+                )
+            }
+
             fn raw_copy_to(&self, dst: &mut [$ty]) {
                 let buf = wasm_bindgen::memory();
                 let mem = buf.unchecked_ref::<WebAssembly::Memory>();

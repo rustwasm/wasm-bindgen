@@ -466,3 +466,8 @@ fn array_inheritance() {
     assert!(array.is_instance_of::<Object>());
     let _: &Object = array.as_ref();
 }
+
+#[wasm_bindgen_test]
+fn uint8_view_mut_raw() {
+    assert!(1 == 2);
+}
