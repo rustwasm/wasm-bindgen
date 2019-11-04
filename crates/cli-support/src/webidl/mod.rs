@@ -627,59 +627,40 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
+    // Discover a function `main(i32, i32) -> i32` and, if it exists, make that function run at module start.
     fn discover_main(&mut self) -> Result<(), Error> {
-        let main_info = self
+        // find a `main(i32, i32) -> i32`
+        let main_id = self
             .module
             .functions()
-            .find(|x| x.name.as_ref().map_or(false, |x| x == "main"))
-            .map(|x| (x.ty(), x.id()));
-        if let Some((main_type, main_id)) = main_info {
-            use walrus::ValType::I32;
-            // an entry point `main` has signature (i32, i32) -> i32
-            let type_matches = {
-                let ty = self.module.types.get(main_type);
-                ty.params() == [I32, I32] && ty.results() == [I32]
-            };
-            if !type_matches {
-                return Ok(());
-            }
-            let mut wrapper = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
-            const NAME: &str = "__wasm_bindgen_autodiscoveredmain_wrapper";
-            wrapper
-                .func_body()
-                .i32_const(0)
-                .i32_const(0)
-                .call(main_id)
-                .drop()
-                .return_();
-            let wrapper = wrapper.finish(vec![], &mut self.module.funcs);
-            let export = self.module.exports.add(NAME, wrapper);
-            self.function_exports
-                .insert(NAME.to_string(), (export, wrapper));
-            let descriptor = Descriptor::Function(Box::new(Function {
-                arguments: vec![],
-                shim_idx: 0, // TODO is this bad
-                ret: Descriptor::Unit,
-            }));
-            self.descriptors.insert(NAME.to_string(), descriptor);
+            .find(|x| {
+                use walrus::ValType::I32;
+                // name has to be `main`
+                let name_matches = x.name.as_ref().map_or(false, |x| x == "main");
+                // type has to be `(i32, i32) -> i32`
+                let ty = self.module.types.get(x.ty());
+                let type_matches = ty.params() == [I32, I32] && ty.results() == [I32];
+                name_matches && type_matches
+            })
+            .map(|x| x.id());
+        let main_id = match main_id {
+            Some(x) => x,
+            None => return Ok(()),
+        };
 
-            let export = decode::Export {
-                class: None,
-                comments: vec![],
-                consumed: false,
-                function: decode::Function {
-                    arg_names: vec![],
-                    name: NAME,
-                },
-                method_kind: decode::MethodKind::Operation(decode::Operation {
-                    is_static: true,
-                    kind: decode::OperationKind::Regular,
-                }),
-                start: true,
-            };
+        // build a wrapper to zero out the arguments and ignore the return value
+        let mut wrapper = walrus::FunctionBuilder::new(&mut self.module.types, &[], &[]);
+        wrapper
+            .func_body()
+            .i32_const(0)
+            .i32_const(0)
+            .call(main_id)
+            .drop()
+            .return_();
+        let wrapper = wrapper.finish(vec![], &mut self.module.funcs);
 
-            self.export(export)?;
-        }
+        // call that wrapper when the module starts
+        self.add_start_function(wrapper)?;
 
         Ok(())
     }
