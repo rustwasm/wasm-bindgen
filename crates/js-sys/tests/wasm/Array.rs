@@ -470,19 +470,45 @@ fn array_inheritance() {
 
 #[wasm_bindgen(module = "tests/wasm/Array.js")]
 extern "C" {
-    fn populate_array(arr: JsValue, len: JsValue) -> JsValue;
+    fn populate_array(arr: JsValue, start: JsValue, len: JsValue) -> JsValue;
 }
 
 #[wasm_bindgen_test]
-fn uint8_view_mut_raw() {
+fn uint8array_view_mut_raw() {
+    let start: u8 = 10;
     let len: usize = 32;
+    let end: u8 = start + len as u8;
     let mut buffer: Vec<u8> = Vec::new();
     buffer.reserve(len);
     unsafe {
         let array = js_sys::Uint8Array::view_mut_raw(buffer.as_mut_ptr(), len);
-        populate_array(JsValue::from(array), JsValue::from(len as u32));
+        populate_array(
+            JsValue::from(array),
+            JsValue::from(start),
+            JsValue::from(len as u32),
+        );
         buffer.set_len(len);
     }
-    let expected: Vec<u8> = (0..(len as u8)).collect();
+    let expected: Vec<u8> = (start..end).collect();
+    assert_eq!(buffer, expected)
+}
+
+#[wasm_bindgen_test]
+fn uint32array_view_mut_raw() {
+    let start: u32 = 10;
+    let len: usize = 32;
+    let end: u32 = start + len as u32;
+    let mut buffer: Vec<u32> = Vec::new();
+    buffer.reserve(len);
+    unsafe {
+        let array = js_sys::Uint32Array::view_mut_raw(buffer.as_mut_ptr(), len);
+        populate_array(
+            JsValue::from(array),
+            JsValue::from(start),
+            JsValue::from(len as u32),
+        );
+        buffer.set_len(len);
+    }
+    let expected: Vec<u32> = (start..end).collect();
     assert_eq!(buffer, expected)
 }
