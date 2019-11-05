@@ -1,5 +1,6 @@
 use js_sys::*;
 use std::iter::FromIterator;
+use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
@@ -467,7 +468,21 @@ fn array_inheritance() {
     let _: &Object = array.as_ref();
 }
 
+#[wasm_bindgen(module = "tests/wasm/Array.js")]
+extern "C" {
+    fn populate_array(arr: JsValue, len: JsValue) -> JsValue;
+}
+
 #[wasm_bindgen_test]
 fn uint8_view_mut_raw() {
-    assert!(1 == 2);
+    let len: usize = 32;
+    let mut buffer: Vec<u8> = Vec::new();
+    buffer.reserve(len);
+    unsafe {
+        let array = js_sys::Uint8Array::view_mut_raw(buffer.as_mut_ptr(), len);
+        populate_array(JsValue::from(array), JsValue::from(len as u32));
+        buffer.set_len(len);
+    }
+    let expected: Vec<u8> = (0..(len as u8)).collect();
+    assert_eq!(buffer, expected)
 }
