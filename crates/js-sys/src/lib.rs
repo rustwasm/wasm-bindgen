@@ -4793,7 +4793,7 @@ macro_rules! arrays {
             }
 
             /// Creates a JS typed array which is a view into wasm's linear
-            /// memory at the slice specified.
+            /// memory at the specified pointer with specified length.
             ///
             /// This function returns a new typed array which is a view into
             /// wasm's memory. This view does not copy the underlying data.
