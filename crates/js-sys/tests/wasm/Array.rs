@@ -474,7 +474,7 @@ extern "C" {
 }
 
 #[wasm_bindgen_test]
-fn uint8array_view_mut_raw() {
+fn Uint8Array_view_mut_raw_no_macro() {
     let start: u8 = 10;
     let len: usize = 32;
     let end: u8 = start + len as u8;
@@ -493,22 +493,78 @@ fn uint8array_view_mut_raw() {
     assert_eq!(buffer, expected)
 }
 
+macro_rules! test_view_mut_raw {
+    ($($name:ident $ty:ident)?) => ($(
+        let start: $ty = 10 as $ty;
+        let len: usize = 32;
+        let end: $ty = start + len as $ty;
+        let mut buffer: Vec<$ty> = Vec::new();
+        buffer.reserve(len);
+        unsafe {
+            let array = js_sys::$name::view_mut_raw(buffer.as_mut_ptr(), len);
+            populate_array(
+                JsValue::from(array),
+                JsValue::from(start),
+                JsValue::from(len as u32),
+            );
+            buffer.set_len(len);
+        }
+        let expected: Vec<$ty> = (start..end).collect();
+        assert_eq!(buffer, expected)
+    )?);
+}
+
 #[wasm_bindgen_test]
-fn uint32array_view_mut_raw() {
-    let start: u32 = 10;
+fn Int8Array_view_mut_raw() {
+    test_view_mut_raw! { Int8Array i8 }
+}
+
+#[wasm_bindgen_test]
+fn Int16Array_view_mut_raw() {
+    test_view_mut_raw! { Int16Array i16 }
+}
+
+#[wasm_bindgen_test]
+fn Int32Array_view_mut_raw() {
+    test_view_mut_raw! { Int32Array i32 }
+}
+
+#[wasm_bindgen_test]
+fn Uint8Array_view_mut_raw() {
+    test_view_mut_raw! { Uint8Array u8 }
+}
+
+#[wasm_bindgen_test]
+fn Uint8ClampedArray_view_mut_raw() {
+    test_view_mut_raw! { Uint8ClampedArray u8 }
+}
+
+#[wasm_bindgen_test]
+fn Uint16Array_view_mut_raw() {
+    test_view_mut_raw! { Uint16Array u16 }
+}
+
+#[wasm_bindgen_test]
+fn Uint32Array_view_mut_raw() {
+    test_view_mut_raw! { Uint32Array u32 }
+}
+
+#[wasm_bindgen_test]
+fn Float64Array_view_mut_raw() {
+    let start: u8 = 10;
     let len: usize = 32;
-    let end: u32 = start + len as u32;
-    let mut buffer: Vec<u32> = Vec::new();
+    let end: u8 = start + len as u8;
+    let mut buffer: Vec<f64> = Vec::new();
     buffer.reserve(len);
     unsafe {
-        let array = js_sys::Uint32Array::view_mut_raw(buffer.as_mut_ptr(), len);
+        let array = js_sys::Float64Array::view_mut_raw(buffer.as_mut_ptr(), len);
         populate_array(
             JsValue::from(array),
-            JsValue::from(start),
+            JsValue::from(f64::from(start)),
             JsValue::from(len as u32),
         );
         buffer.set_len(len);
     }
-    let expected: Vec<u32> = (start..end).collect();
+    let expected: Vec<f64> = (start..end).map(f64::from).collect();
     assert_eq!(buffer, expected)
 }

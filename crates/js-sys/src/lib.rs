@@ -4792,6 +4792,21 @@ macro_rules! arrays {
                 )
             }
 
+            /// Creates a JS typed array which is a view into wasm's linear
+            /// memory at the slice specified.
+            ///
+            /// This function returns a new typed array which is a view into
+            /// wasm's memory. This view does not copy the underlying data.
+            ///
+            /// # Unsafety
+            ///
+            /// Views into WebAssembly memory are only valid so long as the
+            /// backing buffer isn't resized in JS. Once this function is called
+            /// any future calls to `Box::new` (or malloc of any form) may cause
+            /// the returned value here to be invalidated. Use with caution!
+            ///
+            /// Additionally the returned object can be safely mutated,
+            /// the changes are guranteed to be reflected in the input array.
             pub unsafe fn view_mut_raw(ptr: *mut $ty, length: usize) -> $name {
                 let buf = wasm_bindgen::memory();
                 let mem = buf.unchecked_ref::<WebAssembly::Memory>();
