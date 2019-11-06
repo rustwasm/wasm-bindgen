@@ -9,3 +9,4 @@ yarn.lock
 *.d.ts
 /publish
 /publish.exe
+.vscode
