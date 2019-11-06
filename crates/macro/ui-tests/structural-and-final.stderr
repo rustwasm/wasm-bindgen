@@ -3,5 +3,3 @@ error: cannot specify both `structural` and `final`
   |
 7 |     #[wasm_bindgen(method, structural, final)]
   |                                        ^^^^^
-
-error: could not compile `wasm-bindgen-macro-tests`.

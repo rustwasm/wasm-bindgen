@@ -63,5 +63,3 @@ error: #[wasm_bindgen] can only be applied to a function, struct, enum, impl, or
    |
 34 | trait X {}
    | ^^^^^^^^^^
-
-error: could not compile `wasm-bindgen-macro-tests`.

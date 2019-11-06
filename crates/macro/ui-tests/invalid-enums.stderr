@@ -21,5 +21,3 @@ error: enums with #[wasm_bindgen] can only support numbers that can be represent
    |
 18 |     X = 4294967296,
    |         ^^^^^^^^^^
-
-error: could not compile `wasm-bindgen-macro-tests`.

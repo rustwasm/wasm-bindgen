@@ -3,5 +3,3 @@ error: can only #[wasm_bindgen] public functions
   |
 4 | fn foo() {}
   | ^^^^^^^^^^^
-
-error: could not compile `wasm-bindgen-macro-tests`.

@@ -9,5 +9,3 @@ error: relative module paths aren't supported yet
   |
 8 | #[wasm_bindgen(module = "../foo.js")]
   |                         ^^^^^^^^^^^
-
-error: could not compile `wasm-bindgen-macro-tests`.

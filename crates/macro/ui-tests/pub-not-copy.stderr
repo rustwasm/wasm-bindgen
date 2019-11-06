@@ -8,5 +8,3 @@ error[E0277]: the trait bound `std::string::String: std::marker::Copy` is not sa
 4 | pub struct A {
 5 |     pub field: String,
   |                ^^^^^^ the trait `std::marker::Copy` is not implemented for `std::string::String`
-
-For more information about this error, try `rustc --explain E0277`.

@@ -642,7 +642,7 @@ macro_rules! doit {
             }
         }
 
-        #[allow(non_snake_case)]
+        #[allow(non_snake_case, unused_parens)]
         impl<T, $($var,)* R> WasmClosureFnOnce<($($var),*), R> for T
             where T: 'static + FnOnce($($var),*) -> R,
                   $($var: FromWasmAbi + 'static,)*

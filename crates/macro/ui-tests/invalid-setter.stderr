@@ -3,5 +3,3 @@ error: setters must start with `set_`, found: a
   |
 9 |     fn a(this: &A, b: i32);
   |        ^
-
-error: could not compile `wasm-bindgen-macro-tests`.
