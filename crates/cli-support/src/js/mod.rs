@@ -950,7 +950,7 @@ impl<'a> Context<'a> {
             debug,
             encode_as_ascii,
             if self.config.debug {
-                "if (ret.read != arg.length) throw new Error('failed to pass whole string');"
+                "if (ret.read !== arg.length) throw new Error('failed to pass whole string');"
             } else {
                 ""
             },
