@@ -2,6 +2,32 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.54
+
+Released 2019-11-07.
+
+### Added
+
+* A safe `to_vec` method has been added for typed arrays.
+  [#1844](https://github.com/rustwasm/wasm-bindgen/pull/1844)
+
+* A unsafe method `view_mut_raw` has been added to typed arrays.
+  [#1850](https://github.com/rustwasm/wasm-bindgen/pull/1850)
+
+* The `HTMLImageElement` WebIDL has been updated with recent features.
+  [#1842](https://github.com/rustwasm/wasm-bindgen/pull/1842)
+
+* Binary crates are now supported and `fn main` will be automatically executed
+  like the `start` function.
+  [#1843](https://github.com/rustwasm/wasm-bindgen/pull/1843)
+
+### Changed
+
+* Some JS glue generation has been tweaked to avoid TypeScript warnings.
+  [#1852](https://github.com/rustwasm/wasm-bindgen/pull/1852)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.53
 
 Released 2019-10-29.
