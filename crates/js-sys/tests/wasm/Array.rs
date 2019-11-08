@@ -1,5 +1,6 @@
 use js_sys::*;
 use std::iter::FromIterator;
+use std::mem;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
@@ -619,4 +620,14 @@ fn Float32Array_view_mut_raw() {
 #[wasm_bindgen_test]
 fn Float64Array_view_mut_raw() {
     test_array_view_mut_raw(js_sys::Float64Array::view_mut_raw, f64::from, JsValue::from);
+}
+
+#[wasm_bindgen_test]
+fn Uint8Array_copy_to_MaybeUninit() {
+    let mut x: mem::MaybeUninit<Vec<u8>> = mem::MaybeUninit::<Vec<u8>>::uninit();
+    unsafe {
+        x.as_mut_ptr().write(vec![0, 1, 2]);
+    }
+    let x_vec = unsafe { &*x.as_ptr() };
+    assert_eq!(x_vec.len(), 4);
 }
