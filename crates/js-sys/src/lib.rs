@@ -4985,8 +4985,10 @@ macro_rules! arrays {
             /// array into this wasm module's own linear memory, initializing
             /// the memory destination provided.
             /// 
-            /// This function will allocate a new `Vec` instance of the proper length and initialize the
-            /// `std::mem::MaybeUninit<Vec<T>>`. Do not pass an initialized instance of `std::mem::MaybeUninit`.
+            /// This function will allocate a new `Vec` instance of the proper length.
+            /// This function will override any previous value inside the `std::mem::MaybeUninit`
+            /// without dropping it. Do *NOT* pass an initialized instance of `std::mem::MaybeUninit`
+            /// unless you want to skip running the destructor.
             pub unsafe fn copy_to_maybe_uninit(&self, dst: &mut mem::MaybeUninit<Vec<$ty>>) {
                 let len = self.length() as usize;
                 let mut allocated_vec = Vec::<$ty>::with_capacity(len);
