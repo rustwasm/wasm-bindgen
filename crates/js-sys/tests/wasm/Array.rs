@@ -638,15 +638,9 @@ fn test_js_array_copy_to_maybe_uninit<ElemT: std::cmp::PartialEq + std::fmt::Deb
     let mut mvec: mem::MaybeUninit<Vec<ElemT>> = mem::MaybeUninit::uninit();
 
     unsafe {
-        let mut uninit: Vec<ElemT> = Vec::with_capacity(len);
-        uninit.set_len(len);
-
-        mvec.as_mut_ptr().write(uninit);
-        let actual: *mut Vec<ElemT> = mvec.as_mut_ptr();
-
         sut(&js_arr, &mut mvec);
 
-        assert_eq!(*actual, expected);
+        assert_eq!(*mvec.as_mut_ptr(), expected);
         assert_eq!(mvec.assume_init(), expected);
     }
 }
