@@ -4978,23 +4978,21 @@ macro_rules! arrays {
                 self.raw_copy_to(dst);
             }
 
-            /// Copy the contents of this JS typed array into the destination Rust vector wrapped into
-            /// `std::mem::MaybeUninit`.
+            /// Copy the contents of this JS typed array into the destination
+            /// Rust slice, that might be unitialized.
             ///
             /// This function will efficiently copy the memory from a typed
             /// array into this wasm module's own linear memory, initializing
             /// the memory destination provided.
-            /// 
-            /// This function will allocate a new `Vec` instance of the proper length.
-            /// This function will override any previous value inside the `std::mem::MaybeUninit`
-            /// without dropping it. Do *NOT* pass an initialized instance of `std::mem::MaybeUninit`
-            /// unless you want to skip running the destructor.
-            pub unsafe fn copy_to_maybe_uninit(&self, dst: &mut mem::MaybeUninit<Vec<$ty>>) {
-                let len = self.length() as usize;
-                let mut allocated_vec = Vec::<$ty>::with_capacity(len);
-                allocated_vec.set_len(len);
-                dst.as_mut_ptr().write(allocated_vec);
-                self.raw_copy_to((*dst.as_mut_ptr()).as_mut_slice());
+            ///
+            /// # Panics
+            ///
+            /// This function will panic if this typed array's length is
+            /// different than the length of the provided `dst` array.
+            pub unsafe fn copy_to_unsafe(&self, dst: &mut mem::MaybeUninit<&mut [$ty]>) {
+                let arr: &mut [$ty] = *dst.as_mut_ptr();
+                assert_eq!(self.length() as usize, arr.len());
+                self.raw_copy_to(arr);
             }
 
             /// Efficiently copies the contents of this JS typed array into a new Vec.

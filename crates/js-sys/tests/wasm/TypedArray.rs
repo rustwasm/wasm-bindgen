@@ -238,8 +238,8 @@ fn Float64Array_view_mut_raw() {
     test_array_view_mut_raw(js_sys::Float64Array::view_mut_raw, f64::from, JsValue::from);
 }
 
-fn test_js_array_copy_to_maybe_uninit<ElemT: std::cmp::PartialEq + std::fmt::Debug, JsArrT>(
-    sut: unsafe fn(&JsArrT, &mut mem::MaybeUninit<Vec<ElemT>>) -> (),
+fn test_js_array_copy_to_unsafe<ElemT: std::cmp::PartialEq + std::fmt::Debug, JsArrT>(
+    sut: unsafe fn(&JsArrT, &mut mem::MaybeUninit<&mut [ElemT]>) -> (),
     sliceToJsArray: fn(&[ElemT]) -> JsArrT,
     u8ToElem: fn(u8) -> ElemT,
 ) {
@@ -250,92 +250,96 @@ fn test_js_array_copy_to_maybe_uninit<ElemT: std::cmp::PartialEq + std::fmt::Deb
 
     let js_arr: JsArrT = sliceToJsArray(expected.as_slice());
 
-    let mut mvec: mem::MaybeUninit<Vec<ElemT>> = mem::MaybeUninit::uninit();
+    let mut vec: Vec<ElemT> = Vec::with_capacity(len);
+    unsafe {
+        vec.set_len(len);
+    }
+    let mut mvec: mem::MaybeUninit<&mut [ElemT]> = mem::MaybeUninit::new(&mut vec);
 
     unsafe {
         sut(&js_arr, &mut mvec);
-
-        assert_eq!(*mvec.as_mut_ptr(), expected);
-        assert_eq!(mvec.assume_init(), expected);
+        assert_eq!(*mvec.as_ptr(), expected.as_slice());
+        assert_eq!(mvec.assume_init(), expected.as_slice());
     }
+    assert_eq!(vec, expected);
 }
 
 #[wasm_bindgen_test]
-fn Int8Array_copy_to_maybe_uninit() {
-    test_js_array_copy_to_maybe_uninit(
-        js_sys::Int8Array::copy_to_maybe_uninit,
+fn Int8Array_copy_to_unsafe() {
+    test_js_array_copy_to_unsafe(
+        js_sys::Int8Array::copy_to_unsafe,
         |xs: &[i8]| js_sys::Int8Array::from(xs),
         u8Toi8_unsafe,
     );
 }
 
 #[wasm_bindgen_test]
-fn Int16Array_copy_to_maybe_uninit() {
-    test_js_array_copy_to_maybe_uninit(
-        js_sys::Int16Array::copy_to_maybe_uninit,
+fn Int16Array_copy_to_unsafe() {
+    test_js_array_copy_to_unsafe(
+        js_sys::Int16Array::copy_to_unsafe,
         |xs: &[i16]| js_sys::Int16Array::from(xs),
         i16::from,
     );
 }
 
 #[wasm_bindgen_test]
-fn Int32Array_copy_to_maybe_uninit() {
-    test_js_array_copy_to_maybe_uninit(
-        js_sys::Int32Array::copy_to_maybe_uninit,
+fn Int32Array_copy_to_unsafe() {
+    test_js_array_copy_to_unsafe(
+        js_sys::Int32Array::copy_to_unsafe,
         |xs: &[i32]| js_sys::Int32Array::from(xs),
         i32::from,
     );
 }
 
 #[wasm_bindgen_test]
-fn Uint8Array_copy_to_maybe_uninit() {
-    test_js_array_copy_to_maybe_uninit(
-        js_sys::Uint8Array::copy_to_maybe_uninit,
+fn Uint8Array_copy_to_unsafe() {
+    test_js_array_copy_to_unsafe(
+        js_sys::Uint8Array::copy_to_unsafe,
         |xs: &[u8]| js_sys::Uint8Array::from(xs),
         u8::from,
     );
 }
 
 #[wasm_bindgen_test]
-fn Uint8ClampedArray_copy_to_maybe_uninit() {
-    test_js_array_copy_to_maybe_uninit(
-        js_sys::Uint8ClampedArray::copy_to_maybe_uninit,
+fn Uint8ClampedArray_copy_to_unsafe() {
+    test_js_array_copy_to_unsafe(
+        js_sys::Uint8ClampedArray::copy_to_unsafe,
         |xs: &[u8]| js_sys::Uint8ClampedArray::from(xs),
         u8::from,
     );
 }
 
 #[wasm_bindgen_test]
-fn Uint16Array_copy_to_maybe_uninit() {
-    test_js_array_copy_to_maybe_uninit(
-        js_sys::Uint16Array::copy_to_maybe_uninit,
+fn Uint16Array_copy_to_unsafe() {
+    test_js_array_copy_to_unsafe(
+        js_sys::Uint16Array::copy_to_unsafe,
         |xs: &[u16]| js_sys::Uint16Array::from(xs),
         u16::from,
     );
 }
 
 #[wasm_bindgen_test]
-fn Uint32Array_copy_to_maybe_uninit() {
-    test_js_array_copy_to_maybe_uninit(
-        js_sys::Uint32Array::copy_to_maybe_uninit,
+fn Uint32Array_copy_to_unsafe() {
+    test_js_array_copy_to_unsafe(
+        js_sys::Uint32Array::copy_to_unsafe,
         |xs: &[u32]| js_sys::Uint32Array::from(xs),
         u32::from,
     );
 }
 
 #[wasm_bindgen_test]
-fn Float32Array_copy_to_maybe_uninit() {
-    test_js_array_copy_to_maybe_uninit(
-        js_sys::Float32Array::copy_to_maybe_uninit,
+fn Float32Array_copy_to_unsafe() {
+    test_js_array_copy_to_unsafe(
+        js_sys::Float32Array::copy_to_unsafe,
         |xs: &[f32]| js_sys::Float32Array::from(xs),
         f32::from,
     );
 }
 
 #[wasm_bindgen_test]
-fn Float64Array_copy_to_maybe_uninit() {
-    test_js_array_copy_to_maybe_uninit(
-        js_sys::Float64Array::copy_to_maybe_uninit,
+fn Float64Array_copy_to_unsafe() {
+    test_js_array_copy_to_unsafe(
+        js_sys::Float64Array::copy_to_unsafe,
         |xs: &[f64]| js_sys::Float64Array::from(xs),
         f64::from,
     );
