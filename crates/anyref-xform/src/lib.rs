@@ -58,9 +58,9 @@ struct Transform<'a> {
     // Indices of items that we have injected or found. This state is maintained
     // during the pass execution.
     table: TableId,
-    clone_ref: FunctionId,
-    heap_alloc: FunctionId,
-    heap_dealloc: FunctionId,
+    clone_ref: Option<FunctionId>,
+    heap_alloc: Option<FunctionId>,
+    heap_dealloc: Option<FunctionId>,
     stack_pointer: GlobalId,
 }
 
@@ -185,33 +185,34 @@ impl Context {
                 _ => {}
             }
         }
-        let heap_alloc = heap_alloc.ok_or_else(|| anyhow!("failed to find heap alloc"))?;
-        let heap_dealloc = heap_dealloc.ok_or_else(|| anyhow!("failed to find heap dealloc"))?;
+        let mut clone_ref = None;
+        if let Some(heap_alloc) = heap_alloc {
+            // Create a shim function that looks like:
+            //
+            // (func __wbindgen_object_clone_ref (param i32) (result i32)
+            //      (local i32)
+            //      (table.set
+            //          (tee_local 1 (call $heap_alloc))
+            //          (table.get (local.get 0)))
+            //      (local.get 1))
+            let mut builder =
+                walrus::FunctionBuilder::new(&mut module.types, &[ValType::I32], &[ValType::I32]);
+            let arg = module.locals.add(ValType::I32);
+            let local = module.locals.add(ValType::I32);
 
-        // Create a shim function that looks like:
-        //
-        // (func __wbindgen_object_clone_ref (param i32) (result i32)
-        //      (local i32)
-        //      (table.set
-        //          (tee_local 1 (call $heap_alloc))
-        //          (table.get (local.get 0)))
-        //      (local.get 1))
-        let mut builder =
-            walrus::FunctionBuilder::new(&mut module.types, &[ValType::I32], &[ValType::I32]);
-        let arg = module.locals.add(ValType::I32);
-        let local = module.locals.add(ValType::I32);
+            let mut body = builder.func_body();
+            body.call(heap_alloc)
+                .local_tee(local)
+                .local_get(arg)
+                .table_get(table)
+                .table_set(table)
+                .local_get(local);
 
-        let mut body = builder.func_body();
-        body.call(heap_alloc)
-            .local_tee(local)
-            .local_get(arg)
-            .table_get(table)
-            .table_set(table)
-            .local_get(local);
-
-        let clone_ref = builder.finish(vec![arg], &mut module.funcs);
-        let name = "__wbindgen_object_clone_ref".to_string();
-        module.funcs.get_mut(clone_ref).name = Some(name);
+            let func = builder.finish(vec![arg], &mut module.funcs);
+            let name = "__wbindgen_object_clone_ref".to_string();
+            module.funcs.get_mut(func).name = Some(name);
+            clone_ref = Some(func);
+        }
 
         // And run the transformation!
         Transform {
@@ -236,9 +237,9 @@ impl Transform<'_> {
         self.find_intrinsics(module)?;
 
         // Perform transformations of imports, exports, and function pointers.
-        self.process_imports(module);
+        self.process_imports(module)?;
         assert!(self.cx.imports.is_empty());
-        self.process_exports(module);
+        self.process_exports(module)?;
         assert!(self.cx.exports.is_empty());
         self.process_elements(module)?;
         assert!(self.cx.elements.is_empty());
@@ -251,7 +252,7 @@ impl Transform<'_> {
 
         // Perform all instruction transformations to rewrite calls between
         // functions and make sure everything is still hooked up right.
-        self.rewrite_calls(module);
+        self.rewrite_calls(module)?;
 
         Ok(())
     }
@@ -297,7 +298,22 @@ impl Transform<'_> {
         Ok(())
     }
 
-    fn process_imports(&mut self, module: &mut Module) {
+    fn heap_alloc(&self) -> Result<FunctionId, Error> {
+        self.heap_alloc
+            .ok_or_else(|| anyhow!("failed to find the `__wbindgen_anyref_table_alloc` function"))
+    }
+
+    fn clone_ref(&self) -> Result<FunctionId, Error> {
+        self.clone_ref
+            .ok_or_else(|| anyhow!("failed to find intrinsics to enable `clone_ref` function"))
+    }
+
+    fn heap_dealloc(&self) -> Result<FunctionId, Error> {
+        self.heap_dealloc
+            .ok_or_else(|| anyhow!("failed to find the `__wbindgen_anyref_table_dealloc` function"))
+    }
+
+    fn process_imports(&mut self, module: &mut Module) -> Result<(), Error> {
         for import in module.imports.iter_mut() {
             let f = match import.kind {
                 walrus::ImportKind::Function(f) => f,
@@ -315,16 +331,17 @@ impl Transform<'_> {
                 &mut module.types,
                 &mut module.funcs,
                 &mut module.locals,
-            );
+            )?;
             self.import_map.insert(f, shim);
             match &mut module.funcs.get_mut(f).kind {
                 walrus::FunctionKind::Import(f) => f.ty = anyref_ty,
                 _ => unreachable!(),
             }
         }
+        Ok(())
     }
 
-    fn process_exports(&mut self, module: &mut Module) {
+    fn process_exports(&mut self, module: &mut Module) -> Result<(), Error> {
         // let mut new_exports = Vec::new();
         for export in module.exports.iter_mut() {
             let f = match export.item {
@@ -342,9 +359,10 @@ impl Transform<'_> {
                 &mut module.types,
                 &mut module.funcs,
                 &mut module.locals,
-            );
+            )?;
             export.item = shim.into();
         }
+        Ok(())
     }
 
     fn process_elements(&mut self, module: &mut Module) -> Result<(), Error> {
@@ -372,7 +390,7 @@ impl Transform<'_> {
                 &mut module.types,
                 &mut module.funcs,
                 &mut module.locals,
-            );
+            )?;
             kind.elements.push(Some(shim));
         }
 
@@ -393,7 +411,7 @@ impl Transform<'_> {
         types: &mut walrus::ModuleTypes,
         funcs: &mut walrus::ModuleFunctions,
         locals: &mut walrus::ModuleLocals,
-    ) -> (FunctionId, TypeId) {
+    ) -> Result<(FunctionId, TypeId), Error> {
         let target = funcs.get_mut(shim_target);
         let (is_export, ty) = match &target.kind {
             walrus::FunctionKind::Import(f) => (false, f.ty),
@@ -508,7 +526,7 @@ impl Transform<'_> {
                     body.local_get(params[i])
                         .table_get(self.table)
                         .local_get(params[i])
-                        .call(self.heap_dealloc);
+                        .call(self.heap_dealloc()?);
                 }
                 Convert::Load { owned: false } => {
                     body.local_get(params[i]).table_get(self.table);
@@ -516,7 +534,7 @@ impl Transform<'_> {
                 Convert::Store { owned: true } => {
                     // Allocate space for the anyref, store it, and then leave
                     // the index of the allocated anyref on the stack.
-                    body.call(self.heap_alloc)
+                    body.call(self.heap_alloc()?)
                         .local_tee(scratch_i32)
                         .local_get(params[i])
                         .table_set(self.table)
@@ -559,13 +577,13 @@ impl Transform<'_> {
                 body.local_tee(scratch_i32)
                     .table_get(self.table)
                     .local_get(scratch_i32)
-                    .call(self.heap_dealloc);
+                    .call(self.heap_dealloc()?);
             } else {
                 // Imports are the opposite, we have any anyref on the stack
                 // and convert it to an i32 by allocating space for it and
                 // storing it there.
                 body.local_set(scratch_anyref)
-                    .call(self.heap_alloc)
+                    .call(self.heap_alloc()?)
                     .local_tee(scratch_i32)
                     .local_get(scratch_anyref)
                     .table_set(self.table)
@@ -604,20 +622,32 @@ impl Transform<'_> {
         let name = format!("{}_anyref_shim", name);
         funcs.get_mut(id).name = Some(name);
         self.shims.insert(id);
-        (id, anyref_ty)
+        Ok((id, anyref_ty))
     }
 
-    fn rewrite_calls(&mut self, module: &mut Module) {
+    fn rewrite_calls(&mut self, module: &mut Module) -> Result<(), Error> {
         for (id, func) in module.funcs.iter_local_mut() {
             if self.shims.contains(&id) {
                 continue;
             }
             let entry = func.entry_block();
-            dfs_pre_order_mut(&mut Rewrite { xform: self }, func, entry);
+            dfs_pre_order_mut(
+                &mut Rewrite {
+                    clone_ref: self.clone_ref()?,
+                    heap_dealloc: self.heap_dealloc()?,
+                    xform: self,
+                },
+                func,
+                entry,
+            );
         }
+
+        return Ok(());
 
         struct Rewrite<'a, 'b> {
             xform: &'a Transform<'b>,
+            clone_ref: FunctionId,
+            heap_dealloc: FunctionId,
         }
 
         impl VisitorMut for Rewrite<'_, '_> {
@@ -664,8 +694,8 @@ impl Transform<'_> {
                             seq.instrs
                                 .insert(i, (RefNull {}.into(), InstrLocId::default()));
                         }
-                        Intrinsic::DropRef => call.func = self.xform.heap_dealloc,
-                        Intrinsic::CloneRef => call.func = self.xform.clone_ref,
+                        Intrinsic::DropRef => call.func = self.heap_dealloc,
+                        Intrinsic::CloneRef => call.func = self.clone_ref,
                     }
                 }
             }
