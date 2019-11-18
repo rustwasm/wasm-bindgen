@@ -197,3 +197,39 @@ fn bin_crate_works() {
         .success()
         .stdout("hello, world\n");
 }
+
+#[test]
+fn empty_interface_types() {
+    let (mut cmd, _out_dir) = Project::new("empty_interface_types")
+        .file(
+            "src/lib.rs",
+            r#"
+                #[no_mangle]
+                pub extern fn foo() {}
+            "#
+        )
+        .file(
+            "Cargo.toml",
+            &format!(
+                "
+                    [package]
+                    name = \"empty_interface_types\"
+                    authors = []
+                    version = \"1.0.0\"
+                    edition = '2018'
+
+                    [dependencies]
+                    wasm-bindgen = {{ path = '{}' }}
+
+                    [lib]
+                    crate-type = ['cdylib']
+
+                    [workspace]
+                ",
+                repo_root().display(),
+            ),
+        )
+        .wasm_bindgen("");
+    cmd.env("WASM_INTERFACE_TYPES", "1");
+    cmd.assert().success();
+}
