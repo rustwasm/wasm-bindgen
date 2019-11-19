@@ -2,6 +2,21 @@
 
 --------------------------------------------------------------------------------
 
+## 0.2.55
+
+Released 2019-11-19.
+
+### Fixed
+
+* Running `wasm-bindgen` over empty anyref modules now works again.
+  [#1861](https://github.com/rustwasm/wasm-bindgen/pull/1861)
+
+* Support for multi-value JS engines has been fixed as a wasm interface types
+  polyfill.
+  [#1863](https://github.com/rustwasm/wasm-bindgen/pull/1863)
+
+--------------------------------------------------------------------------------
+
 ## 0.2.54
 
 Released 2019-11-07.
