@@ -565,6 +565,10 @@ impl Output {
         &self.module
     }
 
+    pub fn wasm_mut(&mut self) -> &mut walrus::Module {
+        &mut self.module
+    }
+
     pub fn emit(&mut self, out_dir: impl AsRef<Path>) -> Result<(), Error> {
         self._emit(out_dir.as_ref())
     }
