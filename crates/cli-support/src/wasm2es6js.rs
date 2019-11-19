@@ -85,7 +85,7 @@ pub fn typescript(module: &Module) -> Result<String, Error> {
             ret = match ty.results().len() {
                 0 => "void",
                 1 => "number",
-                _ => bail!("cannot support multi-return yet"),
+                _ => "Array",
             },
         ));
     }
