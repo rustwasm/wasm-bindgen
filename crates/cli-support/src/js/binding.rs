@@ -282,9 +282,22 @@ impl<'a, 'b> Builder<'a, 'b> {
                     }
                 }
 
-                // No return pointer? That's much easier! We just have one input
-                // of `ret` which is created in the JS shim below.
-                None => ret_args.push("ret".to_string()),
+                // No return pointer? That's much easier!
+                //
+                // If there's one return value we just have one input of `ret`
+                // which is created in the JS shim below. If there's multiple
+                // return values (a multi-value module) then we'll pull results
+                // from the returned array.
+                None => {
+                    let amt = self.cx.module.types.get(binding.wasm_ty).results().len();
+                    if amt == 1 {
+                        ret_args.push("ret".to_string());
+                    } else {
+                        for i in 0..amt {
+                            ret_args.push(format!("ret[{}]", i));
+                        }
+                    }
+                }
             }
             js = JsBuilder::new(ret_args);
             let mut ret = outgoing::Outgoing::new(self.cx, &mut js);
