@@ -568,7 +568,7 @@ impl<'src> FirstPassRecord<'src> {
 
         // whitelist a few names that have known polyfills
         match name {
-            "AudioContext" => {
+            "AudioContext" | "OfflineAudioContext" => {
                 import_type
                     .vendor_prefixes
                     .push(Ident::new("webkit", Span::call_site()));
