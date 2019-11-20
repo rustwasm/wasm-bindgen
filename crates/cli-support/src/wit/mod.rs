@@ -58,7 +58,7 @@ pub use self::outgoing::NonstandardOutgoing;
 /// bindings. There it can be transformed, however, into an actual WebIDL
 /// binding section using all of the values it has internally.
 #[derive(Default, Debug)]
-pub struct NonstandardWebidlSection {
+pub struct NonstandardWitSection {
     /// Store of all WebIDL types. Used currently to store all function types
     /// specified in `Bindings`. This is intended to be passed through verbatim
     /// to a final WebIDL bindings section.
@@ -87,7 +87,7 @@ pub struct NonstandardWebidlSection {
     pub elems: Vec<(u32, Binding)>,
 }
 
-pub type NonstandardWebidlSectionId = TypedCustomSectionId<NonstandardWebidlSection>;
+pub type NonstandardWitSectionId = TypedCustomSectionId<NonstandardWitSection>;
 
 /// A non-standard wasm-bindgen-specifi WebIDL binding. This is meant to vaguely
 /// resemble a `FuctionBinding` in the official WebIDL bindings proposal, or at

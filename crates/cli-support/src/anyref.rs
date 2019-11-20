@@ -1,5 +1,5 @@
-use crate::webidl::{NonstandardIncoming, NonstandardOutgoing};
-use crate::webidl::{NonstandardWebidlSection, WasmBindgenAux};
+use crate::wit::NonstandardInstr;
+use crate::wit::{NonstandardWitSection, WasmBindgenAux};
 use anyhow::Error;
 use std::collections::HashSet;
 use walrus::Module;
@@ -11,8 +11,8 @@ pub fn process(module: &mut Module, wasm_interface_types: bool) -> Result<(), Er
     cfg.prepare(module)?;
     let bindings = module
         .customs
-        .get_typed_mut::<NonstandardWebidlSection>()
-        .expect("webidl custom section should exist");
+        .get_typed_mut::<NonstandardWitSection>()
+        .expect("wit custom section should exist");
 
     // Transform all exported functions in the module, using the bindings listed
     // for each exported function.
@@ -78,8 +78,8 @@ pub fn process(module: &mut Module, wasm_interface_types: bool) -> Result<(), Er
         .collect::<HashSet<_>>();
     module
         .customs
-        .get_typed_mut::<NonstandardWebidlSection>()
-        .expect("webidl custom section should exist")
+        .get_typed_mut::<NonstandardWitSection>()
+        .expect("wit custom section should exist")
         .imports
         .retain(|id, _| remaining_imports.contains(id));
     module

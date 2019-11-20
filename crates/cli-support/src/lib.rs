@@ -17,7 +17,7 @@ mod descriptors;
 mod intrinsic;
 mod js;
 pub mod wasm2es6js;
-mod webidl;
+mod wit;
 
 pub struct Bindgen {
     input: Input,
@@ -329,11 +329,11 @@ impl Bindgen {
 
         // Process and remove our raw custom sections emitted by the
         // #[wasm_bindgen] macro and the compiler. In their stead insert a
-        // forward-compatible WebIDL bindings section (forward-compatible with
-        // the webidl bindings proposal) as well as an auxiliary section for all
-        // sorts of miscellaneous information and features #[wasm_bindgen]
-        // supports that aren't covered by WebIDL bindings.
-        webidl::process(
+        // forward-compatible wasm interface types section as well as an
+        // auxiliary section for all sorts of miscellaneous information and
+        // features #[wasm_bindgen] supports that aren't covered by wasm
+        // interface types.
+        wit::process(
             &mut module,
             self.anyref,
             self.wasm_interface_types,
@@ -355,7 +355,7 @@ impl Bindgen {
             .expect("aux section should be present");
         let mut bindings = module
             .customs
-            .delete_typed::<webidl::NonstandardWebidlSection>()
+            .delete_typed::<webidl::NonstandardWitSection>()
             .unwrap();
 
         // Now that our module is massaged and good to go, feed it into the JS
