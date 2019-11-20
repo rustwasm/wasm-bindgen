@@ -465,10 +465,12 @@ impl<'a> Context<'a> {
         };
 
         let default_module_path = match self.config.mode {
-            OutputMode::Web => "\
+            OutputMode::Web => {
+                "\
                     if (typeof module === 'undefined') {
                         module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
-                    }",
+                    }"
+            }
             _ => "",
         };
 
