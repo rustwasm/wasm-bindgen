@@ -896,174 +896,187 @@ impl<'a> Context<'a> {
     }
 
     fn standard(&mut self, std: &wit_walrus::WasmInterfaceTypes) -> Result<(), Error> {
-        //         for (_id, bind) in std.binds.iter() {
-        //             let binding = self.standard_binding(std, bind)?;
-        //             let func = self.module.funcs.get(bind.func);
-        //             match &func.kind {
-        //                 walrus::FunctionKind::Import(i) => {
-        //                     let id = i.import;
-        //                     self.standard_import(binding, id)?;
-        //                 }
-        //                 walrus::FunctionKind::Local(_) => {
-        //                     let export = self
-        //                         .module
-        //                         .exports
-        //                         .iter()
-        //                         .find(|e| match e.item {
-        //                             walrus::ExportItem::Function(f) => f == bind.func,
-        //                             _ => false,
-        //                         })
-        //                         .ok_or_else(|| anyhow!("missing export function for webidl binding"))?;
-        //                     let id = export.id();
-        //                     self.standard_export(binding, id)?;
-        //                 }
-        //                 walrus::FunctionKind::Uninitialized(_) => unreachable!(),
-        //             }
-        //         }
+        let mut walrus2us = HashMap::new();
+        let params_and_results = |id: wit_walrus::TypeId| -> (Vec<_>, Vec<_>) {
+            let ty = std.types.get(id);
+            let params = ty
+                .params()
+                .iter()
+                .cloned()
+                .map(AdapterType::from_wit)
+                .collect();
+            let results = ty
+                .results()
+                .iter()
+                .cloned()
+                .map(AdapterType::from_wit)
+                .collect();
+            (params, results)
+        };
+
+        // Register all imports, allocating our own id for them and configuring
+        // where the JS value for the import is coming from.
+        for import in std.imports.iter() {
+            let func = std.funcs.get(import.func);
+            let (params, results) = params_and_results(func.ty);
+            let id = self.adapters.append(
+                params,
+                results,
+                AdapterKind::Import {
+                    module: import.module.clone(),
+                    name: import.name.clone(),
+                    kind: AdapterJsImportKind::Normal,
+                },
+            );
+            walrus2us.insert(import.func, id);
+            let js = JsImport {
+                name: JsImportName::Module {
+                    module: import.module.clone(),
+                    name: import.name.clone(),
+                },
+                fields: Vec::new(),
+            };
+            let value = AuxValue::Bare(js);
+            assert!(self
+                .aux
+                .import_map
+                .insert(id, AuxImport::Value(value))
+                .is_none());
+        }
+
+        // Register all functions, allocating our own id system for each of the
+        // functions.
+        for func in std.funcs.iter() {
+            if let wit_walrus::FuncKind::Import(_) = func.kind {
+                continue;
+            }
+            let (params, results) = params_and_results(func.ty);
+            walrus2us.insert(
+                func.id(),
+                self.adapters.append(
+                    params,
+                    results,
+                    AdapterKind::Local {
+                        instructions: Vec::new(),
+                    },
+                ),
+            );
+        }
+
+        // .. and then actually translate all functions using our id mapping,
+        // now that we're able to remap all the `CallAdapter` instructions.
+        for func in std.funcs.iter() {
+            let instrs = match &func.kind {
+                wit_walrus::FuncKind::Local(instrs) => instrs,
+                wit_walrus::FuncKind::Import(_) => continue,
+            };
+            let instrs = instrs
+                .iter()
+                .map(|i| match i {
+                    wit_walrus::Instruction::CallAdapter(f) => {
+                        Instruction::CallAdapter(walrus2us[&f])
+                    }
+                    other => Instruction::Standard(other.clone()),
+                })
+                .collect::<Vec<_>>();
+
+            // Store the instrs into the adapter function directly.
+            let adapter = self
+                .adapters
+                .adapters
+                .get_mut(&walrus2us[&func.id()])
+                .unwrap();
+            match &mut adapter.kind {
+                AdapterKind::Local { instructions } => *instructions = instrs,
+                _ => unreachable!(),
+            }
+        }
+
+        // next up register all exports, ensuring that our export map says
+        // what's happening as well for JS
+        for export in std.exports.iter() {
+            let id = walrus2us[&export.func];
+            self.adapters.exports.push((export.name.clone(), id));
+
+            let kind = AuxExportKind::Function(export.name.clone());
+            let export = AuxExport {
+                debug_name: format!("standard export {:?}", id),
+                comments: String::new(),
+                arg_names: None,
+                kind,
+            };
+            assert!(self.aux.export_map.insert(id, export).is_none());
+        }
+
+        // ... and finally the `implements` section
+        for i in std.implements.iter() {
+            let import_id = match &self.module.funcs.get(i.core_func).kind {
+                walrus::FunctionKind::Import(i) => i.import,
+                _ => panic!("malformed wasm interface typess section"),
+            };
+            self.adapters
+                .implements
+                .push((import_id, walrus2us[&i.adapter_func]));
+        }
         Ok(())
     }
-
-    //     /// Creates a wasm-bindgen-internal `Binding` from an official `Bind`
-    //     /// structure specified in the upstream binary format.
-    //     ///
-    //     /// This will largely just copy some things into our own arenas but also
-    //     /// processes the list of binding expressions into our own representations.
-    //     fn standard_binding(
-    //         &mut self,
-    //         std: &ast::WebidlBindings,
-    //         bind: &ast::Bind,
-    //     ) -> Result<Binding, Error> {
-    //         let binding: &ast::FunctionBinding = std
-    //             .bindings
-    //             .get(bind.binding)
-    //             .ok_or_else(|| anyhow!("bad binding id"))?;
-    //         let (wasm_ty, webidl_ty, incoming, outgoing) = match binding {
-    //             ast::FunctionBinding::Export(e) => (
-    //                 e.wasm_ty,
-    //                 e.webidl_ty,
-    //                 e.params.bindings.as_slice(),
-    //                 &e.result.bindings[..],
-    //             ),
-    //             ast::FunctionBinding::Import(e) => (
-    //                 e.wasm_ty,
-    //                 e.webidl_ty,
-    //                 &e.result.bindings[..],
-    //                 e.params.bindings.as_slice(),
-    //             ),
-    //         };
-    //         let webidl_ty = standard::copy_ty(&mut self.bindings.types, webidl_ty, &std.types);
-    //         let webidl_ty = match webidl_ty {
-    //             ast::WebidlTypeRef::Id(id) => <ast::WebidlFunction as ast::WebidlTypeId>::wrap(id),
-    //             _ => bail!("invalid webidl type listed"),
-    //         };
-    //
-    //         Ok(Binding {
-    //             wasm_ty,
-    //             webidl_ty,
-    //             incoming: incoming
-    //                 .iter()
-    //                 .cloned()
-    //                 .map(NonstandardIncoming::Standard)
-    //                 .collect(),
-    //             outgoing: outgoing
-    //                 .iter()
-    //                 .cloned()
-    //                 .map(NonstandardOutgoing::Standard)
-    //                 .collect(),
-    //             return_via_outptr: None,
-    //         })
-    //     }
-    //
-    //     /// Registers that `id` has a `binding` which was read from a standard
-    //     /// webidl bindings section, so the source of `id` is its actual module/name
-    //     /// listed in the wasm module.
-    //     fn standard_import(&mut self, binding: Binding, id: walrus::ImportId) -> Result<(), Error> {
-    //         let import = self.module.imports.get(id);
-    //         let js = JsImport {
-    //             name: JsImportName::Module {
-    //                 module: import.module.clone(),
-    //                 name: import.name.clone(),
-    //             },
-    //             fields: Vec::new(),
-    //         };
-    //         let value = AuxValue::Bare(js);
-    //         assert!(self
-    //             .aux
-    //             .import_map
-    //             .insert(id, AuxImport::Value(value))
-    //             .is_none());
-    //         assert!(self.bindings.imports.insert(id, binding).is_none());
-    //
-    //         Ok(())
-    //     }
-    //
-    //     /// Registers that `id` has a `binding` and comes from a standard webidl
-    //     /// bindings section so it doesn't have any documentation or debug names we
-    //     /// can work with.
-    //     fn standard_export(&mut self, binding: Binding, id: walrus::ExportId) -> Result<(), Error> {
-    //         let export = self.module.exports.get(id);
-    //         let kind = AuxExportKind::Function(export.name.clone());
-    //         let export = AuxExport {
-    //             debug_name: format!("standard export {:?}", id),
-    //             comments: String::new(),
-    //             arg_names: None,
-    //             kind,
-    //         };
-    //         assert!(self.aux.export_map.insert(id, export).is_none());
-    //         assert!(self.bindings.exports.insert(id, binding).is_none());
-    //         Ok(())
-    //     }
 
     /// Perform a small verification pass over the module to perform some
     /// internal sanity checks.
     fn verify(&self) -> Result<(), Error> {
-        //         let mut imports_counted = 0;
-        //         for import in self.module.imports.iter() {
-        //             if import.module != PLACEHOLDER_MODULE {
-        //                 continue;
-        //             }
-        //             match import.kind {
-        //                 walrus::ImportKind::Function(_) => {}
-        //                 _ => bail!("import from `{}` was not a function", PLACEHOLDER_MODULE),
-        //             }
-        //
-        //             // Ensure that everything imported from the `__wbindgen_placeholder__`
-        //             // module has a location listed as to where it's expected to be
-        //             // imported from.
-        //             if !self.aux.import_map.contains_key(&import.id()) {
-        //                 bail!(
-        //                     "import of `{}` doesn't have an import map item listed",
-        //                     import.name
-        //                 );
-        //             }
-        //
-        //             // Also make sure there's a binding listed for it.
-        //             if !self.bindings.imports.contains_key(&import.id()) {
-        //                 bail!("import of `{}` doesn't have a binding listed", import.name);
-        //             }
-        //             imports_counted += 1;
-        //         }
-        //
-        //         // Make sure there's no extraneous bindings that weren't actually
-        //         // imported in the module.
-        //         if self.aux.import_map.len() != imports_counted {
-        //             bail!("import map is larger than the number of imports");
-        //         }
-        //         if self.bindings.imports.len() != imports_counted {
-        //             bail!("import binding map is larger than the number of imports");
-        //         }
-        //
-        //         // Make sure the export map and export bindings map contain the same
-        //         // number of entries.
-        //         for id in self.bindings.exports.keys() {
-        //             if !self.aux.export_map.contains_key(id) {
-        //                 bail!("bindings map has an entry that the export map does not");
-        //             }
-        //         }
-        //
-        //         if self.bindings.exports.len() != self.aux.export_map.len() {
-        //             bail!("export map and export bindings map have different sizes");
-        //         }
+        let mut imports_counted = 0;
+        let mut implemented = HashMap::new();
+        for (core, adapter) in self.adapters.implements.iter() {
+            implemented.insert(core, adapter);
+        }
+        for import in self.module.imports.iter() {
+            if import.module != PLACEHOLDER_MODULE {
+                continue;
+            }
+            match import.kind {
+                walrus::ImportKind::Function(_) => {}
+                _ => bail!("import from `{}` was not a function", PLACEHOLDER_MODULE),
+            }
+            let adapter = match implemented.remove(&import.id()) {
+                Some(id) => id,
+                None => {
+                    bail!("import of `{}` doesn't have an adapter listed", import.name);
+                }
+            };
+
+            // Ensure that everything imported from the `__wbindgen_placeholder__`
+            // module has a location listed as to where it's expected to be
+            // imported from.
+            if !self.aux.import_map.contains_key(&adapter) {
+                bail!(
+                    "import of `{}` doesn't have an import map item listed",
+                    import.name
+                );
+            }
+
+            imports_counted += 1;
+        }
+
+        // Make sure there's no extraneous adapters that weren't actually
+        // imported in the module.
+        if self.aux.import_map.len() != imports_counted {
+            bail!("import map is larger than the number of imports");
+        }
+        if implemented.len() != 0 {
+            bail!("more implementations listed than imports");
+        }
+
+        // Make sure the export map and export adapters map contain the same
+        // number of entries.
+        for (_, id) in self.adapters.exports.iter() {
+            if !self.aux.export_map.contains_key(id) {
+                bail!("adapters map has an entry that the export map does not");
+            }
+        }
+
+        if self.adapters.exports.len() != self.aux.export_map.len() {
+            bail!("export map and export adapters map have different sizes");
+        }
 
         Ok(())
     }
