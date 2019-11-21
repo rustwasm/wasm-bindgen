@@ -87,6 +87,7 @@ pub enum Instruction {
     LoadRetptr { ty: AdapterType, offset: usize },
     /// An instruction which pushes the return pointer onto the stack.
     Retptr,
+
     /// Pops a `bool` from the stack and pushes an `i32` equivalent
     I32FromBool,
     /// Pops a `string` from the stack and pushes the first character as `i32`
