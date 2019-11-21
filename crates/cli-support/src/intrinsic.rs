@@ -36,7 +36,7 @@ macro_rules! intrinsics {
 
             /// Returns the expected signature of this intrinsic, used for
             /// generating a JS shim.
-            pub fn binding(&self) -> Function {
+            pub fn signature(&self) -> Function {
                 use crate::descriptor::Descriptor::*;
                 match self {
                     $(
