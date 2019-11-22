@@ -19,7 +19,7 @@ set -ex
 
 PATH=$PATH:$(dirname $(find $(rustc --print sysroot) -name 'rust-lld')) \
   RUSTFLAGS='-C target-feature=+atomics,+bulk-memory' \
-  cargo build --target wasm32-unknown-unknown --release -Z build-std -Z timings=html
+  cargo build --target wasm32-unknown-unknown --release -Z build-std
 
 # Note the usage of `--no-modules` here which is used to create an output which
 # is usable from Web Workers. We notably can't use `--target bundler` since
