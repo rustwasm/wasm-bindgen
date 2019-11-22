@@ -14,7 +14,7 @@
 // //! Rust type to an outgoing binding.
 
 use crate::descriptor::{Descriptor, VectorKind};
-use crate::wit::{AdapterType, Instruction, NonstandardWitSection};
+use crate::wit::{AdapterType, Instruction, NonstandardWitSection, InstructionBuilder};
 use anyhow::{bail, format_err, Error};
 use walrus::{Module, ValType};
 
@@ -153,50 +153,33 @@ use walrus::{Module, ValType};
 //     },
 // }
 //
-#[derive(Default)]
-pub struct OutgoingBuilder<'a> {
-    pub input: Vec<AdapterType>,
-    pub output: Vec<AdapterType>,
-    pub instructions: Vec<Instruction>,
-
-    // These two arguments are optional and, if set, will enable creating
-    // `StackClosure` bindings. They're not present for return values from
-    // exported Rust functions, but they are available for the arguments of
-    // calling imported functions.
-    pub module: Option<&'a mut Module>,
-    pub adapters: Option<&'a mut NonstandardWitSection>,
-}
-
-impl OutgoingBuilder<'_> {
-    // /// Adds a dummy first argument which is passed through as an integer
-    // /// representing the return pointer.
-    // pub fn process_retptr(&mut self) {
-    //     self.standard_as(ValType::I32, ast::WebidlScalarType::Long);
-    // }
-    //
+impl InstructionBuilder<'_, '_> {
     /// Processes one more `Descriptor` as an argument to a JS function that
     /// wasm is calling.
     ///
     /// This will internally skip `Unit` and otherwise build up the `bindings`
     /// map and ensure that it's correctly mapped from wasm to JS.
-    pub fn process(&mut self, arg: &Descriptor) -> Result<(), Error> {
+    pub fn outgoing(&mut self, arg: &Descriptor) -> Result<(), Error> {
         if let Descriptor::Unit = arg {
             return Ok(());
         }
-        // assert_eq!(self.webidl.len(), self.bindings.len());
-        // let wasm_before = self.wasm.len();
-        // let webidl_before = self.webidl.len();
-        // self._process(arg)?;
-        // assert_eq!(self.webidl.len(), self.bindings.len());
-        // assert_eq!(webidl_before + 1, self.webidl.len());
-        // assert!(wasm_before < self.wasm.len());
+        // Similar rationale to `incoming.rs` around these sanity checks.
+        let input_before = self.input.len();
+        let output_before = self.output.len();
+        self._outgoing(arg)?;
+        assert_eq!(output_before + 1, self.output.len());
+        assert!(input_before < self.input.len());
         Ok(())
     }
 
-    // fn _process(&mut self, arg: &Descriptor) -> Result<(), Error> {
-    //     match arg {
-    //         Descriptor::Boolean => self.standard_as(ValType::I32, ast::WebidlScalarType::Boolean),
-    //         Descriptor::Anyref => self.standard_as(ValType::Anyref, ast::WebidlScalarType::Any),
+    fn _outgoing(&mut self, arg: &Descriptor) -> Result<(), Error> {
+        match arg {
+            Descriptor::Boolean => {
+                self.get(AdapterType::I32);
+                self.instructions.push(Instruction::BoolFromI32);
+                self.output.push(AdapterType::Bool);
+            }
+            Descriptor::Anyref => self.standard_as(ValType::Anyref, ast::WebidlScalarType::Any),
     //         Descriptor::I8 => self.standard_as(ValType::I32, ast::WebidlScalarType::Byte),
     //         Descriptor::U8 => self.standard_as(ValType::I32, ast::WebidlScalarType::Octet),
     //         Descriptor::I16 => self.standard_as(ValType::I32, ast::WebidlScalarType::Short),
@@ -268,16 +251,17 @@ impl OutgoingBuilder<'_> {
     //             "unsupported argument type for calling JS function from Rust: {:?}",
     //             arg
     //         ),
-    //
-    //         // nothing to do
-    //         Descriptor::Unit => {}
-    //
-    //         // Largely synthetic and can't show up
-    //         Descriptor::ClampedU8 => unreachable!(),
-    //     }
-    //     Ok(())
-    // }
-    //
+
+            // nothing to do
+            Descriptor::Unit => {}
+
+            // Largely synthetic and can't show up
+            Descriptor::ClampedU8 => unreachable!(),
+            _ => {}
+        }
+        Ok(())
+    }
+
     // fn process_ref(&mut self, mutable: bool, arg: &Descriptor) -> Result<(), Error> {
     //     match arg {
     //         Descriptor::Anyref => {

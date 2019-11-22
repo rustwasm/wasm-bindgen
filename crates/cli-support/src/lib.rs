@@ -12,6 +12,7 @@ use walrus::Module;
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 
 // mod anyref;
+mod multivalue;
 mod decode;
 mod descriptor;
 mod descriptors;
@@ -349,17 +350,16 @@ impl Bindgen {
         // if self.anyref {
         //     anyref::process(&mut module, self.wasm_interface_types)?;
         // }
-        //
-        // let aux = module
-        //     .customs
-        //     .delete_typed::<webidl::WasmBindgenAux>()
-        //     .expect("aux section should be present");
-        // let mut bindings = module
-        //     .customs
-        //     .delete_typed::<webidl::NonstandardWitSection>()
-        //     .unwrap();
 
-        panic!()
+        let aux = module
+            .customs
+            .delete_typed::<wit::WasmBindgenAux>()
+            .expect("aux section should be present");
+        let mut adapters = module
+            .customs
+            .delete_typed::<wit::NonstandardWitSection>()
+            .unwrap();
+
         // // Now that our module is massaged and good to go, feed it into the JS
         // // shim generation which will actually generate JS for all this.
         // let (npm_dependencies, (js, ts)) = {
@@ -368,34 +368,32 @@ impl Bindgen {
         //     let npm_dependencies = cx.npm_dependencies.clone();
         //     (npm_dependencies, cx.finalize(stem)?)
         // };
-        //
-        // if self.wasm_interface_types {
-        //     if self.multi_value {
-        //         webidl::standard::add_multi_value(&mut module, &mut bindings)
-        //             .context("failed to transform return pointers into multi-value Wasm")?;
-        //     }
-        //     webidl::standard::add_section(&mut module, &aux, &bindings)
-        //         .with_context(|| "failed to generate a standard wasm bindings custom section")?;
-        // } else {
-        //     if self.multi_value {
-        //         anyhow::bail!(
-        //             "Wasm multi-value is currently only available when \
-        //              Wasm interface types is also enabled"
-        //         );
-        //     }
-        // }
-        //
-        // // If we exported the shadow stack pointer earlier, remove it from the
-        // // export set now.
-        // if exported_shadow_stack_pointer {
-        //     wasm_conventions::unexport_shadow_stack_pointer(&mut module)?;
-        //     // The shadow stack pointer is potentially unused now, but since it
-        //     // most likely _is_ in use, we don't pay the cost of a full GC here
-        //     // just to remove one potentially unnecessary global.
-        //     //
-        //     // walrus::passes::gc::run(&mut module);
-        // }
-        //
+
+        if self.wasm_interface_types {
+            multivalue::run(&mut module, &mut adapters)
+                .context("failed to transform return pointers into multi-value Wasm")?;
+            wit::section::add(&mut module, &aux, &adapters)
+                .context("failed to generate a standard wasm bindings custom section")?;
+        } else {
+            if self.multi_value {
+                anyhow::bail!(
+                    "Wasm multi-value is currently only available when \
+                     Wasm interface types is also enabled"
+                );
+            }
+        }
+
+        // If we exported the shadow stack pointer earlier, remove it from the
+        // export set now.
+        if exported_shadow_stack_pointer {
+            wasm_conventions::unexport_shadow_stack_pointer(&mut module)?;
+            // The shadow stack pointer is potentially unused now, but since it
+            // most likely _is_ in use, we don't pay the cost of a full GC here
+            // just to remove one potentially unnecessary global.
+            //
+            // walrus::passes::gc::run(&mut module);
+        }
+
         // Ok(Output {
         //     module,
         //     stem: stem.to_string(),
@@ -408,6 +406,8 @@ impl Bindgen {
         //     typescript: self.typescript,
         //     wasm_interface_types: self.wasm_interface_types,
         // })
+
+        panic!()
     }
 
     fn local_module_name(&self, module: &str) -> String {

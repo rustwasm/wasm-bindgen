@@ -7,15 +7,16 @@ use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::str;
+use walrus::MemoryId;
 use walrus::{ExportId, FunctionId, ImportId, Module, TypedCustomSectionId};
 use wasm_bindgen_shared::struct_function_export_name;
 
 const PLACEHOLDER_MODULE: &str = "__wbindgen_placeholder__";
 
-mod adapters;
 mod incoming;
 mod nonstandard;
 mod outgoing;
+pub mod section;
 mod standard;
 pub use self::nonstandard::*;
 pub use self::standard::*;
@@ -27,12 +28,21 @@ struct Context<'a> {
     aux: WasmBindgenAux,
     function_exports: HashMap<String, (ExportId, FunctionId)>,
     function_imports: HashMap<String, (ImportId, FunctionId)>,
+    memory: Option<MemoryId>,
     vendor_prefixes: HashMap<String, Vec<String>>,
     unique_crate_identifier: &'a str,
     descriptors: HashMap<String, Descriptor>,
     anyref_enabled: bool,
     wasm_interface_types: bool,
     support_start: bool,
+}
+
+struct InstructionBuilder<'a, 'b> {
+    input: Vec<AdapterType>,
+    output: Vec<AdapterType>,
+    instructions: Vec<Instruction>,
+    cx: &'a mut Context<'b>,
+    return_position: bool,
 }
 
 pub fn process(
@@ -52,6 +62,7 @@ pub fn process(
         vendor_prefixes: Default::default(),
         descriptors: Default::default(),
         unique_crate_identifier: "",
+        memory: wasm_bindgen_wasm_conventions::get_memory(module).ok(),
         module,
         start_found: false,
         anyref_enabled,
@@ -144,13 +155,7 @@ impl<'a> Context<'a> {
                     arguments: vec![Descriptor::I32; 3],
                     ret: Descriptor::Anyref,
                 };
-                adapters::import(
-                    self.module,
-                    &mut self.adapters,
-                    id,
-                    signature,
-                    AdapterJsImportKind::Normal,
-                )?;
+                self.import_adapter(id, signature, AdapterJsImportKind::Normal)?;
                 // Synthesize the two integer pointers we pass through which
                 // aren't present in the signature but are present in the wasm
                 // signature.
@@ -158,12 +163,7 @@ impl<'a> Context<'a> {
                 let nargs = function.arguments.len();
                 function.arguments.insert(0, Descriptor::I32);
                 function.arguments.insert(0, Descriptor::I32);
-                let id = adapters::table_element(
-                    self.module,
-                    &mut self.adapters,
-                    descriptor.shim_idx,
-                    function,
-                )?;
+                let id = self.table_element_adapter(descriptor.shim_idx, function)?;
                 self.aux.import_map.insert(
                     id,
                     AuxImport::Closure {
@@ -248,13 +248,7 @@ impl<'a> Context<'a> {
     }
 
     fn bind_intrinsic(&mut self, id: ImportId, intrinsic: Intrinsic) -> Result<(), Error> {
-        let id = adapters::import(
-            self.module,
-            &mut self.adapters,
-            id,
-            intrinsic.signature(),
-            AdapterJsImportKind::Normal,
-        )?;
+        let id = self.import_adapter(id, intrinsic.signature(), AdapterJsImportKind::Normal)?;
         self.aux
             .import_map
             .insert(id, AuxImport::Intrinsic(intrinsic));
@@ -382,7 +376,7 @@ impl<'a> Context<'a> {
             None => AuxExportKind::Function(export.function.name.to_string()),
         };
 
-        let id = adapters::export(self.module, &mut self.adapters, export_id, descriptor)?;
+        let id = self.export_adapter(export_id, descriptor)?;
         self.aux.export_map.insert(
             id,
             AuxExport {
@@ -470,9 +464,7 @@ impl<'a> Context<'a> {
                     // NB: `structural` is ignored for constructors since the
                     // js type isn't expected to change anyway.
                     decode::MethodKind::Constructor => {
-                        let id = adapters::import(
-                            self.module,
-                            &mut self.adapters,
+                        let id = self.import_adapter(
                             import_id,
                             descriptor,
                             AdapterJsImportKind::Constructor,
@@ -487,16 +479,7 @@ impl<'a> Context<'a> {
                         } else {
                             AdapterJsImportKind::Normal
                         };
-                        (
-                            adapters::import(
-                                self.module,
-                                &mut self.adapters,
-                                import_id,
-                                descriptor,
-                                kind,
-                            )?,
-                            import,
-                        )
+                        (self.import_adapter(import_id, descriptor, kind)?, import)
                     }
                 }
             }
@@ -504,13 +487,7 @@ impl<'a> Context<'a> {
             // NB: `structural` is ignored for free functions since it's
             // expected that the binding isn't changing anyway.
             None => {
-                let id = adapters::import(
-                    self.module,
-                    &mut self.adapters,
-                    import_id,
-                    descriptor,
-                    AdapterJsImportKind::Normal,
-                )?;
+                let id = self.import_adapter(import_id, descriptor, AdapterJsImportKind::Normal)?;
                 let name = self.determine_import(import, function.name)?;
                 (id, AuxImport::Value(AuxValue::Bare(name)))
             }
@@ -652,9 +629,7 @@ impl<'a> Context<'a> {
         };
 
         // Register the signature of this imported shim
-        let id = adapters::import(
-            self.module,
-            &mut self.adapters,
+        let id = self.import_adapter(
             import_id,
             Function {
                 arguments: Vec::new(),
@@ -682,9 +657,7 @@ impl<'a> Context<'a> {
         };
 
         // Register the signature of this imported shim
-        let id = adapters::import(
-            self.module,
-            &mut self.adapters,
+        let id = self.import_adapter(
             import_id,
             Function {
                 arguments: vec![Descriptor::Ref(Box::new(Descriptor::Anyref))],
@@ -733,12 +706,7 @@ impl<'a> Context<'a> {
                 shim_idx: 0,
                 ret: descriptor.clone(),
             };
-            let getter_id = adapters::export(
-                self.module,
-                &mut self.adapters,
-                getter_id,
-                getter_descriptor,
-            )?;
+            let getter_id = self.export_adapter(getter_id, getter_descriptor)?;
             self.aux.export_map.insert(
                 getter_id,
                 AuxExport {
@@ -763,12 +731,7 @@ impl<'a> Context<'a> {
                 shim_idx: 0,
                 ret: Descriptor::Unit,
             };
-            let setter_id = adapters::export(
-                self.module,
-                &mut self.adapters,
-                setter_id,
-                setter_descriptor,
-            )?;
+            let setter_id = self.export_adapter(setter_id, setter_descriptor)?;
             self.aux.export_map.insert(
                 setter_id,
                 AuxExport {
@@ -789,19 +752,13 @@ impl<'a> Context<'a> {
         self.aux.structs.push(aux);
 
         let wrap_constructor = wasm_bindgen_shared::new_function(struct_.name);
-        if let Some((import_id, _id)) = self.function_imports.get(&wrap_constructor) {
+        if let Some((import_id, _id)) = self.function_imports.get(&wrap_constructor).cloned() {
             let signature = Function {
                 shim_idx: 0,
                 arguments: vec![Descriptor::I32],
                 ret: Descriptor::Anyref,
             };
-            let id = adapters::import(
-                self.module,
-                &mut self.adapters,
-                *import_id,
-                signature,
-                AdapterJsImportKind::Normal,
-            )?;
+            let id = self.import_adapter(import_id, signature, AdapterJsImportKind::Normal)?;
             self.aux
                 .import_map
                 .insert(id, AuxImport::WrapInExportedClass(struct_.name.to_string()));
@@ -1079,6 +1036,184 @@ impl<'a> Context<'a> {
         }
 
         Ok(())
+    }
+
+    /// Creates an import adapter for the `import` which will have the given
+    /// `signature`.
+    ///
+    /// Note that the JS function imported will be invoked as `kind`.
+    fn import_adapter(
+        &mut self,
+        import: ImportId,
+        signature: Function,
+        kind: AdapterJsImportKind,
+    ) -> Result<AdapterId, Error> {
+        let import = self.module.imports.get(import);
+        let (import_module, import_name) = (import.module.clone(), import.name.clone());
+        let id = match import.kind {
+            walrus::ImportKind::Function(f) => f,
+            _ => unreachable!(),
+        };
+        let import_id = import.id();
+
+        // Process the returned type first to see if it needs an out-pointer. This
+        // happens if the results of the incoming arguments translated to wasm take
+        // up more than one type.
+        let mut ret = self.instruction_builder(true);
+        ret.incoming(&signature.ret)?;
+        let uses_retptr = ret.output.len() > 1;
+
+        // Process the argument next, allocating space of the return value if one
+        // was present. Additionally configure the `module` and `adapters` to allow
+        // usage of closures going out to the import.
+        let mut args = ret.cx.instruction_builder(false);
+        if uses_retptr {
+            args.input.push(AdapterType::I32);
+        }
+        for arg in signature.arguments.iter() {
+            args.outgoing(arg)?;
+        }
+
+        // Build up the list of instructions for our adapter function. We start out
+        // with all the outgoing instructions which convert all wasm params to the
+        // desired types to call our import...
+        let mut instructions = args.instructions;
+
+        // ... and then we actually call our import. We synthesize an adapter
+        // definition for it with the appropriate types here on the fly.
+        let f = args.cx.adapters.append(
+            args.output,
+            ret.input,
+            AdapterKind::Import {
+                module: import_module,
+                name: import_name,
+                kind,
+            },
+        );
+        instructions.push(Instruction::CallAdapter(f));
+
+        // ... and then we follow up with a conversion of the incoming type
+        // back to wasm.
+        instructions.extend(ret.instructions);
+
+        // ... and if a return pointer is in use then we need to store the types on
+        // the stack into the wasm return pointer. Note that we iterate in reverse
+        // here because the last result is the top value on the stack.
+        let results = if uses_retptr {
+            for (i, ty) in ret.output.into_iter().enumerate().rev() {
+                instructions.push(Instruction::StoreRetptr { offset: i, ty });
+            }
+            Vec::new()
+        } else {
+            ret.output
+        };
+        let id = args
+            .cx
+            .adapters
+            .append(args.input, results, AdapterKind::Local { instructions });
+        args.cx.adapters.implements.push((import_id, id));
+        Ok(id)
+    }
+
+    /// Creates an adapter function for the `export` given to have the
+    /// `signature` specified.
+    fn export_adapter(
+        &mut self,
+        export: ExportId,
+        signature: Function,
+    ) -> Result<AdapterId, Error> {
+        let export = self.module.exports.get(export);
+        let name = export.name.clone();
+        let id = match export.item {
+            walrus::ExportItem::Function(f) => f,
+            _ => unreachable!(),
+        };
+        let export_id = export.id();
+        // Do the actual heavy lifting elsewhere to generate the `binding`.
+        let id = self.register_export_adapter(id, signature)?;
+        self.adapters.exports.push((name, id));
+        Ok(id)
+    }
+
+    fn table_element_adapter(&mut self, idx: u32, signature: Function) -> Result<AdapterId, Error> {
+        let table = self
+            .module
+            .tables
+            .main_function_table()?
+            .ok_or_else(|| anyhow!("no function table found"))?;
+        let table = self.module.tables.get(table);
+        let functions = match &table.kind {
+            walrus::TableKind::Function(f) => f,
+            _ => unreachable!(),
+        };
+        let id = functions.elements[idx as usize].unwrap();
+        // like above, largely just defer the work elsewhere
+        Ok(self.register_export_adapter(id, signature)?)
+    }
+
+    fn register_export_adapter(
+        &mut self,
+        id: walrus::FunctionId,
+        signature: Function,
+    ) -> Result<AdapterId, Error> {
+        // Figure out how to translate all the incoming arguments ...
+        let mut args = self.instruction_builder(false);
+        for arg in signature.arguments.iter() {
+            args.incoming(arg)?;
+        }
+
+        // ... then the returned value being translated back
+        let mut ret = args.cx.instruction_builder(true,);
+        ret.outgoing(&signature.ret)?;
+        let uses_retptr = ret.input.len() > 1;
+
+        // Our instruction stream starts out with the return pointer as the first
+        // argument to the wasm function, if one is in use. Then we convert
+        // everything to wasm types.
+        //
+        // After calling the core wasm function we need to load all the return
+        // pointer arguments if there were any, otherwise we simply convert
+        // everything into the outgoing arguments.
+        let mut instructions = Vec::new();
+        if uses_retptr {
+            instructions.push(Instruction::Retptr);
+        }
+        instructions.extend(args.instructions);
+        instructions.push(Instruction::Standard(wit_walrus::Instruction::CallCore(id)));
+        if uses_retptr {
+            for (i, ty) in ret.input.into_iter().enumerate() {
+                instructions.push(Instruction::LoadRetptr { offset: i, ty });
+            }
+        }
+        instructions.extend(ret.instructions);
+
+        Ok(ret
+            .cx
+            .adapters
+            .append(args.input, ret.output, AdapterKind::Local { instructions }))
+    }
+
+    fn instruction_builder<'b>(&'b mut self, return_position: bool) -> InstructionBuilder<'b, 'a> {
+        InstructionBuilder {
+            cx: self,
+            input: Vec::new(),
+            output: Vec::new(),
+            instructions: Vec::new(),
+            return_position,
+        }
+    }
+
+    fn malloc(&self) -> Result<FunctionId, Error> {
+        self.function_exports
+            .get("__wbindgen_malloc")
+            .cloned()
+            .map(|p| p.1)
+            .ok_or_else(|| anyhow!("failed to find declaration of `__wbindgen_malloc` in module"))
+    }
+
+    fn memory(&self) -> Result<MemoryId, Error> {
+        self.memory
+            .ok_or_else(|| anyhow!("failed to find memory declaration in module"))
     }
 }
 

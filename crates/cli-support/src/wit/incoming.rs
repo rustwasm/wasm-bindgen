@@ -8,38 +8,31 @@
 //! the `outgoing.rs` module.
 
 use crate::descriptor::{Descriptor, VectorKind};
-use crate::wit::{AdapterType, Instruction};
+use crate::wit::{AdapterType, Instruction, InstructionBuilder};
 use anyhow::{bail, format_err, Error};
-use walrus::ValType;
+use walrus::{FunctionId, MemoryId, ValType};
 
-#[derive(Default)]
-pub struct IncomingBuilder {
-    pub input: Vec<AdapterType>,
-    pub output: Vec<AdapterType>,
-    pub instructions: Vec<Instruction>,
-}
-
-impl IncomingBuilder {
+impl InstructionBuilder<'_, '_> {
     /// Process a `Descriptor` as if it's being passed from JS to Rust. This
     /// will skip `Unit` and otherwise internally add instructions necessary to
     /// convert the foreign type into the Rust bits.
-    pub fn process(&mut self, arg: &Descriptor) -> Result<(), Error> {
+    pub fn incoming(&mut self, arg: &Descriptor) -> Result<(), Error> {
         if let Descriptor::Unit = arg {
             return Ok(());
         }
-        // This is a wrapper around `_process` to have a number of sanity checks
+        // This is a wrapper around `_incoming` to have a number of sanity checks
         // that we don't forget things. We should always produce at least one
         // wasm arge and exactly one webidl arg. Additionally the number of
         // bindings should always match the number of webidl types for now.
         let input_before = self.input.len();
         let output_before = self.output.len();
-        self._process(arg)?;
+        self._incoming(arg)?;
         assert_eq!(output_before + 1, self.output.len());
         assert!(input_before < self.input.len());
         Ok(())
     }
 
-    fn _process(&mut self, arg: &Descriptor) -> Result<(), Error> {
+    fn _incoming(&mut self, arg: &Descriptor) -> Result<(), Error> {
         use walrus::ValType as WasmVT;
         use wit_walrus::ValType as WitVT;
         match arg {
@@ -82,17 +75,33 @@ impl IncomingBuilder {
                 self.output.push(AdapterType::F64);
             }
             Descriptor::Enum { .. } => self.number(WitVT::U32, WasmVT::I32),
-            Descriptor::Ref(d) => self.process_ref(false, d)?,
-            Descriptor::RefMut(d) => self.process_ref(true, d)?,
-            Descriptor::Option(d) => self.process_option(d)?,
+            Descriptor::Ref(d) => self.incoming_ref(false, d)?,
+            Descriptor::RefMut(d) => self.incoming_ref(true, d)?,
+            Descriptor::Option(d) => self.incoming_option(d)?,
 
-            Descriptor::String | Descriptor::CachedString | Descriptor::Vector(_) => {
-                panic!()
-            //     let kind = arg.vector_kind().ok_or_else(|| {
-            //         format_err!("unsupported argument type for calling Rust function from JS {:?}", arg)
-            //     })? ;
-            //     self.wasm.extend(&[ValType::I32; 2]);
-            //     self.alloc_copy_kind(kind)
+            Descriptor::String | Descriptor::CachedString => {
+                self.get(AdapterType::String);
+                let std = wit_walrus::Instruction::StringToMemory {
+                    malloc: self.cx.malloc()?,
+                    mem: self.cx.memory()?,
+                };
+                self.instructions.push(Instruction::Standard(std));
+                self.output.push(AdapterType::I32);
+                self.output.push(AdapterType::I32);
+            }
+
+            Descriptor::Vector(_) => {
+                let kind = arg.vector_kind().ok_or_else(|| {
+                    format_err!("unsupported argument type for calling Rust function from JS {:?}", arg)
+                })?;
+                self.get(AdapterType::Vector(kind));
+                self.instructions.push(Instruction::VectorToMemory {
+                    kind,
+                    malloc: self.cx.malloc()?,
+                    mem: self.cx.memory()?,
+                });
+                self.output.push(AdapterType::I32);
+                self.output.push(AdapterType::I32);
             }
 
             // Can't be passed from JS to Rust yet
@@ -114,7 +123,7 @@ impl IncomingBuilder {
         Ok(())
     }
 
-    fn process_ref(&mut self, mutable: bool, arg: &Descriptor) -> Result<(), Error> {
+    fn incoming_ref(&mut self, mutable: bool, arg: &Descriptor) -> Result<(), Error> {
         match arg {
             Descriptor::RustStruct(class) => {
                 self.get(AdapterType::Anyref);
@@ -129,24 +138,34 @@ impl IncomingBuilder {
                 self.instructions.push(Instruction::I32FromAnyrefBorrow);
                 self.output.push(AdapterType::I32);
             }
-            Descriptor::String | Descriptor::CachedString | Descriptor::Slice(_) => {
-                panic!()
-                //     let kind = arg.vector_kind().ok_or_else(|| {
-                //         format_err!(
-                //             "unsupported slice type for calling Rust function from JS {:?}",
-                //             arg
-                //         )
-                //     })?;
-                //     self.wasm.extend(&[ValType::I32; 2]);
-                //     if mutable {
-                //         self.bindings.push(NonstandardIncoming::MutableSlice {
-                //             kind,
-                //             val: self.expr_get(),
-                //         });
-                //         self.webidl.push(ast::WebidlScalarType::Any);
-                //     } else {
-                //         self.alloc_copy_kind(kind)
-                //     }
+            Descriptor::String | Descriptor::CachedString => {
+                // This allocation is cleaned up once it's received in Rust.
+                self.get(AdapterType::String);
+                let std = wit_walrus::Instruction::StringToMemory {
+                    malloc: self.cx.malloc()?,
+                    mem: self.cx.memory()?,
+                };
+                self.instructions.push(Instruction::Standard(std));
+                self.output.push(AdapterType::I32);
+                self.output.push(AdapterType::I32);
+            }
+            Descriptor::Slice(_) => {
+                // like strings, this allocation is cleaned up after being
+                // received in Rust.
+                let kind = arg.vector_kind().ok_or_else(|| {
+                    format_err!(
+                        "unsupported argument type for calling Rust function from JS {:?}",
+                        arg
+                    )
+                })?;
+                self.get(AdapterType::Vector(kind));
+                self.instructions.push(Instruction::VectorToMemory {
+                    kind,
+                    malloc: self.cx.malloc()?,
+                    mem: self.cx.memory()?,
+                });
+                self.output.push(AdapterType::I32);
+                self.output.push(AdapterType::I32);
             }
             _ => bail!(
                 "unsupported reference argument type for calling Rust function from JS: {:?}",
@@ -156,7 +175,7 @@ impl IncomingBuilder {
         Ok(())
     }
 
-    fn process_option(&mut self, arg: &Descriptor) -> Result<(), Error> {
+    fn incoming_option(&mut self, arg: &Descriptor) -> Result<(), Error> {
         match arg {
             Descriptor::Anyref => {
                 self.get(AdapterType::Anyref);
@@ -205,40 +224,37 @@ impl IncomingBuilder {
                 self.output.push(AdapterType::I32);
             }
 
-            // Descriptor::Ref(_) | Descriptor::RefMut(_) => {
-            //     let mutable = match arg {
-            //         Descriptor::Ref(_) => false,
-            //         _ => true,
-            //     };
-            //     let kind = arg.vector_kind().ok_or_else(|| {
-            //         format_err!(
-            //             "unsupported optional slice type for calling Rust function from JS {:?}",
-            //             arg
-            //         )
-            //     })?;
-            //     self.bindings.push(NonstandardIncoming::OptionSlice {
-            //         kind,
-            //         val: self.expr_get(),
-            //         mutable,
-            //     });
-            //     self.wasm.extend(&[ValType::I32; 2]);
-            //     self.webidl.push(ast::WebidlScalarType::Any);
-            // }
-            //
-            // Descriptor::String | Descriptor::CachedString | Descriptor::Vector(_) => {
-            //     let kind = arg.vector_kind().ok_or_else(|| {
-            //         format_err!(
-            //             "unsupported optional slice type for calling Rust function from JS {:?}",
-            //             arg
-            //         )
-            //     })?;
-            //     self.bindings.push(NonstandardIncoming::OptionVector {
-            //         kind,
-            //         val: self.expr_get(),
-            //     });
-            //     self.wasm.extend(&[ValType::I32; 2]);
-            //     self.webidl.push(ast::WebidlScalarType::Any);
-            // }
+            Descriptor::Ref(_) | Descriptor::RefMut(_) => {
+                let mutable = match arg {
+                    Descriptor::Ref(_) => false,
+                    _ => true,
+                };
+                let kind = arg.vector_kind().ok_or_else(|| {
+                    format_err!(
+                        "unsupported optional slice type for calling Rust function from JS {:?}",
+                        arg
+                    )
+                })?;
+                self.get(AdapterType::Anyref);
+                self.instructions
+                    .push(Instruction::OptionSlice { kind, mutable });
+                self.output.push(AdapterType::I32);
+                self.output.push(AdapterType::I32);
+            }
+
+            Descriptor::String | Descriptor::CachedString | Descriptor::Vector(_) => {
+                let kind = arg.vector_kind().ok_or_else(|| {
+                    format_err!(
+                        "unsupported optional slice type for calling Rust function from JS {:?}",
+                        arg
+                    )
+                })?;
+                self.get(AdapterType::Anyref);
+                self.instructions.push(Instruction::OptionVector { kind });
+                self.output.push(AdapterType::I32);
+                self.output.push(AdapterType::I32);
+            }
+
             _ => bail!(
                 "unsupported optional argument type for calling Rust function from JS: {:?}",
                 arg
@@ -247,71 +263,18 @@ impl IncomingBuilder {
         Ok(())
     }
 
-    fn get(&mut self, ty: AdapterType) {
-        let idx = self.input.len() as u32 - 1;
+    pub fn get(&mut self, ty: AdapterType) {
         self.input.push(ty);
-        let std = wit_walrus::Instruction::ArgGet(idx);
-        self.instructions.push(Instruction::Standard(std));
-    }
 
-    // fn alloc_func_name(&self) -> String {
-    //     "__wbindgen_malloc".to_string()
-    // }
-    //
-    // fn alloc_copy_kind(&mut self, kind: VectorKind) {
-    //     use wasm_webidl_bindings::ast::WebidlScalarType::*;
-    //
-    //     match kind {
-    //         VectorKind::I8 => self.alloc_copy(Int8Array),
-    //         VectorKind::U8 => self.alloc_copy(Uint8Array),
-    //         VectorKind::ClampedU8 => self.alloc_copy(Uint8ClampedArray),
-    //         VectorKind::I16 => self.alloc_copy(Int16Array),
-    //         VectorKind::U16 => self.alloc_copy(Uint16Array),
-    //         VectorKind::I32 => self.alloc_copy(Int32Array),
-    //         VectorKind::U32 => self.alloc_copy(Uint32Array),
-    //         VectorKind::F32 => self.alloc_copy(Float32Array),
-    //         VectorKind::F64 => self.alloc_copy(Float64Array),
-    //         VectorKind::String => {
-    //             let expr = ast::IncomingBindingExpressionAllocUtf8Str {
-    //                 alloc_func_name: self.alloc_func_name(),
-    //                 expr: Box::new(self.expr_get()),
-    //             };
-    //             self.webidl.push(DomString);
-    //             self.bindings
-    //                 .push(NonstandardIncoming::Standard(expr.into()));
-    //         }
-    //         VectorKind::I64 | VectorKind::U64 => {
-    //             let signed = match kind {
-    //                 VectorKind::I64 => true,
-    //                 _ => false,
-    //             };
-    //             self.bindings.push(NonstandardIncoming::AllocCopyInt64 {
-    //                 alloc_func_name: self.alloc_func_name(),
-    //                 expr: Box::new(self.expr_get()),
-    //                 signed,
-    //             });
-    //             self.webidl.push(Any);
-    //         }
-    //         VectorKind::Anyref => {
-    //             self.bindings
-    //                 .push(NonstandardIncoming::AllocCopyAnyrefArray {
-    //                     alloc_func_name: self.alloc_func_name(),
-    //                     expr: Box::new(self.expr_get()),
-    //                 });
-    //             self.webidl.push(Any);
-    //         }
-    //     }
-    // }
-    //
-    // fn alloc_copy(&mut self, webidl: ast::WebidlScalarType) {
-    //     let expr = ast::IncomingBindingExpressionAllocCopy {
-    //         alloc_func_name: self.alloc_func_name(),
-    //         expr: Box::new(self.expr_get()),
-    //     };
-    //     self.webidl.push(webidl);
-    //     self.bindings
-    //         .push(NonstandardIncoming::Standard(expr.into()));
-    // }
+        // If we're generating instructions in the return position then the
+        // arguments are already on the stack to consume, otherwise we need to
+        // fetch them from the parameters.
+        if !self.return_position {
+            let idx = self.input.len() as u32 - 1;
+            let std = wit_walrus::Instruction::ArgGet(idx);
+            self.instructions.push(Instruction::Standard(std));
+        }
+    }
 
     fn number(&mut self, input: wit_walrus::ValType, output: walrus::ValType) {
         self.get(AdapterType::from_wit(input));
