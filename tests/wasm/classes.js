@@ -170,3 +170,25 @@ exports.js_test_option_classes = () => {
   assert.ok(c instanceof wasm.OptionClass);
   wasm.option_class_assert_some(c);
 };
+
+exports.js_test_inspectable_classes = () => {
+    const inspectable = wasm.Inspectable.new();
+    const not_inspectable = wasm.NotInspectable.new();
+    // Inspectable classes have a toJSON and toString implementation generated
+    assert.deepStrictEqual(inspectable.toJSON(), { a: inspectable.a });
+    assert.strictEqual(inspectable.toString(), `{"a":${inspectable.a}}`);
+    // Non-inspectable classes do not have a toJSON or toString generated
+    assert.strictEqual(not_inspectable.toJSON, undefined);
+    assert.strictEqual(not_inspectable.toString(), '[object Object]');
+    inspectable.free();
+    not_inspectable.free();
+};
+
+exports.js_test_inspectable_classes_can_override_generated_methods = () => {
+    const overridden_inspectable = wasm.OverriddenInspectable.new();
+    // Inspectable classes can have the generated toJSON and toString overwritten
+    assert.strictEqual(overridden_inspectable.a, 0);
+    assert.deepStrictEqual(overridden_inspectable.toJSON(), 'JSON was overwritten');
+    assert.strictEqual(overridden_inspectable.toString(), 'string was overwritten');
+    overridden_inspectable.free();
+};

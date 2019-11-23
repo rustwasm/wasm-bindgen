@@ -30,6 +30,8 @@ extern "C" {
     fn js_return_none2() -> Option<OptionClass>;
     fn js_return_some(a: OptionClass) -> Option<OptionClass>;
     fn js_test_option_classes();
+    fn js_test_inspectable_classes();
+    fn js_test_inspectable_classes_can_override_generated_methods();
 }
 
 #[wasm_bindgen_test]
@@ -487,5 +489,67 @@ mod works_in_module {
         }
 
         pub fn foo(&self) {}
+    }
+}
+
+#[wasm_bindgen_test]
+fn inspectable_classes() {
+    js_test_inspectable_classes();
+}
+
+#[wasm_bindgen(inspectable)]
+#[derive(Default)]
+pub struct Inspectable {
+    pub a: u32,
+    // This private field will not be exposed unless a getter is provided for it
+    #[allow(dead_code)]
+    private: u32,
+}
+
+#[wasm_bindgen]
+impl Inspectable {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Default)]
+pub struct NotInspectable {
+    pub a: u32,
+}
+
+#[wasm_bindgen]
+impl NotInspectable {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+#[wasm_bindgen_test]
+fn inspectable_classes_can_override_generated_methods() {
+    js_test_inspectable_classes_can_override_generated_methods();
+}
+
+#[wasm_bindgen(inspectable)]
+#[derive(Default)]
+pub struct OverriddenInspectable {
+    pub a: u32,
+}
+
+#[wasm_bindgen]
+impl OverriddenInspectable {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    #[wasm_bindgen(js_name = toJSON)]
+    pub fn to_json(&self) -> String {
+        String::from("JSON was overwritten")
+    }
+
+    #[wasm_bindgen(js_name = toString)]
+    pub fn to_string(&self) -> String {
+        String::from("string was overwritten")
     }
 }

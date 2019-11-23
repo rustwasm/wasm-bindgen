@@ -45,6 +45,7 @@ macro_rules! attrgen {
             (readonly, Readonly(Span)),
             (js_name, JsName(Span, String, Span)),
             (js_class, JsClass(Span, String, Span)),
+            (inspectable, Inspectable(Span)),
             (is_type_of, IsTypeOf(Span, syn::Expr)),
             (extends, Extends(Span, syn::Path)),
             (vendor_prefix, VendorPrefix(Span, Ident)),
@@ -322,6 +323,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             .js_name()
             .map(|s| s.0.to_string())
             .unwrap_or(self.ident.to_string());
+        let is_inspectable = attrs.inspectable().is_some();
         for (i, field) in self.fields.iter_mut().enumerate() {
             match field.vis {
                 syn::Visibility::Public(..) => {}
@@ -361,6 +363,7 @@ impl<'a> ConvertToAst<BindgenAttrs> for &'a mut syn::ItemStruct {
             js_name,
             fields,
             comments,
+            is_inspectable,
         })
     }
 }

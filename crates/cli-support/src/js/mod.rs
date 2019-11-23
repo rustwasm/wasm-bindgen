@@ -57,6 +57,10 @@ pub struct ExportedClass {
     typescript: String,
     has_constructor: bool,
     wrap_needed: bool,
+    /// Whether to generate helper methods for inspecting the class
+    is_inspectable: bool,
+    /// All readable properties of the class
+    readable_properties: Vec<String>,
     /// Map from field name to type as a string plus whether it has a setter
     typescript_fields: HashMap<String, (String, bool)>,
 }
@@ -641,6 +645,36 @@ impl<'a> Context<'a> {
                 ",
                 name,
                 wasm_bindgen_shared::free_function(&name),
+            ));
+        }
+
+        // If the class is inspectable, generate `toJSON` and `toString`
+        // to expose all readable properties of the class. Otherwise,
+        // the class shows only the "ptr" property when logged or serialized
+        if class.is_inspectable {
+            // Creates a JavaScript object of all readable properties
+            // This looks like { a: this.a, b: this.b }
+            let readable_properties_js_object = format!(
+                "{{{}}}",
+                class
+                    .readable_properties
+                    .iter()
+                    .fold(String::from("\n"), |fields, field_name| {
+                        format!("{}{name}: this.{name},\n", fields, name = field_name)
+                    })
+            );
+
+            dst.push_str(&format!(
+                "
+                toJSON() {{
+                    return {readable_properties};
+                }}
+
+                toString() {{
+                    return JSON.stringify({readable_properties});
+                }}
+                ",
+                readable_properties = readable_properties_js_object
             ));
         }
 
@@ -2723,6 +2757,7 @@ impl<'a> Context<'a> {
     fn generate_struct(&mut self, struct_: &AuxStruct) -> Result<(), Error> {
         let class = require_class(&mut self.exported_classes, &struct_.name);
         class.comments = format_doc_comments(&struct_.comments, None);
+        class.is_inspectable = struct_.is_inspectable;
         Ok(())
     }
 
@@ -2975,6 +3010,7 @@ impl ExportedClass {
     /// generation is handled specially.
     fn push_getter(&mut self, docs: &str, field: &str, js: &str, ret_ty: &str) {
         self.push_accessor(docs, field, js, "get ", ret_ty);
+        self.readable_properties.push(field.to_string());
     }
 
     /// Used for adding a setter to a class, mainly to ensure that TypeScript
