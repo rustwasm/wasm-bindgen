@@ -45,5 +45,5 @@ extern "C" {
 
 let x: &Baz = ...;
 let y1: &Bar = x.as_ref();
-let y2: &Foo = x.as_ref();
+let y2: &Foo = y1.as_ref();
 ```
