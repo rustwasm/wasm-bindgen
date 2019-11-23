@@ -16,7 +16,7 @@ should be able to transparently switch to `final` eventually.
 
 The eventual performance aspect is that with the [host bindings
 proposal][host-bindings] then `wasm-bindgen` will need to generate far fewer JS
-functino shims to import than it does today. For example, consider this import
+function shims to import than it does today. For example, consider this import
 today:
 
 ```rust
