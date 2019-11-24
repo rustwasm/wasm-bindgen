@@ -171,15 +171,41 @@ exports.js_test_option_classes = () => {
   wasm.option_class_assert_some(c);
 };
 
+/**
+ * Invokes `console.log`, but logs to a string rather than stdout
+ * @param {any} data Data to pass to `console.log`
+ * @returns {string} Output from `console.log`, without color or trailing newlines
+ */
+const console_log_to_string = data => {
+    // Store the original stdout.write and create a console that logs without color
+    const original_write = process.stdout.write;
+    const colorless_console = new console.Console({
+      stdout: process.stdout,
+      colorMode: false
+    });
+    let output = '';
+
+    // Change stdout.write to append to our string, then restore the original function
+    process.stdout.write = chunk => output += chunk.trim();
+    colorless_console.log(data);
+    process.stdout.write = original_write;
+
+    return output;
+};
+
 exports.js_test_inspectable_classes = () => {
     const inspectable = wasm.Inspectable.new();
     const not_inspectable = wasm.NotInspectable.new();
     // Inspectable classes have a toJSON and toString implementation generated
     assert.deepStrictEqual(inspectable.toJSON(), { a: inspectable.a });
     assert.strictEqual(inspectable.toString(), `{"a":${inspectable.a}}`);
+    // Inspectable classes in Node.js have improved console.log formatting as well
+    assert.strictEqual(console_log_to_string(inspectable), `Inspectable { a: ${inspectable.a} }`);
     // Non-inspectable classes do not have a toJSON or toString generated
     assert.strictEqual(not_inspectable.toJSON, undefined);
     assert.strictEqual(not_inspectable.toString(), '[object Object]');
+    // Non-inspectable classes in Node.js have no special console.log formatting
+    assert.strictEqual(console_log_to_string(not_inspectable), `NotInspectable { ptr: ${not_inspectable.ptr} }`);
     inspectable.free();
     not_inspectable.free();
 };

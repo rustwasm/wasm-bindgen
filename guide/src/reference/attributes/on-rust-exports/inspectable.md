@@ -45,3 +45,9 @@ impl Baz {
     }
 }
 ```
+
+Note that the output of `console.log` will remain unchanged and display only the `ptr` field in browsers. It is recommended to call `toJSON` or `JSON.stringify` in these situations to aid with logging or debugging. Node.js does not suffer from this limitation, see the section below.
+
+## `inspectable` Classes in Node.js
+
+When the `nodejs` target is used, an additional `[util.inspect.custom]` implementation is provided. This method is used for `console.log` and similar functions to display all readable fields of the Rust struct.
