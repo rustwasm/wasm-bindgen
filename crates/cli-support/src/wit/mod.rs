@@ -40,7 +40,7 @@ struct Context<'a> {
 struct InstructionBuilder<'a, 'b> {
     input: Vec<AdapterType>,
     output: Vec<AdapterType>,
-    instructions: Vec<Instruction>,
+    instructions: Vec<InstructionData>,
     cx: &'a mut Context<'b>,
     return_position: bool,
 }
@@ -935,6 +935,10 @@ impl<'a> Context<'a> {
                     }
                     other => Instruction::Standard(other.clone()),
                 })
+                .map(|instr| InstructionData {
+                    instr,
+                    stack_change: StackChange::Unknown,
+                })
                 .collect::<Vec<_>>();
 
             // Store the instrs into the adapter function directly.
@@ -1090,7 +1094,10 @@ impl<'a> Context<'a> {
                 kind,
             },
         );
-        instructions.push(Instruction::CallAdapter(f));
+        instructions.push(InstructionData {
+            instr: Instruction::CallAdapter(f),
+            stack_change: StackChange::Unknown,
+        });
 
         // ... and then we follow up with a conversion of the incoming type
         // back to wasm.
@@ -1101,7 +1108,13 @@ impl<'a> Context<'a> {
         // here because the last result is the top value on the stack.
         let results = if uses_retptr {
             for (i, ty) in ret.output.into_iter().enumerate().rev() {
-                instructions.push(Instruction::StoreRetptr { offset: i, ty });
+                instructions.push(InstructionData {
+                    instr: Instruction::StoreRetptr { offset: i, ty },
+                    stack_change: StackChange::Modified {
+                        pushed: 0,
+                        popped: 1,
+                    },
+                });
             }
             Vec::new()
         } else {
@@ -1124,36 +1137,22 @@ impl<'a> Context<'a> {
     ) -> Result<AdapterId, Error> {
         let export = self.module.exports.get(export);
         let name = export.name.clone();
-        let id = match export.item {
-            walrus::ExportItem::Function(f) => f,
-            _ => unreachable!(),
-        };
-        let export_id = export.id();
         // Do the actual heavy lifting elsewhere to generate the `binding`.
-        let id = self.register_export_adapter(id, signature)?;
+        let call = Instruction::CallExport(export.id());
+        let id = self.register_export_adapter(call, signature)?;
         self.adapters.exports.push((name, id));
         Ok(id)
     }
 
     fn table_element_adapter(&mut self, idx: u32, signature: Function) -> Result<AdapterId, Error> {
-        let table = self
-            .module
-            .tables
-            .main_function_table()?
-            .ok_or_else(|| anyhow!("no function table found"))?;
-        let table = self.module.tables.get(table);
-        let functions = match &table.kind {
-            walrus::TableKind::Function(f) => f,
-            _ => unreachable!(),
-        };
-        let id = functions.elements[idx as usize].unwrap();
+        let call = Instruction::CallTableElement(idx);
         // like above, largely just defer the work elsewhere
-        Ok(self.register_export_adapter(id, signature)?)
+        Ok(self.register_export_adapter(call, signature)?)
     }
 
     fn register_export_adapter(
         &mut self,
-        id: walrus::FunctionId,
+        call: Instruction,
         signature: Function,
     ) -> Result<AdapterId, Error> {
         // Figure out how to translate all the incoming arguments ...
@@ -1163,7 +1162,7 @@ impl<'a> Context<'a> {
         }
 
         // ... then the returned value being translated back
-        let mut ret = args.cx.instruction_builder(true,);
+        let mut ret = args.cx.instruction_builder(true);
         ret.outgoing(&signature.ret)?;
         let uses_retptr = ret.input.len() > 1;
 
@@ -1176,13 +1175,28 @@ impl<'a> Context<'a> {
         // everything into the outgoing arguments.
         let mut instructions = Vec::new();
         if uses_retptr {
-            instructions.push(Instruction::Retptr);
+            instructions.push(InstructionData {
+                instr: Instruction::Retptr,
+                stack_change: StackChange::Modified {
+                    pushed: 1,
+                    popped: 0,
+                },
+            });
         }
         instructions.extend(args.instructions);
-        instructions.push(Instruction::Standard(wit_walrus::Instruction::CallCore(id)));
+        instructions.push(InstructionData {
+            instr: call,
+            stack_change: StackChange::Unknown,
+        });
         if uses_retptr {
             for (i, ty) in ret.input.into_iter().enumerate() {
-                instructions.push(Instruction::LoadRetptr { offset: i, ty });
+                instructions.push(InstructionData {
+                    instr: Instruction::LoadRetptr { offset: i, ty },
+                    stack_change: StackChange::Modified {
+                        pushed: 1,
+                        popped: 0,
+                    },
+                });
             }
         }
         instructions.extend(ret.instructions);
@@ -1209,6 +1223,14 @@ impl<'a> Context<'a> {
             .cloned()
             .map(|p| p.1)
             .ok_or_else(|| anyhow!("failed to find declaration of `__wbindgen_malloc` in module"))
+    }
+
+    fn free(&self) -> Result<FunctionId, Error> {
+        self.function_exports
+            .get("__wbindgen_free")
+            .cloned()
+            .map(|p| p.1)
+            .ok_or_else(|| anyhow!("failed to find declaration of `__wbindgen_free` in module"))
     }
 
     fn memory(&self) -> Result<MemoryId, Error> {

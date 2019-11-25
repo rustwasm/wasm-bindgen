@@ -7,10 +7,7 @@ use walrus::Module;
 use wasm_bindgen_multi_value_xform as multi_value_xform;
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 
-pub fn run(
-    module: &mut Module,
-    adapters: &mut NonstandardWitSection,
-) -> Result<(), Error> {
+pub fn run(module: &mut Module, adapters: &mut NonstandardWitSection) -> Result<(), Error> {
     let mut to_xform = Vec::new();
     let mut slots = Vec::new();
 
@@ -48,10 +45,10 @@ fn extract_xform<'a>(
     // If the first instruction is a `Retptr`, then this must be an exported
     // adapter which calls a wasm-defined function. Something we'd like to
     // adapt to multi-value!
-    if let Some(Instruction::Retptr) = instructions.first() {
+    if let Some(Instruction::Retptr) = instructions.first().map(|e| &e.instr) {
         instructions.remove(0);
         let mut types = Vec::new();
-        instructions.retain(|instruction| match instruction {
+        instructions.retain(|instruction| match instruction.instr {
             Instruction::LoadRetptr { ty, .. } => {
                 types.push(ty.to_wasm().unwrap());
                 false
@@ -60,7 +57,7 @@ fn extract_xform<'a>(
         });
         let id = instructions
             .iter_mut()
-            .filter_map(|i| match i {
+            .filter_map(|i| match &mut i.instr {
                 Instruction::Standard(wit_walrus::Instruction::CallCore(f)) => Some(f),
                 _ => None,
             })
@@ -75,8 +72,8 @@ fn extract_xform<'a>(
     }
 
     // If the last instruction is a `StoreRetptr`, then this must be an adapter
-    // which is calling
+    // which calls an imported function.
     //
-    // TODO: handle this case
-    if let Some(Instruction::StoreRetptr { .. }) = instructions.last() {}
+    // FIXME(#1872) handle this
+    // if let Some(Instruction::StoreRetptr { .. }) = instructions.last() {}
 }

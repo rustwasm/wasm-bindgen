@@ -17,9 +17,12 @@
 //! the module contains the wasm bindings section and it's actually respected.
 
 use crate::descriptor::VectorKind;
+use crate::wit::{AdapterId, AdapterJsImportKind, AdapterType, Instruction};
+use crate::wit::{AdapterKind, NonstandardWitSection, WasmBindgenAux};
+use crate::wit::{AuxExport, InstructionData};
 use crate::wit::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
-use crate::wit::{NonstandardWitSection, WasmBindgenAux};
-use anyhow::{bail, Context, Error};
+use anyhow::{anyhow, bail, Context, Error};
+use std::collections::HashMap;
 use walrus::Module;
 use wasm_bindgen_multi_value_xform as multi_value_xform;
 use wasm_bindgen_wasm_conventions as wasm_conventions;
@@ -44,131 +47,93 @@ pub fn add(
         structs,
     } = aux;
 
-    // for (export, binding) in nonstandard.exports.iter() {
-    //     // First up make sure this is something that's actually valid to export
-    //     // form a vanilla WebAssembly module with WebIDL bindings.
-    //     match &export_map[export].kind {
-    //         AuxExportKind::Function(_) => {}
-    //         AuxExportKind::Constructor(name) => {
-    //             bail!(
-    //                 "cannot export `{}` constructor function when generating \
-    //                  a standalone WebAssembly module with no JS glue",
-    //                 name,
-    //             );
-    //         }
-    //         AuxExportKind::Getter { class, field } => {
-    //             bail!(
-    //                 "cannot export `{}::{}` getter function when generating \
-    //                  a standalone WebAssembly module with no JS glue",
-    //                 class,
-    //                 field,
-    //             );
-    //         }
-    //         AuxExportKind::Setter { class, field } => {
-    //             bail!(
-    //                 "cannot export `{}::{}` setter function when generating \
-    //                  a standalone WebAssembly module with no JS glue",
-    //                 class,
-    //                 field,
-    //             );
-    //         }
-    //         AuxExportKind::StaticFunction { class, name } => {
-    //             bail!(
-    //                 "cannot export `{}::{}` static function when \
-    //                  generating a standalone WebAssembly module with no \
-    //                  JS glue",
-    //                 class,
-    //                 name
-    //             );
-    //         }
-    //         AuxExportKind::Method { class, name, .. } => {
-    //             bail!(
-    //                 "cannot export `{}::{}` method when \
-    //                  generating a standalone WebAssembly module with no \
-    //                  JS glue",
-    //                 class,
-    //                 name
-    //             );
-    //         }
-    //     }
-    //
-    //     let name = &module.exports.get(*export).name;
-    //     let params = extract_incoming(&binding.incoming).with_context(|| {
-    //         format!(
-    //             "failed to map arguments for export `{}` to standard \
-    //              binding expressions",
-    //             name
-    //         )
-    //     })?;
-    //     let result = extract_outgoing(&binding.outgoing).with_context(|| {
-    //         format!(
-    //             "failed to map return value for export `{}` to standard \
-    //              binding expressions",
-    //             name
-    //         )
-    //     })?;
-    //
-    //     assert!(binding.return_via_outptr.is_none());
-    //     let binding = section.bindings.insert(ast::ExportBinding {
-    //         wasm_ty: binding.wasm_ty,
-    //         webidl_ty: copy_ty(
-    //             &mut section.types,
-    //             binding.webidl_ty.into(),
-    //             &nonstandard.types,
-    //         ),
-    //         params: ast::IncomingBindingMap { bindings: params },
-    //         result: ast::OutgoingBindingMap { bindings: result },
-    //     });
-    //     let func = match module.exports.get(*export).item {
-    //         walrus::ExportItem::Function(f) => f,
-    //         _ => unreachable!(),
-    //     };
-    //     section.binds.insert(ast::Bind {
-    //         func,
-    //         binding: binding.into(),
-    //     });
-    // }
-    //
-    // for (import, binding) in nonstandard.imports.iter() {
-    //     check_standard_import(&import_map[import])?;
-    //     let (module_name, name) = {
-    //         let import = module.imports.get(*import);
-    //         (&import.module, &import.name)
-    //     };
-    //     let params = extract_outgoing(&binding.outgoing).with_context(|| {
-    //         format!(
-    //             "failed to map arguments of import `{}::{}` to standard \
-    //              binding expressions",
-    //             module_name, name,
-    //         )
-    //     })?;
-    //     let result = extract_incoming(&binding.incoming).with_context(|| {
-    //         format!(
-    //             "failed to map return value of import `{}::{}` to standard \
-    //              binding expressions",
-    //             module_name, name,
-    //         )
-    //     })?;
-    //     assert!(binding.return_via_outptr.is_none());
-    //     let binding = section.bindings.insert(ast::ImportBinding {
-    //         wasm_ty: binding.wasm_ty,
-    //         webidl_ty: copy_ty(
-    //             &mut section.types,
-    //             binding.webidl_ty.into(),
-    //             &nonstandard.types,
-    //         ),
-    //         params: ast::OutgoingBindingMap { bindings: params },
-    //         result: ast::IncomingBindingMap { bindings: result },
-    //     });
-    //     let func = match module.imports.get(*import).kind {
-    //         walrus::ImportKind::Function(f) => f,
-    //         _ => unreachable!(),
-    //     };
-    //     section.binds.insert(ast::Bind {
-    //         func,
-    //         binding: binding.into(),
-    //     });
-    // }
+    let adapter_context = |id: AdapterId| {
+        if let Some((name, _)) = nonstandard.exports.iter().find(|p| p.1 == id) {
+            return format!("in function export `{}`", name);
+        }
+        if let Some((core, _)) = nonstandard.implements.iter().find(|p| p.1 == id) {
+            let import = module.imports.get(*core);
+            return format!(
+                "in function import from `{}::{}`",
+                import.module, import.name
+            );
+        }
+        unreachable!()
+    };
+
+    let mut us2walrus = HashMap::new();
+    for (us, func) in nonstandard.adapters.iter() {
+        if let Some(export) = export_map.get(us) {
+            check_standard_export(export).context(adapter_context(*us))?;
+        }
+        if let Some(import) = import_map.get(us) {
+            check_standard_import(import).context(adapter_context(*us))?;
+        }
+        let params = translate_tys(&func.params).context(adapter_context(*us))?;
+        let results = translate_tys(&func.results).context(adapter_context(*us))?;
+        let ty = section.types.add(params, results);
+        let walrus = match &func.kind {
+            AdapterKind::Local { .. } => section.funcs.add_local(ty, Vec::new()),
+            AdapterKind::Import {
+                module,
+                name,
+                kind: AdapterJsImportKind::Normal,
+            } => section.add_import_func(module, name, ty).0,
+            AdapterKind::Import {
+                module,
+                name,
+                kind: AdapterJsImportKind::Constructor,
+            } => {
+                bail!(
+                    "interfaces types doesn't support import of `{}::{}` \
+                     as a constructor",
+                    module,
+                    name
+                );
+            }
+            AdapterKind::Import {
+                module,
+                name,
+                kind: AdapterJsImportKind::Method,
+            } => {
+                bail!(
+                    "interfaces types doesn't support import of `{}::{}` \
+                     as a method",
+                    module,
+                    name
+                );
+            }
+        };
+        us2walrus.insert(*us, walrus);
+    }
+
+    for (core, adapter) in nonstandard.implements.iter() {
+        let core = match module.imports.get(*core).kind {
+            walrus::ImportKind::Function(f) => f,
+            _ => bail!("cannot implement a non-function"),
+        };
+        section.implements.add(us2walrus[adapter], core);
+    }
+
+    for (name, adapter) in nonstandard.exports.iter() {
+        section.exports.add(name, us2walrus[adapter]);
+    }
+
+    for (id, func) in nonstandard.adapters.iter() {
+        let instructions = match &func.kind {
+            AdapterKind::Local { instructions } => instructions,
+            AdapterKind::Import { .. } => continue,
+        };
+        let result = match &mut section.funcs.get_mut(us2walrus[id]).kind {
+            wit_walrus::FuncKind::Local(i) => i,
+            _ => unreachable!(),
+        };
+
+        for instruction in instructions {
+            translate_instruction(instruction, &us2walrus, module)
+                .with_context(|| adapter_context(*id))?;
+        }
+    }
 
     if let Some((name, _)) = local_modules.iter().next() {
         bail!(
@@ -197,27 +162,21 @@ pub fn add(
         );
     }
 
-    // if let Some(import) = imports_with_catch.iter().next() {
-    //     let import = module.imports.get(*import);
-    //     bail!(
-    //         "generating a bindings section is currently incompatible with \
-    //          `#[wasm_bindgen(catch)]` on the `{}::{}` import because a \
-    //          a standalone wasm file is being generated",
-    //         import.module,
-    //         import.name,
-    //     );
-    // }
-    //
-    // if let Some(import) = imports_with_variadic.iter().next() {
-    //     let import = module.imports.get(*import);
-    //     bail!(
-    //         "generating a bindings section is currently incompatible with \
-    //          `#[wasm_bindgen(variadic)]` on the `{}::{}` import because a \
-    //          a standalone wasm file is being generated",
-    //         import.module,
-    //         import.name,
-    //     );
-    // }
+    if let Some(id) = imports_with_catch.iter().next() {
+        bail!(
+            "{}\ngenerating a bindings section is currently incompatible with \
+             `#[wasm_bindgen(catch)]`",
+            adapter_context(*id),
+        );
+    }
+
+    if let Some(id) = imports_with_variadic.iter().next() {
+        bail!(
+            "{}\ngenerating a bindings section is currently incompatible with \
+             `#[wasm_bindgen(variadic)]`",
+            adapter_context(*id),
+        );
+    }
 
     if let Some(enum_) = enums.iter().next() {
         bail!(
@@ -236,102 +195,91 @@ pub fn add(
     }
 
     module.customs.add(section);
-    if true { panic!() }
     Ok(())
 }
 
-// fn extract_incoming(
-//     nonstandard: &[NonstandardIncoming],
-// ) -> Result<Vec<ast::IncomingBindingExpression>, Error> {
-//     let mut exprs = Vec::new();
-//     for expr in nonstandard {
-//         let desc = match expr {
-//             NonstandardIncoming::Standard(e) => {
-//                 exprs.push(e.clone());
-//                 continue;
-//             }
-//             NonstandardIncoming::Int64 { .. } => "64-bit integer",
-//             NonstandardIncoming::AllocCopyInt64 { .. } => "64-bit integer array",
-//             NonstandardIncoming::AllocCopyAnyrefArray { .. } => "array of JsValue",
-//             NonstandardIncoming::MutableSlice { .. } => "mutable slice",
-//             NonstandardIncoming::OptionSlice { .. } => "optional slice",
-//             NonstandardIncoming::OptionVector { .. } => "optional vector",
-//             NonstandardIncoming::OptionAnyref { .. } => "optional anyref",
-//             NonstandardIncoming::OptionNative { .. } => "optional integer",
-//             NonstandardIncoming::OptionU32Sentinel { .. } => "optional integer",
-//             NonstandardIncoming::OptionBool { .. } => "optional bool",
-//             NonstandardIncoming::OptionChar { .. } => "optional char",
-//             NonstandardIncoming::OptionIntegerEnum { .. } => "optional enum",
-//             NonstandardIncoming::OptionInt64 { .. } => "optional integer",
-//             NonstandardIncoming::RustType { .. } => "native Rust type",
-//             NonstandardIncoming::RustTypeRef { .. } => "reference to Rust type",
-//             NonstandardIncoming::OptionRustType { .. } => "optional Rust type",
-//             NonstandardIncoming::Char { .. } => "character",
-//             NonstandardIncoming::BorrowedAnyref { .. } => "borrowed anyref",
-//         };
-//         bail!(
-//             "cannot represent {} with a standard bindings expression",
-//             desc
-//         );
-//     }
-//     Ok(exprs)
-// }
-//
-// fn extract_outgoing(
-//     nonstandard: &[NonstandardOutgoing],
-// ) -> Result<Vec<ast::OutgoingBindingExpression>, Error> {
-//     let mut exprs = Vec::new();
-//     for expr in nonstandard {
-//         let desc = match expr {
-//             NonstandardOutgoing::Standard(e) => {
-//                 exprs.push(e.clone());
-//                 continue;
-//             }
-//             // ... yeah ... let's just leak strings
-//             // see comment at top of this module about returning strings for
-//             // what this is doing and why it's weird
-//             NonstandardOutgoing::Vector {
-//                 offset,
-//                 length,
-//                 kind: VectorKind::String,
-//             } => {
-//                 exprs.push(
-//                     ast::OutgoingBindingExpressionUtf8Str {
-//                         offset: *offset,
-//                         length: *length,
-//                         ty: ast::WitScalarType::DomString.into(),
-//                     }
-//                     .into(),
-//                 );
-//                 continue;
-//             }
-//
-//             NonstandardOutgoing::RustType { .. } => "rust type",
-//             NonstandardOutgoing::Char { .. } => "character",
-//             NonstandardOutgoing::Number64 { .. } => "64-bit integer",
-//             NonstandardOutgoing::BorrowedAnyref { .. } => "borrowed anyref",
-//             NonstandardOutgoing::Vector { .. } => "vector",
-//             NonstandardOutgoing::CachedString { .. } => "cached string",
-//             NonstandardOutgoing::View64 { .. } => "64-bit slice",
-//             NonstandardOutgoing::ViewAnyref { .. } => "anyref slice",
-//             NonstandardOutgoing::OptionVector { .. } => "optional vector",
-//             NonstandardOutgoing::OptionSlice { .. } => "optional slice",
-//             NonstandardOutgoing::OptionNative { .. } => "optional integer",
-//             NonstandardOutgoing::OptionU32Sentinel { .. } => "optional integer",
-//             NonstandardOutgoing::OptionBool { .. } => "optional boolean",
-//             NonstandardOutgoing::OptionChar { .. } => "optional character",
-//             NonstandardOutgoing::OptionIntegerEnum { .. } => "optional enum",
-//             NonstandardOutgoing::OptionInt64 { .. } => "optional 64-bit integer",
-//             NonstandardOutgoing::OptionRustType { .. } => "optional rust type",
-//             NonstandardOutgoing::StackClosure { .. } => "closures",
-//         };
-//         bail!(
-//             "cannot represent {} with a standard bindings expression",
-//             desc
-//         );
-//     }
-//     Ok(exprs)
-// }
+fn translate_instruction(
+    instr: &InstructionData,
+    us2walrus: &HashMap<AdapterId, wit_walrus::FuncId>,
+    module: &Module,
+) -> Result<wit_walrus::Instruction, Error> {
+    use Instruction::*;
+
+    match &instr.instr {
+        Standard(s) => Ok(s.clone()),
+        CallAdapter(id) => {
+            let id = us2walrus[id];
+            Ok(wit_walrus::Instruction::CallAdapter(id))
+        }
+        CallExport(e) => match module.exports.get(*e).item {
+            walrus::ExportItem::Function(f) => Ok(wit_walrus::Instruction::CallCore(f)),
+            _ => bail!("can only call exported functions"),
+        },
+        CallTableElement(e) => {
+            let table = module
+                .tables
+                .main_function_table()?
+                .ok_or_else(|| anyhow!("no function table found in module"))?;
+            let functions = match &module.tables.get(table).kind {
+                walrus::TableKind::Function(f) => f,
+                _ => unreachable!(),
+            };
+            match functions.elements.get(*e as usize) {
+                Some(Some(f)) => Ok(wit_walrus::Instruction::CallCore(*f)),
+                _ => bail!("expected to find an element of the function table"),
+            }
+        }
+        StoreRetptr { .. } | LoadRetptr { .. } | Retptr => {
+            bail!("return pointers aren't supported in wasm interface types");
+        }
+        I32FromBool | BoolFromI32 => {
+            bail!("booleans aren't supported in wasm interface types");
+        }
+        I32FromStringFirstChar | StringFromChar => {
+            bail!("chars aren't supported in wasm interface types");
+        }
+        I32FromAnyrefOwned | I32FromAnyrefBorrow | AnyrefLoadOwned | TableGet => {
+            bail!("anyref pass failed to sink into wasm module");
+        }
+        I32FromAnyrefRustOwned { .. } | I32FromAnyrefRustBorrow { .. } | RustFromI32 { .. } => {
+            bail!("rust types aren't supported in wasm interface types");
+        }
+        I32Split64 { .. } | I64FromLoHi { .. } => {
+            bail!("64-bit integers aren't supported in wasm-bindgen");
+        }
+        I32SplitOption64 { .. }
+        | I32FromOptionAnyref
+        | I32FromOptionU32Sentinel
+        | I32FromOptionRust { .. }
+        | I32FromOptionBool
+        | I32FromOptionChar
+        | I32FromOptionEnum { .. }
+        | FromOptionNative { .. }
+        | OptionSlice { .. }
+        | OptionVector { .. }
+        | AnyrefLoadOptionOwned
+        | OptionRustFromI32 { .. }
+        | OptionVectorLoad { .. }
+        | OptionView { .. }
+        | OptionU32Sentinel
+        | ToOptionNative { .. }
+        | OptionBoolFromI32
+        | OptionCharFromI32
+        | OptionEnumFromI32 { .. }
+        | Option64FromI32 { .. } => {
+            bail!("optional types aren't supported in wasm bindgen");
+        }
+        VectorToMemory { .. } | VectorLoad { .. } | View { .. } => {
+            bail!("vector slices aren't supported in wasm interface types yet");
+        }
+        CachedStringLoad { .. } => {
+            bail!("cached strings aren't supported in wasm interface types");
+        }
+        StackClosure { .. } => {
+            bail!("closures aren't supported in wasm interface types");
+        }
+    }
+}
 
 fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
     let desc_js = |js: &JsImport| {
@@ -405,4 +353,62 @@ fn check_standard_import(import: &AuxImport) -> Result<(), Error> {
          contains an import of {} since it requires JS glue",
         item
     );
+}
+
+fn check_standard_export(export: &AuxExport) -> Result<(), Error> {
+    // First up make sure this is something that's actually valid to export
+    // form a vanilla WebAssembly module with WebIDL bindings.
+    match &export.kind {
+        AuxExportKind::Function(_) => Ok(()),
+        AuxExportKind::Constructor(name) => {
+            bail!(
+                "cannot export `{}` constructor function when generating \
+                 a standalone WebAssembly module with no JS glue",
+                name,
+            );
+        }
+        AuxExportKind::Getter { class, field } => {
+            bail!(
+                "cannot export `{}::{}` getter function when generating \
+                 a standalone WebAssembly module with no JS glue",
+                class,
+                field,
+            );
+        }
+        AuxExportKind::Setter { class, field } => {
+            bail!(
+                "cannot export `{}::{}` setter function when generating \
+                 a standalone WebAssembly module with no JS glue",
+                class,
+                field,
+            );
+        }
+        AuxExportKind::StaticFunction { class, name } => {
+            bail!(
+                "cannot export `{}::{}` static function when \
+                 generating a standalone WebAssembly module with no \
+                 JS glue",
+                class,
+                name
+            );
+        }
+        AuxExportKind::Method { class, name, .. } => {
+            bail!(
+                "cannot export `{}::{}` method when \
+                 generating a standalone WebAssembly module with no \
+                 JS glue",
+                class,
+                name
+            );
+        }
+    }
+}
+
+fn translate_tys(tys: &[AdapterType]) -> Result<Vec<wit_walrus::ValType>, Error> {
+    tys.iter()
+        .map(|ty| {
+            ty.to_wit()
+                .ok_or_else(|| anyhow!("type {:?} isn't supported in standard interface types", ty))
+        })
+        .collect()
 }

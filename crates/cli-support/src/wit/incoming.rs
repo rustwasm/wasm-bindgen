@@ -8,7 +8,8 @@
 //! the `outgoing.rs` module.
 
 use crate::descriptor::{Descriptor, VectorKind};
-use crate::wit::{AdapterType, Instruction, InstructionBuilder};
+use crate::wit::InstructionData;
+use crate::wit::{AdapterType, Instruction, InstructionBuilder, StackChange};
 use anyhow::{bail, format_err, Error};
 use walrus::{FunctionId, MemoryId, ValType};
 
@@ -37,26 +38,34 @@ impl InstructionBuilder<'_, '_> {
         use wit_walrus::ValType as WitVT;
         match arg {
             Descriptor::Boolean => {
-                self.get(AdapterType::Bool);
-                self.instructions.push(Instruction::I32FromBool);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Bool],
+                    Instruction::I32FromBool,
+                    &[AdapterType::I32],
+                );
             }
             Descriptor::Char => {
-                self.get(AdapterType::String);
-                self.instructions.push(Instruction::I32FromStringFirstChar);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::String],
+                    Instruction::I32FromStringFirstChar,
+                    &[AdapterType::I32],
+                );
             }
             Descriptor::Anyref => {
-                self.get(AdapterType::Anyref);
-                self.instructions.push(Instruction::I32FromAnyrefOwned);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32FromAnyrefOwned,
+                    &[AdapterType::I32],
+                );
             }
             Descriptor::RustStruct(class) => {
-                self.get(AdapterType::Anyref);
-                self.instructions.push(Instruction::I32FromAnyrefRustOwned {
-                    class: class.clone(),
-                });
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32FromAnyrefRustOwned {
+                        class: class.clone(),
+                    },
+                    &[AdapterType::I32],
+                );
             }
             Descriptor::I8 => self.number(WitVT::S8, WasmVT::I32),
             Descriptor::U8 => self.number(WitVT::U8, WasmVT::I32),
@@ -80,28 +89,30 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Option(d) => self.incoming_option(d)?,
 
             Descriptor::String | Descriptor::CachedString => {
-                self.get(AdapterType::String);
                 let std = wit_walrus::Instruction::StringToMemory {
                     malloc: self.cx.malloc()?,
                     mem: self.cx.memory()?,
                 };
-                self.instructions.push(Instruction::Standard(std));
-                self.output.push(AdapterType::I32);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::String],
+                    Instruction::Standard(std),
+                    &[AdapterType::I32, AdapterType::I32],
+                );
             }
 
             Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!("unsupported argument type for calling Rust function from JS {:?}", arg)
                 })?;
-                self.get(AdapterType::Vector(kind));
-                self.instructions.push(Instruction::VectorToMemory {
-                    kind,
-                    malloc: self.cx.malloc()?,
-                    mem: self.cx.memory()?,
-                });
-                self.output.push(AdapterType::I32);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Vector(kind)],
+                    Instruction::VectorToMemory {
+                        kind,
+                        malloc: self.cx.malloc()?,
+                        mem: self.cx.memory()?,
+                    },
+                    &[AdapterType::I32, AdapterType::I32],
+                );
             }
 
             // Can't be passed from JS to Rust yet
@@ -126,28 +137,32 @@ impl InstructionBuilder<'_, '_> {
     fn incoming_ref(&mut self, mutable: bool, arg: &Descriptor) -> Result<(), Error> {
         match arg {
             Descriptor::RustStruct(class) => {
-                self.get(AdapterType::Anyref);
-                self.instructions
-                    .push(Instruction::I32FromAnyrefRustBorrow {
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32FromAnyrefRustBorrow {
                         class: class.clone(),
-                    });
-                self.output.push(AdapterType::I32);
+                    },
+                    &[AdapterType::I32],
+                );
             }
             Descriptor::Anyref => {
-                self.get(AdapterType::Anyref);
-                self.instructions.push(Instruction::I32FromAnyrefBorrow);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32FromAnyrefBorrow,
+                    &[AdapterType::I32],
+                );
             }
             Descriptor::String | Descriptor::CachedString => {
                 // This allocation is cleaned up once it's received in Rust.
-                self.get(AdapterType::String);
                 let std = wit_walrus::Instruction::StringToMemory {
                     malloc: self.cx.malloc()?,
                     mem: self.cx.memory()?,
                 };
-                self.instructions.push(Instruction::Standard(std));
-                self.output.push(AdapterType::I32);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::String],
+                    Instruction::Standard(std),
+                    &[AdapterType::I32, AdapterType::I32],
+                );
             }
             Descriptor::Slice(_) => {
                 // like strings, this allocation is cleaned up after being
@@ -158,14 +173,15 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
-                self.get(AdapterType::Vector(kind));
-                self.instructions.push(Instruction::VectorToMemory {
-                    kind,
-                    malloc: self.cx.malloc()?,
-                    mem: self.cx.memory()?,
-                });
-                self.output.push(AdapterType::I32);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Vector(kind)],
+                    Instruction::VectorToMemory {
+                        kind,
+                        malloc: self.cx.malloc()?,
+                        mem: self.cx.memory()?,
+                    },
+                    &[AdapterType::I32, AdapterType::I32],
+                );
             }
             _ => bail!(
                 "unsupported reference argument type for calling Rust function from JS: {:?}",
@@ -178,50 +194,60 @@ impl InstructionBuilder<'_, '_> {
     fn incoming_option(&mut self, arg: &Descriptor) -> Result<(), Error> {
         match arg {
             Descriptor::Anyref => {
-                self.get(AdapterType::Anyref);
-                self.instructions.push(Instruction::I32FromOptionAnyref);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32FromOptionAnyref,
+                    &[AdapterType::I32],
+                );
             }
-            Descriptor::I8 => self.option_sentinel(),
-            Descriptor::U8 => self.option_sentinel(),
-            Descriptor::I16 => self.option_sentinel(),
-            Descriptor::U16 => self.option_sentinel(),
-            Descriptor::I32 => self.option_native(ValType::I32),
-            Descriptor::U32 => self.option_native(ValType::I32),
-            Descriptor::F32 => self.option_native(ValType::F32),
-            Descriptor::F64 => self.option_native(ValType::F64),
+            Descriptor::I8 => self.in_option_sentinel(),
+            Descriptor::U8 => self.in_option_sentinel(),
+            Descriptor::I16 => self.in_option_sentinel(),
+            Descriptor::U16 => self.in_option_sentinel(),
+            Descriptor::I32 => self.in_option_native(ValType::I32),
+            Descriptor::U32 => self.in_option_native(ValType::I32),
+            Descriptor::F32 => self.in_option_native(ValType::F32),
+            Descriptor::F64 => self.in_option_native(ValType::F64),
             Descriptor::I64 | Descriptor::U64 => {
-                self.get(AdapterType::Anyref);
                 let signed = match arg {
                     Descriptor::I64 => true,
                     _ => false,
                 };
-                self.instructions
-                    .push(Instruction::I32SplitOption64 { signed });
-                self.output.extend(&[AdapterType::I32; 4]);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32SplitOption64 { signed },
+                    &[AdapterType::I32; 3],
+                );
             }
             Descriptor::Boolean => {
-                self.get(AdapterType::Anyref);
-                self.instructions.push(Instruction::I32FromOptionBool);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32FromOptionBool,
+                    &[AdapterType::I32],
+                );
             }
             Descriptor::Char => {
-                self.get(AdapterType::Anyref);
-                self.instructions.push(Instruction::I32FromOptionChar);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32FromOptionChar,
+                    &[AdapterType::I32],
+                );
             }
             Descriptor::Enum { hole } => {
-                self.get(AdapterType::Anyref);
-                self.instructions
-                    .push(Instruction::I32FromOptionEnum { hole: *hole });
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32FromOptionEnum { hole: *hole },
+                    &[AdapterType::I32],
+                );
             }
             Descriptor::RustStruct(name) => {
-                self.get(AdapterType::Anyref);
-                self.instructions.push(Instruction::I32FromOptionRust {
-                    class: name.to_string(),
-                });
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::I32FromOptionRust {
+                        class: name.to_string(),
+                    },
+                    &[AdapterType::I32],
+                );
             }
 
             Descriptor::Ref(_) | Descriptor::RefMut(_) => {
@@ -235,11 +261,11 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
-                self.get(AdapterType::Anyref);
-                self.instructions
-                    .push(Instruction::OptionSlice { kind, mutable });
-                self.output.push(AdapterType::I32);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::OptionSlice { kind, mutable },
+                    &[AdapterType::I32; 2],
+                );
             }
 
             Descriptor::String | Descriptor::CachedString | Descriptor::Vector(_) => {
@@ -249,10 +275,11 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
-                self.get(AdapterType::Anyref);
-                self.instructions.push(Instruction::OptionVector { kind });
-                self.output.push(AdapterType::I32);
-                self.output.push(AdapterType::I32);
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::OptionVector { kind },
+                    &[AdapterType::I32; 2],
+                );
             }
 
             _ => bail!(
@@ -272,44 +299,80 @@ impl InstructionBuilder<'_, '_> {
         if !self.return_position {
             let idx = self.input.len() as u32 - 1;
             let std = wit_walrus::Instruction::ArgGet(idx);
-            self.instructions.push(Instruction::Standard(std));
+            self.instructions.push(InstructionData {
+                instr: Instruction::Standard(std),
+                stack_change: StackChange::Modified {
+                    pushed: 1,
+                    popped: 0,
+                },
+            });
         }
     }
 
+    pub fn instruction(
+        &mut self,
+        inputs: &[AdapterType],
+        instr: Instruction,
+        outputs: &[AdapterType],
+    ) {
+        // If we're generating instructions in the return position then the
+        // arguments are already on the stack to consume, otherwise we need to
+        // fetch them from the parameters.
+        if !self.return_position {
+            for input in inputs {
+                self.get(*input);
+            }
+        }
+
+        self.instructions.push(InstructionData {
+            instr,
+            stack_change: StackChange::Modified {
+                popped: inputs.len(),
+                pushed: outputs.len(),
+            },
+        });
+        self.input.extend_from_slice(inputs);
+        self.output.extend_from_slice(outputs);
+    }
+
     fn number(&mut self, input: wit_walrus::ValType, output: walrus::ValType) {
-        self.get(AdapterType::from_wit(input));
         let std = wit_walrus::Instruction::IntToWasm {
             input,
             output,
             trap: false,
         };
-        self.instructions.push(Instruction::Standard(std));
-        self.output.push(AdapterType::from_wasm(output).unwrap());
+        self.instruction(
+            &[AdapterType::from_wit(input)],
+            Instruction::Standard(std),
+            &[AdapterType::from_wasm(output).unwrap()],
+        );
     }
 
     fn number64(&mut self, signed: bool) {
-        self.get(if signed {
-            AdapterType::S64
-        } else {
-            AdapterType::U64
-        });
-        self.instructions.push(Instruction::I32Split64 { signed });
-        self.output.push(AdapterType::I32);
-        self.output.push(AdapterType::I32);
+        self.instruction(
+            &[if signed {
+                AdapterType::S64
+            } else {
+                AdapterType::U64
+            }],
+            Instruction::I32Split64 { signed },
+            &[AdapterType::I32, AdapterType::I32],
+        );
     }
 
-    fn option_native(&mut self, wasm: ValType) {
-        self.get(AdapterType::Anyref);
-        self.instructions
-            .push(Instruction::OptionNative { ty: wasm });
-        self.output.push(AdapterType::I32);
-        self.output.push(AdapterType::from_wasm(wasm).unwrap());
+    fn in_option_native(&mut self, wasm: ValType) {
+        self.instruction(
+            &[AdapterType::Anyref],
+            Instruction::FromOptionNative { ty: wasm },
+            &[AdapterType::I32, AdapterType::from_wasm(wasm).unwrap()],
+        );
     }
 
-    fn option_sentinel(&mut self) {
-        self.get(AdapterType::Anyref);
-        self.instructions
-            .push(Instruction::I32FromOptionU32Sentinel);
-        self.output.push(AdapterType::I32);
+    fn in_option_sentinel(&mut self) {
+        self.instruction(
+            &[AdapterType::Anyref],
+            Instruction::I32FromOptionU32Sentinel,
+            &[AdapterType::I32],
+        );
     }
 }

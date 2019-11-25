@@ -11,12 +11,12 @@ use std::str;
 use walrus::Module;
 use wasm_bindgen_wasm_conventions as wasm_conventions;
 
-// mod anyref;
-mod multivalue;
+mod anyref;
 mod decode;
 mod descriptor;
 mod descriptors;
 mod intrinsic;
+mod multivalue;
 // mod js;
 pub mod wasm2es6js;
 mod wit;
@@ -342,14 +342,14 @@ impl Bindgen {
             self.emit_start,
         )?;
 
-        // // Now that we've got type information from the webidl processing pass,
-        // // touch up the output of rustc to insert anyref shims where necessary.
-        // // This is only done if the anyref pass is enabled, which it's
-        // // currently off-by-default since `anyref` is still in development in
-        // // engines.
-        // if self.anyref {
-        //     anyref::process(&mut module, self.wasm_interface_types)?;
-        // }
+        // Now that we've got type information from the webidl processing pass,
+        // touch up the output of rustc to insert anyref shims where necessary.
+        // This is only done if the anyref pass is enabled, which it's
+        // currently off-by-default since `anyref` is still in development in
+        // engines.
+        if self.anyref {
+            anyref::process(&mut module, self.wasm_interface_types)?;
+        }
 
         let aux = module
             .customs
@@ -364,7 +364,7 @@ impl Bindgen {
         // // shim generation which will actually generate JS for all this.
         // let (npm_dependencies, (js, ts)) = {
         //     let mut cx = js::Context::new(&mut module, self)?;
-        //     cx.generate(&aux, &bindings)?;
+        //     cx.generate(&aux, &adapters)?;
         //     let npm_dependencies = cx.npm_dependencies.clone();
         //     (npm_dependencies, cx.finalize(stem)?)
         // };

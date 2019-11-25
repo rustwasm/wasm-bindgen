@@ -34,13 +34,25 @@ pub struct Adapter {
 #[derive(Debug, Clone)]
 pub enum AdapterKind {
     Local {
-        instructions: Vec<Instruction>,
+        instructions: Vec<InstructionData>,
     },
     Import {
         module: String,
         name: String,
         kind: AdapterJsImportKind,
     },
+}
+
+#[derive(Debug, Clone)]
+pub struct InstructionData {
+    pub instr: Instruction,
+    pub stack_change: StackChange,
+}
+
+#[derive(Debug, Clone)]
+pub enum StackChange {
+    Modified { pushed: usize, popped: usize },
+    Unknown,
 }
 
 #[derive(Debug, Clone)]
@@ -82,11 +94,21 @@ pub enum Instruction {
     /// A call to one of our own defined adapters, similar to the standard
     /// call-adapter instruction
     CallAdapter(AdapterId),
+    /// Call an exported function in the core module
+    CallExport(walrus::ExportId),
+    /// Call an element in the function table of the core module
+    CallTableElement(u32),
 
     /// An instruction to store `ty` at the `offset` index in the return pointer
-    StoreRetptr { ty: AdapterType, offset: usize },
+    StoreRetptr {
+        ty: AdapterType,
+        offset: usize,
+    },
     /// An instruction to load `ty` at the `offset` index from the return pointer
-    LoadRetptr { ty: AdapterType, offset: usize },
+    LoadRetptr {
+        ty: AdapterType,
+        offset: usize,
+    },
     /// An instruction which pushes the return pointer onto the stack.
     Retptr,
 
@@ -102,20 +124,30 @@ pub enum Instruction {
     I32FromAnyrefBorrow,
     /// Pops an `anyref` from the stack, assumes it's a Rust class given, and
     /// deallocates the JS object and returns the i32 Rust pointer.
-    I32FromAnyrefRustOwned { class: String },
+    I32FromAnyrefRustOwned {
+        class: String,
+    },
     /// Pops an `anyref` from the stack, assumes it's a Rust class given, and
     /// passes the pointer to Rust which will be borrowed for the duration of a
     /// call
-    I32FromAnyrefRustBorrow { class: String },
+    I32FromAnyrefRustBorrow {
+        class: String,
+    },
     /// Pops an `anyref` from the stack, pushes 0 if it's "none" or the
     /// consumed pointer value if it's "some".
-    I32FromOptionRust { class: String },
+    I32FromOptionRust {
+        class: String,
+    },
     /// Pops an `s64` or `u64` from the stack, pushing two `i32` values.
-    I32Split64 { signed: bool },
+    I32Split64 {
+        signed: bool,
+    },
     /// Pops an `s64` or `u64` from the stack, pushing three `i32` values.
     /// First is the "some/none" bit, and the next is the low bits, and the
     /// next is the high bits.
-    I32SplitOption64 { signed: bool },
+    I32SplitOption64 {
+        signed: bool,
+    },
     /// Pops an `anyref` from the stack, pushes either 0 if it's "none" or and
     /// index into the owned wasm table it was stored at if it's "some"
     I32FromOptionAnyref,
@@ -130,11 +162,15 @@ pub enum Instruction {
     I32FromOptionChar,
     /// Pops an `anyref` from the stack, pushes `hole` for "none" or the
     /// value if it's "some"
-    I32FromOptionEnum { hole: u32 },
+    I32FromOptionEnum {
+        hole: u32,
+    },
     /// Pops any anyref from the stack and then pushes two values. First is a
     /// 0/1 if it's none/some and second is `ty` value if it was there or 0 if
     /// it wasn't there.
-    OptionNative { ty: walrus::ValType },
+    FromOptionNative {
+        ty: walrus::ValType,
+    },
 
     /// Pops a vector value of `kind` from the stack, allocates memory with
     /// `malloc`, and then copies all the data into `mem`. Pushes the pointer
@@ -147,13 +183,79 @@ pub enum Instruction {
 
     /// Pops an anyref, pushes pointer/length or all zeros. Will update original
     /// view if mutable.
-    OptionSlice { kind: VectorKind, mutable: bool },
+    OptionSlice {
+        kind: VectorKind,
+        mutable: bool,
+    },
 
     /// Pops an anyref, pushes pointer/length or all zeros
-    OptionVector { kind: VectorKind },
+    OptionVector {
+        kind: VectorKind,
+    },
 
-    /// pops a `bool`, pushes `i32`
+    /// pops a `i32`, pushes `bool`
     BoolFromI32,
+    /// pops `i32`, loads anyref at that slot, dealloates anyref, pushes `anyref`
+    AnyrefLoadOwned,
+    /// pops `i32`, loads anyref at that slot, dealloates anyref, pushes `anyref`
+    AnyrefLoadOptionOwned,
+    /// pops `i32`, pushes string from that `char`
+    StringFromChar,
+    /// pops two `i32`, pushes a 64-bit number
+    I64FromLoHi {
+        signed: bool,
+    },
+    /// pops `i32`, pushes an anyref for the wrapped rust class
+    RustFromI32 {
+        class: String,
+    },
+    OptionRustFromI32 {
+        class: String,
+    },
+    /// pops ptr/length i32, loads string from cache
+    CachedStringLoad {
+        owned: bool,
+        optional: bool,
+    },
+    /// pops ptr/length, pushes a vector, frees the original data
+    VectorLoad {
+        kind: VectorKind,
+    },
+    /// pops ptr/length, pushes a vector, frees the original data
+    OptionVectorLoad {
+        kind: VectorKind,
+    },
+    /// pops i32, loads anyref from anyref table
+    TableGet,
+    /// pops two i32 data pointers, pushes an anyref closure
+    StackClosure {
+        adapter: AdapterId,
+        nargs: usize,
+        mutable: bool,
+    },
+    /// pops two i32 data pointers, pushes a vector view
+    View {
+        kind: VectorKind,
+    },
+    /// pops two i32 data pointers, pushes a vector view
+    OptionView {
+        kind: VectorKind,
+    },
+    /// pops i32, pushes it viewed as an optional value with a known sentinel
+    OptionU32Sentinel,
+    /// pops an i32, then `ty`, then pushes anyref
+    ToOptionNative {
+        ty: walrus::ValType,
+        signed: bool,
+    },
+    OptionBoolFromI32,
+    OptionCharFromI32,
+    OptionEnumFromI32 {
+        hole: u32,
+    },
+    Option64FromI32 {
+        signed: bool,
+    },
 }
 
 impl AdapterType {
