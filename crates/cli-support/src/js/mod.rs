@@ -1934,7 +1934,7 @@ impl<'a> Context<'a> {
         // export that we're generating.
         let mut builder = binding::Builder::new(self);
         builder.disable_log_error(disable_log_error);
-        builder.catch(builder.cx.aux.imports_with_catch.contains(&id))?;
+        builder.catch(builder.cx.aux.imports_with_catch.contains(&id));
         let mut arg_names = &None;
         match kind {
             Kind::Export(export) => {

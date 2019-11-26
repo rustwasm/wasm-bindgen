@@ -16,22 +16,6 @@ use walrus::Module;
 pub struct Builder<'a, 'b> {
     /// Parent context used to expose helper functions and such.
     pub cx: &'a mut Context<'b>,
-    /// Prelude JS which is present before the main invocation to prepare
-    /// arguments.
-    args_prelude: String,
-    /// Finally block to be executed regardless of the call's status, mostly
-    /// used for cleanups like free'ing.
-    finally: String,
-    /// Code to execute after return value is materialized.
-    ret_finally: String,
-    /// Argument names to the JS function shim that we're generating.
-    function_args: Vec<String>,
-    /// JS expressions that are arguments to the function that we're calling.
-    invoc_args: Vec<String>,
-    /// JS to execute just before the return value is materialized.
-    ret_prelude: String,
-    /// The JS expression of the actual return value.
-    ret_js: String,
     /// The TypeScript definition for each argument to this function.
     pub ts_args: Vec<TypescriptArg>,
     /// The TypeScript return value for this function.
@@ -71,13 +55,6 @@ impl<'a, 'b> Builder<'a, 'b> {
         Builder {
             log_error: cx.config.debug,
             cx,
-            args_prelude: String::new(),
-            finally: String::new(),
-            ret_finally: String::new(),
-            function_args: Vec::new(),
-            invoc_args: Vec::new(),
-            ret_prelude: String::new(),
-            ret_js: String::new(),
             ts_args: Vec::new(),
             ts_ret: None,
             constructor: None,
@@ -94,12 +71,8 @@ impl<'a, 'b> Builder<'a, 'b> {
         self.constructor = Some(class.to_string());
     }
 
-    pub fn catch(&mut self, catch: bool) -> Result<(), Error> {
-        if catch {
-            self.cx.expose_handle_error()?;
-        }
+    pub fn catch(&mut self, catch: bool) {
         self.catch = catch;
-        Ok(())
     }
 
     pub fn disable_log_error(&mut self, disable: bool) {
@@ -114,31 +87,27 @@ impl<'a, 'b> Builder<'a, 'b> {
         instructions: &[InstructionData],
         explicit_arg_names: &Option<Vec<String>>,
     ) -> Result<String, Error> {
-        // used in `finalize` below
-        if self.log_error {
-            self.cx.expose_log_error();
-        }
-
         let mut params = adapter.params.iter();
-        let mut adapter_params = Vec::new();
+        let mut function_args = Vec::new();
 
         // If this is a method then we're generating this as part of a class
         // method, so the leading parameter is the this pointer stored on
         // the JS object, so synthesize that here.
+        let mut js = JsBuilder::new(self.cx);
         match self.method {
             Some(consumes_self) => {
                 drop(params.next());
-                if self.cx.config.debug {
-                    self.args_prelude.push_str(
+                if js.cx.config.debug {
+                    js.prelude(
                         "if (this.ptr == 0) throw new Error('Attempt to use a moved value');\n",
                     );
                 }
                 if consumes_self {
-                    self.args_prelude.push_str("const ptr = this.ptr;\n");
-                    self.args_prelude.push_str("this.ptr = 0;\n");
-                    adapter_params.push("ptr".to_string());
+                    js.prelude("const ptr = this.ptr;");
+                    js.prelude("this.ptr = 0;");
+                    js.args.push("ptr".to_string());
                 } else {
-                    adapter_params.push("this.ptr".to_string());
+                    js.args.push("this.ptr".to_string());
                 }
             }
             None => {}
@@ -148,208 +117,46 @@ impl<'a, 'b> Builder<'a, 'b> {
                 Some(list) => list[i].clone(),
                 None => format!("arg{}", i),
             };
-            adapter_params.push(arg.clone());
-            self.function_args.push(arg);
+            js.args.push(arg.clone());
+            function_args.push(arg);
         }
-        let mut js = JsBuilder::new(self.cx, adapter_params);
 
         for instr in instructions {
             instruction(&mut js, &instr.instr)?;
         }
 
         assert_eq!(js.stack.len(), adapter.results.len());
-
-        //     // Save off the results of JS generation for the arguments.
-        //     self.args_prelude.push_str(&js.prelude);
-        //     self.finally.push_str(&js.finally);
-        //     self.ts_args.extend(js.typescript);
-        //
-        //     // Remove extraneous typescript args which were synthesized and aren't
-        //     // part of our function shim.
-        //     while self.ts_args.len() > self.function_args.len() {
-        //         self.ts_args.remove(0);
-        //     }
-        //
-        //     // Handle the special case where there is no return value. In this case
-        //     // we can skip all the logic below and go straight to the end.
-        //     if incoming_args {
-        //         if binding.outgoing.len() == 0 {
-        //             assert!(binding.return_via_outptr.is_none());
-        //             assert!(self.constructor.is_none());
-        //             let invoc = invoke(self.cx, &mut self.args_prelude, &self.invoc_args)?;
-        //             return Ok(self.finalize(&invoc));
-        //         }
-        //         assert_eq!(binding.outgoing.len(), 1);
-        //     } else {
-        //         if binding.incoming.len() == 0 {
-        //             assert!(binding.return_via_outptr.is_none());
-        //             assert!(self.constructor.is_none());
-        //             let invoc = invoke(self.cx, &mut self.args_prelude, &self.invoc_args)?;
-        //             return Ok(self.finalize(&invoc));
-        //         }
-        //         assert_eq!(binding.incoming.len(), 1);
-        //     }
-        //
-        //     // Like above handling the return value is quite different based on
-        //     // whether it's an outgoing argument or an incoming argument.
-        //     let mut ret_args = Vec::new();
-        //     let mut js;
-        //     if incoming_args {
-        //         match &binding.return_via_outptr {
-        //             // If we have an outgoing value that requires multiple
-        //             // aggregates then we're passing a return pointer (a global one)
-        //             // to a wasm function, and then afterwards we're going to read
-        //             // the results of that return pointer. Here we generate an
-        //             // expression effectively which represents reading each value of
-        //             // the return pointer that was filled in. These values are then
-        //             // used by the outgoing builder as inputs to generate the final
-        //             // actual return value.
-        //             Some(list) => {
-        //                 let mut exposed = HashSet::new();
-        //                 for (i, ty) in list.iter().enumerate() {
-        //                     let (mem, size) = match ty {
-        //                         walrus::ValType::I32 => {
-        //                             if exposed.insert(*ty) {
-        //                                 self.cx.expose_int32_memory();
-        //                                 self.ret_prelude
-        //                                     .push_str("const memi32 = getInt32Memory();\n");
-        //                             }
-        //                             ("memi32", 4)
-        //                         }
-        //                         walrus::ValType::F32 => {
-        //                             if exposed.insert(*ty) {
-        //                                 self.cx.expose_f32_memory();
-        //                                 self.ret_prelude
-        //                                     .push_str("const memf32 = getFloat32Memory();\n");
-        //                             }
-        //                             ("memf32", 4)
-        //                         }
-        //                         walrus::ValType::F64 => {
-        //                             if exposed.insert(*ty) {
-        //                                 self.cx.expose_f64_memory();
-        //                                 self.ret_prelude
-        //                                     .push_str("const memf64 = getFloat64Memory();\n");
-        //                             }
-        //                             ("memf64", 8)
-        //                         }
-        //                         _ => bail!("invalid aggregate return type"),
-        //                     };
-        //                     ret_args.push(format!("{}[retptr / {} + {}]", mem, size, i));
-        //                 }
-        //             }
-        //
-        //             // No return pointer? That's much easier!
-        //             //
-        //             // If there's one return value we just have one input of `ret`
-        //             // which is created in the JS shim below. If there's multiple
-        //             // return values (a multi-value module) then we'll pull results
-        //             // from the returned array.
-        //             None => {
-        //                 let amt = self.cx.module.types.get(binding.wasm_ty).results().len();
-        //                 if amt == 1 {
-        //                     ret_args.push("ret".to_string());
-        //                 } else {
-        //                     for i in 0..amt {
-        //                         ret_args.push(format!("ret[{}]", i));
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //         js = JsBuilder::new(ret_args);
-        //         let mut ret = outgoing::Outgoing::new(self.cx, &mut js);
-        //         let ret_js = ret.process(&binding.outgoing[0])?;
-        //         self.ret_js.push_str(&ret_js);
-        //     } else {
-        //         // If there's an out ptr for an incoming argument then it means that
-        //         // the first argument to our function is the return pointer, and we
-        //         // need to fill that in. After we process the value we then write
-        //         // each result of the processed value into the corresponding typed
-        //         // array.
-        //         js = JsBuilder::new(vec!["ret".to_string()]);
-        //         let results = match &webidl.result {
-        //             Some(ptr) => std::slice::from_ref(ptr),
-        //             None => &[],
-        //         };
-        //         let mut ret = incoming::Incoming::new(self.cx, results, &mut js);
-        //         let ret_js = ret.process(&binding.incoming[0])?;
-        //         match &binding.return_via_outptr {
-        //             Some(list) => {
-        //                 assert_eq!(list.len(), ret_js.len());
-        //                 for (i, js) in ret_js.iter().enumerate() {
-        //                     self.ret_finally
-        //                         .push_str(&format!("const ret{} = {};\n", i, js));
-        //                 }
-        //                 for (i, ty) in list.iter().enumerate() {
-        //                     let (mem, size) = match ty {
-        //                         walrus::ValType::I32 => {
-        //                             self.cx.expose_int32_memory();
-        //                             ("getInt32Memory()", 4)
-        //                         }
-        //                         walrus::ValType::F32 => {
-        //                             self.cx.expose_f32_memory();
-        //                             ("getFloat32Memory()", 4)
-        //                         }
-        //                         walrus::ValType::F64 => {
-        //                             self.cx.expose_f64_memory();
-        //                             ("getFloat64Memory()", 8)
-        //                         }
-        //                         _ => bail!("invalid aggregate return type"),
-        //                     };
-        //                     self.ret_finally
-        //                         .push_str(&format!("{}[arg0 / {} + {}] = ret{};\n", mem, size, i, i));
-        //                 }
-        //             }
-        //             None => {
-        //                 assert_eq!(ret_js.len(), 1);
-        //                 self.ret_js.push_str(&ret_js[0]);
-        //             }
-        //         }
-        //     }
-        //     self.ret_finally.push_str(&js.finally);
-        //     self.ret_prelude.push_str(&js.prelude);
-        //     self.ts_ret = Some(js.typescript.remove(0));
-        //     let invoc = invoke(self.cx, &mut self.args_prelude, &self.invoc_args)?;
-        // Ok(self.finalize(&invoc))
-        Ok(self.finalize("x"))
-    }
-
-    // This method... is a mess. Refactorings and improvements are more than
-    // welcome :)
-    fn finalize(&self, invoc: &str) -> String {
-        let mut js = String::new();
-        js.push_str("(");
-        js.push_str(&self.function_args.join(", "));
-        js.push_str(") {\n");
-        if self.args_prelude.len() > 0 {
-            js.push_str(self.args_prelude.trim());
-            js.push_str("\n");
+        match js.stack.len() {
+            0 => {}
+            1 => {
+                self.ts_ret = js.typescript.pop();
+                let val = js.pop();
+                js.prelude(&format!("return {};", val));
+            }
+            _ => {
+                if true {
+                    panic!()
+                }
+                let expr = js.stack.join(", ");
+                js.stack.truncate(0);
+                js.prelude(&format!("return [{}];", expr));
+            }
         }
+        assert!(js.stack.is_empty());
+        self.ts_args = js.typescript;
 
-        let mut call = String::new();
-        if self.ts_ret.is_some() {
-            call.push_str("const ret = ");
-        }
-        call.push_str(invoc);
-        call.push_str(";\n");
+        let mut ret = String::new();
+        ret.push_str("(");
+        ret.push_str(&function_args.join(", "));
+        ret.push_str(") {\n");
 
-        if self.ret_prelude.len() > 0 {
-            call.push_str(self.ret_prelude.trim());
-            call.push_str("\n");
-        }
-
-        if self.ret_js.len() > 0 {
-            assert!(self.ts_ret.is_some());
-            // Having a this field isn't supported yet, but shouldn't come up
-            assert!(self.ret_finally.len() == 0);
-            call.push_str("return ");
-            call.push_str(&self.ret_js);
-            call.push_str(";\n");
-        } else if self.ret_finally.len() > 0 {
-            call.push_str(self.ret_finally.trim());
-            call.push_str("\n");
+        let mut call = js.prelude;
+        if js.finally.len() != 0 {
+            call = format!("try {{\n{}}} finally {{\n{}\n}}\n", call, js.finally);
         }
 
         if self.catch {
+            js.cx.expose_handle_error()?;
             call = format!("try {{\n{}}} catch (e) {{\n handleError(e)\n}}\n", call);
         }
 
@@ -358,18 +165,14 @@ impl<'a, 'b> Builder<'a, 'b> {
         // logs what happened, but keeps the exception being thrown to propagate
         // elsewhere.
         if self.log_error {
+            js.cx.expose_log_error();
             call = format!("try {{\n{}}} catch (e) {{\n logError(e)\n}}\n", call);
         }
 
-        let finally = self.finally.trim();
-        if finally.len() != 0 {
-            call = format!("try {{\n{}}} finally {{\n{}\n}}\n", call, finally);
-        }
+        ret.push_str(&call);
+        ret.push_str("}");
 
-        js.push_str(&call);
-        js.push_str("}");
-
-        return js;
+        return Ok(ret);
     }
 
     /// Returns the typescript signature of the binding that this has described.
@@ -438,10 +241,10 @@ impl<'a, 'b> Builder<'a, 'b> {
 }
 
 impl<'a, 'b> JsBuilder<'a, 'b> {
-    pub fn new(cx: &'a mut Context<'b>, args: Vec<String>) -> JsBuilder<'a, 'b> {
+    pub fn new(cx: &'a mut Context<'b>) -> JsBuilder<'a, 'b> {
         JsBuilder {
             cx,
-            args,
+            args: Vec::new(),
             tmp: 0,
             finally: String::new(),
             prelude: String::new(),
@@ -640,7 +443,10 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             // happens. This is pretty conditional depending on the number of
             // return values of the function.
             match (invoc.defer(), results) {
-                (true, 0) => js.finally(&format!("{};", call)),
+                (true, 0) => {
+                    js.finally(&format!("{};", call));
+                    js.stack.extend(args);
+                }
                 (true, _) => panic!("deferred calls must have no results"),
                 (false, 0) => js.prelude(&format!("{};", call)),
                 (false, 1) => js.push(call),
@@ -654,6 +460,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
         }
 
         Instruction::Standard(wit_walrus::Instruction::IntToWasm { trap: false, .. }) => {
+            js.typescript_required("number");
             let val = js.pop();
             js.assert_number(&val);
             js.push(val);
@@ -662,7 +469,12 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
         // When converting to a JS number we need to specially handle the `u32`
         // case because if the high bit is set then it comes out as a negative
         // number, but we want to switch that to an unsigned representation.
-        Instruction::Standard(wit_walrus::Instruction::WasmToInt { trap: false, output, .. }) => {
+        Instruction::Standard(wit_walrus::Instruction::WasmToInt {
+            trap: false,
+            output,
+            ..
+        }) => {
+            js.typescript_required("number");
             let val = js.pop();
             match output {
                 wit_walrus::ValType::U32 => js.push(format!("{} >>> 0", val)),
@@ -937,38 +749,48 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             js.push(format!("len{}", i));
         }
 
-        Instruction::OptionMutableSlice { .. } |
+        Instruction::OptionMutableSlice { .. } => panic!(),
         Instruction::MutableSliceToMemory {
-            ..
-            // kind,
-            // malloc,
-            // mem,
-            // free,
+            kind,
+            malloc,
+            mem,
+            free,
         } => {
-            panic!()
-            // js.typescript_required(kind.js_ty());
-            // let val = js.pop();
-            // let func = js.cx.pass_to_wasm_function(*kind, *mem)?;
-            // let malloc = js.cx.export_name_of(*malloc);
-            // let i = js.tmp();
-            // js.prelude(&format!(
-            //     "const ptr{i} = {f}({val}, wasm.{malloc});",
-            //     val = val,
-            //     i = i,
-            //     f = func,
-            //     malloc = malloc,
-            // ));
-            // js.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
-            // js.push(format!("ptr{}", i));
-            // js.push(format!("len{}", i));
-            // let free = js.cx.export_name_of(*free);
-            // js.finally_free_slice(&val, i, *kind,
-            // js.finally(&format!(
-            //     "wasm.{free}(ptr{i}, len{i} * {size});",
-            //     free = free,
-            //     size = kind.size(),
-            //     i = i
-            // ));
+            js.typescript_required(kind.js_ty());
+            // First up, pass the JS value into wasm, getting out a pointer and
+            // a length. These two pointer/length values get pushed onto the
+            // value stack.
+            let val = js.pop();
+            let func = js.cx.pass_to_wasm_function(*kind, *mem)?;
+            let malloc = js.cx.export_name_of(*malloc);
+            let i = js.tmp();
+            js.prelude(&format!(
+                "const ptr{i} = {f}({val}, wasm.{malloc});",
+                val = val,
+                i = i,
+                f = func,
+                malloc = malloc,
+            ));
+            js.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
+            js.push(format!("ptr{}", i));
+            js.push(format!("len{}", i));
+
+            // Next we set up a `finally` clause which will both update the
+            // original mutable slice with any modifications, and then free the
+            // Rust-backed memory.
+            let free = js.cx.export_name_of(*free);
+            let get = js.cx.memview_function(*kind, *mem);
+            js.finally(&format!(
+                "
+                    {val}.set({get}().subarray(ptr{i} / size, ptr{i} / size + len{i}));
+                    wasm.{free}(ptr{i}, len{i} * {size});
+                ",
+                val = val,
+                get = get,
+                free = free,
+                size = kind.size(),
+                i = i,
+            ));
         }
 
         Instruction::BoolFromI32 => {
@@ -1034,12 +856,16 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let val = js.pop();
             js.push(format!(
                 "{0} === 0 ? undefined : {1}.__wrap({0})",
-                val,
-                class,
+                val, class,
             ))
         }
 
-        Instruction::CachedStringLoad { owned, optional, mem, free } => {
+        Instruction::CachedStringLoad {
+            owned,
+            optional,
+            mem,
+            free,
+        } => {
             if *optional {
                 js.typescript_optional("string");
             } else {
@@ -1052,10 +878,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
 
             let get = js.cx.expose_get_cached_string_from_wasm(*mem)?;
 
-            js.prelude(&format!(
-                "const v{} = {}({}, {});",
-                tmp, get, ptr, len
-            ));
+            js.prelude(&format!("const v{} = {}({}, {});", tmp, get, ptr, len));
 
             if *owned {
                 let free = js.cx.export_name_of(*free);
@@ -1077,17 +900,16 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             js.push(format!("getObject({})", val));
         }
 
-        Instruction::StackClosure { adapter, nargs, mutable } => {
+        Instruction::StackClosure {
+            adapter,
+            nargs,
+            mutable,
+        } => {
             js.typescript_optional("any");
             let i = js.tmp();
             let b = js.pop();
             let a = js.pop();
-            js.prelude(&format!(
-                "const state{} = {{a: {}, b: {}}};",
-                i,
-                a,
-                b,
-            ));
+            js.prelude(&format!("const state{} = {{a: {}, b: {}}};", i, a, b,));
             let args = (0..*nargs)
                 .map(|i| format!("arg{}", i))
                 .collect::<Vec<_>>()
@@ -1136,7 +958,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let i = js.tmp();
             let free = js.cx.export_name_of(*free);
             js.prelude(&format!("const v{} = {}({}, {}).slice();", i, f, ptr, len));
-            js.prelude(&format!("wasm.{}({}, {} * {});", free, ptr, len, kind.size()));
+            js.prelude(&format!(
+                "wasm.{}({}, {} * {});",
+                free,
+                ptr,
+                len,
+                kind.size()
+            ));
             js.push(format!("v{}", i))
         }
 
@@ -1150,7 +978,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             js.prelude(&format!("let v{};", i));
             js.prelude(&format!("if ({} !== 0) {{", ptr));
             js.prelude(&format!("v{} = {}({}, {}).slice();", i, f, ptr, len));
-            js.prelude(&format!("wasm.{}({}, {} * {});", free, ptr, len, kind.size()));
+            js.prelude(&format!(
+                "wasm.{}({}, {} * {});",
+                free,
+                ptr,
+                len,
+                kind.size()
+            ));
             js.prelude("}");
             js.push(format!("v{}", i));
         }
@@ -1160,12 +994,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let len = js.pop();
             let ptr = js.pop();
             let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
-            js.push(format!(
-                "{f}({ptr}, {len})",
-                ptr = ptr,
-                len = len,
-                f = f
-            ));
+            js.push(format!("{f}({ptr}, {len})", ptr = ptr, len = len, f = f));
         }
 
         Instruction::OptionView { kind, mem } => {
