@@ -223,6 +223,7 @@ pub struct Struct {
     pub js_name: String,
     pub fields: Vec<StructField>,
     pub comments: Vec<String>,
+    pub is_inspectable: bool,
 }
 
 #[cfg_attr(feature = "extra-traits", derive(Debug, PartialEq, Eq))]

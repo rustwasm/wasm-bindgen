@@ -256,6 +256,8 @@ pub struct AuxStruct {
     pub name: String,
     /// The copied Rust comments to forward to JS
     pub comments: String,
+    /// Whether to generate helper methods for inspecting the class
+    pub is_inspectable: bool,
 }
 
 /// All possible types of imports that can be imported by a wasm module.
@@ -1238,6 +1240,7 @@ impl<'a> Context<'a> {
         let aux = AuxStruct {
             name: struct_.name.to_string(),
             comments: concatenate_comments(&struct_.comments),
+            is_inspectable: struct_.is_inspectable,
         };
         self.aux.structs.push(aux);
 
