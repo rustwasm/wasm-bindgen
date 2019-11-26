@@ -674,7 +674,7 @@ impl<'a> Context<'a> {
 
             if self.config.mode.nodejs() {
                 // `util.inspect` must be imported in Node.js to define [inspect.custom]
-                self.import_name(&JsImport {
+                let module_name = self.import_name(&JsImport {
                     name: JsImportName::Module {
                         module: "util".to_string(),
                         name: "inspect".to_string(),
@@ -685,13 +685,14 @@ impl<'a> Context<'a> {
                 // Node.js supports a custom inspect function to control the
                 // output of `console.log` and friends. The constructor is set
                 // to display the class name as a typical JavaScript class would
-                dst.push_str(
+                dst.push_str(&format!(
                     "
-                    [inspect.custom]() {
-                        return Object.assign(Object.create({constructor: this.constructor}), this.toJSON());
-                    }
-                    "
-                );
+                    [{}.custom]() {{
+                        return Object.assign(Object.create({{constructor: this.constructor}}), this.toJSON());
+                    }}
+                    ",
+                    module_name
+                ));
             }
         }
 
