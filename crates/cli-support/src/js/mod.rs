@@ -6,6 +6,7 @@ use crate::webidl::{AuxValue, Binding};
 use crate::webidl::{JsImport, JsImportName, NonstandardWebidlSection, WasmBindgenAux};
 use crate::{Bindgen, EncodeInto, OutputMode};
 use anyhow::{bail, Context as _, Error};
+use base64::encode;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -64,6 +65,7 @@ pub struct ExportedClass {
 const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 // Must be kept in sync with `src/lib.rs` of the `wasm-bindgen` crate
 const INITIAL_HEAP_OFFSET: usize = 32;
+const MODULE_NAME: &str = "wbg";
 
 impl<'a> Context<'a> {
     pub fn new(module: &'a mut Module, config: &'a Bindgen) -> Result<Context<'a>, Error> {
@@ -282,10 +284,16 @@ impl<'a> Context<'a> {
             | OutputMode::Node {
                 experimental_modules: true,
             } => {
-                imports.push_str(&format!(
-                    "import * as wasm from './{}_bg.wasm';\n",
-                    module_name
-                ));
+                if let OutputMode::Bundler { inline: true, .. } = &self.config.mode {
+                    let wasm = self.gen_base64(Some(&mut imports))?;
+                    js.push_str(&wasm);
+                } else {
+                    imports.push_str(&format!(
+                        "import * as wasm from './{}_bg.wasm';\n",
+                        module_name
+                    ));
+                }
+
                 for (id, js) in sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}.js", module_name);
@@ -432,63 +440,20 @@ impl<'a> Context<'a> {
         )
     }
 
-    fn gen_init(
-        &mut self,
-        needs_manual_start: bool,
-        mut imports: Option<&mut String>,
-    ) -> Result<(String, String), Error> {
-        let module_name = "wbg";
-        let mem = self.module.memories.get(self.memory);
-        let (init_memory1, init_memory2) = if let Some(id) = mem.import {
-            self.module.imports.get_mut(id).module = module_name.to_string();
-            let mut memory = String::from("new WebAssembly.Memory({");
-            memory.push_str(&format!("initial:{}", mem.initial));
-            if let Some(max) = mem.maximum {
-                memory.push_str(&format!(",maximum:{}", max));
-            }
-            if mem.shared {
-                memory.push_str(",shared:true");
-            }
-            memory.push_str("})");
-            self.imports_post.push_str("let memory;\n");
-            (
-                format!("memory = imports.{}.memory = maybe_memory;", module_name),
-                format!("memory = imports.{}.memory = {};", module_name, memory),
-            )
-        } else {
-            (String::new(), String::new())
-        };
-        let init_memory_arg = if mem.import.is_some() {
-            ", maybe_memory"
-        } else {
-            ""
-        };
-
-        let default_module_path = match self.config.mode {
-            OutputMode::Web => {
-                "\
-                    if (typeof module === 'undefined') {
-                        module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
-                    }"
-            }
-            _ => "",
-        };
-
-        let ts = Self::ts_for_init_fn(mem.import.is_some(), !default_module_path.is_empty());
-
+    fn gen_imports_init(&mut self, mut imports: Option<&mut String>) -> Result<String, Error> {
         // Initialize the `imports` object for all import definitions that we're
         // directed to wire up.
         let mut imports_init = String::new();
         if self.wasm_import_definitions.len() > 0 {
             imports_init.push_str("imports.");
-            imports_init.push_str(module_name);
+            imports_init.push_str(MODULE_NAME);
             imports_init.push_str(" = {};\n");
         }
         for (id, js) in sorted_iter(&self.wasm_import_definitions) {
             let import = self.module.imports.get_mut(*id);
-            import.module = module_name.to_string();
+            import.module = MODULE_NAME.to_string();
             imports_init.push_str("imports.");
-            imports_init.push_str(module_name);
+            imports_init.push_str(MODULE_NAME);
             imports_init.push_str(".");
             imports_init.push_str(&import.name);
             imports_init.push_str(" = ");
@@ -522,6 +487,86 @@ impl<'a> Context<'a> {
             imports.push_str(&format!("import * as __wbg_star{} from '{}';\n", i, extra));
             imports_init.push_str(&format!("imports['{}'] = __wbg_star{};\n", extra, i));
         }
+
+        let js = format!("const imports = {{}};\n{}", imports_init);
+
+        Ok(js)
+    }
+
+    fn gen_base64(&mut self, imports: Option<&mut String>) -> Result<String, Error> {
+        let imports_init = self.gen_imports_init(imports)?;
+
+        let wasm_bytes = self.module.emit_wasm();
+        let wasm_base64 = encode(&wasm_bytes);
+
+        let js = format!(
+            "\
+            const wasm = (() => {{
+                {imports_init}
+
+                const raw = atob('{wasm_base64}');
+                const rawLength = raw.length;
+                const buf = new Uint8Array(new ArrayBuffer(rawLength));
+                for(let i = 0; i < rawLength; i++) {{
+                    buf[i] = raw.charCodeAt(i);
+                }}
+
+                const mod = new WebAssembly.Module(buf);
+                const instance = new WebAssembly.Instance(mod, imports)
+                return instance.exports
+            }})()
+            ",
+            wasm_base64 = wasm_base64,
+            imports_init = imports_init
+        );
+
+        Ok(js)
+    }
+
+    fn gen_init(
+        &mut self,
+        needs_manual_start: bool,
+        imports: Option<&mut String>,
+    ) -> Result<(String, String), Error> {
+        let mem = self.module.memories.get(self.memory);
+        let (init_memory1, init_memory2) = if let Some(id) = mem.import {
+            self.module.imports.get_mut(id).module = MODULE_NAME.to_string();
+            let mut memory = String::from("new WebAssembly.Memory({");
+            memory.push_str(&format!("initial:{}", mem.initial));
+            if let Some(max) = mem.maximum {
+                memory.push_str(&format!(",maximum:{}", max));
+            }
+            if mem.shared {
+                memory.push_str(",shared:true");
+            }
+            memory.push_str("})");
+            self.imports_post.push_str("let memory;\n");
+            (
+                format!("memory = imports.{}.memory = maybe_memory;", MODULE_NAME),
+                format!("memory = imports.{}.memory = {};", MODULE_NAME, memory),
+            )
+        } else {
+            (String::new(), String::new())
+        };
+        let init_memory_arg = if mem.import.is_some() {
+            ", maybe_memory"
+        } else {
+            ""
+        };
+
+        let default_module_path = match self.config.mode {
+            OutputMode::Web => {
+                "\
+                    if (typeof module === 'undefined') {
+                        module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
+                    }"
+            }
+            _ => "",
+        };
+
+        let ts = Self::ts_for_init_fn(mem.import.is_some(), !default_module_path.is_empty());
+
+        let imports_init = self.gen_imports_init(imports)?;
 
         let js = format!(
             "\

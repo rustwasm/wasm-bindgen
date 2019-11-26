@@ -57,7 +57,7 @@ pub struct Output {
 
 #[derive(Clone)]
 enum OutputMode {
-    Bundler { browser_only: bool },
+    Bundler { browser_only: bool, inline: bool },
     Web,
     NoModules { global: String },
     Node { experimental_modules: bool },
@@ -85,6 +85,7 @@ impl Bindgen {
             out_name: None,
             mode: OutputMode::Bundler {
                 browser_only: false,
+                inline: false,
             },
             debug: false,
             typescript: false,
@@ -154,10 +155,21 @@ impl Bindgen {
         Ok(self)
     }
 
+    pub fn inline(&mut self, inline: bool) -> Result<&mut Bindgen, Error> {
+        if inline {
+            match &mut self.mode {
+                OutputMode::Bundler { inline, .. } => *inline = true,
+                _ => bail!("cannot specify `--inline` with other output types"),
+            }
+        }
+        Ok(self)
+    }
+
     pub fn bundler(&mut self, bundler: bool) -> Result<&mut Bindgen, Error> {
         if bundler {
             self.switch_mode(
                 OutputMode::Bundler {
+                    inline: false,
                     browser_only: false,
                 },
                 "--target bundler",
@@ -188,7 +200,7 @@ impl Bindgen {
     pub fn browser(&mut self, browser: bool) -> Result<&mut Bindgen, Error> {
         if browser {
             match &mut self.mode {
-                OutputMode::Bundler { browser_only } => *browser_only = true,
+                OutputMode::Bundler { browser_only, .. } => *browser_only = true,
                 _ => bail!("cannot specify `--browser` with other output types"),
             }
         }
@@ -517,7 +529,7 @@ impl OutputMode {
         match self {
             OutputMode::Web => true,
             OutputMode::NoModules { .. } => true,
-            OutputMode::Bundler { browser_only } => *browser_only,
+            OutputMode::Bundler { browser_only, .. } => *browser_only,
             _ => false,
         }
     }
