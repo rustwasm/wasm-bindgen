@@ -206,7 +206,7 @@ fn empty_interface_types() {
             r#"
                 #[no_mangle]
                 pub extern fn foo() {}
-            "#
+            "#,
         )
         .file(
             "Cargo.toml",

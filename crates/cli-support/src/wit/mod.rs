@@ -153,7 +153,7 @@ impl<'a> Context<'a> {
                     arguments: vec![Descriptor::I32; 3],
                     ret: Descriptor::Anyref,
                 };
-                self.import_adapter(id, signature, AdapterJsImportKind::Normal)?;
+                let id = self.import_adapter(id, signature, AdapterJsImportKind::Normal)?;
                 // Synthesize the two integer pointers we pass through which
                 // aren't present in the signature but are present in the wasm
                 // signature.
@@ -161,14 +161,14 @@ impl<'a> Context<'a> {
                 let nargs = function.arguments.len();
                 function.arguments.insert(0, Descriptor::I32);
                 function.arguments.insert(0, Descriptor::I32);
-                let id = self.table_element_adapter(descriptor.shim_idx, function)?;
+                let adapter = self.table_element_adapter(descriptor.shim_idx, function)?;
                 self.aux.import_map.insert(
                     id,
                     AuxImport::Closure {
                         dtor: descriptor.dtor_idx,
                         mutable: descriptor.mutable,
                         nargs,
-                        adapter: id,
+                        adapter,
                     },
                 );
             }
@@ -984,7 +984,9 @@ impl<'a> Context<'a> {
     /// Perform a small verification pass over the module to perform some
     /// internal sanity checks.
     fn verify(&self) -> Result<(), Error> {
-        let mut imports_counted = 0;
+        // First up verify that all imports in the wasm module from our
+        // `$PLACEHOLDER_MODULE` are connected to an adapter via the
+        // `implements` section.
         let mut implemented = HashMap::new();
         for (core, adapter) in self.adapters.implements.iter() {
             implemented.insert(core, adapter);
@@ -997,33 +999,35 @@ impl<'a> Context<'a> {
                 walrus::ImportKind::Function(_) => {}
                 _ => bail!("import from `{}` was not a function", PLACEHOLDER_MODULE),
             }
-            let adapter = match implemented.remove(&import.id()) {
-                Some(id) => id,
-                None => {
-                    bail!("import of `{}` doesn't have an adapter listed", import.name);
-                }
-            };
+            if implemented.remove(&import.id()).is_none() {
+                bail!("import of `{}` doesn't have an adapter listed", import.name);
+            }
+        }
+        if implemented.len() != 0 {
+            bail!("more implementations listed than imports");
+        }
 
-            // Ensure that everything imported from the `__wbindgen_placeholder__`
-            // module has a location listed as to where it's expected to be
-            // imported from.
-            if !self.aux.import_map.contains_key(&adapter) {
+        // Next up verify that all imported adapter functions have a listing of
+        // where they're imported from.
+        let mut imports_counted = 0;
+        for (id, adapter) in self.adapters.adapters.iter() {
+            let name = match &adapter.kind {
+                AdapterKind::Import { name, .. } => name,
+                AdapterKind::Local { .. } => continue,
+            };
+            if !self.aux.import_map.contains_key(id) {
                 bail!(
                     "import of `{}` doesn't have an import map item listed",
-                    import.name
+                    name
                 );
             }
 
             imports_counted += 1;
         }
-
         // Make sure there's no extraneous adapters that weren't actually
         // imported in the module.
         if self.aux.import_map.len() != imports_counted {
             bail!("import map is larger than the number of imports");
-        }
-        if implemented.len() != 0 {
-            bail!("more implementations listed than imports");
         }
 
         // Make sure the export map and export adapters map contain the same
@@ -1102,9 +1106,10 @@ impl<'a> Context<'a> {
         // the stack into the wasm return pointer. Note that we iterate in reverse
         // here because the last result is the top value on the stack.
         let results = if uses_retptr {
+            let mem = args.cx.memory()?;
             for (i, ty) in ret.output.into_iter().enumerate().rev() {
                 instructions.push(InstructionData {
-                    instr: Instruction::StoreRetptr { offset: i, ty },
+                    instr: Instruction::StoreRetptr { offset: i, ty, mem },
                     stack_change: StackChange::Modified {
                         pushed: 0,
                         popped: 1,
@@ -1120,7 +1125,7 @@ impl<'a> Context<'a> {
             .adapters
             .append(args.input, results, AdapterKind::Local { instructions });
         args.cx.adapters.implements.push((import_id, id));
-        Ok(id)
+        Ok(f)
     }
 
     /// Creates an adapter function for the `export` given to have the
@@ -1184,9 +1189,10 @@ impl<'a> Context<'a> {
             stack_change: StackChange::Unknown,
         });
         if uses_retptr {
+            let mem = ret.cx.memory()?;
             for (i, ty) in ret.input.into_iter().enumerate() {
                 instructions.push(InstructionData {
-                    instr: Instruction::LoadRetptr { offset: i, ty },
+                    instr: Instruction::LoadRetptr { offset: i, ty, mem },
                     stack_change: StackChange::Modified {
                         pushed: 1,
                         popped: 0,

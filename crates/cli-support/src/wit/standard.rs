@@ -20,7 +20,7 @@ pub struct NonstandardWitSection {
 
 pub type NonstandardWitSectionId = TypedCustomSectionId<NonstandardWitSection>;
 
-#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, PartialOrd, Ord)]
 pub struct AdapterId(pub usize);
 
 #[derive(Debug, Clone)]
@@ -103,11 +103,13 @@ pub enum Instruction {
     StoreRetptr {
         ty: AdapterType,
         offset: usize,
+        mem: walrus::MemoryId,
     },
     /// An instruction to load `ty` at the `offset` index from the return pointer
     LoadRetptr {
         ty: AdapterType,
         offset: usize,
+        mem: walrus::MemoryId,
     },
     /// An instruction which pushes the return pointer onto the stack.
     Retptr,
@@ -180,23 +182,27 @@ pub enum Instruction {
         malloc: walrus::FunctionId,
         mem: walrus::MemoryId,
     },
-    SliceToMemory {
+    MutableSliceToMemory {
         kind: VectorKind,
         malloc: walrus::FunctionId,
+        free: walrus::FunctionId,
         mem: walrus::MemoryId,
-        mutable: bool,
     },
 
     /// Pops an anyref, pushes pointer/length or all zeros. Will update original
     /// view if mutable.
-    OptionSlice {
+    OptionMutableSlice {
         kind: VectorKind,
-        mutable: bool,
+        malloc: walrus::FunctionId,
+        free: walrus::FunctionId,
+        mem: walrus::MemoryId,
     },
 
     /// Pops an anyref, pushes pointer/length or all zeros
     OptionVector {
         kind: VectorKind,
+        malloc: walrus::FunctionId,
+        mem: walrus::MemoryId,
     },
 
     /// pops a `i32`, pushes `bool`
@@ -222,14 +228,20 @@ pub enum Instruction {
     CachedStringLoad {
         owned: bool,
         optional: bool,
+        mem: walrus::MemoryId,
+        free: walrus::FunctionId,
     },
     /// pops ptr/length, pushes a vector, frees the original data
     VectorLoad {
         kind: VectorKind,
+        mem: walrus::MemoryId,
+        free: walrus::FunctionId,
     },
     /// pops ptr/length, pushes a vector, frees the original data
     OptionVectorLoad {
         kind: VectorKind,
+        mem: walrus::MemoryId,
+        free: walrus::FunctionId,
     },
     /// pops i32, loads anyref from anyref table
     TableGet,
@@ -242,10 +254,12 @@ pub enum Instruction {
     /// pops two i32 data pointers, pushes a vector view
     View {
         kind: VectorKind,
+        mem: walrus::MemoryId,
     },
     /// pops two i32 data pointers, pushes a vector view
     OptionView {
         kind: VectorKind,
+        mem: walrus::MemoryId,
     },
     /// pops i32, pushes it viewed as an optional value with a known sentinel
     OptionU32Sentinel,

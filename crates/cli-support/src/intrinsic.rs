@@ -13,7 +13,7 @@ macro_rules! intrinsics {
     (pub enum Intrinsic {
         $(
             #[symbol = $sym:tt]
-            #[signature = fn($($arg:expr),*) -> $ret:ident]
+            #[signature = fn($($arg:expr),*) -> $ret:expr]
             $name:ident,
         )*
     }) => {
@@ -71,6 +71,10 @@ fn ref_string() -> Descriptor {
     Descriptor::Ref(Box::new(Descriptor::String))
 }
 
+fn opt_string() -> Descriptor {
+    Descriptor::Option(Box::new(Descriptor::String))
+}
+
 intrinsics! {
     pub enum Intrinsic {
         #[symbol = "__wbindgen_jsval_eq"]
@@ -125,7 +129,7 @@ intrinsics! {
         #[signature = fn(ref_anyref(), I32) -> F64]
         NumberGet,
         #[symbol = "__wbindgen_string_get"]
-        #[signature = fn(ref_anyref(), I32) -> I32]
+        #[signature = fn(ref_anyref()) -> opt_string()]
         StringGet,
         #[symbol = "__wbindgen_boolean_get"]
         #[signature = fn(ref_anyref()) -> I32]

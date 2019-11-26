@@ -91,7 +91,7 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Ref(d) => self.outgoing_ref(false, d)?,
             Descriptor::RefMut(d) => self.outgoing_ref(true, d)?,
 
-            Descriptor::CachedString => self.cached_string(false, true),
+            Descriptor::CachedString => self.cached_string(false, true)?,
 
             Descriptor::String => {
                 // fetch the ptr/length ...
@@ -128,9 +128,11 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
+                let mem = self.cx.memory()?;
+                let free = self.cx.free()?;
                 self.instruction(
                     &[AdapterType::I32; 2],
-                    Instruction::VectorLoad { kind },
+                    Instruction::VectorLoad { kind, mem, free },
                     &[AdapterType::Vector(kind)],
                 );
             }
@@ -160,7 +162,7 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Anyref],
                 );
             }
-            Descriptor::CachedString => self.cached_string(false, false),
+            Descriptor::CachedString => self.cached_string(false, false)?,
 
             Descriptor::String => {
                 let std = wit_walrus::Instruction::MemoryToString(self.cx.memory()?);
@@ -177,9 +179,10 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
+                let mem = self.cx.memory()?;
                 self.instruction(
                     &[AdapterType::I32; 2],
-                    Instruction::View { kind },
+                    Instruction::View { kind, mem },
                     &[AdapterType::Vector(kind)],
                 );
             }
@@ -274,7 +277,8 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Ref(d) => self.outgoing_option_ref(false, d)?,
             Descriptor::RefMut(d) => self.outgoing_option_ref(true, d)?,
 
-            // Descriptor::CachedString => self.cached_string(true, true),
+            Descriptor::CachedString => self.cached_string(true, true)?,
+
             Descriptor::String | Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -282,9 +286,11 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
+                let mem = self.cx.memory()?;
+                let free = self.cx.free()?;
                 self.instruction(
                     &[AdapterType::I32; 2],
-                    Instruction::OptionVectorLoad { kind },
+                    Instruction::OptionVectorLoad { kind, mem, free },
                     &[AdapterType::Anyref],
                 );
             }
@@ -306,7 +312,7 @@ impl InstructionBuilder<'_, '_> {
                     &[AdapterType::Anyref],
                 );
             }
-            Descriptor::CachedString => self.cached_string(true, false),
+            Descriptor::CachedString => self.cached_string(true, false)?,
             Descriptor::String | Descriptor::Slice(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
@@ -314,9 +320,10 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
+                let mem = self.cx.memory()?;
                 self.instruction(
                     &[AdapterType::I32; 2],
-                    Instruction::OptionView { kind },
+                    Instruction::OptionView { kind, mem },
                     &[AdapterType::Anyref],
                 );
             }
@@ -337,12 +344,20 @@ impl InstructionBuilder<'_, '_> {
         self.instruction(&[AdapterType::I32], Instruction::Standard(std), &[output]);
     }
 
-    fn cached_string(&mut self, optional: bool, owned: bool) {
+    fn cached_string(&mut self, optional: bool, owned: bool) -> Result<(), Error> {
+        let mem = self.cx.memory()?;
+        let free = self.cx.free()?;
         self.instruction(
             &[AdapterType::I32; 2],
-            Instruction::CachedStringLoad { owned, optional },
+            Instruction::CachedStringLoad {
+                owned,
+                optional,
+                mem,
+                free,
+            },
             &[AdapterType::String],
         );
+        Ok(())
     }
 
     fn option_native(&mut self, signed: bool, ty: ValType) {

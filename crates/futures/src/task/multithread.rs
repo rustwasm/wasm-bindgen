@@ -130,7 +130,7 @@ impl Task {
             // resources associated with the future ASAP.
             Poll::Ready(()) => {
                 *borrow = None;
-            },
+            }
 
             // Unlike `singlethread.rs` we are responsible for ensuring there's
             // a closure to handle the notification that a Future is ready. In

@@ -28,8 +28,17 @@ impl InstructionBuilder<'_, '_> {
         let input_before = self.input.len();
         let output_before = self.output.len();
         self._incoming(arg)?;
-        assert_eq!(output_before + 1, self.output.len());
-        assert!(input_before < self.input.len());
+        assert_eq!(
+            input_before + 1,
+            self.input.len(),
+            "didn't push an input {:?}",
+            arg
+        );
+        assert!(
+            output_before < self.output.len(),
+            "didn't push more outputs {:?}",
+            arg
+        );
         Ok(())
     }
 
@@ -173,16 +182,28 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
-                self.instruction(
-                    &[AdapterType::Vector(kind)],
-                    Instruction::SliceToMemory {
-                        kind,
-                        malloc: self.cx.malloc()?,
-                        mem: self.cx.memory()?,
-                        mutable,
-                    },
-                    &[AdapterType::I32, AdapterType::I32],
-                );
+                if mutable {
+                    self.instruction(
+                        &[AdapterType::Vector(kind)],
+                        Instruction::MutableSliceToMemory {
+                            kind,
+                            malloc: self.cx.malloc()?,
+                            mem: self.cx.memory()?,
+                            free: self.cx.free()?,
+                        },
+                        &[AdapterType::I32, AdapterType::I32],
+                    );
+                } else {
+                    self.instruction(
+                        &[AdapterType::Vector(kind)],
+                        Instruction::VectorToMemory {
+                            kind,
+                            malloc: self.cx.malloc()?,
+                            mem: self.cx.memory()?,
+                        },
+                        &[AdapterType::I32, AdapterType::I32],
+                    );
+                }
             }
             _ => bail!(
                 "unsupported reference argument type for calling Rust function from JS: {:?}",
@@ -262,11 +283,29 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
-                self.instruction(
-                    &[AdapterType::Anyref],
-                    Instruction::OptionSlice { kind, mutable },
-                    &[AdapterType::I32; 2],
-                );
+                drop((kind, mutable));
+                bail!("unsupported slice");
+                // let malloc = self.cx.malloc()?;
+                // let mem = self.cx.memory()?;
+                // if mutable {
+                //     let free = self.cx.free()?;
+                //     self.instruction(
+                //         &[AdapterType::Anyref],
+                //         Instruction::OptionMutableSlice {
+                //             kind,
+                //             malloc,
+                //             mem,
+                //             free,
+                //         },
+                //         &[AdapterType::I32; 2],
+                //     );
+                // } else {
+                //     self.instruction(
+                //         &[AdapterType::Anyref],
+                //         Instruction::OptionVector { kind, malloc, mem },
+                //         &[AdapterType::I32; 2],
+                //     );
+                // }
             }
 
             Descriptor::String | Descriptor::CachedString | Descriptor::Vector(_) => {
@@ -276,9 +315,11 @@ impl InstructionBuilder<'_, '_> {
                         arg
                     )
                 })?;
+                let malloc = self.cx.malloc()?;
+                let mem = self.cx.memory()?;
                 self.instruction(
                     &[AdapterType::Anyref],
-                    Instruction::OptionVector { kind },
+                    Instruction::OptionVector { kind, malloc, mem },
                     &[AdapterType::I32; 2],
                 );
             }
@@ -323,6 +364,8 @@ impl InstructionBuilder<'_, '_> {
             for input in inputs {
                 self.get(*input);
             }
+        } else {
+            self.input.extend_from_slice(inputs);
         }
 
         self.instructions.push(InstructionData {
@@ -332,7 +375,6 @@ impl InstructionBuilder<'_, '_> {
                 pushed: outputs.len(),
             },
         });
-        self.input.extend_from_slice(inputs);
         self.output.extend_from_slice(outputs);
     }
 

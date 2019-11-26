@@ -254,7 +254,7 @@ fn translate_instruction(
         | I32FromOptionChar
         | I32FromOptionEnum { .. }
         | FromOptionNative { .. }
-        | OptionSlice { .. }
+        | OptionMutableSlice { .. }
         | OptionVector { .. }
         | AnyrefLoadOptionOwned
         | OptionRustFromI32 { .. }
@@ -268,7 +268,7 @@ fn translate_instruction(
         | Option64FromI32 { .. } => {
             bail!("optional types aren't supported in wasm bindgen");
         }
-        SliceToMemory { .. } | VectorToMemory { .. } | VectorLoad { .. } | View { .. } => {
+        MutableSliceToMemory { .. } | VectorToMemory { .. } | VectorLoad { .. } | View { .. } => {
             bail!("vector slices aren't supported in wasm interface types yet");
         }
         CachedStringLoad { .. } => {
