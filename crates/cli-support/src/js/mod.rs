@@ -573,7 +573,6 @@ impl<'a> Context<'a> {
                 function init(module{init_memory_arg}) {{
                     {default_module_path}
                     let result;
-                    const imports = {{}};
                     {imports_init}
                     if ((typeof URL === 'function' && module instanceof URL) || typeof module === 'string' || (typeof Request === 'function' && module instanceof Request)) {{
                         {init_memory2}
