@@ -652,29 +652,24 @@ impl<'a> Context<'a> {
         // to expose all readable properties of the class. Otherwise,
         // the class shows only the "ptr" property when logged or serialized
         if class.is_inspectable {
-            // Creates a JavaScript object of all readable properties
-            // This looks like { a: this.a, b: this.b }
-            let readable_properties_js_object = format!(
-                "{{{}}}",
+            // Creates a `toJSON` method which returns an object of all readable properties
+            // This object looks like { a: this.a, b: this.b }
+            dst.push_str(&format!(
+                "
+                toJSON() {{
+                    return {{{}}};
+                }}
+
+                toString() {{
+                    return JSON.stringify(this);
+                }}
+                ",
                 class
                     .readable_properties
                     .iter()
                     .fold(String::from("\n"), |fields, field_name| {
                         format!("{}{name}: this.{name},\n", fields, name = field_name)
                     })
-            );
-
-            dst.push_str(&format!(
-                "
-                toJSON() {{
-                    return {readable_properties};
-                }}
-
-                toString() {{
-                    return JSON.stringify({readable_properties});
-                }}
-                ",
-                readable_properties = readable_properties_js_object
             ));
 
             if self.config.mode.nodejs() {
@@ -691,13 +686,12 @@ impl<'a> Context<'a> {
                 // output of `console.log` and friends. The constructor is set
                 // to display the class name as a typical JavaScript class would
                 dst.push_str(
-                    &format!("
-                    [inspect.custom]() {{
-                        return Object.assign(Object.create({{constructor: this.constructor}}), {readable_properties});
-                    }}
-                    ",
-                    readable_properties = readable_properties_js_object
-                ));
+                    "
+                    [inspect.custom]() {
+                        return Object.assign(Object.create({constructor: this.constructor}), this.toJSON());
+                    }
+                    "
+                );
             }
         }
 

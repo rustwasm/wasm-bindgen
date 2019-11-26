@@ -29,7 +29,7 @@ obj.field = 4;
 assert.strictEqual(obj.toString(), '{"field":4}');
 ```
 
-One or both of these implementations can be overridden as desired:
+One or both of these implementations can be overridden as desired. Note that the generated `toString` calls `toJSON` internally, so overriding `toJSON` will affect its output as a side effect.
 
 ```rust
 #[wasm_bindgen]
@@ -50,4 +50,4 @@ Note that the output of `console.log` will remain unchanged and display only the
 
 ## `inspectable` Classes in Node.js
 
-When the `nodejs` target is used, an additional `[util.inspect.custom]` implementation is provided. This method is used for `console.log` and similar functions to display all readable fields of the Rust struct.
+When the `nodejs` target is used, an additional `[util.inspect.custom]` implementation is provided which calls `toJSON` internally. This method is used for `console.log` and similar functions to display all readable fields of the Rust struct.
