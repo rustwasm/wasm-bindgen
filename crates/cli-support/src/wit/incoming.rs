@@ -7,11 +7,11 @@
 //! Note that the mirror operation, going from WebAssembly to JS, is found in
 //! the `outgoing.rs` module.
 
-use crate::descriptor::{Descriptor, VectorKind};
+use crate::descriptor::Descriptor;
 use crate::wit::InstructionData;
 use crate::wit::{AdapterType, Instruction, InstructionBuilder, StackChange};
 use anyhow::{bail, format_err, Error};
-use walrus::{FunctionId, MemoryId, ValType};
+use walrus::ValType;
 
 impl InstructionBuilder<'_, '_> {
     /// Process a `Descriptor` as if it's being passed from JS to Rust. This
@@ -175,10 +175,11 @@ impl InstructionBuilder<'_, '_> {
                 })?;
                 self.instruction(
                     &[AdapterType::Vector(kind)],
-                    Instruction::VectorToMemory {
+                    Instruction::SliceToMemory {
                         kind,
                         malloc: self.cx.malloc()?,
                         mem: self.cx.memory()?,
+                        mutable,
                     },
                     &[AdapterType::I32, AdapterType::I32],
                 );

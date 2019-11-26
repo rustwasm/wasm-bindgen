@@ -3,12 +3,10 @@ use crate::descriptor::{Descriptor, Function};
 use crate::descriptors::WasmBindgenDescriptorsSection;
 use crate::intrinsic::Intrinsic;
 use anyhow::{anyhow, bail, Error};
-use std::borrow::Cow;
-use std::collections::{HashMap, HashSet};
-use std::path::PathBuf;
+use std::collections::HashMap;
 use std::str;
 use walrus::MemoryId;
-use walrus::{ExportId, FunctionId, ImportId, Module, TypedCustomSectionId};
+use walrus::{ExportId, FunctionId, ImportId, Module};
 use wasm_bindgen_shared::struct_function_export_name;
 
 const PLACEHOLDER_MODULE: &str = "__wbindgen_placeholder__";
@@ -170,6 +168,7 @@ impl<'a> Context<'a> {
                         dtor: descriptor.dtor_idx,
                         mutable: descriptor.mutable,
                         nargs,
+                        adapter: id,
                     },
                 );
             }
@@ -1054,10 +1053,6 @@ impl<'a> Context<'a> {
     ) -> Result<AdapterId, Error> {
         let import = self.module.imports.get(import);
         let (import_module, import_name) = (import.module.clone(), import.name.clone());
-        let id = match import.kind {
-            walrus::ImportKind::Function(f) => f,
-            _ => unreachable!(),
-        };
         let import_id = import.id();
 
         // Process the returned type first to see if it needs an out-pointer. This

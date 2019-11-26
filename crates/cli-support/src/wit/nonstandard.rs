@@ -172,6 +172,7 @@ pub enum AuxImport {
     Closure {
         mutable: bool, // whether or not this was a `FnMut` closure
         dtor: u32,     // table element index of the destructor function
+        adapter: AdapterId, // the adapter which translates the types for this closure
         nargs: usize,
     },
 

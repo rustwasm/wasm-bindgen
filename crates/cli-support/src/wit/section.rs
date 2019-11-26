@@ -16,7 +16,6 @@
 //! generating any JS glue. Any JS glue currently generated is also invalid if
 //! the module contains the wasm bindings section and it's actually respected.
 
-use crate::descriptor::VectorKind;
 use crate::wit::{AdapterId, AdapterJsImportKind, AdapterType, Instruction};
 use crate::wit::{AdapterKind, NonstandardWitSection, WasmBindgenAux};
 use crate::wit::{AuxExport, InstructionData};
@@ -24,8 +23,6 @@ use crate::wit::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
 use anyhow::{anyhow, bail, Context, Error};
 use std::collections::HashMap;
 use walrus::Module;
-use wasm_bindgen_multi_value_xform as multi_value_xform;
-use wasm_bindgen_wasm_conventions as wasm_conventions;
 
 pub fn add(
     module: &mut Module,
@@ -130,8 +127,10 @@ pub fn add(
         };
 
         for instruction in instructions {
-            translate_instruction(instruction, &us2walrus, module)
-                .with_context(|| adapter_context(*id))?;
+            result.push(
+                translate_instruction(instruction, &us2walrus, module)
+                    .with_context(|| adapter_context(*id))?,
+            );
         }
     }
 
@@ -269,7 +268,7 @@ fn translate_instruction(
         | Option64FromI32 { .. } => {
             bail!("optional types aren't supported in wasm bindgen");
         }
-        VectorToMemory { .. } | VectorLoad { .. } | View { .. } => {
+        SliceToMemory { .. } | VectorToMemory { .. } | VectorLoad { .. } | View { .. } => {
             bail!("vector slices aren't supported in wasm interface types yet");
         }
         CachedStringLoad { .. } => {

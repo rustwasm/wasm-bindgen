@@ -1,8 +1,8 @@
-use crate::descriptor::{Descriptor, VectorKind};
-use crate::wit::{AdapterType, Instruction, InstructionBuilder, NonstandardWitSection};
+use crate::descriptor::Descriptor;
+use crate::wit::{AdapterType, Instruction, InstructionBuilder};
 use crate::wit::{InstructionData, StackChange};
 use anyhow::{bail, format_err, Error};
-use walrus::{Module, ValType};
+use walrus::ValType;
 
 impl InstructionBuilder<'_, '_> {
     /// Processes one more `Descriptor` as an argument to a JS function that

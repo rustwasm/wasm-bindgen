@@ -1,8 +1,6 @@
-use crate::descriptor::VectorKind;
-use crate::wit::{Adapter, NonstandardWitSection, WasmBindgenAux};
+use crate::wit::{Adapter, NonstandardWitSection};
 use crate::wit::{AdapterKind, Instruction};
-use crate::wit::{AuxExportKind, AuxImport, AuxValue, JsImport, JsImportName};
-use anyhow::{bail, Context, Error};
+use anyhow::Error;
 use walrus::Module;
 use wasm_bindgen_multi_value_xform as multi_value_xform;
 use wasm_bindgen_wasm_conventions as wasm_conventions;

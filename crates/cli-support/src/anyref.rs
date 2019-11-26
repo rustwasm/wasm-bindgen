@@ -1,7 +1,7 @@
-use crate::wit::{AdapterKind, Instruction, NonstandardWitSection, WasmBindgenAux};
+use crate::wit::{AdapterKind, Instruction, NonstandardWitSection};
 use crate::wit::{AdapterType, InstructionData, StackChange};
 use anyhow::Error;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use walrus::Module;
 use wasm_bindgen_anyref_xform::Context;
 
@@ -181,6 +181,12 @@ fn import_xform(
     while let Some((i, instr)) = iter.next() {
         match instr.instr {
             Instruction::AnyrefLoadOwned => {
+                assert_eq!(results.len(), 1);
+                match results[0] {
+                    AdapterType::I32 => {}
+                    _ => panic!("must be `i32` type"),
+                }
+                results[0] = AdapterType::Anyref;
                 ret_anyref = true;
                 to_delete.push(i);
             }

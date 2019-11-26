@@ -21,7 +21,7 @@ pub struct NonstandardWitSection {
 pub type NonstandardWitSectionId = TypedCustomSectionId<NonstandardWitSection>;
 
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq)]
-pub struct AdapterId(usize);
+pub struct AdapterId(pub usize);
 
 #[derive(Debug, Clone)]
 pub struct Adapter {
@@ -55,7 +55,7 @@ pub enum StackChange {
     Unknown,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum AdapterJsImportKind {
     /// The first argument is an `anyref` which is the `this` of the function
     /// call
@@ -179,6 +179,12 @@ pub enum Instruction {
         kind: VectorKind,
         malloc: walrus::FunctionId,
         mem: walrus::MemoryId,
+    },
+    SliceToMemory {
+        kind: VectorKind,
+        malloc: walrus::FunctionId,
+        mem: walrus::MemoryId,
+        mutable: bool,
     },
 
     /// Pops an anyref, pushes pointer/length or all zeros. Will update original

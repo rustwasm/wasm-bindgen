@@ -1,5 +1,4 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
-#![allow(dead_code, unused)]
 
 use anyhow::{bail, Context, Error};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
@@ -16,8 +15,9 @@ mod decode;
 mod descriptor;
 mod descriptors;
 mod intrinsic;
+#[allow(dead_code, unused)]
+mod js;
 mod multivalue;
-// mod js;
 pub mod wasm2es6js;
 mod wit;
 
@@ -360,14 +360,14 @@ impl Bindgen {
             .delete_typed::<wit::NonstandardWitSection>()
             .unwrap();
 
-        // // Now that our module is massaged and good to go, feed it into the JS
-        // // shim generation which will actually generate JS for all this.
-        // let (npm_dependencies, (js, ts)) = {
-        //     let mut cx = js::Context::new(&mut module, self)?;
-        //     cx.generate(&aux, &adapters)?;
-        //     let npm_dependencies = cx.npm_dependencies.clone();
-        //     (npm_dependencies, cx.finalize(stem)?)
-        // };
+        // Now that our module is massaged and good to go, feed it into the JS
+        // shim generation which will actually generate JS for all this.
+        let (npm_dependencies, (js, ts)) = {
+            let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
+            cx.generate()?;
+            let npm_dependencies = cx.npm_dependencies.clone();
+            (npm_dependencies, cx.finalize(stem)?)
+        };
 
         if self.wasm_interface_types {
             multivalue::run(&mut module, &mut adapters)
@@ -394,20 +394,18 @@ impl Bindgen {
             // walrus::passes::gc::run(&mut module);
         }
 
-        // Ok(Output {
-        //     module,
-        //     stem: stem.to_string(),
-        //     snippets: aux.snippets.clone(),
-        //     local_modules: aux.local_modules.clone(),
-        //     npm_dependencies,
-        //     js,
-        //     ts,
-        //     mode: self.mode.clone(),
-        //     typescript: self.typescript,
-        //     wasm_interface_types: self.wasm_interface_types,
-        // })
-
-        panic!()
+        Ok(Output {
+            module,
+            stem: stem.to_string(),
+            snippets: aux.snippets.clone(),
+            local_modules: aux.local_modules.clone(),
+            npm_dependencies,
+            js,
+            ts,
+            mode: self.mode.clone(),
+            typescript: self.typescript,
+            wasm_interface_types: self.wasm_interface_types,
+        })
     }
 
     fn local_module_name(&self, module: &str) -> String {

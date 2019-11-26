@@ -1,20 +1,18 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
-use crate::webidl;
-use crate::webidl::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
-use crate::webidl::{AuxValue, Binding};
-use crate::webidl::{JsImport, JsImportName, NonstandardWebidlSection, WasmBindgenAux};
+use crate::wit::{Adapter, AuxValue, AdapterJsImportKind};
+use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
+use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{Bindgen, EncodeInto, OutputMode};
 use anyhow::{bail, Context as _, Error};
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use walrus::{ExportId, ImportId, MemoryId, Module};
-use wasm_webidl_bindings::ast;
 
 mod binding;
-mod incoming;
-mod outgoing;
+// mod incoming;
+// mod outgoing;
 
 pub struct Context<'a> {
     globals: String,
@@ -22,8 +20,11 @@ pub struct Context<'a> {
     typescript: String,
     exposed_globals: Option<HashSet<&'static str>>,
     required_internal_exports: HashSet<&'static str>,
+    next_export_idx: usize,
     config: &'a Bindgen,
     pub module: &'a mut Module,
+    aux: &'a WasmBindgenAux,
+    wit: &'a NonstandardWitSection,
 
     /// A map representing the `import` statements we'll be generating in the JS
     /// glue. The key is the module we're importing from and the value is the
@@ -66,7 +67,12 @@ const INITIAL_HEAP_VALUES: &[&str] = &["undefined", "null", "true", "false"];
 const INITIAL_HEAP_OFFSET: usize = 32;
 
 impl<'a> Context<'a> {
-    pub fn new(module: &'a mut Module, config: &'a Bindgen) -> Result<Context<'a>, Error> {
+    pub fn new(
+        module: &'a mut Module,
+        config: &'a Bindgen,
+        wit: &'a NonstandardWitSection,
+        aux: &'a WasmBindgenAux,
+    ) -> Result<Context<'a>, Error> {
         // Find the single memory, if there is one, and for ease of use in our
         // binding generation just inject one if there's not one already (and
         // we'll clean it up later if we end up not using it).
@@ -94,6 +100,9 @@ impl<'a> Context<'a> {
             module,
             memory,
             npm_dependencies: Default::default(),
+            next_export_idx: 0,
+            wit,
+            aux,
         })
     }
 
@@ -465,10 +474,12 @@ impl<'a> Context<'a> {
         };
 
         let default_module_path = match self.config.mode {
-            OutputMode::Web => "\
+            OutputMode::Web => {
+                "\
                     if (typeof module === 'undefined') {
                         module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
-                    }",
+                    }"
+            }
             _ => "",
         };
 
@@ -828,10 +839,10 @@ impl<'a> Context<'a> {
 
             self.global(&format!(
                 "
-                    function passStringToWasm(arg) {{
+                    function passStringToWasm(arg, malloc) {{
                         {}
                         const len = Buffer.byteLength(arg);
-                        const ptr = wasm.__wbindgen_malloc(len);
+                        const ptr = malloc(len);
                         getNodeBufferMemory().write(arg, ptr, len);
                         WASM_VECTOR_LEN = len;
                         return ptr;
@@ -911,7 +922,7 @@ impl<'a> Context<'a> {
         // charCodeAt on ASCII strings is usually optimised to raw bytes.
         let encode_as_ascii = "\
             let len = arg.length;
-            let ptr = wasm.__wbindgen_malloc(len);
+            let ptr = malloc(len);
 
             const mem = getUint8Memory();
 
@@ -930,7 +941,7 @@ impl<'a> Context<'a> {
         // looping over the string to calculate the precise size, or perhaps using
         // `shrink_to_fit` on the Rust side.
         self.global(&format!(
-            "function passStringToWasm(arg) {{
+            "function passStringToWasm(arg, malloc) {{
                 {}
                 {}
                 if (offset !== len) {{
@@ -1874,100 +1885,100 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    pub fn generate(
-        &mut self,
-        aux: &WasmBindgenAux,
-        bindings: &NonstandardWebidlSection,
-    ) -> Result<(), Error> {
-        for (i, (idx, binding)) in bindings.elems.iter().enumerate() {
-            self.generate_elem_binding(i, *idx, binding, bindings)?;
+    pub fn generate(&mut self) -> Result<(), Error> {
+        for (id, adapter) in self.wit.adapters.iter() {
+            if let Some(export) = self.aux.export_map.get(id) {
+                self.generate_export(export, adapter)?;
+                continue;
+            }
+            if let Some(import) = self.aux.import_map.get(id) {
+            }
+            // self.generate_adapter(id, adapter);
         }
-
-        let mut pairs = aux.export_map.iter().collect::<Vec<_>>();
-        pairs.sort_by_key(|(k, _)| *k);
-        check_duplicated_getter_and_setter_names(&pairs)?;
-        for (id, export) in pairs {
-            self.generate_export(*id, export, bindings)
-                .with_context(|| {
-                    format!(
-                        "failed to generate bindings for Rust export `{}`",
-                        export.debug_name,
-                    )
-                })?;
-        }
-
-        for (id, import) in sorted_iter(&aux.import_map) {
-            let variadic = aux.imports_with_variadic.contains(&id);
-            let catch = aux.imports_with_catch.contains(&id);
-            let assert_no_shim = aux.imports_with_assert_no_shim.contains(&id);
-            self.generate_import(*id, import, bindings, variadic, catch, assert_no_shim)
-                .with_context(|| {
-                    format!("failed to generate bindings for import `{:?}`", import,)
-                })?;
-        }
-        for e in aux.enums.iter() {
+        // for (i, (idx, binding)) in bindings.elems.iter().enumerate() {
+        //     self.generate_elem_binding(i, *idx, binding, bindings)?;
+        // }
+        //
+        // let mut pairs = aux.export_map.iter().collect::<Vec<_>>();
+        // pairs.sort_by_key(|(k, _)| *k);
+        // check_duplicated_getter_and_setter_names(&pairs)?;
+        // for (id, export) in pairs {
+        //     self.generate_export(*id, export, bindings)
+        //         .with_context(|| {
+        //             format!(
+        //                 "failed to generate bindings for Rust export `{}`",
+        //                 export.debug_name,
+        //             )
+        //         })?;
+        // }
+        //
+        // for (id, import) in sorted_iter(&aux.import_map) {
+        //     let variadic = aux.imports_with_variadic.contains(&id);
+        //     let catch = aux.imports_with_catch.contains(&id);
+        //     let assert_no_shim = aux.imports_with_assert_no_shim.contains(&id);
+        //     self.generate_import(*id, import, bindings, variadic, catch, assert_no_shim)
+        //         .with_context(|| {
+        //             format!("failed to generate bindings for import `{:?}`", import,)
+        //         })?;
+        // }
+        for e in self.aux.enums.iter() {
             self.generate_enum(e)?;
         }
 
-        for s in aux.structs.iter() {
+        for s in self.aux.structs.iter() {
             self.generate_struct(s)?;
         }
 
-        self.typescript.push_str(&aux.extra_typescript);
+        self.typescript.push_str(&self.aux.extra_typescript);
 
-        for path in aux.package_jsons.iter() {
+        for path in self.aux.package_jsons.iter() {
             self.process_package_json(path)?;
         }
 
         Ok(())
     }
 
-    /// Generates a wrapper function for each bound element of the function
-    /// table. These wrapper functions have the expected WebIDL signature we'd
-    /// like them to have. This currently isn't part of the WebIDL bindings
-    /// proposal, but the thinking is that it'd look something like this if
-    /// added.
-    ///
-    /// Note that this is just an internal function shim used by closures and
-    /// such, so we're not actually exporting anything here.
-    fn generate_elem_binding(
-        &mut self,
-        idx: usize,
-        elem_idx: u32,
-        binding: &Binding,
-        bindings: &NonstandardWebidlSection,
-    ) -> Result<(), Error> {
-        let webidl = bindings
-            .types
-            .get::<ast::WebidlFunction>(binding.webidl_ty)
-            .unwrap();
-        self.export_function_table()?;
-        let mut builder = binding::Builder::new(self);
-        builder.disable_log_error(true);
-        let js = builder.process(&binding, &webidl, true, &None, &mut |_, _, args| {
-            Ok(format!(
-                "wasm.__wbg_function_table.get({})({})",
-                elem_idx,
-                args.join(", ")
-            ))
-        })?;
-        self.globals
-            .push_str(&format!("function __wbg_elem_binding{}{}\n", idx, js));
-        Ok(())
-    }
+    // /// Generates a wrapper function for each bound element of the function
+    // /// table. These wrapper functions have the expected WebIDL signature we'd
+    // /// like them to have. This currently isn't part of the WebIDL bindings
+    // /// proposal, but the thinking is that it'd look something like this if
+    // /// added.
+    // ///
+    // /// Note that this is just an internal function shim used by closures and
+    // /// such, so we're not actually exporting anything here.
+    // fn generate_elem_binding(
+    //     &mut self,
+    //     idx: usize,
+    //     elem_idx: u32,
+    //     binding: &Binding,
+    //     bindings: &NonstandardWitSection,
+    // ) -> Result<(), Error> {
+    //     let webidl = bindings
+    //         .types
+    //         .get::<ast::WitFunction>(binding.webidl_ty)
+    //         .unwrap();
+    //     self.export_function_table()?;
+    //     let mut builder = binding::Builder::new(self);
+    //     builder.disable_log_error(true);
+    //     let js = builder.process(&binding, &webidl, true, &None, &mut |_, _, args| {
+    //         Ok(format!(
+    //             "wasm.__wbg_function_table.get({})({})",
+    //             elem_idx,
+    //             args.join(", ")
+    //         ))
+    //     })?;
+    //     self.globals
+    //         .push_str(&format!("function __wbg_elem_binding{}{}\n", idx, js));
+    //     Ok(())
+    // }
 
-    fn generate_export(
-        &mut self,
-        id: ExportId,
-        export: &AuxExport,
-        bindings: &NonstandardWebidlSection,
-    ) -> Result<(), Error> {
-        let wasm_name = self.module.exports.get(id).name.clone();
-        let binding = &bindings.exports[&id];
-        let webidl = bindings
-            .types
-            .get::<ast::WebidlFunction>(binding.webidl_ty)
-            .unwrap();
+    fn generate_export(&mut self, export: &AuxExport, adapter: &Adapter) -> Result<(), Error> {
+        // let wasm_name = self.module.exports.get(id).name.clone();
+        // let binding = &bindings.exports[&id];
+        // let webidl = bindings
+        //     .types
+        //     .get::<ast::WitFunction>(binding.webidl_ty)
+        //     .unwrap();
 
         // Construct a JS shim builder, and configure it based on the kind of
         // export that we're generating.
@@ -1983,12 +1994,11 @@ impl<'a> Context<'a> {
 
         // Process the `binding` and generate a bunch of JS/TypeScript/etc.
         let js = builder.process(
-            &binding,
-            &webidl,
-            true,
+            &adapter,
             &export.arg_names,
-            &mut |_, _, args| Ok(format!("wasm.{}({})", wasm_name, args.join(", "))),
+            // &mut |_, _, args| Ok(format!("wasm.{}({})", wasm_name, args.join(", "))),
         )?;
+        let js = String::new();
         let ts = builder.typescript_signature();
         let js_doc = builder.js_doc_comments();
         let docs = format_doc_comments(&export.comments, Some(js_doc));
@@ -2034,57 +2044,57 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn generate_import(
-        &mut self,
-        id: ImportId,
-        import: &AuxImport,
-        bindings: &NonstandardWebidlSection,
-        variadic: bool,
-        catch: bool,
-        assert_no_shim: bool,
-    ) -> Result<(), Error> {
-        let binding = &bindings.imports[&id];
-        let webidl = bindings
-            .types
-            .get::<ast::WebidlFunction>(binding.webidl_ty)
-            .unwrap();
-        match import {
-            AuxImport::Value(AuxValue::Bare(js))
-                if !variadic && !catch && self.import_does_not_require_glue(binding, webidl) =>
-            {
-                self.direct_import(id, js)
-            }
-            _ => {
-                if assert_no_shim {
-                    panic!(
-                        "imported function was annotated with `#[wasm_bindgen(assert_no_shim)]` \
-                         but we need to generate a JS shim for it:\n\n\
-                         \timport = {:?}\n\n\
-                         \tbinding = {:?}\n\n\
-                         \twebidl = {:?}",
-                        import, binding, webidl,
-                    );
-                }
-
-                let disable_log_error = self.import_never_log_error(import);
-                let mut builder = binding::Builder::new(self);
-                builder.catch(catch)?;
-                builder.disable_log_error(disable_log_error);
-                let js = builder.process(
-                    &binding,
-                    &webidl,
-                    false,
-                    &None,
-                    &mut |cx, prelude, args| {
-                        cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
-                    },
-                )?;
-                self.wasm_import_definitions
-                    .insert(id, format!("function{}", js));
-                Ok(())
-            }
-        }
-    }
+    // fn generate_import(
+    //     &mut self,
+    //     id: ImportId,
+    //     import: &AuxImport,
+    //     bindings: &NonstandardWitSection,
+    //     variadic: bool,
+    //     catch: bool,
+    //     assert_no_shim: bool,
+    // ) -> Result<(), Error> {
+    //     let binding = &bindings.imports[&id];
+    //     let webidl = bindings
+    //         .types
+    //         .get::<ast::WitFunction>(binding.webidl_ty)
+    //         .unwrap();
+    //     match import {
+    //         AuxImport::Value(AuxValue::Bare(js))
+    //             if !variadic && !catch && self.import_does_not_require_glue(binding, webidl) =>
+    //         {
+    //             self.direct_import(id, js)
+    //         }
+    //         _ => {
+    //             if assert_no_shim {
+    //                 panic!(
+    //                     "imported function was annotated with `#[wasm_bindgen(assert_no_shim)]` \
+    //                      but we need to generate a JS shim for it:\n\n\
+    //                      \timport = {:?}\n\n\
+    //                      \tbinding = {:?}\n\n\
+    //                      \twebidl = {:?}",
+    //                     import, binding, webidl,
+    //                 );
+    //             }
+    //
+    //             let disable_log_error = self.import_never_log_error(import);
+    //             let mut builder = binding::Builder::new(self);
+    //             builder.catch(catch)?;
+    //             builder.disable_log_error(disable_log_error);
+    //             let js = builder.process(
+    //                 &binding,
+    //                 &webidl,
+    //                 false,
+    //                 &None,
+    //                 &mut |cx, prelude, args| {
+    //                     cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
+    //                 },
+    //             )?;
+    //             self.wasm_import_definitions
+    //                 .insert(id, format!("function{}", js));
+    //             Ok(())
+    //         }
+    //     }
+    // }
 
     /// Returns whether we should disable the logic, in debug mode, to catch an
     /// error, log it, and rethrow it. This is only intended for user-defined
@@ -2102,30 +2112,26 @@ impl<'a> Context<'a> {
         }
     }
 
-    fn import_does_not_require_glue(
-        &self,
-        binding: &Binding,
-        webidl: &ast::WebidlFunction,
-    ) -> bool {
-        if !self.config.anyref && binding.contains_anyref(self.module) {
-            return false;
-        }
-
-        let wasm_ty = self.module.types.get(binding.wasm_ty);
-        webidl.kind == ast::WebidlFunctionKind::Static
-            && webidl::outgoing_do_not_require_glue(
-                &binding.outgoing,
-                wasm_ty.params(),
-                &webidl.params,
-                self.config.wasm_interface_types,
-            )
-            && webidl::incoming_do_not_require_glue(
-                &binding.incoming,
-                &webidl.result.into_iter().collect::<Vec<_>>(),
-                wasm_ty.results(),
-                self.config.wasm_interface_types,
-            )
-    }
+    // fn import_does_not_require_glue(&self, binding: &Binding, webidl: &ast::WitFunction) -> bool {
+    //     if !self.config.anyref && binding.contains_anyref(self.module) {
+    //         return false;
+    //     }
+    //
+    //     let wasm_ty = self.module.types.get(binding.wasm_ty);
+    //     webidl.kind == AdapterJsImportKind::Normal
+    //         && webidl::outgoing_do_not_require_glue(
+    //             &binding.outgoing,
+    //             wasm_ty.params(),
+    //             &webidl.params,
+    //             self.config.wasm_interface_types,
+    //         )
+    //         && webidl::incoming_do_not_require_glue(
+    //             &binding.incoming,
+    //             &webidl.result.into_iter().collect::<Vec<_>>(),
+    //             wasm_ty.results(),
+    //             self.config.wasm_interface_types,
+    //         )
+    // }
 
     /// Emit a direct import directive that hooks up the `js` value specified to
     /// the wasm import `id`.
@@ -2202,14 +2208,12 @@ impl<'a> Context<'a> {
     /// purpose of `AuxImport`, which depends on the kind of import.
     fn invoke_import(
         &mut self,
-        binding: &Binding,
         import: &AuxImport,
-        bindings: &NonstandardWebidlSection,
+        kind: AdapterJsImportKind,
         args: &[String],
         variadic: bool,
         prelude: &mut String,
     ) -> Result<String, Error> {
-        let webidl_ty: &ast::WebidlFunction = bindings.types.get(binding.webidl_ty).unwrap();
         let variadic_args = |js_arguments: &[String]| {
             Ok(if !variadic {
                 format!("{}", js_arguments.join(", "))
@@ -2226,15 +2230,15 @@ impl<'a> Context<'a> {
             })
         };
         match import {
-            AuxImport::Value(val) => match webidl_ty.kind {
-                ast::WebidlFunctionKind::Constructor => {
+            AuxImport::Value(val) => match kind {
+                AdapterJsImportKind::Constructor => {
                     let js = match val {
                         AuxValue::Bare(js) => self.import_name(js)?,
                         _ => bail!("invalid import set for constructor"),
                     };
                     Ok(format!("new {}({})", js, variadic_args(&args)?))
                 }
-                ast::WebidlFunctionKind::Method(_) => {
+                AdapterJsImportKind::Method => {
                     let descriptor = |anchor: &str, extra: &str, field: &str, which: &str| {
                         format!(
                             "GetOwnOrInheritedPropertyDescriptor({}{}, '{}').{}",
@@ -2266,7 +2270,7 @@ impl<'a> Context<'a> {
                     };
                     Ok(format!("{}.call({})", js, variadic_args(&args)?))
                 }
-                ast::WebidlFunctionKind::Static => {
+                AdapterJsImportKind::Normal => {
                     let js = match val {
                         AuxValue::Bare(js) => self.import_name(js)?,
                         _ => bail!("invalid import set for free function"),
@@ -2281,7 +2285,7 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::Instanceof(js) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 let js = self.import_name(js)?;
@@ -2289,7 +2293,7 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::Static(js) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
                 self.import_name(js)
@@ -2298,10 +2302,10 @@ impl<'a> Context<'a> {
             AuxImport::Closure {
                 dtor,
                 mutable,
-                binding_idx,
+                adapter,
                 nargs,
             } => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 3);
                 let arg_names = (0..*nargs)
@@ -2316,7 +2320,8 @@ impl<'a> Context<'a> {
 
                 self.export_function_table()?;
                 let dtor = format!("wasm.__wbg_function_table.get({})", dtor);
-                let call = format!("__wbg_elem_binding{}", binding_idx);
+                // TODO: refactor this name generation to be somewhere else
+                let call = format!("__wbg_adapter_{}", adapter.0);
 
                 if *mutable {
                     // For mutable closures they can't be invoked recursively.
@@ -2369,7 +2374,7 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::StructuralMethod(name) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 let (receiver, args) = match args.split_first() {
                     Some(pair) => pair,
                     None => bail!("structural method calls must have at least one argument"),
@@ -2378,14 +2383,14 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::StructuralGetter(field) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 Ok(format!("{}.{}", args[0], field))
             }
 
             AuxImport::StructuralClassGetter(class, field) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 0);
                 let class = self.import_name(class)?;
@@ -2393,14 +2398,14 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::StructuralSetter(field) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 2);
                 Ok(format!("{}.{} = {}", args[0], field, args[1]))
             }
 
             AuxImport::StructuralClassSetter(class, field) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 let class = self.import_name(class)?;
@@ -2408,7 +2413,7 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::IndexingGetterOfClass(class) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 let class = self.import_name(class)?;
@@ -2416,14 +2421,14 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::IndexingGetterOfObject => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 2);
                 Ok(format!("{}[{}]", args[0], args[1]))
             }
 
             AuxImport::IndexingSetterOfClass(class) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 2);
                 let class = self.import_name(class)?;
@@ -2431,14 +2436,14 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::IndexingSetterOfObject => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 3);
                 Ok(format!("{}[{}] = {}", args[0], args[1], args[2]))
             }
 
             AuxImport::IndexingDeleterOfClass(class) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 let class = self.import_name(class)?;
@@ -2446,14 +2451,14 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::IndexingDeleterOfObject => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 2);
                 Ok(format!("delete {}[{}]", args[0], args[1]))
             }
 
             AuxImport::WrapInExportedClass(class) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 assert_eq!(args.len(), 1);
                 self.require_class_wrap(class);
@@ -2461,7 +2466,7 @@ impl<'a> Context<'a> {
             }
 
             AuxImport::Intrinsic(intrinsic) => {
-                assert!(webidl_ty.kind == ast::WebidlFunctionKind::Static);
+                assert!(kind == AdapterJsImportKind::Normal);
                 assert!(!variadic);
                 self.invoke_intrinsic(intrinsic, args, prelude)
             }
@@ -2873,6 +2878,28 @@ impl<'a> Context<'a> {
         };
         self.module.exports.add("__wbg_function_table", id);
         Ok(())
+    }
+
+    fn export_name_of(&mut self, id: impl Into<walrus::ExportItem>) -> String {
+        let id = id.into();
+        let export = self.module.exports.iter().find(|e| {
+            use walrus::ExportItem::*;
+
+            match (e.item, id) {
+                (Function(a), Function(b)) => a == b,
+                (Table(a), Table(b)) => a == b,
+                (Memory(a), Memory(b)) => a == b,
+                (Global(a), Global(b)) => a == b,
+                _ => false,
+            }
+        });
+        if let Some(export) = export {
+            return export.name.clone();
+        }
+        let mut name = format!("__wbindgen_export_{}", self.next_export_idx);
+        self.next_export_idx += 1;
+        self.module.exports.add(&name, id);
+        return name;
     }
 }
 
