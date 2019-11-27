@@ -189,15 +189,6 @@ pub enum Instruction {
         mem: walrus::MemoryId,
     },
 
-    /// Pops an anyref, pushes pointer/length or all zeros. Will update original
-    /// view if mutable.
-    OptionMutableSlice {
-        kind: VectorKind,
-        malloc: walrus::FunctionId,
-        free: walrus::FunctionId,
-        mem: walrus::MemoryId,
-    },
-
     /// Pops an anyref, pushes pointer/length or all zeros
     OptionVector {
         kind: VectorKind,
@@ -209,8 +200,6 @@ pub enum Instruction {
     BoolFromI32,
     /// pops `i32`, loads anyref at that slot, dealloates anyref, pushes `anyref`
     AnyrefLoadOwned,
-    /// pops `i32`, loads anyref at that slot, dealloates anyref, pushes `anyref`
-    AnyrefLoadOptionOwned,
     /// pops `i32`, pushes string from that `char`
     StringFromChar,
     /// pops two `i32`, pushes a 64-bit number

@@ -254,9 +254,7 @@ fn translate_instruction(
         | I32FromOptionChar
         | I32FromOptionEnum { .. }
         | FromOptionNative { .. }
-        | OptionMutableSlice { .. }
         | OptionVector { .. }
-        | AnyrefLoadOptionOwned
         | OptionRustFromI32 { .. }
         | OptionVectorLoad { .. }
         | OptionView { .. }

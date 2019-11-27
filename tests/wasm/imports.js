@@ -115,3 +115,7 @@ class StaticMethodCheck {
 }
 
 exports.StaticMethodCheck = StaticMethodCheck;
+
+exports.receive_undefined = val => {
+  assert.strictEqual(val, undefined);
+};

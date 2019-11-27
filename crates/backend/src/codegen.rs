@@ -618,12 +618,18 @@ impl ToTokens for ast::ImportType {
 
                 impl OptionIntoWasmAbi for #rust_name {
                     #[inline]
-                    fn none() -> Self::Abi { 0 }
+                    fn none() -> Self::Abi {
+                        0
+                        // JsValue::undefined().into_abi()
+                    }
                 }
 
                 impl<'a> OptionIntoWasmAbi for &'a #rust_name {
                     #[inline]
-                    fn none() -> Self::Abi { 0 }
+                    fn none() -> Self::Abi {
+                        0
+                        // JsValue::undefined().into_abi()
+                    }
                 }
 
                 impl FromWasmAbi for #rust_name {

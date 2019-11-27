@@ -219,9 +219,11 @@ impl InstructionBuilder<'_, '_> {
     fn outgoing_option(&mut self, arg: &Descriptor) -> Result<(), Error> {
         match arg {
             Descriptor::Anyref => {
+                // This is set to `undefined` in the `None` case and otherwise
+                // is the valid owned index.
                 self.instruction(
                     &[AdapterType::I32],
-                    Instruction::AnyrefLoadOptionOwned,
+                    Instruction::AnyrefLoadOwned,
                     &[AdapterType::Anyref],
                 );
             }
@@ -306,6 +308,8 @@ impl InstructionBuilder<'_, '_> {
     fn outgoing_option_ref(&mut self, _mutable: bool, arg: &Descriptor) -> Result<(), Error> {
         match arg {
             Descriptor::Anyref => {
+                // If this is `Some` then it's the index, otherwise if it's
+                // `None` then it's the index pointing to undefined.
                 self.instruction(
                     &[AdapterType::I32],
                     Instruction::TableGet,

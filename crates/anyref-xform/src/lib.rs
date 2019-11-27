@@ -619,7 +619,7 @@ impl Transform<'_> {
         // with a fresh type we've been calculating so far. Give the function a
         // nice name for debugging and then we're good to go!
         let id = builder.finish(params, funcs);
-        let name = format!("{}_anyref_shim", name);
+        let name = format!("{} anyref shim", name);
         funcs.get_mut(id).name = Some(name);
         self.shims.insert(id);
         Ok((id, anyref_ty))

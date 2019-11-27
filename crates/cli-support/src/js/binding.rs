@@ -733,7 +733,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             js.push(format!("len{}", i));
         }
 
-        Instruction::OptionMutableSlice { .. } => panic!(),
         Instruction::MutableSliceToMemory {
             kind,
             malloc,
@@ -788,13 +787,6 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             js.cx.expose_take_object();
             let val = js.pop();
             js.push(format!("takeObject({})", val));
-        }
-
-        Instruction::AnyrefLoadOptionOwned => {
-            js.typescript_optional("any");
-            js.cx.expose_take_object();
-            let val = js.pop();
-            js.push(format!("{0} === 0 ? undefined : takeObject({0})", val));
         }
 
         Instruction::StringFromChar => {
