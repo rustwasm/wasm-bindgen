@@ -25,5 +25,4 @@ wasm-bindgen-multi-value-xform = { path = '../multi-value-xform', version = '=0.
 wasm-bindgen-threads-xform = { path = '../threads-xform', version = '=0.2.55' }
 wasm-bindgen-wasm-conventions = { path = '../wasm-conventions', version = '=0.2.55' }
 wasm-bindgen-wasm-interpreter = { path = "../wasm-interpreter", version = '=0.2.55' }
-#wit-walrus = { git = 'https://github.com/alexcrichton/wasm-interface-types', branch = 'walrus' }
-wit-walrus = { path = "../../../wasm-interface-types/crates/walrus" }
+wit-walrus = { git = 'https://github.com/bytecodealliance/wasm-interface-types' }
