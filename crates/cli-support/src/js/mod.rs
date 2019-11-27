@@ -22,7 +22,7 @@ pub struct Context<'a> {
     imports_post: String,
     typescript: String,
     exposed_globals: Option<HashSet<Cow<'static, str>>>,
-    required_internal_exports: HashSet<&'static str>,
+    required_internal_exports: HashSet<Cow<'static, str>>,
     next_export_idx: usize,
     config: &'a Bindgen,
     pub module: &'a mut Module,
@@ -166,7 +166,7 @@ impl<'a> Context<'a> {
     }
 
     fn require_internal_export(&mut self, name: &'static str) -> Result<(), Error> {
-        if !self.required_internal_exports.insert(name) {
+        if !self.required_internal_exports.insert(name.into()) {
             return Ok(());
         }
 
@@ -1077,7 +1077,7 @@ impl<'a> Context<'a> {
                 return ptr;
             }}
             ",
-            view,
+            ret,
             view,
             size = size
         ));
@@ -1317,7 +1317,7 @@ impl<'a> Context<'a> {
                 return {mem}().subarray(ptr / {size}, ptr / {size} + len);
             }}
             ",
-            name = name,
+            name = ret,
             mem = view,
             size = size,
         ));
@@ -1402,8 +1402,8 @@ impl<'a> Context<'a> {
             "
             let cache{name} = null;
             function {name}() {{
-                if (cache{name} === null || cache{name}.buffer !== {mem}.buffer) {{
-                    cache{name} = {js}({mem}.buffer);
+                if (cache{name} === null || cache{name}.buffer !== wasm.{mem}.buffer) {{
+                    cache{name} = {js}(wasm.{mem}.buffer);
                 }}
                 return cache{name};
             }}
@@ -2018,6 +2018,7 @@ impl<'a> Context<'a> {
                         self.globals.push_str("function ");
                         self.globals.push_str(&self.adapter_name(id));
                         self.globals.push_str(&js);
+                        self.globals.push_str("\n\n");
                     }
                 }
             }
@@ -2868,11 +2869,14 @@ impl<'a> Context<'a> {
             }
         });
         if let Some(export) = export {
+            self.required_internal_exports
+                .insert(export.name.clone().into());
             return export.name.clone();
         }
         let mut name = format!("__wbindgen_export_{}", self.next_export_idx);
         self.next_export_idx += 1;
         self.module.exports.add(&name, id);
+        self.required_internal_exports.insert(name.clone().into());
         return name;
     }
 

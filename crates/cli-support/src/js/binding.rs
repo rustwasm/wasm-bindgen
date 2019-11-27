@@ -103,7 +103,7 @@ impl<'a, 'b> Builder<'a, 'b> {
                     );
                 }
                 if consumes_self {
-                    js.prelude("const ptr = this.ptr;");
+                    js.prelude("var ptr = this.ptr;");
                     js.prelude("this.ptr = 0;");
                     js.args.push("ptr".to_string());
                 } else {
@@ -152,7 +152,7 @@ impl<'a, 'b> Builder<'a, 'b> {
 
         let mut call = js.prelude;
         if js.finally.len() != 0 {
-            call = format!("try {{\n{}}} finally {{\n{}\n}}\n", call, js.finally);
+            call = format!("try {{\n{}}} finally {{\n{}}}\n", call, js.finally);
         }
 
         if self.catch {
@@ -287,16 +287,20 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     }
 
     pub fn prelude(&mut self, prelude: &str) {
-        for line in prelude.trim().lines() {
-            self.prelude.push_str(line);
-            self.prelude.push_str("\n");
+        for line in prelude.trim().lines().map(|l| l.trim()) {
+            if !line.is_empty() {
+                self.prelude.push_str(line);
+                self.prelude.push_str("\n");
+            }
         }
     }
 
     pub fn finally(&mut self, finally: &str) {
-        for line in finally.trim().lines() {
-            self.finally.push_str(line);
-            self.finally.push_str("\n");
+        for line in finally.trim().lines().map(|l| l.trim()) {
+            if !line.is_empty() {
+                self.finally.push_str(line);
+                self.finally.push_str("\n");
+            }
         }
     }
 
@@ -368,39 +372,6 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             arg,
         ));
     }
-
-    // fn finally_free_slice(
-    //     &mut self,
-    //     expr: &str,
-    //     i: usize,
-    //     kind: VectorKind,
-    //     mutable: bool,
-    // ) -> Result<(), Error> {
-    //     // If the slice was mutable it's currently a feature that we
-    //     // mirror back updates to the original slice. This... is
-    //     // arguably a misfeature of wasm-bindgen...
-    //     if mutable {
-    //         let get = self.cx.memview_function(kind);
-    //         self.js.finally(&format!(
-    //             "\
-    //              {arg}.set({get}().subarray(\
-    //              ptr{i} / {size}, \
-    //              ptr{i} / {size} + len{i}\
-    //              ));\
-    //              ",
-    //             i = i,
-    //             arg = expr,
-    //             get = get,
-    //             size = kind.size()
-    //         ));
-    //     }
-    //     self.js.finally(&format!(
-    //         "wasm.__wbindgen_free(ptr{i}, len{i} * {size});",
-    //         i = i,
-    //         size = kind.size(),
-    //     ));
-    //     self.cx.require_internal_export("__wbindgen_free")
-    // }
 }
 
 fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
@@ -449,11 +420,14 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
                 }
                 (true, _) => panic!("deferred calls must have no results"),
                 (false, 0) => js.prelude(&format!("{};", call)),
-                (false, 1) => js.push(call),
                 (false, n) => {
-                    js.prelude(&format!("const ret = {};", call));
-                    for i in 0..n {
-                        js.push(format!("ret[{}]", i));
+                    js.prelude(&format!("var ret = {};", call));
+                    if n == 1 {
+                        js.push("ret".to_string());
+                    } else {
+                        for i in 0..n {
+                            js.push(format!("ret[{}]", i));
+                        }
                     }
                 }
             }
@@ -491,8 +465,8 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             js.typescript_required("string");
             let len = js.pop();
             let ptr = js.pop();
-            js.cx.expose_get_string_from_wasm(*mem)?;
-            js.push(format!("getStringFromWasm({}, {})", ptr, len));
+            let get = js.cx.expose_get_string_from_wasm(*mem)?;
+            js.push(format!("{}({}, {})", get, ptr, len));
         }
 
         Instruction::Standard(wit_walrus::Instruction::StringToMemory { mem, malloc }) => {
@@ -500,8 +474,17 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let pass = js.cx.expose_pass_string_to_wasm(*mem)?;
             let val = js.pop();
             let malloc = js.cx.export_name_of(*malloc);
-            js.push(format!("{}({}, wasm.{})", pass, val, malloc));
-            js.push("WASM_VECTOR_LEN".to_string());
+            let i = js.tmp();
+            js.prelude(&format!(
+                "var ptr{i} = {f}({0}, wasm.{malloc});",
+                val,
+                i = i,
+                f = pass,
+                malloc = malloc,
+            ));
+            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+            js.push(format!("ptr{}", i));
+            js.push(format!("len{}", i));
         }
 
         Instruction::Retptr => js.stack.push(retptr_val.to_string()),
@@ -517,7 +500,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             // which is currently the case for LLVM.
             let val = js.pop();
             let expr = format!(
-                "{}[{}() / {} + {}] = {};",
+                "{}()[{} / {} + {}] = {};",
                 mem,
                 js.arg(0),
                 size,
@@ -529,25 +512,17 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
 
         Instruction::LoadRetptr { ty, offset, mem } => {
             let (mem, size) = match ty {
-                AdapterType::I32 => {
-                    js.cx.expose_int32_memory(*mem);
-                    ("getInt32Memory()", 4)
-                }
-                AdapterType::F32 => {
-                    js.cx.expose_f32_memory(*mem);
-                    ("getFloat32Memory()", 4)
-                }
-                AdapterType::F64 => {
-                    js.cx.expose_f64_memory(*mem);
-                    ("getFloat64Memory()", 8)
-                }
+                AdapterType::I32 => (js.cx.expose_int32_memory(*mem), 4),
+                AdapterType::F32 => (js.cx.expose_f32_memory(*mem), 4),
+                AdapterType::F64 => (js.cx.expose_f64_memory(*mem), 8),
                 other => bail!("invalid aggregate return type {:?}", other),
             };
             // If we're loading from the return pointer then we must have pushed
             // it earlier, and we always push the same value, so load that value
             // here
-            let expr = format!("{}[{} / {} + {}]", mem, retptr_val, size, offset,);
-            js.push(expr);
+            let expr = format!("{}()[{} / {} + {}]", mem, retptr_val, size, offset,);
+            js.prelude(&format!("var r{} = {};", offset, expr));
+            js.push(format!("r{}", offset));
         }
 
         Instruction::I32FromBool => {
@@ -586,7 +561,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             js.assert_class(&val, &class);
             js.assert_not_moved(&val);
             let i = js.tmp();
-            js.prelude(&format!("const ptr{} = {}.ptr;", i, val));
+            js.prelude(&format!("var ptr{} = {}.ptr;", i, val));
             js.prelude(&format!("{}.ptr = 0;", val));
             js.push(format!("ptr{}", i));
         }
@@ -726,8 +701,17 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let val = js.pop();
             let func = js.cx.pass_to_wasm_function(*kind, *mem)?;
             let malloc = js.cx.export_name_of(*malloc);
-            js.push(format!("{}({}, wasm.{})", func, val, malloc));
-            js.push("WASM_VECTOR_LEN".to_string());
+            let i = js.tmp();
+            js.prelude(&format!(
+                "var ptr{i} = {f}({0}, wasm.{malloc});",
+                val,
+                i = i,
+                f = func,
+                malloc = malloc,
+            ));
+            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+            js.push(format!("ptr{}", i));
+            js.push(format!("len{}", i));
         }
 
         Instruction::OptionVector { kind, mem, malloc } => {
@@ -738,13 +722,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let malloc = js.cx.export_name_of(*malloc);
             let val = js.pop();
             js.prelude(&format!(
-                "const ptr{i} = isLikeNone({0}) ? 0 : {f}({0}, wasm.{malloc});",
+                "var ptr{i} = isLikeNone({0}) ? 0 : {f}({0}, wasm.{malloc});",
                 val,
                 i = i,
                 f = func,
                 malloc = malloc,
             ));
-            js.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
+            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
             js.push(format!("ptr{}", i));
             js.push(format!("len{}", i));
         }
@@ -765,13 +749,13 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let malloc = js.cx.export_name_of(*malloc);
             let i = js.tmp();
             js.prelude(&format!(
-                "const ptr{i} = {f}({val}, wasm.{malloc});",
+                "var ptr{i} = {f}({val}, wasm.{malloc});",
                 val = val,
                 i = i,
                 f = func,
                 malloc = malloc,
             ));
-            js.prelude(&format!("const len{} = WASM_VECTOR_LEN;", i));
+            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
             js.push(format!("ptr{}", i));
             js.push(format!("len{}", i));
 
@@ -782,7 +766,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let get = js.cx.memview_function(*kind, *mem);
             js.finally(&format!(
                 "
-                    {val}.set({get}().subarray(ptr{i} / size, ptr{i} / size + len{i}));
+                    {val}.set({get}().subarray(ptr{i} / {size}, ptr{i} / {size} + len{i}));
                     wasm.{free}(ptr{i}, len{i} * {size});
                 ",
                 val = val,
@@ -878,7 +862,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
 
             let get = js.cx.expose_get_cached_string_from_wasm(*mem)?;
 
-            js.prelude(&format!("const v{} = {}({}, {});", tmp, get, ptr, len));
+            js.prelude(&format!("var v{} = {}({}, {});", tmp, get, ptr, len));
 
             if *owned {
                 let free = js.cx.export_name_of(*free);
@@ -909,7 +893,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let i = js.tmp();
             let b = js.pop();
             let a = js.pop();
-            js.prelude(&format!("const state{} = {{a: {}, b: {}}};", i, a, b,));
+            js.prelude(&format!("var state{} = {{a: {}, b: {}}};", i, a, b,));
             let args = (0..*nargs)
                 .map(|i| format!("arg{}", i))
                 .collect::<Vec<_>>()
@@ -920,7 +904,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
                 // recursively, so ensure that we clear out one of the
                 // internal pointers while it's being invoked.
                 js.prelude(&format!(
-                    "const cb{i} = ({args}) => {{
+                    "var cb{i} = ({args}) => {{
                         const a = state{i}.a;
                         state{i}.a = 0;
                         try {{
@@ -935,7 +919,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
                 ));
             } else {
                 js.prelude(&format!(
-                    "const cb{i} = ({args}) => {wrapper}(state{i}.a, state{i}.b, {args});",
+                    "var cb{i} = ({args}) => {wrapper}(state{i}.a, state{i}.b, {args});",
                     i = i,
                     args = args,
                     wrapper = wrapper,
@@ -957,7 +941,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let f = js.cx.expose_get_vector_from_wasm(*kind, *mem)?;
             let i = js.tmp();
             let free = js.cx.export_name_of(*free);
-            js.prelude(&format!("const v{} = {}({}, {}).slice();", i, f, ptr, len));
+            js.prelude(&format!("var v{} = {}({}, {}).slice();", i, f, ptr, len));
             js.prelude(&format!(
                 "wasm.{}({}, {} * {});",
                 free,

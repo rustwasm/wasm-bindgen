@@ -498,7 +498,12 @@ impl<'a> Context<'a> {
             self.aux.imports_with_variadic.insert(id);
         }
         if *catch {
-            self.aux.imports_with_catch.insert(id);
+            // Note that `catch` is applied not to the import itself but to the
+            // adapter shim we generated, so fetch that shim id and flag it as
+            // catch here. This basically just needs to be kept in sync with
+            // `js/mod.rs`.
+            let adapter = self.adapters.implements.last().unwrap().1;
+            self.aux.imports_with_catch.insert(adapter);
         }
         if *assert_no_shim {
             self.aux.imports_with_assert_no_shim.insert(id);

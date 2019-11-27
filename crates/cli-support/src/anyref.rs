@@ -180,7 +180,7 @@ fn import_xform(
     let mut ret_anyref = false;
     while let Some((i, instr)) = iter.next() {
         match instr.instr {
-            Instruction::AnyrefLoadOwned => {
+            Instruction::I32FromAnyrefOwned => {
                 assert_eq!(results.len(), 1);
                 match results[0] {
                     AdapterType::I32 => {}

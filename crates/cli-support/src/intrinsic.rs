@@ -75,6 +75,10 @@ fn opt_string() -> Descriptor {
     Descriptor::Option(Box::new(Descriptor::String))
 }
 
+fn opt_f64() -> Descriptor {
+    Descriptor::Option(Box::new(Descriptor::F64))
+}
+
 intrinsics! {
     pub enum Intrinsic {
         #[symbol = "__wbindgen_jsval_eq"]
@@ -126,7 +130,7 @@ intrinsics! {
         #[signature = fn(ref_string()) -> Anyref]
         SymbolNamedNew,
         #[symbol = "__wbindgen_number_get"]
-        #[signature = fn(ref_anyref(), I32) -> F64]
+        #[signature = fn(ref_anyref()) -> opt_f64()]
         NumberGet,
         #[symbol = "__wbindgen_string_get"]
         #[signature = fn(ref_anyref()) -> opt_string()]
