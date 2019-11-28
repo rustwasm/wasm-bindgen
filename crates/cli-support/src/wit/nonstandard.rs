@@ -129,6 +129,8 @@ pub struct AuxStruct {
     pub name: String,
     /// The copied Rust comments to forward to JS
     pub comments: String,
+    /// Whether to generate helper methods for inspecting the class
+    pub is_inspectable: bool,
 }
 
 /// All possible types of imports that can be imported by a wasm module.
