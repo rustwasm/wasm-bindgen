@@ -226,7 +226,7 @@ impl JsValue {
         T: for<'a> serde::de::Deserialize<'a>,
     {
         unsafe {
-            let ret = __wbindgen_json_serialize(&mut ret, self.idx);
+            let ret = __wbindgen_json_serialize(self.idx);
             let s = String::from_abi(ret);
             serde_json::from_str(&s)
         }
