@@ -444,158 +444,155 @@ impl<'a> Context<'a> {
         needs_manual_start: bool,
         mut imports: Option<&mut String>,
     ) -> Result<(String, String), Error> {
-        panic!()
-        // let module_name = "wbg";
-        // let mem = self.module.memories.get(self.memory);
-        // let (init_memory1, init_memory2) = if let Some(id) = mem.import {
-        //     self.module.imports.get_mut(id).module = module_name.to_string();
-        //     let mut memory = String::from("new WebAssembly.Memory({");
-        //     memory.push_str(&format!("initial:{}", mem.initial));
-        //     if let Some(max) = mem.maximum {
-        //         memory.push_str(&format!(",maximum:{}", max));
-        //     }
-        //     if mem.shared {
-        //         memory.push_str(",shared:true");
-        //     }
-        //     memory.push_str("})");
-        //     self.imports_post.push_str("let memory;\n");
-        //     (
-        //         format!("memory = imports.{}.memory = maybe_memory;", module_name),
-        //         format!("memory = imports.{}.memory = {};", module_name, memory),
-        //     )
-        // } else {
-        //     (String::new(), String::new())
-        // };
-        // let init_memory_arg = if mem.import.is_some() {
-        //     ", maybe_memory"
-        // } else {
-        //     ""
-        // };
-        //
-        // let default_module_path = match self.config.mode {
-        //     OutputMode::Web => {
-        //         "\
-        //             if (typeof module === 'undefined') {
-        //                 module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
-        //             }"
-        //     }
-        //     _ => "",
-        // };
-        //
-        // let ts = Self::ts_for_init_fn(mem.import.is_some(), !default_module_path.is_empty());
-        //
-        // // Initialize the `imports` object for all import definitions that we're
-        // // directed to wire up.
-        // let mut imports_init = String::new();
-        // if self.wasm_import_definitions.len() > 0 {
-        //     imports_init.push_str("imports.");
-        //     imports_init.push_str(module_name);
-        //     imports_init.push_str(" = {};\n");
-        // }
-        // for (id, js) in sorted_iter(&self.wasm_import_definitions) {
-        //     let import = self.module.imports.get_mut(*id);
-        //     import.module = module_name.to_string();
-        //     imports_init.push_str("imports.");
-        //     imports_init.push_str(module_name);
-        //     imports_init.push_str(".");
-        //     imports_init.push_str(&import.name);
-        //     imports_init.push_str(" = ");
-        //     imports_init.push_str(js.trim());
-        //     imports_init.push_str(";\n");
-        // }
-        //
-        // let extra_modules = self
-        //     .module
-        //     .imports
-        //     .iter()
-        //     .filter(|i| !self.wasm_import_definitions.contains_key(&i.id()))
-        //     .filter(|i| {
-        //         // Importing memory is handled specially in this area, so don't
-        //         // consider this a candidate for importing from extra modules.
-        //         match i.kind {
-        //             walrus::ImportKind::Memory(_) => false,
-        //             _ => true,
-        //         }
-        //     })
-        //     .map(|i| &i.module)
-        //     .collect::<BTreeSet<_>>();
-        // for (i, extra) in extra_modules.iter().enumerate() {
-        //     let imports = match &mut imports {
-        //         Some(list) => list,
-        //         None => bail!(
-        //             "cannot import from modules (`{}`) with `--no-modules`",
-        //             extra
-        //         ),
-        //     };
-        //     imports.push_str(&format!("import * as __wbg_star{} from '{}';\n", i, extra));
-        //     imports_init.push_str(&format!("imports['{}'] = __wbg_star{};\n", extra, i));
-        // }
-        //
-        // let js = format!(
-        //     "\
-        //         function init(module{init_memory_arg}) {{
-        //             {default_module_path}
-        //             let result;
-        //             const imports = {{}};
-        //             {imports_init}
-        //             if ((typeof URL === 'function' && module instanceof URL) || typeof module === 'string' || (typeof Request === 'function' && module instanceof Request)) {{
-        //                 {init_memory2}
-        //                 const response = fetch(module);
-        //                 if (typeof WebAssembly.instantiateStreaming === 'function') {{
-        //                     result = WebAssembly.instantiateStreaming(response, imports)
-        //                         .catch(e => {{
-        //                             return response
-        //                                 .then(r => {{
-        //                                     if (r.headers.get('Content-Type') != 'application/wasm') {{
-        //                                         console.warn(\"`WebAssembly.instantiateStreaming` failed \
-        //                                                         because your server does not serve wasm with \
-        //                                                         `application/wasm` MIME type. Falling back to \
-        //                                                         `WebAssembly.instantiate` which is slower. Original \
-        //                                                         error:\\n\", e);
-        //                                         return r.arrayBuffer();
-        //                                     }} else {{
-        //                                         throw e;
-        //                                     }}
-        //                                 }})
-        //                                 .then(bytes => WebAssembly.instantiate(bytes, imports));
-        //                         }});
-        //                 }} else {{
-        //                     result = response
-        //                         .then(r => r.arrayBuffer())
-        //                         .then(bytes => WebAssembly.instantiate(bytes, imports));
-        //                 }}
-        //             }} else {{
-        //                 {init_memory1}
-        //                 result = WebAssembly.instantiate(module, imports)
-        //                     .then(result => {{
-        //                         if (result instanceof WebAssembly.Instance) {{
-        //                             return {{ instance: result, module }};
-        //                         }} else {{
-        //                             return result;
-        //                         }}
-        //                     }});
-        //             }}
-        //             return result.then(({{instance, module}}) => {{
-        //                 wasm = instance.exports;
-        //                 init.__wbindgen_wasm_module = module;
-        //                 {start}
-        //                 return wasm;
-        //             }});
-        //         }}
-        //     ",
-        //     init_memory_arg = init_memory_arg,
-        //     default_module_path = default_module_path,
-        //     init_memory1 = init_memory1,
-        //     init_memory2 = init_memory2,
-        //     start = if needs_manual_start {
-        //         "wasm.__wbindgen_start();"
-        //     } else {
-        //         ""
-        //     },
-        //     imports_init = imports_init,
-        // );
-        //
-        // Ok((js, ts))
+        let module_name = "wbg";
+        let mut init_memory_arg = "";
+        let mut init_memory1 = String::new();
+        let mut init_memory2 = String::new();
+        let mut has_memory = false;
+        if let Some(mem) = self.module.memories.iter().next() {
+            if let Some(id) = mem.import {
+                self.module.imports.get_mut(id).module = module_name.to_string();
+                let mut memory = String::from("new WebAssembly.Memory({");
+                memory.push_str(&format!("initial:{}", mem.initial));
+                if let Some(max) = mem.maximum {
+                    memory.push_str(&format!(",maximum:{}", max));
+                }
+                if mem.shared {
+                    memory.push_str(",shared:true");
+                }
+                memory.push_str("})");
+                self.imports_post.push_str("let memory;\n");
+                init_memory1 = format!("memory = imports.{}.memory = maybe_memory;", module_name);
+                init_memory2 = format!("memory = imports.{}.memory = {};", module_name, memory);
+                init_memory_arg = ", maybe_memory";
+                has_memory = true;
+            }
+        }
+
+        let default_module_path = match self.config.mode {
+            OutputMode::Web => {
+                "\
+                    if (typeof module === 'undefined') {
+                        module = import.meta.url.replace(/\\.js$/, '_bg.wasm');
+                    }"
+            }
+            _ => "",
+        };
+
+        let ts = Self::ts_for_init_fn(has_memory, !default_module_path.is_empty());
+
+        // Initialize the `imports` object for all import definitions that we're
+        // directed to wire up.
+        let mut imports_init = String::new();
+        if self.wasm_import_definitions.len() > 0 {
+            imports_init.push_str("imports.");
+            imports_init.push_str(module_name);
+            imports_init.push_str(" = {};\n");
+        }
+        for (id, js) in sorted_iter(&self.wasm_import_definitions) {
+            let import = self.module.imports.get_mut(*id);
+            import.module = module_name.to_string();
+            imports_init.push_str("imports.");
+            imports_init.push_str(module_name);
+            imports_init.push_str(".");
+            imports_init.push_str(&import.name);
+            imports_init.push_str(" = ");
+            imports_init.push_str(js.trim());
+            imports_init.push_str(";\n");
+        }
+
+        let extra_modules = self
+            .module
+            .imports
+            .iter()
+            .filter(|i| !self.wasm_import_definitions.contains_key(&i.id()))
+            .filter(|i| {
+                // Importing memory is handled specially in this area, so don't
+                // consider this a candidate for importing from extra modules.
+                match i.kind {
+                    walrus::ImportKind::Memory(_) => false,
+                    _ => true,
+                }
+            })
+            .map(|i| &i.module)
+            .collect::<BTreeSet<_>>();
+        for (i, extra) in extra_modules.iter().enumerate() {
+            let imports = match &mut imports {
+                Some(list) => list,
+                None => bail!(
+                    "cannot import from modules (`{}`) with `--no-modules`",
+                    extra
+                ),
+            };
+            imports.push_str(&format!("import * as __wbg_star{} from '{}';\n", i, extra));
+            imports_init.push_str(&format!("imports['{}'] = __wbg_star{};\n", extra, i));
+        }
+
+        let js = format!(
+            "\
+                function init(module{init_memory_arg}) {{
+                    {default_module_path}
+                    let result;
+                    const imports = {{}};
+                    {imports_init}
+                    if ((typeof URL === 'function' && module instanceof URL) || typeof module === 'string' || (typeof Request === 'function' && module instanceof Request)) {{
+                        {init_memory2}
+                        const response = fetch(module);
+                        if (typeof WebAssembly.instantiateStreaming === 'function') {{
+                            result = WebAssembly.instantiateStreaming(response, imports)
+                                .catch(e => {{
+                                    return response
+                                        .then(r => {{
+                                            if (r.headers.get('Content-Type') != 'application/wasm') {{
+                                                console.warn(\"`WebAssembly.instantiateStreaming` failed \
+                                                                because your server does not serve wasm with \
+                                                                `application/wasm` MIME type. Falling back to \
+                                                                `WebAssembly.instantiate` which is slower. Original \
+                                                                error:\\n\", e);
+                                                return r.arrayBuffer();
+                                            }} else {{
+                                                throw e;
+                                            }}
+                                        }})
+                                        .then(bytes => WebAssembly.instantiate(bytes, imports));
+                                }});
+                        }} else {{
+                            result = response
+                                .then(r => r.arrayBuffer())
+                                .then(bytes => WebAssembly.instantiate(bytes, imports));
+                        }}
+                    }} else {{
+                        {init_memory1}
+                        result = WebAssembly.instantiate(module, imports)
+                            .then(result => {{
+                                if (result instanceof WebAssembly.Instance) {{
+                                    return {{ instance: result, module }};
+                                }} else {{
+                                    return result;
+                                }}
+                            }});
+                    }}
+                    return result.then(({{instance, module}}) => {{
+                        wasm = instance.exports;
+                        init.__wbindgen_wasm_module = module;
+                        {start}
+                        return wasm;
+                    }});
+                }}
+            ",
+            init_memory_arg = init_memory_arg,
+            default_module_path = default_module_path,
+            init_memory1 = init_memory1,
+            init_memory2 = init_memory2,
+            start = if needs_manual_start {
+                "wasm.__wbindgen_start();"
+            } else {
+                ""
+            },
+            imports_init = imports_init,
+        );
+
+        Ok((js, ts))
     }
 
     fn write_classes(&mut self) -> Result<(), Error> {
@@ -976,20 +973,23 @@ impl<'a> Context<'a> {
         // This might be not very intuitive, but such calls are usually more
         // expensive in mainstream engines than staying in the JS, and
         // charCodeAt on ASCII strings is usually optimised to raw bytes.
-        let encode_as_ascii = "\
-            let len = arg.length;
-            let ptr = malloc(len);
+        let encode_as_ascii = format!(
+            "\
+                let len = arg.length;
+                let ptr = malloc(len);
 
-            const mem = getUint8Memory();
+                const mem = {}();
 
-            let offset = 0;
+                let offset = 0;
 
-            for (; offset < len; offset++) {
-                const code = arg.charCodeAt(offset);
-                if (code > 0x7F) break;
-                mem[ptr + offset] = code;
-            }
-        ";
+                for (; offset < len; offset++) {{
+                    const code = arg.charCodeAt(offset);
+                    if (code > 0x7F) break;
+                    mem[ptr + offset] = code;
+                }}
+            ",
+            mem
+        );
 
         // TODO:
         // When converting a JS string to UTF-8, the maximum size is `arg.length * 3`,
