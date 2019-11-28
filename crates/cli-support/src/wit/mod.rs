@@ -752,6 +752,7 @@ impl<'a> Context<'a> {
         let aux = AuxStruct {
             name: struct_.name.to_string(),
             comments: concatenate_comments(&struct_.comments),
+            is_inspectable: struct_.is_inspectable,
         };
         self.aux.structs.push(aux);
 

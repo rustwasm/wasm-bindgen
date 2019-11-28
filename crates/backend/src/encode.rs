@@ -306,6 +306,7 @@ fn shared_struct<'a>(s: &'a ast::Struct, intern: &'a Interner) -> Struct<'a> {
             .map(|s| shared_struct_field(s, intern))
             .collect(),
         comments: s.comments.iter().map(|s| &**s).collect(),
+        is_inspectable: s.is_inspectable,
     }
 }
 
