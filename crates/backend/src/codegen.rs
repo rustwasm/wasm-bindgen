@@ -620,7 +620,6 @@ impl ToTokens for ast::ImportType {
                     #[inline]
                     fn none() -> Self::Abi {
                         0
-                        // JsValue::undefined().into_abi()
                     }
                 }
 
@@ -628,7 +627,6 @@ impl ToTokens for ast::ImportType {
                     #[inline]
                     fn none() -> Self::Abi {
                         0
-                        // JsValue::undefined().into_abi()
                     }
                 }
 

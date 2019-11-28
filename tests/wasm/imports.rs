@@ -258,5 +258,7 @@ fn static_method_of_has_right_this() {
 #[wasm_bindgen_test]
 fn pass_out_options_as_undefined() {
     receive_undefined_ref(None);
+    receive_undefined_ref(None);
+    receive_undefined_owned(None);
     receive_undefined_owned(None);
 }
