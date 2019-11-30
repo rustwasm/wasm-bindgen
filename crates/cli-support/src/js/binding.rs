@@ -145,6 +145,12 @@ impl<'a, 'b> Builder<'a, 'b> {
         assert!(js.stack.is_empty());
         self.ts_args = js.typescript;
 
+        // Remove extraneous typescript args which were synthesized and aren't
+        // part of our function shim.
+        while self.ts_args.len() > function_args.len() {
+            self.ts_args.remove(0);
+        }
+
         let mut ret = String::new();
         ret.push_str("(");
         ret.push_str(&function_args.join(", "));
