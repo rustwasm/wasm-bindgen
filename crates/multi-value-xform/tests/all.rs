@@ -23,7 +23,9 @@ fn runtest(test: &Test) -> Result<String> {
     let mut exports = Vec::new();
     let mut xforms = Vec::new();
     for directive in test.directives.iter() {
-        let export = walrus.exports.iter()
+        let export = walrus
+            .exports
+            .iter()
             .find(|e| e.name == directive.name)
             .unwrap();
         let id = match export.item {
@@ -35,12 +37,7 @@ fn runtest(test: &Test) -> Result<String> {
     }
     let memory = walrus.memories.iter().next().unwrap().id();
     let stack_pointer = walrus.globals.iter().next().unwrap().id();
-    let ret = wasm_bindgen_multi_value_xform::run(
-        &mut walrus,
-        memory,
-        stack_pointer,
-        &xforms,
-    )?;
+    let ret = wasm_bindgen_multi_value_xform::run(&mut walrus, memory, stack_pointer, &xforms)?;
     for (export, id) in exports.into_iter().zip(ret) {
         walrus.exports.get_mut(export).item = walrus::ExportItem::Function(id);
     }
@@ -223,9 +220,6 @@ impl<'a> Parse<'a> for Directive {
             }
             Ok(())
         })?;
-        Ok(Directive {
-            name,
-            tys,
-        })
+        Ok(Directive { name, tys })
     }
 }
