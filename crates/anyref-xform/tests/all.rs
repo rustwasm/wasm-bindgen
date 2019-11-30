@@ -232,16 +232,18 @@ impl<'a> Parse<'a> for Directive {
         };
         let mut args = Vec::new();
         parser.parens(|p| {
+            let mut i = 0;
             while !p.is_empty() {
                 if parser.peek::<anyref_owned>() {
                     parser.parse::<anyref_owned>()?;
-                    args.push((args.len(), true));
+                    args.push((i, true));
                 } else if parser.peek::<anyref_borrowed>() {
                     parser.parse::<anyref_borrowed>()?;
-                    args.push((args.len(), false));
+                    args.push((i, false));
                 } else {
                     parser.parse::<other>()?;
-                };
+                }
+                i += 1;
             }
             Ok(())
         })?;
