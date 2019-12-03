@@ -98,13 +98,13 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Option(d) => self.incoming_option(d)?,
 
             Descriptor::String | Descriptor::CachedString => {
-                let std = wit_walrus::Instruction::StringToMemory {
-                    malloc: self.cx.malloc()?,
-                    mem: self.cx.memory()?,
-                };
                 self.instruction(
                     &[AdapterType::String],
-                    Instruction::Standard(std),
+                    Instruction::StringToMemory {
+                        malloc: self.cx.malloc()?,
+                        realloc: self.cx.realloc(),
+                        mem: self.cx.memory()?,
+                    },
                     &[AdapterType::I32, AdapterType::I32],
                 );
             }
@@ -163,13 +163,13 @@ impl InstructionBuilder<'_, '_> {
             }
             Descriptor::String | Descriptor::CachedString => {
                 // This allocation is cleaned up once it's received in Rust.
-                let std = wit_walrus::Instruction::StringToMemory {
-                    malloc: self.cx.malloc()?,
-                    mem: self.cx.memory()?,
-                };
                 self.instruction(
                     &[AdapterType::String],
-                    Instruction::Standard(std),
+                    Instruction::StringToMemory {
+                        malloc: self.cx.malloc()?,
+                        realloc: self.cx.realloc(),
+                        mem: self.cx.memory()?,
+                    },
                     &[AdapterType::I32, AdapterType::I32],
                 );
             }
@@ -272,7 +272,22 @@ impl InstructionBuilder<'_, '_> {
                 );
             }
 
-            Descriptor::String | Descriptor::CachedString | Descriptor::Vector(_) => {
+            Descriptor::String | Descriptor::CachedString => {
+                let malloc = self.cx.malloc()?;
+                let mem = self.cx.memory()?;
+                let realloc = self.cx.realloc();
+                self.instruction(
+                    &[AdapterType::Anyref],
+                    Instruction::OptionString {
+                        malloc,
+                        mem,
+                        realloc,
+                    },
+                    &[AdapterType::I32; 2],
+                );
+            }
+
+            Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
                         "unsupported optional slice type for calling Rust function from JS {:?}",

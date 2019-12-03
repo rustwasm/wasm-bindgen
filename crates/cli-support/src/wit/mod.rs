@@ -1254,6 +1254,13 @@ impl<'a> Context<'a> {
             .ok_or_else(|| anyhow!("failed to find declaration of `__wbindgen_malloc` in module"))
     }
 
+    fn realloc(&self) -> Option<FunctionId> {
+        self.function_exports
+            .get("__wbindgen_realloc")
+            .cloned()
+            .map(|p| p.1)
+    }
+
     fn free(&self) -> Result<FunctionId, Error> {
         self.function_exports
             .get("__wbindgen_free")

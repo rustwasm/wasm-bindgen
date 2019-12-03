@@ -1,10 +1,10 @@
+use crate::intrinsic::Intrinsic;
+use crate::wit::AuxImport;
 use crate::wit::{AdapterKind, Instruction, NonstandardWitSection};
 use crate::wit::{AdapterType, InstructionData, StackChange, WasmBindgenAux};
-use crate::wit::AuxImport;
 use anyhow::Error;
 use std::collections::HashMap;
 use walrus::Module;
-use crate::intrinsic::Intrinsic;
 use wasm_bindgen_anyref_xform::Context;
 
 pub fn process(module: &mut Module) -> Result<(), Error> {

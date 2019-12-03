@@ -45,7 +45,7 @@ pub fn add(
         anyref_table: _,      // not relevant
         anyref_alloc: _,      // not relevant
         anyref_drop_slice: _, // not relevant
-        exn_store: _, // not relevant
+        exn_store: _,         // not relevant
     } = aux;
 
     let adapter_context = |id: AdapterId| {
@@ -228,6 +228,14 @@ fn translate_instruction(
                 _ => bail!("expected to find an element of the function table"),
             }
         }
+        StringToMemory {
+            mem,
+            malloc,
+            realloc: _,
+        } => Ok(wit_walrus::Instruction::StringToMemory {
+            mem: *mem,
+            malloc: *malloc,
+        }),
         StoreRetptr { .. } | LoadRetptr { .. } | Retptr => {
             bail!("return pointers aren't supported in wasm interface types");
         }
@@ -255,6 +263,7 @@ fn translate_instruction(
         | I32FromOptionEnum { .. }
         | FromOptionNative { .. }
         | OptionVector { .. }
+        | OptionString { .. }
         | OptionRustFromI32 { .. }
         | OptionVectorLoad { .. }
         | OptionView { .. }

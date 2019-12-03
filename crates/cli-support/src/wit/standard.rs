@@ -1,7 +1,7 @@
 use crate::descriptor::VectorKind;
 use std::borrow::Cow;
 use std::collections::HashMap;
-use walrus::{ImportId, FunctionId, TypedCustomSectionId};
+use walrus::{FunctionId, ImportId, TypedCustomSectionId};
 
 #[derive(Default, Debug)]
 pub struct NonstandardWitSection {
@@ -186,6 +186,19 @@ pub enum Instruction {
         mem: walrus::MemoryId,
     },
 
+    /// Pops a string, pushes pointer/length or all zeros
+    OptionString {
+        malloc: walrus::FunctionId,
+        mem: walrus::MemoryId,
+        realloc: Option<walrus::FunctionId>,
+    },
+    /// Pops a string, pushes pointer/length
+    StringToMemory {
+        malloc: walrus::FunctionId,
+        mem: walrus::MemoryId,
+        realloc: Option<walrus::FunctionId>,
+    },
+
     /// Pops an anyref, pushes pointer/length or all zeros
     OptionVector {
         kind: VectorKind,
@@ -367,8 +380,8 @@ impl walrus::CustomSection for NonstandardWitSection {
             };
             for instr in instrs {
                 match instr.instr {
-                    Standard(wit_walrus::Instruction::DeferCallCore(f)) |
-                    Standard(wit_walrus::Instruction::CallCore(f)) => {
+                    Standard(wit_walrus::Instruction::DeferCallCore(f))
+                    | Standard(wit_walrus::Instruction::CallCore(f)) => {
                         roots.push_func(f);
                     }
                     StoreRetptr { mem, .. }
@@ -396,6 +409,22 @@ impl walrus::CustomSection for NonstandardWitSection {
                     | CachedStringLoad { free, mem, .. } => {
                         roots.push_memory(mem);
                         roots.push_func(free);
+                    }
+                    OptionString {
+                        mem,
+                        malloc,
+                        realloc,
+                    }
+                    | StringToMemory {
+                        mem,
+                        malloc,
+                        realloc,
+                    } => {
+                        roots.push_memory(mem);
+                        roots.push_func(malloc);
+                        if let Some(id) = realloc {
+                            roots.push_func(id);
+                        }
                     }
                     _ => {}
                 }

@@ -42,6 +42,7 @@ fn main() -> Result<()> {
         .collect::<Vec<_>>();
 
     if errs.len() == 0 {
+        println!("{} tests passed", tests.len());
         return Ok(());
     }
     eprintln!("failed tests:\n");

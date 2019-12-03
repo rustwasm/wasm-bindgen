@@ -167,19 +167,6 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn require_internal_export(&mut self, name: &'static str) -> Result<(), Error> {
-        if self.module.exports.iter().any(|e| e.name == name) {
-            return Ok(());
-        }
-
-        bail!(
-            "the exported function `{}` is required to generate bindings \
-             but it was not found in the wasm file, perhaps the `std` feature \
-             of the `wasm-bindgen` crate needs to be enabled?",
-            name
-        );
-    }
-
     pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
         // Finalize all bindings for JS classes. This is where we'll generate JS
         // glue for all classes as well as finish up a few final imports like
@@ -917,8 +904,6 @@ impl<'a> Context<'a> {
             }
         }
 
-        self.require_internal_export("__wbindgen_realloc")?;
-
         // A fast path that directly writes char codes into WASM memory as long
         // as it finds only ASCII characters.
         //
@@ -930,10 +915,18 @@ impl<'a> Context<'a> {
         // charCodeAt on ASCII strings is usually optimised to raw bytes.
         let encode_as_ascii = format!(
             "\
+                if (realloc === undefined) {{
+                    const buf = cachedTextEncoder.encode(arg);
+                    const ptr = malloc(buf.length);
+                    {mem}().subarray(ptr, ptr + buf.length).set(buf);
+                    WASM_VECTOR_LEN = buf.length;
+                    return ptr;
+                }}
+
                 let len = arg.length;
                 let ptr = malloc(len);
 
-                const mem = {}();
+                const mem = {mem}();
 
                 let offset = 0;
 
@@ -943,7 +936,7 @@ impl<'a> Context<'a> {
                     mem[ptr + offset] = code;
                 }}
             ",
-            mem
+            mem = mem,
         );
 
         // TODO:
@@ -952,14 +945,14 @@ impl<'a> Context<'a> {
         // looping over the string to calculate the precise size, or perhaps using
         // `shrink_to_fit` on the Rust side.
         self.global(&format!(
-            "function {name}(arg, malloc) {{
+            "function {name}(arg, malloc, realloc) {{
                 {debug}
                 {ascii}
                 if (offset !== len) {{
                     if (offset !== 0) {{
                         arg = arg.slice(offset);
                     }}
-                    ptr = wasm.__wbindgen_realloc(ptr, len, len = offset + arg.length * 3);
+                    ptr = realloc(ptr, len, len = offset + arg.length * 3);
                     const view = {mem}().subarray(ptr + offset, ptr + len);
                     const ret = encodeString(arg, view);
                     {debug_end}
@@ -2917,9 +2910,12 @@ impl<'a> Context<'a> {
         // Not really an exhaustive list, but works for our purposes.
         fn to_js_identifier(name: &str) -> String {
             name.chars()
-                .map(|c| match c {
-                    ' ' | ':' => '_',
-                    c => c,
+                .map(|c| {
+                    if c.is_ascii() && (c.is_alphabetic() || c.is_numeric()) {
+                        c
+                    } else {
+                        '_'
+                    }
                 })
                 .collect()
         }
