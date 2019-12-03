@@ -14,8 +14,6 @@ use std::path::{Path, PathBuf};
 use walrus::{ExportId, FunctionId, ImportId, MemoryId, Module, TableId};
 
 mod binding;
-// mod incoming;
-// mod outgoing;
 
 pub struct Context<'a> {
     globals: String,
