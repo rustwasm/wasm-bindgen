@@ -647,15 +647,15 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             js.typescript_optional("any");
             let val = js.pop();
             js.cx.expose_is_like_none();
-            // TODO: would be great to handle this in the anyref pass so we
-            // don't have to worry about it here, shouldn't have an extra
-            // switch.
-            if js.cx.config.anyref {
-                js.cx.expose_add_to_anyref_table()?;
-                js.push(format!("isLikeNone({0}) ? 0 : addToAnyrefTable({0})", val));
-            } else {
-                js.cx.expose_add_heap_object();
-                js.push(format!("isLikeNone({0}) ? 0 : addHeapObject({0})", val));
+            match (js.cx.aux.anyref_table, js.cx.aux.anyref_alloc) {
+                (Some(table), Some(alloc)) => {
+                    let alloc = js.cx.expose_add_to_anyref_table(table, alloc)?;
+                    js.push(format!("isLikeNone({0}) ? 0 : {1}({0})", val, alloc));
+                }
+                _ => {
+                    js.cx.expose_add_heap_object();
+                    js.push(format!("isLikeNone({0}) ? 0 : addHeapObject({0})", val));
+                }
             }
         }
 

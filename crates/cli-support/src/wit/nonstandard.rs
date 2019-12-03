@@ -46,6 +46,12 @@ pub struct WasmBindgenAux {
     /// Auxiliary information to go into JS/TypeScript bindings describing the
     /// exported structs from Rust and their fields they've got exported.
     pub structs: Vec<AuxStruct>,
+
+    /// Information about various internal functions used to manage the `anyref`
+    /// table, later used to process JS bindings.
+    pub anyref_table: Option<walrus::TableId>,
+    pub anyref_alloc: Option<walrus::FunctionId>,
+    pub anyref_drop_slice: Option<walrus::FunctionId>,
 }
 
 pub type WasmBindgenAuxId = TypedCustomSectionId<WasmBindgenAux>;

@@ -1,11 +1,11 @@
 use crate::wit::{AdapterKind, Instruction, NonstandardWitSection};
-use crate::wit::{AdapterType, InstructionData, StackChange};
+use crate::wit::{AdapterType, InstructionData, StackChange, WasmBindgenAux};
 use anyhow::Error;
 use std::collections::HashMap;
 use walrus::Module;
 use wasm_bindgen_anyref_xform::Context;
 
-pub fn process(module: &mut Module, wasm_interface_types: bool) -> Result<(), Error> {
+pub fn process(module: &mut Module) -> Result<(), Error> {
     let mut cfg = Context::default();
     cfg.prepare(module)?;
     let section = module
@@ -43,52 +43,15 @@ pub fn process(module: &mut Module, wasm_interface_types: bool) -> Result<(), Er
         }
     }
 
-    cfg.run(module)?;
+    let meta = cfg.run(module)?;
 
-    // If our output is using WebAssembly interface types then our bindings will
-    // never use this table, so no need to export it. Otherwise it's highly
-    // likely in web/JS embeddings this will be used, so make sure we export it
-    // to avoid it getting gc'd accidentally.
-    if !wasm_interface_types {
-        // Make sure to export the `anyref` table for the JS bindings since it
-        // will need to be initialized. If it doesn't exist though then the
-        // module must not use it, so we skip it.
-        let table = module.tables.iter().find(|t| match t.kind {
-            walrus::TableKind::Anyref(_) => true,
-            _ => false,
-        });
-        let table = match table {
-            Some(t) => t.id(),
-            None => return Ok(()),
-        };
-        module.exports.add("__wbg_anyref_table", table);
-    }
-
-    // TODO: still needed?
-    // // Clean up now-unused intrinsics and shims and such
-    // walrus::passes::gc::run(module);
-    //
-    // // The GC pass above may end up removing some imported intrinsics. For
-    // // example `__wbindgen_object_clone_ref` is no longer needed after the
-    // // anyref pass. Make sure to delete the associated metadata for those
-    // // intrinsics so we don't try to access stale intrinsics later on.
-    // let remaining_imports = module
-    //     .imports
-    //     .iter()
-    //     .map(|i| i.id())
-    //     .collect::<HashSet<_>>();
-    // module
-    //     .customs
-    //     .get_typed_mut::<NonstandardWitSection>()
-    //     .expect("wit custom section should exist")
-    //     .implements
-    //     .retain(|(id, _)| remaining_imports.contains(id));
-    // module
-    //     .customs
-    //     .get_typed_mut::<WasmBindgenAux>()
-    //     .expect("wasm-bindgen aux section should exist")
-    //     .import_map
-    //     .retain(|id, _| remaining_imports.contains(id));
+    let section = module
+        .customs
+        .get_typed_mut::<WasmBindgenAux>()
+        .expect("wit custom section should exist");
+    section.anyref_table = Some(meta.table);
+    section.anyref_alloc = meta.alloc;
+    section.anyref_drop_slice = meta.drop_slice;
     Ok(())
 }
 

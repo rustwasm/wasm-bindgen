@@ -11,7 +11,7 @@ use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
 use std::fs;
 use std::path::{Path, PathBuf};
-use walrus::{ExportId, ImportId, MemoryId, Module};
+use walrus::{ExportId, FunctionId, ImportId, MemoryId, Module, TableId};
 
 mod binding;
 // mod incoming;
@@ -55,6 +55,7 @@ pub struct Context<'a> {
     /// A mapping of a index for memories as we see them. Used in function
     /// names.
     memory_indices: HashMap<MemoryId, usize>,
+    table_indices: HashMap<TableId, usize>,
 }
 
 #[derive(Default)]
@@ -101,6 +102,7 @@ impl<'a> Context<'a> {
             wit,
             aux,
             memory_indices: Default::default(),
+            table_indices: Default::default(),
         })
     }
 
@@ -1068,40 +1070,43 @@ impl<'a> Context<'a> {
             return Ok(ret);
         }
         self.expose_wasm_vector_len();
-        if self.config.anyref {
-            // TODO: using `addToAnyrefTable` goes back and forth between wasm
-            // and JS a lot, we should have a bulk operation for this.
-            self.expose_add_to_anyref_table()?;
-            self.global(&format!(
-                "
-                function {}(array, malloc) {{
-                    const ptr = malloc(array.length * 4);
-                    const mem = {}();
-                    for (let i = 0; i < array.length; i++) {{
-                        mem[ptr / 4 + i] = addToAnyrefTable(array[i]);
-                    }}
-                    WASM_VECTOR_LEN = array.length;
-                    return ptr;
-                }}
-                ",
-                ret, mem,
-            ));
-        } else {
-            self.expose_add_heap_object();
-            self.global(&format!(
-                "
-                function {}(array, malloc) {{
-                    const ptr = malloc(array.length * 4);
-                    const mem = {}();
-                    for (let i = 0; i < array.length; i++) {{
-                        mem[ptr / 4 + i] = addHeapObject(array[i]);
-                    }}
-                    WASM_VECTOR_LEN = array.length;
-                    return ptr;
-                }}
-                ",
-                ret, mem,
-            ));
+        match (self.aux.anyref_table, self.aux.anyref_alloc) {
+            (Some(table), Some(alloc)) => {
+                // TODO: using `addToAnyrefTable` goes back and forth between wasm
+                // and JS a lot, we should have a bulk operation for this.
+                let add = self.expose_add_to_anyref_table(table, alloc)?;
+                self.global(&format!(
+                    "
+                        function {}(array, malloc) {{
+                            const ptr = malloc(array.length * 4);
+                            const mem = {}();
+                            for (let i = 0; i < array.length; i++) {{
+                                mem[ptr / 4 + i] = {}(array[i]);
+                            }}
+                            WASM_VECTOR_LEN = array.length;
+                            return ptr;
+                        }}
+                    ",
+                    ret, mem, add,
+                ));
+            }
+            _ => {
+                self.expose_add_heap_object();
+                self.global(&format!(
+                    "
+                        function {}(array, malloc) {{
+                            const ptr = malloc(array.length * 4);
+                            const mem = {}();
+                            for (let i = 0; i < array.length; i++) {{
+                                mem[ptr / 4 + i] = addHeapObject(array[i]);
+                            }}
+                            WASM_VECTOR_LEN = array.length;
+                            return ptr;
+                        }}
+                    ",
+                    ret, mem,
+                ));
+            }
         }
         Ok(ret)
     }
@@ -1263,39 +1268,43 @@ impl<'a> Context<'a> {
         if !self.should_write_global(ret.to_string()) {
             return Ok(ret);
         }
-        if self.config.anyref {
-            self.global(&format!(
-                "
-                function {}(ptr, len) {{
-                    const mem = {}();
-                    const slice = mem.subarray(ptr / 4, ptr / 4 + len);
-                    const result = [];
-                    for (let i = 0; i < slice.length; i++) {{
-                        result.push(wasm.__wbg_anyref_table.get(slice[i]));
+        match (self.aux.anyref_table, self.aux.anyref_drop_slice) {
+            (Some(table), Some(drop)) => {
+                let table = self.export_name_of(table);
+                let drop = self.export_name_of(drop);
+                self.global(&format!(
+                    "
+                    function {}(ptr, len) {{
+                        const mem = {}();
+                        const slice = mem.subarray(ptr / 4, ptr / 4 + len);
+                        const result = [];
+                        for (let i = 0; i < slice.length; i++) {{
+                            result.push(wasm.{}.get(slice[i]));
+                        }}
+                        wasm.{}(ptr, len);
+                        return result;
                     }}
-                    wasm.__wbindgen_drop_anyref_slice(ptr, len);
-                    return result;
-                }}
-                ",
-                ret, mem,
-            ));
-            self.require_internal_export("__wbindgen_drop_anyref_slice")?;
-        } else {
-            self.expose_take_object();
-            self.global(&format!(
-                "
-                function {}(ptr, len) {{
-                    const mem = {}();
-                    const slice = mem.subarray(ptr / 4, ptr / 4 + len);
-                    const result = [];
-                    for (let i = 0; i < slice.length; i++) {{
-                        result.push(takeObject(slice[i]));
+                    ",
+                    ret, mem, table, drop,
+                ));
+            }
+            _ => {
+                self.expose_take_object();
+                self.global(&format!(
+                    "
+                    function {}(ptr, len) {{
+                        const mem = {}();
+                        const slice = mem.subarray(ptr / 4, ptr / 4 + len);
+                        const result = [];
+                        for (let i = 0; i < slice.length; i++) {{
+                            result.push(takeObject(slice[i]));
+                        }}
+                        return result;
                     }}
-                    return result;
-                }}
-                ",
-                ret, mem,
-            ));
+                    ",
+                    ret, mem,
+                ));
+            }
         }
         Ok(ret)
     }
@@ -1443,9 +1452,7 @@ impl<'a> Context<'a> {
     }
 
     fn memview(&mut self, name: &'static str, js: &str, memory: walrus::MemoryId) -> MemView {
-        let next = self.memory_indices.len();
-        let num = *self.memory_indices.entry(memory).or_insert(next);
-        let view = MemView { name, num };
+        let view = self.memview_memory(name, memory);
         if !self.should_write_global(name.to_string()) {
             return view;
         }
@@ -1465,6 +1472,18 @@ impl<'a> Context<'a> {
             mem = mem,
         ));
         return view;
+    }
+
+    fn memview_memory(&mut self, name: &'static str, memory: walrus::MemoryId) -> MemView {
+        let next = self.memory_indices.len();
+        let num = *self.memory_indices.entry(memory).or_insert(next);
+        MemView { name, num }
+    }
+
+    fn memview_table(&mut self, name: &'static str, table: walrus::TableId) -> MemView {
+        let next = self.table_indices.len();
+        let num = *self.table_indices.entry(table).or_insert(next);
+        MemView { name, num }
     }
 
     fn expose_assert_class(&mut self) {
@@ -1569,25 +1588,29 @@ impl<'a> Context<'a> {
             return Ok(());
         }
         self.require_internal_export("__wbindgen_exn_store")?;
-        if self.config.anyref {
-            self.expose_add_to_anyref_table()?;
-            self.global(
-                "
-                function handleError(e) {
-                    const idx = addToAnyrefTable(e);
-                    wasm.__wbindgen_exn_store(idx);
-                }
-                ",
-            );
-        } else {
-            self.expose_add_heap_object();
-            self.global(
-                "
-                function handleError(e) {
-                    wasm.__wbindgen_exn_store(addHeapObject(e));
-                }
-                ",
-            );
+        match (self.aux.anyref_table, self.aux.anyref_alloc) {
+            (Some(table), Some(alloc)) => {
+                let add = self.expose_add_to_anyref_table(table, alloc)?;
+                self.global(&format!(
+                    "
+                    function handleError(e) {{
+                        const idx = {}(e);
+                        wasm.__wbindgen_exn_store(idx);
+                    }}
+                    ",
+                    add,
+                ));
+            }
+            _ => {
+                self.expose_add_heap_object();
+                self.global(
+                    "
+                    function handleError(e) {
+                        wasm.__wbindgen_exn_store(addHeapObject(e));
+                    }
+                    ",
+                );
+            }
         }
         Ok(())
     }
@@ -1851,23 +1874,30 @@ impl<'a> Context<'a> {
         true
     }
 
-    fn expose_add_to_anyref_table(&mut self) -> Result<(), Error> {
+    fn expose_add_to_anyref_table(
+        &mut self,
+        table: TableId,
+        alloc: FunctionId,
+    ) -> Result<MemView, Error> {
+        let view = self.memview_table("addToAnyrefTable", table);
         assert!(self.config.anyref);
-        if !self.should_write_global("add_to_anyref_table") {
-            return Ok(());
+        if !self.should_write_global(view.to_string()) {
+            return Ok(view);
         }
-        self.require_internal_export("__wbindgen_anyref_table_alloc")?;
-        self.global(
+        let alloc = self.export_name_of(alloc);
+        let table = self.export_name_of(table);
+        self.global(&format!(
             "
-                function addToAnyrefTable(obj) {
-                    const idx = wasm.__wbindgen_anyref_table_alloc();
-                    wasm.__wbg_anyref_table.set(idx, obj);
+                function {}(obj) {{
+                    const idx = wasm.{}();
+                    wasm.{}.set(idx, obj);
                     return idx;
-                }
+                }}
             ",
-        );
+            view, alloc, table,
+        ));
 
-        Ok(())
+        Ok(view)
     }
 
     pub fn generate(&mut self) -> Result<(), Error> {
@@ -2710,16 +2740,20 @@ impl<'a> Context<'a> {
             }
 
             Intrinsic::InitAnyrefTable => {
+                let table = self.aux.anyref_table
+                    .ok_or_else(|| anyhow!("must enable anyref to use anyref intrinsic"))?;
+                let name = self.export_name_of(table);
                 // Grow the table to insert our initial values, and then also
                 // set the 0th slot to `undefined` since that's what we've
                 // historically used for our ABI which is that the index of 0
                 // returns `undefined` for types like `None` going out.
                 let mut base = format!(
                     "
-                      const table = wasm.__wbg_anyref_table;
+                      const table = wasm.{};
                       const offset = table.grow({});
                       table.set(0, undefined);
                     ",
+                    name,
                     INITIAL_HEAP_VALUES.len(),
                 );
                 for (i, value) in INITIAL_HEAP_VALUES.iter().enumerate() {

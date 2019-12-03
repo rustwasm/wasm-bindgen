@@ -348,7 +348,7 @@ impl Bindgen {
         // currently off-by-default since `anyref` is still in development in
         // engines.
         if self.anyref {
-            anyref::process(&mut module, self.wasm_interface_types)?;
+            anyref::process(&mut module)?;
         }
 
         let aux = module

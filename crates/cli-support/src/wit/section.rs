@@ -42,6 +42,9 @@ pub fn add(
         imports_with_assert_no_shim: _, // not relevant for this purpose
         enums,
         structs,
+        anyref_table: _, // not relevant
+        anyref_alloc: _, // not relevant
+        anyref_drop_slice: _, // not relevant
     } = aux;
 
     let adapter_context = |id: AdapterId| {

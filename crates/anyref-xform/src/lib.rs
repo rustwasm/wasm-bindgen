@@ -44,6 +44,12 @@ pub struct Context {
     table: Option<TableId>,
 }
 
+pub struct Meta {
+    pub table: TableId,
+    pub alloc: Option<FunctionId>,
+    pub drop_slice: Option<FunctionId>,
+}
+
 struct Transform<'a> {
     cx: &'a mut Context,
 
@@ -161,7 +167,7 @@ impl Context {
         })
     }
 
-    pub fn run(&mut self, module: &mut Module) -> Result<(), Error> {
+    pub fn run(&mut self, module: &mut Module) -> Result<Meta, Error> {
         let table = self.table.unwrap();
 
         // Inject a stack pointer global which will be used for managing the
@@ -171,6 +177,7 @@ impl Context {
 
         let mut heap_alloc = None;
         let mut heap_dealloc = None;
+        let mut drop_slice = None;
 
         // Find exports of some intrinsics which we only need for a runtime
         // implementation.
@@ -182,7 +189,8 @@ impl Context {
             match export.name.as_str() {
                 "__wbindgen_anyref_table_alloc" => heap_alloc = Some(f),
                 "__wbindgen_anyref_table_dealloc" => heap_dealloc = Some(f),
-                _ => {}
+                "__wbindgen_drop_anyref_slice" => drop_slice = Some(f),
+                _ => continue,
             }
         }
         let mut clone_ref = None;
@@ -226,7 +234,13 @@ impl Context {
             heap_dealloc,
             stack_pointer,
         }
-        .run(module)
+        .run(module)?;
+
+        Ok(Meta {
+            table,
+            alloc: heap_alloc,
+            drop_slice,
+        })
     }
 }
 
