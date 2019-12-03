@@ -55,6 +55,7 @@ pub struct WasmBindgenAux {
 
     /// Various intrinsics used for JS glue generation
     pub exn_store: Option<walrus::FunctionId>,
+    pub shadow_stack_pointer: Option<walrus::GlobalId>,
 }
 
 pub type WasmBindgenAuxId = TypedCustomSectionId<WasmBindgenAux>;
@@ -373,6 +374,9 @@ impl walrus::CustomSection for WasmBindgenAux {
         }
         if let Some(id) = self.exn_store {
             roots.push_func(id);
+        }
+        if let Some(id) = self.shadow_stack_pointer {
+            roots.push_global(id);
         }
     }
 }

@@ -227,7 +227,7 @@ impl<'a> Context<'a> {
             } => {
                 js.push_str("let wasm;\n");
 
-                for (id, js) in sorted_iter(&self.wasm_import_definitions) {
+                for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}.js", module_name);
                     footer.push_str("\nmodule.exports.");
@@ -254,7 +254,7 @@ impl<'a> Context<'a> {
                     "import * as wasm from './{}_bg.wasm';\n",
                     module_name
                 ));
-                for (id, js) in sorted_iter(&self.wasm_import_definitions) {
+                for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
                     let import = self.module.imports.get_mut(*id);
                     import.module = format!("./{}.js", module_name);
                     footer.push_str("\nexport const ");
@@ -328,7 +328,7 @@ impl<'a> Context<'a> {
             OutputMode::Node {
                 experimental_modules: false,
             } => {
-                for (module, items) in sorted_iter(&self.js_imports) {
+                for (module, items) in crate::sorted_iter(&self.js_imports) {
                     imports.push_str("const { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
                         if i > 0 {
@@ -351,7 +351,7 @@ impl<'a> Context<'a> {
                 experimental_modules: true,
             }
             | OutputMode::Web => {
-                for (module, items) in sorted_iter(&self.js_imports) {
+                for (module, items) in crate::sorted_iter(&self.js_imports) {
                     imports.push_str("import { ");
                     for (i, (item, rename)) in items.iter().enumerate() {
                         if i > 0 {
@@ -450,7 +450,7 @@ impl<'a> Context<'a> {
             imports_init.push_str(module_name);
             imports_init.push_str(" = {};\n");
         }
-        for (id, js) in sorted_iter(&self.wasm_import_definitions) {
+        for (id, js) in crate::sorted_iter(&self.wasm_import_definitions) {
             let import = self.module.imports.get_mut(*id);
             import.module = module_name.to_string();
             imports_init.push_str("imports.");
@@ -1852,7 +1852,7 @@ impl<'a> Context<'a> {
     }
 
     pub fn generate(&mut self) -> Result<(), Error> {
-        for (id, adapter) in sorted_iter(&self.wit.adapters) {
+        for (id, adapter) in crate::sorted_iter(&self.wit.adapters) {
             let instrs = match &adapter.kind {
                 AdapterKind::Import { .. } => continue,
                 AdapterKind::Local { instructions } => instructions,
@@ -3053,21 +3053,6 @@ impl ExportedClass {
         *ty = ret_ty.to_string();
         has_setter
     }
-}
-
-/// Returns a sorted iterator over a hash map, sorted based on key.
-///
-/// The intention of this API is to be used whenever the iteration order of a
-/// `HashMap` might affect the generated JS bindings. We want to ensure that the
-/// generated output is deterministic and we do so by ensuring that iteration of
-/// hash maps is consistently sorted.
-fn sorted_iter<K, V>(map: &HashMap<K, V>) -> impl Iterator<Item = (&K, &V)>
-where
-    K: Ord,
-{
-    let mut pairs = map.iter().collect::<Vec<_>>();
-    pairs.sort_by_key(|(k, _)| *k);
-    pairs.into_iter()
 }
 
 #[test]

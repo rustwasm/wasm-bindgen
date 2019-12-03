@@ -35,7 +35,8 @@ predicates = "1.0.0"
 rayon = "1.0"
 tempfile = "3.0"
 walrus = "0.14"
-wasmprinter = "0.2"
+wit-walrus = "0.1"
+wit-printer = "0.1"
 
 [[test]]
 name = "reference"
