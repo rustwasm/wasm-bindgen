@@ -11,7 +11,7 @@ use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt;
 use std::fs;
 use std::path::{Path, PathBuf};
-use walrus::{ExportId, FunctionId, ImportId, MemoryId, Module, TableId};
+use walrus::{FunctionId, ImportId, MemoryId, Module, TableId};
 
 mod binding;
 
@@ -1907,9 +1907,9 @@ impl<'a> Context<'a> {
             self.generate_adapter(*id, adapter, instrs)?;
         }
 
-        // let mut pairs = aux.export_map.iter().collect::<Vec<_>>();
-        // pairs.sort_by_key(|(k, _)| *k);
-        // check_duplicated_getter_and_setter_names(&pairs)?;
+        let mut pairs = self.aux.export_map.iter().collect::<Vec<_>>();
+        pairs.sort_by_key(|(k, _)| *k);
+        check_duplicated_getter_and_setter_names(&pairs)?;
 
         for e in self.aux.enums.iter() {
             self.generate_enum(e)?;
@@ -2970,7 +2970,7 @@ impl<'a> Context<'a> {
 }
 
 fn check_duplicated_getter_and_setter_names(
-    exports: &[(&ExportId, &AuxExport)],
+    exports: &[(&AdapterId, &AuxExport)],
 ) -> Result<(), Error> {
     let verify_exports =
         |first_class, first_field, second_class, second_field| -> Result<(), Error> {
