@@ -1,3 +1,4 @@
+use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::AuxImport;
 use crate::wit::{AdapterKind, Instruction, NonstandardWitSection};
@@ -47,24 +48,34 @@ pub fn process(module: &mut Module) -> Result<(), Error> {
 
     let meta = cfg.run(module)?;
 
-    // Store functions found during the anyref transformation onto the auxiliary
-    // section. These will end up getting used for the full support in the JS
-    // polyfill, so we'll want the functions to stick around.
     let mut aux = module
         .customs
         .delete_typed::<WasmBindgenAux>()
         .expect("wit custom section should exist");
-    aux.anyref_table = Some(meta.table);
-    aux.anyref_alloc = meta.alloc;
-    aux.anyref_drop_slice = meta.drop_slice;
-
-    // Additonally we may need to update some adapter instructions other than
-    // those found for the anyref pass. These are some general "fringe support"
-    // things necessary to get absolutely everything working.
     let section = module
         .customs
         .get_typed_mut::<NonstandardWitSection>()
         .expect("wit custom section should exist");
+
+    // If the module looks like it's going to use some of these exports, store
+    // them in the aux section to get used.
+    //
+    // FIXME: this is not great, we should ideally have precise tracking of what
+    // requires what. These are used by catch clauses and anyref slices going
+    // in/out of wasm. The catch clauses are a bit weird but anyref slices
+    // should ideally track in their own instructions what table/functions
+    // they're referencing. This doesn't fit well in today's model of
+    // slice-related instructions, though, so let's just cop out and only enable
+    // these coarsely.
+    aux.anyref_table = Some(meta.table);
+    if module_needs_anyref_metadata(&aux, section) {
+        aux.anyref_alloc = meta.alloc;
+        aux.anyref_drop_slice = meta.drop_slice;
+    }
+
+    // Additonally we may need to update some adapter instructions other than
+    // those found for the anyref pass. These are some general "fringe support"
+    // things necessary to get absolutely everything working.
     for (_, adapter) in section.adapters.iter_mut() {
         let instrs = match &mut adapter.kind {
             AdapterKind::Local { instructions } => instructions,
@@ -92,7 +103,9 @@ pub fn process(module: &mut Module) -> Result<(), Error> {
 
                 // Optional anyref values are now managed in the wasm module, so
                 // we need to store where they're managed.
-                Instruction::I32FromOptionAnyref { ref mut table_and_alloc } => {
+                Instruction::I32FromOptionAnyref {
+                    ref mut table_and_alloc,
+                } => {
                     *table_and_alloc = meta.alloc.map(|id| (meta.table, id));
                 }
                 _ => continue,
@@ -316,4 +329,56 @@ fn export_xform(cx: &mut Context, export: Export, instrs: &mut Vec<InstructionDa
     for idx in to_delete.into_iter().rev() {
         instrs.remove(idx);
     }
+}
+
+/// This function shouldn't need to exist, see the fixme at the call-site.
+fn module_needs_anyref_metadata(aux: &WasmBindgenAux, section: &NonstandardWitSection) -> bool {
+    use Instruction::*;
+
+    // our `handleError` intrinsic uses a few pieces of metadata to store
+    // indices directly into the wasm module.
+    if aux.imports_with_catch.len() > 0 {
+        return true;
+    }
+
+    // Look for any instructions which may use `VectorKind::Anyref`. If there
+    // are any then we'll need our intrinsics/tables/etc, otherwise we shouldn't
+    // ever need them.
+    section.adapters.iter().any(|(_, adapter)| {
+        let instructions = match &adapter.kind {
+            AdapterKind::Local { instructions } => instructions,
+            AdapterKind::Import { .. } => return false,
+        };
+        instructions.iter().any(|instr| match instr.instr {
+            VectorToMemory {
+                kind: VectorKind::Anyref,
+                ..
+            }
+            | MutableSliceToMemory {
+                kind: VectorKind::Anyref,
+                ..
+            }
+            | OptionVector {
+                kind: VectorKind::Anyref,
+                ..
+            }
+            | VectorLoad {
+                kind: VectorKind::Anyref,
+                ..
+            }
+            | OptionVectorLoad {
+                kind: VectorKind::Anyref,
+                ..
+            }
+            | View {
+                kind: VectorKind::Anyref,
+                ..
+            }
+            | OptionView {
+                kind: VectorKind::Anyref,
+                ..
+            } => true,
+            _ => false,
+        })
+    })
 }

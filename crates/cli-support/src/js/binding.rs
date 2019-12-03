@@ -707,7 +707,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("high{}", i));
         }
 
-        Instruction::I32FromOptionAnyref { table_and_alloc }=> {
+        Instruction::I32FromOptionAnyref { table_and_alloc } => {
             js.typescript_optional("any");
             let val = js.pop();
             js.cx.expose_is_like_none();

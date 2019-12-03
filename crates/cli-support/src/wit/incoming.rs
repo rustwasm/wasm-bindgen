@@ -218,7 +218,9 @@ impl InstructionBuilder<'_, '_> {
             Descriptor::Anyref => {
                 self.instruction(
                     &[AdapterType::Anyref],
-                    Instruction::I32FromOptionAnyref { table_and_alloc: None },
+                    Instruction::I32FromOptionAnyref {
+                        table_and_alloc: None,
+                    },
                     &[AdapterType::I32],
                 );
             }
