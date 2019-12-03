@@ -33,14 +33,37 @@ pub struct Builder<'a, 'b> {
     log_error: bool,
 }
 
-/// Helper struct used in incoming/outgoing to generate JS.
+/// Helper struct used to create JS to process all instructions in an adapter
+/// function.
 pub struct JsBuilder<'a, 'b> {
+    /// General context for building JS, used to manage intrinsic names, exposed
+    /// JS functions, etc.
     cx: &'a mut Context<'b>,
+
+    /// The list of typescript arguments that we're going to have to this
+    /// function.
     typescript: Vec<TypescriptArg>,
+
+    /// The "prelude" of the function, or largely just the JS function we've
+    /// built so far.
     prelude: String,
+
+    /// JS code to execute in a `finally` block in case any exceptions happen.
     finally: String,
+
+    /// An index used to manage allocation of temporary indices, used to name
+    /// variables to ensure nothing clashes with anything else.
     tmp: usize,
+
+    /// Names or expressions representing the arguments to the adapter. This is
+    /// use to translate the `arg.get` instruction.
     args: Vec<String>,
+
+    /// The wasm interface types "stack". The expressions pushed onto this stack
+    /// are intended to be *pure*, and if they're not, they should be pushed
+    /// into the `prelude`, assigned to a variable, and the variable should be
+    /// pushed to the stack. We're not super principled about this though, so
+    /// improvements will likely happen here over time.
     stack: Vec<String>,
 }
 
@@ -121,6 +144,18 @@ impl<'a, 'b> Builder<'a, 'b> {
             function_args.push(arg);
         }
 
+        // Translate all instructions, the fun loop!
+        //
+        // This loop will process all instructions for this adapter function.
+        // Each instruction will push/pop from the `js.stack` variable, and will
+        // eventually build up the entire `js.prelude` variable with all the JS
+        // code that we're going to be adding. Note that the stack at the end
+        // represents all returned values.
+        //
+        // We don't actually manage a literal stack at runtime, but instead we
+        // act as more of a compiler to generate straight-line code to make it
+        // more JIT-friendly. The generated code should be equivalent to the
+        // wasm interface types stack machine, however.
         for instr in instructions {
             instruction(&mut js, &instr.instr)?;
         }
