@@ -14,7 +14,7 @@ edition = '2018'
 [dependencies]
 anyhow = "1.0"
 log = "0.4"
-walrus = "0.13.0"
+walrus = "0.14.0"
 
 [dev-dependencies]
 tempfile = "3"

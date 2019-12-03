@@ -14,7 +14,7 @@ use core::marker;
 use core::mem;
 use core::ops::{Deref, DerefMut};
 
-use crate::convert::FromWasmAbi;
+use crate::convert::{FromWasmAbi, WasmOptionalF64, WasmSlice};
 
 macro_rules! if_std {
     ($($i:item)*) => ($(
@@ -226,10 +226,8 @@ impl JsValue {
         T: for<'a> serde::de::Deserialize<'a>,
     {
         unsafe {
-            let mut ret = [0usize; 2];
-            __wbindgen_json_serialize(&mut ret, self.idx);
-            let s = Vec::from_raw_parts(ret[0] as *mut u8, ret[1], ret[1]);
-            let s = String::from_utf8_unchecked(s);
+            let ret = __wbindgen_json_serialize(self.idx);
+            let s = String::from_abi(ret);
             serde_json::from_str(&s)
         }
     }
@@ -240,15 +238,7 @@ impl JsValue {
     /// If this JS value is not an instance of a number then this returns
     /// `None`.
     pub fn as_f64(&self) -> Option<f64> {
-        let mut invalid = 0;
-        unsafe {
-            let ret = __wbindgen_number_get(self.idx, &mut invalid);
-            if invalid == 1 {
-                None
-            } else {
-                Some(ret)
-            }
-        }
+        unsafe { FromWasmAbi::from_abi(__wbindgen_number_get(self.idx)) }
     }
 
     /// Tests whether this JS value is a JS string.
@@ -278,16 +268,7 @@ impl JsValue {
     /// [caveats]: https://rustwasm.github.io/docs/wasm-bindgen/reference/types/str.html
     #[cfg(feature = "std")]
     pub fn as_string(&self) -> Option<String> {
-        unsafe {
-            let mut len = 0;
-            let ptr = __wbindgen_string_get(self.idx, &mut len);
-            if ptr.is_null() {
-                None
-            } else {
-                let data = Vec::from_raw_parts(ptr, len, len);
-                Some(String::from_utf8_unchecked(data))
-            }
-        }
+        unsafe { FromWasmAbi::from_abi(__wbindgen_string_get(self.idx)) }
     }
 
     /// Returns the `bool` value of this JS value if it's an instance of a
@@ -523,9 +504,9 @@ externs! {
         fn __wbindgen_is_string(idx: u32) -> u32;
         fn __wbindgen_is_falsy(idx: u32) -> u32;
 
-        fn __wbindgen_number_get(idx: u32, invalid: *mut u8) -> f64;
+        fn __wbindgen_number_get(idx: u32) -> WasmOptionalF64;
         fn __wbindgen_boolean_get(idx: u32) -> u32;
-        fn __wbindgen_string_get(idx: u32, len: *mut usize) -> *mut u8;
+        fn __wbindgen_string_get(idx: u32) -> WasmSlice;
 
         fn __wbindgen_debug_string(ret: *mut [usize; 2], idx: u32) -> ();
 
@@ -539,7 +520,7 @@ externs! {
         fn __wbindgen_describe_closure(a: u32, b: u32, c: u32) -> u32;
 
         fn __wbindgen_json_parse(ptr: *const u8, len: usize) -> u32;
-        fn __wbindgen_json_serialize(ret: *mut [usize; 2], idx: u32) -> ();
+        fn __wbindgen_json_serialize(idx: u32) -> WasmSlice;
         fn __wbindgen_jsval_eq(a: u32, b: u32) -> u32;
 
         fn __wbindgen_memory() -> u32;

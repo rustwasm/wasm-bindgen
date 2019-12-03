@@ -96,6 +96,10 @@ jobs:
         displayName: "wasm-bindgen-cli-support tests"
       - script: cargo test -p wasm-bindgen-cli
         displayName: "wasm-bindgen-cli tests"
+      - script: cargo test -p wasm-bindgen-anyref-xform
+        displayName: "wasm-bindgen-anyref-xform tests"
+      - script: cargo test -p wasm-bindgen-multi-value-xform
+        displayName: "wasm-bindgen-multi-value-xform tests"
 
   - job: test_web_sys
     displayName: "Run web-sys crate tests"

@@ -41,63 +41,27 @@ exports.js_export = () => {
     assert.deepStrictEqual(wasm.export_f64(f64), f64);
 };
 
-exports.import_js_i8 = a => {
+const test_import = (a, b, c) => {
     assert.strictEqual(a.length, 2);
     assert.strictEqual(a[0], 1);
     assert.strictEqual(a[1], 2);
+    assert.strictEqual(b.length, 2);
+    assert.strictEqual(b[0], 1);
+    assert.strictEqual(b[1], 2);
+    assert.strictEqual(c, undefined);
     return a;
 };
 
-exports.import_js_u8 = a => {
-    assert.strictEqual(a.length, 2);
-    assert.strictEqual(a[0], 1);
-    assert.strictEqual(a[1], 2);
-    return a;
-};
-
-exports.import_js_i16 = a => {
-    assert.strictEqual(a.length, 2);
-    assert.strictEqual(a[0], 1);
-    assert.strictEqual(a[1], 2);
-    return a;
-};
-
-exports.import_js_u16 = a => {
-    assert.strictEqual(a.length, 2);
-    assert.strictEqual(a[0], 1);
-    assert.strictEqual(a[1], 2);
-    return a;
-};
-
-exports.import_js_i32 = a => {
-    assert.strictEqual(a.length, 2);
-    assert.strictEqual(a[0], 1);
-    assert.strictEqual(a[1], 2);
-    return a;
-};
-exports.import_js_isize = exports.import_js_i32;
-
-exports.import_js_u32 = a => {
-    assert.strictEqual(a.length, 2);
-    assert.strictEqual(a[0], 1);
-    assert.strictEqual(a[1], 2);
-    return a;
-};
-exports.import_js_usize = exports.import_js_u32;
-
-exports.import_js_f32 = a => {
-    assert.strictEqual(a.length, 2);
-    assert.strictEqual(a[0], 1);
-    assert.strictEqual(a[1], 2);
-    return a;
-};
-
-exports.import_js_f64 = a => {
-    assert.strictEqual(a.length, 2);
-    assert.strictEqual(a[0], 1);
-    assert.strictEqual(a[1], 2);
-    return a;
-};
+exports.import_js_i8 = test_import;
+exports.import_js_u8 = test_import;
+exports.import_js_i16 = test_import;
+exports.import_js_u16 = test_import;
+exports.import_js_i32 = test_import;
+exports.import_js_isize = test_import;
+exports.import_js_u32 = test_import;
+exports.import_js_usize = test_import;
+exports.import_js_f32 = test_import;
+exports.import_js_f64 = test_import;
 
 exports.js_import = () => {
     const i8 = new Int8Array(2);
@@ -152,12 +116,19 @@ exports.js_pass_array = () => {
     wasm.pass_array_rust_f64([1, 2]);
 };
 
-const import_mut_foo = a => {
+const import_mut_foo = (a, b, c) => {
     assert.strictEqual(a.length, 3);
     assert.strictEqual(a[0], 1);
     assert.strictEqual(a[1], 2);
     a[0] = 4;
     a[1] = 5;
+    assert.strictEqual(b.length, 3);
+    assert.strictEqual(b[0], 4);
+    assert.strictEqual(b[1], 5);
+    assert.strictEqual(b[2], 6);
+    b[0] = 8;
+    b[1] = 7;
+    assert.strictEqual(c, undefined);
 };
 
 exports.import_mut_js_i8 = import_mut_foo;

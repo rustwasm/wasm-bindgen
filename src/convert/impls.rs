@@ -51,7 +51,6 @@ unsafe impl WasmAbi for Wasm64 {}
 #[repr(C)]
 pub struct WasmOptional64 {
     pub present: u32,
-    pub padding: u32,
     pub low: u32,
     pub high: u32,
 }
@@ -177,13 +176,11 @@ macro_rules! type_64 {
                 match self {
                     None => WasmOptional64 {
                         present: 0,
-                        padding: 0,
                         low: 0 as u32,
                         high: 0 as u32,
                     },
                     Some(me) => WasmOptional64 {
                         present: 1,
-                        padding: 0,
                         low: me as u32,
                         high: (me >> 32) as u32,
                     },

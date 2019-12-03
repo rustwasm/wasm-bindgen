@@ -57,6 +57,18 @@ extern "C" {
     fn static_method_of_right_this();
 
     static STATIC_STRING: String;
+
+    #[derive(Clone)]
+    type PassOutOptionUndefined;
+    fn get_some_val() -> PassOutOptionUndefined;
+    #[wasm_bindgen(js_name = "receive_undefined")]
+    fn receive_undefined_ref(arg: Option<&PassOutOptionUndefined>);
+    #[wasm_bindgen(js_name = "receive_undefined")]
+    fn receive_undefined_owned(arg: Option<PassOutOptionUndefined>);
+    #[wasm_bindgen(js_name = "receive_some")]
+    fn receive_some_ref(arg: Option<&PassOutOptionUndefined>);
+    #[wasm_bindgen(js_name = "receive_some")]
+    fn receive_some_owned(arg: Option<PassOutOptionUndefined>);
 }
 
 #[wasm_bindgen]
@@ -247,4 +259,18 @@ fn static_string_ok() {
 #[wasm_bindgen_test]
 fn static_method_of_has_right_this() {
     StaticMethodCheck::static_method_of_right_this();
+}
+
+#[wasm_bindgen_test]
+fn pass_out_options_as_undefined() {
+    receive_undefined_ref(None);
+    receive_undefined_ref(None);
+    receive_undefined_owned(None);
+    receive_undefined_owned(None);
+
+    let v = get_some_val();
+    receive_some_ref(Some(&v));
+    receive_some_ref(Some(&v));
+    receive_some_owned(Some(v.clone()));
+    receive_some_owned(Some(v));
 }

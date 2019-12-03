@@ -16,8 +16,9 @@ mod descriptor;
 mod descriptors;
 mod intrinsic;
 mod js;
+mod multivalue;
 pub mod wasm2es6js;
-mod webidl;
+mod wit;
 
 pub struct Bindgen {
     input: Input,
@@ -268,7 +269,7 @@ impl Bindgen {
                     .generate_dwarf(self.keep_debug)
                     .generate_name_section(!self.remove_name_section)
                     .generate_producers_section(!self.remove_producers_section)
-                    .on_parse(wasm_webidl_bindings::binary::on_parse)
+                    .on_parse(wit_walrus::on_parse)
                     .parse(&contents)
                     .context("failed to parse input file as wasm")?;
                 let stem = match &self.out_name {
@@ -329,11 +330,11 @@ impl Bindgen {
 
         // Process and remove our raw custom sections emitted by the
         // #[wasm_bindgen] macro and the compiler. In their stead insert a
-        // forward-compatible WebIDL bindings section (forward-compatible with
-        // the webidl bindings proposal) as well as an auxiliary section for all
-        // sorts of miscellaneous information and features #[wasm_bindgen]
-        // supports that aren't covered by WebIDL bindings.
-        webidl::process(
+        // forward-compatible wasm interface types section as well as an
+        // auxiliary section for all sorts of miscellaneous information and
+        // features #[wasm_bindgen] supports that aren't covered by wasm
+        // interface types.
+        wit::process(
             &mut module,
             self.anyref,
             self.wasm_interface_types,
@@ -346,34 +347,32 @@ impl Bindgen {
         // currently off-by-default since `anyref` is still in development in
         // engines.
         if self.anyref {
-            anyref::process(&mut module, self.wasm_interface_types)?;
+            anyref::process(&mut module)?;
         }
 
         let aux = module
             .customs
-            .delete_typed::<webidl::WasmBindgenAux>()
+            .delete_typed::<wit::WasmBindgenAux>()
             .expect("aux section should be present");
-        let mut bindings = module
+        let mut adapters = module
             .customs
-            .delete_typed::<webidl::NonstandardWebidlSection>()
+            .delete_typed::<wit::NonstandardWitSection>()
             .unwrap();
 
         // Now that our module is massaged and good to go, feed it into the JS
         // shim generation which will actually generate JS for all this.
         let (npm_dependencies, (js, ts)) = {
-            let mut cx = js::Context::new(&mut module, self)?;
-            cx.generate(&aux, &bindings)?;
+            let mut cx = js::Context::new(&mut module, self, &adapters, &aux)?;
+            cx.generate()?;
             let npm_dependencies = cx.npm_dependencies.clone();
             (npm_dependencies, cx.finalize(stem)?)
         };
 
         if self.wasm_interface_types {
-            if self.multi_value {
-                webidl::standard::add_multi_value(&mut module, &mut bindings)
-                    .context("failed to transform return pointers into multi-value Wasm")?;
-            }
-            webidl::standard::add_section(&mut module, &aux, &bindings)
-                .with_context(|| "failed to generate a standard wasm bindings custom section")?;
+            multivalue::run(&mut module, &mut adapters)
+                .context("failed to transform return pointers into multi-value Wasm")?;
+            wit::section::add(&mut module, &aux, &adapters)
+                .context("failed to generate a standard wasm bindings custom section")?;
         } else {
             if self.multi_value {
                 anyhow::bail!(
