@@ -565,7 +565,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             // If we're loading from the return pointer then we must have pushed
             // it earlier, and we always push the same value, so load that value
             // here
-            let expr = format!("{}()[{} / {} + {}]", mem, retptr_val, size, offset,);
+            let expr = format!("{}()[{} / {} + {}]", mem, retptr_val, size, offset);
             js.prelude(&format!("var r{} = {};", offset, expr));
             js.push(format!("r{}", offset));
         }
@@ -930,7 +930,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             let i = js.tmp();
             let b = js.pop();
             let a = js.pop();
-            js.prelude(&format!("var state{} = {{a: {}, b: {}}};", i, a, b,));
+            js.prelude(&format!("var state{} = {{a: {}, b: {}}};", i, a, b));
             let args = (0..*nargs)
                 .map(|i| format!("arg{}", i))
                 .collect::<Vec<_>>()
