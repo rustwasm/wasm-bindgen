@@ -707,16 +707,16 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("high{}", i));
         }
 
-        Instruction::I32FromOptionAnyref => {
+        Instruction::I32FromOptionAnyref { table_and_alloc }=> {
             js.typescript_optional("any");
             let val = js.pop();
             js.cx.expose_is_like_none();
-            match (js.cx.aux.anyref_table, js.cx.aux.anyref_alloc) {
-                (Some(table), Some(alloc)) => {
-                    let alloc = js.cx.expose_add_to_anyref_table(table, alloc)?;
+            match table_and_alloc {
+                Some((table, alloc)) => {
+                    let alloc = js.cx.expose_add_to_anyref_table(*table, *alloc)?;
                     js.push(format!("isLikeNone({0}) ? 0 : {1}({0})", val, alloc));
                 }
-                _ => {
+                None => {
                     js.cx.expose_add_heap_object();
                     js.push(format!("isLikeNone({0}) ? 0 : addHeapObject({0})", val));
                 }

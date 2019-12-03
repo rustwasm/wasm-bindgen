@@ -1,0 +1,12 @@
+(module
+  (type (;0;) (func))
+  (import "./reference_test.js" "__wbindgen_init_anyref_table" (func (;0;) (type 0)))
+  (func $foo (type 0))
+  (table (;0;) 32 anyref)
+  (memory (;0;) 17)
+  (global (;0;) i32 (i32.const 1048576))
+  (export "memory" (memory 0))
+  (export "__rustc_debug_gdb_scripts_section__" (global 0))
+  (export "foo" (func $foo))
+  (export "__wbindgen_export_0" (table 0))
+  (export "__wbindgen_start" (func 0)))

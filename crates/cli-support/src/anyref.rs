@@ -58,35 +58,45 @@ pub fn process(module: &mut Module) -> Result<(), Error> {
     aux.anyref_alloc = meta.alloc;
     aux.anyref_drop_slice = meta.drop_slice;
 
-    // Additionally if the heap live count intrinsic was found, if it was
-    // actually called from any adapter function we want to switch to calling
-    // the wasm core module intrinsic directly. This'll avoid generating
-    // incorrect JS glue.
-    if let Some(id) = meta.live_count {
-        let section = module
-            .customs
-            .get_typed_mut::<NonstandardWitSection>()
-            .expect("wit custom section should exist");
-        for (_, adapter) in section.adapters.iter_mut() {
-            let instrs = match &mut adapter.kind {
-                AdapterKind::Local { instructions } => instructions,
-                AdapterKind::Import { .. } => continue,
-            };
-            for instr in instrs {
-                let adapter = match instr.instr {
-                    Instruction::CallAdapter(id) => id,
-                    _ => continue,
-                };
-                let import = match aux.import_map.get(&adapter) {
-                    Some(import) => import,
-                    None => continue,
-                };
-                match import {
-                    AuxImport::Intrinsic(Intrinsic::AnyrefHeapLiveCount) => {}
-                    _ => continue,
+    // Additonally we may need to update some adapter instructions other than
+    // those found for the anyref pass. These are some general "fringe support"
+    // things necessary to get absolutely everything working.
+    let section = module
+        .customs
+        .get_typed_mut::<NonstandardWitSection>()
+        .expect("wit custom section should exist");
+    for (_, adapter) in section.adapters.iter_mut() {
+        let instrs = match &mut adapter.kind {
+            AdapterKind::Local { instructions } => instructions,
+            AdapterKind::Import { .. } => continue,
+        };
+        for instr in instrs {
+            match instr.instr {
+                // Calls to the heap live count intrinsic are now routed to the
+                // actual wasm function which keeps track of this.
+                Instruction::CallAdapter(adapter) => {
+                    let id = match meta.live_count {
+                        Some(id) => id,
+                        None => continue,
+                    };
+                    let import = match aux.import_map.get(&adapter) {
+                        Some(import) => import,
+                        None => continue,
+                    };
+                    match import {
+                        AuxImport::Intrinsic(Intrinsic::AnyrefHeapLiveCount) => {}
+                        _ => continue,
+                    }
+                    instr.instr = Instruction::Standard(wit_walrus::Instruction::CallCore(id));
                 }
-                instr.instr = Instruction::Standard(wit_walrus::Instruction::CallCore(id));
-            }
+
+                // Optional anyref values are now managed in the wasm module, so
+                // we need to store where they're managed.
+                Instruction::I32FromOptionAnyref { ref mut table_and_alloc } => {
+                    *table_and_alloc = meta.alloc.map(|id| (meta.table, id));
+                }
+                _ => continue,
+            };
         }
     }
 

@@ -149,7 +149,11 @@ pub enum Instruction {
     },
     /// Pops an `anyref` from the stack, pushes either 0 if it's "none" or and
     /// index into the owned wasm table it was stored at if it's "some"
-    I32FromOptionAnyref,
+    I32FromOptionAnyref {
+        /// Set to `Some` by the anyref pass of where to put it in the wasm
+        /// module, otherwise it's shoved into the JS shim.
+        table_and_alloc: Option<(walrus::TableId, walrus::FunctionId)>,
+    },
     /// Pops an `anyref` from the stack, pushes either a sentinel value if it's
     /// "none" or the integer value of it if it's "some"
     I32FromOptionU32Sentinel,
@@ -424,6 +428,12 @@ impl walrus::CustomSection for NonstandardWitSection {
                         roots.push_func(malloc);
                         if let Some(id) = realloc {
                             roots.push_func(id);
+                        }
+                    }
+                    I32FromOptionAnyref { table_and_alloc } => {
+                        if let Some((table, alloc)) = table_and_alloc {
+                            roots.push_table(table);
+                            roots.push_func(alloc);
                         }
                     }
                     _ => {}

@@ -255,7 +255,7 @@ fn translate_instruction(
             bail!("64-bit integers aren't supported in wasm-bindgen");
         }
         I32SplitOption64 { .. }
-        | I32FromOptionAnyref
+        | I32FromOptionAnyref { .. }
         | I32FromOptionU32Sentinel
         | I32FromOptionRust { .. }
         | I32FromOptionBool
