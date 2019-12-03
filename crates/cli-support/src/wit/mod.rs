@@ -497,16 +497,17 @@ impl<'a> Context<'a> {
         if *variadic {
             self.aux.imports_with_variadic.insert(id);
         }
+
+        // Note that `catch`/`assert_no_shim` is applied not to the import
+        // itself but to the adapter shim we generated, so fetch that shim id
+        // and flag it as catch here. This basically just needs to be kept in
+        // sync with `js/mod.rs`.
+        let adapter = self.adapters.implements.last().unwrap().1;
         if *catch {
-            // Note that `catch` is applied not to the import itself but to the
-            // adapter shim we generated, so fetch that shim id and flag it as
-            // catch here. This basically just needs to be kept in sync with
-            // `js/mod.rs`.
-            let adapter = self.adapters.implements.last().unwrap().1;
             self.aux.imports_with_catch.insert(adapter);
         }
         if *assert_no_shim {
-            self.aux.imports_with_assert_no_shim.insert(id);
+            self.aux.imports_with_assert_no_shim.insert(adapter);
         }
 
         self.aux.import_map.insert(id, import);
@@ -1374,77 +1375,3 @@ fn concatenate_comments(comments: &[&str]) -> String {
         .collect::<Vec<_>>()
         .join("\n")
 }
-
-// /// Do we need to generate JS glue shims for these incoming bindings?
-// pub fn incoming_do_not_require_glue(
-//     exprs: &[NonstandardIncoming],
-//     from_webidl_tys: &[ast::WebidlTypeRef],
-//     to_wasm_tys: &[walrus::ValType],
-//     standard_webidl_enabled: bool,
-// ) -> bool {
-//     // If anything is nonstandard, then we're unconditionally going to need a JS
-//     // shim because, well, it's not standard.
-//     if exprs.iter().any(|e| match e {
-//         NonstandardIncoming::Standard(_) => false,
-//         _ => true,
-//     }) {
-//         return false;
-//     }
-//
-//     // If everything is `Standard` and we've actually got WebIDL bindings fully
-//     // enabled, then we don't require any glue at all!
-//     if standard_webidl_enabled {
-//         return true;
-//     }
-//
-//     exprs.len() == from_webidl_tys.len()
-//         && exprs.len() == to_wasm_tys.len()
-//         && exprs
-//             .iter()
-//             .zip(from_webidl_tys)
-//             .zip(to_wasm_tys)
-//             .enumerate()
-//             .all(|(i, ((expr, from_webidl_ty), to_wasm_ty))| match expr {
-//                 NonstandardIncoming::Standard(e) => e.is_expressible_in_js_without_webidl_bindings(
-//                     *from_webidl_ty,
-//                     *to_wasm_ty,
-//                     i as u32,
-//                 ),
-//                 _ => false,
-//             })
-// }
-//
-// /// Do we need to generate JS glue shims for these outgoing bindings?
-// pub fn outgoing_do_not_require_glue(
-//     exprs: &[NonstandardOutgoing],
-//     from_wasm_tys: &[walrus::ValType],
-//     to_webidl_tys: &[ast::WebidlTypeRef],
-//     standard_webidl_enabled: bool,
-// ) -> bool {
-//     // Same short-circuits as above.
-//     if exprs.iter().any(|e| match e {
-//         NonstandardOutgoing::Standard(_) => false,
-//         _ => true,
-//     }) {
-//         return false;
-//     }
-//     if standard_webidl_enabled {
-//         return true;
-//     }
-//
-//     exprs.len() == from_wasm_tys.len()
-//         && exprs.len() == to_webidl_tys.len()
-//         && exprs
-//             .iter()
-//             .zip(from_wasm_tys)
-//             .zip(to_webidl_tys)
-//             .enumerate()
-//             .all(|(i, ((expr, from_wasm_ty), to_webidl_ty))| match expr {
-//                 NonstandardOutgoing::Standard(e) => e.is_expressible_in_js_without_webidl_bindings(
-//                     *from_wasm_ty,
-//                     *to_webidl_ty,
-//                     i as u32,
-//                 ),
-//                 _ => false,
-//             })
-// }

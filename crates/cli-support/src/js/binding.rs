@@ -107,6 +107,10 @@ impl<'a, 'b> Builder<'a, 'b> {
         instructions: &[InstructionData],
         explicit_arg_names: &Option<Vec<String>>,
     ) -> Result<String, Error> {
+        if self.cx.aux.imports_with_assert_no_shim.contains(&adapter.id) {
+            bail!("generating a shim for something asserted to have no shim");
+        }
+
         let mut params = adapter.params.iter();
         let mut function_args = Vec::new();
 

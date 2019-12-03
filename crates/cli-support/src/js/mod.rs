@@ -1,7 +1,7 @@
 use crate::descriptor::VectorKind;
 use crate::intrinsic::Intrinsic;
 use crate::wit::{Adapter, AdapterId, AdapterJsImportKind, AuxValue};
-use crate::wit::{AdapterKind, InstructionData};
+use crate::wit::{AdapterKind, Instruction, InstructionData};
 use crate::wit::{AuxEnum, AuxExport, AuxExportKind, AuxImport, AuxStruct};
 use crate::wit::{JsImport, JsImportName, NonstandardWitSection, WasmBindgenAux};
 use crate::{Bindgen, EncodeInto, OutputMode};
@@ -1910,15 +1910,7 @@ impl<'a> Context<'a> {
         // let mut pairs = aux.export_map.iter().collect::<Vec<_>>();
         // pairs.sort_by_key(|(k, _)| *k);
         // check_duplicated_getter_and_setter_names(&pairs)?;
-        // for (id, import) in sorted_iter(&aux.import_map) {
-        //     let variadic = aux.imports_with_variadic.contains(&id);
-        //     let catch = aux.imports_with_catch.contains(&id);
-        //     let assert_no_shim = aux.imports_with_assert_no_shim.contains(&id);
-        //     self.generate_import(*id, import, bindings, variadic, catch, assert_no_shim)
-        //         .with_context(|| {
-        //             format!("failed to generate bindings for import `{:?}`", import,)
-        //         })?;
-        // }
+
         for e in self.aux.enums.iter() {
             self.generate_enum(e)?;
         }
@@ -1959,6 +1951,13 @@ impl<'a> Context<'a> {
             }
         };
 
+        let catch = self.aux.imports_with_catch.contains(&id);
+        if let Kind::Import(core) = kind {
+            if !catch && self.attempt_direct_import(core, instrs)? {
+                return Ok(());
+            }
+        }
+
         // Construct a JS shim builder, and configure it based on the kind of
         // export that we're generating.
         let mut builder = binding::Builder::new(self);
@@ -1966,7 +1965,7 @@ impl<'a> Context<'a> {
             Kind::Export(_) | Kind::Adapter => false,
             Kind::Import(_) => builder.cx.config.debug,
         });
-        builder.catch(builder.cx.aux.imports_with_catch.contains(&id));
+        builder.catch(catch);
         let mut arg_names = &None;
         match kind {
             Kind::Export(export) => {
@@ -2055,53 +2054,8 @@ impl<'a> Context<'a> {
                 self.globals.push_str("\n\n");
             }
         }
-        Ok(())
+        return Ok(());
     }
-
-    // fn generate_import(
-    //     &mut self,
-    //     id: ImportId,
-    //     import: &AuxImport,
-    //     bindings: &NonstandardWitSection,
-    //     variadic: bool,
-    //     catch: bool,
-    //     assert_no_shim: bool,
-    // ) -> Result<(), Error> {
-    //     match import {
-    //         AuxImport::Value(AuxValue::Bare(js))
-    //             if !variadic && !catch && self.import_does_not_require_glue(binding, webidl) =>
-    //         {
-    //             self.direct_import(id, js)
-    //         }
-    //         _ => {
-    //             if assert_no_shim {
-    //                 panic!(
-    //                     "imported function was annotated with `#[wasm_bindgen(assert_no_shim)]` \
-    //                      but we need to generate a JS shim for it:\n\n\
-    //                      \timport = {:?}\n\n\
-    //                      \tbinding = {:?}\n\n\
-    //                      \twebidl = {:?}",
-    //                     import, binding, webidl,
-    //                 );
-    //             }
-    //
-    //             let disable_log_error = self.import_never_log_error(import);
-    //             let mut builder = binding::Builder::new(self);
-    //             builder.catch(catch)?;
-    //             builder.disable_log_error(disable_log_error);
-    //             let js = builder.process(
-    //                 &binding,
-    //                 &webidl,
-    //                 false,
-    //                 &None,
-    //                 &mut |cx, prelude, args| {
-    //                     cx.invoke_import(&binding, import, bindings, args, variadic, prelude)
-    //                 },
-    //             )?;
-    //             Ok(())
-    //         }
-    //     }
-    // }
 
     /// Returns whether we should disable the logic, in debug mode, to catch an
     /// error, log it, and rethrow it. This is only intended for user-defined
@@ -2119,30 +2073,72 @@ impl<'a> Context<'a> {
         }
     }
 
-    // fn import_does_not_require_glue(&self, binding: &Binding, webidl: &ast::WitFunction) -> bool {
-    //     if !self.config.anyref && binding.contains_anyref(self.module) {
-    //         return false;
-    //     }
-    //
-    //     let wasm_ty = self.module.types.get(binding.wasm_ty);
-    //     webidl.kind == AdapterJsImportKind::Normal
-    //         && webidl::outgoing_do_not_require_glue(
-    //             &binding.outgoing,
-    //             wasm_ty.params(),
-    //             &webidl.params,
-    //             self.config.wasm_interface_types,
-    //         )
-    //         && webidl::incoming_do_not_require_glue(
-    //             &binding.incoming,
-    //             &webidl.result.into_iter().collect::<Vec<_>>(),
-    //             wasm_ty.results(),
-    //             self.config.wasm_interface_types,
-    //         )
-    // }
+    /// Attempts to directly hook up the `id` import in the wasm module with
+    /// the `instrs` specified.
+    ///
+    /// If this succeeds it returns `Ok(true)`, otherwise if it cannot be
+    /// directly imported then `Ok(false)` is returned.
+    fn attempt_direct_import(
+        &mut self,
+        id: ImportId,
+        instrs: &[InstructionData],
+    ) -> Result<bool, Error> {
+        // First up extract the ID of the single called adapter, if any.
+        let mut call = None;
+        for instr in instrs {
+            match instr.instr {
+                Instruction::CallAdapter(id) => {
+                    if call.is_some() {
+                        return Ok(false);
+                    } else {
+                        call = Some(id);
+                    }
+                }
+                Instruction::CallExport(_)
+                | Instruction::CallTableElement(_)
+                | Instruction::Standard(wit_walrus::Instruction::CallCore(_))
+                | Instruction::Standard(wit_walrus::Instruction::CallAdapter(_)) => {
+                    return Ok(false)
+                }
+                _ => {}
+            }
+        }
+        let adapter = match call {
+            Some(id) => id,
+            None => return Ok(false),
+        };
+        match &self.wit.adapters[&adapter].kind {
+            AdapterKind::Import { kind, .. } => match kind {
+                AdapterJsImportKind::Normal => {}
+                // method/constructors need glue because we either need to
+                // invoke them as `new` or we need to invoke them with
+                // method-call syntax to get the `this` parameter right.
+                AdapterJsImportKind::Method | AdapterJsImportKind::Constructor => return Ok(false),
+            },
+            // This is an adapter-to-adapter call, so it needs a shim.
+            AdapterKind::Local { .. } => return Ok(false),
+        }
 
-    /// Emit a direct import directive that hooks up the `js` value specified to
-    /// the wasm import `id`.
-    fn direct_import(&mut self, id: ImportId, js: &JsImport) -> Result<(), Error> {
+        // Next up check to make sure that this import is to a bare JS value
+        // itself, no extra fluff intended.
+        let js = match &self.aux.import_map[&adapter] {
+            AuxImport::Value(AuxValue::Bare(js)) => js,
+            _ => return Ok(false),
+        };
+
+        // Make sure this isn't variadic in any way which means we need some
+        // sort of adapter glue.
+        if self.aux.imports_with_variadic.contains(&adapter) {
+            return Ok(false);
+        }
+
+        // Ensure that every single instruction can be represented without JS
+        // glue being generated, aka it's covered by the JS ECMAScript bindings
+        // for wasm.
+        if !self.representable_without_js_glue(instrs) {
+            return Ok(false);
+        }
+
         // If there's no field projection happening here and this is a direct
         // import from an ES-looking module, then we can actually just hook this
         // up directly in the wasm file itself. Note that this is covered in the
@@ -2162,14 +2158,14 @@ impl<'a> Context<'a> {
                     let import = self.module.imports.get_mut(id);
                     import.module = module.clone();
                     import.name = name.clone();
-                    return Ok(());
+                    return Ok(true);
                 }
                 JsImportName::LocalModule { module, name } => {
                     let module = self.config.local_module_name(module);
                     let import = self.module.imports.get_mut(id);
                     import.module = module;
                     import.name = name.clone();
-                    return Ok(());
+                    return Ok(true);
                 }
                 JsImportName::InlineJs {
                     unique_crate_identifier,
@@ -2182,7 +2178,7 @@ impl<'a> Context<'a> {
                     let import = self.module.imports.get_mut(id);
                     import.module = module;
                     import.name = name.clone();
-                    return Ok(());
+                    return Ok(true);
                 }
 
                 // Fall through below to requiring a JS shim to create an item
@@ -2200,7 +2196,61 @@ impl<'a> Context<'a> {
             name = name,
         );
         self.wasm_import_definitions.insert(id, js);
-        Ok(())
+        Ok(true)
+    }
+
+    fn representable_without_js_glue(&self, instrs: &[InstructionData]) -> bool {
+        use Instruction::*;
+        let standard_enabled = self.config.wasm_interface_types;
+
+        let mut last_arg = None;
+        let mut saw_call = false;
+        for instr in instrs {
+            match instr.instr {
+                // Is an adapter section getting emitted? If so, then every
+                // standard operation is natively supported!
+                Standard(_) if standard_enabled => {}
+
+                // Fetching arguments is just that, a fetch, so no need for
+                // glue. Note though that the arguments must be fetched in order
+                // for this to actually work,
+                Standard(wit_walrus::Instruction::ArgGet(i)) => {
+                    if saw_call {
+                        return false;
+                    }
+                    match (i, last_arg) {
+                        (0, None) => last_arg = Some(0),
+                        (n, Some(i)) if n == i + 1 => last_arg = Some(n),
+                        _ => return false,
+                    }
+                }
+
+                // Similarly calling a function is the same as in JS, no glue
+                // needed.
+                CallAdapter(_) => saw_call = true,
+
+                // Conversions to wasm integers are always supported since
+                // they're coerced into i32/f32/f64 appropriately.
+                Standard(wit_walrus::Instruction::IntToWasm { .. }) => {}
+
+                // Converts from wasm to JS, however, only supports most
+                // integers. Converting into a u32 isn't supported because we
+                // need to generate glue to change the sign.
+                Standard(wit_walrus::Instruction::WasmToInt {
+                    output: wit_walrus::ValType::U32,
+                    ..
+                }) => return false,
+                Standard(wit_walrus::Instruction::WasmToInt { .. }) => {}
+
+                // JS spec automatically coerces boolean values to i32 of 0 or 1
+                // depending on true/false
+                I32FromBool => {}
+
+                _ => return false,
+            }
+        }
+
+        return true;
     }
 
     /// Generates a JS snippet appropriate for invoking `import`.
