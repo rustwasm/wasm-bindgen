@@ -100,6 +100,8 @@ jobs:
         displayName: "wasm-bindgen-anyref-xform tests"
       - script: cargo test -p wasm-bindgen-multi-value-xform
         displayName: "wasm-bindgen-multi-value-xform tests"
+      - script: cargo test -p wasm-bindgen-wasm-interpreter
+        displayName: "wasm-bindgen-wasm-interpreter tests"
 
   - job: test_web_sys
     displayName: "Run web-sys crate tests"
@@ -157,23 +159,6 @@ jobs:
       # Temporarily disable sccache because it is failing on CI.
       # - template: ci/azure-install-sccache.yml
       - script: cargo test -p wasm-bindgen-macro
-
-  - job: test_wasm_interpreter
-    displayName: "Run wasm-bindgen-wasm-interpreter tests"
-    steps:
-      - template: ci/azure-install-rust.yml
-      # Temporarily disable sccache because it is failing on CI.
-      # - template: ci/azure-install-sccache.yml
-      - script: |
-          git clone https://github.com/WebAssembly/wabt
-          mkdir -p wabt/build
-          cd wabt/build
-          # Temporarily disable sccache because it is failing on CI.
-          # cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=off -DCMAKE_CXX_COMPILER_LAUNCHER=$RUSTC_WRAPPER
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=off
-          cmake --build . -- -j$(nproc)
-          echo "##vso[task.prependpath]$PWD"
-      - script: cargo test -p wasm-bindgen-wasm-interpreter
 
   - job: test_typescript_output
     displayName: "Test TypeScript output of wasm-bindgen"

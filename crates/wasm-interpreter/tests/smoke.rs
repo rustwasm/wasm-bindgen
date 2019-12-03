@@ -1,21 +1,8 @@
-use std::fs;
-use std::process::Command;
-
 use wasm_bindgen_wasm_interpreter::Interpreter;
 
 fn interpret(wat: &str, name: &str, result: Option<&[u32]>) {
-    let input = tempfile::NamedTempFile::new().unwrap();
-    let output = tempfile::NamedTempFile::new().unwrap();
-    fs::write(input.path(), wat).unwrap();
-    let status = Command::new("wat2wasm")
-        .arg(input.path())
-        .arg("-o")
-        .arg(output.path())
-        .status()
-        .unwrap();
-    println!("status: {}", status);
-    assert!(status.success());
-    let module = walrus::Module::from_file(output.path()).unwrap();
+    let wasm = wat::parse_str(wat).unwrap();
+    let module = walrus::Module::from_buffer(&wasm).unwrap();
     let mut i = Interpreter::new(&module).unwrap();
     let id = module
         .exports
