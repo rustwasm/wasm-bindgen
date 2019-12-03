@@ -2375,8 +2375,8 @@ impl<'a> Context<'a> {
                 // be deallocated while we're invoking it.
                 js.push_str("state.cnt++;\n");
 
-                self.export_function_table()?;
-                let dtor = format!("wasm.__wbg_function_table.get({})", dtor);
+                let table = self.export_function_table()?;
+                let dtor = format!("wasm.{}.get({})", table, dtor);
                 let call = self.adapter_name(*adapter);
 
                 if *mutable {
@@ -2682,8 +2682,8 @@ impl<'a> Context<'a> {
 
             Intrinsic::FunctionTable => {
                 assert_eq!(args.len(), 0);
-                self.export_function_table()?;
-                format!("wasm.__wbg_function_table")
+                let name = self.export_function_table()?;
+                format!("wasm.{}", name)
             }
 
             Intrinsic::DebugString => {
@@ -2932,16 +2932,11 @@ impl<'a> Context<'a> {
         );
     }
 
-    fn export_function_table(&mut self) -> Result<(), Error> {
-        if !self.should_write_global("wbg-function-table") {
-            return Ok(());
-        }
-        let id = match self.module.tables.main_function_table()? {
-            Some(id) => id,
+    fn export_function_table(&mut self) -> Result<String, Error> {
+        match self.module.tables.main_function_table()? {
+            Some(id) => Ok(self.export_name_of(id)),
             None => bail!("no function table found in module"),
-        };
-        self.module.exports.add("__wbg_function_table", id);
-        Ok(())
+        }
     }
 
     fn export_name_of(&mut self, id: impl Into<walrus::ExportItem>) -> String {
