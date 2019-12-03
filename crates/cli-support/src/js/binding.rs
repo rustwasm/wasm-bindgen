@@ -8,7 +8,6 @@ use crate::js::Context;
 use crate::wit::InstructionData;
 use crate::wit::{Adapter, AdapterId, AdapterKind, AdapterType, Instruction};
 use anyhow::{anyhow, bail, Error};
-use std::collections::HashSet;
 use walrus::Module;
 
 /// A one-size-fits-all builder for processing WebIDL bindings and generating
@@ -296,10 +295,6 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             typescript: Vec::new(),
             stack: Vec::new(),
         }
-    }
-
-    pub fn typescript_len(&self) -> usize {
-        self.typescript.len()
     }
 
     pub fn arg(&self, idx: u32) -> &str {

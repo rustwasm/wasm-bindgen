@@ -1906,23 +1906,10 @@ impl<'a> Context<'a> {
             };
             self.generate_adapter(*id, adapter, instrs)?;
         }
-        // for (i, (idx, binding)) in bindings.elems.iter().enumerate() {
-        //     self.generate_elem_binding(i, *idx, binding, bindings)?;
-        // }
-        //
+
         // let mut pairs = aux.export_map.iter().collect::<Vec<_>>();
         // pairs.sort_by_key(|(k, _)| *k);
         // check_duplicated_getter_and_setter_names(&pairs)?;
-        // for (id, export) in pairs {
-        //     self.generate_export(*id, export, bindings)
-        //         .with_context(|| {
-        //             format!(
-        //                 "failed to generate bindings for Rust export `{}`",
-        //                 export.debug_name,
-        //             )
-        //         })?;
-        // }
-        //
         // for (id, import) in sorted_iter(&aux.import_map) {
         //     let variadic = aux.imports_with_variadic.contains(&id);
         //     let catch = aux.imports_with_catch.contains(&id);
@@ -1948,40 +1935,6 @@ impl<'a> Context<'a> {
 
         Ok(())
     }
-
-    // /// Generates a wrapper function for each bound element of the function
-    // /// table. These wrapper functions have the expected WebIDL signature we'd
-    // /// like them to have. This currently isn't part of the WebIDL bindings
-    // /// proposal, but the thinking is that it'd look something like this if
-    // /// added.
-    // ///
-    // /// Note that this is just an internal function shim used by closures and
-    // /// such, so we're not actually exporting anything here.
-    // fn generate_elem_binding(
-    //     &mut self,
-    //     idx: usize,
-    //     elem_idx: u32,
-    //     binding: &Binding,
-    //     bindings: &NonstandardWitSection,
-    // ) -> Result<(), Error> {
-    //     let webidl = bindings
-    //         .types
-    //         .get::<ast::WitFunction>(binding.webidl_ty)
-    //         .unwrap();
-    //     self.export_function_table()?;
-    //     let mut builder = binding::Builder::new(self);
-    //     builder.disable_log_error(true);
-    //     let js = builder.process(&binding, &webidl, true, &None, &mut |_, _, args| {
-    //         Ok(format!(
-    //             "wasm.__wbg_function_table.get({})({})",
-    //             elem_idx,
-    //             args.join(", ")
-    //         ))
-    //     })?;
-    //     self.globals
-    //         .push_str(&format!("function __wbg_elem_binding{}{}\n", idx, js));
-    //     Ok(())
-    // }
 
     fn generate_adapter(
         &mut self,
@@ -2029,7 +1982,7 @@ impl<'a> Context<'a> {
                     AuxExportKind::Method { consumed, .. } => builder.method(*consumed),
                 }
             }
-            Kind::Import(import) => {}
+            Kind::Import(_) => {}
             Kind::Other => {}
         }
 
@@ -2958,7 +2911,7 @@ impl<'a> Context<'a> {
                 .insert(export.name.clone().into());
             return export.name.clone();
         }
-        let mut name = format!("__wbindgen_export_{}", self.next_export_idx);
+        let name = format!("__wbindgen_export_{}", self.next_export_idx);
         self.next_export_idx += 1;
         self.module.exports.add(&name, id);
         self.required_internal_exports.insert(name.clone().into());

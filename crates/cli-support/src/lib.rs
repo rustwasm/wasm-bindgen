@@ -15,7 +15,6 @@ mod decode;
 mod descriptor;
 mod descriptors;
 mod intrinsic;
-#[allow(dead_code, unused)]
 mod js;
 mod multivalue;
 pub mod wasm2es6js;
