@@ -13,9 +13,6 @@ pub struct NonstandardWitSection {
 
     /// A list of adapter functions and the names they're exported under.
     pub exports: Vec<(String, AdapterId)>,
-    // /// A list of table elements that are wrapped by the given adapter
-    // /// function.
-    // pub elems: Vec<(u32, AdapterId)>,
 }
 
 pub type NonstandardWitSectionId = TypedCustomSectionId<NonstandardWitSection>;

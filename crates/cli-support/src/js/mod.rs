@@ -1943,30 +1943,29 @@ impl<'a> Context<'a> {
         instrs: &[InstructionData],
     ) -> Result<(), Error> {
         enum Kind<'a> {
-            Import(&'a AuxImport),
             Export(&'a AuxExport),
-            Other,
+            Import(walrus::ImportId),
+            Adapter,
         }
 
-        let mut disable_log_error = true;
         let kind = match self.aux.export_map.get(&id) {
             Some(export) => Kind::Export(export),
-            None => match self.aux.import_map.get(&id) {
-                Some(import) => {
-                    if true {
-                        panic!()
-                    }
-                    disable_log_error = self.import_never_log_error(import);
-                    Kind::Import(import)
+            None => {
+                let core = self.wit.implements.iter().find(|pair| pair.1 == id);
+                match core {
+                    Some((core, _)) => Kind::Import(*core),
+                    None => Kind::Adapter,
                 }
-                None => Kind::Other,
-            },
+            }
         };
 
         // Construct a JS shim builder, and configure it based on the kind of
         // export that we're generating.
         let mut builder = binding::Builder::new(self);
-        builder.disable_log_error(disable_log_error);
+        builder.log_error(match kind {
+            Kind::Export(_) | Kind::Adapter => false,
+            Kind::Import(_) => builder.cx.config.debug,
+        });
         builder.catch(builder.cx.aux.imports_with_catch.contains(&id));
         let mut arg_names = &None;
         match kind {
@@ -1983,7 +1982,7 @@ impl<'a> Context<'a> {
                 }
             }
             Kind::Import(_) => {}
-            Kind::Other => {}
+            Kind::Adapter => {}
         }
 
         // Process the `binding` and generate a bunch of JS/TypeScript/etc.
@@ -1991,8 +1990,14 @@ impl<'a> Context<'a> {
             .process(&adapter, instrs, arg_names)
             .with_context(|| match kind {
                 Kind::Export(e) => format!("failed to generate bindings for `{}`", e.debug_name),
-                Kind::Import(i) => format!("failed to generate bindings for import {:?}", i),
-                Kind::Other => format!("failed to generates bindings for adapter"),
+                Kind::Import(i) => {
+                    let i = builder.cx.module.imports.get(i);
+                    format!(
+                        "failed to generate bindings for import of `{}::{}`",
+                        i.module, i.name
+                    )
+                }
+                Kind::Adapter => format!("failed to generates bindings for adapter"),
             })?;
         let ts = builder.typescript_signature();
         let js_doc = builder.js_doc_comments();
@@ -2039,21 +2044,15 @@ impl<'a> Context<'a> {
                     }
                 }
             }
-            Kind::Import(_) => {}
-            Kind::Other => {
-                let core = self.wit.implements.iter().find(|pair| pair.1 == id);
-                match core {
-                    Some((core, _)) => {
-                        self.wasm_import_definitions
-                            .insert(*core, format!("function{}", js));
-                    }
-                    None => {
-                        self.globals.push_str("function ");
-                        self.globals.push_str(&self.adapter_name(id));
-                        self.globals.push_str(&js);
-                        self.globals.push_str("\n\n");
-                    }
-                }
+            Kind::Import(core) => {
+                self.wasm_import_definitions
+                    .insert(core, format!("function{}", js));
+            }
+            Kind::Adapter => {
+                self.globals.push_str("function ");
+                self.globals.push_str(&self.adapter_name(id));
+                self.globals.push_str(&js);
+                self.globals.push_str("\n\n");
             }
         }
         Ok(())
@@ -2691,7 +2690,9 @@ impl<'a> Context<'a> {
             }
 
             Intrinsic::InitAnyrefTable => {
-                let table = self.aux.anyref_table
+                let table = self
+                    .aux
+                    .anyref_table
                     .ok_or_else(|| anyhow!("must enable anyref to use anyref intrinsic"))?;
                 let name = self.export_name_of(table);
                 // Grow the table to insert our initial values, and then also

@@ -75,7 +75,7 @@ pub struct TypescriptArg {
 impl<'a, 'b> Builder<'a, 'b> {
     pub fn new(cx: &'a mut Context<'b>) -> Builder<'a, 'b> {
         Builder {
-            log_error: cx.config.debug,
+            log_error: false,
             cx,
             ts_args: Vec::new(),
             ts_ret: None,
@@ -97,10 +97,8 @@ impl<'a, 'b> Builder<'a, 'b> {
         self.catch = catch;
     }
 
-    pub fn disable_log_error(&mut self, disable: bool) {
-        if disable {
-            self.log_error = false;
-        }
+    pub fn log_error(&mut self, log: bool) {
+        self.log_error = log;
     }
 
     pub fn process(
@@ -156,7 +154,7 @@ impl<'a, 'b> Builder<'a, 'b> {
         // more JIT-friendly. The generated code should be equivalent to the
         // wasm interface types stack machine, however.
         for instr in instructions {
-            instruction(&mut js, &instr.instr)?;
+            instruction(&mut js, &instr.instr, &mut self.log_error)?;
         }
 
         assert_eq!(js.stack.len(), adapter.results.len());
@@ -414,7 +412,7 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
     }
 }
 
-fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
+fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) -> Result<(), Error> {
     // Here first properly aligned nonzero address is chosen to be the
     // out-pointer. We use the address for a BigInt64Array sometimes which
     // means it needs to be 8-byte aligned. Otherwise valid code is
@@ -448,7 +446,7 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction) -> Result<(), Error> {
             args.reverse();
 
             // Call the function through an export of the underlying module.
-            let call = invoc.invoke(js.cx, &args, &mut js.prelude)?;
+            let call = invoc.invoke(js.cx, &args, &mut js.prelude, log_error)?;
 
             // And then figure out how to actually handle where the call
             // happens. This is pretty conditional depending on the number of
@@ -1163,6 +1161,7 @@ impl Invocation {
         cx: &mut Context,
         args: &[String],
         prelude: &mut String,
+        log_error: &mut bool,
     ) -> Result<String, Error> {
         match self {
             Invocation::Core { id, .. } => {
@@ -1179,6 +1178,9 @@ impl Invocation {
                 };
                 let import = &cx.aux.import_map[id];
                 let variadic = cx.aux.imports_with_variadic.contains(id);
+                if cx.import_never_log_error(import) {
+                    *log_error = false;
+                }
                 cx.invoke_import(import, kind, args, variadic, prelude)
             }
         }
