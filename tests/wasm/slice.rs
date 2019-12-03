@@ -55,7 +55,7 @@ macro_rules! import_macro {
     ($(($rust:ident, $js:ident, $i:ident))*) => ($(
         #[wasm_bindgen(module = "tests/wasm/slice.js")]
         extern "C" {
-            fn $js(a: &[$i]) -> Vec<$i>;
+            fn $js(a: &[$i], b: Option<&[$i]>, c: Option<&[$i]>) -> Vec<$i>;
         }
 
         #[wasm_bindgen]
@@ -63,7 +63,7 @@ macro_rules! import_macro {
             assert_eq!(a.len(), 2);
             assert_eq!(a[0], 1 as $i);
             assert_eq!(a[1], 2 as $i);
-            $js(a)
+            $js(a, Some(a), None)
         }
     )*)
 }
@@ -120,19 +120,27 @@ macro_rules! import_mut_macro {
         $(
             #[wasm_bindgen(module = "tests/wasm/slice.js")]
             extern "C" {
-                fn $js(a: &mut [$i]);
+                fn $js(a: &mut [$i], b: Option<&mut [$i]>, c: Option<&mut [$i]>);
             }
 
             fn $rust() {
-                let mut buf = [
+                let mut buf1 = [
                     1 as $i,
                     2 as $i,
                     3 as $i,
                 ];
-                $js(&mut buf);
-                assert_eq!(buf[0], 4 as $i);
-                assert_eq!(buf[1], 5 as $i);
-                assert_eq!(buf[2], 3 as $i);
+                let mut buf2 = [
+                    4 as $i,
+                    5 as $i,
+                    6 as $i,
+                ];
+                $js(&mut buf1, Some(&mut buf2), None);
+                assert_eq!(buf1[0], 4 as $i);
+                assert_eq!(buf1[1], 5 as $i);
+                assert_eq!(buf1[2], 3 as $i);
+                assert_eq!(buf2[0], 8 as $i);
+                assert_eq!(buf2[1], 7 as $i);
+                assert_eq!(buf2[2], 6 as $i);
             }
         )*
 

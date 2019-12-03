@@ -272,42 +272,6 @@ impl InstructionBuilder<'_, '_> {
                 );
             }
 
-            Descriptor::Ref(_) | Descriptor::RefMut(_) => {
-                let mutable = match arg {
-                    Descriptor::Ref(_) => false,
-                    _ => true,
-                };
-                let kind = arg.vector_kind().ok_or_else(|| {
-                    format_err!(
-                        "unsupported optional slice type for calling Rust function from JS {:?}",
-                        arg
-                    )
-                })?;
-                drop((kind, mutable));
-                bail!("unsupported slice");
-                // let malloc = self.cx.malloc()?;
-                // let mem = self.cx.memory()?;
-                // if mutable {
-                //     let free = self.cx.free()?;
-                //     self.instruction(
-                //         &[AdapterType::Anyref],
-                //         Instruction::OptionMutableSlice {
-                //             kind,
-                //             malloc,
-                //             mem,
-                //             free,
-                //         },
-                //         &[AdapterType::I32; 2],
-                //     );
-                // } else {
-                //     self.instruction(
-                //         &[AdapterType::Anyref],
-                //         Instruction::OptionVector { kind, malloc, mem },
-                //         &[AdapterType::I32; 2],
-                //     );
-                // }
-            }
-
             Descriptor::String | Descriptor::CachedString | Descriptor::Vector(_) => {
                 let kind = arg.vector_kind().ok_or_else(|| {
                     format_err!(
