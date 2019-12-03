@@ -168,14 +168,18 @@ impl<'a, 'b> Builder<'a, 'b> {
                 let val = js.pop();
                 js.prelude(&format!("return {};", val));
             }
-            _ => {
-                if true {
-                    panic!()
-                }
-                let expr = js.stack.join(", ");
-                js.stack.truncate(0);
-                js.prelude(&format!("return [{}];", expr));
-            }
+
+            // TODO: this should be pretty trivial to support (commented out
+            // code below), but we should be sure to have a test for this
+            // somewhere. Currently I don't think it's possible to actually
+            // exercise this with just Rust code, so let's wait until we get
+            // some tests to enable this path.
+            _ => bail!("multi-value returns from adapters not supported yet"),
+            // _ => {
+            //     let expr = js.stack.join(", ");
+            //     js.stack.truncate(0);
+            //     js.prelude(&format!("return [{}];", expr));
+            // }
         }
         assert!(js.stack.is_empty());
         self.ts_args = js.typescript;
