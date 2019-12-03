@@ -48,6 +48,7 @@ pub struct Meta {
     pub table: TableId,
     pub alloc: Option<FunctionId>,
     pub drop_slice: Option<FunctionId>,
+    pub live_count: Option<FunctionId>,
 }
 
 struct Transform<'a> {
@@ -178,20 +179,27 @@ impl Context {
         let mut heap_alloc = None;
         let mut heap_dealloc = None;
         let mut drop_slice = None;
+        let mut live_count = None;
 
         // Find exports of some intrinsics which we only need for a runtime
         // implementation.
+        let mut to_delete = Vec::new();
         for export in module.exports.iter() {
             let f = match export.item {
                 walrus::ExportItem::Function(f) => f,
                 _ => continue,
             };
             match export.name.as_str() {
-                "__wbindgen_anyref_table_alloc" => heap_alloc = Some(f),
-                "__wbindgen_anyref_table_dealloc" => heap_dealloc = Some(f),
-                "__wbindgen_drop_anyref_slice" => drop_slice = Some(f),
+                "__anyref_table_alloc" => heap_alloc = Some(f),
+                "__anyref_table_dealloc" => heap_dealloc = Some(f),
+                "__anyref_drop_slice" => drop_slice = Some(f),
+                "__anyref_heap_live_count" => live_count = Some(f),
                 _ => continue,
             }
+            to_delete.push(export.id());
+        }
+        for id in to_delete {
+            module.exports.delete(id);
         }
         let mut clone_ref = None;
         if let Some(heap_alloc) = heap_alloc {
@@ -240,6 +248,7 @@ impl Context {
             table,
             alloc: heap_alloc,
             drop_slice,
+            live_count,
         })
     }
 }

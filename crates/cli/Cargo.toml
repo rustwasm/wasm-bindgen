@@ -30,7 +30,16 @@ wasm-bindgen-shared = { path = "../shared", version = "=0.2.55" }
 
 [dev-dependencies]
 assert_cmd = "0.11"
+diff = "0.1"
 predicates = "1.0.0"
+rayon = "1.0"
+tempfile = "3.0"
+walrus = "0.14"
+wasmprinter = "0.2"
+
+[[test]]
+name = "reference"
+harness = false
 
 [features]
 vendored-openssl = ['openssl/vendored']

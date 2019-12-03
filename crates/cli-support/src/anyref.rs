@@ -1,8 +1,10 @@
 use crate::wit::{AdapterKind, Instruction, NonstandardWitSection};
 use crate::wit::{AdapterType, InstructionData, StackChange, WasmBindgenAux};
+use crate::wit::AuxImport;
 use anyhow::Error;
 use std::collections::HashMap;
 use walrus::Module;
+use crate::intrinsic::Intrinsic;
 use wasm_bindgen_anyref_xform::Context;
 
 pub fn process(module: &mut Module) -> Result<(), Error> {
@@ -17,7 +19,7 @@ pub fn process(module: &mut Module) -> Result<(), Error> {
         .implements
         .iter()
         .cloned()
-        .map(|(core, adapter)| (adapter, core))
+        .map(|(core, _, adapter)| (adapter, core))
         .collect::<HashMap<_, _>>();
 
     // Transform all exported functions in the module, using the bindings listed
@@ -45,13 +47,51 @@ pub fn process(module: &mut Module) -> Result<(), Error> {
 
     let meta = cfg.run(module)?;
 
-    let section = module
+    // Store functions found during the anyref transformation onto the auxiliary
+    // section. These will end up getting used for the full support in the JS
+    // polyfill, so we'll want the functions to stick around.
+    let mut aux = module
         .customs
-        .get_typed_mut::<WasmBindgenAux>()
+        .delete_typed::<WasmBindgenAux>()
         .expect("wit custom section should exist");
-    section.anyref_table = Some(meta.table);
-    section.anyref_alloc = meta.alloc;
-    section.anyref_drop_slice = meta.drop_slice;
+    aux.anyref_table = Some(meta.table);
+    aux.anyref_alloc = meta.alloc;
+    aux.anyref_drop_slice = meta.drop_slice;
+
+    // Additionally if the heap live count intrinsic was found, if it was
+    // actually called from any adapter function we want to switch to calling
+    // the wasm core module intrinsic directly. This'll avoid generating
+    // incorrect JS glue.
+    if let Some(id) = meta.live_count {
+        let section = module
+            .customs
+            .get_typed_mut::<NonstandardWitSection>()
+            .expect("wit custom section should exist");
+        for (_, adapter) in section.adapters.iter_mut() {
+            let instrs = match &mut adapter.kind {
+                AdapterKind::Local { instructions } => instructions,
+                AdapterKind::Import { .. } => continue,
+            };
+            for instr in instrs {
+                let adapter = match instr.instr {
+                    Instruction::CallAdapter(id) => id,
+                    _ => continue,
+                };
+                let import = match aux.import_map.get(&adapter) {
+                    Some(import) => import,
+                    None => continue,
+                };
+                match import {
+                    AuxImport::Intrinsic(Intrinsic::AnyrefHeapLiveCount) => {}
+                    _ => continue,
+                }
+                instr.instr = Instruction::Standard(wit_walrus::Instruction::CallCore(id));
+            }
+        }
+    }
+
+    module.customs.add(*aux);
+
     Ok(())
 }
 

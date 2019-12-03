@@ -29,11 +29,11 @@ pub fn get_memory(module: &Module) -> Result<MemoryId, Error> {
     })
 }
 
-/// Discover the shadow stack pointer and add it to the module's exports as
-/// `__shadow_stack_pointer`.
+/// Get the `__shadow_stack_pointer`.
 ///
-/// Adding it to the exports is useful for making sure it doesn't get GC'd.
-pub fn export_shadow_stack_pointer(module: &mut Module) -> Result<(), Error> {
+/// It must have been previously added to the module's exports via
+/// `export_shadow_stack_pointer`.
+pub fn get_shadow_stack_pointer(module: &Module) -> Result<GlobalId, Error> {
     let candidates = module
         .globals
         .iter()
@@ -57,35 +57,5 @@ pub fn export_shadow_stack_pointer(module: &mut Module) -> Result<(), Error> {
         _ => bail!("too many mutable globals to infer which is the shadow stack pointer"),
     };
 
-    module.exports.add("__shadow_stack_pointer", ssp);
-    Ok(())
-}
-
-/// Unexport the shadow stack pointer that was previously added to the module's
-/// exports as `__shadow_stack_pointer`.
-pub fn unexport_shadow_stack_pointer(module: &mut Module) -> Result<(), Error> {
-    let e = module
-        .exports
-        .iter()
-        .find(|e| e.name == "__shadow_stack_pointer")
-        .map(|e| e.id())
-        .ok_or_else(|| anyhow!("did not find the `__shadow_stack_pointer` export in the module"))?;
-    module.exports.delete(e);
-    Ok(())
-}
-
-/// Get the `__shadow_stack_pointer`.
-///
-/// It must have been previously added to the module's exports via
-/// `export_shadow_stack_pointer`.
-pub fn get_shadow_stack_pointer(module: &Module) -> Result<GlobalId, Error> {
-    module
-        .exports
-        .iter()
-        .find(|e| e.name == "__shadow_stack_pointer")
-        .ok_or_else(|| anyhow!("did not find the `__shadow_stack_pointer` export in the module"))
-        .and_then(|e| match e.item {
-            walrus::ExportItem::Global(g) => Ok(g),
-            _ => bail!("`__shadow_stack_pointer` export is wrong kind"),
-        })
+    Ok(ssp)
 }

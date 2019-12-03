@@ -83,6 +83,8 @@ pub fn process(
 
     cx.verify()?;
 
+    cx.unexport_intrinsics();
+
     let adapters = cx.module.customs.add(cx.adapters);
     let aux = cx.module.customs.add(cx.aux);
     Ok((adapters, aux))
@@ -502,9 +504,15 @@ impl<'a> Context<'a> {
         // itself but to the adapter shim we generated, so fetch that shim id
         // and flag it as catch here. This basically just needs to be kept in
         // sync with `js/mod.rs`.
-        let adapter = self.adapters.implements.last().unwrap().1;
+        //
+        // For `catch` once we see that we'll need an internal intrinsic later
+        // for JS glue generation, so be sure to find that here.
+        let adapter = self.adapters.implements.last().unwrap().2;
         if *catch {
             self.aux.imports_with_catch.insert(adapter);
+            if self.aux.exn_store.is_none() {
+                self.find_exn_store();
+            }
         }
         if *assert_no_shim {
             self.aux.imports_with_assert_no_shim.insert(adapter);
@@ -983,7 +991,7 @@ impl<'a> Context<'a> {
             };
             self.adapters
                 .implements
-                .push((import_id, walrus2us[&i.adapter_func]));
+                .push((import_id, i.core_func, walrus2us[&i.adapter_func]));
         }
         Ok(())
     }
@@ -995,7 +1003,7 @@ impl<'a> Context<'a> {
         // `$PLACEHOLDER_MODULE` are connected to an adapter via the
         // `implements` section.
         let mut implemented = HashMap::new();
-        for (core, adapter) in self.adapters.implements.iter() {
+        for (core, _, adapter) in self.adapters.implements.iter() {
             implemented.insert(core, adapter);
         }
         for import in self.module.imports.iter() {
@@ -1005,6 +1013,15 @@ impl<'a> Context<'a> {
             match import.kind {
                 walrus::ImportKind::Function(_) => {}
                 _ => bail!("import from `{}` was not a function", PLACEHOLDER_MODULE),
+            }
+
+            // These are special intrinsics which were handled in the descriptor
+            // phase, but we don't have an implementation for them. We don't
+            // need to error about them in this verification pass though,
+            // having them lingering in the module is normal.
+            if import.name == "__wbindgen_describe" || import.name == "__wbindgen_describe_closure"
+            {
+                continue;
             }
             if implemented.remove(&import.id()).is_none() {
                 bail!("import of `{}` doesn't have an adapter listed", import.name);
@@ -1065,6 +1082,10 @@ impl<'a> Context<'a> {
         let import = self.module.imports.get(import);
         let (import_module, import_name) = (import.module.clone(), import.name.clone());
         let import_id = import.id();
+        let core_id = match import.kind {
+            walrus::ImportKind::Function(f) => f,
+            _ => bail!("bound import must be assigned to function"),
+        };
 
         // Process the returned type first to see if it needs an out-pointer. This
         // happens if the results of the incoming arguments translated to wasm take
@@ -1131,7 +1152,7 @@ impl<'a> Context<'a> {
             .cx
             .adapters
             .append(args.input, results, AdapterKind::Local { instructions });
-        args.cx.adapters.implements.push((import_id, id));
+        args.cx.adapters.implements.push((import_id, core_id, id));
         Ok(f)
     }
 
@@ -1244,6 +1265,45 @@ impl<'a> Context<'a> {
     fn memory(&self) -> Result<MemoryId, Error> {
         self.memory
             .ok_or_else(|| anyhow!("failed to find memory declaration in module"))
+    }
+
+    /// Removes the export item for all `__wbindgen` intrinsics which are
+    /// generally only purely internal helpers.
+    ///
+    /// References to these functions are preserved through adapter instructions
+    /// if necessary, otherwise they can all be gc'd out. By the time this
+    /// function is called our discovery of these intrinsics has completed and
+    /// there's no need to keep around these exports.
+    fn unexport_intrinsics(&mut self) {
+        let mut to_remove = Vec::new();
+        for export in self.module.exports.iter() {
+            match export.name.as_str() {
+                n if n.starts_with("__wbindgen") => {
+                    to_remove.push(export.id());
+                }
+                _ => {}
+            }
+        }
+        for id in to_remove {
+            self.module.exports.delete(id);
+        }
+    }
+
+    /// Attempts to locate the `__wbindgen_exn_store` intrinsic and stores it in
+    /// our auxiliary information.
+    ///
+    /// This is only invoked if the intrinsic will actually be needed for JS
+    /// glue generation somewhere.
+    fn find_exn_store(&mut self) {
+        self.aux.exn_store = self
+            .module
+            .exports
+            .iter()
+            .find(|e| e.name == "__wbindgen_exn_store")
+            .and_then(|e| match e.item {
+                walrus::ExportItem::Function(f) => Some(f),
+                _ => None,
+            });
     }
 }
 

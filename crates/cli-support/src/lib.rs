@@ -1,14 +1,13 @@
 #![doc(html_root_url = "https://docs.rs/wasm-bindgen-cli-support/0.2")]
 
 use anyhow::{bail, Context, Error};
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::env;
 use std::fs;
 use std::mem;
 use std::path::{Path, PathBuf};
 use std::str;
 use walrus::Module;
-use wasm_bindgen_wasm_conventions as wasm_conventions;
 
 mod anyref;
 mod decode;
@@ -280,15 +279,6 @@ impl Bindgen {
             }
         };
 
-        // Our threads and multi-value xforms rely on the presence of the stack
-        // pointer, so temporarily export it so that our many GC's don't remove
-        // it before the xform runs.
-        let mut exported_shadow_stack_pointer = false;
-        if self.multi_value || self.threads.is_enabled(&module) {
-            wasm_conventions::export_shadow_stack_pointer(&mut module)?;
-            exported_shadow_stack_pointer = true;
-        }
-
         // This isn't the hardest thing in the world too support but we
         // basically don't know how to rationalize #[wasm_bindgen(start)] and
         // the actual `start` function if present. Figure this out later if it
@@ -346,9 +336,28 @@ impl Bindgen {
         // This is only done if the anyref pass is enabled, which it's
         // currently off-by-default since `anyref` is still in development in
         // engines.
+        //
+        // If the anyref pass isn't necessary, then we blanket delete the
+        // export of all our anyref intrinsics which will get cleaned up in the
+        // GC pass before JS generation.
         if self.anyref {
             anyref::process(&mut module)?;
+        } else {
+            let ids = module
+                .exports
+                .iter()
+                .filter(|e| e.name.starts_with("__anyref"))
+                .map(|e| e.id())
+                .collect::<Vec<_>>();
+            for id in ids {
+                module.exports.delete(id);
+            }
         }
+
+        // We've done a whole bunch of transformations to the wasm module, many
+        // of which leave "garbage" lying around, so let's prune out all our
+        // unnecessary things here.
+        gc_module_and_adapters(&mut module);
 
         let aux = module
             .customs
@@ -380,17 +389,6 @@ impl Bindgen {
                      Wasm interface types is also enabled"
                 );
             }
-        }
-
-        // If we exported the shadow stack pointer earlier, remove it from the
-        // export set now.
-        if exported_shadow_stack_pointer {
-            wasm_conventions::unexport_shadow_stack_pointer(&mut module)?;
-            // The shadow stack pointer is potentially unused now, but since it
-            // most likely _is_ in use, we don't pay the cost of a full GC here
-            // just to remove one potentially unnecessary global.
-            //
-            // walrus::passes::gc::run(&mut module);
         }
 
         Ok(Output {
@@ -718,5 +716,44 @@ impl Output {
         }
 
         reset_indentation(&shim)
+    }
+}
+
+fn gc_module_and_adapters(module: &mut Module) {
+    // First up we execute walrus's own gc passes, and this may enable us to
+    // delete entries in the `implements` section of the nonstandard wasm
+    // interface types section. (if the import is GC'd, then the implements
+    // annotation is no longer needed).
+    //
+    // By deleting adapter functions that may enable us to further delete more
+    // functions, so we run this in a loop until we don't actually delete any
+    // adapter functions.
+    loop {
+        walrus::passes::gc::run(module);
+
+        let imports_remaining = module
+            .imports
+            .iter()
+            .map(|i| i.id())
+            .collect::<HashSet<_>>();
+        let section = module
+            .customs
+            .get_typed_mut::<wit::NonstandardWitSection>()
+            .unwrap();
+        let mut deleted_implements = Vec::new();
+        section.implements.retain(|pair| {
+            if imports_remaining.contains(&pair.0) {
+                true
+            } else {
+                deleted_implements.push(pair.2);
+                false
+            }
+        });
+        if deleted_implements.len() == 0 {
+            break;
+        }
+        for id in deleted_implements {
+            section.adapters.remove(&id);
+        }
     }
 }
