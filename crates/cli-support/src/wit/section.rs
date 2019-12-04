@@ -45,13 +45,14 @@ pub fn add(
         anyref_table: _,      // not relevant
         anyref_alloc: _,      // not relevant
         anyref_drop_slice: _, // not relevant
+        exn_store: _,         // not relevant
     } = aux;
 
     let adapter_context = |id: AdapterId| {
         if let Some((name, _)) = nonstandard.exports.iter().find(|p| p.1 == id) {
             return format!("in function export `{}`", name);
         }
-        if let Some((core, _)) = nonstandard.implements.iter().find(|p| p.1 == id) {
+        if let Some((core, _, _)) = nonstandard.implements.iter().find(|p| p.2 == id) {
             let import = module.imports.get(*core);
             return format!(
                 "in function import from `{}::{}`",
@@ -107,12 +108,8 @@ pub fn add(
         us2walrus.insert(*us, walrus);
     }
 
-    for (core, adapter) in nonstandard.implements.iter() {
-        let core = match module.imports.get(*core).kind {
-            walrus::ImportKind::Function(f) => f,
-            _ => bail!("cannot implement a non-function"),
-        };
-        section.implements.add(us2walrus[adapter], core);
+    for (_, core, adapter) in nonstandard.implements.iter() {
+        section.implements.add(us2walrus[adapter], *core);
     }
 
     for (name, adapter) in nonstandard.exports.iter() {
@@ -231,6 +228,14 @@ fn translate_instruction(
                 _ => bail!("expected to find an element of the function table"),
             }
         }
+        StringToMemory {
+            mem,
+            malloc,
+            realloc: _,
+        } => Ok(wit_walrus::Instruction::StringToMemory {
+            mem: *mem,
+            malloc: *malloc,
+        }),
         StoreRetptr { .. } | LoadRetptr { .. } | Retptr => {
             bail!("return pointers aren't supported in wasm interface types");
         }
@@ -250,7 +255,7 @@ fn translate_instruction(
             bail!("64-bit integers aren't supported in wasm-bindgen");
         }
         I32SplitOption64 { .. }
-        | I32FromOptionAnyref
+        | I32FromOptionAnyref { .. }
         | I32FromOptionU32Sentinel
         | I32FromOptionRust { .. }
         | I32FromOptionBool
@@ -258,6 +263,7 @@ fn translate_instruction(
         | I32FromOptionEnum { .. }
         | FromOptionNative { .. }
         | OptionVector { .. }
+        | OptionString { .. }
         | OptionRustFromI32 { .. }
         | OptionVectorLoad { .. }
         | OptionView { .. }

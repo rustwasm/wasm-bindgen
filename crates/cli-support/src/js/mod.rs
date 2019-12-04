@@ -20,7 +20,6 @@ pub struct Context<'a> {
     imports_post: String,
     typescript: String,
     exposed_globals: Option<HashSet<Cow<'static, str>>>,
-    required_internal_exports: HashSet<Cow<'static, str>>,
     next_export_idx: usize,
     config: &'a Bindgen,
     pub module: &'a mut Module,
@@ -87,7 +86,6 @@ impl<'a> Context<'a> {
             imports_post: String::new(),
             typescript: "/* tslint:disable */\n".to_string(),
             exposed_globals: Some(Default::default()),
-            required_internal_exports: Default::default(),
             imported_names: Default::default(),
             js_imports: Default::default(),
             defined_identifiers: Default::default(),
@@ -169,32 +167,11 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn require_internal_export(&mut self, name: &'static str) -> Result<(), Error> {
-        if !self.required_internal_exports.insert(name.into()) {
-            return Ok(());
-        }
-
-        if self.module.exports.iter().any(|e| e.name == name) {
-            return Ok(());
-        }
-
-        bail!(
-            "the exported function `{}` is required to generate bindings \
-             but it was not found in the wasm file, perhaps the `std` feature \
-             of the `wasm-bindgen` crate needs to be enabled?",
-            name
-        );
-    }
-
     pub fn finalize(&mut self, module_name: &str) -> Result<(String, String), Error> {
         // Finalize all bindings for JS classes. This is where we'll generate JS
         // glue for all classes as well as finish up a few final imports like
         // `__wrap` and such.
         self.write_classes()?;
-
-        // We're almost done here, so we can delete any internal exports (like
-        // `__wbindgen_malloc`) if none of our JS glue actually needed it.
-        self.unexport_unused_internal_exports();
 
         // Initialization is just flat out tricky and not something we
         // understand super well. To try to handle various issues that have come
@@ -202,22 +179,6 @@ impl<'a> Context<'a> {
         // bindings glue then manually calls the start function (if it was
         // previously present).
         let needs_manual_start = self.unstart_start_function();
-
-        // After all we've done, especially
-        // `unexport_unused_internal_exports()`, we probably have a bunch of
-        // garbage in the module that's no longer necessary, so delete
-        // everything that we don't actually need. Afterwards make sure we don't
-        // try to emit bindings for now-nonexistent imports by pruning our
-        // `wasm_import_definitions` set.
-        walrus::passes::gc::run(self.module);
-        let remaining_imports = self
-            .module
-            .imports
-            .iter()
-            .map(|i| i.id())
-            .collect::<HashSet<_>>();
-        self.wasm_import_definitions
-            .retain(|id, _| remaining_imports.contains(id));
 
         // Cause any future calls to `should_write_global` to panic, making sure
         // we don't ask for items which we can no longer emit.
@@ -739,25 +700,6 @@ impl<'a> Context<'a> {
         Ok(())
     }
 
-    fn unexport_unused_internal_exports(&mut self) {
-        let mut to_remove = Vec::new();
-        for export in self.module.exports.iter() {
-            match export.name.as_str() {
-                // Otherwise only consider our special exports, which all start
-                // with the same prefix which hopefully only we're using.
-                n if n.starts_with("__wbindgen") => {
-                    if !self.required_internal_exports.contains(n) {
-                        to_remove.push(export.id());
-                    }
-                }
-                _ => {}
-            }
-        }
-        for id in to_remove {
-            self.module.exports.delete(id);
-        }
-    }
-
     fn expose_drop_ref(&mut self) {
         if !self.should_write_global("drop_ref") {
             return;
@@ -962,8 +904,6 @@ impl<'a> Context<'a> {
             }
         }
 
-        self.require_internal_export("__wbindgen_realloc")?;
-
         // A fast path that directly writes char codes into WASM memory as long
         // as it finds only ASCII characters.
         //
@@ -975,10 +915,18 @@ impl<'a> Context<'a> {
         // charCodeAt on ASCII strings is usually optimised to raw bytes.
         let encode_as_ascii = format!(
             "\
+                if (realloc === undefined) {{
+                    const buf = cachedTextEncoder.encode(arg);
+                    const ptr = malloc(buf.length);
+                    {mem}().subarray(ptr, ptr + buf.length).set(buf);
+                    WASM_VECTOR_LEN = buf.length;
+                    return ptr;
+                }}
+
                 let len = arg.length;
                 let ptr = malloc(len);
 
-                const mem = {}();
+                const mem = {mem}();
 
                 let offset = 0;
 
@@ -988,7 +936,7 @@ impl<'a> Context<'a> {
                     mem[ptr + offset] = code;
                 }}
             ",
-            mem
+            mem = mem,
         );
 
         // TODO:
@@ -997,14 +945,14 @@ impl<'a> Context<'a> {
         // looping over the string to calculate the precise size, or perhaps using
         // `shrink_to_fit` on the Rust side.
         self.global(&format!(
-            "function {name}(arg, malloc) {{
+            "function {name}(arg, malloc, realloc) {{
                 {debug}
                 {ascii}
                 if (offset !== len) {{
                     if (offset !== 0) {{
                         arg = arg.slice(offset);
                     }}
-                    ptr = wasm.__wbindgen_realloc(ptr, len, len = offset + arg.length * 3);
+                    ptr = realloc(ptr, len, len = offset + arg.length * 3);
                     const view = {mem}().subarray(ptr + offset, ptr + len);
                     const ret = encodeString(arg, view);
                     {debug_end}
@@ -1585,7 +1533,11 @@ impl<'a> Context<'a> {
         if !self.should_write_global("handle_error") {
             return Ok(());
         }
-        self.require_internal_export("__wbindgen_exn_store")?;
+        let store = self
+            .aux
+            .exn_store
+            .ok_or_else(|| anyhow!("failed to find `__wbindgen_exn_store` intrinsic"))?;
+        let store = self.export_name_of(store);
         match (self.aux.anyref_table, self.aux.anyref_alloc) {
             (Some(table), Some(alloc)) => {
                 let add = self.expose_add_to_anyref_table(table, alloc)?;
@@ -1593,21 +1545,22 @@ impl<'a> Context<'a> {
                     "
                     function handleError(e) {{
                         const idx = {}(e);
-                        wasm.__wbindgen_exn_store(idx);
+                        wasm.{}(idx);
                     }}
                     ",
-                    add,
+                    add, store,
                 ));
             }
             _ => {
                 self.expose_add_heap_object();
-                self.global(
+                self.global(&format!(
                     "
-                    function handleError(e) {
-                        wasm.__wbindgen_exn_store(addHeapObject(e));
-                    }
+                    function handleError(e) {{
+                        wasm.{}(addHeapObject(e));
+                    }}
                     ",
-                );
+                    store,
+                ));
             }
         }
         Ok(())
@@ -1943,9 +1896,9 @@ impl<'a> Context<'a> {
         let kind = match self.aux.export_map.get(&id) {
             Some(export) => Kind::Export(export),
             None => {
-                let core = self.wit.implements.iter().find(|pair| pair.1 == id);
+                let core = self.wit.implements.iter().find(|pair| pair.2 == id);
                 match core {
-                    Some((core, _)) => Kind::Import(*core),
+                    Some((core, _, _)) => Kind::Import(*core),
                     None => Kind::Adapter,
                 }
             }
@@ -2708,35 +2661,22 @@ impl<'a> Context<'a> {
 
             Intrinsic::AnyrefHeapLiveCount => {
                 assert_eq!(args.len(), 0);
-                if self.config.anyref {
-                    // Eventually we should add support to the anyref-xform to
-                    // re-write calls to the imported
-                    // `__wbindgen_anyref_heap_live_count` function into calls to
-                    // the exported `__wbindgen_anyref_heap_live_count_impl`
-                    // function, and to un-export that function.
-                    //
-                    // But for now, we just bounce wasm -> js -> wasm because it is
-                    // easy.
-                    self.require_internal_export("__wbindgen_anyref_heap_live_count_impl")?;
-                    "wasm.__wbindgen_anyref_heap_live_count_impl()".into()
-                } else {
-                    self.expose_global_heap();
-                    prelude.push_str(
-                        "
-                            let free_count = 0;
-                            let next = heap_next;
-                            while (next < heap.length) {
-                                free_count += 1;
-                                next = heap[next];
-                            }
-                        ",
-                    );
-                    format!(
-                        "heap.length - free_count - {} - {}",
-                        INITIAL_HEAP_OFFSET,
-                        INITIAL_HEAP_VALUES.len(),
-                    )
-                }
+                self.expose_global_heap();
+                prelude.push_str(
+                    "
+                        let free_count = 0;
+                        let next = heap_next;
+                        while (next < heap.length) {
+                            free_count += 1;
+                            next = heap[next];
+                        }
+                    ",
+                );
+                format!(
+                    "heap.length - free_count - {} - {}",
+                    INITIAL_HEAP_OFFSET,
+                    INITIAL_HEAP_VALUES.len(),
+                )
             }
 
             Intrinsic::InitAnyrefTable => {
@@ -2953,15 +2893,32 @@ impl<'a> Context<'a> {
             }
         });
         if let Some(export) = export {
-            self.required_internal_exports
-                .insert(export.name.clone().into());
             return export.name.clone();
         }
-        let name = format!("__wbindgen_export_{}", self.next_export_idx);
+        let default_name = format!("__wbindgen_export_{}", self.next_export_idx);
         self.next_export_idx += 1;
+        let name = match id {
+            walrus::ExportItem::Function(f) => match &self.module.funcs.get(f).name {
+                Some(s) => to_js_identifier(s),
+                None => default_name,
+            },
+            _ => default_name,
+        };
         self.module.exports.add(&name, id);
-        self.required_internal_exports.insert(name.clone().into());
         return name;
+
+        // Not really an exhaustive list, but works for our purposes.
+        fn to_js_identifier(name: &str) -> String {
+            name.chars()
+                .map(|c| {
+                    if c.is_ascii() && (c.is_alphabetic() || c.is_numeric()) {
+                        c
+                    } else {
+                        '_'
+                    }
+                })
+                .collect()
+        }
     }
 
     fn adapter_name(&self, id: AdapterId) -> String {

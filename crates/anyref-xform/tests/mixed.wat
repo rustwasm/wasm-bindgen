@@ -9,20 +9,19 @@
     i32.const 4
     i32.const 5
     call $a)
-  (func $alloc (export "__wbindgen_anyref_table_alloc") (result i32)
+  (func $alloc (export "__anyref_table_alloc") (result i32)
     i32.const 0)
-  (func $dealloc (export "__wbindgen_anyref_table_dealloc") (param i32))
+  (func $dealloc (export "__anyref_table_dealloc") (param i32))
 )
 
 (; CHECK-ALL:
 (module
   (type (;0;) (func))
-  (type (;1;) (func (result i32)))
-  (type (;2;) (func (param i32)))
-  (type (;3;) (func (param f32 i32 i64 i32 i32)))
-  (type (;4;) (func (param f32 anyref i64 anyref i32)))
-  (import "" "a" (func $a (type 4)))
-  (func $a anyref shim (type 3) (param f32 i32 i64 i32 i32)
+  (type (;1;) (func (param i32)))
+  (type (;2;) (func (param f32 i32 i64 i32 i32)))
+  (type (;3;) (func (param f32 anyref i64 anyref i32)))
+  (import "" "a" (func $a (type 3)))
+  (func $a anyref shim (type 2) (param f32 i32 i64 i32 i32)
     local.get 0
     local.get 1
     table.get 0
@@ -40,11 +39,7 @@
     i32.const 4
     i32.const 5
     call $a anyref shim)
-  (func $alloc (type 1) (result i32)
-    i32.const 0)
-  (func $dealloc (type 2) (param i32))
+  (func $dealloc (type 1) (param i32))
   (table (;0;) 32 anyref)
-  (export "foo" (func 2))
-  (export "__wbindgen_anyref_table_alloc" (func $alloc))
-  (export "__wbindgen_anyref_table_dealloc" (func $dealloc)))
+  (export "foo" (func 2)))
 ;)

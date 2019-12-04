@@ -1,7 +1,7 @@
 use crate::descriptor::VectorKind;
 use std::borrow::Cow;
 use std::collections::HashMap;
-use walrus::{ImportId, TypedCustomSectionId};
+use walrus::{FunctionId, ImportId, TypedCustomSectionId};
 
 #[derive(Default, Debug)]
 pub struct NonstandardWitSection {
@@ -9,7 +9,7 @@ pub struct NonstandardWitSection {
     pub adapters: HashMap<AdapterId, Adapter>,
 
     /// A list of pairs for adapter functions that implement core wasm imports.
-    pub implements: Vec<(ImportId, AdapterId)>,
+    pub implements: Vec<(ImportId, FunctionId, AdapterId)>,
 
     /// A list of adapter functions and the names they're exported under.
     pub exports: Vec<(String, AdapterId)>,
@@ -149,7 +149,11 @@ pub enum Instruction {
     },
     /// Pops an `anyref` from the stack, pushes either 0 if it's "none" or and
     /// index into the owned wasm table it was stored at if it's "some"
-    I32FromOptionAnyref,
+    I32FromOptionAnyref {
+        /// Set to `Some` by the anyref pass of where to put it in the wasm
+        /// module, otherwise it's shoved into the JS shim.
+        table_and_alloc: Option<(walrus::TableId, walrus::FunctionId)>,
+    },
     /// Pops an `anyref` from the stack, pushes either a sentinel value if it's
     /// "none" or the integer value of it if it's "some"
     I32FromOptionU32Sentinel,
@@ -184,6 +188,19 @@ pub enum Instruction {
         malloc: walrus::FunctionId,
         free: walrus::FunctionId,
         mem: walrus::MemoryId,
+    },
+
+    /// Pops a string, pushes pointer/length or all zeros
+    OptionString {
+        malloc: walrus::FunctionId,
+        mem: walrus::MemoryId,
+        realloc: Option<walrus::FunctionId>,
+    },
+    /// Pops a string, pushes pointer/length
+    StringToMemory {
+        malloc: walrus::FunctionId,
+        mem: walrus::MemoryId,
+        realloc: Option<walrus::FunctionId>,
     },
 
     /// Pops an anyref, pushes pointer/length or all zeros
@@ -355,5 +372,73 @@ impl walrus::CustomSection for NonstandardWitSection {
 
     fn data(&self, _: &walrus::IdsToIndices) -> Cow<[u8]> {
         panic!("shouldn't emit custom sections just yet");
+    }
+
+    fn add_gc_roots(&self, roots: &mut walrus::passes::Roots) {
+        use Instruction::*;
+
+        for (_, adapter) in self.adapters.iter() {
+            let instrs = match &adapter.kind {
+                AdapterKind::Local { instructions } => instructions,
+                AdapterKind::Import { .. } => continue,
+            };
+            for instr in instrs {
+                match instr.instr {
+                    Standard(wit_walrus::Instruction::DeferCallCore(f))
+                    | Standard(wit_walrus::Instruction::CallCore(f)) => {
+                        roots.push_func(f);
+                    }
+                    StoreRetptr { mem, .. }
+                    | LoadRetptr { mem, .. }
+                    | View { mem, .. }
+                    | OptionView { mem, .. }
+                    | Standard(wit_walrus::Instruction::MemoryToString(mem)) => {
+                        roots.push_memory(mem);
+                    }
+                    VectorToMemory { malloc, mem, .. }
+                    | OptionVector { malloc, mem, .. }
+                    | Standard(wit_walrus::Instruction::StringToMemory { mem, malloc }) => {
+                        roots.push_memory(mem);
+                        roots.push_func(malloc);
+                    }
+                    MutableSliceToMemory {
+                        free, malloc, mem, ..
+                    } => {
+                        roots.push_memory(mem);
+                        roots.push_func(malloc);
+                        roots.push_func(free);
+                    }
+                    VectorLoad { free, mem, .. }
+                    | OptionVectorLoad { free, mem, .. }
+                    | CachedStringLoad { free, mem, .. } => {
+                        roots.push_memory(mem);
+                        roots.push_func(free);
+                    }
+                    OptionString {
+                        mem,
+                        malloc,
+                        realloc,
+                    }
+                    | StringToMemory {
+                        mem,
+                        malloc,
+                        realloc,
+                    } => {
+                        roots.push_memory(mem);
+                        roots.push_func(malloc);
+                        if let Some(id) = realloc {
+                            roots.push_func(id);
+                        }
+                    }
+                    I32FromOptionAnyref { table_and_alloc } => {
+                        if let Some((table, alloc)) = table_and_alloc {
+                            roots.push_table(table);
+                            roots.push_func(alloc);
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
     }
 }

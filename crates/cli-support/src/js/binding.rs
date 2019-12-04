@@ -107,7 +107,12 @@ impl<'a, 'b> Builder<'a, 'b> {
         instructions: &[InstructionData],
         explicit_arg_names: &Option<Vec<String>>,
     ) -> Result<String, Error> {
-        if self.cx.aux.imports_with_assert_no_shim.contains(&adapter.id) {
+        if self
+            .cx
+            .aux
+            .imports_with_assert_no_shim
+            .contains(&adapter.id)
+        {
             bail!("generating a shim for something asserted to have no shim");
         }
 
@@ -414,6 +419,35 @@ impl<'a, 'b> JsBuilder<'a, 'b> {
             arg,
         ));
     }
+
+    fn string_to_memory(
+        &mut self,
+        mem: walrus::MemoryId,
+        malloc: walrus::FunctionId,
+        realloc: Option<walrus::FunctionId>,
+    ) -> Result<(), Error> {
+        self.typescript_required("string");
+        let pass = self.cx.expose_pass_string_to_wasm(mem)?;
+        let val = self.pop();
+        let malloc = self.cx.export_name_of(malloc);
+        let i = self.tmp();
+        let realloc = match realloc {
+            Some(f) => format!(", wasm.{}", self.cx.export_name_of(f)),
+            None => String::new(),
+        };
+        self.prelude(&format!(
+            "var ptr{i} = {f}({0}, wasm.{malloc}{realloc});",
+            val,
+            i = i,
+            f = pass,
+            malloc = malloc,
+            realloc = realloc,
+        ));
+        self.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+        self.push(format!("ptr{}", i));
+        self.push(format!("len{}", i));
+        Ok(())
+    }
 }
 
 fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) -> Result<(), Error> {
@@ -512,21 +546,15 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
         }
 
         Instruction::Standard(wit_walrus::Instruction::StringToMemory { mem, malloc }) => {
-            js.typescript_required("string");
-            let pass = js.cx.expose_pass_string_to_wasm(*mem)?;
-            let val = js.pop();
-            let malloc = js.cx.export_name_of(*malloc);
-            let i = js.tmp();
-            js.prelude(&format!(
-                "var ptr{i} = {f}({0}, wasm.{malloc});",
-                val,
-                i = i,
-                f = pass,
-                malloc = malloc,
-            ));
-            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
-            js.push(format!("ptr{}", i));
-            js.push(format!("len{}", i));
+            js.string_to_memory(*mem, *malloc, None)?;
+        }
+
+        Instruction::StringToMemory {
+            mem,
+            malloc,
+            realloc,
+        } => {
+            js.string_to_memory(*mem, *malloc, *realloc)?;
         }
 
         Instruction::Retptr => js.stack.push(retptr_val.to_string()),
@@ -679,16 +707,16 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
             js.push(format!("high{}", i));
         }
 
-        Instruction::I32FromOptionAnyref => {
+        Instruction::I32FromOptionAnyref { table_and_alloc } => {
             js.typescript_optional("any");
             let val = js.pop();
             js.cx.expose_is_like_none();
-            match (js.cx.aux.anyref_table, js.cx.aux.anyref_alloc) {
-                (Some(table), Some(alloc)) => {
-                    let alloc = js.cx.expose_add_to_anyref_table(table, alloc)?;
+            match table_and_alloc {
+                Some((table, alloc)) => {
+                    let alloc = js.cx.expose_add_to_anyref_table(*table, *alloc)?;
                     js.push(format!("isLikeNone({0}) ? 0 : {1}({0})", val, alloc));
                 }
-                _ => {
+                None => {
                     js.cx.expose_add_heap_object();
                     js.push(format!("isLikeNone({0}) ? 0 : addHeapObject({0})", val));
                 }
@@ -750,6 +778,34 @@ fn instruction(js: &mut JsBuilder, instr: &Instruction, log_error: &mut bool) ->
                 i = i,
                 f = func,
                 malloc = malloc,
+            ));
+            js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
+            js.push(format!("ptr{}", i));
+            js.push(format!("len{}", i));
+        }
+
+        Instruction::OptionString {
+            mem,
+            malloc,
+            realloc,
+        } => {
+            js.typescript_optional("string");
+            let func = js.cx.expose_pass_string_to_wasm(*mem)?;
+            js.cx.expose_is_like_none();
+            let i = js.tmp();
+            let malloc = js.cx.export_name_of(*malloc);
+            let val = js.pop();
+            let realloc = match realloc {
+                Some(f) => format!(", wasm.{}", js.cx.export_name_of(*f)),
+                None => String::new(),
+            };
+            js.prelude(&format!(
+                "var ptr{i} = isLikeNone({0}) ? 0 : {f}({0}, wasm.{malloc}{realloc});",
+                val,
+                i = i,
+                f = func,
+                malloc = malloc,
+                realloc = realloc,
             ));
             js.prelude(&format!("var len{} = WASM_VECTOR_LEN;", i));
             js.push(format!("ptr{}", i));

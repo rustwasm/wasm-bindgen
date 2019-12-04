@@ -52,6 +52,9 @@ pub struct WasmBindgenAux {
     pub anyref_table: Option<walrus::TableId>,
     pub anyref_alloc: Option<walrus::FunctionId>,
     pub anyref_drop_slice: Option<walrus::FunctionId>,
+
+    /// Various intrinsics used for JS glue generation
+    pub exn_store: Option<walrus::FunctionId>,
 }
 
 pub type WasmBindgenAuxId = TypedCustomSectionId<WasmBindgenAux>;
@@ -356,5 +359,20 @@ impl walrus::CustomSection for WasmBindgenAux {
 
     fn data(&self, _: &walrus::IdsToIndices) -> Cow<[u8]> {
         panic!("shouldn't emit custom sections just yet");
+    }
+
+    fn add_gc_roots(&self, roots: &mut walrus::passes::Roots) {
+        if let Some(id) = self.anyref_table {
+            roots.push_table(id);
+        }
+        if let Some(id) = self.anyref_alloc {
+            roots.push_func(id);
+        }
+        if let Some(id) = self.anyref_drop_slice {
+            roots.push_func(id);
+        }
+        if let Some(id) = self.exn_store {
+            roots.push_func(id);
+        }
     }
 }
