@@ -36,7 +36,7 @@ exports.test_iterator = function(sym) {
   assert.deepEqual([...iterable1], [1, 2, 3]);
 };
 
-exports.test_async_iterator = function(sym) {
+exports.test_async_iterator = async function(sym) {
   const iterable1 = new Object();
 
   iterable1[sym] = function () {
@@ -68,7 +68,7 @@ exports.test_async_iterator = function(sym) {
     values.push(value);
   }
 
-  assert.deepEqual(values, [0, 1]);
+  assert.deepEqual(values, [0]);
 };
 
 exports.test_match = function(sym) {

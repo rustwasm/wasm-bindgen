@@ -1,13 +1,14 @@
 use js_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_test::*;
+use wasm_bindgen_futures::JsFuture;
 
 #[wasm_bindgen(module = "tests/wasm/Symbol.js")]
 extern "C" {
     fn test_has_instance(sym: &Symbol);
     fn test_is_concat_spreadable(sym: &Symbol);
     fn test_iterator(sym: &Symbol);
-    fn test_async_iterator(sym: &Symbol);
+    fn test_async_iterator(sym: &Symbol) -> Promise;
     fn test_match(sym: &Symbol);
     fn test_replace(sym: &Symbol);
     fn test_search(sym: &Symbol);
@@ -39,8 +40,8 @@ fn iterator() {
 }
 
 #[wasm_bindgen_test]
-fn async_iterator() {
-    test_async_iterator(&Symbol::async_iterator());
+async fn async_iterator() {
+    JsFuture::from(test_async_iterator(&Symbol::async_iterator())).await.unwrap_throw();
 }
 
 #[wasm_bindgen_test]
