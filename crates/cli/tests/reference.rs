@@ -107,7 +107,9 @@ fn runtest(test: &Path) -> Result<()> {
     exec(&mut bindgen)?;
 
     if interface_types {
-        let wit = sanitize_wasm(&td.path().join("reference_test.wasm"))?;
+        let wasm = td.path().join("reference_test.wasm");
+        wit_validator::validate(&fs::read(&wasm)?)?;
+        let wit = sanitize_wasm(&wasm)?;
         assert_same(&wit, &test.with_extension("wit"))?;
     } else {
         let js = fs::read_to_string(td.path().join("reference_test.js"))?;
