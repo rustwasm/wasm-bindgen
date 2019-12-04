@@ -86,7 +86,6 @@ members = [
   "examples/without-a-bundler-no-modules",
   "tests/no-std",
 ]
-exclude = ['crates/typescript']
 
 [patch.crates-io]
 wasm-bindgen = { path = '.' }
