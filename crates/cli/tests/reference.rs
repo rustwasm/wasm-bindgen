@@ -142,6 +142,18 @@ fn sanitize_wasm(wasm: &Path) -> Result<String> {
     for mem in module.memories.iter_mut() {
         mem.data_segments.drain();
     }
+    let ids = module
+        .exports
+        .iter()
+        .filter(|e| match e.item {
+            walrus::ExportItem::Global(_) => true,
+            _ => false,
+        })
+        .map(|d| d.id())
+        .collect::<Vec<_>>();
+    for id in ids {
+        module.exports.delete(id);
+    }
     walrus::passes::gc::run(&mut module);
     let mut wat = wasmprinter::print_bytes(&module.emit_wasm())?;
     wat.push_str("\n");
