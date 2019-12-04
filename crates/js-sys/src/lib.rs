@@ -1349,6 +1349,25 @@ impl Iterator {
     }
 }
 
+// Async Iterator
+#[wasm_bindgen]
+extern "C" {
+    /// Any object that conforms to the JS async iterator protocol. For example,
+    /// something returned by `myObject[Symbol.asyncIterator]()`.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of)
+    #[derive(Clone, Debug)]
+    #[wasm_bindgen(is_type_of = Iterator::looks_like_iterator)]
+    pub type AsyncIterator;
+
+    /// The next method always has to return a Promise which resolves to an object
+    /// with appropriate properties including done and value. If a non-object value
+    /// gets returned (such as false or undefined), a TypeError ("iterator.next()
+    /// returned a non-object value") will be thrown.
+    #[wasm_bindgen(catch, method, structural)]
+    pub fn next(this: &AsyncIterator) -> Result<Promise, JsValue>;
+}
+
 /// An iterator over the JS `Symbol.iterator` iteration protocol.
 ///
 /// Use the `IntoIterator for &js_sys::Iterator` implementation to create this.
@@ -4164,6 +4183,13 @@ extern "C" {
     /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/isConcatSpreadable)
     #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = isConcatSpreadable)]
     pub fn is_concat_spreadable() -> Symbol;
+
+    /// The `Symbol.asyncIterator` well-known symbol specifies the default AsyncIterator for an object.
+    /// If this property is set on an object, it is an async iterable and can be used in a `for await...of` loop.
+    ///
+    /// [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/asyncIterator)
+    #[wasm_bindgen(static_method_of = Symbol, getter, structural, js_name = asyncIterator)]
+    pub fn async_iterator() -> Symbol;
 
     /// The `Symbol.iterator` well-known symbol specifies the default iterator
     /// for an object.  Used by `for...of`.
